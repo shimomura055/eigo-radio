@@ -1,0 +1,882 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "But in the oil market, the curtain did not fall right away.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "But in the oil market, the curtain did not fall right away.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The Fee Plan Is Replaced, but the Oil Market’s Story Isn’t Over\n\nIn this news story, the lead role on the policy stage changed hands the next day. But in the oil market, the curtain did not fall right away.\n\nTrump proposed charging all cargo passing through the Strait of Hormuz a 20% fee to recover the cost of keeping the strait safe. It was like putting up a sign along the route that said, “Please pay for keeping this route safe.”",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But in the oil market, the curtain did not fall right away.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "1e3d03a9eaafa8f6f8356d7c0e4e31e32cf06075cec977e3ef32f11a93f64085"
+            ],
+            "batch_cost_jpy": 0.0211,
+            "batch_n_claims": 1
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "But in the oil market, the curtain did not fall right away.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "1e3d03a9eaafa8f6f8356d7c0e4e31e32cf06075cec977e3ef32f11a93f64085"
+          ],
+          "batch_cost_jpy": 0.0211,
+          "batch_n_claims": 1
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5154,
+      "usage": {
+        "input_tokens": 5085,
+        "cached_input_tokens": 0,
+        "output_tokens": 5553,
+        "reasoning_tokens": 1749
+      },
+      "elapsed_seconds": 40.29,
+      "prompt_sha256": "bd7843e98a8ce450755e0bc6929999ec2df015b2b577b298c576d9c3ecbe9f76",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 1.0254,
+      "usage": {
+        "input_tokens": 4722,
+        "cached_input_tokens": 0,
+        "output_tokens": 12128,
+        "reasoning_tokens": 9705
+      },
+      "elapsed_seconds": 112.305,
+      "prompt_sha256": "093559b690cd8dc3574f4d1d95e0e76f0c71cad5d5eb936f1c5d94a1c07f4139",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.1653,
+      "usage": {
+        "input_tokens": 4854,
+        "cached_input_tokens": 0,
+        "output_tokens": 1137,
+        "reasoning_tokens": 714
+      },
+      "elapsed_seconds": 11.437,
+      "prompt_sha256": "fa9bd7f794c12c77fd6ea3c5cb41d59a150ad60adc3de968d1f5dd6944424a3a",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1075,
+      "usage": {
+        "input_tokens": 5703,
+        "cached_input_tokens": 0,
+        "output_tokens": 230,
+        "reasoning_tokens": 179
+      },
+      "elapsed_seconds": 3.52,
+      "prompt_sha256": "1e3d03a9eaafa8f6f8356d7c0e4e31e32cf06075cec977e3ef32f11a93f64085"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0211,
+      "usage": {
+        "input_tokens": 5703,
+        "cached_input_tokens": 5700,
+        "output_tokens": 155,
+        "reasoning_tokens": 104
+      },
+      "elapsed_seconds": 2.02,
+      "prompt_sha256": "1e3d03a9eaafa8f6f8356d7c0e4e31e32cf06075cec977e3ef32f11a93f64085"
+    }
+  ],
+  "total_cost_jpy": 1.8347,
+  "total_calls": 5,
+  "elapsed_seconds": 169.613,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But in the oil market, the curtain did not fall right away.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 6,
+      "n_model_entries": 5,
+      "n_targets": 5,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 5,
+      "n_excluded_entries": 5,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.1653,
+          "usage": {
+            "input_tokens": 4854,
+            "cached_input_tokens": 0,
+            "output_tokens": 1137,
+            "reasoning_tokens": 714
+          },
+          "elapsed_seconds": 11.437,
+          "prompt_sha256": "fa9bd7f794c12c77fd6ea3c5cb41d59a150ad60adc3de968d1f5dd6944424a3a",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.1653,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.1",
+          "claim": "In this news story, the lead role on the policy stage changed hands the next day.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "政策上の主役が翌日に入れ替わったという比喩は、7月13日の提案が7月14日に置き換えられた事実の平易な表現。",
+          "fact_tags": [
+            "date"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C2",
+          "key": "S4.1",
+          "claim": "So how did the market react?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "市場の反応を尋ねる導入の問いかけで、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S6.3",
+          "claim": "The market’s response seemed to say, “There’s more to come,” rather than giving the story a neat ending.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "市場の反応を物語の比喩で表した修辞的なまとめで、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S7.3",
+          "claim": "If you pay attention to that, market movements too begin to look like the next part of the story.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "読者への助言と物語の比喩による一般論で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "R:S3.3+S4.1",
+          "claim": "So how did the market react?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "市場の反応を尋ねる導入の問いかけで、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "fa9bd7f794c12c77fd6ea3c5cb41d59a150ad60adc3de968d1f5dd6944424a3a"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 30,
+    "n_judged_units": 22,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S3.3+S4.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "R:S3.3+S4.1",
+          "S1.1",
+          "S1.2",
+          "S4.1",
+          "S6.3",
+          "S7.3"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "CANDIDATE",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "CANDIDATE",
+          "L1": "SUPPORTED",
+          "R:S3.3+S4.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5154,
+            "usage": {
+              "input_tokens": 5085,
+              "cached_input_tokens": 0,
+              "output_tokens": 5553,
+              "reasoning_tokens": 1749
+            },
+            "elapsed_seconds": 40.29,
+            "prompt_sha256": "bd7843e98a8ce450755e0bc6929999ec2df015b2b577b298c576d9c3ecbe9f76",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "CANDIDATE",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "CANDIDATE",
+          "L1": "SUPPORTED",
+          "R:S3.3+S4.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "In this news story, the lead role on the policy stage changed hands the next day.",
+            "span": [
+              67,
+              148
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "翌日に変わったのは償還料案の扱いであり、政策上の主導権や役割が別の主体に移ったとはLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "In this news story, the lead role on the policy stage changed hands the next day."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "But in the oil market, the curtain did not fall right away.",
+            "span": [
+              149,
+              208
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "So how did the market react?",
+            "span": [
+              757,
+              785
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "文頭の“So”が、直前の償還料案の置換と市場の反応を結び付けていますが、Ledgerは置換が市場反応を引き起こしたとは述べていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "So how did the market react?"
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "The market’s response seemed to say, “There’s more to come,” rather than giving the story a neat ending.",
+            "span": [
+              1550,
+              1654
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "市場の反応が今後の展開を予告するかのように示した、という市場の含意・予測はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The market’s response seemed to say, “There’s more to come,” rather than giving the story a neat ending."
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "If you pay attention to that, market movements too begin to look like the next part of the story.",
+            "span": [
+              1772,
+              1869
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "市場の動きを追うことで、それが物語の次の展開として見えてくるという一般的な主張はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "If you pay attention to that, market movements too begin to look like the next part of the story."
+          },
+          {
+            "unit_id": "R:S3.3+S4.1",
+            "unit_ids": [
+              "R:S3.3+S4.1"
+            ],
+            "claim_text": "So how did the market react?",
+            "span": [
+              757,
+              785
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "“So”で、料金案の置換とその後に尋ねる市場の反応を因果的・関係的に結び付けています。Ledgerは発表後の値動きを記録していますが、置換がその値動きを引き起こしたとは述べていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The prop of a fee for using the strait was taken backstage, and trade and investment came on in its place. So how did the market react?"
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S3.1": "MATCH",
+          "S3.3": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S6.1": "MATCH",
+          "S6.2": "MATCH",
+          "L1": "MATCH",
+          "R:S3.3+S4.1": "MATCH",
+          "S1.1": "MATCH",
+          "S3.2": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S2.2": "UNMENTIONED",
+          "S4.1": "UNMENTIONED",
+          "S6.3": "UNMENTIONED",
+          "S7.1": "UNMENTIONED",
+          "S7.2": "UNMENTIONED",
+          "S7.3": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 1.0254,
+            "usage": {
+              "input_tokens": 4722,
+              "cached_input_tokens": 0,
+              "output_tokens": 12128,
+              "reasoning_tokens": 9705
+            },
+            "elapsed_seconds": 112.305,
+            "prompt_sha256": "093559b690cd8dc3574f4d1d95e0e76f0c71cad5d5eb936f1c5d94a1c07f4139",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": []
+      }
+    },
+    "overlap": {
+      "both": [],
+      "r3_only": [
+        "R:S3.3+S4.1",
+        "S1.1",
+        "S1.2",
+        "S4.1",
+        "S6.3",
+        "S7.3"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 1
+    },
+    "union_candidates": [
+      {
+        "claim_text": "But in the oil market, the curtain did not fall right away.",
+        "span": [
+          149,
+          208
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 1,
+    "n_model_candidates": 0,
+    "n_deterministic_only_candidates": 1,
+    "total_cost_jpy": 1.5408,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 5,
+    "n_targets": 5,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 5,
+    "n_excluded_entries": 5,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.1653,
+    "effort": "medium",
+    "prompt_sha256": "fa9bd7f794c12c77fd6ea3c5cb41d59a150ad60adc3de968d1f5dd6944424a3a"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {},
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 1.8347,
+  "provenance": {
+    "switch_dump_sha256": "66d18a3a1b28679684d7dcbe6e7af161a4da4223da7415a7ac50e7450de777c1",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-08T09:37:13",
+    "ledger_sha256": "83b2a09b99b20af0f1d30aefc6dda7bfe40ed06a6d7726a56a0bb90bce774522",
+    "article_sha256": "fc84a5b526df27ed4b2e7e80964cff1be9432163b1cf49af00090317fcf1ede4",
+    "source_article_sha256": "ffbecd3a85825f503e013c62235833a707b6833e1c96f1aef9e68ba7fa52967c",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/factlock_writer_trial_01/runs/hormuz/control/b4__factlock__r1/checker",
+      "ledger_path": "er052_output/factlock_writer_trial_01/runs/hormuz/control/b4__factlock__r1/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/factlock_writer_trial_01/runs/hormuz/control/b4__factlock__r1/b1b/article.md",
+      "source_path": "er052_output/factlock_writer_trial_01/runs/hormuz/control/b4__factlock__r1/ja_writer/revision2.md",
+      "budget_jpy": 10.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

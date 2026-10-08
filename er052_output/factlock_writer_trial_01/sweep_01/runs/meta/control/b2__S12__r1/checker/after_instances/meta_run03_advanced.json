@@ -1,0 +1,3379 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Here’s the first question.",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "Here’s the first question.",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# A Quiz About Who Handles the Call, and What to Ask After the Answer\n\nHere’s the first question. In some calls made through Muse, who called the other person and finished the conversation? The answer is trained human contract workers. Meta was testing workers making calls and completing the conversations.\n\nNow for the second question. Once you know who handles the call, is that enough to put your mind at ease? Another concern is who might receive users’ information.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "claim:b19b89381a2d6229",
+            "claim_text": "Here’s the first question.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "Now for the second question.",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "Now for the second question.",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S2.1); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S2.1"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Here’s the first question. In some calls made through Muse, who called the other person and finished the conversation? The answer is trained human contract workers. Meta was testing workers making calls and completing the conversations.\n\nNow for the second question. Once you know who handles the call, is that enough to put your mind at ease? Another concern is who might receive users’ information.\n\nMeta employees raised privacy concerns that when human contract workers handle calls, sensitive user information needed to carry out the calls might be shared by mistake with contract workers at call centers.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "claim:eeda015438a32150",
+            "claim_text": "Now for the second question.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "Once you know who handles the call, is that enough to put your mind at ease?",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "Once you know who handles the call, is that enough to put your mind at ease?",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S2.2); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S2.2"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Here’s the first question. In some calls made through Muse, who called the other person and finished the conversation? The answer is trained human contract workers. Meta was testing workers making calls and completing the conversations.\n\nNow for the second question. Once you know who handles the call, is that enough to put your mind at ease? Another concern is who might receive users’ information.\n\nMeta employees raised privacy concerns that when human contract workers handle calls, sensitive user information needed to carry out the calls might be shared by mistake with contract workers at call centers.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "claim:4e6fa189f663d4c3",
+            "claim_text": "Once you know who handles the call, is that enough to put your mind at ease?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "It is important to get the answer right here.",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "It is important to get the answer right here.",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Meta employees raised privacy concerns that when human contract workers handle calls, sensitive user information needed to carry out the calls might be shared by mistake with contract workers at call centers.\n\nIt is important to get the answer right here. The concern was not that a large-scale leak of information had happened, but that information might be shared by mistake.\n\nIf someone made a call for you, would you want to know whether the person handling it was human? Or would you want an explanation of who might receive your information? Some people might want to know both, right?",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "claim:09b03871b4214ad3",
+            "claim_text": "It is important to get the answer right here.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "The concern was not that a large-scale leak of information had happened, but that information might be shared by mistake.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "The concern was not that a large-scale leak of information had happened, but that information might be shared by mistake.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Meta employees raised privacy concerns that when human contract workers handle calls, sensitive user information needed to carry out the calls might be shared by mistake with contract workers at call centers.\n\nIt is important to get the answer right here. The concern was not that a large-scale leak of information had happened, but that information might be shared by mistake.\n\nIf someone made a call for you, would you want to know whether the person handling it was human? Or would you want an explanation of who might receive your information? Some people might want to know both, right?",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-010",
+            "claim_text": "The concern was not that a large-scale leak of information had happened, but that information might be shared by mistake.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "If someone made a call for you, would you want to know whether the person handling it was human?",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "If someone made a call for you, would you want to know whether the person handling it was human?",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "It is important to get the answer right here. The concern was not that a large-scale leak of information had happened, but that information might be shared by mistake.\n\nIf someone made a call for you, would you want to know whether the person handling it was human? Or would you want an explanation of who might receive your information? Some people might want to know both, right?\n\nAnd now for the final question. The vice president of Meta’s Superintelligence Labs said that starting tests in which contract workers made calls without properly informing users was a “mistake,” and rolled back the human concierge feature for now. The rollback applied to the human concierge feature. Muse as a whole was not being stopped.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "claim:b4b677bc79f46ffc",
+            "claim_text": "If someone made a call for you, would you want to know whether the person handling it was human?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "Or would you want an explanation of who might receive your information?",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "Or would you want an explanation of who might receive your information?",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S5.2); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S5.2"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "It is important to get the answer right here. The concern was not that a large-scale leak of information had happened, but that information might be shared by mistake.\n\nIf someone made a call for you, would you want to know whether the person handling it was human? Or would you want an explanation of who might receive your information? Some people might want to know both, right?\n\nAnd now for the final question. The vice president of Meta’s Superintelligence Labs said that starting tests in which contract workers made calls without properly informing users was a “mistake,” and rolled back the human concierge feature for now. The rollback applied to the human concierge feature. Muse as a whole was not being stopped.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "claim:fadb84215f542f30",
+            "claim_text": "Or would you want an explanation of who might receive your information?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "Some people might want to know both, right?",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "Some people might want to know both, right?",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S5.3); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S5.3"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "It is important to get the answer right here. The concern was not that a large-scale leak of information had happened, but that information might be shared by mistake.\n\nIf someone made a call for you, would you want to know whether the person handling it was human? Or would you want an explanation of who might receive your information? Some people might want to know both, right?\n\nAnd now for the final question. The vice president of Meta’s Superintelligence Labs said that starting tests in which contract workers made calls without properly informing users was a “mistake,” and rolled back the human concierge feature for now. The rollback applied to the human concierge feature. Muse as a whole was not being stopped.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "claim:c8f62e2783014060",
+            "claim_text": "Some people might want to know both, right?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "And now for the final question.",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "And now for the final question.",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S6.1); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S6.1"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "If someone made a call for you, would you want to know whether the person handling it was human? Or would you want an explanation of who might receive your information? Some people might want to know both, right?\n\nAnd now for the final question. The vice president of Meta’s Superintelligence Labs said that starting tests in which contract workers made calls without properly informing users was a “mistake,” and rolled back the human concierge feature for now. The rollback applied to the human concierge feature. Muse as a whole was not being stopped.\n\nWhat to think about in this story is not only who makes the call, but also how users are told about it. So, what would you want to check before letting someone handle a call for you?",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "claim:452e50db5fbddde2",
+            "claim_text": "And now for the final question.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "The rollback applied to the human concierge feature.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "The rollback applied to the human concierge feature.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "If someone made a call for you, would you want to know whether the person handling it was human? Or would you want an explanation of who might receive your information? Some people might want to know both, right?\n\nAnd now for the final question. The vice president of Meta’s Superintelligence Labs said that starting tests in which contract workers made calls without properly informing users was a “mistake,” and rolled back the human concierge feature for now. The rollback applied to the human concierge feature. Muse as a whole was not being stopped.\n\nWhat to think about in this story is not only who makes the call, but also how users are told about it. So, what would you want to check before letting someone handle a call for you?",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "The rollback applied to the human concierge feature.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "So, what would you want to check before letting someone handle a call for you?",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "So, what would you want to check before letting someone handle a call for you?",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S7.2); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S7.2"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "And now for the final question. The vice president of Meta’s Superintelligence Labs said that starting tests in which contract workers made calls without properly informing users was a “mistake,” and rolled back the human concierge feature for now. The rollback applied to the human concierge feature. Muse as a whole was not being stopped.\n\nWhat to think about in this story is not only who makes the call, but also how users are told about it. So, what would you want to check before letting someone handle a call for you?\n\n## In one line\nMeta paused its human call feature after admitting users weren’t properly told contractors might handle their calls.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "claim:5aaf3045ade0d80b",
+            "claim_text": "So, what would you want to check before letting someone handle a call for you?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "Meta paused its human call feature after admitting users weren’t properly told contractors might handle their calls.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "Meta paused its human call feature after admitting users weren’t properly told contractors might handle their calls.",
+            "issue": "「適切な開示なし」を「ユーザーに適切に伝えられていなかった」と言い換え、開示の受け手をユーザーに特定している。 / 「users」と一般化しており、Ledgerが扱うMeta従業員向けの社内テストという範囲を超えている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "What to think about in this story is not only who makes the call, but also how users are told about it. So, what would you want to check before letting someone handle a call for you?\n\n## In one line\nMeta paused its human call feature after admitting users weren’t properly told contractors might handle their calls.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "Meta paused its human call feature after admitting users weren’t properly told contractors might handle their calls.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "Meta employees raised privacy concerns that when human contract workers handle calls, sensitive user information needed to carry out the calls might be shared by mistake with contract workers at call centers.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "Meta employees raised privacy concerns that when human contract workers handle calls, sensitive user information needed to carry out the calls might be shared by mistake with contract workers at call centers.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The concern was not that a large-scale leak of information had happened, but that information might be shared by mistake."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Now for the second question. Once you know who handles the call, is that enough to put your mind at ease? Another concern is who might receive users’ information.\n\nMeta employees raised privacy concerns that when human contract workers handle calls, sensitive user information needed to carry out the calls might be shared by mistake with contract workers at call centers.\n\nIt is important to get the answer right here. The concern was not that a large-scale leak of information had happened, but that information might be shared by mistake.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-010",
+            "claim_text": "Meta employees raised privacy concerns that when human contract workers handle calls, sensitive user information needed to carry out the calls might be shared by mistake with contract workers at call ",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "Another concern is who might receive users’ information.",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "Another concern is who might receive users’ information.",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S5.2); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S5.2"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Or would you want an explanation of who might receive your information?"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Here’s the first question. In some calls made through Muse, who called the other person and finished the conversation? The answer is trained human contract workers. Meta was testing workers making calls and completing the conversations.\n\nNow for the second question. Once you know who handles the call, is that enough to put your mind at ease? Another concern is who might receive users’ information.\n\nMeta employees raised privacy concerns that when human contract workers handle calls, sensitive user information needed to carry out the calls might be shared by mistake with contract workers at call centers.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "claim:a5cb3aac70f13b21",
+            "claim_text": "Another concern is who might receive users’ information.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "The vice president of Meta’s Superintelligence Labs said that starting tests in which contract workers made calls without properly informing users was a “mistake,” and rolled back the human concierge feature for now.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "The vice president of Meta’s Superintelligence Labs said that starting tests in which contract workers made calls without properly informing users was a “mistake,” and rolled back the human concierge feature for now.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The rollback applied to the human concierge feature."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "If someone made a call for you, would you want to know whether the person handling it was human? Or would you want an explanation of who might receive your information? Some people might want to know both, right?\n\nAnd now for the final question. The vice president of Meta’s Superintelligence Labs said that starting tests in which contract workers made calls without properly informing users was a “mistake,” and rolled back the human concierge feature for now. The rollback applied to the human concierge feature. Muse as a whole was not being stopped.\n\nWhat to think about in this story is not only who makes the call, but also how users are told about it. So, what would you want to check before letting someone handle a call for you?",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "The vice president of Meta’s Superintelligence Labs said that starting tests in which contract workers made calls without properly informing users was a “mistake,” and rolled back the human concierge ",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "What to think about in this story is not only who makes the call, but also how users are told about it.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "What to think about in this story is not only who makes the call, but also how users are told about it.",
+            "issue": "「適切な開示なし」を「ユーザーに適切に伝えられていなかった」と言い換え、開示の受け手をユーザーに特定している。 / 「users」と一般化しており、Ledgerが扱うMeta従業員向けの社内テストという範囲を超えている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Meta paused its human call feature after admitting users weren’t properly told contractors might handle their calls."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "And now for the final question. The vice president of Meta’s Superintelligence Labs said that starting tests in which contract workers made calls without properly informing users was a “mistake,” and rolled back the human concierge feature for now. The rollback applied to the human concierge feature. Muse as a whole was not being stopped.\n\nWhat to think about in this story is not only who makes the call, but also how users are told about it. So, what would you want to check before letting someone handle a call for you?\n\n## In one line\nMeta paused its human call feature after admitting users weren’t properly told contractors might handle their calls.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "What to think about in this story is not only who makes the call, but also how users are told about it.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+              "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+            ],
+            "batch_cost_jpy": 0.1951,
+            "batch_n_claims": 16
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 16,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "claim:b19b89381a2d6229",
+          "claim_text": "Here’s the first question.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "claim:eeda015438a32150",
+          "claim_text": "Now for the second question.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "claim:4e6fa189f663d4c3",
+          "claim_text": "Once you know who handles the call, is that enough to put your mind at ease?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "claim:09b03871b4214ad3",
+          "claim_text": "It is important to get the answer right here.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-010",
+          "claim_text": "The concern was not that a large-scale leak of information had happened, but that information might be shared by mistake.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "claim:b4b677bc79f46ffc",
+          "claim_text": "If someone made a call for you, would you want to know whether the person handling it was human?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "claim:fadb84215f542f30",
+          "claim_text": "Or would you want an explanation of who might receive your information?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "claim:c8f62e2783014060",
+          "claim_text": "Some people might want to know both, right?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "claim:452e50db5fbddde2",
+          "claim_text": "And now for the final question.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "The rollback applied to the human concierge feature.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "claim:5aaf3045ade0d80b",
+          "claim_text": "So, what would you want to check before letting someone handle a call for you?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "Meta paused its human call feature after admitting users weren’t properly told contractors might handle their calls.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-010",
+          "claim_text": "Meta employees raised privacy concerns that when human contract workers handle calls, sensitive user information needed to carry out the calls might be shared by mistake with contract workers at call ",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "claim:a5cb3aac70f13b21",
+          "claim_text": "Another concern is who might receive users’ information.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "The vice president of Meta’s Superintelligence Labs said that starting tests in which contract workers made calls without properly informing users was a “mistake,” and rolled back the human concierge ",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "What to think about in this story is not only who makes the call, but also how users are told about it.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0",
+            "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+          ],
+          "batch_cost_jpy": 0.1951,
+          "batch_n_claims": 16
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.4884,
+      "usage": {
+        "input_tokens": 5058,
+        "cached_input_tokens": 0,
+        "output_tokens": 5215,
+        "reasoning_tokens": 2069
+      },
+      "elapsed_seconds": 36.94,
+      "prompt_sha256": "5380a5500b9b8531d8f366f7749e42ddd9ccfe584bbb5901be585be2f94a6069",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.7747,
+      "usage": {
+        "input_tokens": 4752,
+        "cached_input_tokens": 0,
+        "output_tokens": 8926,
+        "reasoning_tokens": 6940
+      },
+      "elapsed_seconds": 55.886,
+      "prompt_sha256": "9080a9440a427f01fd3f3b480e87ceeb3008927479f4b40852c08014b368fcec",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.1773,
+      "usage": {
+        "input_tokens": 4820,
+        "cached_input_tokens": 0,
+        "output_tokens": 1296,
+        "reasoning_tokens": 876
+      },
+      "elapsed_seconds": 16.382,
+      "prompt_sha256": "34f353506551d4ffd90c1fda4a513ce5673ad0d5dad03f6d1a9efcf09c175bc9",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2855,
+      "usage": {
+        "input_tokens": 11041,
+        "cached_input_tokens": 0,
+        "output_tokens": 1432,
+        "reasoning_tokens": 1017
+      },
+      "elapsed_seconds": 14.166,
+      "prompt_sha256": "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0993,
+      "usage": {
+        "input_tokens": 5683,
+        "cached_input_tokens": 0,
+        "output_tokens": 129,
+        "reasoning_tokens": 78
+      },
+      "elapsed_seconds": 2.841,
+      "prompt_sha256": "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1767,
+      "usage": {
+        "input_tokens": 11041,
+        "cached_input_tokens": 11038,
+        "output_tokens": 2031,
+        "reasoning_tokens": 1616
+      },
+      "elapsed_seconds": 22.872,
+      "prompt_sha256": "afeccf80dd2559b5c2d4d14a71bd45609fbb55dd60c001a8a6d776e65b3fa1d0"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0184,
+      "usage": {
+        "input_tokens": 5683,
+        "cached_input_tokens": 5680,
+        "output_tokens": 120,
+        "reasoning_tokens": 69
+      },
+      "elapsed_seconds": 2.68,
+      "prompt_sha256": "f2001de5dd0acc0297040c193a732745588fa57f5a319606959c8a173ab10b6e"
+    }
+  ],
+  "total_cost_jpy": 2.0203,
+  "total_calls": 7,
+  "elapsed_seconds": 151.802,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Here’s the first question.",
+        "related_fact_id": "",
+        "origin": null,
+        "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S1.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Now for the second question.",
+        "related_fact_id": "",
+        "origin": null,
+        "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S2.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Once you know who handles the call, is that enough to put your mind at ease?",
+        "related_fact_id": "",
+        "origin": null,
+        "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S2.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "It is important to get the answer right here.",
+        "related_fact_id": "",
+        "origin": null,
+        "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S4.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The concern was not that a large-scale leak of information had happened, but that information might be shared by mistake.",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "If someone made a call for you, would you want to know whether the person handling it was human?",
+        "related_fact_id": "",
+        "origin": null,
+        "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Or would you want an explanation of who might receive your information?",
+        "related_fact_id": "",
+        "origin": null,
+        "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S5.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Some people might want to know both, right?",
+        "related_fact_id": "",
+        "origin": null,
+        "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S5.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "And now for the final question.",
+        "related_fact_id": "",
+        "origin": null,
+        "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S6.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The rollback applied to the human concierge feature.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "So, what would you want to check before letting someone handle a call for you?",
+        "related_fact_id": "",
+        "origin": null,
+        "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S7.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Meta paused its human call feature after admitting users weren’t properly told contractors might handle their calls.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "「適切な開示なし」を「ユーザーに適切に伝えられていなかった」と言い換え、開示の受け手をユーザーに特定している。 / 「users」と一般化しており、Ledgerが扱うMeta従業員向けの社内テストという範囲を超えている。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 17,
+      "n_model_entries": 6,
+      "n_targets": 4,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 3,
+      "n_excluded_entries": 4,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.1773,
+          "usage": {
+            "input_tokens": 4820,
+            "cached_input_tokens": 0,
+            "output_tokens": 1296,
+            "reasoning_tokens": 876
+          },
+          "elapsed_seconds": 16.382,
+          "prompt_sha256": "34f353506551d4ffd90c1fda4a513ce5673ad0d5dad03f6d1a9efcf09c175bc9",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.1773,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S6.2",
+          "claim": "The vice president of Meta’s Superintelligence Labs said that starting tests in which contract workers made calls without properly informing users was a “mistake,” and rolled back the human concierge feature for now.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "MetaのSuperintelligence Labs部門の副社長が、適切な開示なしで契約スタッフが電話を担当するテストをミスと認め、人間コンシェルジュ機能をロールバックしたというLedgerの記述と一致する。",
+          "fact_tags": [
+            "proper_noun",
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C2",
+          "key": "S6.4",
+          "claim": "Muse as a whole was not being stopped.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "人間コンシェルジュ機能のロールバックをMuse全体の停止と区別しており、Ledgerがロールバック対象を同機能に限定していることと一致する。",
+          "fact_tags": [
+            "proper_noun",
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C3",
+          "key": "L1",
+          "claim": "Meta paused its human call feature after admitting users weren’t properly told contractors might handle their calls.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "Metaが機能をロールバックした点は一致するが、Ledgerが適切な開示なしでのテストに限定するのに対し、記事はユーザー全般が適切に知らされていなかったように述べ、テストという限定を落としている。",
+          "fact_tags": [
+            "proper_noun",
+            "causality",
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C4",
+          "key": "R:S7.1+S7.2",
+          "claim": "So, what would you want to check before letting someone handle a call for you?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "読者に向けた仮定的な問いかけであり、Ledgerにない具体的事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "34f353506551d4ffd90c1fda4a513ce5673ad0d5dad03f6d1a9efcf09c175bc9"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 30,
+    "n_judged_units": 22,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S7.1+S7.2"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 15,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S7.1+S7.2",
+          "S1.1",
+          "S2.1",
+          "S2.2",
+          "S4.1",
+          "S4.2",
+          "S5.1",
+          "S5.2",
+          "S5.3",
+          "S6.1",
+          "S6.2",
+          "S6.3",
+          "S6.4",
+          "S7.2"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED->CANDIDATE(unknown_fact_id,quote_missing)",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S2.1": "SUPPORTED->CANDIDATE(unknown_fact_id,quote_missing)",
+          "S2.2": "SUPPORTED->CANDIDATE(unknown_fact_id,quote_missing)",
+          "S2.3": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S4.1": "SUPPORTED->CANDIDATE(unknown_fact_id,quote_missing)",
+          "S4.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.1": "SUPPORTED->CANDIDATE(unknown_fact_id,quote_missing)",
+          "S5.2": "SUPPORTED->CANDIDATE(unknown_fact_id,quote_missing)",
+          "S5.3": "SUPPORTED->CANDIDATE(unknown_fact_id,quote_missing)",
+          "S6.1": "SUPPORTED->CANDIDATE(unknown_fact_id,quote_missing)",
+          "S6.2": "CANDIDATE",
+          "S6.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S6.4": "CANDIDATE",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED->CANDIDATE(unknown_fact_id,quote_missing)",
+          "L1": "CANDIDATE",
+          "R:S7.1+S7.2": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.4884,
+            "usage": {
+              "input_tokens": 5058,
+              "cached_input_tokens": 0,
+              "output_tokens": 5215,
+              "reasoning_tokens": 2069
+            },
+            "elapsed_seconds": 36.94,
+            "prompt_sha256": "5380a5500b9b8531d8f366f7749e42ddd9ccfe584bbb5901be585be2f94a6069",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "CANDIDATE",
+          "S6.3": "SUPPORTED",
+          "S6.4": "CANDIDATE",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "L1": "CANDIDATE",
+          "R:S7.1+S7.2": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "Here’s the first question.",
+            "span": [
+              71,
+              97
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "unknown_fact_id",
+              "quote_missing"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: unknown_fact_id,quote_missing"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.1",
+            "unit_ids": [
+              "S2.1"
+            ],
+            "claim_text": "Now for the second question.",
+            "span": [
+              309,
+              337
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "unknown_fact_id",
+              "quote_missing"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: unknown_fact_id,quote_missing"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "Once you know who handles the call, is that enough to put your mind at ease?",
+            "span": [
+              338,
+              414
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "unknown_fact_id",
+              "quote_missing"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: unknown_fact_id,quote_missing"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "It is important to get the answer right here.",
+            "span": [
+              683,
+              728
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "unknown_fact_id",
+              "quote_missing"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: unknown_fact_id,quote_missing"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "The concern was not that a large-scale leak of information had happened, but that information might be shared by mistake.",
+            "span": [
+              729,
+              850
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "If someone made a call for you, would you want to know whether the person handling it was human?",
+            "span": [
+              852,
+              948
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "unknown_fact_id",
+              "quote_missing"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: unknown_fact_id,quote_missing"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "Or would you want an explanation of who might receive your information?",
+            "span": [
+              949,
+              1020
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "unknown_fact_id",
+              "quote_missing"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: unknown_fact_id,quote_missing"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "Some people might want to know both, right?",
+            "span": [
+              1021,
+              1064
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "unknown_fact_id",
+              "quote_missing"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: unknown_fact_id,quote_missing"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "And now for the final question.",
+            "span": [
+              1066,
+              1097
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "unknown_fact_id",
+              "quote_missing"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: unknown_fact_id,quote_missing"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "The vice president of Meta’s Superintelligence Labs said that starting tests in which contract workers made calls without properly informing users was a “mistake,” and rolled back the human concierge feature for now.",
+            "span": [
+              1098,
+              1314
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは「適切な開示なし」としているが、誰に開示されていなかったかをユーザーと特定してはいない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "The vice president of Meta’s Superintelligence Labs said that starting tests in which contract workers made calls without properly informing users was a “mistake,” and rolled back the human concierge feature for now."
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "The rollback applied to the human concierge feature.",
+            "span": [
+              1315,
+              1367
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "Muse as a whole was not being stopped.",
+            "span": [
+              1368,
+              1406
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerが直接確認しているのは人間コンシェルジュ機能のロールバックであり、Muse全体が停止していなかったという断定は事実本文に明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "Muse as a whole was not being stopped."
+          },
+          {
+            "unit_id": "S7.2",
+            "unit_ids": [
+              "S7.2"
+            ],
+            "claim_text": "So, what would you want to check before letting someone handle a call for you?",
+            "span": [
+              1512,
+              1590
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "unknown_fact_id",
+              "quote_missing"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: unknown_fact_id,quote_missing"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Meta paused its human call feature after admitting users weren’t properly told contractors might handle their calls.",
+            "span": [
+              1607,
+              1723
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「適切な開示なし」を「ユーザーに適切に伝えられていなかった」と言い換え、開示の受け手をユーザーに特定している。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "Meta paused its human call feature after admitting users weren’t properly told contractors might handle their calls."
+          },
+          {
+            "unit_id": "R:S7.1+S7.2",
+            "unit_ids": [
+              "R:S7.1+S7.2"
+            ],
+            "claim_text": "So, what would you want to check before letting someone handle a call for you?",
+            "span": [
+              1512,
+              1590
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「So」が前文の論点提示から次の問いを導く関係を作っているが、この接続関係自体はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "What to think about in this story is not only who makes the call, but also how users are told about it. So, what would you want to check before letting someone handle a call for you?"
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "S6.4"
+        ],
+        "unit_status": {
+          "S1.2": "MATCH",
+          "S1.3": "MATCH",
+          "S1.4": "MATCH",
+          "S2.2": "MATCH",
+          "S5.1": "MATCH",
+          "S6.2": "MATCH",
+          "S7.1": "MATCH",
+          "S7.2": "MATCH",
+          "R:S7.1+S7.2": "MATCH",
+          "S2.3": "MATCH",
+          "S3.1": "MATCH",
+          "S4.2": "MATCH",
+          "S5.2": "MATCH",
+          "S6.3": "MATCH",
+          "S6.4": "DEVIATION",
+          "L1": "DEVIATION",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S2.1": "UNMENTIONED",
+          "S4.1": "UNMENTIONED",
+          "S5.3": "UNMENTIONED",
+          "S6.1": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.7747,
+            "usage": {
+              "input_tokens": 4752,
+              "cached_input_tokens": 0,
+              "output_tokens": 8926,
+              "reasoning_tokens": 6940
+            },
+            "elapsed_seconds": 55.886,
+            "prompt_sha256": "9080a9440a427f01fd3f3b480e87ceeb3008927479f4b40852c08014b368fcec",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "Muse as a whole was not being stopped.",
+            "span": [
+              1368,
+              1406
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerは人間コンシェルジュ機能のロールバックを示すだけで、Muse全体が停止されなかったという製品全体の稼働状況までは確認していない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "Muse as a whole was not being stopped."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Meta paused its human call feature after admitting users weren’t properly told contractors might handle their calls.",
+            "span": [
+              1607,
+              1723
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "「users」と一般化しており、Ledgerが扱うMeta従業員向けの社内テストという範囲を超えている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "Meta paused its human call feature after admitting users weren’t properly told contractors might handle their calls."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "L1",
+        "S6.4"
+      ],
+      "r3_only": [
+        "R:S7.1+S7.2",
+        "S1.1",
+        "S2.1",
+        "S2.2",
+        "S4.1",
+        "S4.2",
+        "S5.1",
+        "S5.2",
+        "S5.3",
+        "S6.1",
+        "S6.2",
+        "S6.3",
+        "S7.2"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 11
+    },
+    "union_candidates": [
+      {
+        "claim_text": "Here’s the first question.",
+        "span": [
+          71,
+          97
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "unknown_fact_id",
+          "quote_missing"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: unknown_fact_id,quote_missing"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Now for the second question.",
+        "span": [
+          309,
+          337
+        ],
+        "unit_ids": [
+          "S2.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "unknown_fact_id",
+          "quote_missing"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: unknown_fact_id,quote_missing"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Once you know who handles the call, is that enough to put your mind at ease?",
+        "span": [
+          338,
+          414
+        ],
+        "unit_ids": [
+          "S2.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "unknown_fact_id",
+          "quote_missing"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: unknown_fact_id,quote_missing"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [],
+        "model_claims": []
+      },
+      {
+        "claim_text": "It is important to get the answer right here.",
+        "span": [
+          683,
+          728
+        ],
+        "unit_ids": [
+          "S4.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "unknown_fact_id",
+          "quote_missing"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: unknown_fact_id,quote_missing"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The concern was not that a large-scale leak of information had happened, but that information might be shared by mistake.",
+        "span": [
+          729,
+          850
+        ],
+        "unit_ids": [
+          "S4.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-010"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "If someone made a call for you, would you want to know whether the person handling it was human?",
+        "span": [
+          852,
+          948
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "unknown_fact_id",
+          "quote_missing"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: unknown_fact_id,quote_missing"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Or would you want an explanation of who might receive your information?",
+        "span": [
+          949,
+          1020
+        ],
+        "unit_ids": [
+          "S5.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "unknown_fact_id",
+          "quote_missing"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: unknown_fact_id,quote_missing"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Some people might want to know both, right?",
+        "span": [
+          1021,
+          1064
+        ],
+        "unit_ids": [
+          "S5.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "unknown_fact_id",
+          "quote_missing"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: unknown_fact_id,quote_missing"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [],
+        "model_claims": []
+      },
+      {
+        "claim_text": "And now for the final question.",
+        "span": [
+          1066,
+          1097
+        ],
+        "unit_ids": [
+          "S6.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "unknown_fact_id",
+          "quote_missing"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: unknown_fact_id,quote_missing"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The rollback applied to the human concierge feature.",
+        "span": [
+          1315,
+          1367
+        ],
+        "unit_ids": [
+          "S6.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "So, what would you want to check before letting someone handle a call for you?",
+        "span": [
+          1512,
+          1590
+        ],
+        "unit_ids": [
+          "S7.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "unknown_fact_id",
+          "quote_missing"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: unknown_fact_id,quote_missing"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Meta paused its human call feature after admitting users weren’t properly told contractors might handle their calls.",
+        "span": [
+          1607,
+          1723
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "「適切な開示なし」を「ユーザーに適切に伝えられていなかった」と言い換え、開示の受け手をユーザーに特定している。",
+          "「users」と一般化しており、Ledgerが扱うMeta従業員向けの社内テストという範囲を超えている。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "Meta paused its human call feature after admitting users weren’t properly told contractors might handle their calls."
+        ]
+      }
+    ],
+    "n_union_candidates": 12,
+    "n_model_candidates": 1,
+    "n_deterministic_only_candidates": 11,
+    "total_cost_jpy": 1.2631,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 6,
+    "n_targets": 4,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 3,
+    "n_excluded_entries": 4,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.1773,
+    "effort": "medium",
+    "prompt_sha256": "34f353506551d4ffd90c1fda4a513ce5673ad0d5dad03f6d1a9efcf09c175bc9"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 4
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

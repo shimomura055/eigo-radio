@@ -1,0 +1,1065 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "He said the decision was based on “very productive talks” with Middle Eastern leaders.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "He said the decision was based on “very productive talks” with Middle Eastern leaders.",
+            "issue": "決定論検査で戻した: quote_not_in_ledger",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "quote_not_in_ledger"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Trump first posted that he would seek a 20% fee on all cargo passing through the Strait of Hormuz. The proposal was meant to help cover the costs the United States spends on keeping the strait safe. It was not a fee that had actually started to be collected.\n\nBut the next day, events took a sharp turn. Trump posted that he would replace the fee with trade and investment deals between Gulf countries and the United States. He said the decision was based on “very productive talks” with Middle Eastern leaders.\n\nSo, what happened to Brent futures? After the announcement of the change, they briefly gave up some of their gains. But soon they returned to a high level close to where they had been before the announcement. At the time the article was published, they were up about 2.6%, above $85 a barrel.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "He said the decision was based on “very productive talks” with Middle Eastern leaders.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bbcee84f83296b5052fe3625e3b4188e1186d83ff0a51fe6c08749bea4dc5fc6"
+            ],
+            "batch_cost_jpy": 0.0219,
+            "batch_n_claims": 1
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "He said the decision was based on “very productive talks” with Middle Eastern leaders.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bbcee84f83296b5052fe3625e3b4188e1186d83ff0a51fe6c08749bea4dc5fc6"
+          ],
+          "batch_cost_jpy": 0.0219,
+          "batch_n_claims": 1
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6199,
+      "usage": {
+        "input_tokens": 5120,
+        "cached_input_tokens": 0,
+        "output_tokens": 6879,
+        "reasoning_tokens": 2351
+      },
+      "elapsed_seconds": 50.891,
+      "prompt_sha256": "4c76184f5e0c38c2da373fa8bcbd503d5d17489e3e940b23fb0bb27b56ce47db",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.9017,
+      "usage": {
+        "input_tokens": 4746,
+        "cached_input_tokens": 0,
+        "output_tokens": 10546,
+        "reasoning_tokens": 7681
+      },
+      "elapsed_seconds": 91.939,
+      "prompt_sha256": "93ed2fc6e914e0eacb9d5b75e553f75bc0d4732cd1fdd2a890dc26492b364a56",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2579,
+      "usage": {
+        "input_tokens": 4918,
+        "cached_input_tokens": 0,
+        "output_tokens": 2304,
+        "reasoning_tokens": 1693
+      },
+      "elapsed_seconds": 20.276,
+      "prompt_sha256": "0b3df2314fb4d0981a22ade3a877160937ecade1f4196767545f78eec13a95b7",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1424,
+      "usage": {
+        "input_tokens": 8454,
+        "cached_input_tokens": 0,
+        "output_tokens": 124,
+        "reasoning_tokens": 73
+      },
+      "elapsed_seconds": 2.165,
+      "prompt_sha256": "bbcee84f83296b5052fe3625e3b4188e1186d83ff0a51fe6c08749bea4dc5fc6"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0219,
+      "usage": {
+        "input_tokens": 8454,
+        "cached_input_tokens": 8451,
+        "output_tokens": 110,
+        "reasoning_tokens": 58
+      },
+      "elapsed_seconds": 2.117,
+      "prompt_sha256": "bbcee84f83296b5052fe3625e3b4188e1186d83ff0a51fe6c08749bea4dc5fc6"
+    }
+  ],
+  "total_cost_jpy": 1.9438,
+  "total_calls": 5,
+  "elapsed_seconds": 167.43,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "He said the decision was based on “very productive talks” with Middle Eastern leaders.",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "決定論検査で戻した: quote_not_in_ledger",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S3.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 10,
+      "n_model_entries": 9,
+      "n_targets": 7,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 7,
+      "n_excluded_entries": 9,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.2579,
+          "usage": {
+            "input_tokens": 4918,
+            "cached_input_tokens": 0,
+            "output_tokens": 2304,
+            "reasoning_tokens": 1693
+          },
+          "elapsed_seconds": 20.276,
+          "prompt_sha256": "0b3df2314fb4d0981a22ade3a877160937ecade1f4196767545f78eec13a95b7",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.2579,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S2.3",
+          "claim": "It was not a fee that had actually started to be collected.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "文脈上の20％償還料案は提案段階で、実際に徴収が始まったとはされていない点がLedgerと一致する。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C2",
+          "key": "S5.1",
+          "claim": "“We changed the fee plan, so prices should settle down too.”",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "変更で価格が落ち着くという文は、実際の因果関係の断定ではなく、直後に「期待」として扱われる仮定的な台詞である。",
+          "fact_tags": [
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S5.2",
+          "claim": "It is tempting to expect that ending.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "期待についての修辞的なコメントで、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S5.4",
+          "claim": "Still, the information here alone does not tell us how much those concerns affected prices after the announcement.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "発表後の価格に対する懸念の影響度は、この情報だけからは特定できないという慎重な表現で、Ledgerの因果推論への留保と一致する。",
+          "fact_tags": [
+            "causality",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C5",
+          "key": "S6.2",
+          "claim": "It seems a little early to look at just one thing and say, “That settles it.”",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "一つの要因だけで結論づけるのは早いという修辞的な注意で、具体的なFactを追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C6",
+          "key": "R:S1.1+S1.2",
+          "claim": "So, how did the story unfold?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "物語の展開を尋ねる導入上の問いで、具体的な事実を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "R:S3.3+S4.1",
+          "claim": "So, what happened to Brent futures?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "Brent先物を話題として提示する修辞的な問いで、値動きなどの具体的な事実を主張していない。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "0b3df2314fb4d0981a22ade3a877160937ecade1f4196767545f78eec13a95b7"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 30,
+    "n_judged_units": 23,
+    "n_relation_units": 2,
+    "relation_ids": [
+      "R:S1.1+S1.2",
+      "R:S3.3+S4.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "R:S1.1+S1.2",
+          "R:S3.3+S4.1",
+          "S2.3",
+          "S3.3",
+          "S5.1",
+          "S5.2",
+          "S5.4",
+          "S6.2"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED->CANDIDATE(quote_not_in_ledger)",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "CANDIDATE",
+          "S5.3": "SUPPORTED",
+          "S5.4": "CANDIDATE",
+          "S6.1": "SUPPORTED",
+          "S6.2": "CANDIDATE",
+          "S6.3": "SUPPORTED",
+          "L1": "SUPPORTED",
+          "R:S1.1+S1.2": "CANDIDATE",
+          "R:S3.3+S4.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6199,
+            "usage": {
+              "input_tokens": 5120,
+              "cached_input_tokens": 0,
+              "output_tokens": 6879,
+              "reasoning_tokens": 2351
+            },
+            "elapsed_seconds": 50.891,
+            "prompt_sha256": "4c76184f5e0c38c2da373fa8bcbd503d5d17489e3e940b23fb0bb27b56ce47db",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "CANDIDATE",
+          "S5.3": "SUPPORTED",
+          "S5.4": "CANDIDATE",
+          "S6.1": "SUPPORTED",
+          "S6.2": "CANDIDATE",
+          "S6.3": "SUPPORTED",
+          "L1": "SUPPORTED",
+          "R:S1.1+S1.2": "CANDIDATE",
+          "R:S3.3+S4.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "It was not a fee that had actually started to be collected.",
+            "span": [
+              433,
+              492
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerでは20％償還料が提案されたことは確認できるが、実際に徴収が開始されなかったことを明示する事実はない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "It was not a fee that had actually started to be collected."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "He said the decision was based on “very productive talks” with Middle Eastern leaders.",
+            "span": [
+              659,
+              745
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "quote_not_in_ledger"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: quote_not_in_ledger"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "“We changed the fee plan, so prices should settle down too.”",
+            "span": [
+              1041,
+              1101
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "料金案の変更によって価格が落ち着くはずだという因果的な予測はLedgerで確認されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "“We changed the fee plan, so prices should settle down too.”"
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "It is tempting to expect that ending.",
+            "span": [
+              1102,
+              1139
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「その結末を期待したくなる」という読者・書き手の反応はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "It is tempting to expect that ending."
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "Still, the information here alone does not tell us how much those concerns affected prices after the announcement.",
+            "span": [
+              1288,
+              1402
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは懸念が継続したことを記すが、その情報だけでは発表後の価格への影響の大きさが分からないという評価を明示していない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Still, the information here alone does not tell us how much those concerns affected prices after the announcement."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "It seems a little early to look at just one thing and say, “That settles it.”",
+            "span": [
+              1571,
+              1648
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "一つの要因だけで結論を出すのは早いという評価は、Ledgerに明示された事実ではない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "It seems a little early to look at just one thing and say, “That settles it.”"
+          },
+          {
+            "unit_id": "R:S1.1+S1.2",
+            "unit_ids": [
+              "R:S1.1+S1.2"
+            ],
+            "claim_text": "So, how did the story unfold?",
+            "span": [
+              203,
+              232
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「So」が前文の状況説明から後文の問いへの関係を示すが、Ledgerはこの関係を事実として述べていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "If this news were a play, the fee plan would rewrite the script halfway through, while Brent futures would take center stage as their prices moved. So, how did the story unfold?"
+          },
+          {
+            "unit_id": "R:S3.3+S4.1",
+            "unit_ids": [
+              "R:S3.3+S4.1"
+            ],
+            "claim_text": "So, what happened to Brent futures?",
+            "span": [
+              747,
+              782
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「So」が協議に基づく変更決定とBrent先物の動きへの問いをつなぐ関係を示すが、Ledgerはそのつながりを述べていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "He said the decision was based on “very productive talks” with Middle Eastern leaders. So, what happened to Brent futures?"
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S5.1"
+        ],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "T": "MATCH",
+          "S1.1": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S4.2": "MATCH",
+          "S5.1": "DEVIATION",
+          "S6.1": "MATCH",
+          "S6.3": "MATCH",
+          "L1": "MATCH",
+          "R:S1.1+S1.2": "MATCH",
+          "R:S3.3+S4.1": "MATCH",
+          "S4.3": "MATCH",
+          "S4.4": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S5.4": "MATCH",
+          "S6.2": "MATCH",
+          "S1.2": "UNMENTIONED",
+          "S4.1": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.9017,
+            "usage": {
+              "input_tokens": 4746,
+              "cached_input_tokens": 0,
+              "output_tokens": 10546,
+              "reasoning_tokens": 7681
+            },
+            "elapsed_seconds": 91.939,
+            "prompt_sha256": "93ed2fc6e914e0eacb9d5b75e553f75bc0d4732cd1fdd2a890dc26492b364a56",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "“We changed the fee plan, so prices should settle down too.”",
+            "span": [
+              1041,
+              1101
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "料金案の変更によって価格が落ち着くという因果的な期待を追加しています。Ledgerは撤回後の価格推移を記録していますが、この因果関係は確認していません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "“We changed the fee plan, so prices should settle down too.”"
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "“We changed the fee plan, so prices should settle down too.”",
+            "span": [
+              1041,
+              1101
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "料金案の変更によって価格が落ち着くという因果的な期待を追加しています。Ledgerは撤回後に上げ幅が一時縮小し、その後回復したとしています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "“We changed the fee plan, so prices should settle down too.”"
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S5.1"
+      ],
+      "r3_only": [
+        "R:S1.1+S1.2",
+        "R:S3.3+S4.1",
+        "S2.3",
+        "S3.3",
+        "S5.2",
+        "S5.4",
+        "S6.2"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 1
+    },
+    "union_candidates": [
+      {
+        "claim_text": "He said the decision was based on “very productive talks” with Middle Eastern leaders.",
+        "span": [
+          659,
+          745
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "quote_not_in_ledger"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: quote_not_in_ledger"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 1,
+    "n_model_candidates": 0,
+    "n_deterministic_only_candidates": 1,
+    "total_cost_jpy": 1.5216,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 9,
+    "n_targets": 7,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 7,
+    "n_excluded_entries": 9,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.2579,
+    "effort": "medium",
+    "prompt_sha256": "0b3df2314fb4d0981a22ade3a877160937ecade1f4196767545f78eec13a95b7"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {},
+    "unrewritten_blocking_pass": 0
+  }
+}

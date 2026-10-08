@@ -1,0 +1,2344 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "# Toll Proposal Withdrawn, but Crude Oil Prices Did Not Fall Right Away",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "# Toll Proposal Withdrawn, but Crude Oil Prices Did Not Fall Right Away",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Toll Proposal Withdrawn, but Crude Oil Prices Did Not Fall Right Away\n\nA 20% fee on cargo passing through the Strait of Hormuz. That was the reimbursement fee proposal put forward by Trump: all cargo passing through the strait would help pay for the cost of keeping it safe. It was a wide-reaching proposal, asking all cargo to pay, not just a limited group.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "# Toll Proposal Withdrawn, but Crude Oil Prices Did Not Fall Right Away",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+              "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+            ],
+            "batch_cost_jpy": 0.1351,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "It was a wide-reaching proposal, asking all cargo to pay, not just a limited group.",
+          "origin": null,
+          "related_fact_id": "HF-002",
+          "dev": {
+            "claim_in_article": "It was a wide-reaching proposal, asking all cargo to pay, not just a limited group.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-002",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Toll Proposal Withdrawn, but Crude Oil Prices Did Not Fall Right Away\n\nA 20% fee on cargo passing through the Strait of Hormuz. That was the reimbursement fee proposal put forward by Trump: all cargo passing through the strait would help pay for the cost of keeping it safe. It was a wide-reaching proposal, asking all cargo to pay, not just a limited group.\n\nThe market moved, too. On the day the proposal was announced, Brent crude futures rose sharply. Behind the rise were a planned naval blockade against Iran and worries about energy shipments passing through the strait. One thing to keep in mind is that the price rise cannot be blamed only on the fee proposal. Worries about the blockade and shipments also played a part.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-002",
+            "claim_text": "It was a wide-reaching proposal, asking all cargo to pay, not just a limited group.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_scope",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+              "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+            ],
+            "batch_cost_jpy": 0.1351,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "One thing to keep in mind is that the price rise cannot be blamed only on the fee proposal.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "One thing to keep in mind is that the price rise cannot be blamed only on the fee proposal.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.4"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "A 20% fee on cargo passing through the Strait of Hormuz. That was the reimbursement fee proposal put forward by Trump: all cargo passing through the strait would help pay for the cost of keeping it safe. It was a wide-reaching proposal, asking all cargo to pay, not just a limited group.\n\nThe market moved, too. On the day the proposal was announced, Brent crude futures rose sharply. Behind the rise were a planned naval blockade against Iran and worries about energy shipments passing through the strait. One thing to keep in mind is that the price rise cannot be blamed only on the fee proposal. Worries about the blockade and shipments also played a part.\n\nThen, the next day, the story took a sharp turn. Trump posted that he would withdraw the 20% fee proposal, citing “very productive talks” with Middle Eastern leaders. What he presented instead were deals involving trade with and investment in the United States by Gulf countries. The proposal to charge cargo passing through the strait was replaced by deals involving trade and investment between Gulf countries and the United States.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "One thing to keep in mind is that the price rise cannot be blamed only on the fee proposal.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+              "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+            ],
+            "batch_cost_jpy": 0.1351,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "The answer was not so simple.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "The answer was not so simple.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Then, the next day, the story took a sharp turn. Trump posted that he would withdraw the 20% fee proposal, citing “very productive talks” with Middle Eastern leaders. What he presented instead were deals involving trade with and investment in the United States by Gulf countries. The proposal to charge cargo passing through the strait was replaced by deals involving trade and investment between Gulf countries and the United States.\n\nSo, if the toll proposal is gone, will crude oil prices soon settle down, too? The answer was not so simple. After the announcement, Brent crude futures gave up some of their gains for a while. But before long, they returned to a high level close to where they had been before the announcement. At the time of publication, prices were up about 2.6%, at more than $85 a barrel.\n\nOther worries remained, which is why prices did not settle down just because the proposal was withdrawn. These included attacks between the United States and Iran, the naval blockade, and concerns about the safety of tankers. Worries about oil supplies had not gone away, either. Even with one proposal withdrawn, concerns about supplies through the strait remained.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "The answer was not so simple.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+              "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+            ],
+            "batch_cost_jpy": 0.1351,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Other worries remained, which is why prices did not settle down just because the proposal was withdrawn.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Other worries remained, which is why prices did not settle down just because the proposal was withdrawn.",
+            "issue": "Ledgerは他の懸念が続いていたことと価格の動きを記録していますが、それらの懸念が価格が落ち着かなかった理由だと明示していません。因果関係を断定しています。 / 継続する懸念を、価格が落ち着かなかった理由として断定的に結び付けている。Ledgerは懸念の継続を記すが、この因果関係までは明示していない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So, if the toll proposal is gone, will crude oil prices soon settle down, too? The answer was not so simple. After the announcement, Brent crude futures gave up some of their gains for a while. But before long, they returned to a high level close to where they had been before the announcement. At the time of publication, prices were up about 2.6%, at more than $85 a barrel.\n\nOther worries remained, which is why prices did not settle down just because the proposal was withdrawn. These included attacks between the United States and Iran, the naval blockade, and concerns about the safety of tankers. Worries about oil supplies had not gone away, either. Even with one proposal withdrawn, concerns about supplies through the strait remained.\n\n## In one line\nTrump withdrew the Strait of Hormuz toll proposal, but oil prices stayed high as supply and security concerns continued.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Other worries remained, which is why prices did not settle down just because the proposal was withdrawn.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+              "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+            ],
+            "batch_cost_jpy": 0.1351,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Worries about oil supplies had not gone away, either.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "Worries about oil supplies had not gone away, either.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.3"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So, if the toll proposal is gone, will crude oil prices soon settle down, too? The answer was not so simple. After the announcement, Brent crude futures gave up some of their gains for a while. But before long, they returned to a high level close to where they had been before the announcement. At the time of publication, prices were up about 2.6%, at more than $85 a barrel.\n\nOther worries remained, which is why prices did not settle down just because the proposal was withdrawn. These included attacks between the United States and Iran, the naval blockade, and concerns about the safety of tankers. Worries about oil supplies had not gone away, either. Even with one proposal withdrawn, concerns about supplies through the strait remained.\n\n## In one line\nTrump withdrew the Strait of Hormuz toll proposal, but oil prices stayed high as supply and security concerns continued.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "Worries about oil supplies had not gone away, either.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+              "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+            ],
+            "batch_cost_jpy": 0.1351,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "So, if the toll proposal is gone, will crude oil prices soon settle down, too?",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "So, if the toll proposal is gone, will crude oil prices soon settle down, too?",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# Toll Proposal Withdrawn, but Crude Oil Prices Did Not Fall Right Away"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Then, the next day, the story took a sharp turn. Trump posted that he would withdraw the 20% fee proposal, citing “very productive talks” with Middle Eastern leaders. What he presented instead were deals involving trade with and investment in the United States by Gulf countries. The proposal to charge cargo passing through the strait was replaced by deals involving trade and investment between Gulf countries and the United States.\n\nSo, if the toll proposal is gone, will crude oil prices soon settle down, too? The answer was not so simple. After the announcement, Brent crude futures gave up some of their gains for a while. But before long, they returned to a high level close to where they had been before the announcement. At the time of publication, prices were up about 2.6%, at more than $85 a barrel.\n\nOther worries remained, which is why prices did not settle down just because the proposal was withdrawn. These included attacks between the United States and Iran, the naval blockade, and concerns about the safety of tankers. Worries about oil supplies had not gone away, either. Even with one proposal withdrawn, concerns about supplies through the strait remained.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "So, if the toll proposal is gone, will crude oil prices soon settle down, too?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+              "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+            ],
+            "batch_cost_jpy": 0.1351,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Trump withdrew the Strait of Hormuz toll proposal, but oil prices stayed high as supply and security concerns continued.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Trump withdrew the Strait of Hormuz toll proposal, but oil prices stayed high as supply and security concerns continued.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# Toll Proposal Withdrawn, but Crude Oil Prices Did Not Fall Right Away"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Other worries remained, which is why prices did not settle down just because the proposal was withdrawn. These included attacks between the United States and Iran, the naval blockade, and concerns about the safety of tankers. Worries about oil supplies had not gone away, either. Even with one proposal withdrawn, concerns about supplies through the strait remained.\n\n## In one line\nTrump withdrew the Strait of Hormuz toll proposal, but oil prices stayed high as supply and security concerns continued.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Trump withdrew the Strait of Hormuz toll proposal, but oil prices stayed high as supply and security concerns continued.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+              "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+            ],
+            "batch_cost_jpy": 0.1351,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "That was the reimbursement fee proposal put forward by Trump: all cargo passing through the strait would help pay for the cost of keeping it safe.",
+          "origin": null,
+          "related_fact_id": "HF-002",
+          "dev": {
+            "claim_in_article": "That was the reimbursement fee proposal put forward by Trump: all cargo passing through the strait would help pay for the cost of keeping it safe.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-002",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "It was a wide-reaching proposal, asking all cargo to pay, not just a limited group."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Toll Proposal Withdrawn, but Crude Oil Prices Did Not Fall Right Away\n\nA 20% fee on cargo passing through the Strait of Hormuz. That was the reimbursement fee proposal put forward by Trump: all cargo passing through the strait would help pay for the cost of keeping it safe. It was a wide-reaching proposal, asking all cargo to pay, not just a limited group.\n\nThe market moved, too. On the day the proposal was announced, Brent crude futures rose sharply. Behind the rise were a planned naval blockade against Iran and worries about energy shipments passing through the strait. One thing to keep in mind is that the price rise cannot be blamed only on the fee proposal. Worries about the blockade and shipments also played a part.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-002",
+            "claim_text": "That was the reimbursement fee proposal put forward by Trump: all cargo passing through the strait would help pay for the cost of keeping it safe.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+              "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+            ],
+            "batch_cost_jpy": 0.1351,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Even with one proposal withdrawn, concerns about supplies through the strait remained.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Even with one proposal withdrawn, concerns about supplies through the strait remained.",
+            "issue": "Ledgerは他の懸念が続いていたことと価格の動きを記録していますが、それらの懸念が価格が落ち着かなかった理由だと明示していません。因果関係を断定しています。 / 継続する懸念を、価格が落ち着かなかった理由として断定的に結び付けている。Ledgerは懸念の継続を記すが、この因果関係までは明示していない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Other worries remained, which is why prices did not settle down just because the proposal was withdrawn."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So, if the toll proposal is gone, will crude oil prices soon settle down, too? The answer was not so simple. After the announcement, Brent crude futures gave up some of their gains for a while. But before long, they returned to a high level close to where they had been before the announcement. At the time of publication, prices were up about 2.6%, at more than $85 a barrel.\n\nOther worries remained, which is why prices did not settle down just because the proposal was withdrawn. These included attacks between the United States and Iran, the naval blockade, and concerns about the safety of tankers. Worries about oil supplies had not gone away, either. Even with one proposal withdrawn, concerns about supplies through the strait remained.\n\n## In one line\nTrump withdrew the Strait of Hormuz toll proposal, but oil prices stayed high as supply and security concerns continued.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Even with one proposal withdrawn, concerns about supplies through the strait remained.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+              "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+            ],
+            "batch_cost_jpy": 0.1351,
+            "batch_n_claims": 10
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 10,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "# Toll Proposal Withdrawn, but Crude Oil Prices Did Not Fall Right Away",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+            "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+          ],
+          "batch_cost_jpy": 0.1351,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-002",
+          "claim_text": "It was a wide-reaching proposal, asking all cargo to pay, not just a limited group.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_scope",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+            "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+          ],
+          "batch_cost_jpy": 0.1351,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "One thing to keep in mind is that the price rise cannot be blamed only on the fee proposal.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+            "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+          ],
+          "batch_cost_jpy": 0.1351,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "The answer was not so simple.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+            "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+          ],
+          "batch_cost_jpy": 0.1351,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Other worries remained, which is why prices did not settle down just because the proposal was withdrawn.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+            "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+          ],
+          "batch_cost_jpy": 0.1351,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "Worries about oil supplies had not gone away, either.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+            "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+          ],
+          "batch_cost_jpy": 0.1351,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "So, if the toll proposal is gone, will crude oil prices soon settle down, too?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+            "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+          ],
+          "batch_cost_jpy": 0.1351,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Trump withdrew the Strait of Hormuz toll proposal, but oil prices stayed high as supply and security concerns continued.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+            "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+          ],
+          "batch_cost_jpy": 0.1351,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-002",
+          "claim_text": "That was the reimbursement fee proposal put forward by Trump: all cargo passing through the strait would help pay for the cost of keeping it safe.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+            "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+          ],
+          "batch_cost_jpy": 0.1351,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Even with one proposal withdrawn, concerns about supplies through the strait remained.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52",
+            "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+          ],
+          "batch_cost_jpy": 0.1351,
+          "batch_n_claims": 10
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5696,
+      "usage": {
+        "input_tokens": 5107,
+        "cached_input_tokens": 0,
+        "output_tokens": 6240,
+        "reasoning_tokens": 1715
+      },
+      "elapsed_seconds": 49.898,
+      "prompt_sha256": "b64f2413d8d721d1ad1b5b5bc2a28cff865c88a8d3c93aa6d7646a367cf9e42d",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.9663,
+      "usage": {
+        "input_tokens": 4734,
+        "cached_input_tokens": 0,
+        "output_tokens": 11372,
+        "reasoning_tokens": 8804
+      },
+      "elapsed_seconds": 104.668,
+      "prompt_sha256": "43fd6ae1c105f9fa80a2d53c2c663f8eac1fc04625d4ce1386697428118020f9",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2594,
+      "usage": {
+        "input_tokens": 4869,
+        "cached_input_tokens": 0,
+        "output_tokens": 2333,
+        "reasoning_tokens": 1823
+      },
+      "elapsed_seconds": 21.943,
+      "prompt_sha256": "0c2a410cc24543d4cd9b44bb47177feb032bf71bcc3e27aecc8198e285d53d5f",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2269,
+      "usage": {
+        "input_tokens": 9990,
+        "cached_input_tokens": 0,
+        "output_tokens": 895,
+        "reasoning_tokens": 683
+      },
+      "elapsed_seconds": 9.74,
+      "prompt_sha256": "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1342,
+      "usage": {
+        "input_tokens": 5809,
+        "cached_input_tokens": 0,
+        "output_tokens": 549,
+        "reasoning_tokens": 446
+      },
+      "elapsed_seconds": 6.759,
+      "prompt_sha256": "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0685,
+      "usage": {
+        "input_tokens": 9990,
+        "cached_input_tokens": 9987,
+        "output_tokens": 673,
+        "reasoning_tokens": 466
+      },
+      "elapsed_seconds": 7.113,
+      "prompt_sha256": "8a400a2113d2e9a0608832b2a2235ef9c86b06b563d81af31a7e448912fbeb52"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0666,
+      "usage": {
+        "input_tokens": 5809,
+        "cached_input_tokens": 5806,
+        "output_tokens": 732,
+        "reasoning_tokens": 626
+      },
+      "elapsed_seconds": 8.134,
+      "prompt_sha256": "2947016f940c1adf6d9b84934b1fa4800a540909ae4c7707c4c5643ad18bc57c"
+    }
+  ],
+  "total_cost_jpy": 2.2915,
+  "total_calls": 7,
+  "elapsed_seconds": 208.304,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "# Toll Proposal Withdrawn, but Crude Oil Prices Did Not Fall Right Away",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "It was a wide-reaching proposal, asking all cargo to pay, not just a limited group.",
+        "related_fact_id": "HF-002",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "One thing to keep in mind is that the price rise cannot be blamed only on the fee proposal.",
+        "related_fact_id": "HF-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The answer was not so simple.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Other worries remained, which is why prices did not settle down just because the proposal was withdrawn.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "Ledgerは他の懸念が続いていたことと価格の動きを記録していますが、それらの懸念が価格が落ち着かなかった理由だと明示していません。因果関係を断定しています。 / 継続する懸念を、価格が落ち着かなかった理由として断定的に結び付けている。Ledgerは懸念の継続を記すが、この因果関係までは明示していない。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Worries about oil supplies had not gone away, either.",
+        "related_fact_id": "HF-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 12,
+      "n_model_entries": 7,
+      "n_targets": 5,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 4,
+      "n_excluded_entries": 5,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.2594,
+          "usage": {
+            "input_tokens": 4869,
+            "cached_input_tokens": 0,
+            "output_tokens": 2333,
+            "reasoning_tokens": 1823
+          },
+          "elapsed_seconds": 21.943,
+          "prompt_sha256": "0c2a410cc24543d4cd9b44bb47177feb032bf71bcc3e27aecc8198e285d53d5f",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.2594,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.1",
+          "claim": "A 20% fee on cargo passing through the Strait of Hormuz.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "文脈上はトランプ氏が提案した20％償還料を指し、通航する全貨物という対象範囲もLedgerと一致する。",
+          "fact_tags": [
+            "number",
+            "proper_noun"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C2",
+          "key": "S5.1",
+          "claim": "Other worries remained, which is why prices did not settle down just because the proposal was withdrawn.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "懸念が残ったことや価格の一時的な上げ幅縮小後の回復は裏付けられるが、それが価格の落ち着かなかった原因だと断定する因果関係はLedgerと一致しない。",
+          "fact_tags": [
+            "causality",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C3",
+          "key": "S5.4",
+          "claim": "Even with one proposal withdrawn, concerns about supplies through the strait remained.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "海峡経由の供給への懸念が残ったという内容は、海峡を通るエネルギー輸送への懸念や継続した供給・安全上の懸念と一致する。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C4",
+          "key": "L1",
+          "claim": "Trump withdrew the Strait of Hormuz toll proposal, but oil prices stayed high as supply and security concerns continued.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "トランプ氏による提案の撤回・置換、撤回後の一時的な上げ幅縮小と回復、および供給・安全上の懸念の継続はLedgerに裏付けられている。",
+          "fact_tags": [
+            "proper_noun",
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C5",
+          "key": "R:S3.4+S4.1",
+          "claim": "So, if the toll proposal is gone, will crude oil prices soon settle down, too?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "提案撤回後に価格が落ち着くかを尋ねる読者向けの問いであり、価格が実際に落ち着くという事実は主張していない。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "0c2a410cc24543d4cd9b44bb47177feb032bf71bcc3e27aecc8198e285d53d5f"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 30,
+    "n_judged_units": 24,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S3.4+S4.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S3.4+S4.1",
+          "S1.1",
+          "S1.3",
+          "S2.4",
+          "S4.2",
+          "S5.1",
+          "S5.3",
+          "S5.4",
+          "T"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.5": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S4.5": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.4": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S3.4+S4.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5696,
+            "usage": {
+              "input_tokens": 5107,
+              "cached_input_tokens": 0,
+              "output_tokens": 6240,
+              "reasoning_tokens": 1715
+            },
+            "elapsed_seconds": 49.898,
+            "prompt_sha256": "b64f2413d8d721d1ad1b5b5bc2a28cff865c88a8d3c93aa6d7646a367cf9e42d",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S2.5": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S4.5": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S3.4+S4.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# Toll Proposal Withdrawn, but Crude Oil Prices Did Not Fall Right Away",
+            "span": [
+              0,
+              71
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "A 20% fee on cargo passing through the Strait of Hormuz.",
+            "span": [
+              73,
+              129
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "単独では20％の料金が存在するかのように読めますが、Ledgerが確認しているのは提案された償還料です。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "A 20% fee on cargo passing through the Strait of Hormuz."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "It was a wide-reaching proposal, asking all cargo to pay, not just a limited group.",
+            "span": [
+              277,
+              360
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "One thing to keep in mind is that the price rise cannot be blamed only on the fee proposal.",
+            "span": [
+              580,
+              671
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "The answer was not so simple.",
+            "span": [
+              1249,
+              1278
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "Other worries remained, which is why prices did not settle down just because the proposal was withdrawn.",
+            "span": [
+              1548,
+              1652
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは他の懸念が続いていたことと価格の動きを記録していますが、それらの懸念が価格が落ち着かなかった理由だと明示していません。因果関係を断定しています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Other worries remained, which is why prices did not settle down just because the proposal was withdrawn."
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "Worries about oil supplies had not gone away, either.",
+            "span": [
+              1774,
+              1827
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "Even with one proposal withdrawn, concerns about supplies through the strait remained.",
+            "span": [
+              1828,
+              1914
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "供給懸念が続いたことはLedgerにありますが、それが7月14日の撤回後も特に海峡経由の供給に関する懸念として続いていたとは、Ledgerが明示していません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Even with one proposal withdrawn, concerns about supplies through the strait remained."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Trump withdrew the Strait of Hormuz toll proposal, but oil prices stayed high as supply and security concerns continued.",
+            "span": [
+              1931,
+              2051
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "撤回後に価格が高い水準にあったことと懸念が継続していたことは記録されていますが、「as」は懸念の継続が価格の高さを引き起こしたという因果関係を付与しています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Trump withdrew the Strait of Hormuz toll proposal, but oil prices stayed high as supply and security concerns continued."
+          },
+          {
+            "unit_id": "R:S3.4+S4.1",
+            "unit_ids": [
+              "R:S3.4+S4.1"
+            ],
+            "claim_text": "So, if the toll proposal is gone, will crude oil prices soon settle down, too?",
+            "span": [
+              1170,
+              1248
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「So」が置換の事実から、撤回により原油価格が落ち着くかという問いへ推論的な関係を結んでいますが、その関係はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The proposal to charge cargo passing through the strait was replaced by deals involving trade and investment between Gulf countries and the United States. So, if the toll proposal is gone, will crude oil prices soon settle down, too?"
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "S5.1"
+        ],
+        "unit_status": {
+          "S1.1": "MATCH",
+          "S1.2": "MATCH",
+          "S1.3": "MATCH",
+          "S2.2": "MATCH",
+          "S2.4": "MATCH",
+          "S3.2": "MATCH",
+          "S3.4": "MATCH",
+          "S2.3": "MATCH",
+          "S2.5": "MATCH",
+          "S3.1": "MATCH",
+          "S3.3": "MATCH",
+          "S4.1": "MATCH",
+          "R:S3.4+S4.1": "MATCH",
+          "T": "MATCH",
+          "S4.3": "MATCH",
+          "S4.4": "MATCH",
+          "S4.5": "MATCH",
+          "S5.1": "DEVIATION",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S5.4": "MATCH",
+          "L1": "DEVIATION",
+          "S2.1": "UNMENTIONED",
+          "S4.2": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.9663,
+            "usage": {
+              "input_tokens": 4734,
+              "cached_input_tokens": 0,
+              "output_tokens": 11372,
+              "reasoning_tokens": 8804
+            },
+            "elapsed_seconds": 104.668,
+            "prompt_sha256": "43fd6ae1c105f9fa80a2d53c2c663f8eac1fc04625d4ce1386697428118020f9",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "Other worries remained, which is why prices did not settle down just because the proposal was withdrawn.",
+            "span": [
+              1548,
+              1652
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "継続する懸念を、価格が落ち着かなかった理由として断定的に結び付けている。Ledgerは懸念の継続を記すが、この因果関係までは明示していない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Other worries remained, which is why prices did not settle down just because the proposal was withdrawn."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Trump withdrew the Strait of Hormuz toll proposal, but oil prices stayed high as supply and security concerns continued.",
+            "span": [
+              1931,
+              2051
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerの対象はBrent先物だが、ここでは「oil prices」と一般化し、供給・安全上の懸念が高値継続の理由であると結び付けている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Trump withdrew the Strait of Hormuz toll proposal, but oil prices stayed high as supply and security concerns continued."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "L1",
+        "S5.1"
+      ],
+      "r3_only": [
+        "R:S3.4+S4.1",
+        "S1.1",
+        "S1.3",
+        "S2.4",
+        "S4.2",
+        "S5.3",
+        "S5.4",
+        "T"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 5
+    },
+    "union_candidates": [
+      {
+        "claim_text": "# Toll Proposal Withdrawn, but Crude Oil Prices Did Not Fall Right Away",
+        "span": [
+          0,
+          71
+        ],
+        "unit_ids": [
+          "T"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "It was a wide-reaching proposal, asking all cargo to pay, not just a limited group.",
+        "span": [
+          277,
+          360
+        ],
+        "unit_ids": [
+          "S1.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-002"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "One thing to keep in mind is that the price rise cannot be blamed only on the fee proposal.",
+        "span": [
+          580,
+          671
+        ],
+        "unit_ids": [
+          "S2.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The answer was not so simple.",
+        "span": [
+          1249,
+          1278
+        ],
+        "unit_ids": [
+          "S4.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Other worries remained, which is why prices did not settle down just because the proposal was withdrawn.",
+        "span": [
+          1548,
+          1652
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "Ledgerは他の懸念が続いていたことと価格の動きを記録していますが、それらの懸念が価格が落ち着かなかった理由だと明示していません。因果関係を断定しています。",
+          "継続する懸念を、価格が落ち着かなかった理由として断定的に結び付けている。Ledgerは懸念の継続を記すが、この因果関係までは明示していない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "Other worries remained, which is why prices did not settle down just because the proposal was withdrawn."
+        ]
+      },
+      {
+        "claim_text": "Worries about oil supplies had not gone away, either.",
+        "span": [
+          1774,
+          1827
+        ],
+        "unit_ids": [
+          "S5.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-006"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 6,
+    "n_model_candidates": 1,
+    "n_deterministic_only_candidates": 5,
+    "total_cost_jpy": 1.5359,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 7,
+    "n_targets": 5,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 4,
+    "n_excluded_entries": 5,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.2594,
+    "effort": "medium",
+    "prompt_sha256": "0c2a410cc24543d4cd9b44bb47177feb032bf71bcc3e27aecc8198e285d53d5f"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 4
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 2.2915,
+  "provenance": {
+    "switch_dump_sha256": "66d18a3a1b28679684d7dcbe6e7af161a4da4223da7415a7ac50e7450de777c1",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-08T11:41:26",
+    "ledger_sha256": "83b2a09b99b20af0f1d30aefc6dda7bfe40ed06a6d7726a56a0bb90bce774522",
+    "article_sha256": "4159b49df8e0a7bede3fe60124a38b504acdea5fe0cab0866709efc9ab15f985",
+    "source_article_sha256": "6be1cd8b1d32b6da24ec8733a9c54cfca4224eef05fc85caf39f65444ee901f1",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/factlock_writer_trial_01/sweep_01/runs/hormuz/control/b4__S6__r1/checker",
+      "ledger_path": "er052_output/factlock_writer_trial_01/sweep_01/runs/hormuz/control/b4__S6__r1/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/factlock_writer_trial_01/sweep_01/runs/hormuz/control/b4__S6__r1/b1b/article.md",
+      "source_path": "er052_output/factlock_writer_trial_01/sweep_01/runs/hormuz/control/b4__S6__r1/ja_writer/revision2.md",
+      "budget_jpy": 10.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

@@ -1,0 +1,210 @@
+{
+  "trial_id": "FACTLOCK-WRITER-REDESIGN-TRIAL-01",
+  "sweep_id": "FACTLOCK-SWEEP-01",
+  "arm": "sweep_S4_6luna",
+  "variant": "S4",
+  "variant_axis": "S3+R1/R2に2文(事実を変えない・新事実を足さない)",
+  "tag_mode": "full",
+  "brief_marks": "keep",
+  "chain_requested": "previous_response_id",
+  "r3": false,
+  "slug": "hormuz",
+  "out_dir": "er052_output/factlock_writer_trial_01/sweep_01/runs/hormuz/control/b4__S4__r1",
+  "brief_md": "er052_output/factlock_writer_trial_01/briefs/hormuz/b4/selected_brief_factlock.md",
+  "brief_used": "er052_output/factlock_writer_trial_01/briefs/hormuz/b4/selected_brief_factlock.md",
+  "brief_sha256": "b5fdb4a0127456ef564d8c8348f360e29b04bc5a588fe0ce9b275c15eca84abe",
+  "brief_used_sha256": "b5fdb4a0127456ef564d8c8348f360e29b04bc5a588fe0ce9b275c15eca84abe",
+  "core_numbers_sha256": "fe951c28119300245ec9002c4b7714ab1b77c32a7acc4a7067737d86d6051828",
+  "ledger_sha256": "9bd6834e68e7e4378ba0ebccdd84c0128df2a5cd0aca7c1e84df612ae77ae1a6",
+  "variants_json_sha256": "6519d798838b2504914a89b5710d54646da4e9889d058626b3430c70c8925c38",
+  "prompt_sha256": {
+    "R0_PROMPT_original": "6108a7cddaa9eaf31262354ba32d33e4683ccaf810d861f27e3dcc8972028366",
+    "R0_PROMPT_variant": "6108a7cddaa9eaf31262354ba32d33e4683ccaf810d861f27e3dcc8972028366",
+    "AN3_original": "067030ff53ecb76a4d1477a3deace07b3e1fac438a33cb873edbe045cf6927fe",
+    "CONCRETENESS_variant": "d0b892aaeec2cf0d1ed3497198e4cf0e1fc9485a3820cd7988eb785bcc9e6ca5",
+    "R1_instruction_variant": "3ac3745bfae4b4003d5e67c521cfd654c337a06af28f0900ad685e45ef6d4dca",
+    "R2_instruction_variant": "3aab4f77f820a1338ed4f201f007404363e1b7dc8eedb10d0c39b7ee8450aa85",
+    "R3_instruction_variant": null,
+    "DEVELOPER_MESSAGE": "d1fbb04224d346e79c588b8e69da4dcfe26e758ceefc71aa83d13ff7f216ed8d",
+    "PAIR_PROMPT": "e30501573f24964e48423a95322d4269a4296b9c84ff792336d834ed2506709b",
+    "UNTAGGED_PROMPT": "95931cbc02cf57f4246dcb1a603015f9ca82b212d482aa72dc9e4025050bcb02",
+    "RETAG_PROMPT": "2d747e9392df1130657202765867d27db9cf13b4b39d31556b24827477fdd2e3"
+  },
+  "harness_sha256": {
+    "sweep_run": "c8626f6c82e48663ca5f0be2b14d47aa2ee3e54788dcfffb9ee016cfae995b29",
+    "factlock_run": "6a04e22d73e40d3becc83927959325a41fd90f4d892161a7ad5b14f869fa2a55",
+    "all6_run": "9412a19e43753f28d55e6915e5337a5053aa037b347fb8664e261c68f508d7d0"
+  },
+  "production_sha256": {
+    "er019_writer": "b3b5b9ff0eb6e97241d50cd70b0443b43007fd32680f764911f69d70420b28e6",
+    "vfl01": "63286c2b558cdcc3cd2def090bae6975ca48385e962dd53c9c70f7e116afde80"
+  },
+  "reasoning_effort": "high",
+  "all6_model": "gpt-6-luna",
+  "checker_enabled": true,
+  "budget_jpy": 12.0,
+  "started_at": "2026-10-08T11:31:36",
+  "phases": [
+    {
+      "phase": "phase1",
+      "rc": 0,
+      "sec": 154.4
+    },
+    {
+      "phase": "phase2",
+      "rc": "error:JARecheckRequiredError('[STOP] JA_RECHECK_REQUIRED: Advanced deviation MAJORのうち1件がJA R2由来(origin=ja_source)と判定されました。Englishを盲目的に再生成せず、JA側の再確認が必要です。 (ja_recheck_attempts=1、案Bで再生成後もMAJORが解消せずSTOP。これ以上JAを自動再生成しません。)')",
+      "sec": 176.3
+    }
+  ],
+  "postprocess_sec": 147.8,
+  "factlock_shas": {
+    "r0": {
+      "with_tags": "93e31aaf233fd04213ec82fd299a5e28ae5c5d181da99db93684992d9feded69",
+      "stripped": "4b7e011e7546d367e87cae08b939aefd62d45bc104365ce424b93032f511ff09"
+    },
+    "r1": {
+      "with_tags": "75c93fdf841f13bf50143bd95222a325be2d6b7c54926e491db1c6d1ab1accca",
+      "stripped": "a2d2de342edbf2f0b54260d047740b8425c5a69275abc3dc5512f0b6e28e6ac9"
+    },
+    "r2": {
+      "with_tags": "8cbe522f02f94bab9f6541043c886730b15d3675ae21557ca8463595eaa854bc",
+      "stripped": "d6c4b1e4e80bb7cab951074fb3f90e65a325b9d4ddeaba4392ea159b78f8d58e"
+    }
+  },
+  "chain_actual_cut_log": [],
+  "finished_at": "2026-10-08T11:39:34",
+  "wall_sec": 478.4,
+  "exit_reason": "phase2_error: JARecheckRequiredError('[STOP] JA_RECHECK_REQUIRED: Advanced deviation MAJORのうち1件がJA R2由来(origin=ja_source)と判定されました。Englishを盲目的に再生成せず、JA側の再確認が必要です。 (ja_recheck_attempts=1、案Bで再生成後もMAJORが解消せずSTOP。これ以上JAを自動再生成しません。)')",
+  "model_ids_actual": {
+    "ja_original": [
+      "gpt-6-luna"
+    ],
+    "ja_original_check": [
+      "gpt-6-luna"
+    ],
+    "ja_original_must_fix": [
+      "gpt-6-luna"
+    ],
+    "ja_original_check_retry": [
+      "gpt-6-luna"
+    ],
+    "ja_r1": [
+      "gpt-6-luna"
+    ],
+    "ja_r2": [
+      "gpt-6-luna"
+    ],
+    "ja_r2_check": [
+      "gpt-6-luna"
+    ],
+    "factlock_pair_r0": [
+      "gpt-6-luna"
+    ],
+    "factlock_untagged_r0": [
+      "gpt-6-luna"
+    ],
+    "factlock_pair_r1": [
+      "gpt-6-luna"
+    ],
+    "factlock_untagged_r1": [
+      "gpt-6-luna"
+    ],
+    "factlock_pair_r2": [
+      "gpt-6-luna"
+    ],
+    "factlock_untagged_r2": [
+      "gpt-6-luna"
+    ],
+    "advanced": [
+      "gpt-6-luna"
+    ],
+    "_checker_models_seen": []
+  },
+  "checker": {
+    "present": false,
+    "switch_dump_sha256": null
+  },
+  "cost": {
+    "by_stage_jpy": {
+      "ja_original": 0.267,
+      "ja_original_check": 0.22,
+      "ja_original_must_fix": 0.517,
+      "ja_original_check_retry": 0.124,
+      "ja_r1": 0.29,
+      "ja_r2": 0.313,
+      "ja_r2_check": 0.108
+    },
+    "total_jpy": 1.839
+  },
+  "residual_bracket_scan": {
+    "hits": [
+      {
+        "file": "b1b/audit/deviation_checks/advanced_attempt1.json",
+        "count": 8
+      },
+      {
+        "file": "ja_writer/original.md",
+        "count": 10
+      },
+      {
+        "file": "ja_writer/original_with_tags.md",
+        "count": 8
+      },
+      {
+        "file": "ja_writer/revision1.md",
+        "count": 10
+      },
+      {
+        "file": "ja_writer/revision1_with_tags.md",
+        "count": 7
+      },
+      {
+        "file": "ja_writer/revision2.md",
+        "count": 10
+      },
+      {
+        "file": "ja_writer/revision2_with_tags.md",
+        "count": 7
+      },
+      {
+        "file": "ja_writer/runtime_evidence.json",
+        "count": 30
+      },
+      {
+        "file": "ja_writer/audit/deviation_checks/ja_original_attempt1.json",
+        "count": 6
+      },
+      {
+        "file": "ja_writer/audit/deviation_checks/ja_original_attempt2.json",
+        "count": 7
+      },
+      {
+        "file": "ja_writer/audit/deviation_checks/ja_r2_attempt1.json",
+        "count": 6
+      },
+      {
+        "file": "storyline_b3/fact_selection_evidence.json",
+        "count": 15
+      },
+      {
+        "file": "storyline_b3/selected_brief.md",
+        "count": 15
+      }
+    ],
+    "unexpected": [
+      {
+        "file": "ja_writer/original.md",
+        "count": 10
+      },
+      {
+        "file": "ja_writer/revision1.md",
+        "count": 10
+      },
+      {
+        "file": "ja_writer/revision2.md",
+        "count": 10
+      }
+    ],
+    "unexpected_total": 30
+  }
+}

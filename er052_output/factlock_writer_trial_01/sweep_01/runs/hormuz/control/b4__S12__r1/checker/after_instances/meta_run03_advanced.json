@@ -1,0 +1,1693 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "# From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "# From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes",
+            "issue": "「Policy Turns the Wheel」は政策変更が市場の動きを導いたという因果関係を示唆するが、Ledgerが確認するのは撤回後の一時的な上げ幅縮小とその後の回復であり、政策が市場を操舵したとは述べていない。 / 「投資案件に変わった」と、実際に案件が成立したかのように読める。Ledgerが確認するのは、トランプ氏が償還料案を貿易・投資案件に置き換えると投稿したこと。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-009",
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes\n\nFirst, it was a fee proposal. But by the next day, it had become an investment deal. As we follow Mr. Trump’s posts, the story changes direction.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "# From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e",
+              "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+            ],
+            "batch_cost_jpy": 0.1341,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "But by the next day, it had become an investment deal.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "But by the next day, it had become an investment deal.",
+            "issue": "Ledgerが述べるのは提案を貿易・投資案件に置き換えるとの投稿であり、提案そのものが実際に単一の投資取引へ変わったとは確認していない。 / 提案を投資案件に置き換えると投稿したことを、投資案件が実際に成立したかのように強めている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes\n\nFirst, it was a fee proposal. But by the next day, it had become an investment deal. As we follow Mr. Trump’s posts, the story changes direction.\n\nMr. Trump proposed a 20% fee on all cargo passing through the Strait of Hormuz, saying it would pay back the cost of keeping the strait safe. The next day, he posted that he would replace the proposal with trade and investment deals between Gulf countries and the United States. He said the decision followed “very productive talks” with Middle Eastern leaders.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "But by the next day, it had become an investment deal.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e",
+              "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+            ],
+            "batch_cost_jpy": 0.1341,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "We should not assume that the 20% proposal alone caused prices to rise.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "We should not assume that the 20% proposal alone caused prices to rise.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.4"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Mr. Trump proposed a 20% fee on all cargo passing through the Strait of Hormuz, saying it would pay back the cost of keeping the strait safe. The next day, he posted that he would replace the proposal with trade and investment deals between Gulf countries and the United States. He said the decision followed “very productive talks” with Middle Eastern leaders.\n\nBut the oil market cannot be steered as one wishes with a single announcement. On the day the proposal was made, Brent crude futures rose. Reuters linked the rise to concerns about a naval blockade of Iran, which was expected to begin the next day, and about energy shipments passing through the strait. We should not assume that the 20% proposal alone caused prices to rise.\n\nThe next day, when the proposal’s withdrawal and replacement were announced, the rise in Brent futures briefly slowed. It looked as if the brakes had been applied, but only for a moment. Soon, prices returned to a high level close to where they had been before the announcement. At the time the article was published, they were up about 2.6%, above $85 a barrel. Meanwhile, concerns continued about attacks between the United States and Iran, the naval blockade, and the safety of tankers.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "We should not assume that the 20% proposal alone caused prices to rise.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e",
+              "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+            ],
+            "batch_cost_jpy": 0.1341,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "The fee proposal changed, and the market hit the brakes once, then rose again.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "The fee proposal changed, and the market hit the brakes once, then rose again.",
+            "issue": "「Policy Turns the Wheel」は政策変更が市場の動きを導いたという因果関係を示唆するが、Ledgerが確認するのは撤回後の一時的な上げ幅縮小とその後の回復であり、政策が市場を操舵したとは述べていない。 / 「投資案件に変わった」と、実際に案件が成立したかのように読める。Ledgerが確認するのは、トランプ氏が償還料案を貿易・投資案件に置き換えると投稿したこと。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-009",
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The next day, when the proposal’s withdrawal and replacement were announced, the rise in Brent futures briefly slowed. It looked as if the brakes had been applied, but only for a moment. Soon, prices returned to a high level close to where they had been before the announcement. At the time the article was published, they were up about 2.6%, above $85 a barrel. Meanwhile, concerns continued about attacks between the United States and Iran, the naval blockade, and the safety of tankers.\n\nThe fee proposal changed, and the market hit the brakes once, then rose again. If there is uncertainty about the very route goods travel, can we feel relieved just because the fee proposal has changed?\n\n## In one line\nAfter Trump replaced his proposed Hormuz fee with investment deals, oil’s rise briefly slowed before prices climbed again.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "The fee proposal changed, and the market hit the brakes once, then rose again.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e",
+              "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+            ],
+            "batch_cost_jpy": 0.1341,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "After Trump replaced his proposed Hormuz fee with investment deals, oil’s rise briefly slowed before prices climbed again.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "After Trump replaced his proposed Hormuz fee with investment deals, oil’s rise briefly slowed before prices climbed again.",
+            "issue": "「Policy Turns the Wheel」は政策変更が市場の動きを導いたという因果関係を示唆するが、Ledgerが確認するのは撤回後の一時的な上げ幅縮小とその後の回復であり、政策が市場を操舵したとは述べていない。 / 「投資案件に変わった」と、実際に案件が成立したかのように読める。Ledgerが確認するのは、トランプ氏が償還料案を貿易・投資案件に置き換えると投稿したこと。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-009",
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The fee proposal changed, and the market hit the brakes once, then rose again. If there is uncertainty about the very route goods travel, can we feel relieved just because the fee proposal has changed?\n\n## In one line\nAfter Trump replaced his proposed Hormuz fee with investment deals, oil’s rise briefly slowed before prices climbed again.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "After Trump replaced his proposed Hormuz fee with investment deals, oil’s rise briefly slowed before prices climbed again.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e",
+              "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+            ],
+            "batch_cost_jpy": 0.1341,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "The next day, he posted that he would replace the proposal with trade and investment deals between Gulf countries and the United States.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "The next day, he posted that he would replace the proposal with trade and investment deals between Gulf countries and the United States.",
+            "issue": "Ledgerが述べるのは提案を貿易・投資案件に置き換えるとの投稿であり、提案そのものが実際に単一の投資取引へ変わったとは確認していない。 / 提案を投資案件に置き換えると投稿したことを、投資案件が実際に成立したかのように強めている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "But by the next day, it had become an investment deal."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "First, it was a fee proposal. But by the next day, it had become an investment deal. As we follow Mr. Trump’s posts, the story changes direction.\n\nMr. Trump proposed a 20% fee on all cargo passing through the Strait of Hormuz, saying it would pay back the cost of keeping the strait safe. The next day, he posted that he would replace the proposal with trade and investment deals between Gulf countries and the United States. He said the decision followed “very productive talks” with Middle Eastern leaders.\n\nBut the oil market cannot be steered as one wishes with a single announcement. On the day the proposal was made, Brent crude futures rose. Reuters linked the rise to concerns about a naval blockade of Iran, which was expected to begin the next day, and about energy shipments passing through the strait. We should not assume that the 20% proposal alone caused prices to rise.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "The next day, he posted that he would replace the proposal with trade and investment deals between Gulf countries and the United States.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e",
+              "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+            ],
+            "batch_cost_jpy": 0.1341,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "Trump proposed a 20% fee on all cargo passing through the Strait of Hormuz, saying it would pay back the cost of keeping the strait safe.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "Trump proposed a 20% fee on all cargo passing through the Strait of Hormuz, saying it would pay back the cost of keeping the strait safe.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.4"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "We should not assume that the 20% proposal alone caused prices to rise."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "First, it was a fee proposal. But by the next day, it had become an investment deal. As we follow Mr. Trump’s posts, the story changes direction.\n\nMr. Trump proposed a 20% fee on all cargo passing through the Strait of Hormuz, saying it would pay back the cost of keeping the strait safe. The next day, he posted that he would replace the proposal with trade and investment deals between Gulf countries and the United States. He said the decision followed “very productive talks” with Middle Eastern leaders.\n\nBut the oil market cannot be steered as one wishes with a single announcement. On the day the proposal was made, Brent crude futures rose. Reuters linked the rise to concerns about a naval blockade of Iran, which was expected to begin the next day, and about energy shipments passing through the strait. We should not assume that the 20% proposal alone caused prices to rise.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "Trump proposed a 20% fee on all cargo passing through the Strait of Hormuz, saying it would pay back the cost of keeping the strait safe.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e",
+              "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+            ],
+            "batch_cost_jpy": 0.1341,
+            "batch_n_claims": 7
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 7,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "# From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e",
+            "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+          ],
+          "batch_cost_jpy": 0.1341,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "But by the next day, it had become an investment deal.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e",
+            "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+          ],
+          "batch_cost_jpy": 0.1341,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "We should not assume that the 20% proposal alone caused prices to rise.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e",
+            "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+          ],
+          "batch_cost_jpy": 0.1341,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "The fee proposal changed, and the market hit the brakes once, then rose again.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e",
+            "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+          ],
+          "batch_cost_jpy": 0.1341,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "After Trump replaced his proposed Hormuz fee with investment deals, oil’s rise briefly slowed before prices climbed again.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e",
+            "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+          ],
+          "batch_cost_jpy": 0.1341,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "The next day, he posted that he would replace the proposal with trade and investment deals between Gulf countries and the United States.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e",
+            "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+          ],
+          "batch_cost_jpy": 0.1341,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "Trump proposed a 20% fee on all cargo passing through the Strait of Hormuz, saying it would pay back the cost of keeping the strait safe.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e",
+            "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+          ],
+          "batch_cost_jpy": 0.1341,
+          "batch_n_claims": 7
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.4175,
+      "usage": {
+        "input_tokens": 4929,
+        "cached_input_tokens": 0,
+        "output_tokens": 4337,
+        "reasoning_tokens": 1263
+      },
+      "elapsed_seconds": 29.844,
+      "prompt_sha256": "1f7d69c4f74462c3bad12c2554d31d6a711d611b63b34c8806488201d9b99df7",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 1.277,
+      "usage": {
+        "input_tokens": 4587,
+        "cached_input_tokens": 0,
+        "output_tokens": 15363,
+        "reasoning_tokens": 11111
+      },
+      "elapsed_seconds": 99.597,
+      "prompt_sha256": "aea5d83e8ae87432867744e01cda00b79e6ca26b43ae5278070ba90d1d1d7bf4",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2686,
+      "usage": {
+        "input_tokens": 4804,
+        "cached_input_tokens": 0,
+        "output_tokens": 2464,
+        "reasoning_tokens": 2058
+      },
+      "elapsed_seconds": 29.442,
+      "prompt_sha256": "7461e8c63cecd4f30a261a5b25770e37a12cfd74dadfc69abe9ddd6e0f036fdf",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1912,
+      "usage": {
+        "input_tokens": 9356,
+        "cached_input_tokens": 0,
+        "output_tokens": 566,
+        "reasoning_tokens": 411
+      },
+      "elapsed_seconds": 4.339,
+      "prompt_sha256": "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1148,
+      "usage": {
+        "input_tokens": 5671,
+        "cached_input_tokens": 0,
+        "output_tokens": 329,
+        "reasoning_tokens": 252
+      },
+      "elapsed_seconds": 4.031,
+      "prompt_sha256": "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0739,
+      "usage": {
+        "input_tokens": 9356,
+        "cached_input_tokens": 9353,
+        "output_tokens": 754,
+        "reasoning_tokens": 594
+      },
+      "elapsed_seconds": 5.489,
+      "prompt_sha256": "43c9c21f76dc5a51ae7f2ee449fdfe9e77eb33427b6c0df45c4043ea4d96d60e"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0602,
+      "usage": {
+        "input_tokens": 5671,
+        "cached_input_tokens": 5668,
+        "output_tokens": 653,
+        "reasoning_tokens": 576
+      },
+      "elapsed_seconds": 7.106,
+      "prompt_sha256": "94cc1107e91e3755f7af42c44b1a7ac9930298e12ec6b34eb5fc5ebd496b6cb5"
+    }
+  ],
+  "total_cost_jpy": 2.4032,
+  "total_calls": 7,
+  "elapsed_seconds": 179.898,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "# From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "「Policy Turns the Wheel」は政策変更が市場の動きを導いたという因果関係を示唆するが、Ledgerが確認するのは撤回後の一時的な上げ幅縮小とその後の回復であり、政策が市場を操舵したとは述べていない。 / 「投資案件に変わった」と、実際に案件が成立したかのように読める。Ledgerが確認するのは、トランプ氏が償還料案を貿易・投資案件に置き換えると投稿したこと。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=T); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But by the next day, it had become an investment deal.",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "Ledgerが述べるのは提案を貿易・投資案件に置き換えるとの投稿であり、提案そのものが実際に単一の投資取引へ変わったとは確認していない。 / 提案を投資案件に置き換えると投稿したことを、投資案件が実際に成立したかのように強めている。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "We should not assume that the 20% proposal alone caused prices to rise.",
+        "related_fact_id": "HF-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 8,
+      "n_model_entries": 7,
+      "n_targets": 4,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 2,
+      "n_excluded_entries": 3,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.2686,
+          "usage": {
+            "input_tokens": 4804,
+            "cached_input_tokens": 0,
+            "output_tokens": 2464,
+            "reasoning_tokens": 2058
+          },
+          "elapsed_seconds": 29.442,
+          "prompt_sha256": "7461e8c63cecd4f30a261a5b25770e37a12cfd74dadfc69abe9ddd6e0f036fdf",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.2686,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「Investment Deal」への移行を成立済みの取引のように表現していますが、Ledgerは湾岸諸国と米国の貿易・投資案件に置き換えるとの投稿を確認しているだけです。",
+          "fact_tags": [
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "mismatch",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.2",
+          "claim": "But by the next day, it had become an investment deal.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "翌日という時系列は一致しますが、Ledgerが確認するのは提案を貿易・投資案件に置き換えるとの投稿であり、投資案件が実際に成立したとはしていません。",
+          "fact_tags": [
+            "date",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "mismatch",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C3",
+          "key": "S3.1",
+          "claim": "But the oil market cannot be steered as one wishes with a single announcement.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "市場は一つの発表で思いどおりに動かせないという、具体的な新事実を加えない一般的・比喩的な表現です。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S5.2",
+          "claim": "If there is uncertainty about the very route goods travel, can we feel relieved just because the fee proposal has changed?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "通航路への不確実性を条件として置いた読者への修辞的な問いであり、新たな具体的事実を断定していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "7461e8c63cecd4f30a261a5b25770e37a12cfd74dadfc69abe9ddd6e0f036fdf"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 25,
+    "n_judged_units": 19,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "S1.2",
+          "S3.1",
+          "S3.4",
+          "S5.2",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "SUPPORTED",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S4.5": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.4175,
+            "usage": {
+              "input_tokens": 4929,
+              "cached_input_tokens": 0,
+              "output_tokens": 4337,
+              "reasoning_tokens": 1263
+            },
+            "elapsed_seconds": 29.844,
+            "prompt_sha256": "1f7d69c4f74462c3bad12c2554d31d6a711d611b63b34c8806488201d9b99df7",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "SUPPORTED",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S4.5": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes",
+            "span": [
+              0,
+              107
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「Policy Turns the Wheel」は政策変更が市場の動きを導いたという因果関係を示唆するが、Ledgerが確認するのは撤回後の一時的な上げ幅縮小とその後の回復であり、政策が市場を操舵したとは述べていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "# From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes"
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "But by the next day, it had become an investment deal.",
+            "span": [
+              139,
+              193
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerが述べるのは提案を貿易・投資案件に置き換えるとの投稿であり、提案そのものが実際に単一の投資取引へ変わったとは確認していない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "But by the next day, it had become an investment deal."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "But the oil market cannot be steered as one wishes with a single announcement.",
+            "span": [
+              619,
+              697
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "単一の発表では市場を望むように動かせないという一般的な市場行動の主張は、Ledgerで確認されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But the oil market cannot be steered as one wishes with a single announcement."
+          },
+          {
+            "unit_id": "S3.4",
+            "unit_ids": [
+              "S3.4"
+            ],
+            "claim_text": "We should not assume that the 20% proposal alone caused prices to rise.",
+            "span": [
+              923,
+              994
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "If there is uncertainty about the very route goods travel, can we feel relieved just because the fee proposal has changed?",
+            "span": [
+              1566,
+              1688
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "海峡という貨物輸送ルートそのものについて不確実性があるという主張、および料金案の変更だけでは安心できないという含意は、Ledgerの記載から直接確認できない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "If there is uncertainty about the very route goods travel, can we feel relieved just because the fee proposal has changed?"
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S1.2",
+          "S3.1",
+          "T"
+        ],
+        "unit_status": {
+          "T": "DEVIATION",
+          "S1.1": "MATCH",
+          "S1.2": "DEVIATION",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S3.4": "MATCH",
+          "S4.1": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "L1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.1": "DEVIATION",
+          "S3.3": "MATCH",
+          "S2.3": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S4.4": "MATCH",
+          "S4.5": "MATCH",
+          "S1.3": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 1.277,
+            "usage": {
+              "input_tokens": 4587,
+              "cached_input_tokens": 0,
+              "output_tokens": 15363,
+              "reasoning_tokens": 11111
+            },
+            "elapsed_seconds": 99.597,
+            "prompt_sha256": "aea5d83e8ae87432867744e01cda00b79e6ca26b43ae5278070ba90d1d1d7bf4",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "But the oil market cannot be steered as one wishes with a single announcement.",
+            "span": [
+              619,
+              697
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "一般的に「単一の発表では原油市場を思いどおりに動かせない」と断定しているが、Ledgerが確認するのは7月13日の上昇要因と、20％案だけを原因としない注意であり、この一般則までは確認されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "But the oil market cannot be steered as one wishes with a single announcement."
+          },
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes",
+            "span": [
+              0,
+              107
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "「投資案件に変わった」と、実際に案件が成立したかのように読める。Ledgerが確認するのは、トランプ氏が償還料案を貿易・投資案件に置き換えると投稿したこと。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes"
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "But by the next day, it had become an investment deal.",
+            "span": [
+              139,
+              193
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "提案を投資案件に置き換えると投稿したことを、投資案件が実際に成立したかのように強めている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "But by the next day, it had become an investment deal."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S1.2",
+        "S3.1",
+        "T"
+      ],
+      "r3_only": [
+        "S3.4",
+        "S5.2"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 1
+    },
+    "union_candidates": [
+      {
+        "claim_text": "# From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes",
+        "span": [
+          0,
+          107
+        ],
+        "unit_ids": [
+          "T"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "「Policy Turns the Wheel」は政策変更が市場の動きを導いたという因果関係を示唆するが、Ledgerが確認するのは撤回後の一時的な上げ幅縮小とその後の回復であり、政策が市場を操舵したとは述べていない。",
+          "「投資案件に変わった」と、実際に案件が成立したかのように読める。Ledgerが確認するのは、トランプ氏が償還料案を貿易・投資案件に置き換えると投稿したこと。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009",
+          "HF-007"
+        ],
+        "model_claims": [
+          "# From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes",
+          "From a Fee Proposal to an Investment Deal: Policy Turns the Wheel, and the Market Briefly Hits the Brakes"
+        ]
+      },
+      {
+        "claim_text": "But by the next day, it had become an investment deal.",
+        "span": [
+          139,
+          193
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "Ledgerが述べるのは提案を貿易・投資案件に置き換えるとの投稿であり、提案そのものが実際に単一の投資取引へ変わったとは確認していない。",
+          "提案を投資案件に置き換えると投稿したことを、投資案件が実際に成立したかのように強めている。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "But by the next day, it had become an investment deal."
+        ]
+      },
+      {
+        "claim_text": "We should not assume that the 20% proposal alone caused prices to rise.",
+        "span": [
+          923,
+          994
+        ],
+        "unit_ids": [
+          "S3.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-006"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 3,
+    "n_model_candidates": 2,
+    "n_deterministic_only_candidates": 1,
+    "total_cost_jpy": 1.6945,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 7,
+    "n_targets": 4,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 2,
+    "n_excluded_entries": 3,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.2686,
+    "effort": "medium",
+    "prompt_sha256": "7461e8c63cecd4f30a261a5b25770e37a12cfd74dadfc69abe9ddd6e0f036fdf"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 4
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

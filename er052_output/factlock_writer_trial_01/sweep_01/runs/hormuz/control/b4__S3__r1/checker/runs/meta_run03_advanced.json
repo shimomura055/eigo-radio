@@ -1,0 +1,2198 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Put simply, it was a plan to send the cargo a “security bill.”",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "Put simply, it was a plan to send the cargo a “security bill.”",
+            "issue": "「cargoにsecurity billを送る」は、貨物自体が請求を受ける、または支払義務者が特定されているとの含意があります。Ledgerでは支払義務者や徴収方法は示されていません。 / 貨物に請求書を送るという徴収方法を示しており、Ledgerで未提示とされる制度設計を付加している。 / Ledgerでは徴収主体や支払義務者、徴収方法などが示されていないが、貨物へ請求書を送る具体的な仕組みを付加している。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.2"
+              ],
+              "related_fact_ids": [
+                "HF-003",
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This news is interesting if you read it as a quick change in policy. A proposal to charge for the cost of keeping cargo safe as it passes through the strait became talk of investment and trade from Gulf states to the United States the next day.\n\nTrump posted that he would charge a 20% fee on all goods passing through the Strait of Hormuz to cover the cost of keeping it safe. Put simply, it was a plan to send the cargo a “security bill.” But the next day, he posted that he would replace that plan with talk of Gulf states investing in and trading with the United States. He said this was because of “very productive talks” with Middle Eastern leaders.\n\nThe focus quickly shifted from a bill to an economic deal. What changed was the form of the proposal; worries about the safety of ships passing through the strait had not gone away. Brent oil futures rose on the day the fee plan was announced. But the rise cannot be blamed on the 20% plan alone. Concerns about a naval blockade of Iran, which was expected to begin the next day, and about energy shipments were also part of the picture.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "Put simply, it was a plan to send the cargo a “security bill.”",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+            ],
+            "batch_cost_jpy": 0.1536,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "But the rise cannot be blamed on the 20% plan alone.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "But the rise cannot be blamed on the 20% plan alone.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.4"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Trump posted that he would charge a 20% fee on all goods passing through the Strait of Hormuz to cover the cost of keeping it safe. Put simply, it was a plan to send the cargo a “security bill.” But the next day, he posted that he would replace that plan with talk of Gulf states investing in and trading with the United States. He said this was because of “very productive talks” with Middle Eastern leaders.\n\nThe focus quickly shifted from a bill to an economic deal. What changed was the form of the proposal; worries about the safety of ships passing through the strait had not gone away. Brent oil futures rose on the day the fee plan was announced. But the rise cannot be blamed on the 20% plan alone. Concerns about a naval blockade of Iran, which was expected to begin the next day, and about energy shipments were also part of the picture.\n\nAfter the announcement that the plan would be replaced, oil futures briefly gave back some of their gains. But before long, they returned to a high level close to where they had been before the announcement. At the time the article was published, they were up about 2.6%, above $85 a barrel. Concerns about attacks by the United States and Iran, the naval blockade, and the safety of tankers continued.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "But the rise cannot be blamed on the 20% plan alone.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+            ],
+            "batch_cost_jpy": 0.1536,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "In short, the script for the announcement changed, but the market’s concerns stayed the same.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "In short, the script for the announcement changed, but the market’s concerns stayed the same.",
+            "issue": "「市場の懸念は同じままだった」は、懸念が継続したというLedgerの記述を、懸念の内容・程度が変わらなかったという断定に強めています。 / Ledgerでは攻撃、海上封鎖、タンカー安全への懸念が継続したとされるが、「市場の懸念」全体が同じままだったと範囲を広げている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "After the announcement that the plan would be replaced, oil futures briefly gave back some of their gains. But before long, they returned to a high level close to where they had been before the announcement. At the time the article was published, they were up about 2.6%, above $85 a barrel. Concerns about attacks by the United States and Iran, the naval blockade, and the safety of tankers continued.\n\nIn short, the script for the announcement changed, but the market’s concerns stayed the same. The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil. A bill can change its clothes, but worries at sea do not. That is the punch line of the story.\n\n## In one line\nTrump replaced a proposed Hormuz shipping fee with investment talks, but concerns about tanker safety remained.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "In short, the script for the announcement changed, but the market’s concerns stayed the same.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+            ],
+            "batch_cost_jpy": 0.1536,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil.",
+            "issue": "料金案の置換は支えられていますが、それが船舶の安全を保証しなかったという主張はLedgerにありません。 / 置換が確認されている提案について、「消えたかもしれない」と不確かな表現にしている。 / 安全への懸念が続いたというLedgerの記述を超えて、船舶の安全が保証されていないという主張を加えている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.2"
+              ],
+              "related_fact_ids": [
+                "HF-007",
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "After the announcement that the plan would be replaced, oil futures briefly gave back some of their gains. But before long, they returned to a high level close to where they had been before the announcement. At the time the article was published, they were up about 2.6%, above $85 a barrel. Concerns about attacks by the United States and Iran, the naval blockade, and the safety of tankers continued.\n\nIn short, the script for the announcement changed, but the market’s concerns stayed the same. The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil. A bill can change its clothes, but worries at sea do not. That is the punch line of the story.\n\n## In one line\nTrump replaced a proposed Hormuz shipping fee with investment talks, but concerns about tanker safety remained.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+            ],
+            "batch_cost_jpy": 0.1536,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "A bill can change its clothes, but worries at sea do not.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "A bill can change its clothes, but worries at sea do not.",
+            "issue": "海上の懸念が変わらないという一般化は、Ledgerの「懸念が継続していた」という記述を超えています。 / Ledgerで確認された特定の供給・タンカー安全上の懸念から、「海上の懸念」一般へ範囲を広げている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.3"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "After the announcement that the plan would be replaced, oil futures briefly gave back some of their gains. But before long, they returned to a high level close to where they had been before the announcement. At the time the article was published, they were up about 2.6%, above $85 a barrel. Concerns about attacks by the United States and Iran, the naval blockade, and the safety of tankers continued.\n\nIn short, the script for the announcement changed, but the market’s concerns stayed the same. The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil. A bill can change its clothes, but worries at sea do not. That is the punch line of the story.\n\n## In one line\nTrump replaced a proposed Hormuz shipping fee with investment talks, but concerns about tanker safety remained.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "A bill can change its clothes, but worries at sea do not.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+            ],
+            "batch_cost_jpy": 0.1536,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "Put simply, it was a plan to send the cargo a “security bill.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "Put simply, it was a plan to send the cargo a “security bill.",
+            "issue": "「cargoにsecurity billを送る」は、貨物自体が請求を受ける、または支払義務者が特定されているとの含意があります。Ledgerでは支払義務者や徴収方法は示されていません。 / 貨物に請求書を送るという徴収方法を示しており、Ledgerで未提示とされる制度設計を付加している。 / Ledgerでは徴収主体や支払義務者、徴収方法などが示されていないが、貨物へ請求書を送る具体的な仕組みを付加している。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.2"
+              ],
+              "related_fact_ids": [
+                "HF-003",
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Put simply, it was a plan to send the cargo a “security bill.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This news is interesting if you read it as a quick change in policy. A proposal to charge for the cost of keeping cargo safe as it passes through the strait became talk of investment and trade from Gulf states to the United States the next day.\n\nTrump posted that he would charge a 20% fee on all goods passing through the Strait of Hormuz to cover the cost of keeping it safe. Put simply, it was a plan to send the cargo a “security bill.” But the next day, he posted that he would replace that plan with talk of Gulf states investing in and trading with the United States. He said this was because of “very productive talks” with Middle Eastern leaders.\n\nThe focus quickly shifted from a bill to an economic deal. What changed was the form of the proposal; worries about the safety of ships passing through the strait had not gone away. Brent oil futures rose on the day the fee plan was announced. But the rise cannot be blamed on the 20% plan alone. Concerns about a naval blockade of Iran, which was expected to begin the next day, and about energy shipments were also part of the picture.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "Put simply, it was a plan to send the cargo a “security bill.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+            ],
+            "batch_cost_jpy": 0.1536,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "Trump posted that he would charge a 20% fee on all goods passing through the Strait of Hormuz to cover the cost of keeping it safe.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "Trump posted that he would charge a 20% fee on all goods passing through the Strait of Hormuz to cover the cost of keeping it safe.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.4"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "But the rise cannot be blamed on the 20% plan alone."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This news is interesting if you read it as a quick change in policy. A proposal to charge for the cost of keeping cargo safe as it passes through the strait became talk of investment and trade from Gulf states to the United States the next day.\n\nTrump posted that he would charge a 20% fee on all goods passing through the Strait of Hormuz to cover the cost of keeping it safe. Put simply, it was a plan to send the cargo a “security bill.” But the next day, he posted that he would replace that plan with talk of Gulf states investing in and trading with the United States. He said this was because of “very productive talks” with Middle Eastern leaders.\n\nThe focus quickly shifted from a bill to an economic deal. What changed was the form of the proposal; worries about the safety of ships passing through the strait had not gone away. Brent oil futures rose on the day the fee plan was announced. But the rise cannot be blamed on the 20% plan alone. Concerns about a naval blockade of Iran, which was expected to begin the next day, and about energy shipments were also part of the picture.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "Trump posted that he would charge a 20% fee on all goods passing through the Strait of Hormuz to cover the cost of keeping it safe.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+            ],
+            "batch_cost_jpy": 0.1536,
+            "batch_n_claims": 7
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 7,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "Put simply, it was a plan to send the cargo a “security bill.”",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+          ],
+          "batch_cost_jpy": 0.1536,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "But the rise cannot be blamed on the 20% plan alone.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+          ],
+          "batch_cost_jpy": 0.1536,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "In short, the script for the announcement changed, but the market’s concerns stayed the same.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+          ],
+          "batch_cost_jpy": 0.1536,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+          ],
+          "batch_cost_jpy": 0.1536,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "A bill can change its clothes, but worries at sea do not.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+          ],
+          "batch_cost_jpy": 0.1536,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "Put simply, it was a plan to send the cargo a “security bill.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+          ],
+          "batch_cost_jpy": 0.1536,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "Trump posted that he would charge a 20% fee on all goods passing through the Strait of Hormuz to cover the cost of keeping it safe.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+          ],
+          "batch_cost_jpy": 0.1536,
+          "batch_n_claims": 7
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.4431,
+      "usage": {
+        "input_tokens": 4992,
+        "cached_input_tokens": 0,
+        "output_tokens": 4650,
+        "reasoning_tokens": 1034
+      },
+      "elapsed_seconds": 37.851,
+      "prompt_sha256": "33c1c369490a6980884da500de608be7fab91b08cab42694e94e8a42e07a2df1",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.7493,
+      "usage": {
+        "input_tokens": 4640,
+        "cached_input_tokens": 0,
+        "output_tokens": 8624,
+        "reasoning_tokens": 5696
+      },
+      "elapsed_seconds": 81.752,
+      "prompt_sha256": "690a75c83017bca4f0eb4624d6c533bde168dfa98d0791d930a923e5776a0acc",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2733,
+      "usage": {
+        "input_tokens": 5058,
+        "cached_input_tokens": 0,
+        "output_tokens": 2473,
+        "reasoning_tokens": 1842
+      },
+      "elapsed_seconds": 23.554,
+      "prompt_sha256": "bf687dd6258460a98ddbb30fbb5a9f52b67b921abc99a21937869b5a9939ca80",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.3129,
+      "usage": {
+        "input_tokens": 10138,
+        "cached_input_tokens": 0,
+        "output_tokens": 1962,
+        "reasoning_tokens": 1755
+      },
+      "elapsed_seconds": 21.986,
+      "prompt_sha256": "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1536,
+      "usage": {
+        "input_tokens": 10138,
+        "cached_input_tokens": 10135,
+        "output_tokens": 1755,
+        "reasoning_tokens": 1548
+      },
+      "elapsed_seconds": 20.417,
+      "prompt_sha256": "f7cb8b6e28f8b6b19a6591b089bc3b0072a5c1c4e4a923c82dc6f791fc0e2317"
+    }
+  ],
+  "total_cost_jpy": 1.9322,
+  "total_calls": 5,
+  "elapsed_seconds": 185.606,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Put simply, it was a plan to send the cargo a “security bill.”",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "「cargoにsecurity billを送る」は、貨物自体が請求を受ける、または支払義務者が特定されているとの含意があります。Ledgerでは支払義務者や徴収方法は示されていません。 / 貨物に請求書を送るという徴収方法を示しており、Ledgerで未提示とされる制度設計を付加している。 / Ledgerでは徴収主体や支払義務者、徴収方法などが示されていないが、貨物へ請求書を送る具体的な仕組みを付加している。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But the rise cannot be blamed on the 20% plan alone.",
+        "related_fact_id": "HF-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In short, the script for the announcement changed, but the market’s concerns stayed the same.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "「市場の懸念は同じままだった」は、懸念が継続したというLedgerの記述を、懸念の内容・程度が変わらなかったという断定に強めています。 / Ledgerでは攻撃、海上封鎖、タンカー安全への懸念が継続したとされるが、「市場の懸念」全体が同じままだったと範囲を広げている。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_comparison",
+          "changed_fact",
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil.",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "料金案の置換は支えられていますが、それが船舶の安全を保証しなかったという主張はLedgerにありません。 / 置換が確認されている提案について、「消えたかもしれない」と不確かな表現にしている。 / 安全への懸念が続いたというLedgerの記述を超えて、船舶の安全が保証されていないという主張を加えている。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "A bill can change its clothes, but worries at sea do not.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "海上の懸念が変わらないという一般化は、Ledgerの「懸念が継続していた」という記述を超えています。 / Ledgerで確認された特定の供給・タンカー安全上の懸念から、「海上の懸念」一般へ範囲を広げている。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_comparison",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 16,
+      "n_model_entries": 15,
+      "n_targets": 9,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 5,
+      "n_excluded_entries": 5,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.2733,
+          "usage": {
+            "input_tokens": 5058,
+            "cached_input_tokens": 0,
+            "output_tokens": 2473,
+            "reasoning_tokens": 1842
+          },
+          "elapsed_seconds": 23.554,
+          "prompt_sha256": "bf687dd6258460a98ddbb30fbb5a9f52b67b921abc99a21937869b5a9939ca80",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.2733,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# A Toll Bill Turns into Investment Talk the Next Day",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "The headline accurately summarizes the fee proposal being replaced by investment and trade talks the next day.",
+          "fact_tags": [
+            "date",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.1",
+          "claim": "This news is interesting if you read it as a quick change in policy.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "The characterization of a quick policy change is consistent with the replacement occurring the next day.",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C3",
+          "key": "S2.2",
+          "claim": "Put simply, it was a plan to send the cargo a “security bill.”",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "Calling it a plan to send the cargo a bill implies a billing recipient or mechanism that the Ledger says was not specified (counterpart mismatch).",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "mismatch",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C4",
+          "key": "S3.1",
+          "claim": "The focus quickly shifted from a bill to an economic deal.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "The proposal was replaced the next day by Gulf-state investment and trade talks, matching the described shift.",
+          "fact_tags": [
+            "date",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C5",
+          "key": "S3.2",
+          "claim": "What changed was the form of the proposal; worries about the safety of ships passing through the strait had not gone away.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "The proposal's form changed, while the Ledger reports that concerns about tanker safety continued.",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C6",
+          "key": "S5.1",
+          "claim": "In short, the script for the announcement changed, but the market’s concerns stayed the same.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "The Ledger supports that concerns continued, not that the market's concerns stayed exactly the same; this overstates their unchanged scope and continuity.",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C7",
+          "key": "S5.2",
+          "claim": "The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "The Ledger supports replacement of the fee proposal and continuing safety concerns, but does not establish the added claim that the change did not guarantee ship safety.",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C8",
+          "key": "S5.3",
+          "claim": "A bill can change its clothes, but worries at sea do not.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "The metaphor asserts that worries at sea do not change, whereas the Ledger only supports that specified safety concerns continued.",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C9",
+          "key": "S5.4",
+          "claim": "That is the punch line of the story.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "This is a rhetorical closing remark and adds no concrete fact.",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "bf687dd6258460a98ddbb30fbb5a9f52b67b921abc99a21937869b5a9939ca80"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 27,
+    "n_judged_units": 21,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "S1.1",
+          "S2.2",
+          "S3.1",
+          "S3.2",
+          "S3.4",
+          "S5.1",
+          "S5.2",
+          "S5.3",
+          "S5.4",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "CANDIDATE",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "CANDIDATE",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.5": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "CANDIDATE",
+          "S5.3": "CANDIDATE",
+          "S5.4": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.4431,
+            "usage": {
+              "input_tokens": 4992,
+              "cached_input_tokens": 0,
+              "output_tokens": 4650,
+              "reasoning_tokens": 1034
+            },
+            "elapsed_seconds": 37.851,
+            "prompt_sha256": "33c1c369490a6980884da500de608be7fab91b08cab42694e94e8a42e07a2df1",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "CANDIDATE",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "CANDIDATE",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S3.5": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "CANDIDATE",
+          "S5.3": "CANDIDATE",
+          "S5.4": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# A Toll Bill Turns into Investment Talk the Next Day",
+            "span": [
+              0,
+              53
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「Toll Bill」は具体的な通航料請求書や制度が存在したかのように読めますが、Ledgerが確認しているのは提案とその置換です。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "A Toll Bill Turns into Investment Talk the Next Day"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "This news is interesting if you read it as a quick change in policy.",
+            "span": [
+              55,
+              123
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "ニュースを「interesting」と評価する主観的な主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "This news is interesting if you read it as a quick change in policy."
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "Put simply, it was a plan to send the cargo a “security bill.”",
+            "span": [
+              433,
+              495
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「cargoにsecurity billを送る」は、貨物自体が請求を受ける、または支払義務者が特定されているとの含意があります。Ledgerでは支払義務者や徴収方法は示されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "Put simply, it was a plan to send the cargo a “security bill.”"
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "The focus quickly shifted from a bill to an economic deal.",
+            "span": [
+              712,
+              770
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "法案から経済取引へ「focus」がすぐ移ったという描写は、Ledgerが確認する政策案の置換を超える出来事・焦点の変化を述べています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The focus quickly shifted from a bill to an economic deal."
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "What changed was the form of the proposal; worries about the safety of ships passing through the strait had not gone away.",
+            "span": [
+              771,
+              893
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "提案の形が変わったことと、船舶の安全への懸念がなくならなかったことは支えられますが、「変わったのは提案の形だけ」という限定はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "What changed was the form of the proposal; worries about the safety of ships passing through the strait had not gone away."
+          },
+          {
+            "unit_id": "S3.4",
+            "unit_ids": [
+              "S3.4"
+            ],
+            "claim_text": "But the rise cannot be blamed on the 20% plan alone.",
+            "span": [
+              956,
+              1008
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "In short, the script for the announcement changed, but the market’s concerns stayed the same.",
+            "span": [
+              1555,
+              1648
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「市場の懸念は同じままだった」は、懸念が継続したというLedgerの記述を、懸念の内容・程度が変わらなかったという断定に強めています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "In short, the script for the announcement changed, but the market’s concerns stayed the same."
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil.",
+            "span": [
+              1649,
+              1773
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "料金案の置換は支えられていますが、それが船舶の安全を保証しなかったという主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil."
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "A bill can change its clothes, but worries at sea do not.",
+            "span": [
+              1774,
+              1831
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "海上の懸念が変わらないという一般化は、Ledgerの「懸念が継続していた」という記述を超えています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "A bill can change its clothes, but worries at sea do not."
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "That is the punch line of the story.",
+            "span": [
+              1832,
+              1868
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "物語の「punch line」であるという評価は主観的なコメントであり、Ledgerでは確認できません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "That is the punch line of the story."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S2.2",
+          "S5.1",
+          "S5.2",
+          "S5.3"
+        ],
+        "unit_status": {
+          "S1.2": "MATCH",
+          "S2.1": "MATCH",
+          "S2.2": "DEVIATION",
+          "S2.3": "MATCH",
+          "S3.1": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S5.2": "DEVIATION",
+          "S5.3": "DEVIATION",
+          "L1": "MATCH",
+          "S3.5": "MATCH",
+          "S2.4": "MATCH",
+          "S5.1": "DEVIATION",
+          "S3.2": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S4.4": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S5.4": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.7493,
+            "usage": {
+              "input_tokens": 4640,
+              "cached_input_tokens": 0,
+              "output_tokens": 8624,
+              "reasoning_tokens": 5696
+            },
+            "elapsed_seconds": 81.752,
+            "prompt_sha256": "690a75c83017bca4f0eb4624d6c533bde168dfa98d0791d930a923e5776a0acc",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "Put simply, it was a plan to send the cargo a “security bill.”",
+            "span": [
+              433,
+              495
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "貨物に請求書を送るという徴収方法を示しており、Ledgerで未提示とされる制度設計を付加している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "Put simply, it was a plan to send the cargo a “security bill.”"
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "Put simply, it was a plan to send the cargo a “security bill.”",
+            "span": [
+              433,
+              495
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerでは徴収主体や支払義務者、徴収方法などが示されていないが、貨物へ請求書を送る具体的な仕組みを付加している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "Put simply, it was a plan to send the cargo a “security bill.”"
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil.",
+            "span": [
+              1649,
+              1773
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "置換が確認されている提案について、「消えたかもしれない」と不確かな表現にしている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "In short, the script for the announcement changed, but the market’s concerns stayed the same.",
+            "span": [
+              1555,
+              1648
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerでは攻撃、海上封鎖、タンカー安全への懸念が継続したとされるが、「市場の懸念」全体が同じままだったと範囲を広げている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "In short, the script for the announcement changed, but the market’s concerns stayed the same."
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil.",
+            "span": [
+              1649,
+              1773
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "安全への懸念が続いたというLedgerの記述を超えて、船舶の安全が保証されていないという主張を加えている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil."
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "A bill can change its clothes, but worries at sea do not.",
+            "span": [
+              1774,
+              1831
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerで確認された特定の供給・タンカー安全上の懸念から、「海上の懸念」一般へ範囲を広げている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "A bill can change its clothes, but worries at sea do not."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S2.2",
+        "S5.1",
+        "S5.2",
+        "S5.3"
+      ],
+      "r3_only": [
+        "S1.1",
+        "S3.1",
+        "S3.2",
+        "S3.4",
+        "S5.4",
+        "T"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 1
+    },
+    "union_candidates": [
+      {
+        "claim_text": "Put simply, it was a plan to send the cargo a “security bill.”",
+        "span": [
+          433,
+          495
+        ],
+        "unit_ids": [
+          "S2.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "「cargoにsecurity billを送る」は、貨物自体が請求を受ける、または支払義務者が特定されているとの含意があります。Ledgerでは支払義務者や徴収方法は示されていません。",
+          "貨物に請求書を送るという徴収方法を示しており、Ledgerで未提示とされる制度設計を付加している。",
+          "Ledgerでは徴収主体や支払義務者、徴収方法などが示されていないが、貨物へ請求書を送る具体的な仕組みを付加している。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-003",
+          "HF-002"
+        ],
+        "model_claims": [
+          "Put simply, it was a plan to send the cargo a “security bill.”"
+        ]
+      },
+      {
+        "claim_text": "But the rise cannot be blamed on the 20% plan alone.",
+        "span": [
+          956,
+          1008
+        ],
+        "unit_ids": [
+          "S3.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "In short, the script for the announcement changed, but the market’s concerns stayed the same.",
+        "span": [
+          1555,
+          1648
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "「市場の懸念は同じままだった」は、懸念が継続したというLedgerの記述を、懸念の内容・程度が変わらなかったという断定に強めています。",
+          "Ledgerでは攻撃、海上封鎖、タンカー安全への懸念が継続したとされるが、「市場の懸念」全体が同じままだったと範囲を広げている。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "In short, the script for the announcement changed, but the market’s concerns stayed the same."
+        ]
+      },
+      {
+        "claim_text": "The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil.",
+        "span": [
+          1649,
+          1773
+        ],
+        "unit_ids": [
+          "S5.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "料金案の置換は支えられていますが、それが船舶の安全を保証しなかったという主張はLedgerにありません。",
+          "置換が確認されている提案について、「消えたかもしれない」と不確かな表現にしている。",
+          "安全への懸念が続いたというLedgerの記述を超えて、船舶の安全が保証されていないという主張を加えている。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-007",
+          "HF-009"
+        ],
+        "model_claims": [
+          "The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil."
+        ]
+      },
+      {
+        "claim_text": "A bill can change its clothes, but worries at sea do not.",
+        "span": [
+          1774,
+          1831
+        ],
+        "unit_ids": [
+          "S5.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "海上の懸念が変わらないという一般化は、Ledgerの「懸念が継続していた」という記述を超えています。",
+          "Ledgerで確認された特定の供給・タンカー安全上の懸念から、「海上の懸念」一般へ範囲を広げている。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "A bill can change its clothes, but worries at sea do not."
+        ]
+      }
+    ],
+    "n_union_candidates": 5,
+    "n_model_candidates": 4,
+    "n_deterministic_only_candidates": 1,
+    "total_cost_jpy": 1.1924,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 15,
+    "n_targets": 9,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 5,
+    "n_excluded_entries": 5,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.2733,
+    "effort": "medium",
+    "prompt_sha256": "bf687dd6258460a98ddbb30fbb5a9f52b67b921abc99a21937869b5a9939ca80"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 2
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 1.9322,
+  "provenance": {
+    "switch_dump_sha256": "66d18a3a1b28679684d7dcbe6e7af161a4da4223da7415a7ac50e7450de777c1",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-08T11:28:49",
+    "ledger_sha256": "83b2a09b99b20af0f1d30aefc6dda7bfe40ed06a6d7726a56a0bb90bce774522",
+    "article_sha256": "b788fe3993fd86c05c46f927840ce2540cfc238c3243cdefec47db929f29303d",
+    "source_article_sha256": "e7516b72de2393557a1980dbf757e69d7d2cddd73e09b8d8459146211aa72fe2",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/factlock_writer_trial_01/sweep_01/runs/hormuz/control/b4__S3__r1/checker",
+      "ledger_path": "er052_output/factlock_writer_trial_01/sweep_01/runs/hormuz/control/b4__S3__r1/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/factlock_writer_trial_01/sweep_01/runs/hormuz/control/b4__S3__r1/b1b/article.md",
+      "source_path": "er052_output/factlock_writer_trial_01/sweep_01/runs/hormuz/control/b4__S3__r1/ja_writer/revision2.md",
+      "budget_jpy": 10.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

@@ -1,0 +1,1405 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "In tests of some calls made through Muse, the callers were not AI but trained human contract workers.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "In tests of some calls made through Muse, the callers were not AI but trained human contract workers.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The Mystery of the Phone Call: Who Was Handling It?\n\nIf this were a detective show, the first question would be: “Was it really AI that made the call?” In tests of some calls made through Muse, the callers were not AI but trained human contract workers. Those workers also completed the conversations with the people on the other end.\n\nA human was involved. So where is the heart of the mystery? Who handles the calls, and how is that made clear? And who handles the information needed for the calls? From here, the story moves into the privacy chapter.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "In tests of some calls made through Muse, the callers were not AI but trained human contract workers.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0fbb68f78accc0df45b44f3672fc161a990557442c7c7601d6f87cdd6c2de77c",
+              "c94bbdcadfa3494148ab6de6e55b1cc860ff287bd745e31a8fa97f68565e7123"
+            ],
+            "batch_cost_jpy": 0.0822,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "So where is the heart of the mystery?",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "So where is the heart of the mystery?",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S2.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S2.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "If this were a detective show, the first question would be: “Was it really AI that made the call?” In tests of some calls made through Muse, the callers were not AI but trained human contract workers. Those workers also completed the conversations with the people on the other end.\n\nA human was involved. So where is the heart of the mystery? Who handles the calls, and how is that made clear? And who handles the information needed for the calls? From here, the story moves into the privacy chapter.\n\nMeta employees raised concerns that if human contract workers handled the calls, sensitive user information needed for the conversations might be shared with call-center contract workers by mistake.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "So where is the heart of the mystery?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0fbb68f78accc0df45b44f3672fc161a990557442c7c7601d6f87cdd6c2de77c",
+              "c94bbdcadfa3494148ab6de6e55b1cc860ff287bd745e31a8fa97f68565e7123"
+            ],
+            "batch_cost_jpy": 0.0822,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "” In tests of some calls made through Muse, the callers were not AI but trained human contract workers.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "” In tests of some calls made through Muse, the callers were not AI but trained human contract workers.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In tests of some calls made through Muse, the callers were not AI but trained human contract workers."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The Mystery of the Phone Call: Who Was Handling It?\n\nIf this were a detective show, the first question would be: “Was it really AI that made the call?” In tests of some calls made through Muse, the callers were not AI but trained human contract workers. Those workers also completed the conversations with the people on the other end.\n\nA human was involved. So where is the heart of the mystery? Who handles the calls, and how is that made clear? And who handles the information needed for the calls? From here, the story moves into the privacy chapter.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "” In tests of some calls made through Muse, the callers were not AI but trained human contract workers.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0fbb68f78accc0df45b44f3672fc161a990557442c7c7601d6f87cdd6c2de77c",
+              "c94bbdcadfa3494148ab6de6e55b1cc860ff287bd745e31a8fa97f68565e7123"
+            ],
+            "batch_cost_jpy": 0.0822,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "Meta employees raised concerns that if human contract workers handled the calls, sensitive user information needed for the conversations might be shared with call-center contract workers by mistake.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "Meta employees raised concerns that if human contract workers handled the calls, sensitive user information needed for the conversations might be shared with call-center contract workers by mistake.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In tests of some calls made through Muse, the callers were not AI but trained human contract workers."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "A human was involved. So where is the heart of the mystery? Who handles the calls, and how is that made clear? And who handles the information needed for the calls? From here, the story moves into the privacy chapter.\n\nMeta employees raised concerns that if human contract workers handled the calls, sensitive user information needed for the conversations might be shared with call-center contract workers by mistake.\n\nThis is where we need to keep the detective’s reasoning from running wild. This is not a story about a large data leak. The concern was that information might be shared by mistake. Let’s keep “what actually happened” and “what people worried might happen” on separate pages.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "Meta employees raised concerns that if human contract workers handled the calls, sensitive user information needed for the conversations might be shared with call-center contract workers by mistake.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0fbb68f78accc0df45b44f3672fc161a990557442c7c7601d6f87cdd6c2de77c",
+              "c94bbdcadfa3494148ab6de6e55b1cc860ff287bd745e31a8fa97f68565e7123"
+            ],
+            "batch_cost_jpy": 0.0822,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "A Meta vice president admitted that it was a mistake to start tests in which contract workers made calls without proper disclosure, and rolled back the human concierge feature for now.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "A Meta vice president admitted that it was a mistake to start tests in which contract workers made calls without proper disclosure, and rolled back the human concierge feature for now.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In tests of some calls made through Muse, the callers were not AI but trained human contract workers."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This is where we need to keep the detective’s reasoning from running wild. This is not a story about a large data leak. The concern was that information might be shared by mistake. Let’s keep “what actually happened” and “what people worried might happen” on separate pages.\n\nA Meta vice president admitted that it was a mistake to start tests in which contract workers made calls without proper disclosure, and rolled back the human concierge feature for now. The rollback affected the human concierge feature; it did not shut down all of Muse.\n\nThe main point of interest this time may not be only whether the main figure in the calls was AI or a human. If there are people behind the scenes, how should that be made clear? What information is handled, and by whom? The next time you read this mystery, which clue would you check first?",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "A Meta vice president admitted that it was a mistake to start tests in which contract workers made calls without proper disclosure, and rolled back the human concierge feature for now.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0fbb68f78accc0df45b44f3672fc161a990557442c7c7601d6f87cdd6c2de77c",
+              "c94bbdcadfa3494148ab6de6e55b1cc860ff287bd745e31a8fa97f68565e7123"
+            ],
+            "batch_cost_jpy": 0.0822,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "Meta paused Muse’s human concierge feature after contract workers made test calls without proper disclosure.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "Meta paused Muse’s human concierge feature after contract workers made test calls without proper disclosure.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In tests of some calls made through Muse, the callers were not AI but trained human contract workers."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The main point of interest this time may not be only whether the main figure in the calls was AI or a human. If there are people behind the scenes, how should that be made clear? What information is handled, and by whom? The next time you read this mystery, which clue would you check first?\n\n## In one line\nMeta paused Muse’s human concierge feature after contract workers made test calls without proper disclosure.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "Meta paused Muse’s human concierge feature after contract workers made test calls without proper disclosure.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0fbb68f78accc0df45b44f3672fc161a990557442c7c7601d6f87cdd6c2de77c",
+              "c94bbdcadfa3494148ab6de6e55b1cc860ff287bd745e31a8fa97f68565e7123"
+            ],
+            "batch_cost_jpy": 0.0822,
+            "batch_n_claims": 6
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 6,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "In tests of some calls made through Muse, the callers were not AI but trained human contract workers.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0fbb68f78accc0df45b44f3672fc161a990557442c7c7601d6f87cdd6c2de77c",
+            "c94bbdcadfa3494148ab6de6e55b1cc860ff287bd745e31a8fa97f68565e7123"
+          ],
+          "batch_cost_jpy": 0.0822,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "So where is the heart of the mystery?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0fbb68f78accc0df45b44f3672fc161a990557442c7c7601d6f87cdd6c2de77c",
+            "c94bbdcadfa3494148ab6de6e55b1cc860ff287bd745e31a8fa97f68565e7123"
+          ],
+          "batch_cost_jpy": 0.0822,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "” In tests of some calls made through Muse, the callers were not AI but trained human contract workers.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0fbb68f78accc0df45b44f3672fc161a990557442c7c7601d6f87cdd6c2de77c",
+            "c94bbdcadfa3494148ab6de6e55b1cc860ff287bd745e31a8fa97f68565e7123"
+          ],
+          "batch_cost_jpy": 0.0822,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "Meta employees raised concerns that if human contract workers handled the calls, sensitive user information needed for the conversations might be shared with call-center contract workers by mistake.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0fbb68f78accc0df45b44f3672fc161a990557442c7c7601d6f87cdd6c2de77c",
+            "c94bbdcadfa3494148ab6de6e55b1cc860ff287bd745e31a8fa97f68565e7123"
+          ],
+          "batch_cost_jpy": 0.0822,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "A Meta vice president admitted that it was a mistake to start tests in which contract workers made calls without proper disclosure, and rolled back the human concierge feature for now.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0fbb68f78accc0df45b44f3672fc161a990557442c7c7601d6f87cdd6c2de77c",
+            "c94bbdcadfa3494148ab6de6e55b1cc860ff287bd745e31a8fa97f68565e7123"
+          ],
+          "batch_cost_jpy": 0.0822,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "Meta paused Muse’s human concierge feature after contract workers made test calls without proper disclosure.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0fbb68f78accc0df45b44f3672fc161a990557442c7c7601d6f87cdd6c2de77c",
+            "c94bbdcadfa3494148ab6de6e55b1cc860ff287bd745e31a8fa97f68565e7123"
+          ],
+          "batch_cost_jpy": 0.0822,
+          "batch_n_claims": 6
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5389,
+      "usage": {
+        "input_tokens": 5034,
+        "cached_input_tokens": 0,
+        "output_tokens": 5864,
+        "reasoning_tokens": 2053
+      },
+      "elapsed_seconds": 43.584,
+      "prompt_sha256": "419ad86dec82057ebfd3e021efc4ff636e22232aa95262aa4ffde4f7cdc50b0e",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5067,
+      "usage": {
+        "input_tokens": 4728,
+        "cached_input_tokens": 0,
+        "output_tokens": 5514,
+        "reasoning_tokens": 3806
+      },
+      "elapsed_seconds": 51.233,
+      "prompt_sha256": "2e5789df48a14823491da4e917c2a18f31baeead5d906722cf553826497cc1e2",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.1303,
+      "usage": {
+        "input_tokens": 4743,
+        "cached_input_tokens": 0,
+        "output_tokens": 713,
+        "reasoning_tokens": 432
+      },
+      "elapsed_seconds": 6.745,
+      "prompt_sha256": "784edc0b4d1e06c9685f9dfa7035dd40664d99ed0c55af8cc5f687527fd11bde",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1791,
+      "usage": {
+        "input_tokens": 9020,
+        "cached_input_tokens": 0,
+        "output_tokens": 479,
+        "reasoning_tokens": 350
+      },
+      "elapsed_seconds": 6.644,
+      "prompt_sha256": "0fbb68f78accc0df45b44f3672fc161a990557442c7c7601d6f87cdd6c2de77c"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1065,
+      "usage": {
+        "input_tokens": 5748,
+        "cached_input_tokens": 0,
+        "output_tokens": 208,
+        "reasoning_tokens": 131
+      },
+      "elapsed_seconds": 2.991,
+      "prompt_sha256": "c94bbdcadfa3494148ab6de6e55b1cc860ff287bd745e31a8fa97f68565e7123"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0535,
+      "usage": {
+        "input_tokens": 9020,
+        "cached_input_tokens": 9017,
+        "output_tokens": 501,
+        "reasoning_tokens": 372
+      },
+      "elapsed_seconds": 5.484,
+      "prompt_sha256": "0fbb68f78accc0df45b44f3672fc161a990557442c7c7601d6f87cdd6c2de77c"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0287,
+      "usage": {
+        "input_tokens": 5748,
+        "cached_input_tokens": 5745,
+        "output_tokens": 250,
+        "reasoning_tokens": 171
+      },
+      "elapsed_seconds": 3.405,
+      "prompt_sha256": "c94bbdcadfa3494148ab6de6e55b1cc860ff287bd745e31a8fa97f68565e7123"
+    }
+  ],
+  "total_cost_jpy": 1.5437,
+  "total_calls": 7,
+  "elapsed_seconds": 120.118,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In tests of some calls made through Muse, the callers were not AI but trained human contract workers.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "So where is the heart of the mystery?",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: causal_not_in_fact",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S2.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 5,
+      "n_model_entries": 3,
+      "n_targets": 3,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 3,
+      "n_excluded_entries": 3,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.1303,
+          "usage": {
+            "input_tokens": 4743,
+            "cached_input_tokens": 0,
+            "output_tokens": 713,
+            "reasoning_tokens": 432
+          },
+          "elapsed_seconds": 6.745,
+          "prompt_sha256": "784edc0b4d1e06c9685f9dfa7035dd40664d99ed0c55af8cc5f687527fd11bde",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.1303,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S4.2",
+          "claim": "This is not a story about a large data leak.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "Ledgerは情報漏えい懸念と実際の大規模漏えいの断定を区別しており、「大規模なデータ漏えいの話ではない」という記事の限定的な説明と一致する。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C2",
+          "key": "S6.1",
+          "claim": "The main point of interest this time may not be only whether the main figure in the calls was AI or a human.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "何が主な関心事かを述べる評価的な言い回しで、Ledgerにない具体的事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "R:S2.1+S2.2",
+          "claim": "So where is the heart of the mystery?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「謎の核心」を尋ねる修辞的な問いかけで、具体的事実を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "784edc0b4d1e06c9685f9dfa7035dd40664d99ed0c55af8cc5f687527fd11bde"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 29,
+    "n_judged_units": 22,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S2.1+S2.2"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 15,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "R:S2.1+S2.2",
+          "S1.2",
+          "S2.2",
+          "S4.2",
+          "S6.1"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED->CANDIDATE(causal_not_in_fact)",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S2.5": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "CANDIDATE",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "L1": "SUPPORTED",
+          "R:S2.1+S2.2": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5389,
+            "usage": {
+              "input_tokens": 5034,
+              "cached_input_tokens": 0,
+              "output_tokens": 5864,
+              "reasoning_tokens": 2053
+            },
+            "elapsed_seconds": 43.584,
+            "prompt_sha256": "419ad86dec82057ebfd3e021efc4ff636e22232aa95262aa4ffde4f7cdc50b0e",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S2.5": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "CANDIDATE",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "L1": "SUPPORTED",
+          "R:S2.1+S2.2": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "In tests of some calls made through Muse, the callers were not AI but trained human contract workers.",
+            "span": [
+              154,
+              255
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "So where is the heart of the mystery?",
+            "span": [
+              360,
+              397
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "causal_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: causal_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "This is not a story about a large data leak.",
+            "span": [
+              832,
+              876
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "大規模なデータ漏えいがなかったと断定しているが、Ledgerが支えるのは情報共有の可能性に関する懸念であり、実際に大規模漏えいがなかったことまでは述べていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "This is not a story about a large data leak."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "The main point of interest this time may not be only whether the main figure in the calls was AI or a human.",
+            "span": [
+              1304,
+              1412
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "この話の主な注目点はAIか人間かだけではない、という比較・評価を加えているが、Ledgerは記事内の論点の重要度や優先順位を示していない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "The main point of interest this time may not be only whether the main figure in the calls was AI or a human."
+          },
+          {
+            "unit_id": "R:S2.1+S2.2",
+            "unit_ids": [
+              "R:S2.1+S2.2"
+            ],
+            "claim_text": "So where is the heart of the mystery?",
+            "span": [
+              360,
+              397
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「So」が、人間が関与したことを受けて謎の中心が生じるという関係を作っているが、その因果・論理関係はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "A human was involved. So where is the heart of the mystery?"
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [],
+        "unit_status": {
+          "S1.1": "MATCH",
+          "S1.2": "MATCH",
+          "S1.3": "MATCH",
+          "S2.1": "MATCH",
+          "S2.3": "MATCH",
+          "R:S2.1+S2.2": "MATCH",
+          "S6.1": "MATCH",
+          "S6.2": "MATCH",
+          "S2.4": "MATCH",
+          "S3.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S4.4": "MATCH",
+          "S6.3": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "L1": "MATCH",
+          "T": "UNMENTIONED",
+          "S2.2": "UNMENTIONED",
+          "S2.5": "UNMENTIONED",
+          "S4.1": "UNMENTIONED",
+          "S6.4": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.5067,
+            "usage": {
+              "input_tokens": 4728,
+              "cached_input_tokens": 0,
+              "output_tokens": 5514,
+              "reasoning_tokens": 3806
+            },
+            "elapsed_seconds": 51.233,
+            "prompt_sha256": "2e5789df48a14823491da4e917c2a18f31baeead5d906722cf553826497cc1e2",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": []
+      }
+    },
+    "overlap": {
+      "both": [],
+      "r3_only": [
+        "R:S2.1+S2.2",
+        "S1.2",
+        "S2.2",
+        "S4.2",
+        "S6.1"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 2
+    },
+    "union_candidates": [
+      {
+        "claim_text": "In tests of some calls made through Muse, the callers were not AI but trained human contract workers.",
+        "span": [
+          154,
+          255
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "So where is the heart of the mystery?",
+        "span": [
+          360,
+          397
+        ],
+        "unit_ids": [
+          "S2.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "causal_not_in_fact"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: causal_not_in_fact"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 2,
+    "n_model_candidates": 0,
+    "n_deterministic_only_candidates": 2,
+    "total_cost_jpy": 1.0456,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 3,
+    "n_targets": 3,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 3,
+    "n_excluded_entries": 3,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.1303,
+    "effort": "medium",
+    "prompt_sha256": "784edc0b4d1e06c9685f9dfa7035dd40664d99ed0c55af8cc5f687527fd11bde"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 4
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 1.5437,
+  "provenance": {
+    "switch_dump_sha256": "66d18a3a1b28679684d7dcbe6e7af161a4da4223da7415a7ac50e7450de777c1",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-08T09:44:24",
+    "ledger_sha256": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+    "article_sha256": "34f094b9fe1b023f944210994926566bb418dbaebbbb363d4795fbafb7918cd4",
+    "source_article_sha256": "7daca40942ad64cdc1bbd46f20cf9e990db332b2efba1c1f32090dc9f0f62c5d",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/factlock_writer_trial_01/runs/meta/control/b2__factlock__r1/checker",
+      "ledger_path": "er052_output/factlock_writer_trial_01/runs/meta/control/b2__factlock__r1/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/factlock_writer_trial_01/runs/meta/control/b2__factlock__r1/b1b/article.md",
+      "source_path": "er052_output/factlock_writer_trial_01/runs/meta/control/b2__factlock__r1/ja_writer/revision2.md",
+      "budget_jpy": 10.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

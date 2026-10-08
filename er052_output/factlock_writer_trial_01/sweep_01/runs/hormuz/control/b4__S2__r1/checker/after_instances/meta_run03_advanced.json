@@ -1,0 +1,2154 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "We cannot say the reimbursement proposal alone caused the price increase.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "We cannot say the reimbursement proposal alone caused the price increase.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.4"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Just when it seemed the story would end with the reimbursement proposal being pulled, the price chart had another act. The key point is that the outcome of the policy statement and the moves in oil prices do not form one neat story.\n\nOn July 13, Trump posted that he would seek 20% reimbursement on all cargo passing through the Strait of Hormuz to cover U.S. security costs. That day, Brent crude futures rose $7.29, or 9.59%, and settled at $83.30 a barrel. Reuters linked the rise to concerns about a naval blockade against Iran that was planned to begin the next day, and about energy shipments through the strait. We cannot say the reimbursement proposal alone caused the price increase.\n\nThe next day, Trump posted that he would replace the proposal with deals involving trade between Gulf countries and the United States, and investment by Gulf countries in the United States. He said the decision was based on “very productive talks” with Middle Eastern leaders.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "notes_for_writer",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "We cannot say the reimbursement proposal alone caused the price increase.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "notes_for_writer",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+              "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+            ],
+            "batch_cost_jpy": 0.1773,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "The price above $85 was an update at the time the article was published, not the settlement price for July 14.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "The price above $85 was an update at the time the article was published, not the settlement price for July 14.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "After the announcement, Brent futures briefly gave up some of their gains. But before long, they returned to a high level close to where they had been before the announcement. At the time the article was published, the price was up about 2.6%, at more than $85 a barrel.\n\nHere, the numbers have a small trap. The price above $85 was an update at the time the article was published, not the settlement price for July 14. That day’s settlement price was $84.73 a barrel, up $1.43, or 1.7%, from the day before. For the second business day in a row, it was the highest settlement price since June 12.\n\nThe reimbursement proposal was pulled, the price gain briefly narrowed, and then prices returned to a high level. Meanwhile, concerns continued about a naval blockade, attacks between the United States and Iran, and tanker safety. But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.” What we can confirm is that the change in the statement, the price moves, and the continued concerns all happened during the same period. We can follow the news story, but we should not name a single culprit for the market’s moves. That is the key point this time.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_numeric_value",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "The price above $85 was an update at the time the article was published, not the settlement price for July 14.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_numeric_value",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+              "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+            ],
+            "batch_cost_jpy": 0.1773,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.”",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.”",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.3"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Here, the numbers have a small trap. The price above $85 was an update at the time the article was published, not the settlement price for July 14. That day’s settlement price was $84.73 a barrel, up $1.43, or 1.7%, from the day before. For the second business day in a row, it was the highest settlement price since June 12.\n\nThe reimbursement proposal was pulled, the price gain briefly narrowed, and then prices returned to a high level. Meanwhile, concerns continued about a naval blockade, attacks between the United States and Iran, and tanker safety. But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.” What we can confirm is that the change in the statement, the price moves, and the continued concerns all happened during the same period. We can follow the news story, but we should not name a single culprit for the market’s moves. That is the key point this time.\n\n## In one line\nAfter Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "notes_for_writer",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.”",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "notes_for_writer",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+              "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+            ],
+            "batch_cost_jpy": 0.1773,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "We can follow the news story, but we should not name a single culprit for the market’s moves.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "We can follow the news story, but we should not name a single culprit for the market’s moves.",
+            "issue": "「the market’s moves」は複数の値動きを広く指している。Ledgerは7月13日の上昇全体を20％料だけに帰属しないよう注意し、7月14日の動きについても特定の因果推論を避けているが、期間全体の市場の動きについて単一の原因を挙げるべきでないという主張を直接確定してはいない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S6.5); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.5"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Here, the numbers have a small trap. The price above $85 was an update at the time the article was published, not the settlement price for July 14. That day’s settlement price was $84.73 a barrel, up $1.43, or 1.7%, from the day before. For the second business day in a row, it was the highest settlement price since June 12.\n\nThe reimbursement proposal was pulled, the price gain briefly narrowed, and then prices returned to a high level. Meanwhile, concerns continued about a naval blockade, attacks between the United States and Iran, and tanker safety. But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.” What we can confirm is that the change in the statement, the price moves, and the continued concerns all happened during the same period. We can follow the news story, but we should not name a single culprit for the market’s moves. That is the key point this time.\n\n## In one line\nAfter Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "notes_for_writer",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "We can follow the news story, but we should not name a single culprit for the market’s moves.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "notes_for_writer",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+              "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+            ],
+            "batch_cost_jpy": 0.1773,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "After Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "After Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear.",
+            "issue": "提案後に価格が一時的に落ち着き高い水準にとどまったという部分は支えられるが、「no single cause was clear」はLedgerの明示事実ではなく、また原油価格の動きを全体として単一の原因にまとめられないという一般化になっている。 / 「oil prices」と対象を一般化しており、Ledgerが確認するBrent先物より範囲が広い。また、「no single cause was clear」はLedgerに明記されていない因果評価を追加している。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The reimbursement proposal was pulled, the price gain briefly narrowed, and then prices returned to a high level. Meanwhile, concerns continued about a naval blockade, attacks between the United States and Iran, and tanker safety. But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.” What we can confirm is that the change in the statement, the price moves, and the continued concerns all happened during the same period. We can follow the news story, but we should not name a single culprit for the market’s moves. That is the key point this time.\n\n## In one line\nAfter Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "After Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+              "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+            ],
+            "batch_cost_jpy": 0.1773,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Just when it seemed the story would end with the reimbursement proposal being pulled, the price chart had another act.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "Just when it seemed the story would end with the reimbursement proposal being pulled, the price chart had another act.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.4"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "We cannot say the reimbursement proposal alone caused the price increase."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The Reimbursement Proposal Is Out; Oil Prices Zigzag\n\nJust when it seemed the story would end with the reimbursement proposal being pulled, the price chart had another act. The key point is that the outcome of the policy statement and the moves in oil prices do not form one neat story.\n\nOn July 13, Trump posted that he would seek 20% reimbursement on all cargo passing through the Strait of Hormuz to cover U.S. security costs. That day, Brent crude futures rose $7.29, or 9.59%, and settled at $83.30 a barrel. Reuters linked the rise to concerns about a naval blockade against Iran that was planned to begin the next day, and about energy shipments through the strait. We cannot say the reimbursement proposal alone caused the price increase.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "Just when it seemed the story would end with the reimbursement proposal being pulled, the price chart had another act.",
+            "first_materiality": "QUALITY",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+              "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+            ],
+            "batch_cost_jpy": 0.1773,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "The reimbursement proposal was pulled, the price gain briefly narrowed, and then prices returned to a high level.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "The reimbursement proposal was pulled, the price gain briefly narrowed, and then prices returned to a high level.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.4"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "We cannot say the reimbursement proposal alone caused the price increase."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Here, the numbers have a small trap. The price above $85 was an update at the time the article was published, not the settlement price for July 14. That day’s settlement price was $84.73 a barrel, up $1.43, or 1.7%, from the day before. For the second business day in a row, it was the highest settlement price since June 12.\n\nThe reimbursement proposal was pulled, the price gain briefly narrowed, and then prices returned to a high level. Meanwhile, concerns continued about a naval blockade, attacks between the United States and Iran, and tanker safety. But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.” What we can confirm is that the change in the statement, the price moves, and the continued concerns all happened during the same period. We can follow the news story, but we should not name a single culprit for the market’s moves. That is the key point this time.\n\n## In one line\nAfter Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "The reimbursement proposal was pulled, the price gain briefly narrowed, and then prices returned to a high level.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+              "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+            ],
+            "batch_cost_jpy": 0.1773,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "At the time the article was published, the price was up about 2.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "At the time the article was published, the price was up about 2.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The price above $85 was an update at the time the article was published, not the settlement price for July 14."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The next day, Trump posted that he would replace the proposal with deals involving trade between Gulf countries and the United States, and investment by Gulf countries in the United States. He said the decision was based on “very productive talks” with Middle Eastern leaders.\n\nAfter the announcement, Brent futures briefly gave up some of their gains. But before long, they returned to a high level close to where they had been before the announcement. At the time the article was published, the price was up about 2.6%, at more than $85 a barrel.\n\nHere, the numbers have a small trap. The price above $85 was an update at the time the article was published, not the settlement price for July 14. That day’s settlement price was $84.73 a barrel, up $1.43, or 1.7%, from the day before. For the second business day in a row, it was the highest settlement price since June 12.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_numeric_value",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "At the time the article was published, the price was up about 2.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_numeric_value",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+              "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+            ],
+            "batch_cost_jpy": 0.1773,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "6%, at more than $85 a barrel.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "6%, at more than $85 a barrel.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The price above $85 was an update at the time the article was published, not the settlement price for July 14."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The next day, Trump posted that he would replace the proposal with deals involving trade between Gulf countries and the United States, and investment by Gulf countries in the United States. He said the decision was based on “very productive talks” with Middle Eastern leaders.\n\nAfter the announcement, Brent futures briefly gave up some of their gains. But before long, they returned to a high level close to where they had been before the announcement. At the time the article was published, the price was up about 2.6%, at more than $85 a barrel.\n\nHere, the numbers have a small trap. The price above $85 was an update at the time the article was published, not the settlement price for July 14. That day’s settlement price was $84.73 a barrel, up $1.43, or 1.7%, from the day before. For the second business day in a row, it was the highest settlement price since June 12.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_numeric_value",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "6%, at more than $85 a barrel.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_numeric_value",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+              "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+            ],
+            "batch_cost_jpy": 0.1773,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.3"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Here, the numbers have a small trap. The price above $85 was an update at the time the article was published, not the settlement price for July 14. That day’s settlement price was $84.73 a barrel, up $1.43, or 1.7%, from the day before. For the second business day in a row, it was the highest settlement price since June 12.\n\nThe reimbursement proposal was pulled, the price gain briefly narrowed, and then prices returned to a high level. Meanwhile, concerns continued about a naval blockade, attacks between the United States and Iran, and tanker safety. But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.” What we can confirm is that the change in the statement, the price moves, and the continued concerns all happened during the same period. We can follow the news story, but we should not name a single culprit for the market’s moves. That is the key point this time.\n\n## In one line\nAfter Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "notes_for_writer",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "notes_for_writer",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+              "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+            ],
+            "batch_cost_jpy": 0.1773,
+            "batch_n_claims": 10
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 10,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "We cannot say the reimbursement proposal alone caused the price increase.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "notes_for_writer",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+            "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+          ],
+          "batch_cost_jpy": 0.1773,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "The price above $85 was an update at the time the article was published, not the settlement price for July 14.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_numeric_value",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+            "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+          ],
+          "batch_cost_jpy": 0.1773,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.”",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "notes_for_writer",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+            "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+          ],
+          "batch_cost_jpy": 0.1773,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "We can follow the news story, but we should not name a single culprit for the market’s moves.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "notes_for_writer",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+            "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+          ],
+          "batch_cost_jpy": 0.1773,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "After Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+            "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+          ],
+          "batch_cost_jpy": 0.1773,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "Just when it seemed the story would end with the reimbursement proposal being pulled, the price chart had another act.",
+          "first_materiality": "QUALITY",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+            "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+          ],
+          "batch_cost_jpy": 0.1773,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "The reimbursement proposal was pulled, the price gain briefly narrowed, and then prices returned to a high level.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+            "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+          ],
+          "batch_cost_jpy": 0.1773,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "At the time the article was published, the price was up about 2.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_numeric_value",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+            "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+          ],
+          "batch_cost_jpy": 0.1773,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "6%, at more than $85 a barrel.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_numeric_value",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+            "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+          ],
+          "batch_cost_jpy": 0.1773,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "notes_for_writer",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c",
+            "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+          ],
+          "batch_cost_jpy": 0.1773,
+          "batch_n_claims": 10
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5563,
+      "usage": {
+        "input_tokens": 5104,
+        "cached_input_tokens": 0,
+        "output_tokens": 6071,
+        "reasoning_tokens": 2123
+      },
+      "elapsed_seconds": 52.806,
+      "prompt_sha256": "e71d90ed816271c663cf7304a9acb931bc4b05327a748ff4940ff94f15eac041",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.9044,
+      "usage": {
+        "input_tokens": 4742,
+        "cached_input_tokens": 0,
+        "output_tokens": 10582,
+        "reasoning_tokens": 7396
+      },
+      "elapsed_seconds": 98.732,
+      "prompt_sha256": "ebd8edb13bd25e94d526a82c86d9ad354caa636cf198eb217d9a9e34ee6fd108",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2438,
+      "usage": {
+        "input_tokens": 4958,
+        "cached_input_tokens": 0,
+        "output_tokens": 2117,
+        "reasoning_tokens": 1639
+      },
+      "elapsed_seconds": 21.594,
+      "prompt_sha256": "aad3ac22603c8e5df6d957fbc20a0767522a400bf568f1ea1a614977437f97ec",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.3275,
+      "usage": {
+        "input_tokens": 10846,
+        "cached_input_tokens": 0,
+        "output_tokens": 2006,
+        "reasoning_tokens": 1731
+      },
+      "elapsed_seconds": 22.945,
+      "prompt_sha256": "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1135,
+      "usage": {
+        "input_tokens": 5806,
+        "cached_input_tokens": 0,
+        "output_tokens": 286,
+        "reasoning_tokens": 237
+      },
+      "elapsed_seconds": 4.419,
+      "prompt_sha256": "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1384,
+      "usage": {
+        "input_tokens": 10846,
+        "cached_input_tokens": 10843,
+        "output_tokens": 1547,
+        "reasoning_tokens": 1288
+      },
+      "elapsed_seconds": 17.067,
+      "prompt_sha256": "bae801defc6cf611be4aebf14ce11470dd2ab6994b81a4efac2293a84c312f4c"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0389,
+      "usage": {
+        "input_tokens": 5806,
+        "cached_input_tokens": 5803,
+        "output_tokens": 379,
+        "reasoning_tokens": 328
+      },
+      "elapsed_seconds": 4.891,
+      "prompt_sha256": "8574864e0d23b7d2404ed17038fd7109d4dc105ef6da17e902282837cf38ffaf"
+    }
+  ],
+  "total_cost_jpy": 2.3228,
+  "total_calls": 7,
+  "elapsed_seconds": 222.533,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "We cannot say the reimbursement proposal alone caused the price increase.",
+        "related_fact_id": "HF-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The price above $85 was an update at the time the article was published, not the settlement price for July 14.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.”",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "We can follow the news story, but we should not name a single culprit for the market’s moves.",
+        "related_fact_id": "HF-006",
+        "origin": null,
+        "issue": "「the market’s moves」は複数の値動きを広く指している。Ledgerは7月13日の上昇全体を20％料だけに帰属しないよう注意し、7月14日の動きについても特定の因果推論を避けているが、期間全体の市場の動きについて単一の原因を挙げるべきでないという主張を直接確定してはいない。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S6.5); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "After Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "提案後に価格が一時的に落ち着き高い水準にとどまったという部分は支えられるが、「no single cause was clear」はLedgerの明示事実ではなく、また原油価格の動きを全体として単一の原因にまとめられないという一般化になっている。 / 「oil prices」と対象を一般化しており、Ledgerが確認するBrent先物より範囲が広い。また、「no single cause was clear」はLedgerに明記されていない因果評価を追加している。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 9,
+      "n_model_entries": 6,
+      "n_targets": 5,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 3,
+      "n_excluded_entries": 3,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.2438,
+          "usage": {
+            "input_tokens": 4958,
+            "cached_input_tokens": 0,
+            "output_tokens": 2117,
+            "reasoning_tokens": 1639
+          },
+          "elapsed_seconds": 21.594,
+          "prompt_sha256": "aad3ac22603c8e5df6d957fbc20a0767522a400bf568f1ea1a614977437f97ec",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.2438,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.1",
+          "claim": "Just when it seemed the story would end with the reimbursement proposal being pulled, the price chart had another act.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "出来事を「チャートのもう一幕」と表現する導入の比喩で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.2",
+          "claim": "The key point is that the outcome of the policy statement and the moves in oil prices do not form one neat story.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "政策発表と価格変動を「一つの筋書きではない」と評する要約的な修辞で、具体的な新事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S6.5",
+          "claim": "We can follow the news story, but we should not name a single culprit for the market’s moves.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "市場変動に単一の原因を挙げるべきでないという因果上の結論は、Ledgerが明示的に裏付ける範囲を超えている。",
+          "fact_tags": [
+            "causality",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S6.6",
+          "claim": "That is the key point this time.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "直前の説明を締めくくる修辞で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "L1",
+          "claim": "After Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "撤回後の一時的な上げ幅縮小と高水準への回復はHF-009に沿うが、「単一の原因は明らかでなかった」という因果上の判断はLedgerに明示されていない。",
+          "fact_tags": [
+            "proper_noun",
+            "causality",
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "aad3ac22603c8e5df6d957fbc20a0767522a400bf568f1ea1a614977437f97ec"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 30,
+    "n_judged_units": 23,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.1",
+          "S1.2",
+          "S2.4",
+          "S5.2",
+          "S6.3",
+          "S6.5",
+          "S6.6"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S6.4": "SUPPORTED",
+          "S6.5": "CANDIDATE",
+          "S6.6": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5563,
+            "usage": {
+              "input_tokens": 5104,
+              "cached_input_tokens": 0,
+              "output_tokens": 6071,
+              "reasoning_tokens": 2123
+            },
+            "elapsed_seconds": 52.806,
+            "prompt_sha256": "e71d90ed816271c663cf7304a9acb931bc4b05327a748ff4940ff94f15eac041",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "S6.5": "CANDIDATE",
+          "S6.6": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "Just when it seemed the story would end with the reimbursement proposal being pulled, the price chart had another act.",
+            "span": [
+              56,
+              174
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「story would end」と思われていたという読者や関係者の認識はLedgerに記載されていない。価格のその後の値動き自体は記録されているが、この認識を前提にする部分は裏付けられない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Just when it seemed the story would end with the reimbursement proposal being pulled, the price chart had another act."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "The key point is that the outcome of the policy statement and the moves in oil prices do not form one neat story.",
+            "span": [
+              175,
+              288
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "政策発表の結果と原油価格の値動きが「one neat story」を形成しないという評価は、Ledgerに直接記載された事実ではない。Ledgerは価格変動と継続する懸念を記録し、単一原因への帰属を避けるよう注意しているが、この総括表現を直接裏付けてはいない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The key point is that the outcome of the policy statement and the moves in oil prices do not form one neat story."
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "We cannot say the reimbursement proposal alone caused the price increase.",
+            "span": [
+              675,
+              748
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "The price above $85 was an update at the time the article was published, not the settlement price for July 14.",
+            "span": [
+              1337,
+              1447
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.”",
+            "span": [
+              1858,
+              1986
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.5",
+            "unit_ids": [
+              "S6.5"
+            ],
+            "claim_text": "We can follow the news story, but we should not name a single culprit for the market’s moves.",
+            "span": [
+              2125,
+              2218
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「the market’s moves」は複数の値動きを広く指している。Ledgerは7月13日の上昇全体を20％料だけに帰属しないよう注意し、7月14日の動きについても特定の因果推論を避けているが、期間全体の市場の動きについて単一の原因を挙げるべきでないという主張を直接確定してはいない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "We can follow the news story, but we should not name a single culprit for the market’s moves."
+          },
+          {
+            "unit_id": "S6.6",
+            "unit_ids": [
+              "S6.6"
+            ],
+            "claim_text": "That is the key point this time.",
+            "span": [
+              2219,
+              2251
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「That is the key point this time」は記事内の論点を指す表現だが、その論点（前文の「単一の原因を挙げるべきでない」）はLedgerにより直接裏付けられていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "That is the key point this time."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "After Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear.",
+            "span": [
+              2268,
+              2374
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "提案後に価格が一時的に落ち着き高い水準にとどまったという部分は支えられるが、「no single cause was clear」はLedgerの明示事実ではなく、また原油価格の動きを全体として単一の原因にまとめられないという一般化になっている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "After Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1"
+        ],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S3.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S6.5": "MATCH",
+          "S1.1": "MATCH",
+          "S1.2": "MATCH",
+          "S3.2": "MATCH",
+          "S6.1": "MATCH",
+          "S6.3": "MATCH",
+          "S6.4": "MATCH",
+          "L1": "DEVIATION",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S5.2": "MATCH",
+          "S6.2": "MATCH",
+          "S5.3": "MATCH",
+          "S5.4": "MATCH",
+          "T": "UNMENTIONED",
+          "S5.1": "UNMENTIONED",
+          "S6.6": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.9044,
+            "usage": {
+              "input_tokens": 4742,
+              "cached_input_tokens": 0,
+              "output_tokens": 10582,
+              "reasoning_tokens": 7396
+            },
+            "elapsed_seconds": 98.732,
+            "prompt_sha256": "ebd8edb13bd25e94d526a82c86d9ad354caa636cf198eb217d9a9e34ee6fd108",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "After Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear.",
+            "span": [
+              2268,
+              2374
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "「oil prices」と対象を一般化しており、Ledgerが確認するBrent先物より範囲が広い。また、「no single cause was clear」はLedgerに明記されていない因果評価を追加している。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "After Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "L1"
+      ],
+      "r3_only": [
+        "S1.1",
+        "S1.2",
+        "S2.4",
+        "S5.2",
+        "S6.3",
+        "S6.5",
+        "S6.6"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 3
+    },
+    "union_candidates": [
+      {
+        "claim_text": "We cannot say the reimbursement proposal alone caused the price increase.",
+        "span": [
+          675,
+          748
+        ],
+        "unit_ids": [
+          "S2.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The price above $85 was an update at the time the article was published, not the settlement price for July 14.",
+        "span": [
+          1337,
+          1447
+        ],
+        "unit_ids": [
+          "S5.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.”",
+        "span": [
+          1858,
+          1986
+        ],
+        "unit_ids": [
+          "S6.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "We can follow the news story, but we should not name a single culprit for the market’s moves.",
+        "span": [
+          2125,
+          2218
+        ],
+        "unit_ids": [
+          "S6.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "「the market’s moves」は複数の値動きを広く指している。Ledgerは7月13日の上昇全体を20％料だけに帰属しないよう注意し、7月14日の動きについても特定の因果推論を避けているが、期間全体の市場の動きについて単一の原因を挙げるべきでないという主張を直接確定してはいない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-006"
+        ],
+        "model_claims": [
+          "We can follow the news story, but we should not name a single culprit for the market’s moves."
+        ]
+      },
+      {
+        "claim_text": "After Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear.",
+        "span": [
+          2268,
+          2374
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "提案後に価格が一時的に落ち着き高い水準にとどまったという部分は支えられるが、「no single cause was clear」はLedgerの明示事実ではなく、また原油価格の動きを全体として単一の原因にまとめられないという一般化になっている。",
+          "「oil prices」と対象を一般化しており、Ledgerが確認するBrent先物より範囲が広い。また、「no single cause was clear」はLedgerに明記されていない因果評価を追加している。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "After Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear."
+        ]
+      }
+    ],
+    "n_union_candidates": 5,
+    "n_model_candidates": 2,
+    "n_deterministic_only_candidates": 3,
+    "total_cost_jpy": 1.4607,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 6,
+    "n_targets": 5,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 3,
+    "n_excluded_entries": 3,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.2438,
+    "effort": "medium",
+    "prompt_sha256": "aad3ac22603c8e5df6d957fbc20a0767522a400bf568f1ea1a614977437f97ec"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 5
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

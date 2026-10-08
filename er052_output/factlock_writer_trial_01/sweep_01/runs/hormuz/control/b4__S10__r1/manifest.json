@@ -1,0 +1,113 @@
+{
+  "trial_id": "FACTLOCK-WRITER-REDESIGN-TRIAL-01",
+  "sweep_id": "FACTLOCK-SWEEP-01",
+  "arm": "sweep_S10_6luna",
+  "variant": "S10",
+  "variant_axis": "S4+面白さの手段リスト(選択肢の列挙)",
+  "tag_mode": "full",
+  "brief_marks": "keep",
+  "chain_requested": "previous_response_id",
+  "r3": false,
+  "slug": "hormuz",
+  "out_dir": "er052_output/factlock_writer_trial_01/sweep_01/runs/hormuz/control/b4__S10__r1",
+  "brief_md": "er052_output/factlock_writer_trial_01/briefs/hormuz/b4/selected_brief_factlock.md",
+  "brief_used": "er052_output/factlock_writer_trial_01/briefs/hormuz/b4/selected_brief_factlock.md",
+  "brief_sha256": "b5fdb4a0127456ef564d8c8348f360e29b04bc5a588fe0ce9b275c15eca84abe",
+  "brief_used_sha256": "b5fdb4a0127456ef564d8c8348f360e29b04bc5a588fe0ce9b275c15eca84abe",
+  "core_numbers_sha256": "fe951c28119300245ec9002c4b7714ab1b77c32a7acc4a7067737d86d6051828",
+  "ledger_sha256": "9bd6834e68e7e4378ba0ebccdd84c0128df2a5cd0aca7c1e84df612ae77ae1a6",
+  "variants_json_sha256": "6519d798838b2504914a89b5710d54646da4e9889d058626b3430c70c8925c38",
+  "prompt_sha256": {
+    "R0_PROMPT_original": "6108a7cddaa9eaf31262354ba32d33e4683ccaf810d861f27e3dcc8972028366",
+    "R0_PROMPT_variant": "6108a7cddaa9eaf31262354ba32d33e4683ccaf810d861f27e3dcc8972028366",
+    "AN3_original": "067030ff53ecb76a4d1477a3deace07b3e1fac438a33cb873edbe045cf6927fe",
+    "CONCRETENESS_variant": "d0b892aaeec2cf0d1ed3497198e4cf0e1fc9485a3820cd7988eb785bcc9e6ca5",
+    "R1_instruction_variant": "e2554de6cdb5754a6a74fd66c4bd60cab5f8fb141a5e99979f88c6f0c1f27648",
+    "R2_instruction_variant": "6295835556fbd2fc6d1d8b672e746900a0cd9466a1f7b74df14575477b5373ff",
+    "R3_instruction_variant": null,
+    "DEVELOPER_MESSAGE": "d1fbb04224d346e79c588b8e69da4dcfe26e758ceefc71aa83d13ff7f216ed8d",
+    "PAIR_PROMPT": "e30501573f24964e48423a95322d4269a4296b9c84ff792336d834ed2506709b",
+    "UNTAGGED_PROMPT": "95931cbc02cf57f4246dcb1a603015f9ca82b212d482aa72dc9e4025050bcb02",
+    "RETAG_PROMPT": "2d747e9392df1130657202765867d27db9cf13b4b39d31556b24827477fdd2e3"
+  },
+  "harness_sha256": {
+    "sweep_run": "c8626f6c82e48663ca5f0be2b14d47aa2ee3e54788dcfffb9ee016cfae995b29",
+    "factlock_run": "6a04e22d73e40d3becc83927959325a41fd90f4d892161a7ad5b14f869fa2a55",
+    "all6_run": "9412a19e43753f28d55e6915e5337a5053aa037b347fb8664e261c68f508d7d0"
+  },
+  "production_sha256": {
+    "er019_writer": "b3b5b9ff0eb6e97241d50cd70b0443b43007fd32680f764911f69d70420b28e6",
+    "vfl01": "63286c2b558cdcc3cd2def090bae6975ca48385e962dd53c9c70f7e116afde80"
+  },
+  "reasoning_effort": "high",
+  "all6_model": "gpt-6-luna",
+  "checker_enabled": true,
+  "budget_jpy": 12.0,
+  "started_at": "2026-10-08T11:58:39",
+  "phases": [
+    {
+      "phase": "phase1",
+      "rc": "error:RuntimeError('[STOP] JA_FACT_CHECK_STOP: JA R2 Fact Check、must-fix Rewrite後もMAJOR、または前回指摘の未解消が残りました(overall_status=LEDGER_DEVIATION, all_prior_issues_resolved=True)。本文を手で直さずSTOPします。')",
+      "sec": 221.0
+    }
+  ],
+  "chain_actual_cut_log": [],
+  "finished_at": "2026-10-08T12:02:20",
+  "wall_sec": 221.0,
+  "exit_reason": "phase1_error: RuntimeError('[STOP] JA_FACT_CHECK_STOP: JA R2 Fact Check、must-fix Rewrite後もMAJOR、または前回指摘の未解消が残りました(overall_status=LEDGER_DEVIATION, all_prior_issues_resolved=True)。本文を手で直さずSTOPします。')",
+  "model_ids_actual": {
+    "ja_original": [
+      "gpt-6-luna"
+    ],
+    "ja_original_check": [
+      "gpt-6-luna"
+    ],
+    "ja_r1": [
+      "gpt-6-luna"
+    ],
+    "ja_r2": [
+      "gpt-6-luna"
+    ],
+    "ja_r2_check": [
+      "gpt-6-luna"
+    ],
+    "ja_r2_must_fix": [
+      "gpt-6-luna"
+    ],
+    "ja_r2_check_retry": [
+      "gpt-6-luna"
+    ],
+    "_checker_models_seen": []
+  },
+  "checker": {
+    "present": false,
+    "switch_dump_sha256": null
+  },
+  "cost": null,
+  "residual_bracket_scan": {
+    "hits": [
+      {
+        "file": "ja_writer/audit/rejected_ja_r2.md",
+        "count": 12
+      },
+      {
+        "file": "ja_writer/audit/deviation_checks/ja_r2_attempt1.json",
+        "count": 6
+      },
+      {
+        "file": "ja_writer/audit/deviation_checks/ja_r2_attempt2.json",
+        "count": 7
+      },
+      {
+        "file": "storyline_b3/fact_selection_evidence.json",
+        "count": 15
+      },
+      {
+        "file": "storyline_b3/selected_brief.md",
+        "count": 15
+      }
+    ],
+    "unexpected": [],
+    "unexpected_total": 0
+  }
+}

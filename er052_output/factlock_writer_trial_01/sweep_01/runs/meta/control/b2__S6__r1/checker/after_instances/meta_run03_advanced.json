@@ -1,0 +1,2950 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature",
+            "issue": "人間が電話を担当したのはMuse経由の電話の一部だが、見出しは人間が電話テスト全体を担当したようにも読め、対象範囲が広がっています。 / 「Museの電話テスト」で人間が対応した範囲を、テスト全体のように読める表現にしており、一部の電話という範囲が明示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature\n\nWas it AI or a person making the call? In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person. The workers were responsible not only for making the calls, but also for carrying the conversations through to the end. However, this was a test involving only some calls through Muse, not all of them.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+              "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+            ],
+            "batch_cost_jpy": 0.1542,
+            "batch_n_claims": 15
+          }
+        },
+        {
+          "claim_text": "In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature\n\nWas it AI or a person making the call? In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person. The workers were responsible not only for making the calls, but also for carrying the conversations through to the end. However, this was a test involving only some calls through Muse, not all of them.\n\nThe test raised privacy concerns. Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract workers. The concern was that user information might be shared unexpectedly because a person was handling the call. There is an important distinction here. What was raised was a concern about information being shared, not that a large-scale data leak had actually happened. We should not mistake concern about a possibility for an actual large-scale data leak.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+              "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+            ],
+            "batch_cost_jpy": 0.1542,
+            "batch_n_claims": 15
+          }
+        },
+        {
+          "claim_text": "However, this was a test involving only some calls through Muse, not all of them.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "However, this was a test involving only some calls through Muse, not all of them.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.4); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.4"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature\n\nWas it AI or a person making the call? In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person. The workers were responsible not only for making the calls, but also for carrying the conversations through to the end. However, this was a test involving only some calls through Muse, not all of them.\n\nThe test raised privacy concerns. Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract workers. The concern was that user information might be shared unexpectedly because a person was handling the call. There is an important distinction here. What was raised was a concern about information being shared, not that a large-scale data leak had actually happened. We should not mistake concern about a possibility for an actual large-scale data leak.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "However, this was a test involving only some calls through Muse, not all of them.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+              "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+            ],
+            "batch_cost_jpy": 0.1542,
+            "batch_n_claims": 15
+          }
+        },
+        {
+          "claim_text": "The concern was that user information might be shared unexpectedly because a person was handling the call.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "The concern was that user information might be shared unexpectedly because a person was handling the call.",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S2.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S2.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Was it AI or a person making the call? In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person. The workers were responsible not only for making the calls, but also for carrying the conversations through to the end. However, this was a test involving only some calls through Muse, not all of them.\n\nThe test raised privacy concerns. Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract workers. The concern was that user information might be shared unexpectedly because a person was handling the call. There is an important distinction here. What was raised was a concern about information being shared, not that a large-scale data leak had actually happened. We should not mistake concern about a possibility for an actual large-scale data leak.\n\nThe vice president of Meta’s Superintelligence Labs admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.” In other words, what was acknowledged as a problem was starting the test in which people handled the calls without proper disclosure. Meta then rolled back the human concierge feature for the time being. What was rolled back here was the human concierge feature. Meta did not shut down all of Muse. Rolling back the feature that lets people make calls and shutting down all of Muse are not the same thing.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-010",
+            "claim_text": "The concern was that user information might be shared unexpectedly because a person was handling the call.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+              "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+            ],
+            "batch_cost_jpy": 0.1542,
+            "batch_n_claims": 15
+          }
+        },
+        {
+          "claim_text": "What was raised was a concern about information being shared, not that a large-scale data leak had actually happened.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "What was raised was a concern about information being shared, not that a large-scale data leak had actually happened.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.5); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.5"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Was it AI or a person making the call? In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person. The workers were responsible not only for making the calls, but also for carrying the conversations through to the end. However, this was a test involving only some calls through Muse, not all of them.\n\nThe test raised privacy concerns. Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract workers. The concern was that user information might be shared unexpectedly because a person was handling the call. There is an important distinction here. What was raised was a concern about information being shared, not that a large-scale data leak had actually happened. We should not mistake concern about a possibility for an actual large-scale data leak.\n\nThe vice president of Meta’s Superintelligence Labs admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.” In other words, what was acknowledged as a problem was starting the test in which people handled the calls without proper disclosure. Meta then rolled back the human concierge feature for the time being. What was rolled back here was the human concierge feature. Meta did not shut down all of Muse. Rolling back the feature that lets people make calls and shutting down all of Muse are not the same thing.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-010",
+            "claim_text": "What was raised was a concern about information being shared, not that a large-scale data leak had actually happened.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+              "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+            ],
+            "batch_cost_jpy": 0.1542,
+            "batch_n_claims": 15
+          }
+        },
+        {
+          "claim_text": "We should not mistake concern about a possibility for an actual large-scale data leak.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "We should not mistake concern about a possibility for an actual large-scale data leak.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.6); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.6"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Was it AI or a person making the call? In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person. The workers were responsible not only for making the calls, but also for carrying the conversations through to the end. However, this was a test involving only some calls through Muse, not all of them.\n\nThe test raised privacy concerns. Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract workers. The concern was that user information might be shared unexpectedly because a person was handling the call. There is an important distinction here. What was raised was a concern about information being shared, not that a large-scale data leak had actually happened. We should not mistake concern about a possibility for an actual large-scale data leak.\n\nThe vice president of Meta’s Superintelligence Labs admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.” In other words, what was acknowledged as a problem was starting the test in which people handled the calls without proper disclosure. Meta then rolled back the human concierge feature for the time being. What was rolled back here was the human concierge feature. Meta did not shut down all of Muse. Rolling back the feature that lets people make calls and shutting down all of Muse are not the same thing.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-010",
+            "claim_text": "We should not mistake concern about a possibility for an actual large-scale data leak.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+              "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+            ],
+            "batch_cost_jpy": 0.1542,
+            "batch_n_claims": 15
+          }
+        },
+        {
+          "claim_text": "Meta then rolled back the human concierge feature for the time being.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "Meta then rolled back the human concierge feature for the time being.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The test raised privacy concerns. Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract workers. The concern was that user information might be shared unexpectedly because a person was handling the call. There is an important distinction here. What was raised was a concern about information being shared, not that a large-scale data leak had actually happened. We should not mistake concern about a possibility for an actual large-scale data leak.\n\nThe vice president of Meta’s Superintelligence Labs admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.” In other words, what was acknowledged as a problem was starting the test in which people handled the calls without proper disclosure. Meta then rolled back the human concierge feature for the time being. What was rolled back here was the human concierge feature. Meta did not shut down all of Muse. Rolling back the feature that lets people make calls and shutting down all of Muse are not the same thing.\n\n## In one line\nMeta rolled back Muse’s human concierge feature after contractors, rather than AI, handled some calls.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "Meta then rolled back the human concierge feature for the time being.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+              "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+            ],
+            "batch_cost_jpy": 0.1542,
+            "batch_n_claims": 15
+          }
+        },
+        {
+          "claim_text": "What was rolled back here was the human concierge feature.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "What was rolled back here was the human concierge feature.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.4"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The test raised privacy concerns. Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract workers. The concern was that user information might be shared unexpectedly because a person was handling the call. There is an important distinction here. What was raised was a concern about information being shared, not that a large-scale data leak had actually happened. We should not mistake concern about a possibility for an actual large-scale data leak.\n\nThe vice president of Meta’s Superintelligence Labs admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.” In other words, what was acknowledged as a problem was starting the test in which people handled the calls without proper disclosure. Meta then rolled back the human concierge feature for the time being. What was rolled back here was the human concierge feature. Meta did not shut down all of Muse. Rolling back the feature that lets people make calls and shutting down all of Muse are not the same thing.\n\n## In one line\nMeta rolled back Muse’s human concierge feature after contractors, rather than AI, handled some calls.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "What was rolled back here was the human concierge feature.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+              "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+            ],
+            "batch_cost_jpy": 0.1542,
+            "batch_n_claims": 15
+          }
+        },
+        {
+          "claim_text": "Meta did not shut down all of Muse.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "Meta did not shut down all of Muse.",
+            "issue": "人間コンシェルジュ機能のロールバックは支えられていますが、Muse全体を停止しなかったという明示的な否定まではLedger本文で確認できません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": true,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.5); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.5"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The test raised privacy concerns. Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract workers. The concern was that user information might be shared unexpectedly because a person was handling the call. There is an important distinction here. What was raised was a concern about information being shared, not that a large-scale data leak had actually happened. We should not mistake concern about a possibility for an actual large-scale data leak.\n\nThe vice president of Meta’s Superintelligence Labs admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.” In other words, what was acknowledged as a problem was starting the test in which people handled the calls without proper disclosure. Meta then rolled back the human concierge feature for the time being. What was rolled back here was the human concierge feature. Meta did not shut down all of Muse. Rolling back the feature that lets people make calls and shutting down all of Muse are not the same thing.\n\n## In one line\nMeta rolled back Muse’s human concierge feature after contractors, rather than AI, handled some calls.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "Meta did not shut down all of Muse.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+              "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+            ],
+            "batch_cost_jpy": 0.1542,
+            "batch_n_claims": 15
+          }
+        },
+        {
+          "claim_text": "Rolling back the feature that lets people make calls and shutting down all of Muse are not the same thing.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "Rolling back the feature that lets people make calls and shutting down all of Muse are not the same thing.",
+            "issue": "人間が電話を担当したのはMuse経由の電話の一部だが、見出しは人間が電話テスト全体を担当したようにも読め、対象範囲が広がっています。 / 「Museの電話テスト」で人間が対応した範囲を、テスト全体のように読める表現にしており、一部の電話という範囲が明示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The test raised privacy concerns. Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract workers. The concern was that user information might be shared unexpectedly because a person was handling the call. There is an important distinction here. What was raised was a concern about information being shared, not that a large-scale data leak had actually happened. We should not mistake concern about a possibility for an actual large-scale data leak.\n\nThe vice president of Meta’s Superintelligence Labs admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.” In other words, what was acknowledged as a problem was starting the test in which people handled the calls without proper disclosure. Meta then rolled back the human concierge feature for the time being. What was rolled back here was the human concierge feature. Meta did not shut down all of Muse. Rolling back the feature that lets people make calls and shutting down all of Muse are not the same thing.\n\n## In one line\nMeta rolled back Muse’s human concierge feature after contractors, rather than AI, handled some calls.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "Rolling back the feature that lets people make calls and shutting down all of Muse are not the same thing.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+              "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+            ],
+            "batch_cost_jpy": 0.1542,
+            "batch_n_claims": 15
+          }
+        },
+        {
+          "claim_text": "Meta rolled back Muse’s human concierge feature after contractors, rather than AI, handled some calls.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "Meta rolled back Muse’s human concierge feature after contractors, rather than AI, handled some calls.",
+            "issue": "人間が電話を担当したのはMuse経由の電話の一部だが、見出しは人間が電話テスト全体を担当したようにも読め、対象範囲が広がっています。 / 「Museの電話テスト」で人間が対応した範囲を、テスト全体のように読める表現にしており、一部の電話という範囲が明示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The vice president of Meta’s Superintelligence Labs admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.” In other words, what was acknowledged as a problem was starting the test in which people handled the calls without proper disclosure. Meta then rolled back the human concierge feature for the time being. What was rolled back here was the human concierge feature. Meta did not shut down all of Muse. Rolling back the feature that lets people make calls and shutting down all of Muse are not the same thing.\n\n## In one line\nMeta rolled back Muse’s human concierge feature after contractors, rather than AI, handled some calls.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "Meta rolled back Muse’s human concierge feature after contractors, rather than AI, handled some calls.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+              "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+            ],
+            "batch_cost_jpy": 0.1542,
+            "batch_n_claims": 15
+          }
+        },
+        {
+          "claim_text": "The workers were responsible not only for making the calls, but also for carrying the conversations through to the end.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "The workers were responsible not only for making the calls, but also for carrying the conversations through to the end.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature\n\nWas it AI or a person making the call? In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person. The workers were responsible not only for making the calls, but also for carrying the conversations through to the end. However, this was a test involving only some calls through Muse, not all of them.\n\nThe test raised privacy concerns. Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract workers. The concern was that user information might be shared unexpectedly because a person was handling the call. There is an important distinction here. What was raised was a concern about information being shared, not that a large-scale data leak had actually happened. We should not mistake concern about a possibility for an actual large-scale data leak.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "The workers were responsible not only for making the calls, but also for carrying the conversations through to the end.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+              "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+            ],
+            "batch_cost_jpy": 0.1542,
+            "batch_n_claims": 15
+          }
+        },
+        {
+          "claim_text": "Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract workers.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract workers.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Was it AI or a person making the call? In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person. The workers were responsible not only for making the calls, but also for carrying the conversations through to the end. However, this was a test involving only some calls through Muse, not all of them.\n\nThe test raised privacy concerns. Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract workers. The concern was that user information might be shared unexpectedly because a person was handling the call. There is an important distinction here. What was raised was a concern about information being shared, not that a large-scale data leak had actually happened. We should not mistake concern about a possibility for an actual large-scale data leak.\n\nThe vice president of Meta’s Superintelligence Labs admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.” In other words, what was acknowledged as a problem was starting the test in which people handled the calls without proper disclosure. Meta then rolled back the human concierge feature for the time being. What was rolled back here was the human concierge feature. Meta did not shut down all of Muse. Rolling back the feature that lets people make calls and shutting down all of Muse are not the same thing.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract wor",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+              "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+            ],
+            "batch_cost_jpy": 0.1542,
+            "batch_n_claims": 15
+          }
+        },
+        {
+          "claim_text": "The vice president of Meta’s Superintelligence Labs admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "The vice president of Meta’s Superintelligence Labs admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The test raised privacy concerns. Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract workers. The concern was that user information might be shared unexpectedly because a person was handling the call. There is an important distinction here. What was raised was a concern about information being shared, not that a large-scale data leak had actually happened. We should not mistake concern about a possibility for an actual large-scale data leak.\n\nThe vice president of Meta’s Superintelligence Labs admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.” In other words, what was acknowledged as a problem was starting the test in which people handled the calls without proper disclosure. Meta then rolled back the human concierge feature for the time being. What was rolled back here was the human concierge feature. Meta did not shut down all of Muse. Rolling back the feature that lets people make calls and shutting down all of Muse are not the same thing.\n\n## In one line\nMeta rolled back Muse’s human concierge feature after contractors, rather than AI, handled some calls.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "The vice president of Meta’s Superintelligence Labs admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+              "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+            ],
+            "batch_cost_jpy": 0.1542,
+            "batch_n_claims": 15
+          }
+        },
+        {
+          "claim_text": "” In other words, what was acknowledged as a problem was starting the test in which people handled the calls without proper disclosure.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "” In other words, what was acknowledged as a problem was starting the test in which people handled the calls without proper disclosure.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The test raised privacy concerns. Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract workers. The concern was that user information might be shared unexpectedly because a person was handling the call. There is an important distinction here. What was raised was a concern about information being shared, not that a large-scale data leak had actually happened. We should not mistake concern about a possibility for an actual large-scale data leak.\n\nThe vice president of Meta’s Superintelligence Labs admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.” In other words, what was acknowledged as a problem was starting the test in which people handled the calls without proper disclosure. Meta then rolled back the human concierge feature for the time being. What was rolled back here was the human concierge feature. Meta did not shut down all of Muse. Rolling back the feature that lets people make calls and shutting down all of Muse are not the same thing.\n\n## In one line\nMeta rolled back Muse’s human concierge feature after contractors, rather than AI, handled some calls.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "” In other words, what was acknowledged as a problem was starting the test in which people handled the calls without proper disclosure.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+              "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+            ],
+            "batch_cost_jpy": 0.1542,
+            "batch_n_claims": 15
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 15,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+            "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+          ],
+          "batch_cost_jpy": 0.1542,
+          "batch_n_claims": 15
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+            "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+          ],
+          "batch_cost_jpy": 0.1542,
+          "batch_n_claims": 15
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "However, this was a test involving only some calls through Muse, not all of them.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+            "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+          ],
+          "batch_cost_jpy": 0.1542,
+          "batch_n_claims": 15
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-010",
+          "claim_text": "The concern was that user information might be shared unexpectedly because a person was handling the call.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+            "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+          ],
+          "batch_cost_jpy": 0.1542,
+          "batch_n_claims": 15
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-010",
+          "claim_text": "What was raised was a concern about information being shared, not that a large-scale data leak had actually happened.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+            "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+          ],
+          "batch_cost_jpy": 0.1542,
+          "batch_n_claims": 15
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-010",
+          "claim_text": "We should not mistake concern about a possibility for an actual large-scale data leak.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+            "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+          ],
+          "batch_cost_jpy": 0.1542,
+          "batch_n_claims": 15
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "Meta then rolled back the human concierge feature for the time being.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+            "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+          ],
+          "batch_cost_jpy": 0.1542,
+          "batch_n_claims": 15
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "What was rolled back here was the human concierge feature.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+            "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+          ],
+          "batch_cost_jpy": 0.1542,
+          "batch_n_claims": 15
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "Meta did not shut down all of Muse.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+            "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+          ],
+          "batch_cost_jpy": 0.1542,
+          "batch_n_claims": 15
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "Rolling back the feature that lets people make calls and shutting down all of Muse are not the same thing.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+            "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+          ],
+          "batch_cost_jpy": 0.1542,
+          "batch_n_claims": 15
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "Meta rolled back Muse’s human concierge feature after contractors, rather than AI, handled some calls.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+            "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+          ],
+          "batch_cost_jpy": 0.1542,
+          "batch_n_claims": 15
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "The workers were responsible not only for making the calls, but also for carrying the conversations through to the end.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+            "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+          ],
+          "batch_cost_jpy": 0.1542,
+          "batch_n_claims": 15
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "Meta employees worried that when human contract workers handled the calls, sensitive user information needed to complete the conversations might be shared unintentionally with call-center contract wor",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+            "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+          ],
+          "batch_cost_jpy": 0.1542,
+          "batch_n_claims": 15
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "The vice president of Meta’s Superintelligence Labs admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+            "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+          ],
+          "batch_cost_jpy": 0.1542,
+          "batch_n_claims": 15
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "” In other words, what was acknowledged as a problem was starting the test in which people handled the calls without proper disclosure.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701",
+            "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+          ],
+          "batch_cost_jpy": 0.1542,
+          "batch_n_claims": 15
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.4447,
+      "usage": {
+        "input_tokens": 4911,
+        "cached_input_tokens": 0,
+        "output_tokens": 4687,
+        "reasoning_tokens": 1699
+      },
+      "elapsed_seconds": 40.084,
+      "prompt_sha256": "502cff37e4e0608f08dce9eb82d6bce0a80ec54696eca8c72c007754386a50b5",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5165,
+      "usage": {
+        "input_tokens": 4631,
+        "cached_input_tokens": 0,
+        "output_tokens": 5659,
+        "reasoning_tokens": 3868
+      },
+      "elapsed_seconds": 49.876,
+      "prompt_sha256": "58da887fa5d0ee34206f3f04177b0bacfcb00312c9ffd51773c3f6f3d9c68c6a",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2056,
+      "usage": {
+        "input_tokens": 4760,
+        "cached_input_tokens": 0,
+        "output_tokens": 1669,
+        "reasoning_tokens": 1288
+      },
+      "elapsed_seconds": 16.437,
+      "prompt_sha256": "c40ba931d75ff1a04900392a1ffb962063469eac64735bd5040d21b1ee579367",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2992,
+      "usage": {
+        "input_tokens": 11640,
+        "cached_input_tokens": 0,
+        "output_tokens": 1487,
+        "reasoning_tokens": 1176
+      },
+      "elapsed_seconds": 15.928,
+      "prompt_sha256": "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1803,
+      "usage": {
+        "input_tokens": 5872,
+        "cached_input_tokens": 0,
+        "output_tokens": 1124,
+        "reasoning_tokens": 995
+      },
+      "elapsed_seconds": 11.778,
+      "prompt_sha256": "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.116,
+      "usage": {
+        "input_tokens": 11640,
+        "cached_input_tokens": 11637,
+        "output_tokens": 1246,
+        "reasoning_tokens": 935
+      },
+      "elapsed_seconds": 14.104,
+      "prompt_sha256": "b4f609ea49575e032121ba7b63f5e092cd2ebf8be1585d3decb1f53a20127701"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0382,
+      "usage": {
+        "input_tokens": 5872,
+        "cached_input_tokens": 5869,
+        "output_tokens": 369,
+        "reasoning_tokens": 240
+      },
+      "elapsed_seconds": 4.004,
+      "prompt_sha256": "2c53ef96a09a81d22fd7598588217fafe15c060457266a0f3f5ba02ee40c4cb8"
+    }
+  ],
+  "total_cost_jpy": 1.8005,
+  "total_calls": 7,
+  "elapsed_seconds": 152.254,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "人間が電話を担当したのはMuse経由の電話の一部だが、見出しは人間が電話テスト全体を担当したようにも読め、対象範囲が広がっています。 / 「Museの電話テスト」で人間が対応した範囲を、テスト全体のように読める表現にしており、一部の電話という範囲が明示されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=T); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "However, this was a test involving only some calls through Muse, not all of them.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The concern was that user information might be shared unexpectedly because a person was handling the call.",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": null,
+        "issue": "決定論検査で戻した: causal_not_in_fact",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S2.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "What was raised was a concern about information being shared, not that a large-scale data leak had actually happened.",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.5); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "We should not mistake concern about a possibility for an actual large-scale data leak.",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.6); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Meta then rolled back the human concierge feature for the time being.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "What was rolled back here was the human concierge feature.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Meta did not shut down all of Muse.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "人間コンシェルジュ機能のロールバックは支えられていますが、Muse全体を停止しなかったという明示的な否定まではLedger本文で確認できません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.5); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_negation",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 12,
+      "n_model_entries": 5,
+      "n_targets": 4,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 2,
+      "n_excluded_entries": 2,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.2056,
+          "usage": {
+            "input_tokens": 4760,
+            "cached_input_tokens": 0,
+            "output_tokens": 1669,
+            "reasoning_tokens": 1288
+          },
+          "elapsed_seconds": 16.437,
+          "prompt_sha256": "c40ba931d75ff1a04900392a1ffb962063469eac64735bd5040d21b1ee579367",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.2056,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "人間が電話を担当したことと機能のロールバックは裏付けられるが、見出しは「一部の電話」という範囲・限定を示していない。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C2",
+          "key": "S2.4",
+          "claim": "There is an important distinction here.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "文脈をつなぐ修辞的な表現で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S3.5",
+          "claim": "Meta did not shut down all of Muse.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "Metaが人間コンシェルジュ機能をロールバックした事実はあるが、Muse全体を停止しなかったという否定はLedgerに明示されておらず、対象範囲も機能からMuse全体へ広がっている。",
+          "fact_tags": [
+            "proper_noun",
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "mismatch",
+          "scope_match": "mismatch",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S1.1",
+          "claim": "Was it AI or a person making the call?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "誰が電話したのかを問う導入の修辞的な疑問で、事実を断定していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "c40ba931d75ff1a04900392a1ffb962063469eac64735bd5040d21b1ee579367"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 22,
+    "n_judged_units": 18,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 15,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "S1.2",
+          "S1.4",
+          "S2.3",
+          "S2.4",
+          "S2.5",
+          "S2.6",
+          "S3.3",
+          "S3.4",
+          "S3.5",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED->CANDIDATE(causal_not_in_fact)",
+          "S2.4": "CANDIDATE",
+          "S2.5": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.6": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.5": "CANDIDATE",
+          "S3.6": "SUPPORTED",
+          "L1": "SUPPORTED"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.4447,
+            "usage": {
+              "input_tokens": 4911,
+              "cached_input_tokens": 0,
+              "output_tokens": 4687,
+              "reasoning_tokens": 1699
+            },
+            "elapsed_seconds": 40.084,
+            "prompt_sha256": "502cff37e4e0608f08dce9eb82d6bce0a80ec54696eca8c72c007754386a50b5",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "CANDIDATE",
+          "S2.5": "SUPPORTED",
+          "S2.6": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S3.5": "CANDIDATE",
+          "S3.6": "SUPPORTED",
+          "L1": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature",
+            "span": [
+              0,
+              63
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間が電話を担当したのはMuse経由の電話の一部だが、見出しは人間が電話テスト全体を担当したようにも読め、対象範囲が広がっています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature"
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person.",
+            "span": [
+              104,
+              256
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S1.4",
+            "unit_ids": [
+              "S1.4"
+            ],
+            "claim_text": "However, this was a test involving only some calls through Muse, not all of them.",
+            "span": [
+              377,
+              458
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "The concern was that user information might be shared unexpectedly because a person was handling the call.",
+            "span": [
+              700,
+              806
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "causal_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: causal_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "There is an important distinction here.",
+            "span": [
+              807,
+              846
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "区別が「重要」であるという評価はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "There is an important distinction here."
+          },
+          {
+            "unit_id": "S2.5",
+            "unit_ids": [
+              "S2.5"
+            ],
+            "claim_text": "What was raised was a concern about information being shared, not that a large-scale data leak had actually happened.",
+            "span": [
+              847,
+              964
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.6",
+            "unit_ids": [
+              "S2.6"
+            ],
+            "claim_text": "We should not mistake concern about a possibility for an actual large-scale data leak.",
+            "span": [
+              965,
+              1051
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "Meta then rolled back the human concierge feature for the time being.",
+            "span": [
+              1349,
+              1418
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.4",
+            "unit_ids": [
+              "S3.4"
+            ],
+            "claim_text": "What was rolled back here was the human concierge feature.",
+            "span": [
+              1419,
+              1477
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.5",
+            "unit_ids": [
+              "S3.5"
+            ],
+            "claim_text": "Meta did not shut down all of Muse.",
+            "span": [
+              1478,
+              1513
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間コンシェルジュ機能のロールバックは支えられていますが、Muse全体を停止しなかったという明示的な否定まではLedger本文で確認できません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": true,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "Meta did not shut down all of Muse."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S1.1",
+          "T"
+        ],
+        "unit_status": {
+          "T": "DEVIATION",
+          "S1.1": "DEVIATION",
+          "S1.2": "MATCH",
+          "S1.3": "MATCH",
+          "S1.4": "MATCH",
+          "L1": "MATCH",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.5": "MATCH",
+          "S2.6": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S3.5": "MATCH",
+          "S3.6": "MATCH",
+          "S2.4": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.5165,
+            "usage": {
+              "input_tokens": 4631,
+              "cached_input_tokens": 0,
+              "output_tokens": 5659,
+              "reasoning_tokens": 3868
+            },
+            "elapsed_seconds": 49.876,
+            "prompt_sha256": "58da887fa5d0ee34206f3f04177b0bacfcb00312c9ffd51773c3f6f3d9c68c6a",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature",
+            "span": [
+              0,
+              63
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "「Museの電話テスト」で人間が対応した範囲を、テスト全体のように読める表現にしており、一部の電話という範囲が明示されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Humans Handled Muse’s Phone Test"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "Was it AI or a person making the call?",
+            "span": [
+              65,
+              103
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "事実として報告された人間による対応を、未確定の問いとして提示しています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Was it AI or a person making the call?"
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "T"
+      ],
+      "r3_only": [
+        "S1.2",
+        "S1.4",
+        "S2.3",
+        "S2.4",
+        "S2.5",
+        "S2.6",
+        "S3.3",
+        "S3.4",
+        "S3.5"
+      ],
+      "r5_only": [
+        "S1.1"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 7
+    },
+    "union_candidates": [
+      {
+        "claim_text": "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature",
+        "span": [
+          0,
+          63
+        ],
+        "unit_ids": [
+          "T"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "人間が電話を担当したのはMuse経由の電話の一部だが、見出しは人間が電話テスト全体を担当したようにも読め、対象範囲が広がっています。",
+          "「Museの電話テスト」で人間が対応した範囲を、テスト全体のように読める表現にしており、一部の電話という範囲が明示されていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": [
+          "# Humans Handled Muse’s Phone Test. Meta Rolls Back the Feature",
+          "Humans Handled Muse’s Phone Test"
+        ]
+      },
+      {
+        "claim_text": "In a test involving some calls through Muse, trained human contract workers—not AI—made the calls and completed the conversations with the other person.",
+        "span": [
+          104,
+          256
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "However, this was a test involving only some calls through Muse, not all of them.",
+        "span": [
+          377,
+          458
+        ],
+        "unit_ids": [
+          "S1.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The concern was that user information might be shared unexpectedly because a person was handling the call.",
+        "span": [
+          700,
+          806
+        ],
+        "unit_ids": [
+          "S2.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "causal_not_in_fact"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: causal_not_in_fact"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-010"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "What was raised was a concern about information being shared, not that a large-scale data leak had actually happened.",
+        "span": [
+          847,
+          964
+        ],
+        "unit_ids": [
+          "S2.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-010"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "We should not mistake concern about a possibility for an actual large-scale data leak.",
+        "span": [
+          965,
+          1051
+        ],
+        "unit_ids": [
+          "S2.6"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-010"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Meta then rolled back the human concierge feature for the time being.",
+        "span": [
+          1349,
+          1418
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "What was rolled back here was the human concierge feature.",
+        "span": [
+          1419,
+          1477
+        ],
+        "unit_ids": [
+          "S3.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Meta did not shut down all of Muse.",
+        "span": [
+          1478,
+          1513
+        ],
+        "unit_ids": [
+          "S3.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "人間コンシェルジュ機能のロールバックは支えられていますが、Muse全体を停止しなかったという明示的な否定まではLedger本文で確認できません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": true,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "Meta did not shut down all of Muse."
+        ]
+      }
+    ],
+    "n_union_candidates": 9,
+    "n_model_candidates": 2,
+    "n_deterministic_only_candidates": 7,
+    "total_cost_jpy": 0.9612,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 5,
+    "n_targets": 4,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 2,
+    "n_excluded_entries": 2,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.2056,
+    "effort": "medium",
+    "prompt_sha256": "c40ba931d75ff1a04900392a1ffb962063469eac64735bd5040d21b1ee579367"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 6
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

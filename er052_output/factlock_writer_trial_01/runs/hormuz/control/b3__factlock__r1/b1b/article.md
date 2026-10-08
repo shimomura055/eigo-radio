@@ -1,0 +1,16 @@
+# Fee plan changes, Brent futures stay at high levels
+
+If this news were a play, the fee plan would rewrite the script halfway through, while Brent futures would take center stage as their prices moved. So, how did the story unfold?
+
+Trump first posted that he would seek a 20% fee on all cargo passing through the Strait of Hormuz. The proposal was meant to help cover the costs the United States spends on keeping the strait safe. It was not a fee that had actually started to be collected.
+
+But the next day, events took a sharp turn. Trump posted that he would replace the fee with trade and investment deals between Gulf countries and the United States. He said the decision was based on “very productive talks” with Middle Eastern leaders.
+
+So, what happened to Brent futures? After the announcement of the change, they briefly gave up some of their gains. But soon they returned to a high level close to where they had been before the announcement. At the time the article was published, they were up about 2.6%, above $85 a barrel.
+
+“We changed the fee plan, so prices should settle down too.” It is tempting to expect that ending. But another concern remained on the news stage: concerns about attacks by the United States and Iran, a blockade at sea, and the safety of tankers. Still, the information here alone does not tell us how much those concerns affected prices after the announcement.
+
+In other words, the fee plan in a new costume, Brent futures that first gave up some gains and then recovered, and the concerns that remain are all on the same stage. It seems a little early to look at just one thing and say, “That settles it.” Even though this is a story about a distant strait, it makes us want to ask: If the announcement’s script has changed, will the worries leave the stage too?
+
+## In one line
+Trump replaced his proposed Strait of Hormuz fee with trade deals, but Brent oil futures soon returned to high levels.

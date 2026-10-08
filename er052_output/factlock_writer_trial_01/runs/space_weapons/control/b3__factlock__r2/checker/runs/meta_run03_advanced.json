@@ -1,0 +1,1202 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The box is open, but we still cannot see the labels on what is inside.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "The box is open, but we still cannot see the labels on what is inside.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.4"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Everyone in the audience, picture a stage in your mind. There is one question: Can we put all news about “space weapons” in the same box?\n\nFirst, the “in orbit” box. On September 14, 2026, the U.S. Secretary of the Air Force said that the United States was deploying space-control weapons in orbit to protect its joint forces from the actions of hostile rivals. An official U.S. government article records this as the first time the Space Force acknowledged that it had deployed weapons in space. The box is open, but we still cannot see the labels on what is inside. The name, specific attack abilities, and targets have not been confirmed.\n\nThe next card says “launched from the ground.” Russia’s test to destroy a satellite used a missile fired from the ground. It destroyed a satellite and created more than 1,500 pieces of debris that could be tracked. Here is an important point: a test launched from the ground and putting a weapon in orbit may seem similar, but they are different events.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "The box is open, but we still cannot see the labels on what is inside.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c47af100ea78bed59415bfc1ba2dd01f3e88054b800389e7e34d4beb4f5c918e",
+              "570944c4c4cfa57c0ec849398dc21b44933388c6aa874ef1f0f4265c752a7167"
+            ],
+            "batch_cost_jpy": 0.0887,
+            "batch_n_claims": 5
+          }
+        },
+        {
+          "claim_text": "The name, specific attack abilities, and targets have not been confirmed.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "The name, specific attack abilities, and targets have not been confirmed.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.5); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.5"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Everyone in the audience, picture a stage in your mind. There is one question: Can we put all news about “space weapons” in the same box?\n\nFirst, the “in orbit” box. On September 14, 2026, the U.S. Secretary of the Air Force said that the United States was deploying space-control weapons in orbit to protect its joint forces from the actions of hostile rivals. An official U.S. government article records this as the first time the Space Force acknowledged that it had deployed weapons in space. The box is open, but we still cannot see the labels on what is inside. The name, specific attack abilities, and targets have not been confirmed.\n\nThe next card says “launched from the ground.” Russia’s test to destroy a satellite used a missile fired from the ground. It destroyed a satellite and created more than 1,500 pieces of debris that could be tracked. Here is an important point: a test launched from the ground and putting a weapon in orbit may seem similar, but they are different events.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "The name, specific attack abilities, and targets have not been confirmed.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c47af100ea78bed59415bfc1ba2dd01f3e88054b800389e7e34d4beb4f5c918e",
+              "570944c4c4cfa57c0ec849398dc21b44933388c6aa874ef1f0f4265c752a7167"
+            ],
+            "batch_cost_jpy": 0.0887,
+            "batch_n_claims": 5
+          }
+        },
+        {
+          "claim_text": "If you write “all space weapons are banned” as your answer, it is not accurate.",
+          "origin": null,
+          "related_fact_id": "F-016",
+          "dev": {
+            "claim_in_article": "If you write “all space weapons are banned” as your answer, it is not accurate.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "F-016",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "F-016"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "There are many ways to protect against threats. These include giving warning of threats, making satellites harder to destroy, separating their functions, spreading them out, and keeping backups. If we put these preparations in the same box as weapons that attack from orbit, the categories get mixed up.\n\nLast is a quiz about the “Outer Space Treaty.” If you write “all space weapons are banned” as your answer, it is not accurate. The treaty bans putting nuclear weapons and other weapons of mass destruction in orbit around Earth, placing them on the Moon or other celestial bodies, or deploying them in outer space in another way. It also bans military bases and forts on celestial bodies, as well as weapons tests and military exercises there.\n\nNow for the final question. Don’t just ask, “Are there weapons in space?” Ask whether they are fired from the ground, placed in orbit, or are preparations to protect against threats. If you can read the labels and tell them apart, you pass this news-sorting test.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-016",
+            "claim_text": "If you write “all space weapons are banned” as your answer, it is not accurate.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_scope",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c47af100ea78bed59415bfc1ba2dd01f3e88054b800389e7e34d4beb4f5c918e",
+              "570944c4c4cfa57c0ec849398dc21b44933388c6aa874ef1f0f4265c752a7167"
+            ],
+            "batch_cost_jpy": 0.0887,
+            "batch_n_claims": 5
+          }
+        },
+        {
+          "claim_text": "There is one question: Can we put all news about “space weapons” in the same box?",
+          "origin": null,
+          "related_fact_id": "F-016",
+          "dev": {
+            "claim_in_article": "There is one question: Can we put all news about “space weapons” in the same box?",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "F-016",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "F-016"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "If you write “all space weapons are banned” as your answer, it is not accurate."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The Space Weapons Sorting Show Begins\n\nEveryone in the audience, picture a stage in your mind. There is one question: Can we put all news about “space weapons” in the same box?\n\nFirst, the “in orbit” box. On September 14, 2026, the U.S. Secretary of the Air Force said that the United States was deploying space-control weapons in orbit to protect its joint forces from the actions of hostile rivals. An official U.S. government article records this as the first time the Space Force acknowledged that it had deployed weapons in space. The box is open, but we still cannot see the labels on what is inside. The name, specific attack abilities, and targets have not been confirmed.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F-016",
+            "claim_text": "There is one question: Can we put all news about “space weapons” in the same box?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c47af100ea78bed59415bfc1ba2dd01f3e88054b800389e7e34d4beb4f5c918e",
+              "570944c4c4cfa57c0ec849398dc21b44933388c6aa874ef1f0f4265c752a7167"
+            ],
+            "batch_cost_jpy": 0.0887,
+            "batch_n_claims": 5
+          }
+        },
+        {
+          "claim_text": "” If you write “all space weapons are banned” as your answer, it is not accurate.",
+          "origin": null,
+          "related_fact_id": "F-016",
+          "dev": {
+            "claim_in_article": "” If you write “all space weapons are banned” as your answer, it is not accurate.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "F-016",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "F-016"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "If you write “all space weapons are banned” as your answer, it is not accurate."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "There are many ways to protect against threats. These include giving warning of threats, making satellites harder to destroy, separating their functions, spreading them out, and keeping backups. If we put these preparations in the same box as weapons that attack from orbit, the categories get mixed up.\n\nLast is a quiz about the “Outer Space Treaty.” If you write “all space weapons are banned” as your answer, it is not accurate. The treaty bans putting nuclear weapons and other weapons of mass destruction in orbit around Earth, placing them on the Moon or other celestial bodies, or deploying them in outer space in another way. It also bans military bases and forts on celestial bodies, as well as weapons tests and military exercises there.\n\nNow for the final question. Don’t just ask, “Are there weapons in space?” Ask whether they are fired from the ground, placed in orbit, or are preparations to protect against threats. If you can read the labels and tell them apart, you pass this news-sorting test.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-016",
+            "claim_text": "” If you write “all space weapons are banned” as your answer, it is not accurate.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_scope",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c47af100ea78bed59415bfc1ba2dd01f3e88054b800389e7e34d4beb4f5c918e",
+              "570944c4c4cfa57c0ec849398dc21b44933388c6aa874ef1f0f4265c752a7167"
+            ],
+            "batch_cost_jpy": 0.0887,
+            "batch_n_claims": 5
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 5,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "The box is open, but we still cannot see the labels on what is inside.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c47af100ea78bed59415bfc1ba2dd01f3e88054b800389e7e34d4beb4f5c918e",
+            "570944c4c4cfa57c0ec849398dc21b44933388c6aa874ef1f0f4265c752a7167"
+          ],
+          "batch_cost_jpy": 0.0887,
+          "batch_n_claims": 5
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "The name, specific attack abilities, and targets have not been confirmed.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c47af100ea78bed59415bfc1ba2dd01f3e88054b800389e7e34d4beb4f5c918e",
+            "570944c4c4cfa57c0ec849398dc21b44933388c6aa874ef1f0f4265c752a7167"
+          ],
+          "batch_cost_jpy": 0.0887,
+          "batch_n_claims": 5
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-016",
+          "claim_text": "If you write “all space weapons are banned” as your answer, it is not accurate.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_scope",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c47af100ea78bed59415bfc1ba2dd01f3e88054b800389e7e34d4beb4f5c918e",
+            "570944c4c4cfa57c0ec849398dc21b44933388c6aa874ef1f0f4265c752a7167"
+          ],
+          "batch_cost_jpy": 0.0887,
+          "batch_n_claims": 5
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F-016",
+          "claim_text": "There is one question: Can we put all news about “space weapons” in the same box?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c47af100ea78bed59415bfc1ba2dd01f3e88054b800389e7e34d4beb4f5c918e",
+            "570944c4c4cfa57c0ec849398dc21b44933388c6aa874ef1f0f4265c752a7167"
+          ],
+          "batch_cost_jpy": 0.0887,
+          "batch_n_claims": 5
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-016",
+          "claim_text": "” If you write “all space weapons are banned” as your answer, it is not accurate.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_scope",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c47af100ea78bed59415bfc1ba2dd01f3e88054b800389e7e34d4beb4f5c918e",
+            "570944c4c4cfa57c0ec849398dc21b44933388c6aa874ef1f0f4265c752a7167"
+          ],
+          "batch_cost_jpy": 0.0887,
+          "batch_n_claims": 5
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5907,
+      "usage": {
+        "input_tokens": 7571,
+        "cached_input_tokens": 0,
+        "output_tokens": 6016,
+        "reasoning_tokens": 1547
+      },
+      "elapsed_seconds": 42.182,
+      "prompt_sha256": "a3747c217a154e345b541daa3cf55023aa1340d31ae4ebf620c4c081ed6ea97f",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.66,
+      "usage": {
+        "input_tokens": 7229,
+        "cached_input_tokens": 0,
+        "output_tokens": 6968,
+        "reasoning_tokens": 4775
+      },
+      "elapsed_seconds": 61.845,
+      "prompt_sha256": "db91e23244bb6a52067a02b2ed347e19bea2e4c0790b8a37a6d49e272124d037",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2127,
+      "usage": {
+        "input_tokens": 11835,
+        "cached_input_tokens": 0,
+        "output_tokens": 344,
+        "reasoning_tokens": 215
+      },
+      "elapsed_seconds": 4.47,
+      "prompt_sha256": "c47af100ea78bed59415bfc1ba2dd01f3e88054b800389e7e34d4beb4f5c918e"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1428,
+      "usage": {
+        "input_tokens": 8211,
+        "cached_input_tokens": 0,
+        "output_tokens": 178,
+        "reasoning_tokens": 127
+      },
+      "elapsed_seconds": 2.585,
+      "prompt_sha256": "570944c4c4cfa57c0ec849398dc21b44933388c6aa874ef1f0f4265c752a7167"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0566,
+      "usage": {
+        "input_tokens": 11835,
+        "cached_input_tokens": 11832,
+        "output_tokens": 484,
+        "reasoning_tokens": 352
+      },
+      "elapsed_seconds": 5.135,
+      "prompt_sha256": "c47af100ea78bed59415bfc1ba2dd01f3e88054b800389e7e34d4beb4f5c918e"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0321,
+      "usage": {
+        "input_tokens": 8211,
+        "cached_input_tokens": 8208,
+        "output_tokens": 245,
+        "reasoning_tokens": 194
+      },
+      "elapsed_seconds": 4.711,
+      "prompt_sha256": "570944c4c4cfa57c0ec849398dc21b44933388c6aa874ef1f0f4265c752a7167"
+    }
+  ],
+  "total_cost_jpy": 1.6949,
+  "total_calls": 6,
+  "elapsed_seconds": 120.976,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The box is open, but we still cannot see the labels on what is inside.",
+        "related_fact_id": "F-001",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The name, specific attack abilities, and targets have not been confirmed.",
+        "related_fact_id": "F-001",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.5); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "If you write “all space weapons are banned” as your answer, it is not accurate.",
+        "related_fact_id": "F-016",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "no_target",
+      "n_entries_in": 3,
+      "n_model_entries": 0,
+      "n_targets": 0,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 0,
+      "n_excluded_entries": 0,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [],
+      "cost_jpy": 0.0,
+      "verdicts": [],
+      "effort": "medium",
+      "prompt_sha256": null
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 35,
+    "n_judged_units": 27,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 22,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "S2.4",
+          "S2.5",
+          "S6.2"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.5": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "L1": "SUPPORTED"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5907,
+            "usage": {
+              "input_tokens": 7571,
+              "cached_input_tokens": 0,
+              "output_tokens": 6016,
+              "reasoning_tokens": 1547
+            },
+            "elapsed_seconds": 42.182,
+            "prompt_sha256": "a3747c217a154e345b541daa3cf55023aa1340d31ae4ebf620c4c081ed6ea97f",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S2.5": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "L1": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "The box is open, but we still cannot see the labels on what is inside.",
+            "span": [
+              538,
+              608
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.5",
+            "unit_ids": [
+              "S2.5"
+            ],
+            "claim_text": "The name, specific attack abilities, and targets have not been confirmed.",
+            "span": [
+              609,
+              682
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "If you write “all space weapons are banned” as your answer, it is not accurate.",
+            "span": [
+              1667,
+              1746
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-016"
+            ],
+            "model_claim": ""
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S2.5": "MATCH",
+          "S3.4": "MATCH",
+          "S7.3": "MATCH",
+          "L1": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S6.1": "MATCH",
+          "S6.2": "MATCH",
+          "S6.3": "MATCH",
+          "S6.4": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S4.1": "UNMENTIONED",
+          "S7.1": "UNMENTIONED",
+          "S7.2": "UNMENTIONED",
+          "S7.4": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.66,
+            "usage": {
+              "input_tokens": 7229,
+              "cached_input_tokens": 0,
+              "output_tokens": 6968,
+              "reasoning_tokens": 4775
+            },
+            "elapsed_seconds": 61.845,
+            "prompt_sha256": "db91e23244bb6a52067a02b2ed347e19bea2e4c0790b8a37a6d49e272124d037",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": []
+      }
+    },
+    "overlap": {
+      "both": [],
+      "r3_only": [
+        "S2.4",
+        "S2.5",
+        "S6.2"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 3
+    },
+    "union_candidates": [
+      {
+        "claim_text": "The box is open, but we still cannot see the labels on what is inside.",
+        "span": [
+          538,
+          608
+        ],
+        "unit_ids": [
+          "S2.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-001"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The name, specific attack abilities, and targets have not been confirmed.",
+        "span": [
+          609,
+          682
+        ],
+        "unit_ids": [
+          "S2.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-001"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "If you write “all space weapons are banned” as your answer, it is not accurate.",
+        "span": [
+          1667,
+          1746
+        ],
+        "unit_ids": [
+          "S6.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-016"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 3,
+    "n_model_candidates": 0,
+    "n_deterministic_only_candidates": 3,
+    "total_cost_jpy": 1.2507,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "no_target",
+    "n_model_entries": 0,
+    "n_targets": 0,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 0,
+    "n_excluded_entries": 0,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.0,
+    "effort": "medium",
+    "prompt_sha256": null
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 2
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 1.6949,
+  "provenance": {
+    "switch_dump_sha256": "66d18a3a1b28679684d7dcbe6e7af161a4da4223da7415a7ac50e7450de777c1",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-08T10:15:33",
+    "ledger_sha256": "2ebdce8660fbdc084c392b8e603cf7030cc221265ce2353769ccf950849eb0ec",
+    "article_sha256": "1626f3b9e1ba38dbb9f78fd87b723a8f009dbad85ee9d44faa6a3ba79d563d41",
+    "source_article_sha256": "c0a6d3a2b387006820bbe32d07d69fc83a9f08c94018b389635158bfd4c1d13c",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/factlock_writer_trial_01/runs/space_weapons/control/b3__factlock__r2/checker",
+      "ledger_path": "er052_output/factlock_writer_trial_01/runs/space_weapons/control/b3__factlock__r2/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/factlock_writer_trial_01/runs/space_weapons/control/b3__factlock__r2/b1b/article.md",
+      "source_path": "er052_output/factlock_writer_trial_01/runs/space_weapons/control/b3__factlock__r2/ja_writer/revision2.md",
+      "budget_jpy": 10.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

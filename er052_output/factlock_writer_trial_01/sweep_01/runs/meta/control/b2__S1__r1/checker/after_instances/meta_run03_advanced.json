@@ -1,0 +1,2269 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "When the curtain goes up, the person on the other end of the phone is supposed to be AI.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "When the curtain goes up, the person on the other end of the phone is supposed to be AI.",
+            "issue": "一部の電話を人間が担当したことは支えられるが、電話の相手側がAIである「はず」だったという前提はLedgerで直接確認できない。 / 「AIであるはずだった」という利用者側の期待は、Ledgerでは確認されていない。 / 適切な開示がなかったことはLedgerにあるが、相手がAIだと想定していたとまでは確認されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006",
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Behind the Scenes of AI Phone Calls: Will We Be Told When the Lead Changes?\n\nWhen the curtain goes up, the person on the other end of the phone is supposed to be AI. But then a human helper steps out from the wings. This kind of change of lead was being tested on some calls through Muse. Trained contract staff made the calls and handled the conversation all the way to the end.\n\nWhat matters here is not the helper’s appearance itself, but whether the audience was told about the change. This test began without a proper explanation. A vice president in a Meta division admitted that this was a mistake.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "When the curtain goes up, the person on the other end of the phone is supposed to be AI.",
+            "first_materiality": "QUALITY",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "9290742e5dffbc063cdea2aa12efa18cba4f2386cd3f99348e71c24bfc261760",
+              "94acb316a79eb918e06a72601a07816fea3a8be72ddced997ae9799cab542442"
+            ],
+            "batch_cost_jpy": 0.4139,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "A vice president in a Meta division admitted that this was a mistake.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "A vice president in a Meta division admitted that this was a mistake.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "When the curtain goes up, the person on the other end of the phone is supposed to be AI. But then a human helper steps out from the wings. This kind of change of lead was being tested on some calls through Muse. Trained contract staff made the calls and handled the conversation all the way to the end.\n\nWhat matters here is not the helper’s appearance itself, but whether the audience was told about the change. This test began without a proper explanation. A vice president in a Meta division admitted that this was a mistake.\n\nAI or human? A quiz where you guess from the voice on the phone might be fun. But it is a different matter when users’ information is involved. Meta employees raised concerns that personal information needed to handle the call could accidentally be shared with contract staff at a call center.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "A vice president in a Meta division admitted that this was a mistake.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "9290742e5dffbc063cdea2aa12efa18cba4f2386cd3f99348e71c24bfc261760",
+              "94acb316a79eb918e06a72601a07816fea3a8be72ddced997ae9799cab542442"
+            ],
+            "batch_cost_jpy": 0.4139,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "But whether or not any leak actually happened, users want to know who handles their information.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "But whether or not any leak actually happened, users want to know who handles their information.",
+            "issue": "ユーザー一般が情報を扱う人を知りたがっているという欲求の主張はLedgerにない。 / Meta従業員の懸念から、ユーザー一般の希望へと対象を広げている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "AI or human? A quiz where you guess from the voice on the phone might be fun. But it is a different matter when users’ information is involved. Meta employees raised concerns that personal information needed to handle the call could accidentally be shared with contract staff at a call center.\n\nThis is not a place to make the story bigger just to heighten the suspense. A concern was raised; this does not mean that a large-scale data leak took place. But whether or not any leak actually happened, users want to know who handles their information.\n\nMeta has put its human concierge feature on hold for now. But it has not stopped Muse as a whole. The stage itself has not closed; the scene in which a human appears has simply been pulled back for now.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-010",
+            "claim_text": "But whether or not any leak actually happened, users want to know who handles their information.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "9290742e5dffbc063cdea2aa12efa18cba4f2386cd3f99348e71c24bfc261760",
+              "94acb316a79eb918e06a72601a07816fea3a8be72ddced997ae9799cab542442"
+            ],
+            "batch_cost_jpy": 0.4139,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "Meta has put its human concierge feature on hold for now.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "Meta has put its human concierge feature on hold for now.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This is not a place to make the story bigger just to heighten the suspense. A concern was raised; this does not mean that a large-scale data leak took place. But whether or not any leak actually happened, users want to know who handles their information.\n\nMeta has put its human concierge feature on hold for now. But it has not stopped Muse as a whole. The stage itself has not closed; the scene in which a human appears has simply been pulled back for now.\n\nPeople may help with AI’s work. But there is no need to keep that change secret. Rather than hold a contest to guess who is speaking, it would be much kinder to tell users before the call, “A person will handle this.”",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "Meta has put its human concierge feature on hold for now.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "9290742e5dffbc063cdea2aa12efa18cba4f2386cd3f99348e71c24bfc261760",
+              "94acb316a79eb918e06a72601a07816fea3a8be72ddced997ae9799cab542442"
+            ],
+            "batch_cost_jpy": 0.4139,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "But there is no need to keep that change secret.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "But there is no need to keep that change secret.",
+            "issue": "変化を秘密にする必要はないという規範的な主張はLedgerに記載されていない。 / 適切な開示がなかったという事実を、変更を意図的に秘密にしていたことへ広げている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Meta has put its human concierge feature on hold for now. But it has not stopped Muse as a whole. The stage itself has not closed; the scene in which a human appears has simply been pulled back for now.\n\nPeople may help with AI’s work. But there is no need to keep that change secret. Rather than hold a contest to guess who is speaking, it would be much kinder to tell users before the call, “A person will handle this.”\n\n## In one line\nMeta paused its human concierge feature after testing AI calls without telling users when contractors took over.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "But there is no need to keep that change secret.",
+            "first_materiality": "QUALITY",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "9290742e5dffbc063cdea2aa12efa18cba4f2386cd3f99348e71c24bfc261760",
+              "94acb316a79eb918e06a72601a07816fea3a8be72ddced997ae9799cab542442"
+            ],
+            "batch_cost_jpy": 0.4139,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "Meta paused its human concierge feature after testing AI calls without telling users when contractors took over.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "Meta paused its human concierge feature after testing AI calls without telling users when contractors took over.",
+            "issue": "「ユーザーに知らせずに」は、Ledgerの「適切な開示なしに」より強く、まったく知らせなかったと断定している。 / 「適切な開示がなかった」を「ユーザーに伝えていなかった」と断定しており、開示が全くなかったと強めている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "People may help with AI’s work. But there is no need to keep that change secret. Rather than hold a contest to guess who is speaking, it would be much kinder to tell users before the call, “A person will handle this.”\n\n## In one line\nMeta paused its human concierge feature after testing AI calls without telling users when contractors took over.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "Meta paused its human concierge feature after testing AI calls without telling users when contractors took over.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "9290742e5dffbc063cdea2aa12efa18cba4f2386cd3f99348e71c24bfc261760",
+              "94acb316a79eb918e06a72601a07816fea3a8be72ddced997ae9799cab542442"
+            ],
+            "batch_cost_jpy": 0.4139,
+            "batch_n_claims": 6
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 6,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "When the curtain goes up, the person on the other end of the phone is supposed to be AI.",
+          "first_materiality": "QUALITY",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "9290742e5dffbc063cdea2aa12efa18cba4f2386cd3f99348e71c24bfc261760",
+            "94acb316a79eb918e06a72601a07816fea3a8be72ddced997ae9799cab542442"
+          ],
+          "batch_cost_jpy": 0.4139,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "A vice president in a Meta division admitted that this was a mistake.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "9290742e5dffbc063cdea2aa12efa18cba4f2386cd3f99348e71c24bfc261760",
+            "94acb316a79eb918e06a72601a07816fea3a8be72ddced997ae9799cab542442"
+          ],
+          "batch_cost_jpy": 0.4139,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-010",
+          "claim_text": "But whether or not any leak actually happened, users want to know who handles their information.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "9290742e5dffbc063cdea2aa12efa18cba4f2386cd3f99348e71c24bfc261760",
+            "94acb316a79eb918e06a72601a07816fea3a8be72ddced997ae9799cab542442"
+          ],
+          "batch_cost_jpy": 0.4139,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "Meta has put its human concierge feature on hold for now.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "9290742e5dffbc063cdea2aa12efa18cba4f2386cd3f99348e71c24bfc261760",
+            "94acb316a79eb918e06a72601a07816fea3a8be72ddced997ae9799cab542442"
+          ],
+          "batch_cost_jpy": 0.4139,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "But there is no need to keep that change secret.",
+          "first_materiality": "QUALITY",
+          "first_basis": "unsupported_relationship",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "9290742e5dffbc063cdea2aa12efa18cba4f2386cd3f99348e71c24bfc261760",
+            "94acb316a79eb918e06a72601a07816fea3a8be72ddced997ae9799cab542442"
+          ],
+          "batch_cost_jpy": 0.4139,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "Meta paused its human concierge feature after testing AI calls without telling users when contractors took over.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "9290742e5dffbc063cdea2aa12efa18cba4f2386cd3f99348e71c24bfc261760",
+            "94acb316a79eb918e06a72601a07816fea3a8be72ddced997ae9799cab542442"
+          ],
+          "batch_cost_jpy": 0.4139,
+          "batch_n_claims": 6
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5239,
+      "usage": {
+        "input_tokens": 4994,
+        "cached_input_tokens": 0,
+        "output_tokens": 5680,
+        "reasoning_tokens": 2205
+      },
+      "elapsed_seconds": 46.028,
+      "prompt_sha256": "5c63758667875438a88b75901cddeef1d56827d8504d730a8c8497371de3228a",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.7028,
+      "usage": {
+        "input_tokens": 4694,
+        "cached_input_tokens": 0,
+        "output_tokens": 8021,
+        "reasoning_tokens": 6065
+      },
+      "elapsed_seconds": 79.435,
+      "prompt_sha256": "1371facb360a57c1c5296179313f36deb456231f8ff3ca6ed10543834b8ad438",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.4084,
+      "usage": {
+        "input_tokens": 5187,
+        "cached_input_tokens": 0,
+        "output_tokens": 4169,
+        "reasoning_tokens": 3240
+      },
+      "elapsed_seconds": 37.802,
+      "prompt_sha256": "4bc54c4cac4ec63cf757709c447856cbebb58a26e4d3da5231bb15a9273c57ea",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.3162,
+      "usage": {
+        "input_tokens": 9186,
+        "cached_input_tokens": 0,
+        "output_tokens": 2194,
+        "reasoning_tokens": 2037
+      },
+      "elapsed_seconds": 21.718,
+      "prompt_sha256": "9290742e5dffbc063cdea2aa12efa18cba4f2386cd3f99348e71c24bfc261760"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1093,
+      "usage": {
+        "input_tokens": 5724,
+        "cached_input_tokens": 0,
+        "output_tokens": 248,
+        "reasoning_tokens": 199
+      },
+      "elapsed_seconds": 3.8,
+      "prompt_sha256": "94acb316a79eb918e06a72601a07816fea3a8be72ddced997ae9799cab542442"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.37,
+      "usage": {
+        "input_tokens": 9186,
+        "cached_input_tokens": 9183,
+        "output_tokens": 4533,
+        "reasoning_tokens": 4379
+      },
+      "elapsed_seconds": 46.964,
+      "prompt_sha256": "9290742e5dffbc063cdea2aa12efa18cba4f2386cd3f99348e71c24bfc261760"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0439,
+      "usage": {
+        "input_tokens": 5724,
+        "cached_input_tokens": 5721,
+        "output_tokens": 445,
+        "reasoning_tokens": 394
+      },
+      "elapsed_seconds": 6.151,
+      "prompt_sha256": "94acb316a79eb918e06a72601a07816fea3a8be72ddced997ae9799cab542442"
+    }
+  ],
+  "total_cost_jpy": 2.4745,
+  "total_calls": 7,
+  "elapsed_seconds": 241.93,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "When the curtain goes up, the person on the other end of the phone is supposed to be AI.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "一部の電話を人間が担当したことは支えられるが、電話の相手側がAIである「はず」だったという前提はLedgerで直接確認できない。 / 「AIであるはずだった」という利用者側の期待は、Ledgerでは確認されていない。 / 適切な開示がなかったことはLedgerにあるが、相手がAIだと想定していたとまでは確認されていない。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "A vice president in a Meta division admitted that this was a mistake.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But whether or not any leak actually happened, users want to know who handles their information.",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": null,
+        "issue": "ユーザー一般が情報を扱う人を知りたがっているという欲求の主張はLedgerにない。 / Meta従業員の懸念から、ユーザー一般の希望へと対象を広げている。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Meta has put its human concierge feature on hold for now.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But there is no need to keep that change secret.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "変化を秘密にする必要はないという規範的な主張はLedgerに記載されていない。 / 適切な開示がなかったという事実を、変更を意図的に秘密にしていたことへ広げている。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S6.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Meta paused its human concierge feature after testing AI calls without telling users when contractors took over.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "「ユーザーに知らせずに」は、Ledgerの「適切な開示なしに」より強く、まったく知らせなかったと断定している。 / 「適切な開示がなかった」を「ユーザーに伝えていなかった」と断定しており、開示が全くなかったと強めている。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 18,
+      "n_model_entries": 16,
+      "n_targets": 11,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 7,
+      "n_excluded_entries": 7,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.4084,
+          "usage": {
+            "input_tokens": 5187,
+            "cached_input_tokens": 0,
+            "output_tokens": 4169,
+            "reasoning_tokens": 3240
+          },
+          "elapsed_seconds": 37.802,
+          "prompt_sha256": "4bc54c4cac4ec63cf757709c447856cbebb58a26e4d3da5231bb15a9273c57ea",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.4084,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# Behind the Scenes of AI Phone Calls: Will We Be Told When the Lead Changes?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "問いかけ形式の見出しで、具体的な事実を断定していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.1",
+          "claim": "When the curtain goes up, the person on the other end of the phone is supposed to be AI.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "電話の相手がAIであるはずだという期待を具体的に述べているが、Ledgerは利用者側の認識や期待を明示していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S2.1",
+          "claim": "What matters here is not the helper’s appearance itself, but whether the audience was told about the change.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "何が重要かについての論評であり、新たな具体的事実を加えていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S3.2",
+          "claim": "A quiz where you guess from the voice on the phone might be fun.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "電話相手を声で当てる遊びについての仮定的な感想で、具体的事実の主張ではない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S3.3",
+          "claim": "But it is a different matter when users’ information is involved.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "情報が関わる場合についての一般的な論評で、具体的事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C6",
+          "key": "S4.1",
+          "claim": "This is not a place to make the story bigger just to heighten the suspense.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "記事を誇張すべきでないという論評で、具体的事実を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "S4.2",
+          "claim": "A concern was raised; this does not mean that a large-scale data leak took place.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "従業員の懸念と、それだけでは大規模な情報漏えいを意味しないという限定は、Ledgerの記述と一致する。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C8",
+          "key": "S4.3",
+          "claim": "But whether or not any leak actually happened, users want to know who handles their information.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "漏えいの有無を断定してはいないが、「ユーザーは知りたい」という広い利用者全体の意向はLedgerにない新たな主張である。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C9",
+          "key": "S6.2",
+          "claim": "But there is no need to keep that change secret.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「秘密にする」との表現は、Ledgerが示す適切な開示の欠如よりも意図的な秘匿を含意し、限定を強めている。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C10",
+          "key": "S6.3",
+          "claim": "Rather than hold a contest to guess who is speaking, it would be much kinder to tell users before the call, “A person will handle this.”",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "人間が対応する場合に利用者へ伝えるべきだという提案であり、実際にそう伝えたとの事実主張ではない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C11",
+          "key": "L1",
+          "claim": "Meta paused its human concierge feature after testing AI calls without telling users when contractors took over.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "主体・対象・機能の範囲は一致するが、「ユーザーに伝えず」はLedgerの「適切な開示なし」より強く、何も伝えなかったと限定を変えている。",
+          "fact_tags": [
+            "proper_noun",
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "mismatch"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "4bc54c4cac4ec63cf757709c447856cbebb58a26e4d3da5231bb15a9273c57ea"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 29,
+    "n_judged_units": 22,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 15,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.1",
+          "S2.1",
+          "S2.3",
+          "S3.2",
+          "S3.3",
+          "S4.1",
+          "S4.2",
+          "S4.3",
+          "S5.1",
+          "S6.2",
+          "S6.3",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S2.1": "CANDIDATE",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.1": "SUPPORTED",
+          "S3.2": "CANDIDATE",
+          "S3.3": "CANDIDATE",
+          "S3.4": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "CANDIDATE",
+          "S4.3": "CANDIDATE",
+          "S5.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "CANDIDATE",
+          "S6.3": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5239,
+            "usage": {
+              "input_tokens": 4994,
+              "cached_input_tokens": 0,
+              "output_tokens": 5680,
+              "reasoning_tokens": 2205
+            },
+            "elapsed_seconds": 46.028,
+            "prompt_sha256": "5c63758667875438a88b75901cddeef1d56827d8504d730a8c8497371de3228a",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S2.1": "CANDIDATE",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "CANDIDATE",
+          "S3.3": "CANDIDATE",
+          "S3.4": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "CANDIDATE",
+          "S4.3": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "CANDIDATE",
+          "S6.3": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# Behind the Scenes of AI Phone Calls: Will We Be Told When the Lead Changes?",
+            "span": [
+              0,
+              77
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間が電話を担当するテストや適切な開示の問題はLedgerにあるが、タイトルの問いが示す今後の開示状況は確認されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "# Behind the Scenes of AI Phone Calls: Will We Be Told When the Lead Changes?"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "When the curtain goes up, the person on the other end of the phone is supposed to be AI.",
+            "span": [
+              79,
+              167
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "一部の電話を人間が担当したことは支えられるが、電話の相手側がAIである「はず」だったという前提はLedgerで直接確認できない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "When the curtain goes up, the person on the other end of the phone is supposed to be AI."
+          },
+          {
+            "unit_id": "S2.1",
+            "unit_ids": [
+              "S2.1"
+            ],
+            "claim_text": "What matters here is not the helper’s appearance itself, but whether the audience was told about the change.",
+            "span": [
+              383,
+              491
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "何を重視すべきかという評価・優先順位はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "What matters here is not the helper’s appearance itself, but whether the audience was told about the change."
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "A vice president in a Meta division admitted that this was a mistake.",
+            "span": [
+              538,
+              607
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "A quiz where you guess from the voice on the phone might be fun.",
+            "span": [
+              622,
+              686
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "電話の声から話者を当てるクイズが楽しいという評価はLedgerに支えられていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "A quiz where you guess from the voice on the phone might be fun."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "But it is a different matter when users’ information is involved.",
+            "span": [
+              687,
+              752
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "情報が関わる場合は別問題だという評価は、Ledgerに記載された事実ではない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "But it is a different matter when users’ information is involved."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "This is not a place to make the story bigger just to heighten the suspense.",
+            "span": [
+              904,
+              979
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "話を大きくすべきでないという編集上の評価・方針はLedgerに支えられていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "This is not a place to make the story bigger just to heighten the suspense."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "A concern was raised; this does not mean that a large-scale data leak took place.",
+            "span": [
+              980,
+              1061
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "懸念が示されたことは支えられるが、大規模な情報漏えいが起きたとは意味しないという否定的な結論は、Fact本文で直接確認できない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": true,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "A concern was raised; this does not mean that a large-scale data leak took place."
+          },
+          {
+            "unit_id": "S4.3",
+            "unit_ids": [
+              "S4.3"
+            ],
+            "claim_text": "But whether or not any leak actually happened, users want to know who handles their information.",
+            "span": [
+              1062,
+              1158
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "ユーザー一般が情報を扱う人を知りたがっているという欲求の主張はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "But whether or not any leak actually happened, users want to know who handles their information."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "Meta has put its human concierge feature on hold for now.",
+            "span": [
+              1160,
+              1217
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "But there is no need to keep that change secret.",
+            "span": [
+              1396,
+              1444
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "変化を秘密にする必要はないという規範的な主張はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "But there is no need to keep that change secret."
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "Rather than hold a contest to guess who is speaking, it would be much kinder to tell users before the call, “A person will handle this.”",
+            "span": [
+              1445,
+              1581
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "事前に「人が対応する」とユーザーへ伝えることがより親切だという推奨はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "Rather than hold a contest to guess who is speaking, it would be much kinder to tell users before the call, “A person will handle this.”"
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Meta paused its human concierge feature after testing AI calls without telling users when contractors took over.",
+            "span": [
+              1598,
+              1710
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「ユーザーに知らせずに」は、Ledgerの「適切な開示なしに」より強く、まったく知らせなかったと断定している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "Meta paused its human concierge feature after testing AI calls without telling users when contractors took over."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.1",
+          "S4.3",
+          "S6.2"
+        ],
+        "unit_status": {
+          "S1.3": "MATCH",
+          "S1.1": "DEVIATION",
+          "S1.2": "MATCH",
+          "S1.4": "MATCH",
+          "L1": "DEVIATION",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "DEVIATION",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S6.2": "DEVIATION",
+          "T": "UNMENTIONED",
+          "S3.1": "UNMENTIONED",
+          "S3.2": "UNMENTIONED",
+          "S4.1": "UNMENTIONED",
+          "S6.1": "UNMENTIONED",
+          "S6.3": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.7028,
+            "usage": {
+              "input_tokens": 4694,
+              "cached_input_tokens": 0,
+              "output_tokens": 8021,
+              "reasoning_tokens": 6065
+            },
+            "elapsed_seconds": 79.435,
+            "prompt_sha256": "1371facb360a57c1c5296179313f36deb456231f8ff3ca6ed10543834b8ad438",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "When the curtain goes up, the person on the other end of the phone is supposed to be AI.",
+            "span": [
+              79,
+              167
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "「AIであるはずだった」という利用者側の期待は、Ledgerでは確認されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "When the curtain goes up, the person on the other end of the phone is supposed to be AI."
+          },
+          {
+            "unit_id": "S4.3",
+            "unit_ids": [
+              "S4.3"
+            ],
+            "claim_text": "But whether or not any leak actually happened, users want to know who handles their information.",
+            "span": [
+              1062,
+              1158
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Meta従業員の懸念から、ユーザー一般の希望へと対象を広げている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "But whether or not any leak actually happened, users want to know who handles their information."
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "When the curtain goes up, the person on the other end of the phone is supposed to be AI.",
+            "span": [
+              79,
+              167
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "適切な開示がなかったことはLedgerにあるが、相手がAIだと想定していたとまでは確認されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "When the curtain goes up, the person on the other end of the phone is supposed to be AI."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "But there is no need to keep that change secret.",
+            "span": [
+              1396,
+              1444
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "適切な開示がなかったという事実を、変更を意図的に秘密にしていたことへ広げている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "But there is no need to keep that change secret."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Meta paused its human concierge feature after testing AI calls without telling users when contractors took over.",
+            "span": [
+              1598,
+              1710
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "「適切な開示がなかった」を「ユーザーに伝えていなかった」と断定しており、開示が全くなかったと強めている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "Meta paused its human concierge feature after testing AI calls without telling users when contractors took over."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "L1",
+        "S1.1",
+        "S4.3",
+        "S6.2"
+      ],
+      "r3_only": [
+        "S2.1",
+        "S2.3",
+        "S3.2",
+        "S3.3",
+        "S4.1",
+        "S4.2",
+        "S5.1",
+        "S6.3",
+        "T"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 2
+    },
+    "union_candidates": [
+      {
+        "claim_text": "When the curtain goes up, the person on the other end of the phone is supposed to be AI.",
+        "span": [
+          79,
+          167
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "一部の電話を人間が担当したことは支えられるが、電話の相手側がAIである「はず」だったという前提はLedgerで直接確認できない。",
+          "「AIであるはずだった」という利用者側の期待は、Ledgerでは確認されていない。",
+          "適切な開示がなかったことはLedgerにあるが、相手がAIだと想定していたとまでは確認されていない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006",
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "When the curtain goes up, the person on the other end of the phone is supposed to be AI."
+        ]
+      },
+      {
+        "claim_text": "A vice president in a Meta division admitted that this was a mistake.",
+        "span": [
+          538,
+          607
+        ],
+        "unit_ids": [
+          "S2.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "But whether or not any leak actually happened, users want to know who handles their information.",
+        "span": [
+          1062,
+          1158
+        ],
+        "unit_ids": [
+          "S4.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "ユーザー一般が情報を扱う人を知りたがっているという欲求の主張はLedgerにない。",
+          "Meta従業員の懸念から、ユーザー一般の希望へと対象を広げている。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-010"
+        ],
+        "model_claims": [
+          "But whether or not any leak actually happened, users want to know who handles their information."
+        ]
+      },
+      {
+        "claim_text": "Meta has put its human concierge feature on hold for now.",
+        "span": [
+          1160,
+          1217
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "But there is no need to keep that change secret.",
+        "span": [
+          1396,
+          1444
+        ],
+        "unit_ids": [
+          "S6.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "変化を秘密にする必要はないという規範的な主張はLedgerに記載されていない。",
+          "適切な開示がなかったという事実を、変更を意図的に秘密にしていたことへ広げている。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "But there is no need to keep that change secret."
+        ]
+      },
+      {
+        "claim_text": "Meta paused its human concierge feature after testing AI calls without telling users when contractors took over.",
+        "span": [
+          1598,
+          1710
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "「ユーザーに知らせずに」は、Ledgerの「適切な開示なしに」より強く、まったく知らせなかったと断定している。",
+          "「適切な開示がなかった」を「ユーザーに伝えていなかった」と断定しており、開示が全くなかったと強めている。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "Meta paused its human concierge feature after testing AI calls without telling users when contractors took over."
+        ]
+      }
+    ],
+    "n_union_candidates": 6,
+    "n_model_candidates": 4,
+    "n_deterministic_only_candidates": 2,
+    "total_cost_jpy": 1.2267,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 16,
+    "n_targets": 11,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 7,
+    "n_excluded_entries": 7,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.4084,
+    "effort": "medium",
+    "prompt_sha256": "4bc54c4cac4ec63cf757709c447856cbebb58a26e4d3da5231bb15a9273c57ea"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {},
+    "unrewritten_blocking_pass": 0
+  }
+}

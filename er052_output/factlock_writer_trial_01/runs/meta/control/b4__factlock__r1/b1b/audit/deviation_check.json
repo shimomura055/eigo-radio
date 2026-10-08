@@ -1,0 +1,51 @@
+{
+  "deviations": [
+    {
+      "claim_in_article": "Meta executives admitted that it was a mistake to start testing calls handled by contract workers without proper disclosure.",
+      "issue": "Ledger identifies the speaker as the vice president of Meta's Superintelligence Labs; the article attributes the admission more broadly to “Meta executives.”",
+      "severity": "MINOR",
+      "changed_fact": false,
+      "changed_scope": false,
+      "changed_causality": false,
+      "changed_certainty": false,
+      "changed_number": false,
+      "changed_actor": true,
+      "changed_negation": false,
+      "changed_comparison": false,
+      "changed_time": false,
+      "unsupported_new_claim": false,
+      "explanation": "The attribution is broader than the specific speaker in the Ledger, so changed_actor is true. This is a loose attribution rather than a materially different account; the same broad wording was already present in the Japanese source.",
+      "related_fact_id": "MUSE-HC-012",
+      "origin": "ja_source",
+      "auto_downgraded": false
+    },
+    {
+      "claim_in_article": "Meta’s AI calling test used human contractors without proper disclosure, so the company rolled back that feature.",
+      "issue": "The word “so” presents the lack of disclosure as the cause of the rollback, while the Ledger reports the admission and rollback without explicitly establishing that causal link.",
+      "severity": "MAJOR",
+      "changed_fact": false,
+      "changed_scope": false,
+      "changed_causality": true,
+      "changed_certainty": false,
+      "changed_number": false,
+      "changed_actor": false,
+      "changed_negation": false,
+      "changed_comparison": false,
+      "changed_time": false,
+      "unsupported_new_claim": false,
+      "explanation": "The summary adds a causal connection between inadequate disclosure and the rollback that the Ledger does not explicitly confirm. This causal link is absent from the Japanese source and was introduced in the adapted article.",
+      "related_fact_id": "MUSE-HC-012",
+      "origin": "translation",
+      "auto_downgraded": false
+    }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "prior_issues_resolved": [
+    {
+      "index": 0,
+      "resolved": true,
+      "explanation": "The article says the test proceeded “without proper disclosure” but does not identify users as the people who were not informed. The earlier unsupported specification has been removed."
+    }
+  ],
+  "all_prior_issues_resolved": true
+}

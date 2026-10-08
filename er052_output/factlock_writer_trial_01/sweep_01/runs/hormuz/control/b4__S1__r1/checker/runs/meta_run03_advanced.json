@@ -1,0 +1,2188 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "# From a Fee Schedule to a Deal Card: The Strait Story Changes Fast",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "# From a Fee Schedule to a Deal Card: The Strait Story Changes Fast",
+            "issue": "「Fee Schedule」は通航料の具体的な料金表が示されたことを含意しますが、Ledgerが確認しているのは20％の償還料の提案であり、具体的な制度設計は示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# From a Fee Schedule to a Deal Card: The Strait Story Changes Fast\n\nJust when it seemed a fee schedule had appeared, it was replaced the next day with a deal card. Events around the Strait of Hormuz are changing at a dizzying pace, even just in terms of policy. Trump posted that he would charge all cargo passing through the Strait a 20 percent fee to ensure U.S. security. The next day, he announced that he would replace the proposed fee with deals involving trade with and investment in the United States by Gulf countries. He said this was because of “very productive talks” with Middle Eastern leaders.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "# From a Fee Schedule to a Deal Card: The Strait Story Changes Fast",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648",
+              "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+            ],
+            "batch_cost_jpy": 0.1243,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card.",
+            "issue": "料金表が現れたかのように述べていますが、Ledgerは具体的な制度設計を示していない提案だったとしています。 / 20％の提案が出たことを「fee schedule」が現れたと表現し、提案された率を超える具体的な料金表・制度が存在したかのように示しています。 / 記事は「fee schedule」が現れたと述べていますが、Ledgerでは20％の率以外の具体的な制度設計は示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "HF-003",
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# From a Fee Schedule to a Deal Card: The Strait Story Changes Fast\n\nJust when it seemed a fee schedule had appeared, it was replaced the next day with a deal card. Events around the Strait of Hormuz are changing at a dizzying pace, even just in terms of policy. Trump posted that he would charge all cargo passing through the Strait a 20 percent fee to ensure U.S. security. The next day, he announced that he would replace the proposed fee with deals involving trade with and investment in the United States by Gulf countries. He said this was because of “very productive talks” with Middle Eastern leaders.\n\nMeanwhile, the line chart for crude oil prices does not tell a story that can be read at a glance. On the day the fee proposal came out, Brent crude futures rose sharply. Reuters reported that the rise was linked to worries about a naval blockade of Iran, which was said to be set to begin the next day, and about energy shipments passing through the Strait. We cannot say that the fee proposal alone caused prices to rise.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648",
+              "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+            ],
+            "batch_cost_jpy": 0.1243,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "We cannot say that the fee proposal alone caused prices to rise.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "We cannot say that the fee proposal alone caused prices to rise.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.4"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card. Events around the Strait of Hormuz are changing at a dizzying pace, even just in terms of policy. Trump posted that he would charge all cargo passing through the Strait a 20 percent fee to ensure U.S. security. The next day, he announced that he would replace the proposed fee with deals involving trade with and investment in the United States by Gulf countries. He said this was because of “very productive talks” with Middle Eastern leaders.\n\nMeanwhile, the line chart for crude oil prices does not tell a story that can be read at a glance. On the day the fee proposal came out, Brent crude futures rose sharply. Reuters reported that the rise was linked to worries about a naval blockade of Iran, which was said to be set to begin the next day, and about energy shipments passing through the Strait. We cannot say that the fee proposal alone caused prices to rise.\n\nAfter the announcement the next day that the proposal would be replaced, crude oil futures briefly gave up some of their gains. But soon they returned to a high level close to where they had been before the announcement. At the time the article was published, they were up about 2.6 percent, at more than $85 a barrel. Concerns about attacks by the United States and Iran, a naval blockade, and tanker safety continued.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "We cannot say that the fee proposal alone caused prices to rise.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648",
+              "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+            ],
+            "batch_cost_jpy": 0.1243,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "Even a faraway strait matters to fuel and transport because of crude oil.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "Even a faraway strait matters to fuel and transport because of crude oil.",
+            "issue": "遠方の海峡が原油を通じて燃料や輸送に影響するという一般的な因果主張はLedgerにありません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S5.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.4"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "One thing to be careful about is not to treat this price movement as a scorecard for the policy. The fact that prices first fell back and then rose again does not, by itself, tell us what the market considered most important. That is because the change to the fee proposal and worries about a naval blockade and tanker safety were happening at the same time.\n\nThe main points this time are that the 20 percent fee proposal was replaced with talk of trade and investment, and that crude prices moved up and down over a short period. Looking at these two things side by side makes the story easier to follow. But the key is not to settle on just one reason for the market’s movement. Even a faraway strait matters to fuel and transport because of crude oil. Looking not only at price changes, but also at what was announced and what concerns remain, can make the news a little more interesting to read.\n\n## In one line\nTrump quickly replaced a proposed 20 percent fee on Strait of Hormuz shipping with trade and investment deals.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "Even a faraway strait matters to fuel and transport because of crude oil.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648",
+              "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+            ],
+            "batch_cost_jpy": 0.1243,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "The next day, he announced that he would replace the proposed fee with deals involving trade with and investment in the United States by Gulf countries.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "The next day, he announced that he would replace the proposed fee with deals involving trade with and investment in the United States by Gulf countries.",
+            "issue": "料金表が現れたかのように述べていますが、Ledgerは具体的な制度設計を示していない提案だったとしています。 / 20％の提案が出たことを「fee schedule」が現れたと表現し、提案された率を超える具体的な料金表・制度が存在したかのように示しています。 / 記事は「fee schedule」が現れたと述べていますが、Ledgerでは20％の率以外の具体的な制度設計は示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "HF-003",
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# From a Fee Schedule to a Deal Card: The Strait Story Changes Fast\n\nJust when it seemed a fee schedule had appeared, it was replaced the next day with a deal card. Events around the Strait of Hormuz are changing at a dizzying pace, even just in terms of policy. Trump posted that he would charge all cargo passing through the Strait a 20 percent fee to ensure U.S. security. The next day, he announced that he would replace the proposed fee with deals involving trade with and investment in the United States by Gulf countries. He said this was because of “very productive talks” with Middle Eastern leaders.\n\nMeanwhile, the line chart for crude oil prices does not tell a story that can be read at a glance. On the day the fee proposal came out, Brent crude futures rose sharply. Reuters reported that the rise was linked to worries about a naval blockade of Iran, which was said to be set to begin the next day, and about energy shipments passing through the Strait. We cannot say that the fee proposal alone caused prices to rise.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "The next day, he announced that he would replace the proposed fee with deals involving trade with and investment in the United States by Gulf countries.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648",
+              "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+            ],
+            "batch_cost_jpy": 0.1243,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "After the announcement the next day that the proposal would be replaced, crude oil futures briefly gave up some of their gains.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "After the announcement the next day that the proposal would be replaced, crude oil futures briefly gave up some of their gains.",
+            "issue": "料金表が現れたかのように述べていますが、Ledgerは具体的な制度設計を示していない提案だったとしています。 / 20％の提案が出たことを「fee schedule」が現れたと表現し、提案された率を超える具体的な料金表・制度が存在したかのように示しています。 / 記事は「fee schedule」が現れたと述べていますが、Ledgerでは20％の率以外の具体的な制度設計は示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "HF-003",
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Meanwhile, the line chart for crude oil prices does not tell a story that can be read at a glance. On the day the fee proposal came out, Brent crude futures rose sharply. Reuters reported that the rise was linked to worries about a naval blockade of Iran, which was said to be set to begin the next day, and about energy shipments passing through the Strait. We cannot say that the fee proposal alone caused prices to rise.\n\nAfter the announcement the next day that the proposal would be replaced, crude oil futures briefly gave up some of their gains. But soon they returned to a high level close to where they had been before the announcement. At the time the article was published, they were up about 2.6 percent, at more than $85 a barrel. Concerns about attacks by the United States and Iran, a naval blockade, and tanker safety continued.\n\nOne thing to be careful about is not to treat this price movement as a scorecard for the policy. The fact that prices first fell back and then rose again does not, by itself, tell us what the market considered most important. That is because the change to the fee proposal and worries about a naval blockade and tanker safety were happening at the same time.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "After the announcement the next day that the proposal would be replaced, crude oil futures briefly gave up some of their gains.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648",
+              "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+            ],
+            "batch_cost_jpy": 0.1243,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "The main points this time are that the 20 percent fee proposal was replaced with talk of trade and investment, and that crude prices moved up and down over a short period.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "The main points this time are that the 20 percent fee proposal was replaced with talk of trade and investment, and that crude prices moved up and down over a short period.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.4"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "We cannot say that the fee proposal alone caused prices to rise."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "One thing to be careful about is not to treat this price movement as a scorecard for the policy. The fact that prices first fell back and then rose again does not, by itself, tell us what the market considered most important. That is because the change to the fee proposal and worries about a naval blockade and tanker safety were happening at the same time.\n\nThe main points this time are that the 20 percent fee proposal was replaced with talk of trade and investment, and that crude prices moved up and down over a short period. Looking at these two things side by side makes the story easier to follow. But the key is not to settle on just one reason for the market’s movement. Even a faraway strait matters to fuel and transport because of crude oil. Looking not only at price changes, but also at what was announced and what concerns remain, can make the news a little more interesting to read.\n\n## In one line\nTrump quickly replaced a proposed 20 percent fee on Strait of Hormuz shipping with trade and investment deals.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "The main points this time are that the 20 percent fee proposal was replaced with talk of trade and investment, and that crude prices moved up and down over a short period.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648",
+              "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+            ],
+            "batch_cost_jpy": 0.1243,
+            "batch_n_claims": 7
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 7,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "# From a Fee Schedule to a Deal Card: The Strait Story Changes Fast",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648",
+            "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+          ],
+          "batch_cost_jpy": 0.1243,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648",
+            "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+          ],
+          "batch_cost_jpy": 0.1243,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "We cannot say that the fee proposal alone caused prices to rise.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648",
+            "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+          ],
+          "batch_cost_jpy": 0.1243,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "Even a faraway strait matters to fuel and transport because of crude oil.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648",
+            "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+          ],
+          "batch_cost_jpy": 0.1243,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "The next day, he announced that he would replace the proposed fee with deals involving trade with and investment in the United States by Gulf countries.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648",
+            "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+          ],
+          "batch_cost_jpy": 0.1243,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "After the announcement the next day that the proposal would be replaced, crude oil futures briefly gave up some of their gains.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648",
+            "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+          ],
+          "batch_cost_jpy": 0.1243,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "The main points this time are that the 20 percent fee proposal was replaced with talk of trade and investment, and that crude prices moved up and down over a short period.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648",
+            "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+          ],
+          "batch_cost_jpy": 0.1243,
+          "batch_n_claims": 7
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5364,
+      "usage": {
+        "input_tokens": 5208,
+        "cached_input_tokens": 0,
+        "output_tokens": 5797,
+        "reasoning_tokens": 1802
+      },
+      "elapsed_seconds": 45.548,
+      "prompt_sha256": "040f5c82e105247a52454c2e89adae4ca2b187ab32a66c59d3c4f58fc91a2b1d",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.7039,
+      "usage": {
+        "input_tokens": 4835,
+        "cached_input_tokens": 0,
+        "output_tokens": 8007,
+        "reasoning_tokens": 5696
+      },
+      "elapsed_seconds": 74.344,
+      "prompt_sha256": "7c6db99ab36826c8fe7ca8d95933dc18bab5190c6088a09281fd6eb7f535b2b3",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.4572,
+      "usage": {
+        "input_tokens": 5321,
+        "cached_input_tokens": 0,
+        "output_tokens": 4764,
+        "reasoning_tokens": 3723
+      },
+      "elapsed_seconds": 45.589,
+      "prompt_sha256": "fb7fdbd81400887f613a9b8445ce90ab77a17e53e7bb9968ba7c884675f0c267",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1917,
+      "usage": {
+        "input_tokens": 9507,
+        "cached_input_tokens": 0,
+        "output_tokens": 543,
+        "reasoning_tokens": 414
+      },
+      "elapsed_seconds": 6.529,
+      "prompt_sha256": "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1813,
+      "usage": {
+        "input_tokens": 5918,
+        "cached_input_tokens": 0,
+        "output_tokens": 1128,
+        "reasoning_tokens": 1025
+      },
+      "elapsed_seconds": 12.139,
+      "prompt_sha256": "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0521,
+      "usage": {
+        "input_tokens": 9507,
+        "cached_input_tokens": 9504,
+        "output_tokens": 474,
+        "reasoning_tokens": 345
+      },
+      "elapsed_seconds": 6.595,
+      "prompt_sha256": "8e7d79d51e30cfb435232ff1d7529a18a06ca0ced73a7e81a2612d8899014648"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0722,
+      "usage": {
+        "input_tokens": 5918,
+        "cached_input_tokens": 5915,
+        "output_tokens": 801,
+        "reasoning_tokens": 698
+      },
+      "elapsed_seconds": 10.285,
+      "prompt_sha256": "91ff8fa99728ba2a7ca61e5bd699fd7b095318c7f7fdca064c03e5d51c9151fc"
+    }
+  ],
+  "total_cost_jpy": 2.1948,
+  "total_calls": 7,
+  "elapsed_seconds": 201.08,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "# From a Fee Schedule to a Deal Card: The Strait Story Changes Fast",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "「Fee Schedule」は通航料の具体的な料金表が示されたことを含意しますが、Ledgerが確認しているのは20％の償還料の提案であり、具体的な制度設計は示されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card.",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "料金表が現れたかのように述べていますが、Ledgerは具体的な制度設計を示していない提案だったとしています。 / 20％の提案が出たことを「fee schedule」が現れたと表現し、提案された率を超える具体的な料金表・制度が存在したかのように示しています。 / 記事は「fee schedule」が現れたと述べていますが、Ledgerでは20％の率以外の具体的な制度設計は示されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "We cannot say that the fee proposal alone caused prices to rise.",
+        "related_fact_id": "HF-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Even a faraway strait matters to fuel and transport because of crude oil.",
+        "related_fact_id": "HF-006",
+        "origin": null,
+        "issue": "遠方の海峡が原油を通じて燃料や輸送に影響するという一般的な因果主張はLedgerにありません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S5.4); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 15,
+      "n_model_entries": 14,
+      "n_targets": 12,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 9,
+      "n_excluded_entries": 9,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.4572,
+          "usage": {
+            "input_tokens": 5321,
+            "cached_input_tokens": 0,
+            "output_tokens": 4764,
+            "reasoning_tokens": 3723
+          },
+          "elapsed_seconds": 45.589,
+          "prompt_sha256": "fb7fdbd81400887f613a9b8445ce90ab77a17e53e7bb9968ba7c884675f0c267",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.4572,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# From a Fee Schedule to a Deal Card: The Strait Story Changes Fast",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「Fee Schedule」は、Ledgerが具体的な制度設計のない提案とする内容を、正式な料金表が存在したかのように示しています。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.1",
+          "claim": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "翌日に置き換えた点は一致しますが、「fee scheduleが現れた」は、制度設計のない提案を実際の料金表のように述べています。",
+          "fact_tags": [
+            "date",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C3",
+          "key": "S1.2",
+          "claim": "Events around the Strait of Hormuz are changing at a dizzying pace, even just in terms of policy.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "ホルムズ海峡をめぐる政策が短期間で変化したという要約は、20％料の提案と翌日の置換に沿っています。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C4",
+          "key": "S2.1",
+          "claim": "Meanwhile, the line chart for crude oil prices does not tell a story that can be read at a glance.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "価格チャートの読みやすさについての評価で、具体的な事実を追加していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S4.1",
+          "claim": "One thing to be careful about is not to treat this price movement as a scorecard for the policy.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "価格変動を政策の採点表として扱わないよう促す比喩的な助言です。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C6",
+          "key": "S4.2",
+          "claim": "The fact that prices first fell back and then rose again does not, by itself, tell us what the market considered most important.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "一時的に上げ幅を縮めた後に高い水準へ戻ったという順序はHF-009と一致し、市場が重視した要因をそれだけで特定できないという注意書きです。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C7",
+          "key": "S5.2",
+          "claim": "Looking at these two things side by side makes the story easier to follow.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "二つの話題を並べると理解しやすいという読者向けの評価です。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C8",
+          "key": "S5.3",
+          "claim": "But the key is not to settle on just one reason for the market’s movement.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "市場変動の理由を一つに決めつけないよう促す論評で、具体的な因果事実を追加していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C9",
+          "key": "S5.4",
+          "claim": "Even a faraway strait matters to fuel and transport because of crude oil.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "海峡が燃料・輸送に影響するという因果関係はLedgerに確認されず、Ledgerのエネルギー輸送への懸念より対象を広げています。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "mismatch",
+          "scope_match": "mismatch",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C10",
+          "key": "S5.5",
+          "claim": "Looking not only at price changes, but also at what was announced and what concerns remain, can make the news a little more interesting to read.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "ニュースの読み方についての一般的な評価で、具体的な事実を追加していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C11",
+          "key": "L1",
+          "claim": "Trump quickly replaced a proposed 20 percent fee on Strait of Hormuz shipping with trade and investment deals.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "トランプ氏が提案した20％料を湾岸諸国との貿易・投資案件に置き換えたという要約はHF-002・HF-007に沿っています。",
+          "fact_tags": [
+            "number",
+            "proper_noun",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C12",
+          "key": "R:S4.2+S4.3",
+          "claim": "That is because the change to the fee proposal and worries about a naval blockade and tanker safety were happening at the same time.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "料金案の置換と海上封鎖・タンカー安全への懸念が同時に存在した点はHF-009の状況説明に合致し、価格要因を単一に特定できない理由として述べています。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "fb7fdbd81400887f613a9b8445ce90ab77a17e53e7bb9968ba7c884675f0c267"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 30,
+    "n_judged_units": 24,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S4.2+S4.3"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S4.2+S4.3",
+          "S1.1",
+          "S1.2",
+          "S2.1",
+          "S2.4",
+          "S4.1",
+          "S4.2",
+          "S5.2",
+          "S5.3",
+          "S5.4",
+          "S5.5",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S1.5": "SUPPORTED",
+          "S2.1": "CANDIDATE",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "CANDIDATE",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "CANDIDATE",
+          "S5.3": "CANDIDATE",
+          "S5.4": "CANDIDATE",
+          "S5.5": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S4.2+S4.3": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5364,
+            "usage": {
+              "input_tokens": 5208,
+              "cached_input_tokens": 0,
+              "output_tokens": 5797,
+              "reasoning_tokens": 1802
+            },
+            "elapsed_seconds": 45.548,
+            "prompt_sha256": "040f5c82e105247a52454c2e89adae4ca2b187ab32a66c59d3c4f58fc91a2b1d",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S1.5": "SUPPORTED",
+          "S2.1": "CANDIDATE",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "CANDIDATE",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "CANDIDATE",
+          "S5.3": "CANDIDATE",
+          "S5.4": "CANDIDATE",
+          "S5.5": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S4.2+S4.3": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# From a Fee Schedule to a Deal Card: The Strait Story Changes Fast",
+            "span": [
+              0,
+              67
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「Fee Schedule」は通航料の具体的な料金表が示されたことを含意しますが、Ledgerが確認しているのは20％の償還料の提案であり、具体的な制度設計は示されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "# From a Fee Schedule to a Deal Card: The Strait Story Changes Fast"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card.",
+            "span": [
+              69,
+              164
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "料金表が現れたかのように述べていますが、Ledgerは具体的な制度設計を示していない提案だったとしています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "Events around the Strait of Hormuz are changing at a dizzying pace, even just in terms of policy.",
+            "span": [
+              165,
+              262
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "海峡をめぐる出来事全般が「目まぐるしいペース」で変化しているという評価・一般化はLedgerで確認できません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Events around the Strait of Hormuz are changing at a dizzying pace, even just in terms of policy."
+          },
+          {
+            "unit_id": "S2.1",
+            "unit_ids": [
+              "S2.1"
+            ],
+            "claim_text": "Meanwhile, the line chart for crude oil prices does not tell a story that can be read at a glance.",
+            "span": [
+              611,
+              709
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "原油価格の線グラフが一目で読める物語を示さないという評価はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Meanwhile, the line chart for crude oil prices does not tell a story that can be read at a glance."
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "We cannot say that the fee proposal alone caused prices to rise.",
+            "span": [
+              970,
+              1034
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "One thing to be careful about is not to treat this price movement as a scorecard for the policy.",
+            "span": [
+              1457,
+              1553
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "価格変動を政策の「採点表」として扱わないようにするという助言・解釈は、Ledgerに明示されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "One thing to be careful about is not to treat this price movement as a scorecard for the policy."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "The fact that prices first fell back and then rose again does not, by itself, tell us what the market considered most important.",
+            "span": [
+              1554,
+              1682
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "市場が何を最も重要と考えたかは価格の上下だけでは分からないという認識上の結論は、Ledgerに直接記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The fact that prices first fell back and then rose again does not, by itself, tell us what the market considered most important."
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "Looking at these two things side by side makes the story easier to follow.",
+            "span": [
+              1989,
+              2063
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "二つの事柄を並べて見ることで話を追いやすくなるという読者体験上の評価はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Looking at these two things side by side makes the story easier to follow."
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "But the key is not to settle on just one reason for the market’s movement.",
+            "span": [
+              2064,
+              2138
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "市場の動きについて理由を一つに決めつけないことを「key」とする助言は、Ledgerに直接述べられていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "But the key is not to settle on just one reason for the market’s movement."
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "Even a faraway strait matters to fuel and transport because of crude oil.",
+            "span": [
+              2139,
+              2212
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "遠方の海峡が原油を通じて燃料や輸送に影響するという一般的な因果主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "Even a faraway strait matters to fuel and transport because of crude oil."
+          },
+          {
+            "unit_id": "S5.5",
+            "unit_ids": [
+              "S5.5"
+            ],
+            "claim_text": "Looking not only at price changes, but also at what was announced and what concerns remain, can make the news a little more interesting to read.",
+            "span": [
+              2213,
+              2357
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "価格変動、発表、残る懸念を合わせて見るとニュースがより興味深く読めるという評価はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Looking not only at price changes, but also at what was announced and what concerns remain, can make the news a little more interesting to read."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Trump quickly replaced a proposed 20 percent fee on Strait of Hormuz shipping with trade and investment deals.",
+            "span": [
+              2374,
+              2484
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「shipping」への料金は全貨物への償還料案より対象を広げており、また「deals」との置換は投資・貿易案件が実際に成立したかのようにも読めます。Ledgerが確認するのは湾岸諸国による対米貿易・投資案件への置換投稿です。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Trump quickly replaced a proposed 20 percent fee on Strait of Hormuz shipping with trade and investment deals."
+          },
+          {
+            "unit_id": "R:S4.2+S4.3",
+            "unit_ids": [
+              "R:S4.2+S4.3"
+            ],
+            "claim_text": "That is because the change to the fee proposal and worries about a naval blockade and tanker safety were happening at the same time.",
+            "span": [
+              1683,
+              1815
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「That is because」が、懸念が同時に存在したことを、価格から市場の重視事項が分からないことの原因として結び付けています。Ledgerは同時に続いた要因を記載していますが、この因果関係は述べていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The fact that prices first fell back and then rose again does not, by itself, tell us what the market considered most important. That is because the change to the fee proposal and worries about a naval blockade and tanker safety were happening at the same time."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S1.1"
+        ],
+        "unit_status": {
+          "S1.1": "DEVIATION",
+          "S1.3": "MATCH",
+          "S1.4": "MATCH",
+          "S5.1": "MATCH",
+          "L1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S5.3": "MATCH",
+          "S1.5": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "R:S4.2+S4.3": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S2.1": "UNMENTIONED",
+          "S5.2": "UNMENTIONED",
+          "S5.4": "UNMENTIONED",
+          "S5.5": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.7039,
+            "usage": {
+              "input_tokens": 4835,
+              "cached_input_tokens": 0,
+              "output_tokens": 8007,
+              "reasoning_tokens": 5696
+            },
+            "elapsed_seconds": 74.344,
+            "prompt_sha256": "7c6db99ab36826c8fe7ca8d95933dc18bab5190c6088a09281fd6eb7f535b2b3",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card.",
+            "span": [
+              69,
+              164
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "20％の提案が出たことを「fee schedule」が現れたと表現し、提案された率を超える具体的な料金表・制度が存在したかのように示しています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card."
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card.",
+            "span": [
+              69,
+              164
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "記事は「fee schedule」が現れたと述べていますが、Ledgerでは20％の率以外の具体的な制度設計は示されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S1.1"
+      ],
+      "r3_only": [
+        "L1",
+        "R:S4.2+S4.3",
+        "S1.2",
+        "S2.1",
+        "S2.4",
+        "S4.1",
+        "S4.2",
+        "S5.2",
+        "S5.3",
+        "S5.4",
+        "S5.5",
+        "T"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 1
+    },
+    "union_candidates": [
+      {
+        "claim_text": "# From a Fee Schedule to a Deal Card: The Strait Story Changes Fast",
+        "span": [
+          0,
+          67
+        ],
+        "unit_ids": [
+          "T"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "「Fee Schedule」は通航料の具体的な料金表が示されたことを含意しますが、Ledgerが確認しているのは20％の償還料の提案であり、具体的な制度設計は示されていません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-003"
+        ],
+        "model_claims": [
+          "# From a Fee Schedule to a Deal Card: The Strait Story Changes Fast"
+        ]
+      },
+      {
+        "claim_text": "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card.",
+        "span": [
+          69,
+          164
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "料金表が現れたかのように述べていますが、Ledgerは具体的な制度設計を示していない提案だったとしています。",
+          "20％の提案が出たことを「fee schedule」が現れたと表現し、提案された率を超える具体的な料金表・制度が存在したかのように示しています。",
+          "記事は「fee schedule」が現れたと述べていますが、Ledgerでは20％の率以外の具体的な制度設計は示されていません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-003",
+          "HF-002"
+        ],
+        "model_claims": [
+          "Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card."
+        ]
+      },
+      {
+        "claim_text": "We cannot say that the fee proposal alone caused prices to rise.",
+        "span": [
+          970,
+          1034
+        ],
+        "unit_ids": [
+          "S2.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Even a faraway strait matters to fuel and transport because of crude oil.",
+        "span": [
+          2139,
+          2212
+        ],
+        "unit_ids": [
+          "S5.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "遠方の海峡が原油を通じて燃料や輸送に影響するという一般的な因果主張はLedgerにありません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-006"
+        ],
+        "model_claims": [
+          "Even a faraway strait matters to fuel and transport because of crude oil."
+        ]
+      }
+    ],
+    "n_union_candidates": 4,
+    "n_model_candidates": 3,
+    "n_deterministic_only_candidates": 1,
+    "total_cost_jpy": 1.2403,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 14,
+    "n_targets": 12,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 9,
+    "n_excluded_entries": 9,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.4572,
+    "effort": "medium",
+    "prompt_sha256": "fb7fdbd81400887f613a9b8445ce90ab77a17e53e7bb9968ba7c884675f0c267"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 3
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 2.1948,
+  "provenance": {
+    "switch_dump_sha256": "66d18a3a1b28679684d7dcbe6e7af161a4da4223da7415a7ac50e7450de777c1",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-08T11:19:16",
+    "ledger_sha256": "83b2a09b99b20af0f1d30aefc6dda7bfe40ed06a6d7726a56a0bb90bce774522",
+    "article_sha256": "8d72d2e876459416c1e485ed27499d9b9ec4f867cc7e3a9b9e17256c91b79585",
+    "source_article_sha256": "482a9a9fedea1320fa2ab5fbf778b570d02741306de1cb1c271ff20fcf726575",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/factlock_writer_trial_01/sweep_01/runs/hormuz/control/b4__S1__r1/checker",
+      "ledger_path": "er052_output/factlock_writer_trial_01/sweep_01/runs/hormuz/control/b4__S1__r1/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/factlock_writer_trial_01/sweep_01/runs/hormuz/control/b4__S1__r1/b1b/article.md",
+      "source_path": "er052_output/factlock_writer_trial_01/sweep_01/runs/hormuz/control/b4__S1__r1/ja_writer/revision2.md",
+      "budget_jpy": 10.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

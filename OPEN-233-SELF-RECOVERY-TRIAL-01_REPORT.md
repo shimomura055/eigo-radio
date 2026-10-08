@@ -5627,3 +5627,37 @@ precheck +56/-1(`extract_percentages_strict`新設、`check_number_mismatch`のf
 - 悪化項目: JA R2重大0->1、EN Advanced deviation STOP 0->2とmust-fix 0->6、保留増、軽微のscope/subject型の増加。限界: N小、重大全体2件(床効果)、LLM単独評価で評価者差が群間差を上回る、STOP10本は評価対象外、Checkerは両群6-lunaで比較に含まれない、cost.jsonはpricing表欠落で6-lunaが0円計上のためraw_usageから再計算。
 - 費用: T-A ¥316.3(baseline ¥222.5/all6 ¥93.8)+T-B ¥31.4+評価 ¥34.9=¥382.6/¥500。
 - artifact: `er052_output/all6_writer_redesign_necessity_01/`(RESULT.md、PREREGISTRATION.md、MANIFEST.json、T-B/、eval/SUMMARY_TA.md、eval/HUMAN_CHECK_TA.md[重大候補2件])。Production変更なし。
+
+## §104 FACTLOCK-WRITER-REDESIGN-TRIAL-01(Fact Lock v1・残NG突合・診断・R3最小指示・6-sol N=1・sweep生成、2026-10-08、v1 MEASURED / sweep EVALUATING)
+
+- 位置づけ: Trial(Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言、採用判断はユーザー)。全て6-lunaで実施(model_id実測)。LLM単独判定・人間確認前。
+- 設計: 事実をタグ(【事実N】)付きで書かせるFact Lock。数値規則(c)(周辺数値は書かず中核数値のみ上限3件)、R1/R2事実固定5則、名称内番号はA(周辺のまま名称ごと書かない)。Opus条件A(M1〜M9)反映済み。
+
+### v1(委任_02b、3セルx24本、同一パック盲検)
+| 区分 | baseline(5.6現行) | all6 | factlock |
+|---|---|---|---|
+| JA R2 重大 | 0 | 1 | 0 |
+| EN 重大 | 1 | 1 | 0 |
+| JA R2 軽微/記事 | 0.55(12件) | 0.32(7) | 0.21(5) |
+| EN 軽微/記事 | 0.81(17) | 0.68(13) | 0.32(6) |
+| R0 軽微 | 11 | 8 | 4 |
+| 保留/記事 | 0.46 | 0.33 | 0.21 |
+- 面白さpairwise(副指標): factlock 13対all6 35(不戦勝4判定を除くと実質9対35)。STOP率は同じ5/24。照合不整合R2 13/189文(6.9%、space_weapons/b3/r2に偏在)。
+- 費用: ¥173.2/¥150(超過¥23.2、同一72本採点で5.6ジャッジ¥1.5/call、T-3運用で記録継続)。
+- 限界: 5要素のどれが効いたか分離不可、3テーマ超の一般化不可、重大0〜2件で判断不能、B3中核数値は手付け注記、照合はWriter同系列の自己判定。
+### 残NG突合(委任_05、¥0)
+- factlock全NG 14項目(重大1[R0のみ]・軽微8・保留5)。照合検出は狭義1/9(11%)、広義2/9(22%)。照合不整合13文は盲検NG/保留と0重複。ENのみ(翻訳段由来)3件(EN軽微6件の50%)。機械的上限 JA軽微0.21→0.17、EN 0.32→0.32。限界: NG総数9で不確実性大。
+### 診断(委任_03、¥0)
+- 実質9対35。FL側批判(44判定中)は比喩の重なり16、作り込み・窮屈27(judge指示文に同語あり=独立所見でない)。密度(FL/現行): アラビア数字3.42/1.32、推量・仮定語2.12/0.86、問い0.71/0.09、です・ます文割合0.26/0.50、「ではありません」型1.58/2.59(仮説不支持)。外れ値space_weapons b3 r2はタグ番号取り違え(共通修正T)。案A/案Bを設計(DESIGN_02)。
+### R3-MINIMAL-01(委任_06、N=12、¥13.01/¥60)
+- fresh 8.5/12・JA FC MAJOR 0→6(5本)、chain 7.0/12・MAJOR 0→4(3本)。位置バイアス強い(B勝39/48)。例: 「懸念が残っていたから値が高止まり」型の因果変更、「原油先物」(台帳はBrent限定)。6-lunaでは最小指示で事実逸脱が増える。限界: N=12、LLM判定のみ。
+### 6-sol R3 N=1(委任_07、meta b2、¥1.72)
+- JA FC LEDGER_COMPLIANT、字数767→597(約22%短縮)、構成組替えなし、比喩5→3種。pairwiseは位置偏りで各1-1。優劣未測定(N=1)。
+### sweep生成(委任_04b、33本、GENERATED)
+- 11変種(S1〜S4,S6〜S12)x3 brief。完走29・STOP4(S3 meta=EN MAJOR再発、S4 hormuz=JA_RECHECK_REQUIRED、S8 meta・S10 hormuz=JA R2 Fact Check STOP)。実費約¥186.6/¥300。照合の不整合率はS2 29.2%・S7 29.4%が高く、S1 0%・S6 3.1%・S3 3.4%が低い(N=3、タグ付き文数が変種で大きく異なり粗い)。文体指標は常体化(S1 0.25、S4 0.19)や比喩種の差が大きい(詳細STYLE_METRICS)。
+- **sweep評価結果は評価中(委任_04c)。後続§で追記する。**
+### 問題・未修正
+- harness欠陥: phase2のJA再生成でタグ除去が適用されず、最終稿/ENにタグ残存(S4 hormuz・S11 space_weapons[EN含む]・S8 space_weapons)。Production採用検討時に要修正。
+- Opus: 条件A M1〜M9、任意(sweep評価設計 M1〜M7、O1・O2・O4採用)を OPUS_FINDINGS_LEDGER OF-072〜087 に登録。
+### artifact
+- `er052_output/factlock_writer_trial_01/`(RESULT.md、MANIFEST.json、PREREGISTRATION.md、FIXED_SHAS.json、DESIGN_01.md、runs/、eval/{SUMMARY_FL.md,FACTLOCK_CHECK_SUMMARY.md,HUMAN_CHECK_FL.md,residual_analysis/}、v2_design/、r3_minimal_01/{SUMMARY_R3.md,sol_n1/}、sweep_01/{MANIFEST.json,DESIGN_SWEEP_01.md,PREREGISTRATION_SWEEP.md,variants.json,runs/})、harness `er052_factlock_writer_trial_01_run.py`/`er052_factlock_sweep_01_run.py`。Opusレビュー `docs/pm/opus_l2_review_factlock_{writer_trial,sweep_eval}_01.md`。

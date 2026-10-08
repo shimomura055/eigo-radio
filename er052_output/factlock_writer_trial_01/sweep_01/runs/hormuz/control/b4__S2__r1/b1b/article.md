@@ -1,0 +1,16 @@
+# The Reimbursement Proposal Is Out; Oil Prices Zigzag
+
+Just when it seemed the story would end with the reimbursement proposal being pulled, the price chart had another act. The key point is that the outcome of the policy statement and the moves in oil prices do not form one neat story.
+
+On July 13, Trump posted that he would seek 20% reimbursement on all cargo passing through the Strait of Hormuz to cover U.S. security costs. That day, Brent crude futures rose $7.29, or 9.59%, and settled at $83.30 a barrel. Reuters linked the rise to concerns about a naval blockade against Iran that was planned to begin the next day, and about energy shipments through the strait. We cannot say the reimbursement proposal alone caused the price increase.
+
+The next day, Trump posted that he would replace the proposal with deals involving trade between Gulf countries and the United States, and investment by Gulf countries in the United States. He said the decision was based on “very productive talks” with Middle Eastern leaders.
+
+After the announcement, Brent futures briefly gave up some of their gains. But before long, they returned to a high level close to where they had been before the announcement. At the time the article was published, the price was up about 2.6%, at more than $85 a barrel.
+
+Here, the numbers have a small trap. The price above $85 was an update at the time the article was published, not the settlement price for July 14. That day’s settlement price was $84.73 a barrel, up $1.43, or 1.7%, from the day before. For the second business day in a row, it was the highest settlement price since June 12.
+
+The reimbursement proposal was pulled, the price gain briefly narrowed, and then prices returned to a high level. Meanwhile, concerns continued about a naval blockade, attacks between the United States and Iran, and tanker safety. But this sequence alone does not show that “the withdrawal lowered prices” or that “the concerns prevented prices from falling.” What we can confirm is that the change in the statement, the price moves, and the continued concerns all happened during the same period. We can follow the news story, but we should not name a single culprit for the market’s moves. That is the key point this time.
+
+## In one line
+After Trump dropped the proposal, oil prices briefly eased but stayed high, and no single cause was clear.

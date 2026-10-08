@@ -1,0 +1,74 @@
+{
+  "trigger_stage": "advanced",
+  "major_deviations_ja_sourced": [
+    {
+      "claim_in_article": "“Oil prices quickly returned near earlier highs” (including the headline and the “In one line” summary).",
+      "issue": "Brent先物について確認された値動きを「原油価格」全般の動きとして表現しており、対象をBrent以外にも広げて読める。",
+      "severity": "MAJOR",
+      "changed_fact": false,
+      "changed_scope": true,
+      "changed_causality": false,
+      "changed_certainty": false,
+      "changed_number": false,
+      "changed_actor": false,
+      "changed_negation": false,
+      "changed_comparison": false,
+      "changed_time": false,
+      "unsupported_new_claim": false,
+      "explanation": "changed_scope=true。Ledgerが確認しているのはBrent先物の値動きであり、記事の総括は原油価格全般に対象を広げている。",
+      "related_fact_id": "HF-009",
+      "origin": "ja_source",
+      "auto_downgraded": false
+    },
+    {
+      "claim_in_article": "“The price moves seemed to reflect not only the changed announcement but also worries about sea transport.”",
+      "issue": "発表後の値動きが海上輸送への懸念も反映していたという因果的な解釈は、Ledgerではこの値動きについて確認されていない。",
+      "severity": "MAJOR",
+      "changed_fact": false,
+      "changed_scope": false,
+      "changed_causality": true,
+      "changed_certainty": false,
+      "changed_number": false,
+      "changed_actor": false,
+      "changed_negation": false,
+      "changed_comparison": false,
+      "changed_time": false,
+      "unsupported_new_claim": false,
+      "explanation": "changed_causality=true。Ledgerは懸念が続いていたことと値動きを報告しているが、発表後の値動きがその懸念を反映したとは結び付けていない。記事は「seemed」と留保しているため、確実性の変更とはしない。",
+      "related_fact_id": "HF-009",
+      "origin": "ja_source",
+      "auto_downgraded": false
+    }
+  ],
+  "must_fix_used": [
+    {
+      "fact_id": "HF-009",
+      "claim_in_article": "“Oil prices quickly returned near earlier highs” (including the headline and the “In one line” summary).",
+      "issue": "Brent先物について確認された値動きを「原油価格」全般の動きとして表現しており、対象をBrent以外にも広げて読める。",
+      "explanation": "changed_scope=true。Ledgerが確認しているのはBrent先物の値動きであり、記事の総括は原油価格全般に対象を広げている。"
+    },
+    {
+      "fact_id": "HF-009",
+      "claim_in_article": "“The price moves seemed to reflect not only the changed announcement but also worries about sea transport.”",
+      "issue": "発表後の値動きが海上輸送への懸念も反映していたという因果的な解釈は、Ledgerではこの値動きについて確認されていない。",
+      "explanation": "changed_causality=true。Ledgerは懸念が続いていたことと値動きを報告しているが、発表後の値動きがその懸念を反映したとは結び付けていない。記事は「seemed」と留保しているため、確実性の変更とはしない。"
+    }
+  ],
+  "pre_recheck_sha256": {
+    "original.md": "d04b041c5464a159bcc1d4e081bc698545eb9a68245ee93735c4d2443b469770",
+    "revision1.md": "a2fad83437aedf762fcfeeab2b98c92314726841b2b8594b8195e8e29c5aa8b4",
+    "revision2.md": "86824c49724a79f5df19fdf91cc474a027a8deb49f0d5f25455cfd6c91178ffc"
+  },
+  "new_ja_text_sha256": "969b9cfc7581bc9539552e1e98857878c04fbc48f3b6bcc5de14c881ecf441bf",
+  "fact_checks_summary": {
+    "original": {
+      "must_fix_applied": false,
+      "final_status": "LEDGER_COMPLIANT"
+    },
+    "r2": {
+      "must_fix_applied": false,
+      "final_status": "LEDGER_COMPLIANT"
+    }
+  },
+  "outcome": "REGENERATED"
+}

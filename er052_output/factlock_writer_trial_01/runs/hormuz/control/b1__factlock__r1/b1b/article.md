@@ -1,0 +1,12 @@
+# The Proposal Changed Costumes Quickly, but the Market Has Not Lowered the Curtain
+
+The main point this time is how quickly the policy proposal changed. A plan to charge for cargo changed into an investment deal the next day. But the market did not say, “That settles it.” Brent futures briefly gave up some of their gains, but soon returned to a high level close to where they were before the announcement.
+
+First came the original costume. Trump posted that he would seek a 20% payment from all cargo passing through the Strait of Hormuz to cover the cost of keeping the strait safe. The next day, he posted that he would replace that payment with trade and investment deals between Gulf countries and the United States. From “We’ll charge cargo” to “We’ll make it an investment deal.” It was as if the lines on stage had changed in an instant.
+
+But it seems the mood on stage did not change. At the time of the report, Brent futures were up 2.6%, above $85 a barrel. Attacks between the United States and Iran, a blockade at sea, and concerns about the safety of tankers continued.
+
+What we could see was that the proposal had changed shape, while worries at sea continued. If we look only at the moment when the price gains narrowed and jump to the conclusion that “it’s all safe now,” we may miss how prices later returned to a high level. If this news were a play, the costume change would be complete. But it would still be too soon for the curtain to fall. That is how the story seems to end.
+
+## In one line
+Trump swapped a proposed Hormuz cargo fee for investment deals, but oil prices remained high as tensions continued.

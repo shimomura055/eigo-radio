@@ -1,0 +1,2444 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "# Strait Toll Plan Turns into Trade Talks the Next Day, but the Oil Market Has Not Settled Down",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "# Strait Toll Plan Turns into Trade Talks the Next Day, but the Oil Market Has Not Settled Down",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Strait Toll Plan Turns into Trade Talks the Next Day, but the Oil Market Has Not Settled Down\n\nAs soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.” Trump posted that the United States would seek 20% reimbursement from all cargo passing through, to cover the cost of keeping the Strait of Hormuz safe. But this was a proposal, not a fee already in effect. The fee system had not gone into action.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "# Strait Toll Plan Turns into Trade Talks the Next Day, but the Oil Market Has Not Settled Down",
+            "first_materiality": "QUALITY",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+              "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+            ],
+            "batch_cost_jpy": 0.1884,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.”",
+          "origin": null,
+          "related_fact_id": "HF-002",
+          "dev": {
+            "claim_in_article": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.”",
+            "issue": "「ショーが始まるとすぐ」「最初の考えとして現れた」という順序・時期の主張はLedgerにない。 / Ledgerは通航貨物への20％償還料の投稿を確認していますが、「ショーの始まりと同時に」「最初に現れたアイデア」という出来事の順序・タイミングまでは確認していません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-002",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Strait Toll Plan Turns into Trade Talks the Next Day, but the Oil Market Has Not Settled Down\n\nAs soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.” Trump posted that the United States would seek 20% reimbursement from all cargo passing through, to cover the cost of keeping the Strait of Hormuz safe. But this was a proposal, not a fee already in effect. The fee system had not gone into action.\n\nBut the next day, the scene changed suddenly. Trump posted that he would replace the toll plan with trade and investment deals between Gulf countries and the United States. He said the decision was based on “very productive talks” with Middle Eastern leaders. The bill quickly turned into papers for trade talks. Quite a striking change of costume.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": "deterministic_floor_cited:changed_time",
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-002",
+            "claim_text": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.”",
+            "first_materiality": "QUALITY",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+              "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+            ],
+            "batch_cost_jpy": 0.1884,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "The answer was not so simple.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "The answer was not so simple.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But the next day, the scene changed suddenly. Trump posted that he would replace the toll plan with trade and investment deals between Gulf countries and the United States. He said the decision was based on “very productive talks” with Middle Eastern leaders. The bill quickly turned into papers for trade talks. Quite a striking change of costume.\n\nSo, did oil prices also feel safe enough to bring the curtain down? The answer was not so simple. After the announcement, Brent futures briefly gave up some of their gains, but soon returned to a high level close to where they had been before the announcement. At the time of publication, they were up about 2.6%, above $85 a barrel.\n\nWhat remained onstage was concern about supply. Concerns continued over attacks between the United States and Iran, a blockade at sea, and the safety of tankers. Even after the toll plan changed costumes, worries about the strait did not leave the stage.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "The answer was not so simple.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+              "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+            ],
+            "batch_cost_jpy": 0.1884,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Even after the toll plan changed costumes, worries about the strait did not leave the stage.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Even after the toll plan changed costumes, worries about the strait did not leave the stage.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.3"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So, did oil prices also feel safe enough to bring the curtain down? The answer was not so simple. After the announcement, Brent futures briefly gave up some of their gains, but soon returned to a high level close to where they had been before the announcement. At the time of publication, they were up about 2.6%, above $85 a barrel.\n\nWhat remained onstage was concern about supply. Concerns continued over attacks between the United States and Iran, a blockade at sea, and the safety of tankers. Even after the toll plan changed costumes, worries about the strait did not leave the stage.\n\nThe main topic changed from charges on cargo to trade and investment. But judging by market moves, worries about supply seemed to remain unchanged. Though the news was about a faraway strait, what mattered in the end was the movement in oil prices. A quick change in the story alone was not enough to bring the curtain down.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Even after the toll plan changed costumes, worries about the strait did not leave the stage.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+              "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+            ],
+            "batch_cost_jpy": 0.1884,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "But judging by market moves, worries about supply seemed to remain unchanged.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "But judging by market moves, worries about supply seemed to remain unchanged.",
+            "issue": "Ledgerは供給懸念が継続したとするが、懸念が以前と「変わらず」だったという比較までは確認していない。 / Ledgerは懸念が続いていたことと、Brentが一時上げ幅を縮小した後に回復したことを確認していますが、「市場の動きから供給懸念が変わらなかった」と結び付ける解釈までは確認していません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "What remained onstage was concern about supply. Concerns continued over attacks between the United States and Iran, a blockade at sea, and the safety of tankers. Even after the toll plan changed costumes, worries about the strait did not leave the stage.\n\nThe main topic changed from charges on cargo to trade and investment. But judging by market moves, worries about supply seemed to remain unchanged. Though the news was about a faraway strait, what mattered in the end was the movement in oil prices. A quick change in the story alone was not enough to bring the curtain down.\n\n## In one line\nTrump replaced his proposed Strait of Hormuz toll with trade talks, but oil-market worries persisted.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But judging by market moves, worries about supply seemed to remain unchanged.",
+            "first_materiality": "QUALITY",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+              "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+            ],
+            "batch_cost_jpy": 0.1884,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "A quick change in the story alone was not enough to bring the curtain down.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "A quick change in the story alone was not enough to bring the curtain down.",
+            "issue": "料金案の変更だけでは市場の動きを終わらせられなかったという因果・十分性の解釈を加えているが、Ledgerはその因果関係を確認していない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S5.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.4"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "What remained onstage was concern about supply. Concerns continued over attacks between the United States and Iran, a blockade at sea, and the safety of tankers. Even after the toll plan changed costumes, worries about the strait did not leave the stage.\n\nThe main topic changed from charges on cargo to trade and investment. But judging by market moves, worries about supply seemed to remain unchanged. Though the news was about a faraway strait, what mattered in the end was the movement in oil prices. A quick change in the story alone was not enough to bring the curtain down.\n\n## In one line\nTrump replaced his proposed Strait of Hormuz toll with trade talks, but oil-market worries persisted.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "A quick change in the story alone was not enough to bring the curtain down.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+              "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+            ],
+            "batch_cost_jpy": 0.1884,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Trump posted that he would replace the toll plan with trade and investment deals between Gulf countries and the United States.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Trump posted that he would replace the toll plan with trade and investment deals between Gulf countries and the United States.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# Strait Toll Plan Turns into Trade Talks the Next Day, but the Oil Market Has Not Settled Down"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.” Trump posted that the United States would seek 20% reimbursement from all cargo passing through, to cover the cost of keeping the Strait of Hormuz safe. But this was a proposal, not a fee already in effect. The fee system had not gone into action.\n\nBut the next day, the scene changed suddenly. Trump posted that he would replace the toll plan with trade and investment deals between Gulf countries and the United States. He said the decision was based on “very productive talks” with Middle Eastern leaders. The bill quickly turned into papers for trade talks. Quite a striking change of costume.\n\nSo, did oil prices also feel safe enough to bring the curtain down? The answer was not so simple. After the announcement, Brent futures briefly gave up some of their gains, but soon returned to a high level close to where they had been before the announcement. At the time of publication, they were up about 2.6%, above $85 a barrel.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "Trump posted that he would replace the toll plan with trade and investment deals between Gulf countries and the United States.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+              "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+            ],
+            "batch_cost_jpy": 0.1884,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Trump replaced his proposed Strait of Hormuz toll with trade talks, but oil-market worries persisted.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Trump replaced his proposed Strait of Hormuz toll with trade talks, but oil-market worries persisted.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# Strait Toll Plan Turns into Trade Talks the Next Day, but the Oil Market Has Not Settled Down"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The main topic changed from charges on cargo to trade and investment. But judging by market moves, worries about supply seemed to remain unchanged. Though the news was about a faraway strait, what mattered in the end was the movement in oil prices. A quick change in the story alone was not enough to bring the curtain down.\n\n## In one line\nTrump replaced his proposed Strait of Hormuz toll with trade talks, but oil-market worries persisted.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "Trump replaced his proposed Strait of Hormuz toll with trade talks, but oil-market worries persisted.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+              "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+            ],
+            "batch_cost_jpy": 0.1884,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.",
+          "origin": null,
+          "related_fact_id": "HF-002",
+          "dev": {
+            "claim_in_article": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.",
+            "issue": "「ショーが始まるとすぐ」「最初の考えとして現れた」という順序・時期の主張はLedgerにない。 / Ledgerは通航貨物への20％償還料の投稿を確認していますが、「ショーの始まりと同時に」「最初に現れたアイデア」という出来事の順序・タイミングまでは確認していません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-002",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Strait Toll Plan Turns into Trade Talks the Next Day, but the Oil Market Has Not Settled Down\n\nAs soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.” Trump posted that the United States would seek 20% reimbursement from all cargo passing through, to cover the cost of keeping the Strait of Hormuz safe. But this was a proposal, not a fee already in effect. The fee system had not gone into action.\n\nBut the next day, the scene changed suddenly. Trump posted that he would replace the toll plan with trade and investment deals between Gulf countries and the United States. He said the decision was based on “very productive talks” with Middle Eastern leaders. The bill quickly turned into papers for trade talks. Quite a striking change of costume.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-002",
+            "claim_text": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.",
+            "first_materiality": "QUALITY",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+              "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+            ],
+            "batch_cost_jpy": 0.1884,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "So, did oil prices also feel safe enough to bring the curtain down?",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "So, did oil prices also feel safe enough to bring the curtain down?",
+            "issue": "料金案の変更だけでは市場の動きを終わらせられなかったという因果・十分性の解釈を加えているが、Ledgerはその因果関係を確認していない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S5.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.4"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "A quick change in the story alone was not enough to bring the curtain down."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But the next day, the scene changed suddenly. Trump posted that he would replace the toll plan with trade and investment deals between Gulf countries and the United States. He said the decision was based on “very productive talks” with Middle Eastern leaders. The bill quickly turned into papers for trade talks. Quite a striking change of costume.\n\nSo, did oil prices also feel safe enough to bring the curtain down? The answer was not so simple. After the announcement, Brent futures briefly gave up some of their gains, but soon returned to a high level close to where they had been before the announcement. At the time of publication, they were up about 2.6%, above $85 a barrel.\n\nWhat remained onstage was concern about supply. Concerns continued over attacks between the United States and Iran, a blockade at sea, and the safety of tankers. Even after the toll plan changed costumes, worries about the strait did not leave the stage.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "So, did oil prices also feel safe enough to bring the curtain down?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+              "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+            ],
+            "batch_cost_jpy": 0.1884,
+            "batch_n_claims": 10
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 10,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "# Strait Toll Plan Turns into Trade Talks the Next Day, but the Oil Market Has Not Settled Down",
+          "first_materiality": "QUALITY",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+            "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+          ],
+          "batch_cost_jpy": 0.1884,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-002",
+          "claim_text": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.”",
+          "first_materiality": "QUALITY",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+            "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+          ],
+          "batch_cost_jpy": 0.1884,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "The answer was not so simple.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+            "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+          ],
+          "batch_cost_jpy": 0.1884,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Even after the toll plan changed costumes, worries about the strait did not leave the stage.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+            "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+          ],
+          "batch_cost_jpy": 0.1884,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "But judging by market moves, worries about supply seemed to remain unchanged.",
+          "first_materiality": "QUALITY",
+          "first_basis": "unsupported_relationship",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+            "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+          ],
+          "batch_cost_jpy": 0.1884,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "A quick change in the story alone was not enough to bring the curtain down.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+            "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+          ],
+          "batch_cost_jpy": 0.1884,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "Trump posted that he would replace the toll plan with trade and investment deals between Gulf countries and the United States.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+            "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+          ],
+          "batch_cost_jpy": 0.1884,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "Trump replaced his proposed Strait of Hormuz toll with trade talks, but oil-market worries persisted.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+            "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+          ],
+          "batch_cost_jpy": 0.1884,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-002",
+          "claim_text": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.",
+          "first_materiality": "QUALITY",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+            "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+          ],
+          "batch_cost_jpy": 0.1884,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "So, did oil prices also feel safe enough to bring the curtain down?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5",
+            "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+          ],
+          "batch_cost_jpy": 0.1884,
+          "batch_n_claims": 10
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5343,
+      "usage": {
+        "input_tokens": 5036,
+        "cached_input_tokens": 0,
+        "output_tokens": 5804,
+        "reasoning_tokens": 1792
+      },
+      "elapsed_seconds": 40.652,
+      "prompt_sha256": "6574ea86ad8db2c63162a0189571c804cb443f9271ca7124984c5e6e823cf4b7",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.8391,
+      "usage": {
+        "input_tokens": 4668,
+        "cached_input_tokens": 0,
+        "output_tokens": 9764,
+        "reasoning_tokens": 7167
+      },
+      "elapsed_seconds": 83.18,
+      "prompt_sha256": "6401ba94d3601e10589428a60a8eb473bdff2a17c0e0b0e997054b3e4b5ca9df",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.27,
+      "usage": {
+        "input_tokens": 4954,
+        "cached_input_tokens": 0,
+        "output_tokens": 2451,
+        "reasoning_tokens": 1683
+      },
+      "elapsed_seconds": 23.017,
+      "prompt_sha256": "bbc7a155ae9c3eb460241f39df692e27e03e67727417f34ddc91a67dba41e019",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2501,
+      "usage": {
+        "input_tokens": 9750,
+        "cached_input_tokens": 0,
+        "output_tokens": 1239,
+        "reasoning_tokens": 1034
+      },
+      "elapsed_seconds": 11.005,
+      "prompt_sha256": "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1296,
+      "usage": {
+        "input_tokens": 5762,
+        "cached_input_tokens": 0,
+        "output_tokens": 500,
+        "reasoning_tokens": 403
+      },
+      "elapsed_seconds": 5.587,
+      "prompt_sha256": "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.125,
+      "usage": {
+        "input_tokens": 9750,
+        "cached_input_tokens": 9747,
+        "output_tokens": 1398,
+        "reasoning_tokens": 1186
+      },
+      "elapsed_seconds": 13.019,
+      "prompt_sha256": "c8283ee1969f9a54a9036b15cc227e492607b3eaeb0198eec55fe80c717091b5"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0634,
+      "usage": {
+        "input_tokens": 5762,
+        "cached_input_tokens": 5759,
+        "output_tokens": 693,
+        "reasoning_tokens": 590
+      },
+      "elapsed_seconds": 6.614,
+      "prompt_sha256": "a09e970e860b1e6123b90df9223fc0df980e3c70ba0296ec1336ee6e3543b0af"
+    }
+  ],
+  "total_cost_jpy": 2.2115,
+  "total_calls": 7,
+  "elapsed_seconds": 183.123,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "# Strait Toll Plan Turns into Trade Talks the Next Day, but the Oil Market Has Not Settled Down",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.”",
+        "related_fact_id": "HF-002",
+        "origin": null,
+        "issue": "「ショーが始まるとすぐ」「最初の考えとして現れた」という順序・時期の主張はLedgerにない。 / Ledgerは通航貨物への20％償還料の投稿を確認していますが、「ショーの始まりと同時に」「最初に現れたアイデア」という出来事の順序・タイミングまでは確認していません。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The answer was not so simple.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Even after the toll plan changed costumes, worries about the strait did not leave the stage.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But judging by market moves, worries about supply seemed to remain unchanged.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "Ledgerは供給懸念が継続したとするが、懸念が以前と「変わらず」だったという比較までは確認していない。 / Ledgerは懸念が続いていたことと、Brentが一時上げ幅を縮小した後に回復したことを確認していますが、「市場の動きから供給懸念が変わらなかった」と結び付ける解釈までは確認していません。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_comparison",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "A quick change in the story alone was not enough to bring the curtain down.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "料金案の変更だけでは市場の動きを終わらせられなかったという因果・十分性の解釈を加えているが、Ledgerはその因果関係を確認していない。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S5.4); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 13,
+      "n_model_entries": 10,
+      "n_targets": 8,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 5,
+      "n_excluded_entries": 5,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.27,
+          "usage": {
+            "input_tokens": 4954,
+            "cached_input_tokens": 0,
+            "output_tokens": 2451,
+            "reasoning_tokens": 1683
+          },
+          "elapsed_seconds": 23.017,
+          "prompt_sha256": "bbc7a155ae9c3eb460241f39df692e27e03e67727417f34ddc91a67dba41e019",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.27,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.1",
+          "claim": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.”",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "海峡通航貨物への課金案はHF-002と合うが、「最初に現れた」という順序・時点の主張はLedgerで確認できない。",
+          "fact_tags": [
+            "date"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.4",
+          "claim": "The fee system had not gone into action.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "HF-002が提案段階であったこと、HF-003が具体的な徴収制度の未提示を記していることと整合し、料金制度が実施済みでないという否定も一致する。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C3",
+          "key": "S2.4",
+          "claim": "The bill quickly turned into papers for trade talks.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「翌日」に料金案を湾岸諸国との貿易・投資案件へ置き換えたHF-007の言い換えで、「すぐに」も時系列と整合する。",
+          "fact_tags": [
+            "date"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C4",
+          "key": "S3.1",
+          "claim": "So, did oil prices also feel safe enough to bring the curtain down?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "原油価格を擬人化した修辞的な問いかけで、具体的な事実を断定していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S5.2",
+          "claim": "But judging by market moves, worries about supply seemed to remain unchanged.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "供給懸念が続いた点はHF-009と合うが、「変わらず」は懸念の程度が不変だったとの比較を加えており、Ledgerが裏付けるのは懸念の継続まで。",
+          "fact_tags": [
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C6",
+          "key": "S5.3",
+          "claim": "Though the news was about a faraway strait, what mattered in the end was the movement in oil prices.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "何が最終的に重要だったかを述べる評価的・修辞的な表現で、検証可能な具体的事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "S5.4",
+          "claim": "A quick change in the story alone was not enough to bring the curtain down.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "発表後にBrentが一時上げ幅を縮小して戻った点はHF-009と整合するが、変更だけでは市場を落ち着かせられなかったという因果・否定を断定し、Brentの値動きから市場全体へ範囲を広げている。",
+          "fact_tags": [
+            "causality",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C8",
+          "key": "R:S2.5+S3.1",
+          "claim": "So, did oil prices also feel safe enough to bring the curtain down?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "C4と同じ修辞的な問いかけで、具体的な事実を断定していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "bbc7a155ae9c3eb460241f39df692e27e03e67727417f34ddc91a67dba41e019"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 29,
+    "n_judged_units": 23,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S2.5+S3.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "R:S2.5+S3.1",
+          "S1.1",
+          "S1.4",
+          "S2.4",
+          "S3.1",
+          "S3.2",
+          "S4.3",
+          "S5.2",
+          "S5.3",
+          "S5.4",
+          "T"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "CANDIDATE",
+          "S2.5": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.1": "SUPPORTED",
+          "S5.2": "CANDIDATE",
+          "S5.3": "CANDIDATE",
+          "S5.4": "CANDIDATE",
+          "L1": "SUPPORTED",
+          "R:S2.5+S3.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5343,
+            "usage": {
+              "input_tokens": 5036,
+              "cached_input_tokens": 0,
+              "output_tokens": 5804,
+              "reasoning_tokens": 1792
+            },
+            "elapsed_seconds": 40.652,
+            "prompt_sha256": "6574ea86ad8db2c63162a0189571c804cb443f9271ca7124984c5e6e823cf4b7",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "CANDIDATE",
+          "S2.5": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "CANDIDATE",
+          "S5.3": "CANDIDATE",
+          "S5.4": "CANDIDATE",
+          "L1": "SUPPORTED",
+          "R:S2.5+S3.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# Strait Toll Plan Turns into Trade Talks the Next Day, but the Oil Market Has Not Settled Down",
+            "span": [
+              0,
+              95
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.”",
+            "span": [
+              97,
+              198
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「ショーが始まるとすぐ」「最初の考えとして現れた」という順序・時期の主張はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.”"
+          },
+          {
+            "unit_id": "S1.4",
+            "unit_ids": [
+              "S1.4"
+            ],
+            "claim_text": "The fee system had not gone into action.",
+            "span": [
+              406,
+              446
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは提案と具体的な制度設計の未提示を確認しているが、料金制度が実際に「動き出していなかった」とは明記していない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "The fee system had not gone into action."
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "The bill quickly turned into papers for trade talks.",
+            "span": [
+              708,
+              760
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "料金案の置換は確認されているが、「貿易協議の書類になった」という具体的な書類の存在・変化はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The bill quickly turned into papers for trade talks."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "So, did oil prices also feel safe enough to bring the curtain down?",
+            "span": [
+              798,
+              865
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「So」で直前の料金案の置換と原油価格の反応を結び、価格が安全を感じたかのような因果的な枠付けをしているが、Ledgerはこの関係を述べていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "So, did oil prices also feel safe enough to bring the curtain down?"
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "The answer was not so simple.",
+            "span": [
+              866,
+              895
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.3",
+            "unit_ids": [
+              "S4.3"
+            ],
+            "claim_text": "Even after the toll plan changed costumes, worries about the strait did not leave the stage.",
+            "span": [
+              1295,
+              1387
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "But judging by market moves, worries about supply seemed to remain unchanged.",
+            "span": [
+              1459,
+              1536
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは供給懸念が継続したとするが、懸念が以前と「変わらず」だったという比較までは確認していない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But judging by market moves, worries about supply seemed to remain unchanged."
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "Though the news was about a faraway strait, what mattered in the end was the movement in oil prices.",
+            "span": [
+              1537,
+              1637
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "原油価格の動きが最終的に「重要だった」とする評価・重要性の主張はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Though the news was about a faraway strait, what mattered in the end was the movement in oil prices."
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "A quick change in the story alone was not enough to bring the curtain down.",
+            "span": [
+              1638,
+              1713
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "料金案の変更だけでは市場の動きを終わらせられなかったという因果・十分性の解釈を加えているが、Ledgerはその因果関係を確認していない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "A quick change in the story alone was not enough to bring the curtain down."
+          },
+          {
+            "unit_id": "R:S2.5+S3.1",
+            "unit_ids": [
+              "R:S2.5+S3.1"
+            ],
+            "claim_text": "So, did oil prices also feel safe enough to bring the curtain down?",
+            "span": [
+              798,
+              865
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "直前の「striking change」と続く「So」の関係で、料金案の置換が原油価格の反応を促す／価格が安全を感じたかのような結び付けを作っているが、その関係はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Quite a striking change of costume. So, did oil prices also feel safe enough to bring the curtain down?"
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S1.1",
+          "S5.2"
+        ],
+        "unit_status": {
+          "S1.1": "DEVIATION",
+          "S1.2": "MATCH",
+          "S1.3": "MATCH",
+          "S1.4": "MATCH",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S2.5": "MATCH",
+          "S5.1": "MATCH",
+          "L1": "MATCH",
+          "R:S2.5+S3.1": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S5.2": "DEVIATION",
+          "S5.4": "MATCH",
+          "T": "UNMENTIONED",
+          "S5.3": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.8391,
+            "usage": {
+              "input_tokens": 4668,
+              "cached_input_tokens": 0,
+              "output_tokens": 9764,
+              "reasoning_tokens": 7167
+            },
+            "elapsed_seconds": 83.18,
+            "prompt_sha256": "6401ba94d3601e10589428a60a8eb473bdff2a17c0e0b0e997054b3e4b5ca9df",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.”",
+            "span": [
+              97,
+              198
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerは通航貨物への20％償還料の投稿を確認していますが、「ショーの始まりと同時に」「最初に現れたアイデア」という出来事の順序・タイミングまでは確認していません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.”"
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "But judging by market moves, worries about supply seemed to remain unchanged.",
+            "span": [
+              1459,
+              1536
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerは懸念が続いていたことと、Brentが一時上げ幅を縮小した後に回復したことを確認していますが、「市場の動きから供給懸念が変わらなかった」と結び付ける解釈までは確認していません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But judging by market moves, worries about supply seemed to remain unchanged."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S1.1",
+        "S5.2"
+      ],
+      "r3_only": [
+        "R:S2.5+S3.1",
+        "S1.4",
+        "S2.4",
+        "S3.1",
+        "S3.2",
+        "S4.3",
+        "S5.3",
+        "S5.4",
+        "T"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 3
+    },
+    "union_candidates": [
+      {
+        "claim_text": "# Strait Toll Plan Turns into Trade Talks the Next Day, but the Oil Market Has Not Settled Down",
+        "span": [
+          0,
+          95
+        ],
+        "unit_ids": [
+          "T"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.”",
+        "span": [
+          97,
+          198
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "「ショーが始まるとすぐ」「最初の考えとして現れた」という順序・時期の主張はLedgerにない。",
+          "Ledgerは通航貨物への20％償還料の投稿を確認していますが、「ショーの始まりと同時に」「最初に現れたアイデア」という出来事の順序・タイミングまでは確認していません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-002"
+        ],
+        "model_claims": [
+          "As soon as the show began, the first idea to appear was: “Charge goods that pass through the strait.”"
+        ]
+      },
+      {
+        "claim_text": "The answer was not so simple.",
+        "span": [
+          866,
+          895
+        ],
+        "unit_ids": [
+          "S3.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Even after the toll plan changed costumes, worries about the strait did not leave the stage.",
+        "span": [
+          1295,
+          1387
+        ],
+        "unit_ids": [
+          "S4.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "But judging by market moves, worries about supply seemed to remain unchanged.",
+        "span": [
+          1459,
+          1536
+        ],
+        "unit_ids": [
+          "S5.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "Ledgerは供給懸念が継続したとするが、懸念が以前と「変わらず」だったという比較までは確認していない。",
+          "Ledgerは懸念が続いていたことと、Brentが一時上げ幅を縮小した後に回復したことを確認していますが、「市場の動きから供給懸念が変わらなかった」と結び付ける解釈までは確認していません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "But judging by market moves, worries about supply seemed to remain unchanged."
+        ]
+      },
+      {
+        "claim_text": "A quick change in the story alone was not enough to bring the curtain down.",
+        "span": [
+          1638,
+          1713
+        ],
+        "unit_ids": [
+          "S5.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "料金案の変更だけでは市場の動きを終わらせられなかったという因果・十分性の解釈を加えているが、Ledgerはその因果関係を確認していない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "A quick change in the story alone was not enough to bring the curtain down."
+        ]
+      }
+    ],
+    "n_union_candidates": 6,
+    "n_model_candidates": 3,
+    "n_deterministic_only_candidates": 3,
+    "total_cost_jpy": 1.3734,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 10,
+    "n_targets": 8,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 5,
+    "n_excluded_entries": 5,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.27,
+    "effort": "medium",
+    "prompt_sha256": "bbc7a155ae9c3eb460241f39df692e27e03e67727417f34ddc91a67dba41e019"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 4
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 2.2115,
+  "provenance": {
+    "switch_dump_sha256": "66d18a3a1b28679684d7dcbe6e7af161a4da4223da7415a7ac50e7450de777c1",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-08T10:14:17",
+    "ledger_sha256": "83b2a09b99b20af0f1d30aefc6dda7bfe40ed06a6d7726a56a0bb90bce774522",
+    "article_sha256": "7c8ca99688f77e23055b422e58103a29809dfd491317144a7b8c3a7a112aacbc",
+    "source_article_sha256": "f0ac4e324ccaee048364f86be5c0ae3383f799d456057b32086c82c42b03df86",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/factlock_writer_trial_01/runs/hormuz/control/b3__factlock__r2/checker",
+      "ledger_path": "er052_output/factlock_writer_trial_01/runs/hormuz/control/b3__factlock__r2/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/factlock_writer_trial_01/runs/hormuz/control/b3__factlock__r2/b1b/article.md",
+      "source_path": "er052_output/factlock_writer_trial_01/runs/hormuz/control/b3__factlock__r2/ja_writer/revision2.md",
+      "budget_jpy": 10.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

@@ -1,0 +1,2144 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "There are three things to look at: “Where is it?”",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "There are three things to look at: “Where is it?”",
+            "issue": "見るべき観点を三つとする記事独自の整理方法はLedgerに示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Space Weapons News: Sort the Cards in Your Head\n\nStories about weapons in space are easier to read if you sort them like cards in a card game. There are three things to look at: “Where is it?” “What does the term mean?” and “What does the treaty ban?” If you mix these up, the meaning of the news gets muddled too.\n\nThe first card is “deployed in orbit.” On September 14, 2026, the US Secretary of the Air Force said that the US was deploying “space control weapons” in orbit to protect joint forces from hostile actors. An official US government article records this as the first statement to acknowledge that the Space Force had deployed weapons in space.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "claim:6c4e36b40e1256e9",
+            "claim_text": "There are three things to look at: “Where is it?”",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+              "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "A test to destroy a satellite and the deployment of weapons in orbit are not the same card.",
+          "origin": null,
+          "related_fact_id": "F-003",
+          "dev": {
+            "claim_in_article": "A test to destroy a satellite and the deployment of weapons in orbit are not the same card.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+            "related_fact_id": "F-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.4"
+              ],
+              "related_fact_ids": [
+                "F-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The first card is “deployed in orbit.” On September 14, 2026, the US Secretary of the Air Force said that the US was deploying “space control weapons” in orbit to protect joint forces from hostile actors. An official US government article records this as the first statement to acknowledge that the Space Force had deployed weapons in space.\n\nThe second card is “launched from the ground.” What Russia did in 2021 was test a missile fired from the ground to destroy a satellite. More than 1,500 pieces of debris could be tracked. A test to destroy a satellite and the deployment of weapons in orbit are not the same card.\n\nThe third card is a somewhat bigger card: “counterspace operations.” In the US Space Force’s 2025 framework, this means not only putting weapons in space, but also carrying out attacks and defense involving orbits, communication links, and ground facilities. There are different kinds of defensive measures, too: warning of threats, making satellites stronger, splitting up their functions, spreading them across several systems, moving them, and keeping backups. These measures are also forms of defense, but they are different from deploying offensive weapons in orbit.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-003",
+            "claim_text": "A test to destroy a satellite and the deployment of weapons in orbit are not the same card.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+              "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "It does not ban all space weapons across the board.",
+          "origin": null,
+          "related_fact_id": "F-016",
+          "dev": {
+            "claim_in_article": "It does not ban all space weapons across the board.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.3); severity is decided by Stage 2",
+            "related_fact_id": "F-016",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.3"
+              ],
+              "related_fact_ids": [
+                "F-016"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The third card is a somewhat bigger card: “counterspace operations.” In the US Space Force’s 2025 framework, this means not only putting weapons in space, but also carrying out attacks and defense involving orbits, communication links, and ground facilities. There are different kinds of defensive measures, too: warning of threats, making satellites stronger, splitting up their functions, spreading them across several systems, moving them, and keeping backups. These measures are also forms of defense, but they are different from deploying offensive weapons in orbit.\n\nThe last card is the “treaty” card. The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction in orbit around Earth, placing them on the Moon or other celestial bodies, or deploying them in space in another way. It does not ban all space weapons across the board.\n\nSo when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated. Was it fired from the ground, or deployed in orbit? Was it an attack or a defense? Turn the cards over one by one, and you can see what is behind the dramatic headline.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-016",
+            "claim_text": "It does not ban all space weapons across the board.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+              "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "So when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated.",
+          "origin": null,
+          "related_fact_id": "F-017",
+          "dev": {
+            "claim_in_article": "So when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated.",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S6.1); severity is decided by Stage 2",
+            "related_fact_id": "F-017",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S6.1"
+              ],
+              "related_fact_ids": [
+                "F-017"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The last card is the “treaty” card. The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction in orbit around Earth, placing them on the Moon or other celestial bodies, or deploying them in space in another way. It does not ban all space weapons across the board.\n\nSo when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated. Was it fired from the ground, or deployed in orbit? Was it an attack or a defense? Turn the cards over one by one, and you can see what is behind the dramatic headline.\n\n## In one line\nA report about weapons in space does not automatically mean a treaty violation; the details matter.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-017",
+            "claim_text": "So when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+              "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "A report about weapons in space does not automatically mean a treaty violation; the details matter.",
+          "origin": null,
+          "related_fact_id": "F-016",
+          "dev": {
+            "claim_in_article": "A report about weapons in space does not automatically mean a treaty violation; the details matter.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F-016",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F-016"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated. Was it fired from the ground, or deployed in orbit? Was it an attack or a defense? Turn the cards over one by one, and you can see what is behind the dramatic headline.\n\n## In one line\nA report about weapons in space does not automatically mean a treaty violation; the details matter.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-016",
+            "claim_text": "A report about weapons in space does not automatically mean a treaty violation; the details matter.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+              "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "There are three things to look at: “Where is it?",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "There are three things to look at: “Where is it?",
+            "issue": "見るべき観点を三つとする記事独自の整理方法はLedgerに示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "There are three things to look at: “Where is it?”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Space Weapons News: Sort the Cards in Your Head\n\nStories about weapons in space are easier to read if you sort them like cards in a card game. There are three things to look at: “Where is it?” “What does the term mean?” and “What does the treaty ban?” If you mix these up, the meaning of the news gets muddled too.\n\nThe first card is “deployed in orbit.” On September 14, 2026, the US Secretary of the Air Force said that the US was deploying “space control weapons” in orbit to protect joint forces from hostile actors. An official US government article records this as the first statement to acknowledge that the Space Force had deployed weapons in space.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "claim:6c4e36b40e1256e9",
+            "claim_text": "There are three things to look at: “Where is it?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+              "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "” What Russia did in 2021 was test a missile fired from the ground to destroy a satellite.",
+          "origin": null,
+          "related_fact_id": "F-003",
+          "dev": {
+            "claim_in_article": "” What Russia did in 2021 was test a missile fired from the ground to destroy a satellite.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+            "related_fact_id": "F-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.4"
+              ],
+              "related_fact_ids": [
+                "F-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "A test to destroy a satellite and the deployment of weapons in orbit are not the same card."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The first card is “deployed in orbit.” On September 14, 2026, the US Secretary of the Air Force said that the US was deploying “space control weapons” in orbit to protect joint forces from hostile actors. An official US government article records this as the first statement to acknowledge that the Space Force had deployed weapons in space.\n\nThe second card is “launched from the ground.” What Russia did in 2021 was test a missile fired from the ground to destroy a satellite. More than 1,500 pieces of debris could be tracked. A test to destroy a satellite and the deployment of weapons in orbit are not the same card.\n\nThe third card is a somewhat bigger card: “counterspace operations.” In the US Space Force’s 2025 framework, this means not only putting weapons in space, but also carrying out attacks and defense involving orbits, communication links, and ground facilities. There are different kinds of defensive measures, too: warning of threats, making satellites stronger, splitting up their functions, spreading them across several systems, moving them, and keeping backups. These measures are also forms of defense, but they are different from deploying offensive weapons in orbit.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-003",
+            "claim_text": "” What Russia did in 2021 was test a missile fired from the ground to destroy a satellite.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+              "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "Stories about weapons in space are easier to read if you sort them like cards in a card game.",
+          "origin": null,
+          "related_fact_id": "F-017",
+          "dev": {
+            "claim_in_article": "Stories about weapons in space are easier to read if you sort them like cards in a card game.",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S6.1); severity is decided by Stage 2",
+            "related_fact_id": "F-017",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S6.1"
+              ],
+              "related_fact_ids": [
+                "F-017"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "So when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Space Weapons News: Sort the Cards in Your Head\n\nStories about weapons in space are easier to read if you sort them like cards in a card game. There are three things to look at: “Where is it?” “What does the term mean?” and “What does the treaty ban?” If you mix these up, the meaning of the news gets muddled too.\n\nThe first card is “deployed in orbit.” On September 14, 2026, the US Secretary of the Air Force said that the US was deploying “space control weapons” in orbit to protect joint forces from hostile actors. An official US government article records this as the first statement to acknowledge that the Space Force had deployed weapons in space.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F-017",
+            "claim_text": "Stories about weapons in space are easier to read if you sort them like cards in a card game.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+              "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction in orbit around Earth, placing them on the Moon or other celestial bodies, or deploying them in space in another way.",
+          "origin": null,
+          "related_fact_id": "F-017",
+          "dev": {
+            "claim_in_article": "The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction in orbit around Earth, placing them on the Moon or other celestial bodies, or deploying them in space in another way.",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S6.1); severity is decided by Stage 2",
+            "related_fact_id": "F-017",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S6.1"
+              ],
+              "related_fact_ids": [
+                "F-017"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "So when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The third card is a somewhat bigger card: “counterspace operations.” In the US Space Force’s 2025 framework, this means not only putting weapons in space, but also carrying out attacks and defense involving orbits, communication links, and ground facilities. There are different kinds of defensive measures, too: warning of threats, making satellites stronger, splitting up their functions, spreading them across several systems, moving them, and keeping backups. These measures are also forms of defense, but they are different from deploying offensive weapons in orbit.\n\nThe last card is the “treaty” card. The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction in orbit around Earth, placing them on the Moon or other celestial bodies, or deploying them in space in another way. It does not ban all space weapons across the board.\n\nSo when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated. Was it fired from the ground, or deployed in orbit? Was it an attack or a defense? Turn the cards over one by one, and you can see what is behind the dramatic headline.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-017",
+            "claim_text": "The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction in orbit around Earth, placing them on the Moon or other celestial bodies, or deploying them in space in anoth",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+              "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 9
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 9,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "claim:6c4e36b40e1256e9",
+          "claim_text": "There are three things to look at: “Where is it?”",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+            "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-003",
+          "claim_text": "A test to destroy a satellite and the deployment of weapons in orbit are not the same card.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+            "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-016",
+          "claim_text": "It does not ban all space weapons across the board.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+            "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-017",
+          "claim_text": "So when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+            "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-016",
+          "claim_text": "A report about weapons in space does not automatically mean a treaty violation; the details matter.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+            "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "claim:6c4e36b40e1256e9",
+          "claim_text": "There are three things to look at: “Where is it?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+            "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-003",
+          "claim_text": "” What Russia did in 2021 was test a missile fired from the ground to destroy a satellite.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+            "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F-017",
+          "claim_text": "Stories about weapons in space are easier to read if you sort them like cards in a card game.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+            "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-017",
+          "claim_text": "The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction in orbit around Earth, placing them on the Moon or other celestial bodies, or deploying them in space in anoth",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764",
+            "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 9
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6267,
+      "usage": {
+        "input_tokens": 7585,
+        "cached_input_tokens": 0,
+        "output_tokens": 6472,
+        "reasoning_tokens": 2441
+      },
+      "elapsed_seconds": 50.906,
+      "prompt_sha256": "2c5c06a689782fb8967a352e8ffc192e0a4621059f25b887f8ca24583ac9b574",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.668,
+      "usage": {
+        "input_tokens": 7242,
+        "cached_input_tokens": 0,
+        "output_tokens": 7068,
+        "reasoning_tokens": 5176
+      },
+      "elapsed_seconds": 68.943,
+      "prompt_sha256": "94d43e17213213dc047ea8ddc40e3e1c14337c45a8afcfc6ba7998243e2f963d",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.28,
+      "usage": {
+        "input_tokens": 7396,
+        "cached_input_tokens": 0,
+        "output_tokens": 2090,
+        "reasoning_tokens": 1504
+      },
+      "elapsed_seconds": 20.131,
+      "prompt_sha256": "5d6b067b5d8d804ab3c5a3cae7d4eb135eb0483bba176f445122a2481057f4ea",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2447,
+      "usage": {
+        "input_tokens": 12287,
+        "cached_input_tokens": 0,
+        "output_tokens": 662,
+        "reasoning_tokens": 481
+      },
+      "elapsed_seconds": 7.684,
+      "prompt_sha256": "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1536,
+      "usage": {
+        "input_tokens": 8266,
+        "cached_input_tokens": 0,
+        "output_tokens": 305,
+        "reasoning_tokens": 202
+      },
+      "elapsed_seconds": 4.047,
+      "prompt_sha256": "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1112,
+      "usage": {
+        "input_tokens": 12287,
+        "cached_input_tokens": 12284,
+        "output_tokens": 1171,
+        "reasoning_tokens": 990
+      },
+      "elapsed_seconds": 12.885,
+      "prompt_sha256": "f96c5f9b896fb76b242fa0bdbf895623032f3af04e17700fe154ed6f4c69c764"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0435,
+      "usage": {
+        "input_tokens": 8266,
+        "cached_input_tokens": 8263,
+        "output_tokens": 389,
+        "reasoning_tokens": 286
+      },
+      "elapsed_seconds": 4.995,
+      "prompt_sha256": "0975e43a417acbf50740c532b99fb554428fcf16ce4f412f5d3dd4d198becf5e"
+    }
+  ],
+  "total_cost_jpy": 2.1277,
+  "total_calls": 7,
+  "elapsed_seconds": 169.635,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "There are three things to look at: “Where is it?”",
+        "related_fact_id": "",
+        "origin": null,
+        "issue": "見るべき観点を三つとする記事独自の整理方法はLedgerに示されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+        "true_flags": [
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "A test to destroy a satellite and the deployment of weapons in orbit are not the same card.",
+        "related_fact_id": "F-003",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "It does not ban all space weapons across the board.",
+        "related_fact_id": "F-016",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "So when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated.",
+        "related_fact_id": "F-017",
+        "origin": null,
+        "issue": "決定論検査で戻した: causal_not_in_fact",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S6.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "A report about weapons in space does not automatically mean a treaty violation; the details matter.",
+        "related_fact_id": "F-016",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 11,
+      "n_model_entries": 7,
+      "n_targets": 7,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 6,
+      "n_excluded_entries": 6,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.28,
+          "usage": {
+            "input_tokens": 7396,
+            "cached_input_tokens": 0,
+            "output_tokens": 2090,
+            "reasoning_tokens": 1504
+          },
+          "elapsed_seconds": 20.131,
+          "prompt_sha256": "5d6b067b5d8d804ab3c5a3cae7d4eb135eb0483bba176f445122a2481057f4ea",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.28,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# Space Weapons News: Sort the Cards in Your Head",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "見出しの比喩的な表現で、具体的な事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.1",
+          "claim": "Stories about weapons in space are easier to read if you sort them like cards in a card game.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "カードにたとえた一般的な読み方の助言で、具体的な比較事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S1.2",
+          "claim": "There are three things to look at: “Where is it?”",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「3つ」という数を含む記事の整理枠組みの主張だが、Ledgerにその数の裏付けがない。",
+          "fact_tags": [
+            "number"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S1.5",
+          "claim": "If you mix these up, the meaning of the news gets muddled too.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "概念を混同すると理解が曖昧になるという、具体的な対象を加えない一般的な説明。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S4.1",
+          "claim": "The third card is a somewhat bigger card: “counterspace operations.”",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「カード」の順序や大きさを使った比喩的な導入で、counterspace operationsの具体的な性質を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C6",
+          "key": "S6.4",
+          "claim": "Turn the cards over one by one, and you can see what is behind the dramatic headline.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "カードをめくるという比喩を用いた締めの表現で、具体的な事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "R:S5.3+S6.1",
+          "claim": "So when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "兵器が宇宙にあるという表現だけでは条約違反か決められないという結論は、条約が禁止する対象を限定するLedgerの説明と一致する。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "5d6b067b5d8d804ab3c5a3cae7d4eb135eb0483bba176f445122a2481057f4ea"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 33,
+    "n_judged_units": 26,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S5.3+S6.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 22,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S5.3+S6.1",
+          "S1.1",
+          "S1.2",
+          "S1.5",
+          "S3.4",
+          "S4.1",
+          "S5.3",
+          "S6.1",
+          "S6.4",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S1.5": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.1": "CANDIDATE",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S6.1": "SUPPORTED->CANDIDATE(causal_not_in_fact)",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "CANDIDATE",
+          "L1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "R:S5.3+S6.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6267,
+            "usage": {
+              "input_tokens": 7585,
+              "cached_input_tokens": 0,
+              "output_tokens": 6472,
+              "reasoning_tokens": 2441
+            },
+            "elapsed_seconds": 50.906,
+            "prompt_sha256": "2c5c06a689782fb8967a352e8ffc192e0a4621059f25b887f8ca24583ac9b574",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S1.5": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "CANDIDATE",
+          "L1": "SUPPORTED",
+          "R:S5.3+S6.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# Space Weapons News: Sort the Cards in Your Head",
+            "span": [
+              0,
+              49
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "見出しの「カードに分けて考える」という提案はLedgerに記載された事実ではありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "# Space Weapons News: Sort the Cards in Your Head"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "Stories about weapons in space are easier to read if you sort them like cards in a card game.",
+            "span": [
+              51,
+              144
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "カードのように分類すると宇宙兵器に関する話が読みやすくなるという一般的な効果はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Stories about weapons in space are easier to read if you sort them like cards in a card game."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "There are three things to look at: “Where is it?”",
+            "span": [
+              145,
+              194
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "見るべき観点を三つとする記事独自の整理方法はLedgerに示されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "There are three things to look at: “Where is it?”"
+          },
+          {
+            "unit_id": "S1.5",
+            "unit_ids": [
+              "S1.5"
+            ],
+            "claim_text": "If you mix these up, the meaning of the news gets muddled too.",
+            "span": [
+              254,
+              316
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "分類を混同するとニュースの意味が曖昧になるという因果関係はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "If you mix these up, the meaning of the news gets muddled too."
+          },
+          {
+            "unit_id": "S3.4",
+            "unit_ids": [
+              "S3.4"
+            ],
+            "claim_text": "A test to destroy a satellite and the deployment of weapons in orbit are not the same card.",
+            "span": [
+              848,
+              939
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "The third card is a somewhat bigger card: “counterspace operations.”",
+            "span": [
+              941,
+              1009
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "counterspace operationsが他のカードより「大きい」という比較は、比喩的表現であってもLedgerにはありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-011"
+            ],
+            "model_claim": "The third card is a somewhat bigger card: “counterspace operations.”"
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "It does not ban all space weapons across the board.",
+            "span": [
+              1758,
+              1809
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-016"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "So when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated.",
+            "span": [
+              1811,
+              1921
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "causal_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: causal_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-017"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "Turn the cards over one by one, and you can see what is behind the dramatic headline.",
+            "span": [
+              2005,
+              2090
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "カードを一枚ずつ確認すれば見出しの背後にある事実が分かるという効果は、Ledgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Turn the cards over one by one, and you can see what is behind the dramatic headline."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "A report about weapons in space does not automatically mean a treaty violation; the details matter.",
+            "span": [
+              2107,
+              2206
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-016"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "R:S5.3+S6.1",
+            "unit_ids": [
+              "R:S5.3+S6.1"
+            ],
+            "claim_text": "So when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated.",
+            "span": [
+              1811,
+              1921
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「So」が、条約は宇宙兵器全般を禁じないことから、個別の違反かどうかを即断できないという結論を導いています。この結び付け自体はLedgerが明示していません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-017"
+            ],
+            "model_claim": "It does not ban all space weapons across the board. So when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S6.2": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S4.4": "MATCH",
+          "S6.3": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S6.1": "MATCH",
+          "L1": "MATCH",
+          "R:S5.3+S6.1": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S1.3": "UNMENTIONED",
+          "S1.4": "UNMENTIONED",
+          "S1.5": "UNMENTIONED",
+          "S5.1": "UNMENTIONED",
+          "S6.4": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.668,
+            "usage": {
+              "input_tokens": 7242,
+              "cached_input_tokens": 0,
+              "output_tokens": 7068,
+              "reasoning_tokens": 5176
+            },
+            "elapsed_seconds": 68.943,
+            "prompt_sha256": "94d43e17213213dc047ea8ddc40e3e1c14337c45a8afcfc6ba7998243e2f963d",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": []
+      }
+    },
+    "overlap": {
+      "both": [],
+      "r3_only": [
+        "L1",
+        "R:S5.3+S6.1",
+        "S1.1",
+        "S1.2",
+        "S1.5",
+        "S3.4",
+        "S4.1",
+        "S5.3",
+        "S6.1",
+        "S6.4",
+        "T"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 4
+    },
+    "union_candidates": [
+      {
+        "claim_text": "There are three things to look at: “Where is it?”",
+        "span": [
+          145,
+          194
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "見るべき観点を三つとする記事独自の整理方法はLedgerに示されていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [],
+        "model_claims": [
+          "There are three things to look at: “Where is it?”"
+        ]
+      },
+      {
+        "claim_text": "A test to destroy a satellite and the deployment of weapons in orbit are not the same card.",
+        "span": [
+          848,
+          939
+        ],
+        "unit_ids": [
+          "S3.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "It does not ban all space weapons across the board.",
+        "span": [
+          1758,
+          1809
+        ],
+        "unit_ids": [
+          "S5.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-016"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "So when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated.",
+        "span": [
+          1811,
+          1921
+        ],
+        "unit_ids": [
+          "S6.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "causal_not_in_fact"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: causal_not_in_fact"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-017"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "A report about weapons in space does not automatically mean a treaty violation; the details matter.",
+        "span": [
+          2107,
+          2206
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-016"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 5,
+    "n_model_candidates": 1,
+    "n_deterministic_only_candidates": 4,
+    "total_cost_jpy": 1.2947,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 7,
+    "n_targets": 7,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 6,
+    "n_excluded_entries": 6,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.28,
+    "effort": "medium",
+    "prompt_sha256": "5d6b067b5d8d804ab3c5a3cae7d4eb135eb0483bba176f445122a2481057f4ea"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 4
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

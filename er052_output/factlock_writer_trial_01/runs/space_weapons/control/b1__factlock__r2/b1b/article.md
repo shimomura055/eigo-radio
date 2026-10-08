@@ -1,0 +1,18 @@
+# Sorting Space Weapons: Put Them on the Wrong Shelf and Things Get Confusing
+
+When you hear “space weapons,” you might want to put them all on the same shelf for now. But the group includes things that attack, ways to defend, and things that come from the ground. For the person sorting them, it is a tough job.
+
+First, let’s check where to put them. On September 14, 2026, the US Air Force Secretary said that the United States was deploying “space-control weapons” in orbit to protect the joint force from hostile actions. An official article from a US government agency records this as the first statement to acknowledge that the Space Force had deployed weapons in space.
+
+But do missiles that destroy satellites from the ground go on the same shelf? On November 15, 2021, Russia destroyed a satellite with a ground-launched anti-satellite missile that went straight up, creating more than 1,500 pieces of debris that could be tracked. This was a destructive test launched from the ground, which is different from permanently placing a weapon in orbit. Both may look like they are related to space, but they belong in different places. We do not want to mix up the labels here.
+
+But the classification chart goes on. In the US Space Force framework, counterspace operations include attacks and defense in orbit, against communication links, and on the ground. Electromagnetic attacks on communications, cyberattacks, and attacks on the ground are also options for attack. You may be surprised: “This is about space, so why are communications and the ground included?” The category is much bigger than its name might suggest.
+
+And on the defense shelf, there are things like warning of threats, making equipment stronger, separating functions, and providing the ability to move or backup capacity. The framework divides defense into active and passive types. These ways of protecting things are different from attack weapons in orbit. If we put attack and defense in the same box, the sorting box would already be full.
+
+There is also a clear line on the treaty shelf. The Outer Space Treaty bans placing nuclear weapons and other weapons of mass destruction in orbit around Earth, putting them on the Moon or other celestial bodies, or placing them in outer space in any other way. It also bans military bases and forts on celestial bodies, weapons tests, and military exercises. But it does not have a rule that bans all space weapons, so this statement alone cannot determine whether a particular weapon is legal or illegal.
+
+In short, when sorting space weapons, what matters is not just how dramatic the name sounds. Where is it? What does it do? Is it for attack or defense? When we think of them as separate shelves, the news becomes clearer.
+
+## In one line
+“Space weapons” cover very different things, so their location and purpose matter when sorting them.

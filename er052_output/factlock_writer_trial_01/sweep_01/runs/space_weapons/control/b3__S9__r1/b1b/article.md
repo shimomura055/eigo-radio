@@ -1,0 +1,18 @@
+# The Space Weapons Quiz: The Answer Is in Where They Are!
+
+Now it’s time for a quiz show in your head. Here’s the question: When you hear “space weapons,” do you picture a missile floating among the stars and shooting down a satellite? Sure, you’re free to imagine that. But wait until you see the evidence before deciding on an answer.
+
+Question one: What did the United States officially acknowledge for the first time? The correct answer is space control weapons deployed in orbit. On September 14, 2026, the U.S. Secretary of the Air Force said that space control weapons were being deployed in orbit to protect the joint force from the actions of hostile opponents. An official government article records this as the first statement acknowledging that the Space Force had deployed weapons in space. However, no specific system name, attack capability, or target has been confirmed. Adding your own picture of what these weapons “must be” would break the quiz rules.
+
+Question two: Are launching a missile from the ground and deploying a weapon in orbit the same answer? Bzzt! They’re different. In November 2021, Russia destroyed a satellite with a ground-launched anti-satellite missile, creating more than 1,500 pieces of trackable debris. This was an example of attacking space from the ground, not of deploying a weapon in orbit. “Where did it come from?” is an important clue, too.
+
+Question three: Does “counterspace” refer only to weapons placed in space? Bzzt again. In the U.S. Space Force’s framework, it is a broad term for attack and defense involving orbit, communication links with satellites, and ground facilities. In other words, this label alone does not tell you whether there are weapons in orbit.
+
+Keep the card for defenses separate from the card for attack weapons, too. There are ways to defend: receive warnings about threats, make satellites stronger, divide up their functions, spread out their positions, make them able to move, and keep backups. These protective steps are not the same as deploying attack weapons in orbit.
+
+The final question is about the Outer Space Treaty. The treaty bans placing objects carrying nuclear weapons or other weapons of mass destruction in orbit around Earth, installing them on celestial bodies such as the Moon, or placing them in outer space in any other way. On celestial bodies, it also bans setting up military bases or forts, testing weapons, and holding military exercises. But “all weapons in space are banned” is also the wrong answer.
+
+The key to every question is not to group things together too quickly. Is it an attack from the ground, a broad counterspace operation, a way to protect satellites, or something the treaty bans? Sort the answer cards, and the quiz of reading news about space weapons becomes much easier to solve.
+
+## In one line
+The U.S. has acknowledged deploying weapons in orbit, but has not revealed what they can do or target.
