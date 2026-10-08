@@ -190,3 +190,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-07 | OPEN-233-B3-BRIEF-STRUCTURE-TRIAL-01(更新) | 初回正式報告=済(ユーザーへ★報告済み、REPORT §100、Status=NOT_SUPPORTED)。Feedback=close可否ユーザー確認待ち(未)。Production該当=なし。
 - 2026-10-08 | 夜間自律ループ統合報告(2026-10-08) | 初回報告済(2026-10-08朝、チャット)|Feedback未|Production該当N|正本 docs/pm/handoff/2026-10-08_night_loop_morning_report.md
 - 2026-10-08 | ALL-6-LUNA-WRITER-REDESIGN-NECESSITY-TRIAL-01 | 初回報告日2026-10-08(Fable経由ユーザー報告待ち)|REPORT §103|Status=MEASURED|Feedback未|Production該当N|詳細 er052_output/all6_writer_redesign_necessity_01/RESULT.md
+- 2026-10-08 | PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01 | 初回報告日2026-10-08(Fable経由ユーザー報告待ち)|参照 docs/pm/design_production_model_routing_gpt6_wiring_01.md|Status=PLANNED|Feedback未|Production該当N(配線は委任_02以降、OPEN-241)
