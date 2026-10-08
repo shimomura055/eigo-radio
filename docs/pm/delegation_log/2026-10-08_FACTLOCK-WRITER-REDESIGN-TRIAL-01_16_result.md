@@ -50,3 +50,16 @@ OPEN-243(翻訳段(EN化)で生じる事実NGと EN deviation check / Checker �
 ## 逸脱・未解決点
 - 実行はすべて指示どおり。逸脱: (1) ミニバッグ briefのSelected Facts 3事実化と数値注記は実行層判断(上記)。(2) R0のR1打ち切りは Production関数への実行時patch(BaseException)で実現、ファイル編集なし。(3) check_delegation_prompt は FAIL(委任文の形式要件、実行には影響なし)。(4) (ii)費用は1本0.2円の概算。
 - 人間確認待ち: USER_PACK_02.md の盲検読み(面白さ)。
+
+## commit / raw URL
+- commit ee19bacb(push済み origin/main)。
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_writer_trial_01/astra_revise_matrix_02/USER_PACK_02.md
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_writer_trial_01/astra_revise_matrix_02/eval/SUMMARY_MATRIX_02.md
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_writer_trial_01/astra_revise_matrix_02/eval/COST_MATRIX_02.md
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_writer_trial_01/astra_revise_matrix_02/eval/HUMAN_CHECK_MATRIX_02.md
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_writer_trial_01/astra_revise_matrix_02/DESIGN.md
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/OPEN_ITEMS.md
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/DECISION_LOG.md
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/pm/REPORT_LEDGER.md
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/pm/delegation_log/2026-10-08_FACTLOCK-WRITER-REDESIGN-TRIAL-01_16_result.md
