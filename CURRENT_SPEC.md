@@ -2295,14 +2295,14 @@ Single Source of Truth: [er006_model_routing_contract_01.py](er006_model_routing
 
 | Process | Approved Model/Provider | 状態 | 根拠Decision | 最終更新日 |
 |---|---|---|---|---|
-| Query Planning | GPT-5.6 Luna | `DECIDED` | ER-005以前から(gather_topic.py) | - |
-| Topic Selection | GPT-5.6 Luna | `DECIDED` | ER-005以前から | - |
-| Evidence Pack / VFL / Verification | GPT-5.6 Luna | `DECIDED` | ER-006-POOL-PILOT-01(新規構築時から) | 2026-08-21 |
+| Query Planning | GPT-6 Luna(`gpt-6-luna`) | `DECIDED` | ER-005以前から(gather_topic.py) | - → **2026-10-08更新: 全工程gpt-6-luna(ユーザー判断7、PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01、旧GPT-5.6 Luna。配線完了・Fable受入待ち)** |
+| Topic Selection | GPT-6 Luna(`gpt-6-luna`) | `DECIDED` | ER-005以前から | - → **2026-10-08更新: 全工程gpt-6-luna(ユーザー判断7、PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01、旧GPT-5.6 Luna。配線完了・Fable受入待ち)** |
+| Evidence Pack / VFL / Verification | GPT-6 Luna(`gpt-6-luna`) | `DECIDED` | ER-006-POOL-PILOT-01(新規構築時から) | 2026-08-21 → **2026-10-08更新: 全工程gpt-6-luna(ユーザー判断7、PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01、旧GPT-5.6 Luna。配線完了・Fable受入待ち)** |
 | Exception Search | Perplexity Search API | `DECIDED` | ER-006-POOL-PILOT-01 | 2026-08-21 |
-| B1 Writer / A2 Writer(Deviation Check含む) | GPT-5.6 Luna | `DECIDED`(Solから変更) | ER-006-MODEL-ROUTING-CONTRACT-01 | 2026-08-22 |
-| Writer Fact Check | GPT-5.6 Luna | `DECIDED`(Solから変更) | ER-006-MODEL-ROUTING-CONTRACT-01 | 2026-08-22 |
-| B1 Support / A2 Support(Key Phrase選定・正規化含む) | GPT-5.6 Luna | `DECIDED`(Solから変更) | ER-006-MODEL-ROUTING-CONTRACT-01 | 2026-08-22 |
-| Support Fact Check | GPT-5.6 Luna | `DECIDED` | ER-005-SUPPORT-COST-QUALITY-01系実装をER-006 Pool Pilotで採用、ER-006-MODEL-ROUTING-CONTRACT-01で正式契約化 | 2026-08-22 |
+| B1 Writer / A2 Writer(Deviation Check含む) | GPT-6 Luna(`gpt-6-luna`) | `DECIDED`(Solから変更) | ER-006-MODEL-ROUTING-CONTRACT-01 | 2026-08-22 → **2026-10-08更新: 全工程gpt-6-luna(ユーザー判断7、PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01、旧GPT-5.6 Luna。配線完了・Fable受入待ち)** |
+| Writer Fact Check | GPT-6 Luna(`gpt-6-luna`) | `DECIDED`(Solから変更) | ER-006-MODEL-ROUTING-CONTRACT-01 | 2026-08-22 → **2026-10-08更新: 全工程gpt-6-luna(ユーザー判断7、PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01、旧GPT-5.6 Luna。配線完了・Fable受入待ち)** |
+| B1 Support / A2 Support(Key Phrase選定・正規化含む) | GPT-6 Luna(`gpt-6-luna`) | `DECIDED`(Solから変更) | ER-006-MODEL-ROUTING-CONTRACT-01 | 2026-08-22 → **2026-10-08更新: 全工程gpt-6-luna(ユーザー判断7、PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01、旧GPT-5.6 Luna。配線完了・Fable受入待ち)** |
+| Support Fact Check | GPT-6 Luna(`gpt-6-luna`) | `DECIDED` | ER-005-SUPPORT-COST-QUALITY-01系実装をER-006 Pool Pilotで採用、ER-006-MODEL-ROUTING-CONTRACT-01で正式契約化 | 2026-08-22 → **2026-10-08更新: 全工程gpt-6-luna(ユーザー判断7、PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01、旧GPT-5.6 Luna。配線完了・Fable受入待ち)** |
 | TTS | Gemini `gemini-2.5-pro-preview-tts`(英語)/`gemini-3.1-flash-tts-preview`(日本語)。呼び出し方式はBatch API(`client.batches.create()`)がApproved方式であり、**Production call site全6箇所へ実配線済み**(詳細はAudio Production Pipeline節「Gemini TTS実装方式」)。**注記(2026-09-06、PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-01)**: Batch APIは正式リリース後の実量産における正式TTS方式。正式リリース前(DEV/Trial/診断/Production正式経路を使ったruntime確認/完成候補生成/回帰等)はStandard同期を既定とする(PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-01、2026-09-06、正本は`docs/pm/PM_GOVERNANCE.md` 7節)。Standard同期使用はProduction正式経路であることを否定しない。**実行モード切替(2026-09-06、ER-011-TTS-EXECUTION-MODE-SWITCH-PRODUCTION-WIRING-01、`PRODUCTION_WIRED`)**: 環境変数`TTS_EXECUTION_MODE`(`BATCH`/`STANDARD`、既定`BATCH`)で切替。詳細・実API確認結果はAudio Production Pipeline節「Gemini TTS実装方式」参照 | `DECIDED` / `WIRED` | プロジェクト全体方針(model)、ER-006-AUDIO-COST-SPEC-FIX-01(Batch方式の正式化)、ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01(Production実配線)、ER-011-TTS-EXECUTION-MODE-SWITCH-PRODUCTION-WIRING-01(環境変数切替の配線) | 2026-08-22 |
 | ASR / Audio QA | **2026-08-25更新: 英語・日本語ともOpenAI `gpt-4o-mini-transcribe`(Primary)、AzureはSecondary Cascade用**。SSOTは[er006_asr_provider_routing_01.py](er006_asr_provider_routing_01.py)(`ASR_ROUTING`/`require_asr_route()`)であり、本Routing Contractの`ASR_PROVIDER`定数(`"azure"`固定)は既存test互換のためのみ残す未配線の値である(詳細はAudio Production Pipeline節「Primary ASR Routing」) | `DECIDED` | ER-006-AUDIO-COST-PILOT-02、ER-006-AUDIO-COST-SPEC-FIX-01(Contract表への反映)、ER-007-JA-ASR-VALIDATOR-REDESIGN-AND-CASCADE-01(日本語Primary切替) | 2026-08-25 |
 
@@ -2321,7 +2321,7 @@ ER-006-MODEL-ROUTING-CONTRACT-01完了報告のAudit一覧を参照)。
 
 **Ledger Deviation Checker: GPT-6モデルTrial結果(2026-09-29、
 GPT6-MODEL-COMPARISON-TRIAL-01)**: 本Contract表(Model Routing Contract)の
-上記Approved Modelは無変更(`gpt-5.6-luna`のまま、Production routing未変更)。
+上記Approved Modelは当時無変更(`gpt-5.6-luna`のまま、Production routing未変更)だった。**[2026-10-08判断7で上書き: 全7定数(QUERY_PLANNER/TOPIC_SELECTOR/RESEARCH/WRITER/WRITER_FACT_CHECK/SUPPORT/SUPPORT_FACT_CHECK)を`gpt-6-luna`へ変更済み(配線完了・Fable受入待ち、PRODUCTION_WIRED確定はFable判定)。Writer不変(Opus#15 K7)の旧記述も本判断で上書き。単価は`pricing_snapshot.json`へ登録済み、予算ガード4箇所はfail-closed化済み。運用規則O3: 量産最初の10本でEN Advanced deviation STOP 3本以上または保留0.3/記事以上→条件D(QCD悪化)として見直し。切り戻しはPhase 2 commitのrevertのみ。詳細DECISION_LOG末尾`## PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01`節]**
 Trial(84 call実測、`er050_gpt6_checker_comparison_trial_01.py`、
 `er003_v1_en_direct_vfl_01_generate.py::run_deviation_check()`をContract非経由で
 model引数のみ差し替えて実行)の結果、`gpt-6-luna`はChecker(Ledger Deviation
