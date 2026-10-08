@@ -5723,6 +5723,7 @@ N=3 brief x 1反復、LLM判定のみ(同系列の主・併用judge)、強い位
 
 - 位置づけ: Trial(Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言、推奨なし)。ChatGPT再現の要因分解(逸脱ルール無し、観察のみ)。条件 F0(現状: developer1文+禁止リスト)/F1(禁止リスト除去)/F2(許可の人格)/F3(F2+長さ自由)x gpt-6-luna / gpt-6-sol、F2・F3 x gpt-6-astra、計10本(N=1/条件、単一記事meta b2)。比較対象: ChatGPTログアウト版、元記事(現行R2版)。証跡 `er052_output/factlock_writer_trial_01/step1_chat_repro_01/`(SUMMARY_STEP1.md、BLIND_PACK.md、runs/、fc/)。
 - 実費: 合計¥22.266(usage_log.jsonl全行のcost_jpy合計をSonnetが再計算、MANIFEST.json total_cost_jpy 22.266と一致、Fable把握値¥22.3と一致)。astra単価は未登録のためgpt-6-sol単価x2.5の推定概算(F2 ¥5.58、F3 ¥8.13)。
+- 【訂正注記 2026-10-08(元の記述は残す)】gpt-6-astra正式単価は Standard 10/1/12.5/50(USD/1M、input/cached/cache write/output)、出典 https://platform.openai.com/docs/pricing(2026-10-08 16:38 JST、`er052_output/factlock_writer_trial_01/astra_pricing_01/`)。上記「gpt-6-sol単価x2.5の推定」は誤りで、正しくはSolの5倍(astra分が2倍)。再計算(USD/JPY=160、記載値からの機械計算): astra分 F2 ¥5.58+F3 ¥8.13=¥13.71 を2倍→合計約¥35.98(Step 1の予算上限は本REPORTに記載なし=未確認)。詳細 DECISION_LOG「OPEN-243-TRANSLATION-NG-ANALYSIS-01」節(ii)。
 
 ### 指標表(SUMMARY_STEP1.md転記)
 | 記事 | 条件 | 字数 | 段落 | 1文段落 | 問い | ダッシュ | ではない型 | です・ます率 | 記号Gate | FC | 費用¥ | 秒 |
@@ -5762,6 +5763,7 @@ N=3 brief x 1反復、LLM判定のみ(同系列の主・併用judge)、強い位
 - 位置づけ: Trial(Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言、推奨なし)。ユーザーGo取得済み(2026-10-08「はい、Goしてください。」)。**人間確認待ち**。
 - 設計(ユーザー確定): 起点 R0 = Fact Lock v1 meta b2 r1 の `original.md`(Writer直後、R1/R2未通過、タグ除去済み。委任_14準備の `step2_astra_r3_01/inputs/FL_R0/meta/b2/source.md` と末尾改行を除きバイト一致を突合確認、SHA 4dd147ff.../0b672113...)。モデルは全て gpt-6-astra(reasoning high、Step 1 と同一)。2系列 x 3段: 系列A = ユーザーPromptのみ(developer/systemなし)、系列B = 熟練編集者(Step 1 F2 developer 文を conditions.json から逐語)。user メッセージ「以下の記事:\n\n{前段本文}\n\n事実は変えずにエンターテイメント性をもっと上げた記事にReviseください。長さは800〜1000字程度でお願いします。」。逐次(R1入力=R0、R2入力=R1出力、R3入力=R2出力、previous_response_id不使用、記号禁止リストなし)。系列A/Bは2プロセス並列。台帳 = `er052_output/factlock_writer_trial_01/runs/meta/control/b2__factlock__r1/research_ledger/verified_fact_ledger.txt`、B3 brief = 同 `storyline_b3/selected_brief.md`(= `briefs/meta/b2/selected_brief_factlock.md`)。
 - 実費: 総額 約¥48.48(推定。生成6本 ¥45.77(**astra単価は未登録のため gpt-6-sol 単価 x2.5 の推定**、USD/JPY=160)+ JA FC 7本 ¥1.31(luna 実測トークンx登録単価)+ (ii) 7本 ¥1.40(usage非取得のため1本0.2円の概算計上))。予算上限¥60内。生成6本のトークン合計: input 4402 / cached 0 / output 10563(うち reasoning 6303)。所要: 生成は2プロセス並列で約2分、評価約98秒。
+- 【訂正注記 2026-10-08(元の記述は残す)】gpt-6-astra正式単価は Standard 10/1/12.5/50(USD/1M、input/cached/cache write/output)、出典 https://platform.openai.com/docs/pricing(2026-10-08 16:38 JST、`er052_output/factlock_writer_trial_01/astra_pricing_01/`)。上記「gpt-6-sol単価x2.5の推定」は誤りで、正しくはSolの5倍(astra分が2倍)。再計算: astra生成6本 ¥45.77を2倍→総額約¥94.25(予算上限¥60に対し約¥34超過)。詳細 DECISION_LOG同節(ii)。
 
 ### 指標表(7本。SUMMARY_MATRIX.md 転記)
 FC = JA Fact Check(gpt-6-luna、全台帳、sweep/R3-MINIMALと同一呼び出し)。字数等はタイトル行を除く。FC・決定論指標はMarkdown除去後(P1)の本文。系列A=ユーザーPromptのみ、B=熟練編集者。
@@ -5813,6 +5815,7 @@ MEASURED(人間確認待ち)。Production変更なし(VALIDATED/APPROVED_FOR_PRO
 - 設計: 委任_15 と同一条件(gpt-6-astra・reasoning high、系列A=X=ユーザーPromptのみ[developerなし]/系列B=Y=熟練編集者[Step 1 F2 developer文]、user文共通、R1入力=R0・R2入力=R1生出力、previous_response_idなし、記号禁止リストなし)で記事を2本に拡張し、R3は実施せず R1・R2 のみ。評価 10本(R0は記事共通 x 2 + 生成8本)。詳細 `er052_output/factlock_writer_trial_01/astra_revise_matrix_02/DESIGN.md`。
 - R0 の経緯: **ホルムズ** = Fact Lock v1 の既存 `runs/hormuz/control/b2__factlock__r1/ja_writer/original.md`(manifest completed、選択規則どおり。`strip_tags` 後 R0.md SHA c9ee84e0...、original.md SHA 169f06a4...、台帳 SHA 9bd6834e...、B3 brief SHA 4ed19d37...[注記版と同一])。**ミニバッグ** = 本日の全6-luna E2E `er052_output/gpt6_wiring_e2e_01/run_02/` の台帳(SHA 0cc8ca3f...)・B3 brief(SHA 55bb9ba3...)を入力に Fact Lock v1 の R0 手順で新規生成(Production関数 `run_ja_writer_o_r1_r2` の Original段を gpt-6-luna で実行し R1 呼び出し直前で打ち切り。R1/R2のAPIは未呼出)。元 brief の Selected Facts が箇条書きでなく1段落だったため、文境界で3事実に分けて `【事実N】` を付与(本文は逐語)、数値注記は中核2件(2026年9月・2026年10月)、周辺2件(Fall 2026・2026年)。生成1 call、JA Fact Check(Full Ledger)= LEDGER_COMPLIANT・MAJOR 0/MINOR 0、**must-fix 不要**、STOPなし。タグ照合(測定のみ): 17文中9文にタグ、数値照合の不一致0。R0 = `inputs/small_bag/R0.md`(SHA 88ba339d...)。
 - 実費: 総額 約¥64.92(推定。astra生成8本 ¥60.21(**astra単価は未登録のため gpt-6-sol 単価 x2.5 の推定**、USD/JPY=160)+ ミニバッグR0生成(luna 実測x登録単価)¥1.39 + JA FC 10本 ¥1.33(luna)+ (ii) 10本 ¥2.00(1本0.2円の概算計上))。予算上限¥80内。生成8本のトークン合計: input 5991 / cached 0 / output 13855(うち reasoning 7996)。所要: 準備〜全評価・集計まで約10分(16:12〜16:20)(R0生成約100秒、astra生成は4系列並列で約2分、評価各約70秒)。
+- 【訂正注記 2026-10-08(元の記述は残す)】gpt-6-astra正式単価は Standard 10/1/12.5/50(USD/1M、input/cached/cache write/output)、出典 https://platform.openai.com/docs/pricing(2026-10-08 16:38 JST、`er052_output/factlock_writer_trial_01/astra_pricing_01/`)。上記「gpt-6-sol単価x2.5の推定」は誤りで、正しくはSolの5倍(astra分が2倍)。再計算: astra生成8本 ¥60.21を2倍→総額約¥125.13(予算上限¥80に対し約¥45超過。委任文記載値は約¥124)。詳細 DECISION_LOG同節(ii)。
 
 ### 指標表(10本。SUMMARY_MATRIX_02.md 転記)
 FC = JA Fact Check(gpt-6-luna、全台帳、委任_15と同一呼び出し)。字数等はタイトル行を除く。FC・決定論指標はMarkdown除去後(P1)の本文。X=ユーザーPromptのみ、Y=熟練編集者。meta(委任_15)の既存値は SUMMARY_MATRIX_02.md に併記(再評価なし)。
@@ -5852,3 +5855,14 @@ N=2記事・1回・系列あたり1本。FCと(ii)は gpt-6-luna の自己判定
 
 ### Status
 MEASURED(人間確認待ち)。Production変更なし(VALIDATED/APPROVED_FOR_PRODUCTION未宣言)。詳細 `er052_output/factlock_writer_trial_01/astra_revise_matrix_02/`(DESIGN.md、runs/、eval/、USER_PACK_02.md、tools/)。
+
+## §109 OPEN-243-TRANSLATION-NG-ANALYSIS-01 翻訳段NG解析・Opus所見・S0監査(委任_01・委任_02、2026-10-08、ANALYZED/AUDITED)
+
+- 位置づけ: 既存artifactのみ読取り(API支出¥0)。Production変更なし(VALIDATED/APPROVED_FOR_PRODUCTION未宣言)。解析=`er052_output/open243_translation_ng_analysis_01/ANALYSIS_01.md`・`COUNTERMEASURES_01.md`(委任_01)。Opus独立レビュー所見・ユーザー決定は OPEN_ITEMS OPEN-243・DECISION_LOG同名節・OPUS_FINDINGS_LEDGER OF-088〜094。
+- S0監査(委任_02)= `S0_AUDIT_01.md`(集計表・突合表・精査表・FLOOR_MODE・EV-28)、`S0_USER_CHECK.md`(ユーザー確認3件)、`s0_excluded_candidates.jsonl`(除外1,011行)。
+  - 再分類による除外: 承認構成133 Checker実行で再分類対象1,389 claimのうち1,011 claimが除外(SUPPORTED 372/NO_FACT_CLAIM 639)、うちchanged_actor=true 38(actor_match=match 27)。Trial A/B 57実行では対象499中379除外、changed_actor 8。
+  - 盲検NGとの突合: 翻訳段由来/増幅26事象のうち初回再分類で除外された文と一致したのは5事象(EV-25重大・EV-06・EV-07・EV-10・EV-19)。「候補化なし10/24」のうち3事象(EV-06/07/10)が再分類除外、7事象はStage 1候補に出ていない。M3(E0)で救済され得る上限=2事象(EV-25・EV-06、changed_actor付き)。
+  - 要約MAJOR14世代(手動判定): 明確な誤り5/境界例7/過剰判定の疑い2。STOP 8世代の最終MAJOR基準では明確1/境界4/過剰疑い3。
+  - FLOOR_MODE: Trial A/B 57実行の switch dump 全件が `FLOOR_MODE=number_only`・`STAGE1_RECLASSIFY=True`(sha256 が provenance と一致)。
+  - EV-28: EN deviation check は要約を指摘せず、Checker Stage 1 が候補化(changed_actor付き)、再分類は維持、Stage 2一次ACCEPTABLE→第2意見BLOCKING→書換え。
+- Status: ANALYZED/AUDITED。M1〜M3はTrial経路での検証が次(ユーザー決定2026-10-08)。ユーザー確認3件は回答待ち。
