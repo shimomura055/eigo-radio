@@ -24,3 +24,6 @@ OPUS_FINDINGS_LEDGER(OF-088〜094)、OPEN_ITEMS OPEN-243(行長2,361字、3,000�
 ## 変更ファイル
 新規: `er052_output/open243_translation_ng_analysis_01/`(既存ANALYSIS等+S0_AUDIT_01.md、S0_USER_CHECK.md、s0_excluded_candidates.jsonl、_s0_*)、`er052_output/factlock_writer_trial_01/astra_pricing_01/`、delegation_log(本委任・委任_17・_18・OPEN-243委任_01の委任文/check/result)。
 更新: `docs/pm/OPUS_FINDINGS_LEDGER.md`、`OPEN_ITEMS.md`、`DECISION_LOG.md`、`docs/pm/PM_BRIEF.md`、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`、`docs/pm/REPORT_LEDGER.md`。
+
+## Git
+commit 5505ae219f7b38b06822ac9bbfdb269c3fc0dca6 (origin/main へ push 済み)。raw URL 例: https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/open243_translation_ng_analysis_01/S0_AUDIT_01.md
