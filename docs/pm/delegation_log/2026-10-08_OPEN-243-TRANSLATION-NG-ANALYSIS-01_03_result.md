@@ -47,4 +47,13 @@ FAIL(標準フォーマット外: 性質/事前指定Read一覧/Grep一覧/実�
 - 新規仕様候補・追加判断事項: なし(採否はFable・ユーザー判断、Opus条件A/Cの要否はFable判断)。
 
 ## commit / raw URL
-(commit後に追記)
+commit 2cf161ab682a11ea68bfa752e82fff8a418ea774(origin/main push済み)。主な raw URL(https://raw.githubusercontent.com/shimomura055/eigo-radio/main/<path>):
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/open243_translation_ng_analysis_01/trial_m123_01/DESIGN_M123.md
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/open243_translation_ng_analysis_01/trial_m123_01/RESULTS_M123.md
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er003_v1_n3_01_advanced_adaptation_generate.py
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er012_e_family_entertainment_two_level_runner_01.py
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er003_v1_en_direct_vfl_01_generate.py
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_open233_stage1_reclassify_01.py
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_open243_m123_trial_test_01.py
+- https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/pm/delegation_log/2026-10-08_OPEN-243-TRANSLATION-NG-ANALYSIS-01_03_result.md
