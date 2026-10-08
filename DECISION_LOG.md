@@ -6,6 +6,8 @@
 **追記索引(2026-10-08、判断7)**: `PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01`(全6-luna化=Production方針のユーザー決定、PLANNED、OPEN-241)は本ファイル末尾`## PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01`節。
 **追記索引(2026-10-08、判断7配線完了)**: `PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01`委任_03(Model Routing全工程gpt-6-luna配線・予算ガードfail-closed化・Production E2E 1本[Advanced deviation Gate STOP]、配線完了・Fable受入待ち、PRODUCTION_WIRED未確定、OPEN-241)は本ファイル末尾`## PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01: 委任_03`節。
 **追記索引(2026-10-08、判断7完走E2E)**: `PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01`委任_04(完走E2E evidence取得: 別テーマsmall_bag、全12 stage `gpt-6-luna`、cost.json ¥19.105、ガード4.70、O3観測EN STOP 1/2本、OPEN-242起票)は本ファイル末尾の委任_04エントリ参照。
+**追記索引(2026-10-08、判断7 PRODUCTION_WIRED確定)**: `PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01`委任_05(Fable判定: PRODUCTION_WIRED確定、受入a〜e充足、O3観測EN STOP 1/2本継続、OPEN-241)は本ファイル末尾の`## PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01: Fable判定`節。
+**追記索引(2026-10-08、FACTLOCK)**: `FACTLOCK-WRITER-REDESIGN-TRIAL-01`(Fact Lock v1 MEASURED・残NG突合・診断・R3最小指示・sol N=1・sweep生成33本、sweep評価中)のユーザー判断・結果は本ファイル末尾`## FACTLOCK-WRITER-REDESIGN-TRIAL-01`節、詳細REPORT §104。
 
 **履歴全文(直前の記録・その前の記録、以下さらに前の記録、合計12件、原文のまま移動): `DECISION_LOG_HISTORY.md`の`## ER-PM-001_CHAIN`節参照**
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
@@ -20252,3 +20254,26 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - O3観測: EN Advanced deviation STOP 1/2本(委任_03 STOP、委任_04 通過)。
 - OPEN-242起票(予算ガードのweb_search未計上、修正は別タスク)。実費¥19.105/¥50。
 - 証跡: `er052_output/gpt6_wiring_e2e_01/E2E_EVIDENCE.md`、`er052_output/gpt6_wiring_e2e_01/run_02/`。
+
+## PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01: Fable判定(PRODUCTION_WIRED確定、2026-10-08、委任_05)
+
+- **判定**: OPEN-241は**PRODUCTION_WIRED確定**(Fable判定、PM_GOVERNANCE 11-3照合済み)。
+- **根拠(受入a〜e)**: (a)Family X Production正式入口から完走実行(small_bag、exit=0)。(b)12 stage・14 callの`model_id`実測が全て`gpt-6-luna`、5.6残存0。KP解説stageはrunner対象外で未観測(Phase 0 probeで互換確認済み)。(c)cost.json total ¥19.105>0、予算ガード累計4.70>0。(d)回帰5266/5278 PASS(残12件は本変更と無関係の既知失敗)。(e)fail-closed維持・単価未登録例外なし。
+- **O3観測**: EN Advanced deviation STOP 1/2本(委任_03 STOP、委任_04通過)。Production最初の10本で3本以上または保留0.3/記事以上なら条件D(QCD悪化)として見直す。継続観測。
+- **Opus条件C**: M1〜M6/O1〜O3反映済み(OPUS_FINDINGS_LEDGER OF-063〜071)。OF-065(M3)=CLOSEOUT_CONFIRMED。
+- **切り戻し手順(再掲)**: commit 756ed882(Phase 2)のrevertのみ(Phase 1の単価追記・fail-closed化は戻さない、戻すと費用0円計上に逆戻り)。revert後は常駐processを再起動、回帰全件実行。
+- **関連**: OPEN-242(予算ガードのweb_search未計上、修正可否は別途ユーザー/Fable判断)。
+- **Status**: PRODUCTION_WIRED。
+
+## FACTLOCK-WRITER-REDESIGN-TRIAL-01: ユーザー判断・結果記録(2026-10-08、委任_08)
+
+- **ユーザー判断(逐語要旨)**: 数値規則は(c)(周辺数値は書かず、中核数値のみ上限3件でタグ付き転記可)。R1/R2は5則(Fable提案ベース)。名称内の番号(COSMOS 1408・第4条等)の扱いは「Aで良いです」(周辺のまま名称ごと書かない)。モデルは6-lunaで実施。決定Aの例外あり。sweep費用上限¥300(異議なし)、しきい値は設けない。Fact Lock v1の面白さはNG(実質pairwise 9対35)との指示を受け、禁止誘導を最小化したsweep方針(11変種x3本)へ。ChatGPT提示のR3最小指示(「事実は変えずにエンタメ性を上げて」)を試験。6-solは「1本だけ作らせて」「その記事をまずは私に見せて。それ以外はまだ実施しないで」でN=1のみ。
+- **v1結果(MEASURED)**: 3セル(baseline 5.6現行/all6/factlock)x24本、同一パック盲検。軽微/記事 JA R2 0.55/0.32/0.21、EN 0.81/0.68/0.32。重大 JA R2 0/1/0、EN 1/1/0(ユニーク重大 1/1/0)。面白さpairwise factlock 13対all6 35(不戦勝4判定除外で実質9対35)。実費¥173.2/¥150(超過¥23.2、採点が同一パック72本・5.6ジャッジ¥1.5/callのため、T-3運用で記録継続)。
+- **残NG突合(¥0)**: factlock全NG 14項目(重大1[R0のみ]・軽微8・保留5)。照合が検出していたNGは狭義1/9(11%)、広義2/9。照合不整合13文は盲検NG/保留と0重複。EN軽微6件の半分(3件)は翻訳段由来。
+- **診断(¥0)**: アラビア数字2.6倍(3.42/1.32)・常体化(です・ます文割合0.26/0.50)・比喩種増(4種以上の記事17/24対11/22)・推量・仮定語2.12/0.86・問い0.71/0.09。「ではありません」型はFLのほうが少なく仮説不支持。pairwiseにjudge指示文の誘導語と位置バイアスあり。外れ値space_weapons b3 r2はタグ番号取り違え(共通修正T)。
+- **R3-MINIMAL(N=12、MEASURED、¥13.01/¥60)**: fresh 8.5/12・JA FC MAJOR 0→6(5本)、chain 7.0/12・MAJOR 0→4(3本)。位置バイアスB勝39/48(R3がA位置で8/24勝・B位置で23/24勝)。6-lunaでは最小指示で事実逸脱が増える。
+- **6-sol R3 N=1(meta b2、MEASURED、¥1.72[総約¥2.0])**: JA FC LEDGER_COMPLIANT(MAJOR 0/MINOR 0)、字数767→597(約22%短縮)、構成の組替えなし(話の順序は同じ、冒頭段のみ統合)、比喩5→3種。pairwiseは位置偏りで各1-1。優劣は未測定。
+- **sweep生成(33本、GENERATED)**: 11変種(S1〜S4,S6〜S12)x3 brief(meta b2/hormuz b4/space_weapons b3)。完走29・Gate STOP 4(S3 meta=EN MAJOR再発、S4 hormuz=JA_RECHECK_REQUIRED、S8 meta・S10 hormuz=JA R2 Fact Check STOP)。実費約¥186.6/¥300。model_id実測は全runで`gpt-6-luna`。LLM評価は委任_04c(評価中)。
+- **Opus独立レビュー**: 条件A(M1〜M9、O1〜O4、`docs/pm/opus_l2_review_factlock_writer_trial_01.md`)・任意(sweep評価設計M1〜M7、O1・O2・O4採用・O3次段、`docs/pm/opus_l2_review_factlock_sweep_eval_01.md`)反映済み(OPUS_FINDINGS_LEDGER)。
+- **harness欠陥(未修正)**: phase2のJA再確認で本文が再生成されるとタグ除去が適用されず、タグが最終稿・ENに残存(S4 hormuz・S11 space_weapons[EN含む]・S8 space_weapons)。**Production採用検討時に要修正**(再実行・runs側除去は未実施)。
+- **Status**: v1 MEASURED・sweep EVALUATING。Production変更なし。採用判断はユーザー(APPROVED_FOR_PRODUCTION未宣言)。詳細REPORT §104、`er052_output/factlock_writer_trial_01/`。
