@@ -52,3 +52,14 @@ Status: DESIGN_READY(実行Go未)。Production変更なし、既存コード・P
 
 ## 7. 所要時間・API支出
 - 所要: 約1時間(読込・設計・文書作成・commit)。API生成支出=¥0(OpenAI/Gemini呼び出しなし、web検索なし、HTTP取得なし)。
+
+## Git
+- commit(成果物): b8015ce7092f7794f46e0d18f75466f45fd7551e
+- raw URL(base https://raw.githubusercontent.com/shimomura055/eigo-radio/main/):
+  - er052_output/factlock_astra_e2e_trial_01/DESIGN_E2E_01.md
+  - er052_output/factlock_astra_e2e_trial_01/PREREGISTRATION_01.md
+  - er052_output/factlock_astra_e2e_trial_01/NEW_THEME_CANDIDATES_01.md
+  - DECISION_LOG.md
+  - docs/pm/REPORT_LEDGER.md
+  - docs/pm/delegation_log/2026-10-09_FACTLOCK-ASTRA-E2E-TRIAL-01_01.md
+  - docs/pm/delegation_log/2026-10-09_FACTLOCK-ASTRA-E2E-TRIAL-01_01_result.md
