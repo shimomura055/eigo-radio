@@ -1,0 +1,1721 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "But the curtain did not come down on Brent futures price movements.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "But the curtain did not come down on Brent futures price movements.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# It Took the Stage, Then Left the Next Day: A Two-Act Play of the Fee Proposal and Brent Futures\n\nThe fee proposal that appeared on the stage of a policy announcement gave up the lead role the next day. But the curtain did not come down on Brent futures price movements. What stood out this time was that the statements changed, while concerns about shipping continued.\n\nThe first act was on July 13. Trump posted a proposal to charge a 20 percent fee on all cargo passing through the Strait of Hormuz. He said the money would pay the United States back for the cost of keeping the strait safe. But this was only a proposal. They had not actually started collecting the fee.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But the curtain did not come down on Brent futures price movements.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "1f369ca5e334bb6e8e89204d6d12a35a0b9f7929a9adde9dedde55155a6b954e",
+              "f9a8f7796d9b2e061a8ad250970f8b219cae444f1991567b46efb1bebe650c68"
+            ],
+            "batch_cost_jpy": 0.0886,
+            "batch_n_claims": 4
+          }
+        },
+        {
+          "claim_text": "But this was only a proposal.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "But this was only a proposal.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.4"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The fee proposal that appeared on the stage of a policy announcement gave up the lead role the next day. But the curtain did not come down on Brent futures price movements. What stood out this time was that the statements changed, while concerns about shipping continued.\n\nThe first act was on July 13. Trump posted a proposal to charge a 20 percent fee on all cargo passing through the Strait of Hormuz. He said the money would pay the United States back for the cost of keeping the strait safe. But this was only a proposal. They had not actually started collecting the fee.\n\nThen the second act began the next day. Trump posted that he was withdrawing the fee proposal and replacing it with plans for trade and investment involving Gulf countries and the United States. He said the decision came after “very productive talks” with Middle Eastern leaders. From fees on cargo to trade and investment: the sign on the story had changed.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "But this was only a proposal.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "1f369ca5e334bb6e8e89204d6d12a35a0b9f7929a9adde9dedde55155a6b954e",
+              "f9a8f7796d9b2e061a8ad250970f8b219cae444f1991567b46efb1bebe650c68"
+            ],
+            "batch_cost_jpy": 0.0886,
+            "batch_n_claims": 4
+          }
+        },
+        {
+          "claim_text": "They had not actually started collecting the fee.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "They had not actually started collecting the fee.",
+            "issue": "Ledgerは徴収方法などの制度設計が示されなかったことを確認しているが、実際に徴収が開始されていなかったことを直接確認していない。 / 実際に徴収が始まっていなかったという状況はLedgerに明記されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.5); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.5"
+              ],
+              "related_fact_ids": [
+                "HF-003",
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The fee proposal that appeared on the stage of a policy announcement gave up the lead role the next day. But the curtain did not come down on Brent futures price movements. What stood out this time was that the statements changed, while concerns about shipping continued.\n\nThe first act was on July 13. Trump posted a proposal to charge a 20 percent fee on all cargo passing through the Strait of Hormuz. He said the money would pay the United States back for the cost of keeping the strait safe. But this was only a proposal. They had not actually started collecting the fee.\n\nThen the second act began the next day. Trump posted that he was withdrawing the fee proposal and replacing it with plans for trade and investment involving Gulf countries and the United States. He said the decision came after “very productive talks” with Middle Eastern leaders. From fees on cargo to trade and investment: the sign on the story had changed.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "They had not actually started collecting the fee.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "1f369ca5e334bb6e8e89204d6d12a35a0b9f7929a9adde9dedde55155a6b954e",
+              "f9a8f7796d9b2e061a8ad250970f8b219cae444f1991567b46efb1bebe650c68"
+            ],
+            "batch_cost_jpy": 0.0886,
+            "batch_n_claims": 4
+          }
+        },
+        {
+          "claim_text": "Even after the fee proposal was dropped, prices did not move in just one direction.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Even after the fee proposal was dropped, prices did not move in just one direction.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.5); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.5"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Then the second act began the next day. Trump posted that he was withdrawing the fee proposal and replacing it with plans for trade and investment involving Gulf countries and the United States. He said the decision came after “very productive talks” with Middle Eastern leaders. From fees on cargo to trade and investment: the sign on the story had changed.\n\nThis is where Brent futures came in. After the announcement of the change, futures briefly gave up some of their gains. But soon they returned to a high level close to where they had been before the announcement. At the time the news report was published, they were up about 2.6 percent, above $85 a barrel. Even after the fee proposal was dropped, prices did not move in just one direction.\n\nDuring that time, concerns about attacks by the United States and Iran, a blockade at sea, and tanker safety continued. The change in statements and the concerns about the strait were both on the screen at the same time.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Even after the fee proposal was dropped, prices did not move in just one direction.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "1f369ca5e334bb6e8e89204d6d12a35a0b9f7929a9adde9dedde55155a6b954e",
+              "f9a8f7796d9b2e061a8ad250970f8b219cae444f1991567b46efb1bebe650c68"
+            ],
+            "batch_cost_jpy": 0.0886,
+            "batch_n_claims": 4
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 4,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "But the curtain did not come down on Brent futures price movements.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "1f369ca5e334bb6e8e89204d6d12a35a0b9f7929a9adde9dedde55155a6b954e",
+            "f9a8f7796d9b2e061a8ad250970f8b219cae444f1991567b46efb1bebe650c68"
+          ],
+          "batch_cost_jpy": 0.0886,
+          "batch_n_claims": 4
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "But this was only a proposal.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "1f369ca5e334bb6e8e89204d6d12a35a0b9f7929a9adde9dedde55155a6b954e",
+            "f9a8f7796d9b2e061a8ad250970f8b219cae444f1991567b46efb1bebe650c68"
+          ],
+          "batch_cost_jpy": 0.0886,
+          "batch_n_claims": 4
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "They had not actually started collecting the fee.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "1f369ca5e334bb6e8e89204d6d12a35a0b9f7929a9adde9dedde55155a6b954e",
+            "f9a8f7796d9b2e061a8ad250970f8b219cae444f1991567b46efb1bebe650c68"
+          ],
+          "batch_cost_jpy": 0.0886,
+          "batch_n_claims": 4
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Even after the fee proposal was dropped, prices did not move in just one direction.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "1f369ca5e334bb6e8e89204d6d12a35a0b9f7929a9adde9dedde55155a6b954e",
+            "f9a8f7796d9b2e061a8ad250970f8b219cae444f1991567b46efb1bebe650c68"
+          ],
+          "batch_cost_jpy": 0.0886,
+          "batch_n_claims": 4
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5641,
+      "usage": {
+        "input_tokens": 5014,
+        "cached_input_tokens": 0,
+        "output_tokens": 6189,
+        "reasoning_tokens": 1603
+      },
+      "elapsed_seconds": 45.495,
+      "prompt_sha256": "2de37b24fbb1773c510c53a52b429cebf00800f99365ba75a5bfaaa54755c88e",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.9075,
+      "usage": {
+        "input_tokens": 4652,
+        "cached_input_tokens": 0,
+        "output_tokens": 10639,
+        "reasoning_tokens": 7250
+      },
+      "elapsed_seconds": 81.411,
+      "prompt_sha256": "5cc83b7416749670e00501247a0192ae6fc6d3659891618cb819aaf1f6f83a51",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2624,
+      "usage": {
+        "input_tokens": 4853,
+        "cached_input_tokens": 0,
+        "output_tokens": 2375,
+        "reasoning_tokens": 1972
+      },
+      "elapsed_seconds": 23.722,
+      "prompt_sha256": "1da6ccd4e3f3c382aa40cf03ff9f6af1e273dcc0c60ea37a0d966406a857cd0c",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1726,
+      "usage": {
+        "input_tokens": 8960,
+        "cached_input_tokens": 0,
+        "output_tokens": 409,
+        "reasoning_tokens": 303
+      },
+      "elapsed_seconds": 4.952,
+      "prompt_sha256": "1f369ca5e334bb6e8e89204d6d12a35a0b9f7929a9adde9dedde55155a6b954e"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1016,
+      "usage": {
+        "input_tokens": 5709,
+        "cached_input_tokens": 0,
+        "output_tokens": 154,
+        "reasoning_tokens": 103
+      },
+      "elapsed_seconds": 2.953,
+      "prompt_sha256": "f9a8f7796d9b2e061a8ad250970f8b219cae444f1991567b46efb1bebe650c68"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0629,
+      "usage": {
+        "input_tokens": 8960,
+        "cached_input_tokens": 8957,
+        "output_tokens": 622,
+        "reasoning_tokens": 516
+      },
+      "elapsed_seconds": 5.948,
+      "prompt_sha256": "1f369ca5e334bb6e8e89204d6d12a35a0b9f7929a9adde9dedde55155a6b954e"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0257,
+      "usage": {
+        "input_tokens": 5709,
+        "cached_input_tokens": 5706,
+        "output_tokens": 213,
+        "reasoning_tokens": 161
+      },
+      "elapsed_seconds": 4.276,
+      "prompt_sha256": "f9a8f7796d9b2e061a8ad250970f8b219cae444f1991567b46efb1bebe650c68"
+    }
+  ],
+  "total_cost_jpy": 2.0968,
+  "total_calls": 7,
+  "elapsed_seconds": 168.804,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But the curtain did not come down on Brent futures price movements.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But this was only a proposal.",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "They had not actually started collecting the fee.",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "Ledgerは徴収方法などの制度設計が示されなかったことを確認しているが、実際に徴収が開始されていなかったことを直接確認していない。 / 実際に徴収が始まっていなかったという状況はLedgerに明記されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.5); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Even after the fee proposal was dropped, prices did not move in just one direction.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.5); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 15,
+      "n_model_entries": 12,
+      "n_targets": 4,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 3,
+      "n_excluded_entries": 9,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.2624,
+          "usage": {
+            "input_tokens": 4853,
+            "cached_input_tokens": 0,
+            "output_tokens": 2375,
+            "reasoning_tokens": 1972
+          },
+          "elapsed_seconds": 23.722,
+          "prompt_sha256": "1da6ccd4e3f3c382aa40cf03ff9f6af1e273dcc0c60ea37a0d966406a857cd0c",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.2624,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S2.5",
+          "claim": "They had not actually started collecting the fee.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "Ledgerは20％料を提案として扱い制度設計が未提示だったことを示すが、実際に徴収が始まっていなかったという否定までは明示していない。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S5.1",
+          "claim": "During that time, concerns about attacks by the United States and Iran, a blockade at sea, and tanker safety continued.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "米・イラン間の攻撃、海上封鎖、タンカー安全への懸念が続いていたというLedgerの記述と一致する。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C3",
+          "key": "S6.1",
+          "claim": "In other words, following only the arrival and departure of the fee proposal does not tell the full story of that day’s price movements.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "料金案の撤回後も価格が一時下落して戻り、海運上の懸念も続いたため、料金案の変化だけでは値動きの全体を説明できないというまとめはLedgerと整合する。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C4",
+          "key": "L1",
+          "claim": "Trump withdrew the proposed Strait of Hormuz fee, but Brent futures stayed high as shipping concerns persisted.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "トランプ氏が提案を撤回・置換し、Brent先物が一時上げ幅を縮小した後に高い水準へ戻り、海運上の懸念も続いたというLedgerの記述と整合する。",
+          "fact_tags": [
+            "proper_noun",
+            "causality"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "1da6ccd4e3f3c382aa40cf03ff9f6af1e273dcc0c60ea37a0d966406a857cd0c"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 30,
+    "n_judged_units": 23,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.2",
+          "S2.4",
+          "S2.5",
+          "S4.5",
+          "S5.1",
+          "S6.1"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.5": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S4.5": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.1": "CANDIDATE",
+          "S5.2": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "SUPPORTED",
+          "L1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5641,
+            "usage": {
+              "input_tokens": 5014,
+              "cached_input_tokens": 0,
+              "output_tokens": 6189,
+              "reasoning_tokens": 1603
+            },
+            "elapsed_seconds": 45.495,
+            "prompt_sha256": "2de37b24fbb1773c510c53a52b429cebf00800f99365ba75a5bfaaa54755c88e",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S2.5": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S4.5": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "SUPPORTED",
+          "L1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "But the curtain did not come down on Brent futures price movements.",
+            "span": [
+              204,
+              271
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "But this was only a proposal.",
+            "span": [
+              596,
+              625
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.5",
+            "unit_ids": [
+              "S2.5"
+            ],
+            "claim_text": "They had not actually started collecting the fee.",
+            "span": [
+              626,
+              675
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは徴収方法などの制度設計が示されなかったことを確認しているが、実際に徴収が開始されていなかったことを直接確認していない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "They had not actually started collecting the fee."
+          },
+          {
+            "unit_id": "S4.5",
+            "unit_ids": [
+              "S4.5"
+            ],
+            "claim_text": "Even after the fee proposal was dropped, prices did not move in just one direction.",
+            "span": [
+              1345,
+              1428
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "During that time, concerns about attacks by the United States and Iran, a blockade at sea, and tanker safety continued.",
+            "span": [
+              1430,
+              1549
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは米国とイランの間の攻撃などへの懸念が続いたとしているが、記事は攻撃の主体を「米国とイラン」としており、双方が攻撃を行ったという意味に読める。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "During that time, concerns about attacks by the United States and Iran, a blockade at sea, and tanker safety continued."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "In other words, following only the arrival and departure of the fee proposal does not tell the full story of that day’s price movements.",
+            "span": [
+              1652,
+              1788
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「その日の価格変動の全体像を語れない」という結論はLedgerに明記された事実ではなく、提案の撤回と他の要因との関係をまとめた解釈である。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "In other words, following only the arrival and departure of the fee proposal does not tell the full story of that day’s price movements."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Trump withdrew the proposed Strait of Hormuz fee, but Brent futures stayed high as shipping concerns persisted.",
+            "span": [
+              1931,
+              2042
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「as shipping concerns persisted」は、海運上の懸念がBrent先物が高い水準にとどまった理由であるとの結び付きを示すが、Ledgerはその因果関係を確認していない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Trump withdrew the proposed Strait of Hormuz fee, but Brent futures stayed high as shipping concerns persisted."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "S2.5",
+          "S6.1"
+        ],
+        "unit_status": {
+          "S1.1": "MATCH",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S2.5": "DEVIATION",
+          "S3.2": "MATCH",
+          "S3.4": "MATCH",
+          "S4.5": "MATCH",
+          "S6.1": "DEVIATION",
+          "L1": "DEVIATION",
+          "S1.3": "MATCH",
+          "S3.1": "MATCH",
+          "S3.3": "MATCH",
+          "S4.2": "MATCH",
+          "S6.2": "MATCH",
+          "S1.2": "MATCH",
+          "S4.3": "MATCH",
+          "S4.4": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "T": "UNMENTIONED",
+          "S4.1": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.9075,
+            "usage": {
+              "input_tokens": 4652,
+              "cached_input_tokens": 0,
+              "output_tokens": 10639,
+              "reasoning_tokens": 7250
+            },
+            "elapsed_seconds": 81.411,
+            "prompt_sha256": "5cc83b7416749670e00501247a0192ae6fc6d3659891618cb819aaf1f6f83a51",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S2.5",
+            "unit_ids": [
+              "S2.5"
+            ],
+            "claim_text": "They had not actually started collecting the fee.",
+            "span": [
+              626,
+              675
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "実際に徴収が始まっていなかったという状況はLedgerに明記されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "They had not actually started collecting the fee."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "In other words, following only the arrival and departure of the fee proposal does not tell the full story of that day’s price movements.",
+            "span": [
+              1652,
+              1788
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "提案の開始・撤回だけでは価格変動を説明できないという評価は、Ledgerに明示された事実を超えています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "In other words, following only the arrival and departure of the fee proposal does not tell the full story of that day’s price movements."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Trump withdrew the proposed Strait of Hormuz fee, but Brent futures stayed high as shipping concerns persisted.",
+            "span": [
+              1931,
+              2042
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "提案料の撤回とBrent先物が高止まりしたことの因果関係を、Ledgerの裏付けを超えて示しています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "Trump withdrew the proposed Strait of Hormuz fee, but Brent futures stayed high as shipping concerns persisted."
+          },
+          {
+            "unit_id": "S2.5",
+            "unit_ids": [
+              "S2.5"
+            ],
+            "claim_text": "They had not actually started collecting the fee.",
+            "span": [
+              626,
+              675
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "実際に徴収が始まっていなかったという状況はLedgerに明記されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "They had not actually started collecting the fee."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "In other words, following only the arrival and departure of the fee proposal does not tell the full story of that day’s price movements.",
+            "span": [
+              1652,
+              1788
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "提案の開始・撤回だけでは価格変動を説明できないという評価は、Ledgerに明示された事実を超えています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "In other words, following only the arrival and departure of the fee proposal does not tell the full story of that day’s price movements."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Trump withdrew the proposed Strait of Hormuz fee, but Brent futures stayed high as shipping concerns persisted.",
+            "span": [
+              1931,
+              2042
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "提案料の撤回とBrent先物が高止まりしたことの因果関係を、Ledgerの裏付けを超えて示しています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Trump withdrew the proposed Strait of Hormuz fee, but Brent futures stayed high as shipping concerns persisted."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "In other words, following only the arrival and departure of the fee proposal does not tell the full story of that day’s price movements.",
+            "span": [
+              1652,
+              1788
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "手数料提案の開始・撤回だけでは価格変動を説明できないという因果的な評価は、Ledgerに明示されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "In other words, following only the arrival and departure of the fee proposal does not tell the full story of that day’s price movements."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Trump withdrew the proposed Strait of Hormuz fee, but Brent futures stayed high as shipping concerns persisted.",
+            "span": [
+              1931,
+              2042
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "海運上の懸念が続いたためBrent先物が高止まりしたという因果関係は、Ledgerに明示されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Trump withdrew the proposed Strait of Hormuz fee, but Brent futures stayed high as shipping concerns persisted."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "L1",
+        "S2.5",
+        "S6.1"
+      ],
+      "r3_only": [
+        "S1.2",
+        "S2.4",
+        "S4.5",
+        "S5.1"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 3
+    },
+    "union_candidates": [
+      {
+        "claim_text": "But the curtain did not come down on Brent futures price movements.",
+        "span": [
+          204,
+          271
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "But this was only a proposal.",
+        "span": [
+          596,
+          625
+        ],
+        "unit_ids": [
+          "S2.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "They had not actually started collecting the fee.",
+        "span": [
+          626,
+          675
+        ],
+        "unit_ids": [
+          "S2.5"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "Ledgerは徴収方法などの制度設計が示されなかったことを確認しているが、実際に徴収が開始されていなかったことを直接確認していない。",
+          "実際に徴収が始まっていなかったという状況はLedgerに明記されていません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-003",
+          "HF-002"
+        ],
+        "model_claims": [
+          "They had not actually started collecting the fee."
+        ]
+      },
+      {
+        "claim_text": "Even after the fee proposal was dropped, prices did not move in just one direction.",
+        "span": [
+          1345,
+          1428
+        ],
+        "unit_ids": [
+          "S4.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 4,
+    "n_model_candidates": 1,
+    "n_deterministic_only_candidates": 3,
+    "total_cost_jpy": 1.4716,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 12,
+    "n_targets": 4,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 3,
+    "n_excluded_entries": 9,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.2624,
+    "effort": "medium",
+    "prompt_sha256": "1da6ccd4e3f3c382aa40cf03ff9f6af1e273dcc0c60ea37a0d966406a857cd0c"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {},
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 2.0968,
+  "provenance": {
+    "switch_dump_sha256": "66d18a3a1b28679684d7dcbe6e7af161a4da4223da7415a7ac50e7450de777c1",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-08T08:28:06",
+    "ledger_sha256": "83b2a09b99b20af0f1d30aefc6dda7bfe40ed06a6d7726a56a0bb90bce774522",
+    "article_sha256": "089568285d57ba1b46847c2839c90ddb690db496c6c347a3330e97d50ad02361",
+    "source_article_sha256": "c1277dfce91fcfb6a25fda58a6f4643d11a49c08f454827ac90e1fe9e2008608",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/all6_writer_redesign_necessity_01/runs/hormuz/control/b3__all6__r1/checker",
+      "ledger_path": "er052_output/all6_writer_redesign_necessity_01/runs/hormuz/control/b3__all6__r1/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/all6_writer_redesign_necessity_01/runs/hormuz/control/b3__all6__r1/b1b/article.md",
+      "source_path": "er052_output/all6_writer_redesign_necessity_01/runs/hormuz/control/b3__all6__r1/ja_writer/revision2.md",
+      "budget_jpy": 10.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

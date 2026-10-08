@@ -5617,3 +5617,13 @@ precheck +56/-1(`extract_percentages_strict`新設、`check_number_mismatch`のf
 
 ### §102-10 参照
 - `er052_output/open233_control_checker_polysemy_trial_01/{eval/SUMMARY_CCP.md,eval/HUMAN_REVIEW_RESULT.md,eval/RCA_jb9k_qvqc.md,runs/RUN_CHECK.md,provenance.json,eval/aggregate_ccp.json}`、`docs/pm/control_checker_polysemy_trial_01/{plan_01.md,preregistration_01.md,open_item_check.md}`。
+
+## §103 ALL-6-LUNA-WRITER-REDESIGN-NECESSITY-TRIAL-01(全5.6工程→6-luna比較Trial、2026-10-08、MEASURED)
+
+- 目的: 現在gpt-5.6-lunaの工程(Writer/JA・EN Fact Check/EN)をgpt-6-lunaへ切替えた場合の事実NG率・重大見逃しの変化を数値化(Writer根本設計の要否判断材料。しきい値なし)。
+- 設計: harness`er052_all6_writer_trial_01_run.py`、12 brief(B3 V0 b1-b4 x 3テーマ)x baseline/all6 x 2反復=48本、Checker ON両群同一(gpt-6-luna、`OPEN233_APPROVED_FLOW_SWITCHES`既定、新スイッチOFF)。T-B=既知NG記事のFact Check再判定(重大7件・軽微16件、5.6対6各n=2)。盲検LLM評価(評価者gpt-5.6-luna/gpt-6-luna、各評価者に両群同数)。
+- 差替え対象: JA Writer R0/R1/R2/must-fix(`er019.WRITER_MODEL`)、JA/EN Fact Check(`vfl01.run_deviation_check`既定model)、EN Advanced(`generate_family_x_*`)。Checkerは別processでgpt-6-lunaのまま両群同一。実使用model_idはraw_usage_logから実測(24/24本ずつ一致)。
+- 結果(T-A、完走19対19、baseline対all6): JA R2 重大0対1・軽微10対7、EN 重大1対1・軽微14対12、保留/記事0.05対0.26、R2初出4対5、EN Advanced must-fix 0/19対6/19、Writer Gate STOP 3対5(baselineは別にBUDGET_GUARD 2)、費用/本¥9.46対¥4.29、所要491s対341s。T-B: 重大7件の検出 1/14(7%)対4/14(29%)、軽微16件 3/32(9%)対4/32(12%)、NG文非対応のMAJOR逸脱延べ10対32(未検証)。
+- 悪化項目: JA R2重大0->1、EN Advanced deviation STOP 0->2とmust-fix 0->6、保留増、軽微のscope/subject型の増加。限界: N小、重大全体2件(床効果)、LLM単独評価で評価者差が群間差を上回る、STOP10本は評価対象外、Checkerは両群6-lunaで比較に含まれない、cost.jsonはpricing表欠落で6-lunaが0円計上のためraw_usageから再計算。
+- 費用: T-A ¥316.3(baseline ¥222.5/all6 ¥93.8)+T-B ¥31.4+評価 ¥34.9=¥382.6/¥500。
+- artifact: `er052_output/all6_writer_redesign_necessity_01/`(RESULT.md、PREREGISTRATION.md、MANIFEST.json、T-B/、eval/SUMMARY_TA.md、eval/HUMAN_CHECK_TA.md[重大候補2件])。Production変更なし。

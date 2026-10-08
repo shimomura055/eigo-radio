@@ -1,0 +1,2310 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "However, the name of the device, its ability to attack, and its targets have not been made public.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "However, the name of the device, its ability to attack, and its targets have not been made public.",
+            "issue": "発表で具体的な名称・攻撃能力・標的が示されていないことは読み取れるが、それらが公にされていないという範囲の広い断定まではLedgerで確認できない。 / Ledgerは兵器の具体名・攻撃能力・標的を推測で補わないよう注意しているが、それらが公表されていないとまでは記載していない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.3); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.3"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Let’s turn this news into a quiz. What did the United States officially acknowledge for the first time: the weapon’s name, what it can attack, or where it is placed? The answer is where it is placed.\n\nIn September 2026, the U.S. Secretary of the Air Force said that the United States had deployed space-control weapons in orbit. Their purpose is to protect joint forces from the actions of hostile parties. However, the name of the device, its ability to attack, and its targets have not been made public. If we start imagining, “It must be this kind of weapon,” we are adding our own answer to the quiz.\n\nWhat about missiles that destroy satellites from the ground? In 2021, Russia fired a missile from the ground and destroyed a satellite, creating more than 1,500 pieces of space debris that could be tracked. This showed that Russia could attack satellites from the ground. That is different from putting the weapon itself in orbit. The place an attack is launched from and the place a weapon is put may sound similar, but they are different.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "However, the name of the device, its ability to attack, and its targets have not been made public.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+              "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+            ],
+            "batch_cost_jpy": 0.1378,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "This showed that Russia could attack satellites from the ground.",
+          "origin": null,
+          "related_fact_id": "F-003",
+          "dev": {
+            "claim_in_article": "This showed that Russia could attack satellites from the ground.",
+            "issue": "一度の試験で衛星を破壊した事実から、ロシアが一般に衛星を攻撃できる能力を示したと広げている。Ledgerは特定の衛星を破壊した事例を記録している。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "F-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "F-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In September 2026, the U.S. Secretary of the Air Force said that the United States had deployed space-control weapons in orbit. Their purpose is to protect joint forces from the actions of hostile parties. However, the name of the device, its ability to attack, and its targets have not been made public. If we start imagining, “It must be this kind of weapon,” we are adding our own answer to the quiz.\n\nWhat about missiles that destroy satellites from the ground? In 2021, Russia fired a missile from the ground and destroyed a satellite, creating more than 1,500 pieces of space debris that could be tracked. This showed that Russia could attack satellites from the ground. That is different from putting the weapon itself in orbit. The place an attack is launched from and the place a weapon is put may sound similar, but they are different.\n\nAnd attacks and interference involving space do not only involve weapons in orbit. They also include using radio waves to disrupt communication with satellites, and cyberattacks. GPS, tracking missiles, monitoring space, and work to make satellites harder to damage are also military duties, but that alone does not show that weapons designed to attack are in orbit.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-003",
+            "claim_text": "This showed that Russia could attack satellites from the ground.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+              "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+            ],
+            "batch_cost_jpy": 0.1378,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "The legal answer is not a simple yes or no.",
+          "origin": null,
+          "related_fact_id": "F-016",
+          "dev": {
+            "claim_in_article": "The legal answer is not a simple yes or no.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "F-016",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "F-016"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "And attacks and interference involving space do not only involve weapons in orbit. They also include using radio waves to disrupt communication with satellites, and cyberattacks. GPS, tracking missiles, monitoring space, and work to make satellites harder to damage are also military duties, but that alone does not show that weapons designed to attack are in orbit.\n\nThe legal answer is not a simple yes or no. The Outer Space Treaty bans placing nuclear weapons and other weapons of mass destruction around Earth. On the other hand, it does not ban all space weapons, including conventional weapons. The fact that deployment has been confirmed and whether it breaks the treaty are separate questions.\n\nIn other words, this news is not an announcement that reveals the weapon’s capabilities. It is news that helps us tell apart “firing from the ground,” “disrupting communications,” and “placing weapons in orbit,” instead of treating all military activity in space as one thing. The correct quiz answer was not what the weapon was, but where it was placed.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-016",
+            "claim_text": "The legal answer is not a simple yes or no.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+              "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+            ],
+            "batch_cost_jpy": 0.1378,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "In other words, this news is not an announcement that reveals the weapon’s capabilities.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "In other words, this news is not an announcement that reveals the weapon’s capabilities.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.1); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.1"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The legal answer is not a simple yes or no. The Outer Space Treaty bans placing nuclear weapons and other weapons of mass destruction around Earth. On the other hand, it does not ban all space weapons, including conventional weapons. The fact that deployment has been confirmed and whether it breaks the treaty are separate questions.\n\nIn other words, this news is not an announcement that reveals the weapon’s capabilities. It is news that helps us tell apart “firing from the ground,” “disrupting communications,” and “placing weapons in orbit,” instead of treating all military activity in space as one thing. The correct quiz answer was not what the weapon was, but where it was placed.\n\n## In one line\nThe U.S. confirmed it has placed space-control weapons in orbit, but did not reveal what they can do.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "In other words, this news is not an announcement that reveals the weapon’s capabilities.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+              "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+            ],
+            "batch_cost_jpy": 0.1378,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "The correct quiz answer was not what the weapon was, but where it was placed.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "The correct quiz answer was not what the weapon was, but where it was placed.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.3"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The legal answer is not a simple yes or no. The Outer Space Treaty bans placing nuclear weapons and other weapons of mass destruction around Earth. On the other hand, it does not ban all space weapons, including conventional weapons. The fact that deployment has been confirmed and whether it breaks the treaty are separate questions.\n\nIn other words, this news is not an announcement that reveals the weapon’s capabilities. It is news that helps us tell apart “firing from the ground,” “disrupting communications,” and “placing weapons in orbit,” instead of treating all military activity in space as one thing. The correct quiz answer was not what the weapon was, but where it was placed.\n\n## In one line\nThe U.S. confirmed it has placed space-control weapons in orbit, but did not reveal what they can do.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "The correct quiz answer was not what the weapon was, but where it was placed.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+              "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+            ],
+            "batch_cost_jpy": 0.1378,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "The U.S. confirmed it has placed space-control weapons in orbit, but did not reveal what they can do.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "The U.S. confirmed it has placed space-control weapons in orbit, but did not reveal what they can do.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In other words, this news is not an announcement that reveals the weapon’s capabilities. It is news that helps us tell apart “firing from the ground,” “disrupting communications,” and “placing weapons in orbit,” instead of treating all military activity in space as one thing. The correct quiz answer was not what the weapon was, but where it was placed.\n\n## In one line\nThe U.S. confirmed it has placed space-control weapons in orbit, but did not reveal what they can do.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "The U.S. confirmed it has placed space-control weapons in orbit, but did not reveal what they can do.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+              "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+            ],
+            "batch_cost_jpy": 0.1378,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "What did the United States officially acknowledge for the first time: the weapon’s name, what it can attack, or where it is placed?",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "What did the United States officially acknowledge for the first time: the weapon’s name, what it can attack, or where it is placed?",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.3"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The correct quiz answer was not what the weapon was, but where it was placed."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Turning Space Weapons News into a Three-Choice Quiz\n\nLet’s turn this news into a quiz. What did the United States officially acknowledge for the first time: the weapon’s name, what it can attack, or where it is placed? The answer is where it is placed.\n\nIn September 2026, the U.S. Secretary of the Air Force said that the United States had deployed space-control weapons in orbit. Their purpose is to protect joint forces from the actions of hostile parties. However, the name of the device, its ability to attack, and its targets have not been made public. If we start imagining, “It must be this kind of weapon,” we are adding our own answer to the quiz.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F-001",
+            "claim_text": "What did the United States officially acknowledge for the first time: the weapon’s name, what it can attack, or where it is placed?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+              "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+            ],
+            "batch_cost_jpy": 0.1378,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "The answer is where it is placed.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "The answer is where it is placed.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.3"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The correct quiz answer was not what the weapon was, but where it was placed."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Turning Space Weapons News into a Three-Choice Quiz\n\nLet’s turn this news into a quiz. What did the United States officially acknowledge for the first time: the weapon’s name, what it can attack, or where it is placed? The answer is where it is placed.\n\nIn September 2026, the U.S. Secretary of the Air Force said that the United States had deployed space-control weapons in orbit. Their purpose is to protect joint forces from the actions of hostile parties. However, the name of the device, its ability to attack, and its targets have not been made public. If we start imagining, “It must be this kind of weapon,” we are adding our own answer to the quiz.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F-001",
+            "claim_text": "The answer is where it is placed.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+              "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+            ],
+            "batch_cost_jpy": 0.1378,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "If we start imagining, “It must be this kind of weapon,” we are adding our own answer to the quiz.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "If we start imagining, “It must be this kind of weapon,” we are adding our own answer to the quiz.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.3"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The correct quiz answer was not what the weapon was, but where it was placed."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Let’s turn this news into a quiz. What did the United States officially acknowledge for the first time: the weapon’s name, what it can attack, or where it is placed? The answer is where it is placed.\n\nIn September 2026, the U.S. Secretary of the Air Force said that the United States had deployed space-control weapons in orbit. Their purpose is to protect joint forces from the actions of hostile parties. However, the name of the device, its ability to attack, and its targets have not been made public. If we start imagining, “It must be this kind of weapon,” we are adding our own answer to the quiz.\n\nWhat about missiles that destroy satellites from the ground? In 2021, Russia fired a missile from the ground and destroyed a satellite, creating more than 1,500 pieces of space debris that could be tracked. This showed that Russia could attack satellites from the ground. That is different from putting the weapon itself in orbit. The place an attack is launched from and the place a weapon is put may sound similar, but they are different.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "If we start imagining, “It must be this kind of weapon,” we are adding our own answer to the quiz.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+              "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+            ],
+            "batch_cost_jpy": 0.1378,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Secretary of the Air Force said that the United States had deployed space-control weapons in orbit.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "Secretary of the Air Force said that the United States had deployed space-control weapons in orbit.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The U.S. confirmed it has placed space-control weapons in orbit, but did not reveal what they can do."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Let’s turn this news into a quiz. What did the United States officially acknowledge for the first time: the weapon’s name, what it can attack, or where it is placed? The answer is where it is placed.\n\nIn September 2026, the U.S. Secretary of the Air Force said that the United States had deployed space-control weapons in orbit. Their purpose is to protect joint forces from the actions of hostile parties. However, the name of the device, its ability to attack, and its targets have not been made public. If we start imagining, “It must be this kind of weapon,” we are adding our own answer to the quiz.\n\nWhat about missiles that destroy satellites from the ground? In 2021, Russia fired a missile from the ground and destroyed a satellite, creating more than 1,500 pieces of space debris that could be tracked. This showed that Russia could attack satellites from the ground. That is different from putting the weapon itself in orbit. The place an attack is launched from and the place a weapon is put may sound similar, but they are different.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "Secretary of the Air Force said that the United States had deployed space-control weapons in orbit.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+              "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+            ],
+            "batch_cost_jpy": 0.1378,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "confirmed it has placed space-control weapons in orbit, but did not reveal what they can do.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "confirmed it has placed space-control weapons in orbit, but did not reveal what they can do.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The U.S. confirmed it has placed space-control weapons in orbit, but did not reveal what they can do."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In other words, this news is not an announcement that reveals the weapon’s capabilities. It is news that helps us tell apart “firing from the ground,” “disrupting communications,” and “placing weapons in orbit,” instead of treating all military activity in space as one thing. The correct quiz answer was not what the weapon was, but where it was placed.\n\n## In one line\nThe U.S. confirmed it has placed space-control weapons in orbit, but did not reveal what they can do.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "confirmed it has placed space-control weapons in orbit, but did not reveal what they can do.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+              "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+            ],
+            "batch_cost_jpy": 0.1378,
+            "batch_n_claims": 11
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 11,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "However, the name of the device, its ability to attack, and its targets have not been made public.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+            "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+          ],
+          "batch_cost_jpy": 0.1378,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-003",
+          "claim_text": "This showed that Russia could attack satellites from the ground.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+            "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+          ],
+          "batch_cost_jpy": 0.1378,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-016",
+          "claim_text": "The legal answer is not a simple yes or no.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+            "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+          ],
+          "batch_cost_jpy": 0.1378,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "In other words, this news is not an announcement that reveals the weapon’s capabilities.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+            "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+          ],
+          "batch_cost_jpy": 0.1378,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "The correct quiz answer was not what the weapon was, but where it was placed.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+            "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+          ],
+          "batch_cost_jpy": 0.1378,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "The U.S. confirmed it has placed space-control weapons in orbit, but did not reveal what they can do.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+            "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+          ],
+          "batch_cost_jpy": 0.1378,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F-001",
+          "claim_text": "What did the United States officially acknowledge for the first time: the weapon’s name, what it can attack, or where it is placed?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+            "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+          ],
+          "batch_cost_jpy": 0.1378,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F-001",
+          "claim_text": "The answer is where it is placed.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+            "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+          ],
+          "batch_cost_jpy": 0.1378,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "If we start imagining, “It must be this kind of weapon,” we are adding our own answer to the quiz.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+            "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+          ],
+          "batch_cost_jpy": 0.1378,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "Secretary of the Air Force said that the United States had deployed space-control weapons in orbit.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+            "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+          ],
+          "batch_cost_jpy": 0.1378,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "confirmed it has placed space-control weapons in orbit, but did not reveal what they can do.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4",
+            "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+          ],
+          "batch_cost_jpy": 0.1378,
+          "batch_n_claims": 11
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5988,
+      "usage": {
+        "input_tokens": 7488,
+        "cached_input_tokens": 0,
+        "output_tokens": 6136,
+        "reasoning_tokens": 1972
+      },
+      "elapsed_seconds": 46.423,
+      "prompt_sha256": "11a08a73b0abbd94a979f4996c7f4c14f078eb2e4b70c6bce87f4163e98b0f07",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.8633,
+      "usage": {
+        "input_tokens": 7161,
+        "cached_input_tokens": 0,
+        "output_tokens": 9574,
+        "reasoning_tokens": 5980
+      },
+      "elapsed_seconds": 64.357,
+      "prompt_sha256": "cb57ca6bd9f4ed671cf3909009d96ea313043722dce11eee80405d608555dd0c",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2852,
+      "usage": {
+        "input_tokens": 7272,
+        "cached_input_tokens": 0,
+        "output_tokens": 2181,
+        "reasoning_tokens": 1771
+      },
+      "elapsed_seconds": 18.403,
+      "prompt_sha256": "5416216f922ee9927c625e326b66f8585c85545956bdcd0e3ddd8e8240fa0109",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2626,
+      "usage": {
+        "input_tokens": 12905,
+        "cached_input_tokens": 0,
+        "output_tokens": 767,
+        "reasoning_tokens": 508
+      },
+      "elapsed_seconds": 7.176,
+      "prompt_sha256": "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1503,
+      "usage": {
+        "input_tokens": 8203,
+        "cached_input_tokens": 0,
+        "output_tokens": 275,
+        "reasoning_tokens": 198
+      },
+      "elapsed_seconds": 3.187,
+      "prompt_sha256": "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0905,
+      "usage": {
+        "input_tokens": 12905,
+        "cached_input_tokens": 12902,
+        "output_tokens": 895,
+        "reasoning_tokens": 636
+      },
+      "elapsed_seconds": 7.975,
+      "prompt_sha256": "65f8b488b83edba9f5b33f23aba09e4ed2d006549c2c1a08075568df50bd28b4"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0473,
+      "usage": {
+        "input_tokens": 8203,
+        "cached_input_tokens": 8200,
+        "output_tokens": 439,
+        "reasoning_tokens": 362
+      },
+      "elapsed_seconds": 4.704,
+      "prompt_sha256": "ad4e9e90f13b0eee2284be304a89a6f9c7c705148b4dadb7835a777e36bf3740"
+    }
+  ],
+  "total_cost_jpy": 2.298,
+  "total_calls": 7,
+  "elapsed_seconds": 152.271,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "However, the name of the device, its ability to attack, and its targets have not been made public.",
+        "related_fact_id": "F-001",
+        "origin": null,
+        "issue": "発表で具体的な名称・攻撃能力・標的が示されていないことは読み取れるが、それらが公にされていないという範囲の広い断定まではLedgerで確認できない。 / Ledgerは兵器の具体名・攻撃能力・標的を推測で補わないよう注意しているが、それらが公表されていないとまでは記載していない。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "This showed that Russia could attack satellites from the ground.",
+        "related_fact_id": "F-003",
+        "origin": null,
+        "issue": "一度の試験で衛星を破壊した事実から、ロシアが一般に衛星を攻撃できる能力を示したと広げている。Ledgerは特定の衛星を破壊した事例を記録している。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The legal answer is not a simple yes or no.",
+        "related_fact_id": "F-016",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In other words, this news is not an announcement that reveals the weapon’s capabilities.",
+        "related_fact_id": "F-001",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The correct quiz answer was not what the weapon was, but where it was placed.",
+        "related_fact_id": "F-001",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The U.S. confirmed it has placed space-control weapons in orbit, but did not reveal what they can do.",
+        "related_fact_id": "F-001",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 9,
+      "n_model_entries": 5,
+      "n_targets": 4,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 2,
+      "n_excluded_entries": 2,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.2852,
+          "usage": {
+            "input_tokens": 7272,
+            "cached_input_tokens": 0,
+            "output_tokens": 2181,
+            "reasoning_tokens": 1771
+          },
+          "elapsed_seconds": 18.403,
+          "prompt_sha256": "5416216f922ee9927c625e326b66f8585c85545956bdcd0e3ddd8e8240fa0109",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.2852,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S2.3",
+          "claim": "However, the name of the device, its ability to attack, and its targets have not been made public.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「公表されていない」という否定はLedgerで確認されておらず、発言で詳細が示されなかったことを公表状況全般へ広げています（scope mismatch）。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S3.3",
+          "claim": "This showed that Russia could attack satellites from the ground.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "ロシアが地上発射ミサイルで衛星を破壊した事実は一致しますが、Ledgerの対象はロシア自身のCOSMOS 1408であり、「衛星を攻撃できる」と一般化しています（counterpart・scope mismatch）。",
+          "fact_tags": [
+            "proper_noun",
+            "causality"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "mismatch",
+          "scope_match": "mismatch",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C3",
+          "key": "S4.2",
+          "claim": "They also include using radio waves to disrupt communication with satellites, and cyberattacks.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "通信リンクへの電磁攻撃とサイバー攻撃を含むというLedgerの記述を、電波による通信妨害として平易に言い換えています。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C4",
+          "key": "S5.3",
+          "claim": "On the other hand, it does not ban all space weapons, including conventional weapons.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "条約が核兵器等の大量破壊兵器の軌道上配備を禁じる一方、宇宙兵器全般を禁止するものではないというLedgerの範囲と一致します。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "5416216f922ee9927c625e326b66f8585c85545956bdcd0e3ddd8e8240fa0109"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 31,
+    "n_judged_units": 24,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 22,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "S2.3",
+          "S3.3",
+          "S4.2",
+          "S5.1",
+          "S5.3",
+          "S6.1",
+          "S6.3"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "CANDIDATE",
+          "S2.4": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "CANDIDATE",
+          "S3.4": "SUPPORTED",
+          "S3.5": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "CANDIDATE",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.2": "SUPPORTED",
+          "S5.3": "CANDIDATE",
+          "S5.4": "SUPPORTED",
+          "S6.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "L1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5988,
+            "usage": {
+              "input_tokens": 7488,
+              "cached_input_tokens": 0,
+              "output_tokens": 6136,
+              "reasoning_tokens": 1972
+            },
+            "elapsed_seconds": 46.423,
+            "prompt_sha256": "11a08a73b0abbd94a979f4996c7f4c14f078eb2e4b70c6bce87f4163e98b0f07",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "CANDIDATE",
+          "S2.4": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "CANDIDATE",
+          "S3.4": "SUPPORTED",
+          "S3.5": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "CANDIDATE",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "CANDIDATE",
+          "S5.4": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "L1": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "However, the name of the device, its ability to attack, and its targets have not been made public.",
+            "span": [
+              462,
+              560
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "発表で具体的な名称・攻撃能力・標的が示されていないことは読み取れるが、それらが公にされていないという範囲の広い断定まではLedgerで確認できない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": "However, the name of the device, its ability to attack, and its targets have not been made public."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "This showed that Russia could attack satellites from the ground.",
+            "span": [
+              868,
+              932
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "一度の試験で衛星を破壊した事実から、ロシアが一般に衛星を攻撃できる能力を示したと広げている。Ledgerは特定の衛星を破壊した事例を記録している。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "This showed that Russia could attack satellites from the ground."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "They also include using radio waves to disrupt communication with satellites, and cyberattacks.",
+            "span": [
+              1186,
+              1281
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは通信リンクへの電磁攻撃とサイバー攻撃を挙げるが、衛星通信を妨害する手段として電波を使うという具体的説明は明記していない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "They also include using radio waves to disrupt communication with satellites, and cyberattacks."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "The legal answer is not a simple yes or no.",
+            "span": [
+              1471,
+              1514
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-016"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "On the other hand, it does not ban all space weapons, including conventional weapons.",
+            "span": [
+              1619,
+              1704
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "条約が宇宙兵器を全面禁止していないことはLedgerの注意書きにあるが、通常兵器を含む具体的な適用範囲について条約が禁止していないと断定するところまでは直接支えられていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-016"
+            ],
+            "model_claim": "On the other hand, it does not ban all space weapons, including conventional weapons."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "In other words, this news is not an announcement that reveals the weapon’s capabilities.",
+            "span": [
+              1807,
+              1895
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "The correct quiz answer was not what the weapon was, but where it was placed.",
+            "span": [
+              2084,
+              2161
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "The U.S. confirmed it has placed space-control weapons in orbit, but did not reveal what they can do.",
+            "span": [
+              2178,
+              2279
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": ""
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S2.3"
+        ],
+        "unit_status": {
+          "S1.2": "MATCH",
+          "S1.3": "MATCH",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "DEVIATION",
+          "S2.4": "MATCH",
+          "S3.4": "MATCH",
+          "S3.5": "MATCH",
+          "S4.3": "MATCH",
+          "S5.4": "MATCH",
+          "S6.1": "MATCH",
+          "S6.2": "MATCH",
+          "S6.3": "MATCH",
+          "L1": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.8633,
+            "usage": {
+              "input_tokens": 7161,
+              "cached_input_tokens": 0,
+              "output_tokens": 9574,
+              "reasoning_tokens": 5980
+            },
+            "elapsed_seconds": 64.357,
+            "prompt_sha256": "cb57ca6bd9f4ed671cf3909009d96ea313043722dce11eee80405d608555dd0c",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "However, the name of the device, its ability to attack, and its targets have not been made public.",
+            "span": [
+              462,
+              560
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerは兵器の具体名・攻撃能力・標的を推測で補わないよう注意しているが、それらが公表されていないとまでは記載していない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": "However, the name of the device, its ability to attack, and its targets have not been made public."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S2.3"
+      ],
+      "r3_only": [
+        "L1",
+        "S3.3",
+        "S4.2",
+        "S5.1",
+        "S5.3",
+        "S6.1",
+        "S6.3"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 4
+    },
+    "union_candidates": [
+      {
+        "claim_text": "However, the name of the device, its ability to attack, and its targets have not been made public.",
+        "span": [
+          462,
+          560
+        ],
+        "unit_ids": [
+          "S2.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "発表で具体的な名称・攻撃能力・標的が示されていないことは読み取れるが、それらが公にされていないという範囲の広い断定まではLedgerで確認できない。",
+          "Ledgerは兵器の具体名・攻撃能力・標的を推測で補わないよう注意しているが、それらが公表されていないとまでは記載していない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-001"
+        ],
+        "model_claims": [
+          "However, the name of the device, its ability to attack, and its targets have not been made public."
+        ]
+      },
+      {
+        "claim_text": "This showed that Russia could attack satellites from the ground.",
+        "span": [
+          868,
+          932
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "一度の試験で衛星を破壊した事実から、ロシアが一般に衛星を攻撃できる能力を示したと広げている。Ledgerは特定の衛星を破壊した事例を記録している。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-003"
+        ],
+        "model_claims": [
+          "This showed that Russia could attack satellites from the ground."
+        ]
+      },
+      {
+        "claim_text": "The legal answer is not a simple yes or no.",
+        "span": [
+          1471,
+          1514
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-016"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "In other words, this news is not an announcement that reveals the weapon’s capabilities.",
+        "span": [
+          1807,
+          1895
+        ],
+        "unit_ids": [
+          "S6.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-001"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The correct quiz answer was not what the weapon was, but where it was placed.",
+        "span": [
+          2084,
+          2161
+        ],
+        "unit_ids": [
+          "S6.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-001"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The U.S. confirmed it has placed space-control weapons in orbit, but did not reveal what they can do.",
+        "span": [
+          2178,
+          2279
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-001"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 6,
+    "n_model_candidates": 2,
+    "n_deterministic_only_candidates": 4,
+    "total_cost_jpy": 1.4621,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 5,
+    "n_targets": 4,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 2,
+    "n_excluded_entries": 2,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.2852,
+    "effort": "medium",
+    "prompt_sha256": "5416216f922ee9927c625e326b66f8585c85545956bdcd0e3ddd8e8240fa0109"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 5
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 2.298,
+  "provenance": {
+    "switch_dump_sha256": "66d18a3a1b28679684d7dcbe6e7af161a4da4223da7415a7ac50e7450de777c1",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-08T08:16:17",
+    "ledger_sha256": "2ebdce8660fbdc084c392b8e603cf7030cc221265ce2353769ccf950849eb0ec",
+    "article_sha256": "c83be2d245e8f8bac300c12c67f550b802f84dd76a344579428d3deced53b4b7",
+    "source_article_sha256": "49c4c103b9750c7571c4589e1d32955b4c1d51a0c8a253422a164c9f6705dce5",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/all6_writer_redesign_necessity_01/runs/space_weapons/control/b2__all6__r1/checker",
+      "ledger_path": "er052_output/all6_writer_redesign_necessity_01/runs/space_weapons/control/b2__all6__r1/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/all6_writer_redesign_necessity_01/runs/space_weapons/control/b2__all6__r1/b1b/article.md",
+      "source_path": "er052_output/all6_writer_redesign_necessity_01/runs/space_weapons/control/b2__all6__r1/ja_writer/revision2.md",
+      "budget_jpy": 10.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

@@ -1,0 +1,2603 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Even so, oil prices did not calm down right away.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Even so, oil prices did not calm down right away.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The 20 Percent Plan Changes Shape. Oil Prices Remain Unsettled\n\nThis news has two parts: a policy plan that changed quickly, and an unsettled market. A big number made the headlines, then the next day it took the form of a different deal. Even so, oil prices did not calm down right away.\n\nOn July 13, President Trump put forward a plan to charge 20 percent on all cargo passing through the Strait of Hormuz. He said it would help cover the cost of the United States keeping the strait safe. But this was only a proposal. The fee had not begun to be collected.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_scope",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Even so, oil prices did not calm down right away.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_scope",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+              "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+            ],
+            "batch_cost_jpy": 0.1433,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "But this was only a proposal.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "But this was only a proposal.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.3"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This news has two parts: a policy plan that changed quickly, and an unsettled market. A big number made the headlines, then the next day it took the form of a different deal. Even so, oil prices did not calm down right away.\n\nOn July 13, President Trump put forward a plan to charge 20 percent on all cargo passing through the Strait of Hormuz. He said it would help cover the cost of the United States keeping the strait safe. But this was only a proposal. The fee had not begun to be collected.\n\nThe figure of 20 percent stood out. But there was no detailed explanation of how it would become an actual charge: who would pay, what the amount would be based on, or how it would be collected. No plan for how the system would work was shown. The headline was striking, but the system was still unclear. That was the proposal.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "But this was only a proposal.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+              "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+            ],
+            "batch_cost_jpy": 0.1433,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "That was the proposal.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "That was the proposal.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.5); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.5"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On July 13, President Trump put forward a plan to charge 20 percent on all cargo passing through the Strait of Hormuz. He said it would help cover the cost of the United States keeping the strait safe. But this was only a proposal. The fee had not begun to be collected.\n\nThe figure of 20 percent stood out. But there was no detailed explanation of how it would become an actual charge: who would pay, what the amount would be based on, or how it would be collected. No plan for how the system would work was shown. The headline was striking, but the system was still unclear. That was the proposal.\n\nThen, on July 14, Trump announced that he was withdrawing the fee proposal and replacing it with trade and investment deals that Gulf countries would make with the United States. He said the decision was based on talks with Middle Eastern leaders. The headline changed from a fee plan to trade and investment deals.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "That was the proposal.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+              "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+            ],
+            "batch_cost_jpy": 0.1433,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "One might have thought the market would catch its breath too, but the story did not end there.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "One might have thought the market would catch its breath too, but the story did not end there.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Then, on July 14, Trump announced that he was withdrawing the fee proposal and replacing it with trade and investment deals that Gulf countries would make with the United States. He said the decision was based on talks with Middle Eastern leaders. The headline changed from a fee plan to trade and investment deals.\n\nOne might have thought the market would catch its breath too, but the story did not end there. After the announcement, Brent crude futures, an international benchmark, briefly gave back some of their gains. But soon they returned to a level close to where they had been before the announcement. At the time of the report, they were above $85 a barrel, up about 2.6 percent.\n\nThis price move alone does not show that the market felt reassured by the withdrawal, or that the proposal meant nothing. At the time, attacks by the United States and Iran and a sea blockade continued, and concerns about tanker safety remained. The fee plan being withdrawn did not mean that concerns about ship safety had gone away. Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "One might have thought the market would catch its breath too, but the story did not end there.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+              "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+            ],
+            "batch_cost_jpy": 0.1433,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "This price move alone does not show that the market felt reassured by the withdrawal, or that the proposal meant nothing.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "This price move alone does not show that the market felt reassured by the withdrawal, or that the proposal meant nothing.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "One might have thought the market would catch its breath too, but the story did not end there. After the announcement, Brent crude futures, an international benchmark, briefly gave back some of their gains. But soon they returned to a level close to where they had been before the announcement. At the time of the report, they were above $85 a barrel, up about 2.6 percent.\n\nThis price move alone does not show that the market felt reassured by the withdrawal, or that the proposal meant nothing. At the time, attacks by the United States and Iran and a sea blockade continued, and concerns about tanker safety remained. The fee plan being withdrawn did not mean that concerns about ship safety had gone away. Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety.\n\nThe main story in the headlines changed in just one day. Even so, concerns at sea continued at that point. Looking at the policy statements alongside the market moves shows that changing the plan alone did not bring the news story to a close.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "This price move alone does not show that the market felt reassured by the withdrawal, or that the proposal meant nothing.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "notes_for_writer",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+              "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+            ],
+            "batch_cost_jpy": 0.1433,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "The fee plan being withdrawn did not mean that concerns about ship safety had gone away.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "The fee plan being withdrawn did not mean that concerns about ship safety had gone away.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.3"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "One might have thought the market would catch its breath too, but the story did not end there. After the announcement, Brent crude futures, an international benchmark, briefly gave back some of their gains. But soon they returned to a level close to where they had been before the announcement. At the time of the report, they were above $85 a barrel, up about 2.6 percent.\n\nThis price move alone does not show that the market felt reassured by the withdrawal, or that the proposal meant nothing. At the time, attacks by the United States and Iran and a sea blockade continued, and concerns about tanker safety remained. The fee plan being withdrawn did not mean that concerns about ship safety had gone away. Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety.\n\nThe main story in the headlines changed in just one day. Even so, concerns at sea continued at that point. Looking at the policy statements alongside the market moves shows that changing the plan alone did not bring the news story to a close.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "The fee plan being withdrawn did not mean that concerns about ship safety had gone away.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+              "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+            ],
+            "batch_cost_jpy": 0.1433,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety.",
+            "issue": "計画の置換が船舶の安全に与えた影響を価格の動きだけでは判断できないという関係・評価は、Ledgerに記載されていない。 / 海峡計画の置換と船舶安全への影響を結び付ける、Ledgerにない因果的な論点を追加しています。 / 価格変動から計画置換の船舶安全への影響を判断できるかという因果的な論点は、Ledgerに記載されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S6.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.4"
+              ],
+              "related_fact_ids": [
+                "HF-009",
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "One might have thought the market would catch its breath too, but the story did not end there. After the announcement, Brent crude futures, an international benchmark, briefly gave back some of their gains. But soon they returned to a level close to where they had been before the announcement. At the time of the report, they were above $85 a barrel, up about 2.6 percent.\n\nThis price move alone does not show that the market felt reassured by the withdrawal, or that the proposal meant nothing. At the time, attacks by the United States and Iran and a sea blockade continued, and concerns about tanker safety remained. The fee plan being withdrawn did not mean that concerns about ship safety had gone away. Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety.\n\nThe main story in the headlines changed in just one day. Even so, concerns at sea continued at that point. Looking at the policy statements alongside the market moves shows that changing the plan alone did not bring the news story to a close.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+              "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+            ],
+            "batch_cost_jpy": 0.1433,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Then, on July 14, Trump announced that he was withdrawing the fee proposal and replacing it with trade and investment deals that Gulf countries would make with the United States.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Then, on July 14, Trump announced that he was withdrawing the fee proposal and replacing it with trade and investment deals that Gulf countries would make with the United States.",
+            "issue": "計画の置換が船舶の安全に与えた影響を価格の動きだけでは判断できないという関係・評価は、Ledgerに記載されていない。 / 海峡計画の置換と船舶安全への影響を結び付ける、Ledgerにない因果的な論点を追加しています。 / 価格変動から計画置換の船舶安全への影響を判断できるかという因果的な論点は、Ledgerに記載されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S6.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.4"
+              ],
+              "related_fact_ids": [
+                "HF-009",
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The figure of 20 percent stood out. But there was no detailed explanation of how it would become an actual charge: who would pay, what the amount would be based on, or how it would be collected. No plan for how the system would work was shown. The headline was striking, but the system was still unclear. That was the proposal.\n\nThen, on July 14, Trump announced that he was withdrawing the fee proposal and replacing it with trade and investment deals that Gulf countries would make with the United States. He said the decision was based on talks with Middle Eastern leaders. The headline changed from a fee plan to trade and investment deals.\n\nOne might have thought the market would catch its breath too, but the story did not end there. After the announcement, Brent crude futures, an international benchmark, briefly gave back some of their gains. But soon they returned to a level close to where they had been before the announcement. At the time of the report, they were above $85 a barrel, up about 2.6 percent.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Then, on July 14, Trump announced that he was withdrawing the fee proposal and replacing it with trade and investment deals that Gulf countries would make with the United States.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+              "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+            ],
+            "batch_cost_jpy": 0.1433,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "The headline changed from a fee plan to trade and investment deals.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "The headline changed from a fee plan to trade and investment deals.",
+            "issue": "計画の置換が船舶の安全に与えた影響を価格の動きだけでは判断できないという関係・評価は、Ledgerに記載されていない。 / 海峡計画の置換と船舶安全への影響を結び付ける、Ledgerにない因果的な論点を追加しています。 / 価格変動から計画置換の船舶安全への影響を判断できるかという因果的な論点は、Ledgerに記載されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S6.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.4"
+              ],
+              "related_fact_ids": [
+                "HF-009",
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The figure of 20 percent stood out. But there was no detailed explanation of how it would become an actual charge: who would pay, what the amount would be based on, or how it would be collected. No plan for how the system would work was shown. The headline was striking, but the system was still unclear. That was the proposal.\n\nThen, on July 14, Trump announced that he was withdrawing the fee proposal and replacing it with trade and investment deals that Gulf countries would make with the United States. He said the decision was based on talks with Middle Eastern leaders. The headline changed from a fee plan to trade and investment deals.\n\nOne might have thought the market would catch its breath too, but the story did not end there. After the announcement, Brent crude futures, an international benchmark, briefly gave back some of their gains. But soon they returned to a level close to where they had been before the announcement. At the time of the report, they were above $85 a barrel, up about 2.6 percent.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "The headline changed from a fee plan to trade and investment deals.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+              "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+            ],
+            "batch_cost_jpy": 0.1433,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Trump replaced his proposed Hormuz shipping fee with trade and investment deals, but oil prices remained unsettled.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Trump replaced his proposed Hormuz shipping fee with trade and investment deals, but oil prices remained unsettled.",
+            "issue": "計画の置換が船舶の安全に与えた影響を価格の動きだけでは判断できないという関係・評価は、Ledgerに記載されていない。 / 海峡計画の置換と船舶安全への影響を結び付ける、Ledgerにない因果的な論点を追加しています。 / 価格変動から計画置換の船舶安全への影響を判断できるかという因果的な論点は、Ledgerに記載されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S6.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.4"
+              ],
+              "related_fact_ids": [
+                "HF-009",
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The main story in the headlines changed in just one day. Even so, concerns at sea continued at that point. Looking at the policy statements alongside the market moves shows that changing the plan alone did not bring the news story to a close.\n\n## In one line\nTrump replaced his proposed Hormuz shipping fee with trade and investment deals, but oil prices remained unsettled.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Trump replaced his proposed Hormuz shipping fee with trade and investment deals, but oil prices remained unsettled.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+              "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+            ],
+            "batch_cost_jpy": 0.1433,
+            "batch_n_claims": 10
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 10,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Even so, oil prices did not calm down right away.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_scope",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+            "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+          ],
+          "batch_cost_jpy": 0.1433,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "But this was only a proposal.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+            "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+          ],
+          "batch_cost_jpy": 0.1433,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "That was the proposal.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+            "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+          ],
+          "batch_cost_jpy": 0.1433,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "One might have thought the market would catch its breath too, but the story did not end there.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+            "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+          ],
+          "batch_cost_jpy": 0.1433,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "This price move alone does not show that the market felt reassured by the withdrawal, or that the proposal meant nothing.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "notes_for_writer",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+            "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+          ],
+          "batch_cost_jpy": 0.1433,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "The fee plan being withdrawn did not mean that concerns about ship safety had gone away.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+            "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+          ],
+          "batch_cost_jpy": 0.1433,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+            "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+          ],
+          "batch_cost_jpy": 0.1433,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Then, on July 14, Trump announced that he was withdrawing the fee proposal and replacing it with trade and investment deals that Gulf countries would make with the United States.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+            "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+          ],
+          "batch_cost_jpy": 0.1433,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "The headline changed from a fee plan to trade and investment deals.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+            "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+          ],
+          "batch_cost_jpy": 0.1433,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Trump replaced his proposed Hormuz shipping fee with trade and investment deals, but oil prices remained unsettled.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74",
+            "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+          ],
+          "batch_cost_jpy": 0.1433,
+          "batch_n_claims": 10
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5936,
+      "usage": {
+        "input_tokens": 5162,
+        "cached_input_tokens": 0,
+        "output_tokens": 6535,
+        "reasoning_tokens": 1504
+      },
+      "elapsed_seconds": 44.236,
+      "prompt_sha256": "33e5d646a401eb3841b5267a46b2af6bb9b40968631d7c2df5e42cc51466d905",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 1.171,
+      "usage": {
+        "input_tokens": 4775,
+        "cached_input_tokens": 0,
+        "output_tokens": 13973,
+        "reasoning_tokens": 9818
+      },
+      "elapsed_seconds": 94.658,
+      "prompt_sha256": "e4647de8befb369bc4b90753502c7e888dc924fd581cc92c70ada2fc25934f54",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.3365,
+      "usage": {
+        "input_tokens": 5080,
+        "cached_input_tokens": 0,
+        "output_tokens": 3274,
+        "reasoning_tokens": 2588
+      },
+      "elapsed_seconds": 26.753,
+      "prompt_sha256": "9cbcd50d692107ae8ca0a2ba97361d6b33b8d13917d2d532fb93013b68538625",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.25,
+      "usage": {
+        "input_tokens": 10653,
+        "cached_input_tokens": 0,
+        "output_tokens": 1057,
+        "reasoning_tokens": 789
+      },
+      "elapsed_seconds": 9.245,
+      "prompt_sha256": "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1142,
+      "usage": {
+        "input_tokens": 5818,
+        "cached_input_tokens": 0,
+        "output_tokens": 292,
+        "reasoning_tokens": 242
+      },
+      "elapsed_seconds": 4.012,
+      "prompt_sha256": "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1056,
+      "usage": {
+        "input_tokens": 10653,
+        "cached_input_tokens": 10650,
+        "output_tokens": 1133,
+        "reasoning_tokens": 865
+      },
+      "elapsed_seconds": 10.244,
+      "prompt_sha256": "1b1941fd90eeed12cab434c25db3e7b9025e9c081bab9d5dc1a37727964b0e74"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0377,
+      "usage": {
+        "input_tokens": 5818,
+        "cached_input_tokens": 5815,
+        "output_tokens": 364,
+        "reasoning_tokens": 313
+      },
+      "elapsed_seconds": 4.426,
+      "prompt_sha256": "f4c7caac950939ddd23401065c73e47d7311c326e8f78d5d78773b84fbe253e3"
+    }
+  ],
+  "total_cost_jpy": 2.6086,
+  "total_calls": 7,
+  "elapsed_seconds": 193.621,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Even so, oil prices did not calm down right away.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But this was only a proposal.",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "That was the proposal.",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.5); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "One might have thought the market would catch its breath too, but the story did not end there.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "This price move alone does not show that the market felt reassured by the withdrawal, or that the proposal meant nothing.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The fee plan being withdrawn did not mean that concerns about ship safety had gone away.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "計画の置換が船舶の安全に与えた影響を価格の動きだけでは判断できないという関係・評価は、Ledgerに記載されていない。 / 海峡計画の置換と船舶安全への影響を結び付ける、Ledgerにない因果的な論点を追加しています。 / 価格変動から計画置換の船舶安全への影響を判断できるかという因果的な論点は、Ledgerに記載されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S6.4); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 16,
+      "n_model_entries": 10,
+      "n_targets": 8,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 7,
+      "n_excluded_entries": 7,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.3365,
+          "usage": {
+            "input_tokens": 5080,
+            "cached_input_tokens": 0,
+            "output_tokens": 3274,
+            "reasoning_tokens": 2588
+          },
+          "elapsed_seconds": 26.753,
+          "prompt_sha256": "9cbcd50d692107ae8ca0a2ba97361d6b33b8d13917d2d532fb93013b68538625",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.3365,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.2",
+          "claim": "A big number made the headlines, then the next day it took the form of a different deal.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "20％案の翌日に湾岸諸国との貿易・投資案件へ置き換えたというHF-002・HF-007の順序と内容に沿う。",
+          "fact_tags": [
+            "number",
+            "date",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C2",
+          "key": "S2.4",
+          "claim": "The fee had not begun to be collected.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "20％案は提案として扱われ、徴収制度の具体的設計も示されていないため、徴収開始前との記述はLedgerと整合する。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C3",
+          "key": "S3.1",
+          "claim": "The figure of 20 percent stood out.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "20％という提案率はHF-002に一致し、「目立った」は評価的な言い回しである。",
+          "fact_tags": [
+            "number"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S3.4",
+          "claim": "The headline was striking, but the system was still unclear.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "制度の詳細が示されなかったというHF-003を、仕組みが不明確だったと言い換えている。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C5",
+          "key": "S6.2",
+          "claim": "At the time, attacks by the United States and Iran and a sea blockade continued, and concerns about tanker safety remained.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が続いていたというHF-009の条件と整合する。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C6",
+          "key": "S6.4",
+          "claim": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "計画の置換が船舶の安全に与えた影響を価格変動だけから判断できないという因果推論上の主張は、Ledgerに明示的な裏付けがない。",
+          "fact_tags": [
+            "causality",
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C7",
+          "key": "S7.1",
+          "claim": "The main story in the headlines changed in just one day.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "7月13日の20％案が翌7月14日に別の案件へ置き換わったというHF-002・HF-007の時系列に一致する。",
+          "fact_tags": [
+            "date",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C8",
+          "key": "S7.3",
+          "claim": "Looking at the policy statements alongside the market moves shows that changing the plan alone did not bring the news story to a close.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "置換後も市場や海上の懸念が続いたというHF-009の記述を、計画変更だけでは話が終わらなかったと要約している。",
+          "fact_tags": [
+            "causality",
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "9cbcd50d692107ae8ca0a2ba97361d6b33b8d13917d2d532fb93013b68538625"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 36,
+    "n_judged_units": 28,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "S1.2",
+          "S1.3",
+          "S2.3",
+          "S2.4",
+          "S3.1",
+          "S3.4",
+          "S3.5",
+          "S5.1",
+          "S6.1",
+          "S6.2",
+          "S6.3",
+          "S6.4",
+          "S7.1",
+          "S7.3"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.4": "CANDIDATE",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "CANDIDATE",
+          "S3.5": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S6.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S6.2": "CANDIDATE",
+          "S6.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S6.4": "CANDIDATE",
+          "S7.1": "CANDIDATE",
+          "S7.2": "SUPPORTED",
+          "S7.3": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5936,
+            "usage": {
+              "input_tokens": 5162,
+              "cached_input_tokens": 0,
+              "output_tokens": 6535,
+              "reasoning_tokens": 1504
+            },
+            "elapsed_seconds": 44.236,
+            "prompt_sha256": "33e5d646a401eb3841b5267a46b2af6bb9b40968631d7c2df5e42cc51466d905",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "CANDIDATE",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "CANDIDATE",
+          "S3.5": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "CANDIDATE",
+          "S6.3": "SUPPORTED",
+          "S6.4": "CANDIDATE",
+          "S7.1": "CANDIDATE",
+          "S7.2": "SUPPORTED",
+          "S7.3": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "A big number made the headlines, then the next day it took the form of a different deal.",
+            "span": [
+              152,
+              240
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "20％案が報道の見出しになったというメディア上の扱いはLedgerに記載されていない。翌日に別の形へ置き換わった点は確認できる。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "A big number made the headlines, then the next day it took the form of a different deal."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "Even so, oil prices did not calm down right away.",
+            "span": [
+              241,
+              290
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "But this was only a proposal.",
+            "span": [
+              494,
+              523
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "The fee had not begun to be collected.",
+            "span": [
+              524,
+              562
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは提案だったことを確認しているが、実際に徴収が始まっていなかったと明示してはいない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "The fee had not begun to be collected."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "The figure of 20 percent stood out.",
+            "span": [
+              564,
+              599
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "20％という率は確認されているが、それが人々の関心を集めた・際立っていたという評価はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "The figure of 20 percent stood out."
+          },
+          {
+            "unit_id": "S3.4",
+            "unit_ids": [
+              "S3.4"
+            ],
+            "claim_text": "The headline was striking, but the system was still unclear.",
+            "span": [
+              808,
+              868
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "制度設計が不明確だった点は支えられるが、見出しが「印象的」だったという評価はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "The headline was striking, but the system was still unclear."
+          },
+          {
+            "unit_id": "S3.5",
+            "unit_ids": [
+              "S3.5"
+            ],
+            "claim_text": "That was the proposal.",
+            "span": [
+              869,
+              891
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "One might have thought the market would catch its breath too, but the story did not end there.",
+            "span": [
+              1210,
+              1304
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "This price move alone does not show that the market felt reassured by the withdrawal, or that the proposal meant nothing.",
+            "span": [
+              1585,
+              1706
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "At the time, attacks by the United States and Iran and a sea blockade continued, and concerns about tanker safety remained.",
+            "span": [
+              1707,
+              1830
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは「米・イラン間の攻撃」としているが、記事は攻撃を米国とイランがそれぞれ行ったと読める形にしており、主体を特定・変更している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "At the time, attacks by the United States and Iran and a sea blockade continued, and concerns about tanker safety remained."
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "The fee plan being withdrawn did not mean that concerns about ship safety had gone away.",
+            "span": [
+              1831,
+              1919
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety.",
+            "span": [
+              1920,
+              2034
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "計画の置換が船舶の安全に与えた影響を価格の動きだけでは判断できないという関係・評価は、Ledgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety."
+          },
+          {
+            "unit_id": "S7.1",
+            "unit_ids": [
+              "S7.1"
+            ],
+            "claim_text": "The main story in the headlines changed in just one day.",
+            "span": [
+              2036,
+              2092
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "一日の間に政策案が置き換わったことは確認できるが、「見出し」の主題が変わったというメディア上の記述はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The main story in the headlines changed in just one day."
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "Looking at the policy statements alongside the market moves shows that changing the plan alone did not bring the news story to a close.",
+            "span": [
+              2143,
+              2278
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "政策案の変更だけではニュースが終わらなかったという結論は、政策変更と市場の動きがニュースの継続をもたらしたという関係を示すが、Ledgerはその関係を明示していない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Looking at the policy statements alongside the market moves shows that changing the plan alone did not bring the news story to a close."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S6.4"
+        ],
+        "unit_status": {
+          "T": "MATCH",
+          "S1.2": "MATCH",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S3.5": "MATCH",
+          "S4.1": "MATCH",
+          "L1": "MATCH",
+          "S1.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S5.4": "MATCH",
+          "S6.1": "MATCH",
+          "S6.3": "MATCH",
+          "S6.4": "DEVIATION",
+          "S7.1": "MATCH",
+          "S7.3": "MATCH",
+          "S1.3": "MATCH",
+          "S6.2": "MATCH",
+          "S7.2": "MATCH"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 1.171,
+            "usage": {
+              "input_tokens": 4775,
+              "cached_input_tokens": 0,
+              "output_tokens": 13973,
+              "reasoning_tokens": 9818
+            },
+            "elapsed_seconds": 94.658,
+            "prompt_sha256": "e4647de8befb369bc4b90753502c7e888dc924fd581cc92c70ada2fc25934f54",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety.",
+            "span": [
+              1920,
+              2034
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "海峡計画の置換と船舶安全への影響を結び付ける、Ledgerにない因果的な論点を追加しています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety."
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety.",
+            "span": [
+              1920,
+              2034
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "価格変動から計画置換の船舶安全への影響を判断できるかという因果的な論点は、Ledgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S6.4"
+      ],
+      "r3_only": [
+        "S1.2",
+        "S1.3",
+        "S2.3",
+        "S2.4",
+        "S3.1",
+        "S3.4",
+        "S3.5",
+        "S5.1",
+        "S6.1",
+        "S6.2",
+        "S6.3",
+        "S7.1",
+        "S7.3"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 6
+    },
+    "union_candidates": [
+      {
+        "claim_text": "Even so, oil prices did not calm down right away.",
+        "span": [
+          241,
+          290
+        ],
+        "unit_ids": [
+          "S1.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "But this was only a proposal.",
+        "span": [
+          494,
+          523
+        ],
+        "unit_ids": [
+          "S2.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "That was the proposal.",
+        "span": [
+          869,
+          891
+        ],
+        "unit_ids": [
+          "S3.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "One might have thought the market would catch its breath too, but the story did not end there.",
+        "span": [
+          1210,
+          1304
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "This price move alone does not show that the market felt reassured by the withdrawal, or that the proposal meant nothing.",
+        "span": [
+          1585,
+          1706
+        ],
+        "unit_ids": [
+          "S6.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The fee plan being withdrawn did not mean that concerns about ship safety had gone away.",
+        "span": [
+          1831,
+          1919
+        ],
+        "unit_ids": [
+          "S6.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety.",
+        "span": [
+          1920,
+          2034
+        ],
+        "unit_ids": [
+          "S6.4"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "計画の置換が船舶の安全に与えた影響を価格の動きだけでは判断できないという関係・評価は、Ledgerに記載されていない。",
+          "海峡計画の置換と船舶安全への影響を結び付ける、Ledgerにない因果的な論点を追加しています。",
+          "価格変動から計画置換の船舶安全への影響を判断できるかという因果的な論点は、Ledgerに記載されていません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009",
+          "HF-007"
+        ],
+        "model_claims": [
+          "Nor can this price move alone tell us how replacing the plan with trade and investment deals affected ship safety."
+        ]
+      }
+    ],
+    "n_union_candidates": 7,
+    "n_model_candidates": 1,
+    "n_deterministic_only_candidates": 6,
+    "total_cost_jpy": 1.7646,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 10,
+    "n_targets": 8,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 7,
+    "n_excluded_entries": 7,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.3365,
+    "effort": "medium",
+    "prompt_sha256": "9cbcd50d692107ae8ca0a2ba97361d6b33b8d13917d2d532fb93013b68538625"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 3
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

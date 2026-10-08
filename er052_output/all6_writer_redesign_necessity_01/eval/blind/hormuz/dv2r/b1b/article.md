@@ -1,0 +1,20 @@
+# The Day the 20% Fee Plan Disappeared, but Crude Oil Did Not
+
+The main actor in this news story changes costumes in just one day.
+
+The first thing to appear on stage was a fee plan for cargo passing through the Strait of Hormuz. On July 13, Trump said that the United States would seek a 20 percent payment from all cargo to cover the costs of keeping the strait safe.
+
+But this did not mean that a fee booth had actually opened. It was only a proposal. No system was shown for such things as who would collect the money, who would pay it, or how the amount would be calculated. At first, all that appeared on stage was the large number: 20 percent.
+
+Then, on the following day, July 14, the main actor quickly changed costumes. Trump posted that the 20 percent payment would be replaced with trade with the United States and investment deals by Gulf countries. He explained that this decision was based on talks with Middle Eastern leaders.
+
+He also told reporters that no one should charge ships passing through the Strait of Hormuz. He said he did not like the idea of a fee itself. The fee plan that appeared the day before had moved to a different policy the next day.
+
+The crude oil market also reacted. After the announcement of the replacement, Brent futures briefly gave up some of their gains. But this move did not last long. They soon returned to a high level close to where they had been before the announcement. At the time the article was published, they were up about 2.6 percent and above 85 dollars a barrel.
+
+On July 13, Brent futures had already risen 9.59 percent from the previous day and settled at 83 dollars and 30 cents a barrel. Reuters pointed to concerns about a US sea blockade of Iran, reportedly set to begin the following day, and about energy shipments passing through the strait as reasons for the rise.
+
+In other words, even when the fee plan left the stage, the worries behind it did not disappear. As long as attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continue, the crude oil market is not watching only a fee plan that can change in one day. Even after the main actor changed, the stage setting—the tension around the strait—remained.
+
+## In one line
+Trump dropped his proposed 20% Hormuz fee, but tensions around the strait kept oil prices high.

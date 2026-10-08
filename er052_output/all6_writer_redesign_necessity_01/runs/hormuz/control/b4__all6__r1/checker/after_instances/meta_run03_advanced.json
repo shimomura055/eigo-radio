@@ -1,0 +1,2722 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "But the audience’s worries stayed the same.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "But the audience’s worries stayed the same.",
+            "issue": "Ledgerは懸念が続いたことを支えますが、「the same」は懸念の内容が変わらなかったと比較・断定しています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The Fee Proposal Leaves the Stage, but Oil Worries Stay On\n\nOnstage, the lead role changed hands. But the audience’s worries stayed the same. This time, the crude oil market unfolded like a play.\n\nIt began with an announcement by Mr. Trump. He said that all goods passing through the Strait of Hormuz would face a 20 percent fee to cover the cost of keeping the strait safe. Crude oil futures prices rose sharply that day. But the fee proposal was not the only reason for the rise. There were also worries about the sea blockade against Iran, which was due to begin the next day, and whether ships carrying energy could pass safely.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But the audience’s worries stayed the same.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+              "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+            ],
+            "batch_cost_jpy": 0.1563,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "But the fee proposal was not the only reason for the rise.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "But the fee proposal was not the only reason for the rise.",
+            "issue": "「not the only reason」は償還料案も価格上昇の原因だったと含意しますが、Ledgerは上昇を封鎖方針と供給懸念に関連付けており、償還料案との因果関係を確認していません。 / Ledgerは20％償還料の投稿と原油価格上昇の因果関係を確認していないが、記事は提案料が価格上昇の一因だったと示している。 / Ledgerは20％償還料を価格上昇の原因の一つと確認していないが、記事はそう示している。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.4"
+              ],
+              "related_fact_ids": [
+                "HF-006",
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Onstage, the lead role changed hands. But the audience’s worries stayed the same. This time, the crude oil market unfolded like a play.\n\nIt began with an announcement by Mr. Trump. He said that all goods passing through the Strait of Hormuz would face a 20 percent fee to cover the cost of keeping the strait safe. Crude oil futures prices rose sharply that day. But the fee proposal was not the only reason for the rise. There were also worries about the sea blockade against Iran, which was due to begin the next day, and whether ships carrying energy could pass safely.\n\nThe next day, Mr. Trump withdrew the fee proposal, citing “very productive talks” with leaders in the Middle East. Instead, he announced deals on trade with the United States and investment with Gulf countries. The idea of charging a fee on goods passing through the strait was replaced by plans to move ahead with deals with the United States. Based on the headlines alone, it might look as if the matter was settled.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "But the fee proposal was not the only reason for the rise.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+              "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+            ],
+            "batch_cost_jpy": 0.1563,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "The market was not looking only at whether there would be a fee.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "The market was not looking only at whether there would be a fee.",
+            "issue": "市場が料金の有無だけを見ていたのではない、という市場の注目対象についての断定はLedgerに直接記載されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "After the announcement, crude oil futures prices gave back some of their gains for a while. But they soon returned to a high level close to where they had been before the announcement. Even though the fee proposal, one of the play’s characters, left the stage, worries remained about the sea blockade, attacks between the United States and Iran, and the safety of tankers.\n\nThe market was not looking only at whether there would be a fee. Could ships travel safely? Would the oil arrive? Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn.\n\nIn other words, the news story can change in a day, but conditions at sea do not change in a day. Perhaps the crude oil market was watching a story that would keep going.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "The market was not looking only at whether there would be a fee.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+              "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+            ],
+            "batch_cost_jpy": 0.1563,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "Would the oil arrive?",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "Would the oil arrive?",
+            "issue": "決定論検査で戻した: quote_not_in_ledger",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S5.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "quote_not_in_ledger"
+              ],
+              "unit_ids": [
+                "S5.3"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "After the announcement, crude oil futures prices gave back some of their gains for a while. But they soon returned to a high level close to where they had been before the announcement. Even though the fee proposal, one of the play’s characters, left the stage, worries remained about the sea blockade, attacks between the United States and Iran, and the safety of tankers.\n\nThe market was not looking only at whether there would be a fee. Could ships travel safely? Would the oil arrive? Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn.\n\nIn other words, the news story can change in a day, but conditions at sea do not change in a day. Perhaps the crude oil market was watching a story that would keep going.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "Would the oil arrive?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+              "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+            ],
+            "batch_cost_jpy": 0.1563,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn.",
+            "issue": "懸念が解消しない限り心配が続くという条件付きの将来予測は、撤回後にも懸念が続いたという観測を超えています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S5.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.4"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "After the announcement, crude oil futures prices gave back some of their gains for a while. But they soon returned to a high level close to where they had been before the announcement. Even though the fee proposal, one of the play’s characters, left the stage, worries remained about the sea blockade, attacks between the United States and Iran, and the safety of tankers.\n\nThe market was not looking only at whether there would be a fee. Could ships travel safely? Would the oil arrive? Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn.\n\nIn other words, the news story can change in a day, but conditions at sea do not change in a day. Perhaps the crude oil market was watching a story that would keep going.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn.",
+            "first_materiality": "QUALITY",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+              "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+            ],
+            "batch_cost_jpy": 0.1563,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "In other words, the news story can change in a day, but conditions at sea do not change in a day.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "In other words, the news story can change in a day, but conditions at sea do not change in a day.",
+            "issue": "ニュースが一日で変わるという一般化、および海上の状況は一日では変わらないという断定は、Ledgerが確認する個別の政策発表と継続中の懸念を超えています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S6.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.1"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The market was not looking only at whether there would be a fee. Could ships travel safely? Would the oil arrive? Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn.\n\nIn other words, the news story can change in a day, but conditions at sea do not change in a day. Perhaps the crude oil market was watching a story that would keep going.\n\n## In one line\nTrump withdrew the proposed Strait of Hormuz fee, but oil markets remained worried about shipping safety and supply.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "In other words, the news story can change in a day, but conditions at sea do not change in a day.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+              "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+            ],
+            "batch_cost_jpy": 0.1563,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "Crude oil futures prices rose sharply that day.",
+          "origin": null,
+          "related_fact_id": "HF-005",
+          "dev": {
+            "claim_in_article": "Crude oil futures prices rose sharply that day.",
+            "issue": "Ledgerの対象はFT掲載の期近Brent先物データだが、記事は指標を限定せず原油先物全般について述べている。 / LedgerはBrent先物の上昇を記録しているが、記事は指標を限定せず原油先物全般の上昇としている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S2.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-005",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.3"
+              ],
+              "related_fact_ids": [
+                "HF-005",
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Onstage, the lead role changed hands. But the audience’s worries stayed the same. This time, the crude oil market unfolded like a play.\n\nIt began with an announcement by Mr. Trump. He said that all goods passing through the Strait of Hormuz would face a 20 percent fee to cover the cost of keeping the strait safe. Crude oil futures prices rose sharply that day. But the fee proposal was not the only reason for the rise. There were also worries about the sea blockade against Iran, which was due to begin the next day, and whether ships carrying energy could pass safely.\n\nThe next day, Mr. Trump withdrew the fee proposal, citing “very productive talks” with leaders in the Middle East. Instead, he announced deals on trade with the United States and investment with Gulf countries. The idea of charging a fee on goods passing through the strait was replaced by plans to move ahead with deals with the United States. Based on the headlines alone, it might look as if the matter was settled.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-005",
+            "claim_text": "Crude oil futures prices rose sharply that day.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+              "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+            ],
+            "batch_cost_jpy": 0.1563,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "After the announcement, crude oil futures prices gave back some of their gains for a while.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "After the announcement, crude oil futures prices gave back some of their gains for a while.",
+            "issue": "Ledgerが扱うのはBrent先物の短時間の値動きだが、記事は指標を限定せず原油先物全般について述べている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The next day, Mr. Trump withdrew the fee proposal, citing “very productive talks” with leaders in the Middle East. Instead, he announced deals on trade with the United States and investment with Gulf countries. The idea of charging a fee on goods passing through the strait was replaced by plans to move ahead with deals with the United States. Based on the headlines alone, it might look as if the matter was settled.\n\nAfter the announcement, crude oil futures prices gave back some of their gains for a while. But they soon returned to a high level close to where they had been before the announcement. Even though the fee proposal, one of the play’s characters, left the stage, worries remained about the sea blockade, attacks between the United States and Iran, and the safety of tankers.\n\nThe market was not looking only at whether there would be a fee. Could ships travel safely? Would the oil arrive? Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "After the announcement, crude oil futures prices gave back some of their gains for a while.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+              "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+            ],
+            "batch_cost_jpy": 0.1563,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "But they soon returned to a high level close to where they had been before the announcement.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "But they soon returned to a high level close to where they had been before the announcement.",
+            "issue": "Ledgerが扱うのはBrent先物の短時間の値動きだが、記事は指標を限定せず原油先物全般について述べている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The next day, Mr. Trump withdrew the fee proposal, citing “very productive talks” with leaders in the Middle East. Instead, he announced deals on trade with the United States and investment with Gulf countries. The idea of charging a fee on goods passing through the strait was replaced by plans to move ahead with deals with the United States. Based on the headlines alone, it might look as if the matter was settled.\n\nAfter the announcement, crude oil futures prices gave back some of their gains for a while. But they soon returned to a high level close to where they had been before the announcement. Even though the fee proposal, one of the play’s characters, left the stage, worries remained about the sea blockade, attacks between the United States and Iran, and the safety of tankers.\n\nThe market was not looking only at whether there would be a fee. Could ships travel safely? Would the oil arrive? Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But they soon returned to a high level close to where they had been before the announcement.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+              "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+            ],
+            "batch_cost_jpy": 0.1563,
+            "batch_n_claims": 9
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 9,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "But the audience’s worries stayed the same.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+            "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+          ],
+          "batch_cost_jpy": 0.1563,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "But the fee proposal was not the only reason for the rise.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+            "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+          ],
+          "batch_cost_jpy": 0.1563,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "The market was not looking only at whether there would be a fee.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+            "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+          ],
+          "batch_cost_jpy": 0.1563,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "Would the oil arrive?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+            "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+          ],
+          "batch_cost_jpy": 0.1563,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn.",
+          "first_materiality": "QUALITY",
+          "first_basis": "unsupported_relationship",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+            "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+          ],
+          "batch_cost_jpy": 0.1563,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "In other words, the news story can change in a day, but conditions at sea do not change in a day.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+            "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+          ],
+          "batch_cost_jpy": 0.1563,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-005",
+          "claim_text": "Crude oil futures prices rose sharply that day.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+            "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+          ],
+          "batch_cost_jpy": 0.1563,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "After the announcement, crude oil futures prices gave back some of their gains for a while.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+            "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+          ],
+          "batch_cost_jpy": 0.1563,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "But they soon returned to a high level close to where they had been before the announcement.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987",
+            "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+          ],
+          "batch_cost_jpy": 0.1563,
+          "batch_n_claims": 9
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5068,
+      "usage": {
+        "input_tokens": 5005,
+        "cached_input_tokens": 0,
+        "output_tokens": 5460,
+        "reasoning_tokens": 1826
+      },
+      "elapsed_seconds": 39.89,
+      "prompt_sha256": "41d219d88857c217c8f19f64979c441e64ff974edba10949685651c9bf171502",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6891,
+      "usage": {
+        "input_tokens": 4643,
+        "cached_input_tokens": 0,
+        "output_tokens": 7857,
+        "reasoning_tokens": 5977
+      },
+      "elapsed_seconds": 66.725,
+      "prompt_sha256": "910bc5be7b7cc238a46d104faf740bad02e3db1b6711fadf3dd73938eb289249",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.3265,
+      "usage": {
+        "input_tokens": 5186,
+        "cached_input_tokens": 0,
+        "output_tokens": 3125,
+        "reasoning_tokens": 1954
+      },
+      "elapsed_seconds": 28.177,
+      "prompt_sha256": "8da36e0ebd6686785b1c5e70644d0186cfd49e06e0b45138881659c96099036e",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2701,
+      "usage": {
+        "input_tokens": 10064,
+        "cached_input_tokens": 0,
+        "output_tokens": 1430,
+        "reasoning_tokens": 1199
+      },
+      "elapsed_seconds": 13.904,
+      "prompt_sha256": "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1053,
+      "usage": {
+        "input_tokens": 5620,
+        "cached_input_tokens": 0,
+        "output_tokens": 219,
+        "reasoning_tokens": 169
+      },
+      "elapsed_seconds": 3.335,
+      "prompt_sha256": "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1179,
+      "usage": {
+        "input_tokens": 10064,
+        "cached_input_tokens": 10061,
+        "output_tokens": 1301,
+        "reasoning_tokens": 1064
+      },
+      "elapsed_seconds": 12.994,
+      "prompt_sha256": "055e39fbb754d8bd520e5dbc25d85ca8db2e9c8f548ec0b8dfe97e3d6ea8b987"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0384,
+      "usage": {
+        "input_tokens": 5620,
+        "cached_input_tokens": 5617,
+        "output_tokens": 377,
+        "reasoning_tokens": 327
+      },
+      "elapsed_seconds": 5.512,
+      "prompt_sha256": "a4c4bf36319bb5bbb21b1c699e7de392d80971ccbf2cfad6cd9da6f0352b1d5d"
+    }
+  ],
+  "total_cost_jpy": 2.0541,
+  "total_calls": 7,
+  "elapsed_seconds": 170.587,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But the audience’s worries stayed the same.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "Ledgerは懸念が続いたことを支えますが、「the same」は懸念の内容が変わらなかったと比較・断定しています。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_comparison"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But the fee proposal was not the only reason for the rise.",
+        "related_fact_id": "HF-006",
+        "origin": null,
+        "issue": "「not the only reason」は償還料案も価格上昇の原因だったと含意しますが、Ledgerは上昇を封鎖方針と供給懸念に関連付けており、償還料案との因果関係を確認していません。 / Ledgerは20％償還料の投稿と原油価格上昇の因果関係を確認していないが、記事は提案料が価格上昇の一因だったと示している。 / Ledgerは20％償還料を価格上昇の原因の一つと確認していないが、記事はそう示している。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.4); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The market was not looking only at whether there would be a fee.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "市場が料金の有無だけを見ていたのではない、という市場の注目対象についての断定はLedgerに直接記載されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Would the oil arrive?",
+        "related_fact_id": "HF-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: quote_not_in_ledger",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S5.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "懸念が解消しない限り心配が続くという条件付きの将来予測は、撤回後にも懸念が続いたという観測を超えています。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S5.4); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In other words, the news story can change in a day, but conditions at sea do not change in a day.",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "ニュースが一日で変わるという一般化、および海上の状況は一日では変わらないという断定は、Ledgerが確認する個別の政策発表と継続中の懸念を超えています。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S6.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Crude oil futures prices rose sharply that day.",
+        "related_fact_id": "HF-005",
+        "origin": null,
+        "issue": "Ledgerの対象はFT掲載の期近Brent先物データだが、記事は指標を限定せず原油先物全般について述べている。 / LedgerはBrent先物の上昇を記録しているが、記事は指標を限定せず原油先物全般の上昇としている。",
+        "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S2.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "After the announcement, crude oil futures prices gave back some of their gains for a while.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "Ledgerが扱うのはBrent先物の短時間の値動きだが、記事は指標を限定せず原油先物全般について述べている。",
+        "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S4.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But they soon returned to a high level close to where they had been before the announcement.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "Ledgerが扱うのはBrent先物の短時間の値動きだが、記事は指標を限定せず原油先物全般について述べている。",
+        "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S4.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 17,
+      "n_model_entries": 16,
+      "n_targets": 13,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 5,
+      "n_excluded_entries": 5,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.3265,
+          "usage": {
+            "input_tokens": 5186,
+            "cached_input_tokens": 0,
+            "output_tokens": 3125,
+            "reasoning_tokens": 1954
+          },
+          "elapsed_seconds": 28.177,
+          "prompt_sha256": "8da36e0ebd6686785b1c5e70644d0186cfd49e06e0b45138881659c96099036e",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.3265,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.1",
+          "claim": "Onstage, the lead role changed hands.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「主役が入れ替わった」は文脈上の比喩で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.2",
+          "claim": "But the audience’s worries stayed the same.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "心配が続いたことはHF-009と合うが、「同じままだった」という比較はLedgerで裏付けられていない。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C3",
+          "key": "S1.3",
+          "claim": "This time, the crude oil market unfolded like a play.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "原油市場を劇にたとえた修辞で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S2.4",
+          "claim": "But the fee proposal was not the only reason for the rise.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "上昇が料金案だけによるものではない点はLedgerと整合するが、料金案自体が上昇の原因だったとの含意はLedgerで確認できない。",
+          "fact_tags": [
+            "causality",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S3.2",
+          "claim": "Instead, he announced deals on trade with the United States and investment with Gulf countries.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "トランプ氏が湾岸諸国との対米貿易・投資案件を発表したという内容はHF-007と一致する。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C6",
+          "key": "S3.4",
+          "claim": "Based on the headlines alone, it might look as if the matter was settled.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "見出しだけなら決着したように見えるという読者向けの推測的なつなぎで、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "S5.1",
+          "claim": "The market was not looking only at whether there would be a fee.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "市場が料金の有無だけを見ていなかったという市場の注目対象に関する主張は、Ledgerの記載を超える。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C8",
+          "key": "S5.4",
+          "claim": "Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "撤回後も懸念が続いたことはHF-009にあるが、疑問への明確な回答が得られるまで懸念が消えないという条件付きの断定は裏付けられていない。",
+          "fact_tags": [
+            "causality",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C9",
+          "key": "S6.1",
+          "claim": "In other words, the news story can change in a day, but conditions at sea do not change in a day.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「海上の状況は1日では変わらない」という一般化・否定は、Ledgerが示す懸念の継続を超えており確認できない。",
+          "fact_tags": [
+            "date",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C10",
+          "key": "S6.2",
+          "claim": "Perhaps the crude oil market was watching a story that would keep going.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "市場が続く物語を見ていたという比喩的・推測的な締めで、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C11",
+          "key": "S2.3",
+          "claim": "Crude oil futures prices rose sharply that day.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "上昇はHF-006と一致する一方、Ledgerが裏付けるのはBrent先物であり、主張は原油先物全般へ対象を広げている。",
+          "fact_tags": [
+            "date",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "mismatch",
+          "scope_match": "mismatch",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C12",
+          "key": "S4.1",
+          "claim": "After the announcement, crude oil futures prices gave back some of their gains for a while.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "一時的に上げ幅を縮小した点はHF-009と一致するが、Ledgerの対象はBrent先物であり、主張は原油先物全般へ広げている。",
+          "fact_tags": [
+            "date",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "mismatch",
+          "scope_match": "mismatch",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C13",
+          "key": "S4.2",
+          "claim": "But they soon returned to a high level close to where they had been before the announcement.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "発表前に近い高水準へ戻った点はHF-009と一致するが、Ledgerの対象はBrent先物であり、主張は原油先物全般へ広げている。",
+          "fact_tags": [
+            "date",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "mismatch",
+          "scope_match": "mismatch",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "8da36e0ebd6686785b1c5e70644d0186cfd49e06e0b45138881659c96099036e"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 30,
+    "n_judged_units": 23,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "S1.1",
+          "S1.2",
+          "S1.3",
+          "S2.4",
+          "S3.2",
+          "S3.4",
+          "S5.1",
+          "S5.3",
+          "S5.4",
+          "S6.1",
+          "S6.2"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "CANDIDATE",
+          "S2.5": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "CANDIDATE",
+          "S3.3": "SUPPORTED",
+          "S3.4": "CANDIDATE",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED->CANDIDATE(quote_not_in_ledger)",
+          "S5.4": "CANDIDATE",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5068,
+            "usage": {
+              "input_tokens": 5005,
+              "cached_input_tokens": 0,
+              "output_tokens": 5460,
+              "reasoning_tokens": 1826
+            },
+            "elapsed_seconds": 39.89,
+            "prompt_sha256": "41d219d88857c217c8f19f64979c441e64ff974edba10949685651c9bf171502",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "CANDIDATE",
+          "S2.5": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "CANDIDATE",
+          "S3.3": "SUPPORTED",
+          "S3.4": "CANDIDATE",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "CANDIDATE",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "Onstage, the lead role changed hands.",
+            "span": [
+              62,
+              99
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「lead role changed hands」は役割が別の主体に移ったことを示唆しますが、Ledgerが確認するのは償還料案の撤回・置換であり、役割の移転ではありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Onstage, the lead role changed hands."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "But the audience’s worries stayed the same.",
+            "span": [
+              100,
+              143
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは懸念が続いたことを支えますが、「the same」は懸念の内容が変わらなかったと比較・断定しています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But the audience’s worries stayed the same."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "This time, the crude oil market unfolded like a play.",
+            "span": [
+              144,
+              197
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "市場の展開を「play」のようだったと表現する評価・特徴づけは、Ledgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "This time, the crude oil market unfolded like a play."
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "But the fee proposal was not the only reason for the rise.",
+            "span": [
+              425,
+              483
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「not the only reason」は償還料案も価格上昇の原因だったと含意しますが、Ledgerは上昇を封鎖方針と供給懸念に関連付けており、償還料案との因果関係を確認していません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "But the fee proposal was not the only reason for the rise."
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "Instead, he announced deals on trade with the United States and investment with Gulf countries.",
+            "span": [
+              751,
+              846
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「announced deals」は、取引が成立・決定済みであるとの含意があります。Ledgerが確認するのは、償還料を湾岸諸国による対米貿易・投資案件に置き換えるとの投稿であり、成立済みの取引の発表ではありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Instead, he announced deals on trade with the United States and investment with Gulf countries."
+          },
+          {
+            "unit_id": "S3.4",
+            "unit_ids": [
+              "S3.4"
+            ],
+            "claim_text": "Based on the headlines alone, it might look as if the matter was settled.",
+            "span": [
+              981,
+              1054
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "見出しだけなら問題が解決したように見える、という読者の受け止め・解釈はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Based on the headlines alone, it might look as if the matter was settled."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "The market was not looking only at whether there would be a fee.",
+            "span": [
+              1430,
+              1494
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "市場が料金の有無だけを見ていたのではない、という市場の注目対象についての断定はLedgerに直接記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The market was not looking only at whether there would be a fee."
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "Would the oil arrive?",
+            "span": [
+              1522,
+              1543
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "quote_not_in_ledger"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: quote_not_in_ledger"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn.",
+            "span": [
+              1544,
+              1660
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "懸念が解消しない限り心配が続くという条件付きの将来予測は、撤回後にも懸念が続いたという観測を超えています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "In other words, the news story can change in a day, but conditions at sea do not change in a day.",
+            "span": [
+              1662,
+              1759
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "ニュースが一日で変わるという一般化、および海上の状況は一日では変わらないという断定は、Ledgerが確認する個別の政策発表と継続中の懸念を超えています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "In other words, the news story can change in a day, but conditions at sea do not change in a day."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "Perhaps the crude oil market was watching a story that would keep going.",
+            "span": [
+              1760,
+              1832
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "市場が今後も続く「story」を見ていたという推測・比喩的な市場の視点はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Perhaps the crude oil market was watching a story that would keep going."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S2.3",
+          "S2.4",
+          "S4.1",
+          "S4.2"
+        ],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.4": "DEVIATION",
+          "S2.3": "DEVIATION",
+          "S2.5": "MATCH",
+          "T": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "L1": "MATCH",
+          "S4.1": "DEVIATION",
+          "S4.2": "DEVIATION",
+          "S4.3": "MATCH",
+          "S1.1": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S1.3": "UNMENTIONED",
+          "S3.4": "UNMENTIONED",
+          "S5.1": "UNMENTIONED",
+          "S5.2": "UNMENTIONED",
+          "S5.3": "UNMENTIONED",
+          "S5.4": "UNMENTIONED",
+          "S6.1": "UNMENTIONED",
+          "S6.2": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.6891,
+            "usage": {
+              "input_tokens": 4643,
+              "cached_input_tokens": 0,
+              "output_tokens": 7857,
+              "reasoning_tokens": 5977
+            },
+            "elapsed_seconds": 66.725,
+            "prompt_sha256": "910bc5be7b7cc238a46d104faf740bad02e3db1b6711fadf3dd73938eb289249",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "But the fee proposal was not the only reason for the rise.",
+            "span": [
+              425,
+              483
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerは20％償還料の投稿と原油価格上昇の因果関係を確認していないが、記事は提案料が価格上昇の一因だったと示している。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "But the fee proposal was not the only reason for the rise."
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "Crude oil futures prices rose sharply that day.",
+            "span": [
+              377,
+              424
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerの対象はFT掲載の期近Brent先物データだが、記事は指標を限定せず原油先物全般について述べている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-005"
+            ],
+            "model_claim": "Crude oil futures prices rose sharply that day."
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "Crude oil futures prices rose sharply that day.",
+            "span": [
+              377,
+              424
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "LedgerはBrent先物の上昇を記録しているが、記事は指標を限定せず原油先物全般の上昇としている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "Crude oil futures prices rose sharply that day."
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "But the fee proposal was not the only reason for the rise.",
+            "span": [
+              425,
+              483
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerは20％償還料を価格上昇の原因の一つと確認していないが、記事はそう示している。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "But the fee proposal was not the only reason for the rise."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "After the announcement, crude oil futures prices gave back some of their gains for a while.",
+            "span": [
+              1056,
+              1147
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerが扱うのはBrent先物の短時間の値動きだが、記事は指標を限定せず原油先物全般について述べている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "After the announcement, crude oil futures prices gave back some of their gains for a while."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "But they soon returned to a high level close to where they had been before the announcement.",
+            "span": [
+              1148,
+              1240
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerが扱うのはBrent先物の短時間の値動きだが、記事は指標を限定せず原油先物全般について述べている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But they soon returned to a high level close to where they had been before the announcement."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S2.4"
+      ],
+      "r3_only": [
+        "S1.1",
+        "S1.2",
+        "S1.3",
+        "S3.2",
+        "S3.4",
+        "S5.1",
+        "S5.3",
+        "S5.4",
+        "S6.1",
+        "S6.2"
+      ],
+      "r5_only": [
+        "S2.3",
+        "S4.1",
+        "S4.2"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 1
+    },
+    "union_candidates": [
+      {
+        "claim_text": "But the audience’s worries stayed the same.",
+        "span": [
+          100,
+          143
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "Ledgerは懸念が続いたことを支えますが、「the same」は懸念の内容が変わらなかったと比較・断定しています。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "But the audience’s worries stayed the same."
+        ]
+      },
+      {
+        "claim_text": "But the fee proposal was not the only reason for the rise.",
+        "span": [
+          425,
+          483
+        ],
+        "unit_ids": [
+          "S2.4"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "「not the only reason」は償還料案も価格上昇の原因だったと含意しますが、Ledgerは上昇を封鎖方針と供給懸念に関連付けており、償還料案との因果関係を確認していません。",
+          "Ledgerは20％償還料の投稿と原油価格上昇の因果関係を確認していないが、記事は提案料が価格上昇の一因だったと示している。",
+          "Ledgerは20％償還料を価格上昇の原因の一つと確認していないが、記事はそう示している。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-006",
+          "HF-002"
+        ],
+        "model_claims": [
+          "But the fee proposal was not the only reason for the rise."
+        ]
+      },
+      {
+        "claim_text": "The market was not looking only at whether there would be a fee.",
+        "span": [
+          1430,
+          1494
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "市場が料金の有無だけを見ていたのではない、という市場の注目対象についての断定はLedgerに直接記載されていません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "The market was not looking only at whether there would be a fee."
+        ]
+      },
+      {
+        "claim_text": "Would the oil arrive?",
+        "span": [
+          1522,
+          1543
+        ],
+        "unit_ids": [
+          "S5.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "quote_not_in_ledger"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: quote_not_in_ledger"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn.",
+        "span": [
+          1544,
+          1660
+        ],
+        "unit_ids": [
+          "S5.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "懸念が解消しない限り心配が続くという条件付きの将来予測は、撤回後にも懸念が続いたという観測を超えています。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "Until those questions had clear answers, worry would not leave the stage, even after the announcement was withdrawn."
+        ]
+      },
+      {
+        "claim_text": "In other words, the news story can change in a day, but conditions at sea do not change in a day.",
+        "span": [
+          1662,
+          1759
+        ],
+        "unit_ids": [
+          "S6.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "ニュースが一日で変わるという一般化、および海上の状況は一日では変わらないという断定は、Ledgerが確認する個別の政策発表と継続中の懸念を超えています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "In other words, the news story can change in a day, but conditions at sea do not change in a day."
+        ]
+      },
+      {
+        "claim_text": "Crude oil futures prices rose sharply that day.",
+        "span": [
+          377,
+          424
+        ],
+        "unit_ids": [
+          "S2.3"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r5"
+        ],
+        "issues": [
+          "Ledgerの対象はFT掲載の期近Brent先物データだが、記事は指標を限定せず原油先物全般について述べている。",
+          "LedgerはBrent先物の上昇を記録しているが、記事は指標を限定せず原油先物全般の上昇としている。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-005",
+          "HF-006"
+        ],
+        "model_claims": [
+          "Crude oil futures prices rose sharply that day."
+        ]
+      },
+      {
+        "claim_text": "After the announcement, crude oil futures prices gave back some of their gains for a while.",
+        "span": [
+          1056,
+          1147
+        ],
+        "unit_ids": [
+          "S4.1"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r5"
+        ],
+        "issues": [
+          "Ledgerが扱うのはBrent先物の短時間の値動きだが、記事は指標を限定せず原油先物全般について述べている。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "After the announcement, crude oil futures prices gave back some of their gains for a while."
+        ]
+      },
+      {
+        "claim_text": "But they soon returned to a high level close to where they had been before the announcement.",
+        "span": [
+          1148,
+          1240
+        ],
+        "unit_ids": [
+          "S4.2"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r5"
+        ],
+        "issues": [
+          "Ledgerが扱うのはBrent先物の短時間の値動きだが、記事は指標を限定せず原油先物全般について述べている。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "But they soon returned to a high level close to where they had been before the announcement."
+        ]
+      }
+    ],
+    "n_union_candidates": 9,
+    "n_model_candidates": 8,
+    "n_deterministic_only_candidates": 1,
+    "total_cost_jpy": 1.1959,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 16,
+    "n_targets": 13,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 5,
+    "n_excluded_entries": 5,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.3265,
+    "effort": "medium",
+    "prompt_sha256": "8da36e0ebd6686785b1c5e70644d0186cfd49e06e0b45138881659c96099036e"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {},
+    "unrewritten_blocking_pass": 0
+  }
+}

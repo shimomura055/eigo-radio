@@ -1,0 +1,47 @@
+{
+ "code": "y3ck",
+ "judge": "gpt-5.6-luna",
+ "judge_actual": "gpt-5.6-luna",
+ "parsed": {
+  "ng_items": [
+   {
+    "text": "Museは、散髪の予約や商品の在庫確認などを電話で頼めるAIエージェントです。",
+    "severity": "minor",
+    "kind": "scope",
+    "fact_id": "MUSE-HC-004",
+    "in_r0": true,
+    "in_r2": true,
+    "in_en": true,
+    "reason": "台帳で確認できる電話先の範囲は米国内の企業・店舗だが、3版とも地域を示さず一般的な店舗への電話として記述しており、対象範囲が曖昧になっている。世界中で利用できると明示しているわけではないため軽微とした。"
+   },
+   {
+    "text": "電話機能は改善を続け、準備が整い、適切な開示ができる場合にだけ公開する方針です。",
+    "severity": "major",
+    "kind": "scope",
+    "fact_id": "MUSE-HC-005",
+    "in_r0": false,
+    "in_r2": true,
+    "in_en": true,
+    "reason": "ロールバック対象の人間コンシェルジュ実験ではなく、一般の電話機能全体がまだ公開前であるかのように読める。台帳では電話機能はユーザー向けに段階展開されており、一般機能とロールバックされた人間コンシェルジュ実験を区別する必要がある。対象範囲・状態を取り違えるため重大とした。"
+   },
+   {
+    "text": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”",
+    "severity": "minor",
+    "kind": "subject",
+    "fact_id": "MUSE-HC-012",
+    "in_r0": false,
+    "in_r2": false,
+    "in_en": true,
+    "reason": "台帳で認めた主体はSuperintelligence Labs部門の副社長1名だが、英語版では複数のMeta幹部が認めたように読める。事実の方向は変わらないが主体数を過剰にしている。"
+   }
+  ],
+  "pending": [
+   {
+    "text": "いわば、台本を受け取ったAIの後ろから、人間キャストが登場する仕組みです。",
+    "reason": "ENにも対応する表現がある。人間への引き渡し自体は台帳にあるが、「AIが台本を受け取る」という具体的な処理は明記されていない。一方、「いわば」「In effect」という比喩的表現とも読めるため、事実誤認と文章上の比喩の境界として保留とした。"
+   }
+  ],
+  "notes": "台帳との照合に基づく単独判定。電話機能全体の公開状態に関するR2/ENの表現は、一般機能と人間コンシェルジュ実験の対象範囲を取り違えるため重大と判定した。"
+ },
+ "sec": 100.2
+}

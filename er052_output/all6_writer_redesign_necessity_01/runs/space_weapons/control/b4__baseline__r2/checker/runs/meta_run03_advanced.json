@@ -1,0 +1,3644 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Are they on the ground, or in orbit?",
+          "origin": null,
+          "related_fact_id": "F-003",
+          "dev": {
+            "claim_in_article": "Are they on the ground, or in orbit?",
+            "issue": "決定論検査で戻した: quote_not_in_ledger",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "F-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "quote_not_in_ledger"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "F-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Space Weapons: Ask Where They Are First\n\nWhen reading news about space weapons, you can get lost if you open the list of specifications right away. The first thing to ask is not what they can hit, but where they are. Are they on the ground, or in orbit? This difference in address divides the issue in a major way.\n\nOn September 14, 2026, the U.S. Secretary of the Air Force said that the United States had deployed space-control weapons in orbit to protect the joint force from the actions of hostile parties. An official U.S. government article records this as the first statement to acknowledge that the U.S. Space Force had deployed weapons in space.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F-003",
+            "claim_text": "Are they on the ground, or in orbit?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_scope",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+              "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+            ],
+            "batch_cost_jpy": 0.1833,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "The specific system name is not known.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "The specific system name is not known.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On September 14, 2026, the U.S. Secretary of the Air Force said that the United States had deployed space-control weapons in orbit to protect the joint force from the actions of hostile parties. An official U.S. government article records this as the first statement to acknowledge that the U.S. Space Force had deployed weapons in space.\n\nBut do not try to play detective here. The specific system name is not known. Its attack abilities and targets have not been confirmed. Just seeing the name “space-control weapons” is not enough to decide that they are anti-satellite weapons.\n\nRussia’s example shows us the difference in address. On November 15, 2021, Russia launched a direct-ascent anti-satellite missile from the ground and destroyed the satellite Kosmos 1408. The amount of trackable space debris exceeded 1,500 pieces. This was a test in which a weapon on the ground was sent into space to attack a satellite. Its address is different from permanently keeping the weapon itself in orbit.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "The specific system name is not known.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "notes_for_writer",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+              "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+            ],
+            "batch_cost_jpy": 0.1833,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "Its attack abilities and targets have not been confirmed.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "Its attack abilities and targets have not been confirmed.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On September 14, 2026, the U.S. Secretary of the Air Force said that the United States had deployed space-control weapons in orbit to protect the joint force from the actions of hostile parties. An official U.S. government article records this as the first statement to acknowledge that the U.S. Space Force had deployed weapons in space.\n\nBut do not try to play detective here. The specific system name is not known. Its attack abilities and targets have not been confirmed. Just seeing the name “space-control weapons” is not enough to decide that they are anti-satellite weapons.\n\nRussia’s example shows us the difference in address. On November 15, 2021, Russia launched a direct-ascent anti-satellite missile from the ground and destroyed the satellite Kosmos 1408. The amount of trackable space debris exceeded 1,500 pieces. This was a test in which a weapon on the ground was sent into space to attack a satellite. Its address is different from permanently keeping the weapon itself in orbit.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "Its attack abilities and targets have not been confirmed.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "notes_for_writer",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+              "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+            ],
+            "batch_cost_jpy": 0.1833,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "Russia’s example shows us the difference in address.",
+          "origin": null,
+          "related_fact_id": "F-003",
+          "dev": {
+            "claim_in_article": "Russia’s example shows us the difference in address.",
+            "issue": "決定論検査で戻した: quote_not_in_ledger",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "F-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "quote_not_in_ledger"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "F-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But do not try to play detective here. The specific system name is not known. Its attack abilities and targets have not been confirmed. Just seeing the name “space-control weapons” is not enough to decide that they are anti-satellite weapons.\n\nRussia’s example shows us the difference in address. On November 15, 2021, Russia launched a direct-ascent anti-satellite missile from the ground and destroyed the satellite Kosmos 1408. The amount of trackable space debris exceeded 1,500 pieces. This was a test in which a weapon on the ground was sent into space to attack a satellite. Its address is different from permanently keeping the weapon itself in orbit.\n\nSo, what is counterspace? This term does not refer only to weapons placed in space. In the U.S. Space Force’s framework, it includes orbits, communication links, and attacks and defenses carried out on the ground. It may also include actions such as using electromagnetic attacks to interfere with communications or cyberattacks to disrupt satellite networks. Even without destroying a satellite, an action can still be counterspace.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-003",
+            "claim_text": "Russia’s example shows us the difference in address.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "notes_for_writer",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+              "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+            ],
+            "batch_cost_jpy": 0.1833,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "So, what is counterspace?",
+          "origin": null,
+          "related_fact_id": "F-011",
+          "dev": {
+            "claim_in_article": "So, what is counterspace?",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "F-011",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "F-011"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Russia’s example shows us the difference in address. On November 15, 2021, Russia launched a direct-ascent anti-satellite missile from the ground and destroyed the satellite Kosmos 1408. The amount of trackable space debris exceeded 1,500 pieces. This was a test in which a weapon on the ground was sent into space to attack a satellite. Its address is different from permanently keeping the weapon itself in orbit.\n\nSo, what is counterspace? This term does not refer only to weapons placed in space. In the U.S. Space Force’s framework, it includes orbits, communication links, and attacks and defenses carried out on the ground. It may also include actions such as using electromagnetic attacks to interfere with communications or cyberattacks to disrupt satellite networks. Even without destroying a satellite, an action can still be counterspace.\n\nTools used for defense should not all be put on the same shelf. Warning about threats, making satellites harder to damage, spreading out their functions, and keeping backups are all examples. These kinds of passive defense are different from attack weapons in orbit. Sensor satellites that warn of and track missiles are also not the same as attack weapons. However, active defense can include weapons, too, so names alone cannot sort everything perfectly.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-011",
+            "claim_text": "So, what is counterspace?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+              "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+            ],
+            "batch_cost_jpy": 0.1833,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "This term does not refer only to weapons placed in space.",
+          "origin": null,
+          "related_fact_id": "F-011",
+          "dev": {
+            "claim_in_article": "This term does not refer only to weapons placed in space.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.2); severity is decided by Stage 2",
+            "related_fact_id": "F-011",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.2"
+              ],
+              "related_fact_ids": [
+                "F-011"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Russia’s example shows us the difference in address. On November 15, 2021, Russia launched a direct-ascent anti-satellite missile from the ground and destroyed the satellite Kosmos 1408. The amount of trackable space debris exceeded 1,500 pieces. This was a test in which a weapon on the ground was sent into space to attack a satellite. Its address is different from permanently keeping the weapon itself in orbit.\n\nSo, what is counterspace? This term does not refer only to weapons placed in space. In the U.S. Space Force’s framework, it includes orbits, communication links, and attacks and defenses carried out on the ground. It may also include actions such as using electromagnetic attacks to interfere with communications or cyberattacks to disrupt satellite networks. Even without destroying a satellite, an action can still be counterspace.\n\nTools used for defense should not all be put on the same shelf. Warning about threats, making satellites harder to damage, spreading out their functions, and keeping backups are all examples. These kinds of passive defense are different from attack weapons in orbit. Sensor satellites that warn of and track missiles are also not the same as attack weapons. However, active defense can include weapons, too, so names alone cannot sort everything perfectly.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-011",
+            "claim_text": "This term does not refer only to weapons placed in space.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+              "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+            ],
+            "batch_cost_jpy": 0.1833,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "It may also include actions such as using electromagnetic attacks to interfere with communications or cyberattacks to disrupt satellite networks.",
+          "origin": null,
+          "related_fact_id": "F-012",
+          "dev": {
+            "claim_in_article": "It may also include actions such as using electromagnetic attacks to interfere with communications or cyberattacks to disrupt satellite networks.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.4); severity is decided by Stage 2",
+            "related_fact_id": "F-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.4"
+              ],
+              "related_fact_ids": [
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Russia’s example shows us the difference in address. On November 15, 2021, Russia launched a direct-ascent anti-satellite missile from the ground and destroyed the satellite Kosmos 1408. The amount of trackable space debris exceeded 1,500 pieces. This was a test in which a weapon on the ground was sent into space to attack a satellite. Its address is different from permanently keeping the weapon itself in orbit.\n\nSo, what is counterspace? This term does not refer only to weapons placed in space. In the U.S. Space Force’s framework, it includes orbits, communication links, and attacks and defenses carried out on the ground. It may also include actions such as using electromagnetic attacks to interfere with communications or cyberattacks to disrupt satellite networks. Even without destroying a satellite, an action can still be counterspace.\n\nTools used for defense should not all be put on the same shelf. Warning about threats, making satellites harder to damage, spreading out their functions, and keeping backups are all examples. These kinds of passive defense are different from attack weapons in orbit. Sensor satellites that warn of and track missiles are also not the same as attack weapons. However, active defense can include weapons, too, so names alone cannot sort everything perfectly.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-012",
+            "claim_text": "It may also include actions such as using electromagnetic attacks to interfere with communications or cyberattacks to disrupt satellite networks.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+              "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+            ],
+            "batch_cost_jpy": 0.1833,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "Sensor satellites that warn of and track missiles are also not the same as attack weapons.",
+          "origin": null,
+          "related_fact_id": "F-014",
+          "dev": {
+            "claim_in_article": "Sensor satellites that warn of and track missiles are also not the same as attack weapons.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.4); severity is decided by Stage 2",
+            "related_fact_id": "F-014",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.4"
+              ],
+              "related_fact_ids": [
+                "F-014"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So, what is counterspace? This term does not refer only to weapons placed in space. In the U.S. Space Force’s framework, it includes orbits, communication links, and attacks and defenses carried out on the ground. It may also include actions such as using electromagnetic attacks to interfere with communications or cyberattacks to disrupt satellite networks. Even without destroying a satellite, an action can still be counterspace.\n\nTools used for defense should not all be put on the same shelf. Warning about threats, making satellites harder to damage, spreading out their functions, and keeping backups are all examples. These kinds of passive defense are different from attack weapons in orbit. Sensor satellites that warn of and track missiles are also not the same as attack weapons. However, active defense can include weapons, too, so names alone cannot sort everything perfectly.\n\nFinally, there is the treaty. The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, or placing them on celestial bodies such as the Moon. It also does not permit military bases or weapons tests on celestial bodies. However, it cannot be read as a treaty that bans putting all conventional weapons into orbit.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-014",
+            "claim_text": "Sensor satellites that warn of and track missiles are also not the same as attack weapons.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "notes_for_writer",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+              "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+            ],
+            "batch_cost_jpy": 0.1833,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "It also does not permit military bases or weapons tests on celestial bodies.",
+          "origin": null,
+          "related_fact_id": "F-016",
+          "dev": {
+            "claim_in_article": "It also does not permit military bases or weapons tests on celestial bodies.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.3); severity is decided by Stage 2",
+            "related_fact_id": "F-016",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S7.3"
+              ],
+              "related_fact_ids": [
+                "F-016"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Tools used for defense should not all be put on the same shelf. Warning about threats, making satellites harder to damage, spreading out their functions, and keeping backups are all examples. These kinds of passive defense are different from attack weapons in orbit. Sensor satellites that warn of and track missiles are also not the same as attack weapons. However, active defense can include weapons, too, so names alone cannot sort everything perfectly.\n\nFinally, there is the treaty. The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, or placing them on celestial bodies such as the Moon. It also does not permit military bases or weapons tests on celestial bodies. However, it cannot be read as a treaty that bans putting all conventional weapons into orbit.\n\nNow that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone. First look at the address, then the role, and finally check the legal shelf. Space security is less a weapons catalog than a somewhat complicated address book.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-016",
+            "claim_text": "It also does not permit military bases or weapons tests on celestial bodies.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+              "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+            ],
+            "batch_cost_jpy": 0.1833,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "However, it cannot be read as a treaty that bans putting all conventional weapons into orbit.",
+          "origin": null,
+          "related_fact_id": "F-016",
+          "dev": {
+            "claim_in_article": "However, it cannot be read as a treaty that bans putting all conventional weapons into orbit.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.4); severity is decided by Stage 2",
+            "related_fact_id": "F-016",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S7.4"
+              ],
+              "related_fact_ids": [
+                "F-016"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Tools used for defense should not all be put on the same shelf. Warning about threats, making satellites harder to damage, spreading out their functions, and keeping backups are all examples. These kinds of passive defense are different from attack weapons in orbit. Sensor satellites that warn of and track missiles are also not the same as attack weapons. However, active defense can include weapons, too, so names alone cannot sort everything perfectly.\n\nFinally, there is the treaty. The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, or placing them on celestial bodies such as the Moon. It also does not permit military bases or weapons tests on celestial bodies. However, it cannot be read as a treaty that bans putting all conventional weapons into orbit.\n\nNow that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone. First look at the address, then the role, and finally check the legal shelf. Space security is less a weapons catalog than a somewhat complicated address book.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-016",
+            "claim_text": "However, it cannot be read as a treaty that bans putting all conventional weapons into orbit.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "notes_for_writer",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+              "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+            ],
+            "batch_cost_jpy": 0.1833,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "Now that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone.",
+          "origin": null,
+          "related_fact_id": "F-015",
+          "dev": {
+            "claim_in_article": "Now that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone.",
+            "issue": "衛星通信・測位が日常生活の一部になったという社会的範囲の主張、および仕様だけではニュースを理解できないという主張はLedgerに直接記載されていない。 / F-015は米宇宙軍の任務・優先事項や衛星を軍事・社会インフラとして運用・保護する活動を述べているが、記事は衛星通信・測位が日常生活の一部になったと一般化している。この日常生活への普及はLedgerで確認されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S8.1); severity is decided by Stage 2",
+            "related_fact_id": "F-015",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S8.1"
+              ],
+              "related_fact_ids": [
+                "F-015"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Finally, there is the treaty. The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, or placing them on celestial bodies such as the Moon. It also does not permit military bases or weapons tests on celestial bodies. However, it cannot be read as a treaty that bans putting all conventional weapons into orbit.\n\nNow that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone. First look at the address, then the role, and finally check the legal shelf. Space security is less a weapons catalog than a somewhat complicated address book.\n\n## In one line\nTo understand space weapons, first ask whether they are on the ground or in orbit, not what they can do.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-015",
+            "claim_text": "Now that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+              "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+            ],
+            "batch_cost_jpy": 0.1833,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, or placing them on celestial bodies such as the Moon.",
+          "origin": null,
+          "related_fact_id": "F-016",
+          "dev": {
+            "claim_in_article": "The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, or placing them on celestial bodies such as the Moon.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.3); severity is decided by Stage 2",
+            "related_fact_id": "F-016",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S7.3"
+              ],
+              "related_fact_ids": [
+                "F-016"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "It also does not permit military bases or weapons tests on celestial bodies."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Tools used for defense should not all be put on the same shelf. Warning about threats, making satellites harder to damage, spreading out their functions, and keeping backups are all examples. These kinds of passive defense are different from attack weapons in orbit. Sensor satellites that warn of and track missiles are also not the same as attack weapons. However, active defense can include weapons, too, so names alone cannot sort everything perfectly.\n\nFinally, there is the treaty. The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, or placing them on celestial bodies such as the Moon. It also does not permit military bases or weapons tests on celestial bodies. However, it cannot be read as a treaty that bans putting all conventional weapons into orbit.\n\nNow that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone. First look at the address, then the role, and finally check the legal shelf. Space security is less a weapons catalog than a somewhat complicated address book.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-016",
+            "claim_text": "The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, or placing them on celestial bodies such as the Moon.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+              "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+            ],
+            "batch_cost_jpy": 0.1833,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "However, active defense can include weapons, too, so names alone cannot sort everything perfectly.",
+          "origin": null,
+          "related_fact_id": "F-016",
+          "dev": {
+            "claim_in_article": "However, active defense can include weapons, too, so names alone cannot sort everything perfectly.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.4); severity is decided by Stage 2",
+            "related_fact_id": "F-016",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S7.4"
+              ],
+              "related_fact_ids": [
+                "F-016"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "However, it cannot be read as a treaty that bans putting all conventional weapons into orbit."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So, what is counterspace? This term does not refer only to weapons placed in space. In the U.S. Space Force’s framework, it includes orbits, communication links, and attacks and defenses carried out on the ground. It may also include actions such as using electromagnetic attacks to interfere with communications or cyberattacks to disrupt satellite networks. Even without destroying a satellite, an action can still be counterspace.\n\nTools used for defense should not all be put on the same shelf. Warning about threats, making satellites harder to damage, spreading out their functions, and keeping backups are all examples. These kinds of passive defense are different from attack weapons in orbit. Sensor satellites that warn of and track missiles are also not the same as attack weapons. However, active defense can include weapons, too, so names alone cannot sort everything perfectly.\n\nFinally, there is the treaty. The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, or placing them on celestial bodies such as the Moon. It also does not permit military bases or weapons tests on celestial bodies. However, it cannot be read as a treaty that bans putting all conventional weapons into orbit.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-016",
+            "claim_text": "However, active defense can include weapons, too, so names alone cannot sort everything perfectly.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+              "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+            ],
+            "batch_cost_jpy": 0.1833,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "When reading news about space weapons, you can get lost if you open the list of specifications right away.",
+          "origin": null,
+          "related_fact_id": "F-015",
+          "dev": {
+            "claim_in_article": "When reading news about space weapons, you can get lost if you open the list of specifications right away.",
+            "issue": "衛星通信・測位が日常生活の一部になったという社会的範囲の主張、および仕様だけではニュースを理解できないという主張はLedgerに直接記載されていない。 / F-015は米宇宙軍の任務・優先事項や衛星を軍事・社会インフラとして運用・保護する活動を述べているが、記事は衛星通信・測位が日常生活の一部になったと一般化している。この日常生活への普及はLedgerで確認されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S8.1); severity is decided by Stage 2",
+            "related_fact_id": "F-015",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S8.1"
+              ],
+              "related_fact_ids": [
+                "F-015"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Now that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Space Weapons: Ask Where They Are First\n\nWhen reading news about space weapons, you can get lost if you open the list of specifications right away. The first thing to ask is not what they can hit, but where they are. Are they on the ground, or in orbit? This difference in address divides the issue in a major way.\n\nOn September 14, 2026, the U.S. Secretary of the Air Force said that the United States had deployed space-control weapons in orbit to protect the joint force from the actions of hostile parties. An official U.S. government article records this as the first statement to acknowledge that the U.S. Space Force had deployed weapons in space.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F-015",
+            "claim_text": "When reading news about space weapons, you can get lost if you open the list of specifications right away.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+              "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+            ],
+            "batch_cost_jpy": 0.1833,
+            "batch_n_claims": 14
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 14,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F-003",
+          "claim_text": "Are they on the ground, or in orbit?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_scope",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+            "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+          ],
+          "batch_cost_jpy": 0.1833,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "The specific system name is not known.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "notes_for_writer",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+            "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+          ],
+          "batch_cost_jpy": 0.1833,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "Its attack abilities and targets have not been confirmed.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "notes_for_writer",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+            "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+          ],
+          "batch_cost_jpy": 0.1833,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-003",
+          "claim_text": "Russia’s example shows us the difference in address.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "notes_for_writer",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+            "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+          ],
+          "batch_cost_jpy": 0.1833,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-011",
+          "claim_text": "So, what is counterspace?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+            "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+          ],
+          "batch_cost_jpy": 0.1833,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-011",
+          "claim_text": "This term does not refer only to weapons placed in space.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+            "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+          ],
+          "batch_cost_jpy": 0.1833,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-012",
+          "claim_text": "It may also include actions such as using electromagnetic attacks to interfere with communications or cyberattacks to disrupt satellite networks.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+            "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+          ],
+          "batch_cost_jpy": 0.1833,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-014",
+          "claim_text": "Sensor satellites that warn of and track missiles are also not the same as attack weapons.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "notes_for_writer",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+            "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+          ],
+          "batch_cost_jpy": 0.1833,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-016",
+          "claim_text": "It also does not permit military bases or weapons tests on celestial bodies.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+            "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+          ],
+          "batch_cost_jpy": 0.1833,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-016",
+          "claim_text": "However, it cannot be read as a treaty that bans putting all conventional weapons into orbit.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "notes_for_writer",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+            "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+          ],
+          "batch_cost_jpy": 0.1833,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-015",
+          "claim_text": "Now that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+            "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+          ],
+          "batch_cost_jpy": 0.1833,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-016",
+          "claim_text": "The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, or placing them on celestial bodies such as the Moon.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+            "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+          ],
+          "batch_cost_jpy": 0.1833,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-016",
+          "claim_text": "However, active defense can include weapons, too, so names alone cannot sort everything perfectly.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+            "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+          ],
+          "batch_cost_jpy": 0.1833,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F-015",
+          "claim_text": "When reading news about space weapons, you can get lost if you open the list of specifications right away.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d",
+            "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+          ],
+          "batch_cost_jpy": 0.1833,
+          "batch_n_claims": 14
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6457,
+      "usage": {
+        "input_tokens": 7816,
+        "cached_input_tokens": 0,
+        "output_tokens": 6669,
+        "reasoning_tokens": 1702
+      },
+      "elapsed_seconds": 50.98,
+      "prompt_sha256": "457b4ecedbc63df2570d371be6e26803ce87527846399ca41ff44cf36fae7e20",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5876,
+      "usage": {
+        "input_tokens": 7428,
+        "cached_input_tokens": 0,
+        "output_tokens": 6005,
+        "reasoning_tokens": 3691
+      },
+      "elapsed_seconds": 53.747,
+      "prompt_sha256": "3fef1a45ddb9464c88c2d82ba9658005cede65eca8ea1e9196479a0f8362eb90",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.3548,
+      "usage": {
+        "input_tokens": 7804,
+        "cached_input_tokens": 0,
+        "output_tokens": 2963,
+        "reasoning_tokens": 1973
+      },
+      "elapsed_seconds": 25.497,
+      "prompt_sha256": "5d0165f1b9be9b1e6096e69bb905198cb024dc324a0ad402ec30db99b16a3424",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.3206,
+      "usage": {
+        "input_tokens": 14330,
+        "cached_input_tokens": 0,
+        "output_tokens": 1221,
+        "reasoning_tokens": 884
+      },
+      "elapsed_seconds": 11.656,
+      "prompt_sha256": "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1539,
+      "usage": {
+        "input_tokens": 8456,
+        "cached_input_tokens": 0,
+        "output_tokens": 271,
+        "reasoning_tokens": 194
+      },
+      "elapsed_seconds": 4.93,
+      "prompt_sha256": "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1389,
+      "usage": {
+        "input_tokens": 14330,
+        "cached_input_tokens": 14327,
+        "output_tokens": 1484,
+        "reasoning_tokens": 1131
+      },
+      "elapsed_seconds": 12.641,
+      "prompt_sha256": "0ba1ffbeef723155df9bd9d6d832daed231219b4619b5a3542f8a78b3a21a74d"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0444,
+      "usage": {
+        "input_tokens": 8456,
+        "cached_input_tokens": 8453,
+        "output_tokens": 397,
+        "reasoning_tokens": 319
+      },
+      "elapsed_seconds": 4.547,
+      "prompt_sha256": "541574e50747cce7c3cf8096e4c8d64a0ac72912da9f0ad4a49ef2449bd4b3ea"
+    }
+  ],
+  "total_cost_jpy": 2.2459,
+  "total_calls": 7,
+  "elapsed_seconds": 164.048,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Are they on the ground, or in orbit?",
+        "related_fact_id": "F-003",
+        "origin": null,
+        "issue": "決定論検査で戻した: quote_not_in_ledger",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S1.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The specific system name is not known.",
+        "related_fact_id": "F-001",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Its attack abilities and targets have not been confirmed.",
+        "related_fact_id": "F-001",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Russia’s example shows us the difference in address.",
+        "related_fact_id": "F-003",
+        "origin": null,
+        "issue": "決定論検査で戻した: quote_not_in_ledger",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S4.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "So, what is counterspace?",
+        "related_fact_id": "F-011",
+        "origin": null,
+        "issue": "決定論検査で戻した: causal_not_in_fact",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "This term does not refer only to weapons placed in space.",
+        "related_fact_id": "F-011",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "It may also include actions such as using electromagnetic attacks to interfere with communications or cyberattacks to disrupt satellite networks.",
+        "related_fact_id": "F-012",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Sensor satellites that warn of and track missiles are also not the same as attack weapons.",
+        "related_fact_id": "F-014",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "It also does not permit military bases or weapons tests on celestial bodies.",
+        "related_fact_id": "F-016",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "However, it cannot be read as a treaty that bans putting all conventional weapons into orbit.",
+        "related_fact_id": "F-016",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Now that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone.",
+        "related_fact_id": "F-015",
+        "origin": null,
+        "issue": "衛星通信・測位が日常生活の一部になったという社会的範囲の主張、および仕様だけではニュースを理解できないという主張はLedgerに直接記載されていない。 / F-015は米宇宙軍の任務・優先事項や衛星を軍事・社会インフラとして運用・保護する活動を述べているが、記事は衛星通信・測位が日常生活の一部になったと一般化している。この日常生活への普及はLedgerで確認されていない。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S8.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 24,
+      "n_model_entries": 14,
+      "n_targets": 13,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 12,
+      "n_excluded_entries": 12,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.3548,
+          "usage": {
+            "input_tokens": 7804,
+            "cached_input_tokens": 0,
+            "output_tokens": 2963,
+            "reasoning_tokens": 1973
+          },
+          "elapsed_seconds": 25.497,
+          "prompt_sha256": "5d0165f1b9be9b1e6096e69bb905198cb024dc324a0ad402ec30db99b16a3424",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.3548,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# Space Weapons: Ask Where They Are First",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "見出しの比喩的表現で、具体的な事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.1",
+          "claim": "When reading news about space weapons, you can get lost if you open the list of specifications right away.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "読者への一般的な注意喚起で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S1.2",
+          "claim": "The first thing to ask is not what they can hit, but where they are.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "最初に何を確認するかという読者向けの助言である。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S1.4",
+          "claim": "This difference in address divides the issue in a major way.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「住所」の比喩による記事の論旨で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S3.1",
+          "claim": "But do not try to play detective here.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "読者への比喩的な呼びかけである。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C6",
+          "key": "S3.4",
+          "claim": "Just seeing the name “space-control weapons” is not enough to decide that they are anti-satellite weapons.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "F-001の注記どおり、名称だけでは具体的なシステムや攻撃能力を特定できないという限定に合致する。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C7",
+          "key": "S6.1",
+          "claim": "Tools used for defense should not all be put on the same shelf.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "F-013は防御行動の分類を示し、防御手段を一括りにしないという比喩的要約に合致する。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C8",
+          "key": "S6.5",
+          "claim": "However, active defense can include weapons, too, so names alone cannot sort everything perfectly.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "F-013はactive space defenseに兵器が含まれ得るとし、名称だけでは分類しきれないという説明はその区別の要約である。",
+          "fact_tags": [
+            "causality",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C9",
+          "key": "S8.1",
+          "claim": "Now that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "衛星通信・測位が日常生活の一部になったという具体的な社会利用の主張はLedgerに裏付けがない。",
+          "fact_tags": [
+            "causality",
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C10",
+          "key": "S8.2",
+          "claim": "First look at the address, then the role, and finally check the legal shelf.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "住所・役割・法的区分を確認するよう促す修辞的な助言である。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C11",
+          "key": "S8.3",
+          "claim": "Space security is less a weapons catalog than a somewhat complicated address book.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "兵器カタログと住所録を対比した比喩的な締めである。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C12",
+          "key": "L1",
+          "claim": "To understand space weapons, first ask whether they are on the ground or in orbit, not what they can do.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "地上か軌道上かを先に考えるよう促す一般的な助言である。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C13",
+          "key": "R:S4.5+S5.1",
+          "claim": "So, what is counterspace?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "説明を始めるための読者への問いかけである。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "5d0165f1b9be9b1e6096e69bb905198cb024dc324a0ad402ec30db99b16a3424"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 44,
+    "n_judged_units": 35,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S4.5+S5.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 22,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S4.5+S5.1",
+          "S1.1",
+          "S1.2",
+          "S1.3",
+          "S1.4",
+          "S3.1",
+          "S3.2",
+          "S3.3",
+          "S3.4",
+          "S4.1",
+          "S5.1",
+          "S5.2",
+          "S5.4",
+          "S6.1",
+          "S6.4",
+          "S6.5",
+          "S7.3",
+          "S7.4",
+          "S8.1",
+          "S8.2",
+          "S8.3",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED->CANDIDATE(quote_not_in_ledger)",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.4": "CANDIDATE",
+          "S4.1": "SUPPORTED->CANDIDATE(quote_not_in_ledger)",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S4.5": "SUPPORTED",
+          "S5.1": "SUPPORTED->CANDIDATE(causal_not_in_fact)",
+          "S5.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.5": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S6.5": "CANDIDATE",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S7.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S8.1": "CANDIDATE",
+          "S8.2": "CANDIDATE",
+          "S8.3": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S4.5+S5.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6457,
+            "usage": {
+              "input_tokens": 7816,
+              "cached_input_tokens": 0,
+              "output_tokens": 6669,
+              "reasoning_tokens": 1702
+            },
+            "elapsed_seconds": 50.98,
+            "prompt_sha256": "457b4ecedbc63df2570d371be6e26803ce87527846399ca41ff44cf36fae7e20",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "CANDIDATE",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S4.5": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S5.5": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "S6.5": "CANDIDATE",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "S8.1": "CANDIDATE",
+          "S8.2": "CANDIDATE",
+          "S8.3": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S4.5+S5.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# Space Weapons: Ask Where They Are First",
+            "span": [
+              0,
+              41
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは地上・軌道の区別を記載するが、最初に所在を問うべきという見出しの指示は直接述べていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "Space Weapons: Ask Where They Are First"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "When reading news about space weapons, you can get lost if you open the list of specifications right away.",
+            "span": [
+              43,
+              149
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "仕様一覧を先に開くと迷うという読者の経験・効果はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "When reading news about space weapons, you can get lost if you open the list of specifications right away."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "The first thing to ask is not what they can hit, but where they are.",
+            "span": [
+              150,
+              218
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "能力より所在を最初に問うべきという助言はLedgerに直接記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "The first thing to ask is not what they can hit, but where they are."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "Are they on the ground, or in orbit?",
+            "span": [
+              219,
+              255
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "quote_not_in_ledger"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: quote_not_in_ledger"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S1.4",
+            "unit_ids": [
+              "S1.4"
+            ],
+            "claim_text": "This difference in address divides the issue in a major way.",
+            "span": [
+              256,
+              316
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "所在の違いが問題を大きく二分するという評価はLedgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "This difference in address divides the issue in a major way."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "But do not try to play detective here.",
+            "span": [
+              658,
+              696
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "読者に推理をしないよう求める指示はLedgerの事実ではない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": "But do not try to play detective here."
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "The specific system name is not known.",
+            "span": [
+              697,
+              735
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "Its attack abilities and targets have not been confirmed.",
+            "span": [
+              736,
+              793
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.4",
+            "unit_ids": [
+              "S3.4"
+            ],
+            "claim_text": "Just seeing the name “space-control weapons” is not enough to decide that they are anti-satellite weapons.",
+            "span": [
+              794,
+              900
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "名称だけでは対衛星兵器と判定できないという結論は、Ledgerの「推測で補わない」という注意から一歩進んだ推論である。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": "Just seeing the name “space-control weapons” is not enough to decide that they are anti-satellite weapons."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "Russia’s example shows us the difference in address.",
+            "span": [
+              902,
+              954
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "quote_not_in_ledger"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: quote_not_in_ledger"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "So, what is counterspace?",
+            "span": [
+              1319,
+              1344
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "causal_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: causal_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-011"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "This term does not refer only to weapons placed in space.",
+            "span": [
+              1345,
+              1402
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-011"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "It may also include actions such as using electromagnetic attacks to interfere with communications or cyberattacks to disrupt satellite networks.",
+            "span": [
+              1533,
+              1678
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "Tools used for defense should not all be put on the same shelf.",
+            "span": [
+              1754,
+              1817
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "防御手段を同じ分類にまとめるべきでないという助言・評価はLedgerに直接記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-013"
+            ],
+            "model_claim": "Tools used for defense should not all be put on the same shelf."
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "Sensor satellites that warn of and track missiles are also not the same as attack weapons.",
+            "span": [
+              2021,
+              2111
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-014"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.5",
+            "unit_ids": [
+              "S6.5"
+            ],
+            "claim_text": "However, active defense can include weapons, too, so names alone cannot sort everything perfectly.",
+            "span": [
+              2112,
+              2210
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "active defenseに兵器が含まれ得る点は支えられるが、名称だけでは完全に分類できないという追加の一般化はLedgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-013"
+            ],
+            "model_claim": "However, active defense can include weapons, too, so names alone cannot sort everything perfectly."
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "It also does not permit military bases or weapons tests on celestial bodies.",
+            "span": [
+              2411,
+              2487
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-016"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S7.4",
+            "unit_ids": [
+              "S7.4"
+            ],
+            "claim_text": "However, it cannot be read as a treaty that bans putting all conventional weapons into orbit.",
+            "span": [
+              2488,
+              2581
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-016"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S8.1",
+            "unit_ids": [
+              "S8.1"
+            ],
+            "claim_text": "Now that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone.",
+            "span": [
+              2583,
+              2731
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "衛星通信・測位が日常生活の一部になったという社会的範囲の主張、および仕様だけではニュースを理解できないという主張はLedgerに直接記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-015"
+            ],
+            "model_claim": "Now that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone."
+          },
+          {
+            "unit_id": "S8.2",
+            "unit_ids": [
+              "S8.2"
+            ],
+            "claim_text": "First look at the address, then the role, and finally check the legal shelf.",
+            "span": [
+              2732,
+              2808
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "所在、役割、法的枠組みの順に確認すべきという手順の助言はLedgerに直接記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-011"
+            ],
+            "model_claim": "First look at the address, then the role, and finally check the legal shelf."
+          },
+          {
+            "unit_id": "S8.3",
+            "unit_ids": [
+              "S8.3"
+            ],
+            "claim_text": "Space security is less a weapons catalog than a somewhat complicated address book.",
+            "span": [
+              2809,
+              2891
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "宇宙安全保障を兵器カタログより複雑な住所録と捉える評価・比喩はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-011"
+            ],
+            "model_claim": "Space security is less a weapons catalog than a somewhat complicated address book."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "To understand space weapons, first ask whether they are on the ground or in orbit, not what they can do.",
+            "span": [
+              2908,
+              3012
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "地上か軌道かを能力より先に問うべきという要約上の助言は、Ledgerが直接述べる事実ではない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "To understand space weapons, first ask whether they are on the ground or in orbit, not what they can do."
+          },
+          {
+            "unit_id": "R:S4.5+S5.1",
+            "unit_ids": [
+              "R:S4.5+S5.1"
+            ],
+            "claim_text": "So, what is counterspace?",
+            "span": [
+              1319,
+              1344
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「So」が、地上発射試験と軌道上への恒久配備の区別からcounterspaceの問いへ進む因果・論理関係を付与しているが、その結び付けはLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "Its address is different from permanently keeping the weapon itself in orbit. So, what is counterspace?"
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S8.1"
+        ],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S4.4": "MATCH",
+          "S4.5": "MATCH",
+          "R:S4.5+S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S5.4": "MATCH",
+          "S5.5": "MATCH",
+          "S6.2": "MATCH",
+          "S6.3": "MATCH",
+          "S6.5": "MATCH",
+          "S6.4": "MATCH",
+          "S8.1": "DEVIATION",
+          "S7.2": "MATCH",
+          "S7.3": "MATCH",
+          "S7.4": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S1.3": "UNMENTIONED",
+          "S1.4": "UNMENTIONED",
+          "S3.1": "UNMENTIONED",
+          "S4.1": "UNMENTIONED",
+          "S5.1": "UNMENTIONED",
+          "S6.1": "UNMENTIONED",
+          "S7.1": "UNMENTIONED",
+          "S8.2": "UNMENTIONED",
+          "S8.3": "UNMENTIONED",
+          "L1": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.5876,
+            "usage": {
+              "input_tokens": 7428,
+              "cached_input_tokens": 0,
+              "output_tokens": 6005,
+              "reasoning_tokens": 3691
+            },
+            "elapsed_seconds": 53.747,
+            "prompt_sha256": "3fef1a45ddb9464c88c2d82ba9658005cede65eca8ea1e9196479a0f8362eb90",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S8.1",
+            "unit_ids": [
+              "S8.1"
+            ],
+            "claim_text": "Now that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone.",
+            "span": [
+              2583,
+              2731
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "F-015は米宇宙軍の任務・優先事項や衛星を軍事・社会インフラとして運用・保護する活動を述べているが、記事は衛星通信・測位が日常生活の一部になったと一般化している。この日常生活への普及はLedgerで確認されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-015"
+            ],
+            "model_claim": "Now that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S8.1"
+      ],
+      "r3_only": [
+        "L1",
+        "R:S4.5+S5.1",
+        "S1.1",
+        "S1.2",
+        "S1.3",
+        "S1.4",
+        "S3.1",
+        "S3.2",
+        "S3.3",
+        "S3.4",
+        "S4.1",
+        "S5.1",
+        "S5.2",
+        "S5.4",
+        "S6.1",
+        "S6.4",
+        "S6.5",
+        "S7.3",
+        "S7.4",
+        "S8.2",
+        "S8.3",
+        "T"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 10
+    },
+    "union_candidates": [
+      {
+        "claim_text": "Are they on the ground, or in orbit?",
+        "span": [
+          219,
+          255
+        ],
+        "unit_ids": [
+          "S1.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "quote_not_in_ledger"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: quote_not_in_ledger"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The specific system name is not known.",
+        "span": [
+          697,
+          735
+        ],
+        "unit_ids": [
+          "S3.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-001"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Its attack abilities and targets have not been confirmed.",
+        "span": [
+          736,
+          793
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-001"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Russia’s example shows us the difference in address.",
+        "span": [
+          902,
+          954
+        ],
+        "unit_ids": [
+          "S4.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "quote_not_in_ledger"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: quote_not_in_ledger"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "So, what is counterspace?",
+        "span": [
+          1319,
+          1344
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "causal_not_in_fact"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: causal_not_in_fact"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-011"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "This term does not refer only to weapons placed in space.",
+        "span": [
+          1345,
+          1402
+        ],
+        "unit_ids": [
+          "S5.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-011"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "It may also include actions such as using electromagnetic attacks to interfere with communications or cyberattacks to disrupt satellite networks.",
+        "span": [
+          1533,
+          1678
+        ],
+        "unit_ids": [
+          "S5.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-012"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Sensor satellites that warn of and track missiles are also not the same as attack weapons.",
+        "span": [
+          2021,
+          2111
+        ],
+        "unit_ids": [
+          "S6.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-014"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "It also does not permit military bases or weapons tests on celestial bodies.",
+        "span": [
+          2411,
+          2487
+        ],
+        "unit_ids": [
+          "S7.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-016"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "However, it cannot be read as a treaty that bans putting all conventional weapons into orbit.",
+        "span": [
+          2488,
+          2581
+        ],
+        "unit_ids": [
+          "S7.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-016"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Now that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone.",
+        "span": [
+          2583,
+          2731
+        ],
+        "unit_ids": [
+          "S8.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "衛星通信・測位が日常生活の一部になったという社会的範囲の主張、および仕様だけではニュースを理解できないという主張はLedgerに直接記載されていない。",
+          "F-015は米宇宙軍の任務・優先事項や衛星を軍事・社会インフラとして運用・保護する活動を述べているが、記事は衛星通信・測位が日常生活の一部になったと一般化している。この日常生活への普及はLedgerで確認されていない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-015"
+        ],
+        "model_claims": [
+          "Now that satellite communications and positioning have become part of daily life, space weapons news cannot be understood from specifications alone."
+        ]
+      }
+    ],
+    "n_union_candidates": 11,
+    "n_model_candidates": 1,
+    "n_deterministic_only_candidates": 10,
+    "total_cost_jpy": 1.2333,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 14,
+    "n_targets": 13,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 12,
+    "n_excluded_entries": 12,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.3548,
+    "effort": "medium",
+    "prompt_sha256": "5d0165f1b9be9b1e6096e69bb905198cb024dc324a0ad402ec30db99b16a3424"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 3
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 2.2459,
+  "provenance": {
+    "switch_dump_sha256": "66d18a3a1b28679684d7dcbe6e7af161a4da4223da7415a7ac50e7450de777c1",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-08T09:16:42",
+    "ledger_sha256": "2ebdce8660fbdc084c392b8e603cf7030cc221265ce2353769ccf950849eb0ec",
+    "article_sha256": "9d74378a44dd099240dad340b2a45645d7e991c5c3138552df9338f054e32c6d",
+    "source_article_sha256": "c0916e485fe346332f2001520de1eed196cce8ce9f5ddd416e43c121c396a795",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/all6_writer_redesign_necessity_01/runs/space_weapons/control/b4__baseline__r2/checker",
+      "ledger_path": "er052_output/all6_writer_redesign_necessity_01/runs/space_weapons/control/b4__baseline__r2/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/all6_writer_redesign_necessity_01/runs/space_weapons/control/b4__baseline__r2/b1b/article.md",
+      "source_path": "er052_output/all6_writer_redesign_necessity_01/runs/space_weapons/control/b4__baseline__r2/ja_writer/revision2.md",
+      "budget_jpy": 10.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

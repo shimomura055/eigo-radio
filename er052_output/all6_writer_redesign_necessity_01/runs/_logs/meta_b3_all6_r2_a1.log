@@ -1,0 +1,23 @@
+[ModelRoutingContract][OVERRIDE] process 'B1_WRITER': Approved Model 'gpt-5.6-luna' の代わりに 'gpt-6-luna' を明示override(理由: ALL-6-LUNA-WRITER-REDESIGN-NECESSITY-TRIAL-01)で使用します。
+[ModelRoutingContract][OVERRIDE] process 'WRITER_FACT_CHECK': Approved Model 'gpt-5.6-luna' の代わりに 'gpt-6-luna' を明示override(理由: ALL-6-LUNA-WRITER-REDESIGN-NECESSITY-TRIAL-01)で使用します。
+[ModelRoutingContract][OVERRIDE] process 'A2_WRITER': Approved Model 'gpt-5.6-luna' の代わりに 'gpt-6-luna' を明示override(理由: ALL-6-LUNA-WRITER-REDESIGN-NECESSITY-TRIAL-01)で使用します。
+[B3-RUNNER][research_ledger] 既存Ledgerを再利用(既生成済み): er052_output/all6_writer_redesign_necessity_01/runs/meta/control/b3__all6__r2/research_ledger
+[E-FAMILY-RUNNER][cost] so far=0.00 JPY by_provider={} (after research_ledger)
+[B3-RUNNER][storyline_b3] 既存Selected Fact Briefを再利用: er052_output/all6_writer_redesign_necessity_01/runs/meta/control/b3__all6__r2/storyline_b3
+[JA-WRITER][ja_original] Fact Check MAJOR。must-fixで1回だけ再生成します(major_count=1)...
+[E-FAMILY-RUNNER][cost] so far=0.00 JPY by_provider={'openai': 0.0} (after ja_writer)
+[B3-RUNNER] stage=writerで停止(--stop-after writer)。
+[B3-RUNNER][cost] {'by_stage_jpy': {'ja_original': 0.0, 'ja_original_check': 0.0, 'ja_original_must_fix': 0.0, 'ja_original_check_retry': 0.0, 'ja_r1': 0.0, 'ja_r2': 0.0, 'ja_r2_check': 0.0}, 'total_jpy': 0.0}
+[checker-after-p01] out=er052_output\all6_writer_redesign_necessity_01\runs\meta\control\b3__all6__r2\checker budget=JPY10.0 instance=meta_run03_advanced ledger_sha=6e271bb24fdf
+[done] final_state=RESOLVED_STAGE2_DOWNGRADE cost=JPY2.4549
+[B3-RUNNER][research_ledger] 既存Ledgerを再利用(既生成済み): er052_output/all6_writer_redesign_necessity_01/runs/meta/control/b3__all6__r2/research_ledger
+[E-FAMILY-RUNNER][cost] so far=0.00 JPY by_provider={'openai': 0.0} (after research_ledger)
+[B3-RUNNER][storyline_b3] 既存Selected Fact Briefを再利用: er052_output/all6_writer_redesign_necessity_01/runs/meta/control/b3__all6__r2/storyline_b3
+[B3-RUNNER][writer] 既存JA記事(R2)を再利用: er052_output/all6_writer_redesign_necessity_01/runs/meta/control/b3__all6__r2/ja_writer/revision2.md
+[E-FAMILY-RUNNER][writer/meta] Advanced(Family X忠実英訳)生成開始...
+[E-FAMILY-RUNNER][writer/meta] Advanced deviation check開始...
+[E-FAMILY-RUNNER][writer/meta] Advanced deviation MAJOR。must-fixで1回だけ再生成します(major_count=1)...
+[E-FAMILY-RUNNER][cost] so far=0.00 JPY by_provider={'openai': 0.0} (after advanced writer+deviation)
+[E-FAMILY-RUNNER][cost] so far=0.00 JPY by_provider={'openai': 0.0} (after advanced)
+[B3-RUNNER] stage=advancedで停止(--stop-after advanced、Mandatory STOP)。
+[B3-RUNNER][cost] {'by_stage_jpy': {'ja_original': 0.0, 'ja_original_check': 0.0, 'ja_original_must_fix': 0.0, 'ja_original_check_retry': 0.0, 'ja_r1': 0.0, 'ja_r2': 0.0, 'ja_r2_check': 0.0, 'advanced': 0.0}, 'total_jpy': 0.0}

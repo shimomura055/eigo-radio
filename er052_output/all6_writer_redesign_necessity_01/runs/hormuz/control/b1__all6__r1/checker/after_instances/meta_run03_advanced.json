@@ -1,0 +1,2624 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The Fee Plan Gets a New Look the Next Day. Oil Prices Stay Near Their Highs\n\nWhen it comes to policy proposals, this story is moving at fast-forward speed. Trump proposed seeking 20 percent reimbursement from cargo passing through the Strait of Hormuz, then replaced that proposal with another the next day. But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”\n\nThe first post said the United States would seek 20 percent reimbursement from all cargo passing through the strait, citing the cost of keeping it safe. The next day, Trump posted that he was replacing that plan with trade and investment deals involving the Gulf states and the United States. From a plan for cargo passing through the strait to deals involving the Gulf states and the United States: the policy proposal had already changed its look.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+              "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+            ],
+            "batch_cost_jpy": 0.2051,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "Here, “pared their gains” does not mean prices kept falling.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Here, “pared their gains” does not mean prices kept falling.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The first post said the United States would seek 20 percent reimbursement from all cargo passing through the strait, citing the cost of keeping it safe. The next day, Trump posted that he was replacing that plan with trade and investment deals involving the Gulf states and the United States. From a plan for cargo passing through the strait to deals involving the Gulf states and the United States: the policy proposal had already changed its look.\n\nAfter the announcement, Brent crude futures temporarily pared their gains. Here, “pared their gains” does not mean prices kept falling. Before long, they returned to a high level close to where they had been before the announcement. At the time of reporting, they were up about 2.6 percent and above $85 a barrel.\n\nWhile the fee plan changed shape, concerns continued over attacks by the United States and Iran, the sea blockade, and the safety of tankers. The change to the announcement and concerns about the strait were happening at the same time.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Here, “pared their gains” does not mean prices kept falling.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+              "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+            ],
+            "batch_cost_jpy": 0.2051,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "The figure above $85 is the price at the time the article was published, not that day’s closing price.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "The figure above $85 is the price at the time the article was published, not that day’s closing price.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.4"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "While the fee plan changed shape, concerns continued over attacks by the United States and Iran, the sea blockade, and the safety of tankers. The change to the announcement and concerns about the strait were happening at the same time.\n\nSo if we sum it up in one line as “the plan was withdrawn, so oil prices fell,” we miss how prices pared their gains and then returned to a high range. Of course, this price movement alone cannot tell us what moved prices, or by how much. What stands out this time is that the policy proposal changed quickly, the market briefly slowed, and concerns continued—all at once. The figure above $85 is the price at the time the article was published, not that day’s closing price. It seems the market’s story cannot be read from a single headline.\n\n## In one line\nTrump quickly replaced his proposed fee plan for Hormuz shipping, but oil prices stayed near their highs.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "The figure above $85 is the price at the time the article was published, not that day’s closing price.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_numeric_value",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+              "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+            ],
+            "batch_cost_jpy": 0.2051,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The Fee Plan Gets a New Look the Next Day. Oil Prices Stay Near Their Highs\n\nWhen it comes to policy proposals, this story is moving at fast-forward speed. Trump proposed seeking 20 percent reimbursement from cargo passing through the Strait of Hormuz, then replaced that proposal with another the next day. But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”\n\nThe first post said the United States would seek 20 percent reimbursement from all cargo passing through the strait, citing the cost of keeping it safe. The next day, Trump posted that he was replacing that plan with trade and investment deals involving the Gulf states and the United States. From a plan for cargo passing through the strait to deals involving the Gulf states and the United States: the policy proposal had already changed its look.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+              "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+            ],
+            "batch_cost_jpy": 0.2051,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "After the announcement, Brent crude futures temporarily pared their gains.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "After the announcement, Brent crude futures temporarily pared their gains.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The first post said the United States would seek 20 percent reimbursement from all cargo passing through the strait, citing the cost of keeping it safe. The next day, Trump posted that he was replacing that plan with trade and investment deals involving the Gulf states and the United States. From a plan for cargo passing through the strait to deals involving the Gulf states and the United States: the policy proposal had already changed its look.\n\nAfter the announcement, Brent crude futures temporarily pared their gains. Here, “pared their gains” does not mean prices kept falling. Before long, they returned to a high level close to where they had been before the announcement. At the time of reporting, they were up about 2.6 percent and above $85 a barrel.\n\nWhile the fee plan changed shape, concerns continued over attacks by the United States and Iran, the sea blockade, and the safety of tankers. The change to the announcement and concerns about the strait were happening at the same time.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "After the announcement, Brent crude futures temporarily pared their gains.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+              "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+            ],
+            "batch_cost_jpy": 0.2051,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "So if we sum it up in one line as “the plan was withdrawn, so oil prices fell,” we miss how prices pared their gains and then returned to a high range.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "So if we sum it up in one line as “the plan was withdrawn, so oil prices fell,” we miss how prices pared their gains and then returned to a high range.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Here, “pared their gains” does not mean prices kept falling."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "While the fee plan changed shape, concerns continued over attacks by the United States and Iran, the sea blockade, and the safety of tankers. The change to the announcement and concerns about the strait were happening at the same time.\n\nSo if we sum it up in one line as “the plan was withdrawn, so oil prices fell,” we miss how prices pared their gains and then returned to a high range. Of course, this price movement alone cannot tell us what moved prices, or by how much. What stands out this time is that the policy proposal changed quickly, the market briefly slowed, and concerns continued—all at once. The figure above $85 is the price at the time the article was published, not that day’s closing price. It seems the market’s story cannot be read from a single headline.\n\n## In one line\nTrump quickly replaced his proposed fee plan for Hormuz shipping, but oil prices stayed near their highs.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "So if we sum it up in one line as “the plan was withdrawn, so oil prices fell,” we miss how prices pared their gains and then returned to a high range.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+              "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+            ],
+            "batch_cost_jpy": 0.2051,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "6 percent and above $85 a barrel.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "6 percent and above $85 a barrel.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.4"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The figure above $85 is the price at the time the article was published, not that day’s closing price."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The first post said the United States would seek 20 percent reimbursement from all cargo passing through the strait, citing the cost of keeping it safe. The next day, Trump posted that he was replacing that plan with trade and investment deals involving the Gulf states and the United States. From a plan for cargo passing through the strait to deals involving the Gulf states and the United States: the policy proposal had already changed its look.\n\nAfter the announcement, Brent crude futures temporarily pared their gains. Here, “pared their gains” does not mean prices kept falling. Before long, they returned to a high level close to where they had been before the announcement. At the time of reporting, they were up about 2.6 percent and above $85 a barrel.\n\nWhile the fee plan changed shape, concerns continued over attacks by the United States and Iran, the sea blockade, and the safety of tankers. The change to the announcement and concerns about the strait were happening at the same time.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_numeric_value",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "「報道時点では約二・六パーセント高で、一バレル八十五ドルを上回っていました。」に合わせ、「6 percent」を「about 2.6 percent」に置き換えてください。参照: HF-009。",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L6:sentence_restore",
+            "reason": null,
+            "ranges": [
+              "At the time of reporting, they were up about 2.6 percent and above $85 a barrel."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L6:sentence_restore"
+              }
+            },
+            "detail": null,
+            "explain_split": {
+              "attempted": true,
+              "status": "unverified",
+              "reason": "explain_split_rejected:no_quote",
+              "fragments": [],
+              "dropped_remainders": [],
+              "base_reason": "mismatch"
+            },
+            "sentence_restore": {
+              "attempted": true,
+              "status": "restored",
+              "reason": null,
+              "restore_reason": [
+                "truncated_head"
+              ],
+              "fired_by": [
+                "truncated_head"
+              ],
+              "fragments": [
+                {
+                  "part": "6 percent and above $85 a barrel.",
+                  "kind": "exact",
+                  "detail": {
+                    "ok_head": false,
+                    "ok_tail": true
+                  }
+                }
+              ],
+              "anchors": [],
+              "restored_sentence": "At the time of reporting, they were up about 2.6 percent and above $85 a barrel.",
+              "span": [
+                1111,
+                1191
+              ],
+              "n_sentences": 1,
+              "n_candidates": 1,
+              "focus_spans": [
+                [
+                  1158,
+                  1190
+                ]
+              ],
+              "residual_check": [],
+              "original_claim": "6 percent and above $85 a barrel.",
+              "claim_core": "6 percent and above $85 a barrel.",
+              "base_reason": "mismatch"
+            }
+          },
+          "claim_span_text": "At the time of reporting, they were up about 2.6 percent and above $85 a barrel.",
+          "last_resort_delete": true
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 6,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+            "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+          ],
+          "batch_cost_jpy": 0.2051,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Here, “pared their gains” does not mean prices kept falling.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+            "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+          ],
+          "batch_cost_jpy": 0.2051,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "The figure above $85 is the price at the time the article was published, not that day’s closing price.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_numeric_value",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+            "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+          ],
+          "batch_cost_jpy": 0.2051,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+            "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+          ],
+          "batch_cost_jpy": 0.2051,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "After the announcement, Brent crude futures temporarily pared their gains.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+            "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+          ],
+          "batch_cost_jpy": 0.2051,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "So if we sum it up in one line as “the plan was withdrawn, so oil prices fell,” we miss how prices pared their gains and then returned to a high range.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+            "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+          ],
+          "batch_cost_jpy": 0.2051,
+          "batch_n_claims": 6
+        }
+      ],
+      "t_target_selection": {
+        "indices": [
+          0
+        ],
+        "skipped": [],
+        "aligned": true
+      },
+      "last_resort_failure_classification": [],
+      "last_resort_delete_applied": [
+        "fact:HF-009"
+      ],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "deterministic_delete(violation_span(EN,L6:sentence_restore))",
+          "guard_ok": true,
+          "ladder_level_used": "0_delete",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "6 percent and above $85 a barrel.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L6:sentence_restore",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "At the time of reporting, they were up about 2.6 percent and above $85 a barrel."
+              ],
+              "raw_spans": [
+                [
+                  1111,
+                  1191
+                ]
+              ],
+              "spans": [
+                [
+                  1111,
+                  1191
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L6:sentence_restore"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false,
+              "explain_split": {
+                "attempted": true,
+                "status": "unverified",
+                "reason": "explain_split_rejected:no_quote",
+                "fragments": [],
+                "dropped_remainders": [],
+                "base_reason": "mismatch"
+              },
+              "sentence_restore": {
+                "attempted": true,
+                "status": "restored",
+                "reason": null,
+                "restore_reason": [
+                  "truncated_head"
+                ],
+                "fired_by": [
+                  "truncated_head"
+                ],
+                "fragments": [
+                  {
+                    "part": "6 percent and above $85 a barrel.",
+                    "kind": "exact",
+                    "detail": {
+                      "ok_head": false,
+                      "ok_tail": true
+                    }
+                  }
+                ],
+                "anchors": [],
+                "restored_sentence": "At the time of reporting, they were up about 2.6 percent and above $85 a barrel.",
+                "span": [
+                  1111,
+                  1191
+                ],
+                "n_sentences": 1,
+                "n_candidates": 1,
+                "focus_spans": [
+                  [
+                    1158,
+                    1190
+                  ]
+                ],
+                "residual_check": [],
+                "original_claim": "6 percent and above $85 a barrel.",
+                "claim_core": "6 percent and above $85 a barrel.",
+                "base_reason": "mismatch"
+              }
+            },
+            "level_attempts": [
+              {
+                "level": "0_delete",
+                "targets": [
+                  "At the time of reporting, they were up about 2.6 percent and above $85 a barrel."
+                ],
+                "delete_reoccurrence_detected": false,
+                "result": "success"
+              }
+            ],
+            "level_used": "0_delete",
+            "span_unverified": false,
+            "issue_focus_check": {
+              "phrases": [],
+              "absent": false,
+              "haystack": "current_full_text"
+            },
+            "last_resort_delete": {
+              "structural_reasons": []
+            },
+            "delete_units": [
+              "At the time of reporting, they were up about 2.6 percent and above $85 a barrel."
+            ],
+            "delete_expanded_to_sentence": false,
+            "levels_attempted": [
+              "0_delete"
+            ]
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 20.0,
+          "difficult_word_ratio": 0.1389,
+          "word_count": 360
+        },
+        "stats_after": {
+          "avg_sentence_len": 20.35,
+          "difficult_word_ratio": 0.1387,
+          "word_count": 346
+        },
+        "sentence_len_increase": 0.35,
+        "difficulty_ratio_increase": -0.0002,
+        "fragment_stats_before": null,
+        "fragment_stats_after": null,
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 55,
+        "hook_word_count_after": 55,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 16,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 18,
+        "sentence_count_after": 17,
+        "sentence_drop_rate": 0.0556,
+        "hedge_word_count_before": 1,
+        "hedge_word_count_after": 1,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 7,
+        "paragraph_count_after": 7,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# The Fee Plan Gets a New Look the Next Day. Oil Prices Stay Near Their Highs\n\nWhen it comes to policy proposals, this story is moving at fast-forward speed. Trump proposed seeking 20 percent reimbursement from cargo passing through the Strait of Hormuz, then replaced that proposal with another the next day. But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”\n\nThe first post said the United States would seek 20 percent reimbursement from all cargo passing through the strait, citing the cost of keeping it safe. The next day, Trump posted that he was replacing that plan with trade and investment deals involving the Gulf states and the United States. From a plan for cargo passing through the strait to deals involving the Gulf states and the United States: the policy proposal had already changed its look.\n\nAfter the announcement, Brent crude futures temporarily pared their gains. Here, “pared their gains” does not mean prices kept falling. Before long, they returned to a high level close to where they had been before the announcement. At the time of reporting, they were up about 2.6 percent and above $85 a barrel.\n\nWhile the fee plan changed shape, concerns continued over attacks by the United States and Iran, the sea blockade, and the safety of tankers. The change to the announcement and concerns about the strait were happening at the same time.\n\nSo if we sum it up in one line as “the plan was withdrawn, so oil prices fell,” we miss how prices pared their gains and then returned to a high range. Of course, this price movement alone cannot tell us what moved prices, or by how much. What stands out this time is that the policy proposal changed quickly, the market briefly slowed, and concerns continued—all at once. The figure above $85 is the price at the time the article was published, not that day’s closing price. It seems the market’s story cannot be read from a single headline.\n\n## In one line\nTrump quickly replaced his proposed fee plan for Hormuz shipping, but oil prices stayed near their highs.",
+      "en_text_after_rewrite": "# The Fee Plan Gets a New Look the Next Day. Oil Prices Stay Near Their Highs\n\nWhen it comes to policy proposals, this story is moving at fast-forward speed. Trump proposed seeking 20 percent reimbursement from cargo passing through the Strait of Hormuz, then replaced that proposal with another the next day. But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”\n\nThe first post said the United States would seek 20 percent reimbursement from all cargo passing through the strait, citing the cost of keeping it safe. The next day, Trump posted that he was replacing that plan with trade and investment deals involving the Gulf states and the United States. From a plan for cargo passing through the strait to deals involving the Gulf states and the United States: the policy proposal had already changed its look.\n\nAfter the announcement, Brent crude futures temporarily pared their gains. Here, “pared their gains” does not mean prices kept falling. Before long, they returned to a high level close to where they had been before the announcement. \n\nWhile the fee plan changed shape, concerns continued over attacks by the United States and Iran, the sea blockade, and the safety of tankers. The change to the announcement and concerns about the strait were happening at the same time.\n\nSo if we sum it up in one line as “the plan was withdrawn, so oil prices fell,” we miss how prices pared their gains and then returned to a high range. Of course, this price movement alone cannot tell us what moved prices, or by how much. What stands out this time is that the policy proposal changed quickly, the market briefly slowed, and concerns continued—all at once. The figure above $85 is the price at the time the article was published, not that day’s closing price. It seems the market’s story cannot be read from a single headline.\n\n## In one line\nTrump quickly replaced his proposed fee plan for Hormuz shipping, but oil prices stayed near their highs.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "paragraph_or_full_or_delete_rewrite"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "prior_issue_text_sources": [
+        "original_text"
+      ],
+      "recheck_coverage": {
+        "scope_ids": [
+          "S3.2",
+          "S3.3",
+          "S4.1",
+          "S4.2",
+          "R:S4.2+S5.1"
+        ],
+        "changed_ids": [
+          "S3.3",
+          "S4.1"
+        ],
+        "n_scope": 5,
+        "n_judged_units": 19,
+        "n_union_candidates": 1,
+        "n_calls": 2,
+        "total_cost_jpy": 0.7704,
+        "n_prior_claim_hits": 0,
+        "missing_after_rerun": [],
+        "api_failure": false,
+        "reclassify": {
+          "reclassify_status": "ok",
+          "n_model_entries": 2,
+          "n_targets": 2,
+          "n_protected_keys": 0,
+          "n_excluded_claims": 2,
+          "n_excluded_entries": 2,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.1513,
+          "effort": "medium",
+          "prompt_sha256": "01a1103c2a56e345822bacef9bb401cbb411f55070ac9ba83b299fad950351cb"
+        }
+      },
+      "recheck_structural_pairs_n": 0,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false,
+      "recheck_prior_issues_resolved": [
+        {
+          "index": 0,
+          "resolved": false,
+          "explanation": "coverage scope recheck: candidate remains (negation_polarity_mismatch)",
+          "remaining_sentence": "Here, “pared their gains” does not mean prices kept falling."
+        }
+      ],
+      "recheck_prior_issues_resolved_by_index": {
+        "0": false
+      },
+      "recheck_prior_issues_sent_count": 1,
+      "recheck_merge": {
+        "decision": "NEXT_CYCLE",
+        "source": "recheck",
+        "merged_from": [
+          "recheck_major"
+        ],
+        "n_merged": 1,
+        "n_dedup_dropped": 1,
+        "reverify_deviation_without_major": false,
+        "merged_claims": [
+          {
+            "fact_id": "HF-009",
+            "claim": "Here, “pared their gains” does not mean prices kept falling.",
+            "label": "recheck_major"
+          }
+        ]
+      }
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "detected_by": "stage1_llm",
+          "local_context": "The first post said the United States would seek 20 percent reimbursement from all cargo passing through the strait, citing the cost of keeping it safe. The next day, Trump posted that he was replacing that plan with trade and investment deals involving the Gulf states and the United States. From a plan for cargo passing through the strait to deals involving the Gulf states and the United States: the policy proposal had already changed its look.\n\nAfter the announcement, Brent crude futures temporarily pared their gains. Here, “pared their gains” does not mean prices kept falling. Before long, they returned to a high level close to where they had been before the announcement. At the time of reporting, they were up about 2.6 percent and above $85 a barrel.\n\nWhile the fee plan changed shape, concerns continued over attacks by the United States and Iran, the sea blockade, and the safety of tankers. The change to the announcement and concerns about the strait were happening at the same time.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Here, “pared their gains” does not mean prices kept falling.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+              "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+            ],
+            "batch_cost_jpy": 0.2051,
+            "batch_n_claims": 6
+          },
+          "claim_text": "Here, “pared their gains” does not mean prices kept falling.",
+          "dev": {
+            "claim_in_article": "Here, “pared their gains” does not mean prices kept falling.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [],
+      "exit_check": {
+        "cycle": 2,
+        "n_candidates": 3,
+        "api_failure": false,
+        "n_calls": 1,
+        "n_judged_units": 19,
+        "total_cost_jpy": 0.5107,
+        "missing_after_rerun": [],
+        "reclassify": {
+          "reclassify_status": "ok",
+          "n_model_entries": 4,
+          "n_targets": 4,
+          "n_protected_keys": 0,
+          "n_excluded_claims": 4,
+          "n_excluded_entries": 4,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.2064,
+          "effort": "medium",
+          "prompt_sha256": "7492a0d4b847f17876f7ede44574533900110084ba838f18d300ec4df0567bfe"
+        }
+      }
+    },
+    {
+      "cycle": 3,
+      "stage2_results": [
+        {
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "detected_by": "stage1_llm",
+          "local_context": "# The Fee Plan Gets a New Look the Next Day. Oil Prices Stay Near Their Highs\n\nWhen it comes to policy proposals, this story is moving at fast-forward speed. Trump proposed seeking 20 percent reimbursement from cargo passing through the Strait of Hormuz, then replaced that proposal with another the next day. But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”\n\nThe first post said the United States would seek 20 percent reimbursement from all cargo passing through the strait, citing the cost of keeping it safe. The next day, Trump posted that he was replacing that plan with trade and investment deals involving the Gulf states and the United States. From a plan for cargo passing through the strait to deals involving the Gulf states and the United States: the policy proposal had already changed its look.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+              "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+            ],
+            "batch_cost_jpy": 0.2051,
+            "batch_n_claims": 6
+          },
+          "claim_text": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”",
+          "dev": {
+            "claim_in_article": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "detected_by": "stage1_llm",
+          "local_context": "The first post said the United States would seek 20 percent reimbursement from all cargo passing through the strait, citing the cost of keeping it safe. The next day, Trump posted that he was replacing that plan with trade and investment deals involving the Gulf states and the United States. From a plan for cargo passing through the strait to deals involving the Gulf states and the United States: the policy proposal had already changed its look.\n\nAfter the announcement, Brent crude futures temporarily pared their gains. Here, “pared their gains” does not mean prices kept falling. Before long, they returned to a high level close to where they had been before the announcement. At the time of reporting, they were up about 2.6 percent and above $85 a barrel.\n\nWhile the fee plan changed shape, concerns continued over attacks by the United States and Iran, the sea blockade, and the safety of tankers. The change to the announcement and concerns about the strait were happening at the same time.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Here, “pared their gains” does not mean prices kept falling.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+              "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+            ],
+            "batch_cost_jpy": 0.2051,
+            "batch_n_claims": 6
+          },
+          "claim_text": "Here, “pared their gains” does not mean prices kept falling.",
+          "dev": {
+            "claim_in_article": "Here, “pared their gains” does not mean prices kept falling.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "detected_by": "stage1_llm",
+          "local_context": "While the fee plan changed shape, concerns continued over attacks by the United States and Iran, the sea blockade, and the safety of tankers. The change to the announcement and concerns about the strait were happening at the same time.\n\nSo if we sum it up in one line as “the plan was withdrawn, so oil prices fell,” we miss how prices pared their gains and then returned to a high range. Of course, this price movement alone cannot tell us what moved prices, or by how much. What stands out this time is that the policy proposal changed quickly, the market briefly slowed, and concerns continued—all at once. The figure above $85 is the price at the time the article was published, not that day’s closing price. It seems the market’s story cannot be read from a single headline.\n\n## In one line\nTrump quickly replaced his proposed fee plan for Hormuz shipping, but oil prices stayed near their highs.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "The figure above $85 is the price at the time the article was published, not that day’s closing price.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_numeric_value",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0",
+              "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+            ],
+            "batch_cost_jpy": 0.2051,
+            "batch_n_claims": 6
+          },
+          "claim_text": "The figure above $85 is the price at the time the article was published, not that day’s closing price.",
+          "dev": {
+            "claim_in_article": "The figure above $85 is the price at the time the article was published, not that day’s closing price.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.4"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 3,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": []
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5712,
+      "usage": {
+        "input_tokens": 5078,
+        "cached_input_tokens": 0,
+        "output_tokens": 6267,
+        "reasoning_tokens": 2027
+      },
+      "elapsed_seconds": 40.481,
+      "prompt_sha256": "4b5ef001b47a9a4f9bed467721ae51a5220571c34668f385abe0180cc8ffb020",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6582,
+      "usage": {
+        "input_tokens": 4725,
+        "cached_input_tokens": 0,
+        "output_tokens": 7446,
+        "reasoning_tokens": 5178
+      },
+      "elapsed_seconds": 56.496,
+      "prompt_sha256": "e6e9874440b44e7599601e2bcaba2cdd3985676e994f5498fea921ef6c0d940b",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2646,
+      "usage": {
+        "input_tokens": 4994,
+        "cached_input_tokens": 0,
+        "output_tokens": 2375,
+        "reasoning_tokens": 1696
+      },
+      "elapsed_seconds": 20.763,
+      "prompt_sha256": "e0bad489527b4d9015dde96c03b98b0b7386bc8dfe4c4ce5a26de8430dc37305",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2259,
+      "usage": {
+        "input_tokens": 9540,
+        "cached_input_tokens": 0,
+        "output_tokens": 972,
+        "reasoning_tokens": 757
+      },
+      "elapsed_seconds": 9.017,
+      "prompt_sha256": "d46680327063512d840428d545d468177d5c488c57aa60a76552909a291fc926"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1183,
+      "usage": {
+        "input_tokens": 5788,
+        "cached_input_tokens": 0,
+        "output_tokens": 350,
+        "reasoning_tokens": 271
+      },
+      "elapsed_seconds": 3.863,
+      "prompt_sha256": "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1799,
+      "usage": {
+        "input_tokens": 9284,
+        "cached_input_tokens": 0,
+        "output_tokens": 437,
+        "reasoning_tokens": 303
+      },
+      "elapsed_seconds": 5.036,
+      "prompt_sha256": "53fe571c43af3afd8a04f8ef9eeba5c8116fe3b5b159d2060471bde4507f54a0"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0252,
+      "usage": {
+        "input_tokens": 5788,
+        "cached_input_tokens": 5785,
+        "output_tokens": 205,
+        "reasoning_tokens": 128
+      },
+      "elapsed_seconds": 3.391,
+      "prompt_sha256": "95b4fe9f7dca53ed6381dba8d9a183de51a714ebd35772947849f243db3cda6a"
+    },
+    {
+      "label": "meta_run03_advanced_c1_fact:HF-009_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0789,
+      "usage": {
+        "input_tokens": 3843,
+        "cached_input_tokens": 0,
+        "output_tokens": 237,
+        "reasoning_tokens": 202
+      },
+      "elapsed_seconds": 3.422,
+      "prompt_sha256": "f450f6e95e3674294cfafbfa250b4bbdc8e8bedf9bf33046c348cef1b4b457c0"
+    },
+    {
+      "label": "meta_run03_advanced_c1_fact:HF-009_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.077,
+      "usage": {
+        "input_tokens": 3632,
+        "cached_input_tokens": 0,
+        "output_tokens": 255,
+        "reasoning_tokens": 220
+      },
+      "elapsed_seconds": 3.015,
+      "prompt_sha256": "990b959e1a65ca766ce563be2893eeadf785598adde1ffc2a8b1ed2726c6be13"
+    },
+    {
+      "label": "meta_run03_advanced_c1_fact:HF-009_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1026,
+      "usage": {
+        "input_tokens": 3636,
+        "cached_input_tokens": 0,
+        "output_tokens": 581,
+        "reasoning_tokens": 501
+      },
+      "elapsed_seconds": 7.854,
+      "prompt_sha256": "965a41a10df419f842bbfde11a519293ca30e87b4d433b3f821b247ba6daaf03"
+    },
+    {
+      "label": "meta_run03_advanced_c1_recheck_r3",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2588,
+      "usage": {
+        "input_tokens": 4979,
+        "cached_input_tokens": 0,
+        "output_tokens": 2304,
+        "reasoning_tokens": 1353
+      },
+      "elapsed_seconds": 18.405,
+      "prompt_sha256": "b0a56efb45f24fb8741e02d5180d75b4326bbe7cc260b4004a86d28fe0dbcb0c",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_recheck_r5v",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.5116,
+      "usage": {
+        "input_tokens": 4743,
+        "cached_input_tokens": 0,
+        "output_tokens": 5573,
+        "reasoning_tokens": 4387
+      },
+      "elapsed_seconds": 43.144,
+      "prompt_sha256": "c213a683110af554546f5edb140ad92d1a0716655bb1f338b78fdfef20b70d4c",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_c1_recheck_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.1513,
+      "usage": {
+        "input_tokens": 4736,
+        "cached_input_tokens": 0,
+        "output_tokens": 982,
+        "reasoning_tokens": 803
+      },
+      "elapsed_seconds": 8.845,
+      "prompt_sha256": "01a1103c2a56e345822bacef9bb401cbb411f55070ac9ba83b299fad950351cb",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_exit_r3",
+      "recovery_stage": "stage1_exit_check",
+      "cost_jpy": 0.5107,
+      "usage": {
+        "input_tokens": 5044,
+        "cached_input_tokens": 0,
+        "output_tokens": 5502,
+        "reasoning_tokens": 1593
+      },
+      "elapsed_seconds": 37.218,
+      "prompt_sha256": "33bb5930fd3190758b083155e38c4acb343144a3661d8a9d2f99851977283d7e",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_exit_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2064,
+      "usage": {
+        "input_tokens": 4814,
+        "cached_input_tokens": 0,
+        "output_tokens": 1668,
+        "reasoning_tokens": 1278
+      },
+      "elapsed_seconds": 14.121,
+      "prompt_sha256": "7492a0d4b847f17876f7ede44574533900110084ba838f18d300ec4df0567bfe",
+      "reasoning_effort": "medium"
+    }
+  ],
+  "total_cost_jpy": 3.9406,
+  "total_calls": 15,
+  "elapsed_seconds": 275.194,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Here, “pared their gains” does not mean prices kept falling.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The figure above $85 is the price at the time the article was published, not that day’s closing price.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": [
+      {
+        "cycle": 1,
+        "deviations": [
+          {
+            "severity": "MAJOR",
+            "claim_in_article": "Here, “pared their gains” does not mean prices kept falling.",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+            "true_flags": [],
+            "enumeration_source_claim": false,
+            "same_fact_id_locations": null,
+            "passed_downstream": true
+          }
+        ],
+        "ja_deviations": null
+      }
+    ]
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 10,
+      "n_model_entries": 7,
+      "n_targets": 7,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 7,
+      "n_excluded_entries": 7,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.2646,
+          "usage": {
+            "input_tokens": 4994,
+            "cached_input_tokens": 0,
+            "output_tokens": 2375,
+            "reasoning_tokens": 1696
+          },
+          "elapsed_seconds": 20.763,
+          "prompt_sha256": "e0bad489527b4d9015dde96c03b98b0b7386bc8dfe4c4ce5a26de8430dc37305",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.2646,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.1",
+          "claim": "When it comes to policy proposals, this story is moving at fast-forward speed.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「fast-forward speed」は導入の比喩で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S5.1",
+          "claim": "So if we sum it up in one line as “the plan was withdrawn, so oil prices fell,” we miss how prices pared their gains and then returned to a high range.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "単純な「撤回したので価格が下落した」という要約を退け、撤回発表後の一時的な上げ幅縮小と高水準への回復を述べており、HF-009と一致する。",
+          "fact_tags": [
+            "causality",
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C3",
+          "key": "S5.2",
+          "claim": "Of course, this price movement alone cannot tell us what moved prices, or by how much.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "価格変動だけから原因や寄与度を推論できないという限定は、HF-011の注意およびHF-009の継続要因の記述と整合する。",
+          "fact_tags": [
+            "causality",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C4",
+          "key": "S5.5",
+          "claim": "It seems the market’s story cannot be read from a single headline.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "単一の見出しだけでは市場の動きを読み切れないという、具体的な新事実を加えない論評である。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "R:S4.2+S5.1",
+          "claim": "So if we sum it up in one line as “the plan was withdrawn, so oil prices fell,” we miss how prices pared their gains and then returned to a high range.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "C2と同じ主張で、単純な因果要約を退けつつ、一時的な上げ幅縮小とその後の回復を述べており、HF-009と一致する。",
+          "fact_tags": [
+            "causality",
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C6",
+          "key": "T",
+          "claim": "# The Fee Plan Gets a New Look the Next Day. Oil Prices Stay Near Their Highs",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "翌日の置換と、発表後に一時縮小した上げ幅が高い水準へ戻った動きはHF-007、HF-009と整合し、記事の文脈上の対象はBrent原油先物である。",
+          "fact_tags": [
+            "date",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C7",
+          "key": "L1",
+          "claim": "Trump quickly replaced his proposed fee plan for Hormuz shipping, but oil prices stayed near their highs.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "トランプ氏が翌日にホルムズ海峡通航貨物への提案を置き換えたことと、その後Brentが高水準を保ったことはHF-007、HF-009に一致する。",
+          "fact_tags": [
+            "proper_noun",
+            "date",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "e0bad489527b4d9015dde96c03b98b0b7386bc8dfe4c4ce5a26de8430dc37305"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 26,
+    "n_judged_units": 20,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S4.2+S5.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "R:S4.2+S5.1",
+          "S1.1",
+          "S1.3",
+          "S3.2",
+          "S5.1",
+          "S5.2",
+          "S5.4",
+          "S5.5"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "CANDIDATE",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.5": "CANDIDATE",
+          "L1": "SUPPORTED",
+          "R:S4.2+S5.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5712,
+            "usage": {
+              "input_tokens": 5078,
+              "cached_input_tokens": 0,
+              "output_tokens": 6267,
+              "reasoning_tokens": 2027
+            },
+            "elapsed_seconds": 40.481,
+            "prompt_sha256": "4b5ef001b47a9a4f9bed467721ae51a5220571c34668f385abe0180cc8ffb020",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "CANDIDATE",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S5.5": "CANDIDATE",
+          "L1": "SUPPORTED",
+          "R:S4.2+S5.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "When it comes to policy proposals, this story is moving at fast-forward speed.",
+            "span": [
+              79,
+              157
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「policy proposals, this story is moving at fast-forward speed」という評価的な速さの主張はLedgerに直接記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "When it comes to policy proposals, this story is moving at fast-forward speed."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”",
+            "span": [
+              310,
+              425
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "Here, “pared their gains” does not mean prices kept falling.",
+            "span": [
+              953,
+              1013
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "So if we sum it up in one line as “the plan was withdrawn, so oil prices fell,” we miss how prices pared their gains and then returned to a high range.",
+            "span": [
+              1430,
+              1581
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "市場の値動き自体はHF-009に沿うが、文頭の「So」が前文からの因果・推論関係を付与しており、その結び付けはLedgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "So if we sum it up in one line as “the plan was withdrawn, so oil prices fell,” we miss how prices pared their gains and then returned to a high range."
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "Of course, this price movement alone cannot tell us what moved prices, or by how much.",
+            "span": [
+              1582,
+              1668
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "値動きだけでは価格を動かした要因やその大きさを特定できないという一般的な認識論上の主張は、Ledgerに直接記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-011"
+            ],
+            "model_claim": "Of course, this price movement alone cannot tell us what moved prices, or by how much."
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "The figure above $85 is the price at the time the article was published, not that day’s closing price.",
+            "span": [
+              1803,
+              1905
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.5",
+            "unit_ids": [
+              "S5.5"
+            ],
+            "claim_text": "It seems the market’s story cannot be read from a single headline.",
+            "span": [
+              1906,
+              1972
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "市場の動きを単一の見出しから読み取れないという一般的な評価は、Ledgerに直接記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "It seems the market’s story cannot be read from a single headline."
+          },
+          {
+            "unit_id": "R:S4.2+S5.1",
+            "unit_ids": [
+              "R:S4.2+S5.1"
+            ],
+            "claim_text": "So if we sum it up in one line as “the plan was withdrawn, so oil prices fell,” we miss how prices pared their gains and then returned to a high range.",
+            "span": [
+              1430,
+              1581
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "S4.2の同時進行の記述からS5.1の結論へ「So」で因果・推論関係を結んでいるが、懸念が同時に続いたために単純な要約が不適切になるという関係はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The change to the announcement and concerns about the strait were happening at the same time. So if we sum it up in one line as “the plan was withdrawn, so oil prices fell,” we miss how prices pared their gains and then returned to a high range."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "T"
+        ],
+        "unit_status": {
+          "S1.2": "MATCH",
+          "S2.1": "MATCH",
+          "T": "DEVIATION",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S4.2": "MATCH",
+          "S5.1": "MATCH",
+          "S5.3": "MATCH",
+          "L1": "DEVIATION",
+          "R:S4.2+S5.1": "MATCH",
+          "S1.3": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S4.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.4": "MATCH",
+          "S1.1": "UNMENTIONED",
+          "S5.5": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.6582,
+            "usage": {
+              "input_tokens": 4725,
+              "cached_input_tokens": 0,
+              "output_tokens": 7446,
+              "reasoning_tokens": 5178
+            },
+            "elapsed_seconds": 56.496,
+            "prompt_sha256": "e6e9874440b44e7599601e2bcaba2cdd3985676e994f5498fea921ef6c0d940b",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# The Fee Plan Gets a New Look the Next Day. Oil Prices Stay Near Their Highs",
+            "span": [
+              0,
+              77
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerの対象はBrent原油先物だが、「Oil Prices」は対象を原油価格一般へ広げている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Oil Prices Stay Near Their Highs"
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Trump quickly replaced his proposed fee plan for Hormuz shipping, but oil prices stayed near their highs.",
+            "span": [
+              1989,
+              2094
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerの対象はBrent原油先物だが、「oil prices」は対象を原油価格一般へ広げている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Trump quickly replaced his proposed fee plan for Hormuz shipping, but oil prices stayed near their highs."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [],
+      "r3_only": [
+        "R:S4.2+S5.1",
+        "S1.1",
+        "S1.3",
+        "S3.2",
+        "S5.1",
+        "S5.2",
+        "S5.4",
+        "S5.5"
+      ],
+      "r5_only": [
+        "L1",
+        "T"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 3
+    },
+    "union_candidates": [
+      {
+        "claim_text": "But Brent crude futures did not neatly follow the pattern of “proposal withdrawn, and the market turns around too.”",
+        "span": [
+          310,
+          425
+        ],
+        "unit_ids": [
+          "S1.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Here, “pared their gains” does not mean prices kept falling.",
+        "span": [
+          953,
+          1013
+        ],
+        "unit_ids": [
+          "S3.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The figure above $85 is the price at the time the article was published, not that day’s closing price.",
+        "span": [
+          1803,
+          1905
+        ],
+        "unit_ids": [
+          "S5.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 3,
+    "n_model_candidates": 0,
+    "n_deterministic_only_candidates": 3,
+    "total_cost_jpy": 1.2294,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 7,
+    "n_targets": 7,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 7,
+    "n_excluded_entries": 7,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.2646,
+    "effort": "medium",
+    "prompt_sha256": "e0bad489527b4d9015dde96c03b98b0b7386bc8dfe4c4ce5a26de8430dc37305"
+  },
+  "recheck_exit_check": {
+    "done": true,
+    "log": [
+      {
+        "cycle": 2,
+        "n_candidates": 3,
+        "api_failure": false,
+        "n_calls": 1,
+        "n_judged_units": 19,
+        "total_cost_jpy": 0.5107,
+        "missing_after_rerun": [],
+        "reclassify": {
+          "reclassify_status": "ok",
+          "n_model_entries": 4,
+          "n_targets": 4,
+          "n_protected_keys": 0,
+          "n_excluded_claims": 4,
+          "n_excluded_entries": 4,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.2064,
+          "effort": "medium",
+          "prompt_sha256": "7492a0d4b847f17876f7ede44574533900110084ba838f18d300ec4df0567bfe"
+        }
+      }
+    ]
+  },
+  "stage4_allowlist": {
+    "decisions": [
+      {
+        "cycle": 1,
+        "decision": {
+          "allowed": false,
+          "reason": "ladder_exhausted_without_full_rewrite",
+          "action": "funnel",
+          "violation": "reason_not_in_allowlist"
+        },
+        "legacy_reason": "ladder_exhausted_without_full_rewrite"
+      }
+    ],
+    "n_rerouted_legacy_exits": 1,
+    "final_reason_outside_allowlist": false,
+    "t_used": true,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 4,
+      "LAST_RESORT_DELETE": 1,
+      "STAGE2_VERDICT_REUSE_NONBLOCKING": 4
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

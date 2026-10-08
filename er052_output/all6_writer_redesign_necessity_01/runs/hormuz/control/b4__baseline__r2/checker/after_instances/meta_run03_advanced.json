@@ -1,0 +1,3791 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz.",
+            "issue": "政策の「主役が二度変わった」という整理と、最後まで懸念が続いたという包括的な表現は、Ledgerが述べる事実を超えています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The 20 Percent Plan Turned into an Investment Proposal the Next Day\n\nThis news was like a short play set in the crude oil market. The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz.\n\nThe first act was on July 13. Trump posted that the United States would ask for a 20 percent reimbursement from all cargo passing through the Strait of Hormuz, as payment for the cost of keeping it safe. The United States would protect the strait and get that cost back. That was the proposal.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "BLOCKING",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "Checkerの指摘: 政策の主役が二度変わったという整理と、最後まで懸念が続いたという包括的な表現は、Ledgerが述べる事実を超えています。 Ledgerのnotes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。 Ledgerのconditions: トランプ氏は、中東指導者との非常に生産的な協議に基づく決定だと説明した。 fact_id=HF-007のLedgerが確認している範囲に収まるよう、該当文から未確認の因果・主体・断定・範囲の拡大を除いて書き直す。 対象文: “The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz.” 「twice」を削り、主役が一度交代したという範囲に狭めてください。Ledgerでは7月13日の償還料案が7月14日に置き換えられたことが確認されています（HF-007）。",
+          "floor_reason": "s1_second_opinion_blocking",
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_claim",
+            "second_materiality": "BLOCKING",
+            "second_basis": "ledger_numeric_value",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": false,
+            "split": true,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12,
+            "hint_source": "checker_issue+ledger_notes_for_writer+ledger_conditions"
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz."
+        },
+        {
+          "claim_text": "But the important point here is that the United States had not actually started collecting the money.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "But the important point here is that the United States had not actually started collecting the money.",
+            "issue": "Ledgerは提案だったことを確認していますが、実際に徴収を開始していなかったと明示していません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.1"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The first act was on July 13. Trump posted that the United States would ask for a 20 percent reimbursement from all cargo passing through the Strait of Hormuz, as payment for the cost of keeping it safe. The United States would protect the strait and get that cost back. That was the proposal.\n\nBut the important point here is that the United States had not actually started collecting the money. It was not clear who would pay, what the amount would be based on, or how it would be collected. A flashy number had appeared, but how the plan would work was still behind the curtain.\n\nOn the same day, Brent crude oil futures rose 9.59 percent from the previous day and settled at $83.30 a barrel. Reports linked this rise to concerns about a US naval blockade against Iran, which was expected to begin the next day, and about energy shipments through the Strait of Hormuz. We cannot say that the 20 percent plan alone caused the rise.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "But the important point here is that the United States had not actually started collecting the money.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "We cannot say that the 20 percent plan alone caused the rise.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "We cannot say that the 20 percent plan alone caused the rise.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.3"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But the important point here is that the United States had not actually started collecting the money. It was not clear who would pay, what the amount would be based on, or how it would be collected. A flashy number had appeared, but how the plan would work was still behind the curtain.\n\nOn the same day, Brent crude oil futures rose 9.59 percent from the previous day and settled at $83.30 a barrel. Reports linked this rise to concerns about a US naval blockade against Iran, which was expected to begin the next day, and about energy shipments through the Strait of Hormuz. We cannot say that the 20 percent plan alone caused the rise.\n\nThen came the second act. On the next day, July 14, the main player suddenly changed. Trump posted that the 20 percent reimbursement fee would be replaced by deals involving Gulf countries' trade with and investment in the United States. He explained that this decision was based on “very productive discussions” with Middle Eastern leaders.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "We cannot say that the 20 percent plan alone caused the rise.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "Then came the second act.",
+          "origin": null,
+          "related_fact_id": "HF-002",
+          "dev": {
+            "claim_in_article": "Then came the second act.",
+            "issue": "決定論検査で戻した: quote_not_in_ledger",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-002",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "quote_not_in_ledger"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On the same day, Brent crude oil futures rose 9.59 percent from the previous day and settled at $83.30 a barrel. Reports linked this rise to concerns about a US naval blockade against Iran, which was expected to begin the next day, and about energy shipments through the Strait of Hormuz. We cannot say that the 20 percent plan alone caused the rise.\n\nThen came the second act. On the next day, July 14, the main player suddenly changed. Trump posted that the 20 percent reimbursement fee would be replaced by deals involving Gulf countries' trade with and investment in the United States. He explained that this decision was based on “very productive discussions” with Middle Eastern leaders.\n\nA proposal that had asked cargo to bear a cost until the day before became a story about investment and trade the next day. The script for the policy was rewritten quite boldly.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-002",
+            "claim_text": "Then came the second act.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "No.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "No.",
+            "issue": "直前の問いへの否定として、市場が安堵して反応しなかったと断定する形ですが、その感情的な評価はLedgerにありません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S7.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S7.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "A proposal that had asked cargo to bear a cost until the day before became a story about investment and trade the next day. The script for the policy was rewritten quite boldly.\n\nDid the crude oil market then lower the curtain in relief? No. After the announcement, the rise in Brent futures narrowed for a while. But before long, they returned to nearly the high level seen before the announcement. At the time of publication, they were up about 2.6 percent and above $85 a barrel.\n\nThe market's answer in the third act was quite silent. Even after the fee plan was replaced, concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers remained.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "No.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe.",
+            "issue": "市場が請求先ではなく海峡の安全を見ていたという比較・市場の注目対象は、Ledgerに明示されていません。 / 市場が料金の行方より海上安全を注視していたという比較・市場心理はLedgerに確認されていない。 / 市場が政策上の請求内容より海上安全を重視していたという比較・解釈はLedgerに裏付けられていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S9.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S9.1"
+              ],
+              "related_fact_ids": [
+                "HF-009",
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The market's answer in the third act was quite silent. Even after the fee plan was replaced, concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers remained.\n\nIn other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe. Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains. News from a faraway strait gave its answer through market prices.\n\n## In one line\nTrump replaced a 20 percent fee proposal with investment deals, but oil prices stayed high amid shipping fears.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe.",
+            "first_materiality": "QUALITY",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains.",
+            "issue": "海上の不安が続く限り原油価格が落ち着かないという一般的な因果・予測はLedgerに記載されていません。 / Brentの観測結果を超えて原油価格一般について将来の動きを断定し、海上不安を価格が落ち着かない原因としている。 / 海上不安が原油価格一般を落ち着かなくさせるという因果・将来予測はLedgerで確認されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S9.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S9.2"
+              ],
+              "related_fact_ids": [
+                "HF-009",
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The market's answer in the third act was quite silent. Even after the fee plan was replaced, concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers remained.\n\nIn other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe. Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains. News from a faraway strait gave its answer through market prices.\n\n## In one line\nTrump replaced a 20 percent fee proposal with investment deals, but oil prices stayed high amid shipping fears.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains.",
+            "first_materiality": "QUALITY",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "On the next day, July 14, the main player suddenly changed.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "On the next day, July 14, the main player suddenly changed.",
+            "issue": "政策の「主役が二度変わった」という整理と、最後まで懸念が続いたという包括的な表現は、Ledgerが述べる事実を超えています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On the same day, Brent crude oil futures rose 9.59 percent from the previous day and settled at $83.30 a barrel. Reports linked this rise to concerns about a US naval blockade against Iran, which was expected to begin the next day, and about energy shipments through the Strait of Hormuz. We cannot say that the 20 percent plan alone caused the rise.\n\nThen came the second act. On the next day, July 14, the main player suddenly changed. Trump posted that the 20 percent reimbursement fee would be replaced by deals involving Gulf countries' trade with and investment in the United States. He explained that this decision was based on “very productive discussions” with Middle Eastern leaders.\n\nA proposal that had asked cargo to bear a cost until the day before became a story about investment and trade the next day. The script for the policy was rewritten quite boldly.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "On the next day, July 14, the main player suddenly changed.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_date_or_period",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "Trump posted that the United States would ask for a 20 percent reimbursement from all cargo passing through the Strait of Hormuz, as payment for the cost of keeping it safe.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "Trump posted that the United States would ask for a 20 percent reimbursement from all cargo passing through the Strait of Hormuz, as payment for the cost of keeping it safe.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.3"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "We cannot say that the 20 percent plan alone caused the rise."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This news was like a short play set in the crude oil market. The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz.\n\nThe first act was on July 13. Trump posted that the United States would ask for a 20 percent reimbursement from all cargo passing through the Strait of Hormuz, as payment for the cost of keeping it safe. The United States would protect the strait and get that cost back. That was the proposal.\n\nBut the important point here is that the United States had not actually started collecting the money. It was not clear who would pay, what the amount would be based on, or how it would be collected. A flashy number had appeared, but how the plan would work was still behind the curtain.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "Trump posted that the United States would ask for a 20 percent reimbursement from all cargo passing through the Strait of Hormuz, as payment for the cost of keeping it safe.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "Trump posted that the 20 percent reimbursement fee would be replaced by deals involving Gulf countries' trade with and investment in the United States.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "Trump posted that the 20 percent reimbursement fee would be replaced by deals involving Gulf countries' trade with and investment in the United States.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.3"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "We cannot say that the 20 percent plan alone caused the rise."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On the same day, Brent crude oil futures rose 9.59 percent from the previous day and settled at $83.30 a barrel. Reports linked this rise to concerns about a US naval blockade against Iran, which was expected to begin the next day, and about energy shipments through the Strait of Hormuz. We cannot say that the 20 percent plan alone caused the rise.\n\nThen came the second act. On the next day, July 14, the main player suddenly changed. Trump posted that the 20 percent reimbursement fee would be replaced by deals involving Gulf countries' trade with and investment in the United States. He explained that this decision was based on “very productive discussions” with Middle Eastern leaders.\n\nA proposal that had asked cargo to bear a cost until the day before became a story about investment and trade the next day. The script for the policy was rewritten quite boldly.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "Trump posted that the 20 percent reimbursement fee would be replaced by deals involving Gulf countries' trade with and investment in the United States.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "Trump replaced a 20 percent fee proposal with investment deals, but oil prices stayed high amid shipping fears.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "Trump replaced a 20 percent fee proposal with investment deals, but oil prices stayed high amid shipping fears.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.3"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "We cannot say that the 20 percent plan alone caused the rise."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe. Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains. News from a faraway strait gave its answer through market prices.\n\n## In one line\nTrump replaced a 20 percent fee proposal with investment deals, but oil prices stayed high amid shipping fears.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "Trump replaced a 20 percent fee proposal with investment deals, but oil prices stayed high amid shipping fears.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "News from a faraway strait gave its answer through market prices.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "News from a faraway strait gave its answer through market prices.",
+            "issue": "市場が請求先ではなく海峡の安全を見ていたという比較・市場の注目対象は、Ledgerに明示されていません。 / 市場が料金の行方より海上安全を注視していたという比較・市場心理はLedgerに確認されていない。 / 市場が政策上の請求内容より海上安全を重視していたという比較・解釈はLedgerに裏付けられていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S9.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S9.1"
+              ],
+              "related_fact_ids": [
+                "HF-009",
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The market's answer in the third act was quite silent. Even after the fee plan was replaced, concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers remained.\n\nIn other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe. Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains. News from a faraway strait gave its answer through market prices.\n\n## In one line\nTrump replaced a 20 percent fee proposal with investment deals, but oil prices stayed high amid shipping fears.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "News from a faraway strait gave its answer through market prices.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12
+          }
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 11,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_claim",
+          "second_materiality": "BLOCKING",
+          "second_basis": "ledger_numeric_value",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": false,
+          "split": true,
+          "prompt_sha256": [
+            "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+            "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+          ],
+          "batch_cost_jpy": 0.2165,
+          "batch_n_claims": 12,
+          "hint_source": "checker_issue+ledger_notes_for_writer+ledger_conditions"
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "But the important point here is that the United States had not actually started collecting the money.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+            "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+          ],
+          "batch_cost_jpy": 0.2165,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "We cannot say that the 20 percent plan alone caused the rise.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+            "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+          ],
+          "batch_cost_jpy": 0.2165,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-002",
+          "claim_text": "Then came the second act.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+            "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+          ],
+          "batch_cost_jpy": 0.2165,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "No.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+            "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+          ],
+          "batch_cost_jpy": 0.2165,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe.",
+          "first_materiality": "QUALITY",
+          "first_basis": "unsupported_relationship",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+            "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+          ],
+          "batch_cost_jpy": 0.2165,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains.",
+          "first_materiality": "QUALITY",
+          "first_basis": "unsupported_relationship",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+            "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+          ],
+          "batch_cost_jpy": 0.2165,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "On the next day, July 14, the main player suddenly changed.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_date_or_period",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+            "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+          ],
+          "batch_cost_jpy": 0.2165,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "Trump posted that the United States would ask for a 20 percent reimbursement from all cargo passing through the Strait of Hormuz, as payment for the cost of keeping it safe.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+            "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+          ],
+          "batch_cost_jpy": 0.2165,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "Trump posted that the 20 percent reimbursement fee would be replaced by deals involving Gulf countries' trade with and investment in the United States.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+            "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+          ],
+          "batch_cost_jpy": 0.2165,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "Trump replaced a 20 percent fee proposal with investment deals, but oil prices stayed high amid shipping fears.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+            "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+          ],
+          "batch_cost_jpy": 0.2165,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "News from a faraway strait gave its answer through market prices.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+            "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+          ],
+          "batch_cost_jpy": 0.2165,
+          "batch_n_claims": 12
+        }
+      ],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-007",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "hook",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L0",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz."
+              ],
+              "raw_spans": [
+                [
+                  132,
+                  242
+                ]
+              ],
+              "spans": [
+                [
+                  132,
+                  242
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L0"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false
+            },
+            "level_attempts": [
+              {
+                "level": "1_word_connective",
+                "targets": [
+                  "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz."
+                ],
+                "target_equals_confirmed_ranges": true,
+                "revised": [
+                  "The main player changed once."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "actor_guard_decision": [
+                  {
+                    "mode": "ag1_strict",
+                    "ok": true,
+                    "new_classes": []
+                  }
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz.",
+                    "after": "The main player changed once."
+                  }
+                ]
+              }
+            ],
+            "level_used": "1_word_connective",
+            "span_unverified": false,
+            "problem_kind": "term_scope",
+            "levels_planned": [
+              "1_word_connective",
+              "3_sentence",
+              "4_paragraph"
+            ],
+            "levels_attempted": [
+              "1_word_connective"
+            ]
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 15.79,
+          "difficult_word_ratio": 0.1266,
+          "word_count": 458
+        },
+        "stats_after": {
+          "avg_sentence_len": 15.31,
+          "difficult_word_ratio": 0.1284,
+          "word_count": 444
+        },
+        "sentence_len_increase": -0.48,
+        "difficulty_ratio_increase": 0.0018,
+        "fragment_stats_before": {
+          "avg_sentence_len": 19.0,
+          "difficult_word_ratio": 0.0526,
+          "word_count": 19
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 5.0,
+          "difficult_word_ratio": 0.0,
+          "word_count": 5
+        },
+        "fragment_sentence_len_increase": -14.0,
+        "fragment_difficulty_ratio_increase": -0.0526,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 32,
+        "hook_word_count_after": 18,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 11,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 29,
+        "sentence_count_after": 29,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 1,
+        "hedge_word_count_after": 1,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# The 20 Percent Plan Turned into an Investment Proposal the Next Day\n\nThis news was like a short play set in the crude oil market. The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz.\n\nThe first act was on July 13. Trump posted that the United States would ask for a 20 percent reimbursement from all cargo passing through the Strait of Hormuz, as payment for the cost of keeping it safe. The United States would protect the strait and get that cost back. That was the proposal.\n\nBut the important point here is that the United States had not actually started collecting the money. It was not clear who would pay, what the amount would be based on, or how it would be collected. A flashy number had appeared, but how the plan would work was still behind the curtain.\n\nOn the same day, Brent crude oil futures rose 9.59 percent from the previous day and settled at $83.30 a barrel. Reports linked this rise to concerns about a US naval blockade against Iran, which was expected to begin the next day, and about energy shipments through the Strait of Hormuz. We cannot say that the 20 percent plan alone caused the rise.\n\nThen came the second act. On the next day, July 14, the main player suddenly changed. Trump posted that the 20 percent reimbursement fee would be replaced by deals involving Gulf countries' trade with and investment in the United States. He explained that this decision was based on “very productive discussions” with Middle Eastern leaders.\n\nA proposal that had asked cargo to bear a cost until the day before became a story about investment and trade the next day. The script for the policy was rewritten quite boldly.\n\nDid the crude oil market then lower the curtain in relief? No. After the announcement, the rise in Brent futures narrowed for a while. But before long, they returned to nearly the high level seen before the announcement. At the time of publication, they were up about 2.6 percent and above $85 a barrel.\n\nThe market's answer in the third act was quite silent. Even after the fee plan was replaced, concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers remained.\n\nIn other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe. Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains. News from a faraway strait gave its answer through market prices.\n\n## In one line\nTrump replaced a 20 percent fee proposal with investment deals, but oil prices stayed high amid shipping fears.",
+      "en_text_after_rewrite": "# The 20 Percent Plan Turned into an Investment Proposal the Next Day\n\nThis news was like a short play set in the crude oil market. The main player changed once.\n\nThe first act was on July 13. Trump posted that the United States would ask for a 20 percent reimbursement from all cargo passing through the Strait of Hormuz, as payment for the cost of keeping it safe. The United States would protect the strait and get that cost back. That was the proposal.\n\nBut the important point here is that the United States had not actually started collecting the money. It was not clear who would pay, what the amount would be based on, or how it would be collected. A flashy number had appeared, but how the plan would work was still behind the curtain.\n\nOn the same day, Brent crude oil futures rose 9.59 percent from the previous day and settled at $83.30 a barrel. Reports linked this rise to concerns about a US naval blockade against Iran, which was expected to begin the next day, and about energy shipments through the Strait of Hormuz. We cannot say that the 20 percent plan alone caused the rise.\n\nThen came the second act. On the next day, July 14, the main player suddenly changed. Trump posted that the 20 percent reimbursement fee would be replaced by deals involving Gulf countries' trade with and investment in the United States. He explained that this decision was based on “very productive discussions” with Middle Eastern leaders.\n\nA proposal that had asked cargo to bear a cost until the day before became a story about investment and trade the next day. The script for the policy was rewritten quite boldly.\n\nDid the crude oil market then lower the curtain in relief? No. After the announcement, the rise in Brent futures narrowed for a while. But before long, they returned to nearly the high level seen before the announcement. At the time of publication, they were up about 2.6 percent and above $85 a barrel.\n\nThe market's answer in the third act was quite silent. Even after the fee plan was replaced, concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers remained.\n\nIn other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe. Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains. News from a faraway strait gave its answer through market prices.\n\n## In one line\nTrump replaced a 20 percent fee proposal with investment deals, but oil prices stayed high amid shipping fears.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "deterministic_floor_claim",
+        "short_section_no_window(title_hook_in_one_line)"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "prior_issue_text_sources": [
+        "current_text"
+      ],
+      "recheck_coverage": {
+        "scope_ids": [
+          "S1.1",
+          "S1.2",
+          "S2.1"
+        ],
+        "changed_ids": [
+          "S1.2"
+        ],
+        "n_scope": 3,
+        "n_judged_units": 30,
+        "n_union_candidates": 1,
+        "n_calls": 2,
+        "total_cost_jpy": 0.5044,
+        "n_prior_claim_hits": 1,
+        "missing_after_rerun": [],
+        "api_failure": false,
+        "reclassify": {
+          "reclassify_status": "no_target",
+          "n_model_entries": 2,
+          "n_targets": 0,
+          "n_protected_keys": 1,
+          "n_excluded_claims": 0,
+          "n_excluded_entries": 0,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.0,
+          "effort": "medium",
+          "prompt_sha256": null
+        }
+      },
+      "recheck_structural_pairs_n": 0,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false,
+      "recheck_prior_issues_resolved": [
+        {
+          "index": 0,
+          "resolved": false,
+          "explanation": "coverage scope recheck: candidate remains (model)",
+          "remaining_sentence": "The main player changed once."
+        }
+      ],
+      "recheck_prior_issues_resolved_by_index": {
+        "0": false
+      },
+      "recheck_prior_issues_sent_count": 1,
+      "recheck_merge": {
+        "decision": "NEXT_CYCLE",
+        "source": "recheck",
+        "merged_from": [
+          "recheck_major"
+        ],
+        "n_merged": 1,
+        "n_dedup_dropped": 1,
+        "reverify_deviation_without_major": false,
+        "merged_claims": [
+          {
+            "fact_id": "HF-007",
+            "claim": "The main player changed once.",
+            "label": "recheck_major"
+          }
+        ]
+      }
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "The main player changed once.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "The main player changed once.",
+            "issue": "Ledgerは、提案を置き換えたことは確認しているが、「主役」が一度変わったとは述べていない。主役が政策案を指すのか人物を指すのかも明確でない。 / 置き換えられたのは償還料案であり、トランプ氏などの「主役」が変わったという事実はLedgerにない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The 20 Percent Plan Turned into an Investment Proposal the Next Day\n\nThis news was like a short play set in the crude oil market. The main player changed once.\n\nThe first act was on July 13. Trump posted that the United States would ask for a 20 percent reimbursement from all cargo passing through the Strait of Hormuz, as payment for the cost of keeping it safe. The United States would protect the strait and get that cost back. That was the proposal.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 2,
+            "route": "hook",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "The main player changed once.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "87a1ff529a3259e7243624ba764edd622d079282df891358947dbc3db789e5d1"
+            ],
+            "batch_cost_jpy": 0.0373,
+            "batch_n_claims": 1
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 2,
+          "route": "hook",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "The main player changed once.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "87a1ff529a3259e7243624ba764edd622d079282df891358947dbc3db789e5d1"
+          ],
+          "batch_cost_jpy": 0.0373,
+          "batch_n_claims": 1
+        }
+      ],
+      "exit_check": {
+        "cycle": 2,
+        "n_candidates": 5,
+        "api_failure": false,
+        "n_calls": 1,
+        "n_judged_units": 30,
+        "total_cost_jpy": 0.6051,
+        "missing_after_rerun": [],
+        "reclassify": {
+          "reclassify_status": "ok",
+          "n_model_entries": 7,
+          "n_targets": 6,
+          "n_protected_keys": 1,
+          "n_excluded_claims": 4,
+          "n_excluded_entries": 4,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.2375,
+          "effort": "medium",
+          "prompt_sha256": "fe9a29433b52c95e72dc9b4508e3f0cf14d39b66ccd744759ad5c3cfb46fa170"
+        }
+      }
+    },
+    {
+      "cycle": 3,
+      "stage2_results": [
+        {
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "detected_by": "stage1_llm",
+          "local_context": "# The 20 Percent Plan Turned into an Investment Proposal the Next Day\n\nThis news was like a short play set in the crude oil market. The main player changed once.\n\nThe first act was on July 13. Trump posted that the United States would ask for a 20 percent reimbursement from all cargo passing through the Strait of Hormuz, as payment for the cost of keeping it safe. The United States would protect the strait and get that cost back. That was the proposal.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 2,
+            "route": "hook",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "The main player changed once.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "87a1ff529a3259e7243624ba764edd622d079282df891358947dbc3db789e5d1"
+            ],
+            "batch_cost_jpy": 0.0373,
+            "batch_n_claims": 1
+          },
+          "claim_text": "The main player changed once.",
+          "dev": {
+            "claim_in_article": "The main player changed once.",
+            "issue": "政策案が置き換わったことはLedgerにあるが、「main player」が変わったという主張は支えられていない。発言者は同じトランプ大統領である。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "detected_by": "stage1_llm",
+          "local_context": "But the important point here is that the United States had not actually started collecting the money. It was not clear who would pay, what the amount would be based on, or how it would be collected. A flashy number had appeared, but how the plan would work was still behind the curtain.\n\nOn the same day, Brent crude oil futures rose 9.59 percent from the previous day and settled at $83.30 a barrel. Reports linked this rise to concerns about a US naval blockade against Iran, which was expected to begin the next day, and about energy shipments through the Strait of Hormuz. We cannot say that the 20 percent plan alone caused the rise.\n\nThen came the second act. On the next day, July 14, the main player suddenly changed. Trump posted that the 20 percent reimbursement fee would be replaced by deals involving Gulf countries' trade with and investment in the United States. He explained that this decision was based on “very productive discussions” with Middle Eastern leaders.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "We cannot say that the 20 percent plan alone caused the rise.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12
+          },
+          "claim_text": "We cannot say that the 20 percent plan alone caused the rise.",
+          "dev": {
+            "claim_in_article": "We cannot say that the 20 percent plan alone caused the rise.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.3"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "detected_by": "stage1_llm",
+          "local_context": "A proposal that had asked cargo to bear a cost until the day before became a story about investment and trade the next day. The script for the policy was rewritten quite boldly.\n\nDid the crude oil market then lower the curtain in relief? No. After the announcement, the rise in Brent futures narrowed for a while. But before long, they returned to nearly the high level seen before the announcement. At the time of publication, they were up about 2.6 percent and above $85 a barrel.\n\nThe market's answer in the third act was quite silent. Even after the fee plan was replaced, concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers remained.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "No.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12
+          },
+          "claim_text": "No.",
+          "dev": {
+            "claim_in_article": "No.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S7.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "detected_by": "stage1_llm",
+          "local_context": "The market's answer in the third act was quite silent. Even after the fee plan was replaced, concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers remained.\n\nIn other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe. Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains. News from a faraway strait gave its answer through market prices.\n\n## In one line\nTrump replaced a 20 percent fee proposal with investment deals, but oil prices stayed high amid shipping fears.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe.",
+            "first_materiality": "QUALITY",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12
+          },
+          "claim_text": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe.",
+          "dev": {
+            "claim_in_article": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe.",
+            "issue": "市場が料金の行き先ではなく海峡の安全性を注視していた、という市場の関心に関する結論はLedgerに直接記載されていない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S9.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S9.1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "detected_by": "stage1_llm",
+          "local_context": "The market's answer in the third act was quite silent. Even after the fee plan was replaced, concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers remained.\n\nIn other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe. Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains. News from a faraway strait gave its answer through market prices.\n\n## In one line\nTrump replaced a 20 percent fee proposal with investment deals, but oil prices stayed high amid shipping fears.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains.",
+            "first_materiality": "QUALITY",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd",
+              "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+            ],
+            "batch_cost_jpy": 0.2165,
+            "batch_n_claims": 12
+          },
+          "claim_text": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains.",
+          "dev": {
+            "claim_in_article": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains.",
+            "issue": "海上の不安が続く限り原油価格は容易に落ち着かないという一般的な条件・因果関係はLedgerに記載されていない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S9.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S9.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 5,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": []
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5387,
+      "usage": {
+        "input_tokens": 5246,
+        "cached_input_tokens": 0,
+        "output_tokens": 5819,
+        "reasoning_tokens": 1486
+      },
+      "elapsed_seconds": 45.968,
+      "prompt_sha256": "e615234debf95dd144a6a201d768c42e0e4d98866f9152f773ebd073a9ef3db9",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.9304,
+      "usage": {
+        "input_tokens": 4849,
+        "cached_input_tokens": 0,
+        "output_tokens": 10892,
+        "reasoning_tokens": 7804
+      },
+      "elapsed_seconds": 98.809,
+      "prompt_sha256": "06a608f8c3bdf422ef567f988170003112146ce710a4e32f32381ab58c5b62a5",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.3101,
+      "usage": {
+        "input_tokens": 5193,
+        "cached_input_tokens": 0,
+        "output_tokens": 2915,
+        "reasoning_tokens": 2070
+      },
+      "elapsed_seconds": 25.587,
+      "prompt_sha256": "087487978b1a44ff4acc8d18d7403cdb998e3bd936a0d01d55d93c5ecab9faaa",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2918,
+      "usage": {
+        "input_tokens": 10845,
+        "cached_input_tokens": 0,
+        "output_tokens": 1551,
+        "reasoning_tokens": 1242
+      },
+      "elapsed_seconds": 14.651,
+      "prompt_sha256": "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1272,
+      "usage": {
+        "input_tokens": 5881,
+        "cached_input_tokens": 0,
+        "output_tokens": 445,
+        "reasoning_tokens": 395
+      },
+      "elapsed_seconds": 6.868,
+      "prompt_sha256": "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1231,
+      "usage": {
+        "input_tokens": 10845,
+        "cached_input_tokens": 10842,
+        "output_tokens": 1352,
+        "reasoning_tokens": 1034
+      },
+      "elapsed_seconds": 11.495,
+      "prompt_sha256": "869a4e52aa76075fa82bc2f0164550c3dc9586610ab3014b88782406da0dd4cd"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0934,
+      "usage": {
+        "input_tokens": 5881,
+        "cached_input_tokens": 5878,
+        "output_tokens": 1072,
+        "reasoning_tokens": 933
+      },
+      "elapsed_seconds": 10.471,
+      "prompt_sha256": "e918913d7e9dfd6f4df4eb64e42fa78e0968a8a9b48ed6b48415c5c0138c6b98"
+    },
+    {
+      "label": "meta_run03_advanced_c1_fact:HF-007_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0858,
+      "usage": {
+        "input_tokens": 4021,
+        "cached_input_tokens": 0,
+        "output_tokens": 289,
+        "reasoning_tokens": 270
+      },
+      "elapsed_seconds": 4.39,
+      "prompt_sha256": "15f4fa0dcce4dc3c79081da1a97a33862dfe5897d61d0ce68fc3eec778e41b43"
+    },
+    {
+      "label": "meta_run03_advanced_c1_recheck_r3",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2279,
+      "usage": {
+        "input_tokens": 5098,
+        "cached_input_tokens": 0,
+        "output_tokens": 1886,
+        "reasoning_tokens": 1391
+      },
+      "elapsed_seconds": 20.289,
+      "prompt_sha256": "22d3fa6e52a55a4115c9415d37908d1d4f311d8dba7423a961bd75e79b785aa4",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_recheck_r5v",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2765,
+      "usage": {
+        "input_tokens": 4752,
+        "cached_input_tokens": 0,
+        "output_tokens": 2574,
+        "reasoning_tokens": 2225
+      },
+      "elapsed_seconds": 24.723,
+      "prompt_sha256": "d61ca61571c95648e5124a14021fc2eed7a8de77455d6287c9b2bd0c1873b50e",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_c2_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1386,
+      "usage": {
+        "input_tokens": 5845,
+        "cached_input_tokens": 0,
+        "output_tokens": 598,
+        "reasoning_tokens": 547
+      },
+      "elapsed_seconds": 6.503,
+      "prompt_sha256": "87a1ff529a3259e7243624ba764edd622d079282df891358947dbc3db789e5d1"
+    },
+    {
+      "label": "meta_run03_advanced_c2_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0373,
+      "usage": {
+        "input_tokens": 5845,
+        "cached_input_tokens": 5842,
+        "output_tokens": 358,
+        "reasoning_tokens": 308
+      },
+      "elapsed_seconds": 3.945,
+      "prompt_sha256": "87a1ff529a3259e7243624ba764edd622d079282df891358947dbc3db789e5d1"
+    },
+    {
+      "label": "meta_run03_advanced_exit_r3",
+      "recovery_stage": "stage1_exit_check",
+      "cost_jpy": 0.6051,
+      "usage": {
+        "input_tokens": 5228,
+        "cached_input_tokens": 0,
+        "output_tokens": 6668,
+        "reasoning_tokens": 1686
+      },
+      "elapsed_seconds": 49.089,
+      "prompt_sha256": "7d503be8f8c0168d37f79fb01640e7156028ac1eec948b543160ac5903c1d7a0",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_exit_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2375,
+      "usage": {
+        "input_tokens": 5028,
+        "cached_input_tokens": 0,
+        "output_tokens": 2022,
+        "reasoning_tokens": 1446
+      },
+      "elapsed_seconds": 19.796,
+      "prompt_sha256": "fe9a29433b52c95e72dc9b4508e3f0cf14d39b66ccd744759ad5c3cfb46fa170",
+      "reasoning_effort": "medium"
+    }
+  ],
+  "total_cost_jpy": 4.0234,
+  "total_calls": 14,
+  "elapsed_seconds": 342.692,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz.",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "政策の「主役が二度変わった」という整理と、最後まで懸念が続いたという包括的な表現は、Ledgerが述べる事実を超えています。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But the important point here is that the United States had not actually started collecting the money.",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "Ledgerは提案だったことを確認していますが、実際に徴収を開始していなかったと明示していません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "We cannot say that the 20 percent plan alone caused the rise.",
+        "related_fact_id": "HF-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Then came the second act.",
+        "related_fact_id": "HF-002",
+        "origin": null,
+        "issue": "決定論検査で戻した: quote_not_in_ledger",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "No.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "直前の問いへの否定として、市場が安堵して反応しなかったと断定する形ですが、その感情的な評価はLedgerにありません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S7.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "市場が請求先ではなく海峡の安全を見ていたという比較・市場の注目対象は、Ledgerに明示されていません。 / 市場が料金の行方より海上安全を注視していたという比較・市場心理はLedgerに確認されていない。 / 市場が政策上の請求内容より海上安全を重視していたという比較・解釈はLedgerに裏付けられていない。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S9.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_comparison",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "海上の不安が続く限り原油価格が落ち着かないという一般的な因果・予測はLedgerに記載されていません。 / Brentの観測結果を超えて原油価格一般について将来の動きを断定し、海上不安を価格が落ち着かない原因としている。 / 海上不安が原油価格一般を落ち着かなくさせるという因果・将来予測はLedgerで確認されていない。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S9.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": [
+      {
+        "cycle": 1,
+        "deviations": [
+          {
+            "severity": "MAJOR",
+            "claim_in_article": "The main player changed once.",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "issue": "Ledgerは、提案を置き換えたことは確認しているが、「主役」が一度変わったとは述べていない。主役が政策案を指すのか人物を指すのかも明確でない。 / 置き換えられたのは償還料案であり、トランプ氏などの「主役」が変わったという事実はLedgerにない。",
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "true_flags": [
+              "changed_actor",
+              "changed_fact",
+              "unsupported_new_claim"
+            ],
+            "enumeration_source_claim": false,
+            "same_fact_id_locations": null,
+            "passed_downstream": true
+          }
+        ],
+        "ja_deviations": null
+      }
+    ]
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 16,
+      "n_model_entries": 14,
+      "n_targets": 9,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 4,
+      "n_excluded_entries": 5,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.3101,
+          "usage": {
+            "input_tokens": 5193,
+            "cached_input_tokens": 0,
+            "output_tokens": 2915,
+            "reasoning_tokens": 2070
+          },
+          "elapsed_seconds": 25.587,
+          "prompt_sha256": "087487978b1a44ff4acc8d18d7403cdb998e3bd936a0d01d55d93c5ecab9faaa",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.3101,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.1",
+          "claim": "This news was like a short play set in the crude oil market.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "比喩的な導入で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.2",
+          "claim": "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「主役が二度変わった」は具体的な回数を含むが、Ledgerで確認できるのは7月13日の提案が翌日に置き換えられたこと。回数・変化の記述が一致しない。",
+          "fact_tags": [
+            "number",
+            "proper_noun"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C3",
+          "key": "S3.1",
+          "claim": "But the important point here is that the United States had not actually started collecting the money.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "徴収が実際には始まっていなかったという否定は、Ledgerに明記されていない。制度設計が未提示であることだけでは、徴収開始の有無までは確認できない。",
+          "fact_tags": [
+            "proper_noun",
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S7.1",
+          "claim": "Did the crude oil market then lower the curtain in relief?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "市場の反応を尋ねる修辞的な問いで、単独では具体的な事実を断定していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S7.2",
+          "claim": "No.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "LedgerではBrent先物が一時的に上げ幅を縮小したとされるため、原油市場全体についての無条件の否定は範囲を広げ、短時間の値動きという限定も落としている。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C6",
+          "key": "S8.1",
+          "claim": "The market's answer in the third act was quite silent.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「市場の答えは静かだった」は比喩的な表現で、具体的な新事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "S9.1",
+          "claim": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "市場が料金の行方ではなく海峡の安全性に注目していたという優先順位の比較は、Ledgerに裏付けられていない。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C8",
+          "key": "S9.2",
+          "claim": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "海上の不安が続く限り価格が落ち着かないという将来の因果的予測はLedgerにない。また、Ledgerの対象は主にBrent先物の観測値であり、原油価格一般へ広げている。",
+          "fact_tags": [
+            "causality",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C9",
+          "key": "S9.3",
+          "claim": "News from a faraway strait gave its answer through market prices.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "市場価格がニュースへの答えを示したという締めの比喩で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "087487978b1a44ff4acc8d18d7403cdb998e3bd936a0d01d55d93c5ecab9faaa"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 40,
+    "n_judged_units": 30,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "S1.1",
+          "S1.2",
+          "S3.1",
+          "S4.3",
+          "S5.1",
+          "S7.1",
+          "S7.2",
+          "S8.1",
+          "S9.1",
+          "S9.2",
+          "S9.3"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.1": "SUPPORTED->CANDIDATE(quote_not_in_ledger)",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S7.1": "CANDIDATE",
+          "S7.2": "CANDIDATE",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "S7.5": "SUPPORTED",
+          "S8.1": "CANDIDATE",
+          "S8.2": "SUPPORTED",
+          "S9.1": "CANDIDATE",
+          "S9.2": "CANDIDATE",
+          "S9.3": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5387,
+            "usage": {
+              "input_tokens": 5246,
+              "cached_input_tokens": 0,
+              "output_tokens": 5819,
+              "reasoning_tokens": 1486
+            },
+            "elapsed_seconds": 45.968,
+            "prompt_sha256": "e615234debf95dd144a6a201d768c42e0e4d98866f9152f773ebd073a9ef3db9",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S7.1": "CANDIDATE",
+          "S7.2": "CANDIDATE",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "S7.5": "SUPPORTED",
+          "S8.1": "CANDIDATE",
+          "S8.2": "SUPPORTED",
+          "S9.1": "CANDIDATE",
+          "S9.2": "CANDIDATE",
+          "S9.3": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "This news was like a short play set in the crude oil market.",
+            "span": [
+              71,
+              131
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "原油市場を舞台にした短い劇という比喩的な評価はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "This news was like a short play set in the crude oil market."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz.",
+            "span": [
+              132,
+              242
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "政策の「主役が二度変わった」という整理と、最後まで懸念が続いたという包括的な表現は、Ledgerが述べる事実を超えています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "But the important point here is that the United States had not actually started collecting the money.",
+            "span": [
+              539,
+              640
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは提案だったことを確認していますが、実際に徴収を開始していなかったと明示していません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "the United States had not actually started collecting the money."
+          },
+          {
+            "unit_id": "S4.3",
+            "unit_ids": [
+              "S4.3"
+            ],
+            "claim_text": "We cannot say that the 20 percent plan alone caused the rise.",
+            "span": [
+              1116,
+              1177
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "Then came the second act.",
+            "span": [
+              1179,
+              1204
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "quote_not_in_ledger"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: quote_not_in_ledger"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S7.1",
+            "unit_ids": [
+              "S7.1"
+            ],
+            "claim_text": "Did the crude oil market then lower the curtain in relief?",
+            "span": [
+              1701,
+              1759
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "市場が安堵して反応したかという感情・解釈を問いに含めていますが、Ledgerは市場の安堵を確認していません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Did the crude oil market then lower the curtain in relief?"
+          },
+          {
+            "unit_id": "S7.2",
+            "unit_ids": [
+              "S7.2"
+            ],
+            "claim_text": "No.",
+            "span": [
+              1760,
+              1763
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "直前の問いへの否定として、市場が安堵して反応しなかったと断定する形ですが、その感情的な評価はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "No."
+          },
+          {
+            "unit_id": "S8.1",
+            "unit_ids": [
+              "S8.1"
+            ],
+            "claim_text": "The market's answer in the third act was quite silent.",
+            "span": [
+              2006,
+              2060
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "市場の反応を「静か」と評価する主張はLedgerに記載されておらず、価格反応の記述からも直接確認できません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The market's answer in the third act was quite silent."
+          },
+          {
+            "unit_id": "S9.1",
+            "unit_ids": [
+              "S9.1"
+            ],
+            "claim_text": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe.",
+            "span": [
+              2208,
+              2342
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "市場が請求先ではなく海峡の安全を見ていたという比較・市場の注目対象は、Ledgerに明示されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe."
+          },
+          {
+            "unit_id": "S9.2",
+            "unit_ids": [
+              "S9.2"
+            ],
+            "claim_text": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains.",
+            "span": [
+              2343,
+              2462
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "海上の不安が続く限り原油価格が落ち着かないという一般的な因果・予測はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains."
+          },
+          {
+            "unit_id": "S9.3",
+            "unit_ids": [
+              "S9.3"
+            ],
+            "claim_text": "News from a faraway strait gave its answer through market prices.",
+            "span": [
+              2463,
+              2528
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "遠い海峡からのニュースが市場価格を通じて答えを示したという解釈はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "News from a faraway strait gave its answer through market prices."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S9.1",
+          "S9.2",
+          "S9.3"
+        ],
+        "unit_status": {
+          "T": "MATCH",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "L1": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S5.4": "MATCH",
+          "S6.1": "MATCH",
+          "S6.2": "MATCH",
+          "S7.3": "MATCH",
+          "S8.2": "MATCH",
+          "S9.1": "DEVIATION",
+          "S9.2": "DEVIATION",
+          "S7.1": "MATCH",
+          "S7.2": "MATCH",
+          "S7.4": "MATCH",
+          "S7.5": "MATCH",
+          "S9.3": "DEVIATION",
+          "S1.1": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S5.1": "UNMENTIONED",
+          "S8.1": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.9304,
+            "usage": {
+              "input_tokens": 4849,
+              "cached_input_tokens": 0,
+              "output_tokens": 10892,
+              "reasoning_tokens": 7804
+            },
+            "elapsed_seconds": 98.809,
+            "prompt_sha256": "06a608f8c3bdf422ef567f988170003112146ce710a4e32f32381ab58c5b62a5",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S9.1",
+            "unit_ids": [
+              "S9.1"
+            ],
+            "claim_text": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe.",
+            "span": [
+              2208,
+              2342
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "市場が料金の行方より海上安全を注視していたという比較・市場心理はLedgerに確認されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe."
+          },
+          {
+            "unit_id": "S9.2",
+            "unit_ids": [
+              "S9.2"
+            ],
+            "claim_text": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains.",
+            "span": [
+              2343,
+              2462
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Brentの観測結果を超えて原油価格一般について将来の動きを断定し、海上不安を価格が落ち着かない原因としている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains."
+          },
+          {
+            "unit_id": "S9.1",
+            "unit_ids": [
+              "S9.1"
+            ],
+            "claim_text": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe.",
+            "span": [
+              2208,
+              2342
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "市場が政策上の請求内容より海上安全を重視していたという比較・解釈はLedgerに裏付けられていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe."
+          },
+          {
+            "unit_id": "S9.2",
+            "unit_ids": [
+              "S9.2"
+            ],
+            "claim_text": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains.",
+            "span": [
+              2343,
+              2462
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "海上不安が原油価格一般を落ち着かなくさせるという因果・将来予測はLedgerで確認されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains."
+          },
+          {
+            "unit_id": "S9.3",
+            "unit_ids": [
+              "S9.3"
+            ],
+            "claim_text": "News from a faraway strait gave its answer through market prices.",
+            "span": [
+              2463,
+              2528
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "海峡のニュースが市場価格を通じて特定の答えを示したという解釈はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "News from a faraway strait gave its answer through market prices."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S9.1",
+        "S9.2",
+        "S9.3"
+      ],
+      "r3_only": [
+        "S1.1",
+        "S1.2",
+        "S3.1",
+        "S4.3",
+        "S5.1",
+        "S7.1",
+        "S7.2",
+        "S8.1"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 2
+    },
+    "union_candidates": [
+      {
+        "claim_text": "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz.",
+        "span": [
+          132,
+          242
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "政策の「主役が二度変わった」という整理と、最後まで懸念が続いたという包括的な表現は、Ledgerが述べる事実を超えています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "The main player changed twice, but one thing stayed onstage until the end: concern about the Strait of Hormuz."
+        ]
+      },
+      {
+        "claim_text": "But the important point here is that the United States had not actually started collecting the money.",
+        "span": [
+          539,
+          640
+        ],
+        "unit_ids": [
+          "S3.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "Ledgerは提案だったことを確認していますが、実際に徴収を開始していなかったと明示していません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-003"
+        ],
+        "model_claims": [
+          "the United States had not actually started collecting the money."
+        ]
+      },
+      {
+        "claim_text": "We cannot say that the 20 percent plan alone caused the rise.",
+        "span": [
+          1116,
+          1177
+        ],
+        "unit_ids": [
+          "S4.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Then came the second act.",
+        "span": [
+          1179,
+          1204
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "quote_not_in_ledger"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: quote_not_in_ledger"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-002"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "No.",
+        "span": [
+          1760,
+          1763
+        ],
+        "unit_ids": [
+          "S7.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "直前の問いへの否定として、市場が安堵して反応しなかったと断定する形ですが、その感情的な評価はLedgerにありません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "No."
+        ]
+      },
+      {
+        "claim_text": "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe.",
+        "span": [
+          2208,
+          2342
+        ],
+        "unit_ids": [
+          "S9.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "市場が請求先ではなく海峡の安全を見ていたという比較・市場の注目対象は、Ledgerに明示されていません。",
+          "市場が料金の行方より海上安全を注視していたという比較・市場心理はLedgerに確認されていない。",
+          "市場が政策上の請求内容より海上安全を重視していたという比較・解釈はLedgerに裏付けられていない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009",
+          "HF-007"
+        ],
+        "model_claims": [
+          "In other words, what the market was watching was not where the bill would go, but whether transport through the strait was truly safe."
+        ]
+      },
+      {
+        "claim_text": "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains.",
+        "span": [
+          2343,
+          2462
+        ],
+        "unit_ids": [
+          "S9.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "海上の不安が続く限り原油価格が落ち着かないという一般的な因果・予測はLedgerに記載されていません。",
+          "Brentの観測結果を超えて原油価格一般について将来の動きを断定し、海上不安を価格が落ち着かない原因としている。",
+          "海上不安が原油価格一般を落ち着かなくさせるという因果・将来予測はLedgerで確認されていない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009",
+          "HF-007"
+        ],
+        "model_claims": [
+          "Even if the main policy player changes, crude oil prices will not easily settle down as long as anxiety at sea remains."
+        ]
+      }
+    ],
+    "n_union_candidates": 7,
+    "n_model_candidates": 5,
+    "n_deterministic_only_candidates": 2,
+    "total_cost_jpy": 1.4691,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 14,
+    "n_targets": 9,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 4,
+    "n_excluded_entries": 5,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.3101,
+    "effort": "medium",
+    "prompt_sha256": "087487978b1a44ff4acc8d18d7403cdb998e3bd936a0d01d55d93c5ecab9faaa"
+  },
+  "recheck_exit_check": {
+    "done": true,
+    "log": [
+      {
+        "cycle": 2,
+        "n_candidates": 5,
+        "api_failure": false,
+        "n_calls": 1,
+        "n_judged_units": 30,
+        "total_cost_jpy": 0.6051,
+        "missing_after_rerun": [],
+        "reclassify": {
+          "reclassify_status": "ok",
+          "n_model_entries": 7,
+          "n_targets": 6,
+          "n_protected_keys": 1,
+          "n_excluded_claims": 4,
+          "n_excluded_entries": 4,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.2375,
+          "effort": "medium",
+          "prompt_sha256": "fe9a29433b52c95e72dc9b4508e3f0cf14d39b66ccd744759ad5c3cfb46fa170"
+        }
+      }
+    ]
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 5,
+      "STAGE2_VERDICT_REUSE_NONBLOCKING": 5
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

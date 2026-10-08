@@ -1,0 +1,3172 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "But in Meta’s Muse test, AI was not always the one making the call.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "But in Meta’s Muse test, AI was not always the one making the call.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Muse’s Phone Test: Human Cast Members Stand In for AI\n\nAsking AI to call a store feels like a glimpse of a convenient future. But in Meta’s Muse test, AI was not always the one making the call. In some calls, trained contract staff called as human concierges and completed the conversation with the other person.\n\nMuse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock. But AI was not the only one taking the stage on the phone. In effect, human cast members appeared from behind an AI that had been handed a script.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "But in Meta’s Muse test, AI was not always the one making the call.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+              "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+            ],
+            "batch_cost_jpy": 0.1831,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "But AI was not the only one taking the stage on the phone.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "But AI was not the only one taking the stage on the phone.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Asking AI to call a store feels like a glimpse of a convenient future. But in Meta’s Muse test, AI was not always the one making the call. In some calls, trained contract staff called as human concierges and completed the conversation with the other person.\n\nMuse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock. But AI was not the only one taking the stage on the phone. In effect, human cast members appeared from behind an AI that had been handed a script.\n\nWhat is needed here is an explanation of the roles. Does the person receiving the call clearly learn who is speaking? Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.” A phone call is not a two-person scene involving only the person who made the request and the service. There is also the person receiving the call.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "But AI was not the only one taking the stage on the phone.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+              "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+            ],
+            "batch_cost_jpy": 0.1831,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”",
+            "issue": "Ledgerが記録するのは副社長1人の社内投稿での説明であり、「Meta executives」と複数の幹部が認めたという主体の変更がある。 / Ledgerで認めた主体は副社長1人ですが、記事では「executives」と複数の幹部にしています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Muse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock. But AI was not the only one taking the stage on the phone. In effect, human cast members appeared from behind an AI that had been handed a script.\n\nWhat is needed here is an explanation of the roles. Does the person receiving the call clearly learn who is speaking? Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.” A phone call is not a two-person scene involving only the person who made the request and the service. There is also the person receiving the call.\n\nMoreover, making a call work may require user information. Meta employees worried that sensitive information might be shared with contract staff without users intending it. This is not a story about a large-scale information leak having taken place. Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+              "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+            ],
+            "batch_cost_jpy": 0.1831,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Meta employees worried that sensitive information might be shared with contract staff without users intending it.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "Meta employees worried that sensitive information might be shared with contract staff without users intending it.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "What is needed here is an explanation of the roles. Does the person receiving the call clearly learn who is speaking? Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.” A phone call is not a two-person scene involving only the person who made the request and the service. There is also the person receiving the call.\n\nMoreover, making a call work may require user information. Meta employees worried that sensitive information might be shared with contract staff without users intending it. This is not a story about a large-scale information leak having taken place. Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker.\n\nMeta temporarily rolled back the human concierge feature. It did not stop Muse as a whole. It plans to keep improving the phone feature and release it only when it is ready and proper disclosure can be made.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-010",
+            "claim_text": "Meta employees worried that sensitive information might be shared with contract staff without users intending it.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+              "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+            ],
+            "batch_cost_jpy": 0.1831,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker.",
+            "issue": "聴衆がAIに渡した情報が人間スタッフにも渡るか判断しにくいという点はLedgerに記載されていない。 / 契約スタッフへの情報共有の可能性に加え、受け手から共有の有無を見分けにくいというLedgerにない主張を加えています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.4); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.4"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "What is needed here is an explanation of the roles. Does the person receiving the call clearly learn who is speaking? Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.” A phone call is not a two-person scene involving only the person who made the request and the service. There is also the person receiving the call.\n\nMoreover, making a call work may require user information. Meta employees worried that sensitive information might be shared with contract staff without users intending it. This is not a story about a large-scale information leak having taken place. Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker.\n\nMeta temporarily rolled back the human concierge feature. It did not stop Muse as a whole. It plans to keep improving the phone feature and release it only when it is ready and proper disclosure can be made.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-010",
+            "claim_text": "Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker.",
+            "first_materiality": "QUALITY",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+              "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+            ],
+            "batch_cost_jpy": 0.1831,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Meta temporarily rolled back the human concierge feature.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "Meta temporarily rolled back the human concierge feature.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Moreover, making a call work may require user information. Meta employees worried that sensitive information might be shared with contract staff without users intending it. This is not a story about a large-scale information leak having taken place. Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker.\n\nMeta temporarily rolled back the human concierge feature. It did not stop Muse as a whole. It plans to keep improving the phone feature and release it only when it is ready and proper disclosure can be made.\n\nWhat was at issue with making calls on users’ behalf was not only whether the task could be completed. It was also who would speak and what information would be used. If the task is passed to a person, that too should be made clear to the other party. A convenient phone play seems to require planning that includes all of this.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "Meta temporarily rolled back the human concierge feature.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+              "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+            ],
+            "batch_cost_jpy": 0.1831,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Muse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-004",
+          "dev": {
+            "claim_in_article": "Muse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock.",
+            "issue": "米国内という提供範囲を示さず、Reuters報道に基づく機能を確定的な一般機能として述べています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S2.1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-004",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-004"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Asking AI to call a store feels like a glimpse of a convenient future. But in Meta’s Muse test, AI was not always the one making the call. In some calls, trained contract staff called as human concierges and completed the conversation with the other person.\n\nMuse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock. But AI was not the only one taking the stage on the phone. In effect, human cast members appeared from behind an AI that had been handed a script.\n\nWhat is needed here is an explanation of the roles. Does the person receiving the call clearly learn who is speaking? Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.” A phone call is not a two-person scene involving only the person who made the request and the service. There is also the person receiving the call.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_scope",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-004",
+            "claim_text": "Muse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_scope",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+              "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+            ],
+            "batch_cost_jpy": 0.1831,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Meta’s Muse test sometimes used human contractors instead of AI to make calls, without clearly informing recipients.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "Meta’s Muse test sometimes used human contractors instead of AI to make calls, without clearly informing recipients.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "But in Meta’s Muse test, AI was not always the one making the call."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "What was at issue with making calls on users’ behalf was not only whether the task could be completed. It was also who would speak and what information would be used. If the task is passed to a person, that too should be made clear to the other party. A convenient phone play seems to require planning that includes all of this.\n\n## In one line\nMeta’s Muse test sometimes used human contractors instead of AI to make calls, without clearly informing recipients.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "Meta’s Muse test sometimes used human contractors instead of AI to make calls, without clearly informing recipients.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+              "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+            ],
+            "batch_cost_jpy": 0.1831,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "In some calls, trained contract staff called as human concierges and completed the conversation with the other person.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "In some calls, trained contract staff called as human concierges and completed the conversation with the other person.",
+            "issue": "Ledgerが記録するのは副社長1人の社内投稿での説明であり、「Meta executives」と複数の幹部が認めたという主体の変更がある。 / Ledgerで認めた主体は副社長1人ですが、記事では「executives」と複数の幹部にしています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Muse’s Phone Test: Human Cast Members Stand In for AI\n\nAsking AI to call a store feels like a glimpse of a convenient future. But in Meta’s Muse test, AI was not always the one making the call. In some calls, trained contract staff called as human concierges and completed the conversation with the other person.\n\nMuse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock. But AI was not the only one taking the stage on the phone. In effect, human cast members appeared from behind an AI that had been handed a script.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "In some calls, trained contract staff called as human concierges and completed the conversation with the other person.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+              "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+            ],
+            "batch_cost_jpy": 0.1831,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.",
+            "issue": "Ledgerが記録するのは副社長1人の社内投稿での説明であり、「Meta executives」と複数の幹部が認めたという主体の変更がある。 / Ledgerで認めた主体は副社長1人ですが、記事では「executives」と複数の幹部にしています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Muse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock. But AI was not the only one taking the stage on the phone. In effect, human cast members appeared from behind an AI that had been handed a script.\n\nWhat is needed here is an explanation of the roles. Does the person receiving the call clearly learn who is speaking? Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.” A phone call is not a two-person scene involving only the person who made the request and the service. There is also the person receiving the call.\n\nMoreover, making a call work may require user information. Meta employees worried that sensitive information might be shared with contract staff without users intending it. This is not a story about a large-scale information leak having taken place. Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+              "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+            ],
+            "batch_cost_jpy": 0.1831,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "It plans to keep improving the phone feature and release it only when it is ready and proper disclosure can be made.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "It plans to keep improving the phone feature and release it only when it is ready and proper disclosure can be made.",
+            "issue": "Ledgerが記録するのは副社長1人の社内投稿での説明であり、「Meta executives」と複数の幹部が認めたという主体の変更がある。 / Ledgerで認めた主体は副社長1人ですが、記事では「executives」と複数の幹部にしています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Moreover, making a call work may require user information. Meta employees worried that sensitive information might be shared with contract staff without users intending it. This is not a story about a large-scale information leak having taken place. Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker.\n\nMeta temporarily rolled back the human concierge feature. It did not stop Muse as a whole. It plans to keep improving the phone feature and release it only when it is ready and proper disclosure can be made.\n\nWhat was at issue with making calls on users’ behalf was not only whether the task could be completed. It was also who would speak and what information would be used. If the task is passed to a person, that too should be made clear to the other party. A convenient phone play seems to require planning that includes all of this.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "It plans to keep improving the phone feature and release it only when it is ready and proper disclosure can be made.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+              "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+            ],
+            "batch_cost_jpy": 0.1831,
+            "batch_n_claims": 11
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 11,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "But in Meta’s Muse test, AI was not always the one making the call.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+            "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+          ],
+          "batch_cost_jpy": 0.1831,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "But AI was not the only one taking the stage on the phone.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+            "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+          ],
+          "batch_cost_jpy": 0.1831,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+            "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+          ],
+          "batch_cost_jpy": 0.1831,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-010",
+          "claim_text": "Meta employees worried that sensitive information might be shared with contract staff without users intending it.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+            "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+          ],
+          "batch_cost_jpy": 0.1831,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-010",
+          "claim_text": "Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker.",
+          "first_materiality": "QUALITY",
+          "first_basis": "unsupported_relationship",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+            "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+          ],
+          "batch_cost_jpy": 0.1831,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "Meta temporarily rolled back the human concierge feature.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+            "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+          ],
+          "batch_cost_jpy": 0.1831,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-004",
+          "claim_text": "Muse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_scope",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+            "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+          ],
+          "batch_cost_jpy": 0.1831,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "Meta’s Muse test sometimes used human contractors instead of AI to make calls, without clearly informing recipients.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+            "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+          ],
+          "batch_cost_jpy": 0.1831,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "In some calls, trained contract staff called as human concierges and completed the conversation with the other person.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+            "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+          ],
+          "batch_cost_jpy": 0.1831,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+            "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+          ],
+          "batch_cost_jpy": 0.1831,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "It plans to keep improving the phone feature and release it only when it is ready and proper disclosure can be made.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047",
+            "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+          ],
+          "batch_cost_jpy": 0.1831,
+          "batch_n_claims": 11
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5659,
+      "usage": {
+        "input_tokens": 5069,
+        "cached_input_tokens": 0,
+        "output_tokens": 6201,
+        "reasoning_tokens": 2333
+      },
+      "elapsed_seconds": 52.31,
+      "prompt_sha256": "a3c12d47d2871340e56dfcbbaecdbafa05849cca71047fa55352c10a5155fefb",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.7856,
+      "usage": {
+        "input_tokens": 4759,
+        "cached_input_tokens": 0,
+        "output_tokens": 9063,
+        "reasoning_tokens": 6918
+      },
+      "elapsed_seconds": 82.204,
+      "prompt_sha256": "cabebee8c7f097d87905ab860371063c4f067d43cdefec5c04ade0ee6a1082fd",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.4543,
+      "usage": {
+        "input_tokens": 5502,
+        "cached_input_tokens": 0,
+        "output_tokens": 4691,
+        "reasoning_tokens": 3232
+      },
+      "elapsed_seconds": 41.81,
+      "prompt_sha256": "d596a8c52c086001c9b515442f5583765465e8ab9bed704cb18cc04d94bd8326",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.3472,
+      "usage": {
+        "input_tokens": 10461,
+        "cached_input_tokens": 0,
+        "output_tokens": 2334,
+        "reasoning_tokens": 2070
+      },
+      "elapsed_seconds": 21.126,
+      "prompt_sha256": "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1188,
+      "usage": {
+        "input_tokens": 5793,
+        "cached_input_tokens": 0,
+        "output_tokens": 356,
+        "reasoning_tokens": 279
+      },
+      "elapsed_seconds": 5.896,
+      "prompt_sha256": "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1466,
+      "usage": {
+        "input_tokens": 10461,
+        "cached_input_tokens": 10458,
+        "output_tokens": 1659,
+        "reasoning_tokens": 1393
+      },
+      "elapsed_seconds": 14.481,
+      "prompt_sha256": "226832b45e9d4a362c1d11796dd9242b12e5aae344832fa6ca4b948c240dc047"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0365,
+      "usage": {
+        "input_tokens": 5793,
+        "cached_input_tokens": 5790,
+        "output_tokens": 349,
+        "reasoning_tokens": 270
+      },
+      "elapsed_seconds": 5.35,
+      "prompt_sha256": "4be6bd4dc6ffb4563a986957624dbabdaec9ec5e4edd45ca7832efbea4748c64"
+    }
+  ],
+  "total_cost_jpy": 2.4549,
+  "total_calls": 7,
+  "elapsed_seconds": 223.211,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But in Meta’s Muse test, AI was not always the one making the call.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But AI was not the only one taking the stage on the phone.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "Ledgerが記録するのは副社長1人の社内投稿での説明であり、「Meta executives」と複数の幹部が認めたという主体の変更がある。 / Ledgerで認めた主体は副社長1人ですが、記事では「executives」と複数の幹部にしています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_actor",
+          "changed_fact"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Meta employees worried that sensitive information might be shared with contract staff without users intending it.",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker.",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": null,
+        "issue": "聴衆がAIに渡した情報が人間スタッフにも渡るか判断しにくいという点はLedgerに記載されていない。 / 契約スタッフへの情報共有の可能性に加え、受け手から共有の有無を見分けにくいというLedgerにない主張を加えています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.4); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Meta temporarily rolled back the human concierge feature.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Muse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock.",
+        "related_fact_id": "MUSE-HC-004",
+        "origin": null,
+        "issue": "米国内という提供範囲を示さず、Reuters報道に基づく機能を確定的な一般機能として述べています。",
+        "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S2.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 24,
+      "n_model_entries": 20,
+      "n_targets": 17,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 14,
+      "n_excluded_entries": 15,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.4543,
+          "usage": {
+            "input_tokens": 5502,
+            "cached_input_tokens": 0,
+            "output_tokens": 4691,
+            "reasoning_tokens": 3232
+          },
+          "elapsed_seconds": 41.81,
+          "prompt_sha256": "d596a8c52c086001c9b515442f5583765465e8ab9bed704cb18cc04d94bd8326",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.4543,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.1",
+          "claim": "Asking AI to call a store feels like a glimpse of a convenient future.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "便利な未来への期待を表す導入の修辞で、具体的な事実を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S2.3",
+          "claim": "In effect, human cast members appeared from behind an AI that had been handed a script.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「人間の出演者がAIの背後に現れる」は比喩で、文脈上は一部の電話を訓練済み契約スタッフが担当したというLedgerの事実を表す。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C3",
+          "key": "S3.1",
+          "claim": "What is needed here is an explanation of the roles.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "役割説明が必要だという論評で、具体的な出来事を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S3.2",
+          "claim": "Does the person receiving the call clearly learn who is speaking?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "受け手に誰が話しているか分かるのかを問う修辞的な質問で、答えを事実として断定していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S3.3",
+          "claim": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "開示なしのテストを「ミス」と認めた事実は一致するが、Ledgerが特定するのは副社長であり、記事の複数形の「Meta executives」は主体を広げている。",
+          "fact_tags": [
+            "proper_noun",
+            "negation"
+          ],
+          "actor_match": "mismatch",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C6",
+          "key": "S3.4",
+          "claim": "A phone call is not a two-person scene involving only the person who made the request and the service.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "電話を舞台に見立てた一般的な修辞で、特定の電話や追加の出来事を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "S3.5",
+          "claim": "There is also the person receiving the call.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "電話の受け手にも注意を向ける一般的なつなぎの表現で、新たな具体的事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C8",
+          "key": "S4.1",
+          "claim": "Moreover, making a call work may require user information.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "電話の遂行にユーザー情報が必要となる場合があるという限定付きの主張で、Ledgerの条件と一致する。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C9",
+          "key": "S4.3",
+          "claim": "This is not a story about a large-scale information leak having taken place.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "記事は大規模な情報漏えいが起きたとは主張していないという意味で、Ledgerも実際に大規模漏えいが起きたとは断定しない。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C10",
+          "key": "S4.4",
+          "claim": "Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "受け手から情報共有の有無を見分けにくいという具体的な可視性の主張は、Ledgerに記載されていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C11",
+          "key": "S6.1",
+          "claim": "What was at issue with making calls on users’ behalf was not only whether the task could be completed.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "タスク完了だけでは論点を尽くさないという論評上の枠付けで、成功率などの具体的な事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C12",
+          "key": "S6.2",
+          "claim": "It was also who would speak and what information would be used.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "誰が話すか、どの情報が使われるかという問題提起は、人間スタッフによる電話とユーザー情報共有への従業員の懸念を要約している。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C13",
+          "key": "S6.3",
+          "claim": "If the task is passed to a person, that too should be made clear to the other party.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "人間に引き継ぐ場合は相手に明示すべきだという規範的な提案である。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C14",
+          "key": "S6.4",
+          "claim": "A convenient phone play seems to require planning that includes all of this.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "必要な計画についての締めの論評で、追加の具体的事実を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C15",
+          "key": "L1",
+          "claim": "Meta’s Muse test sometimes used human contractors instead of AI to make calls, without clearly informing recipients.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "Museのテストで一部の電話を契約スタッフが担当し、適切な開示なしに行われたという限定付きの要約はLedgerと一致する。",
+          "fact_tags": [
+            "proper_noun",
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C16",
+          "key": "S2.1",
+          "claim": "Muse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "Ledgerは米国内の企業・店舗への発信と利用可能なユーザーを限定しているが、記事は電話で依頼を扱える範囲を一般化し、その限定を落としている。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "mismatch",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C17",
+          "key": "S5.2",
+          "claim": "It did not stop Muse as a whole.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "ロールバックの対象は人間コンシェルジュ機能で、Muse全体は停止していないというLedgerの範囲・否定と一致する。",
+          "fact_tags": [
+            "proper_noun",
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "d596a8c52c086001c9b515442f5583765465e8ab9bed704cb18cc04d94bd8326"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 31,
+    "n_judged_units": 24,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 15,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.1",
+          "S1.2",
+          "S2.2",
+          "S2.3",
+          "S3.1",
+          "S3.2",
+          "S3.3",
+          "S3.4",
+          "S3.5",
+          "S4.1",
+          "S4.2",
+          "S4.3",
+          "S4.4",
+          "S5.1",
+          "S6.1",
+          "S6.2",
+          "S6.3",
+          "S6.4"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.3": "CANDIDATE",
+          "S3.1": "CANDIDATE",
+          "S3.2": "CANDIDATE",
+          "S3.3": "CANDIDATE",
+          "S3.4": "CANDIDATE",
+          "S3.5": "CANDIDATE",
+          "S4.1": "CANDIDATE",
+          "S4.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.3": "CANDIDATE",
+          "S4.4": "CANDIDATE",
+          "S5.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "S6.3": "CANDIDATE",
+          "S6.4": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5659,
+            "usage": {
+              "input_tokens": 5069,
+              "cached_input_tokens": 0,
+              "output_tokens": 6201,
+              "reasoning_tokens": 2333
+            },
+            "elapsed_seconds": 52.31,
+            "prompt_sha256": "a3c12d47d2871340e56dfcbbaecdbafa05849cca71047fa55352c10a5155fefb",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "CANDIDATE",
+          "S3.1": "CANDIDATE",
+          "S3.2": "CANDIDATE",
+          "S3.3": "CANDIDATE",
+          "S3.4": "CANDIDATE",
+          "S3.5": "CANDIDATE",
+          "S4.1": "CANDIDATE",
+          "S4.2": "SUPPORTED",
+          "S4.3": "CANDIDATE",
+          "S4.4": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "S6.3": "CANDIDATE",
+          "S6.4": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "Asking AI to call a store feels like a glimpse of a convenient future.",
+            "span": [
+              57,
+              127
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "AIに店への電話を頼むことが便利な未来を予感させるという評価・将来像はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-004"
+            ],
+            "model_claim": "Asking AI to call a store feels like a glimpse of a convenient future."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "But in Meta’s Muse test, AI was not always the one making the call.",
+            "span": [
+              128,
+              195
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "But AI was not the only one taking the stage on the phone.",
+            "span": [
+              440,
+              498
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "In effect, human cast members appeared from behind an AI that had been handed a script.",
+            "span": [
+              499,
+              586
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間スタッフがAIの背後に現れたという比喩に加え、AIに台本が渡されていたという具体的含意はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "In effect, human cast members appeared from behind an AI that had been handed a script."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "What is needed here is an explanation of the roles.",
+            "span": [
+              588,
+              639
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "役割の説明が必要だという編集上の評価はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "What is needed here is an explanation of the roles."
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "Does the person receiving the call clearly learn who is speaking?",
+            "span": [
+              640,
+              705
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "発信者が誰かを受け手が明確に知らされているかは、Ledgerで直接確認されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "Does the person receiving the call clearly learn who is speaking?"
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”",
+            "span": [
+              706,
+              829
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerが記録するのは副社長1人の社内投稿での説明であり、「Meta executives」と複数の幹部が認めたという主体の変更がある。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”"
+          },
+          {
+            "unit_id": "S3.4",
+            "unit_ids": [
+              "S3.4"
+            ],
+            "claim_text": "A phone call is not a two-person scene involving only the person who made the request and the service.",
+            "span": [
+              830,
+              932
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "電話に依頼者・サービス・受け手の三者が関わるという説明はLedgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-004"
+            ],
+            "model_claim": "A phone call is not a two-person scene involving only the person who made the request and the service."
+          },
+          {
+            "unit_id": "S3.5",
+            "unit_ids": [
+              "S3.5"
+            ],
+            "claim_text": "There is also the person receiving the call.",
+            "span": [
+              933,
+              977
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "電話の受け手がいるという一般的説明はLedgerの明示的な事実として記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-004"
+            ],
+            "model_claim": "There is also the person receiving the call."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "Moreover, making a call work may require user information.",
+            "span": [
+              979,
+              1037
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "電話の遂行にユーザー情報が必要となる場合があるという条件はLedgerの条件欄にあるが、記事はそれを電話を成立させるための一般的要件として述べている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "Moreover, making a call work may require user information."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "Meta employees worried that sensitive information might be shared with contract staff without users intending it.",
+            "span": [
+              1038,
+              1151
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.3",
+            "unit_ids": [
+              "S4.3"
+            ],
+            "claim_text": "This is not a story about a large-scale information leak having taken place.",
+            "span": [
+              1152,
+              1228
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは大規模な情報漏えいが起きたと断定しないよう注意しているが、漏えいが起きていないこと自体を確認してはいない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": true,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "This is not a story about a large-scale information leak having taken place."
+          },
+          {
+            "unit_id": "S4.4",
+            "unit_ids": [
+              "S4.4"
+            ],
+            "claim_text": "Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker.",
+            "span": [
+              1229,
+              1342
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "聴衆がAIに渡した情報が人間スタッフにも渡るか判断しにくいという点はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "Meta temporarily rolled back the human concierge feature.",
+            "span": [
+              1344,
+              1401
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "What was at issue with making calls on users’ behalf was not only whether the task could be completed.",
+            "span": [
+              1553,
+              1655
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "タスク完了だけでなく他の論点も問題になったという編集上のまとめは、Ledgerにその形で直接記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-008"
+            ],
+            "model_claim": "What was at issue with making calls on users’ behalf was not only whether the task could be completed."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "It was also who would speak and what information would be used.",
+            "span": [
+              1656,
+              1719
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "誰が話すかはLedgerにあるが、何の情報が使われるかを同列の争点としてまとめる表現は、Ledgerの報告を越えた編集上の要約になっている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "It was also who would speak and what information would be used."
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "If the task is passed to a person, that too should be made clear to the other party.",
+            "span": [
+              1720,
+              1804
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "適切な開示が必要との説明はあるが、相手方に人間への引き継ぎを明示すべきだという個別の規範はLedgerに直接記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-014"
+            ],
+            "model_claim": "If the task is passed to a person, that too should be made clear to the other party."
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "A convenient phone play seems to require planning that includes all of this.",
+            "span": [
+              1805,
+              1881
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "便利な電話利用には全てを含めた計画が必要だという評価はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-014"
+            ],
+            "model_claim": "A convenient phone play seems to require planning that includes all of this."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Meta’s Muse test sometimes used human contractors instead of AI to make calls, without clearly informing recipients.",
+            "span": [
+              1898,
+              2014
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間の契約スタッフが一部の電話を担当した点は支えられるが、受け手に明確に知らせずに行ったとする表現は、受け手への開示状況をLedgerより具体化している。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "Meta’s Muse test sometimes used human contractors instead of AI to make calls, without clearly informing recipients."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S2.1",
+          "S2.3",
+          "S3.3",
+          "S4.4",
+          "S5.2"
+        ],
+        "unit_status": {
+          "S2.1": "DEVIATION",
+          "S1.2": "MATCH",
+          "S1.3": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "DEVIATION",
+          "S6.2": "MATCH",
+          "S6.3": "MATCH",
+          "L1": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S4.4": "DEVIATION",
+          "S3.2": "MATCH",
+          "S3.3": "DEVIATION",
+          "S5.1": "MATCH",
+          "S5.2": "DEVIATION",
+          "S5.3": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S3.1": "UNMENTIONED",
+          "S3.4": "UNMENTIONED",
+          "S3.5": "UNMENTIONED",
+          "S6.1": "UNMENTIONED",
+          "S6.4": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.7856,
+            "usage": {
+              "input_tokens": 4759,
+              "cached_input_tokens": 0,
+              "output_tokens": 9063,
+              "reasoning_tokens": 6918
+            },
+            "elapsed_seconds": 82.204,
+            "prompt_sha256": "cabebee8c7f097d87905ab860371063c4f067d43cdefec5c04ade0ee6a1082fd",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S2.1",
+            "unit_ids": [
+              "S2.1"
+            ],
+            "claim_text": "Muse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock.",
+            "span": [
+              316,
+              439
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "米国内という提供範囲を示さず、Reuters報道に基づく機能を確定的な一般機能として述べています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-004"
+            ],
+            "model_claim": "Muse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock."
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "In effect, human cast members appeared from behind an AI that had been handed a script.",
+            "span": [
+              499,
+              586
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "人間スタッフが登場するという点は対応しますが、AIが台本を渡されたという情報はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "In effect, human cast members appeared from behind an AI that had been handed a script."
+          },
+          {
+            "unit_id": "S4.4",
+            "unit_ids": [
+              "S4.4"
+            ],
+            "claim_text": "Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker.",
+            "span": [
+              1229,
+              1342
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "契約スタッフへの情報共有の可能性に加え、受け手から共有の有無を見分けにくいというLedgerにない主張を加えています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”",
+            "span": [
+              706,
+              829
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerで認めた主体は副社長1人ですが、記事では「executives」と複数の幹部にしています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”"
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "It did not stop Muse as a whole.",
+            "span": [
+              1402,
+              1434
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerが確認しているのは人間コンシェルジュ機能のロールバックであり、Muse全体が停止しなかったとの事実までは確認していません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "It did not stop Muse as a whole."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S2.3",
+        "S3.3",
+        "S4.4"
+      ],
+      "r3_only": [
+        "L1",
+        "S1.1",
+        "S1.2",
+        "S2.2",
+        "S3.1",
+        "S3.2",
+        "S3.4",
+        "S3.5",
+        "S4.1",
+        "S4.2",
+        "S4.3",
+        "S5.1",
+        "S6.1",
+        "S6.2",
+        "S6.3",
+        "S6.4"
+      ],
+      "r5_only": [
+        "S2.1",
+        "S5.2"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 4
+    },
+    "union_candidates": [
+      {
+        "claim_text": "But in Meta’s Muse test, AI was not always the one making the call.",
+        "span": [
+          128,
+          195
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "But AI was not the only one taking the stage on the phone.",
+        "span": [
+          440,
+          498
+        ],
+        "unit_ids": [
+          "S2.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”",
+        "span": [
+          706,
+          829
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "Ledgerが記録するのは副社長1人の社内投稿での説明であり、「Meta executives」と複数の幹部が認めたという主体の変更がある。",
+          "Ledgerで認めた主体は副社長1人ですが、記事では「executives」と複数の幹部にしています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "Meta executives admitted that starting a test in which contract staff made calls without proper disclosure was a “mistake.”"
+        ]
+      },
+      {
+        "claim_text": "Meta employees worried that sensitive information might be shared with contract staff without users intending it.",
+        "span": [
+          1038,
+          1151
+        ],
+        "unit_ids": [
+          "S4.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-010"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker.",
+        "span": [
+          1229,
+          1342
+        ],
+        "unit_ids": [
+          "S4.4"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "聴衆がAIに渡した情報が人間スタッフにも渡るか判断しにくいという点はLedgerに記載されていない。",
+          "契約スタッフへの情報共有の可能性に加え、受け手から共有の有無を見分けにくいというLedgerにない主張を加えています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-010"
+        ],
+        "model_claims": [
+          "Still, it can be hard to tell from the audience whether information given to AI is also passed to a human worker."
+        ]
+      },
+      {
+        "claim_text": "Meta temporarily rolled back the human concierge feature.",
+        "span": [
+          1344,
+          1401
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Muse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock.",
+        "span": [
+          316,
+          439
+        ],
+        "unit_ids": [
+          "S2.1"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r5"
+        ],
+        "issues": [
+          "米国内という提供範囲を示さず、Reuters報道に基づく機能を確定的な一般機能として述べています。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-004"
+        ],
+        "model_claims": [
+          "Muse is an AI agent that can handle requests by phone, such as booking a haircut or checking whether a product is in stock."
+        ]
+      }
+    ],
+    "n_union_candidates": 7,
+    "n_model_candidates": 3,
+    "n_deterministic_only_candidates": 4,
+    "total_cost_jpy": 1.3515,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 20,
+    "n_targets": 17,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 14,
+    "n_excluded_entries": 15,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.4543,
+    "effort": "medium",
+    "prompt_sha256": "d596a8c52c086001c9b515442f5583765465e8ab9bed704cb18cc04d94bd8326"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 4
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

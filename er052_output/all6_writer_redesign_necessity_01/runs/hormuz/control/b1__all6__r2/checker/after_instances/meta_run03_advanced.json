@@ -1,0 +1,2874 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The focus quickly shifted from cargo passing through the strait to investment in the United States.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "The focus quickly shifted from cargo passing through the strait to investment in the United States.",
+            "issue": "「焦点がすぐに」貨物通航から米国への投資へ移ったという解釈と、投資が米国内向けだという特定は、Ledgerの置換発表の記述を超えています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.4"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The 20 Percent Figure Is Out, but There Are No Details. Oil Prices Climb Back Toward Their Highs\n\nIf you follow only the headlines, it seems as if the story suddenly changed. Trump first posted that he wanted to charge a rate of 20 percent on all cargo passing through the Strait of Hormuz, as repayment for the cost of the United States keeping the strait safe. But the next day, he announced that he was replacing the plan with trade and investment deals between Gulf countries and the United States. The focus quickly shifted from cargo passing through the strait to investment in the United States.\n\nBut just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided. Who would pay? What would the fee be based on? How would it be collected? The key details were not given. The figure made a splash, but there was still no guide to how the system would work. There was no report that a 20 percent toll had actually been collected.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "The focus quickly shifted from cargo passing through the strait to investment in the United States.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+              "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+            ],
+            "batch_cost_jpy": 0.2135,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "But just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "But just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided.",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S2.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S2.1"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "If you follow only the headlines, it seems as if the story suddenly changed. Trump first posted that he wanted to charge a rate of 20 percent on all cargo passing through the Strait of Hormuz, as repayment for the cost of the United States keeping the strait safe. But the next day, he announced that he was replacing the plan with trade and investment deals between Gulf countries and the United States. The focus quickly shifted from cargo passing through the strait to investment in the United States.\n\nBut just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided. Who would pay? What would the fee be based on? How would it be collected? The key details were not given. The figure made a splash, but there was still no guide to how the system would work. There was no report that a 20 percent toll had actually been collected.\n\nSo how did oil prices move? After the replacement plan was announced, Brent futures briefly gave back some of their gains. But soon they were back near the high level they had reached before the announcement. At the time of the report, they were up 2.6 percent, above $85 a barrel. The gains got smaller, then quickly returned. The line on the chart was not moving in a simple way, either.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "But just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+              "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+            ],
+            "batch_cost_jpy": 0.2135,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Who would pay?",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "Who would pay?",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.2"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "If you follow only the headlines, it seems as if the story suddenly changed. Trump first posted that he wanted to charge a rate of 20 percent on all cargo passing through the Strait of Hormuz, as repayment for the cost of the United States keeping the strait safe. But the next day, he announced that he was replacing the plan with trade and investment deals between Gulf countries and the United States. The focus quickly shifted from cargo passing through the strait to investment in the United States.\n\nBut just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided. Who would pay? What would the fee be based on? How would it be collected? The key details were not given. The figure made a splash, but there was still no guide to how the system would work. There was no report that a 20 percent toll had actually been collected.\n\nSo how did oil prices move? After the replacement plan was announced, Brent futures briefly gave back some of their gains. But soon they were back near the high level they had reached before the announcement. At the time of the report, they were up 2.6 percent, above $85 a barrel. The gains got smaller, then quickly returned. The line on the chart was not moving in a simple way, either.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "Who would pay?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+              "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+            ],
+            "batch_cost_jpy": 0.2135,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "What would the fee be based on?",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "What would the fee be based on?",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.3"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "If you follow only the headlines, it seems as if the story suddenly changed. Trump first posted that he wanted to charge a rate of 20 percent on all cargo passing through the Strait of Hormuz, as repayment for the cost of the United States keeping the strait safe. But the next day, he announced that he was replacing the plan with trade and investment deals between Gulf countries and the United States. The focus quickly shifted from cargo passing through the strait to investment in the United States.\n\nBut just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided. Who would pay? What would the fee be based on? How would it be collected? The key details were not given. The figure made a splash, but there was still no guide to how the system would work. There was no report that a 20 percent toll had actually been collected.\n\nSo how did oil prices move? After the replacement plan was announced, Brent futures briefly gave back some of their gains. But soon they were back near the high level they had reached before the announcement. At the time of the report, they were up 2.6 percent, above $85 a barrel. The gains got smaller, then quickly returned. The line on the chart was not moving in a simple way, either.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "What would the fee be based on?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+              "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+            ],
+            "batch_cost_jpy": 0.2135,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "How would it be collected?",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "How would it be collected?",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.4"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "If you follow only the headlines, it seems as if the story suddenly changed. Trump first posted that he wanted to charge a rate of 20 percent on all cargo passing through the Strait of Hormuz, as repayment for the cost of the United States keeping the strait safe. But the next day, he announced that he was replacing the plan with trade and investment deals between Gulf countries and the United States. The focus quickly shifted from cargo passing through the strait to investment in the United States.\n\nBut just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided. Who would pay? What would the fee be based on? How would it be collected? The key details were not given. The figure made a splash, but there was still no guide to how the system would work. There was no report that a 20 percent toll had actually been collected.\n\nSo how did oil prices move? After the replacement plan was announced, Brent futures briefly gave back some of their gains. But soon they were back near the high level they had reached before the announcement. At the time of the report, they were up 2.6 percent, above $85 a barrel. The gains got smaller, then quickly returned. The line on the chart was not moving in a simple way, either.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "How would it be collected?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+              "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+            ],
+            "batch_cost_jpy": 0.2135,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Even though the fee plan changed, tensions over the strait did not disappear.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Even though the fee plan changed, tensions over the strait did not disappear.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So how did oil prices move? After the replacement plan was announced, Brent futures briefly gave back some of their gains. But soon they were back near the high level they had reached before the announcement. At the time of the report, they were up 2.6 percent, above $85 a barrel. The gains got smaller, then quickly returned. The line on the chart was not moving in a simple way, either.\n\nMeanwhile, concerns continued over attacks by the United States and Iran, the naval blockade, and the safety of tankers. Even though the fee plan changed, tensions over the strait did not disappear. What stands out this time is that the policy talk changed in a single day. And even after the statements changed, oil prices did not just fall once and stay down. They returned to a high level. The headlines may move quickly, but worries about events at sea cannot be settled at the same speed.\n\n## In one line\nTrump replaced his proposed Hormuz shipping fee with investment deals, but oil prices soon returned near their highs.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Even though the fee plan changed, tensions over the strait did not disappear.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+              "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+            ],
+            "batch_cost_jpy": 0.2135,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "And even after the statements changed, oil prices did not just fall once and stay down.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "And even after the statements changed, oil prices did not just fall once and stay down.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.4"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So how did oil prices move? After the replacement plan was announced, Brent futures briefly gave back some of their gains. But soon they were back near the high level they had reached before the announcement. At the time of the report, they were up 2.6 percent, above $85 a barrel. The gains got smaller, then quickly returned. The line on the chart was not moving in a simple way, either.\n\nMeanwhile, concerns continued over attacks by the United States and Iran, the naval blockade, and the safety of tankers. Even though the fee plan changed, tensions over the strait did not disappear. What stands out this time is that the policy talk changed in a single day. And even after the statements changed, oil prices did not just fall once and stay down. They returned to a high level. The headlines may move quickly, but worries about events at sea cannot be settled at the same speed.\n\n## In one line\nTrump replaced his proposed Hormuz shipping fee with investment deals, but oil prices soon returned near their highs.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "And even after the statements changed, oil prices did not just fall once and stay down.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+              "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+            ],
+            "batch_cost_jpy": 0.2135,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "What stands out this time is that the policy talk changed in a single day.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "What stands out this time is that the policy talk changed in a single day.",
+            "issue": "「in a single day」は同一日のうちに変化したとの意味になり得るが、提案は7月13日、置換発表は7月14日だった。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S4.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.3"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So how did oil prices move? After the replacement plan was announced, Brent futures briefly gave back some of their gains. But soon they were back near the high level they had reached before the announcement. At the time of the report, they were up 2.6 percent, above $85 a barrel. The gains got smaller, then quickly returned. The line on the chart was not moving in a simple way, either.\n\nMeanwhile, concerns continued over attacks by the United States and Iran, the naval blockade, and the safety of tankers. Even though the fee plan changed, tensions over the strait did not disappear. What stands out this time is that the policy talk changed in a single day. And even after the statements changed, oil prices did not just fall once and stay down. They returned to a high level. The headlines may move quickly, but worries about events at sea cannot be settled at the same speed.\n\n## In one line\nTrump replaced his proposed Hormuz shipping fee with investment deals, but oil prices soon returned near their highs.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_date_or_period",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "What stands out this time is that the policy talk changed in a single day.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_date_or_period",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_date_or_period",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+              "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+            ],
+            "batch_cost_jpy": 0.2135,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Trump first posted that he wanted to charge a rate of 20 percent on all cargo passing through the Strait of Hormuz, as repayment for the cost of the United States keeping the strait safe.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Trump first posted that he wanted to charge a rate of 20 percent on all cargo passing through the Strait of Hormuz, as repayment for the cost of the United States keeping the strait safe.",
+            "issue": "「焦点がすぐに」貨物通航から米国への投資へ移ったという解釈と、投資が米国内向けだという特定は、Ledgerの置換発表の記述を超えています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.4"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The focus quickly shifted from cargo passing through the strait to investment in the United States."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The 20 Percent Figure Is Out, but There Are No Details. Oil Prices Climb Back Toward Their Highs\n\nIf you follow only the headlines, it seems as if the story suddenly changed. Trump first posted that he wanted to charge a rate of 20 percent on all cargo passing through the Strait of Hormuz, as repayment for the cost of the United States keeping the strait safe. But the next day, he announced that he was replacing the plan with trade and investment deals between Gulf countries and the United States. The focus quickly shifted from cargo passing through the strait to investment in the United States.\n\nBut just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided. Who would pay? What would the fee be based on? How would it be collected? The key details were not given. The figure made a splash, but there was still no guide to how the system would work. There was no report that a 20 percent toll had actually been collected.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "Trump first posted that he wanted to charge a rate of 20 percent on all cargo passing through the Strait of Hormuz, as repayment for the cost of the United States keeping the strait safe.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+              "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+            ],
+            "batch_cost_jpy": 0.2135,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "But the next day, he announced that he was replacing the plan with trade and investment deals between Gulf countries and the United States.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "But the next day, he announced that he was replacing the plan with trade and investment deals between Gulf countries and the United States.",
+            "issue": "「焦点がすぐに」貨物通航から米国への投資へ移ったという解釈と、投資が米国内向けだという特定は、Ledgerの置換発表の記述を超えています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.4"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The focus quickly shifted from cargo passing through the strait to investment in the United States."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The 20 Percent Figure Is Out, but There Are No Details. Oil Prices Climb Back Toward Their Highs\n\nIf you follow only the headlines, it seems as if the story suddenly changed. Trump first posted that he wanted to charge a rate of 20 percent on all cargo passing through the Strait of Hormuz, as repayment for the cost of the United States keeping the strait safe. But the next day, he announced that he was replacing the plan with trade and investment deals between Gulf countries and the United States. The focus quickly shifted from cargo passing through the strait to investment in the United States.\n\nBut just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided. Who would pay? What would the fee be based on? How would it be collected? The key details were not given. The figure made a splash, but there was still no guide to how the system would work. There was no report that a 20 percent toll had actually been collected.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "But the next day, he announced that he was replacing the plan with trade and investment deals between Gulf countries and the United States.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+              "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+            ],
+            "batch_cost_jpy": 0.2135,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "There was no report that a 20 percent toll had actually been collected.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "There was no report that a 20 percent toll had actually been collected.",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S2.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S2.1"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "But just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "If you follow only the headlines, it seems as if the story suddenly changed. Trump first posted that he wanted to charge a rate of 20 percent on all cargo passing through the Strait of Hormuz, as repayment for the cost of the United States keeping the strait safe. But the next day, he announced that he was replacing the plan with trade and investment deals between Gulf countries and the United States. The focus quickly shifted from cargo passing through the strait to investment in the United States.\n\nBut just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided. Who would pay? What would the fee be based on? How would it be collected? The key details were not given. The figure made a splash, but there was still no guide to how the system would work. There was no report that a 20 percent toll had actually been collected.\n\nSo how did oil prices move? After the replacement plan was announced, Brent futures briefly gave back some of their gains. But soon they were back near the high level they had reached before the announcement. At the time of the report, they were up 2.6 percent, above $85 a barrel. The gains got smaller, then quickly returned. The line on the chart was not moving in a simple way, either.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "There was no report that a 20 percent toll had actually been collected.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+              "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+            ],
+            "batch_cost_jpy": 0.2135,
+            "batch_n_claims": 11
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 11,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "The focus quickly shifted from cargo passing through the strait to investment in the United States.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+            "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+          ],
+          "batch_cost_jpy": 0.2135,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "But just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+            "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+          ],
+          "batch_cost_jpy": 0.2135,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "Who would pay?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+            "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+          ],
+          "batch_cost_jpy": 0.2135,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "What would the fee be based on?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+            "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+          ],
+          "batch_cost_jpy": 0.2135,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "How would it be collected?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+            "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+          ],
+          "batch_cost_jpy": 0.2135,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Even though the fee plan changed, tensions over the strait did not disappear.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+            "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+          ],
+          "batch_cost_jpy": 0.2135,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "And even after the statements changed, oil prices did not just fall once and stay down.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+            "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+          ],
+          "batch_cost_jpy": 0.2135,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "What stands out this time is that the policy talk changed in a single day.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_date_or_period",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_date_or_period",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+            "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+          ],
+          "batch_cost_jpy": 0.2135,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "Trump first posted that he wanted to charge a rate of 20 percent on all cargo passing through the Strait of Hormuz, as repayment for the cost of the United States keeping the strait safe.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+            "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+          ],
+          "batch_cost_jpy": 0.2135,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "But the next day, he announced that he was replacing the plan with trade and investment deals between Gulf countries and the United States.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+            "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+          ],
+          "batch_cost_jpy": 0.2135,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "There was no report that a 20 percent toll had actually been collected.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255",
+            "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+          ],
+          "batch_cost_jpy": 0.2135,
+          "batch_n_claims": 11
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.541,
+      "usage": {
+        "input_tokens": 5111,
+        "cached_input_tokens": 0,
+        "output_tokens": 5875,
+        "reasoning_tokens": 1478
+      },
+      "elapsed_seconds": 42.837,
+      "prompt_sha256": "1d317ff01a051d9bc032176ca84c44a8f24defa96a6bb04acb246c706fd97c21",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.8909,
+      "usage": {
+        "input_tokens": 4728,
+        "cached_input_tokens": 0,
+        "output_tokens": 10412,
+        "reasoning_tokens": 7200
+      },
+      "elapsed_seconds": 81.964,
+      "prompt_sha256": "8ea928081c9dba131a604c56b47d473cbf920477a078886bcd817e6facf930d5",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2572,
+      "usage": {
+        "input_tokens": 5042,
+        "cached_input_tokens": 0,
+        "output_tokens": 2271,
+        "reasoning_tokens": 1487
+      },
+      "elapsed_seconds": 20.896,
+      "prompt_sha256": "2d8101c072493c607f65d3f66fa7d262258a0d4918da69758ca4cee3aee79601",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2534,
+      "usage": {
+        "input_tokens": 10665,
+        "cached_input_tokens": 0,
+        "output_tokens": 1098,
+        "reasoning_tokens": 857
+      },
+      "elapsed_seconds": 10.985,
+      "prompt_sha256": "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1194,
+      "usage": {
+        "input_tokens": 5854,
+        "cached_input_tokens": 0,
+        "output_tokens": 351,
+        "reasoning_tokens": 251
+      },
+      "elapsed_seconds": 4.008,
+      "prompt_sha256": "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1764,
+      "usage": {
+        "input_tokens": 10665,
+        "cached_input_tokens": 10662,
+        "output_tokens": 2035,
+        "reasoning_tokens": 1796
+      },
+      "elapsed_seconds": 16.523,
+      "prompt_sha256": "515d668fb8626b62f4400595c5cd846f2d5e60084352105fea2903c1823eb255"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0371,
+      "usage": {
+        "input_tokens": 5854,
+        "cached_input_tokens": 5851,
+        "output_tokens": 355,
+        "reasoning_tokens": 252
+      },
+      "elapsed_seconds": 4.52,
+      "prompt_sha256": "a9d40f85d1030f4340734e674873461c5705823a9fcbfc0e8be2ac6f9c84c842"
+    }
+  ],
+  "total_cost_jpy": 2.2754,
+  "total_calls": 7,
+  "elapsed_seconds": 181.807,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The focus quickly shifted from cargo passing through the strait to investment in the United States.",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "「焦点がすぐに」貨物通航から米国への投資へ移ったという解釈と、投資が米国内向けだという特定は、Ledgerの置換発表の記述を超えています。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.4); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided.",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "決定論検査で戻した: causal_not_in_fact",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S2.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Who would pay?",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "What would the fee be based on?",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "How would it be collected?",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Even though the fee plan changed, tensions over the strait did not disappear.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "And even after the statements changed, oil prices did not just fall once and stay down.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "What stands out this time is that the policy talk changed in a single day.",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "「in a single day」は同一日のうちに変化したとの意味になり得るが、提案は7月13日、置換発表は7月14日だった。",
+        "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S4.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_time"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 19,
+      "n_model_entries": 13,
+      "n_targets": 9,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 7,
+      "n_excluded_entries": 11,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.2572,
+          "usage": {
+            "input_tokens": 5042,
+            "cached_input_tokens": 0,
+            "output_tokens": 2271,
+            "reasoning_tokens": 1487
+          },
+          "elapsed_seconds": 20.896,
+          "prompt_sha256": "2d8101c072493c607f65d3f66fa7d262258a0d4918da69758ca4cee3aee79601",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.2572,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.1",
+          "claim": "If you follow only the headlines, it seems as if the story suddenly changed.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「話が急に変わったように見える」という導入上の印象表現で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.4",
+          "claim": "The focus quickly shifted from cargo passing through the strait to investment in the United States.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "海峡の貨物から米国への投資へ注目が「すぐに」移ったという具体的な変化・速度はLedgerに記載されていない。",
+          "fact_tags": [
+            "proper_noun",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S2.6",
+          "claim": "The figure made a splash, but there was still no guide to how the system would work.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "20％案について徴収方法などの具体的な制度設計が示されなかったというHF-003と一致する。「注目を集めた」は評価的な表現。",
+          "fact_tags": [
+            "number",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C4",
+          "key": "S2.7",
+          "claim": "There was no report that a 20 percent toll had actually been collected.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "20％料は提案段階で、実際に導入・徴収された確定料金ではないというHF-002・HF-003と整合する。",
+          "fact_tags": [
+            "number",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C5",
+          "key": "S3.1",
+          "claim": "So how did oil prices move?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "原油価格の動きを尋ねる修辞的な問いで、具体的な値動きを主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C6",
+          "key": "S3.6",
+          "claim": "The line on the chart was not moving in a simple way, either.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "Brent先物が一時上げ幅を縮小した後に高い水準へ戻ったというHF-009の複数段階の値動きを、平易に要約している。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C7",
+          "key": "S4.6",
+          "claim": "The headlines may move quickly, but worries about events at sea cannot be settled at the same speed.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "海上の懸念は見出しほど速く解消しないという、締めの一般的・比喩的な表現である。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C8",
+          "key": "R:S2.7+S3.1",
+          "claim": "So how did oil prices move?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "原油価格の動きを尋ねる修辞的な問いで、具体的な値動きを主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C9",
+          "key": "S4.3",
+          "claim": "What stands out this time is that the policy talk changed in a single day.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "政策変更自体はHF-007と整合するが、「一日のうちに」は提案から置換発表まで約24時間48分というLedgerの期間と合わない。",
+          "fact_tags": [
+            "date",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "mismatch"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "2d8101c072493c607f65d3f66fa7d262258a0d4918da69758ca4cee3aee79601"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 31,
+    "n_judged_units": 26,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S2.7+S3.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "R:S2.7+S3.1",
+          "S1.1",
+          "S1.4",
+          "S2.1",
+          "S2.2",
+          "S2.3",
+          "S2.4",
+          "S2.6",
+          "S2.7",
+          "S3.1",
+          "S3.6",
+          "S4.2",
+          "S4.4",
+          "S4.6"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED->CANDIDATE(causal_not_in_fact)",
+          "S2.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.5": "SUPPORTED",
+          "S2.6": "CANDIDATE",
+          "S2.7": "CANDIDATE",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S3.5": "SUPPORTED",
+          "S3.6": "CANDIDATE",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.5": "SUPPORTED",
+          "S4.6": "CANDIDATE",
+          "L1": "SUPPORTED",
+          "R:S2.7+S3.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.541,
+            "usage": {
+              "input_tokens": 5111,
+              "cached_input_tokens": 0,
+              "output_tokens": 5875,
+              "reasoning_tokens": 1478
+            },
+            "elapsed_seconds": 42.837,
+            "prompt_sha256": "1d317ff01a051d9bc032176ca84c44a8f24defa96a6bb04acb246c706fd97c21",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S2.5": "SUPPORTED",
+          "S2.6": "CANDIDATE",
+          "S2.7": "CANDIDATE",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S3.5": "SUPPORTED",
+          "S3.6": "CANDIDATE",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S4.5": "SUPPORTED",
+          "S4.6": "CANDIDATE",
+          "L1": "SUPPORTED",
+          "R:S2.7+S3.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "If you follow only the headlines, it seems as if the story suddenly changed.",
+            "span": [
+              100,
+              176
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "見出しだけを追うと話が突然変わったように見える、という読者の受け止めについてLedgerの裏付けがありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "If you follow only the headlines, it seems as if the story suddenly changed."
+          },
+          {
+            "unit_id": "S1.4",
+            "unit_ids": [
+              "S1.4"
+            ],
+            "claim_text": "The focus quickly shifted from cargo passing through the strait to investment in the United States.",
+            "span": [
+              505,
+              604
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「焦点がすぐに」貨物通航から米国への投資へ移ったという解釈と、投資が米国内向けだという特定は、Ledgerの置換発表の記述を超えています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The focus quickly shifted from cargo passing through the strait to investment in the United States."
+          },
+          {
+            "unit_id": "S2.1",
+            "unit_ids": [
+              "S2.1"
+            ],
+            "claim_text": "But just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided.",
+            "span": [
+              606,
+              728
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "causal_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: causal_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "Who would pay?",
+            "span": [
+              729,
+              743
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "What would the fee be based on?",
+            "span": [
+              744,
+              775
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "How would it be collected?",
+            "span": [
+              776,
+              802
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.6",
+            "unit_ids": [
+              "S2.6"
+            ],
+            "claim_text": "The figure made a splash, but there was still no guide to how the system would work.",
+            "span": [
+              835,
+              919
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "20％という数字が大きな反響を呼んだという主張はLedgerにありません。一方、制度の仕組みが示されなかった部分はHF-003に合致します。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "The figure made a splash, but there was still no guide to how the system would work."
+          },
+          {
+            "unit_id": "S2.7",
+            "unit_ids": [
+              "S2.7"
+            ],
+            "claim_text": "There was no report that a 20 percent toll had actually been collected.",
+            "span": [
+              920,
+              991
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「実際に徴収されたとの報告はなかった」という報道の有無はLedgerで確認されていません。Ledgerは提案と制度設計の未提示を記録していますが、報告の不存在を直接述べてはいません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "There was no report that a 20 percent toll had actually been collected."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "So how did oil prices move?",
+            "span": [
+              993,
+              1020
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "文頭の「So」が、直前の「20％通航料が実際に徴収されたとの報告はない」という主張から原油価格の動きへの因果・推論上のつながりを示しますが、その関係はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "So how did oil prices move?"
+          },
+          {
+            "unit_id": "S3.6",
+            "unit_ids": [
+              "S3.6"
+            ],
+            "claim_text": "The line on the chart was not moving in a simple way, either.",
+            "span": [
+              1321,
+              1382
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "価格が単純には動かなかったという説明は値動きの記述から読み取れますが、「チャート上の線」に関する具体的な主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The line on the chart was not moving in a simple way, either."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "Even though the fee plan changed, tensions over the strait did not disappear.",
+            "span": [
+              1505,
+              1582
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.4",
+            "unit_ids": [
+              "S4.4"
+            ],
+            "claim_text": "And even after the statements changed, oil prices did not just fall once and stay down.",
+            "span": [
+              1658,
+              1745
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.6",
+            "unit_ids": [
+              "S4.6"
+            ],
+            "claim_text": "The headlines may move quickly, but worries about events at sea cannot be settled at the same speed.",
+            "span": [
+              1777,
+              1877
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "海上の出来事への懸念が同じ速さでは解決できないという一般的な評価・主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The headlines may move quickly, but worries about events at sea cannot be settled at the same speed."
+          },
+          {
+            "unit_id": "R:S2.7+S3.1",
+            "unit_ids": [
+              "R:S2.7+S3.1"
+            ],
+            "claim_text": "So how did oil prices move?",
+            "span": [
+              993,
+              1020
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「So」が、20％通航料が実際に徴収されたとの報告がないことと、その後の原油価格の動きとを推論・因果関係で結び付けていますが、Ledgerはこの関係を述べていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "There was no report that a 20 percent toll had actually been collected. So how did oil prices move?"
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "R:S2.7+S3.1",
+          "S2.7",
+          "S4.3"
+        ],
+        "unit_status": {
+          "T": "MATCH",
+          "S1.2": "MATCH",
+          "S2.1": "MATCH",
+          "S2.6": "MATCH",
+          "S2.7": "DEVIATION",
+          "L1": "MATCH",
+          "R:S2.7+S3.1": "DEVIATION",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S2.5": "MATCH",
+          "S1.3": "MATCH",
+          "S1.4": "MATCH",
+          "S3.2": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "DEVIATION",
+          "S4.4": "MATCH",
+          "S3.1": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S3.5": "MATCH",
+          "S3.6": "MATCH",
+          "S4.1": "MATCH",
+          "S4.5": "MATCH",
+          "S1.1": "UNMENTIONED",
+          "S4.6": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.8909,
+            "usage": {
+              "input_tokens": 4728,
+              "cached_input_tokens": 0,
+              "output_tokens": 10412,
+              "reasoning_tokens": 7200
+            },
+            "elapsed_seconds": 81.964,
+            "prompt_sha256": "8ea928081c9dba131a604c56b47d473cbf920477a078886bcd817e6facf930d5",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S2.7",
+            "unit_ids": [
+              "S2.7"
+            ],
+            "claim_text": "There was no report that a 20 percent toll had actually been collected.",
+            "span": [
+              920,
+              991
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "実際に徴収されたとの報告がなかったという主張は、Ledgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "There was no report that a 20 percent toll had actually been collected."
+          },
+          {
+            "unit_id": "R:S2.7+S3.1",
+            "unit_ids": [
+              "R:S2.7+S3.1"
+            ],
+            "claim_text": "So how did oil prices move?",
+            "span": [
+              993,
+              1020
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "実際に徴収されたとの報告がなかったという主張は、Ledgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "There was no report that a 20 percent toll had actually been collected. So how did oil prices move?"
+          },
+          {
+            "unit_id": "S2.7",
+            "unit_ids": [
+              "S2.7"
+            ],
+            "claim_text": "There was no report that a 20 percent toll had actually been collected.",
+            "span": [
+              920,
+              991
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "実際に徴収されたとの報告がなかったという主張は、Ledgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "There was no report that a 20 percent toll had actually been collected."
+          },
+          {
+            "unit_id": "R:S2.7+S3.1",
+            "unit_ids": [
+              "R:S2.7+S3.1"
+            ],
+            "claim_text": "So how did oil prices move?",
+            "span": [
+              993,
+              1020
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "実際に徴収されたとの報告がなかったという主張は、Ledgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "There was no report that a 20 percent toll had actually been collected. So how did oil prices move?"
+          },
+          {
+            "unit_id": "S4.3",
+            "unit_ids": [
+              "S4.3"
+            ],
+            "claim_text": "What stands out this time is that the policy talk changed in a single day.",
+            "span": [
+              1583,
+              1657
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "「in a single day」は同一日のうちに変化したとの意味になり得るが、提案は7月13日、置換発表は7月14日だった。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "What stands out this time is that the policy talk changed in a single day."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "R:S2.7+S3.1",
+        "S2.7"
+      ],
+      "r3_only": [
+        "S1.1",
+        "S1.4",
+        "S2.1",
+        "S2.2",
+        "S2.3",
+        "S2.4",
+        "S2.6",
+        "S3.1",
+        "S3.6",
+        "S4.2",
+        "S4.4",
+        "S4.6"
+      ],
+      "r5_only": [
+        "S4.3"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 6
+    },
+    "union_candidates": [
+      {
+        "claim_text": "The focus quickly shifted from cargo passing through the strait to investment in the United States.",
+        "span": [
+          505,
+          604
+        ],
+        "unit_ids": [
+          "S1.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "「焦点がすぐに」貨物通航から米国への投資へ移ったという解釈と、投資が米国内向けだという特定は、Ledgerの置換発表の記述を超えています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "The focus quickly shifted from cargo passing through the strait to investment in the United States."
+        ]
+      },
+      {
+        "claim_text": "But just because the figure of 20 percent was announced, that does not mean the system for collecting the fee was decided.",
+        "span": [
+          606,
+          728
+        ],
+        "unit_ids": [
+          "S2.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "causal_not_in_fact"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: causal_not_in_fact"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Who would pay?",
+        "span": [
+          729,
+          743
+        ],
+        "unit_ids": [
+          "S2.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "What would the fee be based on?",
+        "span": [
+          744,
+          775
+        ],
+        "unit_ids": [
+          "S2.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "How would it be collected?",
+        "span": [
+          776,
+          802
+        ],
+        "unit_ids": [
+          "S2.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Even though the fee plan changed, tensions over the strait did not disappear.",
+        "span": [
+          1505,
+          1582
+        ],
+        "unit_ids": [
+          "S4.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "And even after the statements changed, oil prices did not just fall once and stay down.",
+        "span": [
+          1658,
+          1745
+        ],
+        "unit_ids": [
+          "S4.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "What stands out this time is that the policy talk changed in a single day.",
+        "span": [
+          1583,
+          1657
+        ],
+        "unit_ids": [
+          "S4.3"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r5"
+        ],
+        "issues": [
+          "「in a single day」は同一日のうちに変化したとの意味になり得るが、提案は7月13日、置換発表は7月14日だった。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "What stands out this time is that the policy talk changed in a single day."
+        ]
+      }
+    ],
+    "n_union_candidates": 8,
+    "n_model_candidates": 2,
+    "n_deterministic_only_candidates": 6,
+    "total_cost_jpy": 1.4319,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 13,
+    "n_targets": 9,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 7,
+    "n_excluded_entries": 11,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.2572,
+    "effort": "medium",
+    "prompt_sha256": "2d8101c072493c607f65d3f66fa7d262258a0d4918da69758ca4cee3aee79601"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 3
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

@@ -1,0 +1,2427 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "There are two more labels for defense: active defense and passive defense.",
+          "origin": null,
+          "related_fact_id": "F-013",
+          "dev": {
+            "claim_in_article": "There are two more labels for defense: active defense and passive defense.",
+            "issue": "決定論検査で戻した: quote_not_in_ledger",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "F-013",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "quote_not_in_ledger"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "F-013"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The large door next to it is counterspace. In the U.S. Space Force’s 2025 framework, this is a general term for offensive and defensive actions in orbit, in communication links, and on the ground. In other words, it is a broad term that includes not only weapons placed in space, but also communication links and the ground side.\n\nThere are two more labels for defense: active defense and passive defense. Threat warnings, stronger equipment, spreading systems out, separating functions, mobility, and backup systems are examples of passive defense. Active defense, on the other hand, may include weapons. So simply hearing the word “defense” does not tell us whether it refers to an attack weapon in orbit.\n\nThe last door is the Outer Space Treaty, commonly called the Space Treaty. Article IV bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, deploying them in outer space by other means, and placing those weapons on celestial bodies such as the Moon. On celestial bodies, it also bans military bases, military facilities, and fortifications, as well as testing any kind of weapon and military exercises. This does not mean that it is a provision that completely bans space weapons.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-013",
+            "claim_text": "There are two more labels for defense: active defense and passive defense.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+            ],
+            "batch_cost_jpy": 0.1035,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "The last door is the Outer Space Treaty, commonly called the Space Treaty.",
+          "origin": null,
+          "related_fact_id": "F-016",
+          "dev": {
+            "claim_in_article": "The last door is the Outer Space Treaty, commonly called the Space Treaty.",
+            "issue": "Outer Space Treatyが一般に「Space Treaty」と呼ばれるという別称はLedgerで確認できません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S6.1); severity is decided by Stage 2",
+            "related_fact_id": "F-016",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.1"
+              ],
+              "related_fact_ids": [
+                "F-016"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "There are two more labels for defense: active defense and passive defense. Threat warnings, stronger equipment, spreading systems out, separating functions, mobility, and backup systems are examples of passive defense. Active defense, on the other hand, may include weapons. So simply hearing the word “defense” does not tell us whether it refers to an attack weapon in orbit.\n\nThe last door is the Outer Space Treaty, commonly called the Space Treaty. Article IV bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, deploying them in outer space by other means, and placing those weapons on celestial bodies such as the Moon. On celestial bodies, it also bans military bases, military facilities, and fortifications, as well as testing any kind of weapon and military exercises. This does not mean that it is a provision that completely bans space weapons.\n\nSo this news does not end with one line: “There are weapons in space.” Is it a deployment in orbit, a test from the ground, the name of a broad operation, or a defense system? Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-016",
+            "claim_text": "The last door is the Outer Space Treaty, commonly called the Space Treaty.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+            ],
+            "batch_cost_jpy": 0.1035,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "This does not mean that it is a provision that completely bans space weapons.",
+          "origin": null,
+          "related_fact_id": "F-016",
+          "dev": {
+            "claim_in_article": "This does not mean that it is a provision that completely bans space weapons.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.4); severity is decided by Stage 2",
+            "related_fact_id": "F-016",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.4"
+              ],
+              "related_fact_ids": [
+                "F-016"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "There are two more labels for defense: active defense and passive defense. Threat warnings, stronger equipment, spreading systems out, separating functions, mobility, and backup systems are examples of passive defense. Active defense, on the other hand, may include weapons. So simply hearing the word “defense” does not tell us whether it refers to an attack weapon in orbit.\n\nThe last door is the Outer Space Treaty, commonly called the Space Treaty. Article IV bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, deploying them in outer space by other means, and placing those weapons on celestial bodies such as the Moon. On celestial bodies, it also bans military bases, military facilities, and fortifications, as well as testing any kind of weapon and military exercises. This does not mean that it is a provision that completely bans space weapons.\n\nSo this news does not end with one line: “There are weapons in space.” Is it a deployment in orbit, a test from the ground, the name of a broad operation, or a defense system? Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-016",
+            "claim_text": "This does not mean that it is a provision that completely bans space weapons.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+            ],
+            "batch_cost_jpy": 0.1035,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”",
+          "origin": null,
+          "related_fact_id": "F-015",
+          "dev": {
+            "claim_in_article": "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”",
+            "issue": "通信・測位への日常的依存と、それを踏まえてニュースに深みが出るという因果的評価は、Ledgerでこの範囲・関係まで裏付けられていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S7.3); severity is decided by Stage 2",
+            "related_fact_id": "F-015",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S7.3"
+              ],
+              "related_fact_ids": [
+                "F-015"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The last door is the Outer Space Treaty, commonly called the Space Treaty. Article IV bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, deploying them in outer space by other means, and placing those weapons on celestial bodies such as the Moon. On celestial bodies, it also bans military bases, military facilities, and fortifications, as well as testing any kind of weapon and military exercises. This does not mean that it is a provision that completely bans space weapons.\n\nSo this news does not end with one line: “There are weapons in space.” Is it a deployment in orbit, a test from the ground, the name of a broad operation, or a defense system? Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”\n\n## In one line\nThe U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-015",
+            "claim_text": "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+            ],
+            "batch_cost_jpy": 0.1035,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "The U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "The U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+            "issue": "配備の公式認定は裏付けられますが、その正確な性質や役割が不明であるという部分はLedgerに明記されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So this news does not end with one line: “There are weapons in space.” Is it a deployment in orbit, a test from the ground, the name of a broad operation, or a defense system? Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”\n\n## In one line\nThe U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "The U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+            ],
+            "batch_cost_jpy": 0.1035,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "Article IV bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, deploying them in outer space by other means, and placing those weapons on celestial bodies such as the Moon.",
+          "origin": null,
+          "related_fact_id": "F-016",
+          "dev": {
+            "claim_in_article": "Article IV bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, deploying them in outer space by other means, and placing those weapons on celestial bodies such as the Moon.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.4); severity is decided by Stage 2",
+            "related_fact_id": "F-016",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.4"
+              ],
+              "related_fact_ids": [
+                "F-016"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "This does not mean that it is a provision that completely bans space weapons."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "There are two more labels for defense: active defense and passive defense. Threat warnings, stronger equipment, spreading systems out, separating functions, mobility, and backup systems are examples of passive defense. Active defense, on the other hand, may include weapons. So simply hearing the word “defense” does not tell us whether it refers to an attack weapon in orbit.\n\nThe last door is the Outer Space Treaty, commonly called the Space Treaty. Article IV bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, deploying them in outer space by other means, and placing those weapons on celestial bodies such as the Moon. On celestial bodies, it also bans military bases, military facilities, and fortifications, as well as testing any kind of weapon and military exercises. This does not mean that it is a provision that completely bans space weapons.\n\nSo this news does not end with one line: “There are weapons in space.” Is it a deployment in orbit, a test from the ground, the name of a broad operation, or a defense system? Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-016",
+            "claim_text": "Article IV bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, deploying them in outer space by other means, and placing those weapons on celestial bodies such ",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+            ],
+            "batch_cost_jpy": 0.1035,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "So this news does not end with one line: “There are weapons in space.",
+          "origin": null,
+          "related_fact_id": "F-015",
+          "dev": {
+            "claim_in_article": "So this news does not end with one line: “There are weapons in space.",
+            "issue": "通信・測位への日常的依存と、それを踏まえてニュースに深みが出るという因果的評価は、Ledgerでこの範囲・関係まで裏付けられていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S7.3); severity is decided by Stage 2",
+            "related_fact_id": "F-015",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S7.3"
+              ],
+              "related_fact_ids": [
+                "F-015"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The last door is the Outer Space Treaty, commonly called the Space Treaty. Article IV bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, deploying them in outer space by other means, and placing those weapons on celestial bodies such as the Moon. On celestial bodies, it also bans military bases, military facilities, and fortifications, as well as testing any kind of weapon and military exercises. This does not mean that it is a provision that completely bans space weapons.\n\nSo this news does not end with one line: “There are weapons in space.” Is it a deployment in orbit, a test from the ground, the name of a broad operation, or a defense system? Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”\n\n## In one line\nThe U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-015",
+            "claim_text": "So this news does not end with one line: “There are weapons in space.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+            ],
+            "batch_cost_jpy": 0.1035,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.",
+          "origin": null,
+          "related_fact_id": "F-015",
+          "dev": {
+            "claim_in_article": "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.",
+            "issue": "通信・測位への日常的依存と、それを踏まえてニュースに深みが出るという因果的評価は、Ledgerでこの範囲・関係まで裏付けられていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S7.3); severity is decided by Stage 2",
+            "related_fact_id": "F-015",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S7.3"
+              ],
+              "related_fact_ids": [
+                "F-015"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The last door is the Outer Space Treaty, commonly called the Space Treaty. Article IV bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, deploying them in outer space by other means, and placing those weapons on celestial bodies such as the Moon. On celestial bodies, it also bans military bases, military facilities, and fortifications, as well as testing any kind of weapon and military exercises. This does not mean that it is a provision that completely bans space weapons.\n\nSo this news does not end with one line: “There are weapons in space.” Is it a deployment in orbit, a test from the ground, the name of a broad operation, or a defense system? Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”\n\n## In one line\nThe U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-015",
+            "claim_text": "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+            ],
+            "batch_cost_jpy": 0.1035,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+            "issue": "配備の公式認定は裏付けられますが、その正確な性質や役割が不明であるという部分はLedgerに明記されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So this news does not end with one line: “There are weapons in space.” Is it a deployment in orbit, a test from the ground, the name of a broad operation, or a defense system? Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”\n\n## In one line\nThe U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+            ],
+            "batch_cost_jpy": 0.1035,
+            "batch_n_claims": 9
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 9,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-013",
+          "claim_text": "There are two more labels for defense: active defense and passive defense.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+          ],
+          "batch_cost_jpy": 0.1035,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-016",
+          "claim_text": "The last door is the Outer Space Treaty, commonly called the Space Treaty.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+          ],
+          "batch_cost_jpy": 0.1035,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-016",
+          "claim_text": "This does not mean that it is a provision that completely bans space weapons.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+          ],
+          "batch_cost_jpy": 0.1035,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-015",
+          "claim_text": "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+          ],
+          "batch_cost_jpy": 0.1035,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "The U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+          ],
+          "batch_cost_jpy": 0.1035,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-016",
+          "claim_text": "Article IV bans putting nuclear weapons and other weapons of mass destruction into orbit around Earth, deploying them in outer space by other means, and placing those weapons on celestial bodies such ",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+          ],
+          "batch_cost_jpy": 0.1035,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-015",
+          "claim_text": "So this news does not end with one line: “There are weapons in space.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+          ],
+          "batch_cost_jpy": 0.1035,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-015",
+          "claim_text": "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+          ],
+          "batch_cost_jpy": 0.1035,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+          ],
+          "batch_cost_jpy": 0.1035,
+          "batch_n_claims": 9
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6555,
+      "usage": {
+        "input_tokens": 7790,
+        "cached_input_tokens": 0,
+        "output_tokens": 6799,
+        "reasoning_tokens": 2423
+      },
+      "elapsed_seconds": 50.189,
+      "prompt_sha256": "0bbfe9b9f9f7fc0242cfb57a0275edcb914c09aac4b2582401c46d6e723d711a",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5856,
+      "usage": {
+        "input_tokens": 7431,
+        "cached_input_tokens": 0,
+        "output_tokens": 5979,
+        "reasoning_tokens": 3933
+      },
+      "elapsed_seconds": 52.866,
+      "prompt_sha256": "816f259ce2f624c954c4414fa317bf7756856d4fa7c3160dc6eccd1659bafd14",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.3339,
+      "usage": {
+        "input_tokens": 7866,
+        "cached_input_tokens": 0,
+        "output_tokens": 2683,
+        "reasoning_tokens": 1552
+      },
+      "elapsed_seconds": 24.452,
+      "prompt_sha256": "4f1c311c936fcef3f6c903c6f427c381a3a236f522ac93cbffe0d85dcad71b64",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.3902,
+      "usage": {
+        "input_tokens": 13276,
+        "cached_input_tokens": 0,
+        "output_tokens": 2319,
+        "reasoning_tokens": 2060
+      },
+      "elapsed_seconds": 20.924,
+      "prompt_sha256": "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1035,
+      "usage": {
+        "input_tokens": 13276,
+        "cached_input_tokens": 13273,
+        "output_tokens": 1054,
+        "reasoning_tokens": 797
+      },
+      "elapsed_seconds": 9.561,
+      "prompt_sha256": "2ecbe2fc8305dcfd76f29373862ac24ac8d43f5a3dc8579ac064c9bbe902670a"
+    }
+  ],
+  "total_cost_jpy": 2.0687,
+  "total_calls": 5,
+  "elapsed_seconds": 158.035,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "There are two more labels for defense: active defense and passive defense.",
+        "related_fact_id": "F-013",
+        "origin": null,
+        "issue": "決定論検査で戻した: quote_not_in_ledger",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The last door is the Outer Space Treaty, commonly called the Space Treaty.",
+        "related_fact_id": "F-016",
+        "origin": null,
+        "issue": "Outer Space Treatyが一般に「Space Treaty」と呼ばれるという別称はLedgerで確認できません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S6.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "This does not mean that it is a provision that completely bans space weapons.",
+        "related_fact_id": "F-016",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”",
+        "related_fact_id": "F-015",
+        "origin": null,
+        "issue": "通信・測位への日常的依存と、それを踏まえてニュースに深みが出るという因果的評価は、Ledgerでこの範囲・関係まで裏付けられていません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S7.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+        "related_fact_id": "F-001",
+        "origin": null,
+        "issue": "配備の公式認定は裏付けられますが、その正確な性質や役割が不明であるという部分はLedgerに明記されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 16,
+      "n_model_entries": 14,
+      "n_targets": 13,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 10,
+      "n_excluded_entries": 11,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.3339,
+          "usage": {
+            "input_tokens": 7866,
+            "cached_input_tokens": 0,
+            "output_tokens": 2683,
+            "reasoning_tokens": 1552
+          },
+          "elapsed_seconds": 24.452,
+          "prompt_sha256": "4f1c311c936fcef3f6c903c6f427c381a3a236f522ac93cbffe0d85dcad71b64",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.3339,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# Four Doors Out of the “Space Weapons” Maze",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "記事タイトルの比喩的表現で、具体的な事実を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.1",
+          "claim": "In a movie, the story moves on right away: there are weapons in space, they target the enemy, and that is all.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "映画の描写を使った仮定的な導入で、現実の具体的事実を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S1.2",
+          "claim": "But in real news, this is the entrance to a maze.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "迷路を使った比喩的なつなぎで、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S1.3",
+          "claim": "This time, the key is not to jump at flashy words, but to sort things by where they are placed and what role they play.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "情報の読み解き方を示す一般的な助言で、具体的な事実を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S2.3",
+          "claim": "However, the system name, attack capability, and targets have not been made clear.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "システム名・攻撃能力・標的が明らかでないという点はF-001の記載と一致する。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C6",
+          "key": "S5.4",
+          "claim": "So simply hearing the word “defense” does not tell us whether it refers to an attack weapon in orbit.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "F-013は防御行動に受動的防御と兵器を含み得る能動的防御があるとし、「防御」という語だけでは軌道上の攻撃兵器か判断できないという趣旨を支える。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C7",
+          "key": "S6.1",
+          "claim": "The last door is the Outer Space Treaty, commonly called the Space Treaty.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「Space Treaty」という一般的な別称はLedgerで確認されておらず、固有の呼称に関する追加主張である。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C8",
+          "key": "S6.3",
+          "claim": "On celestial bodies, it also bans military bases, military facilities, and fortifications, as well as testing any kind of weapon and military exercises.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "天体上の軍事施設・要塞、兵器の試験、軍事演習の禁止はF-016の規定と一致する。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C9",
+          "key": "S7.1",
+          "claim": "So this news does not end with one line: “There are weapons in space.”",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "ニュースを単一の表現に還元できないという修辞的なまとめで、新たな具体的事実を加えていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C10",
+          "key": "S7.3",
+          "claim": "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "通信や測位への日常生活の依存から、このニュース自体が日常生活に影響するという因果を示しているが、Ledgerはその因果を裏付けていない。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C11",
+          "key": "L1",
+          "claim": "The U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "米国による軌道上兵器配備の公表は一致するが、F-001は防護用途を説明しており、役割全般が不明とするのは不確実性の範囲を広げている。",
+          "fact_tags": [
+            "proper_noun",
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C12",
+          "key": "R:S5.3+S5.4",
+          "claim": "So simply hearing the word “defense” does not tell us whether it refers to an attack weapon in orbit.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "F-013は防御行動に受動的防御と兵器を含み得る能動的防御があるとし、「防御」という語だけでは軌道上の攻撃兵器か判断できないという趣旨を支える。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C13",
+          "key": "R:S6.4+S7.1",
+          "claim": "So this news does not end with one line: “There are weapons in space.”",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "ニュースを単一の表現に還元できないという修辞的なまとめで、新たな具体的事実を加えていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "4f1c311c936fcef3f6c903c6f427c381a3a236f522ac93cbffe0d85dcad71b64"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 36,
+    "n_judged_units": 28,
+    "n_relation_units": 2,
+    "relation_ids": [
+      "R:S5.3+S5.4",
+      "R:S6.4+S7.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 22,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S5.3+S5.4",
+          "R:S6.4+S7.1",
+          "S1.1",
+          "S1.2",
+          "S1.3",
+          "S2.3",
+          "S5.1",
+          "S5.4",
+          "S6.1",
+          "S6.3",
+          "S6.4",
+          "S7.1",
+          "S7.3",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "CANDIDATE",
+          "S2.4": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED->CANDIDATE(quote_not_in_ledger)",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "CANDIDATE",
+          "S6.1": "CANDIDATE",
+          "S6.2": "SUPPORTED",
+          "S6.3": "CANDIDATE",
+          "S6.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S7.1": "CANDIDATE",
+          "S7.2": "SUPPORTED",
+          "S7.3": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S5.3+S5.4": "CANDIDATE",
+          "R:S6.4+S7.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6555,
+            "usage": {
+              "input_tokens": 7790,
+              "cached_input_tokens": 0,
+              "output_tokens": 6799,
+              "reasoning_tokens": 2423
+            },
+            "elapsed_seconds": 50.189,
+            "prompt_sha256": "0bbfe9b9f9f7fc0242cfb57a0275edcb914c09aac4b2582401c46d6e723d711a",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "CANDIDATE",
+          "S2.4": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "CANDIDATE",
+          "S6.1": "CANDIDATE",
+          "S6.2": "SUPPORTED",
+          "S6.3": "CANDIDATE",
+          "S6.4": "SUPPORTED",
+          "S7.1": "CANDIDATE",
+          "S7.2": "SUPPORTED",
+          "S7.3": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S5.3+S5.4": "CANDIDATE",
+          "R:S6.4+S7.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# Four Doors Out of the “Space Weapons” Maze",
+            "span": [
+              0,
+              44
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「Four Doors」という数え方や「Maze」という比喩的な枠組みはLedgerで裏付けられていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "# Four Doors Out of the “Space Weapons” Maze"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "In a movie, the story moves on right away: there are weapons in space, they target the enemy, and that is all.",
+            "span": [
+              46,
+              156
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "映画での筋書きや、宇宙兵器が敵を標的にするという具体的な描写はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "In a movie, the story moves on right away: there are weapons in space, they target the enemy, and that is all."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "But in real news, this is the entrance to a maze.",
+            "span": [
+              157,
+              206
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「現実のニュースは迷路の入口」という評価的な比喩はLedgerで裏付けられていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "But in real news, this is the entrance to a maze."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "This time, the key is not to jump at flashy words, but to sort things by where they are placed and what role they play.",
+            "span": [
+              207,
+              326
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "配置場所と役割で分類することが「鍵」であるという編集上の評価はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "This time, the key is not to jump at flashy words, but to sort things by where they are placed and what role they play."
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "However, the system name, attack capability, and targets have not been made clear.",
+            "span": [
+              674,
+              756
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "システム名・攻撃能力・標的が明らかにされていないという状態は、Ledger本文では明示的に確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": "However, the system name, attack capability, and targets have not been made clear."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "There are two more labels for defense: active defense and passive defense.",
+            "span": [
+              1519,
+              1593
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "quote_not_in_ledger"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: quote_not_in_ledger"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-013"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "So simply hearing the word “defense” does not tell us whether it refers to an attack weapon in orbit.",
+            "span": [
+              1794,
+              1895
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「defense」という語だけでは軌道上の攻撃兵器かどうか判断できないという結論は、Ledgerに直接記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-013"
+            ],
+            "model_claim": "So simply hearing the word “defense” does not tell us whether it refers to an attack weapon in orbit."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "The last door is the Outer Space Treaty, commonly called the Space Treaty.",
+            "span": [
+              1897,
+              1971
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Outer Space Treatyが一般に「Space Treaty」と呼ばれるという別称はLedgerで確認できません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-016"
+            ],
+            "model_claim": "The last door is the Outer Space Treaty, commonly called the Space Treaty."
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "On celestial bodies, it also bans military bases, military facilities, and fortifications, as well as testing any kind of weapon and military exercises.",
+            "span": [
+              2185,
+              2337
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "天体上の「military facilities」を禁止対象として挙げていますが、Ledgerの列挙には軍事施設が含まれていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-016"
+            ],
+            "model_claim": "On celestial bodies, it also bans military bases, military facilities, and fortifications, as well as testing any kind of weapon and military exercises."
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "This does not mean that it is a provision that completely bans space weapons.",
+            "span": [
+              2338,
+              2415
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-016"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S7.1",
+            "unit_ids": [
+              "S7.1"
+            ],
+            "claim_text": "So this news does not end with one line: “There are weapons in space.”",
+            "span": [
+              2417,
+              2487
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "このニュースのまとめ方に関する評価的な表現であり、Ledgerで裏付けられる事実主張ではありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "So this news does not end with one line: “There are weapons in space.”"
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”",
+            "span": [
+              2593,
+              2786
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "通信・測位への日常的依存と、それを踏まえてニュースに深みが出るという因果的評価は、Ledgerでこの範囲・関係まで裏付けられていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-015"
+            ],
+            "model_claim": "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”"
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "The U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+            "span": [
+              2803,
+              2900
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "配備の公式認定は裏付けられますが、その正確な性質や役割が不明であるという部分はLedgerに明記されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": "The U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear."
+          },
+          {
+            "unit_id": "R:S5.3+S5.4",
+            "unit_ids": [
+              "R:S5.3+S5.4"
+            ],
+            "claim_text": "So simply hearing the word “defense” does not tell us whether it refers to an attack weapon in orbit.",
+            "span": [
+              1794,
+              1895
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「active defenseには兵器が含まれ得る」ことから「defenseという語だけでは軌道上の攻撃兵器か判断できない」と結ぶ関係は、Ledgerが直接述べていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-013"
+            ],
+            "model_claim": "Active defense, on the other hand, may include weapons. So simply hearing the word “defense” does not tell us whether it refers to an attack weapon in orbit."
+          },
+          {
+            "unit_id": "R:S6.4+S7.1",
+            "unit_ids": [
+              "R:S6.4+S7.1"
+            ],
+            "claim_text": "So this news does not end with one line: “There are weapons in space.”",
+            "span": [
+              2417,
+              2487
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "条約が宇宙兵器を全面禁止していないことから、このニュースを「宇宙に兵器がある」で終わらせないという関係はLedgerで述べられていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-016"
+            ],
+            "model_claim": "This does not mean that it is a provision that completely bans space weapons. So this news does not end with one line: “There are weapons in space.”"
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S6.3"
+        ],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "L1": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S5.4": "MATCH",
+          "R:S5.3+S5.4": "MATCH",
+          "S6.2": "MATCH",
+          "S6.3": "DEVIATION",
+          "S6.4": "MATCH",
+          "R:S6.4+S7.1": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S1.3": "UNMENTIONED",
+          "S2.4": "UNMENTIONED",
+          "S6.1": "UNMENTIONED",
+          "S7.1": "UNMENTIONED",
+          "S7.2": "UNMENTIONED",
+          "S7.3": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.5856,
+            "usage": {
+              "input_tokens": 7431,
+              "cached_input_tokens": 0,
+              "output_tokens": 5979,
+              "reasoning_tokens": 3933
+            },
+            "elapsed_seconds": 52.866,
+            "prompt_sha256": "816f259ce2f624c954c4414fa317bf7756856d4fa7c3160dc6eccd1659bafd14",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "On celestial bodies, it also bans military bases, military facilities, and fortifications, as well as testing any kind of weapon and military exercises.",
+            "span": [
+              2185,
+              2337
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerに記載された禁止対象に加えて「military facilities」を列挙しており、記録された範囲を広げる追加主張になっています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-016"
+            ],
+            "model_claim": "On celestial bodies, it also bans military bases, military facilities, and fortifications, as well as testing any kind of weapon and military exercises."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S6.3"
+      ],
+      "r3_only": [
+        "L1",
+        "R:S5.3+S5.4",
+        "R:S6.4+S7.1",
+        "S1.1",
+        "S1.2",
+        "S1.3",
+        "S2.3",
+        "S5.1",
+        "S5.4",
+        "S6.1",
+        "S6.4",
+        "S7.1",
+        "S7.3",
+        "T"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 2
+    },
+    "union_candidates": [
+      {
+        "claim_text": "There are two more labels for defense: active defense and passive defense.",
+        "span": [
+          1519,
+          1593
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "quote_not_in_ledger"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: quote_not_in_ledger"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-013"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The last door is the Outer Space Treaty, commonly called the Space Treaty.",
+        "span": [
+          1897,
+          1971
+        ],
+        "unit_ids": [
+          "S6.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "Outer Space Treatyが一般に「Space Treaty」と呼ばれるという別称はLedgerで確認できません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-016"
+        ],
+        "model_claims": [
+          "The last door is the Outer Space Treaty, commonly called the Space Treaty."
+        ]
+      },
+      {
+        "claim_text": "This does not mean that it is a provision that completely bans space weapons.",
+        "span": [
+          2338,
+          2415
+        ],
+        "unit_ids": [
+          "S6.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-016"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”",
+        "span": [
+          2593,
+          2786
+        ],
+        "unit_ids": [
+          "S7.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "通信・測位への日常的依存と、それを踏まえてニュースに深みが出るという因果的評価は、Ledgerでこの範囲・関係まで裏付けられていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-015"
+        ],
+        "model_claims": [
+          "Because it also affects our daily lives, which depend on communications and positioning, the news suddenly has more depth when we look at the categories behind the flashy label “space weapons.”"
+        ]
+      },
+      {
+        "claim_text": "The U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear.",
+        "span": [
+          2803,
+          2900
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "配備の公式認定は裏付けられますが、その正確な性質や役割が不明であるという部分はLedgerに明記されていません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-001"
+        ],
+        "model_claims": [
+          "The U.S. acknowledged deploying weapons in space, but their exact nature and role remain unclear."
+        ]
+      }
+    ],
+    "n_union_candidates": 5,
+    "n_model_candidates": 3,
+    "n_deterministic_only_candidates": 2,
+    "total_cost_jpy": 1.2411,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 14,
+    "n_targets": 13,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 10,
+    "n_excluded_entries": 11,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.3339,
+    "effort": "medium",
+    "prompt_sha256": "4f1c311c936fcef3f6c903c6f427c381a3a236f522ac93cbffe0d85dcad71b64"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 4
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

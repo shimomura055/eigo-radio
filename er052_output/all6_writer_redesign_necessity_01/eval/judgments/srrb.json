@@ -1,0 +1,42 @@
+{
+ "code": "srrb",
+ "judge": "gpt-6-luna",
+ "judge_actual": "gpt-6-luna",
+ "parsed": {
+  "ng_items": [
+   {
+    "text": "R2: 「MetaのAIエージェント、Museには、企業や店に電話をかける機能があります。」 / EN: “Meta's AI agent, Muse, can call companies and stores.”",
+    "severity": "minor",
+    "kind": "scope",
+    "fact_id": "MUSE-HC-004",
+    "in_r0": false,
+    "in_r2": true,
+    "in_en": true,
+    "reason": "台帳が示す電話機能の対象は米国内の企業・店舗だが、R2とENでは地域の限定がなく、範囲を広く読める。"
+   },
+   {
+    "text": "“Meta executives admitted that it had been a mistake to start the test without giving a proper explanation.”",
+    "severity": "minor",
+    "kind": "subject",
+    "fact_id": "MUSE-HC-012",
+    "in_r0": false,
+    "in_r2": false,
+    "in_en": true,
+    "reason": "台帳ではミスを認めたのは副社長1人とされているが、ENは複数の幹部が認めたと表現している。"
+   },
+   {
+    "text": "“callers were not clearly told who was speaking.”",
+    "severity": "major",
+    "kind": "object",
+    "fact_id": "MUSE-HC-012",
+    "in_r0": false,
+    "in_r2": false,
+    "in_en": true,
+    "reason": "開示が適切でなかった相手は電話を受ける側と読める文脈だが、ENの要約では「callers」が知らされなかったとしており、情報を受け取る側を取り違えている。"
+   }
+  ],
+  "pending": [],
+  "notes": "台帳と提示されたルーブリックのみに基づき単独で判定した。"
+ },
+ "sec": 39.4
+}

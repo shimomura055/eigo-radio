@@ -1,0 +1,2649 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "You can ask AI to make phone calls.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-004",
+          "dev": {
+            "claim_in_article": "You can ask AI to make phone calls.",
+            "issue": "AIが電話をかけられるという一般的な主張だが、Ledgerが確認しているのはMuseの電話機能であり、対象をAI一般へ広げている。 / Museの特定機能から、AI一般が電話をかけられるという範囲へ広げています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-004",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-004"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# AI Phone Assistant: Humans Appear Behind the Scenes\n\nYou can ask AI to make phone calls. When you hear that, you might picture a future phone assistant smoothly taking care of requests. But in a feature Meta tested through Muse, AI did not make some of the calls. Trained contract workers called people on users’ behalf and handled the conversations. Human workers appeared behind the scenes of AI phone calls. It was a turn of events that makes you want to check the cast list again.\n\nBut this is not just a story about thinking it was AI and finding out it was a person. Explaining the reason for a call may require information about the user. Employees at the company worried that if contract workers handled the calls, sensitive information might be shared by mistake.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-004",
+            "claim_text": "You can ask AI to make phone calls.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "QUALITY",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+              "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+            ],
+            "batch_cost_jpy": 0.1461,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "But in a feature Meta tested through Muse, AI did not make some of the calls.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "But in a feature Meta tested through Muse, AI did not make some of the calls.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# AI Phone Assistant: Humans Appear Behind the Scenes\n\nYou can ask AI to make phone calls. When you hear that, you might picture a future phone assistant smoothly taking care of requests. But in a feature Meta tested through Muse, AI did not make some of the calls. Trained contract workers called people on users’ behalf and handled the conversations. Human workers appeared behind the scenes of AI phone calls. It was a turn of events that makes you want to check the cast list again.\n\nBut this is not just a story about thinking it was AI and finding out it was a person. Explaining the reason for a call may require information about the user. Employees at the company worried that if contract workers handled the calls, sensitive information might be shared by mistake.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "But in a feature Meta tested through Muse, AI did not make some of the calls.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "QUALITY",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+              "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+            ],
+            "batch_cost_jpy": 0.1461,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "But this is not just a story about thinking it was AI and finding out it was a person.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "But this is not just a story about thinking it was AI and finding out it was a person.",
+            "issue": "人々がAIだと思っていた電話の正体を後から知ったという出来事は、Ledgerで確認されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S2.1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "You can ask AI to make phone calls. When you hear that, you might picture a future phone assistant smoothly taking care of requests. But in a feature Meta tested through Muse, AI did not make some of the calls. Trained contract workers called people on users’ behalf and handled the conversations. Human workers appeared behind the scenes of AI phone calls. It was a turn of events that makes you want to check the cast list again.\n\nBut this is not just a story about thinking it was AI and finding out it was a person. Explaining the reason for a call may require information about the user. Employees at the company worried that if contract workers handled the calls, sensitive information might be shared by mistake.\n\nHere the story changes from a comparison of AI performance to a story about privacy. The problem is not that a person makes the call. What matters to users is knowing who is making the call and who might get their information. This is not a story about a large-scale leak of information. The concern was about a way of running the service that could lead to information being shared with people.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "But this is not just a story about thinking it was AI and finding out it was a person.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+              "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+            ],
+            "batch_cost_jpy": 0.1461,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "What matters to users is knowing who is making the call and who might get their information.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "What matters to users is knowing who is making the call and who might get their information.",
+            "issue": "ユーザー一般にとって何が重要かという価値判断はLedgerにない。また、ユーザー全体へ一般化している。 / 従業員が示した懸念を、ユーザー一般に何が重要かという主張へ置き換えています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But this is not just a story about thinking it was AI and finding out it was a person. Explaining the reason for a call may require information about the user. Employees at the company worried that if contract workers handled the calls, sensitive information might be shared by mistake.\n\nHere the story changes from a comparison of AI performance to a story about privacy. The problem is not that a person makes the call. What matters to users is knowing who is making the call and who might get their information. This is not a story about a large-scale leak of information. The concern was about a way of running the service that could lead to information being shared with people.\n\nA Meta executive admitted that it was a mistake to start the test without a proper explanation. The company then paused the human concierge feature for now. It did not stop Muse as a whole.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-010",
+            "claim_text": "What matters to users is knowing who is making the call and who might get their information.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+              "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+            ],
+            "batch_cost_jpy": 0.1461,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "This is not a story about a large-scale leak of information.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "This is not a story about a large-scale leak of information.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.4"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But this is not just a story about thinking it was AI and finding out it was a person. Explaining the reason for a call may require information about the user. Employees at the company worried that if contract workers handled the calls, sensitive information might be shared by mistake.\n\nHere the story changes from a comparison of AI performance to a story about privacy. The problem is not that a person makes the call. What matters to users is knowing who is making the call and who might get their information. This is not a story about a large-scale leak of information. The concern was about a way of running the service that could lead to information being shared with people.\n\nA Meta executive admitted that it was a mistake to start the test without a proper explanation. The company then paused the human concierge feature for now. It did not stop Muse as a whole.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-010",
+            "claim_text": "This is not a story about a large-scale leak of information.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+              "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+            ],
+            "batch_cost_jpy": 0.1461,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "The concern was about a way of running the service that could lead to information being shared with people.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "The concern was about a way of running the service that could lead to information being shared with people.",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S3.5); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S3.5"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But this is not just a story about thinking it was AI and finding out it was a person. Explaining the reason for a call may require information about the user. Employees at the company worried that if contract workers handled the calls, sensitive information might be shared by mistake.\n\nHere the story changes from a comparison of AI performance to a story about privacy. The problem is not that a person makes the call. What matters to users is knowing who is making the call and who might get their information. This is not a story about a large-scale leak of information. The concern was about a way of running the service that could lead to information being shared with people.\n\nA Meta executive admitted that it was a mistake to start the test without a proper explanation. The company then paused the human concierge feature for now. It did not stop Muse as a whole.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-010",
+            "claim_text": "The concern was about a way of running the service that could lead to information being shared with people.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+              "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+            ],
+            "batch_cost_jpy": 0.1461,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "The company then paused the human concierge feature for now.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "The company then paused the human concierge feature for now.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Here the story changes from a comparison of AI performance to a story about privacy. The problem is not that a person makes the call. What matters to users is knowing who is making the call and who might get their information. This is not a story about a large-scale leak of information. The concern was about a way of running the service that could lead to information being shared with people.\n\nA Meta executive admitted that it was a mistake to start the test without a proper explanation. The company then paused the human concierge feature for now. It did not stop Muse as a whole.\n\nIf AI only answers on a screen, you may not think about what happens behind the scenes. But when it makes phone calls, you start to wonder whether there is a person there and what information is being passed along. The arrival of human workers was an unexpected casting choice, and it also showed that even behind the scenes of convenience, an explanation is needed.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "The company then paused the human concierge feature for now.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+              "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+            ],
+            "batch_cost_jpy": 0.1461,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "But when it makes phone calls, you start to wonder whether there is a person there and what information is being passed along.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-004",
+          "dev": {
+            "claim_in_article": "But when it makes phone calls, you start to wonder whether there is a person there and what information is being passed along.",
+            "issue": "AIが電話をかけられるという一般的な主張だが、Ledgerが確認しているのはMuseの電話機能であり、対象をAI一般へ広げている。 / Museの特定機能から、AI一般が電話をかけられるという範囲へ広げています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-004",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-004"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "You can ask AI to make phone calls."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "A Meta executive admitted that it was a mistake to start the test without a proper explanation. The company then paused the human concierge feature for now. It did not stop Muse as a whole.\n\nIf AI only answers on a screen, you may not think about what happens behind the scenes. But when it makes phone calls, you start to wonder whether there is a person there and what information is being passed along. The arrival of human workers was an unexpected casting choice, and it also showed that even behind the scenes of convenience, an explanation is needed.\n\n## In one line\nMeta’s AI phone-call test used human contractors, raising concerns about who might receive users’ personal information.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-004",
+            "claim_text": "But when it makes phone calls, you start to wonder whether there is a person there and what information is being passed along.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+              "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+            ],
+            "batch_cost_jpy": 0.1461,
+            "batch_n_claims": 9
+          }
+        },
+        {
+          "claim_text": "Meta’s AI phone-call test used human contractors, raising concerns about who might receive users’ personal information.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "Meta’s AI phone-call test used human contractors, raising concerns about who might receive users’ personal information.",
+            "issue": "ユーザー一般にとって何が重要かという価値判断はLedgerにない。また、ユーザー全体へ一般化している。 / 従業員が示した懸念を、ユーザー一般に何が重要かという主張へ置き換えています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "What matters to users is knowing who is making the call and who might get their information."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "If AI only answers on a screen, you may not think about what happens behind the scenes. But when it makes phone calls, you start to wonder whether there is a person there and what information is being passed along. The arrival of human workers was an unexpected casting choice, and it also showed that even behind the scenes of convenience, an explanation is needed.\n\n## In one line\nMeta’s AI phone-call test used human contractors, raising concerns about who might receive users’ personal information.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-010",
+            "claim_text": "Meta’s AI phone-call test used human contractors, raising concerns about who might receive users’ personal information.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+              "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+            ],
+            "batch_cost_jpy": 0.1461,
+            "batch_n_claims": 9
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 9,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-004",
+          "claim_text": "You can ask AI to make phone calls.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "QUALITY",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+            "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+          ],
+          "batch_cost_jpy": 0.1461,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "But in a feature Meta tested through Muse, AI did not make some of the calls.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "QUALITY",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+            "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+          ],
+          "batch_cost_jpy": 0.1461,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "But this is not just a story about thinking it was AI and finding out it was a person.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+            "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+          ],
+          "batch_cost_jpy": 0.1461,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-010",
+          "claim_text": "What matters to users is knowing who is making the call and who might get their information.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+            "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+          ],
+          "batch_cost_jpy": 0.1461,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-010",
+          "claim_text": "This is not a story about a large-scale leak of information.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+            "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+          ],
+          "batch_cost_jpy": 0.1461,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-010",
+          "claim_text": "The concern was about a way of running the service that could lead to information being shared with people.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+            "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+          ],
+          "batch_cost_jpy": 0.1461,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "The company then paused the human concierge feature for now.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+            "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+          ],
+          "batch_cost_jpy": 0.1461,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-004",
+          "claim_text": "But when it makes phone calls, you start to wonder whether there is a person there and what information is being passed along.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+            "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+          ],
+          "batch_cost_jpy": 0.1461,
+          "batch_n_claims": 9
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-010",
+          "claim_text": "Meta’s AI phone-call test used human contractors, raising concerns about who might receive users’ personal information.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94",
+            "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+          ],
+          "batch_cost_jpy": 0.1461,
+          "batch_n_claims": 9
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5325,
+      "usage": {
+        "input_tokens": 5009,
+        "cached_input_tokens": 0,
+        "output_tokens": 5787,
+        "reasoning_tokens": 2242
+      },
+      "elapsed_seconds": 44.238,
+      "prompt_sha256": "ef1759a4f23d909453b2b994a23b748da20ac31ab85b666308b7a5b74a2c8036",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.9068,
+      "usage": {
+        "input_tokens": 4709,
+        "cached_input_tokens": 0,
+        "output_tokens": 10618,
+        "reasoning_tokens": 8364
+      },
+      "elapsed_seconds": 93.224,
+      "prompt_sha256": "f1622cd3f409074fa91c934966e9dd3d0248b00d863b4e27311ca6e7d4ec04e0",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.3497,
+      "usage": {
+        "input_tokens": 5220,
+        "cached_input_tokens": 0,
+        "output_tokens": 3414,
+        "reasoning_tokens": 2319
+      },
+      "elapsed_seconds": 32.002,
+      "prompt_sha256": "411ccbfdf17f76656277cfe06ee087650a4f9489e3cbdd0c8cbde528cd8d46ee",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2497,
+      "usage": {
+        "input_tokens": 9851,
+        "cached_input_tokens": 0,
+        "output_tokens": 1213,
+        "reasoning_tokens": 1006
+      },
+      "elapsed_seconds": 12.09,
+      "prompt_sha256": "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.143,
+      "usage": {
+        "input_tokens": 5779,
+        "cached_input_tokens": 0,
+        "output_tokens": 667,
+        "reasoning_tokens": 588
+      },
+      "elapsed_seconds": 7.549,
+      "prompt_sha256": "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0822,
+      "usage": {
+        "input_tokens": 9851,
+        "cached_input_tokens": 9848,
+        "output_tokens": 851,
+        "reasoning_tokens": 644
+      },
+      "elapsed_seconds": 7.892,
+      "prompt_sha256": "42b2b44df98fdba2df266183d70bc4b69f9b8fae9206a7ecb46cc91f33199a94"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0639,
+      "usage": {
+        "input_tokens": 5779,
+        "cached_input_tokens": 5776,
+        "output_tokens": 698,
+        "reasoning_tokens": 625
+      },
+      "elapsed_seconds": 7.125,
+      "prompt_sha256": "30a4572116dc40d01de280aa35affa2a294c1a981ed111339451357c9eeab343"
+    }
+  ],
+  "total_cost_jpy": 2.3278,
+  "total_calls": 7,
+  "elapsed_seconds": 204.15,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "You can ask AI to make phone calls.",
+        "related_fact_id": "MUSE-HC-004",
+        "origin": null,
+        "issue": "AIが電話をかけられるという一般的な主張だが、Ledgerが確認しているのはMuseの電話機能であり、対象をAI一般へ広げている。 / Museの特定機能から、AI一般が電話をかけられるという範囲へ広げています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But in a feature Meta tested through Muse, AI did not make some of the calls.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But this is not just a story about thinking it was AI and finding out it was a person.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "人々がAIだと思っていた電話の正体を後から知ったという出来事は、Ledgerで確認されていない。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S2.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "What matters to users is knowing who is making the call and who might get their information.",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": null,
+        "issue": "ユーザー一般にとって何が重要かという価値判断はLedgerにない。また、ユーザー全体へ一般化している。 / 従業員が示した懸念を、ユーザー一般に何が重要かという主張へ置き換えています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_actor",
+          "changed_certainty",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "This is not a story about a large-scale leak of information.",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The concern was about a way of running the service that could lead to information being shared with people.",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": null,
+        "issue": "決定論検査で戻した: causal_not_in_fact",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S3.5); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The company then paused the human concierge feature for now.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 18,
+      "n_model_entries": 14,
+      "n_targets": 12,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 9,
+      "n_excluded_entries": 9,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.3497,
+          "usage": {
+            "input_tokens": 5220,
+            "cached_input_tokens": 0,
+            "output_tokens": 3414,
+            "reasoning_tokens": 2319
+          },
+          "elapsed_seconds": 32.002,
+          "prompt_sha256": "411ccbfdf17f76656277cfe06ee087650a4f9489e3cbdd0c8cbde528cd8d46ee",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.3497,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.1",
+          "claim": "You can ask AI to make phone calls.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "記事の文脈ではMuseの電話機能だが、一般のAIに電話を依頼できると範囲を広げ、米国内の企業・店舗などの限定も落としている。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.2",
+          "claim": "When you hear that, you might picture a future phone assistant smoothly taking care of requests.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "将来のアシスタントを読者が想像するという仮定的な導入で、具体的な事実を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S1.6",
+          "claim": "It was a turn of events that makes you want to check the cast list again.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "『配役表を確認したくなる』は人間が電話を担当した展開を表す比喩的な修辞で、新たな事実を加えていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S2.1",
+          "claim": "But this is not just a story about thinking it was AI and finding out it was a person.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "人間が電話を担当したことは裏付けられるが、誰かがAIだと思い、後から人間だと判明したという経緯はLedgerにない。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S2.2",
+          "claim": "Explaining the reason for a call may require information about the user.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "電話の遂行にユーザー情報が必要となる場合があるというLedgerの条件付きの懸念を、可能性として言い換えている。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C6",
+          "key": "S3.1",
+          "claim": "Here the story changes from a comparison of AI performance to a story about privacy.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "記事の話題がプライバシーへ移ることを示す構成上のつなぎで、AI性能の比較結果を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "S3.2",
+          "claim": "The problem is not that a person makes the call.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "人間が電話すること自体を問題視しないという評価・論評であり、具体的な事実の否定ではない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C8",
+          "key": "S3.3",
+          "claim": "What matters to users is knowing who is making the call and who might get their information.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "ユーザーにとって何が重要かを一般化しているが、Ledgerが記録するのは人間スタッフへの情報共有を懸念した従業員の反応であり、主体と範囲が異なる。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "mismatch",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C9",
+          "key": "S4.3",
+          "claim": "It did not stop Muse as a whole.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "Ledgerが人間コンシェルジュ機能のロールバックとMuse全体の停止との区別を明示しており、記事の否定表現はその範囲に一致する。",
+          "fact_tags": [
+            "proper_noun",
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C10",
+          "key": "S5.1",
+          "claim": "If AI only answers on a screen, you may not think about what happens behind the scenes.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "画面上だけで応答するAIについての仮定と読者の反応を述べた修辞で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C11",
+          "key": "S5.2",
+          "claim": "But when it makes phone calls, you start to wonder whether there is a person there and what information is being passed along.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "電話機能を使うと読者が何を考えるかを述べる一般的・仮定的な表現で、新たな事実を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C12",
+          "key": "S5.3",
+          "claim": "The arrival of human workers was an unexpected casting choice, and it also showed that even behind the scenes of convenience, an explanation is needed.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "『予想外の配役』は比喩であり、説明が必要だという部分も記事の論旨を示す評価的な結びで、追加の具体的事実ではない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "411ccbfdf17f76656277cfe06ee087650a4f9489e3cbdd0c8cbde528cd8d46ee"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 28,
+    "n_judged_units": 22,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 15,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "S1.1",
+          "S1.2",
+          "S1.3",
+          "S1.6",
+          "S2.1",
+          "S2.2",
+          "S3.1",
+          "S3.2",
+          "S3.3",
+          "S3.4",
+          "S3.5",
+          "S4.2",
+          "S4.3",
+          "S5.1",
+          "S5.2",
+          "S5.3"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S1.4": "SUPPORTED",
+          "S1.5": "SUPPORTED",
+          "S1.6": "CANDIDATE",
+          "S2.1": "CANDIDATE",
+          "S2.2": "CANDIDATE",
+          "S2.3": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "CANDIDATE",
+          "S3.3": "CANDIDATE",
+          "S3.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.5": "SUPPORTED->CANDIDATE(causal_not_in_fact)",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.3": "CANDIDATE",
+          "S5.1": "CANDIDATE",
+          "S5.2": "CANDIDATE",
+          "S5.3": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5325,
+            "usage": {
+              "input_tokens": 5009,
+              "cached_input_tokens": 0,
+              "output_tokens": 5787,
+              "reasoning_tokens": 2242
+            },
+            "elapsed_seconds": 44.238,
+            "prompt_sha256": "ef1759a4f23d909453b2b994a23b748da20ac31ab85b666308b7a5b74a2c8036",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S1.5": "SUPPORTED",
+          "S1.6": "CANDIDATE",
+          "S2.1": "CANDIDATE",
+          "S2.2": "CANDIDATE",
+          "S2.3": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "CANDIDATE",
+          "S3.3": "CANDIDATE",
+          "S3.4": "SUPPORTED",
+          "S3.5": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "CANDIDATE",
+          "S5.1": "CANDIDATE",
+          "S5.2": "CANDIDATE",
+          "S5.3": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "You can ask AI to make phone calls.",
+            "span": [
+              55,
+              90
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "AIが電話をかけられるという一般的な主張だが、Ledgerが確認しているのはMuseの電話機能であり、対象をAI一般へ広げている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-004"
+            ],
+            "model_claim": "You can ask AI to make phone calls."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "When you hear that, you might picture a future phone assistant smoothly taking care of requests.",
+            "span": [
+              91,
+              187
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "読者が将来の電話アシスタントをどう想像するかという主張はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "When you hear that, you might picture a future phone assistant smoothly taking care of requests."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "But in a feature Meta tested through Muse, AI did not make some of the calls.",
+            "span": [
+              188,
+              265
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S1.6",
+            "unit_ids": [
+              "S1.6"
+            ],
+            "claim_text": "It was a turn of events that makes you want to check the cast list again.",
+            "span": [
+              413,
+              486
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "出来事が予想外だったという評価はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "It was a turn of events that makes you want to check the cast list again."
+          },
+          {
+            "unit_id": "S2.1",
+            "unit_ids": [
+              "S2.1"
+            ],
+            "claim_text": "But this is not just a story about thinking it was AI and finding out it was a person.",
+            "span": [
+              488,
+              574
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人々がAIだと思っていた電話の正体を後から知ったという出来事は、Ledgerで確認されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "But this is not just a story about thinking it was AI and finding out it was a person."
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "Explaining the reason for a call may require information about the user.",
+            "span": [
+              575,
+              647
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "電話の理由を説明するためにユーザー情報が必要となる、という具体的な説明はLedgerにない。Ledgerが述べるのは電話遂行に関する情報共有への懸念。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "Explaining the reason for a call may require information about the user."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "Here the story changes from a comparison of AI performance to a story about privacy.",
+            "span": [
+              776,
+              860
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間とAIの成功率比較およびプライバシー懸念はLedgerにあるが、それらを「ストーリーが性能比較からプライバシーへ変わる」と位置付ける関係・構成上の主張はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-008"
+            ],
+            "model_claim": "Here the story changes from a comparison of AI performance to a story about privacy."
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "The problem is not that a person makes the call.",
+            "span": [
+              861,
+              909
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人が電話をかけること自体は問題ではない、という評価はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "The problem is not that a person makes the call."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "What matters to users is knowing who is making the call and who might get their information.",
+            "span": [
+              910,
+              1002
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "ユーザー一般にとって何が重要かという価値判断はLedgerにない。また、ユーザー全体へ一般化している。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "What matters to users is knowing who is making the call and who might get their information."
+          },
+          {
+            "unit_id": "S3.4",
+            "unit_ids": [
+              "S3.4"
+            ],
+            "claim_text": "This is not a story about a large-scale leak of information.",
+            "span": [
+              1003,
+              1063
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.5",
+            "unit_ids": [
+              "S3.5"
+            ],
+            "claim_text": "The concern was about a way of running the service that could lead to information being shared with people.",
+            "span": [
+              1064,
+              1171
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "causal_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: causal_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "The company then paused the human concierge feature for now.",
+            "span": [
+              1269,
+              1329
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.3",
+            "unit_ids": [
+              "S4.3"
+            ],
+            "claim_text": "It did not stop Muse as a whole.",
+            "span": [
+              1330,
+              1362
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間コンシェルジュ機能のロールバックは確認されているが、Muse全体が停止しなかったという事実は直接記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "It did not stop Muse as a whole."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "If AI only answers on a screen, you may not think about what happens behind the scenes.",
+            "span": [
+              1364,
+              1451
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "画面上で答えるAIについて人々が裏側を考えないという一般的な主張はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "If AI only answers on a screen, you may not think about what happens behind the scenes."
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "But when it makes phone calls, you start to wonder whether there is a person there and what information is being passed along.",
+            "span": [
+              1452,
+              1578
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "電話機能によって人々が人間の関与や情報共有を気にし始めるという一般的な反応はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "But when it makes phone calls, you start to wonder whether there is a person there and what information is being passed along."
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "The arrival of human workers was an unexpected casting choice, and it also showed that even behind the scenes of convenience, an explanation is needed.",
+            "span": [
+              1579,
+              1730
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間の関与が予想外だったという評価、およびそれが説明の必要性を示したという因果的な解釈は、Ledgerが直接述べていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "The arrival of human workers was an unexpected casting choice, and it also showed that even behind the scenes of convenience, an explanation is needed."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S1.1",
+          "S3.3"
+        ],
+        "unit_status": {
+          "S1.1": "DEVIATION",
+          "S1.3": "MATCH",
+          "L1": "MATCH",
+          "T": "MATCH",
+          "S1.4": "MATCH",
+          "S1.5": "MATCH",
+          "S2.3": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "DEVIATION",
+          "S4.2": "MATCH",
+          "S5.2": "MATCH",
+          "S3.1": "MATCH",
+          "S2.2": "MATCH",
+          "S3.4": "MATCH",
+          "S3.5": "MATCH",
+          "S4.1": "MATCH",
+          "S4.3": "MATCH",
+          "S1.2": "UNMENTIONED",
+          "S1.6": "UNMENTIONED",
+          "S2.1": "UNMENTIONED",
+          "S5.1": "UNMENTIONED",
+          "S5.3": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.9068,
+            "usage": {
+              "input_tokens": 4709,
+              "cached_input_tokens": 0,
+              "output_tokens": 10618,
+              "reasoning_tokens": 8364
+            },
+            "elapsed_seconds": 93.224,
+            "prompt_sha256": "f1622cd3f409074fa91c934966e9dd3d0248b00d863b4e27311ca6e7d4ec04e0",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "You can ask AI to make phone calls.",
+            "span": [
+              55,
+              90
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Museの特定機能から、AI一般が電話をかけられるという範囲へ広げています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-004"
+            ],
+            "model_claim": "You can ask AI to make phone calls."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "What matters to users is knowing who is making the call and who might get their information.",
+            "span": [
+              910,
+              1002
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "従業員が示した懸念を、ユーザー一般に何が重要かという主張へ置き換えています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "What matters to users is knowing who is making the call and who might get their information."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S1.1",
+        "S3.3"
+      ],
+      "r3_only": [
+        "S1.2",
+        "S1.3",
+        "S1.6",
+        "S2.1",
+        "S2.2",
+        "S3.1",
+        "S3.2",
+        "S3.4",
+        "S3.5",
+        "S4.2",
+        "S4.3",
+        "S5.1",
+        "S5.2",
+        "S5.3"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 4
+    },
+    "union_candidates": [
+      {
+        "claim_text": "You can ask AI to make phone calls.",
+        "span": [
+          55,
+          90
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "AIが電話をかけられるという一般的な主張だが、Ledgerが確認しているのはMuseの電話機能であり、対象をAI一般へ広げている。",
+          "Museの特定機能から、AI一般が電話をかけられるという範囲へ広げています。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-004"
+        ],
+        "model_claims": [
+          "You can ask AI to make phone calls."
+        ]
+      },
+      {
+        "claim_text": "But in a feature Meta tested through Muse, AI did not make some of the calls.",
+        "span": [
+          188,
+          265
+        ],
+        "unit_ids": [
+          "S1.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "But this is not just a story about thinking it was AI and finding out it was a person.",
+        "span": [
+          488,
+          574
+        ],
+        "unit_ids": [
+          "S2.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "人々がAIだと思っていた電話の正体を後から知ったという出来事は、Ledgerで確認されていない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": [
+          "But this is not just a story about thinking it was AI and finding out it was a person."
+        ]
+      },
+      {
+        "claim_text": "What matters to users is knowing who is making the call and who might get their information.",
+        "span": [
+          910,
+          1002
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "ユーザー一般にとって何が重要かという価値判断はLedgerにない。また、ユーザー全体へ一般化している。",
+          "従業員が示した懸念を、ユーザー一般に何が重要かという主張へ置き換えています。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-010"
+        ],
+        "model_claims": [
+          "What matters to users is knowing who is making the call and who might get their information."
+        ]
+      },
+      {
+        "claim_text": "This is not a story about a large-scale leak of information.",
+        "span": [
+          1003,
+          1063
+        ],
+        "unit_ids": [
+          "S3.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-010"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The concern was about a way of running the service that could lead to information being shared with people.",
+        "span": [
+          1064,
+          1171
+        ],
+        "unit_ids": [
+          "S3.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "causal_not_in_fact"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: causal_not_in_fact"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-010"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The company then paused the human concierge feature for now.",
+        "span": [
+          1269,
+          1329
+        ],
+        "unit_ids": [
+          "S4.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 7,
+    "n_model_candidates": 3,
+    "n_deterministic_only_candidates": 4,
+    "total_cost_jpy": 1.4393,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 14,
+    "n_targets": 12,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 9,
+    "n_excluded_entries": 9,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.3497,
+    "effort": "medium",
+    "prompt_sha256": "411ccbfdf17f76656277cfe06ee087650a4f9489e3cbdd0c8cbde528cd8d46ee"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 2
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 2.3278,
+  "provenance": {
+    "switch_dump_sha256": "66d18a3a1b28679684d7dcbe6e7af161a4da4223da7415a7ac50e7450de777c1",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-08T09:10:28",
+    "ledger_sha256": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+    "article_sha256": "d4653441321a0526bd4746441617b845d3a7c3f7c7db13da57c0ca1d5cdc8168",
+    "source_article_sha256": "92c5efb13a7d6ecdacf773cf9c5222475b64108acc24d4a2adfd2ef389e943b4",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/all6_writer_redesign_necessity_01/runs/meta/control/b4__all6__r2/checker",
+      "ledger_path": "er052_output/all6_writer_redesign_necessity_01/runs/meta/control/b4__all6__r2/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/all6_writer_redesign_necessity_01/runs/meta/control/b4__all6__r2/b1b/article.md",
+      "source_path": "er052_output/all6_writer_redesign_necessity_01/runs/meta/control/b4__all6__r2/ja_writer/revision2.md",
+      "budget_jpy": 10.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

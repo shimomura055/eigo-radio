@@ -1,0 +1,3433 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "# Who Is the Main Player in an AI Phone Call? Human Helpers",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "# Who Is the Main Player in an AI Phone Call? Human Helpers",
+            "issue": "「Human Helpers」がAI電話の主役だとする見出しは、Ledgerが確認する一部のMuse経由の電話・テストを超えて一般化しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Who Is the Main Player in an AI Phone Call? Human Helpers\n\nWe are entering an age when you can ask AI to make phone calls for you. It can book a haircut, check whether a store has something in stock, or ask a business for an estimate. Muse, Meta's AI agent for personal use, is a system that can handle these tasks by phone for users.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "# Who Is the Main Player in an AI Phone Call? Human Helpers",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+              "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+            ],
+            "batch_cost_jpy": 0.2072,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "We are entering an age when you can ask AI to make phone calls for you.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-004",
+          "dev": {
+            "claim_in_article": "We are entering an age when you can ask AI to make phone calls for you.",
+            "issue": "AI全般について「電話をかけてもらえる時代に入っている」と一般化しています。Ledgerが支えるのはMuseの電話機能です。 / Museに確認された電話機能をAI一般の能力として述べ、対象範囲を広げています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-004",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-004"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Who Is the Main Player in an AI Phone Call? Human Helpers\n\nWe are entering an age when you can ask AI to make phone calls for you. It can book a haircut, check whether a store has something in stock, or ask a business for an estimate. Muse, Meta's AI agent for personal use, is a system that can handle these tasks by phone for users.\n\nThere was another twist behind the calls. In some calls made through Muse, it was not AI that made the call and finished the conversation. Trained contract workers did that instead. AI received the request and handed it over to a human helper. A test of “human concierges” was under way.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-004",
+            "claim_text": "We are entering an age when you can ask AI to make phone calls for you.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+              "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+            ],
+            "batch_cost_jpy": 0.2072,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "In some calls made through Muse, it was not AI that made the call and finished the conversation.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "In some calls made through Muse, it was not AI that made the call and finished the conversation.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "We are entering an age when you can ask AI to make phone calls for you. It can book a haircut, check whether a store has something in stock, or ask a business for an estimate. Muse, Meta's AI agent for personal use, is a system that can handle these tasks by phone for users.\n\nThere was another twist behind the calls. In some calls made through Muse, it was not AI that made the call and finished the conversation. Trained contract workers did that instead. AI received the request and handed it over to a human helper. A test of “human concierges” was under way.\n\nThe reaction of the people receiving the calls added another twist. Internal posts reported cases in which the other person hung up after realizing that Muse was AI. An employee also reported that an insurance company repeatedly hung up after noticing that the call was from AI.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "In some calls made through Muse, it was not AI that made the call and finished the conversation.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+              "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+            ],
+            "batch_cost_jpy": 0.2072,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "Some tests in which humans handled the calls suggested that the success rate might reach 95 to 98 percent.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-008",
+          "dev": {
+            "claim_in_article": "Some tests in which humans handled the calls suggested that the success rate might reach 95 to 98 percent.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The reaction of the people receiving the calls added another twist. Internal posts reported cases in which the other person hung up after realizing that Muse was AI. An employee also reported that an insurance company repeatedly hung up after noticing that the call was from AI.\n\nSome tests in which humans handled the calls suggested that the success rate might reach 95 to 98 percent. However, the way it was measured and the number of calls were not made public. This does not mean that humans always succeed. There were cases in which people hung up when the caller was AI. On the other hand, tests handled by humans suggested a possible high success rate. In the world of phone calls, it almost looks as if the roles of AI and humans have been slightly reversed.\n\nHowever, there was a second twist. When contract workers handled calls, the user's sensitive information needed to move the call forward could be shared unintentionally with contract workers at a call center. Meta employees raised privacy concerns. This does not mean that a large leak of information occurred. Even so, if humans are involved in a service that uses AI, users need to be clearly told who is speaking and what information is being shared.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-008",
+            "claim_text": "Some tests in which humans handled the calls suggested that the success rate might reach 95 to 98 percent.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_numeric_value",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+              "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+            ],
+            "batch_cost_jpy": 0.2072,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "On the other hand, tests handled by humans suggested a possible high success rate.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-008",
+          "dev": {
+            "claim_in_article": "On the other hand, tests handled by humans suggested a possible high success rate.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.5); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.5"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The reaction of the people receiving the calls added another twist. Internal posts reported cases in which the other person hung up after realizing that Muse was AI. An employee also reported that an insurance company repeatedly hung up after noticing that the call was from AI.\n\nSome tests in which humans handled the calls suggested that the success rate might reach 95 to 98 percent. However, the way it was measured and the number of calls were not made public. This does not mean that humans always succeed. There were cases in which people hung up when the caller was AI. On the other hand, tests handled by humans suggested a possible high success rate. In the world of phone calls, it almost looks as if the roles of AI and humans have been slightly reversed.\n\nHowever, there was a second twist. When contract workers handled calls, the user's sensitive information needed to move the call forward could be shared unintentionally with contract workers at a call center. Meta employees raised privacy concerns. This does not mean that a large leak of information occurred. Even so, if humans are involved in a service that uses AI, users need to be clearly told who is speaking and what information is being shared.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-008",
+            "claim_text": "On the other hand, tests handled by humans suggested a possible high success rate.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_numeric_value",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+              "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+            ],
+            "batch_cost_jpy": 0.2072,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "In the world of phone calls, it almost looks as if the roles of AI and humans have been slightly reversed.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "In the world of phone calls, it almost looks as if the roles of AI and humans have been slightly reversed.",
+            "issue": "AIと人間の役割が逆転したように見えるという比較的な結論は、Ledgerに記載された事実ではありません。 / 一部テストの報告された成功率比較から、電話におけるAIと人間の役割が逆転したという広い解釈を付け加えています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.6); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.6"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006",
+                "MUSE-HC-008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The reaction of the people receiving the calls added another twist. Internal posts reported cases in which the other person hung up after realizing that Muse was AI. An employee also reported that an insurance company repeatedly hung up after noticing that the call was from AI.\n\nSome tests in which humans handled the calls suggested that the success rate might reach 95 to 98 percent. However, the way it was measured and the number of calls were not made public. This does not mean that humans always succeed. There were cases in which people hung up when the caller was AI. On the other hand, tests handled by humans suggested a possible high success rate. In the world of phone calls, it almost looks as if the roles of AI and humans have been slightly reversed.\n\nHowever, there was a second twist. When contract workers handled calls, the user's sensitive information needed to move the call forward could be shared unintentionally with contract workers at a call center. Meta employees raised privacy concerns. This does not mean that a large leak of information occurred. Even so, if humans are involved in a service that uses AI, users need to be clearly told who is speaking and what information is being shared.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "In the world of phone calls, it almost looks as if the roles of AI and humans have been slightly reversed.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+              "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+            ],
+            "batch_cost_jpy": 0.2072,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "An internal post said that the human concierge feature had been returned to its previous state for now.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "An internal post said that the human concierge feature had been returned to its previous state for now.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "However, there was a second twist. When contract workers handled calls, the user's sensitive information needed to move the call forward could be shared unintentionally with contract workers at a call center. Meta employees raised privacy concerns. This does not mean that a large leak of information occurred. Even so, if humans are involved in a service that uses AI, users need to be clearly told who is speaking and what information is being shared.\n\nThe vice president of Meta's Superintelligence Labs division admitted that starting tests in which contract workers made calls without proper disclosure was a “mistake.” An internal post said that the human concierge feature had been returned to its previous state for now. This did not mean that all of Muse had been stopped.\n\nThe main player in AI phone calls was not AI alone. There was also the person on the other end, the human speaking behind the scenes, and the way that human's presence was explained. Muse's tests showed that behind convenient technology, there is another person taking part.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "An internal post said that the human concierge feature had been returned to its previous state for now.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+              "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+            ],
+            "batch_cost_jpy": 0.2072,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "The main player in AI phone calls was not AI alone.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "The main player in AI phone calls was not AI alone.",
+            "issue": "AI電話全般の主役がAIだけではないというまとめは、一部のMuse経由の電話に関するテスト結果を超えています。 / 一部のMuse経由のテストではなく、AI電話全般について人間も関与すると読める範囲に広げています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S7.1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S7.1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The vice president of Meta's Superintelligence Labs division admitted that starting tests in which contract workers made calls without proper disclosure was a “mistake.” An internal post said that the human concierge feature had been returned to its previous state for now. This did not mean that all of Muse had been stopped.\n\nThe main player in AI phone calls was not AI alone. There was also the person on the other end, the human speaking behind the scenes, and the way that human's presence was explained. Muse's tests showed that behind convenient technology, there is another person taking part.\n\n## In one line\nMeta’s AI phone service sometimes relied on hidden human helpers, raising concerns about transparency and privacy.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "The main player in AI phone calls was not AI alone.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+              "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+            ],
+            "batch_cost_jpy": 0.2072,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "It can book a haircut, check whether a store has something in stock, or ask a business for an estimate.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-004",
+          "dev": {
+            "claim_in_article": "It can book a haircut, check whether a store has something in stock, or ask a business for an estimate.",
+            "issue": "Museが米国内の企業・店舗に電話する機能として報じられた内容を、AI一般が行えることとして述べています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-004",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-004"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Who Is the Main Player in an AI Phone Call? Human Helpers\n\nWe are entering an age when you can ask AI to make phone calls for you. It can book a haircut, check whether a store has something in stock, or ask a business for an estimate. Muse, Meta's AI agent for personal use, is a system that can handle these tasks by phone for users.\n\nThere was another twist behind the calls. In some calls made through Muse, it was not AI that made the call and finished the conversation. Trained contract workers did that instead. AI received the request and handed it over to a human helper. A test of “human concierges” was under way.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-004",
+            "claim_text": "It can book a haircut, check whether a store has something in stock, or ask a business for an estimate.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+              "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+            ],
+            "batch_cost_jpy": 0.2072,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "Muse, Meta's AI agent for personal use, is a system that can handle these tasks by phone for users.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-004",
+          "dev": {
+            "claim_in_article": "Muse, Meta's AI agent for personal use, is a system that can handle these tasks by phone for users.",
+            "issue": "記事は利用者一般に対する機能として述べており、Ledgerが示す米国内の企業・店舗への発信という範囲を明示せず広げています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-004",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-004"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Who Is the Main Player in an AI Phone Call? Human Helpers\n\nWe are entering an age when you can ask AI to make phone calls for you. It can book a haircut, check whether a store has something in stock, or ask a business for an estimate. Muse, Meta's AI agent for personal use, is a system that can handle these tasks by phone for users.\n\nThere was another twist behind the calls. In some calls made through Muse, it was not AI that made the call and finished the conversation. Trained contract workers did that instead. AI received the request and handed it over to a human helper. A test of “human concierges” was under way.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-004",
+            "claim_text": "Muse, Meta's AI agent for personal use, is a system that can handle these tasks by phone for users.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+              "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+            ],
+            "batch_cost_jpy": 0.2072,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "Meta’s AI phone service sometimes relied on hidden human helpers, raising concerns about transparency and privacy.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "Meta’s AI phone service sometimes relied on hidden human helpers, raising concerns about transparency and privacy.",
+            "issue": "「Human Helpers」がAI電話の主役だとする見出しは、Ledgerが確認する一部のMuse経由の電話・テストを超えて一般化しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# Who Is the Main Player in an AI Phone Call? Human Helpers"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The main player in AI phone calls was not AI alone. There was also the person on the other end, the human speaking behind the scenes, and the way that human's presence was explained. Muse's tests showed that behind convenient technology, there is another person taking part.\n\n## In one line\nMeta’s AI phone service sometimes relied on hidden human helpers, raising concerns about transparency and privacy.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "Meta’s AI phone service sometimes relied on hidden human helpers, raising concerns about transparency and privacy.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+              "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+            ],
+            "batch_cost_jpy": 0.2072,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "The vice president of Meta's Superintelligence Labs division admitted that starting tests in which contract workers made calls without proper disclosure was a “mistake.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-008",
+          "dev": {
+            "claim_in_article": "The vice president of Meta's Superintelligence Labs division admitted that starting tests in which contract workers made calls without proper disclosure was a “mistake.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Some tests in which humans handled the calls suggested that the success rate might reach 95 to 98 percent."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "However, there was a second twist. When contract workers handled calls, the user's sensitive information needed to move the call forward could be shared unintentionally with contract workers at a call center. Meta employees raised privacy concerns. This does not mean that a large leak of information occurred. Even so, if humans are involved in a service that uses AI, users need to be clearly told who is speaking and what information is being shared.\n\nThe vice president of Meta's Superintelligence Labs division admitted that starting tests in which contract workers made calls without proper disclosure was a “mistake.” An internal post said that the human concierge feature had been returned to its previous state for now. This did not mean that all of Muse had been stopped.\n\nThe main player in AI phone calls was not AI alone. There was also the person on the other end, the human speaking behind the scenes, and the way that human's presence was explained. Muse's tests showed that behind convenient technology, there is another person taking part.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-008",
+            "claim_text": "The vice president of Meta's Superintelligence Labs division admitted that starting tests in which contract workers made calls without proper disclosure was a “mistake.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+              "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+            ],
+            "batch_cost_jpy": 0.2072,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "” An internal post said that the human concierge feature had been returned to its previous state for now.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "” An internal post said that the human concierge feature had been returned to its previous state for now.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "An internal post said that the human concierge feature had been returned to its previous state for now."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "However, there was a second twist. When contract workers handled calls, the user's sensitive information needed to move the call forward could be shared unintentionally with contract workers at a call center. Meta employees raised privacy concerns. This does not mean that a large leak of information occurred. Even so, if humans are involved in a service that uses AI, users need to be clearly told who is speaking and what information is being shared.\n\nThe vice president of Meta's Superintelligence Labs division admitted that starting tests in which contract workers made calls without proper disclosure was a “mistake.” An internal post said that the human concierge feature had been returned to its previous state for now. This did not mean that all of Muse had been stopped.\n\nThe main player in AI phone calls was not AI alone. There was also the person on the other end, the human speaking behind the scenes, and the way that human's presence was explained. Muse's tests showed that behind convenient technology, there is another person taking part.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "” An internal post said that the human concierge feature had been returned to its previous state for now.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+              "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+            ],
+            "batch_cost_jpy": 0.2072,
+            "batch_n_claims": 13
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 13,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "# Who Is the Main Player in an AI Phone Call? Human Helpers",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "QUALITY",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+            "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+          ],
+          "batch_cost_jpy": 0.2072,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-004",
+          "claim_text": "We are entering an age when you can ask AI to make phone calls for you.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "QUALITY",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+            "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+          ],
+          "batch_cost_jpy": 0.2072,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "In some calls made through Muse, it was not AI that made the call and finished the conversation.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+            "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+          ],
+          "batch_cost_jpy": 0.2072,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-008",
+          "claim_text": "Some tests in which humans handled the calls suggested that the success rate might reach 95 to 98 percent.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_numeric_value",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+            "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+          ],
+          "batch_cost_jpy": 0.2072,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-008",
+          "claim_text": "On the other hand, tests handled by humans suggested a possible high success rate.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_numeric_value",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+            "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+          ],
+          "batch_cost_jpy": 0.2072,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "In the world of phone calls, it almost looks as if the roles of AI and humans have been slightly reversed.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+            "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+          ],
+          "batch_cost_jpy": 0.2072,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "An internal post said that the human concierge feature had been returned to its previous state for now.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+            "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+          ],
+          "batch_cost_jpy": 0.2072,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "The main player in AI phone calls was not AI alone.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+            "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+          ],
+          "batch_cost_jpy": 0.2072,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-004",
+          "claim_text": "It can book a haircut, check whether a store has something in stock, or ask a business for an estimate.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+            "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+          ],
+          "batch_cost_jpy": 0.2072,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-004",
+          "claim_text": "Muse, Meta's AI agent for personal use, is a system that can handle these tasks by phone for users.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "QUALITY",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+            "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+          ],
+          "batch_cost_jpy": 0.2072,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "Meta’s AI phone service sometimes relied on hidden human helpers, raising concerns about transparency and privacy.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+            "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+          ],
+          "batch_cost_jpy": 0.2072,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-008",
+          "claim_text": "The vice president of Meta's Superintelligence Labs division admitted that starting tests in which contract workers made calls without proper disclosure was a “mistake.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+            "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+          ],
+          "batch_cost_jpy": 0.2072,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "” An internal post said that the human concierge feature had been returned to its previous state for now.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5",
+            "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+          ],
+          "batch_cost_jpy": 0.2072,
+          "batch_n_claims": 13
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6041,
+      "usage": {
+        "input_tokens": 5258,
+        "cached_input_tokens": 0,
+        "output_tokens": 6650,
+        "reasoning_tokens": 1742
+      },
+      "elapsed_seconds": 46.919,
+      "prompt_sha256": "29572f25c3a261b887205746875d85d73e527d9abd860b8e5305845421e4140c",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 1.1403,
+      "usage": {
+        "input_tokens": 4918,
+        "cached_input_tokens": 0,
+        "output_tokens": 13554,
+        "reasoning_tokens": 10211
+      },
+      "elapsed_seconds": 101.443,
+      "prompt_sha256": "eca70727a2795cb2edc7128543c0df2479ba364cb3d639ed04820cdb6bdaff37",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.4052,
+      "usage": {
+        "input_tokens": 5444,
+        "cached_input_tokens": 0,
+        "output_tokens": 4077,
+        "reasoning_tokens": 3098
+      },
+      "elapsed_seconds": 36.139,
+      "prompt_sha256": "dfa2dc8280ff846c235d8a8972e186e479e62b09810380d74914fb110e75baf9",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2298,
+      "usage": {
+        "input_tokens": 10771,
+        "cached_input_tokens": 0,
+        "output_tokens": 775,
+        "reasoning_tokens": 516
+      },
+      "elapsed_seconds": 7.043,
+      "prompt_sha256": "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1722,
+      "usage": {
+        "input_tokens": 6078,
+        "cached_input_tokens": 0,
+        "output_tokens": 980,
+        "reasoning_tokens": 851
+      },
+      "elapsed_seconds": 9.892,
+      "prompt_sha256": "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1191,
+      "usage": {
+        "input_tokens": 10771,
+        "cached_input_tokens": 10768,
+        "output_tokens": 1302,
+        "reasoning_tokens": 1034
+      },
+      "elapsed_seconds": 13.812,
+      "prompt_sha256": "0324919dae81e28e322831af3e948e494b4f6d12d7edbbb9a792c470ce29aca5"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0881,
+      "usage": {
+        "input_tokens": 6078,
+        "cached_input_tokens": 6075,
+        "output_tokens": 1001,
+        "reasoning_tokens": 878
+      },
+      "elapsed_seconds": 9.933,
+      "prompt_sha256": "0b15bd1c9db3b6f52323c28ec833d44c7049f57e0919de54dabbb010f7ff9184"
+    }
+  ],
+  "total_cost_jpy": 2.7588,
+  "total_calls": 7,
+  "elapsed_seconds": 225.227,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "# Who Is the Main Player in an AI Phone Call? Human Helpers",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "「Human Helpers」がAI電話の主役だとする見出しは、Ledgerが確認する一部のMuse経由の電話・テストを超えて一般化しています。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "We are entering an age when you can ask AI to make phone calls for you.",
+        "related_fact_id": "MUSE-HC-004",
+        "origin": null,
+        "issue": "AI全般について「電話をかけてもらえる時代に入っている」と一般化しています。Ledgerが支えるのはMuseの電話機能です。 / Museに確認された電話機能をAI一般の能力として述べ、対象範囲を広げています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_actor",
+          "changed_fact",
+          "changed_scope",
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In some calls made through Muse, it was not AI that made the call and finished the conversation.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Some tests in which humans handled the calls suggested that the success rate might reach 95 to 98 percent.",
+        "related_fact_id": "MUSE-HC-008",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "On the other hand, tests handled by humans suggested a possible high success rate.",
+        "related_fact_id": "MUSE-HC-008",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.5); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In the world of phone calls, it almost looks as if the roles of AI and humans have been slightly reversed.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "AIと人間の役割が逆転したように見えるという比較的な結論は、Ledgerに記載された事実ではありません。 / 一部テストの報告された成功率比較から、電話におけるAIと人間の役割が逆転したという広い解釈を付け加えています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.6); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_comparison",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "An internal post said that the human concierge feature had been returned to its previous state for now.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The main player in AI phone calls was not AI alone.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "AI電話全般の主役がAIだけではないというまとめは、一部のMuse経由の電話に関するテスト結果を超えています。 / 一部のMuse経由のテストではなく、AI電話全般について人間も関与すると読める範囲に広げています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S7.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "It can book a haircut, check whether a store has something in stock, or ask a business for an estimate.",
+        "related_fact_id": "MUSE-HC-004",
+        "origin": null,
+        "issue": "Museが米国内の企業・店舗に電話する機能として報じられた内容を、AI一般が行えることとして述べています。",
+        "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_actor",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Muse, Meta's AI agent for personal use, is a system that can handle these tasks by phone for users.",
+        "related_fact_id": "MUSE-HC-004",
+        "origin": null,
+        "issue": "記事は利用者一般に対する機能として述べており、Ledgerが示す米国内の企業・店舗への発信という範囲を明示せず広げています。",
+        "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S1.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 23,
+      "n_model_entries": 19,
+      "n_targets": 12,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 6,
+      "n_excluded_entries": 10,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.4052,
+          "usage": {
+            "input_tokens": 5444,
+            "cached_input_tokens": 0,
+            "output_tokens": 4077,
+            "reasoning_tokens": 3098
+          },
+          "elapsed_seconds": 36.139,
+          "prompt_sha256": "dfa2dc8280ff846c235d8a8972e186e479e62b09810380d74914fb110e75baf9",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.4052,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# Who Is the Main Player in an AI Phone Call? Human Helpers",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「主役」という比較的な framing が、限定されたMuseの一部テストをAI電話全般へ広げています。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.1",
+          "claim": "We are entering an age when you can ask AI to make phone calls for you.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "AI一般が電話をかける時代だと範囲を広げていますが、Ledgerが裏付けるのはMuseの電話機能です。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "mismatch",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C3",
+          "key": "S4.6",
+          "claim": "In the world of phone calls, it almost looks as if the roles of AI and humans have been slightly reversed.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "人間対応テストとAIのみの場合の比較を、限定されたテストから電話全般へ広げています。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C4",
+          "key": "S5.2",
+          "claim": "When contract workers handled calls, the user's sensitive information needed to move the call forward could be shared unintentionally with contract workers at a call center.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "人間の契約スタッフが担当するテストで、機微情報が意図せず共有される可能性への従業員の懸念と一致します。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C5",
+          "key": "S5.4",
+          "claim": "This does not mean that a large leak of information occurred.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "懸念の存在だけでは大規模な情報漏えいの発生を意味しない、というLedgerの注意書きに沿っています。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C6",
+          "key": "S5.5",
+          "claim": "Even so, if humans are involved in a service that uses AI, users need to be clearly told who is speaking and what information is being shared.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "人間が関与する場合の開示について述べる規範的な提言で、新たな具体的事実を主張していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "S7.1",
+          "claim": "The main player in AI phone calls was not AI alone.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "人間が関与したのはMuse経由の一部の電話テストですが、電話全般についてAIだけではないと広く述べています。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C8",
+          "key": "S7.3",
+          "claim": "Muse's tests showed that behind convenient technology, there is another person taking part.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "Museのテストで人間の契約スタッフが電話を担当したという事実の言い換えです。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C9",
+          "key": "S1.2",
+          "claim": "It can book a haircut, check whether a store has something in stock, or ask a business for an estimate.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "機能の主体をMuseに限らないAI一般とし、米国内の企業・店舗への発信という範囲・条件も示していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "mismatch",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C10",
+          "key": "S1.3",
+          "claim": "Muse, Meta's AI agent for personal use, is a system that can handle these tasks by phone for users.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "Museの電話機能とタスクは裏付けられますが、Ledgerが示す米国内の企業・店舗という範囲を限定していません。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C11",
+          "key": "S7.2",
+          "claim": "There was also the person on the other end, the human speaking behind the scenes, and the way that human's presence was explained.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "一部のMuse経由の電話を人間が担当し、その関与の説明が問題となった事実を要約しています。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C12",
+          "key": "L1",
+          "claim": "Meta’s AI phone service sometimes relied on hidden human helpers, raising concerns about transparency and privacy.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "Muse経由の一部の電話で人間が対応し、適切な開示やプライバシーについて懸念が生じたというLedgerに沿っています。",
+          "fact_tags": [
+            "proper_noun",
+            "causality"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "dfa2dc8280ff846c235d8a8972e186e479e62b09810380d74914fb110e75baf9"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 38,
+    "n_judged_units": 30,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 15,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "S1.1",
+          "S2.2",
+          "S4.1",
+          "S4.5",
+          "S4.6",
+          "S5.2",
+          "S5.4",
+          "S5.5",
+          "S6.2",
+          "S7.1",
+          "S7.3",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S2.5": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S4.5": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.6": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "CANDIDATE",
+          "S5.3": "SUPPORTED",
+          "S5.4": "CANDIDATE",
+          "S5.5": "CANDIDATE",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S6.3": "SUPPORTED",
+          "S7.1": "CANDIDATE",
+          "S7.2": "SUPPORTED",
+          "S7.3": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6041,
+            "usage": {
+              "input_tokens": 5258,
+              "cached_input_tokens": 0,
+              "output_tokens": 6650,
+              "reasoning_tokens": 1742
+            },
+            "elapsed_seconds": 46.919,
+            "prompt_sha256": "29572f25c3a261b887205746875d85d73e527d9abd860b8e5305845421e4140c",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S2.5": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S4.5": "SUPPORTED",
+          "S4.6": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "CANDIDATE",
+          "S5.3": "SUPPORTED",
+          "S5.4": "CANDIDATE",
+          "S5.5": "CANDIDATE",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S7.1": "CANDIDATE",
+          "S7.2": "SUPPORTED",
+          "S7.3": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# Who Is the Main Player in an AI Phone Call? Human Helpers",
+            "span": [
+              0,
+              59
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「Human Helpers」がAI電話の主役だとする見出しは、Ledgerが確認する一部のMuse経由の電話・テストを超えて一般化しています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "# Who Is the Main Player in an AI Phone Call? Human Helpers"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "We are entering an age when you can ask AI to make phone calls for you.",
+            "span": [
+              61,
+              132
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "AI全般について「電話をかけてもらえる時代に入っている」と一般化しています。Ledgerが支えるのはMuseの電話機能です。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-004"
+            ],
+            "model_claim": "We are entering an age when you can ask AI to make phone calls for you."
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "In some calls made through Muse, it was not AI that made the call and finished the conversation.",
+            "span": [
+              380,
+              476
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "Some tests in which humans handled the calls suggested that the success rate might reach 95 to 98 percent.",
+            "span": [
+              907,
+              1013
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-008"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.5",
+            "unit_ids": [
+              "S4.5"
+            ],
+            "claim_text": "On the other hand, tests handled by humans suggested a possible high success rate.",
+            "span": [
+              1205,
+              1287
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-008"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.6",
+            "unit_ids": [
+              "S4.6"
+            ],
+            "claim_text": "In the world of phone calls, it almost looks as if the roles of AI and humans have been slightly reversed.",
+            "span": [
+              1288,
+              1394
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "AIと人間の役割が逆転したように見えるという比較的な結論は、Ledgerに記載された事実ではありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "In the world of phone calls, it almost looks as if the roles of AI and humans have been slightly reversed."
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "When contract workers handled calls, the user's sensitive information needed to move the call forward could be shared unintentionally with contract workers at a call center.",
+            "span": [
+              1431,
+              1604
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "機微情報が意図せず共有される可能性は支えられていますが、「電話を進めるために必要な情報」および共有先を「コールセンター」とする具体化は、記事の記述のとおりにはLedgerで確認できません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "When contract workers handled calls, the user's sensitive information needed to move the call forward could be shared unintentionally with contract workers at a call center."
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "This does not mean that a large leak of information occurred.",
+            "span": [
+              1645,
+              1706
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは情報漏えいが起きたと断定しないよう注意していますが、大規模な情報漏えいが起きなかったという否定的事実までは確認していません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": true,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "This does not mean that a large leak of information occurred."
+          },
+          {
+            "unit_id": "S5.5",
+            "unit_ids": [
+              "S5.5"
+            ],
+            "claim_text": "Even so, if humans are involved in a service that uses AI, users need to be clearly told who is speaking and what information is being shared.",
+            "span": [
+              1707,
+              1849
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間が関与するAIサービスでユーザーに何を伝えるべきかという規範的な主張は、Ledgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "Even so, if humans are involved in a service that uses AI, users need to be clearly told who is speaking and what information is being shared."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "An internal post said that the human concierge feature had been returned to its previous state for now.",
+            "span": [
+              2021,
+              2124
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S7.1",
+            "unit_ids": [
+              "S7.1"
+            ],
+            "claim_text": "The main player in AI phone calls was not AI alone.",
+            "span": [
+              2179,
+              2230
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "AI電話全般の主役がAIだけではないというまとめは、一部のMuse経由の電話に関するテスト結果を超えています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "The main player in AI phone calls was not AI alone."
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "Muse's tests showed that behind convenient technology, there is another person taking part.",
+            "span": [
+              2362,
+              2453
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間の契約スタッフが関与したのはMuse経由の電話の一部のテストですが、「Museのテスト」の背後に別の人が参加していたという形で範囲を広げています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Muse's tests showed that behind convenient technology, there is another person taking part."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.1",
+          "S1.2",
+          "S1.3",
+          "S4.6",
+          "S5.5",
+          "S7.1",
+          "S7.2",
+          "S7.3"
+        ],
+        "unit_status": {
+          "S1.3": "DEVIATION",
+          "S1.1": "DEVIATION",
+          "S1.2": "DEVIATION",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S2.5": "MATCH",
+          "S6.1": "MATCH",
+          "S7.1": "DEVIATION",
+          "S7.2": "DEVIATION",
+          "S7.3": "DEVIATION",
+          "L1": "DEVIATION",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S4.5": "MATCH",
+          "S4.6": "DEVIATION",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S4.4": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S5.4": "MATCH",
+          "S5.5": "DEVIATION",
+          "S6.2": "MATCH",
+          "S6.3": "MATCH",
+          "T": "UNMENTIONED",
+          "S2.1": "UNMENTIONED",
+          "S3.1": "UNMENTIONED",
+          "S5.1": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 1.1403,
+            "usage": {
+              "input_tokens": 4918,
+              "cached_input_tokens": 0,
+              "output_tokens": 13554,
+              "reasoning_tokens": 10211
+            },
+            "elapsed_seconds": 101.443,
+            "prompt_sha256": "eca70727a2795cb2edc7128543c0df2479ba364cb3d639ed04820cdb6bdaff37",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "We are entering an age when you can ask AI to make phone calls for you.",
+            "span": [
+              61,
+              132
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Museに確認された電話機能をAI一般の能力として述べ、対象範囲を広げています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-004"
+            ],
+            "model_claim": "We are entering an age when you can ask AI to make phone calls for you."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "It can book a haircut, check whether a store has something in stock, or ask a business for an estimate.",
+            "span": [
+              133,
+              236
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Museが米国内の企業・店舗に電話する機能として報じられた内容を、AI一般が行えることとして述べています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-004"
+            ],
+            "model_claim": "It can book a haircut, check whether a store has something in stock, or ask a business for an estimate."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "Muse, Meta's AI agent for personal use, is a system that can handle these tasks by phone for users.",
+            "span": [
+              237,
+              336
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "記事は利用者一般に対する機能として述べており、Ledgerが示す米国内の企業・店舗への発信という範囲を明示せず広げています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-004"
+            ],
+            "model_claim": "Muse, Meta's AI agent for personal use, is a system that can handle these tasks by phone for users."
+          },
+          {
+            "unit_id": "S7.1",
+            "unit_ids": [
+              "S7.1"
+            ],
+            "claim_text": "The main player in AI phone calls was not AI alone.",
+            "span": [
+              2179,
+              2230
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "一部のMuse経由のテストではなく、AI電話全般について人間も関与すると読める範囲に広げています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "The main player in AI phone calls was not AI alone."
+          },
+          {
+            "unit_id": "S7.2",
+            "unit_ids": [
+              "S7.2"
+            ],
+            "claim_text": "There was also the person on the other end, the human speaking behind the scenes, and the way that human's presence was explained.",
+            "span": [
+              2231,
+              2361
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "人間が関与した一部のテストという限定を示さず、AI電話の一般的な構成として述べています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "There was also the person on the other end, the human speaking behind the scenes, and the way that human's presence was explained."
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "Muse's tests showed that behind convenient technology, there is another person taking part.",
+            "span": [
+              2362,
+              2453
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Museのテストで人間が関与した一部の電話という限定を保たず、人間が参加していたことを広く述べています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Muse's tests showed that behind convenient technology, there is another person taking part."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Meta’s AI phone service sometimes relied on hidden human helpers, raising concerns about transparency and privacy.",
+            "span": [
+              2470,
+              2584
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "社内テストでの一部の電話という範囲を、Metaの電話サービス一般が人間に依存していたという表現に広げています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Meta’s AI phone service sometimes relied on hidden human helpers, raising concerns about transparency and privacy."
+          },
+          {
+            "unit_id": "S4.6",
+            "unit_ids": [
+              "S4.6"
+            ],
+            "claim_text": "In the world of phone calls, it almost looks as if the roles of AI and humans have been slightly reversed.",
+            "span": [
+              1288,
+              1394
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "一部テストの報告された成功率比較から、電話におけるAIと人間の役割が逆転したという広い解釈を付け加えています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-008"
+            ],
+            "model_claim": "In the world of phone calls, it almost looks as if the roles of AI and humans have been slightly reversed."
+          },
+          {
+            "unit_id": "S5.5",
+            "unit_ids": [
+              "S5.5"
+            ],
+            "claim_text": "Even so, if humans are involved in a service that uses AI, users need to be clearly told who is speaking and what information is being shared.",
+            "span": [
+              1707,
+              1849
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "従業員のプライバシー懸念の報告を超えて、AIを使うサービス一般で利用者に開示すべきだという規範的主張を加えています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "Even so, if humans are involved in a service that uses AI, users need to be clearly told who is speaking and what information is being shared."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Meta’s AI phone service sometimes relied on hidden human helpers, raising concerns about transparency and privacy.",
+            "span": [
+              2470,
+              2584
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "適切な開示なしの社内テストという範囲を、Metaの電話サービスで人間の補助者が隠れていたという表現に広げています。また「hidden」は、適切な開示がなかったというLedgerの表現より強い含意です。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "Meta’s AI phone service sometimes relied on hidden human helpers, raising concerns about transparency and privacy."
+          },
+          {
+            "unit_id": "S5.5",
+            "unit_ids": [
+              "S5.5"
+            ],
+            "claim_text": "Even so, if humans are involved in a service that uses AI, users need to be clearly told who is speaking and what information is being shared.",
+            "span": [
+              1707,
+              1849
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Metaが電話機能を公開する際の条件として説明した内容を、AI利用サービス一般に対する記事の規範的主張へ置き換えています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-014"
+            ],
+            "model_claim": "Even so, if humans are involved in a service that uses AI, users need to be clearly told who is speaking and what information is being shared."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S1.1",
+        "S4.6",
+        "S5.5",
+        "S7.1",
+        "S7.3"
+      ],
+      "r3_only": [
+        "S2.2",
+        "S4.1",
+        "S4.5",
+        "S5.2",
+        "S5.4",
+        "S6.2",
+        "T"
+      ],
+      "r5_only": [
+        "L1",
+        "S1.2",
+        "S1.3",
+        "S7.2"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 4
+    },
+    "union_candidates": [
+      {
+        "claim_text": "# Who Is the Main Player in an AI Phone Call? Human Helpers",
+        "span": [
+          0,
+          59
+        ],
+        "unit_ids": [
+          "T"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "「Human Helpers」がAI電話の主役だとする見出しは、Ledgerが確認する一部のMuse経由の電話・テストを超えて一般化しています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": [
+          "# Who Is the Main Player in an AI Phone Call? Human Helpers"
+        ]
+      },
+      {
+        "claim_text": "We are entering an age when you can ask AI to make phone calls for you.",
+        "span": [
+          61,
+          132
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "AI全般について「電話をかけてもらえる時代に入っている」と一般化しています。Ledgerが支えるのはMuseの電話機能です。",
+          "Museに確認された電話機能をAI一般の能力として述べ、対象範囲を広げています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-004"
+        ],
+        "model_claims": [
+          "We are entering an age when you can ask AI to make phone calls for you."
+        ]
+      },
+      {
+        "claim_text": "In some calls made through Muse, it was not AI that made the call and finished the conversation.",
+        "span": [
+          380,
+          476
+        ],
+        "unit_ids": [
+          "S2.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Some tests in which humans handled the calls suggested that the success rate might reach 95 to 98 percent.",
+        "span": [
+          907,
+          1013
+        ],
+        "unit_ids": [
+          "S4.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-008"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "On the other hand, tests handled by humans suggested a possible high success rate.",
+        "span": [
+          1205,
+          1287
+        ],
+        "unit_ids": [
+          "S4.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-008"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "In the world of phone calls, it almost looks as if the roles of AI and humans have been slightly reversed.",
+        "span": [
+          1288,
+          1394
+        ],
+        "unit_ids": [
+          "S4.6"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "AIと人間の役割が逆転したように見えるという比較的な結論は、Ledgerに記載された事実ではありません。",
+          "一部テストの報告された成功率比較から、電話におけるAIと人間の役割が逆転したという広い解釈を付け加えています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006",
+          "MUSE-HC-008"
+        ],
+        "model_claims": [
+          "In the world of phone calls, it almost looks as if the roles of AI and humans have been slightly reversed."
+        ]
+      },
+      {
+        "claim_text": "An internal post said that the human concierge feature had been returned to its previous state for now.",
+        "span": [
+          2021,
+          2124
+        ],
+        "unit_ids": [
+          "S6.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The main player in AI phone calls was not AI alone.",
+        "span": [
+          2179,
+          2230
+        ],
+        "unit_ids": [
+          "S7.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "AI電話全般の主役がAIだけではないというまとめは、一部のMuse経由の電話に関するテスト結果を超えています。",
+          "一部のMuse経由のテストではなく、AI電話全般について人間も関与すると読める範囲に広げています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": [
+          "The main player in AI phone calls was not AI alone."
+        ]
+      },
+      {
+        "claim_text": "It can book a haircut, check whether a store has something in stock, or ask a business for an estimate.",
+        "span": [
+          133,
+          236
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r5"
+        ],
+        "issues": [
+          "Museが米国内の企業・店舗に電話する機能として報じられた内容を、AI一般が行えることとして述べています。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-004"
+        ],
+        "model_claims": [
+          "It can book a haircut, check whether a store has something in stock, or ask a business for an estimate."
+        ]
+      },
+      {
+        "claim_text": "Muse, Meta's AI agent for personal use, is a system that can handle these tasks by phone for users.",
+        "span": [
+          237,
+          336
+        ],
+        "unit_ids": [
+          "S1.3"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r5"
+        ],
+        "issues": [
+          "記事は利用者一般に対する機能として述べており、Ledgerが示す米国内の企業・店舗への発信という範囲を明示せず広げています。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-004"
+        ],
+        "model_claims": [
+          "Muse, Meta's AI agent for personal use, is a system that can handle these tasks by phone for users."
+        ]
+      }
+    ],
+    "n_union_candidates": 10,
+    "n_model_candidates": 6,
+    "n_deterministic_only_candidates": 4,
+    "total_cost_jpy": 1.7444,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 19,
+    "n_targets": 12,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 6,
+    "n_excluded_entries": 10,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.4052,
+    "effort": "medium",
+    "prompt_sha256": "dfa2dc8280ff846c235d8a8972e186e479e62b09810380d74914fb110e75baf9"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 3
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

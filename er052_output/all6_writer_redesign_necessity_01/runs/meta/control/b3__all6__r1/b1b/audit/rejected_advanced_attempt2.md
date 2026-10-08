@@ -1,0 +1,12 @@
+# A Surprising Human Helper for AI Phone Calls
+
+When AI was asked to make a phone call, a human helper appeared behind the scenes. That was the unexpected turn in a test of Muse, Meta’s AI for everyday users. Reports say Muse’s phone feature can call businesses and stores in the United States to book a haircut, check whether an item is in stock, or ask a service provider for an estimate. In some of these calls, trained contract workers—not AI—made the calls and completed the conversations. AI took the request, and a person carried it out by phone. The roles on the team handling the calls had quietly changed.
+
+This human help was not just convenient. If user information was needed to move a call forward, how much of it would be shared? Meta employees raised privacy concerns inside the company, saying that sensitive information might be shared unintentionally with contract workers at call centers. The question is not only what AI knows, but also what is passed on to the person who takes over the task.
+
+There was another issue: explaining what was happening. Meta executives admitted that starting tests in which contract workers made calls without proper disclosure was a “mistake,” and rolled back the human concierge feature. It was that feature—not all of Muse—that was stopped. How should users be told who is making the call? If people are involved, how should information be handled? If the roles change, an explanation needs to come with them.
+
+Meta says it is continuing to improve the phone feature with businesses, and will make it available only when it is ready and proper disclosure can be made. Letting AI handle bookings at stores and businesses in the United States, stock checks, and requests for estimates can be convenient. But if people are behind that convenience, it also matters how the people involved and the information are handled, and what users are told. An AI service that handles tasks for you is not complete just because it is smart on screen. Perhaps the curtain can rise with confidence only when the backstage arrangements are in place.
+
+## In one line
+Meta rolled back Muse’s calling feature after some calls were secretly handled by contract workers, not AI.

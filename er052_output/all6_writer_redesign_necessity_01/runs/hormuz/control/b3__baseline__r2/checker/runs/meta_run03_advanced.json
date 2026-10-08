@@ -1,0 +1,1997 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "# The Fee Plan’s Disappearing Act: Oil Prices Did Not Disappear",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "# The Fee Plan’s Disappearing Act: Oil Prices Did Not Disappear",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The Fee Plan’s Disappearing Act: Oil Prices Did Not Disappear\n\nIf we look at this news as a short drama over two days, the story moves very quickly.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "# The Fee Plan’s Disappearing Act: Oil Prices Did Not Disappear",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+              "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+            ],
+            "batch_cost_jpy": 0.1252,
+            "batch_n_claims": 8
+          }
+        },
+        {
+          "claim_text": "But that did not happen.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "But that did not happen.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S7.1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Now, how did the oil market react? Since the fee plan had disappeared, we might expect prices to safely fall.\n\nBut that did not happen.\n\nJust after the announcement, Brent crude oil futures briefly reduced their gains. But before long, they returned to a high level close to where they had been before the announcement. At the time of the report, they were up about 2.6 percent, at more than 85 dollars a barrel. At the end of trading, they were still at 84.73 dollars a barrel, up 1.7 percent from the previous day.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But that did not happen.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+              "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+            ],
+            "batch_cost_jpy": 0.1252,
+            "batch_n_claims": 8
+          }
+        },
+        {
+          "claim_text": "Concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers did not disappear.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers did not disappear.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S10.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S10.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The rise on the previous day was not only about the fee plan. Brent futures settled at 83.30 dollars a barrel on July 13, up 9.59 percent from the day before. Reuters connected this move to concerns about a US naval blockade against Iran and energy shipments passing through the strait.\n\nIn other words, what disappeared was the fee plan. Concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers did not disappear.\n\nEven when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately. It is a drama in two acts.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers did not disappear.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+              "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+            ],
+            "batch_cost_jpy": 0.1252,
+            "batch_n_claims": 8
+          }
+        },
+        {
+          "claim_text": "Even when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Even when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately.",
+            "issue": "料金案と供給懸念が別々に動いているという関係は、Ledgerの観測値や因果説明から直接確認できない。 / 価格と供給懸念が独立して動いているという関係を断定しており、Ledgerが示す値動きや継続中の懸念を超えた因果的解釈です。 / 価格と供給懸念が独立して動いているという関係を断定しており、7月14日の清算値だけからは裏付けられない解釈です。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S11.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S11.1"
+              ],
+              "related_fact_ids": [
+                "HF-009",
+                "HF-011"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In other words, what disappeared was the fee plan. Concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers did not disappear.\n\nEven when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately. It is a drama in two acts.\n\n## In one line\nThe fee plan disappeared, but fears about oil supply and tanker safety kept prices high.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Even when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+              "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+            ],
+            "batch_cost_jpy": 0.1252,
+            "batch_n_claims": 8
+          }
+        },
+        {
+          "claim_text": "The fee plan disappeared, but fears about oil supply and tanker safety kept prices high.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "The fee plan disappeared, but fears about oil supply and tanker safety kept prices high.",
+            "issue": "供給とタンカー安全への懸念が価格を高く保ったという因果関係は、撤回後も懸念と高値が併存したという事実だけでは直接支えられない。 / 供給懸念とタンカー安全への不安が価格を高く保ったという因果関係は、該当するLedgerの記述では確認できません。 / 供給懸念とタンカー安全への不安が価格を高く保ったという因果関係は、Ledgerが確認していません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-009",
+                "HF-011"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Even when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately. It is a drama in two acts.\n\n## In one line\nThe fee plan disappeared, but fears about oil supply and tanker safety kept prices high.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "The fee plan disappeared, but fears about oil supply and tanker safety kept prices high.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+              "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+            ],
+            "batch_cost_jpy": 0.1252,
+            "batch_n_claims": 8
+          }
+        },
+        {
+          "claim_text": "Since the fee plan had disappeared, we might expect prices to safely fall.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Since the fee plan had disappeared, we might expect prices to safely fall.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# The Fee Plan’s Disappearing Act: Oil Prices Did Not Disappear"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "He also told reporters that no one should charge fees to ships passing through the strait, and that he did not like the idea of fees itself. The fee plan announced the day before was simply replaced by a different plan the next day.\n\nNow, how did the oil market react? Since the fee plan had disappeared, we might expect prices to safely fall.\n\nBut that did not happen.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "Since the fee plan had disappeared, we might expect prices to safely fall.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+              "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+            ],
+            "batch_cost_jpy": 0.1252,
+            "batch_n_claims": 8
+          }
+        },
+        {
+          "claim_text": "Reuters connected this move to concerns about a US naval blockade against Iran and energy shipments passing through the strait.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Reuters connected this move to concerns about a US naval blockade against Iran and energy shipments passing through the strait.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S10.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S10.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers did not disappear."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Just after the announcement, Brent crude oil futures briefly reduced their gains. But before long, they returned to a high level close to where they had been before the announcement. At the time of the report, they were up about 2.6 percent, at more than 85 dollars a barrel. At the end of trading, they were still at 84.73 dollars a barrel, up 1.7 percent from the previous day.\n\nThe rise on the previous day was not only about the fee plan. Brent futures settled at 83.30 dollars a barrel on July 13, up 9.59 percent from the day before. Reuters connected this move to concerns about a US naval blockade against Iran and energy shipments passing through the strait.\n\nIn other words, what disappeared was the fee plan. Concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers did not disappear.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Reuters connected this move to concerns about a US naval blockade against Iran and energy shipments passing through the strait.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+              "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+            ],
+            "batch_cost_jpy": 0.1252,
+            "batch_n_claims": 8
+          }
+        },
+        {
+          "claim_text": "In other words, what disappeared was the fee plan.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "In other words, what disappeared was the fee plan.",
+            "issue": "供給とタンカー安全への懸念が価格を高く保ったという因果関係は、撤回後も懸念と高値が併存したという事実だけでは直接支えられない。 / 供給懸念とタンカー安全への不安が価格を高く保ったという因果関係は、該当するLedgerの記述では確認できません。 / 供給懸念とタンカー安全への不安が価格を高く保ったという因果関係は、Ledgerが確認していません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-009",
+                "HF-011"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The fee plan disappeared, but fears about oil supply and tanker safety kept prices high."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The rise on the previous day was not only about the fee plan. Brent futures settled at 83.30 dollars a barrel on July 13, up 9.59 percent from the day before. Reuters connected this move to concerns about a US naval blockade against Iran and energy shipments passing through the strait.\n\nIn other words, what disappeared was the fee plan. Concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers did not disappear.\n\nEven when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately. It is a drama in two acts.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "In other words, what disappeared was the fee plan.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+              "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+            ],
+            "batch_cost_jpy": 0.1252,
+            "batch_n_claims": 8
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 8,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "# The Fee Plan’s Disappearing Act: Oil Prices Did Not Disappear",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+            "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+          ],
+          "batch_cost_jpy": 0.1252,
+          "batch_n_claims": 8
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "But that did not happen.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+            "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+          ],
+          "batch_cost_jpy": 0.1252,
+          "batch_n_claims": 8
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers did not disappear.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+            "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+          ],
+          "batch_cost_jpy": 0.1252,
+          "batch_n_claims": 8
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Even when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+            "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+          ],
+          "batch_cost_jpy": 0.1252,
+          "batch_n_claims": 8
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "The fee plan disappeared, but fears about oil supply and tanker safety kept prices high.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+            "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+          ],
+          "batch_cost_jpy": 0.1252,
+          "batch_n_claims": 8
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "Since the fee plan had disappeared, we might expect prices to safely fall.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+            "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+          ],
+          "batch_cost_jpy": 0.1252,
+          "batch_n_claims": 8
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Reuters connected this move to concerns about a US naval blockade against Iran and energy shipments passing through the strait.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+            "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+          ],
+          "batch_cost_jpy": 0.1252,
+          "batch_n_claims": 8
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "In other words, what disappeared was the fee plan.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975",
+            "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+          ],
+          "batch_cost_jpy": 0.1252,
+          "batch_n_claims": 8
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5822,
+      "usage": {
+        "input_tokens": 5169,
+        "cached_input_tokens": 0,
+        "output_tokens": 6388,
+        "reasoning_tokens": 1737
+      },
+      "elapsed_seconds": 47.754,
+      "prompt_sha256": "f8356eabd668d13272ea020daea7a01ac88dc37fca232b2ed654020ec675cdbf",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.8586,
+      "usage": {
+        "input_tokens": 4792,
+        "cached_input_tokens": 0,
+        "output_tokens": 9988,
+        "reasoning_tokens": 7262
+      },
+      "elapsed_seconds": 83.608,
+      "prompt_sha256": "8a164a8b6a911ebde2a5abc5d1845302097a1d0999bb6e2f05b16ddd141b1a0f",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.1995,
+      "usage": {
+        "input_tokens": 4890,
+        "cached_input_tokens": 0,
+        "output_tokens": 1565,
+        "reasoning_tokens": 1223
+      },
+      "elapsed_seconds": 18.169,
+      "prompt_sha256": "a470d48a0b44ddc1734179c5d86df6c043647bbd2778e8a697280a4727743aad",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2408,
+      "usage": {
+        "input_tokens": 9597,
+        "cached_input_tokens": 0,
+        "output_tokens": 1150,
+        "reasoning_tokens": 943
+      },
+      "elapsed_seconds": 9.957,
+      "prompt_sha256": "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.113,
+      "usage": {
+        "input_tokens": 5803,
+        "cached_input_tokens": 0,
+        "output_tokens": 280,
+        "reasoning_tokens": 229
+      },
+      "elapsed_seconds": 3.588,
+      "prompt_sha256": "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0937,
+      "usage": {
+        "input_tokens": 9597,
+        "cached_input_tokens": 9594,
+        "output_tokens": 1002,
+        "reasoning_tokens": 795
+      },
+      "elapsed_seconds": 9.153,
+      "prompt_sha256": "dc5cb3f25c63f5dc2f7414f18b36fa2d78f160ab1f5b78233ed4da759f043975"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0315,
+      "usage": {
+        "input_tokens": 5803,
+        "cached_input_tokens": 5800,
+        "output_tokens": 285,
+        "reasoning_tokens": 233
+      },
+      "elapsed_seconds": 3.536,
+      "prompt_sha256": "1ceecade787ab8e1246c137a7e371fb6e1b4fd26f05f689af0452649148495a9"
+    }
+  ],
+  "total_cost_jpy": 2.1193,
+  "total_calls": 7,
+  "elapsed_seconds": 175.814,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "# The Fee Plan’s Disappearing Act: Oil Prices Did Not Disappear",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But that did not happen.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers did not disappear.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S10.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Even when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "料金案と供給懸念が別々に動いているという関係は、Ledgerの観測値や因果説明から直接確認できない。 / 価格と供給懸念が独立して動いているという関係を断定しており、Ledgerが示す値動きや継続中の懸念を超えた因果的解釈です。 / 価格と供給懸念が独立して動いているという関係を断定しており、7月14日の清算値だけからは裏付けられない解釈です。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S11.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "changed_comparison",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The fee plan disappeared, but fears about oil supply and tanker safety kept prices high.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "供給とタンカー安全への懸念が価格を高く保ったという因果関係は、撤回後も懸念と高値が併存したという事実だけでは直接支えられない。 / 供給懸念とタンカー安全への不安が価格を高く保ったという因果関係は、該当するLedgerの記述では確認できません。 / 供給懸念とタンカー安全への不安が価格を高く保ったという因果関係は、Ledgerが確認していません。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 10,
+      "n_model_entries": 7,
+      "n_targets": 3,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 1,
+      "n_excluded_entries": 1,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.1995,
+          "usage": {
+            "input_tokens": 4890,
+            "cached_input_tokens": 0,
+            "output_tokens": 1565,
+            "reasoning_tokens": 1223
+          },
+          "elapsed_seconds": 18.169,
+          "prompt_sha256": "a470d48a0b44ddc1734179c5d86df6c043647bbd2778e8a697280a4727743aad",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.1995,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S6.2",
+          "claim": "Since the fee plan had disappeared, we might expect prices to safely fall.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "価格が下がるというのは実際の値動きの主張ではなく、計画撤回を受けた仮定的な期待を述べる修辞的な導入。",
+          "fact_tags": [
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S11.1",
+          "claim": "Even when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "Ledgerは撤回後の短時間の値動きと供給懸念の継続を示すが、両者が独立して動いていると一般化して結論づけてはいない（範囲・限定条件の不一致）。",
+          "fact_tags": [
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C3",
+          "key": "L1",
+          "claim": "The fee plan disappeared, but fears about oil supply and tanker safety kept prices high.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "計画撤回後も価格が高い水準にあったことと懸念の継続はLedgerにあるが、その懸念が価格を高く保ったという因果までは裏付けられていない（限定条件の不一致）。",
+          "fact_tags": [
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "mismatch"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "a470d48a0b44ddc1734179c5d86df6c043647bbd2778e8a697280a4727743aad"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 38,
+    "n_judged_units": 26,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "S10.2",
+          "S11.1",
+          "S6.2",
+          "S7.1",
+          "T"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S1.1": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "CANDIDATE",
+          "S7.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S8.1": "SUPPORTED",
+          "S8.2": "SUPPORTED",
+          "S8.3": "SUPPORTED",
+          "S8.4": "SUPPORTED",
+          "S9.1": "SUPPORTED",
+          "S9.2": "SUPPORTED",
+          "S9.3": "SUPPORTED",
+          "S10.1": "SUPPORTED",
+          "S10.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S11.1": "CANDIDATE",
+          "S11.2": "SUPPORTED",
+          "L1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5822,
+            "usage": {
+              "input_tokens": 5169,
+              "cached_input_tokens": 0,
+              "output_tokens": 6388,
+              "reasoning_tokens": 1737
+            },
+            "elapsed_seconds": 47.754,
+            "prompt_sha256": "f8356eabd668d13272ea020daea7a01ac88dc37fca232b2ed654020ec675cdbf",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "CANDIDATE",
+          "S7.1": "SUPPORTED",
+          "S8.1": "SUPPORTED",
+          "S8.2": "SUPPORTED",
+          "S8.3": "SUPPORTED",
+          "S8.4": "SUPPORTED",
+          "S9.1": "SUPPORTED",
+          "S9.2": "SUPPORTED",
+          "S9.3": "SUPPORTED",
+          "S10.1": "SUPPORTED",
+          "S10.2": "SUPPORTED",
+          "S11.1": "CANDIDATE",
+          "S11.2": "SUPPORTED",
+          "L1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# The Fee Plan’s Disappearing Act: Oil Prices Did Not Disappear",
+            "span": [
+              0,
+              63
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "Since the fee plan had disappeared, we might expect prices to safely fall.",
+            "span": [
+              1157,
+              1231
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "料金案の撤回を受けて価格が下がると期待する、または撤回と価格下落を結び付ける見立てはLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Since the fee plan had disappeared, we might expect prices to safely fall."
+          },
+          {
+            "unit_id": "S7.1",
+            "unit_ids": [
+              "S7.1"
+            ],
+            "claim_text": "But that did not happen.",
+            "span": [
+              1233,
+              1257
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S10.2",
+            "unit_ids": [
+              "S10.2"
+            ],
+            "claim_text": "Concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers did not disappear.",
+            "span": [
+              1979,
+              2095
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S11.1",
+            "unit_ids": [
+              "S11.1"
+            ],
+            "claim_text": "Even when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately.",
+            "span": [
+              2097,
+              2236
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "料金案と供給懸念が別々に動いているという関係は、Ledgerの観測値や因果説明から直接確認できない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Even when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "The fee plan disappeared, but fears about oil supply and tanker safety kept prices high.",
+            "span": [
+              2280,
+              2368
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "供給とタンカー安全への懸念が価格を高く保ったという因果関係は、撤回後も懸念と高値が併存したという事実だけでは直接支えられない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The fee plan disappeared, but fears about oil supply and tanker safety kept prices high."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "S11.1"
+        ],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S3.1": "MATCH",
+          "S4.2": "MATCH",
+          "S5.2": "MATCH",
+          "S10.1": "MATCH",
+          "S3.2": "MATCH",
+          "S9.2": "MATCH",
+          "S9.1": "MATCH",
+          "S9.3": "MATCH",
+          "S4.1": "MATCH",
+          "S4.3": "MATCH",
+          "S5.1": "MATCH",
+          "S7.1": "MATCH",
+          "S8.1": "MATCH",
+          "S8.2": "MATCH",
+          "S8.3": "MATCH",
+          "S10.2": "MATCH",
+          "S11.1": "DEVIATION",
+          "L1": "DEVIATION",
+          "S8.4": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S6.1": "UNMENTIONED",
+          "S6.2": "UNMENTIONED",
+          "S11.2": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.8586,
+            "usage": {
+              "input_tokens": 4792,
+              "cached_input_tokens": 0,
+              "output_tokens": 9988,
+              "reasoning_tokens": 7262
+            },
+            "elapsed_seconds": 83.608,
+            "prompt_sha256": "8a164a8b6a911ebde2a5abc5d1845302097a1d0999bb6e2f05b16ddd141b1a0f",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S11.1",
+            "unit_ids": [
+              "S11.1"
+            ],
+            "claim_text": "Even when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately.",
+            "span": [
+              2097,
+              2236
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "価格と供給懸念が独立して動いているという関係を断定しており、Ledgerが示す値動きや継続中の懸念を超えた因果的解釈です。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "following oil prices shows that the fee plan and concerns about supply are moving separately."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "The fee plan disappeared, but fears about oil supply and tanker safety kept prices high.",
+            "span": [
+              2280,
+              2368
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "供給懸念とタンカー安全への不安が価格を高く保ったという因果関係は、該当するLedgerの記述では確認できません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "fears about oil supply and tanker safety kept prices high."
+          },
+          {
+            "unit_id": "S11.1",
+            "unit_ids": [
+              "S11.1"
+            ],
+            "claim_text": "Even when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately.",
+            "span": [
+              2097,
+              2236
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "価格と供給懸念が独立して動いているという関係を断定しており、7月14日の清算値だけからは裏付けられない解釈です。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-011"
+            ],
+            "model_claim": "following oil prices shows that the fee plan and concerns about supply are moving separately."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "The fee plan disappeared, but fears about oil supply and tanker safety kept prices high.",
+            "span": [
+              2280,
+              2368
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "供給懸念とタンカー安全への不安が価格を高く保ったという因果関係は、Ledgerが確認していません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-011"
+            ],
+            "model_claim": "fears about oil supply and tanker safety kept prices high."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "L1",
+        "S11.1"
+      ],
+      "r3_only": [
+        "S10.2",
+        "S6.2",
+        "S7.1",
+        "T"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 3
+    },
+    "union_candidates": [
+      {
+        "claim_text": "# The Fee Plan’s Disappearing Act: Oil Prices Did Not Disappear",
+        "span": [
+          0,
+          63
+        ],
+        "unit_ids": [
+          "T"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "But that did not happen.",
+        "span": [
+          1233,
+          1257
+        ],
+        "unit_ids": [
+          "S7.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Concerns about attacks by the United States and Iran, a naval blockade, and the safety of tankers did not disappear.",
+        "span": [
+          1979,
+          2095
+        ],
+        "unit_ids": [
+          "S10.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Even when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately.",
+        "span": [
+          2097,
+          2236
+        ],
+        "unit_ids": [
+          "S11.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "料金案と供給懸念が別々に動いているという関係は、Ledgerの観測値や因果説明から直接確認できない。",
+          "価格と供給懸念が独立して動いているという関係を断定しており、Ledgerが示す値動きや継続中の懸念を超えた因果的解釈です。",
+          "価格と供給懸念が独立して動いているという関係を断定しており、7月14日の清算値だけからは裏付けられない解釈です。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009",
+          "HF-011"
+        ],
+        "model_claims": [
+          "Even when the news is about a distant strait, following oil prices shows that the fee plan and concerns about supply are moving separately.",
+          "following oil prices shows that the fee plan and concerns about supply are moving separately."
+        ]
+      },
+      {
+        "claim_text": "The fee plan disappeared, but fears about oil supply and tanker safety kept prices high.",
+        "span": [
+          2280,
+          2368
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "供給とタンカー安全への懸念が価格を高く保ったという因果関係は、撤回後も懸念と高値が併存したという事実だけでは直接支えられない。",
+          "供給懸念とタンカー安全への不安が価格を高く保ったという因果関係は、該当するLedgerの記述では確認できません。",
+          "供給懸念とタンカー安全への不安が価格を高く保ったという因果関係は、Ledgerが確認していません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009",
+          "HF-011"
+        ],
+        "model_claims": [
+          "The fee plan disappeared, but fears about oil supply and tanker safety kept prices high.",
+          "fears about oil supply and tanker safety kept prices high."
+        ]
+      }
+    ],
+    "n_union_candidates": 5,
+    "n_model_candidates": 2,
+    "n_deterministic_only_candidates": 3,
+    "total_cost_jpy": 1.4408,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 7,
+    "n_targets": 3,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 1,
+    "n_excluded_entries": 1,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.1995,
+    "effort": "medium",
+    "prompt_sha256": "a470d48a0b44ddc1734179c5d86df6c043647bbd2778e8a697280a4727743aad"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 3
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 2.1193,
+  "provenance": {
+    "switch_dump_sha256": "66d18a3a1b28679684d7dcbe6e7af161a4da4223da7415a7ac50e7450de777c1",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-08T09:05:30",
+    "ledger_sha256": "83b2a09b99b20af0f1d30aefc6dda7bfe40ed06a6d7726a56a0bb90bce774522",
+    "article_sha256": "d5b062b0fc646a9b8b04b2bf5a62e289d12175e5fc8bea2923223189c715deb5",
+    "source_article_sha256": "1a8aab013a5b1ec4ccbb7f0c9d44c56691467055cf78090639523d87dab85d7d",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/all6_writer_redesign_necessity_01/runs/hormuz/control/b3__baseline__r2/checker",
+      "ledger_path": "er052_output/all6_writer_redesign_necessity_01/runs/hormuz/control/b3__baseline__r2/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/all6_writer_redesign_necessity_01/runs/hormuz/control/b3__baseline__r2/b1b/article.md",
+      "source_path": "er052_output/all6_writer_redesign_necessity_01/runs/hormuz/control/b3__baseline__r2/ja_writer/revision2.md",
+      "budget_jpy": 10.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

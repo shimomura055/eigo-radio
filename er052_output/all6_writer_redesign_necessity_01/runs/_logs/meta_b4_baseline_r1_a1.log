@@ -1,0 +1,24 @@
+[B3-RUNNER][research_ledger] 既存Ledgerを再利用(既生成済み): er052_output/all6_writer_redesign_necessity_01/runs/meta/control/b4__baseline__r1/research_ledger
+[E-FAMILY-RUNNER][cost] so far=0.00 JPY by_provider={} (after research_ledger)
+[B3-RUNNER][storyline_b3] 既存Selected Fact Briefを再利用: er052_output/all6_writer_redesign_necessity_01/runs/meta/control/b4__baseline__r1/storyline_b3
+[E-FAMILY-RUNNER][cost] so far=1.76 JPY by_provider={'openai': 1.76} (after ja_writer)
+[B3-RUNNER] stage=writerで停止(--stop-after writer)。
+[B3-RUNNER][cost] {'by_stage_jpy': {'ja_original': 0.227, 'ja_original_check': 0.239, 'ja_r1': 0.272, 'ja_r2': 0.425, 'ja_r2_check': 0.595}, 'total_jpy': 1.759}
+[checker-after-p01] out=er052_output\all6_writer_redesign_necessity_01\runs\meta\control\b4__baseline__r1\checker budget=JPY10.0 instance=meta_run03_advanced ledger_sha=6e271bb24fdf
+[done] final_state=RESOLVED_REWRITE_THEN_DOWNGRADE cost=JPY4.7329
+[B3-RUNNER][research_ledger] 既存Ledgerを再利用(既生成済み): er052_output/all6_writer_redesign_necessity_01/runs/meta/control/b4__baseline__r1/research_ledger
+[E-FAMILY-RUNNER][cost] so far=1.76 JPY by_provider={'openai': 1.76} (after research_ledger)
+[B3-RUNNER][storyline_b3] 既存Selected Fact Briefを再利用: er052_output/all6_writer_redesign_necessity_01/runs/meta/control/b4__baseline__r1/storyline_b3
+[B3-RUNNER][writer] 既存JA記事(R2)を再利用: er052_output/all6_writer_redesign_necessity_01/runs/meta/control/b4__baseline__r1/ja_writer/revision2.md
+[E-FAMILY-RUNNER][writer/meta] Advanced(Family X忠実英訳)生成開始...
+[E-FAMILY-RUNNER][writer/meta] Advanced deviation check開始...
+[E-FAMILY-RUNNER][writer/meta] JA_RECHECK_REQUIRED(stage=advanced、ja_sourced_count=3)。案B: JA Writer Oへmust-fixを差し戻し、JAを1回だけ再生成します(ja_recheck_attempts=1)...
+[E-FAMILY-RUNNER][writer/meta] Advanced(Family X忠実英訳)生成開始...
+[E-FAMILY-RUNNER][writer/meta] Advanced deviation check開始...
+[E-FAMILY-RUNNER][cost] so far=7.20 JPY by_provider={'openai': 7.2} (after advanced writer+deviation)
+[E-FAMILY-RUNNER][writer/meta] Standard(Family X見出し廃止A2)生成開始...
+[E-FAMILY-RUNNER][writer/meta] Standard deviation check開始...
+[E-FAMILY-RUNNER][cost] so far=8.21 JPY by_provider={'openai': 8.21} (after standard writer+deviation)
+[E-FAMILY-RUNNER][cost] so far=8.21 JPY by_provider={'openai': 8.21} (after advanced)
+[B3-RUNNER] stage=advancedで停止(--stop-after advanced、Mandatory STOP)。
+[B3-RUNNER][cost] {'by_stage_jpy': {'ja_original': 0.986, 'ja_original_check': 0.596, 'ja_r1': 0.888, 'ja_r2': 1.112, 'ja_r2_check': 1.227, 'advanced': 3.397}, 'total_jpy': 8.206}

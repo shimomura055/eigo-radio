@@ -1,0 +1,16 @@
+# Making Sense of Space Weapons News: First, Look at Where They Are
+
+When you read military news about space, the first thing to look at is not the name of a weapon, but where it is. That is the key to this U.S. announcement. If we group all military activity related to space together, even efforts to protect satellites can look like offensive weapons.
+
+On September 14, the Secretary of the Air Force said the U.S. was deploying “space control weapons” in orbit to protect its forces from the actions of hostile parties. An official U.S. government article records this as the first time the Space Force acknowledged deploying weapons in space. But the name of the system, its ability to attack, and its target have not been made public. The door has opened, but we still cannot see what is inside. For now, what we have learned is that the weapons are being “deployed.”
+
+So, are missiles that shoot down satellites from the ground part of the same story? They belong in a different category. In November 2021, Russia destroyed a satellite with a ground-launched missile, creating more than 1,500 pieces of debris that could be tracked. This was an example of attacking space from the ground. It was not an example of placing a weapon in orbit. Even when space is the setting, the weapons are in different places.
+
+The term “counterspace” makes things even more complicated. It refers not only to weapons in orbit, but also to attacks on communication links and ground facilities. It includes electromagnetic attacks that disrupt communications and cyberattacks. In other words, the big category of military activity in space contains very different tools.
+
+GPS, missile tracking, monitoring conditions in space, and making satellites less likely to break are also missions of the Space Force. But the fact that the Space Force does these things is not proof that attack weapons have been deployed in orbit. Because GPS also plays a role in everyday travel, it is important not to mix up efforts to protect things with tools for attack.
+
+The legal picture is also more clearly sorted than you might expect. The Outer Space Treaty bans placing nuclear weapons and other weapons of mass destruction in orbit, but it does not ban all space weapons, including conventional weapons. Whether something has been deployed and whether it violates a treaty are separate questions. The key to understanding this news is not so much what is being done in space as where the government said it had placed the weapons. That one statement.
+
+## In one line
+The U.S. says it has deployed weapons in orbit, distinct from attacking satellites with ground-launched missiles.

@@ -1,0 +1,32 @@
+{
+  "deviations": [
+    {
+      "claim_in_article": "Meta rolled back Muse’s calling feature after some calls were secretly handled by contract workers, not AI.",
+      "issue": "この一文は、ロールバック対象を人間コンシェルジュ機能より広いMuseの電話機能全体として述べ、契約スタッフが電話を担当したことがロールバックにつながったかのようにまとめています。また、「secretly」はLedgerにない含意です。",
+      "severity": "MAJOR",
+      "changed_fact": true,
+      "changed_scope": true,
+      "changed_causality": true,
+      "changed_certainty": false,
+      "changed_number": false,
+      "changed_actor": false,
+      "changed_negation": false,
+      "changed_comparison": false,
+      "changed_time": false,
+      "unsupported_new_claim": true,
+      "explanation": "Ledgerが示すロールバック対象は人間コンシェルジュ機能で、問題として認められたのは適切な開示なしにテストを始めたことです。この要約は対象を電話機能全体に広げ、契約スタッフの利用をロールバックの契機として示唆し、「secretly」という未確認の描写も加えています。",
+      "related_fact_id": "MUSE-HC-012",
+      "origin": "translation",
+      "auto_downgraded": false
+    }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "prior_issues_resolved": [
+    {
+      "index": 0,
+      "resolved": false,
+      "explanation": "本文では、適切な開示なしでテストを開始したことを「ミス」とし、停止対象を人間コンシェルジュ機能に限定しています。ただし、最後の一文ではMuseの電話機能全体をロールバックしたように述べ、契約スタッフの電話対応後にロールバックしたと結び付けているため、指摘された誤解が完全には解消されていません。"
+    }
+  ],
+  "all_prior_issues_resolved": false
+}
