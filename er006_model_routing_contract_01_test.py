@@ -21,7 +21,7 @@ def run():
         approved = routing.PROCESS_MODEL_MAP[process]
         try:
             result = routing.require_model(process, approved)
-            ok = (result == approved) and approved == "gpt-5.6-luna"
+            ok = (result == approved) and approved == "gpt-6-luna"  # WIRING-01 Phase 2(判断7): 全工程gpt-6-luna
         except routing.ModelContractViolation as e:
             ok = False
         status = "OK" if ok else "FAIL"

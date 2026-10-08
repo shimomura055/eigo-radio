@@ -37,10 +37,11 @@ MANAGEMENT_ID = "FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01"
 SOURCE_TRIAL_MANAGEMENT_ID = "KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02"
 
 # ER-006-MODEL-ROUTING-CONTRACT-01: 新規process。既存のKey Phrase選定
-# (B1_SUPPORT/A2_SUPPORT)と同じApproved Model(SUPPORT_MODEL=
-# "gpt-5.6-luna")を使う(新規モデル追加なし)。
+# (B1_SUPPORT/A2_SUPPORT)と同じApproved Model(SUPPORT_MODELを参照、
+# 2026-10-08以降は"gpt-6-luna")を使う(新規モデル追加なし)。
+# WIRING-01 Phase 2(M4): 直書きをrouting参照へ変更(SUPPORT_MODEL切替に追従)。
 MODEL_ROUTING_PROCESS = "KEY_PHRASE_ADVANCED_EXPLANATION"
-MODEL = "gpt-5.6-luna"
+MODEL = routing.SUPPORT_MODEL
 REASONING_EFFORT = "medium"
 
 # er041_key_phrase_advanced_english_explanation_trial_02.MAX_WORDSの

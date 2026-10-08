@@ -18,7 +18,10 @@ from typing import Optional
 from dotenv import load_dotenv
 from openai import OpenAI
 
-MODEL_SEARCH = "gpt-5.6-luna"  # gather_topic.py / generate_test.pyのMODEL_PLANと同じ格
+import er006_model_routing_contract_01 as routing
+
+# WIRING-01 Phase 2(O2): 直書きをModel Routing参照へ(2026-10-08以降gpt-6-luna)
+MODEL_SEARCH = routing.QUERY_PLANNER_MODEL  # gather_topic.py / generate_test.pyのMODEL_PLANと同じ格
 PROMPT_VERSION = "er002-topic-adapter-v1"
 
 TOPIC_RESEARCH_PROMPT_TEMPLATE = """You are a news researcher for a Japanese English-learning podcast, gathering candidate stories in the {genre_label} genre.
@@ -108,7 +111,7 @@ def make_topic_research_fn(genre: str, client: Optional[OpenAI] = None):
     def research_fn(today: str) -> str:
         prompt = build_research_prompt(genre, today)
         response = client.responses.create(
-            model=MODEL_SEARCH,
+            model=routing.require_model("QUERY_PLANNING", MODEL_SEARCH),
             input=prompt,
             tools=[{"type": "web_search"}],
         )

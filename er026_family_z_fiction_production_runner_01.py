@@ -673,13 +673,33 @@ def run_text_stage(story_key: str, slug: str, run: str, dry_run: bool = False) -
     return plan_summary
 
 
+def _load_model_pricing(model: str) -> dict:
+    """WIRING-01 Phase 2(M2): 指定model(routing由来)のinput/cached_input/
+    output単価をpricing_snapshot.jsonから引く。無ければPricingNotFoundError。"""
+    with open(trial02.PRICING_SNAPSHOT_PATH, encoding="utf-8") as f:
+        snapshot = json.load(f)
+    pricing = {}
+    for entry in snapshot["prices"]:
+        if entry.get("provider") == "openai" and entry.get("model") == model \
+                and entry.get("tier", "Standard") == "Standard":
+            pricing[entry["meter"]] = entry["price"]
+    for meter in ("input_tokens", "cached_input_tokens", "output_tokens"):
+        if meter not in pricing:
+            raise routing.PricingNotFoundError(
+                f"[STOP] 単価未登録model: openai/{model} meter={meter}")
+    return pricing
+
+
 def compute_actual_cost_jpy(log_path: str) -> dict:
     """trial02.compute_cost_jpy()と同一ロジックだが、THEME_TAGを本runner
-    (FAMILY_Z_FICTION_PRODUCTION_E2E_01)向けに差し替えたもの(pricing読み
-    込み自体はtrial02.load_pricing()をそのまま再利用)。"""
+    (FAMILY_Z_FICTION_PRODUCTION_E2E_01)向けに差し替えたもの(単価はrecordの
+    model_idごとにpricing_snapshotから引く。WIRING-01 Phase 2 M2)。"""
     if not os.path.exists(log_path):
         return {"total_usd": 0.0, "total_jpy": 0.0, "record_count": 0}
-    pricing = trial02.load_pricing()
+    # WIRING-01 Phase 2(M2): 5.6固定の単価読込/フィルタをrouting由来modelへ。
+    # OpenAI recordのmodel単価がpricing_snapshotに無ければPricingNotFoundError
+    # (費用が無言で0円になるのを防ぐ、fail-closed)。非OpenAI recordは従来どおり対象外。
+    pricing_by_model = {}
     total_usd = 0.0
     record_count = 0
     with open(log_path, encoding="utf-8") as f:
@@ -693,8 +713,12 @@ def compute_actual_cost_jpy(log_path: str) -> dict:
             record_count += 1
             if not rec.get("success", True):
                 continue
-            if rec.get("model_id") != "gpt-5.6-luna":
+            model_id = rec.get("model_id")
+            if rec.get("provider", "openai") != "openai" or not model_id:
                 continue
+            if model_id not in pricing_by_model:
+                pricing_by_model[model_id] = _load_model_pricing(model_id)
+            pricing = pricing_by_model[model_id]
             input_tokens = rec.get("input_tokens") or 0
             cached = rec.get("cached_input_tokens") or 0
             output_tokens = rec.get("output_tokens") or 0

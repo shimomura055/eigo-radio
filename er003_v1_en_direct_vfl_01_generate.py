@@ -56,6 +56,10 @@ OUT_DIR = "er003_output/en_direct_vfl_01/A02"
 # 範囲外)。
 MODEL = routing.WRITER_MODEL  # "gpt-5.6-luna"(旧: r3.WRITER_MODEL = "gpt-5.6-sol")
 REASONING_EFFORT = r3.WRITER_REASONING_EFFORT  # "high"
+# WIRING-01 Phase 2(Opus O1): Fact Check(run_deviation_check)の既定modelは
+# WRITER_MODELではなくFact Check専用定数を参照する(MODELは他用途=Writer既定
+# にも使われるため、変更はdeviation関数の既定値に限定)。
+DEVIATION_MODEL = routing.WRITER_FACT_CHECK_MODEL
 
 A_VERSION_WORD_COUNT = ab01.A_VERSION_WORD_COUNT  # 418(前回実験と同一基準)
 LENGTH_LOWER_BOUND = ab01.LENGTH_LOWER_BOUND  # 355
@@ -770,7 +774,7 @@ def deviation_audit_record(check_result: dict) -> dict:
     }
 
 
-def run_deviation_check(client, verified_ledger_text: str, article_text: str, model: str = MODEL,
+def run_deviation_check(client, verified_ledger_text: str, article_text: str, model: str = DEVIATION_MODEL,
                          hook_aware: bool = False, prior_issues: list | None = None,
                          include_related_fact_id: bool = False,
                          source_article_text: str | None = None) -> dict:
@@ -785,6 +789,8 @@ def run_deviation_check(client, verified_ledger_text: str, article_text: str, mo
     する。全て未指定の既存呼び出しは、prompt文言・schema・戻り値の
     キー集合とも一切変わらない(新規追加キーはparsedへ指定時のみ増える)。
     """
+    # WIRING-01 Phase 2(O1): API call前にfail-closedで検証(承認外modelはModelContractViolation)
+    model = routing.require_model("WRITER_FACT_CHECK", model)
     developer_message = HOOK_AWARE_DEVIATION_DEVELOPER_MESSAGE if hook_aware else DEVIATION_DEVELOPER_MESSAGE
     prompt_template = HOOK_AWARE_DEVIATION_PROMPT_TEMPLATE if hook_aware else DEVIATION_PROMPT_TEMPLATE
     prompt = prompt_template.format(verified_ledger_text=verified_ledger_text, article_text=article_text)

@@ -13,9 +13,11 @@ from __future__ import annotations
 import json
 
 import er003_v1_en_direct_vfl_01_generate as vfl01
+import er006_model_routing_contract_01 as routing
 
-GATE_MODEL = "gpt-5.6-luna"  # 検証用固定。Production本配線時は
-                              # er006_model_routing_contract_01経由に切替える
+# WIRING-01 Phase 2(O2): Model Routing参照へ(専用process keyは新設しない。
+# 2026-10-08以降gpt-6-luna)。
+GATE_MODEL = routing.RESEARCH_MODEL
 
 GATE_DEVELOPER_MESSAGE = (
     "あなたはeigo-radioのResearch Coverage Gate担当です。Writerが記事を書き始める前に、"

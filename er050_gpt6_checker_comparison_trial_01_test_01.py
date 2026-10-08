@@ -150,7 +150,9 @@ class GuardrailAndOutputTest(unittest.TestCase):
         }]
         fake_client = mock.MagicMock()
         fake_client.responses.create.return_value = _make_fake_response("gpt-5.6-luna", deviations)
-        with mock.patch.object(g6.vfl01, "get_client", return_value=fake_client):
+        # WIRING-01 Phase 2(O1): 旧5.6 harness検証中のみrequire_modelを素通し
+        with mock.patch.object(g6.vfl01, "get_client", return_value=fake_client), \
+                mock.patch.object(g6.vfl01.routing, "require_model", side_effect=lambda p, m: m):
             summary = g6.execute_step("step_test", [self._fixture()], ["gpt-5.6-luna"], budget_jpy=1000.0)
         run = summary["fixtures"][0]["runs"]["gpt-5.6-luna"][0]
         self.assertEqual(run["overall_status"], "LEDGER_COMPLIANT")
@@ -202,7 +204,9 @@ class GuardrailAndOutputTest(unittest.TestCase):
         fixture = self._fixture("f1")
         fake_client = mock.MagicMock()
         fake_client.responses.create.return_value = _make_fake_response("m", [])
-        with mock.patch.object(g6.vfl01, "get_client", return_value=fake_client):
+        # WIRING-01 Phase 2(O1): run_deviation_checkが旧5.6を拒否するため、旧Trial harness検証中のみ素通し
+        with mock.patch.object(g6.vfl01, "get_client", return_value=fake_client), \
+                mock.patch.object(g6.vfl01.routing, "require_model", side_effect=lambda p, m: m):
             g6.run_fixture_once(fake_client, fixture, "gpt-5.6-luna")
             g6.run_fixture_once(fake_client, fixture, "gpt-6-luna")
         calls = fake_client.responses.create.call_args_list

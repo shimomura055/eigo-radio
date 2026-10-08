@@ -417,20 +417,26 @@ def call_with_retry(fn, max_attempts: int = 2) -> tuple:
 # ------------------------------------------------------------
 # 費用計算(pricing_snapshot.jsonのluna単価をraw_usage_log.jsonlへ適用)
 # ------------------------------------------------------------
-def load_luna_pricing() -> dict:
+def load_luna_pricing(model: str | None = None) -> dict:
+    """WIRING-01 Phase 2(M2): model引数化。既定=routing.WRITER_MODEL(2026-10-08以降
+    gpt-6-luna)。旧Trial(5.6)を再現する場合は model="gpt-5.6-luna" を明示する。"""
+    model = model or routing.WRITER_MODEL
     with open(PRICING_SNAPSHOT_PATH, encoding="utf-8") as f:
         snapshot = json.load(f)
     pricing = {}
     for entry in snapshot["prices"]:
-        if entry.get("model") == "gpt-5.6-luna":
+        if entry.get("model") == model:
             pricing[entry["meter"]] = entry["price"]
     return pricing
 
 
-def compute_cost_jpy(log_path: str) -> dict:
+def compute_cost_jpy(log_path: str, model: str | None = None) -> dict:
+    model = model or routing.WRITER_MODEL
     if not os.path.exists(log_path):
         return {"total_usd": 0.0, "total_jpy": 0.0, "record_count": 0}
-    pricing = load_luna_pricing()
+    pricing = load_luna_pricing(model)
+    if not pricing:
+        raise routing.PricingNotFoundError(f"[STOP] 単価未登録model: openai/{model}")
     total_usd = 0.0
     record_count = 0
     with open(log_path, encoding="utf-8") as f:
@@ -442,7 +448,7 @@ def compute_cost_jpy(log_path: str) -> dict:
             record_count += 1
             if not rec.get("success", True):
                 continue
-            if rec.get("model_id") != "gpt-5.6-luna":
+            if rec.get("model_id") != model:
                 continue
             input_tokens = rec.get("input_tokens") or 0
             cached = rec.get("cached_input_tokens") or 0

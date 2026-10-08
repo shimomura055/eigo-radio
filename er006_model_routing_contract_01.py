@@ -16,6 +16,14 @@
 # Research系(Evidence Pack/VFL/Verification)は元々Luna(ER-006で新規構築)、
 # Query Planning/Topic Selectionも元々Luna(gather_topic.py等、ER-005以前
 # から)であり、今回の変更対象ではない。
+#
+# 2026-10-08(ユーザー判断7、PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01
+# 委任_03 Phase 2): 全7定数をgpt-5.6-lunaからgpt-6-lunaへ変更した
+# (「全6-luna化をProduction方針として進めてOK」)。上位互換かつ単価が安い
+# (Input $0.10/Cached $0.01/Output $0.50 per 1M)ことが理由。切り戻しは
+# このPhase 2 commitのrevertのみ(単価登録・fail-closed化=Phase 1は戻さない)。
+# 旧Trial scriptの再実行は require_model_or_override(process,
+# "gpt-5.6-luna", override_reason=...) で5.6を明示指定すること。
 from __future__ import annotations
 
 
@@ -34,13 +42,13 @@ class PricingNotFoundError(RuntimeError):
 # ------------------------------------------------------------
 # Approved Model(OpenAI系)
 # ------------------------------------------------------------
-QUERY_PLANNER_MODEL = "gpt-5.6-luna"
-TOPIC_SELECTOR_MODEL = "gpt-5.6-luna"
-RESEARCH_MODEL = "gpt-5.6-luna"          # Evidence Pack / VFL / Verification
-WRITER_MODEL = "gpt-5.6-luna"            # B1 Writer / A2 Writer(Deviation Check含む)
-WRITER_FACT_CHECK_MODEL = "gpt-5.6-luna"
-SUPPORT_MODEL = "gpt-5.6-luna"           # B1 Support / A2 Support(Key Phrase選定・正規化含む)
-SUPPORT_FACT_CHECK_MODEL = "gpt-5.6-luna"
+QUERY_PLANNER_MODEL = "gpt-6-luna"
+TOPIC_SELECTOR_MODEL = "gpt-6-luna"
+RESEARCH_MODEL = "gpt-6-luna"          # Evidence Pack / VFL / Verification
+WRITER_MODEL = "gpt-6-luna"            # B1 Writer / A2 Writer(Deviation Check含む)
+WRITER_FACT_CHECK_MODEL = "gpt-6-luna"
+SUPPORT_MODEL = "gpt-6-luna"           # B1 Support / A2 Support(Key Phrase選定・正規化含む)
+SUPPORT_FACT_CHECK_MODEL = "gpt-6-luna"
 
 # ------------------------------------------------------------
 # Approved Provider(非OpenAI)

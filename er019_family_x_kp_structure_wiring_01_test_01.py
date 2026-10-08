@@ -77,7 +77,11 @@ class PromptAndStyleFidelityTests(unittest.TestCase):
         self.assertEqual(kp_explanation_gen.PROMPT_SHA256, expected)
 
     def test_model_matches_trial_02(self):
-        self.assertEqual(kp_explanation_gen.MODEL, trial02_text.MODEL)
+        # WIRING-01 Phase 2(M4): Productionのmodelは直書きをやめてrouting.SUPPORT_MODEL
+        # 参照へ変更(2026-10-08判断7でgpt-6-luna)。Trial02(5.6)当時のmodelとの
+        # 一致は意図的に外れた。Production契約への追従を確認する。
+        import er006_model_routing_contract_01 as routing
+        self.assertEqual(kp_explanation_gen.MODEL, routing.SUPPORT_MODEL)
 
     def test_variant_b_style_matches_trial_04(self):
         self.assertEqual(fl_styles.KEY_PHRASE_EXPLANATION_EN, trial04_audio.VARIANT_STYLES["B"])

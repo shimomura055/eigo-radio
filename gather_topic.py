@@ -23,10 +23,13 @@ from datetime import date
 from dotenv import load_dotenv
 from openai import OpenAI
 
+import er006_model_routing_contract_01 as routing
+
 load_dotenv()
 client = OpenAI()
 
-MODEL_SEARCH = "gpt-5.6-luna"  # 調査フェーズ用(generate_test.pyのMODEL_PLANと同じ格)
+# WIRING-01 Phase 2(O2): 直書きをModel Routing参照へ。各API call直前にrequire_modelで検証する。
+MODEL_SEARCH = routing.QUERY_PLANNER_MODEL  # 調査フェーズ用(2026-10-08以降gpt-6-luna)
 TODAY = date.today().strftime("%B %d, %Y")
 
 # ============================================================
@@ -118,7 +121,7 @@ Write your findings in plain text under these exact headings:
 print()
 print("工程①: Web検索で調査中(数十秒かかることがあります)...")
 research = client.responses.create(
-    model=MODEL_SEARCH,
+    model=routing.require_model("QUERY_PLANNING", MODEL_SEARCH),
     input=RESEARCH_PROMPT,
     tools=[{"type": "web_search"}],
 )
@@ -165,7 +168,7 @@ Return ONLY valid JSON in this exact schema:
 print()
 print("工程②: TOPIC_PACKAGE形式に整形中...")
 res = client.chat.completions.create(
-    model=MODEL_SEARCH,
+    model=routing.require_model("QUERY_PLANNING", MODEL_SEARCH),
     messages=[{"role": "user", "content": STRUCTURE_PROMPT}],
     response_format={"type": "json_object"},
 )
