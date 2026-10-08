@@ -20337,3 +20337,13 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **実装(全てフラグ既定OFF、Production変更なし、`OPEN233_APPROVED_FLOW_SWITCHES`・CURRENT_SPEC.md 無変更)**: `OPEN243_M1`(要約へJA本文+Ledger入力、要約のみMAJORなら要約だけ最大2回再生成)、`OPEN243_M2`(EN検査のchanged_actor説明拡張・origin判定修正・校正)、`OPEN233_RECLASSIFY_PROTECT_FLAGS=changed_actor`(再分類で保護)、`OPEN243_G3_TELEMETRY_PATH`(観測)。設計・プロンプト前後全文=`er052_output/open243_translation_ng_analysis_01/trial_m123_01/DESIGN_M123.md`。
 - **結果要約(各 n=1、実費¥56.849)**: M1=要約MAJOR14世代で前回指摘の解消14/14(従来6/14)、再検査まで通過12/14、要約STOP相当 8→2(残2は変更していない本文の再検査揺れ)。M2=陽性26のうちtranslation判定 旧7→新6・主体型7のchanged_actor=true 旧2→新3・重大EV-25は旧新とも未検出、許容文「so」は旧新ともMAJOR(仕様どおり)、旧を再実行した40記事のMAJOR総数 23→22・MAJOR記事 16→16。M3=EV-25をStage 2へ渡した3回再生でBLOCKING 1回・ACCEPTABLE 2回、保護17件中BLOCKING 1(EV-25本体)・QUALITY 3・ACCEPTABLE 13、ledger整合文の誤書き換え0件。詳細 REPORT §110、`RESULTS_M123.md`。
 - **Status**: MEASURED(Trial)。採否判断(Production採用)は未実施・人間ユーザーのみ承認可。
+
+## FACTLOCK-ASTRA-E2E-TRIAL-01 委任_01: 新Writer仕様+翻訳段対策のE2E Trial設計・ユーザー決定記録(2026-10-09、DESIGN_READY)
+
+- **ユーザー決定1(2026-10-09)**: E2E Trial規模=10記事 / TTS 2本 / **予算上限¥1,000**(途中停止を避けるため¥700から引き上げ)。
+- **ユーザー決定2(2026-10-09)**: Astra tier=E2EはStandard同期。Flexは別途評価(本Trialに含めない)。Batchは対象外(委任_18の調査結果: completion window 24hのみ・2段で算術上限48h・改修7箇所)。
+- **ユーザー決定3(2026-10-09)**: M2(EN検査プロンプト拡張)は見送り(OFF維持)。M1・M3はON。
+- **ユーザー決定4(2026-10-09)**: 構成=旧4テーマ(META/ホルムズ/宇宙兵器space_weapons/ミニバッグsmall_bag)+新6テーマ(候補提示→ユーザー選定)=10記事。**全記事で旧仕様腕を併走**(paired design: research→台帳→B3は両腕で共有。旧4テーマは凍結済みの台帳・B3を再利用、新6テーマは新規research)。
+- **ユーザー決定5(2026-10-09)**: 設計書作成へGo(「OKです。開始してください。」)。**実行(API支出)は未Go**。
+- **成果物(委任_01、API費用¥0、Production変更なし)**: `er052_output/factlock_astra_e2e_trial_01/DESIGN_E2E_01.md`(設計書)、`PREREGISTRATION_01.md`(事前登録)、`NEW_THEME_CANDIDATES_01.md`(新テーマ候補10件、ユーザー選定待ち)。費用見積(出典付き・確定値ではない): 合計約¥650(範囲約¥560〜780)、所要約2〜2.5時間。
+- **Status**: DESIGN_READY(実行Go未、Opus条件Aレビュー未、前提作業(a)〜(j)未実装)。VALIDATED/APPROVED_FOR_PRODUCTION未宣言。
