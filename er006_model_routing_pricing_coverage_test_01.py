@@ -53,6 +53,40 @@ class PricingCoverageTest(unittest.TestCase):
         self.assertEqual(price("openai", "gpt-6-luna", "cache_write_input_tokens"), 0.125)
 
 
+    def test_gpt6_astra_prices_registered_standard_only(self):
+        """FACTLOCK-ASTRA-E2E-TRIAL-01 委任_05(a): gpt-6-astra Standard単価(出典=pricing page 2026-10-08)。
+        登録=採用ではない(routingのPROCESS_MODEL_MAPには割り当てない)。Batch/Flex単価は登録しない。"""
+        price = efam._load_pricing()
+        self.assertEqual(price("openai", "gpt-6-astra", "input_tokens"), 10.00)
+        self.assertEqual(price("openai", "gpt-6-astra", "cached_input_tokens"), 1.00)
+        self.assertEqual(price("openai", "gpt-6-astra", "output_tokens"), 50.00)
+        self.assertEqual(price("openai", "gpt-6-astra", "cache_write_input_tokens"), 12.50)
+        with open(SNAPSHOT, encoding="utf-8") as f:
+            prices = json.load(f)["prices"]
+        astra = [p for p in prices if p["model"] == "gpt-6-astra"]
+        self.assertEqual({p["tier"] for p in astra}, {"Standard"})
+        for p in astra:
+            self.assertIn("161df7d8126a8287e0c0c4bc80950f977ab6b54a597d9bced35baeedbbb3a807", p["source_url"])
+            self.assertIn("2026-10-08T16:38", p["source_url"])
+            self.assertIn("platform.openai.com/docs/pricing", p["source_url"])
+        self.assertNotIn("gpt-6-astra", set(routing.PROCESS_MODEL_MAP.values()))
+
+    def test_astra_pricing_not_found_error_resolved(self):
+        """登録前は PricingNotFoundError だった astra の費用計算が、登録後は例外にならず正しい額になる。"""
+        import os
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            p = os.path.join(d, "raw_usage_log.jsonl")
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(json.dumps({"provider": "openai", "model_id": "gpt-6-astra",
+                                    "input_tokens": 1_000_000, "output_tokens": 1_000_000}) + "\n")
+            jpy, _ = efam.compute_cost_jpy_so_far(p)
+        self.assertAlmostEqual(jpy, (10.0 + 50.0) * efam.USD_JPY, places=4)
+        for mod in (adv_gen, std_gen):
+            usd, _jpy = mod._compute_cost_jpy(mod._load_pricing(), "gpt-6-astra", 1_000_000, 0, 1_000_000)
+            self.assertAlmostEqual(usd, 60.0, places=6)
+
+
 class FailClosedTest(unittest.TestCase):
     def test_efam_price_unknown_model_raises(self):
         price = efam._load_pricing()
