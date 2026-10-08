@@ -5628,7 +5628,7 @@ precheck +56/-1(`extract_percentages_strict`新設、`check_number_mismatch`のf
 - 費用: T-A ¥316.3(baseline ¥222.5/all6 ¥93.8)+T-B ¥31.4+評価 ¥34.9=¥382.6/¥500。
 - artifact: `er052_output/all6_writer_redesign_necessity_01/`(RESULT.md、PREREGISTRATION.md、MANIFEST.json、T-B/、eval/SUMMARY_TA.md、eval/HUMAN_CHECK_TA.md[重大候補2件])。Production変更なし。
 
-## §104 FACTLOCK-WRITER-REDESIGN-TRIAL-01(Fact Lock v1・残NG突合・診断・R3最小指示・6-sol N=1・sweep生成、2026-10-08、v1 MEASURED / sweep EVALUATING)
+## §104 FACTLOCK-WRITER-REDESIGN-TRIAL-01(Fact Lock v1・残NG突合・診断・R3最小指示・6-sol N=1・sweep生成、2026-10-08、v1 MEASURED / sweep EVALUATED→§105)
 
 - 位置づけ: Trial(Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言、採用判断はユーザー)。全て6-lunaで実施(model_id実測)。LLM単独判定・人間確認前。
 - 設計: 事実をタグ(【事実N】)付きで書かせるFact Lock。数値規則(c)(周辺数値は書かず中核数値のみ上限3件)、R1/R2事実固定5則、名称内番号はA(周辺のまま名称ごと書かない)。Opus条件A(M1〜M9)反映済み。
@@ -5655,9 +5655,66 @@ precheck +56/-1(`extract_percentages_strict`新設、`check_number_mismatch`のf
 - JA FC LEDGER_COMPLIANT、字数767→597(約22%短縮)、構成組替えなし、比喩5→3種。pairwiseは位置偏りで各1-1。優劣未測定(N=1)。
 ### sweep生成(委任_04b、33本、GENERATED)
 - 11変種(S1〜S4,S6〜S12)x3 brief。完走29・STOP4(S3 meta=EN MAJOR再発、S4 hormuz=JA_RECHECK_REQUIRED、S8 meta・S10 hormuz=JA R2 Fact Check STOP)。実費約¥186.6/¥300。照合の不整合率はS2 29.2%・S7 29.4%が高く、S1 0%・S6 3.1%・S3 3.4%が低い(N=3、タグ付き文数が変種で大きく異なり粗い)。文体指標は常体化(S1 0.25、S4 0.19)や比喩種の差が大きい(詳細STYLE_METRICS)。
-- **sweep評価結果は評価中(委任_04c)。後続§で追記する。**
+- **sweep評価結果は§105参照(委任_04c、EVALUATED)。**
 ### 問題・未修正
 - harness欠陥: phase2のJA再生成でタグ除去が適用されず、最終稿/ENにタグ残存(S4 hormuz・S11 space_weapons[EN含む]・S8 space_weapons)。Production採用検討時に要修正。
 - Opus: 条件A M1〜M9、任意(sweep評価設計 M1〜M7、O1・O2・O4採用)を OPUS_FINDINGS_LEDGER OF-072〜087 に登録。
 ### artifact
 - `er052_output/factlock_writer_trial_01/`(RESULT.md、MANIFEST.json、PREREGISTRATION.md、FIXED_SHAS.json、DESIGN_01.md、runs/、eval/{SUMMARY_FL.md,FACTLOCK_CHECK_SUMMARY.md,HUMAN_CHECK_FL.md,residual_analysis/}、v2_design/、r3_minimal_01/{SUMMARY_R3.md,sol_n1/}、sweep_01/{MANIFEST.json,DESIGN_SWEEP_01.md,PREREGISTRATION_SWEEP.md,variants.json,runs/})、harness `er052_factlock_writer_trial_01_run.py`/`er052_factlock_sweep_01_run.py`。Opusレビュー `docs/pm/opus_l2_review_factlock_{writer_trial,sweep_eval}_01.md`。
+
+## §105 FACTLOCK-WRITER-REDESIGN-TRIAL-01 sweep評価結果(委任_04c、2026-10-08、EVALUATED)
+
+- 位置づけ: Trial(Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言、推奨なし)。S0基準pairwise(gpt-6-luna主、gpt-5.6-luna併用、2順序、スコア=勝ち1/割れ0.5/負け0)。評価規則v2は評価前固定(`sweep_01/eval/EVAL_RULES_V2.md`、PREREGISTRATION_SWEEP.md末尾追記)。Opus任意レビューM1〜M7・O1/O2/O4採用、O3(総当たり第2段)は次段。実費約¥83.4/¥120。N=3 brief x 1反復、LLM判定のみ。
+- 「事実は変わらない」は、この規模・この指標で検出できる差がない、の意味。
+
+### 一覧表(brief順=meta b2 / hormuz b4 / space_weapons b3)
+| 変種 | brief別 | 合計 | 割れ | ノイズ幅 | 数値NG/本 | 増幅(ii)/本 | 比喩異なり/1000字 | 8-gram台帳率 | 読み |
+|---|---|---|---|---|---|---|---|---|---|
+| S1 | .5/0/0 | 0.5 | 1/3 | 幅内 | 0 | -0.67 | 3.91 | .073 | 同等 |
+| S2 | .5/0/0 | 0.5 | 1/3 | 幅内 | 0.33 | +0.33 | 4.26 | .092 | 同等 |
+| S3 | .5/.5/.5 | 1.5 | 3/3 | 幅内 | 0 | 0 | 4.06 | .116 | 同等(meta=STOP) |
+| S4 | .5/.5/.5 | 1.5 | 3/3 | 幅内 | 0 | -0.33 | 5.25 | .098 | 同等(hormuz=STOP) |
+| S6 | 0/0/0 | 0.0 | 0/3 | 幅外 | 0 | +0.33 | 1.01 | .128 | 明確に下 |
+| S7 | 1/0/.5 | 1.5 | 1/3 | 幅内 | 0.67 | -1.0 | 0.0 | .097 | 同等 |
+| S8 | -/.5/0 | 0.5(有効2) | 1/2 | n/a | 0 | 0 | 0.47 | .056 | 判定不能(meta不戦敗=STOP) |
+| S9 | 0/.5/.5 | 1.0 | 2/3 | 幅内 | 0 | +2.0 | 5.61 | .134 | 同等(R3採用2/3、metaは不採用) |
+| S10 | .5/-/.5 | 1.0(有効2) | 2/2 | n/a | 0 | -0.5 | 2.67 | .092 | 判定不能(hormuz不戦敗=STOP) |
+| S11 | .5/.5/0 | 1.0 | 2/3 | 幅内 | 0 | +0.67 | 5.85 | .085 | 同等 |
+| S12 | .5/0/0 | 0.5 | 1/3 | 幅内 | 0 | 0 | 0.0 | .184 | 同等 |
+| S5(アンカー) | .5/.5/.5 | 1.5 | 3/3 | 幅内 | 0 | 0 | 8.15 | .156 | 同等 |
+S0基準値: 数値NG 0、比喩異なり5.8、8-gram .055、増幅n/a(タグなしで計測不能)。他の列(JA FC、比喩領域共通、決まり文句共通、文体6指標)は`sweep_01/eval/SUMMARY_SWEEP.md` §1。
+
+### ノイズ基準・位置バイアス
+- ノイズ基準(NOISE_BASELINE.md): S0 r1対r2の両本文がある10対で、同条件3 brief合計は0.5〜2.0(中央1.5)、割れ7/10。M5規則(全勝かつ>=2.5/全敗)を偶然満たす組は0/36。
+- 位置バイアス: 主judgeは後ろに置いた記事(B)を79%、5.6も82%選んだ。全34対中20対(59%)が割れ、決着は14対のみ。一致度は個別判定58/68、brief別スコア24/34。
+- 読み: S0基準で「明確に上」0変種、「明確に下」S6(3 briefすべてS0が両順序で勝ち、ノイズ幅外)のみ、他はノイズ幅内=S0と区別できない。
+
+### 決定論指標の所見
+- 数値NG(brief・台帳に無い数字/本): S2 0.33、S7 0.67、他は全変種0(S0も0)。JA FC最終は全runでCOMPLIANT。STOP4本(S3 meta、S4 hormuz、S8 meta、S10 hormuz)。
+- 増幅(ii): S9が+2.0(R3は2/3で採用)。S4→S9でスコア-0.5。
+- 台帳転記度(8-gram率): S12 .184・S5 .156がS0 .055の約3.3倍・約2.8倍。S9 .134・S6 .128・S3 .116も高め。S8 .056はS0並み。
+- O2(決着14対、勝者-敗者の符号): 比喩異なりは勝者が高い11/低い3、です・ます率は勝者が低い10/高い3、字数は勝者が短い9/長い5。因果とは読まない。
+
+### 多様性所見
+- 機械指標: 3記事で比喩領域が全記事一致するものは全変種0(解像度が低い)。決まり文句の3記事共通はS3・S10・S11が2種、S0・S4・S9は0。
+- LLM所見(盲検): S4・S11・S9が画一的(演劇語彙/導入の見立て→整理→比喩で締め)、S6・S7・S12・S2は比較的多様と記述。S8・S10は2本のみ。
+- 文体: S0の比喩5.8に対しS6・S7・S12は0〜1.0(S7は話しかけ口調で比喩ほぼなし)。S5は8.15。
+
+### 重大候補
+- 軽量rubric(gpt-6-luna、JA R2+EN、37本)で1件のみ: S1 meta「電話の相手はAIのはず」、台帳MUSE-HC-006と役割が逆に読める可能性。`sweep_01/eval/HUMAN_CHECK_SWEEP.md`(人間確認待ち、確定値ではない)。軽微は参考で、変種あたりJA 0〜3件(S11が3、S4・S9が2)。
+
+### 学び
+- (a) 判定入力の順序固定では位置バイアスが支配的で、LLM単独判定では面白さの方向は決められない(明確な差はS6の下のみ)。
+- (b) 数字漏れ(S2・S7)と増幅(S9)は決定論指標で検出できた。
+- (c) 台帳転記度はS12・S5で高く、S0より明確に高い(転記に寄る傾向)。
+- (d) STOP4本は変種側の安全装置が機能した結果で、不戦敗として別集計した。
+- (e) 多様性の機械指標は閾値設計に依存し、現状は解像度が粗い。
+
+### 限界
+N=3 brief x 1反復、LLM判定のみ(同系列の主・併用judge)、強い位置バイアスで割れが多く解像度が粗い、briefと話題・数値有無の交絡、metaは数値軸で読めない、増幅(ii)はタグなしS0で計測不能・6-luna自己判定、重大候補は人間確認未了。
+
+### 次段候補(事実のみ)
+人間盲検読み(¥0)の実施可否はユーザー回答待ち(本節の時点では未実施)。O3(位置バイアス対策つきの再測)は未実施。重大候補1件の人間確認待ち。
+
+### artifact
+`er052_output/factlock_writer_trial_01/sweep_01/eval/`(SUMMARY_SWEEP.md=本体、EVAL_RULES_V2.md、NOISE_BASELINE.md、HUMAN_CHECK_SWEEP.md、diversity_*.json、facts_deterministic.json、pairwise_*.json。MAPは`_private/`でgit管理外)、ツール`sweep_01/tools/eval_sweep.py`・`eval_sweep_part2.py`(+test 3 passed)。RESULT_PACKET: `docs/pm/RESULT_PACKET_FACTLOCK_SWEEP_EVAL.md`。

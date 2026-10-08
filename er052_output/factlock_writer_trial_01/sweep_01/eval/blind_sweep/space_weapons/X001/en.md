@@ -1,0 +1,42 @@
+# Space Weapons: A Sorting Quiz with Three Boxes
+
+Here’s a question. If you hear that “weapons have been deployed in space,” should you put them straight into the box for anti-satellite missiles? The answer is: wait a moment. With space news, getting the labels right is what matters.
+
+For the first time, the United States officially acknowledged that it had deployed weapons in space.
+
+When you hear that, you might think it means missiles that shoot down satellites. But what makes this story interesting is not so much the weapons’ performance as the boundaries of the term “space weapons.”
+
+First, box number one: “weapons in orbit.” On September 14, 2026, the U.S. Secretary of the Air Force said that the United States was deploying orbital space-control weapons to protect the joint force from actions by hostile parties. An official U.S. government article records this as the first statement acknowledging that the Space Force had deployed weapons in space.
+
+However, the specific systems, their ability to attack, and their targets have not been confirmed.
+
+You may want to ask, “What are they using, and what are they targeting?” But there is no answer to that yet.
+
+Box number two is “operations involving space.” In the U.S. Space Force’s operational framework, the term “counterspace” does not refer only to actions in orbit. It includes both attack and defense, and covers communication links and actions on the ground as well.
+
+In other words, putting weapons in orbit and the full range of operations involving space are two different-sized topics.
+
+They may look like they belong in the same “space” box, but look closely and you’ll see they are different sizes. This is a trick question.
+
+Box number three is “a test of a missile launched from the ground.” In November 2021, Russia destroyed a satellite with a ground-launched anti-satellite missile, creating more than 1,500 pieces of trackable debris.
+
+This was a test in which a missile was fired from the ground. It is different from deploying weapons that stay in orbit.
+
+“Launching from the ground” and “deploying in orbit” may sound similar, but the weapons are in different places.
+
+And measures to protect against attacks do not belong in the box for attack weapons. The Space Force’s framework lists steps such as warning about threats, spreading satellites out, separating their functions, and keeping backups as defensive measures.
+
+These preparations do not, by themselves, mean that attack weapons have been deployed in space.
+
+To use home security as an example, strengthening a lock and keeping a tool for attacking are two different things. Sorting things into the right boxes matters.
+
+So what belongs in the Outer Space Treaty box? The treaty bans placing nuclear weapons and other weapons of mass destruction in Earth orbit, and placing such weapons on celestial bodies such as the Moon. It also bans military bases and forts on celestial bodies, as well as weapons tests and military exercises there.
+
+So it is not accurate to say, “All space weapons are banned.” The treaty’s rules and whether a particular action complies with international law need to be considered separately.
+
+Weapons in orbit, missiles fired from the ground, and measures to protect communications and satellites all involve space security, but they are not the same thing. If you keep them separate as you read, you can see what this announcement makes clear—and what it still does not make clear.
+
+So, which box would you open first?
+
+## In one line
+The U.S. has acknowledged deploying weapons in orbit, but the systems and their targets remain unknown.

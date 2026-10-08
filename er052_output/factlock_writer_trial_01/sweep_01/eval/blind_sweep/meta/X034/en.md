@@ -1,0 +1,14 @@
+# Behind the Scenes of AI Phone Calls: A Change of Lead Turns into a Privacy Drama
+
+At first, this story seems to be about technology: “What does AI do on the phone?” But once the curtain goes up, we start to wonder who is in the cast behind the scenes. In some calls made through Muse, tests were carried out in which trained human contractors called people instead of AI and completed the conversation with them.
+
+When the lead role on the phone changes, the next question is: “Are users being told about it?” But users were not properly told about the change. At this point, the story changes from a contest over how well AI can act into a privacy drama.
+
+If a person handles the call, they may need to use a user’s information to get things done. In fact, Meta employees raised privacy concerns that sensitive information might be shared unintentionally with call center contractors. But this does not mean that a large-scale data leak happened. We should not make the story sound bigger than it is. No large-scale leak was confirmed; rather, people raised concerns that information might be shared with human workers.
+
+A Meta vice president responsible for the service admitted that starting a test in which contractors made calls without properly telling users was a “mistake,” and paused the human concierge feature for now. What was stopped was the feature where people handled the calls, not Muse as a whole.
+
+In other words, they did not close the theater itself; they temporarily pulled the show in which people answered the calls. When we hear about AI services, we tend to focus on “how naturally it speaks.” But this time, the spotlight fell somewhere else. Who is on the other end of the phone? Will that person receive the user’s information? Letting users know who is in the lead may also be an important part of the service’s script.
+
+## In one line
+Meta paused a feature after human contractors made calls without users being properly informed, raising privacy concerns.

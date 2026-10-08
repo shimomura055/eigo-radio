@@ -1,0 +1,14 @@
+# A Toll Bill Turns into Investment Talk the Next Day
+
+This news is interesting if you read it as a quick change in policy. A proposal to charge for the cost of keeping cargo safe as it passes through the strait became talk of investment and trade from Gulf states to the United States the next day.
+
+Trump posted that he would charge a 20% fee on all goods passing through the Strait of Hormuz to cover the cost of keeping it safe. Put simply, it was a plan to send the cargo a “security bill.” But the next day, he posted that he would replace that plan with talk of Gulf states investing in and trading with the United States. He said this was because of “very productive talks” with Middle Eastern leaders.
+
+The focus quickly shifted from a bill to an economic deal. What changed was the form of the proposal; worries about the safety of ships passing through the strait had not gone away. Brent oil futures rose on the day the fee plan was announced. But the rise cannot be blamed on the 20% plan alone. Concerns about a naval blockade of Iran, which was expected to begin the next day, and about energy shipments were also part of the picture.
+
+After the announcement that the plan would be replaced, oil futures briefly gave back some of their gains. But before long, they returned to a high level close to where they had been before the announcement. At the time the article was published, they were up about 2.6%, above $85 a barrel. Concerns about attacks by the United States and Iran, the naval blockade, and the safety of tankers continued.
+
+In short, the script for the announcement changed, but the market’s concerns stayed the same. The plan to charge fees on cargo may have disappeared, but that did not suddenly guarantee the safety of ships carrying oil. A bill can change its clothes, but worries at sea do not. That is the punch line of the story.
+
+## In one line
+Trump replaced a proposed Hormuz shipping fee with investment talks, but concerns about tanker safety remained.

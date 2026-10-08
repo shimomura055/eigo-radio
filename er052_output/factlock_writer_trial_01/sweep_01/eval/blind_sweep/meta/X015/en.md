@@ -1,0 +1,14 @@
+# The AI Phone Relay: Who Gets the Baton?
+
+AI makes phone calls. When you hear that, it may sound as if AI is putting on a one-man show all the way to the other end of the line. But what stood out this time was not how well AI could talk. It was the design that passed the baton to a person partway through.
+
+In some calls made through Meta’s Muse, tests were run in which trained contract workers, not AI, made the calls and completed the exchanges with the people they called. In this phone version of a relay, what was being tested was not just how to run, but how to pass the baton.
+
+Changing who handles the calls from AI to people is not just a small change behind the scenes. That is because it also changes who handles the information needed to keep the conversation going. Meta employees raised privacy concerns that, when human contract workers were in charge, sensitive information needed for the calls might be shared unintentionally with call center contract workers. This does not mean there was a large-scale data leak; the concern was that one might happen.
+
+The important thing here is not to confuse a concern with an incident. It is true that people raised concerns, but we must not turn that into a story that a large-scale leak actually happened. In this relay, the baton is information. If users cannot see who it is passed to, they cannot run with confidence.
+
+A Meta vice president admitted that it was a mistake to start a test in which contract workers made calls without proper disclosure, and pulled the human concierge feature for now. This does not mean Muse as a whole was shut down. What was pulled back this time was the feature in which people handled the calls. The service should explain not only what users can ask AI to do, but also who will hold the baton. We would want that included in the service’s explanation.
+
+## In one line
+Meta paused Muse’s human-call feature after concerns that contract workers might see sensitive information without proper disclosure.

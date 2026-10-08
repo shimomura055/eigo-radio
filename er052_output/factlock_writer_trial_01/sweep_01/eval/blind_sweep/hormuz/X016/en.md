@@ -1,0 +1,14 @@
+# From a Fee Schedule to a Deal Card: The Strait Story Changes Fast
+
+Just when it seemed a fee schedule had appeared, it was replaced the next day with a deal card. Events around the Strait of Hormuz are changing at a dizzying pace, even just in terms of policy. Trump posted that he would charge all cargo passing through the Strait a 20 percent fee to ensure U.S. security. The next day, he announced that he would replace the proposed fee with deals involving trade with and investment in the United States by Gulf countries. He said this was because of “very productive talks” with Middle Eastern leaders.
+
+Meanwhile, the line chart for crude oil prices does not tell a story that can be read at a glance. On the day the fee proposal came out, Brent crude futures rose sharply. Reuters reported that the rise was linked to worries about a naval blockade of Iran, which was said to be set to begin the next day, and about energy shipments passing through the Strait. We cannot say that the fee proposal alone caused prices to rise.
+
+After the announcement the next day that the proposal would be replaced, crude oil futures briefly gave up some of their gains. But soon they returned to a high level close to where they had been before the announcement. At the time the article was published, they were up about 2.6 percent, at more than $85 a barrel. Concerns about attacks by the United States and Iran, a naval blockade, and tanker safety continued.
+
+One thing to be careful about is not to treat this price movement as a scorecard for the policy. The fact that prices first fell back and then rose again does not, by itself, tell us what the market considered most important. That is because the change to the fee proposal and worries about a naval blockade and tanker safety were happening at the same time.
+
+The main points this time are that the 20 percent fee proposal was replaced with talk of trade and investment, and that crude prices moved up and down over a short period. Looking at these two things side by side makes the story easier to follow. But the key is not to settle on just one reason for the market’s movement. Even a faraway strait matters to fuel and transport because of crude oil. Looking not only at price changes, but also at what was announced and what concerns remain, can make the news a little more interesting to read.
+
+## In one line
+Trump quickly replaced a proposed 20 percent fee on Strait of Hormuz shipping with trade and investment deals.

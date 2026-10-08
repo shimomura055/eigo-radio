@@ -1,0 +1,16 @@
+# A Space Weapons Sorting Show: Don’t Put the Wrong Labels on Them
+
+When you hear “space weapons,” you may picture weapons lined up in space. But if you put everything in that box, sorting out this news gets confusing. The key is to use different labels based on “where it is” and “what the word means.”
+
+First, the label “deployed in orbit.” The U.S. Secretary of the Air Force said that the United States is deploying space-control weapons in orbit to protect the U.S. joint force from the actions of hostile actors.【Fact 1】An official U.S. government article records this as the first statement acknowledging that the Space Force had deployed weapons in space.【Fact 1】However, it has not been confirmed what kind of devices they are, what they can attack, or what their targets are.【Fact 1】
+
+The next label is “launched from the ground.” Russia previously destroyed a satellite with a missile launched from the ground and designed to attack satellites, creating large amounts of space debris that could be tracked.【Fact 3】This was a test launched from the ground. It is different from putting the weapon itself in orbit.【Fact 3】Both may look like “weapons involving satellites,” but they need different labels for where they are based.
+
+Then there is the slightly longer label “counterspace.” This word does not refer only to weapons in orbit.【Fact 11】Under the U.S. Space Force’s framework, it refers to attacks and defense in orbit, through communications between satellites and the ground, and at facilities on the ground.【Fact 11】In other words, this word’s box is quite large.
+
+Let’s also keep the label for protection separate from attack weapons. In the Space Force’s classification, defense includes active steps and passive preparations. These include warnings about threats, making systems stronger, separating functions, and spreading them across several systems.【Fact 13】Giving these protective measures the same label as deploying attack weapons in orbit would be a sorting mistake.【Fact 13】
+
+The last label is the space treaty. The treaty bans placing nuclear weapons and other weapons of mass destruction in orbit around Earth. It also bans deploying such weapons in outer space in other ways, or placing them on bodies in space such as the Moon. On these bodies, it also bans things such as military bases and weapons tests.【Fact 16】However, it is not accurate to sum this up by saying “all space weapons are completely banned.”【Fact 16】When you tell apart these three labels—where something is, what a word covers, and what the treaty bans—the news becomes much clearer.
+
+## In one line
+Space-weapons news is clearer when we separate where weapons are from what terms and treaties cover.

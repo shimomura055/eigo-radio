@@ -1,0 +1,18 @@
+# A Line Through the Fee Plan. The Next Act: Investment Deals. But Oil Prices Did Not Follow the Script.
+
+Trump’s first proposal was to ask all cargo passing through the Strait of Hormuz to pay a 20% fee toward the cost of keeping the strait safe.
+
+Brent crude futures rose sharply that day. News reports linked the rise to worries about a naval blockade against Iran, reportedly due to begin the next day, and about energy shipments passing through the strait. We cannot say that the proposed fee alone caused the rise.
+
+Then, the next day, the plot took a sharp turn. Trump posted that he was dropping the plan and replacing it with deals involving trade with the United States and investment by Gulf states. He said the decision was based on “very productive talks” with Middle East leaders.
+
+From a proposed fee on cargo to trade and investment with the United States. In just one day, the sign above the story changed.
+
+Had the market’s curtain fallen here? After the announcement, the gains narrowed for a while, but soon prices returned to nearly the high level they had reached before the announcement. They were still up when this article was published. Around the same time, concerns about attacks by the United States and Iran, the naval blockade, and tanker safety also continued.
+
+This is where we may want to look for one culprit behind the price move, as if we were solving a mystery. But what we know is that prices eased for a while and then rose again, and that concerns continued. Simply putting those facts side by side does not tell us which moved the other.
+
+In other words, the withdrawn plan was not the only main character. A line was drawn through the statement, but the market did not follow the same line back to where it started. It seems too soon to think of taking back a statement as a rewind button for the market. That is what makes this story interesting.
+
+## In one line
+Trump dropped his proposed Hormuz shipping fee, but oil prices soon climbed back near their earlier high.

@@ -1,0 +1,16 @@
+# Space Weapons News: Sort the Cards in Your Head
+
+Stories about weapons in space are easier to read if you sort them like cards in a card game. There are three things to look at: “Where is it?” “What does the term mean?” and “What does the treaty ban?” If you mix these up, the meaning of the news gets muddled too.
+
+The first card is “deployed in orbit.” On September 14, 2026, the US Secretary of the Air Force said that the US was deploying “space control weapons” in orbit to protect joint forces from hostile actors. An official US government article records this as the first statement to acknowledge that the Space Force had deployed weapons in space.
+
+The second card is “launched from the ground.” What Russia did in 2021 was test a missile fired from the ground to destroy a satellite. More than 1,500 pieces of debris could be tracked. A test to destroy a satellite and the deployment of weapons in orbit are not the same card.
+
+The third card is a somewhat bigger card: “counterspace operations.” In the US Space Force’s 2025 framework, this means not only putting weapons in space, but also carrying out attacks and defense involving orbits, communication links, and ground facilities. There are different kinds of defensive measures, too: warning of threats, making satellites stronger, splitting up their functions, spreading them across several systems, moving them, and keeping backups. These measures are also forms of defense, but they are different from deploying offensive weapons in orbit.
+
+The last card is the “treaty” card. The Outer Space Treaty bans putting nuclear weapons and other weapons of mass destruction in orbit around Earth, placing them on the Moon or other celestial bodies, or deploying them in space in another way. It does not ban all space weapons across the board.
+
+So when you hear “weapons in space,” it is too soon to decide right away whether the treaty has been violated. Was it fired from the ground, or deployed in orbit? Was it an attack or a defense? Turn the cards over one by one, and you can see what is behind the dramatic headline.
+
+## In one line
+A report about weapons in space does not automatically mean a treaty violation; the details matter.

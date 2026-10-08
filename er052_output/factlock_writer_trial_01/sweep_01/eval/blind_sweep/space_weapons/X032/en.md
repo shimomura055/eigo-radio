@@ -1,0 +1,22 @@
+# A Space Weapons Sorting Quiz: Put Them in One Box, and You’ll Jump to Conclusions
+
+Now, picture a sorting table in your mind. The label says “space weapons.” Even if they look alike, don’t rush to put them all in the same box. In this news story, things get confusing if you read the labels the wrong way.
+
+First, the label “weapons deployed in orbit.” On September 14, 2026, the U.S. Air Force secretary said that the United States is deploying space control weapons in orbit to protect joint forces from the actions of hostile parties. An official U.S. government article records this as the first time the government has admitted that the Space Force deployed weapons in space. However, it has not been confirmed what the devices are, what they can do, or what they would target.
+
+Wait a moment—the devices themselves are still a mystery. If we make up names or abilities for them here, this is no longer sorting. It’s a guessing game.
+
+The next label is “launched from the ground.” In November 2021, Russia destroyed a satellite with a missile launched from the ground, creating more than 1,500 pieces of trackable debris. This was a test of a ground-launched missile. It is a different kind of thing from the current news about weapons deployed in orbit, even though both are about “space security.”
+
+Put these two in the same box just because they are both about space, and confusion begins.
+
+Then there’s the tricky label: “counterspace.” In U.S. Space Force language, it includes attacks and defense not just in orbit, but also involving communications links and equipment on the ground. The term covers more than you might think.
+
+Don’t toss the defense label into the attack-weapons box, either. Warning about threats, strengthening equipment, spreading out functions, and keeping backups are all ways to prepare. These are different from deploying attack weapons in orbit.
+
+Last is the label “the Outer Space Treaty.” It does not have a rule that bans every weapon related to space. The treaty bans putting nuclear weapons and other weapons of mass destruction in orbit, deploying them in outer space by other means, or placing them on the Moon or other celestial bodies.
+
+So, based on this statement alone, we cannot tell whether the equipment violates the treaty. Weapons in orbit, ground-launched missile tests, operations involving communications and equipment, and ways to defend: the key to this sorting quiz is to check each label one by one.
+
+## In one line
+The U.S. says it has deployed weapons in orbit, but their identity, capabilities, and targets remain unknown.
