@@ -5718,3 +5718,40 @@ N=3 brief x 1反復、LLM判定のみ(同系列の主・併用judge)、強い位
 
 ### artifact
 `er052_output/factlock_writer_trial_01/sweep_01/eval/`(SUMMARY_SWEEP.md=本体、EVAL_RULES_V2.md、NOISE_BASELINE.md、HUMAN_CHECK_SWEEP.md、diversity_*.json、facts_deterministic.json、pairwise_*.json。MAPは`_private/`でgit管理外)、ツール`sweep_01/tools/eval_sweep.py`・`eval_sweep_part2.py`(+test 3 passed)。RESULT_PACKET: `docs/pm/RESULT_PACKET_FACTLOCK_SWEEP_EVAL.md`。
+
+## §106 FACTLOCK-WRITER-REDESIGN-TRIAL-01 Step 1 ChatGPT再現の要因分解(委任_10・委任_11、2026-10-08、MEASURED)
+
+- 位置づけ: Trial(Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言、推奨なし)。ChatGPT再現の要因分解(逸脱ルール無し、観察のみ)。条件 F0(現状: developer1文+禁止リスト)/F1(禁止リスト除去)/F2(許可の人格)/F3(F2+長さ自由)x gpt-6-luna / gpt-6-sol、F2・F3 x gpt-6-astra、計10本(N=1/条件、単一記事meta b2)。比較対象: ChatGPTログアウト版、元記事(現行R2版)。証跡 `er052_output/factlock_writer_trial_01/step1_chat_repro_01/`(SUMMARY_STEP1.md、BLIND_PACK.md、runs/、fc/)。
+- 実費: 合計¥22.266(usage_log.jsonl全行のcost_jpy合計をSonnetが再計算、MANIFEST.json total_cost_jpy 22.266と一致、Fable把握値¥22.3と一致)。astra単価は未登録のためgpt-6-sol単価x2.5の推定概算(F2 ¥5.58、F3 ¥8.13)。
+
+### 指標表(SUMMARY_STEP1.md転記)
+| 記事 | 条件 | 字数 | 段落 | 1文段落 | 問い | ダッシュ | ではない型 | です・ます率 | 記号Gate | FC | 費用¥ | 秒 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 記事11 | F0_luna | 732 | 6 | 0 | 0 | 0 | 5 | 0.857 | 0 | COMPLIANT M0/m0 | 0.0904 | 11.0 |
+| 記事5 | F0_sol | 574 | 6 | 0 | 0 | 0 | 5 | 0.0 | 0 | COMPLIANT M0/m0 | 1.815 | 14.9 |
+| 記事8 | F1_luna | 784 | 7 | 0 | 1 | 3 | 4 | 0.8 | 0 | COMPLIANT M0/m0 | 0.0673 | 10.4 |
+| 記事9 | F1_sol | 571 | 5 | 0 | 2 | 0 | 2 | 0.647 | 0 | COMPLIANT M0/m0 | 1.2125 | 12.7 |
+| 記事12 | F2_luna | 865 | 10 | 2 | 2 | 1 | 4 | 0.833 | 0 | COMPLIANT M0/m0 | 0.0756 | 9.5 |
+| 記事2 | F2_sol | 619 | 7 | 0 | 0 | 1 | 5 | 0.824 | 0 | COMPLIANT M0/m0 | 1.519 | 11.5 |
+| 記事4 | F3_luna | 820 | 10 | 2 | 0 | 1 | 4 | 0.857 | 0 | COMPLIANT M0/m0 | 0.0772 | 11.3 |
+| 記事10 | F3_sol | 659 | 6 | 0 | 1 | 1 | 3 | 0.773 | 0 | COMPLIANT M0/m1 | 1.6784 | 14.7 |
+| 記事3 | F2_astra | 1079 | 21 | 7 | 0 | 2 | 7 | 0.676 | 0 | COMPLIANT M0/m0 | 5.5776 | 28.9 |
+| 記事7 | F3_astra | 1859 | 39 | 23 | 0 | 1 | 6 | 0.655 | 0 | COMPLIANT M0/m0 | 8.132 | 43.6 |
+| 記事6 | chatgpt_logout | 1185 | 34 | 32 | 0 | 2 | 8 | 0.0 | 0 | DEVIATION M1/m0 | - | - |
+| 記事1 | orig_r2 | 767 | 6 | 0 | 0 | 0 | 4 | 0.85 | 0 | COMPLIANT M0/m0 | - | - |
+(ダッシュは「――」と「——」の合計。chatgpt_logoutはタイトル行なしのため仮タイトルを補って指標算出。)
+
+### FC(事実照合)
+- 全10本 MAJOR 0。F3_sol MINOR 1(「AIが対応すると思っていた場面に、人間が加わることがあった」: 利用者がAI対応と考えていたことまではLedger未確認)。ChatGPT版 MAJOR 1(「AIのふりをした人間」: スタッフがAIのふりをしたとはLedgerにない)。記号Gate 全0。
+
+### 主要知見
+- (a) 構成の組み替え(見出し・短段落化・問いかけ)はastraのみで発生(F2_astra 1079字/21段落/1文段落7、F3_astra 1859字/39段落/1文段落23)。luna/solはF1〜F3の指示緩和でも5〜10段落・1文段落0〜2のまま。ChatGPT的構成の再現は「Promptの禁止・制約の除去」では起きず、モデル要因が支配的。
+- (b) F3(長さ自由)はlunaでF0 732→F3 820字の+88字程度(F2 865字との比較では増えない)、astraで1079→1859字と大きく効く。
+- (c) ChatGPT版は34段落/1文段落32で、F3_astraが構造的に最も近い。
+
+### ユーザー盲検評価(2026-10-08)
+- 3本提示(記事A=F3_luna、記事B=F2_astra、記事C=F3_astra、ラベル伏せ)。ユーザー順位(採用したい順)C>B>A。ユーザー注記「長さも同順なので(Bは長く、Cはもっと長い)フェアではないかもしれない。長い方が一般に面白みは出せる。ただそれを差し引いてもC>B>A」。字数交絡は残る(未分離)。
+
+### 注意点
+- N=1/条件・単一記事。astra出力はMarkdown見出し(##)・太字(**)を含み、TTS前に除去処理が必要(記号Gateは通過)。StatusはMEASURED(VALIDATEDではない、Production変更なし)。
+- 次工程候補(未決、ユーザー判断待ち): Step 2 = 現行R0→R1→R2(6-luna)+ R3-fresh(astra, F2/F3)を12 briefで回し、事実指標(FC MAJOR/MINOR、台帳外数値、(ii)増幅)と重大候補の人間確認。

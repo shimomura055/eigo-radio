@@ -20279,8 +20279,22 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **Status**: v1 MEASURED・sweep EVALUATING。Production変更なし。採用判断はユーザー(APPROVED_FOR_PRODUCTION未宣言)。詳細REPORT §104、`er052_output/factlock_writer_trial_01/`。
 - **【sweep評価(委任_04c、2026-10-08)】**: 評価規則v2を評価前に固定(中立判定文・2順序スコア化[割れ=0.5]・ノイズ基準[S0 r1対r2=0.5〜2.0]・3段階読み規則・事実主指標[重大/数値NG/増幅(ii)/JA FC・STOP]、Opus任意レビューM1〜M7・O1/O2/O4採用、O3は次段)。結果=S0基準で明確に上0、明確に下S6のみ、他はノイズ幅内(S8・S10は不戦敗で判定不能)。位置バイアス大(B選択79%、5.6は82%、割れ59%)。決定論指標: 数値漏れS2 0.33/本・S7 0.67/本、増幅(ii)S9 +2.0、台帳転記率S12 .184・S5 .156(S0 .055)。重大候補1件(S1 meta)は人間確認待ち。LLM判定では面白さの方向は決められず、人間盲検読みが次段候補(実施可否はユーザー回答待ち)。実費約¥83.4/¥120。**Status=EVALUATED**、推奨なし、Production変更なし。詳細REPORT §105、`er052_output/factlock_writer_trial_01/sweep_01/eval/SUMMARY_SWEEP.md`。
 
+**追記索引(2026-10-08、FACTLOCK Step1/OPEN-242)**: `FACTLOCK-WRITER-REDESIGN-TRIAL-01` Step 1(ChatGPT再現要因分解、MEASURED、ユーザー盲検C>B>A)および`OPEN-242`のFable判定PRODUCTION_WIRED確定は本ファイル末尾`## FACTLOCK-WRITER-REDESIGN-TRIAL-01: Step 1`節・`## OPEN-242 ... Fable判定`節、詳細REPORT §106。
 ## OPEN-242-BUDGET-GUARD-WEB-SEARCH-COST-GAP-FIX-01: 予算ガードにweb_search課金を計上(2026-10-08)
 
 - **修正**: `er012_e_family_entertainment_two_level_runner_01.compute_cost_jpy_so_far`(`assert_budget_ok`の累計)にweb_search_call課金(pricing_snapshot既存単価 $10/1,000 calls)を加算。共通関数`web_search_call_usd`を新設し`er019...compute_stage_cost_breakdown`(cost.json集計)も同関数を使用(重複実装排除)。単価未登録は既存`PricingNotFoundError`でfail-closed。
 - **検証**: run_01 修正後ガード累計19.481円(cost.json 19.48)、run_02 19.105円(19.105)。差±0.001円。新規テスト2件、回帰 er012 224/er019 268/er006 39 全PASS。API課金¥0。
 - **Status**: PRODUCTION_WIRED候補(Fable受入待ち)。影響: ガード累計が大きくなるため`--budget-jpy`上限到達が早くなる(意図した挙動)。
+
+## FACTLOCK-WRITER-REDESIGN-TRIAL-01: Step 1 ChatGPT再現の要因分解(2026-10-08、MEASURED)
+
+- **内容**: 条件F0〜F3(developer1文+禁止リスト/禁止リスト除去/許可の人格/+長さ自由)x gpt-6-luna・gpt-6-sol、F2・F3 x gpt-6-astra、計10本(N=1/条件、逸脱ルール無し・観察のみ)。実費¥22.266(usage_log再計算、MANIFEST一致)。astra単価は未登録でsol単価x2.5の推定概算。
+- **結果**: FC 全10本 MAJOR 0(F3_sol MINOR 1)、ChatGPT版 MAJOR 1(「AIのふりをした人間」)、記号Gate全0。構成の組み替え(見出し・短段落化・問いかけ)はastraのみ(F2_astra 21段落、F3_astra 39段落/1文段落23)。luna/solは指示緩和でも5〜10段落のまま。ChatGPT的構成の再現はPromptの禁止除去では起きずモデル要因が支配的。長さ自由(F3)はastraで1079→1859字と大きく効く。
+- **ユーザー盲検評価(2026-10-08)**: 3本(A=F3_luna、B=F2_astra、C=F3_astra)の採用したい順は C>B>A。ユーザー注記: 長さも同順(B長い、Cさらに長い)でフェアでない可能性。長い方が一般に面白みを出せるが、差し引いてもC>B>A。字数交絡は未分離。
+- **注意**: astra出力はMarkdown見出し・太字を含みTTS前に除去処理が必要。N=1・単一記事。
+- **Status**: MEASURED。Production変更なし(VALIDATED/APPROVED_FOR_PRODUCTION未宣言)。次工程(Step 2 = 現行R0→R1→R2[6-luna]+R3-fresh[astra, F2/F3]を12 briefで、事実指標と重大候補の人間確認)は**ユーザー判断待ち**。詳細REPORT §106、`er052_output/factlock_writer_trial_01/step1_chat_repro_01/`。
+
+## OPEN-242 ... Fable判定(2026-10-08): PRODUCTION_WIRED確定
+
+- **判定**: `OPEN-242-BUDGET-GUARD-WEB-SEARCH-COST-GAP-FIX-01`(commit 0110d6f1)をFableがPRODUCTION_WIRED確定。受入: cost.json ±0.001円一致(run_01 19.481/19.48、run_02 19.105/19.105)・fail-closed維持・回帰531件PASS(er012 224/er019 268/er006 39)。
+- **Status**: PRODUCTION_WIRED(Fable判定2026-10-08)。
