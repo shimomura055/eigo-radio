@@ -46,7 +46,7 @@ A: r1=2 → r2=0 → r3=2、B: r1=0 → r2=0 → r3=3。段が進むと単調に
 
 ## 9. SSOT・Git
 - REPORT §107、DECISION_LOG 本日分エントリ、REPORT_LEDGER 1行、PM_BRIEF 末尾「PM運用メモ」節に1行(ユーザー指示)を追記。
-- commit hash: (commit後に追記)
+- commit hash: 790ea34e
 - raw URL:
 - https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_writer_trial_01/astra_revise_matrix_01/USER_PACK.md
 - https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_writer_trial_01/astra_revise_matrix_01/DESIGN.md
