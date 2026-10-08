@@ -10,7 +10,7 @@ check_delegation_prompt.py結果: FAIL(必須セクション3種・固定ブロ�
 - `docs/pm/OPUS_FINDINGS_LEDGER.md`(OF-095〜OF-102の8行追記)、`DECISION_LOG.md`(末尾に1節)、`docs/pm/REPORT_LEDGER.md`(1行)
 - `docs/pm/delegation_log/2026-10-09_FACTLOCK-ASTRA-E2E-TRIAL-01_03.md`、`_03_check.json`、本ファイル
 - `docs/pm/ACTIVE_TASK.md`・`docs/pm/RESULT_PACKET.md`は.gitignore対象のため更新のみ(commit対象外)
-- commit hash / raw URL: 下記「commit」節に追記
+- commit hash: d1d8275d(追記コミットは別)。raw URL: 末尾「raw URL」節
 
 ## 2. v1→v2の変更点(Opus論点番号対応)
 - 論点1: Arm C不要、影の対照を両腕化(M1(a)20対、M1(b)、M3旧腕起点)。v1 3節の「M1(b)は安く再現できない」を誤りと訂正(DESIGN 3節・8-2)。
@@ -59,3 +59,13 @@ check_delegation_prompt.py結果: FAIL(必須セクション3種・固定ブロ�
 
 ## 6. 所要時間・API支出
 - API支出: ¥0(生成API呼び出しなし)。所要時間は未計測(概ね数十分規模、記録なし)。
+
+## raw URL(base https://raw.githubusercontent.com/shimomura055/eigo-radio/main/)
+- er052_output/factlock_astra_e2e_trial_01/DESIGN_E2E_01.md
+- er052_output/factlock_astra_e2e_trial_01/PREREGISTRATION_01.md
+- docs/pm/opus_a_review_factlock_astra_e2e_01.md
+- docs/pm/OPUS_FINDINGS_LEDGER.md
+- DECISION_LOG.md
+- docs/pm/REPORT_LEDGER.md
+- docs/pm/delegation_log/2026-10-09_FACTLOCK-ASTRA-E2E-TRIAL-01_03.md
+- docs/pm/delegation_log/2026-10-09_FACTLOCK-ASTRA-E2E-TRIAL-01_03_result.md
