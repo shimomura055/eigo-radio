@@ -1,0 +1,16 @@
+[B3-RUNNER][research] Researcher呼び出し開始(topic='Current news topic: inbound foreign visitors to Japan reachi'...)...
+[B3-RUNNER][research] facts=15 web_search_calls=16
+[B3-RUNNER][ledger] Verification呼び出し開始...
+[B3-RUNNER][ledger] Ledger確定。verdict_counts={'VERIFIED': 11, 'AMBIGUOUS': 2, 'REJECTED': 2} kept_facts=13
+[E-FAMILY-RUNNER][cost] so far=56.82 JPY by_provider={'openai': 56.82} (after research_ledger)
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er019_family_x_entertainment_production_runner_01.py", line 408, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_entertainment_production_runner_01.py", line 322, in main
+    efam.assert_budget_ok(out_dir, args.budget_jpy, "after research_ledger")
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er012_e_family_entertainment_two_level_runner_01.py", line 167, in assert_budget_ok
+    raise RuntimeError(f"[BUDGET_GUARD] cost so far {jpy:.2f} JPY > cap {budget_jpy} JPY. Stopping ({note}).")
+RuntimeError: [BUDGET_GUARD] cost so far 56.82 JPY > cap 30.0 JPY. Stopping (after research_ledger).
+exit=1
