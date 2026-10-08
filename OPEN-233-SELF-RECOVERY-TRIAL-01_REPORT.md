@@ -5800,3 +5800,55 @@ N=1記事・1回・系列あたり1本、FCと(ii)は gpt-6-luna の自己判定
 
 ### Status
 MEASURED(人間確認待ち)。Production変更なし(VALIDATED/APPROVED_FOR_PRODUCTION未宣言)。詳細 `er052_output/factlock_writer_trial_01/astra_revise_matrix_01/`(DESIGN.md、runs/、eval/、USER_PACK.md、tools/)。
+
+
+### 人間確認結果(追記、2026-10-08、ユーザー判定)
+- **本 §107(ASTRA-REVISE-MATRIX-01、meta)**: ユーザー判定「Xの方がよく、コストの兼ね合いもあるのでR2が落としどころ」(X=系列A=ユーザーPromptのみ)。Production採用ではない(APPROVED_FOR_PRODUCTION未宣言)。
+- **Trial B 評価パックの重大候補(2件、ユーザー確認済み)**: 候補1 `baseline/meta/b3/r1` EN「in one case in which Meta was asked to negotiate internet and cable bills」(台帳 MUSE-HC-011: 依頼者は Meta 従業員)=**ユーザー判定 重大**(翻訳段由来)。候補2 `all6/space_weapons/b2/r1`「配備が確認されたことと…」=**ユーザー判定 軽微**(R1/R2段で断定が強まった型)。
+- **候補1 の検査通過状況(Fable確認済み、証跡)**: EN deviation check `.../b3__baseline__r1/b1b/audit/deviation_check.json` は当該文を MINOR(changed_number のみ、changed_actor=false、origin=translation)、overall LEDGER_COMPLIANT。Checker(OPEN-233、gpt-6-luna、E2E02と同一スイッチ)`.../b3__baseline__r1/checker/runs/meta_run03_advanced.json` は当該文を Stage 1 が別事実(MUSE-HC-010、negation_polarity_mismatch)の理由で候補化、Stage 2 一次 QUALITY -> second opinion ACCEPTABLE で confirmed_downgrade=true、final_state=RESOLVED_REWRITE_THEN_DOWNGRADE(PASS系)、当該文は出力に残存。= EN検査と Checker の2層が重大を見逃した実例。OPEN-243 に起票。
+
+## §108 FACTLOCK-WRITER-REDESIGN-TRIAL-01 ASTRA-REVISE-MATRIX-02 ホルムズ+ミニバッグ x Fact Lock R0 -> Astra R1->R2 x 2系列(委任_16、2026-10-08、MEASURED)
+
+- 位置づけ: Trial(Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言、推奨なし)。ユーザーGo取得済み(2026-10-08「OKです。提示は元記事＋XYのR2のみでよいです(R1は不要)。Goお願いします。」)。**人間確認待ち**。
+- 設計: 委任_15 と同一条件(gpt-6-astra・reasoning high、系列A=X=ユーザーPromptのみ[developerなし]/系列B=Y=熟練編集者[Step 1 F2 developer文]、user文共通、R1入力=R0・R2入力=R1生出力、previous_response_idなし、記号禁止リストなし)で記事を2本に拡張し、R3は実施せず R1・R2 のみ。評価 10本(R0は記事共通 x 2 + 生成8本)。詳細 `er052_output/factlock_writer_trial_01/astra_revise_matrix_02/DESIGN.md`。
+- R0 の経緯: **ホルムズ** = Fact Lock v1 の既存 `runs/hormuz/control/b2__factlock__r1/ja_writer/original.md`(manifest completed、選択規則どおり。`strip_tags` 後 R0.md SHA c9ee84e0...、original.md SHA 169f06a4...、台帳 SHA 9bd6834e...、B3 brief SHA 4ed19d37...[注記版と同一])。**ミニバッグ** = 本日の全6-luna E2E `er052_output/gpt6_wiring_e2e_01/run_02/` の台帳(SHA 0cc8ca3f...)・B3 brief(SHA 55bb9ba3...)を入力に Fact Lock v1 の R0 手順で新規生成(Production関数 `run_ja_writer_o_r1_r2` の Original段を gpt-6-luna で実行し R1 呼び出し直前で打ち切り。R1/R2のAPIは未呼出)。元 brief の Selected Facts が箇条書きでなく1段落だったため、文境界で3事実に分けて `【事実N】` を付与(本文は逐語)、数値注記は中核2件(2026年9月・2026年10月)、周辺2件(Fall 2026・2026年)。生成1 call、JA Fact Check(Full Ledger)= LEDGER_COMPLIANT・MAJOR 0/MINOR 0、**must-fix 不要**、STOPなし。タグ照合(測定のみ): 17文中9文にタグ、数値照合の不一致0。R0 = `inputs/small_bag/R0.md`(SHA 88ba339d...)。
+- 実費: 総額 約¥64.92(推定。astra生成8本 ¥60.21(**astra単価は未登録のため gpt-6-sol 単価 x2.5 の推定**、USD/JPY=160)+ ミニバッグR0生成(luna 実測x登録単価)¥1.39 + JA FC 10本 ¥1.33(luna)+ (ii) 10本 ¥2.00(1本0.2円の概算計上))。予算上限¥80内。生成8本のトークン合計: input 5991 / cached 0 / output 13855(うち reasoning 7996)。所要: 準備〜全評価・集計まで約10分(16:12〜16:20)(R0生成約100秒、astra生成は4系列並列で約2分、評価各約70秒)。
+
+### 指標表(10本。SUMMARY_MATRIX_02.md 転記)
+FC = JA Fact Check(gpt-6-luna、全台帳、委任_15と同一呼び出し)。字数等はタイトル行を除く。FC・決定論指標はMarkdown除去後(P1)の本文。X=ユーザーPromptのみ、Y=熟練編集者。meta(委任_15)の既存値は SUMMARY_MATRIX_02.md に併記(再評価なし)。
+
+| 記事 | 本 | FC MAJOR | FC MINOR | 新規具体主張(ii) | 字数 | 段落 | 1文段落 | 問い | ダッシュ | 台帳外数値 | Markdown残存(raw #行/**) | 記号Gate(raw/P1) | 費用(推定円) | 秒 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ホルムズ | R0 | 0 | 0 | 0 | 772 | 6 | 0 | 1 | 0 | 0 | 0/0 | 0/0 | - | - |
+| ホルムズ | X_R1 | 0 | 0 | 0 | 822 | 8 | 0 | 1 | 0 | 0 | 1/0 | 0/0 | 9.52 | 63.4 |
+| ホルムズ | X_R2 | 0 | 0 | 0 | 909 | 8 | 0 | 1 | 1 | 0 | 1/0 | 0/0 | 7.02 | 46.5 |
+| ホルムズ | Y_R1 | 0 | 0 | 0 | 916 | 9 | 1 | 0 | 0 | 0 | 1/0 | 0/0 | 6.67 | 34.5 |
+| ホルムズ | Y_R2 | 0 | 0 | 2 | 977 | 10 | 0 | 0 | 0 | 0 | 1/0 | 0/0 | 7.46 | 36.7 |
+| ミニバッグ | R0 | 0 | 0 | 0 | 754 | 7 | 0 | 0 | 0 | 0 | 0/0 | 0/0 | - | - |
+| ミニバッグ | X_R1 | 0 | 0 | 0 | 905 | 7 | 0 | 3 | 0 | 0 | 1/0 | 0/0 | 8.29 | 51.6 |
+| ミニバッグ | X_R2 | 0 | 0 | 1 | 875 | 7 | 0 | 4 | 0 | 0 | 1/0 | 0/0 | 8.50 | 48.3 |
+| ミニバッグ | Y_R1 | 0 | 0 | 0 | 987 | 10 | 0 | 3 | 0 | 0 | 1/0 | 0/0 | 6.70 | 36.1 |
+| ミニバッグ | Y_R2 | 0 | 0 | 0 | 950 | 16 | 2 | 5 | 1 | 0 | 1/0 | 1/1 | 6.04 | 31.7 |
+
+### FC 結果(指摘全文)
+- **MAJOR・MINOR とも、評価10本すべてで 0件**(overall_status は全10本 LEDGER_COMPLIANT)。主体・因果・否定型の重大候補なし。`eval/HUMAN_CHECK_MATRIX_02.md` は「該当なし」。meta(委任_15)は MAJOR 0/7・MINOR 1(A_r3、R3は本回では未実施)で、R1・R2段は MAJOR/MINOR とも 0。
+- 参考(FCとは別系統の(ii)新規具体主張、R0=0件比): ホルムズ Y_R2 2件(「伝えられているのは、料金案と、それを別の案件に置き換えるという発言まで。」/判定理由: 報道内容をそれだけに限る根拠なし、「貿易や投資が実際にまとまった、という話ではない。」/判定理由: 案件が未成立との事実は一覧にない)、ミニバッグ X_R2 1件(「そのミニバッグ、採用理由は「荷物が入る」より「目に入る」。」/判定理由: 採用理由を視覚的な注目と断定している)。他7本は 0件。いずれも FC は指摘せず(FCは「不在・未成立」を指摘しない型を取り逃し得る点に注意。人間確認対象)。
+
+### 記号Gate(計測のみ)・決定論
+- 記号Gate P1本文: ミニバッグ Y_R2 に「……」1件のみ。他9本は 0。台帳外数値は全10本 0。Markdown残存はP1で全て 0(生出力には見出し1行)。
+- 構成: Y は段階で段落数が増え(ホルムズ 9->10、ミニバッグ 10->16、1文段落は ミニバッグ Y_R2 で 2)、X は 8->8 / 7->7。字数は R0(772/754)に対し生成8本が822〜987字で、800〜1000字指定内。問いは X ミニバッグ 3->4、ホルムズ 1->1、Y ホルムズ 0->0、Y ミニバッグ 3->5。
+
+### 費用(COST_MATRIX_02.md 要点。astra単価は推定)
+- Astra累積(推定円): ホルムズ X R1 9.52 / R1+R2 16.54、Y R1 6.67 / R1+R2 14.13。ミニバッグ X R1 8.29 / R1+R2 16.79、Y R1 6.70 / R1+R2 12.75。
+- 旧 Luna R1+R2 実費: ホルムズ ¥0.603(同run raw_usage_log の実測xluna登録単価。同runの cost.json は課金0記録)、ミニバッグ ¥0.446(E2E run_02 cost.json の ja_r1+ja_r2)。Astra R1+R2 で置換する場合の純増はおよそ +¥12〜¥16。
+- 1記事セット換算(現行約¥52 Standard/約¥43 Batch に加算): R1のみで +¥6.7〜¥9.5、R1+R2 で +¥12.8〜¥16.8(合計 約¥65〜¥69 / Batch基準 約¥56〜¥60)。Astraにbatch割引は仮定しない。
+
+### 主要観察(事実のみ、推奨なし)
+- FC MAJOR/MINOR は評価10本すべて 0件。N=2 brief x 1回 x 系列あたり1本、FCは gpt-6-luna の自己判定で、「事実が保たれている」とは書かない。
+- 面白さは機械指標で判断せず、人間が `USER_PACK_02.md`(記事ごとに 元記事/X-R2/Y-R2 の3本、系列開示)で確認する。
+
+### 注意点・限界
+N=2記事・1回・系列あたり1本。FCと(ii)は gpt-6-luna の自己判定(同系列モデル)。astra単価は推定。ミニバッグの Selected Facts 分割(3事実化)と数値注記は本試験で人間(Sonnet実行層)が決めた加工(本文は逐語)。
+
+### Status
+MEASURED(人間確認待ち)。Production変更なし(VALIDATED/APPROVED_FOR_PRODUCTION未宣言)。詳細 `er052_output/factlock_writer_trial_01/astra_revise_matrix_02/`(DESIGN.md、runs/、eval/、USER_PACK_02.md、tools/)。

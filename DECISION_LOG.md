@@ -20306,3 +20306,13 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **実施**: R0 = Fact Lock v1 meta b2 r1 の `original.md`(タグ除去済み)、gpt-6-astra(reasoning high)で 系列A(developerなし)・系列B(Step 1 F2 developer文)それぞれ R1→R2→R3 を逐次生成(計6本)、7本(R0+6)を JA FC(gpt-6-luna全台帳)・決定論指標・(ii)新規具体主張で評価。
 - **結果**: FC MAJOR 全7本で 0件、MINOR は A_r3 に1件のみ(「利用者が知らされていない」、changed_scope/unsupported_new_claim、台帳 MUSE-HC-012)。主体・因果・否定型の重大候補なし。(ii) 新規具体主張 A: 2→0→2、B: 0→0→3(R0は0)。字数は全6本800〜1000字(R0=727)。台帳外数値全0。記号Gate計測のみ: A_r2・A_r3 に「……」「─」検出。実費 約¥48.48(astra単価は未登録のため gpt-6-sol x2.5 の推定、生成¥45.77)。Astra 3段の1記事セット増分は約¥21〜25(現行約¥52/Batch約¥43に加算)。
 - **Status**: MEASURED(**人間確認待ち**: `USER_PACK.md` による盲検読みと `HUMAN_CHECK_MATRIX.md`)。Production変更なし(VALIDATED/APPROVED_FOR_PRODUCTION未宣言)。詳細 REPORT §107、`er052_output/factlock_writer_trial_01/astra_revise_matrix_01/`。
+
+
+## FACTLOCK-WRITER-REDESIGN-TRIAL-01: ASTRA-REVISE-MATRIX-02 ホルムズ+ミニバッグ x Astra R1-R2 x 2系列、人間確認結果記録、OPEN-243起票(2026-10-08、委任_16、MEASURED)
+
+- **ユーザー指示(逐語)**: 「ホルムズ海峡の記事でXYそれぞれR2までで良いので、同じセンスで記事を作り…XYは開示してOK…軽微・重大のカウントも」「もう一記事…バリエーションのある記事」-> Fable推薦 small_bag(ミニバッグ、本日の全6-luna E2E run_02)をユーザー承認。「OKです。提示は元記事＋XYのR2のみでよいです(R1は不要)。Goお願いします。」(Go、2026-10-08)。
+- **実施**: ホルムズ = Fact Lock v1 既存R0(`runs/hormuz/control/b2__factlock__r1`)、ミニバッグ = E2E run_02 の台帳・B3 briefからFact Lock v1手順でR0を新規生成(JA FC LEDGER_COMPLIANT、must-fix不要)。gpt-6-astra(reasoning high、委任_15と同一)で X(ユーザーPromptのみ)・Y(熟練編集者)それぞれ R1->R2 を2記事ぶん生成(計8本)、10本(R0 x2 + 8)を JA FC(gpt-6-luna全台帳)・決定論指標・(ii)新規具体主張で評価。
+- **結果**: FC MAJOR/MINOR とも全10本で 0件。(ii) はホルムズ Y_R2 2件、ミニバッグ X_R2 1件(他7本0)。記号Gate計測のみ: ミニバッグ Y_R2 に「……」1件。実費 約¥64.92(astra単価は未登録のため gpt-6-sol x2.5 の推定、予算上限¥80内)。1記事セット増分は R1+R2 で約+¥12.8〜¥16.8(現行約¥52/Batch約¥43に加算)。
+- **人間確認結果の記録(ユーザー判定、2026-10-08)**: (1) ASTRA-REVISE-MATRIX-01(meta): 「Xの方がよく、コストの兼ね合いもあるのでR2が落としどころ」(X=系列A=ユーザーPromptのみ)。Production採用ではない。(2) Trial B評価パックの重大候補: 候補1 `baseline/meta/b3/r1` EN「in one case in which Meta was asked to negotiate internet and cable bills」(台帳MUSE-HC-011)=**重大**(翻訳段由来)、候補2 `all6/space_weapons/b2/r1`「配備が確認されたことと…」=**軽微**(R1/R2段で断定が強まった型)。(3) 候補1の検査通過状況(Fable確認済み): EN deviation check は当該文を MINOR(changed_numberのみ、changed_actor=false、origin=translation)・overall LEDGER_COMPLIANT、Checker(OPEN-233、gpt-6-luna、E2E02と同一スイッチ)は Stage 1 が別事実(MUSE-HC-010)の理由で候補化し Stage 2 が別論点を審査して格下げ(RESOLVED_REWRITE_THEN_DOWNGRADE、PASS系)、当該文は出力に残存 = EN検査・Checkerの2層が重大を見逃した実例。
+- **OPEN-243 起票**: 翻訳段(EN化)で生じる事実NGと EN deviation check / Checker の見逃し(Status=OPEN、対策未着手)。対策検討はChecker設計変更を含むため条件D相当でOpus独立レビュー対象(起票時点では未依頼)。
+- **Status**: MEASURED(**人間確認待ち**: `USER_PACK_02.md`)。Production変更なし(VALIDATED/APPROVED_FOR_PRODUCTION未宣言)。詳細 REPORT §107追記・§108、`er052_output/factlock_writer_trial_01/astra_revise_matrix_02/`。
