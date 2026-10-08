@@ -20278,3 +20278,9 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **harness欠陥(未修正)**: phase2のJA再確認で本文が再生成されるとタグ除去が適用されず、タグが最終稿・ENに残存(S4 hormuz・S11 space_weapons[EN含む]・S8 space_weapons)。**Production採用検討時に要修正**(再実行・runs側除去は未実施)。
 - **Status**: v1 MEASURED・sweep EVALUATING。Production変更なし。採用判断はユーザー(APPROVED_FOR_PRODUCTION未宣言)。詳細REPORT §104、`er052_output/factlock_writer_trial_01/`。
 - **【sweep評価(委任_04c、2026-10-08)】**: 評価規則v2を評価前に固定(中立判定文・2順序スコア化[割れ=0.5]・ノイズ基準[S0 r1対r2=0.5〜2.0]・3段階読み規則・事実主指標[重大/数値NG/増幅(ii)/JA FC・STOP]、Opus任意レビューM1〜M7・O1/O2/O4採用、O3は次段)。結果=S0基準で明確に上0、明確に下S6のみ、他はノイズ幅内(S8・S10は不戦敗で判定不能)。位置バイアス大(B選択79%、5.6は82%、割れ59%)。決定論指標: 数値漏れS2 0.33/本・S7 0.67/本、増幅(ii)S9 +2.0、台帳転記率S12 .184・S5 .156(S0 .055)。重大候補1件(S1 meta)は人間確認待ち。LLM判定では面白さの方向は決められず、人間盲検読みが次段候補(実施可否はユーザー回答待ち)。実費約¥83.4/¥120。**Status=EVALUATED**、推奨なし、Production変更なし。詳細REPORT §105、`er052_output/factlock_writer_trial_01/sweep_01/eval/SUMMARY_SWEEP.md`。
+
+## OPEN-242-BUDGET-GUARD-WEB-SEARCH-COST-GAP-FIX-01: 予算ガードにweb_search課金を計上(2026-10-08)
+
+- **修正**: `er012_e_family_entertainment_two_level_runner_01.compute_cost_jpy_so_far`(`assert_budget_ok`の累計)にweb_search_call課金(pricing_snapshot既存単価 $10/1,000 calls)を加算。共通関数`web_search_call_usd`を新設し`er019...compute_stage_cost_breakdown`(cost.json集計)も同関数を使用(重複実装排除)。単価未登録は既存`PricingNotFoundError`でfail-closed。
+- **検証**: run_01 修正後ガード累計19.481円(cost.json 19.48)、run_02 19.105円(19.105)。差±0.001円。新規テスト2件、回帰 er012 224/er019 268/er006 39 全PASS。API課金¥0。
+- **Status**: PRODUCTION_WIRED候補(Fable受入待ち)。影響: ガード累計が大きくなるため`--budget-jpy`上限到達が早くなる(意図した挙動)。

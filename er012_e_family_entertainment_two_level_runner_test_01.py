@@ -52,6 +52,41 @@ class BudgetGuardTests(unittest.TestCase):
                 runner.assert_budget_ok(self.tmp_dir, 300.0, "note")
 
 
+class WebSearchCostGuardTests(unittest.TestCase):
+    """OPEN-242: 予算ガード累計にweb_search tool課金を計上する。"""
+
+    def _log(self, recs):
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
+        path = os.path.join(d, "raw_usage_log.jsonl")
+        with open(path, "w", encoding="utf-8") as f:
+            for r in recs:
+                f.write(json.dumps(r) + chr(10))
+        return path
+
+    def test_web_search_calls_added(self):
+        base = {"provider": "openai", "model_id": "gpt-6-luna", "input_tokens": 0, "output_tokens": 0}
+        j0, _ = runner.compute_cost_jpy_so_far(self._log([dict(base)]))
+        j9, _ = runner.compute_cost_jpy_so_far(self._log([dict(base, web_search_call_count=9)]))
+        self.assertEqual(j0, 0.0)
+        self.assertAlmostEqual(j9, 9 * 10.0 / 1000 * runner.USD_JPY, places=6)
+
+    def test_web_search_price_missing_fails_closed(self):
+        path = self._log([{"provider": "openai", "model_id": "gpt-6-luna", "web_search_call_count": 1}])
+        with mock.patch.object(runner, "PRICING_SNAPSHOT_PATH", self._pricing_without_ws()):
+            with self.assertRaises(runner.PricingNotFoundError):
+                runner.compute_cost_jpy_so_far(path)
+
+    def _pricing_without_ws(self):
+        d = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, d, ignore_errors=True)
+        p = os.path.join(d, "pricing.json")
+        with open(p, "w", encoding="utf-8") as f:
+            json.dump({"prices": [{"provider": "openai", "model": "gpt-6-luna", "meter": "input_tokens", "price": 1.0},
+                                  {"provider": "openai", "model": "gpt-6-luna", "meter": "output_tokens", "price": 1.0}]}, f)
+        return p
+
+
 class LedgerReuseTests(unittest.TestCase):
     def setUp(self):
         self.tmp_dir = tempfile.mkdtemp()

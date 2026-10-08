@@ -195,3 +195,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 
 - 2026-10-08 | PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01 委任_05 | 初回報告日2026-10-08(Fable判定、ユーザー報告はFable経由)|Status=PRODUCTION_WIRED(Fable判定2026-10-08確定、受入a〜e充足、O3観測EN STOP 1/2本継続)|Feedback未|Production該当Y|OPEN-241、DECISION_LOG同日節
 - 2026-10-08 | FACTLOCK-WRITER-REDESIGN-TRIAL-01 | 初回報告日2026-10-08(Fable経由ユーザー報告待ち)|REPORT §104・§105|Status=v1 MEASURED・sweep EVALUATED(§105、明確に上0・下S6、人間盲検読み待ち)|Feedback未|Production該当N|詳細 er052_output/factlock_writer_trial_01/RESULT.md
+- 2026-10-08 | OPEN-242-BUDGET-GUARD-WEB-SEARCH-COST-GAP-FIX-01 委任_01 | 初回報告日2026-10-08(Fable経由ユーザー報告待ち)|Status=PRODUCTION_WIRED候補(Fable受入待ち)|Feedback未|Production該当Y|OPEN-242、DECISION_LOG同日節、er052_output/open242_fix_01/VERIFY.md

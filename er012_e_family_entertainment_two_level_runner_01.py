@@ -118,6 +118,18 @@ def _load_pricing():
     return price
 
 
+WEB_SEARCH_PRICE_MODEL = "N/A (tool, all models)"
+
+
+def web_search_call_usd(rec: dict, price) -> float:
+    """web_search tool呼び出し課金(USD)。単価はpricing_snapshotのweb_search_call(per 1,000 calls)。
+    未登録はprice()がPricingNotFoundError(fail-closed)。ER-019 cost.json集計と共通利用(OPEN-242)。"""
+    ws_calls = rec.get("web_search_call_count") or 0
+    if not ws_calls:
+        return 0.0
+    return ws_calls * price("openai", WEB_SEARCH_PRICE_MODEL, "web_search_call") / 1000
+
+
 def compute_cost_jpy_so_far(cost_log_path: str) -> tuple:
     if not os.path.exists(cost_log_path):
         return 0.0, {}
@@ -139,6 +151,8 @@ def compute_cost_jpy_so_far(cost_log_path: str) -> tuple:
                 # 単価未登録は price() がPricingNotFoundError(fail-closed)を送出
                 usd = in_tok * price(provider, model, "input_tokens") / 1e6 \
                     + out_tok * price(provider, model, "output_tokens") / 1e6
+                if provider == "openai":
+                    usd += web_search_call_usd(rec, price)
             total_usd += usd
             by_provider[provider] = by_provider.get(provider, 0.0) + usd
     jpy = total_usd * USD_JPY
