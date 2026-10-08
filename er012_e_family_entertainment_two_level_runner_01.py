@@ -60,6 +60,7 @@ import er003_v1_n3_01_standard_a2_generate as std_gen
 import er003_v1_n3_01_tts_generate as tts_gen
 import er005_cost_logger as cl
 import er019_family_x_ja_writer_o_r1_r2_01 as jaw
+from er006_model_routing_contract_01 import PricingNotFoundError
 
 PRICING_SNAPSHOT_PATH = "er005_output/cost_baseline_01/pricing_snapshot.json"
 USD_JPY = 160.0
@@ -106,9 +107,14 @@ def _load_pricing():
     prices = load_json(PRICING_SNAPSHOT_PATH)["prices"]
 
     def price(provider, model, meter):
-        return next(p["price"] for p in prices
-                    if p["provider"] == provider and p["model"] == model and p["meter"] == meter
-                    and p.get("tier", "Standard") == "Standard")
+        try:
+            return next(p["price"] for p in prices
+                        if p["provider"] == provider and p["model"] == model and p["meter"] == meter
+                        and p.get("tier", "Standard") == "Standard")
+        except StopIteration as e:
+            # fail-closed: 単価未登録を0円扱いにしない(WIRING-01 Phase 1, M1)
+            raise PricingNotFoundError(
+                f"[STOP] 単価未登録model: {provider}/{model} meter={meter}") from e
     return price
 
 
@@ -127,14 +133,12 @@ def compute_cost_jpy_so_far(cost_log_path: str) -> tuple:
             provider = rec.get("provider")
             model = rec.get("model_id") or rec.get("model")
             usd = 0.0
-            try:
-                if provider in ("gemini", "openai", "openai_asr") and model:
-                    in_tok = rec.get("input_tokens") or 0
-                    out_tok = rec.get("output_tokens") or 0
-                    usd = in_tok * price(provider, model, "input_tokens") / 1e6 \
-                        + out_tok * price(provider, model, "output_tokens") / 1e6
-            except StopIteration:
-                usd = 0.0
+            if provider in ("gemini", "openai", "openai_asr") and model:
+                in_tok = rec.get("input_tokens") or 0
+                out_tok = rec.get("output_tokens") or 0
+                # 単価未登録は price() がPricingNotFoundError(fail-closed)を送出
+                usd = in_tok * price(provider, model, "input_tokens") / 1e6 \
+                    + out_tok * price(provider, model, "output_tokens") / 1e6
             total_usd += usd
             by_provider[provider] = by_provider.get(provider, 0.0) + usd
     jpy = total_usd * USD_JPY

@@ -24,6 +24,13 @@ class ModelContractViolation(Exception):
     必ず送出されなければならない(fail-closed)。"""
 
 
+class PricingNotFoundError(RuntimeError):
+    """Production経路のコスト/予算ガード計算で、使用modelの単価が
+    pricing_snapshot.jsonに無い場合に送出する(fail-closed、単価未登録を
+    0円扱いにしない。PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01 Phase 1、
+    Opus条件C M1)。メッセージにprovider/model/meterを含める。"""
+
+
 # ------------------------------------------------------------
 # Approved Model(OpenAI系)
 # ------------------------------------------------------------

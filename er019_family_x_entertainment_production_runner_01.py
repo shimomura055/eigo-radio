@@ -256,17 +256,13 @@ def compute_stage_cost_breakdown(cost_log_path: str) -> dict:
             if provider == "openai" and model:
                 in_tok = rec.get("input_tokens") or 0
                 out_tok = rec.get("output_tokens") or 0
-                try:
-                    usd += in_tok * price("openai", model, "input_tokens") / 1e6
-                    usd += out_tok * price("openai", model, "output_tokens") / 1e6
-                except StopIteration:
-                    pass
+                # 単価未登録は efam._load_pricing() の price() が
+                # PricingNotFoundError(fail-closed)を送出する(WIRING-01 Phase 1, M1)
+                usd += in_tok * price("openai", model, "input_tokens") / 1e6
+                usd += out_tok * price("openai", model, "output_tokens") / 1e6
                 ws_calls = rec.get("web_search_call_count") or 0
                 if ws_calls:
-                    try:
-                        usd += ws_calls * price("openai", "N/A (tool, all models)", "web_search_call") / 1000
-                    except StopIteration:
-                        pass
+                    usd += ws_calls * price("openai", "N/A (tool, all models)", "web_search_call") / 1000
             total_usd += usd
             by_stage[stage] = by_stage.get(stage, 0.0) + usd
     usd_jpy = efam.USD_JPY

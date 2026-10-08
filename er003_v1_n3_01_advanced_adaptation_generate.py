@@ -380,23 +380,19 @@ def _compute_cost_jpy(price_fn, model: str, input_tokens: int, cached_tokens: in
                        output_tokens: int) -> tuple:
     billable_in = max((input_tokens or 0) - (cached_tokens or 0), 0)
     cost_usd = 0.0
-    try:
-        in_price = price_fn("openai", model, "input_tokens")
-        cost_usd += (billable_in / 1_000_000) * in_price
-    except StopIteration:
-        pass
+
+    def _p(meter):
+        # fail-closed: 単価未登録を0円扱いにしない(WIRING-01 Phase 1, M1)
+        try:
+            return price_fn("openai", model, meter)
+        except StopIteration as e:
+            raise routing.PricingNotFoundError(
+                f"[STOP] 単価未登録model: openai/{model} meter={meter}") from e
+    cost_usd += (billable_in / 1_000_000) * _p("input_tokens")
     if cached_tokens:
-        try:
-            cached_price = price_fn("openai", model, "cached_input_tokens")
-            cost_usd += (cached_tokens / 1_000_000) * cached_price
-        except StopIteration:
-            pass
+        cost_usd += (cached_tokens / 1_000_000) * _p("cached_input_tokens")
     if output_tokens:
-        try:
-            out_price = price_fn("openai", model, "output_tokens")
-            cost_usd += (output_tokens / 1_000_000) * out_price
-        except StopIteration:
-            pass
+        cost_usd += (output_tokens / 1_000_000) * _p("output_tokens")
     cost_jpy = cost_usd * USD_JPY
     return round(cost_usd, 6), round(cost_jpy, 4)
 
