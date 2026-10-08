@@ -41,3 +41,7 @@ A・Bは別subagent、各subagentにはこれ以外を渡さない。保存・�
 7. 運用明確化(a)(b)の「該当テーマ名の列挙」を逐語のまま全プロンプトに入れたため、注記者は他テーマ名(byd_recall等)を目にする。内容は仕様の適用方法のみで結果情報は含まない。
 ## 6 所要時間・API支出
 約25分。API支出 ¥0(API呼び出し・注記実施なし)。既存コード・SSOT本体・委任_05のファイルは未編集。
+## commit
+510f6dc7 (annotation一式は第1commit)。raw URL(例): https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/annotation/RUN_ANNOTATION.md
+他: .../annotation/PROMPT_SHA256.json, .../annotation/FORBIDDEN_PATHS.md, .../annotation/audit_strict_01.py, .../annotation/prompts/<slug>__{A,B}.md, .../PREREGISTRATION_01.md
+注意: git autocrlfにより取得時に改行がCRLFへ変換される場合、ローカルのバイト列とPROMPT_SHA256.jsonがずれうる。注記実施前に作業ツリーのファイルでsha256を再計算して照合すること。
