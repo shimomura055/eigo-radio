@@ -1,9 +1,10 @@
-# PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01 配線計画書 v1
+# PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01 配線計画書 v2
 
-Status=PLANNED(設計のみ。Production code未変更、¥0)。作成 2026-10-08(委任_01)。OPEN-241。
-本書は Opus条件C(重要変更のProduction採用前)の必須レビュー対象。配線は委任_02以降、Opusレビュー後かつ FACTLOCK-WRITER-REDESIGN-TRIAL-01 の生成完了後。
+Status=PROBED(設計更新+Phase 0互換probe完了。Production code未変更)。v1=2026-10-08(委任_01)、v2=2026-10-08(委任_02、Opus条件C M1〜M6/O1〜O3反映)。OPEN-241。
+Opus条件Cレビュー全文: `docs/pm/opus_l2_review_production_model_routing_gpt6_wiring_01.md`(判定: 小規模な修正をしてから配線に進む)。
+配線は委任_03以降、FACTLOCK-WRITER-REDESIGN-TRIAL-01の生成完了後。**未確認だった工程は「互換のみ確認、品質は未検証」**(§2)。
 
-## §0 ユーザー決定と根拠数値
+## §0 ユーザー決定と根拠数値(v1から変更なし)
 
 ユーザー判断7(逐語、2026-10-08): 「全6-luna化をProduction方針として進めてOK(ネガ判定は微妙(同等)、コストメリットが大きく止める理由がない)」。背景発言: 「すべて6.0に変えるつもりだったし、そうなっていたと思ってました。上位互換で価格も安いのに、6.0に変えない理由がありません。」「Checker含めて、現状5.6を使っているものは6.0にTrial的に変更して…追って6.0の検証はしっかりやればいい。」
 
@@ -11,98 +12,123 @@ Status=PLANNED(設計のみ。Production code未変更、¥0)。作成 2026-10-0
 - 費用/本 ¥9.46→¥4.29、所要 491→341秒、Checker候補/記事 8.26→5.95。
 - 生成側の事実NG: 評価者で方向が割れ差不明(JA R2 軽微 0.53→0.37/記事、R0軽微 11→12、重大 0→1。全体の重大は2件のみで床効果)。
 - T-B(frozen既知NG再判定、n=2): 重大検出 1/14→4/14、軽微 3/32→4/32。
-- 悪化側: EN must-fix 0/19→6/19、EN Advanced deviation STOP 0→2、保留/記事 0.05→0.26。
-- 9/29 GPT6-MODEL-COMPARISON-TRIAL-01: Checker比較は6≥5.6(重大検出優位、gold一致率90%対70%、不要BLOCK率同等75%、latency+34%)。価格 gpt-6-luna Input $0.10 / Cached $0.01 / Output $0.50 per 1M(gpt-5.6-lunaは $0.20/$0.02/$1.20、DECISION_LOG 12925-12933行付近)。
-- 限界(RESULT.md §4): N小、LLM単独評価(評価者差が群間差より大)、STOP10本は評価対象外、brief 12本(3テーマ)のみ。
+- 悪化側: EN must-fix 0/19→6/19、EN Advanced deviation STOP 0→2、保留/記事 0.05→0.26。Opus確認: Gate由来STOP 3/24→5/24(約13%→21%、nが小さく不確か)。
+- 9/29 GPT6-MODEL-COMPARISON-TRIAL-01: Checker比較は6≥5.6。価格 gpt-6-luna $0.10/$0.01/$0.50 per 1M(gpt-5.6-lunaは $0.20/$0.02/$1.20)。
+- 限界: N小、LLM単独評価、STOP10本は評価対象外、brief 12本(3テーマ)のみ。
 
-## §1 変更対象の棚卸し(事実)
+## §1 変更対象の棚卸し(事実、v1を維持し委任_02で確定した所在を追記)
 
 ### 1-1 routing契約(er006_model_routing_contract_01.py L30-36)7定数
-QUERY_PLANNER_MODEL / TOPIC_SELECTOR_MODEL / RESEARCH_MODEL / WRITER_MODEL / WRITER_FACT_CHECK_MODEL / SUPPORT_MODEL / SUPPORT_FACT_CHECK_MODEL(全て "gpt-5.6-luna")。
-PROCESS_MODEL_MAP(L65-110)は上記定数を参照する派生: QUERY_PLANNING, TOPIC_SELECTION, EVIDENCE_PACK/VFL/VERIFICATION(RESEARCH), B1_WRITER/A2_WRITER, WRITER_FACT_CHECK, B1_SUPPORT/A2_SUPPORT, SUPPORT_FACT_CHECK、派生キー PROPER_NOUN_EXTRACTION / SHARED_POINT_BLUEPRINT / STANDARD_A2_ADAPTATION / NATURAL_ENGLISH_ADAPTATION(=WRITER_MODEL)、KEY_PHRASE_ADVANCED_EXPLANATION(=SUPPORT_MODEL)。FAMILY_X_FLASH_LITE_TTS(Gemini)・PROCESS_PROVIDER_MAP(Perplexity/TTS/ASR)は対象外。
-定数の値変更だけでPROCESS_MODEL_MAPの全キーが連動して切り替わる構造。
+QUERY_PLANNER_MODEL / TOPIC_SELECTOR_MODEL / RESEARCH_MODEL / WRITER_MODEL / WRITER_FACT_CHECK_MODEL / SUPPORT_MODEL / SUPPORT_FACT_CHECK_MODEL(全て "gpt-5.6-luna")。PROCESS_MODEL_MAP(L65-110)は派生(PROPER_NOUN_EXTRACTION / SHARED_POINT_BLUEPRINT / STANDARD_A2_ADAPTATION / NATURAL_ENGLISH_ADAPTATION=WRITER_MODEL、KEY_PHRASE_ADVANCED_EXPLANATION=SUPPORT_MODEL)。FAMILY_X_FLASH_LITE_TTS・PROCESS_PROVIDER_MAPは対象外。`require_model`本体は無変更(未知model・未指定を拒否し続ける)。
 
-### 1-2 require_model系 呼び出し(Git管理*.py、output除外、テスト除く)
-- 234行/多数ファイル(Trial runner含む)。processキー別: label/process変数経由 約120、"WRITER_FACT_CHECK" 40、"A2_WRITER" 18、"B1_SUPPORT" 17、"B1_WRITER" 10、"A2_SUPPORT" 5、"VFL"/"VERIFICATION"/"EVIDENCE_PACK"/"SUPPORT_FACT_CHECK"/"SHARED_POINT_BLUEPRINT"/"PROPER_NOUN_EXTRACTION" 各1。Production主線: er003_discovery_focus_staged_production_01.py(4)、er012_b_family_production_runner_01.py(3)、er003_v1_n3_01_*_generate.py、er019_family_x_*_runner等。大半はTrial scriptで、定数が変われば同時に6-lunaへ変わる(旧Trial再実行時は結果が変わる点に注意)。
+### 1-2 require_model系呼び出し
+Git管理*.py 約234行。大半はTrial script。定数変更で旧Trial再実行時は結果が変わる(切り戻し§4の「再実行は`require_model_or_override`で5.6明示」参照)。
 
-### 1-3 gpt-5.6-lunaリテラル直参照(routing契約を経由しない)
-- Git管理*.py全体: コメント除く非テスト 207行/89ファイル、test系を含め合計312行(うちtest系ファイルは19ファイル)。うちrouting契約の定数7行が1-1。
-- 契約外の直参照でProduction寄りのもの:
-  - gather_topic.py:29 / er002_topic_adapter.py:21 `MODEL_SEARCH = "gpt-5.6-luna"`(Topic調査、web_search使用)
-  - er006_research_coverage_gate_01.py:17 `GATE_MODEL`(「検証用固定。Production本配線時は…」とコメントあり)
-  - er019_family_x_kp_explanation_01.py:43 `MODEL`(Key Phrase explanation)
-  - er018_fiction_story_dna_e_axis_redesign_01.py:425,445 / er026_family_z_fiction_production_runner_01.py:696 `model_id != "gpt-5.6-luna"` 検査(Fiction側で5.6を前提に判定。6-luna化で不一致判定になる恐れ)
-  - er009_n1_routing_governance_10_actual_model_cost.py:25 / compute_topic_cost.py:11-13 / er015_*系: 単価表引き。
-  - 残りはTrial/cost_compute/bench系(旧Trial再現用)で、5.6のまま凍結する選択肢がある。
-- 注意(委任文との差異): 委任文は cost logger(er005_cost_logger.py)に単価表がある想定だったが、同ファイルに単価表は無い(Grep gpt-5.6-luna|pricing 該当なし)。単価は `er005_output/cost_baseline_01/pricing_snapshot.json`(gpt-6-luna 0件)と、各scriptに散在するhardcode表(例 er009_n1_routing_governance_10_actual_model_cost.py:25、er052_open233_stage1_phase1_recall_check_01.py:29 は両モデル併記)から読まれる。pricing_snapshot.jsonを参照するpyは101ファイル。6-luna未登録のままでは費用が0円計上になる(本日Trialで確認済み)。追加すべき値: Input 0.10 / Cached 0.01 / Output 0.50(+Cache writes 0.125)$/1M。
+### 1-3 直書き5.6参照(Opus F1〜F5で確定した所在)
+- **F3(Fact Check)**: 実際にFact Check modelを決めているのは`vfl01.run_deviation_check(..., model: str = MODEL)`(er003_v1_en_direct_vfl_01_generate.py L773)の既定値`MODEL = routing.WRITER_MODEL`(L57、import時固定)。関数内に`require_model`が無くfail-closed対象外。
+- **F4**: er019_family_x_kp_explanation_01.py L43 `MODEL = "gpt-5.6-luna"`(直書き)→L259 `require_model("KEY_PHRASE_ADVANCED_EXPLANATION", MODEL)`。SUPPORT_MODELだけ変えるとFamily Xが停止。
+- **F5**: gather_topic.py L29、er002_topic_adapter.py L21(`MODEL_SEARCH`)、er006_research_coverage_gate_01.py L17(`GATE_MODEL`)は`require_model`を呼ばず、契約変更後も5.6のまま黙って動く。
+- **F2**: er026_family_z_fiction_production_runner_01.py L696 / er018_fiction_story_dna_e_axis_redesign_01.py L425(`load_luna_pricing`が5.6専用)・L445の`!= "gpt-5.6-luna"`は費用集計フィルタ。切替で費用が無言で0円。
+- **F1**: 予算ガード/コスト関数の`except StopIteration`(単価未登録を0円扱い=fail-open)。
 
 ### 1-4 テストのhardcode
-`gpt-5.6-luna`を含む*_test*.py等は17ファイル: er003_v1_en_direct_vfl_01_generate_test_01 / er003_v1_n3_01_advanced_adaptation_generate_test_01 / er003_v1_n3_01_standard_a2_generate_test_01 / er006_model_routing_contract_01_test(`approved == "gpt-5.6-luna"`を検証、行24付近) / er008_n8_cost_compute_pricing_fix_24_test_01 / er009_n1_routing_governance_10_legacy_scan_test / er012_e_family_entertainment_two_level_runner_test_01 / er019_family_x_b3_production_wiring_01_test_01 / er019_family_x_entertainment_production_runner_01_test_01 / er019_family_x_ja_recheck_retry_01_test_01 / er019_family_x_ja_writer_o_r1_r2_01_test_01 / er019_writer_run_summary_reconstruction_01_test_01 / er020_tts_retry_local_rewrite_01_test_01 / er050_gpt6_checker_comparison_trial_01_test_01 / er052_all6_writer_trial_01_test_01 / generate_test.py / tts_test.py。
-(generate_test.py・tts_test.pyはファイル名がtest系だが実体の役割は未確認。gather_topic.py・er002_topic_adapter.pyもtest系grepに混入。)
-配線時は期待値を `routing.<定数>` 参照へ寄せるか、gpt-6-lunaへ更新する必要がある。
+17ファイル(v1の一覧)。**必ず落ちる2件(M6)**: er052_all6_writer_trial_01_test_01.py(L15,28,42-47,54,65-66で5.6前提)、er006_model_routing_contract_01_test.py:24(`approved == "gpt-5.6-luna"`)。他は`routing.<定数>`参照または6-lunaへ更新。
 
-## §2 互換性の既知/未知(6-lunaでの動作)
+## §2 互換性(Phase 0 probe結果を反映)
+
+Phase 0 probe(2026-10-08、`er052_gpt6_wiring_probe_01.py`、メモリ上で`require_model_or_override`+model定数を差し替え、Production code不変、実費¥10.70/¥30)。**互換のみ確認、品質は未検証**。詳細: `er052_output/gpt6_wiring_probe_01/PROBE_SUMMARY.md`。
 
 | 工程 | 6-luna確認 | 根拠 |
 |---|---|---|
-| JA Writer R0-R2(previous_response_id使用: er019_family_x_ja_writer_o_r1_r2_01) | 確認済み | 2026-10-08 ALL-6-LUNA Trial、24/24本をraw_usageで実測 |
-| JA/EN Fact Check(WRITER_FACT_CHECK) | 確認済み | 同上 |
-| EN化(NATURAL_ENGLISH_ADAPTATION、EN Advanced) | 確認済み(品質は§0のとおりEN STOP/must-fix増) | 同上 |
-| Production Checker(OPEN-233経路) | 確認済み | 2026-09-29 GPT6-MODEL-COMPARISON-TRIAL-01、OPEN-233 Trial群 |
-| Production側Fact Checker / Ledger Deviation v2の5.6箇所 | 未確認(routing経由か直参照かはPhase 2で要精査) | — |
-| Standard A2 Adaptation(STANDARD_A2_ADAPTATION) | 未確認(Writer系だが専用prompt・6000語ライン) | — |
-| Shared Point Blueprint / Proper Noun Extraction | 未確認 | — |
-| Research(Evidence Pack/VFL/Verification、json_schema strict、reasoning=medium、er006_pool_pilot_01_research.py) | 未確認 | — |
-| Research Coverage Gate(GATE_MODEL直参照、json_schema strict) | 未確認 | — |
-| Support B1/A2(Key Phrase選定・正規化、reasoning effortあり) | 未確認 | — |
-| KEY_PHRASE_ADVANCED_EXPLANATION / kp_explanation / key_phrase_llm_fallback(reasoning effort) | 未確認 | — |
-| Query Planner / Topic Selector(gather_topic.py、web_search tool使用) | 未確認(web_search互換含む) | — |
-| Fiction系の `model_id` 検査(5.6固定比較) | 未確認(コード修正要の可能性) | — |
+| JA Writer R0-R2(previous_response_id) | 確認済み(品質は§0) | ALL-6-LUNA Trial 24/24 |
+| JA/EN Fact Check(run_deviation_check) | 確認済み | 同上(本日Trialで実測済みのためprobe不要) |
+| EN化(NATURAL_ENGLISH_ADAPTATION) | 確認済み | 同上 |
+| Production Checker(OPEN-233経路) | 確認済み | 2026-09-29 Trial等 |
+| SHARED_POINT_BLUEPRINT(json_schema strict+reasoning=medium) | 互換OK(PROBED) | probe: model_id=gpt-6-luna、schema適合、effort受付 |
+| PROPER_NOUN_EXTRACTION(json_schema、effort未指定) | 互換OK | 同上(応答側effort=medium) |
+| STANDARD_A2_ADAPTATION(長文、reasoning=high) | 互換OK | 2205字completed、切れなし、structure PASS(1 call) |
+| EVIDENCE_PACK / VFL(json_schema strict+medium) | 互換OK(VERIFICATIONは同パターンのため未実施) | 2 call、3402/4329字completed |
+| Research Coverage Gate(GATE_MODEL直書き) | 互換OK | schema適合 |
+| B1_SUPPORT(Key Phrase選定、reasoning=high、strategy_l) | 互換OK(A2_SUPPORTは同パターンで未実施) | 4035字completed |
+| KEY_PHRASE_ADVANCED_EXPLANATION | 互換OK | 5件schema適合 |
+| Topic research(topic_adapter、web_search tool) | 互換OK | web_search_call 5件、10393字completed、費用¥9.07(検索結果token主因)。gather_topic.pyは同一呼び出しパターン |
+| Fiction系費用集計(F2) | コード修正要(probe対象外) | Opus F2 |
+| Production側Fact Checker/Ledger Deviation v2の5.6箇所 | Grepで直書き5.6は検出なし(`er012_e`/`er019`/`er003_discovery_focus_staged`にgpt-5.6-lunaリテラルなし)、routing/WRITER_MODEL経由 | 委任_02 Grep |
 
-未検証のAPIパターン: web_search tool(er002_*、gather_topic.py)、json_schema strict + reasoning(Research/Gate)。previous_response_idはJA Writerで6-luna確認済み。
+NG工程なし(8/8 OK)。O2はそのまま採用(web_search互換NGで5.6に残す工程なし)。未観測: web_search引用の読み取り品質、A2_SUPPORT/VERIFICATION/gather_topic構造化phase(同パターンの派生)。
 
-## §3 段階配線案
+## §3 配線計画(Opus推奨構成、Phase 0完了)
 
-### Phase 1(≈1時間): 確認済み工程
-- routing契約の WRITER_MODEL / WRITER_FACT_CHECK_MODEL を "gpt-6-luna" へ(定数2行)。ただしWRITER_MODEL連動で PROPER_NOUN_EXTRACTION / SHARED_POINT_BLUEPRINT / STANDARD_A2_ADAPTATION / NATURAL_ENGLISH_ADAPTATION / A2_WRITER / B1_WRITER も同時に切り替わる。§2で未確認の3派生キーは現構造では分離不可のため、(a)派生キーに個別定数を設ける構造変更、(b)Phase 1に含めて1 call smokeを先に行う、のいずれかが必要(Opus論点)。
-- pricing_snapshot.json(および配線対象scriptの単価参照)へ gpt-6-luna 追加、0円計上防止。
-- 受入: 回帰テスト全件PASS(§1-4のhardcode更新後)、fail-closed契約維持(require_modelの例外経路テスト)、各processの実使用model_idをraw_usage_logで実測、cost.jsonが0円計上でないこと。
+### Phase 0(完了): 互換probe
+上記。費用¥10.70。
 
-### Phase 2(≈1時間): Checker
-- Production CheckerのFact Checker/Ledger Deviation v2の5.6箇所の特定とroutingまたは6-lunaへの統一。OPEN-233経路は既に6-luna。
-- 受入: Phase 1同様+Checker既存回帰、model_id実測。
+### Phase 1(≈40分): 単価登録+予算ガードfail-closed化(M1)
+定数変更より**先**(または同commit)。
+1. `er005_output/cost_baseline_01/pricing_snapshot.json`へ gpt-6-luna追記(既存5.6エントリ書式L192-227): input_tokens 0.10 / cached_input_tokens 0.01 / output_tokens 0.50(各`per 1,000,000 tokens`、confidence=PROJECT_INTERNAL_RECORD、note=GPT6-MODEL-COMPARISON-TRIAL-01 DECISION_LOG由来)、cache writes 0.125を別meter(`cache_write_input_tokens`)で1件。
+2. F1の4関数を「Production経路で単価が見つからなければ例外」へ(下記修正箇所一覧A)。
+3. 静的test新設: PROCESS_MODEL_MAPに現れるOpenAI modelはすべてsnapshotに単価がある。
+4. 受入: 新test+既存回帰PASS。この時点で定数は5.6のまま。
 
-### Phase 3(≈1〜2時間): 未確認工程
-- Research(Evidence Pack/VFL/Verification)、Research Coverage Gate、Support B1/A2、Key Phrase explanation/fallback、Query Planner、Topic Selector(MODEL_SEARCH 2箇所)、Fiction側model_id検査。
-- 各工程1 callのsmoke probe(≈¥1〜5)で互換確認後に切替。3a(json_schema+reasoning工程)と3b(web_search使用工程)に分けてもよい。
-- 受入: smoke probeでAPI成功・schema適合・model_id実測、回帰PASS、費用記録確認。
+### Phase 2(≈60分): 定数7行+直書き修正を一括1 commit(M2/M4/O1/O2)
+- routing定数7行を"gpt-6-luna"へ。
+- 直書き修正(下記一覧B)、必ず落ちるtest更新(下記一覧C)。
+- 受入: 回帰全件PASS、fail-closed維持、Phase 1のtest PASS。
 
-### 一括切替案との比較
-- 一括: 定数7行+単価表+テスト更新を1回で。利点: 作業が1回、契約が一貫。欠点: §2の未確認工程(web_search、strict schema+reasoning)が問題を起こすと全量が同時に停止、原因切り分け困難、切り戻しも全量。
-- 段階: 利点: 未確認工程を1 call probeで先に検証、問題Phaseのみ戻せる。欠点: 5.6と6-lunaが一時併存、作業が3回、WRITER_MODEL連動の派生キー分離には構造変更が必要。
-- 段階案の根拠(事実): §2に未確認工程が複数ある、切り戻しの影響範囲が小さい。
+### Phase 3(≈1〜2時間): Production E2E 1本(M3)
+Family Xを最初から最後まで1本。受入3点: (1)raw_usage_logのprocess別model_idがすべてgpt-6-luna(定数からの推測は不可)、(2)cost.json>0、(3)予算ガード累計>0。未確認工程の品質は未検証のため、E2Eは互換と費用記録の確認に限る。
 
-## §4 リスクと緩和
+### 修正箇所一覧(委任_03で編集。本委任では未編集)
 
-- 6-luna Fact Check厳格化によるSTOP増(EN must-fix 0/19→6/19、EN Advanced STOP 0→2): STOPの許容/閾値調整は別論点(本計画の範囲外、ユーザー判断)。
-- 評価者差: 生成NGは評価者で方向が割れ、品質同等は「差不明」であり「改善」ではない。保留/記事が0.05→0.26へ増加(人間確認負荷)。
-- 5.6固有挙動に依存するprompt: 網羅調査は未実施(未確認)。Fiction側 `model_id != "gpt-5.6-luna"` 検査は直接依存の例。
-- 切り戻し手順: routing契約の定数を "gpt-5.6-luna" へ戻し(Phase 1は2行、全Phase後は7行)、pricing_snapshot追記は残す(無害)。回帰テスト全件実行。Phase単位で別commitにしてgit revertで戻せるようにする。
-- 並行作業: FACTLOCK Trial生成中のコード変更は条件同一性を損なう。
+**A. 予算ガード/コスト関数のfail-closed化(F1、M1)**
+| ファイル:行 | 現状 | 修正案 |
+|---|---|---|
+| er012_e_family_entertainment_two_level_runner_01.py L136-137 | `except StopIteration: usd = 0.0` | `except StopIteration: raise RuntimeError(f"[STOP] 単価未登録model: {provider}/{model}")`(Production経路。Trial用途で0円許容が必要なら引数`strict=True`既定) |
+| er019_family_x_entertainment_production_runner_01.py L262-263, L268-269 | `except StopIteration: pass` | 同様にraise(web_search単価欠落も例外) |
+| er003_v1_n3_01_advanced_adaptation_generate.py L386,392,398 | `except StopIteration: pass`×3 | 同様にraise(未登録modelで`_compute_cost_jpy`が例外) |
+| er003_v1_n3_01_standard_a2_generate.py L294,300,306 | 同上×3 | 同上 |
+(例diff: `-            except StopIteration:\n-                usd = 0.0\n+            except StopIteration as e:\n+                raise RuntimeError(f"[STOP] pricing missing: {provider}/{model}") from e`)
 
-## §5 Opus条件Cレビュー論点(候補)
+**B. 直書き・費用集計(M2/M4/O1/O2)**
+| ファイル:行 | 修正案 |
+|---|---|
+| er019_family_x_kp_explanation_01.py L43 | `MODEL = routing.SUPPORT_MODEL`(M4、SUPPORT_MODEL切替と同commit。routing importは既存) |
+| er003_v1_en_direct_vfl_01_generate.py L57 / L773 | O1: 既定値を`routing.WRITER_FACT_CHECK_MODEL`へ、`run_deviation_check`内に`model = routing.require_model("WRITER_FACT_CHECK", model)`。`MODEL`は他用途(Writer既定)にも使われるため、変更はdeviation関数の既定値のみに限定(別名定数`DEVIATION_MODEL = routing.WRITER_FACT_CHECK_MODEL`) |
+| gather_topic.py L29、er002_topic_adapter.py L21 | O2: `MODEL_SEARCH = routing.QUERY_PLANNER_MODEL`、呼び出し前に`routing.require_model("QUERY_PLANNING", MODEL_SEARCH)`(gather_topic.pyはモジュール直下実行のためimport追加が必要) |
+| er006_research_coverage_gate_01.py L17 | O2: `GATE_MODEL = routing.RESEARCH_MODEL`(専用process keyは新設しない。Gate用process新設が必要かはFable判断事項) |
+| er026_family_z_fiction_production_runner_01.py L696 | `!= "gpt-5.6-luna"`を`not in routing.APPROVED_COST_MODELS`相当(`{routing.WRITER_MODEL, routing.SUPPORT_MODEL, ...}`)または単価が引けるmodelか、へ。単価読込をrouting由来modelで引く |
+| er018_fiction_story_dna_e_axis_redesign_01.py L425, L445 | `load_luna_pricing`を引数`model`受け取りに変更(既定=routing由来)、L445は同フィルタ修正(旧Trial再現用は5.6を明示引数) |
 
-1. WRITER_MODEL連動の派生キー(Blueprint/Proper Noun/Standard A2/EN化)をPhase 1で一括切替するか、個別定数で分離する構造変更を入れるか。
-2. 「品質は同等(差不明)、コストは約半額」を根拠にした、EN must-fix/STOP増加と保留増加の運用上の扱い(許容か、Phase 1受入条件にするか)。
-3. 未確認工程(web_search、strict schema+reasoning)のsmoke probe受入条件の十分性(1 callで足りるか)。
-4. pricing_snapshot.jsonへの単価追記方式(散在hardcode表の一元化は別タスクか)と0円計上防止の検査方法。
-5. Trial旧scriptの再現性(定数変更で過去Trial再実行の結果が変わる)の扱い。
+**C. テスト更新(M6)**
+- er052_all6_writer_trial_01_test_01.py: L15,28,42-47,54,65-66の`"gpt-5.6-luna"`期待値を`routing.WRITER_MODEL`参照へ(mock引数のdefault値は6-lunaへ)。
+- er006_model_routing_contract_01_test.py:24: `approved == "gpt-5.6-luna"`を`approved == routing.<対応定数>`参照へ。
+- 他15ファイル(§1-4)は、5.6固定期待値を持つものだけ`routing`参照へ。
+
+## §4 リスクと緩和・切り戻し
+
+- STOP増: EN must-fix 0/19→6/19、EN Advanced STOP 0→2、保留/記事 0.05→0.26。**再評価トリガー(O3)**: Production量産の最初の10本で、EN Advanced deviation STOPが3本以上、または保留が0.3/記事以上になったら、条件D(QCD悪化)として見直す。SSOT記録は委任_03。
+- 評価者差: 品質同等は「差不明」であり「改善」ではない。
+- 5.6固有prompt依存の網羅調査は未実施。
+- **切り戻し手順(M6)**:
+  1. 定数+直書き修正のcommit(Phase 2)をrevertする。
+  2. 単価の追記とfail-closed化(Phase 1)は**戻さない**(無害であり、戻すと費用0円計上に逆戻りする)。
+  3. 常駐processは**再起動**が必要(`run_deviation_check`既定値等がimport時固定、F3)。
+  4. 旧Trial script(89ファイル)は書き換えない。本日以降の旧Trial再実行は`require_model_or_override(process, "gpt-5.6-luna", override_reason=...)`で5.6を明示(DECISION_LOGに記録、委任_03)。
+  5. 回帰テスト全件実行。
+- 並行作業: FACTLOCK Trial生成中のコード変更は条件同一性を損なう。配線順は「6-luna配線commit→E2E→Fact Lock配線(別commit、混ぜない)」。Fact Lock Trialが5.6で動いていた場合、採用前に6-lunaで小規模再確認(Opus論点7)。
+
+## §5 Opus条件Cレビュー論点への回答(完了)
+
+Opus判定「小規模な修正をしてから配線に進む」。採否はOPUS_FINDINGS_LEDGER OF-063〜OF-071(M1〜M6/O1〜O3、すべて採用)。派生キー個別定数化(案a)は不採用(F3により見かけだけの分離)。
 
 ## §6 実施タイミング
 
-FACTLOCK-WRITER-REDESIGN-TRIAL-01(進行中)の生成完了後。理由: メモリ負荷、Trial条件同一性(生成中にroutingを変えない)、Git/SSOT編集の直列化。Opus条件Cレビュー後。
+FACTLOCK-WRITER-REDESIGN-TRIAL-01の生成完了後(メモリ・条件同一性・Git直列化)。Opus条件C実施済み。Production採用判断はユーザー判断7で済み。
 
 ## §7 費用・時間見積
 
-- 費用: smoke probe合計≈¥20以内(Phase 3 各1 call≈¥1〜5×数工程。Phase 1/2は既存Trial結果で確認済みのため原則追加課金なし、model_id実測は次回量産時のログで確認)。
-- 時間: Phase 1 ≈1時間、Phase 2〜3 ≈1〜2時間。
+- Phase 0 実費¥10.70(予算¥30)。Phase 1 ≈40分¥0、Phase 2 ≈60分¥0(回帰のみ)、Phase 3 ≈1〜2時間(Production E2E 1本の費用は6-luna単価で約¥4〜10/本、Trial実績)。
+
+## 改訂履歴
+
+- v1(2026-10-08 委任_01): 初版(棚卸し、3段階案、Opus論点候補)。
+- v2(2026-10-08 委任_02): Opus条件C M1〜M6/O1〜O3反映。Phase構成をOpus推奨(Phase 0 probe→Phase 1 単価+fail-closed→Phase 2 定数+直書き一括→Phase 3 Production E2E 1本)に変更。§2へPhase 0 probe結果(8/8 OK)反映、F1〜F5修正箇所一覧(A=4箇所/B=7箇所/C=test 2件+他)、切り戻し手順(revert範囲・単価は戻さない・process再起動・旧Trial 5.6明示)、受入条件M3、再評価トリガーO3を追記。
