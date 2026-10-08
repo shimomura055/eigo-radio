@@ -572,6 +572,49 @@ FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE = (
     "[Article]\n{article_text}"
 )
 
+# ------------------------------------------------------------
+# OPEN-243-TRANSLATION-NG-ANALYSIS-01 委任_03 M1(Trial専用、既定OFF)
+# 環境変数 OPEN243_M1=1 のときだけ、runner側が下記の引数(ja_text/ledger_text/must_fix)を
+# generate_family_x_in_one_line()へ渡す。引数を渡さない既存呼び出しの prompt は
+# 上の FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE のまま不変。
+# 変更は「要件1行 + 日本語原文とLedgerの入力欄 + (再生成時のみ)前回指摘」だけで、
+# 禁止事項の列挙は増やしていない。
+# ------------------------------------------------------------
+OPEN243_M1_ENV = "OPEN243_M1"
+
+FAMILY_X_IN_ONE_LINE_M1_REQUIREMENT_LINE = (
+    "- Keep who did what to whom, and what exactly it applied to, the same as in the "
+    "Japanese source article and the Ledger below.\n"
+)
+_M1_REQ_ANCHOR = (
+    "- Do not add any new fact, conclusion, or lesson that is not already "
+    "stated in the article below.\n"
+)
+FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE_M1 = (
+    FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE.replace(
+        _M1_REQ_ANCHOR, _M1_REQ_ANCHOR + FAMILY_X_IN_ONE_LINE_M1_REQUIREMENT_LINE)
+    + "\n\n[Japanese source article]\n{ja_text}\n\n[Verified Fact Ledger]\n{ledger_text}"
+)
+assert FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE_M1 != FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE
+
+
+def open243_m1_enabled() -> bool:
+    return os.environ.get(OPEN243_M1_ENV) == "1"
+
+
+def build_family_x_in_one_line_prompt(title: str, body: str, *, ja_text: str | None = None,
+                                      ledger_text: str | None = None, must_fix: list | None = None) -> str:
+    """ja_text/ledger_text/must_fixが全て未指定なら従来promptと完全同一。いずれか指定でM1 prompt。"""
+    article_text = f"# {title}\n\n{body}"
+    if ja_text is None and ledger_text is None and not must_fix:
+        return FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE.format(article_text=article_text)
+    prompt = FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE_M1.format(
+        article_text=article_text, ja_text=ja_text or "", ledger_text=ledger_text or "")
+    if must_fix:
+        prompt += "\n\n" + build_must_fix_block(must_fix)
+    return prompt
+
+
 _FAMILY_X_TITLE_BODY_RE = _fx_re.compile(r"^#\s+(.+?)\s*\n\n(.+)$", _fx_re.S)
 
 
@@ -696,13 +739,15 @@ def generate_family_x_faithful_translation(ja_article_text: str, *, client=None,
     )
 
 
-def generate_family_x_in_one_line(client, title: str, body: str, *, model: str | None = None) -> dict:
+def generate_family_x_in_one_line(client, title: str, body: str, *, model: str | None = None,
+                                  ja_text: str | None = None, ledger_text: str | None = None,
+                                  must_fix: list | None = None) -> dict:
     """In One Line v2(Family X新構造)。er045_family_x_no_heading_
     segmentation_trial_01.generate_trial_in_one_line_v2()と同一Prompt
     (逐語)、Production primitiveのみで再実装する。"""
     requested_model = model or routing.require_model(PROCESS_LABEL, routing.WRITER_MODEL)
-    article_text = f"# {title}\n\n{body}"
-    prompt = FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE.format(article_text=article_text)
+    prompt = build_family_x_in_one_line_prompt(title, body, ja_text=ja_text, ledger_text=ledger_text,
+                                               must_fix=must_fix)
     t0 = time.time()
     result = vfl01.run_writer_no_search(client, prompt, model=requested_model,
                                          developer=FAMILY_X_TRANSLATOR_DEVELOPER)
@@ -715,7 +760,7 @@ def generate_family_x_in_one_line(client, title: str, body: str, *, model: str |
         usage_dict.get("cached_input_tokens") or 0, usage_dict.get("output_tokens") or 0)
     return {"text": text, "model": result["model"], "response_id": result["response_id"],
             "usage": usage_dict, "cost_usd": cost_usd, "cost_jpy": cost_jpy,
-            "elapsed_seconds": elapsed}
+            "elapsed_seconds": elapsed, **({"prompt": prompt} if (ja_text is not None or ledger_text is not None or must_fix) else {})}
 
 
 # ------------------------------------------------------------

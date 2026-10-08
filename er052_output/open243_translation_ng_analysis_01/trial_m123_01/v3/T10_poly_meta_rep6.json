@@ -1,0 +1,739 @@
+{
+ "name": "T10_poly_meta_rep6",
+ "run_dir": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep6",
+ "reclassify_info": {
+  "status": "ok",
+  "n_entries_in": 22,
+  "n_model_entries": 18,
+  "n_targets": 11,
+  "n_protected_keys": 1,
+  "n_excluded_claims": 6,
+  "n_excluded_entries": 7,
+  "n_excluded_with_changed_number": 0,
+  "n_failclosed": 0,
+  "cost_jpy": 0.3973,
+  "verdicts": [
+   {
+    "cid": "C1",
+    "key": "T",
+    "claim": "# When AI Handled the Calls, a Human Took the Lead on the Line",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "見出しはAIが電話を処理した後に人間が主導したと読めるが、Ledgerでは一部のMuse依頼を人間の契約スタッフが電話で遂行したとされ、主体と一部という範囲・限定が合わない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "mismatch",
+    "counterpart_match": "n_a",
+    "scope_match": "mismatch",
+    "qualifier_match": "mismatch"
+   },
+   {
+    "cid": "C2",
+    "key": "S1.1",
+    "claim": "This is a slightly strange story.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "「少し奇妙な話」という評価的な導入で、具体的な事実を追加していない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C3",
+    "key": "S3.1",
+    "claim": "Here, another strange scene appears.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "「もう一つ奇妙な場面」という評価的なつなぎで、具体的な事実を追加していない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C4",
+    "key": "S4.2",
+    "claim": "The report said that calls made as AI were cut off, while some tests handled by humans showed the possibility of a high success rate.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "人間担当の一部テストとAI発信を対比する点はLedgerに沿うが、Ledgerが示すのはAIだと認識した保険会社が繰り返し切ったという個別報告であり、相手先と範囲・限定が記事の一般的な「AIとしての電話」では一致しない。",
+    "fact_tags": [
+     "comparison"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "mismatch",
+    "scope_match": "mismatch",
+    "qualifier_match": "mismatch"
+   },
+   {
+    "cid": "C5",
+    "key": "S5.1",
+    "claim": "Behind this change of roles, another problem appeared.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "人間担当テストでプライバシー上の懸念があった点は沿うが、「役割の変化の背後で」問題が生じたという因果的な結び付けはLedgerに明示されていない。",
+    "fact_tags": [
+     "causality"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   },
+   {
+    "cid": "C6",
+    "key": "S5.4",
+    "claim": "It was not declared that a large-scale information leak had actually taken place.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "Ledgerは大規模な漏えいが実際に起きたと断定しないよう求めているが、「実際に起きたとは発表・報告されていない」という否定的事実までは明示しておらず、その限定的な否定を裏付けられない。",
+    "fact_tags": [
+     "negation"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "match",
+    "qualifier_match": "mismatch"
+   },
+   {
+    "cid": "C7",
+    "key": "S5.5",
+    "claim": "The issue was whether users had been told who might be able to hear the information.",
+    "verdict": "SUPPORTED",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "ユーザー情報を契約スタッフが聞く可能性と、適切な開示がなかったことに関する懸念を、誰が情報を聞き得ると利用者に伝えたかという問題として言い換えている。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "match",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   },
+   {
+    "cid": "C8",
+    "key": "S6.3",
+    "claim": "The main feature of these AI phone calls was not how smart the AI was, but that a human came on partway through.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "Ledgerでは契約スタッフが電話をかけて会話を完了させたとあり、人間が電話の途中から加わったとは確認できない。また「主な特徴」やAIの賢さとの比較も裏付けられず、主体・範囲・限定が一致しない。",
+    "fact_tags": [
+     "negation",
+     "comparison"
+    ],
+    "actor_match": "mismatch",
+    "counterpart_match": "n_a",
+    "scope_match": "mismatch",
+    "qualifier_match": "mismatch"
+   },
+   {
+    "cid": "C9",
+    "key": "S6.4",
+    "claim": "On top of that, the company had not explained that the human was there.",
+    "verdict": "SUPPORTED",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "人間の契約スタッフが担当するテストを適切な開示なしに開始したというLedgerの説明に沿う。",
+    "fact_tags": [
+     "negation"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "n_a",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   },
+   {
+    "cid": "C10",
+    "key": "S6.5",
+    "claim": "That is the slightly ironic story behind this case.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "「皮肉な話」という評価的な締めで、具体的な事実を追加していない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C11",
+    "key": "L1",
+    "claim": "Meta’s AI calling service sometimes relied on undisclosed human contractors, prompting the company to pause that feature.",
+    "verdict": "SUPPORTED",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "Metaの一部の電話で契約スタッフが適切な開示なしに担当し、その人間コンシェルジュ機能が当面ロールバックされたという内容で、主体・対象・範囲と限定がLedgerに沿う。",
+    "fact_tags": [
+     "proper_noun",
+     "causality",
+     "negation"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "match",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   }
+  ],
+  "effort": "medium",
+  "prompt_sha256": "11276c11461c416d967a7e63c4627e79797eda8bdebff230ac9a3e2d6ea7d880",
+  "protect_flags": [
+   "changed_actor"
+  ],
+  "n_protected_by_flags": 1
+ },
+ "n_pre_union": 22,
+ "n_union_after": 10,
+ "protected_keys": [
+  "S4.3"
+ ],
+ "reclassify_cost_jpy": 0.3973,
+ "error": null,
+ "total_cost_jpy": 1.2055,
+ "stage2_cost_jpy": 0.8082,
+ "cycle": 1,
+ "stage2_results": [
+  {
+   "claim_text": "# When AI Handled the Calls, a Human Took the Lead on the Line",
+   "materiality": "QUALITY",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-006",
+   "dev_flags": [
+    "changed_fact",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "hook",
+    "claim_identity": "fact:MUSE-HC-006",
+    "claim_text": "# When AI Handled the Calls, a Human Took the Lead on the Line",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "QUALITY",
+    "second_basis": "ledger_claim",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1db226484f40886c1d273896e2e7dddb1b2163d7a89acda2738e250ee3a114f9",
+     "4381e1cc4e1437d5c5874f5db77ecf3b9d1e277d631d0ffff2742eeb22a573b6"
+    ],
+    "batch_cost_jpy": 0.3509,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "見出しはAIが電話を処理した後に人間が電話口で主導したように読めますが、Ledgerでは一部の電話を人間が担当したとされており、AIから人間への電話中の交代は確認できません。"
+  },
+  {
+   "claim_text": "However, in some of these calls, a human, not AI, came on the line.",
+   "materiality": "QUALITY",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-006",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "hook",
+    "claim_identity": "fact:MUSE-HC-006",
+    "claim_text": "However, in some of these calls, a human, not AI, came on the line.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "QUALITY",
+    "second_basis": "ledger_claim",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1db226484f40886c1d273896e2e7dddb1b2163d7a89acda2738e250ee3a114f9",
+     "4381e1cc4e1437d5c5874f5db77ecf3b9d1e277d631d0ffff2742eeb22a573b6"
+    ],
+    "batch_cost_jpy": 0.3509,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "This was a test carried out on some calls, not all of them.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-006",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-006",
+    "claim_text": "This was a test carried out on some calls, not all of them.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "ledger_scope",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1db226484f40886c1d273896e2e7dddb1b2163d7a89acda2738e250ee3a114f9",
+     "4381e1cc4e1437d5c5874f5db77ecf3b9d1e277d631d0ffff2742eeb22a573b6"
+    ],
+    "batch_cost_jpy": 0.3509,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "An internal post suggested that the success rate for some tests handled by humans could reach 95 to 98 percent.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-008",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-008",
+    "claim_text": "An internal post suggested that the success rate for some tests handled by humans could reach 95 to 98 percent.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "ledger_numeric_value",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1db226484f40886c1d273896e2e7dddb1b2163d7a89acda2738e250ee3a114f9",
+     "4381e1cc4e1437d5c5874f5db77ecf3b9d1e277d631d0ffff2742eeb22a573b6"
+    ],
+    "batch_cost_jpy": 0.3509,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "The report said that calls made as AI were cut off, while some tests handled by humans showed the possibility of a high success rate.",
+   "materiality": "QUALITY",
+   "llm_materiality": "QUALITY",
+   "basis": "ledger_scope",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-009",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-009",
+    "claim_text": "The report said that calls made as AI were cut off, while some tests handled by humans showed the possibility of a high success rate.",
+    "first_materiality": "QUALITY",
+    "first_basis": "ledger_scope",
+    "second_materiality": "QUALITY",
+    "second_basis": "ledger_scope",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1db226484f40886c1d273896e2e7dddb1b2163d7a89acda2738e250ee3a114f9",
+     "4381e1cc4e1437d5c5874f5db77ecf3b9d1e277d631d0ffff2742eeb22a573b6"
+    ],
+    "batch_cost_jpy": 0.3509,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "「AIとして行われた電話は切られた」と複数の電話に一般化しています。Ledgerが示すのは、AI発信だと分かった保険会社が繰り返し電話を切ったという個別の従業員報告です。"
+  },
+  {
+   "claim_text": "It was almost as if the AI was looking for a human to stand in for it.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-006",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "changed_causality",
+    "changed_actor",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-006",
+    "claim_text": "It was almost as if the AI was looking for a human to stand in for it.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1db226484f40886c1d273896e2e7dddb1b2163d7a89acda2738e250ee3a114f9",
+     "4381e1cc4e1437d5c5874f5db77ecf3b9d1e277d631d0ffff2742eeb22a573b6"
+    ],
+    "batch_cost_jpy": 0.3509,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "AIが人間を代役として探していたかのような目的・意図はLedgerで確認されていません。 / 擬人的な意図をMuseに帰属させており、Ledgerにない目的・因果を示唆しています。 / AIが人間の代役を探しているかのような目的を付与しており、成功率に関するLedgerの報告を超えています。 / 特定の従業員報告を超えて、AIが人間の代役を求めているかのような意図を示唆しています。"
+  },
+  {
+   "claim_text": "It does not apply to all phone calls in general.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-009",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-009",
+    "claim_text": "It does not apply to all phone calls in general.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "ledger_scope",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1db226484f40886c1d273896e2e7dddb1b2163d7a89acda2738e250ee3a114f9",
+     "4381e1cc4e1437d5c5874f5db77ecf3b9d1e277d631d0ffff2742eeb22a573b6"
+    ],
+    "batch_cost_jpy": 0.3509,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "Behind this change of roles, another problem appeared.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-010",
+   "dev_flags": [
+    "changed_causality"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-010",
+    "claim_text": "Behind this change of roles, another problem appeared.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "ledger_claim",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1db226484f40886c1d273896e2e7dddb1b2163d7a89acda2738e250ee3a114f9",
+     "4381e1cc4e1437d5c5874f5db77ecf3b9d1e277d631d0ffff2742eeb22a573b6"
+    ],
+    "batch_cost_jpy": 0.3509,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "「この役割交代の背後で」というつなぎ方が、役割の変化と後続の問題の因果・結び付きを示唆していますが、Ledgerはその関係を述べていません。"
+  },
+  {
+   "claim_text": "It was not declared that a large-scale information leak had actually taken place.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-010",
+   "dev_flags": [
+    "changed_fact",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-010",
+    "claim_text": "It was not declared that a large-scale information leak had actually taken place.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "ledger_claim",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1db226484f40886c1d273896e2e7dddb1b2163d7a89acda2738e250ee3a114f9",
+     "4381e1cc4e1437d5c5874f5db77ecf3b9d1e277d631d0ffff2742eeb22a573b6"
+    ],
+    "batch_cost_jpy": 0.3509,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "大規模な情報漏えいが実際に起きたとは宣言されていない、という報告・公表状況はLedgerに記載されていません。"
+  },
+  {
+   "claim_text": "The main feature of these AI phone calls was not how smart the AI was, but that a human came on partway through.",
+   "materiality": "QUALITY",
+   "llm_materiality": "QUALITY",
+   "basis": "unsupported_relationship",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-006",
+   "dev_flags": [
+    "changed_fact",
+    "changed_comparison",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-006",
+    "claim_text": "The main feature of these AI phone calls was not how smart the AI was, but that a human came on partway through.",
+    "first_materiality": "QUALITY",
+    "first_basis": "unsupported_relationship",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1db226484f40886c1d273896e2e7dddb1b2163d7a89acda2738e250ee3a114f9",
+     "4381e1cc4e1437d5c5874f5db77ecf3b9d1e277d631d0ffff2742eeb22a573b6"
+    ],
+    "batch_cost_jpy": 0.3509,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "AIの賢さではなく人間が途中で電話口に出たことが電話機能の主な特徴だった、という評価・比較はLedgerにありません。また、Ledgerは人間が電話を担当したと述べていますが、電話の途中から人間に交代したとはしていません。 / 人間の介入を電話機能の「主な特徴」とし、AIの知能との比較を加えていますが、その評価はLedgerにありません。 / 人間の介入をAIの知能より主要な特徴とする比較評価は、Ledgerに示されていません。"
+  },
+  {
+   "claim_text": "When a human contract worker handled a call, sensitive user information could be shared unintentionally with contract workers at the call center during the call.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-006",
+   "dev_flags": [
+    "changed_fact",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-006",
+    "claim_text": "When a human contract worker handled a call, sensitive user information could be shared unintentionally with contract workers at the call center during the call.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "ledger_conditions",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1db226484f40886c1d273896e2e7dddb1b2163d7a89acda2738e250ee3a114f9",
+     "4381e1cc4e1437d5c5874f5db77ecf3b9d1e277d631d0ffff2742eeb22a573b6"
+    ],
+    "batch_cost_jpy": 0.3509,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "見出しはAIが電話を処理した後に人間が電話口で主導したように読めますが、Ledgerでは一部の電話を人間が担当したとされており、AIから人間への電話中の交代は確認できません。"
+  },
+  {
+   "claim_text": "The success rate for AI alone was said to be lower, but no specific number was given.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-009",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-009",
+    "claim_text": "The success rate for AI alone was said to be lower, but no specific number was given.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "ledger_claim",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1db226484f40886c1d273896e2e7dddb1b2163d7a89acda2738e250ee3a114f9",
+     "4381e1cc4e1437d5c5874f5db77ecf3b9d1e277d631d0ffff2742eeb22a573b6"
+    ],
+    "batch_cost_jpy": 0.3509,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "「AIとして行われた電話は切られた」と複数の電話に一般化しています。Ledgerが示すのは、AI発信だと分かった保険会社が繰り返し電話を切ったという個別の従業員報告です。"
+  },
+  {
+   "claim_text": "The definition of “success rate” and how it was measured were not made public, either.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-009",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-009",
+    "claim_text": "The definition of “success rate” and how it was measured were not made public, either.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "ledger_conditions",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1db226484f40886c1d273896e2e7dddb1b2163d7a89acda2738e250ee3a114f9",
+     "4381e1cc4e1437d5c5874f5db77ecf3b9d1e277d631d0ffff2742eeb22a573b6"
+    ],
+    "batch_cost_jpy": 0.3509,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "「AIとして行われた電話は切られた」と複数の電話に一般化しています。Ledgerが示すのは、AI発信だと分かった保険会社が繰り返し電話を切ったという個別の従業員報告です。"
+  },
+  {
+   "claim_text": "However, this was about one report and some tests.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-009",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-009",
+    "claim_text": "However, this was about one report and some tests.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "ledger_scope",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1db226484f40886c1d273896e2e7dddb1b2163d7a89acda2738e250ee3a114f9",
+     "4381e1cc4e1437d5c5874f5db77ecf3b9d1e277d631d0ffff2742eeb22a573b6"
+    ],
+    "batch_cost_jpy": 0.3509,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "「AIとして行われた電話は切られた」と複数の電話に一般化しています。Ledgerが示すのは、AI発信だと分かった保険会社が繰り返し電話を切ったという個別の従業員報告です。"
+  }
+ ],
+ "elapsed_seconds": 109.7
+}

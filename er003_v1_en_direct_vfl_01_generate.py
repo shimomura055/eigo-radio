@@ -679,6 +679,59 @@ ORIGIN_INSTRUCTION_TEMPLATE = (
 )
 
 
+# ============================================================
+# OPEN-243-TRANSLATION-NG-ANALYSIS-01 委任_03 M2(Trial専用、既定OFF)
+# ============================================================
+# 環境変数 OPEN243_M2=1 のときだけ、run_deviation_check()のprompt文言を差し替える
+# (OFFなら上記の既存文言・schema・戻り値は一切変わらない)。severity規則・10フラグの
+# 構成・JSON schemaは不変で、説明文のみを変える:
+#   D1: changed_actor の説明を、依頼主体・行為主体・受け手/かけ手の入替、受動化による
+#       主体転換、主語省略の誤補完まで明示的に拡張する。
+#   D3: origin判定を「対応する原文(JA R2)の文に同じ逸脱が無ければtranslation」に修正する。
+#   校正: ユーザー回答(2026-10-08)を反映し、文脈から一般に想像できる補足と指標の一般化は
+#       新しい具体的主張を伴わない限り報告しない旨を追加する(因果の付与は対象のまま)。
+OPEN243_M2_ENV = "OPEN243_M2"
+
+DEVIATION_CHANGED_ACTOR_LINE_OLD = (
+    "- changed_actor: 発言主体・調査主体をLedgerと異なる人物・組織にすり替えている\n"
+)
+DEVIATION_CHANGED_ACTOR_LINE_M2 = (
+    "- changed_actor: 発言主体・調査主体・依頼主体・行為主体、または受け手/かけ手(誰が誰に対して行ったか)を"
+    "Ledgerと異なる人物・組織に入れ替えている(受動化による主体の転換、主語省略の誤った補完を含む)\n"
+)
+DEVIATION_ALLOWED_ANCHOR_OLD = "- Ledgerの特定の一文と一字一句一致しないが、同じ意味を保っている表現\n"
+DEVIATION_ALLOWED_ANCHOR_M2 = (
+    DEVIATION_ALLOWED_ANCHOR_OLD +
+    "- 文脈から一般に想像できる補足(例: 開示の相手が利用者であること)や、指標の一般化(例: Brent先物の動きを"
+    "oil pricesと言うこと)は、新しい具体的主張を伴わない限り報告しない(因果関係の付与はこの対象外)\n"
+)
+
+ORIGIN_INSTRUCTION_TEMPLATE_M2 = (
+    "\n\n【追加指示: 逸脱の発生源】\n"
+    "各deviationについて、その逸脱が以下の原文記事(この記事の翻訳・適応元)の対応する文に"
+    "既に存在していたか、それともこの記事(翻訳・適応後)で新たに生じたものかを"
+    "判定し、originとして記録してください。\n"
+    "- ja_source: 原文記事の対応する文に、同じ逸脱(Ledgerと異なる主体・数・範囲など)が既にある\n"
+    "- translation: 原文記事の対応する文には同じ逸脱が無い。原文が数や主語を明示していないのに"
+    "この記事が一方に確定させた場合、原文の表現をこの記事が変更・追加・強めた場合、"
+    "原文に対応する文が無い文(末尾の要約など)の場合を含む\n"
+    "\n【原文記事(翻訳・適応元)】\n{source_article_text}"
+)
+
+
+def open243_m2_enabled() -> bool:
+    return os.environ.get(OPEN243_M2_ENV) == "1"
+
+
+def apply_open243_m2_to_prompt_template(template: str) -> str:
+    """M2 ON時のprompt文言差し替え(D1とユーザー回答反映)。差し替え元の文言が見つからなければ
+    黙って素通りせずAssertionError(テンプレート変更の検知)。"""
+    assert DEVIATION_CHANGED_ACTOR_LINE_OLD in template, "M2: changed_actor line not found"
+    assert DEVIATION_ALLOWED_ANCHOR_OLD in template, "M2: allowed-anchor line not found"
+    return (template.replace(DEVIATION_CHANGED_ACTOR_LINE_OLD, DEVIATION_CHANGED_ACTOR_LINE_M2)
+            .replace(DEVIATION_ALLOWED_ANCHOR_OLD, DEVIATION_ALLOWED_ANCHOR_M2))
+
+
 def build_prior_issues_instruction(prior_issues: list) -> str:
     lines = [
         "\n\n【追加指示: 前回指摘の解消確認】",
@@ -793,6 +846,9 @@ def run_deviation_check(client, verified_ledger_text: str, article_text: str, mo
     model = routing.require_model("WRITER_FACT_CHECK", model)
     developer_message = HOOK_AWARE_DEVIATION_DEVELOPER_MESSAGE if hook_aware else DEVIATION_DEVELOPER_MESSAGE
     prompt_template = HOOK_AWARE_DEVIATION_PROMPT_TEMPLATE if hook_aware else DEVIATION_PROMPT_TEMPLATE
+    _m2 = open243_m2_enabled()  # OPEN-243 M2(Trial専用、既定OFF)
+    if _m2:
+        prompt_template = apply_open243_m2_to_prompt_template(prompt_template)
     prompt = prompt_template.format(verified_ledger_text=verified_ledger_text, article_text=article_text)
 
     include_origin = source_article_text is not None
@@ -801,7 +857,8 @@ def run_deviation_check(client, verified_ledger_text: str, article_text: str, mo
     if include_related_fact_id:
         prompt += RELATED_FACT_ID_INSTRUCTION
     if include_origin:
-        prompt += ORIGIN_INSTRUCTION_TEMPLATE.format(source_article_text=source_article_text)
+        prompt += (ORIGIN_INSTRUCTION_TEMPLATE_M2 if _m2 else ORIGIN_INSTRUCTION_TEMPLATE).format(
+            source_article_text=source_article_text)
     if include_prior_issues:
         prompt += build_prior_issues_instruction(prior_issues)
 

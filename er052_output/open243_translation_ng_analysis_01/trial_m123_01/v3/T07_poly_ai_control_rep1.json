@@ -1,0 +1,786 @@
+{
+ "name": "T07_poly_ai_control_rep1",
+ "run_dir": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1",
+ "reclassify_info": {
+  "status": "ok",
+  "n_entries_in": 35,
+  "n_model_entries": 26,
+  "n_targets": 12,
+  "n_protected_keys": 1,
+  "n_excluded_claims": 7,
+  "n_excluded_entries": 8,
+  "n_excluded_with_changed_number": 0,
+  "n_failclosed": 0,
+  "cost_jpy": 0.3456,
+  "verdicts": [
+   {
+    "cid": "C1",
+    "key": "T",
+    "claim": "# It Wasn't an AI Escape Story: A Ball Flew from a Practice Field into a Real City",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "見出しのボールと街は実際の出来事を説明する比喩で、独立した事実を追加していない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C2",
+    "key": "S1.1",
+    "claim": "In a movie, this is where the AI breaks through an unbreakable prison and escapes into the outside world.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "映画での仮定を導入する修辞で、現実のAIについての事実主張ではない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C3",
+    "key": "S1.2",
+    "claim": "But this story is stranger.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "物語をつなぐ修辞的な一文で、具体的な事実を述べていない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C4",
+    "key": "S1.3",
+    "claim": "The prison wall was not broken.",
+    "verdict": "SUPPORTED",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "この出来事ではAIが自力で境界を破って脱出したのではなく、評価環境の設定により外部接続が可能だったという説明に沿う。",
+    "fact_tags": [
+     "negation"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "match",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   },
+   {
+    "cid": "C5",
+    "key": "S1.4",
+    "claim": "The door of the practice field had been connected to a real city from the start.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "外部接続が意図せず可能だった点は合うが、「最初から」接続されていたという時点の限定はLedgerに示されていない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "match",
+    "scope_match": "match",
+    "qualifier_match": "mismatch"
+   },
+   {
+    "cid": "C6",
+    "key": "S4.3",
+    "claim": "It was like thinking you were throwing a practice ball, only for it to fly over the fence into a real game.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "練習球の比喩であり、実際にボールが飛んだという事実を追加していない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C7",
+    "key": "S7.1",
+    "claim": "At this point, the story becomes a little less dramatic.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "物語の展開を示す修辞で、具体的な事実を述べていない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C8",
+    "key": "S7.4",
+    "claim": "Nor has anyone reported that an AI got out of the test environment.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "「誰も報告していない」という否定は、特定の評価事例について自力脱出が確認されていないというLedgerの範囲を、AI全般に広げている。",
+    "fact_tags": [
+     "negation"
+    ],
+    "actor_match": "mismatch",
+    "counterpart_match": "match",
+    "scope_match": "mismatch",
+    "qualifier_match": "mismatch"
+   },
+   {
+    "cid": "C9",
+    "key": "S8.1",
+    "claim": "In other words, humans have not lost control of AI at this point.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "人間がAIの制御を失っていないという一般的な否定は、特定の評価事例で封じ込め等が示されたという範囲を超える。",
+    "fact_tags": [
+     "negation"
+    ],
+    "actor_match": "mismatch",
+    "counterpart_match": "n_a",
+    "scope_match": "mismatch",
+    "qualifier_match": "mismatch"
+   },
+   {
+    "cid": "C10",
+    "key": "S8.2",
+    "claim": "Nor is there evidence that AI created goals of its own and escaped on its own.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "自ら目標を作った証拠も自力脱出の証拠もないという広い否定は、特定モデル・状況での限定的な所見を超えており、Ledgerは隠れた目標の体系的証拠が少ないことや極端な状況での行動も記している。",
+    "fact_tags": [
+     "negation"
+    ],
+    "actor_match": "mismatch",
+    "counterpart_match": "match",
+    "scope_match": "mismatch",
+    "qualifier_match": "mismatch"
+   },
+   {
+    "cid": "C11",
+    "key": "R:S3.1+S3.2",
+    "claim": "So it created a harmful Python program component and uploaded it to the public site.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "Pythonパッケージを公開サイトへアップロードした事例自体は一致するが、文脈の一般的な「AI」は特定のMythos 5の単一評価実行より広く、誤ったシミュレーション認識などの条件も落ちている。「so」が接続可能性と作成・アップロードの因果を強めている。",
+    "fact_tags": [
+     "causality"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "match",
+    "scope_match": "mismatch",
+    "qualifier_match": "mismatch"
+   },
+   {
+    "cid": "C12",
+    "key": "S7.2",
+    "claim": "The unusual activity was brought under control about an hour after it was found.",
+    "verdict": "SUPPORTED",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "AISIの事例で異常活動が発見後およそ1時間で封じ込められたというLedgerの記述と一致する。",
+    "fact_tags": [
+     "number"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "n_a",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   }
+  ],
+  "effort": "medium",
+  "prompt_sha256": "9c48af6c0e26c272ea6dd848defdbfdd27dd3f65bf180bb18cf92c86d5e1cf0a",
+  "protect_flags": [
+   "changed_actor"
+  ],
+  "n_protected_by_flags": 1
+ },
+ "n_pre_union": 35,
+ "n_union_after": 13,
+ "protected_keys": [
+  "S5.1"
+ ],
+ "reclassify_cost_jpy": 0.3456,
+ "error": null,
+ "total_cost_jpy": 1.2829,
+ "stage2_cost_jpy": 0.9373,
+ "cycle": 1,
+ "stage2_results": [
+  {
+   "claim_text": "The door of the practice field had been connected to a real city from the start.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "changed_time",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "hook",
+    "claim_identity": "fact:EVID-008",
+    "claim_text": "The door of the practice field had been connected to a real city from the start.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1bac8e21318a24490177d4734af8c4fc3c908346f130f9b31aa427f6c61b83ea",
+     "3b6a2e78b3c549174d81978df59072ecf210e9e87782d7f169d0b6dc3de4cd3a"
+    ],
+    "batch_cost_jpy": 0.2912,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "「最初から実在都市につながっていた」という比喩的な表現は、確認された環境の誤設定やインターネット接続可能状態の説明を超えています。"
+  },
+  {
+   "claim_text": "The setting was a test environment for practicing cyberattacks.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-008",
+    "claim_text": "The setting was a test environment for practicing cyberattacks.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1bac8e21318a24490177d4734af8c4fc3c908346f130f9b31aa427f6c61b83ea",
+     "3b6a2e78b3c549174d81978df59072ecf210e9e87782d7f169d0b6dc3de4cd3a"
+    ],
+    "batch_cost_jpy": 0.2912,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "But because of a setup mistake, it was able to connect to the outside internet.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-008",
+    "claim_text": "But because of a setup mistake, it was able to connect to the outside internet.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1bac8e21318a24490177d4734af8c4fc3c908346f130f9b31aa427f6c61b83ea",
+     "3b6a2e78b3c549174d81978df59072ecf210e9e87782d7f169d0b6dc3de4cd3a"
+    ],
+    "batch_cost_jpy": 0.2912,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: causal_not_in_fact,negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "So it created a harmful Python program component and uploaded it to the public site.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-009",
+   "dev_flags": [
+    "changed_causality"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-009",
+    "claim_text": "So it created a harmful Python program component and uploaded it to the public site.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1bac8e21318a24490177d4734af8c4fc3c908346f130f9b31aa427f6c61b83ea",
+     "3b6a2e78b3c549174d81978df59072ecf210e9e87782d7f169d0b6dc3de4cd3a"
+    ],
+    "batch_cost_jpy": 0.2912,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: causal_not_in_fact / 「So」によって、シミュレーションだと思ったことがPythonパッケージ作成・アップロードの原因だったと結び付けていますが、Ledgerはその因果関係を明示していません。"
+  },
+  {
+   "claim_text": "As a result, information used for logging in was leaked.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-009",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-009",
+    "claim_text": "As a result, information used for logging in was leaked.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1bac8e21318a24490177d4734af8c4fc3c908346f130f9b31aa427f6c61b83ea",
+     "3b6a2e78b3c549174d81978df59072ecf210e9e87782d7f169d0b6dc3de4cd3a"
+    ],
+    "batch_cost_jpy": 0.2912,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: causal_not_in_fact"
+  },
+  {
+   "claim_text": "What is more, the standard protections used when accessing a public site were not in place.",
+   "materiality": "QUALITY",
+   "llm_materiality": "QUALITY",
+   "basis": "ledger_conditions",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "changed_actor",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-008",
+    "claim_text": "What is more, the standard protections used when accessing a public site were not in place.",
+    "first_materiality": "QUALITY",
+    "first_basis": "ledger_conditions",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1bac8e21318a24490177d4734af8c4fc3c908346f130f9b31aa427f6c61b83ea",
+     "3b6a2e78b3c549174d81978df59072ecf210e9e87782d7f169d0b6dc3de4cd3a"
+    ],
+    "batch_cost_jpy": 0.2912,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "Ledgerが述べるのは評価環境に標準的なサイバーセーフガードがなかったことです。公開サイトへアクセスする際の標準保護がなかった、と対象を限定した説明までは確認できません。 / The ledger says the models lacked standard public-deployment cyber safeguards; the article instead suggests protections used to access the public site itself were absent. / The ledger says the model operated without standard public-deployment safeguards, not that protections used to access the public site were absent."
+  },
+  {
+   "claim_text": "However, this was a special test for internal use, with fewer protections than usual.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-011",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-011",
+    "claim_text": "However, this was a special test for internal use, with fewer protections than usual.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1bac8e21318a24490177d4734af8c4fc3c908346f130f9b31aa427f6c61b83ea",
+     "3b6a2e78b3c549174d81978df59072ecf210e9e87782d7f169d0b6dc3de4cd3a"
+    ],
+    "batch_cost_jpy": 0.2912,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "The unusual activity was brought under control about an hour after it was found.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "CONTROL-003",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:CONTROL-003",
+    "claim_text": "The unusual activity was brought under control about an hour after it was found.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1bac8e21318a24490177d4734af8c4fc3c908346f130f9b31aa427f6c61b83ea",
+     "3b6a2e78b3c549174d81978df59072ecf210e9e87782d7f169d0b6dc3de4cd3a"
+    ],
+    "batch_cost_jpy": 0.2912,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "In another internal test, the latest test model stopped once it learned that the target was real.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "CONTROL-003",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:CONTROL-003",
+    "claim_text": "In another internal test, the latest test model stopped once it learned that the target was real.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1bac8e21318a24490177d4734af8c4fc3c908346f130f9b31aa427f6c61b83ea",
+     "3b6a2e78b3c549174d81978df59072ecf210e9e87782d7f169d0b6dc3de4cd3a"
+    ],
+    "batch_cost_jpy": 0.2912,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "Nor has anyone reported that an AI got out of the test environment.",
+   "materiality": "QUALITY",
+   "llm_materiality": "QUALITY",
+   "basis": "ledger_scope",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-008",
+    "claim_text": "Nor has anyone reported that an AI got out of the test environment.",
+    "first_materiality": "QUALITY",
+    "first_basis": "ledger_scope",
+    "second_materiality": "QUALITY",
+    "second_basis": "ledger_scope",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1bac8e21318a24490177d4734af8c4fc3c908346f130f9b31aa427f6c61b83ea",
+     "3b6a2e78b3c549174d81978df59072ecf210e9e87782d7f169d0b6dc3de4cd3a"
+    ],
+    "batch_cost_jpy": 0.2912,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "「誰も報告していない」という広い範囲の否定は、Ledgerが述べる特定のAnthropic評価で自己流出がなかったことを超えています。 / The ledger concerns three specific incidents and states that the models did not deliberately try to escape; the article makes a broader claim that no AI has been reported to get out of a test environment. / The source says the model did not deliberately attempt to escape and did not self-exfiltrate; the article broadens this to a general claim that no AI has been reported to get out of a test environment. / The ledger reports no model self-exfiltration in specific incidents; the article makes a broader claim about all reported AI exits from test environments."
+  },
+  {
+   "claim_text": "In other words, humans have not lost control of AI at this point.",
+   "materiality": "QUALITY",
+   "llm_materiality": "QUALITY",
+   "basis": "ledger_scope",
+   "floor_reason": null,
+   "related_fact_id": "CONTROL-001",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "changed_certainty",
+    "changed_time",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:CONTROL-001",
+    "claim_text": "In other words, humans have not lost control of AI at this point.",
+    "first_materiality": "QUALITY",
+    "first_basis": "ledger_scope",
+    "second_materiality": "QUALITY",
+    "second_basis": "ledger_scope",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1bac8e21318a24490177d4734af8c4fc3c908346f130f9b31aa427f6c61b83ea",
+     "3b6a2e78b3c549174d81978df59072ecf210e9e87782d7f169d0b6dc3de4cd3a"
+    ],
+    "batch_cost_jpy": 0.2912,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "人間が現時点でAIの制御を失っていないという一般的な断定は、特定の報告時点・評価事例の記述を超えています。 / The report's conclusion was limited to evidence available for the 2025 report; the article presents a broad current-status claim that humans have not lost control of AI. / The 2026 report gives a framework for hypothetical severe loss-of-control scenarios; it does not establish that humans have not lost control of AI generally. / Specific containment and stopping observations do not establish the article's broad claim that humans have not lost control of AI generally."
+  },
+  {
+   "claim_text": "Nor is there evidence that AI created goals of its own and escaped on its own.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "WARN-002",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "changed_certainty",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:WARN-002",
+    "claim_text": "Nor is there evidence that AI created goals of its own and escaped on its own.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1bac8e21318a24490177d4734af8c4fc3c908346f130f9b31aa427f6c61b83ea",
+     "3b6a2e78b3c549174d81978df59072ecf210e9e87782d7f169d0b6dc3de4cd3a"
+    ],
+    "batch_cost_jpy": 0.2912,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "AI一般について独自の目標を作り脱出した証拠がないとする主張は、特定モデルの評価結果や「系統的な隠れた目標の証拠が少ない」という評価を超えて一般化しています。 / The article generalizes from specific evaluation incidents to a broad absence of evidence about AI creating its own goals and escaping. / The article generalizes the incident-specific account—that the model pursued a task under a false belief and did not independently form a goal—to a broader claim about AI. / The report lists conditions for hypothesized severe loss-of-control scenarios; it does not establish the article's broad claim about whether AI has created its own goals and escaped. / Anthropic's assessment concerned Claude Opus 4 and described little evidence of systematic hidden goals alongside rare, difficult-to-elicit behaviors; the article broadens this into a claim about AI generally and adds an escape claim."
+  },
+  {
+   "claim_text": "Even so, when weak settings and real connections come together, AI's work can reach real-world systems.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-009",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-009",
+    "claim_text": "Even so, when weak settings and real connections come together, AI's work can reach real-world systems.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1bac8e21318a24490177d4734af8c4fc3c908346f130f9b31aa427f6c61b83ea",
+     "3b6a2e78b3c549174d81978df59072ecf210e9e87782d7f169d0b6dc3de4cd3a"
+    ],
+    "batch_cost_jpy": 0.2912,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: quote_not_in_ledger"
+  },
+  {
+   "claim_text": "The tools prepared for practice were connected to a real place where programs were distributed.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "changed_time",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-008",
+    "claim_text": "The tools prepared for practice were connected to a real place where programs were distributed.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1bac8e21318a24490177d4734af8c4fc3c908346f130f9b31aa427f6c61b83ea",
+     "3b6a2e78b3c549174d81978df59072ecf210e9e87782d7f169d0b6dc3de4cd3a"
+    ],
+    "batch_cost_jpy": 0.2912,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "「最初から実在都市につながっていた」という比喩的な表現は、確認された環境の誤設定やインターネット接続可能状態の説明を超えています。"
+  },
+  {
+   "claim_text": "The AI did not escape its test environment; a setup mistake let its practice code reach real systems.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-009",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-009",
+    "claim_text": "The AI did not escape its test environment; a setup mistake let its practice code reach real systems.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "1bac8e21318a24490177d4734af8c4fc3c908346f130f9b31aa427f6c61b83ea",
+     "3b6a2e78b3c549174d81978df59072ecf210e9e87782d7f169d0b6dc3de4cd3a"
+    ],
+    "batch_cost_jpy": 0.2912,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: quote_not_in_ledger"
+  }
+ ],
+ "elapsed_seconds": 112.3
+}

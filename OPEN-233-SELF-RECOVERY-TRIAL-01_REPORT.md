@@ -5866,3 +5866,45 @@ MEASURED(人間確認待ち)。Production変更なし(VALIDATED/APPROVED_FOR_PRO
   - FLOOR_MODE: Trial A/B 57実行の switch dump 全件が `FLOOR_MODE=number_only`・`STAGE1_RECLASSIFY=True`(sha256 が provenance と一致)。
   - EV-28: EN deviation check は要約を指摘せず、Checker Stage 1 が候補化(changed_actor付き)、再分類は維持、Stage 2一次ACCEPTABLE→第2意見BLOCKING→書換え。
 - Status: ANALYZED/AUDITED。M1〜M3はTrial経路での検証が次(ユーザー決定2026-10-08)。ユーザー確認3件は回答待ち。
+
+## §110 OPEN-243-TRANSLATION-NG-ANALYSIS-01 M1〜M3 Trial実装と既存データ検証(委任_03、2026-10-08、MEASURED)
+
+- 位置づけ: ユーザーGo(「M1-M3のTrialに進んでください」)に基づくTrial実装(全てフラグ既定OFF)と、既存データでの検証(新規の全体生成なし)。Production変更なし(VALIDATED/APPROVED_FOR_PRODUCTION未宣言)、CURRENT_SPEC.md・`OPEN233_APPROVED_FLOW_SWITCHES` の値は無変更。設計メモ(プロンプト変更前後の全文)=`er052_output/open243_translation_ng_analysis_01/trial_m123_01/DESIGN_M123.md`、結果詳細=同 `RESULTS_M123.md`。
+- ユーザー回答(2026-10-08): 確認1「users」=許容(文脈から一般に想像できる補足)/確認2「so」=この事例では許容、ただし勝手に因果関係を作るのは潜在的リスク/確認3「oil prices」=許容(一般ニュースでもありえる)。
+
+### 設計(フラグ・差分)
+| フラグ(既定OFF) | 内容 | 変更ファイル |
+|---|---|---|
+| `OPEN243_M1=1` | 要約生成の入力へ日本語R2本文+Ledgerを追加(要件1行を追加、禁止列挙は増やさない)。初回EN検査で「MAJORの全件が要約の文」なら、本文は作り直さず要約だけ最大2回再生成(must-fix+prior_issues検査)。本文MAJOR・ja_source MAJOR・位置判定不能は従来どおり。Advanced枝のみ | `er003_v1_n3_01_advanced_adaptation_generate.py`、`er012_e_family_entertainment_two_level_runner_01.py` |
+| `OPEN243_M2=1` | EN検査promptの説明文のみ: D1 changed_actor(依頼主体・行為主体・受け手/かけ手の入替、受動化による主体転換、主語省略の誤補完)、D3 origin(対応する原文の文に同じ逸脱が無ければtranslation)、校正1項目(一般に想像できる補足・指標の一般化は新規主張を伴わない限り非指摘。因果の付与は指摘対象のまま)。severity規則・10フラグ・schema不変 | `er003_v1_en_direct_vfl_01_generate.py` |
+| `OPEN233_RECLASSIFY_PROTECT_FLAGS=changed_actor` | 再分類でStage 1のmodel候補のうち指定フラグtrueを除外せずCANDIDATEのままStage 2へ(承認構成には含めない) | `er052_open233_stage1_reclassify_01.py` |
+| `OPEN243_G3_TELEMETRY_PATH=<jsonl>` | translation起源MINOR・再分類除外のフラグ付き候補をjsonlへ記録(¥0) | runner、reclassify |
+- D3の現状ロジック: origin判定は決定論コードではなく `ORIGIN_INSTRUCTION_TEMPLATE`(Checkerへの追加質問)。「原文の時点で既にこの逸脱に相当する内容が存在」がja_source。差分は「同じ逸脱があるときだけja_source」へ限定し、数・主語が無標なのにENが一方に確定した場合と原文に対応文が無い文(要約)をtranslationと明記。
+
+### 結果(事実のみ、各 n=1 サンプル)
+| 検証 | 指標 | 旧/従来 | 新(Trial) |
+|---|---|---|---|
+| V1 M1(要約MAJOR14世代、要約だけ再生成) | 前回指摘(要約MAJOR)の解消 | 6/14(従来:本文ごと再生成1回) | 14/14 |
+| | 再検査まで通過(COMPLIANT+前回指摘全解消) | 6/14 | 12/14(未通過2=G03・G08、いずれも変更していない本文の1文が再検査で新規MAJOR) |
+| | 要約STOP相当(未解消MAJOR) | 8 | 2 |
+| | 従来で解消していた6世代 | - | 6/6 解消 |
+| V2 M2(陽性26[翻訳由来22+増幅4]) | 検出 / origin=translation / ja_source | 11 / 7 / 4 | 8 / 6 / 2 |
+| | 主体型7: 検出 / changed_actor=true / translation判定 | 2 / 2 / 1 | 3 / 3 / 2 |
+| | 重大 EV-25 / EV-28 | 未検出 / MAJOR+actor+translation | 未検出 / 同左 |
+| V2 JA由来(旧再実行記事内16事象) | 検出 / origin=ja_source | 6 / 5 | 5 / 4 |
+| V2 ユーザー許容文 | G09「so」 | MAJOR(changed_causality) | MAJOR(同左。因果は仕様どおり指摘対象) |
+| | G02「users」・G06「oil prices」 | 該当文の指摘なし(旧でも出ず、差を確認できず) | 同左 |
+| | 同型 G07・G12(users) | MAJOR | 該当なし |
+| V2 旧を再実行した40記事の最終EN | MAJOR総数 / MAJORを含む記事 | 23 / 16 | 22 / 16 |
+| | 新の全59記事 | 旧は19記事を未再実行(予算上限)で比較不能 | MAJOR 33 / MAJORを含む記事 24 |
+| V3 M3(replay、保護あり) | EV-25(S9.1) Stage 2 最終判定(3回再生) | 実runは再分類で除外されStage 2に出ず | BLOCKING 1回・ACCEPTABLE 2回 |
+| | 保護対象(旧で除外・最終EN残存)17件の判定 | - | BLOCKING 1(EV-25)・QUALITY 3・ACCEPTABLE 13 |
+| | ledger整合文の誤書き換え(保護17件中のBLOCKING) | - | 0件 |
+- 注意: EN検査・Stage 2 は非決定的(旧検査の再実行だけで40記事中16記事にMAJOR。保存済み最終checkのCOMPLIANTは選択バイアスで比較に使えない)。V1の要約再生成は台帳の語に寄る傾向があり、G06は焦点がBrent先物の値動きに移る。V3は cycle 1 の Stage 2(+第2意見)で打ち切り(Rewrite以降は未実行)。Standard(A2)枝へのM1は未実装。open238 replay 2件は同一入力のT04で代表。
+
+### 費用(トークン実測 x 登録単価 gpt-6-luna、USD/JPY=160)
+- 合計 ¥56.849(上限¥60以内、事前見込み約¥30を超過): V1 ¥13.261(要約生成+検査)、V2 ¥28.380(新 ¥16.092 + 旧再実行 ¥12.288)、V3 ¥15.209(再生12回、1回平均 約¥1.27。再分類 約¥0.36 + Stage 2/第2意見)。EN検査1callは約¥0.27(推論トークン大)、要約生成1callは平均¥0.118。
+- 回帰テスト(フラグOFF): 新規単体テスト16件(`er052_open243_m123_trial_test_01.py`)+既存 er012_e runner 23・er003_v1_en_direct_vfl 9・er019 new_structure 31・er052 checker_floor_prod 59・er052 self_recovery_flow_runner 720・er006 pricing_coverage 7 等 全PASS(`trial_m123_01/regression/flags_off_final.log`)。
+
+### Status
+MEASURED(Trial、Production変更なし、フラグ既定OFF)。採否判断はFable・ユーザー(Production採用は`APPROVED_FOR_PRODUCTION`が必要)。

@@ -1,0 +1,757 @@
+{
+ "name": "T01_meta_b3_baseline_r1",
+ "run_dir": "er052_output/all6_writer_redesign_necessity_01/runs/meta/control/b3__baseline__r1",
+ "reclassify_info": {
+  "status": "ok",
+  "n_entries_in": 28,
+  "n_model_entries": 22,
+  "n_targets": 10,
+  "n_protected_keys": 3,
+  "n_excluded_claims": 7,
+  "n_excluded_entries": 11,
+  "n_excluded_with_changed_number": 0,
+  "n_failclosed": 0,
+  "cost_jpy": 0.3236,
+  "verdicts": [
+   {
+    "cid": "C1",
+    "key": "S1.1",
+    "claim": "This is a slightly unusual behind-the-scenes story about what was really behind AI phone calls.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "記事の導入としての修辞的な説明で、具体的な主体・範囲を伴う事実を追加していない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C2",
+    "key": "S2.2",
+    "claim": "Booking a haircut, checking whether a product is in stock, asking a service provider for an estimate—AI was supposed to handle these bothersome calls.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "散髪予約などの用途はLedgerと合うが、Ledgerの米国内という地域範囲と利用可能ユーザーという条件を限定せず広げている。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "match",
+    "scope_match": "mismatch",
+    "qualifier_match": "mismatch"
+   },
+   {
+    "cid": "C3",
+    "key": "S3.1",
+    "claim": "But during some tests of the calls, an unexpected performer appeared.",
+    "verdict": "SUPPORTED",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "「一部のテスト」に人間の契約スタッフが現れたという比喩的表現で、主体・範囲・テストの限定はLedgerと一致する。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "n_a",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   },
+   {
+    "cid": "C4",
+    "key": "S6.1",
+    "claim": "From this point, the story shifts from a look at a convenient future to a mystery about information management.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "物語の展開を示す修辞的なつなぎで、情報管理について新たな具体的事実を述べていない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C5",
+    "key": "S8.2",
+    "claim": "The issue was who handled the calls, which information was passed to whom, and whether that had been explained clearly enough and supported by a sufficient system.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "誰にどの情報が渡されたかを問題として述べ、実際に情報が渡った含意を持つが、Ledgerが裏付けるのは契約スタッフへの意図しない共有の可能性に関する懸念である。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "mismatch",
+    "scope_match": "n_a",
+    "qualifier_match": "mismatch"
+   },
+   {
+    "cid": "C6",
+    "key": "S12.1",
+    "claim": "The most important point in this story is not whether AI can speak just like a human.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "記事の論点を示す修辞的な対比で、AIの会話能力について具体的な事実を断定していない。",
+    "fact_tags": [
+     "negation",
+     "comparison"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C7",
+    "key": "S12.2",
+    "claim": "It is whether it can clearly tell the person on the other end who is speaking.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "記事の主題を問いの形で示す修辞であり、AIの開示能力について具体的な実績を断定していない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C8",
+    "key": "S13.1",
+    "claim": "The twist was that what AI phone calls needed was not an even smarter feature, but first of all, an honest way to say who was calling.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "「必要だったもの」を対比する締めの修辞で、特定の機能要件や比較結果を事実として主張していない。",
+    "fact_tags": [
+     "negation",
+     "comparison"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C9",
+    "key": "S2.1",
+    "claim": "Meta's AI agent, Muse, can call companies and stores.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "主体と対象はLedgerに合うが、Ledgerが米国内かつ電話機能を利用できるユーザーに限定する範囲・条件を示さず広げている。",
+    "fact_tags": [
+     "proper_noun"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "match",
+    "scope_match": "mismatch",
+    "qualifier_match": "mismatch"
+   },
+   {
+    "cid": "C10",
+    "key": "S8.1",
+    "claim": "This was not a confirmed case of a large information leak.",
+    "verdict": "SUPPORTED",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "大規模な情報漏えいが確認された事例ではないという否定は、Ledgerの記述と一致する。",
+    "fact_tags": [
+     "negation"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   }
+  ],
+  "effort": "medium",
+  "prompt_sha256": "1a46dd90d357bdfdf21e18955f47f7ec38fffd4692a54329454b2e20c660060f",
+  "protect_flags": [
+   "changed_actor"
+  ],
+  "n_protected_by_flags": 3
+ },
+ "n_pre_union": 28,
+ "n_union_after": 12,
+ "protected_keys": [
+  "L1",
+  "S9.1",
+  "S10.1"
+ ],
+ "reclassify_cost_jpy": 0.3236,
+ "error": null,
+ "total_cost_jpy": 1.2992,
+ "stage2_cost_jpy": 0.9756,
+ "cycle": 1,
+ "stage2_results": [
+  {
+   "claim_text": "Booking a haircut, checking whether a product is in stock, asking a service provider for an estimate—AI was supposed to handle these bothersome calls.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-004",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-004",
+    "claim_text": "Booking a haircut, checking whether a product is in stock, asking a service provider for an estimate—AI was supposed to handle these bothersome calls.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "05e02d09949b704b96af58d59da5f54890e22570579f4559dbff5c715377669b"
+    ],
+    "batch_cost_jpy": 0.517,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "依頼例は支えられるが、「AI was supposed to handle these ... calls」は、それらの電話をAIだけが扱う想定だったという範囲を加えている。Ledgerは一部の電話を人間が担当したテストも記録している。 / 具体例は一致しますが、米国内というLedgerの地域範囲が省かれています。"
+  },
+  {
+   "claim_text": "The calls were not made by AI.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-006",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-006",
+    "claim_text": "The calls were not made by AI.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "05e02d09949b704b96af58d59da5f54890e22570579f4559dbff5c715377669b"
+    ],
+    "batch_cost_jpy": 0.517,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "Also, this was a test carried out on only some calls, not all of them.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-006",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-006",
+    "claim_text": "Also, this was a test carried out on only some calls, not all of them.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "05e02d09949b704b96af58d59da5f54890e22570579f4559dbff5c715377669b"
+    ],
+    "batch_cost_jpy": 0.517,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "Meta employees worried that when human contract workers handled the calls, sensitive user information needed for the calls might be shared with contract workers at call centers without anyone meaning to.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-010",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-010",
+    "claim_text": "Meta employees worried that when human contract workers handled the calls, sensitive user information needed for the calls might be shared with contract workers at call centers without anyone meaning ",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "05e02d09949b704b96af58d59da5f54890e22570579f4559dbff5c715377669b"
+    ],
+    "batch_cost_jpy": 0.517,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "This was not a confirmed case of a large information leak.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-010",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-010",
+    "claim_text": "This was not a confirmed case of a large information leak.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "05e02d09949b704b96af58d59da5f54890e22570579f4559dbff5c715377669b"
+    ],
+    "batch_cost_jpy": 0.517,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "The issue was who handled the calls, which information was passed to whom, and whether that had been explained clearly enough and supported by a sufficient system.",
+   "materiality": "QUALITY",
+   "llm_materiality": "QUALITY",
+   "basis": "ledger_conditions",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-010",
+   "dev_flags": [
+    "changed_fact",
+    "changed_certainty",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-010",
+    "claim_text": "The issue was who handled the calls, which information was passed to whom, and whether that had been explained clearly enough and supported by a sufficient system.",
+    "first_materiality": "QUALITY",
+    "first_basis": "ledger_conditions",
+    "second_materiality": "QUALITY",
+    "second_basis": "unsupported_relationship",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "05e02d09949b704b96af58d59da5f54890e22570579f4559dbff5c715377669b"
+    ],
+    "batch_cost_jpy": 0.517,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "情報が誰に渡ったかを問題としているように読め、実際の共有があったとの含みがある。また「sufficient system」の有無はLedgerに記載されていない。Ledgerが確認するのは意図しない共有の可能性とプライバシー上の懸念。 / 情報が実際に渡されたことを前提とする表現に加え、システムが十分だったかというLedgerにない論点を加えています。"
+  },
+  {
+   "claim_text": "In addition, in one case in which Meta was asked to negotiate internet and cable bills, employees reported that a human contract worker made an inappropriate remark about race.",
+   "materiality": "BLOCKING",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": "s1_second_opinion_blocking",
+   "related_fact_id": "MUSE-HC-011",
+   "dev_flags": [
+    "changed_actor"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-011",
+    "claim_text": "In addition, in one case in which Meta was asked to negotiate internet and cable bills, employees reported that a human contract worker made an inappropriate remark about race.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "BLOCKING",
+    "second_basis": "ledger_numeric_value",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": false,
+    "split": true,
+    "prompt_sha256": [
+     "05e02d09949b704b96af58d59da5f54890e22570579f4559dbff5c715377669b"
+    ],
+    "batch_cost_jpy": 0.517,
+    "batch_n_claims": 15,
+    "hint_source": "checker_issue+ledger_notes_for_writer+ledger_conditions"
+   },
+   "rewrite_kind": "narrow_scope",
+   "rewrite_hint": "Checkerの指摘: Ledgerでは従業員がMuseに料金交渉を依頼した事例だが、記事はMeta was askedとし、依頼を受けた主体をMetaに変えている。 Ledgerのnotes_for_writer: 従業員の報告として記録する。契約スタッフ全体の行動や実験全体の性質へ一般化しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946)) Ledgerのconditions: 人間の契約スタッフが電話を担当したケース fact_id=MUSE-HC-011のLedgerが確認している範囲に収まるよう、該当文から未確認の因果・主体・断定・範囲の拡大を除いて書き直す。 “In addition, in one case in which Meta was asked to negotiate internet and cable bills, employees reported that a human contract worker made an inappropriate remark about race.” Change “employees reported” to “an employee reported” to match the single employee report in Ledger fact MUSE-HC-011.",
+   "stage1_issue": "Ledgerでは従業員がMuseに料金交渉を依頼した事例だが、記事は「Meta was asked」とし、依頼を受けた主体をMetaに変えている。"
+  },
+  {
+   "claim_text": "This was not a claim about all contract workers, but one individual case reported in the news.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-011",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-011",
+    "claim_text": "This was not a claim about all contract workers, but one individual case reported in the news.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "05e02d09949b704b96af58d59da5f54890e22570579f4559dbff5c715377669b"
+    ],
+    "batch_cost_jpy": 0.517,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "In response, Meta executives admitted that it had been a mistake to start the test without giving a proper explanation.",
+   "materiality": "BLOCKING",
+   "llm_materiality": "QUALITY",
+   "basis": "ledger_claim",
+   "floor_reason": "s1_second_opinion_blocking",
+   "related_fact_id": "MUSE-HC-012",
+   "dev_flags": [
+    "changed_actor"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-012",
+    "claim_text": "In response, Meta executives admitted that it had been a mistake to start the test without giving a proper explanation.",
+    "first_materiality": "QUALITY",
+    "first_basis": "ledger_claim",
+    "second_materiality": "BLOCKING",
+    "second_basis": "ledger_claim",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": false,
+    "split": true,
+    "prompt_sha256": [
+     "05e02d09949b704b96af58d59da5f54890e22570579f4559dbff5c715377669b"
+    ],
+    "batch_cost_jpy": 0.517,
+    "batch_n_claims": 15,
+    "hint_source": "checker_issue+ledger_notes_for_writer+ledger_conditions"
+   },
+   "rewrite_kind": "narrow_scope",
+   "rewrite_hint": "Checkerの指摘: Ledgerでミスと認めた主体はSuperintelligence Labs部門の副社長だが、記事はMeta executivesと複数の幹部に広げている。 / Ledgerでは発言者はSuperintelligence Labs部門の副社長ですが、記事では複数の幹部が認めたとしています。 Ledgerのnotes_for_writer: サービス全体を停止したとは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946)) Ledgerのconditions: 適切な開示なしで契約スタッフが電話を担当していたテスト fact_id=MUSE-HC-012のLedgerが確認している範囲に収まるよう、該当文から未確認の因果・主体・断定・範囲の拡大を除いて書き直す。 “In response, Meta executives admitted that it had been a mistake to start the test without giving a proper explanation.” Narrow the attribution from plural “Meta executives” to the Meta Superintelligence Labs vice president identified in Ledger fact MUSE-HC-012.",
+   "stage1_issue": "Ledgerで「ミス」と認めた主体はSuperintelligence Labs部門の副社長だが、記事は「Meta executives」と複数の幹部に広げている。 / Ledgerでは発言者はSuperintelligence Labs部門の副社長ですが、記事では複数の幹部が認めたとしています。"
+  },
+  {
+   "claim_text": "They then put the human concierge feature back as it had been before.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-012",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-012",
+    "claim_text": "They then put the human concierge feature back as it had been before.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "05e02d09949b704b96af58d59da5f54890e22570579f4559dbff5c715377669b"
+    ],
+    "batch_cost_jpy": 0.517,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "Meta’s AI phone calls sometimes relied on human contractors, but callers were not clearly told who was speaking.",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "basis": "ledger_scope",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-012",
+   "dev_flags": [
+    "changed_fact",
+    "changed_certainty",
+    "changed_actor",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": null,
+   "rewrite_kind": "narrow_scope",
+   "rewrite_hint": "「Meta’s AI phone calls sometimes relied on human contractors, but callers were not clearly told who was speaking.」の “callers” を “the people receiving the calls” に置き換え、誰に開示されなかったのかを正確にしてください。電話をかける側が知らされていなかったという意味にならないようにします。参照: MUSE-HC-012。",
+   "stage1_issue": "人間の契約スタッフが一部の電話を担当した点は支えられるが、「callers were not clearly told who was speaking」は適切な開示なしにテストを開始したとの記録を、通話相手が誰の声か知らされなかったという具体的主張に置き換えている。 / 開示が適切でなかったというLedgerの記述から、通話相手に話者が誰かを明確に伝えていなかったと断定しています。 / 適切な開示がなかったことを、通話相手に話者が誰かを明確に伝えていなかったこととして具体化しています。"
+  },
+  {
+   "claim_text": "Meta's AI agent, Muse, can call companies and stores.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-004",
+   "dev_flags": [
+    "changed_scope"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-004",
+    "claim_text": "Meta's AI agent, Muse, can call companies and stores.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "05e02d09949b704b96af58d59da5f54890e22570579f4559dbff5c715377669b"
+    ],
+    "batch_cost_jpy": 0.517,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "Ledgerが対象とする米国内という地域範囲が省かれ、より広い範囲の機能として読めます。"
+  },
+  {
+   "claim_text": "Meta explained that it will continue working with businesses to improve the phone feature, and will make it available only when it is ready and proper information can be provided.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-010",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-010",
+    "claim_text": "Meta explained that it will continue working with businesses to improve the phone feature, and will make it available only when it is ready and proper information can be provided.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "05e02d09949b704b96af58d59da5f54890e22570579f4559dbff5c715377669b"
+    ],
+    "batch_cost_jpy": 0.517,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "It is whether it can clearly tell the person on the other end who is speaking.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-010",
+   "dev_flags": [
+    "changed_fact",
+    "changed_certainty",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-010",
+    "claim_text": "It is whether it can clearly tell the person on the other end who is speaking.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "05e02d09949b704b96af58d59da5f54890e22570579f4559dbff5c715377669b"
+    ],
+    "batch_cost_jpy": 0.517,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "情報が誰に渡ったかを問題としているように読め、実際の共有があったとの含みがある。また「sufficient system」の有無はLedgerに記載されていない。Ledgerが確認するのは意図しない共有の可能性とプライバシー上の懸念。 / 情報が実際に渡されたことを前提とする表現に加え、システムが十分だったかというLedgerにない論点を加えています。"
+  },
+  {
+   "claim_text": "” Behind the scenes of a service in which AI made phone calls, human staff were there.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-011",
+   "dev_flags": [
+    "changed_actor"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-011",
+    "claim_text": "” Behind the scenes of a service in which AI made phone calls, human staff were there.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "05e02d09949b704b96af58d59da5f54890e22570579f4559dbff5c715377669b"
+    ],
+    "batch_cost_jpy": 0.517,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "Ledgerでは従業員がMuseに料金交渉を依頼した事例だが、記事は「Meta was asked」とし、依頼を受けた主体をMetaに変えている。"
+  },
+  {
+   "claim_text": "The twist was that what AI phone calls needed was not an even smarter feature, but first of all, an honest way to say who was calling.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-012",
+   "dev_flags": [
+    "changed_fact",
+    "changed_certainty",
+    "changed_actor",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-012",
+    "claim_text": "The twist was that what AI phone calls needed was not an even smarter feature, but first of all, an honest way to say who was calling.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "05e02d09949b704b96af58d59da5f54890e22570579f4559dbff5c715377669b"
+    ],
+    "batch_cost_jpy": 0.517,
+    "batch_n_claims": 15
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "人間の契約スタッフが一部の電話を担当した点は支えられるが、「callers were not clearly told who was speaking」は適切な開示なしにテストを開始したとの記録を、通話相手が誰の声か知らされなかったという具体的主張に置き換えている。 / 開示が適切でなかったというLedgerの記述から、通話相手に話者が誰かを明確に伝えていなかったと断定しています。 / 適切な開示がなかったことを、通話相手に話者が誰かを明確に伝えていなかったこととして具体化しています。"
+  }
+ ],
+ "elapsed_seconds": 119.2
+}

@@ -355,6 +355,115 @@ _FAMILY_X_PARAGRAPH_RETRY_MUST_FIX = [{
 }]
 
 
+# ============================================================
+# OPEN-243-TRANSLATION-NG-ANALYSIS-01 委任_03 M1 / G3(Trial専用、既定OFF)
+# ============================================================
+# OPEN243_M1=1: (a) 要約「In one line」の生成入力へ日本語R2本文とLedgerを加える、
+#   (b) 初回検査で「要約だけがMAJOR」なら本文を作り直さず要約だけを最大2回再生成する
+#   (本文にもMAJORがある場合・ja_source MAJORは従来どおり)。
+# OPEN243_G3_TELEMETRY_PATH=<jsonl>: translation起源のMINORをtelemetryへ記録(観測のみ、API費用0)。
+# どちらも未設定なら従来動作と完全に同一(承認済みChecker構成とは無関係)。
+import re as _open243_re
+
+
+def open243_m1_enabled() -> bool:
+    return adv_gen.open243_m1_enabled()
+
+
+def _open243_norm(t: str) -> str:
+    return _open243_re.sub(r"[^0-9a-z]+", "", (t or "").lower())
+
+
+def open243_majors_only_in_summary(major_devs: list, summary_text: str, body_text: str) -> bool:
+    """MAJORの全件が「要約の文」を指し、本文には含まれない場合のみTrue。引用が短すぎる(8文字未満)・
+    空の場合は判定不能としてFalse(=従来どおり本文再生成の経路)。"""
+    if not major_devs:
+        return False
+    s_n, b_n = _open243_norm(summary_text), _open243_norm(body_text)
+    if not s_n:
+        return False
+    for d in major_devs:
+        c = _open243_norm(_open243_re.sub(r"^\s*(##\s*)?in one line\s*:?", "", d.get("claim_in_article") or "",
+                                          flags=_open243_re.I))  # 「In one line:」ラベル付き引用を許容
+        if len(c) < 8:
+            return False
+        if c in b_n:
+            return False
+        if not (c in s_n or s_n in c):
+            return False
+    return True
+
+
+def open243_m1_summary_only_retry(client, *, ledger_text: str, ja_text: str, title: str, body: str,
+                                  must_fix: list, max_attempts: int = 2, dev_check_fn=None) -> dict:
+    """要約だけを再生成(最大max_attempts回)。各回: 要約再生成(JA本文+Ledger+前回指摘を入力)
+    -> EN deviation check(prior_issues付き)。COMPLIANTかつ前回指摘が全て解消なら成功。
+    再生成後に本文側のMAJOR・ja_source MAJORが出た場合は要約再生成を続けず失敗として返す
+    (呼び出し側がSTOP)。dev_check_fn(text, prior_issues)->run_deviation_check相当の戻り値(テスト/検証用に差し替え可)。"""
+    if dev_check_fn is None:
+        def dev_check_fn(text, prior):
+            return vfl01.run_deviation_check(client, ledger_text, text, hook_aware=False,
+                                             include_related_fact_id=True, source_article_text=ja_text,
+                                             prior_issues=prior)
+    attempts = []
+    cur_fix = list(must_fix)
+    for k in range(1, max_attempts + 1):
+        iol = adv_gen.generate_family_x_in_one_line(client, title, body, ja_text=ja_text,
+                                                    ledger_text=ledger_text, must_fix=cur_fix)
+        text = f"# {title}\n\n{body}\n\n## In one line\n{iol['text']}"
+        dev = dev_check_fn(text, cur_fix)
+        status = dev["parsed"].get("overall_status")
+        resolved = bool(dev["parsed"].get("all_prior_issues_resolved", False))
+        majors = _major_deviations(dev)
+        rec = {"attempt": k, "summary": iol["text"], "text": text, "iol": iol, "deviation": dev,
+               "overall_status": status, "all_prior_issues_resolved": resolved,
+               "n_major": len(majors), "must_fix_in": cur_fix}
+        attempts.append(rec)
+        if status == "LEDGER_COMPLIANT" and resolved:
+            return {"success": True, "attempts": attempts, "final_text": text, "final_deviation": dev,
+                    "reason": "resolved"}
+        if majors and not open243_majors_only_in_summary(majors, iol["text"], body):
+            return {"success": False, "attempts": attempts, "final_text": text, "final_deviation": dev,
+                    "reason": "non_summary_or_unlocatable_major_after_summary_retry"}
+        if any(d.get("origin") == "ja_source" for d in majors):
+            return {"success": False, "attempts": attempts, "final_text": text, "final_deviation": dev,
+                    "reason": "ja_source_major_after_summary_retry"}
+        if majors:
+            cur_fix = _must_fix_from_deviations(majors)
+    last = attempts[-1]
+    return {"success": False, "attempts": attempts, "final_text": last["text"],
+            "final_deviation": last["deviation"], "reason": "unresolved_after_max_attempts"}
+
+
+def open243_g3_record_translation_minor(deviation: dict, *, stage: str, out_dir: str) -> int:
+    """OPEN243_G3_TELEMETRY_PATHが設定されているときだけ、translation起源のMINOR(severity=MINOR)を
+    jsonl 1行/件で追記する(観測のみ、API費用0)。戻り値=追記件数(未設定は0)。"""
+    path = os.environ.get("OPEN243_G3_TELEMETRY_PATH")
+    if not path:
+        return 0
+    n = 0
+    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+    with open(path, "a", encoding="utf-8") as f:
+        for d in (deviation.get("parsed") or {}).get("deviations", []):
+            if d.get("severity") == "MINOR" and d.get("origin") == "translation":
+                f.write(json.dumps({
+                    "kind": "en_deviation_translation_minor", "stage": stage, "out_dir": out_dir,
+                    "claim_in_article": d.get("claim_in_article"), "related_fact_id": d.get("related_fact_id"),
+                    "flags": [k for k in vfl01.DEVIATION_FLAG_KEYS if d.get(k)],
+                    "issue": d.get("issue"), "ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
+                }, ensure_ascii=False) + "\n")
+                n += 1
+    return n
+
+
+def _open243_iol(client, title: str, body: str, ja_text: str, ledger_text: str) -> dict:
+    """要約の初回/本文再生成後の生成。M1 OFFなら従来と完全同一の呼び出し。"""
+    if open243_m1_enabled():
+        return adv_gen.generate_family_x_in_one_line(client, title, body, ja_text=ja_text,
+                                                      ledger_text=ledger_text)
+    return adv_gen.generate_family_x_in_one_line(client, title, body)
+
+
 def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
                             budget_jpy: float, only: str | None = None) -> dict:
     """only: None(両方)/"advanced"/"standard"(delegation D4の
@@ -385,10 +494,10 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
             nonlocal adv_result, advanced_title, advanced_body
             adv_result = retry_result
             advanced_title, advanced_body = retry_result.title, retry_result.body
-            iol = adv_gen.generate_family_x_in_one_line(client, advanced_title, advanced_body)
+            iol = _open243_iol(client, advanced_title, advanced_body, ja_text, ledger_text)
             return f"# {advanced_title}\n\n{advanced_body}\n\n## In one line\n{iol['text']}"
 
-        iol_result = adv_gen.generate_family_x_in_one_line(client, advanced_title, advanced_body)
+        iol_result = _open243_iol(client, advanced_title, advanced_body, ja_text, ledger_text)
         advanced_text = f"# {advanced_title}\n\n{advanced_body}\n\n## In one line\n{iol_result['text']}"
         para_outcome = _family_x_ensure_split_or_paragraph_retry(
             advanced_text, _advanced_paragraph_retry_regen, "Advanced")
@@ -402,8 +511,10 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
         save_json(f"{b1b_dir}/audit/deviation_checks/advanced_attempt1.json",
                    vfl01.deviation_audit_record(deviation))
         dev_status = deviation["parsed"].get("overall_status")
+        open243_g3_record_translation_minor(deviation, stage="advanced_attempt1", out_dir=out_dir)
         retried_for_deviation = False
         must_fix_used = []
+        m1_summary_only_handled = False
         if dev_status == "LEDGER_DEVIATION":
             major_devs = _major_deviations(deviation)
             ja_sourced = [d for d in major_devs if d.get("origin") == "ja_source"]
@@ -416,12 +527,39 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
                     major_deviations=major_devs,
                 )
             must_fix_used = _must_fix_from_deviations(major_devs)
+            # OPEN-243 M1(Trial、OPEN243_M1=1のときのみ): 要約だけがMAJORなら本文は作り直さず要約だけを再生成(最大2回)
+            if open243_m1_enabled() and open243_majors_only_in_summary(major_devs, advanced_text.split("## In one line\n")[-1], advanced_body):
+                print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Advanced deviation MAJORは要約のみ。"
+                      f"[OPEN243_M1]要約だけを最大2回再生成します(major_count={len(major_devs)})...")
+                m1 = open243_m1_summary_only_retry(client, ledger_text=ledger_text, ja_text=ja_text,
+                                                   title=advanced_title, body=advanced_body,
+                                                   must_fix=must_fix_used, max_attempts=2)
+                for rec in m1["attempts"]:
+                    save_json(f"{b1b_dir}/audit/deviation_checks/advanced_attempt{rec['attempt'] + 1}.json",
+                               vfl01.deviation_audit_record(rec["deviation"]))
+                    open243_g3_record_translation_minor(rec["deviation"], stage=f"advanced_m1_summary_retry{rec['attempt']}",
+                                                         out_dir=out_dir)
+                deviation = m1["final_deviation"]
+                advanced_text = m1["final_text"]
+                advanced_split = sc.split_family_x_article_text_v2(advanced_text)
+                dev_status = deviation["parsed"].get("overall_status")
+                all_resolved = deviation["parsed"].get("all_prior_issues_resolved", False)
+                retried_for_deviation = True
+                m1_summary_only_handled = True
+                if not m1["success"]:
+                    save_json(f"{b1b_dir}/audit/deviation_check.json", deviation["parsed"])
+                    save_text(f"{b1b_dir}/audit/rejected_advanced_m1_summary_retry.md", advanced_text)
+                    raise RuntimeError(
+                        f"[STOP] Advanced deviation check: 要約のみ再生成(OPEN243_M1)後もMAJOR、または前回指摘の未解消あり"
+                        f"(reason={m1['reason']}, attempts={len(m1['attempts'])})。本文を手で直さずSTOPします。"
+                    )
+        if dev_status == "LEDGER_DEVIATION" and not m1_summary_only_handled:
             print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Advanced deviation MAJOR。"
                   f"must-fixで1回だけ再生成します(major_count={len(major_devs)})...")
             adv_result = adv_gen.generate_family_x_faithful_translation(
                 ja_text, client=client, must_fix=must_fix_used)
             advanced_title, advanced_body = adv_result.title, adv_result.body
-            iol_result = adv_gen.generate_family_x_in_one_line(client, advanced_title, advanced_body)
+            iol_result = _open243_iol(client, advanced_title, advanced_body, ja_text, ledger_text)
             advanced_text = f"# {advanced_title}\n\n{advanced_body}\n\n## In one line\n{iol_result['text']}"
             advanced_split = sc.split_family_x_article_text_v2(advanced_text)
             if advanced_split["status"] != "OK":

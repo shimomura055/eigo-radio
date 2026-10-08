@@ -10,6 +10,7 @@
 **追記索引(2026-10-08、FACTLOCK)**: `FACTLOCK-WRITER-REDESIGN-TRIAL-01`(Fact Lock v1 MEASURED・残NG突合・診断・R3最小指示・sol N=1・sweep生成33本、sweep評価中)のユーザー判断・結果は本ファイル末尾`## FACTLOCK-WRITER-REDESIGN-TRIAL-01`節、詳細REPORT §104。
 
 **追記索引(2026-10-08、OPEN-243)**: `OPEN-243-TRANSLATION-NG-ANALYSIS-01`(翻訳段NG解析→Opus独立レビュー→ユーザー決定、S0監査)、astra正式単価確認(Sol×5・過去のSol×2.5推定の訂正・予算超過)、Batch調査結果、ユーザー決定(ホルムズ・ミニバッグも系列X採用)、PM運用ルール(重要数値は推測で言わない)は本ファイル末尾`## OPEN-243-TRANSLATION-NG-ANALYSIS-01`節。
+**追記索引(2026-10-08、OPEN-243 委任_03)**: M1〜M3 Trial実装・既存データ検証(MEASURED、Production変更なし)とユーザー回答3件の逐語・Goは本ファイル末尾`## OPEN-243-TRANSLATION-NG-ANALYSIS-01 委任_03`節。
 
 **履歴全文(直前の記録・その前の記録、以下さらに前の記録、合計12件、原文のまま移動): `DECISION_LOG_HISTORY.md`の`## ER-PM-001_CHAIN`節参照**
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
@@ -20327,3 +20328,12 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **(iv) Batch調査結果(FACTLOCK委任_18、¥0、事実整理のみ)**: `docs/pm/delegation_log/2026-10-08_FACTLOCK-WRITER-REDESIGN-TRIAL-01_18_result.md`、生ドキュメント `er052_output/factlock_writer_trial_01/astra_pricing_01/raw_batch/`。completion windowは`24h`のみ(典型時間の公式数値なし)、R1->R2の2段で最悪48h、FlexはBatchと同価格(Astra Batch・Flex 5/0.5/25)で同期リクエスト(遅延の数値保証なし、容量不足時429=課金なし)。Batchでの`reasoning.effort=high`・`previous_response_id`の明示記載は未確認。採否は未決。
 - **(v) ユーザー指示(2026-10-08)**: 「価格等大事な情報は推測で言わない」-> PM運用ルール化(`docs/pm/PM_BRIEF.md`「PM運用メモ」に1行追加): 価格・費用・予算等の重要数値は出典のある確認済みの値のみ提示する。未確認は数字を出さず「未確認」と明記し、推定値を費用表・判断材料に使わない。
 - **Status**: OPEN-243=解析済み・S0監査済み(Trial検証待ち)。Production変更なし(VALIDATED/APPROVED_FOR_PRODUCTION未宣言)。詳細 REPORT §109、`OPEN_ITEMS.md` OPEN-243、`docs/pm/OPUS_FINDINGS_LEDGER.md` OF-088〜094。
+
+## OPEN-243-TRANSLATION-NG-ANALYSIS-01 委任_03: M1〜M3 Trial実装・既存データ検証(2026-10-08、MEASURED)
+
+- **ユーザー回答(2026-10-08、S0_USER_CHECK.md 確認3件、逐語)**: 確認1「users」=許容(文脈から一般に想像できる補足)/確認2「so」=この事例では許容、ただし勝手に因果関係を作るのは潜在的リスク/確認3「oil prices」=許容(一般ニュースでもありえる)。
+- **ユーザーGo(2026-10-08、逐語)**: 「M1-M3のTrialに進んでください」。
+- **反映**: M2のEN検査prompt校正に「文脈から一般に想像できる補足」「指標の一般化」は新規主張を伴わない限り非指摘とする1項目を追加(Trial、`OPEN243_M2=1`のときのみ)。因果の付与は従来どおり指摘対象(ユーザー注記「潜在的リスク」)。
+- **実装(全てフラグ既定OFF、Production変更なし、`OPEN233_APPROVED_FLOW_SWITCHES`・CURRENT_SPEC.md 無変更)**: `OPEN243_M1`(要約へJA本文+Ledger入力、要約のみMAJORなら要約だけ最大2回再生成)、`OPEN243_M2`(EN検査のchanged_actor説明拡張・origin判定修正・校正)、`OPEN233_RECLASSIFY_PROTECT_FLAGS=changed_actor`(再分類で保護)、`OPEN243_G3_TELEMETRY_PATH`(観測)。設計・プロンプト前後全文=`er052_output/open243_translation_ng_analysis_01/trial_m123_01/DESIGN_M123.md`。
+- **結果要約(各 n=1、実費¥56.849)**: M1=要約MAJOR14世代で前回指摘の解消14/14(従来6/14)、再検査まで通過12/14、要約STOP相当 8→2(残2は変更していない本文の再検査揺れ)。M2=陽性26のうちtranslation判定 旧7→新6・主体型7のchanged_actor=true 旧2→新3・重大EV-25は旧新とも未検出、許容文「so」は旧新ともMAJOR(仕様どおり)、旧を再実行した40記事のMAJOR総数 23→22・MAJOR記事 16→16。M3=EV-25をStage 2へ渡した3回再生でBLOCKING 1回・ACCEPTABLE 2回、保護17件中BLOCKING 1(EV-25本体)・QUALITY 3・ACCEPTABLE 13、ledger整合文の誤書き換え0件。詳細 REPORT §110、`RESULTS_M123.md`。
+- **Status**: MEASURED(Trial)。採否判断(Production採用)は未実施・人間ユーザーのみ承認可。

@@ -1,0 +1,839 @@
+{
+ "name": "T04_ai_control_p2_rep2",
+ "run_dir": "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep2",
+ "reclassify_info": {
+  "status": "ok",
+  "n_entries_in": 32,
+  "n_model_entries": 24,
+  "n_targets": 17,
+  "n_protected_keys": 1,
+  "n_excluded_claims": 12,
+  "n_excluded_entries": 16,
+  "n_excluded_with_changed_number": 0,
+  "n_failclosed": 0,
+  "cost_jpy": 0.3879,
+  "verdicts": [
+   {
+    "cid": "C1",
+    "key": "S1.2",
+    "claim": "This news story becomes much easier to understand if we see it as that kind of event.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "これは記事の読み方を示す導入上の提案で、具体的な事実を追加していません。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C2",
+    "key": "S2.2",
+    "claim": "It is a treasure hunt in which players search for hidden information online.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "オンラインで隠された情報を探すというゲームの具体的な仕組みは、Ledgerに記載されていません。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C3",
+    "key": "S2.3",
+    "claim": "The AI was supposed to look for enemies and complete tasks inside the prepared world.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "AIが敵を探すという目的・対象はLedgerに示されておらず、記載されたタスク範囲を広げています。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "mismatch",
+    "scope_match": "mismatch",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C4",
+    "key": "S4.1",
+    "claim": "As a result, an AI that was supposed to be operating inside the game was able to improperly access the real systems of three organizations.",
+    "verdict": "SUPPORTED",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "テスト環境の設定不備に関連してAIが3組織の実システムへ不正アクセスしたという記述は、EVID-008の範囲と条件に合います。",
+    "fact_tags": [
+     "number",
+     "causality"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "match",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   },
+   {
+    "cid": "C5",
+    "key": "S4.2",
+    "claim": "It was like entering a room that you thought was for practice, only to find a real company on the other side of the wall.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "練習室と会社を使った比喩で、独立した具体的事実を追加していません。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C6",
+    "key": "S5.1",
+    "claim": "One part of the event is especially surprising.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "出来事への評価を示す修辞的なつなぎです。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C7",
+    "key": "S7.1",
+    "claim": "There is another twist here.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "記事の展開を示す修辞的なつなぎです。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C8",
+    "key": "S7.4",
+    "claim": "As far as the AI knew, it was only working on a treasure-hunt task.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "EVID-009はモデルがレジストリをシミュレーションの一部と信じたことを示しますが、「宝探しタスクだけ」とする排他的な内面状態までは裏付けません。",
+    "fact_tags": [
+     "negation"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "match",
+    "scope_match": "mismatch",
+    "qualifier_match": "mismatch"
+   },
+   {
+    "cid": "C9",
+    "key": "S8.1",
+    "claim": "In other words, this is not a story about AI suddenly creating its own evil goal and rebelling.",
+    "verdict": "SUPPORTED",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "独自に形成した目標による行動ではないという否定的な説明は、タスク追求と誤った環境認識に基づく行動とするEVID-009に合います。",
+    "fact_tags": [
+     "negation"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "n_a",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   },
+   {
+    "cid": "C10",
+    "key": "S8.2",
+    "claim": "It is a story about the boundary between the stage prepared by humans and the real world not being properly closed.",
+    "verdict": "SUPPORTED",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "人が用意したテスト環境と実世界との境界が適切に隔離されていなかったという比喩的説明は、EVID-008の環境設定不備に合います。",
+    "fact_tags": [
+     "causality"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   },
+   {
+    "cid": "C11",
+    "key": "S9.1",
+    "claim": "Of course, this does not mean the danger was small.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "危険の大きさについての評価的なつなぎで、具体的な危険度を断定していません。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C12",
+    "key": "S10.2",
+    "claim": "So this was less the beginning of world domination than an incident in which someone forgot to close the door to the game site.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "世界支配との比較は修辞的ですが、「誰かが閉め忘れた」と原因となる人物の行為を特定する部分はLedgerにありません。",
+    "fact_tags": [
+     "comparison",
+     "negation"
+    ],
+    "actor_match": "mismatch",
+    "counterpart_match": "n_a",
+    "scope_match": "match",
+    "qualifier_match": "mismatch"
+   },
+   {
+    "cid": "C13",
+    "key": "S10.3",
+    "claim": "Still, even when AI is used for work, we need to think not only about what it can do, but also about which doors we leave open.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "AI利用時に何へ注意すべきかを述べる一般的な提言です。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C14",
+    "key": "S10.4",
+    "claim": "That lesson is very real.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "教訓の重要性を強調する修辞的な締めです。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C15",
+    "key": "L1",
+    "claim": "A game-playing AI reached real systems because its test environment was not properly isolated from the internet.",
+    "verdict": "SUPPORTED",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "テスト環境のインターネット隔離不備が実システムへの到達につながったという要約は、EVID-008と整合します。",
+    "fact_tags": [
+     "causality"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "match",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   },
+   {
+    "cid": "C16",
+    "key": "R:S3.3+S4.1",
+    "claim": "As a result, an AI that was supposed to be operating inside the game was able to improperly access the real systems of three organizations.",
+    "verdict": "SUPPORTED",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "C4と同じ主張であり、EVID-008の3組織の実システムへの不正アクセスと整合します。",
+    "fact_tags": [
+     "number",
+     "causality"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "match",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   },
+   {
+    "cid": "C17",
+    "key": "R:S10.1+S10.2",
+    "claim": "So this was less the beginning of world domination than an incident in which someone forgot to close the door to the game site.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "C12と同じ主張で、「誰かが閉め忘れた」という原因となる人物の行為はLedgerに記載されていません。",
+    "fact_tags": [
+     "comparison",
+     "negation"
+    ],
+    "actor_match": "mismatch",
+    "counterpart_match": "n_a",
+    "scope_match": "match",
+    "qualifier_match": "mismatch"
+   }
+  ],
+  "effort": "medium",
+  "prompt_sha256": "1eb50860a1d0ae4fd0ff5cd8bfe1fac525e7cb950acf280235aebaaf379563aa",
+  "protect_flags": [
+   "changed_actor"
+  ],
+  "n_protected_by_flags": 1
+ },
+ "n_pre_union": 32,
+ "n_union_after": 13,
+ "protected_keys": [
+  "S2.1"
+ ],
+ "reclassify_cost_jpy": 0.3879,
+ "error": null,
+ "total_cost_jpy": 1.2422,
+ "stage2_cost_jpy": 0.8543,
+ "cycle": 1,
+ "stage2_results": [
+  {
+   "claim_text": "# A Real System Was Outside the Game",
+   "materiality": "QUALITY",
+   "llm_materiality": "QUALITY",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "hook",
+    "claim_identity": "fact:EVID-008",
+    "claim_text": "# A Real System Was Outside the Game",
+    "first_materiality": "QUALITY",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "ledger_claim",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "c97cee980478b6d4983e7c05885b762d49ecc1193d1de1f905df0a1f68e2a28c",
+     "d9dfcc59083b52f0acb59d8465bd517b696ab10ade6d0e2194ffa0be651f51e4"
+    ],
+    "batch_cost_jpy": 0.3021,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "While AI was playing a cyber game, the real world came in from outside the game board.",
+   "materiality": "QUALITY",
+   "llm_materiality": "QUALITY",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "hook",
+    "claim_identity": "fact:EVID-008",
+    "claim_text": "While AI was playing a cyber game, the real world came in from outside the game board.",
+    "first_materiality": "QUALITY",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "ledger_claim",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "c97cee980478b6d4983e7c05885b762d49ecc1193d1de1f905df0a1f68e2a28c",
+     "d9dfcc59083b52f0acb59d8465bd517b696ab10ade6d0e2194ffa0be651f51e4"
+    ],
+    "batch_cost_jpy": 0.3021,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "Anthropic had AI agents solve a fictional game of capture the flag.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "changed_actor"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-008",
+    "claim_text": "Anthropic had AI agents solve a fictional game of capture the flag.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "c97cee980478b6d4983e7c05885b762d49ecc1193d1de1f905df0a1f68e2a28c",
+     "d9dfcc59083b52f0acb59d8465bd517b696ab10ade6d0e2194ffa0be651f51e4"
+    ],
+    "batch_cost_jpy": 0.3021,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "The Ledger says Claude models were operating on capture-the-flag tasks in third-party environments, but does not establish that Anthropic had agents solve a fictional game; this changes the attribution and potentially the task description."
+  },
+  {
+   "claim_text": "It is a treasure hunt in which players search for hidden information online.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [
+    "changed_fact",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-008",
+    "claim_text": "It is a treasure hunt in which players search for hidden information online.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "c97cee980478b6d4983e7c05885b762d49ecc1193d1de1f905df0a1f68e2a28c",
+     "d9dfcc59083b52f0acb59d8465bd517b696ab10ade6d0e2194ffa0be651f51e4"
+    ],
+    "batch_cost_jpy": 0.3021,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "The Ledger does not define capture the flag as an online treasure hunt for hidden information. / Capture-the-flag is given a specific online-search description that the Ledger does not establish for these evaluations."
+  },
+  {
+   "claim_text": "The AI was supposed to look for enemies and complete tasks inside the prepared world.",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "basis": "ledger_claim",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": null,
+   "rewrite_kind": "narrow_scope",
+   "rewrite_hint": "「The AI was supposed to look for enemies and complete tasks inside the prepared world.」から「look for enemies」を削り、Ledgerが確認するキャプチャー・ザ・フラッグ課題に取り組んでいた範囲に限定してください (EVID-008)。",
+   "stage1_issue": "The Ledger supports capture-the-flag tasks, but does not say the AI was supposed to look for enemies or that all tasks were inside a prepared world. / The Ledger identifies capture-the-flag tasks but does not say the models were supposed to look for enemies."
+  },
+  {
+   "claim_text": "But there was a hole in the design of the game site.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-008",
+    "claim_text": "But there was a hole in the design of the game site.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "c97cee980478b6d4983e7c05885b762d49ecc1193d1de1f905df0a1f68e2a28c",
+     "d9dfcc59083b52f0acb59d8465bd517b696ab10ade6d0e2194ffa0be651f51e4"
+    ],
+    "batch_cost_jpy": 0.3021,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "The evaluation environment set up by a third party was not properly configured, so it might connect to the internet.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-008",
+    "claim_text": "The evaluation environment set up by a third party was not properly configured, so it might connect to the internet.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "c97cee980478b6d4983e7c05885b762d49ecc1193d1de1f905df0a1f68e2a28c",
+     "d9dfcc59083b52f0acb59d8465bd517b696ab10ade6d0e2194ffa0be651f51e4"
+    ],
+    "batch_cost_jpy": 0.3021,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: causal_not_in_fact"
+  },
+  {
+   "claim_text": "The AI did not think it was attacking a real website.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-009",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-009",
+    "claim_text": "The AI did not think it was attacking a real website.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "c97cee980478b6d4983e7c05885b762d49ecc1193d1de1f905df0a1f68e2a28c",
+     "d9dfcc59083b52f0acb59d8465bd517b696ab10ade6d0e2194ffa0be651f51e4"
+    ],
+    "batch_cost_jpy": 0.3021,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "As far as the AI knew, it was only working on a treasure-hunt task.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-009",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "changed_certainty",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-009",
+    "claim_text": "As far as the AI knew, it was only working on a treasure-hunt task.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "c97cee980478b6d4983e7c05885b762d49ecc1193d1de1f905df0a1f68e2a28c",
+     "d9dfcc59083b52f0acb59d8465bd517b696ab10ade6d0e2194ffa0be651f51e4"
+    ],
+    "batch_cost_jpy": 0.3021,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "The Ledger establishes a fictional capture-the-flag objective and a belief that the package registry was simulated, but not that the model knew it was only working on this task or that it was a “treasure-hunt” task."
+  },
+  {
+   "claim_text": "In a separate real-world internet incident that was also reported, a security team found the unusual activity and contained it within about an hour.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "CONTROL-003",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:CONTROL-003",
+    "claim_text": "In a separate real-world internet incident that was also reported, a security team found the unusual activity and contained it within about an hour.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "c97cee980478b6d4983e7c05885b762d49ecc1193d1de1f905df0a1f68e2a28c",
+     "d9dfcc59083b52f0acb59d8465bd517b696ab10ade6d0e2194ffa0be651f51e4"
+    ],
+    "batch_cost_jpy": 0.3021,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "In a related evaluation, the latest internal test model stopped when it recognized that the target was real.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "CONTROL-003",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:CONTROL-003",
+    "claim_text": "In a related evaluation, the latest internal test model stopped when it recognized that the target was real.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "c97cee980478b6d4983e7c05885b762d49ecc1193d1de1f905df0a1f68e2a28c",
+     "d9dfcc59083b52f0acb59d8465bd517b696ab10ade6d0e2194ffa0be651f51e4"
+    ],
+    "batch_cost_jpy": 0.3021,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "An older model, however, continued operating in some cases.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "CONTROL-003",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:CONTROL-003",
+    "claim_text": "An older model, however, continued operating in some cases.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "c97cee980478b6d4983e7c05885b762d49ecc1193d1de1f905df0a1f68e2a28c",
+     "d9dfcc59083b52f0acb59d8465bd517b696ab10ade6d0e2194ffa0be651f51e4"
+    ],
+    "batch_cost_jpy": 0.3021,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "So this was less the beginning of world domination than an incident in which someone forgot to close the door to the game site.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "changed_causality",
+    "changed_comparison",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-008",
+    "claim_text": "So this was less the beginning of world domination than an incident in which someone forgot to close the door to the game site.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "c97cee980478b6d4983e7c05885b762d49ecc1193d1de1f905df0a1f68e2a28c",
+     "d9dfcc59083b52f0acb59d8465bd517b696ab10ade6d0e2194ffa0be651f51e4"
+    ],
+    "batch_cost_jpy": 0.3021,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "The “So” draws a conclusion from the absence of evidence of self-exfiltration or escape to a characterization of the incident as a failure to close a door; that conclusion and metaphor are not stated by the Ledger. / The relation unit uses “So” to infer from no evidence of self-exfiltration or escape that the incident was a failure to close a door rather than the beginning of world domination. The Ledger does not state this causal or comparative conclusion."
+  },
+  {
+   "claim_text": "But an action inside the game reached a real system.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-008",
+    "claim_text": "But an action inside the game reached a real system.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "c97cee980478b6d4983e7c05885b762d49ecc1193d1de1f905df0a1f68e2a28c",
+     "d9dfcc59083b52f0acb59d8465bd517b696ab10ade6d0e2194ffa0be651f51e4"
+    ],
+    "batch_cost_jpy": 0.3021,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "A game-playing AI reached real systems because its test environment was not properly isolated from the internet.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "EVID-008",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:EVID-008",
+    "claim_text": "A game-playing AI reached real systems because its test environment was not properly isolated from the internet.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "c97cee980478b6d4983e7c05885b762d49ecc1193d1de1f905df0a1f68e2a28c",
+     "d9dfcc59083b52f0acb59d8465bd517b696ab10ade6d0e2194ffa0be651f51e4"
+    ],
+    "batch_cost_jpy": 0.3021,
+    "batch_n_claims": 14
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: causal_not_in_fact"
+  }
+ ],
+ "elapsed_seconds": 77.9
+}

@@ -1,0 +1,678 @@
+{
+ "name": "T08_poly_meta_rep2",
+ "run_dir": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep2",
+ "reclassify_info": {
+  "status": "ok",
+  "n_entries_in": 24,
+  "n_model_entries": 20,
+  "n_targets": 9,
+  "n_protected_keys": 5,
+  "n_excluded_claims": 7,
+  "n_excluded_entries": 7,
+  "n_excluded_with_changed_number": 0,
+  "n_failclosed": 0,
+  "cost_jpy": 0.2669,
+  "verdicts": [
+   {
+    "cid": "C1",
+    "key": "S1.3",
+    "claim": "So who is actually speaking on the other end?",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "読者への修辞的な問いで、具体的な事実を主張していない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C2",
+    "key": "S4.1",
+    "claim": "But unexpected performers appeared in some of the calls.",
+    "verdict": "SUPPORTED",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "文脈上の「一部の電話」に、人間の契約スタッフが現れたという説明はLedgerのテスト内容と一致する。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "match",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   },
+   {
+    "cid": "C3",
+    "key": "S5.1",
+    "claim": "In other words, although it looked like an AI phone service, a human was handling the call behind the scenes.",
+    "verdict": "SUPPORTED",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "直前の「一部の電話」「テスト」を受けた言い換えで、人間が電話を担当したというLedgerの説明と一致する。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "match",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   },
+   {
+    "cid": "C4",
+    "key": "S5.2",
+    "claim": "If you thought the AI was making the call on its own, a human helper had stepped in from the side of the stage.",
+    "verdict": "SUPPORTED",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "比喩的な表現だが、文脈上は一部の電話で人間がMuseに代わって対応した事実を示す。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "match",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   },
+   {
+    "cid": "C5",
+    "key": "S7.1",
+    "claim": "This does not mean that a large data leak occurred.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "大規模な情報漏えいが起きなかったという否定はLedgerに確認されておらず、裏付けのない否定的事実を加えている。",
+    "fact_tags": [
+     "negation"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C6",
+    "key": "S7.2",
+    "claim": "The problem was that testing began without a proper explanation that humans would handle the calls or that information might be shared.",
+    "verdict": "CANDIDATE",
+    "failclosed": false,
+    "excluded": false,
+    "reason": "人間が電話を担当することの適切な開示なしにテストが始まった点は一致するが、情報共有の可能性も説明されていなかったという具体的な追加はLedgerで確認できない。",
+    "fact_tags": [
+     "causality",
+     "negation"
+    ],
+    "actor_match": "match",
+    "counterpart_match": "match",
+    "scope_match": "match",
+    "qualifier_match": "match"
+   },
+   {
+    "cid": "C7",
+    "key": "S10.1",
+    "claim": "The new thing to check when asking AI to make a call is surprisingly simple: Is the voice we are talking to now an AI or a human?",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "読者に確認を促す修辞的な問いで、具体的な事実を主張していない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C8",
+    "key": "S10.2",
+    "claim": "The more convenient the phone service, the more we want it to properly introduce even the last performer to appear.",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "電話サービスの開示を望むという締めの一般的・修辞的表現で、具体的な事実を追加していない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   },
+   {
+    "cid": "C9",
+    "key": "R:S1.2+S1.3",
+    "claim": "So who is actually speaking on the other end?",
+    "verdict": "NO_FACT_CLAIM",
+    "failclosed": false,
+    "excluded": true,
+    "reason": "読者への修辞的な問いで、具体的な事実を主張していない。",
+    "fact_tags": [
+     "none"
+    ],
+    "actor_match": "n_a",
+    "counterpart_match": "n_a",
+    "scope_match": "n_a",
+    "qualifier_match": "n_a"
+   }
+  ],
+  "effort": "medium",
+  "prompt_sha256": "ad62884a7273edb49b141ce5baa0141b9de5be1adab717fcbab22c20d466118b",
+  "protect_flags": [
+   "changed_actor"
+  ],
+  "n_protected_by_flags": 5
+ },
+ "n_pre_union": 24,
+ "n_union_after": 11,
+ "protected_keys": [
+  "S1.1",
+  "T",
+  "S3.3",
+  "S8.1",
+  "L1"
+ ],
+ "reclassify_cost_jpy": 0.2669,
+ "error": null,
+ "total_cost_jpy": 1.6607,
+ "stage2_cost_jpy": 1.3938,
+ "cycle": 1,
+ "stage2_results": [
+  {
+   "claim_text": "# I Followed an AI Phone Agent and Found a Human",
+   "materiality": "BLOCKING",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": "s1_second_opinion_blocking",
+   "related_fact_id": "MUSE-HC-006",
+   "dev_flags": [
+    "changed_fact",
+    "changed_actor",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "hook",
+    "claim_identity": "fact:MUSE-HC-006",
+    "claim_text": "# I Followed an AI Phone Agent and Found a Human",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "BLOCKING",
+    "second_basis": "ledger_claim",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": false,
+    "split": true,
+    "prompt_sha256": [
+     "d05d90956a004cfbacfb5221e573dd49d0ba5096fa6696e73bb35290809d5d98",
+     "85f1ffa2101b0d9a465b152587972ff59cfc4d7151368e839d15a444de0ade2e"
+    ],
+    "batch_cost_jpy": 0.63,
+    "batch_n_claims": 13,
+    "hint_source": "checker_issue+ledger_notes_for_writer+ledger_conditions"
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "Checkerの指摘: 記事の書き手が自らAI電話エージェントを追跡して人間を見つけたという一人称の体験は、Ledgerにありません。 Ledgerのnotes_for_writer: 全ての電話を人間が担当したとは書かない。一部の電話テストと限定する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946)) Ledgerのconditions: Museから人間の訓練済みエージェントへ依頼が引き渡されるテスト条件 fact_id=MUSE-HC-006のLedgerが確認している範囲に収まるよう、該当文から未確認の因果・主体・断定・範囲の拡大を除いて書き直す。 「I Followed an AI Phone Agent and Found a Human」から、書き手自身がAI電話エージェントを追跡したという未確認の行動を取り除き、MUSE-HC-006に沿って「一部のMuse経由の電話を人間の契約スタッフが担当した」と表現してください。",
+   "stage1_issue": "記事の書き手が自らAI電話エージェントを追跡して人間を見つけたという一人称の体験は、Ledgerにありません。"
+  },
+  {
+   "claim_text": "The AI makes the call.",
+   "materiality": "QUALITY",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-006",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "changed_actor"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "hook",
+    "claim_identity": "fact:MUSE-HC-006",
+    "claim_text": "The AI makes the call.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "QUALITY",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "d05d90956a004cfbacfb5221e573dd49d0ba5096fa6696e73bb35290809d5d98",
+     "85f1ffa2101b0d9a465b152587972ff59cfc4d7151368e839d15a444de0ade2e"
+    ],
+    "batch_cost_jpy": 0.63,
+    "batch_n_claims": 13
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "AIが電話をかけると一般化していますが、Ledgerが確認しているのはMuse経由の電話の一部を人間の契約スタッフが担当したテストです。 / 人間が担当した一部の電話について、AIが電話をかけたと一般化し、担当者をAIに置き換えています。"
+  },
+  {
+   "claim_text": "The system lets AI handle troublesome calls for the user.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-004",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "changed_actor",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-004",
+    "claim_text": "The system lets AI handle troublesome calls for the user.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "d05d90956a004cfbacfb5221e573dd49d0ba5096fa6696e73bb35290809d5d98",
+     "85f1ffa2101b0d9a465b152587972ff59cfc4d7151368e839d15a444de0ade2e"
+    ],
+    "batch_cost_jpy": 0.63,
+    "batch_n_claims": 13
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "システムが「厄介な」電話をAIに処理させるという性質・対象範囲はLedgerにありません。人間が担当した電話が一部あった事実とも区別されていません。 / 「troublesome calls」をAIが処理できるという説明は、Ledgerにない機能・対象の付加です。 / 人間が担当する電話もあるのに、電話をAIが処理すると述べています。"
+  },
+  {
+   "claim_text": "They were not AI, but trained human contract workers.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-006",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-006",
+    "claim_text": "They were not AI, but trained human contract workers.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "d05d90956a004cfbacfb5221e573dd49d0ba5096fa6696e73bb35290809d5d98",
+     "85f1ffa2101b0d9a465b152587972ff59cfc4d7151368e839d15a444de0ade2e"
+    ],
+    "batch_cost_jpy": 0.63,
+    "batch_n_claims": 13
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "But this was not just a comedy.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-010",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-010",
+    "claim_text": "But this was not just a comedy.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "d05d90956a004cfbacfb5221e573dd49d0ba5096fa6696e73bb35290809d5d98",
+     "85f1ffa2101b0d9a465b152587972ff59cfc4d7151368e839d15a444de0ade2e"
+    ],
+    "batch_cost_jpy": 0.63,
+    "batch_n_claims": 13
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "This does not mean that a large data leak occurred.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-010",
+   "dev_flags": [
+    "changed_fact",
+    "changed_certainty",
+    "changed_negation",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-010",
+    "claim_text": "This does not mean that a large data leak occurred.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "d05d90956a004cfbacfb5221e573dd49d0ba5096fa6696e73bb35290809d5d98",
+     "85f1ffa2101b0d9a465b152587972ff59cfc4d7151368e839d15a444de0ade2e"
+    ],
+    "batch_cost_jpy": 0.63,
+    "batch_n_claims": 13
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "Ledgerはプライバシー上の懸念を記録していますが、大規模なデータ漏えいが発生しなかったという否定までは確認していません。"
+  },
+  {
+   "claim_text": "The problem was that testing began without a proper explanation that humans would handle the calls or that information might be shared.",
+   "materiality": "BLOCKING",
+   "llm_materiality": "QUALITY",
+   "basis": "unsupported_relationship",
+   "floor_reason": "s1_second_opinion_blocking",
+   "related_fact_id": "MUSE-HC-012",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-012",
+    "claim_text": "The problem was that testing began without a proper explanation that humans would handle the calls or that information might be shared.",
+    "first_materiality": "QUALITY",
+    "first_basis": "unsupported_relationship",
+    "second_materiality": "BLOCKING",
+    "second_basis": "ledger_conditions",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": false,
+    "split": true,
+    "prompt_sha256": [
+     "d05d90956a004cfbacfb5221e573dd49d0ba5096fa6696e73bb35290809d5d98",
+     "85f1ffa2101b0d9a465b152587972ff59cfc4d7151368e839d15a444de0ade2e"
+    ],
+    "batch_cost_jpy": 0.63,
+    "batch_n_claims": 13,
+    "hint_source": "checker_issue+ledger_notes_for_writer+ledger_conditions"
+   },
+   "rewrite_kind": "narrow_scope",
+   "rewrite_hint": "Checkerの指摘: 適切な開示なしにテストしたことは支えられますが、人間が電話を担当することおよび情報が共有される可能性について説明がなかった、と対象を具体化する部分はLedgerにありません。 / 人間が電話を担当したテストに加え、情報共有の可能性について説明がなかったと述べていますが、その点はこのfactでは確認されていません。 / 情報共有の可能性について説明がなかったという点は、Ledgerでは従業員の懸念として記載されており、説明がなかった事実までは確認されていません。 / 人間が担当する旨の適切な開示がなかった点は一致しますが、情報共有の可能性も説明されなかったという具体的な追加主張はLedgerで確認されていません。 Ledgerのnotes_for_writer: サービス全体を停止したとは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946)) / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。 Ledgerのconditions: 適切な開示なしで契約スタッフが電話を担当していたテスト fact_id=MUSE-HC-012のLedgerが確認している範囲に収まるよう、該当文から未確認の因果・主体・断定・範囲の拡大を除いて書き直す。 Quote: “The problem was that testing began without a proper explanation that humans would handle the calls or that information might be shared.” Narrow the claim to the established lack of proper disclosure that contractors would make calls; do not assert that the possibility of information sharing was itself undisclosed. Ledger: MUSE-HC-012.",
+   "stage1_issue": "適切な開示なしにテストしたことは支えられますが、「人間が電話を担当すること」および「情報が共有される可能性」について説明がなかった、と対象を具体化する部分はLedgerにありません。 / 人間が電話を担当したテストに加え、情報共有の可能性について説明がなかったと述べていますが、その点はこのfactでは確認されていません。 / 情報共有の可能性について説明がなかったという点は、Ledgerでは従業員の懸念として記載されており、説明がなかった事実までは確認されていません。 / 人間が担当する旨の適切な開示がなかった点は一致しますが、情報共有の可能性も説明されなかったという具体的な追加主張はLedgerで確認されていません。"
+  },
+  {
+   "claim_text": "A Meta executive in charge admitted that this was a “mistake.”",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-012",
+   "dev_flags": [
+    "changed_fact",
+    "changed_actor",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-012",
+    "claim_text": "A Meta executive in charge admitted that this was a “mistake.”",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "d05d90956a004cfbacfb5221e573dd49d0ba5096fa6696e73bb35290809d5d98",
+     "85f1ffa2101b0d9a465b152587972ff59cfc4d7151368e839d15a444de0ade2e"
+    ],
+    "batch_cost_jpy": 0.63,
+    "batch_n_claims": 13
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "LedgerではMetaのSuperintelligence Labs部門の副社長が説明したとされています。「executive in charge」はその人物をテスト全体の責任者とする含みがあり、主体・役割が一致するとは確認できません。"
+  },
+  {
+   "claim_text": "The human concierge feature was temporarily rolled back.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-012",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-012",
+    "claim_text": "The human concierge feature was temporarily rolled back.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "d05d90956a004cfbacfb5221e573dd49d0ba5096fa6696e73bb35290809d5d98",
+     "85f1ffa2101b0d9a465b152587972ff59cfc4d7151368e839d15a444de0ade2e"
+    ],
+    "batch_cost_jpy": 0.63,
+    "batch_n_claims": 13
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "This incident brought those behind-the-scenes rules into the open in a striking way.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-012",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-012",
+    "claim_text": "This incident brought those behind-the-scenes rules into the open in a striking way.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "d05d90956a004cfbacfb5221e573dd49d0ba5096fa6696e73bb35290809d5d98",
+     "85f1ffa2101b0d9a465b152587972ff59cfc4d7151368e839d15a444de0ade2e"
+    ],
+    "batch_cost_jpy": 0.63,
+    "batch_n_claims": 13
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  },
+  {
+   "claim_text": "During testing, Meta’s AI phone agent sometimes had human contractors make calls without properly telling users.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-012",
+   "dev_flags": [
+    "changed_fact",
+    "changed_scope",
+    "changed_actor",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-012",
+    "claim_text": "During testing, Meta’s AI phone agent sometimes had human contractors make calls without properly telling users.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "d05d90956a004cfbacfb5221e573dd49d0ba5096fa6696e73bb35290809d5d98",
+     "85f1ffa2101b0d9a465b152587972ff59cfc4d7151368e839d15a444de0ade2e"
+    ],
+    "batch_cost_jpy": 0.63,
+    "batch_n_claims": 13
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "人間の契約スタッフが一部の電話を担当し、適切な開示がなかったことは支えられますが、誰に説明しなかったのかを「users」と特定する根拠はLedgerにありません。"
+  },
+  {
+   "claim_text": "A Meta executive in charge admitted that this was a “mistake.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-012",
+   "dev_flags": [
+    "changed_fact",
+    "changed_actor",
+    "unsupported_new_claim"
+   ],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-012",
+    "claim_text": "A Meta executive in charge admitted that this was a “mistake.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "d05d90956a004cfbacfb5221e573dd49d0ba5096fa6696e73bb35290809d5d98",
+     "85f1ffa2101b0d9a465b152587972ff59cfc4d7151368e839d15a444de0ade2e"
+    ],
+    "batch_cost_jpy": 0.63,
+    "batch_n_claims": 13
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "LedgerではMetaのSuperintelligence Labs部門の副社長が説明したとされています。「executive in charge」はその人物をテスト全体の責任者とする含みがあり、主体・役割が一致するとは確認できません。"
+  },
+  {
+   "claim_text": "” The human concierge feature was temporarily rolled back.",
+   "materiality": "ACCEPTABLE",
+   "llm_materiality": "ACCEPTABLE",
+   "basis": "none",
+   "floor_reason": null,
+   "related_fact_id": "MUSE-HC-012",
+   "dev_flags": [],
+   "detected_by": "stage1_llm",
+   "second_opinion": {
+    "instance_id": "meta_run03_advanced",
+    "cycle": 1,
+    "route": "body",
+    "claim_identity": "fact:MUSE-HC-012",
+    "claim_text": "” The human concierge feature was temporarily rolled back.",
+    "first_materiality": "ACCEPTABLE",
+    "first_basis": "none",
+    "second_materiality": "ACCEPTABLE",
+    "second_basis": "none",
+    "second_floor_reason": null,
+    "second_floor_anomaly": false,
+    "second_status": "ok",
+    "confirmed_downgrade": true,
+    "split": false,
+    "prompt_sha256": [
+     "d05d90956a004cfbacfb5221e573dd49d0ba5096fa6696e73bb35290809d5d98",
+     "85f1ffa2101b0d9a465b152587972ff59cfc4d7151368e839d15a444de0ade2e"
+    ],
+    "batch_cost_jpy": 0.63,
+    "batch_n_claims": 13
+   },
+   "rewrite_kind": "replace_with_ledger_value",
+   "rewrite_hint": "",
+   "stage1_issue": "決定論検査で戻した: negation_polarity_mismatch"
+  }
+ ],
+ "elapsed_seconds": 188.9
+}

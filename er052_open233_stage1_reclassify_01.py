@@ -13,6 +13,9 @@
 from __future__ import annotations
 
 import hashlib
+import json
+import os
+import time
 
 import er052_open233_stage1_coverage_checker_01 as cov
 
@@ -100,14 +103,42 @@ def is_protected(claim_text: str, protected_claims) -> bool:
     return False
 
 
-def claims_for_candidates(cands: list, protected_claims=()) -> tuple:
-    """(再分類対象items, 保護されたkey集合)。対象=model由来の一意claim(keyは単位ID列、Trialと同一)。cidはC1..。"""
+# OPEN-243-TRANSLATION-NG-ANALYSIS-01 委任_03 M3 / G3(Trial専用スイッチ、既定OFF、承認構成`OPEN233_APPROVED_FLOW_SWITCHES`には含めない)
+# 環境変数 OPEN233_RECLASSIFY_PROTECT_FLAGS="changed_actor"(カンマ区切り): model候補のうち、Stage 1が指定フラグをtrueにしたものは
+# 再分類の対象にせず(=除外されず)CANDIDATEのままStage 2へ渡す(fail-closed側。`is_protected`による前回指摘保護と同じ扱い)。
+# 未設定・空ならこの機能は無効で、従来と完全に同一。未知のフラグ名はValueError(黙って無視しない)。
+# 環境変数 OPEN243_G3_TELEMETRY_PATH=<jsonl>: 再分類で除外された候補のうち、Stage 1がフラグをtrueにしていたものを記録(観測のみ、API費用0)。
+PROTECT_FLAGS_ENV = "OPEN233_RECLASSIFY_PROTECT_FLAGS"
+G3_TELEMETRY_ENV = "OPEN243_G3_TELEMETRY_PATH"
+
+
+def protect_flags_from_env() -> tuple:
+    raw = os.environ.get(PROTECT_FLAGS_ENV, "").strip()
+    if not raw:
+        return ()
+    flags = tuple(x.strip() for x in raw.split(",") if x.strip())
+    bad = [f for f in flags if f not in cov.FLAG_KEYS]
+    if bad:
+        raise ValueError(f"{PROTECT_FLAGS_ENV}: unknown flag(s) {bad}; allowed={cov.FLAG_KEYS}")
+    return flags
+
+
+def claims_for_candidates(cands: list, protected_claims=(), protect_flags=None) -> tuple:
+    """(再分類対象items, 保護されたkey集合)。対象=model由来の一意claim(keyは単位ID列、Trialと同一)。cidはC1..。
+    protect_flags(既定None=環境変数OPEN233_RECLASSIFY_PROTECT_FLAGS、未設定なら空=従来と同一): 指定フラグがtrueのmodel候補を保護する。"""
+    if protect_flags is None:
+        protect_flags = protect_flags_from_env()
     d, prot = {}, set()
+    flag_prot = set()
+    if protect_flags:
+        for c in cands:
+            if is_model(c) and any(bool((c.get("flags") or {}).get(f)) for f in protect_flags):
+                flag_prot.add(ckey(c))
     for c in cands:
         if not is_model(c):
             continue
         k = ckey(c)
-        if is_protected(c.get("claim_text"), protected_claims):
+        if is_protected(c.get("claim_text"), protected_claims) or k in flag_prot:
             prot.add(k)
             continue
         x = d.setdefault(k, {"key": k, "claim_text": c.get("claim_text") or "", "routes": [], "related": []})
@@ -136,11 +167,16 @@ def reclassify_candidates(fixture: dict, cands: list, call_fn, protected_claims=
     """(kept_cands, info)。合流前の経路別候補listを受け、model由来でCANDIDATE以外と判定されたclaimのentryを除く。
     fail-closed: call失敗・未返却・schema不一致(enum外)・call例外は全件CANDIDATE維持(除外0)。
     info.status: `no_target`(対象0件、callなし) / `ok`(callが返った。未返却claimは`n_failclosed`) / `failed`(call失敗、全件維持)。"""
-    items, prot = claims_for_candidates(cands, protected_claims)
+    _pf = protect_flags_from_env()
+    items, prot = claims_for_candidates(cands, protected_claims, _pf)
     info = {"status": "no_target", "n_entries_in": len(cands), "n_model_entries": sum(1 for c in cands if is_model(c)),
             "n_targets": len(items), "n_protected_keys": len(prot), "n_excluded_claims": 0, "n_excluded_entries": 0,
             "n_excluded_with_changed_number": 0, "n_failclosed": 0, "calls": [], "cost_jpy": 0.0, "verdicts": [],
             "effort": EFFORT, "prompt_sha256": None}
+    if _pf:  # M3 ON時のみ記録キーを足す(OFFでは従来と完全同一のキー集合)
+        info["protect_flags"] = list(_pf)
+        info["n_protected_by_flags"] = sum(
+            1 for k in {ckey(c) for c in cands if is_model(c) and any(bool((c.get("flags") or {}).get(f)) for f in _pf)})
     if not items:
         return list(cands), info
     prompt = build_prompt(fixture, items)
@@ -188,7 +224,31 @@ def reclassify_candidates(fixture: dict, cands: list, call_fn, protected_claims=
             continue
         kept.append(c)
     info["n_excluded_claims"] = len(drop_keys)
+    _g3_record_excluded_flags(cands, drop_keys, info)
     return kept, info
+
+
+def _g3_record_excluded_flags(cands: list, drop_keys: set, info: dict) -> None:
+    """G3(観測のみ、API費用0): OPEN243_G3_TELEMETRY_PATH設定時だけ、再分類で除外された候補のうちStage 1が
+    フラグをtrueにしていたものをjsonlへ追記する。未設定なら何もしない(infoも変更しない)。"""
+    path = os.environ.get(G3_TELEMETRY_ENV)
+    if not path:
+        return
+    recs = []
+    for c in cands:
+        if is_model(c) and ckey(c) in drop_keys:
+            fl = [f for f in cov.FLAG_KEYS if (c.get("flags") or {}).get(f)]
+            if fl:
+                v = next((x for x in info.get("verdicts", []) if x.get("key") == ckey(c)), {})
+                recs.append({"kind": "reclassify_excluded_flagged", "key": ckey(c), "claim": c.get("claim_text"), "flags": fl,
+                             "verdict": v.get("verdict"), "reason": v.get("reason"), "prompt_sha256": info.get("prompt_sha256"),
+                             "ts": time.strftime("%Y-%m-%dT%H:%M:%S")})
+    info["g3_n_excluded_flagged"] = len(recs)
+    if recs:
+        os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+        with open(path, "a", encoding="utf-8") as f:
+            for r in recs:
+                f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
 
 def make_candidate_filter(fixture: dict, call_fn, protected_claims=()):
