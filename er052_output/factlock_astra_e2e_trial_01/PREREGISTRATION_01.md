@@ -9,6 +9,7 @@ Status: 事前登録(DESIGN_READY。Fable・ユーザーの実行Go前は案、G
 |---|---|---|
 | v1 | 初版(委任_01) | ユーザー決定1〜5 |
 | v2 | §5-8を確定(案B新腕=B1)、分母を予定run数(各腕20)に固定しSTOPを独立カテゴリに、2-1「1テーマでも悪化」を要確認フラグ化、2-2(EN)/2-3(JA)の軽微二重計上を解消、2-4 EN STOP率を厳格化、追加指標(人手介入必要率・初回JA_RECHECK率・新規具体主張(ii)・shadow_stop)、盲検の限界・rejected本文のラベル対象化、B3注記仕様 v1と独立二重注記を固定設定に追加 | ユーザー決定6・7、Opus条件Aレビュー論点2・3・5・6(`docs/pm/opus_a_review_factlock_astra_e2e_01.md`、Fable採用判断済み) |
+| v2.1 | §5-11を追加(B3由来NGの別集計。台帳外の記述[`unmapped_claims`]由来のNGをFact Lock起因に数えない)。B3注記仕様 v2(`B3_ANNOTATION_SPEC_v2*.md`)をsha256固定の対象に指定 | B3注記仕様 v1のOpusレビュー点7(`docs/pm/opus_a_review_factlock_astra_e2e_01.md`、Fable採用判断済み、委任_04) |
 
 ## 1. 対象・比較単位
 - 比較は**同一テーマの新腕 対 旧腕**の対(paired)。対の数 n=10記事。Checker runは予定数が腕あたり20(10記事×Advanced/Standard)、全体で最大40。
@@ -97,6 +98,7 @@ Status: 事前登録(DESIGN_READY。Fable・ユーザーの実行Go前は案、G
 8. 既存のretry/fallback/regeneration機構の上限回数・安全装置(Gate、must-fix1回、STOP、承認スイッチ)を回避・無効化しない。**【確定(v2)】案B(JA再確認)の回復手段は、旧腕=Production(Luna Writer再生成)、新腕=B1(新Writerの再実行: Fact Lock R0に既存must-fixブロック`original_must_fix`を付けて再生成→Astra R1→R2[系列X逐語]→後処理→EN再実行、1記事1回、Trial全体上限3回、超過はSTOP記録)**。新腕のR2後FC MAJORも同じ回復経路(1記事1回)に統一する(Production等価性)。この確定はユーザー決定6とOpus条件Aレビュー論点2・3による。
 9. Production経路(正式path)の編集は本Trialでは行わない。単価登録((a))は別commitでFable承認後。
 10. (v2追加)旧4テーマでresearch/B3のAPI呼び出し(web_search含む)を検出したら即停止する(再実行によるB3原文の変化=凍結違反を防ぐ)。
+11. (v2.1追加、B3由来NGの別集計)B3注記で台帳に無い記述として`unmapped_claims`に記録された文(新事実・新数値・新因果・一般化・具体化・限定)に由来するNGは「B3由来」として**両腕で別集計**し、Fact Lockの有無に起因するNGに数えない(結果を見た後にこの区分を変更しない)。STOP判定も、B3注記の2条件(Storylineの主張自体が台帳に無い/台帳に無い数字がE1・E2'適格の形で記事の中心にある)に限る。注記者用仕様・委任テンプレート・検証/統合/監査スクリプトのsha256は`B3_SPEC_V2_SHA256.json`に記録し、Trial開始後に変更しない。
 
 ## 6. ラベル運用(事前固定)
 - 対象: JA最終本文(新/旧)、EN最終本文(Advanced/Standard、新/旧)、STOP記事の`rejected_*.md`(別枠)。腕・順序を隠したコピーを作る(JAは文体差で腕が推測可能=盲検不完全)。
