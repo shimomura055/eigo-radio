@@ -20391,3 +20391,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **cap再設定**: runnerのcapをguard基準 `--cap-jpy 1000 --alert-jpy 850`(guard/raw比約1.4のためraw換算約715)。加えてrunner台帳rawが800円に達したら即停止。B1回復は残り1回(超過はSTOP記録)。round2のworker割付は worker5=byd_recall/central_bank_mortgage、worker6=openai_copyright/semiconductor_earnings、worker7=streaming_price。
 - **結果(参考、判定ではない)**: G2完走。台帳raw 459.04 / guard 625.89、Trial累計約638.03。B1回復は3/3消費、semiconductor新Advは上限拒否でSTOP記録。
 - **Status**: Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言。
+
+
+## FACTLOCK-ASTRA-E2E-TRIAL-01 委任_15: G2完了後のラベル集約・判定線の機械照合・Fable判定待ち(2026-10-09、MEASURED)
+- **経緯**: G2完了(委任_13、全9テーマ両腕)後、委任_14a〜cでSonnet 3 workerが盲検ラベルを付け(暫定推測、`label_source`付き)、委任_15で統合(`labels_merged.jsonl` 553行)・事前登録の判定線への機械照合・評価文書・ユーザー確認パックを作成(API支出¥0)。
+- **機械照合の結果(最終判定ではない)**: 重大=判定不能(床効果、出荷本文の重大残存は両腕0)、軽微JA/EN=同等または判定不能、EN STOP率(Adv/Std)=同等、Rewrite率=同等、人手介入必要率=同等(新0.333対旧0.333、層別は反対方向)、総合=同等/混在。費用は新約¥43.9/記事対旧約¥7.1/記事。
+- **Fable判定待ち**: 判定線の最終判定、境界例11件の扱い、OPEN項目候補10件の起票要否、集計scriptの帰属誤り(旧腕EN STOPのレベル、M1発火)の扱い。ユーザー人間確認(`HUMAN_CHECK_E2E_01.md`、byd_recall・openai_copyright・central_bank_mortgage+基準質問1)待ち。
+- **Status**: MEASURED(ラベル暫定)。Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言。`CURRENT_SPEC.md`・`OPEN_ITEMS.md`は未編集。

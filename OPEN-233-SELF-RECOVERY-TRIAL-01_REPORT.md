@@ -5908,3 +5908,33 @@ MEASURED(人間確認待ち)。Production変更なし(VALIDATED/APPROVED_FOR_PRO
 
 ### Status
 MEASURED(Trial、Production変更なし、フラグ既定OFF)。採否判断はFable・ユーザー(Production採用は`APPROVED_FOR_PRODUCTION`が必要)。
+
+
+## §111 FACTLOCK-ASTRA-E2E-TRIAL-01(2026-10-09、MEASURED・ラベル暫定・Fable判定待ち)
+
+- 位置づけ: Trial/DEV(Production変更なし)。**VALIDATED/APPROVED_FOR_PRODUCTION は宣言しない**。到達Status=MEASURED、盲検ラベルはSonnet 3 workerの暫定推測(ユーザー確認前)、判定線の最終判定はFable待ち(空欄)。詳細は `er052_output/factlock_astra_e2e_trial_01/eval/EVAL_E2E_01.md`(2節に機械照合表)、ユーザー確認パックは `.../eval/HUMAN_CHECK_E2E_01.md`。
+- 経緯: 設計(DESIGN_E2E_01 v1→v2、委任_01・03)→Opus条件Aレビュー(論点8件採否、`docs/pm/opus_a_review_factlock_astra_e2e_01.md`)→B3注記仕様 v1→v2(委任_02・04、Opus所見8件反映、sha256固定)→前提作業(a)〜(m)実装・G0 dry-run(委任_05)→Stage R(研究・台帳・B3、委任_06〜10、inbound_tourismは注記不能で除外しn=9)→G1カナリア(委任_11、META新腕完走・旧腕Advanced経路は未実証)→G2 round1(旧4テーマ、委任_12、runner欠陥[worker_shadow]1件修正)→G2 round2(新5テーマ、委任_13)→ラベル付け(委任_14a〜c、Sonnet x3)→本集約(委任_15、API支出¥0)。
+- 構成: 同一テーマの新腕対旧腕(n=9: 旧4=meta/hormuz/space_weapons/small_bag、新5=byd_recall/central_bank_mortgage/openai_copyright/semiconductor_earnings/streaming_price)。新腕=B3注記版+Fact Lock R0+gpt-6-astra R1/R2(系列X)+B1回復+M1(Adv)/M3+Checker(承認スイッチ)。旧腕=Production相当(Luna、案B)。予定run各腕18、分母は予定run数(STOPは独立カテゴリ)。
+- 結果表(事前登録の線への**機械当てはめ**。最終判定はFable):
+  | 指標 | 新 | 旧 | 機械判定 |
+  |---|---|---|---|
+  | 2-1 出荷最終本文の重大残存 | 0 | 0 | 判定不能(床効果)。要確認フラグ: なし(境界例11件は人間確認待ち) |
+  | 2-2 軽微 JA列(claim単位、対6テーマ) | 5(平均0.83) | 9(平均1.50) | 同等(平均比0.56は良化線だが新が少ない対3/4で「6対以上」に届かない) |
+  | 2-2 軽微 EN Adv列(対4テーマ) | 3 | 3 | 同等 |
+  | 2-2 軽微 EN Std列 | 5(4本) | 4(5本) | 判定不能(対のある対が1) |
+  | 2-4 EN STOP率 Adv / Std(分母9) | 0.22 / 0.22 | 0.00 / 0.22 | 両レベル同等(差2記事<3記事、Stdは差0) |
+  | 2-5 Rewrite率(分母18) | 0.111 | 0.167 | 同等 |
+  | 2-5 Human Review | 0 | 0 | 判定不能(床効果) |
+  | 2-5 人手介入必要率(分母18) | 0.333 | 0.333 | 同等。層別は反対方向(旧4: 0.125 対 0.625、新5: 0.50 対 0.10) |
+  | 総合(参考) | 良化0・悪化0 | | 同等/混在 |
+  | 記述: JA R2 FC MAJOR / (ii)最終 | 0 / 2 | 4 / 15(うち7は案B前本文) | 判定外 |
+  | 記述: 初回JA_RECHECK / B1発動 | 4/9 / 3(完走1) | 3/9 / (案B 3、成功1) | 判定外 |
+- 費用(raw=登録単価xトークン、guard=Astra分x1.5、請求照合未実施): 台帳(G1+G2) raw ¥459.04 / guard ¥625.89、Stage R込みTrial累計 raw ¥638.03。新腕 raw ¥395.12(Astra R1+R2 ¥336.71、B1再支出推定 ¥102.99)対 旧腕 ¥63.92。Astra R1+R2は1生成 raw ¥30.6(設計見積¥27〜34の範囲内)。1記事 新約¥43.9 対 旧約¥7.1(全9記事平均)。
+- ラベル要約: 出荷本文の重大見逃しは両腕0(3 worker一致)。境界例11件(出荷本文に残る4〜5件: space両腕の不在・秘匿の断定、byd新の見出し無留保、streaming旧の時制、space新の単複差[Advのみ])。STOP9記事(新5・旧4)の内訳は、重大(境界)1・軽微起因6・偽陽性2。B1は3発動で完走1(純効果は疑問、raw約¥103)。
+- 注目所見: (1)新腕のJA段の良化は検出器・FC上は明確(MAJOR 0対4、(ii) 2対15)だが、ラベル上は旧腕指摘の大半が偽陽性で、実質の軽微差は小さい。(2)新腕固有のSTOP要因: B3注記のqualifier文(semiconductor新EN Adv、確認済み)、周辺扱い注記(central新R0、因果未検証)、単複差の機械floor(space新Std)。(3)旧腕Standard Checkerの小数点文分割断片が不要Rewrite 7件中6件・軽微劣化2件の原因。(4)**集計scriptの帰属誤り**: 旧腕EN STOPはAdvではなくStandard、M1発火のStandard値はattempt2存在でありM1ではない(M1発火は新space Advの1回のみ、B1後の最終本文には効果が残らない)。EVAL 3-4節。
+- 限界: n=9、各腕n=1生成、ラベルはSonnet暫定推測、盲検不完全(Astra/Luna文体差、新931字対旧740字)、旧腕(ii)15のうち7は案B前本文、M1 Standard未測定、請求照合未実施、B3は人手注記の上限性能、B1上限(Trial 3回)の順序依存。Production採用提案前にはOpus独立技術レビュー(条件C)が必要。
+- OPEN項目候補(起票はFable判断、`OPEN_ITEMS.md`は未編集): Checker小数点文分割、B3自動注記、EN段ja_source/translation MAJORの過剰ブロック、B1回復の扱い、B3注記の副作用、集計scriptの帰属誤り、FC/EN deviation判定の再現性、不在・非公開の断定と単複差の基準、M1のStandard枝/B1後の再出現、面白さ比較。
+- 成果物: `er052_output/factlock_astra_e2e_trial_01/eval/{EVAL_E2E_01.md,HUMAN_CHECK_E2E_01.md,labels_merged.jsonl,labels_merged_stats.json,merge_labels_01.py,judge_table_01.py,judge_table_01.json,build_human_check_01.py,labels_w{1,2,3}.jsonl,labels_w{1,2,3}_summary.md}`、`.../runs/final_aggregate/`(集計)。
+
+### Status
+MEASURED(Trial、Production変更なし)。ラベル暫定・盲検不完全・n=9。判定線の最終判定はFable、境界例はユーザー人間確認待ち(HUMAN_CHECK_E2E_01.md)。VALIDATED/APPROVED_FOR_PRODUCTION未宣言。
