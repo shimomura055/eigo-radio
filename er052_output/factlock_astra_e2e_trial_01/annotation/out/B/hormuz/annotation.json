@@ -2,157 +2,200 @@
   "slug": "hormuz",
   "annotator": "B",
   "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
-  "brief_sha256": "c884047d621da143545c5ef7d774e370628ef62987caf94823c0e6f19471706a",
-  "facts": [],
+  "brief_sha256": "73afafe8c17aac57da2f2f7034f4200c32c1a4dfdf62a2e421d265fb33a708cf",
+  "facts": [
+    {
+      "n": 1,
+      "ledger_ids": [
+        "HF-002"
+      ]
+    },
+    {
+      "n": 2,
+      "ledger_ids": [
+        "HF-006"
+      ]
+    },
+    {
+      "n": 3,
+      "ledger_ids": [
+        "HF-007"
+      ]
+    },
+    {
+      "n": 4,
+      "ledger_ids": [
+        "HF-009"
+      ]
+    }
+  ],
   "numbers": [
     {
       "surface": "20％",
       "kind": "magnitude",
-      "concept": "C_rate",
+      "concept": "C_rate20",
       "ledger_ids": [
         "HF-002",
         "HF-003",
         "HF-007"
       ],
       "class": "core",
-      "role": "提案された償還率(Storyline量)"
-    },
-    {
-      "surface": "約25時間",
-      "kind": "magnitude",
-      "concept": "C_25h",
-      "ledger_ids": [],
-      "class": "peripheral",
-      "role": "提案から置換までの経過時間(丸め表現、台帳外)"
+      "role": "償還料案の率(Storylineに出る量)"
     },
     {
       "surface": "7月13日",
       "kind": "date_time",
-      "concept": "C_0713",
+      "concept": "C_jul13",
       "ledger_ids": [
         "HF-002",
-        "HF-003"
+        "HF-003",
+        "HF-005",
+        "HF-006"
       ],
       "class": "peripheral",
-      "role": "償還率提案の日"
+      "role": "償還料案の投稿日・Brent急騰日"
     },
     {
-      "surface": "約24時間48分",
+      "surface": "7.29ドル",
       "kind": "magnitude",
-      "concept": "C_24h48",
+      "concept": "C_brent_chg_abs",
       "ledger_ids": [
-        "HF-007"
+        "HF-006"
       ],
-      "class": "peripheral",
-      "role": "提案から置換までの経過時間"
+      "class": "core",
+      "role": "7月13日のBrent前日比上げ幅"
+    },
+    {
+      "surface": "9.59％",
+      "kind": "magnitude",
+      "concept": "C_brent_chg_pct",
+      "ledger_ids": [
+        "HF-006"
+      ],
+      "class": "core",
+      "role": "7月13日のBrent前日比上昇率"
+    },
+    {
+      "surface": "83.30ドル",
+      "kind": "magnitude",
+      "concept": "C_brent_settle_0713",
+      "ledger_ids": [
+        "HF-005",
+        "HF-006"
+      ],
+      "class": "core",
+      "role": "7月13日のBrent清算値"
     },
     {
       "surface": "7月14日",
       "kind": "date_time",
-      "concept": "C_0714",
+      "concept": "C_jul14",
       "ledger_ids": [
-        "HF-007"
+        "HF-007",
+        "HF-008",
+        "HF-009",
+        "HF-010",
+        "HF-011"
       ],
       "class": "peripheral",
-      "role": "置換投稿の日"
+      "role": "償還料案の撤回・置換日"
     },
     {
       "surface": "約2.6％",
       "kind": "magnitude",
-      "concept": "C_up26",
+      "concept": "C_brent_up_snapshot",
       "ledger_ids": [
         "HF-009"
       ],
-      "class": "core",
-      "role": "報道時点のBrent上昇率"
+      "class": "peripheral",
+      "role": "記事掲載時点のBrent上昇率"
     },
     {
       "surface": "1バレル85ドル超",
       "kind": "magnitude",
-      "concept": "C_p85",
+      "concept": "C_brent_85",
       "ledger_ids": [
-        "HF-009",
-        "HF-004"
+        "HF-009"
       ],
-      "class": "core",
-      "role": "報道時点のBrent価格"
+      "class": "peripheral",
+      "role": "記事掲載時点のBrent価格水準"
     }
   ],
   "unmapped_claims": [
     {
-      "text": "約25時間後",
-      "type": "new_number"
+      "text": "相場では案の撤回後も地政学的リスクが意識されていた",
+      "type": "generalization"
     }
   ],
   "annotation_notes": [
     {
-      "where": "Selected Facts節全体",
-      "question": "項目が「Storyline:」重複行と「素材:」行のみで、【事実N】を付ける対象項目が無い",
+      "where": "概念数 n=8 (20％, 7月13日, 7月14日, 7.29ドル, 9.59％, 83.30ドル, 約2.6％, 85ドル超)",
+      "question": "上限の計算",
       "options": [
-        "素材行に【事実N】を付ける",
-        "付けない"
+        "3",
+        "4"
       ],
-      "chosen": "付けない(facts空)",
-      "rule": "§2 / §5-6"
+      "chosen": "4",
+      "rule": "§3-5-3 max(3,min(6,floor(8/2)))=4"
     },
     {
-      "where": "約25時間後(Storyline)",
-      "question": "台帳(HF-007)は約24時間48分後。丸め表現で台帳に無い数値。STOP(ii)に該当しうるか",
-      "options": [
-        "STOP",
-        "unmappedに記録して継続"
-      ],
-      "chosen": "依頼文(b)に従い新数値(丸め)として記録し継続。STOP判定は統合時",
-      "rule": "§4 / 依頼文(b)"
-    },
-    {
-      "where": "約25時間",
-      "question": "ledger_idsが空で中核にできない",
+      "where": "概念 C_brent_up_snapshot (約2.6％)",
+      "question": "適格だが上限4の外",
       "options": [
         "中核",
         "周辺"
       ],
       "chosen": "周辺",
-      "rule": "§3-4"
+      "rule": "§3-5-6 cap超過で周辺化"
     },
     {
-      "where": "約24時間48分",
-      "question": "numeric_value欄に無く(HF-007の注記にのみ記載)、適格性を確認できない",
+      "where": "概念 C_brent_85 (1バレル85ドル超)",
+      "question": "適格だが上限4の外",
       "options": [
         "中核",
         "周辺"
       ],
-      "chosen": "周辺(ledger_idsはHF-007)",
-      "rule": "§5-2"
+      "chosen": "周辺",
+      "rule": "§3-5-6 cap超過で周辺化"
     },
     {
-      "where": "概念 C_0713 / C_0714",
-      "question": "日付は適格(HF-002/HF-003の2026-07-13、HF-007の2026-07-14と月日一致)だが上限3の外",
+      "where": "概念 C_jul13 / C_jul14",
+      "question": "日付は適格だが優先順位が量より後で上限の外",
       "options": [
         "中核",
         "周辺"
       ],
-      "chosen": "周辺 (cap超過で周辺化)",
-      "rule": "§3-5-6"
+      "chosen": "周辺",
+      "rule": "§3-5-6 cap超過で周辺化"
     },
     {
-      "where": "7月13日午前",
-      "question": "「午前」を表記に含めるか",
+      "where": "表記 1バレル85ドル超",
+      "question": "先頭の「1バレル」の1を表記に含めるか",
       "options": [
-        "7月13日",
-        "7月13日午前"
+        "1バレル85ドル超",
+        "85ドル超"
       ],
-      "chosen": "7月13日(時刻の数字を含まないため)",
-      "rule": "§3-1 / §5-5"
+      "chosen": "1バレル85ドル超(数字に直接つく単位句として1つの表記)",
+      "rule": "§3-1"
     },
     {
-      "where": "概念 C_p85",
-      "question": "HF-004にもBrent約85ドルがある",
+      "where": "事実2 の項目(3文)",
+      "question": "分けるか",
       "options": [
-        "HF-009のみ",
-        "HF-009とHF-004"
+        "分ける",
+        "分けない"
       ],
-      "chosen": "両方を併記",
+      "chosen": "分けない(全文がHF-006を根拠とし、限定文は直前と同事実)",
+      "rule": "§2 / §5-1"
+    },
+    {
+      "where": "表記 83.30ドル",
+      "question": "紐付く台帳が複数(HF-005, HF-006)",
+      "options": [
+        "HF-006のみ",
+        "両方"
+      ],
+      "chosen": "両方",
       "rule": "§5-4"
     }
   ]

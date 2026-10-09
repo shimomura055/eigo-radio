@@ -1,2 +1,38 @@
-=== STOP ===
-仕様4(ii)に該当。Storylineの「単体プラン3種」の「3種」は、算用数字を含む量(magnitude)の形で、台帳に載っていない数字である。台帳F02・F03・F04の numeric_value はそれぞれ「1種」(numeric_scope)を示すだけで、「3種」という数は台帳のどこにも書かれていない(3つのプランを数え上げた合算値であり、台帳外の導出)。仕様3-4により台帳に無い量は中核にできず、かつ仕様4(ii)により台帳に無い数字が中核になりうる量の形でStorylineにあるため、注記をやめる。なお、Storylineの「2026年10月8日」は台帳F01の調査基準日として台帳内にあり、これ自体はSTOP理由ではない。
+=== ANNOTATED_BRIEF_BEGIN ===
+# Selected Fact Brief
+
+## Storyline
+調査で確認できた主要な米国向け発表の範囲で最も新しいDisney+の2026年9月23日【周辺数値】の値上げでは、米国の広告付き単体月額とPremiumの月額・年額が改定され、新規契約者と既存契約者で適用時期が分かれる一方、確認資料からはDisneyが示した理由を特定できない。
+
+## Selected Facts
+- 【事実1】対象は、2026年10月8日【周辺数値】までの調査で確認できた主要な米国向け発表の範囲。Disney+の広告付き単体月額は11.99ドル【中核数値】から12.49ドル【中核数値】へ、Premium単体月額は18.99ドル【中核数値】から21.49ドル【中核数値】へ、Premium単体年額は189.99ドル【周辺数値】から214.99ドル【周辺数値】へ改定。新規契約者向けの新価格は2026年9月23日【周辺数値】からで、それ以前に契約した利用者には2026年10月21日【周辺数値】以降の請求サイクルから適用される。既存契約者への適用日は個々の請求サイクルによる。確認したDisney+米国価格ページとReuters報道では、Disneyが今回の改定理由を明示した記述は確認できず、Reutersは同社がコメント要請に直ちには回答しなかったと報じている。第三者請求パートナー経由では価格や適用条件が異なる場合がある。
+=== ANNOTATED_BRIEF_END ===
+=== SIDECAR_JSON_BEGIN ===
+{
+  "slug": "streaming_price", "annotator": "B",
+  "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+  "brief_sha256": "776ac8d80c32dbeda5c60ae37dd86a24e13e0df40a4f1368bdfeba1b9cc7625d",
+  "facts": [ {"n": 1, "ledger_ids": ["F01", "F02", "F03", "F04", "F05", "F06", "F07"]} ],
+  "numbers": [
+    {"surface": "2026年9月23日", "kind": "date_time", "concept": "C_date_0923", "ledger_ids": ["F01", "F02", "F03", "F04", "F05", "F06"], "class": "peripheral", "role": "Disney+値上げ発表日・新規契約者向け新価格の開始日"},
+    {"surface": "2026年10月8日", "kind": "date_time", "concept": "C_date_1008", "ledger_ids": ["F01"], "class": "peripheral", "role": "調査基準日"},
+    {"surface": "11.99ドル", "kind": "magnitude", "concept": "C_ads_old", "ledger_ids": ["F02"], "class": "core", "role": "広告付き単体月額の旧価格"},
+    {"surface": "12.49ドル", "kind": "magnitude", "concept": "C_ads_new", "ledger_ids": ["F02"], "class": "core", "role": "広告付き単体月額の新価格"},
+    {"surface": "18.99ドル", "kind": "magnitude", "concept": "C_prem_m_old", "ledger_ids": ["F03"], "class": "core", "role": "Premium単体月額の旧価格"},
+    {"surface": "21.49ドル", "kind": "magnitude", "concept": "C_prem_m_new", "ledger_ids": ["F03"], "class": "core", "role": "Premium単体月額の新価格"},
+    {"surface": "189.99ドル", "kind": "magnitude", "concept": "C_prem_y_old", "ledger_ids": ["F04"], "class": "peripheral", "role": "Premium単体年額の旧価格"},
+    {"surface": "214.99ドル", "kind": "magnitude", "concept": "C_prem_y_new", "ledger_ids": ["F04"], "class": "peripheral", "role": "Premium単体年額の新価格"},
+    {"surface": "2026年10月21日", "kind": "date_time", "concept": "C_date_1021", "ledger_ids": ["F02", "F03", "F04", "F06"], "class": "peripheral", "role": "既存契約者の価格変更が始まる請求サイクルの基準日"}
+  ],
+  "unmapped_claims": [],
+  "annotation_notes": [
+    {"where": "Selected Facts 節の段落全体", "question": "文の境目で分けるか(F01 / F02-F04 / F06 / F07 / F05 と5つ以上の別々の台帳IDの群に分かれる)", "options": ["5群に分ける", "3群までに分ける", "分けない"], "chosen": "分けない(1つの事実に台帳ID F01〜F07を併記)", "rule": "§2 / §5-1(4つ以上に分けたくなったら分けない)"},
+    {"where": "概念 C_prem_y_old / C_prem_y_new", "question": "適格だが上限4の外", "options": ["中核", "周辺"], "chosen": "周辺", "rule": "§3-5-6 cap超過で周辺化"},
+    {"where": "概念 C_date_0923", "question": "日付は適格(F01・F02〜F06のdate_or_period先頭の日付2026-09-23と一致)だが優先順で量の後ろにあり上限の外", "options": ["中核", "周辺"], "chosen": "周辺", "rule": "§3-5-6 cap超過で周辺化"},
+    {"where": "概念 C_date_1008 / C_date_1021", "question": "date_or_period欄の先頭の日付表現(2026-09-23または発表日2026-09-23)と一致しない(2026-10-08は調査基準日で先頭ではなく、2026-10-21は2番目の日付)ため不適格", "options": ["中核", "周辺"], "chosen": "周辺", "rule": "§3-5-2 / §5-2"},
+    {"where": "2026年10月21日以降", "question": "「以降」をヘッジ語として表記に含めるか", "options": ["含める", "含めない"], "chosen": "含めない(仕様のヘッジ語リストに無い)", "rule": "§3-1 / §5-5"},
+    {"where": "概念数 n=9(日付3 + 価格6)", "question": "上限の計算", "options": ["3", "4"], "chosen": "4(n=8〜9)。Storylineに量(magnitude/range)は無いため、優先順は(2)他の量(上から)→(3)日付", "rule": "§3-5-3 / §3-5-4"},
+    {"where": "F01 / F07(AMBIGUOUS)", "question": "AMBIGUOUS台帳IDを事実の根拠にしてよいか", "options": ["根拠にする(ledger_idsに記録)", "記録しない"], "chosen": "根拠として記録(曖昧さは保持され、ニュース欄の文言は台帳の範囲内)", "rule": "§5-4"}
+  ]
+}
+=== SIDECAR_JSON_END ===

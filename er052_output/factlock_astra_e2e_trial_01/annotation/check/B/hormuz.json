@@ -149,82 +149,110 @@
     "strict_equal_after_strip": true,
     "inserted_split_breaks": 0,
     "inserted_bullet_markers": 0,
-    "brief_sha256": "5275d5ba683bc176bb4654e1811e9e5eb98d71f7260eee9f61fdecba7e5be7a9",
-    "stripped_annotated_sha256": "5275d5ba683bc176bb4654e1811e9e5eb98d71f7260eee9f61fdecba7e5be7a9"
+    "brief_sha256": "773d7b1d02a10d05b62343915688d70f26cee386cb52b69b5d3f0890b01354d5",
+    "stripped_annotated_sha256": "773d7b1d02a10d05b62343915688d70f26cee386cb52b69b5d3f0890b01354d5"
   },
   "d_sequence": {
-    "status": "FAIL",
-    "fact_numbers": [],
-    "problems": [
-      "【事実N】が0件"
-    ]
+    "status": "PASS",
+    "fact_numbers": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "problems": []
   },
   "b_ledger_mapping": {
     "status": "PASS",
-    "mapping": {},
+    "mapping": {
+      "1": [
+        "HF-002"
+      ],
+      "2": [
+        "HF-006"
+      ],
+      "3": [
+        "HF-007"
+      ],
+      "4": [
+        "HF-009"
+      ]
+    },
     "problems": [],
-    "warnings": []
+    "warnings": [],
+    "ambiguous_fact": {}
   },
   "c_numbers": {
     "status": "PASS",
     "problems": [],
-    "warnings": [
-      "約25時間: ledger_ids [] が台帳にない"
-    ],
+    "warnings": [],
     "surface_diff": [
       {
         "surface": "1バレル85ドル超",
         "ledger_ids": [
-          "HF-009",
-          "HF-004"
+          "HF-009"
         ]
       }
     ],
     "eligibility": {
-      "C_rate": [
+      "C_rate20": [
         "E1"
       ],
-      "C_25h": [],
-      "C_0713": [
+      "C_jul13": [
         "E2p"
       ],
-      "C_24h48": [],
-      "C_0714": [
-        "E2p"
-      ],
-      "C_up26": [
+      "C_brent_chg_abs": [
         "E1"
       ],
-      "C_p85": [
+      "C_brent_chg_pct": [
+        "E1"
+      ],
+      "C_brent_settle_0713": [
+        "E1"
+      ],
+      "C_jul14": [
+        "E2p"
+      ],
+      "C_brent_up_snapshot": [
+        "E1"
+      ],
+      "C_brent_85": [
         "E1"
       ]
     },
-    "countable_concepts": 7,
-    "core_cap": 3,
+    "countable_concepts": 8,
+    "core_cap": 4,
     "expected_core_concepts": [
-      "C_rate",
-      "C_up26",
-      "C_p85"
+      "C_rate20",
+      "C_brent_chg_abs",
+      "C_brent_chg_pct",
+      "C_brent_settle_0713"
     ],
     "declared_core_concepts": [
-      "C_p85",
-      "C_rate",
-      "C_up26"
+      "C_brent_chg_abs",
+      "C_brent_chg_pct",
+      "C_brent_settle_0713",
+      "C_rate20"
     ],
     "cap_dropped_concepts": [
-      "C_0713",
-      "C_0714"
+      "C_brent_up_snapshot",
+      "C_brent_85",
+      "C_jul13",
+      "C_jul14"
     ],
-    "cap_dropped_count": 2,
+    "cap_dropped_count": 4,
     "eligible_concepts": [
-      "C_rate",
-      "C_up26",
-      "C_p85",
-      "C_0713",
-      "C_0714"
+      "C_rate20",
+      "C_brent_chg_abs",
+      "C_brent_chg_pct",
+      "C_brent_settle_0713",
+      "C_brent_up_snapshot",
+      "C_brent_85",
+      "C_jul13",
+      "C_jul14"
     ],
     "concept_detail": {
-      "C_rate": {
+      "C_rate20": {
         "kind": "magnitude",
         "eligible": [
           "E1"
@@ -233,39 +261,16 @@
         "in_storyline": true,
         "expected_class": "core"
       },
-      "C_25h": {
-        "kind": "magnitude",
-        "eligible": [],
-        "group": 0,
+      "C_jul13": {
+        "kind": "date_time",
+        "eligible": [
+          "E2p"
+        ],
+        "group": 2,
         "in_storyline": true,
         "expected_class": "peripheral"
       },
-      "C_0713": {
-        "kind": "date_time",
-        "eligible": [
-          "E2p"
-        ],
-        "group": 2,
-        "in_storyline": false,
-        "expected_class": "peripheral"
-      },
-      "C_24h48": {
-        "kind": "magnitude",
-        "eligible": [],
-        "group": 1,
-        "in_storyline": false,
-        "expected_class": "peripheral"
-      },
-      "C_0714": {
-        "kind": "date_time",
-        "eligible": [
-          "E2p"
-        ],
-        "group": 2,
-        "in_storyline": false,
-        "expected_class": "peripheral"
-      },
-      "C_up26": {
+      "C_brent_chg_abs": {
         "kind": "magnitude",
         "eligible": [
           "E1"
@@ -274,7 +279,7 @@
         "in_storyline": false,
         "expected_class": "core"
       },
-      "C_p85": {
+      "C_brent_chg_pct": {
         "kind": "magnitude",
         "eligible": [
           "E1"
@@ -282,24 +287,58 @@
         "group": 1,
         "in_storyline": false,
         "expected_class": "core"
+      },
+      "C_brent_settle_0713": {
+        "kind": "magnitude",
+        "eligible": [
+          "E1"
+        ],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "core"
+      },
+      "C_jul14": {
+        "kind": "date_time",
+        "eligible": [
+          "E2p"
+        ],
+        "group": 2,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      },
+      "C_brent_up_snapshot": {
+        "kind": "magnitude",
+        "eligible": [
+          "E1"
+        ],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      },
+      "C_brent_85": {
+        "kind": "magnitude",
+        "eligible": [
+          "E1"
+        ],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "peripheral"
       }
     },
     "kanji_numeral_candidates": [],
     "percent_sign_variants": [
       "％"
     ],
-    "stop_candidates": [
-      "約25時間: 台帳に無い数字がStoryline(記事の中心)に有る [STOP候補(ii)]"
-    ]
+    "stop_candidates": []
   },
   "e_sidecar_meta": {
     "status": "PASS",
     "problems": [],
     "warnings": [],
     "unmapped_claims_by_type": {
-      "new_number": 1
+      "generalization": 1
     }
   },
   "skipped": [],
-  "verdict": "FAIL"
+  "verdict": "PASS"
 }

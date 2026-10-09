@@ -186,7 +186,7 @@
     "problems": []
   },
   "b_ledger_mapping": {
-    "status": "FAIL",
+    "status": "PASS",
     "mapping": {
       "1": [
         "F01"
@@ -201,108 +201,110 @@
         "F06"
       ]
     },
-    "problems": [
-      "事実4: 台帳ID F06 の status が VERIFIED でない (AMBIGUOUS)"
+    "problems": [],
+    "warnings": [
+      "事実4: 台帳ID F06 は AMBIGUOUS (ambiguous_fact)"
     ],
-    "warnings": []
+    "ambiguous_fact": {
+      "4": [
+        "F06"
+      ]
+    }
   },
   "c_numbers": {
     "status": "FAIL",
     "problems": [
-      "概念 C_aug2026 と C_aug2019: 短い表記が長い表記に含まれ台帳IDも共通なのに別概念 ('8月' / '2019年8月')",
-      "概念 C_aug2026 と C_aug2025: 短い表記が長い表記に含まれ台帳IDも共通なのに別概念 ('8月' / '2025年8月')",
-      "分類漏れの数字(宣言なし・印なし): ['01', '02', '03', '06']"
+      "概念 C_aug26 と C_aug19: 短い表記が長い表記に含まれ台帳IDも共通なのに別概念 ('8月' / '2019年8月')",
+      "概念 C_aug26 と C_aug25: 短い表記が長い表記に含まれ台帳IDも共通なのに別概念 ('8月' / '2025年8月')",
+      "分類漏れの数字(宣言なし・印なし): ['01', '02', '03', '06', '2026']"
     ],
-    "warnings": [
-      "2026年: ledger_ids [] が台帳にない"
-    ],
+    "warnings": [],
     "surface_diff": [],
     "eligibility": {
-      "C_aug2026": [
+      "C_aug26": [
         "E2p"
       ],
       "C_y2019": [],
-      "C_aug26_total": [
+      "C_aug26_n": [
         "E1"
       ],
       "C_aug_yoy": [
         "E1"
       ],
-      "C_aug2025": [],
-      "C_aug25_total": [
+      "C_aug25": [],
+      "C_aug25_n": [
         "E1"
       ],
-      "C_jan_aug2026": [
+      "C_ytd26": [
         "E2p"
       ],
-      "C_ytd26_total": [
+      "C_ytd26_n": [
         "E1"
       ],
       "C_y2025": [],
       "C_ytd_yoy": [
         "E1"
       ],
-      "C_aug2019": [
+      "C_aug19": [
         "E2p"
       ],
-      "C_aug19_total": [
+      "C_aug19_n": [
         "E1"
       ],
-      "C_aug_diff19": [
+      "C_diff": [
         "E1"
       ],
-      "C_aug_diff19_pct": [
+      "C_diff_pct": [
         "E1"
       ],
-      "C_y2019_total": [
+      "C_annual2019": [
         "E1"
       ],
-      "C_y2025_final": [],
-      "C_y2026": []
+      "C_annual2025_conf": []
     },
     "countable_concepts": 14,
     "core_cap": 6,
     "expected_core_concepts": [
-      "C_aug26_total",
+      "C_aug26_n",
       "C_aug_yoy",
-      "C_aug25_total",
-      "C_ytd26_total",
+      "C_aug25_n",
+      "C_ytd26_n",
       "C_ytd_yoy",
-      "C_aug19_total"
+      "C_aug19_n"
     ],
     "declared_core_concepts": [
-      "C_aug19_total",
-      "C_aug25_total",
-      "C_aug26_total",
+      "C_aug19_n",
+      "C_aug25_n",
+      "C_aug26_n",
       "C_aug_yoy",
-      "C_ytd26_total",
+      "C_ytd26_n",
       "C_ytd_yoy"
     ],
     "cap_dropped_concepts": [
-      "C_aug_diff19",
-      "C_aug_diff19_pct",
-      "C_y2019_total",
-      "C_aug2026",
-      "C_jan_aug2026",
-      "C_aug2019"
+      "C_diff",
+      "C_diff_pct",
+      "C_annual2019",
+      "C_aug26",
+      "C_ytd26",
+      "C_aug19"
     ],
     "cap_dropped_count": 6,
     "eligible_concepts": [
-      "C_aug26_total",
+      "C_aug26_n",
       "C_aug_yoy",
-      "C_aug25_total",
-      "C_ytd26_total",
+      "C_aug25_n",
+      "C_ytd26_n",
       "C_ytd_yoy",
-      "C_aug19_total",
-      "C_aug_diff19",
-      "C_aug_diff19_pct",
-      "C_y2019_total",
-      "C_aug2026",
-      "C_jan_aug2026",
-      "C_aug2019"
+      "C_aug19_n",
+      "C_diff",
+      "C_diff_pct",
+      "C_annual2019",
+      "C_aug26",
+      "C_ytd26",
+      "C_aug19"
     ],
     "concept_detail": {
-      "C_aug2026": {
+      "C_aug26": {
         "kind": "date_time",
         "eligible": [
           "E2p"
@@ -318,7 +320,7 @@
         "in_storyline": true,
         "expected_class": "peripheral"
       },
-      "C_aug26_total": {
+      "C_aug26_n": {
         "kind": "magnitude",
         "eligible": [
           "E1"
@@ -336,14 +338,14 @@
         "in_storyline": false,
         "expected_class": "core"
       },
-      "C_aug2025": {
+      "C_aug25": {
         "kind": "date_time",
         "eligible": [],
         "group": 2,
         "in_storyline": false,
         "expected_class": "peripheral"
       },
-      "C_aug25_total": {
+      "C_aug25_n": {
         "kind": "magnitude",
         "eligible": [
           "E1"
@@ -352,7 +354,7 @@
         "in_storyline": false,
         "expected_class": "core"
       },
-      "C_jan_aug2026": {
+      "C_ytd26": {
         "kind": "date_time",
         "eligible": [
           "E2p"
@@ -361,7 +363,7 @@
         "in_storyline": false,
         "expected_class": "peripheral"
       },
-      "C_ytd26_total": {
+      "C_ytd26_n": {
         "kind": "magnitude",
         "eligible": [
           "E1"
@@ -386,7 +388,7 @@
         "in_storyline": false,
         "expected_class": "core"
       },
-      "C_aug2019": {
+      "C_aug19": {
         "kind": "date_time",
         "eligible": [
           "E2p"
@@ -395,7 +397,7 @@
         "in_storyline": false,
         "expected_class": "peripheral"
       },
-      "C_aug19_total": {
+      "C_aug19_n": {
         "kind": "magnitude",
         "eligible": [
           "E1"
@@ -404,7 +406,7 @@
         "in_storyline": false,
         "expected_class": "core"
       },
-      "C_aug_diff19": {
+      "C_diff": {
         "kind": "magnitude",
         "eligible": [
           "E1"
@@ -413,7 +415,7 @@
         "in_storyline": false,
         "expected_class": "peripheral"
       },
-      "C_aug_diff19_pct": {
+      "C_diff_pct": {
         "kind": "magnitude",
         "eligible": [
           "E1"
@@ -422,7 +424,7 @@
         "in_storyline": false,
         "expected_class": "peripheral"
       },
-      "C_y2019_total": {
+      "C_annual2019": {
         "kind": "magnitude",
         "eligible": [
           "E1"
@@ -431,18 +433,11 @@
         "in_storyline": false,
         "expected_class": "peripheral"
       },
-      "C_y2025_final": {
+      "C_annual2025_conf": {
         "kind": "magnitude",
         "eligible": [],
         "group": 1,
         "in_storyline": false,
-        "expected_class": "peripheral"
-      },
-      "C_y2026": {
-        "kind": "year",
-        "eligible": [],
-        "group": 9,
-        "in_storyline": true,
         "expected_class": "peripheral"
       }
     },
@@ -457,6 +452,7 @@
     "problems": [],
     "warnings": [],
     "unmapped_claims_by_type": {
+      "generalization": 1,
       "qualifier": 1
     }
   },

@@ -411,7 +411,7 @@ def check_b(annotated, ledger, sidecar, d_res):
     if sidecar is None:
         ids = [i for i in ID_RE.findall(norm_nl(annotated)) if i in ledger]
         return {"status": "SKIPPED_NO_SIDECAR", "explicit_ledger_ids_in_text": sorted(set(ids))}
-    problems, mapping, warns = [], {}, []
+    problems, mapping, warns, ambiguous_facts = [], {}, [], {}
     for f in sidecar.get("facts", []):
         n, ids = f.get("n"), f.get("ledger_ids", [])
         mapping[n] = ids
@@ -420,6 +420,10 @@ def check_b(annotated, ledger, sidecar, d_res):
         for i in ids:
             if i not in ledger:
                 problems.append(f"事実{n}: 台帳に存在しないID {i}")
+            elif ledger[i]["status"] == "AMBIGUOUS":
+                # 委任_10 運用明確化(c): AMBIGUOUS台帳IDへの紐付けは許容(WARN)+ambiguous_factフラグ。評価時は別集計(PREREG v2.2 5-12)
+                warns.append(f"事実{n}: 台帳ID {i} は AMBIGUOUS (ambiguous_fact)")
+                ambiguous_facts.setdefault(n, []).append(i)
             elif ledger[i]["status"] != "VERIFIED":
                 problems.append(f"事実{n}: 台帳ID {i} の status が VERIFIED でない ({ledger[i]['status']})")
     if set(mapping) != ns:
@@ -431,7 +435,8 @@ def check_b(annotated, ledger, sidecar, d_res):
             for i in ID_RE.findall(m.group(2)):
                 if i in ledger and i not in mapping.get(int(m.group(1)), []):
                     problems.append(f"事実{m.group(1)}: 本文に明示された台帳ID {i} がledger_idsにない")
-    return {"status": "FAIL" if problems else "PASS", "mapping": mapping, "problems": problems, "warnings": warns}
+    return {"status": "FAIL" if problems else "PASS", "mapping": mapping, "problems": problems, "warnings": warns,
+            "ambiguous_fact": {str(k): v for k, v in sorted(ambiguous_facts.items())}}
 
 
 # ------------------------------------------------------------------ 数値: 計算

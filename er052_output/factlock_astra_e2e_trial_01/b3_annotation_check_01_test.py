@@ -303,6 +303,17 @@ class SyntheticTests(unittest.TestCase):
         led = LEDGER.replace("[VERIFIED] A-002", "[PENDING] A-002")
         r = _run(ledger=led)
         self.assertEqual(r["b_ledger_mapping"]["status"], "FAIL")
+        for st in ("NOT_VERIFIED", "REJECTED"):
+            led = LEDGER.replace("[VERIFIED] A-002", "[%s] A-002" % st)
+            self.assertEqual(_run(ledger=led)["b_ledger_mapping"]["status"], "FAIL", st)
+
+    def test_ambiguous_ledger_id_in_facts_warns_with_flag(self):
+        # 委任_10 運用明確化(c)
+        led = LEDGER.replace("[VERIFIED] A-002", "[AMBIGUOUS] A-002")
+        b = _run(ledger=led)["b_ledger_mapping"]
+        self.assertEqual(b["status"], "PASS", b)
+        self.assertTrue(b["warnings"])
+        self.assertEqual(b["ambiguous_fact"], {"2": ["A-002"]})
 
     def test_unmapped_claims_typed(self):
         side = _side(unmapped_claims=[{"text": "x", "type": "new_fact"}])

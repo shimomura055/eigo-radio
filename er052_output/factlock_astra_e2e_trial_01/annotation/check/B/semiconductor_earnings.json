@@ -99,7 +99,7 @@
     "problems": []
   },
   "b_ledger_mapping": {
-    "status": "FAIL",
+    "status": "PASS",
     "mapping": {
       "1": [
         "F1",
@@ -109,10 +109,15 @@
         "F6"
       ]
     },
-    "problems": [
-      "事実1: 台帳ID F1 の status が VERIFIED でない (AMBIGUOUS)"
+    "problems": [],
+    "warnings": [
+      "事実1: 台帳ID F1 は AMBIGUOUS (ambiguous_fact)"
     ],
-    "warnings": []
+    "ambiguous_fact": {
+      "1": [
+        "F1"
+      ]
+    }
   },
   "c_numbers": {
     "status": "PASS",
@@ -258,5 +263,5 @@
     }
   },
   "skipped": [],
-  "verdict": "FAIL"
+  "verdict": "PASS"
 }

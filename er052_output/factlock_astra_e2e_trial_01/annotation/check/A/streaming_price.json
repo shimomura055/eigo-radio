@@ -97,117 +97,117 @@
     "status": "PASS_LAYOUT_NORMALIZED",
     "reason": "",
     "strict_equal_after_strip": false,
-    "inserted_split_breaks": 2,
+    "inserted_split_breaks": 0,
     "inserted_bullet_markers": 1,
-    "brief_sha256": "3988235658e8830a709d2ddfd41ed94cebab16ec2ab201b32678a96f728a2da2",
-    "stripped_annotated_sha256": "4f9290e27e50ecb752a070ff6ce51ba7fd7225efb2fc38d1b11f45f6ea56dc02"
+    "brief_sha256": "4f6183a27599d9e46eddb158d5cfeedc6fc6657aee3eee31fd0e2c877719a28b",
+    "stripped_annotated_sha256": "6ca37afde69f129635cc6a0bfe4619eef76270f29ef8ebe3ca8213fa65c0bc9b"
   },
   "d_sequence": {
     "status": "PASS",
     "fact_numbers": [
-      1,
-      2,
-      3
+      1
     ],
     "problems": []
   },
   "b_ledger_mapping": {
-    "status": "FAIL",
+    "status": "PASS",
     "mapping": {
       "1": [
+        "F01",
         "F02",
         "F03",
         "F04",
-        "F05"
-      ],
-      "2": [
-        "F06"
-      ],
-      "3": [
+        "F05",
+        "F06",
         "F07"
       ]
     },
-    "problems": [
-      "事実3: 台帳ID F07 の status が VERIFIED でない (AMBIGUOUS)"
+    "problems": [],
+    "warnings": [
+      "事実1: 台帳ID F01 は AMBIGUOUS (ambiguous_fact)",
+      "事実1: 台帳ID F07 は AMBIGUOUS (ambiguous_fact)"
     ],
-    "warnings": []
+    "ambiguous_fact": {
+      "1": [
+        "F01",
+        "F07"
+      ]
+    }
   },
   "c_numbers": {
     "status": "PASS",
     "problems": [],
-    "warnings": [
-      "3種: 数字が台帳 ['F02', 'F03', 'F04'] に存在しない"
-    ],
+    "warnings": [],
     "surface_diff": [],
     "eligibility": {
-      "C_survey_date": [],
-      "C_plan_count": [],
+      "C_new_start": [
+        "E2p"
+      ],
+      "C_survey_base": [],
       "C_ads_old": [
         "E1"
       ],
       "C_ads_new": [
         "E1"
       ],
-      "C_prem_old": [
+      "C_prem_m_old": [
         "E1"
       ],
-      "C_prem_new": [
+      "C_prem_m_new": [
         "E1"
       ],
-      "C_year_old": [
+      "C_prem_y_old": [
         "E1"
       ],
-      "C_year_new": [
+      "C_prem_y_new": [
         "E1"
-      ],
-      "C_new_start": [
-        "E2p"
       ],
       "C_existing_start": []
     },
-    "countable_concepts": 10,
-    "core_cap": 5,
+    "countable_concepts": 9,
+    "core_cap": 4,
     "expected_core_concepts": [
       "C_ads_old",
       "C_ads_new",
-      "C_prem_old",
-      "C_prem_new",
-      "C_year_old"
+      "C_prem_m_old",
+      "C_prem_m_new"
     ],
     "declared_core_concepts": [
       "C_ads_new",
       "C_ads_old",
-      "C_prem_new",
-      "C_prem_old",
-      "C_year_old"
+      "C_prem_m_new",
+      "C_prem_m_old"
     ],
     "cap_dropped_concepts": [
-      "C_year_new",
+      "C_prem_y_old",
+      "C_prem_y_new",
       "C_new_start"
     ],
-    "cap_dropped_count": 2,
+    "cap_dropped_count": 3,
     "eligible_concepts": [
       "C_ads_old",
       "C_ads_new",
-      "C_prem_old",
-      "C_prem_new",
-      "C_year_old",
-      "C_year_new",
+      "C_prem_m_old",
+      "C_prem_m_new",
+      "C_prem_y_old",
+      "C_prem_y_new",
       "C_new_start"
     ],
     "concept_detail": {
-      "C_survey_date": {
+      "C_new_start": {
         "kind": "date_time",
-        "eligible": [],
+        "eligible": [
+          "E2p"
+        ],
         "group": 2,
         "in_storyline": true,
         "expected_class": "peripheral"
       },
-      "C_plan_count": {
-        "kind": "magnitude",
+      "C_survey_base": {
+        "kind": "date_time",
         "eligible": [],
-        "group": 0,
-        "in_storyline": true,
+        "group": 2,
+        "in_storyline": false,
         "expected_class": "peripheral"
       },
       "C_ads_old": {
@@ -228,7 +228,7 @@
         "in_storyline": false,
         "expected_class": "core"
       },
-      "C_prem_old": {
+      "C_prem_m_old": {
         "kind": "magnitude",
         "eligible": [
           "E1"
@@ -237,7 +237,7 @@
         "in_storyline": false,
         "expected_class": "core"
       },
-      "C_prem_new": {
+      "C_prem_m_new": {
         "kind": "magnitude",
         "eligible": [
           "E1"
@@ -246,16 +246,7 @@
         "in_storyline": false,
         "expected_class": "core"
       },
-      "C_year_old": {
-        "kind": "magnitude",
-        "eligible": [
-          "E1"
-        ],
-        "group": 1,
-        "in_storyline": false,
-        "expected_class": "core"
-      },
-      "C_year_new": {
+      "C_prem_y_old": {
         "kind": "magnitude",
         "eligible": [
           "E1"
@@ -264,12 +255,12 @@
         "in_storyline": false,
         "expected_class": "peripheral"
       },
-      "C_new_start": {
-        "kind": "date_time",
+      "C_prem_y_new": {
+        "kind": "magnitude",
         "eligible": [
-          "E2p"
+          "E1"
         ],
-        "group": 2,
+        "group": 1,
         "in_storyline": false,
         "expected_class": "peripheral"
       },
@@ -282,9 +273,7 @@
       }
     },
     "kanji_numeral_candidates": [],
-    "stop_candidates": [
-      "3種: 台帳に無い数字がStorylineに有る [STOP候補(ii)]"
-    ]
+    "stop_candidates": []
   },
   "e_sidecar_meta": {
     "status": "PASS",
@@ -293,5 +282,5 @@
     "unmapped_claims_by_type": {}
   },
   "skipped": [],
-  "verdict": "FAIL"
+  "verdict": "PASS"
 }

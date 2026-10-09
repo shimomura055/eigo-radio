@@ -1,0 +1,294 @@
+{
+  "slug": "hormuz",
+  "annotator": "MERGED",
+  "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+  "brief_sha256": "73afafe8c17aac57da2f2f7034f4200c32c1a4dfdf62a2e421d265fb33a708cf",
+  "facts": [
+    {
+      "n": 1,
+      "ledger_ids": [
+        "HF-002"
+      ]
+    },
+    {
+      "n": 2,
+      "ledger_ids": [
+        "HF-006"
+      ]
+    },
+    {
+      "n": 3,
+      "ledger_ids": [
+        "HF-007"
+      ]
+    },
+    {
+      "n": 4,
+      "ledger_ids": [
+        "HF-009"
+      ]
+    }
+  ],
+  "numbers": [
+    {
+      "surface": "20％",
+      "kind": "magnitude",
+      "class": "core",
+      "concept": "M1",
+      "ledger_ids": [
+        "HF-002",
+        "HF-003",
+        "HF-007"
+      ],
+      "role": "償還料の率(Storylineに出る量)"
+    },
+    {
+      "surface": "7月13日",
+      "kind": "date_time",
+      "class": "peripheral",
+      "concept": "M2",
+      "ledger_ids": [
+        "HF-002",
+        "HF-003",
+        "HF-005",
+        "HF-006"
+      ],
+      "role": "提案日・Brent急騰日"
+    },
+    {
+      "surface": "7.29ドル",
+      "kind": "magnitude",
+      "class": "core",
+      "concept": "M3",
+      "ledger_ids": [
+        "HF-006"
+      ],
+      "role": "Brent前日比上昇額"
+    },
+    {
+      "surface": "9.59％",
+      "kind": "magnitude",
+      "class": "core",
+      "concept": "M4",
+      "ledger_ids": [
+        "HF-006"
+      ],
+      "role": "Brent前日比上昇率"
+    },
+    {
+      "surface": "83.30ドル",
+      "kind": "magnitude",
+      "class": "core",
+      "concept": "M5",
+      "ledger_ids": [
+        "HF-005",
+        "HF-006"
+      ],
+      "role": "7月13日のBrent清算値"
+    },
+    {
+      "surface": "7月14日",
+      "kind": "date_time",
+      "class": "peripheral",
+      "concept": "M6",
+      "ledger_ids": [
+        "HF-007",
+        "HF-008"
+      ],
+      "role": "置換発表日"
+    },
+    {
+      "surface": "約2.6％",
+      "kind": "magnitude",
+      "class": "peripheral",
+      "concept": "M7",
+      "ledger_ids": [
+        "HF-009"
+      ],
+      "role": "記事掲載時点のBrent上昇率"
+    },
+    {
+      "surface": "1バレル85ドル超",
+      "kind": "magnitude",
+      "class": "peripheral",
+      "concept": "M8",
+      "ledger_ids": [
+        "HF-009"
+      ],
+      "role": "記事掲載時点のBrent価格"
+    }
+  ],
+  "unmapped_claims": [
+    {
+      "text": "相場では案の撤回後も地政学的リスクが意識されていた",
+      "type": "generalization"
+    }
+  ],
+  "annotation_notes": [
+    {
+      "where": "概念数 n",
+      "question": "n=8(20％・7月13日・7月14日・7.29ドル・9.59％・83.30ドル・約2.6％・1バレル85ドル超)で上限は4",
+      "options": [
+        "上限3",
+        "上限4"
+      ],
+      "chosen": "上限4",
+      "rule": "§3-5-3",
+      "annotator": "A"
+    },
+    {
+      "where": "概念 C_up26",
+      "question": "適格だが上限4の外",
+      "options": [
+        "中核",
+        "周辺"
+      ],
+      "chosen": "周辺",
+      "rule": "§3-5-6 cap超過で周辺化",
+      "annotator": "A"
+    },
+    {
+      "where": "概念 C_over85",
+      "question": "適格だが上限4の外",
+      "options": [
+        "中核",
+        "周辺"
+      ],
+      "chosen": "周辺",
+      "rule": "§3-5-6 cap超過で周辺化",
+      "annotator": "A"
+    },
+    {
+      "where": "概念 C_0713 / C_0714",
+      "question": "日付は適格だが上限4の外(優先順は量の後)",
+      "options": [
+        "中核",
+        "周辺"
+      ],
+      "chosen": "周辺",
+      "rule": "§3-5-6 cap超過で周辺化",
+      "annotator": "A"
+    },
+    {
+      "where": "【事実2】",
+      "question": "3文を分けるか(2文目は同じHF-006、3文目は限定文)",
+      "options": [
+        "分ける",
+        "分けない"
+      ],
+      "chosen": "分けない",
+      "rule": "§5-1",
+      "annotator": "A"
+    },
+    {
+      "where": "【事実4】",
+      "question": "3文を分けるか(2文目HF-009、3文目は限定文)",
+      "options": [
+        "分ける",
+        "分けない"
+      ],
+      "chosen": "分けない",
+      "rule": "§5-1",
+      "annotator": "A"
+    },
+    {
+      "where": "1バレル85ドル超",
+      "question": "「1バレル」を表記に含めるか(数字に直接つく単位表現)",
+      "options": [
+        "含める",
+        "85ドル超のみ"
+      ],
+      "chosen": "含める(主数字は85)",
+      "rule": "§5-5",
+      "annotator": "A"
+    },
+    {
+      "where": "約2.6％高",
+      "question": "「高」をヘッジ語として含めるか",
+      "options": [
+        "含める",
+        "含めない"
+      ],
+      "chosen": "含めない(約2.6％)",
+      "rule": "§3-1",
+      "annotator": "A"
+    },
+    {
+      "where": "概念数 n=8 (20％, 7月13日, 7月14日, 7.29ドル, 9.59％, 83.30ドル, 約2.6％, 85ドル超)",
+      "question": "上限の計算",
+      "options": [
+        "3",
+        "4"
+      ],
+      "chosen": "4",
+      "rule": "§3-5-3 max(3,min(6,floor(8/2)))=4",
+      "annotator": "B"
+    },
+    {
+      "where": "概念 C_brent_up_snapshot (約2.6％)",
+      "question": "適格だが上限4の外",
+      "options": [
+        "中核",
+        "周辺"
+      ],
+      "chosen": "周辺",
+      "rule": "§3-5-6 cap超過で周辺化",
+      "annotator": "B"
+    },
+    {
+      "where": "概念 C_brent_85 (1バレル85ドル超)",
+      "question": "適格だが上限4の外",
+      "options": [
+        "中核",
+        "周辺"
+      ],
+      "chosen": "周辺",
+      "rule": "§3-5-6 cap超過で周辺化",
+      "annotator": "B"
+    },
+    {
+      "where": "概念 C_jul13 / C_jul14",
+      "question": "日付は適格だが優先順位が量より後で上限の外",
+      "options": [
+        "中核",
+        "周辺"
+      ],
+      "chosen": "周辺",
+      "rule": "§3-5-6 cap超過で周辺化",
+      "annotator": "B"
+    },
+    {
+      "where": "表記 1バレル85ドル超",
+      "question": "先頭の「1バレル」の1を表記に含めるか",
+      "options": [
+        "1バレル85ドル超",
+        "85ドル超"
+      ],
+      "chosen": "1バレル85ドル超(数字に直接つく単位句として1つの表記)",
+      "rule": "§3-1",
+      "annotator": "B"
+    },
+    {
+      "where": "事実2 の項目(3文)",
+      "question": "分けるか",
+      "options": [
+        "分ける",
+        "分けない"
+      ],
+      "chosen": "分けない(全文がHF-006を根拠とし、限定文は直前と同事実)",
+      "rule": "§2 / §5-1",
+      "annotator": "B"
+    },
+    {
+      "where": "表記 83.30ドル",
+      "question": "紐付く台帳が複数(HF-005, HF-006)",
+      "options": [
+        "HF-006のみ",
+        "両方"
+      ],
+      "chosen": "両方",
+      "rule": "§5-4",
+      "annotator": "B"
+    }
+  ]
+}

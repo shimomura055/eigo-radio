@@ -1,0 +1,286 @@
+{
+  "spec": "B3_ANNOTATION_SPEC_v2",
+  "ledger_records": 7,
+  "f_ledger_schema": {
+    "status": "INFO",
+    "records": 7,
+    "field_counts": {
+      "scope": 7,
+      "conditions": 7,
+      "date_or_period": 7,
+      "ambiguity_note": 2,
+      "notes_for_writer": 7,
+      "numeric_value": 4
+    },
+    "numeric_value_fallback_to_statement": false,
+    "date_or_period_fallback_to_statement": false,
+    "non_verified_ids": [
+      "F01",
+      "F07"
+    ],
+    "per_record": {
+      "F01": {
+        "status": "AMBIGUOUS",
+        "fields": [
+          "ambiguity_note",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "scope"
+        ]
+      },
+      "F02": {
+        "status": "VERIFIED",
+        "fields": [
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "numeric_value",
+          "scope"
+        ]
+      },
+      "F03": {
+        "status": "VERIFIED",
+        "fields": [
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "numeric_value",
+          "scope"
+        ]
+      },
+      "F04": {
+        "status": "VERIFIED",
+        "fields": [
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "numeric_value",
+          "scope"
+        ]
+      },
+      "F05": {
+        "status": "VERIFIED",
+        "fields": [
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "scope"
+        ]
+      },
+      "F06": {
+        "status": "VERIFIED",
+        "fields": [
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "numeric_value",
+          "scope"
+        ]
+      },
+      "F07": {
+        "status": "AMBIGUOUS",
+        "fields": [
+          "ambiguity_note",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "scope"
+        ]
+      }
+    },
+    "warnings": [
+      "VERIFIED でない記録: ['F01', 'F07']"
+    ]
+  },
+  "a_strip_equal": {
+    "status": "PASS_LAYOUT_NORMALIZED",
+    "reason": "",
+    "strict_equal_after_strip": false,
+    "inserted_split_breaks": 0,
+    "inserted_bullet_markers": 1,
+    "brief_sha256": "4f6183a27599d9e46eddb158d5cfeedc6fc6657aee3eee31fd0e2c877719a28b",
+    "stripped_annotated_sha256": "6ca37afde69f129635cc6a0bfe4619eef76270f29ef8ebe3ca8213fa65c0bc9b"
+  },
+  "d_sequence": {
+    "status": "PASS",
+    "fact_numbers": [
+      1
+    ],
+    "problems": []
+  },
+  "b_ledger_mapping": {
+    "status": "PASS",
+    "mapping": {
+      "1": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07"
+      ]
+    },
+    "problems": [],
+    "warnings": [
+      "事実1: 台帳ID F01 は AMBIGUOUS (ambiguous_fact)",
+      "事実1: 台帳ID F07 は AMBIGUOUS (ambiguous_fact)"
+    ],
+    "ambiguous_fact": {
+      "1": [
+        "F01",
+        "F07"
+      ]
+    }
+  },
+  "c_numbers": {
+    "status": "PASS",
+    "problems": [],
+    "warnings": [],
+    "surface_diff": [],
+    "eligibility": {
+      "M1": [
+        "E2p"
+      ],
+      "M2": [],
+      "M3": [
+        "E1"
+      ],
+      "M4": [
+        "E1"
+      ],
+      "M5": [
+        "E1"
+      ],
+      "M6": [
+        "E1"
+      ],
+      "M7": [
+        "E1"
+      ],
+      "M8": [
+        "E1"
+      ],
+      "M9": []
+    },
+    "countable_concepts": 9,
+    "core_cap": 4,
+    "expected_core_concepts": [
+      "M3",
+      "M4",
+      "M5",
+      "M6"
+    ],
+    "declared_core_concepts": [
+      "M3",
+      "M4",
+      "M5",
+      "M6"
+    ],
+    "cap_dropped_concepts": [
+      "M7",
+      "M8",
+      "M1"
+    ],
+    "cap_dropped_count": 3,
+    "eligible_concepts": [
+      "M3",
+      "M4",
+      "M5",
+      "M6",
+      "M7",
+      "M8",
+      "M1"
+    ],
+    "concept_detail": {
+      "M1": {
+        "kind": "date_time",
+        "eligible": [
+          "E2p"
+        ],
+        "group": 2,
+        "in_storyline": true,
+        "expected_class": "peripheral"
+      },
+      "M2": {
+        "kind": "date_time",
+        "eligible": [],
+        "group": 2,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      },
+      "M3": {
+        "kind": "magnitude",
+        "eligible": [
+          "E1"
+        ],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "core"
+      },
+      "M4": {
+        "kind": "magnitude",
+        "eligible": [
+          "E1"
+        ],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "core"
+      },
+      "M5": {
+        "kind": "magnitude",
+        "eligible": [
+          "E1"
+        ],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "core"
+      },
+      "M6": {
+        "kind": "magnitude",
+        "eligible": [
+          "E1"
+        ],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "core"
+      },
+      "M7": {
+        "kind": "magnitude",
+        "eligible": [
+          "E1"
+        ],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      },
+      "M8": {
+        "kind": "magnitude",
+        "eligible": [
+          "E1"
+        ],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      },
+      "M9": {
+        "kind": "date_time",
+        "eligible": [],
+        "group": 2,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      }
+    },
+    "kanji_numeral_candidates": [],
+    "stop_candidates": []
+  },
+  "e_sidecar_meta": {
+    "status": "PASS",
+    "problems": [],
+    "warnings": [],
+    "unmapped_claims_by_type": {}
+  },
+  "skipped": [],
+  "verdict": "PASS"
+}

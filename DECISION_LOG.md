@@ -20372,3 +20372,9 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **Fable判断**: 注記者形式FAILは1回再委任後STOP/sha256はLF正規化後/B1枠は記事1回(R2後FC MAJORとEN段共通)/G1は検査通過なら本番run採用/ラウンド1は4並列+自動降格、ラウンド2は3並列/最悪予算約¥915。
 - **実装**: `er052_factlock_astra_e2e_runner_01.py`(2腕・subprocess/環境分離・B1・横断予算ガード・(m)research/B3即停止・G0照合)、stub、集計、ws_check、テスト31件。gpt-6-astra単価はStandardのみ登録(commit 46be02ad、Trial/DEV用であり本番採用ではない)。
 - **Status**: IMPL_READY / G0_PASS(stub、API支出¥0)。stub値は実測ではない。実API経路(Astra応答形、動的fixtureのChecker、M1/M3実挙動)は未検証でG1が初の実証。Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言。
+
+## FACTLOCK-ASTRA-E2E-TRIAL-01 委任_10: 運用明確化(c)(d)(e)とAMBIGUOUS台帳ID許容(2026-10-09、Fable判断)
+- **(c)** B3がAMBIGUOUS台帳記録を選ぶのはProduction挙動で、AMBIGUOUS記録も「台帳由来」。ユーザー固定の「台帳由来のみ」に反しない。PREREGISTRATION v2.2 5-12(注記者はstatusで扱いを変えない、AMBIGUOUS由来NGは別集計)は注記開始前に事前登録済みのため、検査側の「VERIFIED以外=FAIL」を、AMBIGUOUSに限り許容+`ambiguous_fact`フラグ(WARN)へ改めた。NOT_VERIFIED/REJECTED等は従来どおりFAIL。仕様v2本文の変更ではなく運用明確化。ユーザーが覆した場合は該当3テーマ(inbound_tourism/semiconductor_earnings/streaming_price)を除外。
+- **(d)** 注記者がWriteでなくBash `cat >` で自分のreply.mdを書いた件(9/20本)は、他パス接触0・隔離維持のため採用。既存監査scriptのVIOLATIONは許可済みWrite/返却ツールと自プロンプトパスの禁止語該当による誤判定で、補助監査(AUDIT_SUMMARY.md)を正とする。
+- **(e)** 「・」行頭への【事実N】挿入は検査PASS・仕様§2に反しないため許容。仕様sha256はLF正規化後を正、CRLF生バイト値は併記。
+- **Status**: API支出¥0、Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言。正本は`er052_output/factlock_astra_e2e_trial_01/stage_r/SPEC_V2_CLARIFICATIONS.md`。

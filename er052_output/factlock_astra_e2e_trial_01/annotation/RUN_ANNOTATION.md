@@ -46,3 +46,9 @@ PYTHONUTF8=1 python b3_annotator_audit_01.py --transcript annotation/out/$N/$S/t
 
 ## 7 AMBIGUOUS記録の扱い(Fable決定2026-10-09)
 `annotation/AMBIGUOUS_FACT_MAP.json` に、台帳のAMBIGUOUS記録とB3が選択した記録の突合結果を保存(注記者は台帳のstatusを見るが扱いを変えない)。統合後、`merged_annotation.json` を編集せず、評価時にこの表で「台帳AMBIGUOUS由来」を判別して別集計する(PREREGISTRATION v2.2 の5項12)。サイドカーへ `ambiguous_fact: true` を付ける作業は、統合スクリプト非編集の方針により評価側集計で代替する(Fable判断要: 付与が必須ならpost-merge用の小スクリプトを別委任)。
+
+## 8 次委任で実行する手順(委任_10時点の残件。2026-10-09)
+委任_10時点: hormuz / streaming_price(B3 v2基準)は A・B 単独PASS->統合PASS->final->inputs配線->G0実照合PASS済み。inbound_tourism(v1 brief)は再注記A・Bとも単独 c_numbers FAIL(統合せず)。
+1. 再注記済み6本(hormuz / streaming_price / inbound_tourism の A・B)の transcript を `annotation/out/<N>/<slug>/transcript.jsonl` へ保存する(呼び出し側。現在置かれているのは旧v1ラウンドのもの)。保存後に節5の監査(strict / base / `annotation/run_audits_01.py`+`audit_extra_01.py`+`audit_bash_detail_01.py`)を実行し AUDIT_SUMMARY.md を更新する。判定は(d)に従い補助監査を正とする。
+2. hormuz / streaming_price の単独検査・統合は B3 v2 を基準にする: `B=stage_r/$S/storyline_b3_v2/selected_brief.md`(節2・3の `$B` を差し替える)。final は `python annotation/make_final_01.py <slug>`(v2は自動選択)、inputs配線は `python annotation/wire_inputs_01.py <slug>...`、G0は `.venv/Scripts/python.exe -X utf8 er052_factlock_astra_e2e_runner_01.py run --root er052_output/factlock_astra_e2e_trial_01/g0_real_annotation_01 --themes <csv> --g0-only`。
+3. inbound_tourism: 節6のとおり再委任は1回まで。v1ラウンド(委任_09)と今回の再注記で既に2回注記済み=これ以上は再委任せずFableへ報告(STOP)。選択肢(Fable判断): (i)検査scriptのID_REマスク欠陥(連字符なしID `F01` の数字を分類漏れと誤検出)を直す(ただし直してもA=`8`分類漏れ、B=概念重複2件+`2026`分類漏れが残る)、(ii)inbound_tourismを除外し9テーマで進める、(iii)プロンプト/仕様を直して再実行(静かな差替禁止)。
