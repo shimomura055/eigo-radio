@@ -1,0 +1,73 @@
+{
+  "prompt": "以下の記事本文が、Verified Fact Ledgerが保証する「意味上のFact」の\n範囲内に収まっているかを、Fact Safetyの観点のみで確認してください。\n\n【Verified Fact Ledger】\n[AMBIGUOUS - 断定禁止、曖昧さを保持すること] F1: 対象企業はBroadcom Inc.。同社は2026年9月2日、2026年度第3四半期の決算を発表した。\n  scope: Broadcom Inc.の連結業績\n  date_or_period: 2026年9月2日発表。2026年度第3四半期（2026年8月2日終了）\n  ambiguity_note: Broadcomが2026年9月2日に2026年度第3四半期（2026年8月2日終了）の決算を発表したことは確認できました。ただし、対象テーマの「最も最近の発表」という選定条件は、Broadcomの発表日だけでは確認できません。たとえば「leading AI chipmaker」にAI向けメモリのMicronも含めるなら、同社は9月30日にFY2026第4四半期の決算を発表しており、Broadcomより後です。分類の範囲が曖昧なため、Broadcomを選定対象とする前提は確定できません。([investors.broadcom.com](https://investors.broadcom.com/news-releases/news-release-details/broadcom-inc-announces-third-quarter-fiscal-year-2026-financial))\n\n[VERIFIED] F2: Broadcomの第3四半期の純売上高は295億9,100万ドルだった。\n  scope: Broadcom Inc.全体の四半期純売上高\n  conditions: 決算リリースの財務ハイライトでは金額を百万ドル単位で表示。\n  numeric_value: 29,591百万ドル（295億9,100万ドル） (numeric_scope: 連結純売上高)\n  date_or_period: 2026年度第3四半期（2026年8月2日終了）\n\n[VERIFIED] F3: Broadcomの第3四半期のAI半導体売上高は167億ドル。CEOは前年同期比221％増、前四半期比54％増と説明した。\n  scope: AI半導体売上高。Broadcom全体の純売上高や半導体部門全体とは別の数値。\n  conditions: 金額はCEO発言で10億ドル単位に丸めて示された。\n  numeric_value: 167億ドル。前年同期比+221％、前四半期比+54％。 (numeric_scope: 同四半期のAI半導体売上高と、その前年同期・前四半期比)\n  date_or_period: 2026年度第3四半期（2026年8月2日終了）\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 「AI半導体売上高」と記し、半導体ソリューション部門全体の売上高と混同しない。\n\n[VERIFIED] F4: Broadcomは次の四半期の連結売上高を約348億ドルと見込んだ。同社は前年比93％増に相当すると説明した。\n  scope: Broadcom Inc.全体の次四半期連結売上高\n  conditions: 2026年9月2日時点の会社見通し。会社は見通しを推定値とし、実績は異なり、差が重要となる可能性があると記載。\n  numeric_value: 約348億ドル。前年同期比+93％。 (numeric_scope: 2026年度第4四半期の連結売上高見通しと前年同期比)\n  date_or_period: 2026年度第4四半期（2026年11月1日終了予定）\n  notes_for_writer: 会社の見通しとして記載し、確定した実績値として扱わない。\n\n[VERIFIED] F5: BroadcomのCEOは、次の四半期のAI半導体売上高を217億ドルと見込み、前年同期比236％増になると述べた。\n  scope: BroadcomのAI半導体売上高。連結売上高見通しとは別の数値。\n  conditions: 会社CEOによる決算リリース時点の見通し。\n  numeric_value: 217億ドル。前年同期比+236％。 (numeric_scope: 2026年度第4四半期のAI半導体売上高見通しと前年同期比)\n  date_or_period: 2026年度第4四半期（2026年11月1日終了予定）\n  notes_for_writer: 会社の見通しとして記載し、実績値と混同しない。\n\n[VERIFIED] F6: BroadcomのCEOは、カスタムAIアクセラレーターとネットワーキングへの需要が引き続き非常に強いと述べた。\n  scope: 同社のカスタムAIアクセラレーターおよびネットワーキングに対する需要についてのCEOの説明\n  conditions: 経営陣による定性的な評価。\n  date_or_period: 2026年9月2日発表の2026年度第3四半期決算リリース\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 会社CEOの評価として帰属を明記し、独立に確認された市場全体の需要事実として一般化しない。\n\n\n【検証対象の記事】\n決算ステージのセンターは、AI半導体\n\nブロードコムの今回の決算をライブ会場に見立てると、センターに立つのはAI半導体です。会社全体の売上高は約296億ドル。そのうちAI半導体だけで167億ドル。売上全体の六割弱を占めます。ステージの端で出番を待つ脇役どころか、照明を浴びて堂々と真ん中に立つ主役です。もちろん、これは売上の内訳を見たたとえ。実際にライブがあったわけではありません。\n\nこの主役の売上は、前年の同じ四半期より221パーセント増え、前の四半期より54パーセント増えたと会社は説明しています。一年の比較でも、直近の四半期との比較でも増加。数字が二方向からスポットライトを当ててくるようです。ただし、ここから売上が増えた理由を細かく決めつけることはできません。\n\n会社のトップは、カスタムAIアクセラレーターとネットワーク関連への需要が、引き続き非常に強いと述べました。カスタムAIアクセラレーターは、AIの計算を担う専用の半導体です。さらに会社は、次の四半期の売上高を約348億ドルと見込んでいます。需要についての発言と売上の見通しは、同じ決算発表に並んでいます。ただし、需要が強いという発言が、その見通しの数字を生んだ原因だとまでは言えません。ここは別々に受け止めるのが大事です。\n\nもうひとつ、決算の舞台には小さな注意書きがあります。売上高は、会社がどれだけ売ったかを示す数字で、もうけそのものではありません。費用を差し引いた利益とは別物です。大きな数字に拍手したくなっても、利益の話まで分かった気にならないようにしたいところです。\n\nAIの話題では、画面に見えるサービスや新機能が主役になりがち。でも、その裏側にある半導体やネットワークも、企業の売上に大きく登場しています。今回の決算は、AIを使う側ではなく、支える側の数字をのぞくと、どんな景色が見えるのかを楽しめる一幕です。\n\n【判定対象は次の10種類の意味変化のみです】\n- changed_fact: Ledgerに存在しない、またはLedgerと矛盾する具体的事実を主張している\n- changed_scope: Ledgerが確認した対象(誰が・どこで・いつ・どの集団か)を超えて一般化・拡張している\n- changed_causality: 相関を因果に変えている、または因果の方向を変えている\n- changed_certainty: Ledgerでは仮説・自己申告・専門家の解釈にすぎないものを、断定的な事実であるかのように強めている\n- changed_number: 数値・割合・件数をLedgerと異なる値に変えている(単位の違いだけの言い換えは含まない)\n- changed_actor: 発言主体・調査主体をLedgerと異なる人物・組織にすり替えている\n- changed_negation: 肯定・否定を反転させている\n- changed_comparison: 比較の方向(より多い/少ない、より高い/低い等)を反転・変更している\n- changed_time: 時期・年代をLedgerと異なるものに変えている\n- unsupported_new_claim: Ledgerに全く存在しない新しい具体的主張を追加している\n\n【deviationとして報告しないもの(許容範囲)】\n- 自然なparaphrase、A2/B1向けの平易な言い換え、語順変更、同義語への置換\n- 出典名を一般的な言い方(a report, a studyなど)に置き換えること自体\n- 意味を変えない軽いbridge sentence(異なるEvidence間をつなぐだけの文)\n- 明確な新規Factを伴わない一般的な情景描写(例: 支払い画面はレストランやカフェにもある、\n  という一般常識レベルの前置き)\n- Ledgerの特定の一文と一字一句一致しないが、同じ意味を保っている表現\n\n【判定ルール】\n- 上記10種類のいずれかが明確にtrueである場合のみ、severityをMAJORにしてください。\n- 10種類すべてがfalseなのにMAJORにすることは禁止です。\n- 意味はおおむね保っているが言い回しがやや粗い場合(出典に勝手な肩書きを補う、\n  自己申告の調査結果を断定的な行動として書く等)はMINORとして記録してください。\n- 判断に迷う場合は、「記事の主張がLedgerの主張とほぼ同じ意味を保っているか」を\n  最優先の基準にしてください。厳密な文言一致は求めません。\n- 各deviationについて、上記10種類のフラグ全てにtrue/falseを明示し、\n  explanationでどのフラグに基づいてその判定になったかを一言で説明してください。\n\n該当するdeviationがなければ、deviationsを空配列にしてください。\n\n【追加指示: 関連Fact ID】\n各deviationについて、最も関連するVerified/Full Ledger内のfact_id(Ledger中の`[VERIFIED] <fact_id>:`等の行のfact_id部分、例: F1)をrelated_fact_idとして記録してください。特定できない場合は空文字列にしてください。",
+  "raw_text": "{\"deviations\":[{\"claim_in_article\":\"「カスタムAIアクセラレーターは、AIの計算を担う専用の半導体です。」\",\"issue\":\"カスタムAIアクセラレーターの定義・機能について、Ledgerにない説明を追加しています。\",\"severity\":\"MAJOR\",\"changed_fact\":true,\"changed_scope\":false,\"changed_causality\":false,\"changed_certainty\":false,\"changed_number\":false,\"changed_actor\":false,\"changed_negation\":false,\"changed_comparison\":false,\"changed_time\":false,\"unsupported_new_claim\":true,\"explanation\":\"LedgerはカスタムAIアクセラレーターへの需要に関するCEOの評価を確認していますが、この技術的説明までは含んでいません。新たな具体的主張です。\",\"related_fact_id\":\"F6\"},{\"claim_in_article\":\"「売上高は、会社がどれだけ売ったかを示す数字で、もうけそのものではありません。費用を差し引いた利益とは別物です。」\",\"issue\":\"売上高と利益の会計上の説明がLedgerにない情報として追加されています。\",\"severity\":\"MAJOR\",\"changed_fact\":true,\"changed_scope\":false,\"changed_causality\":false,\"changed_certainty\":false,\"changed_number\":false,\"changed_actor\":false,\"changed_negation\":false,\"changed_comparison\":false,\"changed_time\":false,\"unsupported_new_claim\":true,\"explanation\":\"Broadcomの決算数値についてのLedgerには、売上高と利益の定義・関係の説明はありません。\",\"related_fact_id\":\"F2\"},{\"claim_in_article\":\"「AIの話題では、画面に見えるサービスや新機能が主役になりがち。でも、その裏側にある半導体やネットワークも、企業の売上に大きく登場しています。」\",\"issue\":\"AI関連の話題や企業一般についての傾向・売上への寄与を、Ledgerの対象であるBroadcomの決算情報を超えて述べています。\",\"severity\":\"MAJOR\",\"changed_fact\":true,\"changed_scope\":true,\"changed_causality\":false,\"changed_certainty\":false,\"changed_number\":false,\"changed_actor\":false,\"changed_negation\":false,\"changed_comparison\":false,\"changed_time\":false,\"unsupported_new_claim\":true,\"explanation\":\"Ledgerが確認するのはBroadcomのAI半導体売上高と同社CEOによるネットワーキング需要の評価です。AI関連話題全般の傾向や、企業一般でのネットワークの売上寄与までは確認していません。\",\"related_fact_id\":\"F6\"}]}",
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "「カスタムAIアクセラレーターは、AIの計算を担う専用の半導体です。」",
+        "issue": "カスタムAIアクセラレーターの定義・機能について、Ledgerにない説明を追加しています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "LedgerはカスタムAIアクセラレーターへの需要に関するCEOの評価を確認していますが、この技術的説明までは含んでいません。新たな具体的主張です。",
+        "related_fact_id": "F6",
+        "auto_downgraded": false
+      },
+      {
+        "claim_in_article": "「売上高は、会社がどれだけ売ったかを示す数字で、もうけそのものではありません。費用を差し引いた利益とは別物です。」",
+        "issue": "売上高と利益の会計上の説明がLedgerにない情報として追加されています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Broadcomの決算数値についてのLedgerには、売上高と利益の定義・関係の説明はありません。",
+        "related_fact_id": "F2",
+        "auto_downgraded": false
+      },
+      {
+        "claim_in_article": "「AIの話題では、画面に見えるサービスや新機能が主役になりがち。でも、その裏側にある半導体やネットワークも、企業の売上に大きく登場しています。」",
+        "issue": "AI関連の話題や企業一般についての傾向・売上への寄与を、Ledgerの対象であるBroadcomの決算情報を超えて述べています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerが確認するのはBroadcomのAI半導体売上高と同社CEOによるネットワーキング需要の評価です。AI関連話題全般の傾向や、企業一般でのネットワークの売上寄与までは確認していません。",
+        "related_fact_id": "F6",
+        "auto_downgraded": false
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION"
+  },
+  "response_id": "resp_0693fbc1d20c9e77006ac84bf861a487d084601ce561635684",
+  "model": "gpt-6-luna",
+  "usage": {
+    "input_tokens": 2941,
+    "cached_input_tokens": 0,
+    "output_tokens": 3362,
+    "reasoning_tokens": 2764
+  },
+  "elapsed_seconds": 23.676,
+  "hook_aware": false
+}

@@ -1,0 +1,3547 @@
+{
+  "instance_id": "streaming_price_old_advanced",
+  "group": "e2e",
+  "expected_group_label": "E2E generated",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "But bills will not all change at once.",
+          "origin": null,
+          "related_fact_id": "F06",
+          "dev": {
+            "claim_in_article": "But bills will not all change at once.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "F06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "F06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Disney+ Price Hike: Bills Start at Different Times\n\nThe starting gun for the price increase is about to sound. But bills will not all change at once. In the US, Disney+ will start charging the new prices on different dates for new subscribers and people who already have a subscription.\n\nNew subscribers will be first. They will pay the new prices starting September 23, 2026. For people who subscribed before then, the change will begin with billing cycles on or after October 21, 2026. But that does not mean everyone’s bill will change on October 21. From then on, the new price will take effect according to each person’s billing cycle. In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_date_or_period",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F06",
+            "claim_text": "But bills will not all change at once.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_date_or_period",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "But that does not mean everyone’s bill will change on October 21.",
+          "origin": null,
+          "related_fact_id": "F06",
+          "dev": {
+            "claim_in_article": "But that does not mean everyone’s bill will change on October 21.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+            "related_fact_id": "F06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.4"
+              ],
+              "related_fact_ids": [
+                "F06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The starting gun for the price increase is about to sound. But bills will not all change at once. In the US, Disney+ will start charging the new prices on different dates for new subscribers and people who already have a subscription.\n\nNew subscribers will be first. They will pay the new prices starting September 23, 2026. For people who subscribed before then, the change will begin with billing cycles on or after October 21, 2026. But that does not mean everyone’s bill will change on October 21. From then on, the new price will take effect according to each person’s billing cycle. In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.\n\nSo, how much will prices go up? The monthly price of the standalone plan with ads will rise from $11.99 to $12.49. The monthly price of the standalone Premium plan will go up from $18.99 to $21.49. The annual plan will also rise, from $189.99 to $214.99. That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F06",
+            "claim_text": "But that does not mean everyone’s bill will change on October 21.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_date_or_period",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.",
+          "origin": null,
+          "related_fact_id": "F06",
+          "dev": {
+            "claim_in_article": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.",
+            "issue": "Ledgerは価格改定日と既存契約者への適用時期を示していますが、読者が価格改定のニュースを見る日と個々の支払い変更日の間に必ず時間差があるとは確認できません。 / 一般の読者全員について、ニュースを見た日と支払額が変わる日の間に必ず間隔があるように述べています。Ledgerが示すのは主に既存契約者への適用時期であり、全ての読者についてその間隔があることや、個々の読者がニュースを見る日との関係までは確認されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.6); severity is decided by Stage 2",
+            "related_fact_id": "F06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.6"
+              ],
+              "related_fact_ids": [
+                "F06",
+                "F02",
+                "F03",
+                "F04"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The starting gun for the price increase is about to sound. But bills will not all change at once. In the US, Disney+ will start charging the new prices on different dates for new subscribers and people who already have a subscription.\n\nNew subscribers will be first. They will pay the new prices starting September 23, 2026. For people who subscribed before then, the change will begin with billing cycles on or after October 21, 2026. But that does not mean everyone’s bill will change on October 21. From then on, the new price will take effect according to each person’s billing cycle. In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.\n\nSo, how much will prices go up? The monthly price of the standalone plan with ads will rise from $11.99 to $12.49. The monthly price of the standalone Premium plan will go up from $18.99 to $21.49. The annual plan will also rise, from $189.99 to $214.99. That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F06",
+            "claim_text": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_date_or_period",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "So, how much will prices go up?",
+          "origin": null,
+          "related_fact_id": "F02",
+          "dev": {
+            "claim_in_article": "So, how much will prices go up?",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S3.1); severity is decided by Stage 2",
+            "related_fact_id": "F02",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S3.1"
+              ],
+              "related_fact_ids": [
+                "F02"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "New subscribers will be first. They will pay the new prices starting September 23, 2026. For people who subscribed before then, the change will begin with billing cycles on or after October 21, 2026. But that does not mean everyone’s bill will change on October 21. From then on, the new price will take effect according to each person’s billing cycle. In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.\n\nSo, how much will prices go up? The monthly price of the standalone plan with ads will rise from $11.99 to $12.49. The monthly price of the standalone Premium plan will go up from $18.99 to $21.49. The annual plan will also rise, from $189.99 to $214.99. That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.\n\nTo find out which group you are in for this price increase, check when you subscribed and your billing cycle. Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F02",
+            "claim_text": "So, how much will prices go up?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "The monthly price of the standalone Premium plan will go up from $18.99 to $21.49.",
+          "origin": null,
+          "related_fact_id": "F03",
+          "dev": {
+            "claim_in_article": "The monthly price of the standalone Premium plan will go up from $18.99 to $21.49.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "F03",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "F03"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "New subscribers will be first. They will pay the new prices starting September 23, 2026. For people who subscribed before then, the change will begin with billing cycles on or after October 21, 2026. But that does not mean everyone’s bill will change on October 21. From then on, the new price will take effect according to each person’s billing cycle. In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.\n\nSo, how much will prices go up? The monthly price of the standalone plan with ads will rise from $11.99 to $12.49. The monthly price of the standalone Premium plan will go up from $18.99 to $21.49. The annual plan will also rise, from $189.99 to $214.99. That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.\n\nTo find out which group you are in for this price increase, check when you subscribed and your billing cycle. Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F03",
+            "claim_text": "The monthly price of the standalone Premium plan will go up from $18.99 to $21.49.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_numeric_value",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "The annual plan will also rise, from $189.99 to $214.99.",
+          "origin": null,
+          "related_fact_id": "F04",
+          "dev": {
+            "claim_in_article": "The annual plan will also rise, from $189.99 to $214.99.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+            "related_fact_id": "F04",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.4"
+              ],
+              "related_fact_ids": [
+                "F04"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "New subscribers will be first. They will pay the new prices starting September 23, 2026. For people who subscribed before then, the change will begin with billing cycles on or after October 21, 2026. But that does not mean everyone’s bill will change on October 21. From then on, the new price will take effect according to each person’s billing cycle. In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.\n\nSo, how much will prices go up? The monthly price of the standalone plan with ads will rise from $11.99 to $12.49. The monthly price of the standalone Premium plan will go up from $18.99 to $21.49. The annual plan will also rise, from $189.99 to $214.99. That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.\n\nTo find out which group you are in for this price increase, check when you subscribed and your billing cycle. Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F04",
+            "claim_text": "The annual plan will also rise, from $189.99 to $214.99.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_numeric_value",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.",
+          "origin": null,
+          "related_fact_id": "F02",
+          "dev": {
+            "claim_in_article": "That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.",
+            "issue": "決定論検査で戻した: number_not_in_fact / 決定論検査で戻した: number_not_in_fact,causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=number_not_in_fact,causal_not_in_fact, units=S3.5,R:S3.4+S3.5); severity is decided by Stage 2",
+            "related_fact_id": "F02",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "number_not_in_fact",
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S3.5",
+                "R:S3.4+S3.5"
+              ],
+              "related_fact_ids": [
+                "F02"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "New subscribers will be first. They will pay the new prices starting September 23, 2026. For people who subscribed before then, the change will begin with billing cycles on or after October 21, 2026. But that does not mean everyone’s bill will change on October 21. From then on, the new price will take effect according to each person’s billing cycle. In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.\n\nSo, how much will prices go up? The monthly price of the standalone plan with ads will rise from $11.99 to $12.49. The monthly price of the standalone Premium plan will go up from $18.99 to $21.49. The annual plan will also rise, from $189.99 to $214.99. That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.\n\nTo find out which group you are in for this price increase, check when you subscribed and your billing cycle. Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F02",
+            "claim_text": "That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_numeric_value",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+          "origin": null,
+          "related_fact_id": "F06",
+          "dev": {
+            "claim_in_article": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+            "issue": "価格適用時期を確認することで請求時の驚きを避けられるという効果は、Ledgerに記載されていません。 / 価格の適用時期を確認することが請求時の驚きを避ける助けになる、という実用上の因果的効果はLedgerでは確認されていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "F06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "F06",
+                "F02",
+                "F03",
+                "F04"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So, how much will prices go up? The monthly price of the standalone plan with ads will rise from $11.99 to $12.49. The monthly price of the standalone Premium plan will go up from $18.99 to $21.49. The annual plan will also rise, from $189.99 to $214.99. That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.\n\nTo find out which group you are in for this price increase, check when you subscribed and your billing cycle. Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.\n\nThe sources we checked do not confirm that Disney gave a reason for this price increase. Also, if you subscribe through a third-party payment service, the price or the terms that apply may be different.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F06",
+            "claim_text": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_date_or_period",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "To find out which group you are in for this price increase, check when you subscribed and your billing cycle.",
+          "origin": null,
+          "related_fact_id": "F06",
+          "dev": {
+            "claim_in_article": "To find out which group you are in for this price increase, check when you subscribed and your billing cycle.",
+            "issue": "Ledgerは価格改定日と既存契約者への適用時期を示していますが、読者が価格改定のニュースを見る日と個々の支払い変更日の間に必ず時間差があるとは確認できません。 / 一般の読者全員について、ニュースを見た日と支払額が変わる日の間に必ず間隔があるように述べています。Ledgerが示すのは主に既存契約者への適用時期であり、全ての読者についてその間隔があることや、個々の読者がニュースを見る日との関係までは確認されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.6); severity is decided by Stage 2",
+            "related_fact_id": "F06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.6"
+              ],
+              "related_fact_ids": [
+                "F06",
+                "F02",
+                "F03",
+                "F04"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So, how much will prices go up? The monthly price of the standalone plan with ads will rise from $11.99 to $12.49. The monthly price of the standalone Premium plan will go up from $18.99 to $21.49. The annual plan will also rise, from $189.99 to $214.99. That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.\n\nTo find out which group you are in for this price increase, check when you subscribed and your billing cycle. Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.\n\nThe sources we checked do not confirm that Disney gave a reason for this price increase. Also, if you subscribe through a third-party payment service, the price or the terms that apply may be different.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F06",
+            "claim_text": "To find out which group you are in for this price increase, check when you subscribed and your billing cycle.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_date_or_period",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "Also, if you subscribe through a third-party payment service, the price or the terms that apply may be different.",
+          "origin": null,
+          "related_fact_id": "F06",
+          "dev": {
+            "claim_in_article": "Also, if you subscribe through a third-party payment service, the price or the terms that apply may be different.",
+            "issue": "Ledgerは価格改定日と既存契約者への適用時期を示していますが、読者が価格改定のニュースを見る日と個々の支払い変更日の間に必ず時間差があるとは確認できません。 / 一般の読者全員について、ニュースを見た日と支払額が変わる日の間に必ず間隔があるように述べています。Ledgerが示すのは主に既存契約者への適用時期であり、全ての読者についてその間隔があることや、個々の読者がニュースを見る日との関係までは確認されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.6); severity is decided by Stage 2",
+            "related_fact_id": "F06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.6"
+              ],
+              "related_fact_ids": [
+                "F06",
+                "F02",
+                "F03",
+                "F04"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "To find out which group you are in for this price increase, check when you subscribed and your billing cycle. Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.\n\nThe sources we checked do not confirm that Disney gave a reason for this price increase. Also, if you subscribe through a third-party payment service, the price or the terms that apply may be different.\n\n## In one line\nDisney+’s US price hike begins earlier for new subscribers, while existing customers’ bills change with their billing cycles.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F06",
+            "claim_text": "Also, if you subscribe through a third-party payment service, the price or the terms that apply may be different.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "The monthly price of the standalone plan with ads will rise from $11.",
+          "origin": null,
+          "related_fact_id": "F03",
+          "dev": {
+            "claim_in_article": "The monthly price of the standalone plan with ads will rise from $11.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "F03",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "F03"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The monthly price of the standalone Premium plan will go up from $18.99 to $21.49."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "New subscribers will be first. They will pay the new prices starting September 23, 2026. For people who subscribed before then, the change will begin with billing cycles on or after October 21, 2026. But that does not mean everyone’s bill will change on October 21. From then on, the new price will take effect according to each person’s billing cycle. In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.\n\nSo, how much will prices go up? The monthly price of the standalone plan with ads will rise from $11.99 to $12.49. The monthly price of the standalone Premium plan will go up from $18.99 to $21.49. The annual plan will also rise, from $189.99 to $214.99. That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.\n\nTo find out which group you are in for this price increase, check when you subscribed and your billing cycle. Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F03",
+            "claim_text": "The monthly price of the standalone plan with ads will rise from $11.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_numeric_value",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "The monthly price of the standalone Premium plan will go up from $18.",
+          "origin": null,
+          "related_fact_id": "F03",
+          "dev": {
+            "claim_in_article": "The monthly price of the standalone Premium plan will go up from $18.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "F03",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "F03"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The monthly price of the standalone Premium plan will go up from $18.99 to $21.49."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "New subscribers will be first. They will pay the new prices starting September 23, 2026. For people who subscribed before then, the change will begin with billing cycles on or after October 21, 2026. But that does not mean everyone’s bill will change on October 21. From then on, the new price will take effect according to each person’s billing cycle. In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.\n\nSo, how much will prices go up? The monthly price of the standalone plan with ads will rise from $11.99 to $12.49. The monthly price of the standalone Premium plan will go up from $18.99 to $21.49. The annual plan will also rise, from $189.99 to $214.99. That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.\n\nTo find out which group you are in for this price increase, check when you subscribed and your billing cycle. Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F03",
+            "claim_text": "The monthly price of the standalone Premium plan will go up from $18.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_numeric_value",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.",
+          "origin": null,
+          "related_fact_id": "F03",
+          "dev": {
+            "claim_in_article": "That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "F03",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "F03"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The monthly price of the standalone Premium plan will go up from $18.99 to $21.49."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "New subscribers will be first. They will pay the new prices starting September 23, 2026. For people who subscribed before then, the change will begin with billing cycles on or after October 21, 2026. But that does not mean everyone’s bill will change on October 21. From then on, the new price will take effect according to each person’s billing cycle. In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.\n\nSo, how much will prices go up? The monthly price of the standalone plan with ads will rise from $11.99 to $12.49. The monthly price of the standalone Premium plan will go up from $18.99 to $21.49. The annual plan will also rise, from $189.99 to $214.99. That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.\n\nTo find out which group you are in for this price increase, check when you subscribed and your billing cycle. Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F03",
+            "claim_text": "That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_numeric_value",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "The annual plan will also rise, from $189.",
+          "origin": null,
+          "related_fact_id": "F04",
+          "dev": {
+            "claim_in_article": "The annual plan will also rise, from $189.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+            "related_fact_id": "F04",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.4"
+              ],
+              "related_fact_ids": [
+                "F04"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The annual plan will also rise, from $189.99 to $214.99."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "New subscribers will be first. They will pay the new prices starting September 23, 2026. For people who subscribed before then, the change will begin with billing cycles on or after October 21, 2026. But that does not mean everyone’s bill will change on October 21. From then on, the new price will take effect according to each person’s billing cycle. In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.\n\nSo, how much will prices go up? The monthly price of the standalone plan with ads will rise from $11.99 to $12.49. The monthly price of the standalone Premium plan will go up from $18.99 to $21.49. The annual plan will also rise, from $189.99 to $214.99. That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.\n\nTo find out which group you are in for this price increase, check when you subscribed and your billing cycle. Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F04",
+            "claim_text": "The annual plan will also rise, from $189.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_numeric_value",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "50, and the annual price by $25.",
+          "origin": null,
+          "related_fact_id": "F02",
+          "dev": {
+            "claim_in_article": "50, and the annual price by $25.",
+            "issue": "決定論検査で戻した: number_not_in_fact / 決定論検査で戻した: number_not_in_fact,causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=number_not_in_fact,causal_not_in_fact, units=S3.5,R:S3.4+S3.5); severity is decided by Stage 2",
+            "related_fact_id": "F02",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "number_not_in_fact",
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S3.5",
+                "R:S3.4+S3.5"
+              ],
+              "related_fact_ids": [
+                "F02"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "New subscribers will be first. They will pay the new prices starting September 23, 2026. For people who subscribed before then, the change will begin with billing cycles on or after October 21, 2026. But that does not mean everyone’s bill will change on October 21. From then on, the new price will take effect according to each person’s billing cycle. In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.\n\nSo, how much will prices go up? The monthly price of the standalone plan with ads will rise from $11.99 to $12.49. The monthly price of the standalone Premium plan will go up from $18.99 to $21.49. The annual plan will also rise, from $189.99 to $214.99. That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.\n\nTo find out which group you are in for this price increase, check when you subscribed and your billing cycle. Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F02",
+            "claim_text": "50, and the annual price by $25.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_numeric_value",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "From then on, the new price will take effect according to each person’s billing cycle.",
+          "origin": null,
+          "related_fact_id": "F06",
+          "dev": {
+            "claim_in_article": "From then on, the new price will take effect according to each person’s billing cycle.",
+            "issue": "価格適用時期を確認することで請求時の驚きを避けられるという効果は、Ledgerに記載されていません。 / 価格の適用時期を確認することが請求時の驚きを避ける助けになる、という実用上の因果的効果はLedgerでは確認されていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "F06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "F06",
+                "F02",
+                "F03",
+                "F04"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The starting gun for the price increase is about to sound. But bills will not all change at once. In the US, Disney+ will start charging the new prices on different dates for new subscribers and people who already have a subscription.\n\nNew subscribers will be first. They will pay the new prices starting September 23, 2026. For people who subscribed before then, the change will begin with billing cycles on or after October 21, 2026. But that does not mean everyone’s bill will change on October 21. From then on, the new price will take effect according to each person’s billing cycle. In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.\n\nSo, how much will prices go up? The monthly price of the standalone plan with ads will rise from $11.99 to $12.49. The monthly price of the standalone Premium plan will go up from $18.99 to $21.49. The annual plan will also rise, from $189.99 to $214.99. That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F06",
+            "claim_text": "From then on, the new price will take effect according to each person’s billing cycle.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_date_or_period",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+              "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+            ],
+            "batch_cost_jpy": 0.2689,
+            "batch_n_claims": 16
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 16,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F06",
+          "claim_text": "But bills will not all change at once.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_date_or_period",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F06",
+          "claim_text": "But that does not mean everyone’s bill will change on October 21.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_date_or_period",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F06",
+          "claim_text": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_date_or_period",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F02",
+          "claim_text": "So, how much will prices go up?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F03",
+          "claim_text": "The monthly price of the standalone Premium plan will go up from $18.99 to $21.49.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_numeric_value",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F04",
+          "claim_text": "The annual plan will also rise, from $189.99 to $214.99.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_numeric_value",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F02",
+          "claim_text": "That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_numeric_value",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F06",
+          "claim_text": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_date_or_period",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F06",
+          "claim_text": "To find out which group you are in for this price increase, check when you subscribed and your billing cycle.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_date_or_period",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F06",
+          "claim_text": "Also, if you subscribe through a third-party payment service, the price or the terms that apply may be different.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F03",
+          "claim_text": "The monthly price of the standalone plan with ads will rise from $11.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_numeric_value",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F03",
+          "claim_text": "The monthly price of the standalone Premium plan will go up from $18.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_numeric_value",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F03",
+          "claim_text": "That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_numeric_value",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F04",
+          "claim_text": "The annual plan will also rise, from $189.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_numeric_value",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F02",
+          "claim_text": "50, and the annual price by $25.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_numeric_value",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "streaming_price_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F06",
+          "claim_text": "From then on, the new price will take effect according to each person’s billing cycle.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_date_or_period",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee",
+            "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+          ],
+          "batch_cost_jpy": 0.2689,
+          "batch_n_claims": 16
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "streaming_price_old_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5251,
+      "usage": {
+        "input_tokens": 3670,
+        "cached_input_tokens": 0,
+        "output_tokens": 5960,
+        "reasoning_tokens": 2437
+      },
+      "elapsed_seconds": 35.875,
+      "prompt_sha256": "8fcb907546103cd703001b1bad7453fe61354b209ba5a6d20e6af8dd563b0a30",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "streaming_price_old_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 1.4498,
+      "usage": {
+        "input_tokens": 3274,
+        "cached_input_tokens": 0,
+        "output_tokens": 17828,
+        "reasoning_tokens": 10529
+      },
+      "elapsed_seconds": 101.853,
+      "prompt_sha256": "16f76f88b616f31d1b9cc41714543200775e854eeab16a2e06f4bce50a2eb62a",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "streaming_price_old_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2478,
+      "usage": {
+        "input_tokens": 3426,
+        "cached_input_tokens": 0,
+        "output_tokens": 2474,
+        "reasoning_tokens": 1989
+      },
+      "elapsed_seconds": 18.573,
+      "prompt_sha256": "139be8fb49fb2bed8601de768ceedd3af5ad0a40cfa8902844e96ec69e3a6746",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "streaming_price_old_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.3792,
+      "usage": {
+        "input_tokens": 11317,
+        "cached_input_tokens": 0,
+        "output_tokens": 2571,
+        "reasoning_tokens": 2156
+      },
+      "elapsed_seconds": 19.142,
+      "prompt_sha256": "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee"
+    },
+    {
+      "label": "streaming_price_old_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.081,
+      "usage": {
+        "input_tokens": 4154,
+        "cached_input_tokens": 0,
+        "output_tokens": 202,
+        "reasoning_tokens": 148
+      },
+      "elapsed_seconds": 2.699,
+      "prompt_sha256": "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+    },
+    {
+      "label": "streaming_price_old_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2485,
+      "usage": {
+        "input_tokens": 11317,
+        "cached_input_tokens": 11314,
+        "output_tokens": 2941,
+        "reasoning_tokens": 2494
+      },
+      "elapsed_seconds": 22.901,
+      "prompt_sha256": "3d55d52c3d5137357eed2f16b7733bbb7daad139423125a8e58889e74c9db7ee"
+    },
+    {
+      "label": "streaming_price_old_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0204,
+      "usage": {
+        "input_tokens": 4154,
+        "cached_input_tokens": 4151,
+        "output_tokens": 177,
+        "reasoning_tokens": 126
+      },
+      "elapsed_seconds": 2.231,
+      "prompt_sha256": "e0c4255eadf02e848253be29cea540bc79db37ca3a74aeaaa1fbd2231a40de8a"
+    }
+  ],
+  "total_cost_jpy": 2.9518,
+  "total_calls": 7,
+  "elapsed_seconds": 203.36,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But bills will not all change at once.",
+        "related_fact_id": "F06",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But that does not mean everyone’s bill will change on October 21.",
+        "related_fact_id": "F06",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.",
+        "related_fact_id": "F06",
+        "origin": null,
+        "issue": "Ledgerは価格改定日と既存契約者への適用時期を示していますが、読者が価格改定のニュースを見る日と個々の支払い変更日の間に必ず時間差があるとは確認できません。 / 一般の読者全員について、ニュースを見た日と支払額が変わる日の間に必ず間隔があるように述べています。Ledgerが示すのは主に既存契約者への適用時期であり、全ての読者についてその間隔があることや、個々の読者がニュースを見る日との関係までは確認されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.6); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "So, how much will prices go up?",
+        "related_fact_id": "F02",
+        "origin": null,
+        "issue": "決定論検査で戻した: causal_not_in_fact",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S3.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The monthly price of the standalone Premium plan will go up from $18.99 to $21.49.",
+        "related_fact_id": "F03",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The annual plan will also rise, from $189.99 to $214.99.",
+        "related_fact_id": "F04",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.",
+        "related_fact_id": "F02",
+        "origin": null,
+        "issue": "決定論検査で戻した: number_not_in_fact / 決定論検査で戻した: number_not_in_fact,causal_not_in_fact",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=number_not_in_fact,causal_not_in_fact, units=S3.5,R:S3.4+S3.5); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+        "related_fact_id": "F06",
+        "origin": null,
+        "issue": "価格適用時期を確認することで請求時の驚きを避けられるという効果は、Ledgerに記載されていません。 / 価格の適用時期を確認することが請求時の驚きを避ける助けになる、という実用上の因果的効果はLedgerでは確認されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 24,
+      "n_model_entries": 17,
+      "n_targets": 5,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 3,
+      "n_excluded_entries": 7,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.2478,
+          "usage": {
+            "input_tokens": 3426,
+            "cached_input_tokens": 0,
+            "output_tokens": 2474,
+            "reasoning_tokens": 1989
+          },
+          "elapsed_seconds": 18.573,
+          "prompt_sha256": "139be8fb49fb2bed8601de768ceedd3af5ad0a40cfa8902844e96ec69e3a6746",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.2478,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.1",
+          "claim": "The starting gun for the price increase is about to sound.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "値上げ開始が近いことを示す比喩的な導入で、具体的な時期を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S2.6",
+          "claim": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "時間差があるという記述は、既存契約者に限らず読者一般に当てはまるように広げている。新規契約者向け価格は9月23日開始であり、全員に一律の時間差があるとはLedgerにない。",
+          "fact_tags": [
+            "date",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C3",
+          "key": "S4.2",
+          "claim": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "時期を確認すれば請求時の驚きを避けられるという因果的な効果を述べているが、Ledgerはその効果を裏付けていない。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "L1",
+          "claim": "Disney+’s US price hike begins earlier for new subscribers, while existing customers’ bills change with their billing cycles.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "新規契約者向けの価格開始が先で、既存契約者は請求サイクルに応じて変更されるという要約はF06と一致する。",
+          "fact_tags": [
+            "proper_noun",
+            "date",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C5",
+          "key": "R:S2.6+S3.1",
+          "claim": "So, how much will prices go up?",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "文脈上、直前に述べたDisney+の価格改定についての問いであり、値上げの方向はLedgerに裏付けられている。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "139be8fb49fb2bed8601de768ceedd3af5ad0a40cfa8902844e96ec69e3a6746",
+      "g3_n_excluded_flagged": 7
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 28,
+    "n_judged_units": 22,
+    "n_relation_units": 2,
+    "relation_ids": [
+      "R:S2.6+S3.1",
+      "R:S3.4+S3.5"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 7,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S2.6+S3.1",
+          "R:S3.4+S3.5",
+          "S1.1",
+          "S1.2",
+          "S2.4",
+          "S2.6",
+          "S3.1",
+          "S3.3",
+          "S3.4",
+          "S3.5",
+          "S4.2"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.5": "SUPPORTED",
+          "S2.6": "CANDIDATE",
+          "S3.1": "SUPPORTED->CANDIDATE(causal_not_in_fact)",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.5": "SUPPORTED->CANDIDATE(number_not_in_fact)",
+          "S4.1": "SUPPORTED",
+          "S4.2": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "L1": "CANDIDATE",
+          "R:S2.6+S3.1": "CANDIDATE",
+          "R:S3.4+S3.5": "SUPPORTED->CANDIDATE(number_not_in_fact,causal_not_in_fact)"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5251,
+            "usage": {
+              "input_tokens": 3670,
+              "cached_input_tokens": 0,
+              "output_tokens": 5960,
+              "reasoning_tokens": 2437
+            },
+            "elapsed_seconds": 35.875,
+            "prompt_sha256": "8fcb907546103cd703001b1bad7453fe61354b209ba5a6d20e6af8dd563b0a30",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S2.5": "SUPPORTED",
+          "S2.6": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S3.5": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "L1": "CANDIDATE",
+          "R:S2.6+S3.1": "CANDIDATE",
+          "R:S3.4+S3.5": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "The starting gun for the price increase is about to sound.",
+            "span": [
+              54,
+              112
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「about to」は値上げが間もなく始まるという相対的な時期を示しますが、Ledgerには記事の時点がなく、その imminence は確認できません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F02"
+            ],
+            "model_claim": "The starting gun for the price increase is about to sound."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "But bills will not all change at once.",
+            "span": [
+              113,
+              151
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "But that does not mean everyone’s bill will change on October 21.",
+            "span": [
+              490,
+              555
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.6",
+            "unit_ids": [
+              "S2.6"
+            ],
+            "claim_text": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.",
+            "span": [
+              643,
+              774
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは価格改定日と既存契約者への適用時期を示していますが、読者が価格改定のニュースを見る日と個々の支払い変更日の間に必ず時間差があるとは確認できません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "So, how much will prices go up?",
+            "span": [
+              776,
+              807
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "causal_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: causal_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F02"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "The monthly price of the standalone Premium plan will go up from $18.99 to $21.49.",
+            "span": [
+              891,
+              973
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F03"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.4",
+            "unit_ids": [
+              "S3.4"
+            ],
+            "claim_text": "The annual plan will also rise, from $189.99 to $214.99.",
+            "span": [
+              974,
+              1030
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F04"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.5",
+            "unit_ids": [
+              "S3.5"
+            ],
+            "claim_text": "That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.",
+            "span": [
+              1031,
+              1169
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "number_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: number_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F02"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+            "span": [
+              1281,
+              1414
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "価格適用時期を確認することで請求時の驚きを避けられるという効果は、Ledgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Disney+’s US price hike begins earlier for new subscribers, while existing customers’ bills change with their billing cycles.",
+            "span": [
+              1635,
+              1760
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「existing customers」は、2026年9月23日より前に契約した利用者というLedgerの対象時点を明示せず、より広い既存顧客全般を指す可能性があります。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": "Disney+’s US price hike begins earlier for new subscribers, while existing customers’ bills change with their billing cycles."
+          },
+          {
+            "unit_id": "R:S2.6+S3.1",
+            "unit_ids": [
+              "R:S2.6+S3.1"
+            ],
+            "claim_text": "So, how much will prices go up?",
+            "span": [
+              776,
+              807
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「So」は、ニュースを見る日と支払い変更日の時間差から値上げ額を尋ねる流れを結んでいますが、その関係はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes. So, how much will prices go up?"
+          },
+          {
+            "unit_id": "R:S3.4+S3.5",
+            "unit_ids": [
+              "R:S3.4+S3.5"
+            ],
+            "claim_text": "That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.",
+            "span": [
+              1031,
+              1169
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "number_not_in_fact",
+              "causal_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: number_not_in_fact,causal_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F02"
+            ],
+            "model_claim": ""
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "R:S2.6+S3.1",
+          "S2.6",
+          "S4.2"
+        ],
+        "unit_status": {
+          "S1.1": "MATCH",
+          "S1.2": "MATCH",
+          "S1.3": "MATCH",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S2.5": "MATCH",
+          "S2.6": "DEVIATION",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.5": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "DEVIATION",
+          "S5.2": "MATCH",
+          "L1": "MATCH",
+          "R:S2.6+S3.1": "DEVIATION",
+          "R:S3.4+S3.5": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "T": "MATCH",
+          "S5.1": "MATCH"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 1.4498,
+            "usage": {
+              "input_tokens": 3274,
+              "cached_input_tokens": 0,
+              "output_tokens": 17828,
+              "reasoning_tokens": 10529
+            },
+            "elapsed_seconds": 101.853,
+            "prompt_sha256": "16f76f88b616f31d1b9cc41714543200775e854eeab16a2e06f4bce50a2eb62a",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S2.6",
+            "unit_ids": [
+              "S2.6"
+            ],
+            "claim_text": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.",
+            "span": [
+              643,
+              774
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "一般の読者全員について、ニュースを見た日と支払額が変わる日の間に必ず間隔があるように述べています。Ledgerが示すのは主に既存契約者への適用時期であり、全ての読者についてその間隔があることや、個々の読者がニュースを見る日との関係までは確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F02"
+            ],
+            "model_claim": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+            "span": [
+              1281,
+              1414
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "価格の適用時期を確認することが請求時の驚きを避ける助けになる、という実用上の因果的効果はLedgerでは確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F02"
+            ],
+            "model_claim": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill."
+          },
+          {
+            "unit_id": "R:S2.6+S3.1",
+            "unit_ids": [
+              "R:S2.6+S3.1"
+            ],
+            "claim_text": "So, how much will prices go up?",
+            "span": [
+              776,
+              807
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "関係単位でも、ニュースを見た日と支払額が変わる日の間に一般的な時間差があると述べていますが、Ledgerはその範囲を全ての読者に広げていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F02"
+            ],
+            "model_claim": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes. So, how much will prices go up?"
+          },
+          {
+            "unit_id": "S2.6",
+            "unit_ids": [
+              "S2.6"
+            ],
+            "claim_text": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.",
+            "span": [
+              643,
+              774
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "一般の読者全員について、ニュースを見た日と支払額が変わる日の間に必ず間隔があるように述べています。Ledgerが示すのは主に既存契約者への適用時期であり、全ての読者についてその間隔があることや、個々の読者がニュースを見る日との関係までは確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F03"
+            ],
+            "model_claim": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+            "span": [
+              1281,
+              1414
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "価格の適用時期を確認することが請求時の驚きを避ける助けになる、という実用上の因果的効果はLedgerでは確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F03"
+            ],
+            "model_claim": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill."
+          },
+          {
+            "unit_id": "R:S2.6+S3.1",
+            "unit_ids": [
+              "R:S2.6+S3.1"
+            ],
+            "claim_text": "So, how much will prices go up?",
+            "span": [
+              776,
+              807
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "関係単位でも、ニュースを見た日と支払額が変わる日の間に一般的な時間差があると述べていますが、Ledgerはその範囲を全ての読者に広げていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F03"
+            ],
+            "model_claim": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes. So, how much will prices go up?"
+          },
+          {
+            "unit_id": "S2.6",
+            "unit_ids": [
+              "S2.6"
+            ],
+            "claim_text": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.",
+            "span": [
+              643,
+              774
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "一般の読者全員について、ニュースを見た日と支払額が変わる日の間に必ず間隔があるように述べています。Ledgerが示すのは主に既存契約者への適用時期であり、全ての読者についてその間隔があることや、個々の読者がニュースを見る日との関係までは確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F04"
+            ],
+            "model_claim": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+            "span": [
+              1281,
+              1414
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "価格の適用時期を確認することが請求時の驚きを避ける助けになる、という実用上の因果的効果はLedgerでは確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F04"
+            ],
+            "model_claim": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill."
+          },
+          {
+            "unit_id": "R:S2.6+S3.1",
+            "unit_ids": [
+              "R:S2.6+S3.1"
+            ],
+            "claim_text": "So, how much will prices go up?",
+            "span": [
+              776,
+              807
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "関係単位でも、ニュースを見た日と支払額が変わる日の間に一般的な時間差があると述べていますが、Ledgerはその範囲を全ての読者に広げていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F04"
+            ],
+            "model_claim": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes. So, how much will prices go up?"
+          },
+          {
+            "unit_id": "S2.6",
+            "unit_ids": [
+              "S2.6"
+            ],
+            "claim_text": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.",
+            "span": [
+              643,
+              774
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "一般の読者全員について、ニュースを見た日と支払額が変わる日の間に必ず間隔があるように述べています。Ledgerが示すのは主に既存契約者への適用時期であり、全ての読者についてその間隔があることや、個々の読者がニュースを見る日との関係までは確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+            "span": [
+              1281,
+              1414
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "価格の適用時期を確認することが請求時の驚きを避ける助けになる、という実用上の因果的効果はLedgerでは確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill."
+          },
+          {
+            "unit_id": "R:S2.6+S3.1",
+            "unit_ids": [
+              "R:S2.6+S3.1"
+            ],
+            "claim_text": "So, how much will prices go up?",
+            "span": [
+              776,
+              807
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "関係単位でも、ニュースを見た日と支払額が変わる日の間に一般的な時間差があると述べていますが、Ledgerはその範囲を全ての読者に広げていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes. So, how much will prices go up?"
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "R:S2.6+S3.1",
+        "S2.6",
+        "S4.2"
+      ],
+      "r3_only": [
+        "L1",
+        "R:S3.4+S3.5",
+        "S1.1",
+        "S1.2",
+        "S2.4",
+        "S3.1",
+        "S3.3",
+        "S3.4",
+        "S3.5"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 7
+    },
+    "union_candidates": [
+      {
+        "claim_text": "But bills will not all change at once.",
+        "span": [
+          113,
+          151
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F06"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "But that does not mean everyone’s bill will change on October 21.",
+        "span": [
+          490,
+          555
+        ],
+        "unit_ids": [
+          "S2.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F06"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes.",
+        "span": [
+          643,
+          774
+        ],
+        "unit_ids": [
+          "S2.6"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "Ledgerは価格改定日と既存契約者への適用時期を示していますが、読者が価格改定のニュースを見る日と個々の支払い変更日の間に必ず時間差があるとは確認できません。",
+          "一般の読者全員について、ニュースを見た日と支払額が変わる日の間に必ず間隔があるように述べています。Ledgerが示すのは主に既存契約者への適用時期であり、全ての読者についてその間隔があることや、個々の読者がニュースを見る日との関係までは確認されていません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F06",
+          "F02",
+          "F03",
+          "F04"
+        ],
+        "model_claims": [
+          "In other words, there is a time gap between the day you see the news about the price increase and the day your own payment changes."
+        ]
+      },
+      {
+        "claim_text": "So, how much will prices go up?",
+        "span": [
+          776,
+          807
+        ],
+        "unit_ids": [
+          "S3.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "causal_not_in_fact"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: causal_not_in_fact"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F02"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The monthly price of the standalone Premium plan will go up from $18.99 to $21.49.",
+        "span": [
+          891,
+          973
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F03"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The annual plan will also rise, from $189.99 to $214.99.",
+        "span": [
+          974,
+          1030
+        ],
+        "unit_ids": [
+          "S3.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F04"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "That means the monthly price of the plan with ads will go up by 50 cents, the monthly Premium price by $2.50, and the annual price by $25.",
+        "span": [
+          1031,
+          1169
+        ],
+        "unit_ids": [
+          "S3.5",
+          "R:S3.4+S3.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "number_not_in_fact",
+          "causal_not_in_fact"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: number_not_in_fact",
+          "決定論検査で戻した: number_not_in_fact,causal_not_in_fact"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F02"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill.",
+        "span": [
+          1281,
+          1414
+        ],
+        "unit_ids": [
+          "S4.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "価格適用時期を確認することで請求時の驚きを避けられるという効果は、Ledgerに記載されていません。",
+          "価格の適用時期を確認することが請求時の驚きを避ける助けになる、という実用上の因果的効果はLedgerでは確認されていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F06",
+          "F02",
+          "F03",
+          "F04"
+        ],
+        "model_claims": [
+          "Looking not only at the monthly price but also at when it will take effect may help you avoid being surprised when you see your bill."
+        ]
+      }
+    ],
+    "n_union_candidates": 8,
+    "n_model_candidates": 2,
+    "n_deterministic_only_candidates": 6,
+    "total_cost_jpy": 1.9749,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 17,
+    "n_targets": 5,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 3,
+    "n_excluded_entries": 7,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.2478,
+    "effort": "medium",
+    "prompt_sha256": "139be8fb49fb2bed8601de768ceedd3af5ad0a40cfa8902844e96ec69e3a6746"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 8
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

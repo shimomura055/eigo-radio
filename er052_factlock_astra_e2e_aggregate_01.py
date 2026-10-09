@@ -150,8 +150,10 @@ def human_intervention(recs: list) -> dict:
     return parts
 
 
-def aggregate(root: str) -> dict:
+def aggregate(root: str, only_themes=None) -> dict:
     themes = sorted(d for d in os.listdir(root) if os.path.isdir(f"{root}/{d}/shared")) if os.path.isdir(root) else []
+    if only_themes is not None:      # 委任_13追加: 層別集計(旧4/新5)用。費用(cost)は全体のまま
+        themes = [t for t in themes if t in only_themes]
     out = {"root": root, "themes": themes, "planned_runs_per_arm": 2 * len(themes), "arms": {}, "per_theme": [], "cost": cost_by_arm(root),
            "b1_global": R.read_jsonl(f"{root}/b1_counter.jsonl"), "note": "分母は予定run数(各腕2 x テーマ数)。STOPは独立カテゴリ。None=要ラベル/未計測"}
     for arm in ("new", "old"):
@@ -201,6 +203,7 @@ def to_markdown(agg: dict) -> str:
 
     def row(label, fn):
         a, b = (fn(n) if n else None), (fn(o) if o else None)
+        a, b = (round(a, 3) if isinstance(a, float) else a), (round(b, 3) if isinstance(b, float) else b)
         d = round(a - b, 4) if isinstance(a, (int, float)) and isinstance(b, (int, float)) else ""
         L.append(f"| {label} | {a} | {b} | {d} |")
     for lab, k in rows:

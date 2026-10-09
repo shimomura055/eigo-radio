@@ -1,0 +1,4284 @@
+{
+  "instance_id": "byd_recall_old_advanced",
+  "group": "e2e",
+  "expected_group_label": "E2E generated",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-06",
+          "dev": {
+            "claim_in_article": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message",
+            "issue": "「Small」はLedgerに記載のない部品の大きさを具体的に主張しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message\n\nIf we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.” For cars on the road, they are short messages sent with light instead of words. But what if the driver is not pressing the pedal, and the lights stay on? This BYD recall is about the possibility of that kind of “message sent by mistake.”",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:BYD-RECALL-06",
+            "claim_text": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "If we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.”",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-07",
+          "dev": {
+            "claim_in_article": "If we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.”",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-07",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-07"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message\n\nIf we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.” For cars on the road, they are short messages sent with light instead of words. But what if the driver is not pressing the pedal, and the lights stay on? This BYD recall is about the possibility of that kind of “message sent by mistake.”\n\nThe recall notice in China covers a total of 183,211 vehicles from the Tang and Qin series. The issue is a defect in the material of a stopper pad attached to the brake pedal. Because of a manufacturing problem, the pad may crack or break over time.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:BYD-RECALL-07",
+            "claim_text": "If we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.”",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "For cars on the road, they are short messages sent with light instead of words.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-08",
+          "dev": {
+            "claim_in_article": "For cars on the road, they are short messages sent with light instead of words.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-08",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-08"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message\n\nIf we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.” For cars on the road, they are short messages sent with light instead of words. But what if the driver is not pressing the pedal, and the lights stay on? This BYD recall is about the possibility of that kind of “message sent by mistake.”\n\nThe recall notice in China covers a total of 183,211 vehicles from the Tang and Qin series. The issue is a defect in the material of a stopper pad attached to the brake pedal. Because of a manufacturing problem, the pad may crack or break over time.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:BYD-RECALL-08",
+            "claim_text": "For cars on the road, they are short messages sent with light instead of words.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "This BYD recall is about the possibility of that kind of “message sent by mistake.”",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-07",
+          "dev": {
+            "claim_in_article": "This BYD recall is about the possibility of that kind of “message sent by mistake.”",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.4); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-07",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.4"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-07"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message\n\nIf we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.” For cars on the road, they are short messages sent with light instead of words. But what if the driver is not pressing the pedal, and the lights stay on? This BYD recall is about the possibility of that kind of “message sent by mistake.”\n\nThe recall notice in China covers a total of 183,211 vehicles from the Tang and Qin series. The issue is a defect in the material of a stopper pad attached to the brake pedal. Because of a manufacturing problem, the pad may crack or break over time.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:BYD-RECALL-07",
+            "claim_text": "This BYD recall is about the possibility of that kind of “message sent by mistake.”",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "This is the wrong signal that the notice points to as a safety concern.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-08",
+          "dev": {
+            "claim_in_article": "This is the wrong signal that the notice points to as a safety concern.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-08",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.4"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-08"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The recall notice in China covers a total of 183,211 vehicles from the Tang and Qin series. The issue is a defect in the material of a stopper pad attached to the brake pedal. Because of a manufacturing problem, the pad may crack or break over time.\n\nThis is where the message mix-up with the lights can happen. In an extreme case, the pad may come off, and the brake lights may stay on even when the pedal is not being pressed. The car behind then gets a signal that does not match what the driver is doing. This is the wrong signal that the notice points to as a safety concern.\n\nTo be clear, the notice is not saying that the brakes may stop working. It says that what the driver does with the brake pedal may not match what the lights show. When we think of car safety, we tend to focus on big actions such as moving, turning, and stopping. But on the road, signals that tell others “what is happening now” are also essential.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:BYD-RECALL-08",
+            "claim_text": "This is the wrong signal that the notice points to as a safety concern.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "If cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.”",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-07",
+          "dev": {
+            "claim_in_article": "If cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.”",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-07",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-07"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "To be clear, the notice is not saying that the brakes may stop working. It says that what the driver does with the brake pedal may not match what the lights show. When we think of car safety, we tend to focus on big actions such as moving, turning, and stopping. But on the road, signals that tell others “what is happening now” are also essential.\n\nIf cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.” This problem is like that message appearing even though the driver did not send it. Of course, cars do not really talk or send messages. People see the light, and drivers coming from behind understand what it means. Comparing this to chat makes the system a little easier to understand.\n\nBYD will replace the part with an improved one for free through approved dealers for the affected vehicles. The key part is a small pad. But its job affects the signal that reaches the car behind. Replacing a part to prevent a “message sent by mistake” on the road. Thinking of it this way, doesn’t this ordinary recall seem like a news story worth paying a little attention to?",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:BYD-RECALL-07",
+            "claim_text": "If cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.”",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "People see the light, and drivers coming from behind understand what it means.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-08",
+          "dev": {
+            "claim_in_article": "People see the light, and drivers coming from behind understand what it means.",
+            "issue": "人々が灯火を見てその意味を理解するという具体的な主張はLedgerで直接確認できません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S5.4); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-08",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.4"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-08"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "To be clear, the notice is not saying that the brakes may stop working. It says that what the driver does with the brake pedal may not match what the lights show. When we think of car safety, we tend to focus on big actions such as moving, turning, and stopping. But on the road, signals that tell others “what is happening now” are also essential.\n\nIf cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.” This problem is like that message appearing even though the driver did not send it. Of course, cars do not really talk or send messages. People see the light, and drivers coming from behind understand what it means. Comparing this to chat makes the system a little easier to understand.\n\nBYD will replace the part with an improved one for free through approved dealers for the affected vehicles. The key part is a small pad. But its job affects the signal that reaches the car behind. Replacing a part to prevent a “message sent by mistake” on the road. Thinking of it this way, doesn’t this ordinary recall seem like a news story worth paying a little attention to?",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:BYD-RECALL-08",
+            "claim_text": "People see the light, and drivers coming from behind understand what it means.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "BYD will replace the part with an improved one for free through approved dealers for the affected vehicles.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-11",
+          "dev": {
+            "claim_in_article": "BYD will replace the part with an improved one for free through approved dealers for the affected vehicles.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.1); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-11",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.1"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-11"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "If cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.” This problem is like that message appearing even though the driver did not send it. Of course, cars do not really talk or send messages. People see the light, and drivers coming from behind understand what it means. Comparing this to chat makes the system a little easier to understand.\n\nBYD will replace the part with an improved one for free through approved dealers for the affected vehicles. The key part is a small pad. But its job affects the signal that reaches the car behind. Replacing a part to prevent a “message sent by mistake” on the road. Thinking of it this way, doesn’t this ordinary recall seem like a news story worth paying a little attention to?\n\n## In one line\nA faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:BYD-RECALL-11",
+            "claim_text": "BYD will replace the part with an improved one for free through approved dealers for the affected vehicles.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "The key part is a small pad.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-06",
+          "dev": {
+            "claim_in_article": "The key part is a small pad.",
+            "issue": "部品が「small」であるという大きさの主張はLedgerにありません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "If cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.” This problem is like that message appearing even though the driver did not send it. Of course, cars do not really talk or send messages. People see the light, and drivers coming from behind understand what it means. Comparing this to chat makes the system a little easier to understand.\n\nBYD will replace the part with an improved one for free through approved dealers for the affected vehicles. The key part is a small pad. But its job affects the signal that reaches the car behind. Replacing a part to prevent a “message sent by mistake” on the road. Thinking of it this way, doesn’t this ordinary recall seem like a news story worth paying a little attention to?\n\n## In one line\nA faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:BYD-RECALL-06",
+            "claim_text": "The key part is a small pad.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_claim",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "But its job affects the signal that reaches the car behind.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-07",
+          "dev": {
+            "claim_in_article": "But its job affects the signal that reaches the car behind.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-07",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.3"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-07"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "If cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.” This problem is like that message appearing even though the driver did not send it. Of course, cars do not really talk or send messages. People see the light, and drivers coming from behind understand what it means. Comparing this to chat makes the system a little easier to understand.\n\nBYD will replace the part with an improved one for free through approved dealers for the affected vehicles. The key part is a small pad. But its job affects the signal that reaches the car behind. Replacing a part to prevent a “message sent by mistake” on the road. Thinking of it this way, doesn’t this ordinary recall seem like a news story worth paying a little attention to?\n\n## In one line\nA faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:BYD-RECALL-07",
+            "claim_text": "But its job affects the signal that reaches the car behind.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "Replacing a part to prevent a “message sent by mistake” on the road.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-11",
+          "dev": {
+            "claim_in_article": "Replacing a part to prevent a “message sent by mistake” on the road.",
+            "issue": "交換の目的を、道路上の誤信号を防ぐことだと因果・目的関係で述べていますが、その目的はLedgerに明記されていません。 / 交換が誤信号を防ぐという目的・因果関係は、Ledgerに記載された公告内容では確認できません。 / 改善後部品への交換を行うことは記載されていますが、それが誤信号を防ぐという因果・目的まではLedgerで確認できません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S6.4); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-11",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.4"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-11",
+                "BYD-RECALL-08"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "If cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.” This problem is like that message appearing even though the driver did not send it. Of course, cars do not really talk or send messages. People see the light, and drivers coming from behind understand what it means. Comparing this to chat makes the system a little easier to understand.\n\nBYD will replace the part with an improved one for free through approved dealers for the affected vehicles. The key part is a small pad. But its job affects the signal that reaches the car behind. Replacing a part to prevent a “message sent by mistake” on the road. Thinking of it this way, doesn’t this ordinary recall seem like a news story worth paying a little attention to?\n\n## In one line\nA faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:BYD-RECALL-11",
+            "claim_text": "Replacing a part to prevent a “message sent by mistake” on the road.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "A faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-05",
+          "dev": {
+            "claim_in_article": "A faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal.",
+            "issue": "中国国内の公告に限定される範囲が明示されず、対象が中国以外のBYD車にも及ぶように読める表現です。 / 省略了公告所限定的「極端な場合」という条件を外し、制動灯が点灯し続ける可能性の範囲を広げています。 / 省略された「極端な場合」という条件により、誤信号が生じる可能性の範囲が公告の記載より広くなっています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-05",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-05",
+                "BYD-RECALL-07",
+                "BYD-RECALL-08"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "BYD will replace the part with an improved one for free through approved dealers for the affected vehicles. The key part is a small pad. But its job affects the signal that reaches the car behind. Replacing a part to prevent a “message sent by mistake” on the road. Thinking of it this way, doesn’t this ordinary recall seem like a news story worth paying a little attention to?\n\n## In one line\nA faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_scope",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:BYD-RECALL-05",
+            "claim_text": "A faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_scope",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "If we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-06",
+          "dev": {
+            "claim_in_article": "If we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.",
+            "issue": "「Small」はLedgerに記載のない部品の大きさを具体的に主張しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message\n\nIf we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.” For cars on the road, they are short messages sent with light instead of words. But what if the driver is not pressing the pedal, and the lights stay on? This BYD recall is about the possibility of that kind of “message sent by mistake.”\n\nThe recall notice in China covers a total of 183,211 vehicles from the Tang and Qin series. The issue is a defect in the material of a stopper pad attached to the brake pedal. Because of a manufacturing problem, the pad may crack or break over time.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:BYD-RECALL-06",
+            "claim_text": "If we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "This BYD recall is about the possibility of that kind of “message sent by mistake.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-06",
+          "dev": {
+            "claim_in_article": "This BYD recall is about the possibility of that kind of “message sent by mistake.",
+            "issue": "「Small」はLedgerに記載のない部品の大きさを具体的に主張しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message\n\nIf we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.” For cars on the road, they are short messages sent with light instead of words. But what if the driver is not pressing the pedal, and the lights stay on? This BYD recall is about the possibility of that kind of “message sent by mistake.”\n\nThe recall notice in China covers a total of 183,211 vehicles from the Tang and Qin series. The issue is a defect in the material of a stopper pad attached to the brake pedal. Because of a manufacturing problem, the pad may crack or break over time.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:BYD-RECALL-06",
+            "claim_text": "This BYD recall is about the possibility of that kind of “message sent by mistake.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "This is where the message mix-up with the lights can happen.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-06",
+          "dev": {
+            "claim_in_article": "This is where the message mix-up with the lights can happen.",
+            "issue": "「Small」はLedgerに記載のない部品の大きさを具体的に主張しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The recall notice in China covers a total of 183,211 vehicles from the Tang and Qin series. The issue is a defect in the material of a stopper pad attached to the brake pedal. Because of a manufacturing problem, the pad may crack or break over time.\n\nThis is where the message mix-up with the lights can happen. In an extreme case, the pad may come off, and the brake lights may stay on even when the pedal is not being pressed. The car behind then gets a signal that does not match what the driver is doing. This is the wrong signal that the notice points to as a safety concern.\n\nTo be clear, the notice is not saying that the brakes may stop working. It says that what the driver does with the brake pedal may not match what the lights show. When we think of car safety, we tend to focus on big actions such as moving, turning, and stopping. But on the road, signals that tell others “what is happening now” are also essential.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:BYD-RECALL-06",
+            "claim_text": "This is where the message mix-up with the lights can happen.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "If cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-06",
+          "dev": {
+            "claim_in_article": "If cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.",
+            "issue": "「Small」はLedgerに記載のない部品の大きさを具体的に主張しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "To be clear, the notice is not saying that the brakes may stop working. It says that what the driver does with the brake pedal may not match what the lights show. When we think of car safety, we tend to focus on big actions such as moving, turning, and stopping. But on the road, signals that tell others “what is happening now” are also essential.\n\nIf cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.” This problem is like that message appearing even though the driver did not send it. Of course, cars do not really talk or send messages. People see the light, and drivers coming from behind understand what it means. Comparing this to chat makes the system a little easier to understand.\n\nBYD will replace the part with an improved one for free through approved dealers for the affected vehicles. The key part is a small pad. But its job affects the signal that reaches the car behind. Replacing a part to prevent a “message sent by mistake” on the road. Thinking of it this way, doesn’t this ordinary recall seem like a news story worth paying a little attention to?",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:BYD-RECALL-06",
+            "claim_text": "If cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "But what if the driver is not pressing the pedal, and the lights stay on?",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-07",
+          "dev": {
+            "claim_in_article": "But what if the driver is not pressing the pedal, and the lights stay on?",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-07",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-07"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "If we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message\n\nIf we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.” For cars on the road, they are short messages sent with light instead of words. But what if the driver is not pressing the pedal, and the lights stay on? This BYD recall is about the possibility of that kind of “message sent by mistake.”\n\nThe recall notice in China covers a total of 183,211 vehicles from the Tang and Qin series. The issue is a defect in the material of a stopper pad attached to the brake pedal. Because of a manufacturing problem, the pad may crack or break over time.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:BYD-RECALL-07",
+            "claim_text": "But what if the driver is not pressing the pedal, and the lights stay on?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "In an extreme case, the pad may come off, and the brake lights may stay on even when the pedal is not being pressed.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-07",
+          "dev": {
+            "claim_in_article": "In an extreme case, the pad may come off, and the brake lights may stay on even when the pedal is not being pressed.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-07",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-07"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "If we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The recall notice in China covers a total of 183,211 vehicles from the Tang and Qin series. The issue is a defect in the material of a stopper pad attached to the brake pedal. Because of a manufacturing problem, the pad may crack or break over time.\n\nThis is where the message mix-up with the lights can happen. In an extreme case, the pad may come off, and the brake lights may stay on even when the pedal is not being pressed. The car behind then gets a signal that does not match what the driver is doing. This is the wrong signal that the notice points to as a safety concern.\n\nTo be clear, the notice is not saying that the brakes may stop working. It says that what the driver does with the brake pedal may not match what the lights show. When we think of car safety, we tend to focus on big actions such as moving, turning, and stopping. But on the road, signals that tell others “what is happening now” are also essential.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:BYD-RECALL-07",
+            "claim_text": "In an extreme case, the pad may come off, and the brake lights may stay on even when the pedal is not being pressed.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "It says that what the driver does with the brake pedal may not match what the lights show.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-07",
+          "dev": {
+            "claim_in_article": "It says that what the driver does with the brake pedal may not match what the lights show.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-07",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-07"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "If we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This is where the message mix-up with the lights can happen. In an extreme case, the pad may come off, and the brake lights may stay on even when the pedal is not being pressed. The car behind then gets a signal that does not match what the driver is doing. This is the wrong signal that the notice points to as a safety concern.\n\nTo be clear, the notice is not saying that the brakes may stop working. It says that what the driver does with the brake pedal may not match what the lights show. When we think of car safety, we tend to focus on big actions such as moving, turning, and stopping. But on the road, signals that tell others “what is happening now” are also essential.\n\nIf cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.” This problem is like that message appearing even though the driver did not send it. Of course, cars do not really talk or send messages. People see the light, and drivers coming from behind understand what it means. Comparing this to chat makes the system a little easier to understand.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:BYD-RECALL-07",
+            "claim_text": "It says that what the driver does with the brake pedal may not match what the lights show.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "” For cars on the road, they are short messages sent with light instead of words.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-08",
+          "dev": {
+            "claim_in_article": "” For cars on the road, they are short messages sent with light instead of words.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-08",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-08"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "For cars on the road, they are short messages sent with light instead of words."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message\n\nIf we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.” For cars on the road, they are short messages sent with light instead of words. But what if the driver is not pressing the pedal, and the lights stay on? This BYD recall is about the possibility of that kind of “message sent by mistake.”\n\nThe recall notice in China covers a total of 183,211 vehicles from the Tang and Qin series. The issue is a defect in the material of a stopper pad attached to the brake pedal. Because of a manufacturing problem, the pad may crack or break over time.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:BYD-RECALL-08",
+            "claim_text": "” For cars on the road, they are short messages sent with light instead of words.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        },
+        {
+          "claim_text": "The car behind then gets a signal that does not match what the driver is doing.",
+          "origin": null,
+          "related_fact_id": "BYD-RECALL-07",
+          "dev": {
+            "claim_in_article": "The car behind then gets a signal that does not match what the driver is doing.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+            "related_fact_id": "BYD-RECALL-07",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.3"
+              ],
+              "related_fact_ids": [
+                "BYD-RECALL-07"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "But its job affects the signal that reaches the car behind."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The recall notice in China covers a total of 183,211 vehicles from the Tang and Qin series. The issue is a defect in the material of a stopper pad attached to the brake pedal. Because of a manufacturing problem, the pad may crack or break over time.\n\nThis is where the message mix-up with the lights can happen. In an extreme case, the pad may come off, and the brake lights may stay on even when the pedal is not being pressed. The car behind then gets a signal that does not match what the driver is doing. This is the wrong signal that the notice points to as a safety concern.\n\nTo be clear, the notice is not saying that the brakes may stop working. It says that what the driver does with the brake pedal may not match what the lights show. When we think of car safety, we tend to focus on big actions such as moving, turning, and stopping. But on the road, signals that tell others “what is happening now” are also essential.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "byd_recall_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:BYD-RECALL-07",
+            "claim_text": "The car behind then gets a signal that does not match what the driver is doing.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+              "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+            ],
+            "batch_cost_jpy": 0.2776,
+            "batch_n_claims": 21
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 21,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:BYD-RECALL-06",
+          "claim_text": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:BYD-RECALL-07",
+          "claim_text": "If we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.”",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:BYD-RECALL-08",
+          "claim_text": "For cars on the road, they are short messages sent with light instead of words.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:BYD-RECALL-07",
+          "claim_text": "This BYD recall is about the possibility of that kind of “message sent by mistake.”",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:BYD-RECALL-08",
+          "claim_text": "This is the wrong signal that the notice points to as a safety concern.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:BYD-RECALL-07",
+          "claim_text": "If cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.”",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:BYD-RECALL-08",
+          "claim_text": "People see the light, and drivers coming from behind understand what it means.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:BYD-RECALL-11",
+          "claim_text": "BYD will replace the part with an improved one for free through approved dealers for the affected vehicles.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:BYD-RECALL-06",
+          "claim_text": "The key part is a small pad.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_claim",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:BYD-RECALL-07",
+          "claim_text": "But its job affects the signal that reaches the car behind.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:BYD-RECALL-11",
+          "claim_text": "Replacing a part to prevent a “message sent by mistake” on the road.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:BYD-RECALL-05",
+          "claim_text": "A faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_scope",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:BYD-RECALL-06",
+          "claim_text": "If we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:BYD-RECALL-06",
+          "claim_text": "This BYD recall is about the possibility of that kind of “message sent by mistake.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:BYD-RECALL-06",
+          "claim_text": "This is where the message mix-up with the lights can happen.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:BYD-RECALL-06",
+          "claim_text": "If cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:BYD-RECALL-07",
+          "claim_text": "But what if the driver is not pressing the pedal, and the lights stay on?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:BYD-RECALL-07",
+          "claim_text": "In an extreme case, the pad may come off, and the brake lights may stay on even when the pedal is not being pressed.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:BYD-RECALL-07",
+          "claim_text": "It says that what the driver does with the brake pedal may not match what the lights show.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:BYD-RECALL-08",
+          "claim_text": "” For cars on the road, they are short messages sent with light instead of words.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        },
+        {
+          "instance_id": "byd_recall_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:BYD-RECALL-07",
+          "claim_text": "The car behind then gets a signal that does not match what the driver is doing.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773",
+            "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+          ],
+          "batch_cost_jpy": 0.2776,
+          "batch_n_claims": 21
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "byd_recall_old_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.7076,
+      "usage": {
+        "input_tokens": 4400,
+        "cached_input_tokens": 0,
+        "output_tokens": 8141,
+        "reasoning_tokens": 3522
+      },
+      "elapsed_seconds": 46.932,
+      "prompt_sha256": "8dec8282572ca4068382205d66ba437a35ab8d39d0c1b9170acdaf5db9b5ed38",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "byd_recall_old_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6957,
+      "usage": {
+        "input_tokens": 4058,
+        "cached_input_tokens": 0,
+        "output_tokens": 8057,
+        "reasoning_tokens": 5550
+      },
+      "elapsed_seconds": 51.129,
+      "prompt_sha256": "f3a834a7cc73118fbe2a98464d489261741034c0691d8efc4d2a29f96f9973f0",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "byd_recall_old_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.3693,
+      "usage": {
+        "input_tokens": 4463,
+        "cached_input_tokens": 0,
+        "output_tokens": 3815,
+        "reasoning_tokens": 2879
+      },
+      "elapsed_seconds": 28.392,
+      "prompt_sha256": "9f2f46ceba48f437d8a0443640eb0bc08a903dc1387ce9b92b5535c1c3d54c38",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "byd_recall_old_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.3183,
+      "usage": {
+        "input_tokens": 11077,
+        "cached_input_tokens": 0,
+        "output_tokens": 1843,
+        "reasoning_tokens": 1474
+      },
+      "elapsed_seconds": 16.522,
+      "prompt_sha256": "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773"
+    },
+    {
+      "label": "byd_recall_old_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1323,
+      "usage": {
+        "input_tokens": 5427,
+        "cached_input_tokens": 0,
+        "output_tokens": 601,
+        "reasoning_tokens": 368
+      },
+      "elapsed_seconds": 5.402,
+      "prompt_sha256": "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+    },
+    {
+      "label": "byd_recall_old_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2271,
+      "usage": {
+        "input_tokens": 11077,
+        "cached_input_tokens": 11074,
+        "output_tokens": 2673,
+        "reasoning_tokens": 2311
+      },
+      "elapsed_seconds": 21.115,
+      "prompt_sha256": "bf4f86d279f3b0753a4ba4ac60bd9e9fad484e243eb074769712242094565773"
+    },
+    {
+      "label": "byd_recall_old_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0505,
+      "usage": {
+        "input_tokens": 5427,
+        "cached_input_tokens": 5424,
+        "output_tokens": 535,
+        "reasoning_tokens": 302
+      },
+      "elapsed_seconds": 4.466,
+      "prompt_sha256": "8de6443223acaab80221acb7ae2249cfb01fcab6afbb57d9c8929d2847622035"
+    }
+  ],
+  "total_cost_jpy": 2.5008,
+  "total_calls": 7,
+  "elapsed_seconds": 173.995,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message",
+        "related_fact_id": "BYD-RECALL-06",
+        "origin": null,
+        "issue": "「Small」はLedgerに記載のない部品の大きさを具体的に主張しています。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "If we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.”",
+        "related_fact_id": "BYD-RECALL-07",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "For cars on the road, they are short messages sent with light instead of words.",
+        "related_fact_id": "BYD-RECALL-08",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "This BYD recall is about the possibility of that kind of “message sent by mistake.”",
+        "related_fact_id": "BYD-RECALL-07",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "This is the wrong signal that the notice points to as a safety concern.",
+        "related_fact_id": "BYD-RECALL-08",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "If cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.”",
+        "related_fact_id": "BYD-RECALL-07",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "People see the light, and drivers coming from behind understand what it means.",
+        "related_fact_id": "BYD-RECALL-08",
+        "origin": null,
+        "issue": "人々が灯火を見てその意味を理解するという具体的な主張はLedgerで直接確認できません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S5.4); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "BYD will replace the part with an improved one for free through approved dealers for the affected vehicles.",
+        "related_fact_id": "BYD-RECALL-11",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The key part is a small pad.",
+        "related_fact_id": "BYD-RECALL-06",
+        "origin": null,
+        "issue": "部品が「small」であるという大きさの主張はLedgerにありません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S6.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But its job affects the signal that reaches the car behind.",
+        "related_fact_id": "BYD-RECALL-07",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Replacing a part to prevent a “message sent by mistake” on the road.",
+        "related_fact_id": "BYD-RECALL-11",
+        "origin": null,
+        "issue": "交換の目的を、道路上の誤信号を防ぐことだと因果・目的関係で述べていますが、その目的はLedgerに明記されていません。 / 交換が誤信号を防ぐという目的・因果関係は、Ledgerに記載された公告内容では確認できません。 / 改善後部品への交換を行うことは記載されていますが、それが誤信号を防ぐという因果・目的まではLedgerで確認できません。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S6.4); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "A faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal.",
+        "related_fact_id": "BYD-RECALL-05",
+        "origin": null,
+        "issue": "中国国内の公告に限定される範囲が明示されず、対象が中国以外のBYD車にも及ぶように読める表現です。 / 省略了公告所限定的「極端な場合」という条件を外し、制動灯が点灯し続ける可能性の範囲を広げています。 / 省略された「極端な場合」という条件により、誤信号が生じる可能性の範囲が公告の記載より広くなっています。",
+        "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 21,
+      "n_model_entries": 14,
+      "n_targets": 10,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 5,
+      "n_excluded_entries": 5,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.3693,
+          "usage": {
+            "input_tokens": 4463,
+            "cached_input_tokens": 0,
+            "output_tokens": 3815,
+            "reasoning_tokens": 2879
+          },
+          "elapsed_seconds": 28.392,
+          "prompt_sha256": "9f2f46ceba48f437d8a0443640eb0bc08a903dc1387ce9b92b5535c1c3d54c38",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.3693,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "見出しは部品が誤信号を生じさせる可能性を示すが、Ledgerが限定する「極端な場合（パッド脱落時）」という条件がない。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C2",
+          "key": "S4.3",
+          "claim": "When we think of car safety, we tend to focus on big actions such as moving, turning, and stopping.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "安全についての一般的な導入表現で、具体的な検証可能な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S4.4",
+          "claim": "But on the road, signals that tell others “what is happening now” are also essential.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "道路上の信号の重要性を述べる一般論で、召回に関する具体的事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S5.3",
+          "claim": "Of course, cars do not really talk or send messages.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "車が会話するという比喩を打ち消す説明であり、記事の具体的な仕組みに関する新事実ではない。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S5.4",
+          "claim": "People see the light, and drivers coming from behind understand what it means.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "後方の運転者が光を見て意味を理解するという具体的な行動・理解を述べているが、Ledgerは誤信号の伝達を記すにとどまり、理解までは裏付けていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C6",
+          "key": "S5.5",
+          "claim": "Comparing this to chat makes the system a little easier to understand.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "チャットとの比喩が説明を助けるという書き手の修辞的評価で、ニュース上の具体的事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "S6.2",
+          "claim": "The key part is a small pad.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "パッドが対象部品である点は一致するが、「小さい」という具体的な大きさの記述はLedgerに裏付けがない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C8",
+          "key": "S6.4",
+          "claim": "Replacing a part to prevent a “message sent by mistake” on the road.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "部品交換と誤信号の防止を因果・目的として結び付けているが、Ledgerは改善品への交換を記載する一方、誤信号の防止目的を明示しておらず、誤信号のリスクも極端な場合に限る。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C9",
+          "key": "S6.5",
+          "claim": "Thinking of it this way, doesn’t this ordinary recall seem like a news story worth paying a little attention to?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "読者に注意を促す修辞的な問いかけで、新たな具体的事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C10",
+          "key": "L1",
+          "claim": "A faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "部品不具合が非踏下時の制動灯点灯と誤信号につながる点は概ね一致するが、中国国内の公告という範囲と、パッド脱落は「極端な場合」という条件が省かれている。",
+          "fact_tags": [
+            "proper_noun",
+            "causality",
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "9f2f46ceba48f437d8a0443640eb0bc08a903dc1387ce9b92b5535c1c3d54c38",
+      "g3_n_excluded_flagged": 5
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 34,
+    "n_judged_units": 27,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 11,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "S1.1",
+          "S1.2",
+          "S1.4",
+          "S3.4",
+          "S4.3",
+          "S4.4",
+          "S5.1",
+          "S5.3",
+          "S5.4",
+          "S5.5",
+          "S6.1",
+          "S6.2",
+          "S6.3",
+          "S6.4",
+          "S6.5",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S1.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "CANDIDATE",
+          "S4.4": "CANDIDATE",
+          "S5.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.2": "SUPPORTED",
+          "S5.3": "CANDIDATE",
+          "S5.4": "CANDIDATE",
+          "S5.5": "CANDIDATE",
+          "S6.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S6.2": "CANDIDATE",
+          "S6.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S6.4": "CANDIDATE",
+          "S6.5": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.7076,
+            "usage": {
+              "input_tokens": 4400,
+              "cached_input_tokens": 0,
+              "output_tokens": 8141,
+              "reasoning_tokens": 3522
+            },
+            "elapsed_seconds": 46.932,
+            "prompt_sha256": "8dec8282572ca4068382205d66ba437a35ab8d39d0c1b9170acdaf5db9b5ed38",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "CANDIDATE",
+          "S4.4": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "CANDIDATE",
+          "S5.4": "CANDIDATE",
+          "S5.5": "CANDIDATE",
+          "S6.1": "SUPPORTED",
+          "S6.2": "CANDIDATE",
+          "S6.3": "SUPPORTED",
+          "S6.4": "CANDIDATE",
+          "S6.5": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message",
+            "span": [
+              0,
+              79
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「Small」はLedgerに記載のない部品の大きさを具体的に主張しています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-06"
+            ],
+            "model_claim": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "If we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.”",
+            "span": [
+              81,
+              196
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-07"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "For cars on the road, they are short messages sent with light instead of words.",
+            "span": [
+              197,
+              276
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-08"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S1.4",
+            "unit_ids": [
+              "S1.4"
+            ],
+            "claim_text": "This BYD recall is about the possibility of that kind of “message sent by mistake.”",
+            "span": [
+              351,
+              434
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-07"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.4",
+            "unit_ids": [
+              "S3.4"
+            ],
+            "claim_text": "This is the wrong signal that the notice points to as a safety concern.",
+            "span": [
+              945,
+              1016
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-08"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.3",
+            "unit_ids": [
+              "S4.3"
+            ],
+            "claim_text": "When we think of car safety, we tend to focus on big actions such as moving, turning, and stopping.",
+            "span": [
+              1181,
+              1280
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "車の安全について人々が重視する行動に関する一般論はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "When we think of car safety, we tend to focus on big actions such as moving, turning, and stopping."
+          },
+          {
+            "unit_id": "S4.4",
+            "unit_ids": [
+              "S4.4"
+            ],
+            "claim_text": "But on the road, signals that tell others “what is happening now” are also essential.",
+            "span": [
+              1281,
+              1366
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "道路上の信号が不可欠であるという一般的・評価的な主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-08"
+            ],
+            "model_claim": "But on the road, signals that tell others “what is happening now” are also essential."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "If cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.”",
+            "span": [
+              1368,
+              1463
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-07"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "Of course, cars do not really talk or send messages.",
+            "span": [
+              1548,
+              1600
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "車が文字どおり話したりメッセージを送ったりしないという一般的な主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Of course, cars do not really talk or send messages."
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "People see the light, and drivers coming from behind understand what it means.",
+            "span": [
+              1601,
+              1679
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人々が灯火を見てその意味を理解するという具体的な主張はLedgerで直接確認できません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-08"
+            ],
+            "model_claim": "People see the light, and drivers coming from behind understand what it means."
+          },
+          {
+            "unit_id": "S5.5",
+            "unit_ids": [
+              "S5.5"
+            ],
+            "claim_text": "Comparing this to chat makes the system a little easier to understand.",
+            "span": [
+              1680,
+              1750
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "チャットとの比較が理解を容易にするという評価はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Comparing this to chat makes the system a little easier to understand."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "BYD will replace the part with an improved one for free through approved dealers for the affected vehicles.",
+            "span": [
+              1752,
+              1859
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-11"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "The key part is a small pad.",
+            "span": [
+              1860,
+              1888
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "部品が「small」であるという大きさの主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-06"
+            ],
+            "model_claim": "The key part is a small pad."
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "But its job affects the signal that reaches the car behind.",
+            "span": [
+              1889,
+              1948
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-07"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "Replacing a part to prevent a “message sent by mistake” on the road.",
+            "span": [
+              1949,
+              2017
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "交換の目的を、道路上の誤信号を防ぐことだと因果・目的関係で述べていますが、その目的はLedgerに明記されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-11"
+            ],
+            "model_claim": "Replacing a part to prevent a “message sent by mistake” on the road."
+          },
+          {
+            "unit_id": "S6.5",
+            "unit_ids": [
+              "S6.5"
+            ],
+            "claim_text": "Thinking of it this way, doesn’t this ordinary recall seem like a news story worth paying a little attention to?",
+            "span": [
+              2018,
+              2130
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "この召回が注目に値するニュースかという評価・意見はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Thinking of it this way, doesn’t this ordinary recall seem like a news story worth paying a little attention to?"
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "S6.4"
+        ],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "L1": "DEVIATION",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S1.3": "MATCH",
+          "S1.4": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S5.2": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S5.4": "MATCH",
+          "S6.3": "MATCH",
+          "S6.4": "DEVIATION",
+          "S6.1": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S4.3": "UNMENTIONED",
+          "S4.4": "UNMENTIONED",
+          "S5.1": "UNMENTIONED",
+          "S5.3": "UNMENTIONED",
+          "S5.5": "UNMENTIONED",
+          "S6.2": "UNMENTIONED",
+          "S6.5": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.6957,
+            "usage": {
+              "input_tokens": 4058,
+              "cached_input_tokens": 0,
+              "output_tokens": 8057,
+              "reasoning_tokens": 5550
+            },
+            "elapsed_seconds": 51.129,
+            "prompt_sha256": "f3a834a7cc73118fbe2a98464d489261741034c0691d8efc4d2a29f96f9973f0",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "A faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal.",
+            "span": [
+              2147,
+              2257
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "中国国内の公告に限定される範囲が明示されず、対象が中国以外のBYD車にも及ぶように読める表現です。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-05"
+            ],
+            "model_claim": "A faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "A faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal.",
+            "span": [
+              2147,
+              2257
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "省略了公告所限定的「極端な場合」という条件を外し、制動灯が点灯し続ける可能性の範囲を広げています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-07"
+            ],
+            "model_claim": "A faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal."
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "Replacing a part to prevent a “message sent by mistake” on the road.",
+            "span": [
+              1949,
+              2017
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "交換が誤信号を防ぐという目的・因果関係は、Ledgerに記載された公告内容では確認できません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-08"
+            ],
+            "model_claim": "Replacing a part to prevent a “message sent by mistake” on the road."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "A faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal.",
+            "span": [
+              2147,
+              2257
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "省略された「極端な場合」という条件により、誤信号が生じる可能性の範囲が公告の記載より広くなっています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-08"
+            ],
+            "model_claim": "A faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal."
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "Replacing a part to prevent a “message sent by mistake” on the road.",
+            "span": [
+              1949,
+              2017
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "改善後部品への交換を行うことは記載されていますが、それが誤信号を防ぐという因果・目的まではLedgerで確認できません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "BYD-RECALL-11"
+            ],
+            "model_claim": "Replacing a part to prevent a “message sent by mistake” on the road."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S6.4"
+      ],
+      "r3_only": [
+        "S1.1",
+        "S1.2",
+        "S1.4",
+        "S3.4",
+        "S4.3",
+        "S4.4",
+        "S5.1",
+        "S5.3",
+        "S5.4",
+        "S5.5",
+        "S6.1",
+        "S6.2",
+        "S6.3",
+        "S6.5",
+        "T"
+      ],
+      "r5_only": [
+        "L1"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 7
+    },
+    "union_candidates": [
+      {
+        "claim_text": "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message",
+        "span": [
+          0,
+          79
+        ],
+        "unit_ids": [
+          "T"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "「Small」はLedgerに記載のない部品の大きさを具体的に主張しています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "BYD-RECALL-06"
+        ],
+        "model_claims": [
+          "# Brake Lights Sent by Mistake? How a Small Car Part Can Send the Wrong Message"
+        ]
+      },
+      {
+        "claim_text": "If we put subtitles on a car’s lights, the brake lights would display, “The car ahead is pressing the brake pedal.”",
+        "span": [
+          81,
+          196
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "BYD-RECALL-07"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "For cars on the road, they are short messages sent with light instead of words.",
+        "span": [
+          197,
+          276
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "BYD-RECALL-08"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "This BYD recall is about the possibility of that kind of “message sent by mistake.”",
+        "span": [
+          351,
+          434
+        ],
+        "unit_ids": [
+          "S1.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "BYD-RECALL-07"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "This is the wrong signal that the notice points to as a safety concern.",
+        "span": [
+          945,
+          1016
+        ],
+        "unit_ids": [
+          "S3.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "BYD-RECALL-08"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "If cars had chat apps, the brake lights would send a set message: “I’m pressing the pedal now.”",
+        "span": [
+          1368,
+          1463
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "BYD-RECALL-07"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "People see the light, and drivers coming from behind understand what it means.",
+        "span": [
+          1601,
+          1679
+        ],
+        "unit_ids": [
+          "S5.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "人々が灯火を見てその意味を理解するという具体的な主張はLedgerで直接確認できません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "BYD-RECALL-08"
+        ],
+        "model_claims": [
+          "People see the light, and drivers coming from behind understand what it means."
+        ]
+      },
+      {
+        "claim_text": "BYD will replace the part with an improved one for free through approved dealers for the affected vehicles.",
+        "span": [
+          1752,
+          1859
+        ],
+        "unit_ids": [
+          "S6.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "BYD-RECALL-11"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The key part is a small pad.",
+        "span": [
+          1860,
+          1888
+        ],
+        "unit_ids": [
+          "S6.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "部品が「small」であるという大きさの主張はLedgerにありません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "BYD-RECALL-06"
+        ],
+        "model_claims": [
+          "The key part is a small pad."
+        ]
+      },
+      {
+        "claim_text": "But its job affects the signal that reaches the car behind.",
+        "span": [
+          1889,
+          1948
+        ],
+        "unit_ids": [
+          "S6.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "BYD-RECALL-07"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Replacing a part to prevent a “message sent by mistake” on the road.",
+        "span": [
+          1949,
+          2017
+        ],
+        "unit_ids": [
+          "S6.4"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "交換の目的を、道路上の誤信号を防ぐことだと因果・目的関係で述べていますが、その目的はLedgerに明記されていません。",
+          "交換が誤信号を防ぐという目的・因果関係は、Ledgerに記載された公告内容では確認できません。",
+          "改善後部品への交換を行うことは記載されていますが、それが誤信号を防ぐという因果・目的まではLedgerで確認できません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "BYD-RECALL-11",
+          "BYD-RECALL-08"
+        ],
+        "model_claims": [
+          "Replacing a part to prevent a “message sent by mistake” on the road."
+        ]
+      },
+      {
+        "claim_text": "A faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal.",
+        "span": [
+          2147,
+          2257
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r5"
+        ],
+        "issues": [
+          "中国国内の公告に限定される範囲が明示されず、対象が中国以外のBYD車にも及ぶように読める表現です。",
+          "省略了公告所限定的「極端な場合」という条件を外し、制動灯が点灯し続ける可能性の範囲を広げています。",
+          "省略された「極端な場合」という条件により、誤信号が生じる可能性の範囲が公告の記載より広くなっています。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "BYD-RECALL-05",
+          "BYD-RECALL-07",
+          "BYD-RECALL-08"
+        ],
+        "model_claims": [
+          "A faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal."
+        ]
+      }
+    ],
+    "n_union_candidates": 12,
+    "n_model_candidates": 5,
+    "n_deterministic_only_candidates": 7,
+    "total_cost_jpy": 1.4033,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 14,
+    "n_targets": 10,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 5,
+    "n_excluded_entries": 5,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.3693,
+    "effort": "medium",
+    "prompt_sha256": "9f2f46ceba48f437d8a0443640eb0bc08a903dc1387ce9b92b5535c1c3d54c38"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 9
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "provenance": {
+    "stage1_source": "fresh",
+    "frozen": false,
+    "reuse": false,
+    "substitution": false,
+    "stage1_cache": null,
+    "switches": {
+      "HANDOFF_MODE": "violation_span",
+      "VS_MATCH_EXT": true,
+      "VS_EXPLAIN_SPLIT": true,
+      "VS_SENTENCE_RESTORE": true,
+      "JA_MODE": "english_only",
+      "STAGE2_NORMAL_TWO_OF_TWO": false,
+      "CAUSAL_FLOOR_VOCAB": "known6",
+      "STAGE2_SECOND_OPINION": true,
+      "RECHECK_MERGE_UNRESOLVED": true,
+      "STRUCTURAL_ELEMENT_REWRITE": true,
+      "ACTOR_GUARD_MODE": "ag1_strict",
+      "STRUCTURAL_PAIRS_TO_RECHECK": true,
+      "STAGE4_ALLOWLIST": true,
+      "LADDER_LOCATION_CARRY": true,
+      "REWRITE_REVERT_GUARD": true,
+      "SPAN_FALLBACK_CHAIN": true,
+      "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+      "LAST_RESORT_DELETE": true,
+      "MATERIALITY_BLOCKING_PIN": true,
+      "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": true,
+      "FLOOR_MODE": "number_only",
+      "FLOOR_VERIFY_MODE": "off",
+      "CAUSAL_FLOOR": false,
+      "STAGE2_DOWNGRADE_VERIFY": false,
+      "TIER0_G_L_ENABLED": false,
+      "PRECHECK_MODE": "number_only",
+      "STAGE1_RECLASSIFY": true,
+      "RECHECK_BEFORE_AFTER_PAIRS": false,
+      "STAGE1_MODE": "coverage_union",
+      "STAGE1_ROUTES": "both",
+      "STAGE1_R5_MODE": "full",
+      "STAGE1_R3_REASONING": "medium",
+      "STAGE1_R5_REASONING": "high",
+      "STAGE1_NEGATION_MODE": "a",
+      "F3_PRECHECK_ALWAYS": true,
+      "STAGE1_FAIL_CLOSED": true,
+      "RECHECK_MODE": "coverage_union",
+      "MAX_CYCLES": 2,
+      "HARD_MAX_CYCLES": 3,
+      "MODEL": "gpt-6-luna"
+    },
+    "model": "gpt-6-luna",
+    "efforts": {
+      "r3": "medium",
+      "r5": "high",
+      "other": "high"
+    },
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "coverage_module_version": "stage1_coverage_v1",
+    "kind": "E2E(fresh Stage 1 -> 最終出口)。Trial artifactによる代替なし"
+  },
+  "waste_flags": [],
+  "provenance_violations": [],
+  "wall_seconds": 174.048,
+  "run_cost_incl_retries_jpy": 2.5008
+}

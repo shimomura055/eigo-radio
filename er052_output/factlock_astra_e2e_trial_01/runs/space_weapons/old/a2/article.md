@@ -1,0 +1,18 @@
+# A Space Weapon’s “Address” Makes the Story Clearer
+
+When you hear “space weapon,” do you picture a satellite being shot down? But this news is not mainly about the weapon’s power. The key is where it is: on the ground or in orbit. That difference makes the story much easier to follow.
+
+The U.S. Secretary of the Air Force said the U.S. is putting “space-control weapons” in orbit. They are meant to protect U.S. forces from enemy actions. An official U.S. government article calls this the Space Force’s first public statement. It says the Space Force had put weapons in space. But the device’s name has not been made public. We still do not know exactly what it can do in an attack. So we know the weapon’s address, but its details are still unclear.
+
+There is an earlier example of a weapon that destroys satellites. In 2021, Russia launched a missile from the ground. It destroyed a satellite. That was a weapon on the ground, fired at a satellite. This time, the statement is about weapons themselves being put in orbit. A weapon that destroys satellites may not be in orbit itself.
+
+The phrase “operations to counter actions in space” can mean many things. The U.S. Space Force says it covers more than work in satellite orbits. It includes communication with satellites. It also includes work done with equipment on the ground. So, whether weapons are in space does not tell us everything about these operations.
+
+GPS is also one of the Space Force’s missions. So are tracking missiles and watching what happens in space. It also works to make satellite networks harder to damage. We need to separate using and protecting satellites from putting weapons made to attack in orbit.
+
+Does the Outer Space Treaty ban all weapons in space? No. It bans putting nuclear weapons and other weapons of mass destruction in orbit. But it does not ban space weapons in general. That does not mean this deployment has been judged legal, either. This rule alone cannot tell us if this specific case is legal.
+
+Before using the broad label “space weapon,” check its address. Also check its mission and what the treaty covers. Rather than decide right away what happened in space, start by sorting out the words. The news is more interesting to read when we do that.
+
+## In one line
+The U.S. says it has put weapons in orbit, but what they can do is unclear.

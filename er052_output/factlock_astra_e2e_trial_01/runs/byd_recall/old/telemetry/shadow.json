@@ -1,0 +1,44 @@
+{
+  "arm": "old",
+  "note": "ログ専用。腕比較の結果をM1/M3単独の効果と書かない",
+  "m1a": {
+    "alt_rule": "m1_input",
+    "alt_summary": "A faulty brake-pedal pad in recalled BYD cars could keep the brake lights on when drivers aren’t braking, sending a false signal.",
+    "alt_check": {
+      "overall_status": "LEDGER_DEVIATION",
+      "n_major": 1,
+      "n_minor": 0,
+      "majors": [
+        {
+          "claim_in_article": "“A faulty brake-pedal pad in recalled BYD cars could keep the brake lights on when drivers aren’t braking, sending a false signal.”",
+          "issue": "一行要約では、制動灯が点灯し続けるのは限位垫が脱落する「極端な場合」だという条件が省かれ、故障したパッド一般がその結果を起こし得るように読めます。",
+          "severity": "MAJOR",
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false,
+          "explanation": "BYD-RECALL-07が示すのは、極端な場合に限位垫が脱落した場合の可能性です。一行要約はその条件を外しており、対象となる状況の範囲を広げています。本文中の説明には条件がありますが、一行要約にはありません。",
+          "related_fact_id": "BYD-RECALL-07",
+          "origin": "translation",
+          "auto_downgraded": false
+        }
+      ],
+      "response_id": "resp_0f6b41353bfd174f006ac848ffc9c487d089f3674791361eb5",
+      "model": "gpt-6-luna"
+    },
+    "actual_attempt1_status": "LEDGER_COMPLIANT",
+    "actual_summary": "A faulty part in some BYD cars could keep brake lights on when drivers aren’t braking, sending a false signal."
+  },
+  "m1b": {
+    "actual_attempt1_n_major": 0,
+    "majors_only_in_summary": false,
+    "fired_in_arm": false,
+    "counterfactual": null
+  }
+}

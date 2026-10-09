@@ -1,0 +1,4431 @@
+{
+  "instance_id": "semiconductor_earnings_old_standard",
+  "group": "e2e",
+  "expected_group_label": "E2E generated",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The first number on the earnings stage is total net revenue: $29.591 billion.",
+          "origin": null,
+          "related_fact_id": "F2",
+          "dev": {
+            "claim_in_article": "The first number on the earnings stage is total net revenue: $29.591 billion.",
+            "issue": "決定論検査で戻した: number_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=number_not_in_fact, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "F2",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "number_not_in_fact"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "F2"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# On the Earnings Stage, One Number After Another Appears\n\nBroadcom announced its fiscal 2026 third-quarter earnings on September 2, 2026. The quarter ended on August 2. The first number on the earnings stage is total net revenue: $29.591 billion. Next comes a separate number: $16.7 billion in AI semiconductor sales. This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.\n\nAI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F2",
+            "claim_text": "The first number on the earnings stage is total net revenue: $29.591 billion.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.",
+          "origin": null,
+          "related_fact_id": "F3",
+          "dev": {
+            "claim_in_article": "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.5); severity is decided by Stage 2",
+            "related_fact_id": "F3",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.5"
+              ],
+              "related_fact_ids": [
+                "F3"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# On the Earnings Stage, One Number After Another Appears\n\nBroadcom announced its fiscal 2026 third-quarter earnings on September 2, 2026. The quarter ended on August 2. The first number on the earnings stage is total net revenue: $29.591 billion. Next comes a separate number: $16.7 billion in AI semiconductor sales. This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.\n\nAI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F3",
+            "claim_text": "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "But numbers alone do not tell us what caused the increase.",
+          "origin": null,
+          "related_fact_id": "F3",
+          "dev": {
+            "claim_in_article": "But numbers alone do not tell us what caused the increase.",
+            "issue": "増加の原因を数値だけでは判断できないという主張はLedgerに記載されていない。 / Ledgerにない、売上増加の原因を数値だけでは分からないとする因果・証拠解釈を追加しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.5); severity is decided by Stage 2",
+            "related_fact_id": "F3",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.5"
+              ],
+              "related_fact_ids": [
+                "F3"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Broadcom announced its fiscal 2026 third-quarter earnings on September 2, 2026. The quarter ended on August 2. The first number on the earnings stage is total net revenue: $29.591 billion. Next comes a separate number: $16.7 billion in AI semiconductor sales. This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.\n\nAI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.\n\nNow the company's top leader speaks. The CEO said demand for custom AI accelerators and networking is still very strong. This is the CEO's view of demand. The key is to keep it separate from the sales figures.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F3",
+            "claim_text": "But numbers alone do not tell us what caused the increase.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Now the company's top leader speaks.",
+          "origin": null,
+          "related_fact_id": "F6",
+          "dev": {
+            "claim_in_article": "Now the company's top leader speaks.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.1); severity is decided by Stage 2",
+            "related_fact_id": "F6",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.1"
+              ],
+              "related_fact_ids": [
+                "F6"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "AI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.\n\nNow the company's top leader speaks. The CEO said demand for custom AI accelerators and networking is still very strong. This is the CEO's view of demand. The key is to keep it separate from the sales figures.\n\nThen the stage moves to the next quarter. Broadcom expects total revenue for the whole company to be about $34.8 billion. It said this would be 93 percent higher than the same period a year earlier. The CEO also said Broadcom expects $21.7 billion in AI semiconductor sales. That would be up 236 percent from the same quarter a year earlier. Neither figure is an actual result. Both are what the company expected when it announced its earnings. The company said actual results may be different from what it expects. The difference could be important.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F6",
+            "claim_text": "Now the company's top leader speaks.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "The CEO said demand for custom AI accelerators and networking is still very strong.",
+          "origin": null,
+          "related_fact_id": "F6",
+          "dev": {
+            "claim_in_article": "The CEO said demand for custom AI accelerators and networking is still very strong.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "F6",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "F6"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "AI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.\n\nNow the company's top leader speaks. The CEO said demand for custom AI accelerators and networking is still very strong. This is the CEO's view of demand. The key is to keep it separate from the sales figures.\n\nThen the stage moves to the next quarter. Broadcom expects total revenue for the whole company to be about $34.8 billion. It said this would be 93 percent higher than the same period a year earlier. The CEO also said Broadcom expects $21.7 billion in AI semiconductor sales. That would be up 236 percent from the same quarter a year earlier. Neither figure is an actual result. Both are what the company expected when it announced its earnings. The company said actual results may be different from what it expects. The difference could be important.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F6",
+            "claim_text": "The CEO said demand for custom AI accelerators and networking is still very strong.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "This is the CEO's view of demand.",
+          "origin": null,
+          "related_fact_id": "F6",
+          "dev": {
+            "claim_in_article": "This is the CEO's view of demand.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "F6",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "F6"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "AI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.\n\nNow the company's top leader speaks. The CEO said demand for custom AI accelerators and networking is still very strong. This is the CEO's view of demand. The key is to keep it separate from the sales figures.\n\nThen the stage moves to the next quarter. Broadcom expects total revenue for the whole company to be about $34.8 billion. It said this would be 93 percent higher than the same period a year earlier. The CEO also said Broadcom expects $21.7 billion in AI semiconductor sales. That would be up 236 percent from the same quarter a year earlier. Neither figure is an actual result. Both are what the company expected when it announced its earnings. The company said actual results may be different from what it expects. The difference could be important.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F6",
+            "claim_text": "This is the CEO's view of demand.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Neither figure is an actual result.",
+          "origin": null,
+          "related_fact_id": "F4",
+          "dev": {
+            "claim_in_article": "Neither figure is an actual result.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.6); severity is decided by Stage 2",
+            "related_fact_id": "F4",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.6"
+              ],
+              "related_fact_ids": [
+                "F4"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Now the company's top leader speaks. The CEO said demand for custom AI accelerators and networking is still very strong. This is the CEO's view of demand. The key is to keep it separate from the sales figures.\n\nThen the stage moves to the next quarter. Broadcom expects total revenue for the whole company to be about $34.8 billion. It said this would be 93 percent higher than the same period a year earlier. The CEO also said Broadcom expects $21.7 billion in AI semiconductor sales. That would be up 236 percent from the same quarter a year earlier. Neither figure is an actual result. Both are what the company expected when it announced its earnings. The company said actual results may be different from what it expects. The difference could be important.\n\nThe point to watch this time is that actual results and the CEO's view of demand appear together. The same announcement also gives a forecast for the next quarter. As the numbers grow, the story moves further and further ahead. But it is important to remember what each number means. That's a small tip for enjoying live coverage of an earnings report.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F4",
+            "claim_text": "Neither figure is an actual result.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "The company said actual results may be different from what it expects.",
+          "origin": null,
+          "related_fact_id": "F4",
+          "dev": {
+            "claim_in_article": "The company said actual results may be different from what it expects.",
+            "issue": "会社見通しの不確実性に関する記載は連結売上高見通しについて確認できるが、この文はAI半導体売上高見通しにも同じ注意書きが適用されるように述べている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S4.8); severity is decided by Stage 2",
+            "related_fact_id": "F4",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.8"
+              ],
+              "related_fact_ids": [
+                "F4"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Now the company's top leader speaks. The CEO said demand for custom AI accelerators and networking is still very strong. This is the CEO's view of demand. The key is to keep it separate from the sales figures.\n\nThen the stage moves to the next quarter. Broadcom expects total revenue for the whole company to be about $34.8 billion. It said this would be 93 percent higher than the same period a year earlier. The CEO also said Broadcom expects $21.7 billion in AI semiconductor sales. That would be up 236 percent from the same quarter a year earlier. Neither figure is an actual result. Both are what the company expected when it announced its earnings. The company said actual results may be different from what it expects. The difference could be important.\n\nThe point to watch this time is that actual results and the CEO's view of demand appear together. The same announcement also gives a forecast for the next quarter. As the numbers grow, the story moves further and further ahead. But it is important to remember what each number means. That's a small tip for enjoying live coverage of an earnings report.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F4",
+            "claim_text": "The company said actual results may be different from what it expects.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "The difference could be important.",
+          "origin": null,
+          "related_fact_id": "F4",
+          "dev": {
+            "claim_in_article": "The difference could be important.",
+            "issue": "差が重要となる可能性があるとの記載は連結売上高見通しについて確認できるが、この文はAI半導体売上高見通しにも適用されるように述べている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S4.9); severity is decided by Stage 2",
+            "related_fact_id": "F4",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.9"
+              ],
+              "related_fact_ids": [
+                "F4"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Now the company's top leader speaks. The CEO said demand for custom AI accelerators and networking is still very strong. This is the CEO's view of demand. The key is to keep it separate from the sales figures.\n\nThen the stage moves to the next quarter. Broadcom expects total revenue for the whole company to be about $34.8 billion. It said this would be 93 percent higher than the same period a year earlier. The CEO also said Broadcom expects $21.7 billion in AI semiconductor sales. That would be up 236 percent from the same quarter a year earlier. Neither figure is an actual result. Both are what the company expected when it announced its earnings. The company said actual results may be different from what it expects. The difference could be important.\n\nThe point to watch this time is that actual results and the CEO's view of demand appear together. The same announcement also gives a forecast for the next quarter. As the numbers grow, the story moves further and further ahead. But it is important to remember what each number means. That's a small tip for enjoying live coverage of an earnings report.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F4",
+            "claim_text": "The difference could be important.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Broadcom reported a sharp rise in AI-chip sales, but its next-quarter sales figures are forecasts, not actual results.",
+          "origin": null,
+          "related_fact_id": "F3",
+          "dev": {
+            "claim_in_article": "Broadcom reported a sharp rise in AI-chip sales, but its next-quarter sales figures are forecasts, not actual results.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F3",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F3"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The point to watch this time is that actual results and the CEO's view of demand appear together. The same announcement also gives a forecast for the next quarter. As the numbers grow, the story moves further and further ahead. But it is important to remember what each number means. That's a small tip for enjoying live coverage of an earnings report.\n\n## In one line\nBroadcom reported a sharp rise in AI-chip sales, but its next-quarter sales figures are forecasts, not actual results.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F3",
+            "claim_text": "Broadcom reported a sharp rise in AI-chip sales, but its next-quarter sales figures are forecasts, not actual results.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "The first number on the earnings stage is total net revenue: $29.",
+          "origin": null,
+          "related_fact_id": "F2",
+          "dev": {
+            "claim_in_article": "The first number on the earnings stage is total net revenue: $29.",
+            "issue": "決定論検査で戻した: number_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=number_not_in_fact, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "F2",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "number_not_in_fact"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "F2"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The first number on the earnings stage is total net revenue: $29.591 billion."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# On the Earnings Stage, One Number After Another Appears\n\nBroadcom announced its fiscal 2026 third-quarter earnings on September 2, 2026. The quarter ended on August 2. The first number on the earnings stage is total net revenue: $29.591 billion. Next comes a separate number: $16.7 billion in AI semiconductor sales. This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.\n\nAI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_numeric_value",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "該当箇所: “The first number on the earnings stage is total net revenue: $29.591 billion.” claimの「$29.」をLedgerの値「$29.591 billion」に置き換えてください。参照: F2",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L6:sentence_restore",
+            "reason": null,
+            "ranges": [
+              "The first number on the earnings stage is total net revenue: $29.591 billion."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L6:sentence_restore"
+              }
+            },
+            "detail": null,
+            "explain_split": {
+              "attempted": true,
+              "status": "unverified",
+              "reason": "explain_split_rejected:no_quote",
+              "fragments": [],
+              "dropped_remainders": [],
+              "base_reason": "mismatch"
+            },
+            "sentence_restore": {
+              "attempted": true,
+              "status": "restored",
+              "reason": null,
+              "restore_reason": [
+                "truncated_tail"
+              ],
+              "fired_by": [
+                "truncated_tail"
+              ],
+              "fragments": [
+                {
+                  "part": "The first number on the earnings stage is total net revenue: $29.",
+                  "kind": "exact",
+                  "detail": {
+                    "ok_head": true,
+                    "ok_tail": false
+                  }
+                }
+              ],
+              "anchors": [],
+              "restored_sentence": "The first number on the earnings stage is total net revenue: $29.591 billion.",
+              "span": [
+                170,
+                247
+              ],
+              "n_sentences": 1,
+              "n_candidates": 1,
+              "focus_spans": [
+                [
+                  170,
+                  234
+                ]
+              ],
+              "residual_check": [],
+              "original_claim": "The first number on the earnings stage is total net revenue: $29.",
+              "claim_core": "The first number on the earnings stage is total net revenue: $29.",
+              "base_reason": "mismatch"
+            }
+          },
+          "claim_span_text": "The first number on the earnings stage is total net revenue: $29.591 billion."
+        },
+        {
+          "claim_text": "7 billion is for AI semiconductors, not the whole semiconductor segment.",
+          "origin": null,
+          "related_fact_id": "F3",
+          "dev": {
+            "claim_in_article": "7 billion is for AI semiconductors, not the whole semiconductor segment.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.5); severity is decided by Stage 2",
+            "related_fact_id": "F3",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.5"
+              ],
+              "related_fact_ids": [
+                "F3"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# On the Earnings Stage, One Number After Another Appears\n\nBroadcom announced its fiscal 2026 third-quarter earnings on September 2, 2026. The quarter ended on August 2. The first number on the earnings stage is total net revenue: $29.591 billion. Next comes a separate number: $16.7 billion in AI semiconductor sales. This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.\n\nAI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_numeric_value",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "該当箇所: “Next comes a separate number: $16.7 billion in AI semiconductor sales. This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.” claimの「7 billion」をLedgerの値「$16.7 billion」に置き換えてください。参照: F3",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L6:sentence_restore",
+            "reason": null,
+            "ranges": [
+              "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L6:sentence_restore"
+              }
+            },
+            "detail": null,
+            "explain_split": {
+              "attempted": true,
+              "status": "unverified",
+              "reason": "explain_split_rejected:no_quote",
+              "fragments": [],
+              "dropped_remainders": [],
+              "base_reason": "mismatch"
+            },
+            "sentence_restore": {
+              "attempted": true,
+              "status": "restored",
+              "reason": null,
+              "restore_reason": [
+                "truncated_head"
+              ],
+              "fired_by": [
+                "truncated_head"
+              ],
+              "fragments": [
+                {
+                  "part": "7 billion is for AI semiconductors, not the whole semiconductor segment.",
+                  "kind": "exact",
+                  "detail": {
+                    "ok_head": false,
+                    "ok_tail": true
+                  }
+                }
+              ],
+              "anchors": [],
+              "restored_sentence": "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.",
+              "span": [
+                319,
+                400
+              ],
+              "n_sentences": 1,
+              "n_candidates": 1,
+              "focus_spans": [
+                [
+                  328,
+                  399
+                ]
+              ],
+              "residual_check": [],
+              "original_claim": "7 billion is for AI semiconductors, not the whole semiconductor segment.",
+              "claim_core": "7 billion is for AI semiconductors, not the whole semiconductor segment.",
+              "base_reason": "mismatch"
+            }
+          },
+          "claim_span_text": "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment."
+        },
+        {
+          "claim_text": "The point to watch this time is that actual results and the CEO's view of demand appear together.",
+          "origin": null,
+          "related_fact_id": "F6",
+          "dev": {
+            "claim_in_article": "The point to watch this time is that actual results and the CEO's view of demand appear together.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "F6",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "F6"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "This is the CEO's view of demand."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Then the stage moves to the next quarter. Broadcom expects total revenue for the whole company to be about $34.8 billion. It said this would be 93 percent higher than the same period a year earlier. The CEO also said Broadcom expects $21.7 billion in AI semiconductor sales. That would be up 236 percent from the same quarter a year earlier. Neither figure is an actual result. Both are what the company expected when it announced its earnings. The company said actual results may be different from what it expects. The difference could be important.\n\nThe point to watch this time is that actual results and the CEO's view of demand appear together. The same announcement also gives a forecast for the next quarter. As the numbers grow, the story moves further and further ahead. But it is important to remember what each number means. That's a small tip for enjoying live coverage of an earnings report.\n\n## In one line\nBroadcom reported a sharp rise in AI-chip sales, but its next-quarter sales figures are forecasts, not actual results.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F6",
+            "claim_text": "The point to watch this time is that actual results and the CEO's view of demand appear together.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          }
+        }
+      ],
+      "blocking_count": 2,
+      "non_blocking_count": 11,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "semiconductor_earnings_old_standard",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F2",
+          "claim_text": "The first number on the earnings stage is total net revenue: $29.591 billion.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+            "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+          ],
+          "batch_cost_jpy": 0.1696,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "semiconductor_earnings_old_standard",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F3",
+          "claim_text": "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+            "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+          ],
+          "batch_cost_jpy": 0.1696,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "semiconductor_earnings_old_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F3",
+          "claim_text": "But numbers alone do not tell us what caused the increase.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+            "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+          ],
+          "batch_cost_jpy": 0.1696,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "semiconductor_earnings_old_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F6",
+          "claim_text": "Now the company's top leader speaks.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+            "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+          ],
+          "batch_cost_jpy": 0.1696,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "semiconductor_earnings_old_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F6",
+          "claim_text": "The CEO said demand for custom AI accelerators and networking is still very strong.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+            "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+          ],
+          "batch_cost_jpy": 0.1696,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "semiconductor_earnings_old_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F6",
+          "claim_text": "This is the CEO's view of demand.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+            "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+          ],
+          "batch_cost_jpy": 0.1696,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "semiconductor_earnings_old_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F4",
+          "claim_text": "Neither figure is an actual result.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+            "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+          ],
+          "batch_cost_jpy": 0.1696,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "semiconductor_earnings_old_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F4",
+          "claim_text": "The company said actual results may be different from what it expects.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+            "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+          ],
+          "batch_cost_jpy": 0.1696,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "semiconductor_earnings_old_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F4",
+          "claim_text": "The difference could be important.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+            "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+          ],
+          "batch_cost_jpy": 0.1696,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "semiconductor_earnings_old_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F3",
+          "claim_text": "Broadcom reported a sharp rise in AI-chip sales, but its next-quarter sales figures are forecasts, not actual results.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+            "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+          ],
+          "batch_cost_jpy": 0.1696,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "semiconductor_earnings_old_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F6",
+          "claim_text": "The point to watch this time is that actual results and the CEO's view of demand appear together.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+            "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+          ],
+          "batch_cost_jpy": 0.1696,
+          "batch_n_claims": 11
+        }
+      ],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:F2",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(violation_span(EN,L6:sentence_restore))",
+          "guard_ok": true,
+          "ladder_level_used": "3_sentence",
+          "section_type": "hook",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "The first number on the earnings stage is total net revenue: $29.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L6:sentence_restore",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "The first number on the earnings stage is total net revenue: $29.591 billion."
+              ],
+              "raw_spans": [
+                [
+                  170,
+                  247
+                ]
+              ],
+              "spans": [
+                [
+                  170,
+                  247
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L6:sentence_restore"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false,
+              "explain_split": {
+                "attempted": true,
+                "status": "unverified",
+                "reason": "explain_split_rejected:no_quote",
+                "fragments": [],
+                "dropped_remainders": [],
+                "base_reason": "mismatch"
+              },
+              "sentence_restore": {
+                "attempted": true,
+                "status": "restored",
+                "reason": null,
+                "restore_reason": [
+                  "truncated_tail"
+                ],
+                "fired_by": [
+                  "truncated_tail"
+                ],
+                "fragments": [
+                  {
+                    "part": "The first number on the earnings stage is total net revenue: $29.",
+                    "kind": "exact",
+                    "detail": {
+                      "ok_head": true,
+                      "ok_tail": false
+                    }
+                  }
+                ],
+                "anchors": [],
+                "restored_sentence": "The first number on the earnings stage is total net revenue: $29.591 billion.",
+                "span": [
+                  170,
+                  247
+                ],
+                "n_sentences": 1,
+                "n_candidates": 1,
+                "focus_spans": [
+                  [
+                    170,
+                    234
+                  ]
+                ],
+                "residual_check": [],
+                "original_claim": "The first number on the earnings stage is total net revenue: $29.",
+                "claim_core": "The first number on the earnings stage is total net revenue: $29.",
+                "base_reason": "mismatch"
+              }
+            },
+            "level_attempts": [
+              {
+                "level": "1_word_connective",
+                "targets": [
+                  "The first number on the earnings stage is total net revenue: $29.591 billion."
+                ],
+                "target_equals_confirmed_ranges": true,
+                "revised": [
+                  "The first number on the earnings stage is total net revenue: $29.591 billion."
+                ],
+                "each_target_changed": [
+                  false
+                ],
+                "result": "guard_failed"
+              },
+              {
+                "level": "3_sentence",
+                "targets": [
+                  "The first number on the earnings stage is total net revenue: $29.591 billion."
+                ],
+                "revised": [
+                  "The first number on the earnings stage is total net revenue: $29,591 million."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "actor_guard_decision": [
+                  {
+                    "mode": "ag1_strict",
+                    "ok": true,
+                    "new_classes": []
+                  }
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "The first number on the earnings stage is total net revenue: $29.591 billion.",
+                    "after": "The first number on the earnings stage is total net revenue: $29,591 million."
+                  }
+                ]
+              }
+            ],
+            "level_used": "3_sentence",
+            "span_unverified": false,
+            "issue_focus_check": {
+              "phrases": [],
+              "absent": false,
+              "haystack": "current_full_text"
+            },
+            "problem_kind": "unspecified",
+            "levels_planned": [
+              "1_word_connective",
+              "3_sentence",
+              "4_paragraph"
+            ],
+            "levels_attempted": [
+              "1_word_connective",
+              "3_sentence"
+            ]
+          }
+        },
+        {
+          "claim_identity": "fact:F3",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(violation_span(EN,L6:sentence_restore))",
+          "guard_ok": true,
+          "ladder_level_used": "3_sentence",
+          "section_type": "hook",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "7 billion is for AI semiconductors, not the whole semiconductor segment.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L6:sentence_restore",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment."
+              ],
+              "raw_spans": [
+                [
+                  319,
+                  400
+                ]
+              ],
+              "spans": [
+                [
+                  319,
+                  400
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L6:sentence_restore"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false,
+              "explain_split": {
+                "attempted": true,
+                "status": "unverified",
+                "reason": "explain_split_rejected:no_quote",
+                "fragments": [],
+                "dropped_remainders": [],
+                "base_reason": "mismatch"
+              },
+              "sentence_restore": {
+                "attempted": true,
+                "status": "restored",
+                "reason": null,
+                "restore_reason": [
+                  "truncated_head"
+                ],
+                "fired_by": [
+                  "truncated_head"
+                ],
+                "fragments": [
+                  {
+                    "part": "7 billion is for AI semiconductors, not the whole semiconductor segment.",
+                    "kind": "exact",
+                    "detail": {
+                      "ok_head": false,
+                      "ok_tail": true
+                    }
+                  }
+                ],
+                "anchors": [],
+                "restored_sentence": "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.",
+                "span": [
+                  319,
+                  400
+                ],
+                "n_sentences": 1,
+                "n_candidates": 1,
+                "focus_spans": [
+                  [
+                    328,
+                    399
+                  ]
+                ],
+                "residual_check": [],
+                "original_claim": "7 billion is for AI semiconductors, not the whole semiconductor segment.",
+                "claim_core": "7 billion is for AI semiconductors, not the whole semiconductor segment.",
+                "base_reason": "mismatch"
+              }
+            },
+            "level_attempts": [
+              {
+                "level": "1_word_connective",
+                "targets": [
+                  "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment."
+                ],
+                "target_equals_confirmed_ranges": true,
+                "revised": [
+                  "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment."
+                ],
+                "each_target_changed": [
+                  false
+                ],
+                "result": "guard_failed"
+              },
+              {
+                "level": "3_sentence",
+                "targets": [
+                  "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment."
+                ],
+                "revised": [
+                  "This $16.7 billion is for AI semiconductors."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "actor_guard_decision": [
+                  {
+                    "mode": "ag1_strict",
+                    "ok": true,
+                    "new_classes": []
+                  }
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.",
+                    "after": "This $16.7 billion is for AI semiconductors."
+                  }
+                ]
+              }
+            ],
+            "level_used": "3_sentence",
+            "span_unverified": false,
+            "issue_focus_check": {
+              "phrases": [],
+              "absent": false,
+              "haystack": "current_full_text"
+            },
+            "problem_kind": "unspecified",
+            "levels_planned": [
+              "1_word_connective",
+              "3_sentence",
+              "4_paragraph"
+            ],
+            "levels_attempted": [
+              "1_word_connective",
+              "3_sentence"
+            ]
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 11.14,
+          "difficult_word_ratio": 0.1207,
+          "word_count": 323
+        },
+        "stats_after": {
+          "avg_sentence_len": 10.97,
+          "difficult_word_ratio": 0.1195,
+          "word_count": 318
+        },
+        "sentence_len_increase": -0.17,
+        "difficulty_ratio_increase": -0.0012,
+        "fragment_stats_before": {
+          "avg_sentence_len": 11.5,
+          "difficult_word_ratio": 0.1304,
+          "word_count": 23
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 9.0,
+          "difficult_word_ratio": 0.1111,
+          "word_count": 18
+        },
+        "fragment_sentence_len_increase": -2.5,
+        "fragment_difficulty_ratio_increase": -0.0193,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 47,
+        "hook_word_count_after": 42,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 9,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 29,
+        "sentence_count_after": 29,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 4,
+        "hedge_word_count_after": 4,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 7,
+        "paragraph_count_after": 7,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# On the Earnings Stage, One Number After Another Appears\n\nBroadcom announced its fiscal 2026 third-quarter earnings on September 2, 2026. The quarter ended on August 2. The first number on the earnings stage is total net revenue: $29.591 billion. Next comes a separate number: $16.7 billion in AI semiconductor sales. This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.\n\nAI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.\n\nNow the company's top leader speaks. The CEO said demand for custom AI accelerators and networking is still very strong. This is the CEO's view of demand. The key is to keep it separate from the sales figures.\n\nThen the stage moves to the next quarter. Broadcom expects total revenue for the whole company to be about $34.8 billion. It said this would be 93 percent higher than the same period a year earlier. The CEO also said Broadcom expects $21.7 billion in AI semiconductor sales. That would be up 236 percent from the same quarter a year earlier. Neither figure is an actual result. Both are what the company expected when it announced its earnings. The company said actual results may be different from what it expects. The difference could be important.\n\nThe point to watch this time is that actual results and the CEO's view of demand appear together. The same announcement also gives a forecast for the next quarter. As the numbers grow, the story moves further and further ahead. But it is important to remember what each number means. That's a small tip for enjoying live coverage of an earnings report.\n\n## In one line\nBroadcom reported a sharp rise in AI-chip sales, but its next-quarter sales figures are forecasts, not actual results.",
+      "en_text_after_rewrite": "# On the Earnings Stage, One Number After Another Appears\n\nBroadcom announced its fiscal 2026 third-quarter earnings on September 2, 2026. The quarter ended on August 2. The first number on the earnings stage is total net revenue: $29,591 million. Next comes a separate number: $16.7 billion in AI semiconductor sales. This $16.7 billion is for AI semiconductors.\n\nAI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.\n\nNow the company's top leader speaks. The CEO said demand for custom AI accelerators and networking is still very strong. This is the CEO's view of demand. The key is to keep it separate from the sales figures.\n\nThen the stage moves to the next quarter. Broadcom expects total revenue for the whole company to be about $34.8 billion. It said this would be 93 percent higher than the same period a year earlier. The CEO also said Broadcom expects $21.7 billion in AI semiconductor sales. That would be up 236 percent from the same quarter a year earlier. Neither figure is an actual result. Both are what the company expected when it announced its earnings. The company said actual results may be different from what it expects. The difference could be important.\n\nThe point to watch this time is that actual results and the CEO's view of demand appear together. The same announcement also gives a forecast for the next quarter. As the numbers grow, the story moves further and further ahead. But it is important to remember what each number means. That's a small tip for enjoying live coverage of an earnings report.\n\n## In one line\nBroadcom reported a sharp rise in AI-chip sales, but its next-quarter sales figures are forecasts, not actual results.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "multiple_claims_rewritten_same_cycle",
+        "short_section_no_window(title_hook_in_one_line)"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "prior_issue_text_sources": [
+        "current_text",
+        "current_text"
+      ],
+      "recheck_coverage": {
+        "scope_ids": [
+          "S1.2",
+          "S1.3",
+          "S1.4",
+          "S1.5",
+          "S2.1"
+        ],
+        "changed_ids": [
+          "S1.3",
+          "S1.5"
+        ],
+        "n_scope": 5,
+        "n_judged_units": 30,
+        "n_union_candidates": 1,
+        "n_calls": 2,
+        "total_cost_jpy": 0.2238,
+        "n_prior_claim_hits": 2,
+        "missing_after_rerun": [],
+        "api_failure": false,
+        "reclassify": {
+          "reclassify_status": "no_target",
+          "n_model_entries": 0,
+          "n_targets": 0,
+          "n_protected_keys": 0,
+          "n_excluded_claims": 0,
+          "n_excluded_entries": 0,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.0,
+          "effort": "medium",
+          "prompt_sha256": null
+        }
+      },
+      "recheck_structural_pairs_n": 0,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false,
+      "recheck_prior_issues_resolved": [
+        {
+          "index": 0,
+          "resolved": false,
+          "explanation": "coverage scope recheck: candidate remains (number_not_in_fact)",
+          "remaining_sentence": "The first number on the earnings stage is total net revenue: $29,591 million."
+        },
+        {
+          "index": 1,
+          "resolved": true,
+          "explanation": "coverage scope recheck: no candidate for this issue",
+          "remaining_sentence": ""
+        }
+      ],
+      "recheck_prior_issues_resolved_by_index": {
+        "0": false,
+        "1": true
+      },
+      "recheck_prior_issues_sent_count": 2,
+      "recheck_merge": {
+        "decision": "NEXT_CYCLE",
+        "source": "recheck",
+        "merged_from": [
+          "recheck_major"
+        ],
+        "n_merged": 1,
+        "n_dedup_dropped": 1,
+        "reverify_deviation_without_major": false,
+        "merged_claims": [
+          {
+            "fact_id": "F2",
+            "claim": "The first number on the earnings stage is total net revenue: $29,591 million.",
+            "label": "recheck_major"
+          }
+        ]
+      }
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "The first number on the earnings stage is total net revenue: $29,591 million.",
+          "origin": null,
+          "related_fact_id": "F2",
+          "dev": {
+            "claim_in_article": "The first number on the earnings stage is total net revenue: $29,591 million.",
+            "issue": "決定論検査で戻した: number_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=number_not_in_fact, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "F2",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "number_not_in_fact"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "F2"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# On the Earnings Stage, One Number After Another Appears\n\nBroadcom announced its fiscal 2026 third-quarter earnings on September 2, 2026. The quarter ended on August 2. The first number on the earnings stage is total net revenue: $29,591 million. Next comes a separate number: $16.7 billion in AI semiconductor sales. This $16.7 billion is for AI semiconductors.\n\nAI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 2,
+            "route": "hook",
+            "claim_identity": "fact:F2",
+            "claim_text": "The first number on the earnings stage is total net revenue: $29,591 million.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "7a367a4b76a35d99c564b9fd2a3ce5e768e997d84d89ec18f8abc97cd3f25bba"
+            ],
+            "batch_cost_jpy": 0.0255,
+            "batch_n_claims": 1
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "semiconductor_earnings_old_standard",
+          "cycle": 2,
+          "route": "hook",
+          "claim_identity": "fact:F2",
+          "claim_text": "The first number on the earnings stage is total net revenue: $29,591 million.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "7a367a4b76a35d99c564b9fd2a3ce5e768e997d84d89ec18f8abc97cd3f25bba"
+          ],
+          "batch_cost_jpy": 0.0255,
+          "batch_n_claims": 1
+        }
+      ],
+      "exit_check": {
+        "cycle": 2,
+        "n_candidates": 7,
+        "api_failure": false,
+        "n_calls": 1,
+        "n_judged_units": 30,
+        "total_cost_jpy": 0.5696,
+        "missing_after_rerun": [],
+        "reclassify": {
+          "reclassify_status": "ok",
+          "n_model_entries": 6,
+          "n_targets": 6,
+          "n_protected_keys": 0,
+          "n_excluded_claims": 5,
+          "n_excluded_entries": 5,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.1898,
+          "effort": "medium",
+          "prompt_sha256": "0fac13c196170e30409f7229a4c52add6f1dec48ba22851dce083dffb8c29f88"
+        }
+      }
+    },
+    {
+      "cycle": 3,
+      "stage2_results": [
+        {
+          "origin": null,
+          "related_fact_id": "F2",
+          "detected_by": "stage1_llm",
+          "local_context": "# On the Earnings Stage, One Number After Another Appears\n\nBroadcom announced its fiscal 2026 third-quarter earnings on September 2, 2026. The quarter ended on August 2. The first number on the earnings stage is total net revenue: $29,591 million. Next comes a separate number: $16.7 billion in AI semiconductor sales. This $16.7 billion is for AI semiconductors.\n\nAI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 2,
+            "route": "hook",
+            "claim_identity": "fact:F2",
+            "claim_text": "The first number on the earnings stage is total net revenue: $29,591 million.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "7a367a4b76a35d99c564b9fd2a3ce5e768e997d84d89ec18f8abc97cd3f25bba"
+            ],
+            "batch_cost_jpy": 0.0255,
+            "batch_n_claims": 1
+          },
+          "claim_text": "The first number on the earnings stage is total net revenue: $29,591 million.",
+          "dev": {
+            "claim_in_article": "The first number on the earnings stage is total net revenue: $29,591 million.",
+            "issue": "決定論検査で戻した: number_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=number_not_in_fact, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "F2",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "number_not_in_fact"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "F2"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "F3",
+          "detected_by": "stage1_llm",
+          "local_context": "Broadcom announced its fiscal 2026 third-quarter earnings on September 2, 2026. The quarter ended on August 2. The first number on the earnings stage is total net revenue: $29.591 billion. Next comes a separate number: $16.7 billion in AI semiconductor sales. This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.\n\nAI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.\n\nNow the company's top leader speaks. The CEO said demand for custom AI accelerators and networking is still very strong. This is the CEO's view of demand. The key is to keep it separate from the sales figures.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F3",
+            "claim_text": "But numbers alone do not tell us what caused the increase.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          },
+          "claim_text": "But numbers alone do not tell us what caused the increase.",
+          "dev": {
+            "claim_in_article": "But numbers alone do not tell us what caused the increase.",
+            "issue": "数値だけでは増加の原因が分からないという主張はLedgerに記載されていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S2.5); severity is decided by Stage 2",
+            "related_fact_id": "F3",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.5"
+              ],
+              "related_fact_ids": [
+                "F3"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "F6",
+          "detected_by": "stage1_llm",
+          "local_context": "AI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.\n\nNow the company's top leader speaks. The CEO said demand for custom AI accelerators and networking is still very strong. This is the CEO's view of demand. The key is to keep it separate from the sales figures.\n\nThen the stage moves to the next quarter. Broadcom expects total revenue for the whole company to be about $34.8 billion. It said this would be 93 percent higher than the same period a year earlier. The CEO also said Broadcom expects $21.7 billion in AI semiconductor sales. That would be up 236 percent from the same quarter a year earlier. Neither figure is an actual result. Both are what the company expected when it announced its earnings. The company said actual results may be different from what it expects. The difference could be important.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F6",
+            "claim_text": "Now the company's top leader speaks.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          },
+          "claim_text": "Now the company's top leader speaks.",
+          "dev": {
+            "claim_in_article": "Now the company's top leader speaks.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.1); severity is decided by Stage 2",
+            "related_fact_id": "F6",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.1"
+              ],
+              "related_fact_ids": [
+                "F6"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "F6",
+          "detected_by": "stage1_llm",
+          "local_context": "AI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.\n\nNow the company's top leader speaks. The CEO said demand for custom AI accelerators and networking is still very strong. This is the CEO's view of demand. The key is to keep it separate from the sales figures.\n\nThen the stage moves to the next quarter. Broadcom expects total revenue for the whole company to be about $34.8 billion. It said this would be 93 percent higher than the same period a year earlier. The CEO also said Broadcom expects $21.7 billion in AI semiconductor sales. That would be up 236 percent from the same quarter a year earlier. Neither figure is an actual result. Both are what the company expected when it announced its earnings. The company said actual results may be different from what it expects. The difference could be important.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F6",
+            "claim_text": "The CEO said demand for custom AI accelerators and networking is still very strong.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          },
+          "claim_text": "The CEO said demand for custom AI accelerators and networking is still very strong.",
+          "dev": {
+            "claim_in_article": "The CEO said demand for custom AI accelerators and networking is still very strong.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "F6",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "F6"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "F6",
+          "detected_by": "stage1_llm",
+          "local_context": "AI semiconductor sales came with two comparisons. They were up 221 percent from the same quarter a year earlier. They were also up 54 percent from the quarter before. Put side by side, the numbers begin to sound more and more like live commentary. But numbers alone do not tell us what caused the increase.\n\nNow the company's top leader speaks. The CEO said demand for custom AI accelerators and networking is still very strong. This is the CEO's view of demand. The key is to keep it separate from the sales figures.\n\nThen the stage moves to the next quarter. Broadcom expects total revenue for the whole company to be about $34.8 billion. It said this would be 93 percent higher than the same period a year earlier. The CEO also said Broadcom expects $21.7 billion in AI semiconductor sales. That would be up 236 percent from the same quarter a year earlier. Neither figure is an actual result. Both are what the company expected when it announced its earnings. The company said actual results may be different from what it expects. The difference could be important.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F6",
+            "claim_text": "This is the CEO's view of demand.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          },
+          "claim_text": "This is the CEO's view of demand.",
+          "dev": {
+            "claim_in_article": "This is the CEO's view of demand.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "F6",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "F6"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "F4",
+          "detected_by": "stage1_llm",
+          "local_context": "Now the company's top leader speaks. The CEO said demand for custom AI accelerators and networking is still very strong. This is the CEO's view of demand. The key is to keep it separate from the sales figures.\n\nThen the stage moves to the next quarter. Broadcom expects total revenue for the whole company to be about $34.8 billion. It said this would be 93 percent higher than the same period a year earlier. The CEO also said Broadcom expects $21.7 billion in AI semiconductor sales. That would be up 236 percent from the same quarter a year earlier. Neither figure is an actual result. Both are what the company expected when it announced its earnings. The company said actual results may be different from what it expects. The difference could be important.\n\nThe point to watch this time is that actual results and the CEO's view of demand appear together. The same announcement also gives a forecast for the next quarter. As the numbers grow, the story moves further and further ahead. But it is important to remember what each number means. That's a small tip for enjoying live coverage of an earnings report.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F4",
+            "claim_text": "Neither figure is an actual result.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          },
+          "claim_text": "Neither figure is an actual result.",
+          "dev": {
+            "claim_in_article": "Neither figure is an actual result.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.6); severity is decided by Stage 2",
+            "related_fact_id": "F4",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.6"
+              ],
+              "related_fact_ids": [
+                "F4"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "F3",
+          "detected_by": "stage1_llm",
+          "local_context": "The point to watch this time is that actual results and the CEO's view of demand appear together. The same announcement also gives a forecast for the next quarter. As the numbers grow, the story moves further and further ahead. But it is important to remember what each number means. That's a small tip for enjoying live coverage of an earnings report.\n\n## In one line\nBroadcom reported a sharp rise in AI-chip sales, but its next-quarter sales figures are forecasts, not actual results.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "semiconductor_earnings_old_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F3",
+            "claim_text": "Broadcom reported a sharp rise in AI-chip sales, but its next-quarter sales figures are forecasts, not actual results.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7",
+              "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+            ],
+            "batch_cost_jpy": 0.1696,
+            "batch_n_claims": 11
+          },
+          "claim_text": "Broadcom reported a sharp rise in AI-chip sales, but its next-quarter sales figures are forecasts, not actual results.",
+          "dev": {
+            "claim_in_article": "Broadcom reported a sharp rise in AI-chip sales, but its next-quarter sales figures are forecasts, not actual results.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F3",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F3"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 7,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": []
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "semiconductor_earnings_old_standard_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5625,
+      "usage": {
+        "input_tokens": 3290,
+        "cached_input_tokens": 0,
+        "output_tokens": 6513,
+        "reasoning_tokens": 2402
+      },
+      "elapsed_seconds": 37.289,
+      "prompt_sha256": "d980b78fd01fa69a241bebdf6043779cdec5d15856c67be2a3adcf8287eed170",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.756,
+      "usage": {
+        "input_tokens": 2863,
+        "cached_input_tokens": 0,
+        "output_tokens": 9065,
+        "reasoning_tokens": 5820
+      },
+      "elapsed_seconds": 54.718,
+      "prompt_sha256": "aed81e3074eeec1fc6e6eb7e715d2828112feacbaa6ae6396959f9c7e7d3f72b",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.3357,
+      "usage": {
+        "input_tokens": 3141,
+        "cached_input_tokens": 0,
+        "output_tokens": 3652,
+        "reasoning_tokens": 2900
+      },
+      "elapsed_seconds": 27.18,
+      "prompt_sha256": "20c1024f8fe9edf9b42992aada8303db1ee49acb1d7e957c5bd91f0d979cbdf3",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1908,
+      "usage": {
+        "input_tokens": 8782,
+        "cached_input_tokens": 0,
+        "output_tokens": 676,
+        "reasoning_tokens": 417
+      },
+      "elapsed_seconds": 5.847,
+      "prompt_sha256": "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.2445,
+      "usage": {
+        "input_tokens": 4045,
+        "cached_input_tokens": 0,
+        "output_tokens": 2308,
+        "reasoning_tokens": 2046
+      },
+      "elapsed_seconds": 17.507,
+      "prompt_sha256": "f695957f560ab885220249cd068a0253cf9de55235bb09977671c9211b36388a"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0851,
+      "usage": {
+        "input_tokens": 8782,
+        "cached_input_tokens": 8779,
+        "output_tokens": 909,
+        "reasoning_tokens": 650
+      },
+      "elapsed_seconds": 6.778,
+      "prompt_sha256": "fc74dc73bf07dade22eeee1a869f91e1d16e562983269d8bf03296159d42a9c7"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0845,
+      "usage": {
+        "input_tokens": 3972,
+        "cached_input_tokens": 0,
+        "output_tokens": 283,
+        "reasoning_tokens": 206
+      },
+      "elapsed_seconds": 3.37,
+      "prompt_sha256": "0cd0cf332fa0b367437c4abffd337bbd47795607658ffa630af808a62b82eab5"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_c1_fact:F2_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0722,
+      "usage": {
+        "input_tokens": 2094,
+        "cached_input_tokens": 0,
+        "output_tokens": 502,
+        "reasoning_tokens": 471
+      },
+      "elapsed_seconds": 5.499,
+      "prompt_sha256": "29b2e375a6c98c509caba4163e7b90887d13a852d7403cb880df283a2a082ec8"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_c1_fact:F2_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0582,
+      "usage": {
+        "input_tokens": 1877,
+        "cached_input_tokens": 0,
+        "output_tokens": 366,
+        "reasoning_tokens": 335
+      },
+      "elapsed_seconds": 4.756,
+      "prompt_sha256": "1ea500a1d2e71aa2df7c89d6e3ae40a173c35cddd0fc52d65ae3baf51d0709a1"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_c1_fact:F3_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1015,
+      "usage": {
+        "input_tokens": 2113,
+        "cached_input_tokens": 0,
+        "output_tokens": 871,
+        "reasoning_tokens": 839
+      },
+      "elapsed_seconds": 8.897,
+      "prompt_sha256": "5d0d8bcc7e69b4508468e17f47f9ed8ebbaeab2f71a73f7c4fc473195ec1f2a3"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_c1_fact:F3_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0435,
+      "usage": {
+        "input_tokens": 1896,
+        "cached_input_tokens": 0,
+        "output_tokens": 175,
+        "reasoning_tokens": 149
+      },
+      "elapsed_seconds": 2.326,
+      "prompt_sha256": "5f6ff71f9e840e9033baababe5c7938d9cb5dadaf08718b7381d6b4d94061e1c"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_c1_recheck_r3",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1185,
+      "usage": {
+        "input_tokens": 3164,
+        "cached_input_tokens": 0,
+        "output_tokens": 878,
+        "reasoning_tokens": 277
+      },
+      "elapsed_seconds": 6.022,
+      "prompt_sha256": "188ec80d24d78ddc8b7a7dd363002a8241b3b4aa5d47e3cb7c46979746ad0d4e",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_c1_recheck_r5v",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1053,
+      "usage": {
+        "input_tokens": 2834,
+        "cached_input_tokens": 0,
+        "output_tokens": 776,
+        "reasoning_tokens": 305
+      },
+      "elapsed_seconds": 6.785,
+      "prompt_sha256": "a64be1e2d38d48fa081e86142802725100fe0895881ad584981b2d8c95e19837",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_c2_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0868,
+      "usage": {
+        "input_tokens": 3926,
+        "cached_input_tokens": 0,
+        "output_tokens": 321,
+        "reasoning_tokens": 270
+      },
+      "elapsed_seconds": 3.62,
+      "prompt_sha256": "7a367a4b76a35d99c564b9fd2a3ce5e768e997d84d89ec18f8abc97cd3f25bba"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_c2_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0255,
+      "usage": {
+        "input_tokens": 3926,
+        "cached_input_tokens": 3923,
+        "output_tokens": 246,
+        "reasoning_tokens": 194
+      },
+      "elapsed_seconds": 2.851,
+      "prompt_sha256": "7a367a4b76a35d99c564b9fd2a3ce5e768e997d84d89ec18f8abc97cd3f25bba"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_exit_r3",
+      "recovery_stage": "stage1_exit_check",
+      "cost_jpy": 0.5696,
+      "usage": {
+        "input_tokens": 3284,
+        "cached_input_tokens": 0,
+        "output_tokens": 6605,
+        "reasoning_tokens": 2099
+      },
+      "elapsed_seconds": 38.211,
+      "prompt_sha256": "ec68b24817ed42707991fe8d11c04069c7664f8a421dfb3c10684993d4ee3712",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "semiconductor_earnings_old_standard_exit_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.1898,
+      "usage": {
+        "input_tokens": 3055,
+        "cached_input_tokens": 0,
+        "output_tokens": 1809,
+        "reasoning_tokens": 1289
+      },
+      "elapsed_seconds": 12.956,
+      "prompt_sha256": "0fac13c196170e30409f7229a4c52add6f1dec48ba22851dce083dffb8c29f88",
+      "reasoning_effort": "medium"
+    }
+  ],
+  "total_cost_jpy": 3.63,
+  "total_calls": 17,
+  "elapsed_seconds": 244.693,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The first number on the earnings stage is total net revenue: $29.591 billion.",
+        "related_fact_id": "F2",
+        "origin": null,
+        "issue": "決定論検査で戻した: number_not_in_fact",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=number_not_in_fact, units=S1.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.",
+        "related_fact_id": "F3",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.5); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But numbers alone do not tell us what caused the increase.",
+        "related_fact_id": "F3",
+        "origin": null,
+        "issue": "増加の原因を数値だけでは判断できないという主張はLedgerに記載されていない。 / Ledgerにない、売上増加の原因を数値だけでは分からないとする因果・証拠解釈を追加しています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.5); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Now the company's top leader speaks.",
+        "related_fact_id": "F6",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The CEO said demand for custom AI accelerators and networking is still very strong.",
+        "related_fact_id": "F6",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "This is the CEO's view of demand.",
+        "related_fact_id": "F6",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Neither figure is an actual result.",
+        "related_fact_id": "F4",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.6); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The company said actual results may be different from what it expects.",
+        "related_fact_id": "F4",
+        "origin": null,
+        "issue": "会社見通しの不確実性に関する記載は連結売上高見通しについて確認できるが、この文はAI半導体売上高見通しにも同じ注意書きが適用されるように述べている。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S4.8); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The difference could be important.",
+        "related_fact_id": "F4",
+        "origin": null,
+        "issue": "差が重要となる可能性があるとの記載は連結売上高見通しについて確認できるが、この文はAI半導体売上高見通しにも適用されるように述べている。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S4.9); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Broadcom reported a sharp rise in AI-chip sales, but its next-quarter sales figures are forecasts, not actual results.",
+        "related_fact_id": "F3",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": [
+      {
+        "cycle": 1,
+        "deviations": [
+          {
+            "severity": "MAJOR",
+            "claim_in_article": "The first number on the earnings stage is total net revenue: $29,591 million.",
+            "related_fact_id": "F2",
+            "origin": null,
+            "issue": "決定論検査で戻した: number_not_in_fact",
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=number_not_in_fact, units=S1.3); severity is decided by Stage 2",
+            "true_flags": [],
+            "enumeration_source_claim": false,
+            "same_fact_id_locations": null,
+            "passed_downstream": true
+          }
+        ],
+        "ja_deviations": null
+      }
+    ]
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 16,
+      "n_model_entries": 9,
+      "n_targets": 8,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 5,
+      "n_excluded_entries": 5,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.3357,
+          "usage": {
+            "input_tokens": 3141,
+            "cached_input_tokens": 0,
+            "output_tokens": 3652,
+            "reasoning_tokens": 2900
+          },
+          "elapsed_seconds": 27.18,
+          "prompt_sha256": "20c1024f8fe9edf9b42992aada8303db1ee49acb1d7e957c5bd91f0d979cbdf3",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.3357,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S2.4",
+          "claim": "Put side by side, the numbers begin to sound more and more like live commentary.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "数字が実況のように聞こえるという比喩的な表現で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S2.5",
+          "claim": "But numbers alone do not tell us what caused the increase.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "AI半導体売上高の増加を指す点はF3と合うが、数字だけでは原因が分からないという否定を伴う因果上の主張はLedgerに裏付けられていない。",
+          "fact_tags": [
+            "causality",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S3.4",
+          "claim": "The key is to keep it separate from the sales figures.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "CEOの需要評価と売上高の数字を区別するよう促す編集上の助言で、新たな事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S4.8",
+          "claim": "The company said actual results may be different from what it expects.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "実績と見通しが異なる可能性や会社の主体はF4と合うが、文脈上はAI半導体売上高の見通しにも範囲を広げており、F4の連結売上高見通しより広い。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C5",
+          "key": "S4.9",
+          "claim": "The difference could be important.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "差が重要になり得るという限定はF4と合うが、文脈上その差をAI半導体売上高の見通しにも適用しており、F4の連結売上高見通しより範囲が広い。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C6",
+          "key": "S5.3",
+          "claim": "As the numbers grow, the story moves further and further ahead.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "数字が大きくなるにつれて物語が先へ進むという修辞的な表現で、具体的な数値比較を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "S5.4",
+          "claim": "But it is important to remember what each number means.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "各数字の意味を覚えておくよう促す一般的な助言で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C8",
+          "key": "S5.5",
+          "claim": "That's a small tip for enjoying live coverage of an earnings report.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "決算報道を楽しむための助言という締めの修辞で、具体的な事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "20c1024f8fe9edf9b42992aada8303db1ee49acb1d7e957c5bd91f0d979cbdf3",
+      "g3_n_excluded_flagged": 5
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 36,
+    "n_judged_units": 30,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 6,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.3",
+          "S1.5",
+          "S2.4",
+          "S2.5",
+          "S3.1",
+          "S3.2",
+          "S3.3",
+          "S3.4",
+          "S4.6",
+          "S4.8",
+          "S4.9",
+          "S5.3",
+          "S5.4",
+          "S5.5"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED->CANDIDATE(number_not_in_fact)",
+          "S1.4": "SUPPORTED",
+          "S1.5": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "CANDIDATE",
+          "S2.5": "CANDIDATE",
+          "S3.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.4": "CANDIDATE",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S4.5": "SUPPORTED",
+          "S4.6": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.7": "SUPPORTED",
+          "S4.8": "CANDIDATE",
+          "S4.9": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "CANDIDATE",
+          "S5.4": "CANDIDATE",
+          "S5.5": "CANDIDATE",
+          "L1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5625,
+            "usage": {
+              "input_tokens": 3290,
+              "cached_input_tokens": 0,
+              "output_tokens": 6513,
+              "reasoning_tokens": 2402
+            },
+            "elapsed_seconds": 37.289,
+            "prompt_sha256": "d980b78fd01fa69a241bebdf6043779cdec5d15856c67be2a3adcf8287eed170",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S1.5": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "CANDIDATE",
+          "S2.5": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "CANDIDATE",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S4.5": "SUPPORTED",
+          "S4.6": "SUPPORTED",
+          "S4.7": "SUPPORTED",
+          "S4.8": "CANDIDATE",
+          "S4.9": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "CANDIDATE",
+          "S5.4": "CANDIDATE",
+          "S5.5": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "The first number on the earnings stage is total net revenue: $29.591 billion.",
+            "span": [
+              170,
+              247
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "number_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: number_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F2"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S1.5",
+            "unit_ids": [
+              "S1.5"
+            ],
+            "claim_text": "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.",
+            "span": [
+              319,
+              400
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F3"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "Put side by side, the numbers begin to sound more and more like live commentary.",
+            "span": [
+              569,
+              649
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "数値がライブ実況のように聞こえるという評価はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F3"
+            ],
+            "model_claim": "Put side by side, the numbers begin to sound more and more like live commentary."
+          },
+          {
+            "unit_id": "S2.5",
+            "unit_ids": [
+              "S2.5"
+            ],
+            "claim_text": "But numbers alone do not tell us what caused the increase.",
+            "span": [
+              650,
+              708
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "増加の原因を数値だけでは判断できないという主張はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F3"
+            ],
+            "model_claim": "But numbers alone do not tell us what caused the increase."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "Now the company's top leader speaks.",
+            "span": [
+              710,
+              746
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F6"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "The CEO said demand for custom AI accelerators and networking is still very strong.",
+            "span": [
+              747,
+              830
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F6"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "This is the CEO's view of demand.",
+            "span": [
+              831,
+              864
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F6"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.4",
+            "unit_ids": [
+              "S3.4"
+            ],
+            "claim_text": "The key is to keep it separate from the sales figures.",
+            "span": [
+              865,
+              919
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "需要に関するCEOの見解を売上高の数値と分けて扱うべきだという助言はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F3"
+            ],
+            "model_claim": "The key is to keep it separate from the sales figures."
+          },
+          {
+            "unit_id": "S4.6",
+            "unit_ids": [
+              "S4.6"
+            ],
+            "claim_text": "Neither figure is an actual result.",
+            "span": [
+              1263,
+              1298
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F4"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.8",
+            "unit_ids": [
+              "S4.8"
+            ],
+            "claim_text": "The company said actual results may be different from what it expects.",
+            "span": [
+              1366,
+              1436
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "会社見通しの不確実性に関する記載は連結売上高見通しについて確認できるが、この文はAI半導体売上高見通しにも同じ注意書きが適用されるように述べている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F4"
+            ],
+            "model_claim": "The company said actual results may be different from what it expects."
+          },
+          {
+            "unit_id": "S4.9",
+            "unit_ids": [
+              "S4.9"
+            ],
+            "claim_text": "The difference could be important.",
+            "span": [
+              1437,
+              1471
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "差が重要となる可能性があるとの記載は連結売上高見通しについて確認できるが、この文はAI半導体売上高見通しにも適用されるように述べている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F4"
+            ],
+            "model_claim": "The difference could be important."
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "As the numbers grow, the story moves further and further ahead.",
+            "span": [
+              1637,
+              1700
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "数値が大きくなるにつれて話が先へ進むという比喩的な主張はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F4"
+            ],
+            "model_claim": "As the numbers grow, the story moves further and further ahead."
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "But it is important to remember what each number means.",
+            "span": [
+              1701,
+              1756
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "各数値の意味を覚えておくことが重要だという助言・評価はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "But it is important to remember what each number means."
+          },
+          {
+            "unit_id": "S5.5",
+            "unit_ids": [
+              "S5.5"
+            ],
+            "claim_text": "That's a small tip for enjoying live coverage of an earnings report.",
+            "span": [
+              1757,
+              1825
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "決算報道を楽しむための助言という内容はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "That's a small tip for enjoying live coverage of an earnings report."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Broadcom reported a sharp rise in AI-chip sales, but its next-quarter sales figures are forecasts, not actual results.",
+            "span": [
+              1842,
+              1960
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F3"
+            ],
+            "model_claim": ""
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S2.5"
+        ],
+        "unit_status": {
+          "S1.1": "MATCH",
+          "S1.2": "MATCH",
+          "S1.3": "MATCH",
+          "S1.4": "MATCH",
+          "S1.5": "MATCH",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S2.5": "DEVIATION",
+          "S3.4": "MATCH",
+          "S5.1": "MATCH",
+          "L1": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S4.6": "MATCH",
+          "S4.7": "MATCH",
+          "S4.8": "MATCH",
+          "S4.9": "MATCH",
+          "S5.2": "MATCH",
+          "S4.4": "MATCH",
+          "S4.5": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "T": "UNMENTIONED",
+          "S5.3": "UNMENTIONED",
+          "S5.4": "UNMENTIONED",
+          "S5.5": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.756,
+            "usage": {
+              "input_tokens": 2863,
+              "cached_input_tokens": 0,
+              "output_tokens": 9065,
+              "reasoning_tokens": 5820
+            },
+            "elapsed_seconds": 54.718,
+            "prompt_sha256": "aed81e3074eeec1fc6e6eb7e715d2828112feacbaa6ae6396959f9c7e7d3f72b",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S2.5",
+            "unit_ids": [
+              "S2.5"
+            ],
+            "claim_text": "But numbers alone do not tell us what caused the increase.",
+            "span": [
+              650,
+              708
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerにない、売上増加の原因を数値だけでは分からないとする因果・証拠解釈を追加しています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F3"
+            ],
+            "model_claim": "But numbers alone do not tell us what caused the increase."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S2.5"
+      ],
+      "r3_only": [
+        "L1",
+        "S1.3",
+        "S1.5",
+        "S2.4",
+        "S3.1",
+        "S3.2",
+        "S3.3",
+        "S3.4",
+        "S4.6",
+        "S4.8",
+        "S4.9",
+        "S5.3",
+        "S5.4",
+        "S5.5"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 7
+    },
+    "union_candidates": [
+      {
+        "claim_text": "The first number on the earnings stage is total net revenue: $29.591 billion.",
+        "span": [
+          170,
+          247
+        ],
+        "unit_ids": [
+          "S1.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "number_not_in_fact"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: number_not_in_fact"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F2"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "This $16.7 billion is for AI semiconductors, not the whole semiconductor segment.",
+        "span": [
+          319,
+          400
+        ],
+        "unit_ids": [
+          "S1.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F3"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "But numbers alone do not tell us what caused the increase.",
+        "span": [
+          650,
+          708
+        ],
+        "unit_ids": [
+          "S2.5"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "増加の原因を数値だけでは判断できないという主張はLedgerに記載されていない。",
+          "Ledgerにない、売上増加の原因を数値だけでは分からないとする因果・証拠解釈を追加しています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F3"
+        ],
+        "model_claims": [
+          "But numbers alone do not tell us what caused the increase."
+        ]
+      },
+      {
+        "claim_text": "Now the company's top leader speaks.",
+        "span": [
+          710,
+          746
+        ],
+        "unit_ids": [
+          "S3.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F6"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The CEO said demand for custom AI accelerators and networking is still very strong.",
+        "span": [
+          747,
+          830
+        ],
+        "unit_ids": [
+          "S3.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F6"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "This is the CEO's view of demand.",
+        "span": [
+          831,
+          864
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F6"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Neither figure is an actual result.",
+        "span": [
+          1263,
+          1298
+        ],
+        "unit_ids": [
+          "S4.6"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F4"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The company said actual results may be different from what it expects.",
+        "span": [
+          1366,
+          1436
+        ],
+        "unit_ids": [
+          "S4.8"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "会社見通しの不確実性に関する記載は連結売上高見通しについて確認できるが、この文はAI半導体売上高見通しにも同じ注意書きが適用されるように述べている。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F4"
+        ],
+        "model_claims": [
+          "The company said actual results may be different from what it expects."
+        ]
+      },
+      {
+        "claim_text": "The difference could be important.",
+        "span": [
+          1437,
+          1471
+        ],
+        "unit_ids": [
+          "S4.9"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "差が重要となる可能性があるとの記載は連結売上高見通しについて確認できるが、この文はAI半導体売上高見通しにも適用されるように述べている。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F4"
+        ],
+        "model_claims": [
+          "The difference could be important."
+        ]
+      },
+      {
+        "claim_text": "Broadcom reported a sharp rise in AI-chip sales, but its next-quarter sales figures are forecasts, not actual results.",
+        "span": [
+          1842,
+          1960
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F3"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 10,
+    "n_model_candidates": 3,
+    "n_deterministic_only_candidates": 7,
+    "total_cost_jpy": 1.3185,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 9,
+    "n_targets": 8,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 5,
+    "n_excluded_entries": 5,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.3357,
+    "effort": "medium",
+    "prompt_sha256": "20c1024f8fe9edf9b42992aada8303db1ee49acb1d7e957c5bd91f0d979cbdf3"
+  },
+  "recheck_exit_check": {
+    "done": true,
+    "log": [
+      {
+        "cycle": 2,
+        "n_candidates": 7,
+        "api_failure": false,
+        "n_calls": 1,
+        "n_judged_units": 30,
+        "total_cost_jpy": 0.5696,
+        "missing_after_rerun": [],
+        "reclassify": {
+          "reclassify_status": "ok",
+          "n_model_entries": 6,
+          "n_targets": 6,
+          "n_protected_keys": 0,
+          "n_excluded_claims": 5,
+          "n_excluded_entries": 5,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.1898,
+          "effort": "medium",
+          "prompt_sha256": "0fac13c196170e30409f7229a4c52add6f1dec48ba22851dce083dffb8c29f88"
+        }
+      }
+    ]
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 3,
+      "STAGE2_VERDICT_REUSE_NONBLOCKING": 7
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

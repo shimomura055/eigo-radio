@@ -20384,3 +20384,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **B3 v2共有**: hormuz・streaming_priceは両腕ともB3 v2(対の設計)。旧4の「凍結B3」はhormuzのみv2に置換された。
 - **(c)AMBIGUOUS許容**はFable判断で継続(ユーザーが覆せばsemiconductor/streamingを除外)。
 - **Status**: Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言。
+
+## FACTLOCK-ASTRA-E2E-TRIAL-01 委任_13: G2 round1中間チェック判断とcap再設定(2026-10-09、Fable判断)
+- **中間チェック判断**: round1で新腕STOPは系統的でない(JA STOP 0/4、EN Std STOP 1/4)。旧腕Advanced->Checker経路は実証済み。runner欠陥(worker_shadowのa2/article.md無条件読込)は修正済み・テスト33件PASS。再開・続行を承認。
+- **停止条件の解釈**: 「1 run 20円超」はChecker run単位のcap。Astra段は腕cap 100円で管理。
+- **cap再設定**: runnerのcapをguard基準 `--cap-jpy 1000 --alert-jpy 850`(guard/raw比約1.4のためraw換算約715)。加えてrunner台帳rawが800円に達したら即停止。B1回復は残り1回(超過はSTOP記録)。round2のworker割付は worker5=byd_recall/central_bank_mortgage、worker6=openai_copyright/semiconductor_earnings、worker7=streaming_price。
+- **結果(参考、判定ではない)**: G2完走。台帳raw 459.04 / guard 625.89、Trial累計約638.03。B1回復は3/3消費、semiconductor新Advは上限拒否でSTOP記録。
+- **Status**: Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言。

@@ -1,0 +1,2372 @@
+{
+  "instance_id": "central_bank_mortgage_old_advanced",
+  "group": "e2e",
+  "expected_group_label": "E2E generated",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "It does not mean the rate hike has already had an effect.",
+          "origin": null,
+          "related_fact_id": "F003",
+          "dev": {
+            "claim_in_article": "It does not mean the rate hike has already had an effect.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.5); severity is decided by Stage 2",
+            "related_fact_id": "F003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.5"
+              ],
+              "related_fact_ids": [
+                "F003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Think of interest-rate news as a sports broadcast. When the central bank makes a move, everyone pays attention. But bond markets and worries about inflation also take part in the mortgage-rate game. A rise in the policy rate does not mean mortgage rates automatically rise by the same amount.\n\nOn September 16, the meeting that sets U.S. monetary policy raised the policy rate by 0.25 percentage points, to a range of 3.75% to 4.00%. Economic activity and spending at home are strong, but inflation remains high. The aim was to help bring rising prices back to the 2% target sooner. But this is what officials hope to achieve. It does not mean the rate hike has already had an effect.\n\nLet’s look at the mortgage-rate figures. The national average rate for a 30-year fixed-rate mortgage rose from 5.98% in late February to 7.40% on October 8. An Associated Press estimate shows that, for a $400,000 loan, this difference in rates would add about $376 to the monthly payment. Of course, this is an example based on an estimate. It does not mean everyone who borrows will see their payment rise by the same amount.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "central_bank_mortgage_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F003",
+            "claim_text": "It does not mean the rate hike has already had an effect.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+              "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+            ],
+            "batch_cost_jpy": 0.1139,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "It does not mean everyone who borrows will see their payment rise by the same amount.",
+          "origin": null,
+          "related_fact_id": "F007",
+          "dev": {
+            "claim_in_article": "It does not mean everyone who borrows will see their payment rise by the same amount.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.5); severity is decided by Stage 2",
+            "related_fact_id": "F007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.5"
+              ],
+              "related_fact_ids": [
+                "F007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On September 16, the meeting that sets U.S. monetary policy raised the policy rate by 0.25 percentage points, to a range of 3.75% to 4.00%. Economic activity and spending at home are strong, but inflation remains high. The aim was to help bring rising prices back to the 2% target sooner. But this is what officials hope to achieve. It does not mean the rate hike has already had an effect.\n\nLet’s look at the mortgage-rate figures. The national average rate for a 30-year fixed-rate mortgage rose from 5.98% in late February to 7.40% on October 8. An Associated Press estimate shows that, for a $400,000 loan, this difference in rates would add about $376 to the monthly payment. Of course, this is an example based on an estimate. It does not mean everyone who borrows will see their payment rise by the same amount.\n\nLet’s also check the rules of the game. With a fixed-rate mortgage, the rate in the contract stays the same throughout the repayment period. Even if the policy rate rises, payments do not automatically go up for people who have already borrowed. With an adjustable-rate mortgage, the rate may change depending on the terms of the contract.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "central_bank_mortgage_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F007",
+            "claim_text": "It does not mean everyone who borrows will see their payment rise by the same amount.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+              "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+            ],
+            "batch_cost_jpy": 0.1139,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Let’s also check the rules of the game.",
+          "origin": null,
+          "related_fact_id": "F008",
+          "dev": {
+            "claim_in_article": "Let’s also check the rules of the game.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "F008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "F008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Let’s look at the mortgage-rate figures. The national average rate for a 30-year fixed-rate mortgage rose from 5.98% in late February to 7.40% on October 8. An Associated Press estimate shows that, for a $400,000 loan, this difference in rates would add about $376 to the monthly payment. Of course, this is an example based on an estimate. It does not mean everyone who borrows will see their payment rise by the same amount.\n\nLet’s also check the rules of the game. With a fixed-rate mortgage, the rate in the contract stays the same throughout the repayment period. Even if the policy rate rises, payments do not automatically go up for people who have already borrowed. With an adjustable-rate mortgage, the rate may change depending on the terms of the contract.\n\nSo, who are the players that move the mortgage-rate game? They are inflation, central bank policy, and bond market investors’ views of the economy. The recent rise was also linked to swings in the bond market and stronger worries about inflation because of higher oil prices. In other words, it is too soon to blame the September rate hike alone.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "central_bank_mortgage_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F008",
+            "claim_text": "Let’s also check the rules of the game.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+              "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+            ],
+            "batch_cost_jpy": 0.1139,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "With a fixed-rate mortgage, the rate in the contract stays the same throughout the repayment period.",
+          "origin": null,
+          "related_fact_id": "F008",
+          "dev": {
+            "claim_in_article": "With a fixed-rate mortgage, the rate in the contract stays the same throughout the repayment period.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "F008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "F008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Let’s look at the mortgage-rate figures. The national average rate for a 30-year fixed-rate mortgage rose from 5.98% in late February to 7.40% on October 8. An Associated Press estimate shows that, for a $400,000 loan, this difference in rates would add about $376 to the monthly payment. Of course, this is an example based on an estimate. It does not mean everyone who borrows will see their payment rise by the same amount.\n\nLet’s also check the rules of the game. With a fixed-rate mortgage, the rate in the contract stays the same throughout the repayment period. Even if the policy rate rises, payments do not automatically go up for people who have already borrowed. With an adjustable-rate mortgage, the rate may change depending on the terms of the contract.\n\nSo, who are the players that move the mortgage-rate game? They are inflation, central bank policy, and bond market investors’ views of the economy. The recent rise was also linked to swings in the bond market and stronger worries about inflation because of higher oil prices. In other words, it is too soon to blame the September rate hike alone.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "central_bank_mortgage_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F008",
+            "claim_text": "With a fixed-rate mortgage, the rate in the contract stays the same throughout the repayment period.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+              "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+            ],
+            "batch_cost_jpy": 0.1139,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "With an adjustable-rate mortgage, the rate may change depending on the terms of the contract.",
+          "origin": null,
+          "related_fact_id": "F008",
+          "dev": {
+            "claim_in_article": "With an adjustable-rate mortgage, the rate may change depending on the terms of the contract.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.4); severity is decided by Stage 2",
+            "related_fact_id": "F008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.4"
+              ],
+              "related_fact_ids": [
+                "F008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Let’s look at the mortgage-rate figures. The national average rate for a 30-year fixed-rate mortgage rose from 5.98% in late February to 7.40% on October 8. An Associated Press estimate shows that, for a $400,000 loan, this difference in rates would add about $376 to the monthly payment. Of course, this is an example based on an estimate. It does not mean everyone who borrows will see their payment rise by the same amount.\n\nLet’s also check the rules of the game. With a fixed-rate mortgage, the rate in the contract stays the same throughout the repayment period. Even if the policy rate rises, payments do not automatically go up for people who have already borrowed. With an adjustable-rate mortgage, the rate may change depending on the terms of the contract.\n\nSo, who are the players that move the mortgage-rate game? They are inflation, central bank policy, and bond market investors’ views of the economy. The recent rise was also linked to swings in the bond market and stronger worries about inflation because of higher oil prices. In other words, it is too soon to blame the September rate hike alone.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "central_bank_mortgage_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F008",
+            "claim_text": "With an adjustable-rate mortgage, the rate may change depending on the terms of the contract.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+              "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+            ],
+            "batch_cost_jpy": 0.1139,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "When planning your budget for a big purchase, remember that the interest-rate game is not decided by just one player.",
+          "origin": null,
+          "related_fact_id": "F010",
+          "dev": {
+            "claim_in_article": "When planning your budget for a big purchase, remember that the interest-rate game is not decided by just one player.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "F010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "F010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So, who are the players that move the mortgage-rate game? They are inflation, central bank policy, and bond market investors’ views of the economy. The recent rise was also linked to swings in the bond market and stronger worries about inflation because of higher oil prices. In other words, it is too soon to blame the September rate hike alone.\n\nWhen you look at mortgage rates, pay attention not only to what the central bank announces but also to what the market is worried about. When planning your budget for a big purchase, remember that the interest-rate game is not decided by just one player.\n\n## In one line\nMortgage rates are shaped not just by central bank decisions, but also by inflation and bond-market expectations.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "central_bank_mortgage_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F010",
+            "claim_text": "When planning your budget for a big purchase, remember that the interest-rate game is not decided by just one player.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+              "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+            ],
+            "batch_cost_jpy": 0.1139,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Mortgage rates are shaped not just by central bank decisions, but also by inflation and bond-market expectations.",
+          "origin": null,
+          "related_fact_id": "F010",
+          "dev": {
+            "claim_in_article": "Mortgage rates are shaped not just by central bank decisions, but also by inflation and bond-market expectations.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "When you look at mortgage rates, pay attention not only to what the central bank announces but also to what the market is worried about. When planning your budget for a big purchase, remember that the interest-rate game is not decided by just one player.\n\n## In one line\nMortgage rates are shaped not just by central bank decisions, but also by inflation and bond-market expectations.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "central_bank_mortgage_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F010",
+            "claim_text": "Mortgage rates are shaped not just by central bank decisions, but also by inflation and bond-market expectations.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+              "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+            ],
+            "batch_cost_jpy": 0.1139,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "A rise in the policy rate does not mean mortgage rates automatically rise by the same amount.",
+          "origin": null,
+          "related_fact_id": "F007",
+          "dev": {
+            "claim_in_article": "A rise in the policy rate does not mean mortgage rates automatically rise by the same amount.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.5); severity is decided by Stage 2",
+            "related_fact_id": "F007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.5"
+              ],
+              "related_fact_ids": [
+                "F007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "It does not mean everyone who borrows will see their payment rise by the same amount."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Interest Rates: Watch Only the Central Bank, and You’ll Miss the Action\n\nThink of interest-rate news as a sports broadcast. When the central bank makes a move, everyone pays attention. But bond markets and worries about inflation also take part in the mortgage-rate game. A rise in the policy rate does not mean mortgage rates automatically rise by the same amount.\n\nOn September 16, the meeting that sets U.S. monetary policy raised the policy rate by 0.25 percentage points, to a range of 3.75% to 4.00%. Economic activity and spending at home are strong, but inflation remains high. The aim was to help bring rising prices back to the 2% target sooner. But this is what officials hope to achieve. It does not mean the rate hike has already had an effect.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "central_bank_mortgage_old_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F007",
+            "claim_text": "A rise in the policy rate does not mean mortgage rates automatically rise by the same amount.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+              "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+            ],
+            "batch_cost_jpy": 0.1139,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "The national average rate for a 30-year fixed-rate mortgage rose from 5.",
+          "origin": null,
+          "related_fact_id": "F008",
+          "dev": {
+            "claim_in_article": "The national average rate for a 30-year fixed-rate mortgage rose from 5.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "F008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "F008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "With a fixed-rate mortgage, the rate in the contract stays the same throughout the repayment period."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On September 16, the meeting that sets U.S. monetary policy raised the policy rate by 0.25 percentage points, to a range of 3.75% to 4.00%. Economic activity and spending at home are strong, but inflation remains high. The aim was to help bring rising prices back to the 2% target sooner. But this is what officials hope to achieve. It does not mean the rate hike has already had an effect.\n\nLet’s look at the mortgage-rate figures. The national average rate for a 30-year fixed-rate mortgage rose from 5.98% in late February to 7.40% on October 8. An Associated Press estimate shows that, for a $400,000 loan, this difference in rates would add about $376 to the monthly payment. Of course, this is an example based on an estimate. It does not mean everyone who borrows will see their payment rise by the same amount.\n\nLet’s also check the rules of the game. With a fixed-rate mortgage, the rate in the contract stays the same throughout the repayment period. Even if the policy rate rises, payments do not automatically go up for people who have already borrowed. With an adjustable-rate mortgage, the rate may change depending on the terms of the contract.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "central_bank_mortgage_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F008",
+            "claim_text": "The national average rate for a 30-year fixed-rate mortgage rose from 5.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+              "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+            ],
+            "batch_cost_jpy": 0.1139,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "They are inflation, central bank policy, and bond market investors’ views of the economy.",
+          "origin": null,
+          "related_fact_id": "F010",
+          "dev": {
+            "claim_in_article": "They are inflation, central bank policy, and bond market investors’ views of the economy.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Mortgage rates are shaped not just by central bank decisions, but also by inflation and bond-market expectations."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Let’s also check the rules of the game. With a fixed-rate mortgage, the rate in the contract stays the same throughout the repayment period. Even if the policy rate rises, payments do not automatically go up for people who have already borrowed. With an adjustable-rate mortgage, the rate may change depending on the terms of the contract.\n\nSo, who are the players that move the mortgage-rate game? They are inflation, central bank policy, and bond market investors’ views of the economy. The recent rise was also linked to swings in the bond market and stronger worries about inflation because of higher oil prices. In other words, it is too soon to blame the September rate hike alone.\n\nWhen you look at mortgage rates, pay attention not only to what the central bank announces but also to what the market is worried about. When planning your budget for a big purchase, remember that the interest-rate game is not decided by just one player.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "central_bank_mortgage_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F010",
+            "claim_text": "They are inflation, central bank policy, and bond market investors’ views of the economy.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+              "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+            ],
+            "batch_cost_jpy": 0.1139,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "When you look at mortgage rates, pay attention not only to what the central bank announces but also to what the market is worried about.",
+          "origin": null,
+          "related_fact_id": "F010",
+          "dev": {
+            "claim_in_article": "When you look at mortgage rates, pay attention not only to what the central bank announces but also to what the market is worried about.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Mortgage rates are shaped not just by central bank decisions, but also by inflation and bond-market expectations."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So, who are the players that move the mortgage-rate game? They are inflation, central bank policy, and bond market investors’ views of the economy. The recent rise was also linked to swings in the bond market and stronger worries about inflation because of higher oil prices. In other words, it is too soon to blame the September rate hike alone.\n\nWhen you look at mortgage rates, pay attention not only to what the central bank announces but also to what the market is worried about. When planning your budget for a big purchase, remember that the interest-rate game is not decided by just one player.\n\n## In one line\nMortgage rates are shaped not just by central bank decisions, but also by inflation and bond-market expectations.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "central_bank_mortgage_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F010",
+            "claim_text": "When you look at mortgage rates, pay attention not only to what the central bank announces but also to what the market is worried about.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+              "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+            ],
+            "batch_cost_jpy": 0.1139,
+            "batch_n_claims": 11
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 11,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "central_bank_mortgage_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F003",
+          "claim_text": "It does not mean the rate hike has already had an effect.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+            "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+          ],
+          "batch_cost_jpy": 0.1139,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "central_bank_mortgage_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F007",
+          "claim_text": "It does not mean everyone who borrows will see their payment rise by the same amount.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+            "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+          ],
+          "batch_cost_jpy": 0.1139,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "central_bank_mortgage_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F008",
+          "claim_text": "Let’s also check the rules of the game.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+            "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+          ],
+          "batch_cost_jpy": 0.1139,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "central_bank_mortgage_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F008",
+          "claim_text": "With a fixed-rate mortgage, the rate in the contract stays the same throughout the repayment period.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+            "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+          ],
+          "batch_cost_jpy": 0.1139,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "central_bank_mortgage_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F008",
+          "claim_text": "With an adjustable-rate mortgage, the rate may change depending on the terms of the contract.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+            "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+          ],
+          "batch_cost_jpy": 0.1139,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "central_bank_mortgage_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F010",
+          "claim_text": "When planning your budget for a big purchase, remember that the interest-rate game is not decided by just one player.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+            "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+          ],
+          "batch_cost_jpy": 0.1139,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "central_bank_mortgage_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F010",
+          "claim_text": "Mortgage rates are shaped not just by central bank decisions, but also by inflation and bond-market expectations.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+            "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+          ],
+          "batch_cost_jpy": 0.1139,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "central_bank_mortgage_old_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F007",
+          "claim_text": "A rise in the policy rate does not mean mortgage rates automatically rise by the same amount.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+            "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+          ],
+          "batch_cost_jpy": 0.1139,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "central_bank_mortgage_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F008",
+          "claim_text": "The national average rate for a 30-year fixed-rate mortgage rose from 5.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+            "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+          ],
+          "batch_cost_jpy": 0.1139,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "central_bank_mortgage_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F010",
+          "claim_text": "They are inflation, central bank policy, and bond market investors’ views of the economy.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+            "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+          ],
+          "batch_cost_jpy": 0.1139,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "central_bank_mortgage_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F010",
+          "claim_text": "When you look at mortgage rates, pay attention not only to what the central bank announces but also to what the market is worried about.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f",
+            "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+          ],
+          "batch_cost_jpy": 0.1139,
+          "batch_n_claims": 11
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "central_bank_mortgage_old_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.4943,
+      "usage": {
+        "input_tokens": 4893,
+        "cached_input_tokens": 0,
+        "output_tokens": 5323,
+        "reasoning_tokens": 1552
+      },
+      "elapsed_seconds": 28.762,
+      "prompt_sha256": "614ccfed43ae44e754d532394c34a1dc237515f176ac6958461f09132bcd2538",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "central_bank_mortgage_old_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.719,
+      "usage": {
+        "input_tokens": 4490,
+        "cached_input_tokens": 0,
+        "output_tokens": 8268,
+        "reasoning_tokens": 5951
+      },
+      "elapsed_seconds": 49.392,
+      "prompt_sha256": "fbe4e1e8dee5f037fba4a7ae19143ca3eb771c2e37f6fd8107c5b31ed355387c",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "central_bank_mortgage_old_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.107,
+      "usage": {
+        "input_tokens": 4466,
+        "cached_input_tokens": 0,
+        "output_tokens": 471,
+        "reasoning_tokens": 271
+      },
+      "elapsed_seconds": 4.749,
+      "prompt_sha256": "845211f38ff70fc017c221b36d35a3fa7c70e660bc4cbfee6049ee418b431d0b",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "central_bank_mortgage_old_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2661,
+      "usage": {
+        "input_tokens": 10654,
+        "cached_input_tokens": 0,
+        "output_tokens": 1262,
+        "reasoning_tokens": 977
+      },
+      "elapsed_seconds": 10.403,
+      "prompt_sha256": "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f"
+    },
+    {
+      "label": "central_bank_mortgage_old_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1012,
+      "usage": {
+        "input_tokens": 5470,
+        "cached_input_tokens": 0,
+        "output_tokens": 196,
+        "reasoning_tokens": 144
+      },
+      "elapsed_seconds": 2.993,
+      "prompt_sha256": "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+    },
+    {
+      "label": "central_bank_mortgage_old_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0848,
+      "usage": {
+        "input_tokens": 10654,
+        "cached_input_tokens": 10651,
+        "output_tokens": 867,
+        "reasoning_tokens": 582
+      },
+      "elapsed_seconds": 8.198,
+      "prompt_sha256": "72966275358d19c8990ff0f9ab4bb711bbc988007bfb6ea25292eb252f08af5f"
+    },
+    {
+      "label": "central_bank_mortgage_old_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0291,
+      "usage": {
+        "input_tokens": 5470,
+        "cached_input_tokens": 5467,
+        "output_tokens": 261,
+        "reasoning_tokens": 209
+      },
+      "elapsed_seconds": 2.742,
+      "prompt_sha256": "aff69596cf4bd92133ae3a337f4d33feefab03bfc5ae01a82d488b150697748e"
+    }
+  ],
+  "total_cost_jpy": 1.8015,
+  "total_calls": 7,
+  "elapsed_seconds": 107.292,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "It does not mean the rate hike has already had an effect.",
+        "related_fact_id": "F003",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.5); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "It does not mean everyone who borrows will see their payment rise by the same amount.",
+        "related_fact_id": "F007",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.5); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Let’s also check the rules of the game.",
+        "related_fact_id": "F008",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "With a fixed-rate mortgage, the rate in the contract stays the same throughout the repayment period.",
+        "related_fact_id": "F008",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "With an adjustable-rate mortgage, the rate may change depending on the terms of the contract.",
+        "related_fact_id": "F008",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "When planning your budget for a big purchase, remember that the interest-rate game is not decided by just one player.",
+        "related_fact_id": "F010",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Mortgage rates are shaped not just by central bank decisions, but also by inflation and bond-market expectations.",
+        "related_fact_id": "F010",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 9,
+      "n_model_entries": 2,
+      "n_targets": 2,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 2,
+      "n_excluded_entries": 2,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.107,
+          "usage": {
+            "input_tokens": 4466,
+            "cached_input_tokens": 0,
+            "output_tokens": 471,
+            "reasoning_tokens": 271
+          },
+          "elapsed_seconds": 4.749,
+          "prompt_sha256": "845211f38ff70fc017c221b36d35a3fa7c70e660bc4cbfee6049ee418b431d0b",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.107,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.2",
+          "claim": "When the central bank makes a move, everyone pays attention.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "中央銀行の動きに皆が注目するという表現は、導入の比喩的な誇張であり、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "R:S4.4+S5.1",
+          "claim": "So, who are the players that move the mortgage-rate game?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "住宅ローン金利を動かす要因を尋ねる修辞的な問いであり、この文自体は具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "845211f38ff70fc017c221b36d35a3fa7c70e660bc4cbfee6049ee418b431d0b",
+      "g3_n_excluded_flagged": 2
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 34,
+    "n_judged_units": 27,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S4.4+S5.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 11,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S4.4+S5.1",
+          "S1.2",
+          "S2.5",
+          "S3.5",
+          "S4.1",
+          "S4.2",
+          "S4.4",
+          "S6.2"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S2.5": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S3.5": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "L1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "R:S4.4+S5.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.4943,
+            "usage": {
+              "input_tokens": 4893,
+              "cached_input_tokens": 0,
+              "output_tokens": 5323,
+              "reasoning_tokens": 1552
+            },
+            "elapsed_seconds": 28.762,
+            "prompt_sha256": "614ccfed43ae44e754d532394c34a1dc237515f176ac6958461f09132bcd2538",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S2.5": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S3.5": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "L1": "SUPPORTED",
+          "R:S4.4+S5.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "When the central bank makes a move, everyone pays attention.",
+            "span": [
+              126,
+              186
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「everyone pays attention」という全員に及ぶ一般化はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F002"
+            ],
+            "model_claim": "When the central bank makes a move, everyone pays attention."
+          },
+          {
+            "unit_id": "S2.5",
+            "unit_ids": [
+              "S2.5"
+            ],
+            "claim_text": "It does not mean the rate hike has already had an effect.",
+            "span": [
+              702,
+              759
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F003"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.5",
+            "unit_ids": [
+              "S3.5"
+            ],
+            "claim_text": "It does not mean everyone who borrows will see their payment rise by the same amount.",
+            "span": [
+              1102,
+              1187
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F007"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "Let’s also check the rules of the game.",
+            "span": [
+              1189,
+              1228
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F008"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "With a fixed-rate mortgage, the rate in the contract stays the same throughout the repayment period.",
+            "span": [
+              1229,
+              1329
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F008"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.4",
+            "unit_ids": [
+              "S4.4"
+            ],
+            "claim_text": "With an adjustable-rate mortgage, the rate may change depending on the terms of the contract.",
+            "span": [
+              1435,
+              1528
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F008"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "When planning your budget for a big purchase, remember that the interest-rate game is not decided by just one player.",
+            "span": [
+              2015,
+              2132
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F010"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Mortgage rates are shaped not just by central bank decisions, but also by inflation and bond-market expectations.",
+            "span": [
+              2149,
+              2262
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F010"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "R:S4.4+S5.1",
+            "unit_ids": [
+              "R:S4.4+S5.1"
+            ],
+            "claim_text": "So, who are the players that move the mortgage-rate game?",
+            "span": [
+              1530,
+              1587
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「So」が、ARMの契約条件による金利変動と、住宅ローン金利を動かす要因を問うことを結び付けていますが、この因果・照応関係はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F008"
+            ],
+            "model_claim": "With an adjustable-rate mortgage, the rate may change depending on the terms of the contract. So, who are the players that move the mortgage-rate game?"
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S2.5": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S3.5": "MATCH",
+          "S1.4": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S4.4": "MATCH",
+          "R:S4.4+S5.1": "MATCH",
+          "S1.3": "MATCH",
+          "S5.2": "MATCH",
+          "S5.4": "MATCH",
+          "S6.1": "MATCH",
+          "L1": "MATCH",
+          "S5.3": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S3.1": "UNMENTIONED",
+          "S4.1": "UNMENTIONED",
+          "S5.1": "UNMENTIONED",
+          "S6.2": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.719,
+            "usage": {
+              "input_tokens": 4490,
+              "cached_input_tokens": 0,
+              "output_tokens": 8268,
+              "reasoning_tokens": 5951
+            },
+            "elapsed_seconds": 49.392,
+            "prompt_sha256": "fbe4e1e8dee5f037fba4a7ae19143ca3eb771c2e37f6fd8107c5b31ed355387c",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": []
+      }
+    },
+    "overlap": {
+      "both": [],
+      "r3_only": [
+        "L1",
+        "R:S4.4+S5.1",
+        "S1.2",
+        "S2.5",
+        "S3.5",
+        "S4.1",
+        "S4.2",
+        "S4.4",
+        "S6.2"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 7
+    },
+    "union_candidates": [
+      {
+        "claim_text": "It does not mean the rate hike has already had an effect.",
+        "span": [
+          702,
+          759
+        ],
+        "unit_ids": [
+          "S2.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "It does not mean everyone who borrows will see their payment rise by the same amount.",
+        "span": [
+          1102,
+          1187
+        ],
+        "unit_ids": [
+          "S3.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F007"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Let’s also check the rules of the game.",
+        "span": [
+          1189,
+          1228
+        ],
+        "unit_ids": [
+          "S4.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F008"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "With a fixed-rate mortgage, the rate in the contract stays the same throughout the repayment period.",
+        "span": [
+          1229,
+          1329
+        ],
+        "unit_ids": [
+          "S4.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F008"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "With an adjustable-rate mortgage, the rate may change depending on the terms of the contract.",
+        "span": [
+          1435,
+          1528
+        ],
+        "unit_ids": [
+          "S4.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F008"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "When planning your budget for a big purchase, remember that the interest-rate game is not decided by just one player.",
+        "span": [
+          2015,
+          2132
+        ],
+        "unit_ids": [
+          "S6.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F010"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Mortgage rates are shaped not just by central bank decisions, but also by inflation and bond-market expectations.",
+        "span": [
+          2149,
+          2262
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F010"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 7,
+    "n_model_candidates": 0,
+    "n_deterministic_only_candidates": 7,
+    "total_cost_jpy": 1.2133,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 2,
+    "n_targets": 2,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 2,
+    "n_excluded_entries": 2,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.107,
+    "effort": "medium",
+    "prompt_sha256": "845211f38ff70fc017c221b36d35a3fa7c70e660bc4cbfee6049ee418b431d0b"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 4
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "provenance": {
+    "stage1_source": "fresh",
+    "frozen": false,
+    "reuse": false,
+    "substitution": false,
+    "stage1_cache": null,
+    "switches": {
+      "HANDOFF_MODE": "violation_span",
+      "VS_MATCH_EXT": true,
+      "VS_EXPLAIN_SPLIT": true,
+      "VS_SENTENCE_RESTORE": true,
+      "JA_MODE": "english_only",
+      "STAGE2_NORMAL_TWO_OF_TWO": false,
+      "CAUSAL_FLOOR_VOCAB": "known6",
+      "STAGE2_SECOND_OPINION": true,
+      "RECHECK_MERGE_UNRESOLVED": true,
+      "STRUCTURAL_ELEMENT_REWRITE": true,
+      "ACTOR_GUARD_MODE": "ag1_strict",
+      "STRUCTURAL_PAIRS_TO_RECHECK": true,
+      "STAGE4_ALLOWLIST": true,
+      "LADDER_LOCATION_CARRY": true,
+      "REWRITE_REVERT_GUARD": true,
+      "SPAN_FALLBACK_CHAIN": true,
+      "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+      "LAST_RESORT_DELETE": true,
+      "MATERIALITY_BLOCKING_PIN": true,
+      "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": true,
+      "FLOOR_MODE": "number_only",
+      "FLOOR_VERIFY_MODE": "off",
+      "CAUSAL_FLOOR": false,
+      "STAGE2_DOWNGRADE_VERIFY": false,
+      "TIER0_G_L_ENABLED": false,
+      "PRECHECK_MODE": "number_only",
+      "STAGE1_RECLASSIFY": true,
+      "RECHECK_BEFORE_AFTER_PAIRS": false,
+      "STAGE1_MODE": "coverage_union",
+      "STAGE1_ROUTES": "both",
+      "STAGE1_R5_MODE": "full",
+      "STAGE1_R3_REASONING": "medium",
+      "STAGE1_R5_REASONING": "high",
+      "STAGE1_NEGATION_MODE": "a",
+      "F3_PRECHECK_ALWAYS": true,
+      "STAGE1_FAIL_CLOSED": true,
+      "RECHECK_MODE": "coverage_union",
+      "MAX_CYCLES": 2,
+      "HARD_MAX_CYCLES": 3,
+      "MODEL": "gpt-6-luna"
+    },
+    "model": "gpt-6-luna",
+    "efforts": {
+      "r3": "medium",
+      "r5": "high",
+      "other": "high"
+    },
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "coverage_module_version": "stage1_coverage_v1",
+    "kind": "E2E(fresh Stage 1 -> 最終出口)。Trial artifactによる代替なし"
+  },
+  "waste_flags": [],
+  "provenance_violations": [],
+  "wall_seconds": 107.341,
+  "run_cost_incl_retries_jpy": 1.8015
+}

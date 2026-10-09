@@ -1,0 +1,44 @@
+{
+  "arm": "new",
+  "note": "ログ専用。腕比較の結果をM1/M3単独の効果と書かない",
+  "m1a": {
+    "alt_rule": "old_input",
+    "alt_summary": "The U.S. has acknowledged deploying weapons in orbit, but has kept their capabilities secret.",
+    "alt_check": {
+      "overall_status": "LEDGER_DEVIATION",
+      "n_major": 1,
+      "n_minor": 0,
+      "majors": [
+        {
+          "claim_in_article": "“Russia has destroyed satellites with ground-launched anti-satellite missiles.”",
+          "issue": "複数の衛星を破壊したという読みを生む表現だが、Ledgerが確認しているロシアの事例は、2021年にCOSMOS 1408を破壊した一件。",
+          "severity": "MAJOR",
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": true,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false,
+          "explanation": "F-003が確認する対象はロシアの衛星1基であり、記事の複数形は対象数を広げているため、changed_fact・changed_scope・changed_numberに該当する。原文にも同じ一般化がある。",
+          "related_fact_id": "F-003",
+          "origin": "ja_source",
+          "auto_downgraded": false
+        }
+      ],
+      "response_id": "resp_0aab5f54c97b4b40006ac844aed34087d0857758c32f30970e",
+      "model": "gpt-6-luna"
+    },
+    "actual_attempt1_status": "LEDGER_COMPLIANT",
+    "actual_summary": "The United States has publicly acknowledged deploying space-control weapons in orbit, but has not disclosed their capabilities."
+  },
+  "m1b": {
+    "actual_attempt1_n_major": 0,
+    "majors_only_in_summary": false,
+    "fired_in_arm": false,
+    "counterfactual": null
+  }
+}

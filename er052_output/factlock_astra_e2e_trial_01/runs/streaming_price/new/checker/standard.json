@@ -1,0 +1,3224 @@
+{
+  "instance_id": "streaming_price_new_standard",
+  "group": "e2e",
+  "expected_group_label": "E2E generated",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The new U.S. prices do not mean everyone’s bill rises on the same day.",
+          "origin": null,
+          "related_fact_id": "F06",
+          "dev": {
+            "claim_in_article": "The new U.S. prices do not mean everyone’s bill rises on the same day.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.4); severity is decided by Stage 2",
+            "related_fact_id": "F06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.4"
+              ],
+              "related_fact_ids": [
+                "F06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Disney+ Prices Are Going Up: Don’t Miss the “Coming Up Next” on Your Bill!\n\nNews that Disney+ is raising prices may start tense music in your mind. It may make your home budget feel tense. Before you hold your wallet and think, “Not my subscription fees again,” pause. The new U.S. prices do not mean everyone’s bill rises on the same day. The price is the star. The calendar is a surprising co-star.\n\nFirst, look at the numbers that affect your wallet. The monthly ad plan on its own will rise from $11.99 to $12.49. That is a $0.50 increase. The monthly Premium plan on its own will rise from $18.99 to $21.49. That is a $2.50 increase. The yearly price for the Premium plan on its own is changing too. People who pay by the year should take note.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_new_standard",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F06",
+            "claim_text": "The new U.S. prices do not mean everyone’s bill rises on the same day.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+              "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+            ],
+            "batch_cost_jpy": 0.2713,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "The monthly Premium plan on its own will rise from $18.99 to $21.49.",
+          "origin": null,
+          "related_fact_id": "F03",
+          "dev": {
+            "claim_in_article": "The monthly Premium plan on its own will rise from $18.99 to $21.49.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+            "related_fact_id": "F03",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.4"
+              ],
+              "related_fact_ids": [
+                "F03"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "News that Disney+ is raising prices may start tense music in your mind. It may make your home budget feel tense. Before you hold your wallet and think, “Not my subscription fees again,” pause. The new U.S. prices do not mean everyone’s bill rises on the same day. The price is the star. The calendar is a surprising co-star.\n\nFirst, look at the numbers that affect your wallet. The monthly ad plan on its own will rise from $11.99 to $12.49. That is a $0.50 increase. The monthly Premium plan on its own will rise from $18.99 to $21.49. That is a $2.50 increase. The yearly price for the Premium plan on its own is changing too. People who pay by the year should take note.\n\nNow the story has two paths. New subscribers get the new prices first. People who already subscribe get them later, in a future billing cycle. Each current subscriber’s change date depends on their billing cycle. You may watch the same show on the same night as someone else. Still, your new price may have a different “release date.”",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_new_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F03",
+            "claim_text": "The monthly Premium plan on its own will rise from $18.99 to $21.49.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+              "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+            ],
+            "batch_cost_jpy": 0.2713,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "That is a $2.50 increase.",
+          "origin": null,
+          "related_fact_id": "F03",
+          "dev": {
+            "claim_in_article": "That is a $2.50 increase.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.5); severity is decided by Stage 2",
+            "related_fact_id": "F03",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.5"
+              ],
+              "related_fact_ids": [
+                "F03"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "News that Disney+ is raising prices may start tense music in your mind. It may make your home budget feel tense. Before you hold your wallet and think, “Not my subscription fees again,” pause. The new U.S. prices do not mean everyone’s bill rises on the same day. The price is the star. The calendar is a surprising co-star.\n\nFirst, look at the numbers that affect your wallet. The monthly ad plan on its own will rise from $11.99 to $12.49. That is a $0.50 increase. The monthly Premium plan on its own will rise from $18.99 to $21.49. That is a $2.50 increase. The yearly price for the Premium plan on its own is changing too. People who pay by the year should take note.\n\nNow the story has two paths. New subscribers get the new prices first. People who already subscribe get them later, in a future billing cycle. Each current subscriber’s change date depends on their billing cycle. You may watch the same show on the same night as someone else. Still, your new price may have a different “release date.”",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_new_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F03",
+            "claim_text": "That is a $2.50 increase.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+              "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+            ],
+            "batch_cost_jpy": 0.2713,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "The yearly price for the Premium plan on its own is changing too.",
+          "origin": null,
+          "related_fact_id": "F04",
+          "dev": {
+            "claim_in_article": "The yearly price for the Premium plan on its own is changing too.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.6); severity is decided by Stage 2",
+            "related_fact_id": "F04",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.6"
+              ],
+              "related_fact_ids": [
+                "F04"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "News that Disney+ is raising prices may start tense music in your mind. It may make your home budget feel tense. Before you hold your wallet and think, “Not my subscription fees again,” pause. The new U.S. prices do not mean everyone’s bill rises on the same day. The price is the star. The calendar is a surprising co-star.\n\nFirst, look at the numbers that affect your wallet. The monthly ad plan on its own will rise from $11.99 to $12.49. That is a $0.50 increase. The monthly Premium plan on its own will rise from $18.99 to $21.49. That is a $2.50 increase. The yearly price for the Premium plan on its own is changing too. People who pay by the year should take note.\n\nNow the story has two paths. New subscribers get the new prices first. People who already subscribe get them later, in a future billing cycle. Each current subscriber’s change date depends on their billing cycle. You may watch the same show on the same night as someone else. Still, your new price may have a different “release date.”",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_new_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F04",
+            "claim_text": "The yearly price for the Premium plan on its own is changing too.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+              "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+            ],
+            "batch_cost_jpy": 0.2713,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "But the main story starts on your bill on a different day for each person.",
+          "origin": null,
+          "related_fact_id": "F06",
+          "dev": {
+            "claim_in_article": "But the main story starts on your bill on a different day for each person.",
+            "issue": "既存契約者の適用時期が請求サイクルで異なることは支えられるが、「各人で異なる日」と全員に一般化し、全員の日付が異なるとも読める。 / 請求サイクルに応じて適用日が異なるというLedgerの記述を、各人ごとに必ず異なる日になると断定する表現に強めています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "F06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "F06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Now the story has two paths. New subscribers get the new prices first. People who already subscribe get them later, in a future billing cycle. Each current subscriber’s change date depends on their billing cycle. You may watch the same show on the same night as someone else. Still, your new price may have a different “release date.”\n\nThe price-rise headline is a preview sent to everyone. But the main story starts on your bill on a different day for each person. It is too soon to jump to the ending. You may ask, “The news is out. Does my price change today?” First, check if you are a new subscriber or already had a subscription. Then check your billing cycle.\n\nThe price list tells you how much you will pay. Look at it with when you signed up and your billing cycle. Then you can see when the change starts for you. We should invite the calendar to the home budget meeting, not just the calculator.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_new_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F06",
+            "claim_text": "But the main story starts on your bill on a different day for each person.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+              "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+            ],
+            "batch_cost_jpy": 0.2713,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "The price list tells you how much you will pay.",
+          "origin": null,
+          "related_fact_id": "F05",
+          "dev": {
+            "claim_in_article": "The price list tells you how much you will pay.",
+            "issue": "価格表が読者本人の支払額を示すという断定は、第三者請求パートナーでは価格が異なる場合があるという条件を落としている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "F05",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "F05"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The price-rise headline is a preview sent to everyone. But the main story starts on your bill on a different day for each person. It is too soon to jump to the ending. You may ask, “The news is out. Does my price change today?” First, check if you are a new subscriber or already had a subscription. Then check your billing cycle.\n\nThe price list tells you how much you will pay. Look at it with when you signed up and your billing cycle. Then you can see when the change starts for you. We should invite the calendar to the home budget meeting, not just the calculator.\n\nNow many people ask, “So why are prices going up?” But we do not have a clear answer here. The Disney+ U.S. pricing page does not clearly say why Disney made this change. The Reuters report we checked does not clearly say either. According to Reuters, Disney did not answer a request for comment right away.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_new_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F05",
+            "claim_text": "The price list tells you how much you will pay.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+              "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+            ],
+            "batch_cost_jpy": 0.2713,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "prices do not mean everyone’s bill rises on the same day.",
+          "origin": null,
+          "related_fact_id": "F06",
+          "dev": {
+            "claim_in_article": "prices do not mean everyone’s bill rises on the same day.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.4); severity is decided by Stage 2",
+            "related_fact_id": "F06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.4"
+              ],
+              "related_fact_ids": [
+                "F06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The new U.S. prices do not mean everyone’s bill rises on the same day."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Disney+ Prices Are Going Up: Don’t Miss the “Coming Up Next” on Your Bill!\n\nNews that Disney+ is raising prices may start tense music in your mind. It may make your home budget feel tense. Before you hold your wallet and think, “Not my subscription fees again,” pause. The new U.S. prices do not mean everyone’s bill rises on the same day. The price is the star. The calendar is a surprising co-star.\n\nFirst, look at the numbers that affect your wallet. The monthly ad plan on its own will rise from $11.99 to $12.49. That is a $0.50 increase. The monthly Premium plan on its own will rise from $18.99 to $21.49. That is a $2.50 increase. The yearly price for the Premium plan on its own is changing too. People who pay by the year should take note.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_new_standard",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F06",
+            "claim_text": "prices do not mean everyone’s bill rises on the same day.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+              "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+            ],
+            "batch_cost_jpy": 0.2713,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "The monthly ad plan on its own will rise from $11.",
+          "origin": null,
+          "related_fact_id": "F03",
+          "dev": {
+            "claim_in_article": "The monthly ad plan on its own will rise from $11.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+            "related_fact_id": "F03",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.4"
+              ],
+              "related_fact_ids": [
+                "F03"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The monthly Premium plan on its own will rise from $18.99 to $21.49."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "News that Disney+ is raising prices may start tense music in your mind. It may make your home budget feel tense. Before you hold your wallet and think, “Not my subscription fees again,” pause. The new U.S. prices do not mean everyone’s bill rises on the same day. The price is the star. The calendar is a surprising co-star.\n\nFirst, look at the numbers that affect your wallet. The monthly ad plan on its own will rise from $11.99 to $12.49. That is a $0.50 increase. The monthly Premium plan on its own will rise from $18.99 to $21.49. That is a $2.50 increase. The yearly price for the Premium plan on its own is changing too. People who pay by the year should take note.\n\nNow the story has two paths. New subscribers get the new prices first. People who already subscribe get them later, in a future billing cycle. Each current subscriber’s change date depends on their billing cycle. You may watch the same show on the same night as someone else. Still, your new price may have a different “release date.”",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_numeric_value",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_new_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F03",
+            "claim_text": "The monthly ad plan on its own will rise from $11.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_numeric_value",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+              "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+            ],
+            "batch_cost_jpy": 0.2713,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "The monthly Premium plan on its own will rise from $18.",
+          "origin": null,
+          "related_fact_id": "F03",
+          "dev": {
+            "claim_in_article": "The monthly Premium plan on its own will rise from $18.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+            "related_fact_id": "F03",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.4"
+              ],
+              "related_fact_ids": [
+                "F03"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The monthly Premium plan on its own will rise from $18.99 to $21.49."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "News that Disney+ is raising prices may start tense music in your mind. It may make your home budget feel tense. Before you hold your wallet and think, “Not my subscription fees again,” pause. The new U.S. prices do not mean everyone’s bill rises on the same day. The price is the star. The calendar is a surprising co-star.\n\nFirst, look at the numbers that affect your wallet. The monthly ad plan on its own will rise from $11.99 to $12.49. That is a $0.50 increase. The monthly Premium plan on its own will rise from $18.99 to $21.49. That is a $2.50 increase. The yearly price for the Premium plan on its own is changing too. People who pay by the year should take note.\n\nNow the story has two paths. New subscribers get the new prices first. People who already subscribe get them later, in a future billing cycle. Each current subscriber’s change date depends on their billing cycle. You may watch the same show on the same night as someone else. Still, your new price may have a different “release date.”",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_numeric_value",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_new_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F03",
+            "claim_text": "The monthly Premium plan on its own will rise from $18.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_numeric_value",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+              "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+            ],
+            "batch_cost_jpy": 0.2713,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "If you are checking your subscription costs, look at three things together: how much, when, and how much of the reason has been explained.",
+          "origin": null,
+          "related_fact_id": "F05",
+          "dev": {
+            "claim_in_article": "If you are checking your subscription costs, look at three things together: how much, when, and how much of the reason has been explained.",
+            "issue": "価格表が読者本人の支払額を示すという断定は、第三者請求パートナーでは価格が異なる場合があるという条件を落としている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "F05",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "F05"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The price list tells you how much you will pay."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Now many people ask, “So why are prices going up?” But we do not have a clear answer here. The Disney+ U.S. pricing page does not clearly say why Disney made this change. The Reuters report we checked does not clearly say either. According to Reuters, Disney did not answer a request for comment right away.\n\nThe numbers are there, but our sources do not give the reason. We should not write a script based on guesses to fill the gap. If you are checking your subscription costs, look at three things together: how much, when, and how much of the reason has been explained. Next, check not only when your favorite shows will be ready to watch. Also check when you are due to be charged.\n\n## In one line\nDisney+’s U.S. price increases start with new subscribers. Existing customers get the new prices on different billing cycles.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "streaming_price_new_standard",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F05",
+            "claim_text": "If you are checking your subscription costs, look at three things together: how much, when, and how much of the reason has been explained.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+              "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+            ],
+            "batch_cost_jpy": 0.2713,
+            "batch_n_claims": 10
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 10,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "streaming_price_new_standard",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F06",
+          "claim_text": "The new U.S. prices do not mean everyone’s bill rises on the same day.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+            "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+          ],
+          "batch_cost_jpy": 0.2713,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "streaming_price_new_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F03",
+          "claim_text": "The monthly Premium plan on its own will rise from $18.99 to $21.49.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+            "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+          ],
+          "batch_cost_jpy": 0.2713,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "streaming_price_new_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F03",
+          "claim_text": "That is a $2.50 increase.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+            "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+          ],
+          "batch_cost_jpy": 0.2713,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "streaming_price_new_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F04",
+          "claim_text": "The yearly price for the Premium plan on its own is changing too.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+            "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+          ],
+          "batch_cost_jpy": 0.2713,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "streaming_price_new_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F06",
+          "claim_text": "But the main story starts on your bill on a different day for each person.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+            "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+          ],
+          "batch_cost_jpy": 0.2713,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "streaming_price_new_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F05",
+          "claim_text": "The price list tells you how much you will pay.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+            "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+          ],
+          "batch_cost_jpy": 0.2713,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "streaming_price_new_standard",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F06",
+          "claim_text": "prices do not mean everyone’s bill rises on the same day.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+            "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+          ],
+          "batch_cost_jpy": 0.2713,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "streaming_price_new_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F03",
+          "claim_text": "The monthly ad plan on its own will rise from $11.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_numeric_value",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+            "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+          ],
+          "batch_cost_jpy": 0.2713,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "streaming_price_new_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F03",
+          "claim_text": "The monthly Premium plan on its own will rise from $18.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_numeric_value",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+            "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+          ],
+          "batch_cost_jpy": 0.2713,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "streaming_price_new_standard",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F05",
+          "claim_text": "If you are checking your subscription costs, look at three things together: how much, when, and how much of the reason has been explained.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a",
+            "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+          ],
+          "batch_cost_jpy": 0.2713,
+          "batch_n_claims": 10
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "streaming_price_new_standard_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6767,
+      "usage": {
+        "input_tokens": 3951,
+        "cached_input_tokens": 0,
+        "output_tokens": 7837,
+        "reasoning_tokens": 1796
+      },
+      "elapsed_seconds": 42.426,
+      "prompt_sha256": "4df4d2cde4304bf638307d3b6bb221c45e9ccfb751602188accdebcd31671bf0",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "streaming_price_new_standard_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6263,
+      "usage": {
+        "input_tokens": 3464,
+        "cached_input_tokens": 0,
+        "output_tokens": 7292,
+        "reasoning_tokens": 4336
+      },
+      "elapsed_seconds": 39.751,
+      "prompt_sha256": "d1cb6a94306c606ea77f8671688337047531abf45d2243f5a4f4dfc825ed5ec2",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "streaming_price_new_standard_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.4142,
+      "usage": {
+        "input_tokens": 4128,
+        "cached_input_tokens": 0,
+        "output_tokens": 4455,
+        "reasoning_tokens": 2843
+      },
+      "elapsed_seconds": 28.429,
+      "prompt_sha256": "70e723ebf52f42fcf826b13a8bde6615314acec7b874a1ca017830c9f83e97a7",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "streaming_price_new_standard_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.4158,
+      "usage": {
+        "input_tokens": 9106,
+        "cached_input_tokens": 0,
+        "output_tokens": 3480,
+        "reasoning_tokens": 3248
+      },
+      "elapsed_seconds": 28.882,
+      "prompt_sha256": "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a"
+    },
+    {
+      "label": "streaming_price_new_standard_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0916,
+      "usage": {
+        "input_tokens": 4432,
+        "cached_input_tokens": 0,
+        "output_tokens": 282,
+        "reasoning_tokens": 203
+      },
+      "elapsed_seconds": 3.825,
+      "prompt_sha256": "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+    },
+    {
+      "label": "streaming_price_new_standard_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2453,
+      "usage": {
+        "input_tokens": 9106,
+        "cached_input_tokens": 9103,
+        "output_tokens": 2945,
+        "reasoning_tokens": 2714
+      },
+      "elapsed_seconds": 22.975,
+      "prompt_sha256": "bdc4e5f86d3bba1d2627f4a31884a0d8417f9308993f6f684a7d924c441abb0a"
+    },
+    {
+      "label": "streaming_price_new_standard_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.026,
+      "usage": {
+        "input_tokens": 4432,
+        "cached_input_tokens": 4429,
+        "output_tokens": 242,
+        "reasoning_tokens": 163
+      },
+      "elapsed_seconds": 4.11,
+      "prompt_sha256": "cf9030f02b78f746af2d79ddf3897c88df60f6568088cfe3b2825fc43c60724c"
+    }
+  ],
+  "total_cost_jpy": 2.4959,
+  "total_calls": 7,
+  "elapsed_seconds": 170.461,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The new U.S. prices do not mean everyone’s bill rises on the same day.",
+        "related_fact_id": "F06",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The monthly Premium plan on its own will rise from $18.99 to $21.49.",
+        "related_fact_id": "F03",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "That is a $2.50 increase.",
+        "related_fact_id": "F03",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.5); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The yearly price for the Premium plan on its own is changing too.",
+        "related_fact_id": "F04",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.6); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But the main story starts on your bill on a different day for each person.",
+        "related_fact_id": "F06",
+        "origin": null,
+        "issue": "既存契約者の適用時期が請求サイクルで異なることは支えられるが、「各人で異なる日」と全員に一般化し、全員の日付が異なるとも読める。 / 請求サイクルに応じて適用日が異なるというLedgerの記述を、各人ごとに必ず異なる日になると断定する表現に強めています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_comparison",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The price list tells you how much you will pay.",
+        "related_fact_id": "F05",
+        "origin": null,
+        "issue": "価格表が読者本人の支払額を示すという断定は、第三者請求パートナーでは価格が異なる場合があるという条件を落としている。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 25,
+      "n_model_entries": 21,
+      "n_targets": 20,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 18,
+      "n_excluded_entries": 18,
+      "n_excluded_with_changed_number": 1,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.4142,
+          "usage": {
+            "input_tokens": 4128,
+            "cached_input_tokens": 0,
+            "output_tokens": 4455,
+            "reasoning_tokens": 2843
+          },
+          "elapsed_seconds": 28.429,
+          "prompt_sha256": "70e723ebf52f42fcf826b13a8bde6615314acec7b874a1ca017830c9f83e97a7",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.4142,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.1",
+          "claim": "News that Disney+ is raising prices may start tense music in your mind.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "Disney+の価格引き上げはF02〜F04の米国向けプラン改定と一致し、感情表現は比喩です。",
+          "fact_tags": [
+            "proper_noun",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.2",
+          "claim": "It may make your home budget feel tense.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "家計が緊張するという読者の感情を表す表現で、具体的な事実を追加していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S1.3",
+          "claim": "Before you hold your wallet and think, “Not my subscription fees again,” pause.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "財布を持つ動作や引用された独り言を含む修辞的な呼びかけです。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S1.5",
+          "claim": "The price is the star.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "価格を主役にたとえた比喩で、具体的な事実を述べていません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S2.1",
+          "claim": "First, look at the numbers that affect your wallet.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "価格の数字を見るよう促す導入で、数字の具体的内容はこの文では主張していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C6",
+          "key": "S2.7",
+          "claim": "People who pay by the year should take note.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "文脈上、年額Premiumプランの改定に該当する人への案内であり、F04の範囲と一致します。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C7",
+          "key": "S3.5",
+          "claim": "You may watch the same show on the same night as someone else.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "他人と同じ夜に同じ番組を見る可能性を述べる仮定的な例です。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C8",
+          "key": "S4.1",
+          "claim": "The price-rise headline is a preview sent to everyone.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "見出しを「全員に送られた予告」とする比喩的な表現で、実際の一斉送信を主張していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C9",
+          "key": "S4.2",
+          "claim": "But the main story starts on your bill on a different day for each person.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "F06は既存契約者の適用時期が請求サイクルにより異なるとする一方、「各人それぞれ異なる日」と全員に広げ、必ず個別の日が異なるように述べています（範囲・限定条件の不一致）。",
+          "fact_tags": [
+            "date",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C10",
+          "key": "S4.3",
+          "claim": "It is too soon to jump to the ending.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "結末に飛びつかないよう促す比喩的なつなぎです。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C11",
+          "key": "S4.4",
+          "claim": "You may ask, “The news is out.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "読者の疑問を導入する修辞的な呼びかけです。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C12",
+          "key": "S4.5",
+          "claim": "Does my price change today?”",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "読者自身の価格変更時期を尋ねる問いで、変更日を断定していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C13",
+          "key": "S4.6",
+          "claim": "First, check if you are a new subscriber or already had a subscription.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "新規契約者か既存契約者かを確認するよう促す案内です。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C14",
+          "key": "S4.7",
+          "claim": "Then check your billing cycle.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "請求サイクルを確認するよう促す案内で、具体的な請求日を主張していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C15",
+          "key": "S5.1",
+          "claim": "The price list tells you how much you will pay.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "価格表だけで利用者が実際に支払う額が分かると一般化していますが、F05の第三者請求の例外やF06の適用時期の条件を限定していません（範囲・限定条件の不一致）。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C16",
+          "key": "S5.4",
+          "claim": "We should invite the calendar to the home budget meeting, not just the calculator.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "カレンダーと計算機を擬人化した比喩的な締めです。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C17",
+          "key": "S6.1",
+          "claim": "Now many people ask, “So why are prices going up?”",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "値上げ理由を尋ねる読者の疑問を示す修辞的な導入で、理由を事実として提示していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C18",
+          "key": "S7.3",
+          "claim": "If you are checking your subscription costs, look at three things together: how much, when, and how much of the reason has been explained.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "価格・時期・理由の説明状況を確認するよう勧めており、理由が説明済みだとは断定していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C19",
+          "key": "S7.4",
+          "claim": "Next, check not only when your favorite shows will be ready to watch.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "番組の視聴可能時期を確認するよう促す案内です。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C20",
+          "key": "S7.5",
+          "claim": "Also check when you are due to be charged.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "請求予定を確認するよう促す案内で、具体的な請求日を述べていません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "70e723ebf52f42fcf826b13a8bde6615314acec7b874a1ca017830c9f83e97a7",
+      "protect_flags": [
+        "changed_actor"
+      ],
+      "n_protected_by_flags": 0,
+      "g3_n_excluded_flagged": 18
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 51,
+    "n_judged_units": 43,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 7,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "S1.1",
+          "S1.2",
+          "S1.3",
+          "S1.4",
+          "S1.5",
+          "S2.1",
+          "S2.4",
+          "S2.5",
+          "S2.6",
+          "S2.7",
+          "S3.5",
+          "S4.1",
+          "S4.2",
+          "S4.3",
+          "S4.4",
+          "S4.5",
+          "S4.6",
+          "S4.7",
+          "S5.1",
+          "S5.4",
+          "S6.1",
+          "S7.3",
+          "S7.4",
+          "S7.5"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "CANDIDATE",
+          "S1.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S1.5": "CANDIDATE",
+          "S1.6": "SUPPORTED",
+          "S2.1": "CANDIDATE",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.5": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.6": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.7": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S3.5": "CANDIDATE",
+          "S3.6": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "CANDIDATE",
+          "S4.3": "CANDIDATE",
+          "S4.4": "CANDIDATE",
+          "S4.5": "CANDIDATE",
+          "S4.6": "CANDIDATE",
+          "S4.7": "CANDIDATE",
+          "S5.1": "CANDIDATE",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "CANDIDATE",
+          "S6.1": "CANDIDATE",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "S6.5": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "CANDIDATE",
+          "S7.4": "CANDIDATE",
+          "S7.5": "CANDIDATE",
+          "L1": "SUPPORTED",
+          "L2": "SUPPORTED"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6767,
+            "usage": {
+              "input_tokens": 3951,
+              "cached_input_tokens": 0,
+              "output_tokens": 7837,
+              "reasoning_tokens": 1796
+            },
+            "elapsed_seconds": 42.426,
+            "prompt_sha256": "4df4d2cde4304bf638307d3b6bb221c45e9ccfb751602188accdebcd31671bf0",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "CANDIDATE",
+          "S1.4": "SUPPORTED",
+          "S1.5": "CANDIDATE",
+          "S1.6": "SUPPORTED",
+          "S2.1": "CANDIDATE",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S2.5": "SUPPORTED",
+          "S2.6": "SUPPORTED",
+          "S2.7": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S3.5": "CANDIDATE",
+          "S3.6": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "CANDIDATE",
+          "S4.3": "CANDIDATE",
+          "S4.4": "CANDIDATE",
+          "S4.5": "CANDIDATE",
+          "S4.6": "CANDIDATE",
+          "S4.7": "CANDIDATE",
+          "S5.1": "CANDIDATE",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "CANDIDATE",
+          "S6.1": "CANDIDATE",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "S6.5": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "CANDIDATE",
+          "S7.4": "CANDIDATE",
+          "S7.5": "CANDIDATE",
+          "L1": "SUPPORTED",
+          "L2": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "News that Disney+ is raising prices may start tense music in your mind.",
+            "span": [
+              78,
+              149
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "価格改定のニュースが読者に緊張した気分を起こすという心理的反応はLedgerで確認できない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F02"
+            ],
+            "model_claim": "News that Disney+ is raising prices may start tense music in your mind."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "It may make your home budget feel tense.",
+            "span": [
+              150,
+              190
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "読者の家計が緊張した気分になるという心理的反応はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "It may make your home budget feel tense."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "Before you hold your wallet and think, “Not my subscription fees again,” pause.",
+            "span": [
+              191,
+              270
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "財布を持つ、または購読料に反応するという読者の行動・状況はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Before you hold your wallet and think, “Not my subscription fees again,” pause."
+          },
+          {
+            "unit_id": "S1.4",
+            "unit_ids": [
+              "S1.4"
+            ],
+            "claim_text": "The new U.S. prices do not mean everyone’s bill rises on the same day.",
+            "span": [
+              271,
+              341
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S1.5",
+            "unit_ids": [
+              "S1.5"
+            ],
+            "claim_text": "The price is the star.",
+            "span": [
+              342,
+              364
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "価格を「主役」とする比喩的な位置づけはLedgerが述べる事実ではない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "The price is the star."
+          },
+          {
+            "unit_id": "S2.1",
+            "unit_ids": [
+              "S2.1"
+            ],
+            "claim_text": "First, look at the numbers that affect your wallet.",
+            "span": [
+              404,
+              455
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "価格の数字が読者の財布に影響するという表現はLedgerが直接述べていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F02"
+            ],
+            "model_claim": "First, look at the numbers that affect your wallet."
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "The monthly Premium plan on its own will rise from $18.99 to $21.49.",
+            "span": [
+              546,
+              614
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F03"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.5",
+            "unit_ids": [
+              "S2.5"
+            ],
+            "claim_text": "That is a $2.50 increase.",
+            "span": [
+              615,
+              640
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F03"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.6",
+            "unit_ids": [
+              "S2.6"
+            ],
+            "claim_text": "The yearly price for the Premium plan on its own is changing too.",
+            "span": [
+              641,
+              706
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F04"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.7",
+            "unit_ids": [
+              "S2.7"
+            ],
+            "claim_text": "People who pay by the year should take note.",
+            "span": [
+              707,
+              751
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "年払いの人が注意すべきという助言はLedgerの事実として示されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F04"
+            ],
+            "model_claim": "People who pay by the year should take note."
+          },
+          {
+            "unit_id": "S3.5",
+            "unit_ids": [
+              "S3.5"
+            ],
+            "claim_text": "You may watch the same show on the same night as someone else.",
+            "span": [
+              966,
+              1028
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "複数の利用者が同じ番組を同じ夜に視聴するという状況はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "You may watch the same show on the same night as someone else."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "The price-rise headline is a preview sent to everyone.",
+            "span": [
+              1089,
+              1143
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "価格改定の見出しが全員に送られたという配信・通知の主張はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": "The price-rise headline is a preview sent to everyone."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "But the main story starts on your bill on a different day for each person.",
+            "span": [
+              1144,
+              1218
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "既存契約者の適用時期が請求サイクルで異なることは支えられるが、「各人で異なる日」と全員に一般化し、全員の日付が異なるとも読める。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": "But the main story starts on your bill on a different day for each person."
+          },
+          {
+            "unit_id": "S4.3",
+            "unit_ids": [
+              "S4.3"
+            ],
+            "claim_text": "It is too soon to jump to the ending.",
+            "span": [
+              1219,
+              1256
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「結末に飛びつくには早い」という評価・助言はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "It is too soon to jump to the ending."
+          },
+          {
+            "unit_id": "S4.4",
+            "unit_ids": [
+              "S4.4"
+            ],
+            "claim_text": "You may ask, “The news is out.",
+            "span": [
+              1257,
+              1287
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「ニュースが出た」という導入部分は、確認済みの発表時期・内容を特定せず、Ledgerが直接支える主張としては曖昧。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F01"
+            ],
+            "model_claim": "You may ask, “The news is out."
+          },
+          {
+            "unit_id": "S4.5",
+            "unit_ids": [
+              "S4.5"
+            ],
+            "claim_text": "Does my price change today?”",
+            "span": [
+              1288,
+              1316
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "価格が今日変わるかという質問だが、時点が特定されず、質問形式でも前提となる個別適用日の事実はLedgerから特定できない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": "Does my price change today?”"
+          },
+          {
+            "unit_id": "S4.6",
+            "unit_ids": [
+              "S4.6"
+            ],
+            "claim_text": "First, check if you are a new subscriber or already had a subscription.",
+            "span": [
+              1317,
+              1388
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "新規か既存かを確認するという助言は、Ledgerの事実そのものではない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": "First, check if you are a new subscriber or already had a subscription."
+          },
+          {
+            "unit_id": "S4.7",
+            "unit_ids": [
+              "S4.7"
+            ],
+            "claim_text": "Then check your billing cycle.",
+            "span": [
+              1389,
+              1419
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "請求サイクルを確認するよう勧めること自体はLedgerの事実ではない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": "Then check your billing cycle."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "The price list tells you how much you will pay.",
+            "span": [
+              1421,
+              1468
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "価格表が読者本人の支払額を示すという断定は、第三者請求パートナーでは価格が異なる場合があるという条件を落としている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F05"
+            ],
+            "model_claim": "The price list tells you how much you will pay."
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "We should invite the calendar to the home budget meeting, not just the calculator.",
+            "span": [
+              1577,
+              1659
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "家計会議にカレンダーを招くという比喩的助言はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "We should invite the calendar to the home budget meeting, not just the calculator."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "Now many people ask, “So why are prices going up?”",
+            "span": [
+              1661,
+              1711
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「多くの人」が値上げ理由を尋ねているという人数・反応の主張はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": true,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F07"
+            ],
+            "model_claim": "Now many people ask, “So why are prices going up?”"
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "If you are checking your subscription costs, look at three things together: how much, when, and how much of the reason has been explained.",
+            "span": [
+              2096,
+              2234
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「いくら・いつ・理由がどれだけ説明されたか」の3点を一緒に確認するという助言はLedgerにない。特に理由の説明度合いを利用者が確認するという提案は新たな主張・助言。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": "If you are checking your subscription costs, look at three things together: how much, when, and how much of the reason has been explained."
+          },
+          {
+            "unit_id": "S7.4",
+            "unit_ids": [
+              "S7.4"
+            ],
+            "claim_text": "Next, check not only when your favorite shows will be ready to watch.",
+            "span": [
+              2235,
+              2304
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "お気に入りの番組がいつ視聴可能になるかを確認するよう勧める表現は、番組の配信予定等をLedgerが扱っていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Next, check not only when your favorite shows will be ready to watch."
+          },
+          {
+            "unit_id": "S7.5",
+            "unit_ids": [
+              "S7.5"
+            ],
+            "claim_text": "Also check when you are due to be charged.",
+            "span": [
+              2305,
+              2347
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "請求サイクルで価格変更が適用される点はLedgerにあるが、実際に請求される日を確認するという意味まで直接には支えられない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": "Also check when you are due to be charged."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S4.2"
+        ],
+        "unit_status": {
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S2.5": "MATCH",
+          "S2.6": "MATCH",
+          "S2.7": "MATCH",
+          "S1.4": "MATCH",
+          "L1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S3.6": "MATCH",
+          "S4.5": "MATCH",
+          "S4.6": "MATCH",
+          "S4.7": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S7.5": "MATCH",
+          "L2": "MATCH",
+          "S4.2": "DEVIATION",
+          "S6.1": "MATCH",
+          "S6.2": "MATCH",
+          "S6.3": "MATCH",
+          "S6.4": "MATCH",
+          "S6.5": "MATCH",
+          "S7.1": "MATCH",
+          "S7.2": "MATCH",
+          "S7.3": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S1.3": "UNMENTIONED",
+          "S1.5": "UNMENTIONED",
+          "S1.6": "UNMENTIONED",
+          "S2.1": "UNMENTIONED",
+          "S3.1": "UNMENTIONED",
+          "S3.5": "UNMENTIONED",
+          "S4.1": "UNMENTIONED",
+          "S4.3": "UNMENTIONED",
+          "S4.4": "UNMENTIONED",
+          "S5.1": "UNMENTIONED",
+          "S5.4": "UNMENTIONED",
+          "S7.4": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.6263,
+            "usage": {
+              "input_tokens": 3464,
+              "cached_input_tokens": 0,
+              "output_tokens": 7292,
+              "reasoning_tokens": 4336
+            },
+            "elapsed_seconds": 39.751,
+            "prompt_sha256": "d1cb6a94306c606ea77f8671688337047531abf45d2243f5a4f4dfc825ed5ec2",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "But the main story starts on your bill on a different day for each person.",
+            "span": [
+              1144,
+              1218
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "請求サイクルに応じて適用日が異なるというLedgerの記述を、各人ごとに必ず異なる日になると断定する表現に強めています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F06"
+            ],
+            "model_claim": "The main story starts on your bill on a different day for each person."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S4.2"
+      ],
+      "r3_only": [
+        "S1.1",
+        "S1.2",
+        "S1.3",
+        "S1.4",
+        "S1.5",
+        "S2.1",
+        "S2.4",
+        "S2.5",
+        "S2.6",
+        "S2.7",
+        "S3.5",
+        "S4.1",
+        "S4.3",
+        "S4.4",
+        "S4.5",
+        "S4.6",
+        "S4.7",
+        "S5.1",
+        "S5.4",
+        "S6.1",
+        "S7.3",
+        "S7.4",
+        "S7.5"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 4
+    },
+    "union_candidates": [
+      {
+        "claim_text": "The new U.S. prices do not mean everyone’s bill rises on the same day.",
+        "span": [
+          271,
+          341
+        ],
+        "unit_ids": [
+          "S1.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F06"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The monthly Premium plan on its own will rise from $18.99 to $21.49.",
+        "span": [
+          546,
+          614
+        ],
+        "unit_ids": [
+          "S2.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F03"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "That is a $2.50 increase.",
+        "span": [
+          615,
+          640
+        ],
+        "unit_ids": [
+          "S2.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F03"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The yearly price for the Premium plan on its own is changing too.",
+        "span": [
+          641,
+          706
+        ],
+        "unit_ids": [
+          "S2.6"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F04"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "But the main story starts on your bill on a different day for each person.",
+        "span": [
+          1144,
+          1218
+        ],
+        "unit_ids": [
+          "S4.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "既存契約者の適用時期が請求サイクルで異なることは支えられるが、「各人で異なる日」と全員に一般化し、全員の日付が異なるとも読める。",
+          "請求サイクルに応じて適用日が異なるというLedgerの記述を、各人ごとに必ず異なる日になると断定する表現に強めています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F06"
+        ],
+        "model_claims": [
+          "But the main story starts on your bill on a different day for each person.",
+          "The main story starts on your bill on a different day for each person."
+        ]
+      },
+      {
+        "claim_text": "The price list tells you how much you will pay.",
+        "span": [
+          1421,
+          1468
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "価格表が読者本人の支払額を示すという断定は、第三者請求パートナーでは価格が異なる場合があるという条件を落としている。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F05"
+        ],
+        "model_claims": [
+          "The price list tells you how much you will pay."
+        ]
+      }
+    ],
+    "n_union_candidates": 6,
+    "n_model_candidates": 2,
+    "n_deterministic_only_candidates": 4,
+    "total_cost_jpy": 1.303,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 21,
+    "n_targets": 20,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 18,
+    "n_excluded_entries": 18,
+    "n_excluded_with_changed_number": 1,
+    "n_failclosed": 0,
+    "cost_jpy": 0.4142,
+    "effort": "medium",
+    "prompt_sha256": "70e723ebf52f42fcf826b13a8bde6615314acec7b874a1ca017830c9f83e97a7"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 4
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "provenance": {
+    "stage1_source": "fresh",
+    "frozen": false,
+    "reuse": false,
+    "substitution": false,
+    "stage1_cache": null,
+    "switches": {
+      "HANDOFF_MODE": "violation_span",
+      "VS_MATCH_EXT": true,
+      "VS_EXPLAIN_SPLIT": true,
+      "VS_SENTENCE_RESTORE": true,
+      "JA_MODE": "english_only",
+      "STAGE2_NORMAL_TWO_OF_TWO": false,
+      "CAUSAL_FLOOR_VOCAB": "known6",
+      "STAGE2_SECOND_OPINION": true,
+      "RECHECK_MERGE_UNRESOLVED": true,
+      "STRUCTURAL_ELEMENT_REWRITE": true,
+      "ACTOR_GUARD_MODE": "ag1_strict",
+      "STRUCTURAL_PAIRS_TO_RECHECK": true,
+      "STAGE4_ALLOWLIST": true,
+      "LADDER_LOCATION_CARRY": true,
+      "REWRITE_REVERT_GUARD": true,
+      "SPAN_FALLBACK_CHAIN": true,
+      "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+      "LAST_RESORT_DELETE": true,
+      "MATERIALITY_BLOCKING_PIN": true,
+      "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": true,
+      "FLOOR_MODE": "number_only",
+      "FLOOR_VERIFY_MODE": "off",
+      "CAUSAL_FLOOR": false,
+      "STAGE2_DOWNGRADE_VERIFY": false,
+      "TIER0_G_L_ENABLED": false,
+      "PRECHECK_MODE": "number_only",
+      "STAGE1_RECLASSIFY": true,
+      "RECHECK_BEFORE_AFTER_PAIRS": false,
+      "STAGE1_MODE": "coverage_union",
+      "STAGE1_ROUTES": "both",
+      "STAGE1_R5_MODE": "full",
+      "STAGE1_R3_REASONING": "medium",
+      "STAGE1_R5_REASONING": "high",
+      "STAGE1_NEGATION_MODE": "a",
+      "F3_PRECHECK_ALWAYS": true,
+      "STAGE1_FAIL_CLOSED": true,
+      "RECHECK_MODE": "coverage_union",
+      "MAX_CYCLES": 2,
+      "HARD_MAX_CYCLES": 3,
+      "MODEL": "gpt-6-luna"
+    },
+    "model": "gpt-6-luna",
+    "efforts": {
+      "r3": "medium",
+      "r5": "high",
+      "other": "high"
+    },
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "coverage_module_version": "stage1_coverage_v1",
+    "kind": "E2E(fresh Stage 1 -> 最終出口)。Trial artifactによる代替なし"
+  },
+  "waste_flags": [],
+  "provenance_violations": [],
+  "wall_seconds": 170.51,
+  "run_cost_incl_retries_jpy": 2.4959
+}
