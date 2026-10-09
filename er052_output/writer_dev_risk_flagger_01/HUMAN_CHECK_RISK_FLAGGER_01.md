@@ -1,5 +1,35 @@
 # HUMAN_CHECK_RISK_FLAGGER_01 v2: 朝の確認パック(WRITER-DEV-RISK-FLAGGER-DESIGN-01 委任_04で修正)
 
+> **FIX01監査注記(2026-10-10)**: 台帳パーサが `[AMBIGUOUS - ...]` 見出しのFactを無音で読み飛ばしたため、次の10 Flag(C_main 9 + 追加分 1)は、Flaggerにも本パックの「根拠Fact」欄にも **F07(streaming_price)/F1(semiconductor_earnings)が表示されていません**。**回答前に、下の完全台帳のF07/F1本文(引用)を参照してください。** 該当Flagには「★FIX01影響」の目印を付けました(Flag行自体は書き換えていません)。
+> - streaming_price EN: C_main Flag 1(s26)・2(s25)・3(s28) 計3
+> - streaming_price JA: C_main Flag 1(s27)・2(s28)・3(s26) + 追加分 Flag 1(s3) 計4
+> - semiconductor_earnings JA: C_main Flag 1(s31)・2(s36)・3(s6) 計3
+> - 監査の見立て(候補、最終判定なし): Disney+の6 C_main Flag は F07 に根拠があると読める。semiconductor 3 Flag と追加分(因果創作)は F07/F1 と無関係に見える。KPI5 は未取得のまま。
+>
+> F07 原文(streaming_price 台帳):
+>
+> > [AMBIGUOUS - 断定禁止、曖昧さを保持すること] F07: 今回確認したDisney+の米国価格ページとReuters報道では、Disneyが今回の値上げ理由を明示した記述は確認できない。Reutersは、DisneyがReutersのコメント要請に直ちには回答しなかったと報じた。
+> > 
+> >   scope: 今回確認したDisney+米国価格ページおよびReuters記事
+> > 
+> >   conditions: 確認対象に含まれない別の顧客通知等で、追加説明が行われた可能性までは否定しない。
+> > 
+> >   date_or_period: 2026-09-23の価格改定報道時点
+> > 
+> >   ambiguity_note: 確認できた資料の範囲で会社が示した理由は特定できない。価格改定の動機を推測して補わないこと。
+> > 
+> >   notes_for_writer: 一般的な業界要因やDisneyの別時期の説明を、今回の値上げについて会社が述べた理由として転用しない。
+>
+> F1 原文(semiconductor_earnings 台帳):
+>
+> > [AMBIGUOUS - 断定禁止、曖昧さを保持すること] F1: 対象企業はBroadcom Inc.。同社は2026年9月2日、2026年度第3四半期の決算を発表した。
+> > 
+> >   scope: Broadcom Inc.の連結業績
+> > 
+> >   date_or_period: 2026年9月2日発表。2026年度第3四半期（2026年8月2日終了）
+> > 
+> >   ambiguity_note: Broadcomが2026年9月2日に2026年度第3四半期（2026年8月2日終了）の決算を発表したことは確認できました。ただし、対象テーマの「最も最近の発表」という選定条件は、Broadcomの発表日だけでは確認できません。たとえば「leading AI chipmaker」にAI向けメモリのMicronも含めるなら、同社は9月30日にFY2026第4四半期の決算を発表しており、Broadcomより後です。分類の範囲が曖昧なため、Broadcomを選定対象とする前提は確定できません。([investors.broadcom.com](https://investors.broadcom.com/news-releases/news-release-details/broadcom-inc-announces-third-quarter-fiscal-year-2026-financial))
+
 目的: Risk Flaggerが挙げた『人間が確認した方がよい箇所』が、実際に役に立つかを測ります(KPI5)。**Flaggerは合否判定をしません。**
 各Flagの『根拠Fact』(台帳の逐語)と文を見比べ、次のどれかを書いてください:
 - A = 重大(読者に事実と逆・別の意味を与える。直すべき)
@@ -363,7 +393,7 @@
 #### streaming_price EN(streaming_price_new_en)
 - 記事: `er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/new/b1b/article.md`
 
-**C_main Flag 1** (d2rank 順位1、確信度 0.30、文id s26)
+**C_main Flag 1** ★FIX01影響 (d2rank 順位1、確信度 0.30、文id s26)
 
 - Flag文: According to Reuters, Disney did not answer a request for comment right away.
 - 確認質問: 台帳にはReutersによる取材やDisneyの回答状況の記載がないため、「コメント要請にすぐには回答しなかった」という報道内容を別途確認する必要があるのではありませんか
@@ -371,7 +401,7 @@
 - 根拠Fact `F06`(逐語): Disney+の米国価格ページは、新規契約者向け価格を2026年9月23日開始とし、それ以前に契約した利用者には2026年10月21日以降の請求サイクルで価格変更が適用されるとしている。   scope: 米国向けDisney+契約者   conditions: 既存契約者への適用日は、各利用者の請求サイクルにより異なる。第三者請求パートナー経由では価格や適用条件が異なる場合がある。   numeric_value: 2026-09-23；2026-10-21以降 (numeric_scope: 新規契約価格の開始日；既存契約者の価格変更が始まる請求サイクルの基準日)   date_or_period: 新規契約者：2026-09-23から。既存契約者：2026-10-21以降の請求サイクル。   notes_for_writer: 既存契約者全員が10月21日に同時に請求されるという意味ではない。
 - 回答: A 重大 / B1 要確認で価値あり / B2 問題なし / C 判断不能 → [   ]　　新規重大候補か(はい/いいえ) → [   ]　　所要: [   ] 分
 
-**C_main Flag 2** (d2rank 順位2、確信度 0.25、文id s25)
+**C_main Flag 2** ★FIX01影響 (d2rank 順位2、確信度 0.25、文id s25)
 
 - Flag文: pricing page and the Reuters report that we checked did not clearly state Disney’s reason for this change.
 - 確認質問: 台帳は価格と適用条件を示すもので理由の記載の有無までは示していないため、米国価格ページとReuters報道が改定理由を明示していないという断定には原資料の確認が必要ではありませんか
@@ -379,7 +409,7 @@
 - 根拠Fact `F06`(逐語): Disney+の米国価格ページは、新規契約者向け価格を2026年9月23日開始とし、それ以前に契約した利用者には2026年10月21日以降の請求サイクルで価格変更が適用されるとしている。   scope: 米国向けDisney+契約者   conditions: 既存契約者への適用日は、各利用者の請求サイクルにより異なる。第三者請求パートナー経由では価格や適用条件が異なる場合がある。   numeric_value: 2026-09-23；2026-10-21以降 (numeric_scope: 新規契約価格の開始日；既存契約者の価格変更が始まる請求サイクルの基準日)   date_or_period: 新規契約者：2026-09-23から。既存契約者：2026-10-21以降の請求サイクル。   notes_for_writer: 既存契約者全員が10月21日に同時に請求されるという意味ではない。
 - 回答: A 重大 / B1 要確認で価値あり / B2 問題なし / C 判断不能 → [   ]　　新規重大候補か(はい/いいえ) → [   ]　　所要: [   ] 分
 
-**C_main Flag 3** (d2rank 順位3、確信度 0.20、文id s28)
+**C_main Flag 3** ★FIX01影響 (d2rank 順位3、確信度 0.20、文id s28)
 
 - Flag文: But the sources we checked do not tell us the reason.
 - 確認質問: 台帳に改定理由が記載されていないことと確認した情報源に理由がないことは別なので、「情報源は理由を伝えていない」という断定の根拠を確認する必要があるのではありませんか
@@ -390,20 +420,20 @@
 #### streaming_price JA(streaming_price_new_ja)
 - 記事: `er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/new/ja_writer/revision2.md`
 
-**C_main Flag 1** (d2rank 順位1、確信度 0.35、文id s27)
+**C_main Flag 1** ★FIX01影響 (d2rank 順位1、確信度 0.35、文id s27)
 
 - Flag文: 確認したDisney+の米国価格ページとReutersの報道には、Disneyが今回の改定理由を明示した記述はありませんでした。
 - 確認質問: 台帳では米国価格ページとReuters報道に改定理由の明示がないことまでは確認できないため、両資料の記載内容を人間が確認する必要があるのではありませんか
 - 根拠Fact `F05`(逐語): Disney+の改定後価格は米国向けであり、公式価格ページは第三者請求パートナー経由では価格が異なる場合があると記載している。   scope: Disney+ Help Centerの米国向け価格ページに掲載された価格   conditions: 第三者請求パートナー経由の価格は、プラットフォーム上の制限や地域別価格により異なる場合がある。   date_or_period: 2026-09-23掲載の価格情報   notes_for_writer: 確認した価格を全世界共通価格として記述しない。
 - 回答: A 重大 / B1 要確認で価値あり / B2 問題なし / C 判断不能 → [   ]　　新規重大候補か(はい/いいえ) → [   ]　　所要: [   ] 分
 
-**C_main Flag 2** (d2rank 順位2、確信度 0.30、文id s28)
+**C_main Flag 2** ★FIX01影響 (d2rank 順位2、確信度 0.30、文id s28)
 
 - Flag文: Reutersによると、Disneyはコメント要請に直ちには回答しなかったそうです。
 - 確認質問: 台帳にはReutersのコメント要請やDisneyの回答状況に関する記載がないため、「直ちには回答しなかった」という報道内容を別途確認する必要があるのではありませんか
 - 回答: A 重大 / B1 要確認で価値あり / B2 問題なし / C 判断不能 → [   ]　　新規重大候補か(はい/いいえ) → [   ]　　所要: [   ] 分
 
-**C_main Flag 3** (d2rank 順位3、確信度 0.20、文id s26)
+**C_main Flag 3** ★FIX01影響 (d2rank 順位3、確信度 0.20、文id s26)
 
 - Flag文: ただし、ここには明快な種明かしがありません。
 - 確認質問: 台帳に改定理由が記載されていないことだけでは理由の説明が存在しないとは判断できないため、「明快な種明かしがありません」という断定の根拠を確認する必要があるのではありませんか
@@ -413,7 +443,7 @@
 
 追加分(D1v2のみが挙げた別の文。主集計には入れず別集計):
 
-**追加分 Flag 1** (d1v2:因果創作、確信度 0.68、文id s3)
+**追加分 Flag 1** ★FIX01影響 (d1v2:因果創作、確信度 0.68、文id s3)
 
 - Flag文: その一報で、脳内の家計簿に緊迫したBGMが流れた人もいるでしょう。
 - 確認質問: 「その一報で」と「脳内の家計簿に緊迫したBGMが流れた」の結び付きは、台帳の料金改定の事実には記載されていない、値上げ報道による心理的反応を付け足しているのではありませんか。
@@ -450,7 +480,7 @@
 #### semiconductor_earnings JA(semiconductor_earnings_new_ja)
 - 記事: `er052_output/factlock_astra_e2e_trial_01/runs/semiconductor_earnings/new/ja_writer/revision2.md`
 
-**C_main Flag 1** (d2rank 順位1、確信度 0.18、文id s31)
+**C_main Flag 1** ★FIX01影響 (d2rank 順位1、確信度 0.18、文id s31)
 
 - Flag文: この発表だけでは、そこをつなぐ説明は埋まらない。
 - 確認質問: 台帳は発表全体の説明内容を網羅しているとは限らず、「この発表だけでは、そこをつなぐ説明は埋まらない」という断定には原文の確認が必要ではありませんか
@@ -458,7 +488,7 @@
 - 根拠Fact `F5`(逐語): BroadcomのCEOは、次の四半期のAI半導体売上高を217億ドルと見込み、前年同期比236％増になると述べた。   scope: BroadcomのAI半導体売上高。連結売上高見通しとは別の数値。   conditions: 会社CEOによる決算リリース時点の見通し。   numeric_value: 217億ドル。前年同期比+236％。 (numeric_scope: 2026年度第4四半期のAI半導体売上高見通しと前年同期比)   date_or_period: 2026年度第4四半期（2026年11月1日終了予定）   notes_for_writer: 会社の見通しとして記載し、実績値と混同しない。
 - 回答: A 重大 / B1 要確認で価値あり / B2 問題なし / C 判断不能 → [   ]　　新規重大候補か(はい/いいえ) → [   ]　　所要: [   ] 分
 
-**C_main Flag 2** (d2rank 順位2、確信度 0.10、文id s36)
+**C_main Flag 2** ★FIX01影響 (d2rank 順位2、確信度 0.10、文id s36)
 
 - Flag文: でも、次回予告の看板には「会社全体」と書いてある。
 - 確認質問: 約348億ドルの見通しを指すなら台帳と一致しますが、AI半導体売上高217億ドルの見通しもあるため、次回予告全般が会社全体だけを対象にするとの意味に読まれないか確認が必要ではありませんか
@@ -466,7 +496,7 @@
 - 根拠Fact `F5`(逐語): BroadcomのCEOは、次の四半期のAI半導体売上高を217億ドルと見込み、前年同期比236％増になると述べた。   scope: BroadcomのAI半導体売上高。連結売上高見通しとは別の数値。   conditions: 会社CEOによる決算リリース時点の見通し。   numeric_value: 217億ドル。前年同期比+236％。 (numeric_scope: 2026年度第4四半期のAI半導体売上高見通しと前年同期比)   date_or_period: 2026年度第4四半期（2026年11月1日終了予定）   notes_for_writer: 会社の見通しとして記載し、実績値と混同しない。
 - 回答: A 重大 / B1 要確認で価値あり / B2 問題なし / C 判断不能 → [   ]　　新規重大候補か(はい/いいえ) → [   ]　　所要: [   ] 分
 
-**C_main Flag 3** (d2rank 順位3、確信度 0.08、文id s6)
+**C_main Flag 3** ★FIX01影響 (d2rank 順位3、確信度 0.08、文id s6)
 
 - Flag文: そこへ「次は約348億ドル」の文字。
 - 確認質問: 約348億ドルは次四半期の全社連結売上高見通しなので、この文単独ではAI半導体売上高の次期数値や確定した実績と取り違えられないか確認が必要ではありませんか

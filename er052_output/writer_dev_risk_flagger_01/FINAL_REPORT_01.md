@@ -1,5 +1,8 @@
 # FINAL_REPORT_01: 開発用Risk Flagger 最終報告(WRITER-DEV-RISK-FLAGGER-DESIGN-01 委任_04確定版)
 
+> **FIX01監査注記(2026-10-10)**: 台帳パーサ(`ledger_restore_01._HDR`)が `[AMBIGUOUS - ...]` 見出しのFactを無音で読み飛ばしていたため(streaming_price の F01/F07、semiconductor_earnings の F1)、本書の次の指標が影響対象です。KPI2 FPR_clear(分母18中4件が影響、分子3中1件=rf_5cryu9)、KPI2 FPR_boundary(分母3中1件=rf_mytfwc)、Precision、KPI5 確認パック(52 Flag中10 Flagが影響)。KPI1・KPI4 は影響なし(機械照合)。**本書のKPI値(下表)は再計算完了まで確定値として扱いません。** 値自体は書き換えていません。詳細は `fix01_ledger_audit/LEDGER_AUDIT_01.md`。
+
+
 - 状態: **Fable最終判定 = USER_DECISION_REQUIRED**(末尾§11)。草稿 `FINAL_REPORT_DRAFT_01.md` をOpusループ3レビュー(`docs/pm/opus_review_risk_flagger_closeout_01.md`)で反映し、改名・確定した。Production変更なし。VALIDATEDになってもProduction採用ではない。
 - **使用モデル**: gpt-6.1-sol(OpenAI、Standard、$2/$10 per 1M)のみ。これは最新推奨系(PM_GOVERNANCE 25節。旗艦はgpt-6-astra)。**gpt-6-astraを使わなかった理由**: 単価がsolの5倍(入力$10/出力$50 per 1M)で、P4超過後の残予算(約¥40)では意味のある規模にならず、P5(astra確認層)を省略した(§9)。旧モデル・下位モデルは使っていない。
 - **D1のキャッシュ不発**: D1v2は『台帳+文を先頭、タイプ別指示を末尾』に並べ替え、`prompt_cache_key`も付けたが、cached_tokensは約2%に留まり費用削減にならなかった(原因=cache write課金の有無・ルーティング条件は未調査。§8)。

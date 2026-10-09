@@ -1,0 +1,11 @@
+# RESULT_PACKET_FIX01_A (WRITER-R0-MODEL-IMPACT-TRIAL-01-FIX01 項目1・4)
+- 実施: Disney+ 3セル(Luna/Sol/Astra R0、再生成なし)を完全台帳7 Fact(F01〜F07)でRisk Flagger再実行。Flagger Prompt/model(gpt-6.1-sol)/effort(medium)/D0+D2記事モードは前回と同一。detectors配下は無変更。
+- 完全台帳の渡し方: 新規r0_fix01_driver.pyがprocess内のみで見出し正規表現を差替え(ledger_restore_01._HDR)。F01/F07も他5件同様に接頭辞を除去し本文+後続行を渡した。機械確認: n_facts=7、F01..F07(3セル、raw requestでも確認)。
+- 結果(修正前 / 完全台帳): Luna 4 / 0、Sol 1 / 0、Astra 0 / 0。全Flag 0件(D2応答 {"flags":[]})。修正前5Flagは全て消えた、新規0。
+- F07の効果: 「値上げ理由が確認できない」「Reutersコメント要請に直ちに回答せず」のFlagは全セルで消えた。ただしFlagger出力は空配列で理由欄なし。F07追加以外に入力差が無いためF07による可能性が高い(推測)。
+- 条件同一性: 記事sha・台帳sha・文分割・D2 system prompt sha(b8dacc14...)・モデル・effort が前回と一致(機械確認)。detectors主要5ファイルshaも事前登録値と一致。
+- 更新比較表(RESULT_02.md): Disney+/宇宙兵器/BYD/合計 = Luna 0/0/0/0、Sol 0/0/0/0、Astra 0/0/0/0。D2 confidence統計は算出不能(D2 Flag 0)。D0 gate_only(総数外): 宇宙兵器 2/2/3。
+- 優劣は未確定・書かない。Flagger 0件は問題なしの保証ではない。RESULT_01記載の人間確認候補(Flagger未検出)は残る。
+- 費用実測: ¥3.39(1.21+1.08+1.10、上限¥20内)。本Trial累計 ¥169.36。cost_ledger_01.jsonlにphase=fix01で3行追記。
+- Status: WRITER-R0-MODEL-IMPACT-TRIAL-01 = USER_DECISION_REQUIRED のまま。Production変更・採用判断なし。SSOT/git/ACTIVE_TASK/RESULT_PACKET.md未編集。
+- 詳細: er052_output/writer_r0_model_impact_trial_01/{FIX01_DISNEY_RERUN_01.md, RESULT_02.md, flags_fix01/, logs_fix01/, results_fix01/, r0_fix01_driver.py}
