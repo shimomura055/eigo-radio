@@ -20411,3 +20411,12 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **Fable最終判定**: REJECTED(Luna系評価者構成)。根拠: 事前登録M1で、主評価者gpt-6-lunaがK01 rep2=A、K02は4判定すべてB、参考5.6-lunaもK01=A/A。ユーザー成功条件「重大を見逃す→評価方式を見直す」に該当。M2はPASS、形式違反0、実費約JPY 2.46。
 - **留保**: 評価者がLuna系のみ(本番Writer/Checkerと同系統)で、ユーザー指示の「異なる2系統」(別vendor)は未達。本REJECTEDは「Luna系を評価者にする構成」への判定であり、別vendor評価者での二重LLM方式自体は未検証。
 - **VALIDATED / APPROVED_FOR_PRODUCTION ではない**。大規模Writer比較Trialへは進まない。Production変更なし・Checker変更なし・新規Writer生成なし。次の選択肢(未決): (a)別vendor評価者で再試行(単価登録が前提) (b)不在断定(K02型)の3分類定義の見直し (c)方式を見直す。詳細REPORT §112。
+
+## WRITER-EVAL-DUAL-LLM-METHOD-TRIAL-01 追加Trial(Sol・DeepSeek)委任_04/04b(2026-10-09、機械Status=REJECTED、Fable最終判定=Fable待ち)
+- **ユーザー指示**: 逐語は docs/pm/ACTIVE_TASK.md(一時)転記。要旨: Sol・DeepSeekで同一10ケースを追加評価、Sol=モデル性能依存、DeepSeek=モデル/vendor依存、両方不可=LLM主要Checker方式の現実性に強い疑義、成功しても「客観的に正しい」とは結論しない。solは2rep実施(Fable判断で上限をJPY50/rep、合計JPY100へ引上げ、実行前にPREREGISTRATION_02 s8へ固定、08491e12)。
+- **事前登録**: PREREGISTRATION_02.md(118be069)。入力sha256不変。DeepSeekのみmax_tokens 6000->32000。
+- **DeepSeek単価登録**: 出典 https://api-docs.deepseek.com/quick_start/pricing、取得日2026-10-09。Peak標準 input $0.30 / cache hit $0.006 / output $1.20 per 1M。Off-peakは記録のみ。pricing_snapshot.json(er005_output/cost_baseline_01)に登録。
+- **結果**: M1 C数/6 = 6-luna 0 / 5.6-luna 2 / sol 2 / DeepSeek 4。全モデルK01でA(見逃し)、M1 REJECTED。M2全PASS。M4 80/100/100/90%。K11全B/B。形式違反0。実費 sol JPY 25.98、DeepSeek 6.06。
+- **機械Status**: モデル別全REJECTED、Trial全体REJECTED(「改善」定義では Sol・DeepSeek とも改善あり、ただし安定検出ゼロ。解釈規則の衝突を論点として残す)。
+- **Fable最終判定**: Fable待ち。VALIDATED/Production採用ではない。Production変更なし。
+- 詳細: REPORT §112 追加Trial、er052_output/writer_eval_dual_llm_method_trial_01/RESULT_TABLE_02.md。

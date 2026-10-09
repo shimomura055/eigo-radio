@@ -20,3 +20,6 @@
 - 集計: `aggregate_02.py` → `RESULT_TABLE_02.md`(部分: sol未実行)。
 ## 4. gpt-5.6-sol: 未実行(STOP)
 理由は2節。Fable/ユーザーが(a)上限JPY 40の引上げ(実測ベース2rep約JPY 32〜44、機械的見積上限は1repで約JPY 204)、(b)上限据置で1rep実行などを決めた後、`run_eval_01.py --model gpt-5.6-sol --rep {1,2} --max-yen <上限/2>` で実行可能(経路・テスト整備済み)。
+
+## 5. 委任_04b: gpt-5.6-sol 実行(2026-10-09)
+- 上限引上げ JPY50/rep を PREREGISTRATION_02 s8 に実行前固定(08491e12)。`run_eval_01.py --model gpt-5.6-sol --rep {1,2} --max-yen 50`。rep1 JPY 15.006、rep2 JPY 10.970(合計25.975)。形式違反0、再呼び出し0、例外0。実効: reasoning=medium、temperature=指定なし(拒否)、seed未対応。

@@ -5947,3 +5947,12 @@ MEASURED(Trial、Production変更なし)。Fable最終判定=総合『同等・�
 - Status=REJECTED(Fable最終判定、2026-10-09)。根拠: 確認済み重大(K01,K02,K03)を安定して拾えない(ユーザー成功条件「重大を見逃す」)。留保: 評価者がLuna系のみで、ユーザー指示の「異なる2系統」(別vendor)は未達。本判定は「Luna系を評価者にする構成」へのものであり、別vendor評価者での二重LLM方式自体は未検証。大規模Writer比較Trialへは進まない。
 - 次の選択肢(未決): (a)別vendor評価者(DeepSeek/Gemini、単価登録が前提)で再試行 (b)不在断定(K02型)の3分類定義の見直し (c)方式を見直す。
 - 出典: `er052_output/writer_eval_dual_llm_method_trial_01/{RESULT_TABLE_01.md,RUN_LOG_01.md,aggregate_01.json,PREREGISTRATION_01.md,CASES_01.md,OPTIONAL_BLOCK_01.md}`、`docs/pm/delegation_log/2026-10-09_WRITER-EVAL-DUAL-LLM-METHOD-TRIAL-01_{01,01c,01d,02,03}.md`。
+
+### §112 追加Trial(Sol・DeepSeek、委任_04/04b、2026-10-09、機械Status=REJECTED、Fable最終判定=Fable待ち、Production変更なし)
+- 目的: Luna系で失敗した同一10ケース・同一入力(eval_items_01.json sha256 d9f1201b...、eval_prompt_01.txt 5644ff43...)で、(1)Sol=同系統でもモデル性能を上げれば重大を拾えるか (2)DeepSeek=別vendorなら拾えるか。事前登録 `PREREGISTRATION_02.md`(118be069、sol上限引上げ追記 08491e12=実行前)。
+- DeepSeek公式単価登録: https://api-docs.deepseek.com/quick_start/pricing(2026-10-09取得)標準(Peak) input $0.30 / cache hit $0.006 / output $1.20 per 1M(Off-peak半額は記録のみ)。deepseek-v4-flashは引退済みで V4.1-Flash が応答。
+- 結果(M1=K01/K02/K03 x2rep): gpt-6-luna C0/6、gpt-5.6-luna C2/6、**gpt-5.6-sol C2/6(K01=A/A、K02=B/B、K03=C/C)**、deepseek C4/6(K01=A/A、K02=C/C、K03=C/C)。M1はいずれもK01のAでREJECTED、M2は全モデルPASS、M4=80/100/100/90%、K11は全モデルB/B(Aなし)、形式違反0。
+- 機械適用: 「改善」定義(C>0かつM2 PASS)ではSol・DeepSeekとも改善あり、ただし安定検出(M1 6/6 C)したモデルはゼロ。モデル別Status全てREJECTED、Trial全体機械Status=REJECTED。sol x deepseek 人間確認対象率 定義1=30%/20%、定義2=50%/40%(rep1/rep2)。
+- 揺れる論点: 解釈規則の衝突(「改善」定義上は改善だが安定検出なし=「方式の現実性に強い疑義」にも該当)、K01方向反転は4モデル全て見逃し(定義の問題かモデル能力か未切り分け)、solはDeepSeekより安定検出が増えず高コスト。
+- 実費(登録単価): sol JPY 25.98、DeepSeek 6.06、前Trial luna分1.76。追加Trial分 JPY 32.04。詳細 `RESULT_TABLE_02.md`、`RUN_LOG_02.md`。
+- VALIDATED/APPROVED_FOR_PRODUCTION ではない。LLM Checkerが客観的に正しいとは結論しない。最終判定はFable待ち。
