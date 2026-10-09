@@ -4,7 +4,7 @@
 - `er052_output/factlock_astra_e2e_trial_01/eval/`: `labels_merged.jsonl`(553行、重複グループ46、worker間テーマ重複0、`labels_merged_stats.json`)、`merge_labels_01.py`、`judge_table_01.py`/`judge_table_01.json`(機械判定の根拠数値)、`EVAL_E2E_01.md`、`HUMAN_CHECK_E2E_01.md`(+`build_human_check_01.py`)、ラベル原本 `labels_w{1,2,3}.jsonl`/`_summary.md`(未編集)。
 - SSOT: REPORT §111、DECISION_LOG末尾1節、`docs/pm/REPORT_LEDGER.md` 1行、ACTIVE_TASK固定ヘッダ(gitignore対象)。`CURRENT_SPEC.md`/`OPEN_ITEMS.md`は未編集。
 - 記録: 委任文 `_15.md`、`_15_check.json`、`_14a/b/c_result.md`(commitのみ)、本書、RESULT_PACKET。
-- commit: COMMIT_HASH_PLACEHOLDER
+- commit: 6a8061742b5907c6d808027b5f6a3a0a9e218414
 - raw URL: 末尾。
 
 ## 2. 判定線 機械照合表(n=9、予定run各腕18。Fable最終判定は空欄)
@@ -62,4 +62,14 @@ OC-1 Checker小数点文分割(不要Rewrite、軽微劣化) / OC-2 B3自動注�
 8. Production採用提案を行う場合は、Opus独立技術レビュー(条件C)が必要。本書は採用提案ではない。
 
 ## commit・raw URL
-COMMIT_URL_PLACEHOLDER
+commit: 6a8061742b5907c6d808027b5f6a3a0a9e218414
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/eval/EVAL_E2E_01.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/eval/HUMAN_CHECK_E2E_01.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/eval/labels_merged.jsonl
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/eval/merge_labels_01.py
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/eval/judge_table_01.py
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/eval/judge_table_01.json
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/DECISION_LOG.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/pm/REPORT_LEDGER.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/pm/delegation_log/2026-10-09_FACTLOCK-ASTRA-E2E-TRIAL-01_15_result.md
