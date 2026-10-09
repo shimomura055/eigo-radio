@@ -1,7 +1,7 @@
 # 委任_10 結果 FACTLOCK-ASTRA-E2E-TRIAL-01(2026-10-09) Status=PARTIAL(9/10テーマ統合・配線・G0実照合PASS、inbound_tourism未統合、API支出¥0)
 
 ## 1. 成果物・commit・テスト
-- commit: 本文末尾に追記(raw URL群も同所)。
+- commit: 16d00922ec2de3c8c9a134d4c047023313443b76(push済み)。raw URLは本文末尾。
 - 修正: `er052_output/factlock_astra_e2e_trial_01/b3_annotation_check_01.py`(b_ledger_mapping)、`b3_annotation_check_01_test.py`(41件OK=従来40+1、`test_non_verified...`をPENDING/NOT_VERIFIED/REJECTED=FAILに拡張、`test_ambiguous_ledger_id_in_facts_warns_with_flag`新設)、`annotation/make_final_01.py`(B3 v2テーマ選択・JSON text行区切りfallback・final_json_check.jsonを累積)。`annotation/audit_strict_01_test.py` ALL_PASS。
 - 新規: `annotation/wire_inputs_01.py`、`annotation/make_summary_10.py`、`annotation/prefix_scripts/b3_annotation_check_01.pre_delegation10.py`(修正前)、`inputs/<9テーマ>/`、`inputs/WIRING_SHA256.json`、`g0_real_annotation_01/`、`annotation/out/merged/{semiconductor_earnings,hormuz,streaming_price}/`、`annotation/final/{同3}/`。
 - 更新: `annotation/ANNOTATION_SUMMARY_01.md`(10テーマ表・(c)(d)(e)・Bash使用者一覧。旧版は `_prev09.md`)、`annotation/RUN_ANNOTATION.md` 8節、`stage_r/SPEC_V2_CLARIFICATIONS.md`(c)-(f)、DECISION_LOG.md 1節、REPORT_LEDGER.md 1行。
@@ -35,3 +35,12 @@
 
 ## 6. 所要時間・API支出
 - 約45分。API支出 ¥0(生成呼び出しなし、既存スクリプト/テストのみ)。
+
+## raw URL
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/b3_annotation_check_01.py
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/b3_annotation_check_01_test.py
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/annotation/ANNOTATION_SUMMARY_01.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/annotation/RUN_ANNOTATION.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/stage_r/SPEC_V2_CLARIFICATIONS.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/g0_real_annotation_01/g0_summary.json
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/pm/delegation_log/2026-10-09_FACTLOCK-ASTRA-E2E-TRIAL-01_10_result.md
