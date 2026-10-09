@@ -20420,3 +20420,12 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **機械Status**: モデル別全REJECTED、Trial全体REJECTED(「改善」定義では Sol・DeepSeek とも改善あり、ただし安定検出ゼロ。解釈規則の衝突を論点として残す)。
 - **Fable最終判定(2026-10-09)=REJECTED(Trial全体)。根拠: 事前登録の解釈規則「両方でも重大を安定検出できない→LLMを主要Checker/客観評価器にする方式自体の現実性に強い疑義」に該当。4モデル(6-luna/5.6-luna/sol/DeepSeek)全てがK01(META Rollback方向反転、ユーザー確認済み重大)を2repともAと判定。C検出数 DeepSeek4/6>sol2/6=5.6-luna2/6>6-luna0/6で改善はモデル/vendor依存の部分的なもの(DeepSeekが最良、solは同等以下で費用約4倍)。M2全PASS。成功モデルなしのため「LLM Checkerが客観的に正しい」とは結論しない。VALIDATED/Production採用ではなく、大規模Trialへ進まない。留保・次の論点(未決): (1)K01を全モデルがAと読む理由(「restored…to the way it had been before」を言い換えと解釈、台帳JA「ロールバック」との照合)は各モデルのreason欄で¥0分析可能(ケース定義/プロンプト問題かモデル能力かの切り分け) (2)本方式を使うなら決定論の方向語検査との併用か台帳方向を明示する前処理が必要だが方式変更=ユーザー決定 (3)n=10・HC-012偏重の限界。** Production変更なし。
 - 詳細: REPORT §112 追加Trial、er052_output/writer_eval_dual_llm_method_trial_01/RESULT_TABLE_02.md。
+
+## PM-DEV-EVAL-LATEST-MODEL-RULE-01: 開発・評価用途の最新モデル原則(ユーザー正式採用、2026-10-09)
+
+- **区分**: PM運用ルール(開発・評価用途のモデル選定)。Production変更なし、API支出0円。本番ラインへ織り込むモデルの選定は対象外(別判断)。
+- **ユーザー指示(逐語)**: 全文を`docs/pm/PM_GOVERNANCE.md` 25-1節に転記(ここへは重複させない)。要旨: 開発・評価は原則として最新世代の最上位系または推奨系を使う。旧/下位モデルは、既存結果との比較・ライン組み込み候補の性能確認・API制約/費用上限などの実務制約の場合のみ、理由を実行前に明記。評価/Trialの提案・実行ごとに使用モデル名/最新か/最新でない場合の理由を記載。ユーザー指示なしの評価用途ダウングレード禁止。既存評価計画に旧モデルがある場合は理由/置換影響/置換推奨案を報告。
+- **Status**: ADOPTED(PM運用ルール、2026-10-09ユーザー正式採用)。
+- **成果物**: `docs/pm/PM_GOVERNANCE.md` 25節、`docs/pm/dev_eval_model_inventory_01.md`(公式モデル棚卸し・pricing_snapshot登録状況・直近Trial使用モデル・旧モデル計画の整理)、`CLAUDE.md`に参照1行。
+- **棚卸し要点(公式取得2026-10-09)**: OpenAIは gpt-6-astra(旗艦)/ gpt-6.1-sol(推奨、$2/$10)/ gpt-6-luna(効率)。gpt-6.1-sol・deepseek-v4-pro・Gemini 3.8系は単価未登録。追加Trialで使った gpt-5.6-sol・deepseek-v4-flash(V4.1-Flash)は最新の最上位/推奨系ではなく、置換案を同ファイル5節に整理(置換Trialの実施はFable/ユーザー判断、未実施)。
+- **未実施・保留**: 置換Trialの実施、pricing_snapshot.jsonへの新単価登録、FACTLOCK-ASTRA-E2E-TRIAL-01のラベル再付与(いずれもFable/ユーザー判断待ち)。

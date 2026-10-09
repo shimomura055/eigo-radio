@@ -99,6 +99,7 @@ https://raw.githubusercontent.com/shimomura055/eigo-radio/main/tts_test.py
   approved-but-unwired・STOP条件を必ず再確認する、(6)Trial結果(`VALIDATED`等)を
   Production仕様(`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`)と誤認しない、
   (7)`/clear`は自動実行しない。
+- 開発・評価用途の最新モデル原則(2026-10-09ユーザー正式採用、PM-DEV-EVAL-LATEST-MODEL-RULE-01): 検証・比較・方式評価等では原則として最新世代の最上位系/推奨系モデルを使い、旧/下位モデルは明確な例外理由を実行前に明記する。評価・Trialの報告には使用モデル名/最新か/最新でない場合の理由を必ず記載。本番ラインのモデル選定は別判断。正本は`docs/pm/PM_GOVERNANCE.md` 25節(ここへは全文を複製しない)。
 - 開発時間最小化・並列実行原則(2026-10-06ユーザー正式採用、
   PROJECT-DELIVERY-SPEED-PARALLELIZATION-RULE-01): 各タスク開始時に依存関係・
   クリティカルパス・並列可能作業・所要時間見込み・並列化短縮見込みを確認し、
