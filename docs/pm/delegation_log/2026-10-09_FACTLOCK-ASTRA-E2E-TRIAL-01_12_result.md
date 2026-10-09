@@ -38,3 +38,10 @@ Human Review 0。provenance違反0、waste_flags空、(m)違反0、API失敗行0
 2. 暫定集計は旧space_weapons未完了のため確定値ではない。
 3. 請求ダッシュボード照合。shadow失敗リトライ3回分の重複支出の有無は未確認。
 4. Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言。
+
+## commit・raw URL
+commit: d5345c83b38c2d43f13e31d9284f1f87fe4af1d1
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/runs/ROUND1_MIDCHECK.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/pm/delegation_log/2026-10-09_FACTLOCK-ASTRA-E2E-TRIAL-01_12_result.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_factlock_astra_e2e_runner_01.py
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/runs/round1_aggregate/AGGREGATE.md
