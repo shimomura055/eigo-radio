@@ -1,0 +1,4036 @@
+{
+  "instance_id": "small_bag_old_advanced",
+  "group": "e2e",
+  "expected_group_label": "E2E generated",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles.",
+          "origin": null,
+          "related_fact_id": "MB-01",
+          "dev": {
+            "claim_in_article": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles.",
+            "issue": "Fall 2026のミニバッグをトレンドとして紹介した記事はMB-01で確認できるが、「fashion articles」と複数の記事に広げた記述はLedgerで直接確認できない。 / Ledgerが確認しているのはELLEの単一記事であるのに対し、「fashion articles」と複数の記事一般に広げています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "MB-01",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "MB-01"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Fall/Winter Bag Shows: Small Stars and Big Stars Share the Stage\n\nFor fall/winter 2026, mini bags are being featured as a trend in fashion articles. But it is too soon to look at the runway and think, “Small bags have pushed everyone else out.” The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.\n\nSmall decorative clutches appeared in collections from several brands. Fashion editors describe them as small clutches that are more artistic than practical. You could say that rather than being stars at carrying things, they are stars that draw the eye as an addition to an outfit. Their appeal comes from their shape and presence, not how much they can hold. They get a glamorous moment that only the runway can offer.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MB-01",
+            "claim_text": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.",
+          "origin": null,
+          "related_fact_id": "MB-05",
+          "dev": {
+            "claim_in_article": "The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "MB-05",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "MB-05"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Fall/Winter Bag Shows: Small Stars and Big Stars Share the Stage\n\nFor fall/winter 2026, mini bags are being featured as a trend in fashion articles. But it is too soon to look at the runway and think, “Small bags have pushed everyone else out.” The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.\n\nSmall decorative clutches appeared in collections from several brands. Fashion editors describe them as small clutches that are more artistic than practical. You could say that rather than being stars at carrying things, they are stars that draw the eye as an addition to an outfit. Their appeal comes from their shape and presence, not how much they can hold. They get a glamorous moment that only the runway can offer.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MB-05",
+            "claim_text": "The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "Their appeal comes from their shape and presence, not how much they can hold.",
+          "origin": null,
+          "related_fact_id": "MB-05",
+          "dev": {
+            "claim_in_article": "Their appeal comes from their shape and presence, not how much they can hold.",
+            "issue": "Ledgerは小型クラッチが実用性より芸術性が強いとするが、魅力の源が形や存在感であり収納量ではないという説明は直接裏付けていない。 / 小型クラッチが芸術性重視と評された事実から、魅力の源が形や存在感にあると新たな説明を加えています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.4); severity is decided by Stage 2",
+            "related_fact_id": "MB-05",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.4"
+              ],
+              "related_fact_ids": [
+                "MB-05"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles. But it is too soon to look at the runway and think, “Small bags have pushed everyone else out.” The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.\n\nSmall decorative clutches appeared in collections from several brands. Fashion editors describe them as small clutches that are more artistic than practical. You could say that rather than being stars at carrying things, they are stars that draw the eye as an addition to an outfit. Their appeal comes from their shape and presence, not how much they can hold. They get a glamorous moment that only the runway can offer.\n\nMeanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows. Even when small stars get the spotlight, the big stars do not lose their turn. This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-05",
+            "claim_text": "Their appeal comes from their shape and presence, not how much they can hold.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "They get a glamorous moment that only the runway can offer.",
+          "origin": null,
+          "related_fact_id": "MB-05",
+          "dev": {
+            "claim_in_article": "They get a glamorous moment that only the runway can offer.",
+            "issue": "ランウェイで小型クラッチが登場したことは確認できるが、「glamorous moment」やランウェイだけがそれを提供できるという限定的な主張はLedgerにない。 / Ledgerにない「華やかな瞬間」という評価と、ランウェイだけがそれを提供できるという限定を加えています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.5); severity is decided by Stage 2",
+            "related_fact_id": "MB-05",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.5"
+              ],
+              "related_fact_ids": [
+                "MB-05"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles. But it is too soon to look at the runway and think, “Small bags have pushed everyone else out.” The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.\n\nSmall decorative clutches appeared in collections from several brands. Fashion editors describe them as small clutches that are more artistic than practical. You could say that rather than being stars at carrying things, they are stars that draw the eye as an addition to an outfit. Their appeal comes from their shape and presence, not how much they can hold. They get a glamorous moment that only the runway can offer.\n\nMeanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows. Even when small stars get the spotlight, the big stars do not lose their turn. This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-05",
+            "claim_text": "They get a glamorous moment that only the runway can offer.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows.",
+          "origin": null,
+          "related_fact_id": "MB-05",
+          "dev": {
+            "claim_in_article": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows.",
+            "issue": "MB-05はFall 2026の一つのランウェイまとめで大型・ゆったりした形を複数の主要傾向として扱ったが、「summaries」と複数のまとめに広げている。 / 大きくゆとりのあるバッグという内容は重なりますが、Ledgerの対象はSpring/Summer 2026であり、記事はFall/Winterのランウェイとしています。 / roomyな大型バッグがランウェイで目立つという内容は重なりますが、LedgerはSpring/Summer 2026を扱い、記事はFall/Winterの傾向として述べています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.1); severity is decided by Stage 2",
+            "related_fact_id": "MB-05",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.1"
+              ],
+              "related_fact_ids": [
+                "MB-05",
+                "MB-03",
+                "MB-04"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Small decorative clutches appeared in collections from several brands. Fashion editors describe them as small clutches that are more artistic than practical. You could say that rather than being stars at carrying things, they are stars that draw the eye as an addition to an outfit. Their appeal comes from their shape and presence, not how much they can hold. They get a glamorous moment that only the runway can offer.\n\nMeanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows. Even when small stars get the spotlight, the big stars do not lose their turn. This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.\n\nAnd one thing we should not confuse here is “mini” and “micro.” Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long. However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": "deterministic_floor_cited:changed_time",
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-05",
+            "claim_text": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "Even when small stars get the spotlight, the big stars do not lose their turn.",
+          "origin": null,
+          "related_fact_id": "MB-05",
+          "dev": {
+            "claim_in_article": "Even when small stars get the spotlight, the big stars do not lose their turn.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "MB-05",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "MB-05"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Small decorative clutches appeared in collections from several brands. Fashion editors describe them as small clutches that are more artistic than practical. You could say that rather than being stars at carrying things, they are stars that draw the eye as an addition to an outfit. Their appeal comes from their shape and presence, not how much they can hold. They get a glamorous moment that only the runway can offer.\n\nMeanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows. Even when small stars get the spotlight, the big stars do not lose their turn. This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.\n\nAnd one thing we should not confuse here is “mini” and “micro.” Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long. However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-05",
+            "claim_text": "Even when small stars get the spotlight, the big stars do not lose their turn.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.",
+          "origin": null,
+          "related_fact_id": "MB-05",
+          "dev": {
+            "claim_in_article": "This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "MB-05",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "MB-05"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Small decorative clutches appeared in collections from several brands. Fashion editors describe them as small clutches that are more artistic than practical. You could say that rather than being stars at carrying things, they are stars that draw the eye as an addition to an outfit. Their appeal comes from their shape and presence, not how much they can hold. They get a glamorous moment that only the runway can offer.\n\nMeanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows. Even when small stars get the spotlight, the big stars do not lose their turn. This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.\n\nAnd one thing we should not confuse here is “mini” and “micro.” Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long. However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-05",
+            "claim_text": "This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "And one thing we should not confuse here is “mini” and “micro.”",
+          "origin": null,
+          "related_fact_id": "MB-06",
+          "dev": {
+            "claim_in_article": "And one thing we should not confuse here is “mini” and “micro.”",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "MB-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "MB-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows. Even when small stars get the spotlight, the big stars do not lose their turn. This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.\n\nAnd one thing we should not confuse here is “mini” and “micro.” Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long. However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.\n\nSo, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another. We cannot read the applause on the runway as excitement among shoppers. A bag for carrying your everyday things and a bag that makes an outfit look better. Both are bags, but they seem to be given very different roles on the runway.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-06",
+            "claim_text": "And one thing we should not confuse here is “mini” and “micro.”",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long.",
+          "origin": null,
+          "related_fact_id": "MB-06",
+          "dev": {
+            "claim_in_article": "Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "MB-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "MB-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows. Even when small stars get the spotlight, the big stars do not lose their turn. This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.\n\nAnd one thing we should not confuse here is “mini” and “micro.” Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long. However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.\n\nSo, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another. We cannot read the applause on the runway as excitement among shoppers. A bag for carrying your everyday things and a bag that makes an outfit look better. Both are bags, but they seem to be given very different roles on the runway.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-06",
+            "claim_text": "Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.",
+          "origin": null,
+          "related_fact_id": "MB-06",
+          "dev": {
+            "claim_in_article": "However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.3); severity is decided by Stage 2",
+            "related_fact_id": "MB-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.3"
+              ],
+              "related_fact_ids": [
+                "MB-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows. Even when small stars get the spotlight, the big stars do not lose their turn. This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.\n\nAnd one thing we should not confuse here is “mini” and “micro.” Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long. However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.\n\nSo, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another. We cannot read the applause on the runway as excitement among shoppers. A bag for carrying your everyday things and a bag that makes an outfit look better. Both are bags, but they seem to be given very different roles on the runway.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-06",
+            "claim_text": "However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another.",
+          "origin": null,
+          "related_fact_id": "MB-01",
+          "dev": {
+            "claim_in_article": "So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another.",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "MB-01",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "MB-01"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "And one thing we should not confuse here is “mini” and “micro.” Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long. However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.\n\nSo, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another. We cannot read the applause on the runway as excitement among shoppers. A bag for carrying your everyday things and a bag that makes an outfit look better. Both are bags, but they seem to be given very different roles on the runway.\n\n## In one line\nFall/winter runways give mini and roomy bags different roles, rather than letting one replace the other.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_scope",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-01",
+            "claim_text": "So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_scope",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "We cannot read the applause on the runway as excitement among shoppers.",
+          "origin": null,
+          "related_fact_id": "MB-03",
+          "dev": {
+            "claim_in_article": "We cannot read the applause on the runway as excitement among shoppers.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.2); severity is decided by Stage 2",
+            "related_fact_id": "MB-03",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.2"
+              ],
+              "related_fact_ids": [
+                "MB-03"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "And one thing we should not confuse here is “mini” and “micro.” Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long. However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.\n\nSo, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another. We cannot read the applause on the runway as excitement among shoppers. A bag for carrying your everyday things and a bag that makes an outfit look better. Both are bags, but they seem to be given very different roles on the runway.\n\n## In one line\nFall/winter runways give mini and roomy bags different roles, rather than letting one replace the other.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-03",
+            "claim_text": "We cannot read the applause on the runway as excitement among shoppers.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "” Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long.",
+          "origin": null,
+          "related_fact_id": "MB-01",
+          "dev": {
+            "claim_in_article": "” Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long.",
+            "issue": "Fall 2026のミニバッグをトレンドとして紹介した記事はMB-01で確認できるが、「fashion articles」と複数の記事に広げた記述はLedgerで直接確認できない。 / Ledgerが確認しているのはELLEの単一記事であるのに対し、「fashion articles」と複数の記事一般に広げています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "MB-01",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "MB-01"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows. Even when small stars get the spotlight, the big stars do not lose their turn. This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.\n\nAnd one thing we should not confuse here is “mini” and “micro.” Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long. However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.\n\nSo, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another. We cannot read the applause on the runway as excitement among shoppers. A bag for carrying your everyday things and a bag that makes an outfit look better. Both are bags, but they seem to be given very different roles on the runway.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-01",
+            "claim_text": "” Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "Fall/winter runways give mini and roomy bags different roles, rather than letting one replace the other.",
+          "origin": null,
+          "related_fact_id": "MB-01",
+          "dev": {
+            "claim_in_article": "Fall/winter runways give mini and roomy bags different roles, rather than letting one replace the other.",
+            "issue": "Fall 2026のミニバッグをトレンドとして紹介した記事はMB-01で確認できるが、「fashion articles」と複数の記事に広げた記述はLedgerで直接確認できない。 / Ledgerが確認しているのはELLEの単一記事であるのに対し、「fashion articles」と複数の記事一般に広げています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "MB-01",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "MB-01"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another. We cannot read the applause on the runway as excitement among shoppers. A bag for carrying your everyday things and a bag that makes an outfit look better. Both are bags, but they seem to be given very different roles on the runway.\n\n## In one line\nFall/winter runways give mini and roomy bags different roles, rather than letting one replace the other.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-01",
+            "claim_text": "Fall/winter runways give mini and roomy bags different roles, rather than letting one replace the other.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "” The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.",
+          "origin": null,
+          "related_fact_id": "MB-05",
+          "dev": {
+            "claim_in_article": "” The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "MB-05",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "MB-05"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Fall/Winter Bag Shows: Small Stars and Big Stars Share the Stage\n\nFor fall/winter 2026, mini bags are being featured as a trend in fashion articles. But it is too soon to look at the runway and think, “Small bags have pushed everyone else out.” The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.\n\nSmall decorative clutches appeared in collections from several brands. Fashion editors describe them as small clutches that are more artistic than practical. You could say that rather than being stars at carrying things, they are stars that draw the eye as an addition to an outfit. Their appeal comes from their shape and presence, not how much they can hold. They get a glamorous moment that only the runway can offer.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MB-05",
+            "claim_text": "” The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "Both are bags, but they seem to be given very different roles on the runway.",
+          "origin": null,
+          "related_fact_id": "MB-05",
+          "dev": {
+            "claim_in_article": "Both are bags, but they seem to be given very different roles on the runway.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "MB-05",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "MB-05"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "And one thing we should not confuse here is “mini” and “micro.” Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long. However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.\n\nSo, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another. We cannot read the applause on the runway as excitement among shoppers. A bag for carrying your everyday things and a bag that makes an outfit look better. Both are bags, but they seem to be given very different roles on the runway.\n\n## In one line\nFall/winter runways give mini and roomy bags different roles, rather than letting one replace the other.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-05",
+            "claim_text": "Both are bags, but they seem to be given very different roles on the runway.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "And one thing we should not confuse here is “mini” and “micro.",
+          "origin": null,
+          "related_fact_id": "MB-06",
+          "dev": {
+            "claim_in_article": "And one thing we should not confuse here is “mini” and “micro.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "MB-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "MB-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "And one thing we should not confuse here is “mini” and “micro.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows. Even when small stars get the spotlight, the big stars do not lose their turn. This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.\n\nAnd one thing we should not confuse here is “mini” and “micro.” Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long. However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.\n\nSo, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another. We cannot read the applause on the runway as excitement among shoppers. A bag for carrying your everyday things and a bag that makes an outfit look better. Both are bags, but they seem to be given very different roles on the runway.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_old_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-06",
+            "claim_text": "And one thing we should not confuse here is “mini” and “micro.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+              "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+            ],
+            "batch_cost_jpy": 0.1837,
+            "batch_n_claims": 17
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 17,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MB-01",
+          "claim_text": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MB-05",
+          "claim_text": "The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-05",
+          "claim_text": "Their appeal comes from their shape and presence, not how much they can hold.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-05",
+          "claim_text": "They get a glamorous moment that only the runway can offer.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-05",
+          "claim_text": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-05",
+          "claim_text": "Even when small stars get the spotlight, the big stars do not lose their turn.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-05",
+          "claim_text": "This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-06",
+          "claim_text": "And one thing we should not confuse here is “mini” and “micro.”",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-06",
+          "claim_text": "Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-06",
+          "claim_text": "However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-01",
+          "claim_text": "So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_scope",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-03",
+          "claim_text": "We cannot read the applause on the runway as excitement among shoppers.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-01",
+          "claim_text": "” Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-01",
+          "claim_text": "Fall/winter runways give mini and roomy bags different roles, rather than letting one replace the other.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MB-05",
+          "claim_text": "” The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-05",
+          "claim_text": "Both are bags, but they seem to be given very different roles on the runway.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "small_bag_old_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-06",
+          "claim_text": "And one thing we should not confuse here is “mini” and “micro.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898",
+            "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+          ],
+          "batch_cost_jpy": 0.1837,
+          "batch_n_claims": 17
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "small_bag_old_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.4567,
+      "usage": {
+        "input_tokens": 3512,
+        "cached_input_tokens": 0,
+        "output_tokens": 5120,
+        "reasoning_tokens": 1893
+      },
+      "elapsed_seconds": 31.391,
+      "prompt_sha256": "fae8e603f2c985aec5afb224025736f4aef1a54f1981e74100b94528185d2a85",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "small_bag_old_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.9526,
+      "usage": {
+        "input_tokens": 3130,
+        "cached_input_tokens": 0,
+        "output_tokens": 11518,
+        "reasoning_tokens": 9209
+      },
+      "elapsed_seconds": 67.331,
+      "prompt_sha256": "4baff5a8f5f5522eaca40c0f85fdea87313f437af1ec9d50fb4cc01aa7a3b00d",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "small_bag_old_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.3591,
+      "usage": {
+        "input_tokens": 3603,
+        "cached_input_tokens": 0,
+        "output_tokens": 3858,
+        "reasoning_tokens": 2993
+      },
+      "elapsed_seconds": 30.628,
+      "prompt_sha256": "1ba4685a55383adeb3b430bdd016b4e08d5c173ca8b9aaad9ec93b7385f9f8f6",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "small_bag_old_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.306,
+      "usage": {
+        "input_tokens": 10190,
+        "cached_input_tokens": 0,
+        "output_tokens": 1863,
+        "reasoning_tokens": 1460
+      },
+      "elapsed_seconds": 13.219,
+      "prompt_sha256": "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898"
+    },
+    {
+      "label": "small_bag_old_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0974,
+      "usage": {
+        "input_tokens": 4207,
+        "cached_input_tokens": 0,
+        "output_tokens": 400,
+        "reasoning_tokens": 297
+      },
+      "elapsed_seconds": 3.856,
+      "prompt_sha256": "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+    },
+    {
+      "label": "small_bag_old_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1486,
+      "usage": {
+        "input_tokens": 10190,
+        "cached_input_tokens": 10187,
+        "output_tokens": 1690,
+        "reasoning_tokens": 1287
+      },
+      "elapsed_seconds": 12.041,
+      "prompt_sha256": "23845e1347ca36584b07f75dcf7f34bd3caff3ed32b4f574cde9e5632b077898"
+    },
+    {
+      "label": "small_bag_old_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0351,
+      "usage": {
+        "input_tokens": 4207,
+        "cached_input_tokens": 4204,
+        "output_tokens": 363,
+        "reasoning_tokens": 257
+      },
+      "elapsed_seconds": 4.089,
+      "prompt_sha256": "67acb713e994902ee6e3b5540fd177d15e09125f78028e25671503c2c1cc9763"
+    }
+  ],
+  "total_cost_jpy": 2.3555,
+  "total_calls": 7,
+  "elapsed_seconds": 162.589,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles.",
+        "related_fact_id": "MB-01",
+        "origin": null,
+        "issue": "Fall 2026のミニバッグをトレンドとして紹介した記事はMB-01で確認できるが、「fashion articles」と複数の記事に広げた記述はLedgerで直接確認できない。 / Ledgerが確認しているのはELLEの単一記事であるのに対し、「fashion articles」と複数の記事一般に広げています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.",
+        "related_fact_id": "MB-05",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S1.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Their appeal comes from their shape and presence, not how much they can hold.",
+        "related_fact_id": "MB-05",
+        "origin": null,
+        "issue": "Ledgerは小型クラッチが実用性より芸術性が強いとするが、魅力の源が形や存在感であり収納量ではないという説明は直接裏付けていない。 / 小型クラッチが芸術性重視と評された事実から、魅力の源が形や存在感にあると新たな説明を加えています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.4); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "They get a glamorous moment that only the runway can offer.",
+        "related_fact_id": "MB-05",
+        "origin": null,
+        "issue": "ランウェイで小型クラッチが登場したことは確認できるが、「glamorous moment」やランウェイだけがそれを提供できるという限定的な主張はLedgerにない。 / Ledgerにない「華やかな瞬間」という評価と、ランウェイだけがそれを提供できるという限定を加えています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.5); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows.",
+        "related_fact_id": "MB-05",
+        "origin": null,
+        "issue": "MB-05はFall 2026の一つのランウェイまとめで大型・ゆったりした形を複数の主要傾向として扱ったが、「summaries」と複数のまとめに広げている。 / 大きくゆとりのあるバッグという内容は重なりますが、Ledgerの対象はSpring/Summer 2026であり、記事はFall/Winterのランウェイとしています。 / roomyな大型バッグがランウェイで目立つという内容は重なりますが、LedgerはSpring/Summer 2026を扱い、記事はFall/Winterの傾向として述べています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope",
+          "changed_time"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Even when small stars get the spotlight, the big stars do not lose their turn.",
+        "related_fact_id": "MB-05",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.",
+        "related_fact_id": "MB-05",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "And one thing we should not confuse here is “mini” and “micro.”",
+        "related_fact_id": "MB-06",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long.",
+        "related_fact_id": "MB-06",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.",
+        "related_fact_id": "MB-06",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another.",
+        "related_fact_id": "MB-01",
+        "origin": null,
+        "issue": "決定論検査で戻した: causal_not_in_fact",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "We cannot read the applause on the runway as excitement among shoppers.",
+        "related_fact_id": "MB-03",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 25,
+      "n_model_entries": 17,
+      "n_targets": 10,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 6,
+      "n_excluded_entries": 8,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.3591,
+          "usage": {
+            "input_tokens": 3603,
+            "cached_input_tokens": 0,
+            "output_tokens": 3858,
+            "reasoning_tokens": 2993
+          },
+          "elapsed_seconds": 30.628,
+          "prompt_sha256": "1ba4685a55383adeb3b430bdd016b4e08d5c173ca8b9aaad9ec93b7385f9f8f6",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.3591,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.1",
+          "claim": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "Ledgerが裏付けるのはELLEの記事であり、「fashion articles」と複数・一般化した主体と範囲は一致しない。",
+          "fact_tags": [
+            "date"
+          ],
+          "actor_match": "mismatch",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.2",
+          "claim": "But it is too soon to look at the runway and think, “Small bags have pushed everyone else out.”",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "小型バッグと大型・ゆったりした形が同じFall 2026のランウェイ傾向に併存するというLedgerに沿った慎重な表現。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C3",
+          "key": "S2.3",
+          "claim": "You could say that rather than being stars at carrying things, they are stars that draw the eye as an addition to an outfit.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "小型クラッチを実用性より芸術性の強いものとするMB-05の記述を、装いを引き立てるという比喩で言い換えている。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C4",
+          "key": "S2.4",
+          "claim": "Their appeal comes from their shape and presence, not how much they can hold.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "形や存在感が魅力の原因で、収納量は関係しないという因果・対比はLedgerに明示されていない。",
+          "fact_tags": [
+            "causality",
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C5",
+          "key": "S2.5",
+          "claim": "They get a glamorous moment that only the runway can offer.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「ランウェイだけが提供できる」という排他性はLedgerに裏付けられておらず、範囲と限定を広げている。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C6",
+          "key": "S3.1",
+          "claim": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "Ledgerが確認するのはWho What WearのFall 2026まとめであり、「summaries」と複数のまとめ全般に範囲を広げている。",
+          "fact_tags": [
+            "date"
+          ],
+          "actor_match": "mismatch",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C7",
+          "key": "S5.3",
+          "claim": "A bag for carrying your everyday things and a bag that makes an outfit look better.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "異なるバッグの役割を示す修辞的な断片で、具体的な新事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C8",
+          "key": "R:S4.3+S5.1",
+          "claim": "So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "記事・ランウェイでの編集上の注目と、microを含む市場全体の需要の増加を区別するLedgerの注意点に沿う。",
+          "fact_tags": [
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C9",
+          "key": "S5.1",
+          "claim": "So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "記事・ランウェイでの編集上の注目と、microを含む市場全体の需要の増加を区別するLedgerの注意点に沿う。",
+          "fact_tags": [
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C10",
+          "key": "L1",
+          "claim": "Fall/winter runways give mini and roomy bags different roles, rather than letting one replace the other.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "Fall 2026の小型クラッチと大型・ゆったりした形が併存し、異なる傾向として扱われるというMB-05に沿う。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "1ba4685a55383adeb3b430bdd016b4e08d5c173ca8b9aaad9ec93b7385f9f8f6",
+      "g3_n_excluded_flagged": 8
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 27,
+    "n_judged_units": 21,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S4.3+S5.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 6,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "R:S4.3+S5.1",
+          "S1.1",
+          "S1.2",
+          "S1.3",
+          "S2.3",
+          "S2.4",
+          "S2.5",
+          "S3.1",
+          "S3.2",
+          "S3.3",
+          "S4.1",
+          "S4.2",
+          "S4.3",
+          "S5.1",
+          "S5.2",
+          "S5.3"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "CANDIDATE",
+          "S2.4": "CANDIDATE",
+          "S2.5": "CANDIDATE",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.1": "SUPPORTED->CANDIDATE(causal_not_in_fact)",
+          "S5.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.3": "CANDIDATE",
+          "S5.4": "SUPPORTED",
+          "L1": "SUPPORTED",
+          "R:S4.3+S5.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.4567,
+            "usage": {
+              "input_tokens": 3512,
+              "cached_input_tokens": 0,
+              "output_tokens": 5120,
+              "reasoning_tokens": 1893
+            },
+            "elapsed_seconds": 31.391,
+            "prompt_sha256": "fae8e603f2c985aec5afb224025736f4aef1a54f1981e74100b94528185d2a85",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "CANDIDATE",
+          "S2.4": "CANDIDATE",
+          "S2.5": "CANDIDATE",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "CANDIDATE",
+          "S5.4": "SUPPORTED",
+          "L1": "SUPPORTED",
+          "R:S4.3+S5.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles.",
+            "span": [
+              68,
+              150
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Fall 2026のミニバッグをトレンドとして紹介した記事はMB-01で確認できるが、「fashion articles」と複数の記事に広げた記述はLedgerで直接確認できない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-01"
+            ],
+            "model_claim": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "But it is too soon to look at the runway and think, “Small bags have pushed everyone else out.”",
+            "span": [
+              151,
+              246
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "ランウェイで小型・大型のバッグが併存する記述はあるが、「everyone else」を含む広い範囲で小型バッグが他を押しのけていない、またはそう考えるのは早いという判断まではLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "But it is too soon to look at the runway and think, “Small bags have pushed everyone else out.”"
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.",
+            "span": [
+              247,
+              369
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "You could say that rather than being stars at carrying things, they are stars that draw the eye as an addition to an outfit.",
+            "span": [
+              529,
+              653
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "装飾的・芸術性が強いという評価はLedgerにあるが、服装に加えて目を引くことや「stars that draw the eye」とする具体的な効果は記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "You could say that rather than being stars at carrying things, they are stars that draw the eye as an addition to an outfit."
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "Their appeal comes from their shape and presence, not how much they can hold.",
+            "span": [
+              654,
+              731
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは小型クラッチが実用性より芸術性が強いとするが、魅力の源が形や存在感であり収納量ではないという説明は直接裏付けていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "Their appeal comes from their shape and presence, not how much they can hold."
+          },
+          {
+            "unit_id": "S2.5",
+            "unit_ids": [
+              "S2.5"
+            ],
+            "claim_text": "They get a glamorous moment that only the runway can offer.",
+            "span": [
+              732,
+              791
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "ランウェイで小型クラッチが登場したことは確認できるが、「glamorous moment」やランウェイだけがそれを提供できるという限定的な主張はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "They get a glamorous moment that only the runway can offer."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows.",
+            "span": [
+              793,
+              902
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "MB-05はFall 2026の一つのランウェイまとめで大型・ゆったりした形を複数の主要傾向として扱ったが、「summaries」と複数のまとめに広げている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows."
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "Even when small stars get the spotlight, the big stars do not lose their turn.",
+            "span": [
+              903,
+              981
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.",
+            "span": [
+              982,
+              1096
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "And one thing we should not confuse here is “mini” and “micro.”",
+            "span": [
+              1098,
+              1161
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-06"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long.",
+            "span": [
+              1162,
+              1265
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-06"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.3",
+            "unit_ids": [
+              "S4.3"
+            ],
+            "claim_text": "However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.",
+            "span": [
+              1266,
+              1367
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-06"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another.",
+            "span": [
+              1369,
+              1532
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "causal_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: causal_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-01"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "We cannot read the applause on the runway as excitement among shoppers.",
+            "span": [
+              1533,
+              1604
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-03"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "A bag for carrying your everyday things and a bag that makes an outfit look better.",
+            "span": [
+              1605,
+              1688
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "小型クラッチが実用性より芸術性の強いものと説明されたことは裏付けられるが、日用品を運ぶバッグと服装をよく見せるバッグという具体的な用途・効果の対比はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "A bag for carrying your everyday things and a bag that makes an outfit look better."
+          },
+          {
+            "unit_id": "R:S4.3+S5.1",
+            "unit_ids": [
+              "R:S4.3+S5.1"
+            ],
+            "claim_text": "So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another.",
+            "span": [
+              1369,
+              1532
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「So」が編集者の意見は調査結果ではないという点を、ミニバッグの編集上の注目と市場全体の需要を区別する結論の理由として結び付けている。Ledgerには両者の区別はあるが、この因果・推論関係は明示されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-06"
+            ],
+            "model_claim": "However, this is the editor’s opinion, not the result of research into sales or consumers as a whole. So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.1",
+          "S2.4",
+          "S2.5",
+          "S3.1",
+          "S5.1",
+          "S5.3"
+        ],
+        "unit_status": {
+          "S1.1": "DEVIATION",
+          "S5.1": "DEVIATION",
+          "S3.1": "DEVIATION",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "DEVIATION",
+          "S2.5": "DEVIATION",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S5.3": "DEVIATION",
+          "S5.4": "MATCH",
+          "L1": "DEVIATION",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "R:S4.3+S5.1": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S1.3": "UNMENTIONED",
+          "S5.2": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.9526,
+            "usage": {
+              "input_tokens": 3130,
+              "cached_input_tokens": 0,
+              "output_tokens": 11518,
+              "reasoning_tokens": 9209
+            },
+            "elapsed_seconds": 67.331,
+            "prompt_sha256": "4baff5a8f5f5522eaca40c0f85fdea87313f437af1ec9d50fb4cc01aa7a3b00d",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles.",
+            "span": [
+              68,
+              150
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerが確認しているのはELLEの単一記事であるのに対し、「fashion articles」と複数の記事一般に広げています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-01"
+            ],
+            "model_claim": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another.",
+            "span": [
+              1369,
+              1532
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "ELLEの記事の編集上の紹介を、記事やランウェイでミニバッグが目立つという広い主張に拡張しています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-01"
+            ],
+            "model_claim": "So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows.",
+            "span": [
+              793,
+              902
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "大きくゆとりのあるバッグという内容は重なりますが、Ledgerの対象はSpring/Summer 2026であり、記事はFall/Winterのランウェイとしています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-03"
+            ],
+            "model_claim": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another.",
+            "span": [
+              1369,
+              1532
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Vogue特集は小型バッグの掲載とroomy totesの併存を報じていますが、小型バッグが記事やランウェイで目立つと一般化しています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-03"
+            ],
+            "model_claim": "So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows.",
+            "span": [
+              793,
+              902
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "roomyな大型バッグがランウェイで目立つという内容は重なりますが、LedgerはSpring/Summer 2026を扱い、記事はFall/Winterの傾向として述べています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-04"
+            ],
+            "model_claim": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows."
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "Their appeal comes from their shape and presence, not how much they can hold.",
+            "span": [
+              654,
+              731
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "小型クラッチが芸術性重視と評された事実から、魅力の源が形や存在感にあると新たな説明を加えています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "Their appeal comes from their shape and presence, not how much they can hold."
+          },
+          {
+            "unit_id": "S2.5",
+            "unit_ids": [
+              "S2.5"
+            ],
+            "claim_text": "They get a glamorous moment that only the runway can offer.",
+            "span": [
+              732,
+              791
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerにない「華やかな瞬間」という評価と、ランウェイだけがそれを提供できるという限定を加えています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "They get a glamorous moment that only the runway can offer."
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "A bag for carrying your everyday things and a bag that makes an outfit look better.",
+            "span": [
+              1605,
+              1688
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "小型クラッチの実用性より芸術性が強いという記述を、日用品を運ぶバッグと服装を引き立てるバッグという一般的な役割分けに広げています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "A bag for carrying your everyday things and a bag that makes an outfit look better."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Fall/winter runways give mini and roomy bags different roles, rather than letting one replace the other.",
+            "span": [
+              1782,
+              1886
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerが扱うのは複数ブランドの小さなミノディエールですが、記事は「mini bags」全般に対象を広げています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "Fall/winter runways give mini and roomy bags different roles, rather than letting one replace the other."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S1.1",
+        "S2.4",
+        "S2.5",
+        "S3.1",
+        "S5.1",
+        "S5.3"
+      ],
+      "r3_only": [
+        "R:S4.3+S5.1",
+        "S1.2",
+        "S1.3",
+        "S2.3",
+        "S3.2",
+        "S3.3",
+        "S4.1",
+        "S4.2",
+        "S4.3",
+        "S5.2"
+      ],
+      "r5_only": [
+        "L1"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 8
+    },
+    "union_candidates": [
+      {
+        "claim_text": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles.",
+        "span": [
+          68,
+          150
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "Fall 2026のミニバッグをトレンドとして紹介した記事はMB-01で確認できるが、「fashion articles」と複数の記事に広げた記述はLedgerで直接確認できない。",
+          "Ledgerが確認しているのはELLEの単一記事であるのに対し、「fashion articles」と複数の記事一般に広げています。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-01"
+        ],
+        "model_claims": [
+          "For fall/winter 2026, mini bags are being featured as a trend in fashion articles."
+        ]
+      },
+      {
+        "claim_text": "The point this time is not a head-to-head fight over bag size, but a cast of bags with different roles appearing together.",
+        "span": [
+          247,
+          369
+        ],
+        "unit_ids": [
+          "S1.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-05"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Their appeal comes from their shape and presence, not how much they can hold.",
+        "span": [
+          654,
+          731
+        ],
+        "unit_ids": [
+          "S2.4"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "Ledgerは小型クラッチが実用性より芸術性が強いとするが、魅力の源が形や存在感であり収納量ではないという説明は直接裏付けていない。",
+          "小型クラッチが芸術性重視と評された事実から、魅力の源が形や存在感にあると新たな説明を加えています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MB-05"
+        ],
+        "model_claims": [
+          "Their appeal comes from their shape and presence, not how much they can hold."
+        ]
+      },
+      {
+        "claim_text": "They get a glamorous moment that only the runway can offer.",
+        "span": [
+          732,
+          791
+        ],
+        "unit_ids": [
+          "S2.5"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "ランウェイで小型クラッチが登場したことは確認できるが、「glamorous moment」やランウェイだけがそれを提供できるという限定的な主張はLedgerにない。",
+          "Ledgerにない「華やかな瞬間」という評価と、ランウェイだけがそれを提供できるという限定を加えています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MB-05"
+        ],
+        "model_claims": [
+          "They get a glamorous moment that only the runway can offer."
+        ]
+      },
+      {
+        "claim_text": "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows.",
+        "span": [
+          793,
+          902
+        ],
+        "unit_ids": [
+          "S3.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "MB-05はFall 2026の一つのランウェイまとめで大型・ゆったりした形を複数の主要傾向として扱ったが、「summaries」と複数のまとめに広げている。",
+          "大きくゆとりのあるバッグという内容は重なりますが、Ledgerの対象はSpring/Summer 2026であり、記事はFall/Winterのランウェイとしています。",
+          "roomyな大型バッグがランウェイで目立つという内容は重なりますが、LedgerはSpring/Summer 2026を扱い、記事はFall/Winterの傾向として述べています。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-05",
+          "MB-03",
+          "MB-04"
+        ],
+        "model_claims": [
+          "Meanwhile, large, roomy bags also feature as a major trend in summaries of the same fall/winter runway shows."
+        ]
+      },
+      {
+        "claim_text": "Even when small stars get the spotlight, the big stars do not lose their turn.",
+        "span": [
+          903,
+          981
+        ],
+        "unit_ids": [
+          "S3.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-05"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "This is not a show where only small bags play the lead; bags with different appeal are lined up on the same stage.",
+        "span": [
+          982,
+          1096
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-05"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "And one thing we should not confuse here is “mini” and “micro.”",
+        "span": [
+          1098,
+          1161
+        ],
+        "unit_ids": [
+          "S4.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-06"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Another fashion article presents an editor’s view that the trend for tiny micro bags did not last long.",
+        "span": [
+          1162,
+          1265
+        ],
+        "unit_ids": [
+          "S4.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-06"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "However, this is the editor’s opinion, not the result of research into sales or consumers as a whole.",
+        "span": [
+          1266,
+          1367
+        ],
+        "unit_ids": [
+          "S4.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-06"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "So, the fact that mini bags stand out in articles and on runways is one thing; whether demand across the whole market, including micro bags, is growing is another.",
+        "span": [
+          1369,
+          1532
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "causal_not_in_fact"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: causal_not_in_fact"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-01"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "We cannot read the applause on the runway as excitement among shoppers.",
+        "span": [
+          1533,
+          1604
+        ],
+        "unit_ids": [
+          "S5.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-03"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 12,
+    "n_model_candidates": 4,
+    "n_deterministic_only_candidates": 8,
+    "total_cost_jpy": 1.4093,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 17,
+    "n_targets": 10,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 6,
+    "n_excluded_entries": 8,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.3591,
+    "effort": "medium",
+    "prompt_sha256": "1ba4685a55383adeb3b430bdd016b4e08d5c173ca8b9aaad9ec93b7385f9f8f6"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 5
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "provenance": {
+    "stage1_source": "fresh",
+    "frozen": false,
+    "reuse": false,
+    "substitution": false,
+    "stage1_cache": null,
+    "switches": {
+      "HANDOFF_MODE": "violation_span",
+      "VS_MATCH_EXT": true,
+      "VS_EXPLAIN_SPLIT": true,
+      "VS_SENTENCE_RESTORE": true,
+      "JA_MODE": "english_only",
+      "STAGE2_NORMAL_TWO_OF_TWO": false,
+      "CAUSAL_FLOOR_VOCAB": "known6",
+      "STAGE2_SECOND_OPINION": true,
+      "RECHECK_MERGE_UNRESOLVED": true,
+      "STRUCTURAL_ELEMENT_REWRITE": true,
+      "ACTOR_GUARD_MODE": "ag1_strict",
+      "STRUCTURAL_PAIRS_TO_RECHECK": true,
+      "STAGE4_ALLOWLIST": true,
+      "LADDER_LOCATION_CARRY": true,
+      "REWRITE_REVERT_GUARD": true,
+      "SPAN_FALLBACK_CHAIN": true,
+      "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+      "LAST_RESORT_DELETE": true,
+      "MATERIALITY_BLOCKING_PIN": true,
+      "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": true,
+      "FLOOR_MODE": "number_only",
+      "FLOOR_VERIFY_MODE": "off",
+      "CAUSAL_FLOOR": false,
+      "STAGE2_DOWNGRADE_VERIFY": false,
+      "TIER0_G_L_ENABLED": false,
+      "PRECHECK_MODE": "number_only",
+      "STAGE1_RECLASSIFY": true,
+      "RECHECK_BEFORE_AFTER_PAIRS": false,
+      "STAGE1_MODE": "coverage_union",
+      "STAGE1_ROUTES": "both",
+      "STAGE1_R5_MODE": "full",
+      "STAGE1_R3_REASONING": "medium",
+      "STAGE1_R5_REASONING": "high",
+      "STAGE1_NEGATION_MODE": "a",
+      "F3_PRECHECK_ALWAYS": true,
+      "STAGE1_FAIL_CLOSED": true,
+      "RECHECK_MODE": "coverage_union",
+      "MAX_CYCLES": 2,
+      "HARD_MAX_CYCLES": 3,
+      "MODEL": "gpt-6-luna"
+    },
+    "model": "gpt-6-luna",
+    "efforts": {
+      "r3": "medium",
+      "r5": "high",
+      "other": "high"
+    },
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "coverage_module_version": "stage1_coverage_v1",
+    "kind": "E2E(fresh Stage 1 -> 最終出口)。Trial artifactによる代替なし"
+  },
+  "waste_flags": [],
+  "provenance_violations": [],
+  "wall_seconds": 162.645,
+  "run_cost_incl_retries_jpy": 2.3555
+}

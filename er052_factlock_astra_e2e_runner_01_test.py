@@ -341,6 +341,38 @@ def events(root, theme, arm):
     return R.ArmState(f"{root}/{theme}/{arm}").events()
 
 
+class ShadowNoStandardArticleTest(unittest.TestCase):      # 委任_12: EN Standard STOP(a2/article.md無し)でもshadowが例外を出さない
+    def test_shadow_skips_standard_when_article_missing(self):
+        d = tempfile.mkdtemp()
+        try:
+            for sub in ("ja_writer", "b1b/audit/deviation_checks", "a2/audit/deviation_checks", "telemetry"):
+                os.makedirs(f"{d}/{sub}")
+            R.wt(f"{d}/ja_writer/revision2.md", "日本語")
+            R.wt(f"{d}/b1b/article.md", "本文のみ(見出しなし)")
+            R.wj(f"{d}/b1b/audit/deviation_checks/advanced_attempt1.json", {"parsed": {"deviations": []}})
+            R.wj(f"{d}/a2/audit/deviation_checks/standard_attempt1.json", {"parsed": {"deviations": []}})
+            fake = {}
+            for n in ("er003_v1_en_direct_vfl_01_generate", "er003_v1_n3_01_advanced_adaptation_generate",
+                      "er012_e_family_entertainment_two_level_runner_01", "er005_cost_logger"):
+                m = types.ModuleType(n)
+                m.get_client = lambda: object()
+                fake[n] = m
+            saved = {n: sys.modules.get(n) for n in fake}
+            sys.modules.update(fake)
+            try:
+                rc = R.worker_shadow(types.SimpleNamespace(arm="old"), d, "ledger")
+            finally:
+                for n, v in saved.items():
+                    if v is None:
+                        sys.modules.pop(n, None)
+                    else:
+                        sys.modules[n] = v
+            self.assertEqual(rc, 0)
+            self.assertNotIn("standard_attempt1_major", R.rj(f"{d}/telemetry/shadow.json"))
+        finally:
+            shutil.rmtree(d)
+
+
 class StubDryRunTest(unittest.TestCase):
     def setUp(self):
         self.root = tempfile.mkdtemp()
@@ -373,6 +405,18 @@ class StubDryRunTest(unittest.TestCase):
         r = run_cli(self.root)                                                  # 再開: 完了済みstageはAPI(=ledger)を再度動かさない
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         self.assertEqual(len(R.BudgetGuard(self.root, 1).entries()), n0)
+
+    def test_split_arm_invocations_keep_summaries_and_m3_file(self):      # 委任_12: 上書き問題とm3_protected空ファイル
+        r1 = run_cli(self.root, arms="new")
+        self.assertEqual(r1.returncode, 0, r1.stdout + r1.stderr)
+        r2 = run_cli(self.root, arms="old")
+        self.assertEqual(r2.returncode, 0, r2.stdout + r2.stderr)
+        ts = R.rj(f"{self.root}/meta/theme_summary.json")
+        self.assertIn("new", ts)
+        self.assertIn("old", ts)
+        self.assertTrue(os.path.exists(f"{self.root}/run_summary_worker1_new.json"))
+        self.assertTrue(os.path.exists(f"{self.root}/run_summary_worker1_old.json"))
+        self.assertTrue(os.path.exists(f"{self.root}/meta/new/telemetry/m3_protected.jsonl"))
 
     def test_b1_recovery_once_then_denied_per_article(self):
         r = run_cli(self.root, arms="new", scenario={"ja_recheck": {"new": 2}}, extra=["--until", "new_en_std"])

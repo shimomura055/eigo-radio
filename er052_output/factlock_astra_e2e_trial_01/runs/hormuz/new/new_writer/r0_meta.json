@@ -1,0 +1,50 @@
+{
+  "writer_calls": [
+    {
+      "stage": "ja_original",
+      "response_id": "resp_082604b7a4dd75d8006ac83cc45e3c87d08b28b3fdc8c73359",
+      "model": "gpt-6-luna"
+    }
+  ],
+  "ja_fact_checks": [
+    {
+      "overall_status": "LEDGER_COMPLIANT",
+      "n_major": 0,
+      "n_minor": 0,
+      "majors": [],
+      "response_id": "resp_06770a15674fca1e006ac83d003b3887d0829219231c4e1367",
+      "model": "gpt-6-luna"
+    }
+  ],
+  "must_fix_applied": false,
+  "recovery_must_fix": [
+    {
+      "fact_id": "HF-006",
+      "claim_in_article": "“A major policy plan appeared, and oil prices shot up”; 類似して、見出しや結びでも「oil prices」を広く述べている。",
+      "issue": "Ledgerが確認しているのはBrent原油先物の値動きだが、記事は対象を原油価格全般に広げている。",
+      "explanation": "Brent先物の上昇という事実自体は一致するが、「oil prices」とすることで確認対象の範囲をBrent先物から原油価格全般へ広げているため、changed_scopeのみtrue。原文記事にも同じ一般化がある。"
+    }
+  ],
+  "tagged_sentences": 13,
+  "facts_in_brief": [
+    "F1",
+    "F2",
+    "F3",
+    "F4"
+  ],
+  "tags_used": [
+    "F1",
+    "F2",
+    "F3",
+    "F4"
+  ],
+  "marks_echoed": 0,
+  "r0_echo": {
+    "echo_anywhere": false,
+    "echo_in_head120": false,
+    "n": 0
+  },
+  "r0_sha256": "559128822d5f878cb78bebbe3f14c3297e7912ad96ce740799faf73aec4d6b47",
+  "factlock_r0_block_sha256": "74b948719e14fd7184ff3719d36639ede7905e45cef95b97c1cca1a5638b2bf1",
+  "tag_check_note": "測定のみ(STOP・再生成なし)"
+}

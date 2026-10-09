@@ -799,7 +799,7 @@ def worker_shadow(a, arm_dir: str, ledger: str) -> int:
                     m1 = efam.open243_m1_summary_only_retry(client, ledger_text=ledger, ja_text=ja, title=title, body=body, must_fix=mf, max_attempts=2)
                     res["m1b"]["counterfactual"] = {"rule": "m1_summary_only", "success": m1["success"], "reason": m1["reason"],
                                                     "attempts": len(m1["attempts"])}
-    if os.path.exists(f"{arm_dir}/a2/audit/deviation_checks/standard_attempt1.json"):
+    if os.path.exists(f"{arm_dir}/a2/audit/deviation_checks/standard_attempt1.json") and os.path.exists(f"{arm_dir}/a2/article.md"):   # 委任_12修正: EN Standard STOP時は本文なし
         s1 = rj(f"{arm_dir}/a2/audit/deviation_checks/standard_attempt1.json")
         sm = [d for d in (s1.get("parsed") or {}).get("deviations", []) if d.get("severity") == "MAJOR"]
         st = rdt(f"{arm_dir}/a2/article.md")
@@ -814,6 +814,17 @@ class RunCapExceeded(RuntimeError):
     pass
 
 
+def write_m3_protected(arm_dir: str, level: str, res: dict) -> None:
+    """telemetry/m3_protected.jsonl(設計3節)。保護claim 0件でも空ファイルを必ず出す。0件でない場合はcandidate_filterの要約を1行/levelで追記(委任_12修正)。"""
+    pth = f"{arm_dir}/telemetry/m3_protected.jsonl"
+    os.makedirs(os.path.dirname(pth), exist_ok=True)
+    cf = ((res or {}).get("stage1_coverage") or {}).get("candidate_filter") or {}
+    if not os.path.exists(pth):
+        open(pth, "w", encoding="utf-8").close()
+    if cf.get("n_protected_keys"):
+        append_jsonl(pth, {"level": level, "n_protected_keys": cf.get("n_protected_keys"), "n_excluded_claims": cf.get("n_excluded_claims"), "verdicts": cf.get("verdicts")})
+
+
 def worker_check(a, arm_dir: str, ledger: str) -> int:
     level = a.level
     art = rdt(f"{arm_dir}/{'b1b' if level == 'advanced' else 'a2'}/article.md")
@@ -822,7 +833,10 @@ def worker_check(a, arm_dir: str, ledger: str) -> int:
     out = f"{arm_dir}/checker/{level}.json"
     if os.environ.get("E2E_STUB"):
         import er052_factlock_astra_e2e_stub_01 as stub
-        wj(out, stub.stub_check_one(inst, a.arm))
+        res = stub.stub_check_one(inst, a.arm)
+        wj(out, res)
+        if a.arm == "new":
+            write_m3_protected(arm_dir, level, res)
         return 0
     import er052_open233_self_recovery_flow_runner_01 as runner
     import er052_open233_e2e_acceptance_01 as old
@@ -853,6 +867,8 @@ def worker_check(a, arm_dir: str, ledger: str) -> int:
     r.update(provenance=prov, waste_flags=old.post_run_waste_flags(r), provenance_violations=old.provenance_violations({**r, "provenance": prov}),
              wall_seconds=round(time.time() - t0, 3), run_cost_incl_retries_jpy=round(state["cumulative_jpy"] - start, 4))
     wj(out, r)
+    if a.arm == "new":
+        write_m3_protected(arm_dir, level, r)
     return 0
 
 
@@ -1177,7 +1193,12 @@ def run_theme(ctx, theme: str) -> dict:
     res = {"theme": theme, "g0_pass": g0["pass"], "substitutions": g0["substitutions"]}
     for arm in ctx.arms:
         res[arm] = (run_old_arm if arm == "old" else run_new_arm)(ctx, theme, topic)
-    wj(f"{ctx.root}/{theme}/theme_summary.json", res)
+    tsp = f"{ctx.root}/{theme}/theme_summary.json"
+    if os.path.exists(tsp):      # 委任_12修正: 別invocation(別腕)の要約を消さない。実行した腕のキーだけ更新
+        prev = rj(tsp)
+        prev.update(res)
+        res = prev
+    wj(tsp, res)
     return res
 
 
@@ -1204,7 +1225,7 @@ def cmd_run(a) -> int:
         wj(ctx.stop_file(), {"reason": str(e), "worker": ctx.wid, "ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "totals": ctx.guard.totals()})
         print(str(e))
         return 3
-    wj(f"{ctx.root}/run_summary_worker{ctx.wid}.json", {"themes": results, "totals": ctx.guard.totals(), "stub": ctx.stub})
+    wj(f"{ctx.root}/run_summary_worker{ctx.wid}_{'-'.join(ctx.arms)}.json", {"themes": results, "totals": ctx.guard.totals(), "stub": ctx.stub})
     print(json.dumps(ctx.guard.totals(), ensure_ascii=False))
     return 0
 

@@ -1,0 +1,3379 @@
+{
+  "instance_id": "hormuz_new_advanced",
+  "group": "e2e",
+  "expected_group_label": "E2E generated",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Those numbers alone made quite an impact.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "Those numbers alone made quite an impact.",
+            "issue": "数値が大きな印象を与えたという評価は、Ledgerで検証された事実ではない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The story opened with a post by Trump. He proposed asking for a 20% reimbursement on all cargo passing through the Strait of Hormuz, to cover the cost of US security. “Reimbursement” means being paid back for expenses. In other words, it was a proposed charge to cover security costs. The figure of 20% suddenly took center stage.\n\nThat day, Brent futures rose by $7.29, or 9.59%, and ended at $83.30. Those numbers alone made quite an impact.\n\nBut we should not end the search for a cause by saying, “The 20% plan pushed prices up!” Reuters linked the rise to the US naval blockade against Iran, which was set to begin the next day, and to worries about energy shipments through the Strait. There was too much going on behind the scenes for one striking comment to explain it all.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "Those numbers alone made quite an impact.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+            ],
+            "batch_cost_jpy": 0.0944,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!”",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!”",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "That day, Brent futures rose by $7.29, or 9.59%, and ended at $83.30. Those numbers alone made quite an impact.\n\nBut we should not end the search for a cause by saying, “The 20% plan pushed prices up!” Reuters linked the rise to the US naval blockade against Iran, which was set to begin the next day, and to worries about energy shipments through the Strait. There was too much going on behind the scenes for one striking comment to explain it all.\n\nThen, the next day, the script changed. Trump posted that he would replace the reimbursement fee proposal with trade and investment deals involving Gulf countries and the United States. The focus shifted from charging cargo passing through the Strait to trade and investment with the United States. The 20% plan left the stage, and a different deal came in.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!”",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+            ],
+            "batch_cost_jpy": 0.0944,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "Even though the fee proposal was replaced by another deal, worries about energy shipments did not disappear.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Even though the fee proposal was replaced by another deal, worries about energy shipments did not disappear.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S8.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S8.2"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "After the announcement, Brent futures briefly gave up some of their gains. Looking only at this moment, it might seem that tensions had eased. But before long, prices returned to a high level close to where they had been before the announcement. It was too early to say, “That’s the end of it,” and roll the credits.\n\nConcerns about the naval blockade, attacks, and tanker safety continued. Even though the fee proposal was replaced by another deal, worries about energy shipments did not disappear. The question of charges and the question of whether ships can pass safely are separate issues.\n\nWhat we are looking at here is not crude oil prices overall, but Brent futures. And prices did not keep falling after the announcement. They first gave up some of their gains, then recovered. Flashy numbers grab the headlines. But when reading the market, we cannot set aside the issues of a blockade and safe transport. The end of the fee proposal and the end of worries about the Strait are two different things. There was still not enough to bring the curtain down.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "Even though the fee proposal was replaced by another deal, worries about energy shipments did not disappear.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+            ],
+            "batch_cost_jpy": 0.0944,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "What we are looking at here is not crude oil prices overall, but Brent futures.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "What we are looking at here is not crude oil prices overall, but Brent futures.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S9.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S9.1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Concerns about the naval blockade, attacks, and tanker safety continued. Even though the fee proposal was replaced by another deal, worries about energy shipments did not disappear. The question of charges and the question of whether ships can pass safely are separate issues.\n\nWhat we are looking at here is not crude oil prices overall, but Brent futures. And prices did not keep falling after the announcement. They first gave up some of their gains, then recovered. Flashy numbers grab the headlines. But when reading the market, we cannot set aside the issues of a blockade and safe transport. The end of the fee proposal and the end of worries about the Strait are two different things. There was still not enough to bring the curtain down.\n\n## In one line\nBrent futures soon recovered after Trump replaced his proposed 20% charge on cargo crossing the Strait of Hormuz.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "What we are looking at here is not crude oil prices overall, but Brent futures.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+            ],
+            "batch_cost_jpy": 0.0944,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "And prices did not keep falling after the announcement.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "And prices did not keep falling after the announcement.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S9.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S9.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Concerns about the naval blockade, attacks, and tanker safety continued. Even though the fee proposal was replaced by another deal, worries about energy shipments did not disappear. The question of charges and the question of whether ships can pass safely are separate issues.\n\nWhat we are looking at here is not crude oil prices overall, but Brent futures. And prices did not keep falling after the announcement. They first gave up some of their gains, then recovered. Flashy numbers grab the headlines. But when reading the market, we cannot set aside the issues of a blockade and safe transport. The end of the fee proposal and the end of worries about the Strait are two different things. There was still not enough to bring the curtain down.\n\n## In one line\nBrent futures soon recovered after Trump replaced his proposed 20% charge on cargo crossing the Strait of Hormuz.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "And prices did not keep falling after the announcement.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+            ],
+            "batch_cost_jpy": 0.0944,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "There was still not enough to bring the curtain down.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "There was still not enough to bring the curtain down.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S9.7); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S9.7"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Concerns about the naval blockade, attacks, and tanker safety continued. Even though the fee proposal was replaced by another deal, worries about energy shipments did not disappear. The question of charges and the question of whether ships can pass safely are separate issues.\n\nWhat we are looking at here is not crude oil prices overall, but Brent futures. And prices did not keep falling after the announcement. They first gave up some of their gains, then recovered. Flashy numbers grab the headlines. But when reading the market, we cannot set aside the issues of a blockade and safe transport. The end of the fee proposal and the end of worries about the Strait are two different things. There was still not enough to bring the curtain down.\n\n## In one line\nBrent futures soon recovered after Trump replaced his proposed 20% charge on cargo crossing the Strait of Hormuz.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "There was still not enough to bring the curtain down.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+            ],
+            "batch_cost_jpy": 0.0944,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "He proposed asking for a 20% reimbursement on all cargo passing through the Strait of Hormuz, to cover the cost of US security.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "He proposed asking for a 20% reimbursement on all cargo passing through the Strait of Hormuz, to cover the cost of US security.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "When a flashy fee proposal disappears, the market should breathe a sigh of relief. You might think, “Okay, that’s the end of this whole thing!” But this time, Brent futures did not leave the scene. Even after the main figure in the headlines left, the tense drama around the Strait of Hormuz still had more to come.\n\nThe story opened with a post by Trump. He proposed asking for a 20% reimbursement on all cargo passing through the Strait of Hormuz, to cover the cost of US security. “Reimbursement” means being paid back for expenses. In other words, it was a proposed charge to cover security costs. The figure of 20% suddenly took center stage.\n\nThat day, Brent futures rose by $7.29, or 9.59%, and ended at $83.30. Those numbers alone made quite an impact.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "He proposed asking for a 20% reimbursement on all cargo passing through the Strait of Hormuz, to cover the cost of US security.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+            ],
+            "batch_cost_jpy": 0.0944,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "The figure of 20% suddenly took center stage.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "The figure of 20% suddenly took center stage.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "When a flashy fee proposal disappears, the market should breathe a sigh of relief. You might think, “Okay, that’s the end of this whole thing!” But this time, Brent futures did not leave the scene. Even after the main figure in the headlines left, the tense drama around the Strait of Hormuz still had more to come.\n\nThe story opened with a post by Trump. He proposed asking for a 20% reimbursement on all cargo passing through the Strait of Hormuz, to cover the cost of US security. “Reimbursement” means being paid back for expenses. In other words, it was a proposed charge to cover security costs. The figure of 20% suddenly took center stage.\n\nThat day, Brent futures rose by $7.29, or 9.59%, and ended at $83.30. Those numbers alone made quite an impact.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "The figure of 20% suddenly took center stage.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+            ],
+            "batch_cost_jpy": 0.0944,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "That day, Brent futures rose by $7.29, or 9.59%, and ended at $83.30. Those numbers alone made quite an impact.\n\nBut we should not end the search for a cause by saying, “The 20% plan pushed prices up!” Reuters linked the rise to the US naval blockade against Iran, which was set to begin the next day, and to worries about energy shipments through the Strait. There was too much going on behind the scenes for one striking comment to explain it all.\n\nThen, the next day, the script changed. Trump posted that he would replace the reimbursement fee proposal with trade and investment deals involving Gulf countries and the United States. The focus shifted from charging cargo passing through the Strait to trade and investment with the United States. The 20% plan left the stage, and a different deal came in.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+            ],
+            "batch_cost_jpy": 0.0944,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "The 20% plan left the stage, and a different deal came in.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "The 20% plan left the stage, and a different deal came in.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!” Reuters linked the rise to the US naval blockade against Iran, which was set to begin the next day, and to worries about energy shipments through the Strait. There was too much going on behind the scenes for one striking comment to explain it all.\n\nThen, the next day, the script changed. Trump posted that he would replace the reimbursement fee proposal with trade and investment deals involving Gulf countries and the United States. The focus shifted from charging cargo passing through the Strait to trade and investment with the United States. The 20% plan left the stage, and a different deal came in.\n\nSo Brent futures did not suddenly plunge. That is the key point in this story.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "The 20% plan left the stage, and a different deal came in.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+            ],
+            "batch_cost_jpy": 0.0944,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "Brent futures soon recovered after Trump replaced his proposed 20% charge on cargo crossing the Strait of Hormuz.",
+          "origin": null,
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "Brent futures soon recovered after Trump replaced his proposed 20% charge on cargo crossing the Strait of Hormuz.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "HF-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "What we are looking at here is not crude oil prices overall, but Brent futures. And prices did not keep falling after the announcement. They first gave up some of their gains, then recovered. Flashy numbers grab the headlines. But when reading the market, we cannot set aside the issues of a blockade and safe transport. The end of the fee proposal and the end of worries about the Strait are two different things. There was still not enough to bring the curtain down.\n\n## In one line\nBrent futures soon recovered after Trump replaced his proposed 20% charge on cargo crossing the Strait of Hormuz.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "Brent futures soon recovered after Trump replaced his proposed 20% charge on cargo crossing the Strait of Hormuz.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+            ],
+            "batch_cost_jpy": 0.0944,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "” Reuters linked the rise to the US naval blockade against Iran, which was set to begin the next day, and to worries about energy shipments through the Strait.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "” Reuters linked the rise to the US naval blockade against Iran, which was set to begin the next day, and to worries about energy shipments through the Strait.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S8.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S8.2"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Even though the fee proposal was replaced by another deal, worries about energy shipments did not disappear."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "That day, Brent futures rose by $7.29, or 9.59%, and ended at $83.30. Those numbers alone made quite an impact.\n\nBut we should not end the search for a cause by saying, “The 20% plan pushed prices up!” Reuters linked the rise to the US naval blockade against Iran, which was set to begin the next day, and to worries about energy shipments through the Strait. There was too much going on behind the scenes for one striking comment to explain it all.\n\nThen, the next day, the script changed. Trump posted that he would replace the reimbursement fee proposal with trade and investment deals involving Gulf countries and the United States. The focus shifted from charging cargo passing through the Strait to trade and investment with the United States. The 20% plan left the stage, and a different deal came in.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "” Reuters linked the rise to the US naval blockade against Iran, which was set to begin the next day, and to worries about energy shipments through the Strait.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+            ],
+            "batch_cost_jpy": 0.0944,
+            "batch_n_claims": 13
+          }
+        },
+        {
+          "claim_text": "The end of the fee proposal and the end of worries about the Strait are two different things.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "The end of the fee proposal and the end of worries about the Strait are two different things.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S8.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S8.2"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Even though the fee proposal was replaced by another deal, worries about energy shipments did not disappear."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Concerns about the naval blockade, attacks, and tanker safety continued. Even though the fee proposal was replaced by another deal, worries about energy shipments did not disappear. The question of charges and the question of whether ships can pass safely are separate issues.\n\nWhat we are looking at here is not crude oil prices overall, but Brent futures. And prices did not keep falling after the announcement. They first gave up some of their gains, then recovered. Flashy numbers grab the headlines. But when reading the market, we cannot set aside the issues of a blockade and safe transport. The end of the fee proposal and the end of worries about the Strait are two different things. There was still not enough to bring the curtain down.\n\n## In one line\nBrent futures soon recovered after Trump replaced his proposed 20% charge on cargo crossing the Strait of Hormuz.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "The end of the fee proposal and the end of worries about the Strait are two different things.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+            ],
+            "batch_cost_jpy": 0.0944,
+            "batch_n_claims": 13
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 13,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "hormuz_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "Those numbers alone made quite an impact.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+          ],
+          "batch_cost_jpy": 0.0944,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "hormuz_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!”",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+          ],
+          "batch_cost_jpy": 0.0944,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "hormuz_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "Even though the fee proposal was replaced by another deal, worries about energy shipments did not disappear.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+          ],
+          "batch_cost_jpy": 0.0944,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "hormuz_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "What we are looking at here is not crude oil prices overall, but Brent futures.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+          ],
+          "batch_cost_jpy": 0.0944,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "hormuz_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "And prices did not keep falling after the announcement.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+          ],
+          "batch_cost_jpy": 0.0944,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "hormuz_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "There was still not enough to bring the curtain down.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+          ],
+          "batch_cost_jpy": 0.0944,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "hormuz_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "He proposed asking for a 20% reimbursement on all cargo passing through the Strait of Hormuz, to cover the cost of US security.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+          ],
+          "batch_cost_jpy": 0.0944,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "hormuz_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "The figure of 20% suddenly took center stage.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+          ],
+          "batch_cost_jpy": 0.0944,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "hormuz_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+          ],
+          "batch_cost_jpy": 0.0944,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "hormuz_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "The 20% plan left the stage, and a different deal came in.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+          ],
+          "batch_cost_jpy": 0.0944,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "hormuz_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "Brent futures soon recovered after Trump replaced his proposed 20% charge on cargo crossing the Strait of Hormuz.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+          ],
+          "batch_cost_jpy": 0.0944,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "hormuz_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "” Reuters linked the rise to the US naval blockade against Iran, which was set to begin the next day, and to worries about energy shipments through the Strait.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+          ],
+          "batch_cost_jpy": 0.0944,
+          "batch_n_claims": 13
+        },
+        {
+          "instance_id": "hormuz_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "The end of the fee proposal and the end of worries about the Strait are two different things.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+          ],
+          "batch_cost_jpy": 0.0944,
+          "batch_n_claims": 13
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "hormuz_new_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.8077,
+      "usage": {
+        "input_tokens": 5427,
+        "cached_input_tokens": 0,
+        "output_tokens": 9212,
+        "reasoning_tokens": 3198
+      },
+      "elapsed_seconds": 69.017,
+      "prompt_sha256": "5c0c4a4ca1d7901b4dc8f9ccc3886e7e5383eb7accaa0e6352b2e75fc80a7061",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "hormuz_new_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.9405,
+      "usage": {
+        "input_tokens": 4989,
+        "cached_input_tokens": 0,
+        "output_tokens": 10992,
+        "reasoning_tokens": 7768
+      },
+      "elapsed_seconds": 77.293,
+      "prompt_sha256": "bc9d9196dbe5a4061e6a02f467f224e74079f515a3706baa3237659591a95869",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "hormuz_new_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.3851,
+      "usage": {
+        "input_tokens": 5455,
+        "cached_input_tokens": 0,
+        "output_tokens": 3819,
+        "reasoning_tokens": 2603
+      },
+      "elapsed_seconds": 28.712,
+      "prompt_sha256": "3c51240ae27d5d504400f2a98a056c809b284f33e95ab54f2555ac8e8918db1f",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "hormuz_new_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2849,
+      "usage": {
+        "input_tokens": 11502,
+        "cached_input_tokens": 0,
+        "output_tokens": 1332,
+        "reasoning_tokens": 969
+      },
+      "elapsed_seconds": 15.388,
+      "prompt_sha256": "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+    },
+    {
+      "label": "hormuz_new_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0944,
+      "usage": {
+        "input_tokens": 11502,
+        "cached_input_tokens": 11499,
+        "output_tokens": 973,
+        "reasoning_tokens": 610
+      },
+      "elapsed_seconds": 10.663,
+      "prompt_sha256": "a0b5e723065e3db7011a570bf0a4adbeb28ac23c68ffea5d13e0713aad17d1fe"
+    }
+  ],
+  "total_cost_jpy": 2.5126,
+  "total_calls": 5,
+  "elapsed_seconds": 201.13,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Those numbers alone made quite an impact.",
+        "related_fact_id": "HF-006",
+        "origin": null,
+        "issue": "数値が大きな印象を与えたという評価は、Ledgerで検証された事実ではない。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!”",
+        "related_fact_id": "HF-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Even though the fee proposal was replaced by another deal, worries about energy shipments did not disappear.",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S8.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "What we are looking at here is not crude oil prices overall, but Brent futures.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S9.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "And prices did not keep falling after the announcement.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S9.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "There was still not enough to bring the curtain down.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S9.7); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 25,
+      "n_model_entries": 20,
+      "n_targets": 15,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 14,
+      "n_excluded_entries": 19,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.3851,
+          "usage": {
+            "input_tokens": 5455,
+            "cached_input_tokens": 0,
+            "output_tokens": 3819,
+            "reasoning_tokens": 2603
+          },
+          "elapsed_seconds": 28.712,
+          "prompt_sha256": "3c51240ae27d5d504400f2a98a056c809b284f33e95ab54f2555ac8e8918db1f",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.3851,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# The 20% Plan Is Out, but Brent Futures Are Still on Alert",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「20%案」の置換と、その後もBrentが高い水準に戻ったことはHF-007、HF-009と一致する。",
+          "fact_tags": [
+            "number",
+            "proper_noun"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.1",
+          "claim": "When a flashy fee proposal disappears, the market should breathe a sigh of relief.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "市場が安堵すべきという一般的・比喩的な期待を述べている。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S1.2",
+          "claim": "You might think, “Okay, that’s the end of this whole thing!”",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "読者に向けた仮想的な反応で、具体的事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S1.3",
+          "claim": "But this time, Brent futures did not leave the scene.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "Brent先物が発表後も高い水準に戻ったという趣旨で、HF-009の記述と一致する。",
+          "fact_tags": [
+            "proper_noun",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C5",
+          "key": "S1.4",
+          "claim": "Even after the main figure in the headlines left, the tense drama around the Strait of Hormuz still had more to come.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "提案の置換後も海峡をめぐる懸念が続いたという趣旨はHF-009と一致する。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C6",
+          "key": "S2.3",
+          "claim": "“Reimbursement” means being paid back for expenses.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "償還を費用の払い戻しと説明しており、HF-002の安全確保費用の償還という位置付けと一致する。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C7",
+          "key": "S2.5",
+          "claim": "The figure of 20% suddenly took center stage.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "20％という提案率はHF-002に記載された数値と一致する。",
+          "fact_tags": [
+            "number"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C8",
+          "key": "S3.2",
+          "claim": "Those numbers alone made quite an impact.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「その数字だけで影響を与えた」という因果・限定を含むが、Ledgerは価格上昇を封鎖方針や供給懸念にも関連付けている。",
+          "fact_tags": [
+            "number",
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C9",
+          "key": "S6.1",
+          "claim": "So Brent futures did not suddenly plunge.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "発表後にBrent先物が急落せず、一時的な上げ幅縮小後に回復したというHF-009と一致する。",
+          "fact_tags": [
+            "proper_noun",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C10",
+          "key": "S6.2",
+          "claim": "That is the key point in this story.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "物語上の要点を示す評価的な表現で、独立した事実主張ではない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C11",
+          "key": "S7.2",
+          "claim": "Looking only at this moment, it might seem that tensions had eased.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "一時的な値動きを見た読者にそう見える可能性を述べる修辞で、緊張緩和を事実として断定していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C12",
+          "key": "S8.3",
+          "claim": "The question of charges and the question of whether ships can pass safely are separate issues.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "料金案の置換後も海峡の安全・輸送への懸念が続いたというHF-009の記述に沿った区別である。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C13",
+          "key": "S9.4",
+          "claim": "Flashy numbers grab the headlines.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "数字が注目を集めるという一般的・比喩的な表現である。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C14",
+          "key": "S9.5",
+          "claim": "But when reading the market, we cannot set aside the issues of a blockade and safe transport.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "封鎖や安全な輸送への懸念が続いていたという前提はHF-009と一致し、文全体は市場を見る際の論評である。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C15",
+          "key": "R:S5.4+S6.1",
+          "claim": "So Brent futures did not suddenly plunge.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "発表後にBrent先物が急落せず、一時的に上げ幅を縮めてから回復したというHF-009と一致する。",
+          "fact_tags": [
+            "proper_noun",
+            "negation",
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "3c51240ae27d5d504400f2a98a056c809b284f33e95ab54f2555ac8e8918db1f",
+      "protect_flags": [
+        "changed_actor"
+      ],
+      "n_protected_by_flags": 0,
+      "g3_n_excluded_flagged": 19
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 47,
+    "n_judged_units": 37,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S5.4+S6.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "R:S5.4+S6.1",
+          "S1.1",
+          "S1.2",
+          "S1.3",
+          "S1.4",
+          "S2.3",
+          "S2.5",
+          "S3.2",
+          "S4.1",
+          "S6.1",
+          "S6.2",
+          "S7.2",
+          "S8.2",
+          "S8.3",
+          "S9.1",
+          "S9.2",
+          "S9.4",
+          "S9.5",
+          "S9.7",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "CANDIDATE",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "CANDIDATE",
+          "S2.4": "SUPPORTED",
+          "S2.5": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "CANDIDATE",
+          "S4.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "S7.1": "SUPPORTED",
+          "S7.2": "CANDIDATE",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "S8.1": "SUPPORTED",
+          "S8.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S8.3": "CANDIDATE",
+          "S9.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S9.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S9.3": "SUPPORTED",
+          "S9.4": "CANDIDATE",
+          "S9.5": "CANDIDATE",
+          "S9.6": "SUPPORTED",
+          "S9.7": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "L1": "SUPPORTED",
+          "R:S5.4+S6.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.8077,
+            "usage": {
+              "input_tokens": 5427,
+              "cached_input_tokens": 0,
+              "output_tokens": 9212,
+              "reasoning_tokens": 3198
+            },
+            "elapsed_seconds": 69.017,
+            "prompt_sha256": "5c0c4a4ca1d7901b4dc8f9ccc3886e7e5383eb7accaa0e6352b2e75fc80a7061",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "CANDIDATE",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "CANDIDATE",
+          "S2.4": "SUPPORTED",
+          "S2.5": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "CANDIDATE",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "S7.1": "SUPPORTED",
+          "S7.2": "CANDIDATE",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "S8.1": "SUPPORTED",
+          "S8.2": "SUPPORTED",
+          "S8.3": "CANDIDATE",
+          "S9.1": "SUPPORTED",
+          "S9.2": "SUPPORTED",
+          "S9.3": "SUPPORTED",
+          "S9.4": "CANDIDATE",
+          "S9.5": "CANDIDATE",
+          "S9.6": "SUPPORTED",
+          "S9.7": "SUPPORTED",
+          "L1": "SUPPORTED",
+          "R:S5.4+S6.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# The 20% Plan Is Out, but Brent Futures Are Still on Alert",
+            "span": [
+              0,
+              59
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "20%案の置換は裏付けられるが、Brent先物が「警戒状態にある」という評価はLedgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "# The 20% Plan Is Out, but Brent Futures Are Still on Alert"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "When a flashy fee proposal disappears, the market should breathe a sigh of relief.",
+            "span": [
+              61,
+              143
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "提案がなくなれば市場が安堵すべきだという市場反応の期待・規範はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "When a flashy fee proposal disappears, the market should breathe a sigh of relief."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "You might think, “Okay, that’s the end of this whole thing!”",
+            "span": [
+              144,
+              204
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "読者がそう考えるという想定はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "You might think, “Okay, that’s the end of this whole thing!”"
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "But this time, Brent futures did not leave the scene.",
+            "span": [
+              205,
+              258
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Brent先物が「場を去らなかった」という比喩的な評価は、Ledgerの具体的な値動きの記録そのものではない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But this time, Brent futures did not leave the scene."
+          },
+          {
+            "unit_id": "S1.4",
+            "unit_ids": [
+              "S1.4"
+            ],
+            "claim_text": "Even after the main figure in the headlines left, the tense drama around the Strait of Hormuz still had more to come.",
+            "span": [
+              259,
+              376
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "緊張した状況が「まだ続きがある」という将来方向の主張は、Ledgerに直接記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Even after the main figure in the headlines left, the tense drama around the Strait of Hormuz still had more to come."
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "“Reimbursement” means being paid back for expenses.",
+            "span": [
+              545,
+              596
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「償還」の一般的な意味の定義はLedgerに含まれていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "“Reimbursement” means being paid back for expenses."
+          },
+          {
+            "unit_id": "S2.5",
+            "unit_ids": [
+              "S2.5"
+            ],
+            "claim_text": "The figure of 20% suddenly took center stage.",
+            "span": [
+              663,
+              708
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "20%の数字が注目の中心になったという報道上の目立ち方はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "The figure of 20% suddenly took center stage."
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "Those numbers alone made quite an impact.",
+            "span": [
+              780,
+              821
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "数値が大きな印象を与えたという評価は、Ledgerで検証された事実ではない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "Those numbers alone made quite an impact."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!”",
+            "span": [
+              823,
+              911
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "So Brent futures did not suddenly plunge.",
+            "span": [
+              1520,
+              1561
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "値動きが急落しなかったという部分はHF-009に沿うが、文頭の“So”が直前の置換をその値動きの理由・結論として結び付けており、その因果関係はLedgerに示されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "So Brent futures did not suddenly plunge."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "That is the key point in this story.",
+            "span": [
+              1562,
+              1598
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "何がこの物語の「要点」かという評価はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "That is the key point in this story."
+          },
+          {
+            "unit_id": "S7.2",
+            "unit_ids": [
+              "S7.2"
+            ],
+            "claim_text": "Looking only at this moment, it might seem that tensions had eased.",
+            "span": [
+              1675,
+              1742
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "その時点で緊張が和らいだように見えたという解釈は、Ledgerに記載された市場の値動きや懸念そのものではない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Looking only at this moment, it might seem that tensions had eased."
+          },
+          {
+            "unit_id": "S8.2",
+            "unit_ids": [
+              "S8.2"
+            ],
+            "claim_text": "Even though the fee proposal was replaced by another deal, worries about energy shipments did not disappear.",
+            "span": [
+              1991,
+              2099
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S8.3",
+            "unit_ids": [
+              "S8.3"
+            ],
+            "claim_text": "The question of charges and the question of whether ships can pass safely are separate issues.",
+            "span": [
+              2100,
+              2194
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "料金の問題と、船舶が安全に通航できるかという問題を別個の問題とする整理はLedgerに明示されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-001"
+            ],
+            "model_claim": "The question of charges and the question of whether ships can pass safely are separate issues."
+          },
+          {
+            "unit_id": "S9.1",
+            "unit_ids": [
+              "S9.1"
+            ],
+            "claim_text": "What we are looking at here is not crude oil prices overall, but Brent futures.",
+            "span": [
+              2196,
+              2275
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S9.2",
+            "unit_ids": [
+              "S9.2"
+            ],
+            "claim_text": "And prices did not keep falling after the announcement.",
+            "span": [
+              2276,
+              2331
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S9.4",
+            "unit_ids": [
+              "S9.4"
+            ],
+            "claim_text": "Flashy numbers grab the headlines.",
+            "span": [
+              2388,
+              2422
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "目立つ数字が見出しを取るという一般的な報道傾向はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Flashy numbers grab the headlines."
+          },
+          {
+            "unit_id": "S9.5",
+            "unit_ids": [
+              "S9.5"
+            ],
+            "claim_text": "But when reading the market, we cannot set aside the issues of a blockade and safe transport.",
+            "span": [
+              2423,
+              2516
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "封鎖と安全な輸送への懸念が継続したことはLedgerにあるが、それを市場分析で「脇に置けない」とする指示・判断は明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But when reading the market, we cannot set aside the issues of a blockade and safe transport."
+          },
+          {
+            "unit_id": "S9.7",
+            "unit_ids": [
+              "S9.7"
+            ],
+            "claim_text": "There was still not enough to bring the curtain down.",
+            "span": [
+              2611,
+              2664
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "R:S5.4+S6.1",
+            "unit_ids": [
+              "R:S5.4+S6.1"
+            ],
+            "claim_text": "So Brent futures did not suddenly plunge.",
+            "span": [
+              1520,
+              1561
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「So」が、手数料案の置換をBrent先物が急落しなかったことの理由・結論として結び付けているが、Ledgerはこの因果関係を述べていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The 20% plan left the stage, and a different deal came in. So Brent futures did not suddenly plunge."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "R:S5.4+S6.1",
+          "S1.1",
+          "S7.2",
+          "S8.3"
+        ],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S2.5": "MATCH",
+          "S3.1": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S5.4": "MATCH",
+          "L1": "MATCH",
+          "R:S5.4+S6.1": "DEVIATION",
+          "S1.1": "DEVIATION",
+          "S6.1": "MATCH",
+          "S7.1": "MATCH",
+          "S7.2": "DEVIATION",
+          "S7.3": "MATCH",
+          "S8.1": "MATCH",
+          "S8.2": "MATCH",
+          "S8.3": "DEVIATION",
+          "S9.1": "MATCH",
+          "S9.2": "MATCH",
+          "S9.3": "MATCH",
+          "S9.5": "MATCH",
+          "S9.6": "MATCH",
+          "S9.7": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S1.3": "UNMENTIONED",
+          "S1.4": "UNMENTIONED",
+          "S3.2": "UNMENTIONED",
+          "S6.2": "UNMENTIONED",
+          "S7.4": "UNMENTIONED",
+          "S9.4": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.9405,
+            "usage": {
+              "input_tokens": 4989,
+              "cached_input_tokens": 0,
+              "output_tokens": 10992,
+              "reasoning_tokens": 7768
+            },
+            "elapsed_seconds": 77.293,
+            "prompt_sha256": "bc9d9196dbe5a4061e6a02f467f224e74079f515a3706baa3237659591a95869",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "R:S5.4+S6.1",
+            "unit_ids": [
+              "R:S5.4+S6.1"
+            ],
+            "claim_text": "So Brent futures did not suddenly plunge.",
+            "span": [
+              1520,
+              1561
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "置換発表とBrent先物が急落しなかったことを「So」で因果的に結び付けていますが、Ledgerはこの因果関係を確認していません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The 20% plan left the stage, and a different deal came in. So Brent futures did not suddenly plunge."
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "When a flashy fee proposal disappears, the market should breathe a sigh of relief.",
+            "span": [
+              61,
+              143
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "料金案の撤回後に市場が安堵すべきだという市場反応の評価は、Ledgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "When a flashy fee proposal disappears, the market should breathe a sigh of relief."
+          },
+          {
+            "unit_id": "S7.2",
+            "unit_ids": [
+              "S7.2"
+            ],
+            "claim_text": "Looking only at this moment, it might seem that tensions had eased.",
+            "span": [
+              1675,
+              1742
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "一時的な上げ幅縮小から緊張緩和を読み取る可能性を示していますが、Ledgerはその解釈を確認しておらず、緊張緩和との結び付けは裏付けられていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Looking only at this moment, it might seem that tensions had eased."
+          },
+          {
+            "unit_id": "S8.3",
+            "unit_ids": [
+              "S8.3"
+            ],
+            "claim_text": "The question of charges and the question of whether ships can pass safely are separate issues.",
+            "span": [
+              2100,
+              2194
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "料金の問題と船舶の安全な通航の問題が別個だという一般的な主張は、Ledgerで確認された内容を超えています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The question of charges and the question of whether ships can pass safely are separate issues."
+          },
+          {
+            "unit_id": "R:S5.4+S6.1",
+            "unit_ids": [
+              "R:S5.4+S6.1"
+            ],
+            "claim_text": "So Brent futures did not suddenly plunge.",
+            "span": [
+              1520,
+              1561
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "料金案の置換をBrent先物が急落しなかったことの原因のように結び付けていますが、Ledgerが述べるのは発表後の一時的な上げ幅縮小と回復です。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The 20% plan left the stage, and a different deal came in. So Brent futures did not suddenly plunge."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "R:S5.4+S6.1",
+        "S1.1",
+        "S7.2",
+        "S8.3"
+      ],
+      "r3_only": [
+        "S1.2",
+        "S1.3",
+        "S1.4",
+        "S2.3",
+        "S2.5",
+        "S3.2",
+        "S4.1",
+        "S6.1",
+        "S6.2",
+        "S8.2",
+        "S9.1",
+        "S9.2",
+        "S9.4",
+        "S9.5",
+        "S9.7",
+        "T"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 5
+    },
+    "union_candidates": [
+      {
+        "claim_text": "Those numbers alone made quite an impact.",
+        "span": [
+          780,
+          821
+        ],
+        "unit_ids": [
+          "S3.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "数値が大きな印象を与えたという評価は、Ledgerで検証された事実ではない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-006"
+        ],
+        "model_claims": [
+          "Those numbers alone made quite an impact."
+        ]
+      },
+      {
+        "claim_text": "But we should not end the search for a cause by saying, “The 20% plan pushed prices up!”",
+        "span": [
+          823,
+          911
+        ],
+        "unit_ids": [
+          "S4.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Even though the fee proposal was replaced by another deal, worries about energy shipments did not disappear.",
+        "span": [
+          1991,
+          2099
+        ],
+        "unit_ids": [
+          "S8.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "What we are looking at here is not crude oil prices overall, but Brent futures.",
+        "span": [
+          2196,
+          2275
+        ],
+        "unit_ids": [
+          "S9.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "And prices did not keep falling after the announcement.",
+        "span": [
+          2276,
+          2331
+        ],
+        "unit_ids": [
+          "S9.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "There was still not enough to bring the curtain down.",
+        "span": [
+          2611,
+          2664
+        ],
+        "unit_ids": [
+          "S9.7"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 6,
+    "n_model_candidates": 1,
+    "n_deterministic_only_candidates": 5,
+    "total_cost_jpy": 1.7482,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 20,
+    "n_targets": 15,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 14,
+    "n_excluded_entries": 19,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.3851,
+    "effort": "medium",
+    "prompt_sha256": "3c51240ae27d5d504400f2a98a056c809b284f33e95ab54f2555ac8e8918db1f"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 7
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "provenance": {
+    "stage1_source": "fresh",
+    "frozen": false,
+    "reuse": false,
+    "substitution": false,
+    "stage1_cache": null,
+    "switches": {
+      "HANDOFF_MODE": "violation_span",
+      "VS_MATCH_EXT": true,
+      "VS_EXPLAIN_SPLIT": true,
+      "VS_SENTENCE_RESTORE": true,
+      "JA_MODE": "english_only",
+      "STAGE2_NORMAL_TWO_OF_TWO": false,
+      "CAUSAL_FLOOR_VOCAB": "known6",
+      "STAGE2_SECOND_OPINION": true,
+      "RECHECK_MERGE_UNRESOLVED": true,
+      "STRUCTURAL_ELEMENT_REWRITE": true,
+      "ACTOR_GUARD_MODE": "ag1_strict",
+      "STRUCTURAL_PAIRS_TO_RECHECK": true,
+      "STAGE4_ALLOWLIST": true,
+      "LADDER_LOCATION_CARRY": true,
+      "REWRITE_REVERT_GUARD": true,
+      "SPAN_FALLBACK_CHAIN": true,
+      "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+      "LAST_RESORT_DELETE": true,
+      "MATERIALITY_BLOCKING_PIN": true,
+      "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": true,
+      "FLOOR_MODE": "number_only",
+      "FLOOR_VERIFY_MODE": "off",
+      "CAUSAL_FLOOR": false,
+      "STAGE2_DOWNGRADE_VERIFY": false,
+      "TIER0_G_L_ENABLED": false,
+      "PRECHECK_MODE": "number_only",
+      "STAGE1_RECLASSIFY": true,
+      "RECHECK_BEFORE_AFTER_PAIRS": false,
+      "STAGE1_MODE": "coverage_union",
+      "STAGE1_ROUTES": "both",
+      "STAGE1_R5_MODE": "full",
+      "STAGE1_R3_REASONING": "medium",
+      "STAGE1_R5_REASONING": "high",
+      "STAGE1_NEGATION_MODE": "a",
+      "F3_PRECHECK_ALWAYS": true,
+      "STAGE1_FAIL_CLOSED": true,
+      "RECHECK_MODE": "coverage_union",
+      "MAX_CYCLES": 2,
+      "HARD_MAX_CYCLES": 3,
+      "MODEL": "gpt-6-luna"
+    },
+    "model": "gpt-6-luna",
+    "efforts": {
+      "r3": "medium",
+      "r5": "high",
+      "other": "high"
+    },
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "coverage_module_version": "stage1_coverage_v1",
+    "kind": "E2E(fresh Stage 1 -> 最終出口)。Trial artifactによる代替なし"
+  },
+  "waste_flags": [],
+  "provenance_violations": [],
+  "wall_seconds": 201.182,
+  "run_cost_incl_retries_jpy": 2.5126
+}

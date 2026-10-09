@@ -1,0 +1,3864 @@
+{
+  "instance_id": "small_bag_new_advanced",
+  "group": "e2e",
+  "expected_group_label": "E2E generated",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Take a breath.",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "Take a breath.",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Mini Bags in the Spotlight! But Big Bags Aren’t Leaving the Stage\n\n“Mini bags are in the news again.” You line up your wallet, phone, and pouch and start a meeting in your head: “Which one should I leave behind?” Take a breath. It is still too soon to ask your big bag to hand in its retirement papers.\n\nELLE has presented mini bags as an autumn trend. But it would be a mistake to read this as “Small bags have all made a comeback as practical items!” An article rounding up the fall runways presents small decorative clutches as more artistic than practical.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "claim:74f439464d78c755",
+            "claim_text": "Take a breath.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye.",
+          "origin": null,
+          "related_fact_id": "MB-05",
+          "dev": {
+            "claim_in_article": "Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye.",
+            "issue": "ミニバッグが物を運ぶ裏方ではなく、目を引く存在だという役割・効果はLedgerにありません。 / Ledgerが対象とするのはランウェイに登場した小さなミノディエール／クラッチですが、記事は対象をミニバッグ全般に広げています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "MB-05",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "MB-05"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "ELLE has presented mini bags as an autumn trend. But it would be a mistake to read this as “Small bags have all made a comeback as practical items!” An article rounding up the fall runways presents small decorative clutches as more artistic than practical.\n\nIn other words, the point is not just “What can I fit inside?” but also “How does it look as part of an outfit?” Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye. If you judge it only by how much it can hold, you may miss its chance to shine. For now, let’s set capacity checks aside and pay attention to the balance of the whole outfit.\n\nBut this show has some dependable co-stars, too. The same runway roundup also names large, roomy styles as a major trend. Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn. Both the small and the large are getting their share of the spotlight.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-05",
+            "claim_text": "Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "For now, let’s set capacity checks aside and pay attention to the balance of the whole outfit.",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "For now, let’s set capacity checks aside and pay attention to the balance of the whole outfit.",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S3.5); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S3.5"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "ELLE has presented mini bags as an autumn trend. But it would be a mistake to read this as “Small bags have all made a comeback as practical items!” An article rounding up the fall runways presents small decorative clutches as more artistic than practical.\n\nIn other words, the point is not just “What can I fit inside?” but also “How does it look as part of an outfit?” Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye. If you judge it only by how much it can hold, you may miss its chance to shine. For now, let’s set capacity checks aside and pay attention to the balance of the whole outfit.\n\nBut this show has some dependable co-stars, too. The same runway roundup also names large, roomy styles as a major trend. Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn. Both the small and the large are getting their share of the spotlight.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "claim:2e4d6239bda4eb45",
+            "claim_text": "For now, let’s set capacity checks aside and pay attention to the balance of the whole outfit.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn.",
+          "origin": null,
+          "related_fact_id": "MB-01",
+          "dev": {
+            "claim_in_article": "Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn.",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S4.3); severity is decided by Stage 2",
+            "related_fact_id": "MB-01",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S4.3"
+              ],
+              "related_fact_ids": [
+                "MB-01"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In other words, the point is not just “What can I fit inside?” but also “How does it look as part of an outfit?” Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye. If you judge it only by how much it can hold, you may miss its chance to shine. For now, let’s set capacity checks aside and pay attention to the balance of the whole outfit.\n\nBut this show has some dependable co-stars, too. The same runway roundup also names large, roomy styles as a major trend. Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn. Both the small and the large are getting their share of the spotlight.\n\nSo this is not a final showdown to decide which bag size gets the crown. It’s a showcase of choices: go small for decoration, or carry a big bag. The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-01",
+            "claim_text": "Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "So this is not a final showdown to decide which bag size gets the crown.",
+          "origin": null,
+          "related_fact_id": "MB-05",
+          "dev": {
+            "claim_in_article": "So this is not a final showdown to decide which bag size gets the crown.",
+            "issue": "決定論検査で戻した: causal_not_in_fact,negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact,negation_polarity_mismatch, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "MB-05",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact",
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "MB-05"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But this show has some dependable co-stars, too. The same runway roundup also names large, roomy styles as a major trend. Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn. Both the small and the large are getting their share of the spotlight.\n\nSo this is not a final showdown to decide which bag size gets the crown. It’s a showcase of choices: go small for decoration, or carry a big bag. The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.\n\nBut hold the applause before saying, “So micro bags are fully back too!” We should not treat mini bags and micro bags as one and the same. In another article, an editor says the micro-bag trend was over after a short time. We cannot use the attention on mini bags as proof that micro bags in general are popular again.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-05",
+            "claim_text": "So this is not a final showdown to decide which bag size gets the crown.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "But hold the applause before saying, “So micro bags are fully back too!”",
+          "origin": null,
+          "related_fact_id": "MB-06",
+          "dev": {
+            "claim_in_article": "But hold the applause before saying, “So micro bags are fully back too!”",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S6.1); severity is decided by Stage 2",
+            "related_fact_id": "MB-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S6.1"
+              ],
+              "related_fact_ids": [
+                "MB-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So this is not a final showdown to decide which bag size gets the crown. It’s a showcase of choices: go small for decoration, or carry a big bag. The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.\n\nBut hold the applause before saying, “So micro bags are fully back too!” We should not treat mini bags and micro bags as one and the same. In another article, an editor says the micro-bag trend was over after a short time. We cannot use the attention on mini bags as proof that micro bags in general are popular again.\n\nEven a glamorous story needs a note of caution. What we see here is only the attention given by fashion media and on runways. It does not prove demand among all shoppers or that sales have actually risen. “Often seen in magazines” and “often sold at the checkout” are two different things.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-06",
+            "claim_text": "But hold the applause before saying, “So micro bags are fully back too!”",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "We should not treat mini bags and micro bags as one and the same.",
+          "origin": null,
+          "related_fact_id": "MB-06",
+          "dev": {
+            "claim_in_article": "We should not treat mini bags and micro bags as one and the same.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "MB-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "MB-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So this is not a final showdown to decide which bag size gets the crown. It’s a showcase of choices: go small for decoration, or carry a big bag. The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.\n\nBut hold the applause before saying, “So micro bags are fully back too!” We should not treat mini bags and micro bags as one and the same. In another article, an editor says the micro-bag trend was over after a short time. We cannot use the attention on mini bags as proof that micro bags in general are popular again.\n\nEven a glamorous story needs a note of caution. What we see here is only the attention given by fashion media and on runways. It does not prove demand among all shoppers or that sales have actually risen. “Often seen in magazines” and “often sold at the checkout” are two different things.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-06",
+            "claim_text": "We should not treat mini bags and micro bags as one and the same.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "We cannot use the attention on mini bags as proof that micro bags in general are popular again.",
+          "origin": null,
+          "related_fact_id": "MB-06",
+          "dev": {
+            "claim_in_article": "We cannot use the attention on mini bags as proof that micro bags in general are popular again.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.4); severity is decided by Stage 2",
+            "related_fact_id": "MB-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.4"
+              ],
+              "related_fact_ids": [
+                "MB-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So this is not a final showdown to decide which bag size gets the crown. It’s a showcase of choices: go small for decoration, or carry a big bag. The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.\n\nBut hold the applause before saying, “So micro bags are fully back too!” We should not treat mini bags and micro bags as one and the same. In another article, an editor says the micro-bag trend was over after a short time. We cannot use the attention on mini bags as proof that micro bags in general are popular again.\n\nEven a glamorous story needs a note of caution. What we see here is only the attention given by fashion media and on runways. It does not prove demand among all shoppers or that sales have actually risen. “Often seen in magazines” and “often sold at the checkout” are two different things.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-06",
+            "claim_text": "We cannot use the attention on mini bags as proof that micro bags in general are popular again.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "Even a glamorous story needs a note of caution.",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "Even a glamorous story needs a note of caution.",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S7.1); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S7.1"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But hold the applause before saying, “So micro bags are fully back too!” We should not treat mini bags and micro bags as one and the same. In another article, an editor says the micro-bag trend was over after a short time. We cannot use the attention on mini bags as proof that micro bags in general are popular again.\n\nEven a glamorous story needs a note of caution. What we see here is only the attention given by fashion media and on runways. It does not prove demand among all shoppers or that sales have actually risen. “Often seen in magazines” and “often sold at the checkout” are two different things.\n\nFor now, rather than ending with the words “Mini bags are back,” let’s enjoy both the decorative charm of a small bag and the roomy feel of a large one. What will you ask today’s bag to do: carry your things, or finish off your outfit? Your day, not the trend headline, decides what takes center stage.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "claim:9238c918e00098b4",
+            "claim_text": "Even a glamorous story needs a note of caution.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "It does not prove demand among all shoppers or that sales have actually risen.",
+          "origin": null,
+          "related_fact_id": "MB-01",
+          "dev": {
+            "claim_in_article": "It does not prove demand among all shoppers or that sales have actually risen.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.3); severity is decided by Stage 2",
+            "related_fact_id": "MB-01",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S7.3"
+              ],
+              "related_fact_ids": [
+                "MB-01"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But hold the applause before saying, “So micro bags are fully back too!” We should not treat mini bags and micro bags as one and the same. In another article, an editor says the micro-bag trend was over after a short time. We cannot use the attention on mini bags as proof that micro bags in general are popular again.\n\nEven a glamorous story needs a note of caution. What we see here is only the attention given by fashion media and on runways. It does not prove demand among all shoppers or that sales have actually risen. “Often seen in magazines” and “often sold at the checkout” are two different things.\n\nFor now, rather than ending with the words “Mini bags are back,” let’s enjoy both the decorative charm of a small bag and the roomy feel of a large one. What will you ask today’s bag to do: carry your things, or finish off your outfit? Your day, not the trend headline, decides what takes center stage.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-01",
+            "claim_text": "It does not prove demand among all shoppers or that sales have actually risen.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "What will you ask today’s bag to do: carry your things, or finish off your outfit?",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "What will you ask today’s bag to do: carry your things, or finish off your outfit?",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S8.2); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S8.2"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Even a glamorous story needs a note of caution. What we see here is only the attention given by fashion media and on runways. It does not prove demand among all shoppers or that sales have actually risen. “Often seen in magazines” and “often sold at the checkout” are two different things.\n\nFor now, rather than ending with the words “Mini bags are back,” let’s enjoy both the decorative charm of a small bag and the roomy feel of a large one. What will you ask today’s bag to do: carry your things, or finish off your outfit? Your day, not the trend headline, decides what takes center stage.\n\n## In one line\nRunway reports spotlight decorative mini bags, while roomy large bags remain a major trend too.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "claim:da2b2a858662bcec",
+            "claim_text": "What will you ask today’s bag to do: carry your things, or finish off your outfit?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "” Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye.",
+          "origin": null,
+          "related_fact_id": "MB-05",
+          "dev": {
+            "claim_in_article": "” Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye.",
+            "issue": "ミニバッグが物を運ぶ裏方ではなく、目を引く存在だという役割・効果はLedgerにありません。 / Ledgerが対象とするのはランウェイに登場した小さなミノディエール／クラッチですが、記事は対象をミニバッグ全般に広げています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "MB-05",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "MB-05"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "ELLE has presented mini bags as an autumn trend. But it would be a mistake to read this as “Small bags have all made a comeback as practical items!” An article rounding up the fall runways presents small decorative clutches as more artistic than practical.\n\nIn other words, the point is not just “What can I fit inside?” but also “How does it look as part of an outfit?” Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye. If you judge it only by how much it can hold, you may miss its chance to shine. For now, let’s set capacity checks aside and pay attention to the balance of the whole outfit.\n\nBut this show has some dependable co-stars, too. The same runway roundup also names large, roomy styles as a major trend. Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn. Both the small and the large are getting their share of the spotlight.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-05",
+            "claim_text": "” Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "For now, rather than ending with the words “Mini bags are back,” let’s enjoy both the decorative charm of a small bag and the roomy feel of a large one.",
+          "origin": null,
+          "related_fact_id": "MB-05",
+          "dev": {
+            "claim_in_article": "For now, rather than ending with the words “Mini bags are back,” let’s enjoy both the decorative charm of a small bag and the roomy feel of a large one.",
+            "issue": "ミニバッグが物を運ぶ裏方ではなく、目を引く存在だという役割・効果はLedgerにありません。 / Ledgerが対象とするのはランウェイに登場した小さなミノディエール／クラッチですが、記事は対象をミニバッグ全般に広げています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "MB-05",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "MB-05"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Even a glamorous story needs a note of caution. What we see here is only the attention given by fashion media and on runways. It does not prove demand among all shoppers or that sales have actually risen. “Often seen in magazines” and “often sold at the checkout” are two different things.\n\nFor now, rather than ending with the words “Mini bags are back,” let’s enjoy both the decorative charm of a small bag and the roomy feel of a large one. What will you ask today’s bag to do: carry your things, or finish off your outfit? Your day, not the trend headline, decides what takes center stage.\n\n## In one line\nRunway reports spotlight decorative mini bags, while roomy large bags remain a major trend too.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-05",
+            "claim_text": "For now, rather than ending with the words “Mini bags are back,” let’s enjoy both the decorative charm of a small bag and the roomy feel of a large one.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "But hold the applause before saying, “So micro bags are fully back too!",
+          "origin": null,
+          "related_fact_id": "MB-06",
+          "dev": {
+            "claim_in_article": "But hold the applause before saying, “So micro bags are fully back too!",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S6.1); severity is decided by Stage 2",
+            "related_fact_id": "MB-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S6.1"
+              ],
+              "related_fact_ids": [
+                "MB-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "But hold the applause before saying, “So micro bags are fully back too!”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So this is not a final showdown to decide which bag size gets the crown. It’s a showcase of choices: go small for decoration, or carry a big bag. The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.\n\nBut hold the applause before saying, “So micro bags are fully back too!” We should not treat mini bags and micro bags as one and the same. In another article, an editor says the micro-bag trend was over after a short time. We cannot use the attention on mini bags as proof that micro bags in general are popular again.\n\nEven a glamorous story needs a note of caution. What we see here is only the attention given by fashion media and on runways. It does not prove demand among all shoppers or that sales have actually risen. “Often seen in magazines” and “often sold at the checkout” are two different things.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-06",
+            "claim_text": "But hold the applause before saying, “So micro bags are fully back too!",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "” We should not treat mini bags and micro bags as one and the same.",
+          "origin": null,
+          "related_fact_id": "MB-06",
+          "dev": {
+            "claim_in_article": "” We should not treat mini bags and micro bags as one and the same.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "MB-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "MB-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "We should not treat mini bags and micro bags as one and the same."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So this is not a final showdown to decide which bag size gets the crown. It’s a showcase of choices: go small for decoration, or carry a big bag. The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.\n\nBut hold the applause before saying, “So micro bags are fully back too!” We should not treat mini bags and micro bags as one and the same. In another article, an editor says the micro-bag trend was over after a short time. We cannot use the attention on mini bags as proof that micro bags in general are popular again.\n\nEven a glamorous story needs a note of caution. What we see here is only the attention given by fashion media and on runways. It does not prove demand among all shoppers or that sales have actually risen. “Often seen in magazines” and “often sold at the checkout” are two different things.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MB-06",
+            "claim_text": "” We should not treat mini bags and micro bags as one and the same.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "“Mini bags are in the news again.",
+          "origin": null,
+          "related_fact_id": "MB-06",
+          "dev": {
+            "claim_in_article": "“Mini bags are in the news again.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.4); severity is decided by Stage 2",
+            "related_fact_id": "MB-06",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.4"
+              ],
+              "related_fact_ids": [
+                "MB-06"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "We cannot use the attention on mini bags as proof that micro bags in general are popular again."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Mini Bags in the Spotlight! But Big Bags Aren’t Leaving the Stage\n\n“Mini bags are in the news again.” You line up your wallet, phone, and pouch and start a meeting in your head: “Which one should I leave behind?” Take a breath. It is still too soon to ask your big bag to hand in its retirement papers.\n\nELLE has presented mini bags as an autumn trend. But it would be a mistake to read this as “Small bags have all made a comeback as practical items!” An article rounding up the fall runways presents small decorative clutches as more artistic than practical.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MB-06",
+            "claim_text": "“Mini bags are in the news again.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "It is still too soon to ask your big bag to hand in its retirement papers.",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "It is still too soon to ask your big bag to hand in its retirement papers.",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S8.2); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S8.2"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "What will you ask today’s bag to do: carry your things, or finish off your outfit?"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Mini Bags in the Spotlight! But Big Bags Aren’t Leaving the Stage\n\n“Mini bags are in the news again.” You line up your wallet, phone, and pouch and start a meeting in your head: “Which one should I leave behind?” Take a breath. It is still too soon to ask your big bag to hand in its retirement papers.\n\nELLE has presented mini bags as an autumn trend. But it would be a mistake to read this as “Small bags have all made a comeback as practical items!” An article rounding up the fall runways presents small decorative clutches as more artistic than practical.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "claim:7ec7d193eaafaa28",
+            "claim_text": "It is still too soon to ask your big bag to hand in its retirement papers.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        },
+        {
+          "claim_text": "The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.",
+          "origin": null,
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.",
+            "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S8.2); severity is decided by Stage 2",
+            "related_fact_id": "",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "unknown_fact_id",
+                "quote_missing"
+              ],
+              "unit_ids": [
+                "S8.2"
+              ],
+              "related_fact_ids": []
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "What will you ask today’s bag to do: carry your things, or finish off your outfit?"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But this show has some dependable co-stars, too. The same runway roundup also names large, roomy styles as a major trend. Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn. Both the small and the large are getting their share of the spotlight.\n\nSo this is not a final showdown to decide which bag size gets the crown. It’s a showcase of choices: go small for decoration, or carry a big bag. The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.\n\nBut hold the applause before saying, “So micro bags are fully back too!” We should not treat mini bags and micro bags as one and the same. In another article, an editor says the micro-bag trend was over after a short time. We cannot use the attention on mini bags as proof that micro bags in general are popular again.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "small_bag_new_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "claim:f18f5f934eaa7982",
+            "claim_text": "The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+              "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+            ],
+            "batch_cost_jpy": 0.1547,
+            "batch_n_claims": 18
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 18,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "claim:74f439464d78c755",
+          "claim_text": "Take a breath.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-05",
+          "claim_text": "Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "claim:2e4d6239bda4eb45",
+          "claim_text": "For now, let’s set capacity checks aside and pay attention to the balance of the whole outfit.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-01",
+          "claim_text": "Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-05",
+          "claim_text": "So this is not a final showdown to decide which bag size gets the crown.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-06",
+          "claim_text": "But hold the applause before saying, “So micro bags are fully back too!”",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-06",
+          "claim_text": "We should not treat mini bags and micro bags as one and the same.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-06",
+          "claim_text": "We cannot use the attention on mini bags as proof that micro bags in general are popular again.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "claim:9238c918e00098b4",
+          "claim_text": "Even a glamorous story needs a note of caution.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-01",
+          "claim_text": "It does not prove demand among all shoppers or that sales have actually risen.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "claim:da2b2a858662bcec",
+          "claim_text": "What will you ask today’s bag to do: carry your things, or finish off your outfit?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-05",
+          "claim_text": "” Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-05",
+          "claim_text": "For now, rather than ending with the words “Mini bags are back,” let’s enjoy both the decorative charm of a small bag and the roomy feel of a large one.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-06",
+          "claim_text": "But hold the applause before saying, “So micro bags are fully back too!",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MB-06",
+          "claim_text": "” We should not treat mini bags and micro bags as one and the same.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MB-06",
+          "claim_text": "“Mini bags are in the news again.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "claim:7ec7d193eaafaa28",
+          "claim_text": "It is still too soon to ask your big bag to hand in its retirement papers.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        },
+        {
+          "instance_id": "small_bag_new_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "claim:f18f5f934eaa7982",
+          "claim_text": "The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1",
+            "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+          ],
+          "batch_cost_jpy": 0.1547,
+          "batch_n_claims": 18
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "small_bag_new_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6206,
+      "usage": {
+        "input_tokens": 3803,
+        "cached_input_tokens": 0,
+        "output_tokens": 7151,
+        "reasoning_tokens": 2839
+      },
+      "elapsed_seconds": 55.555,
+      "prompt_sha256": "331ba93f19a802c413119c7c964c48464c3bdce8f7396cab8ce9817130d5307f",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "small_bag_new_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.8108,
+      "usage": {
+        "input_tokens": 3361,
+        "cached_input_tokens": 0,
+        "output_tokens": 9665,
+        "reasoning_tokens": 7620
+      },
+      "elapsed_seconds": 69.059,
+      "prompt_sha256": "82f6083c2cbd68cd1fb43d648337abaf010fd72292f590b45be7577f776b885c",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "small_bag_new_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.1827,
+      "usage": {
+        "input_tokens": 3654,
+        "cached_input_tokens": 0,
+        "output_tokens": 1599,
+        "reasoning_tokens": 810
+      },
+      "elapsed_seconds": 14.043,
+      "prompt_sha256": "ceba1b2b368d8edb295a0c13580359c07c979f752cd5d3e6e283a9dfe5ff1ca1",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "small_bag_new_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2449,
+      "usage": {
+        "input_tokens": 10697,
+        "cached_input_tokens": 0,
+        "output_tokens": 983,
+        "reasoning_tokens": 568
+      },
+      "elapsed_seconds": 10.434,
+      "prompt_sha256": "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1"
+    },
+    {
+      "label": "small_bag_new_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1285,
+      "usage": {
+        "input_tokens": 4389,
+        "cached_input_tokens": 0,
+        "output_tokens": 760,
+        "reasoning_tokens": 655
+      },
+      "elapsed_seconds": 7.373,
+      "prompt_sha256": "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+    },
+    {
+      "label": "small_bag_new_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1193,
+      "usage": {
+        "input_tokens": 10697,
+        "cached_input_tokens": 10694,
+        "output_tokens": 1306,
+        "reasoning_tokens": 879
+      },
+      "elapsed_seconds": 13.555,
+      "prompt_sha256": "cc8cbb497cceb33008675e6bce9aed634d4d94037964551acae0314a66ea9bf1"
+    },
+    {
+      "label": "small_bag_new_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0354,
+      "usage": {
+        "input_tokens": 4389,
+        "cached_input_tokens": 4386,
+        "output_tokens": 363,
+        "reasoning_tokens": 258
+      },
+      "elapsed_seconds": 3.937,
+      "prompt_sha256": "55c34f85c59352ac4dd689bc5bf079ef20c32d12069d4a4d5b2e3a7f21c1acad"
+    }
+  ],
+  "total_cost_jpy": 2.1422,
+  "total_calls": 7,
+  "elapsed_seconds": 173.994,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Take a breath.",
+        "related_fact_id": "",
+        "origin": null,
+        "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S1.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye.",
+        "related_fact_id": "MB-05",
+        "origin": null,
+        "issue": "ミニバッグが物を運ぶ裏方ではなく、目を引く存在だという役割・効果はLedgerにありません。 / Ledgerが対象とするのはランウェイに登場した小さなミノディエール／クラッチですが、記事は対象をミニバッグ全般に広げています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "For now, let’s set capacity checks aside and pay attention to the balance of the whole outfit.",
+        "related_fact_id": "",
+        "origin": null,
+        "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S3.5); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn.",
+        "related_fact_id": "MB-01",
+        "origin": null,
+        "issue": "決定論検査で戻した: causal_not_in_fact",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S4.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "So this is not a final showdown to decide which bag size gets the crown.",
+        "related_fact_id": "MB-05",
+        "origin": null,
+        "issue": "決定論検査で戻した: causal_not_in_fact,negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact,negation_polarity_mismatch, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But hold the applause before saying, “So micro bags are fully back too!”",
+        "related_fact_id": "MB-06",
+        "origin": null,
+        "issue": "決定論検査で戻した: causal_not_in_fact",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S6.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "We should not treat mini bags and micro bags as one and the same.",
+        "related_fact_id": "MB-06",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "We cannot use the attention on mini bags as proof that micro bags in general are popular again.",
+        "related_fact_id": "MB-06",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Even a glamorous story needs a note of caution.",
+        "related_fact_id": "",
+        "origin": null,
+        "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S7.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "It does not prove demand among all shoppers or that sales have actually risen.",
+        "related_fact_id": "MB-01",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "What will you ask today’s bag to do: carry your things, or finish off your outfit?",
+        "related_fact_id": "",
+        "origin": null,
+        "issue": "決定論検査で戻した: unknown_fact_id,quote_missing",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=unknown_fact_id,quote_missing, units=S8.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 20,
+      "n_model_entries": 10,
+      "n_targets": 9,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 8,
+      "n_excluded_entries": 8,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.1827,
+          "usage": {
+            "input_tokens": 3654,
+            "cached_input_tokens": 0,
+            "output_tokens": 1599,
+            "reasoning_tokens": 810
+          },
+          "elapsed_seconds": 14.043,
+          "prompt_sha256": "ceba1b2b368d8edb295a0c13580359c07c979f752cd5d3e6e283a9dfe5ff1ca1",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.1827,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.2",
+          "claim": "You line up your wallet, phone, and pouch and start a meeting in your head: “Which one should I leave behind?”",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "財布や携帯などを並べる想像上の場面で、具体的な事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S3.1",
+          "claim": "In other words, the point is not just “What can I fit inside?”",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "バッグの容量についての修辞的な問いかけで、新たな事実を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S3.2",
+          "claim": "but also “How does it look as part of an outfit?”",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "服装との見た目を意識するという修辞的な問いかけで、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S3.3",
+          "claim": "Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「ミニバッグ」全般を運搬より目を引くものとして対比しているが、Ledgerの説明は特定のランウェイ上の小型クラッチに限られ、範囲と限定条件を広げている。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C5",
+          "key": "S3.4",
+          "claim": "If you judge it only by how much it can hold, you may miss its chance to shine.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "容量だけで判断すると魅力を見落とすかもしれないという助言的な比喩で、具体的な事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C6",
+          "key": "S5.3",
+          "claim": "The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "バッグの実用面と装いの面を「同じ舞台に現れる」と表す比喩で、具体的な新事実を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "S8.3",
+          "claim": "Your day, not the trend headline, decides what takes center stage.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "読者に向けた締めの修辞であり、日々の選択を促す表現にとどまる。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C8",
+          "key": "R:S4.4+S5.1",
+          "claim": "So this is not a final showdown to decide which bag size gets the crown.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "バッグのサイズを競わせる「決戦」という比喩を否定する修辞で、独立した具体的事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C9",
+          "key": "S4.3",
+          "claim": "Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "同じランウェイまとめで小型の装飾的バッグと大型・ゆったりした形の双方が扱われるという内容を、比喩的に言い換えている。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "ceba1b2b368d8edb295a0c13580359c07c979f752cd5d3e6e283a9dfe5ff1ca1",
+      "protect_flags": [
+        "changed_actor"
+      ],
+      "n_protected_by_flags": 0,
+      "g3_n_excluded_flagged": 8
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 42,
+    "n_judged_units": 33,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S4.4+S5.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 6,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "R:S4.4+S5.1",
+          "S1.2",
+          "S1.3",
+          "S3.1",
+          "S3.2",
+          "S3.3",
+          "S3.4",
+          "S3.5",
+          "S4.3",
+          "S5.1",
+          "S5.3",
+          "S6.1",
+          "S6.2",
+          "S6.4",
+          "S7.1",
+          "S7.3",
+          "S8.2",
+          "S8.3"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED->CANDIDATE(unknown_fact_id,quote_missing)",
+          "S1.4": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "CANDIDATE",
+          "S3.3": "CANDIDATE",
+          "S3.4": "CANDIDATE",
+          "S3.5": "SUPPORTED->CANDIDATE(unknown_fact_id,quote_missing)",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED->CANDIDATE(causal_not_in_fact)",
+          "S4.4": "SUPPORTED",
+          "S5.1": "SUPPORTED->CANDIDATE(causal_not_in_fact,negation_polarity_mismatch)",
+          "S5.2": "SUPPORTED",
+          "S5.3": "CANDIDATE",
+          "S6.1": "SUPPORTED->CANDIDATE(causal_not_in_fact)",
+          "S6.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S7.1": "SUPPORTED->CANDIDATE(unknown_fact_id,quote_missing)",
+          "S7.2": "SUPPORTED",
+          "S7.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S7.4": "SUPPORTED",
+          "S8.1": "SUPPORTED",
+          "S8.2": "SUPPORTED->CANDIDATE(unknown_fact_id,quote_missing)",
+          "S8.3": "CANDIDATE",
+          "L1": "SUPPORTED",
+          "R:S4.4+S5.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6206,
+            "usage": {
+              "input_tokens": 3803,
+              "cached_input_tokens": 0,
+              "output_tokens": 7151,
+              "reasoning_tokens": 2839
+            },
+            "elapsed_seconds": 55.555,
+            "prompt_sha256": "331ba93f19a802c413119c7c964c48464c3bdce8f7396cab8ce9817130d5307f",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "CANDIDATE",
+          "S3.3": "CANDIDATE",
+          "S3.4": "CANDIDATE",
+          "S3.5": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "CANDIDATE",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "S8.1": "SUPPORTED",
+          "S8.2": "SUPPORTED",
+          "S8.3": "CANDIDATE",
+          "L1": "SUPPORTED",
+          "R:S4.4+S5.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "You line up your wallet, phone, and pouch and start a meeting in your head: “Which one should I leave behind?”",
+            "span": [
+              104,
+              214
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "読者が持ち物を並べて、何を置いていくか考えるという状況はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "You line up your wallet, phone, and pouch and start a meeting in your head: “Which one should I leave behind?”"
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "Take a breath.",
+            "span": [
+              215,
+              229
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "unknown_fact_id",
+              "quote_missing"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: unknown_fact_id,quote_missing"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "In other words, the point is not just “What can I fit inside?”",
+            "span": [
+              564,
+              626
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "バッグ選びで収納量だけが判断点ではないという主張は、Ledgerで確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "In other words, the point is not just “What can I fit inside?”"
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "but also “How does it look as part of an outfit?”",
+            "span": [
+              627,
+              676
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "服装の一部としてどう見えるかも判断点だという主張は、Ledgerで確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "but also “How does it look as part of an outfit?”"
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye.",
+            "span": [
+              677,
+              790
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "ミニバッグが物を運ぶ裏方ではなく、目を引く存在だという役割・効果はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye."
+          },
+          {
+            "unit_id": "S3.4",
+            "unit_ids": [
+              "S3.4"
+            ],
+            "claim_text": "If you judge it only by how much it can hold, you may miss its chance to shine.",
+            "span": [
+              791,
+              870
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "収納量だけで判断するとバッグの魅力を見逃すという評価はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "If you judge it only by how much it can hold, you may miss its chance to shine."
+          },
+          {
+            "unit_id": "S3.5",
+            "unit_ids": [
+              "S3.5"
+            ],
+            "claim_text": "For now, let’s set capacity checks aside and pay attention to the balance of the whole outfit.",
+            "span": [
+              871,
+              965
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "unknown_fact_id",
+              "quote_missing"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: unknown_fact_id,quote_missing"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S4.3",
+            "unit_ids": [
+              "S4.3"
+            ],
+            "claim_text": "Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn.",
+            "span": [
+              1089,
+              1188
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "causal_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: causal_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-01"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "So this is not a final showdown to decide which bag size gets the crown.",
+            "span": [
+              1261,
+              1333
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "causal_not_in_fact",
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: causal_not_in_fact,negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.",
+            "span": [
+              1407,
+              1536
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "バッグが持ち物を運ぶものと服に合わせるものの両方だという一般的な機能・用途の主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "But hold the applause before saying, “So micro bags are fully back too!”",
+            "span": [
+              1538,
+              1610
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "causal_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: causal_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-06"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "We should not treat mini bags and micro bags as one and the same.",
+            "span": [
+              1611,
+              1676
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-06"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "We cannot use the attention on mini bags as proof that micro bags in general are popular again.",
+            "span": [
+              1761,
+              1856
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-06"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S7.1",
+            "unit_ids": [
+              "S7.1"
+            ],
+            "claim_text": "Even a glamorous story needs a note of caution.",
+            "span": [
+              1858,
+              1905
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "unknown_fact_id",
+              "quote_missing"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: unknown_fact_id,quote_missing"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "It does not prove demand among all shoppers or that sales have actually risen.",
+            "span": [
+              1984,
+              2062
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-01"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S8.2",
+            "unit_ids": [
+              "S8.2"
+            ],
+            "claim_text": "What will you ask today’s bag to do: carry your things, or finish off your outfit?",
+            "span": [
+              2302,
+              2384
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "unknown_fact_id",
+              "quote_missing"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: unknown_fact_id,quote_missing"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S8.3",
+            "unit_ids": [
+              "S8.3"
+            ],
+            "claim_text": "Your day, not the trend headline, decides what takes center stage.",
+            "span": [
+              2385,
+              2451
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "個人の一日が何を主役にするかを決めるという因果・選択の主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Your day, not the trend headline, decides what takes center stage."
+          },
+          {
+            "unit_id": "R:S4.4+S5.1",
+            "unit_ids": [
+              "R:S4.4+S5.1"
+            ],
+            "claim_text": "So this is not a final showdown to decide which bag size gets the crown.",
+            "span": [
+              1261,
+              1333
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "“So”で両サイズの注目と、サイズを決める最終対決ではないという結論を因果的に結び付けていますが、その関係自体はLedgerに述べられていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "Both the small and the large are getting their share of the spotlight. So this is not a final showdown to decide which bag size gets the crown."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S3.3",
+          "S4.3"
+        ],
+        "unit_status": {
+          "S1.1": "MATCH",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S7.2": "MATCH",
+          "S7.3": "MATCH",
+          "S2.3": "MATCH",
+          "S3.3": "DEVIATION",
+          "S4.2": "MATCH",
+          "S4.3": "DEVIATION",
+          "S4.4": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S8.1": "MATCH",
+          "L1": "MATCH",
+          "R:S4.4+S5.1": "MATCH",
+          "S6.1": "MATCH",
+          "S6.2": "MATCH",
+          "S6.3": "MATCH",
+          "S6.4": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S1.3": "UNMENTIONED",
+          "S1.4": "UNMENTIONED",
+          "S3.1": "UNMENTIONED",
+          "S3.2": "UNMENTIONED",
+          "S3.4": "UNMENTIONED",
+          "S3.5": "UNMENTIONED",
+          "S4.1": "UNMENTIONED",
+          "S5.3": "UNMENTIONED",
+          "S7.1": "UNMENTIONED",
+          "S7.4": "UNMENTIONED",
+          "S8.2": "UNMENTIONED",
+          "S8.3": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.8108,
+            "usage": {
+              "input_tokens": 3361,
+              "cached_input_tokens": 0,
+              "output_tokens": 9665,
+              "reasoning_tokens": 7620
+            },
+            "elapsed_seconds": 69.059,
+            "prompt_sha256": "82f6083c2cbd68cd1fb43d648337abaf010fd72292f590b45be7577f776b885c",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye.",
+            "span": [
+              677,
+              790
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerが対象とするのはランウェイに登場した小さなミノディエール／クラッチですが、記事は対象をミニバッグ全般に広げています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye."
+          },
+          {
+            "unit_id": "S4.3",
+            "unit_ids": [
+              "S4.3"
+            ],
+            "claim_text": "Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn.",
+            "span": [
+              1089,
+              1188
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerでは小型バッグは装飾性の強いアクセントとして登場し、大型・ゆったりした形も複数の主要傾向とされています。小型バッグを「中心舞台」と位置付けることで、両者の相対的な目立ち方を変えています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MB-05"
+            ],
+            "model_claim": "Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S3.3",
+        "S4.3"
+      ],
+      "r3_only": [
+        "R:S4.4+S5.1",
+        "S1.2",
+        "S1.3",
+        "S3.1",
+        "S3.2",
+        "S3.4",
+        "S3.5",
+        "S5.1",
+        "S5.3",
+        "S6.1",
+        "S6.2",
+        "S6.4",
+        "S7.1",
+        "S7.3",
+        "S8.2",
+        "S8.3"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 10
+    },
+    "union_candidates": [
+      {
+        "claim_text": "Take a breath.",
+        "span": [
+          215,
+          229
+        ],
+        "unit_ids": [
+          "S1.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "unknown_fact_id",
+          "quote_missing"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: unknown_fact_id,quote_missing"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye.",
+        "span": [
+          677,
+          790
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "ミニバッグが物を運ぶ裏方ではなく、目を引く存在だという役割・効果はLedgerにありません。",
+          "Ledgerが対象とするのはランウェイに登場した小さなミノディエール／クラッチですが、記事は対象をミニバッグ全般に広げています。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MB-05"
+        ],
+        "model_claims": [
+          "Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye."
+        ]
+      },
+      {
+        "claim_text": "For now, let’s set capacity checks aside and pay attention to the balance of the whole outfit.",
+        "span": [
+          871,
+          965
+        ],
+        "unit_ids": [
+          "S3.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "unknown_fact_id",
+          "quote_missing"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: unknown_fact_id,quote_missing"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Just because mini bags are center stage doesn’t mean big bags are waiting backstage for their turn.",
+        "span": [
+          1089,
+          1188
+        ],
+        "unit_ids": [
+          "S4.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "causal_not_in_fact"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: causal_not_in_fact"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-01"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "So this is not a final showdown to decide which bag size gets the crown.",
+        "span": [
+          1261,
+          1333
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "causal_not_in_fact",
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: causal_not_in_fact,negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-05"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "But hold the applause before saying, “So micro bags are fully back too!”",
+        "span": [
+          1538,
+          1610
+        ],
+        "unit_ids": [
+          "S6.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "causal_not_in_fact"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: causal_not_in_fact"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-06"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "We should not treat mini bags and micro bags as one and the same.",
+        "span": [
+          1611,
+          1676
+        ],
+        "unit_ids": [
+          "S6.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-06"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "We cannot use the attention on mini bags as proof that micro bags in general are popular again.",
+        "span": [
+          1761,
+          1856
+        ],
+        "unit_ids": [
+          "S6.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-06"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Even a glamorous story needs a note of caution.",
+        "span": [
+          1858,
+          1905
+        ],
+        "unit_ids": [
+          "S7.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "unknown_fact_id",
+          "quote_missing"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: unknown_fact_id,quote_missing"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [],
+        "model_claims": []
+      },
+      {
+        "claim_text": "It does not prove demand among all shoppers or that sales have actually risen.",
+        "span": [
+          1984,
+          2062
+        ],
+        "unit_ids": [
+          "S7.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MB-01"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "What will you ask today’s bag to do: carry your things, or finish off your outfit?",
+        "span": [
+          2302,
+          2384
+        ],
+        "unit_ids": [
+          "S8.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "unknown_fact_id",
+          "quote_missing"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: unknown_fact_id,quote_missing"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 11,
+    "n_model_candidates": 1,
+    "n_deterministic_only_candidates": 10,
+    "total_cost_jpy": 1.4314,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 10,
+    "n_targets": 9,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 8,
+    "n_excluded_entries": 8,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.1827,
+    "effort": "medium",
+    "prompt_sha256": "ceba1b2b368d8edb295a0c13580359c07c979f752cd5d3e6e283a9dfe5ff1ca1"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 7
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "provenance": {
+    "stage1_source": "fresh",
+    "frozen": false,
+    "reuse": false,
+    "substitution": false,
+    "stage1_cache": null,
+    "switches": {
+      "HANDOFF_MODE": "violation_span",
+      "VS_MATCH_EXT": true,
+      "VS_EXPLAIN_SPLIT": true,
+      "VS_SENTENCE_RESTORE": true,
+      "JA_MODE": "english_only",
+      "STAGE2_NORMAL_TWO_OF_TWO": false,
+      "CAUSAL_FLOOR_VOCAB": "known6",
+      "STAGE2_SECOND_OPINION": true,
+      "RECHECK_MERGE_UNRESOLVED": true,
+      "STRUCTURAL_ELEMENT_REWRITE": true,
+      "ACTOR_GUARD_MODE": "ag1_strict",
+      "STRUCTURAL_PAIRS_TO_RECHECK": true,
+      "STAGE4_ALLOWLIST": true,
+      "LADDER_LOCATION_CARRY": true,
+      "REWRITE_REVERT_GUARD": true,
+      "SPAN_FALLBACK_CHAIN": true,
+      "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+      "LAST_RESORT_DELETE": true,
+      "MATERIALITY_BLOCKING_PIN": true,
+      "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": true,
+      "FLOOR_MODE": "number_only",
+      "FLOOR_VERIFY_MODE": "off",
+      "CAUSAL_FLOOR": false,
+      "STAGE2_DOWNGRADE_VERIFY": false,
+      "TIER0_G_L_ENABLED": false,
+      "PRECHECK_MODE": "number_only",
+      "STAGE1_RECLASSIFY": true,
+      "RECHECK_BEFORE_AFTER_PAIRS": false,
+      "STAGE1_MODE": "coverage_union",
+      "STAGE1_ROUTES": "both",
+      "STAGE1_R5_MODE": "full",
+      "STAGE1_R3_REASONING": "medium",
+      "STAGE1_R5_REASONING": "high",
+      "STAGE1_NEGATION_MODE": "a",
+      "F3_PRECHECK_ALWAYS": true,
+      "STAGE1_FAIL_CLOSED": true,
+      "RECHECK_MODE": "coverage_union",
+      "MAX_CYCLES": 2,
+      "HARD_MAX_CYCLES": 3,
+      "MODEL": "gpt-6-luna"
+    },
+    "model": "gpt-6-luna",
+    "efforts": {
+      "r3": "medium",
+      "r5": "high",
+      "other": "high"
+    },
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "coverage_module_version": "stage1_coverage_v1",
+    "kind": "E2E(fresh Stage 1 -> 最終出口)。Trial artifactによる代替なし"
+  },
+  "waste_flags": [],
+  "provenance_violations": [],
+  "wall_seconds": 174.048,
+  "run_cost_incl_retries_jpy": 2.1422
+}
