@@ -20405,3 +20405,9 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **Opus任意レビュー反映**: semiconductor新EN STOPの帰属を訂正(注記前のbrief内指示文がFact Lock R0経由で事実扱いされた新腕固有の経路、注記の副作用ではない)、JA列から未出荷本文を除外、感度値の主表格上げ、ラベル基準統一(OC-8)、言い過ぎの訂正、層別逆転の妥当順説明。人間確認パックに面白さpairwise 3対を追加。
 - **VALIDATED / APPROVED_FOR_PRODUCTION は宣言しない**。Production変更なし、API支出¥0。
 - **ユーザー判断待ち(USER_DECISION_REQUIRED)**: 方向判断(REPORT §111の選択肢(a)人間確認+pairwise / (b)OC-1/OC-3/OC-8のOPEN化+凍結JAでEN段+Checker再実行[推定¥30〜150] / (e)判定基準組替え+次Trial事前登録 / (c)指示文の本文化対策[最小実験推定¥20〜55、新5再実行推定¥180〜230] / (d)保留)。費用は全て推定。B1回復の見直しは仕様変更=ユーザー決定。`CURRENT_SPEC.md`・`OPEN_ITEMS.md`は未編集(OPEN起票はFable判断)。
+
+## WRITER-EVAL-DUAL-LLM-METHOD-TRIAL-01 委任_03: Closeout(2026-10-09、Fable最終判定、REJECTED[Luna系評価者構成])
+- **ユーザー判断(逐語)**: 「1. K01 → C 2. K03 → C 3. K11 → C寄り。ただしBの余地あり」/ K08・K09・K12=A(「問題なしの三件は確認し、問題なしでOK」)/ 「Lunaだけで確認(Deepseekは使わない)任意ブロックはOK、実施。問題なしの三件は確認し、問題なしでOK。Goしてください」。
+- **Fable最終判定**: REJECTED(Luna系評価者構成)。根拠: 事前登録M1で、主評価者gpt-6-lunaがK01 rep2=A、K02は4判定すべてB、参考5.6-lunaもK01=A/A。ユーザー成功条件「重大を見逃す→評価方式を見直す」に該当。M2はPASS、形式違反0、実費約JPY 2.46。
+- **留保**: 評価者がLuna系のみ(本番Writer/Checkerと同系統)で、ユーザー指示の「異なる2系統」(別vendor)は未達。本REJECTEDは「Luna系を評価者にする構成」への判定であり、別vendor評価者での二重LLM方式自体は未検証。
+- **VALIDATED / APPROVED_FOR_PRODUCTION ではない**。大規模Writer比較Trialへは進まない。Production変更なし・Checker変更なし・新規Writer生成なし。次の選択肢(未決): (a)別vendor評価者で再試行(単価登録が前提) (b)不在断定(K02型)の3分類定義の見直し (c)方式を見直す。詳細REPORT §112。

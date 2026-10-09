@@ -5929,3 +5929,21 @@ MEASURED(Trial、Production変更なし、フラグ既定OFF)。採否判断はF
 
 ### Status
 MEASURED(Trial、Production変更なし)。Fable最終判定=総合『同等・混在』(事実安全の良化は示されなかった)。ユーザーの方向判断(上記(a)〜(e))待ち=USER_DECISION_REQUIRED。VALIDATED/APPROVED_FOR_PRODUCTION未宣言。
+
+## §112 WRITER-EVAL-DUAL-LLM-METHOD-TRIAL-01 評価方式(二重LLM独立判定)の小規模要素Trial(2026-10-09、REJECTED[Luna系評価者構成]、Production変更なし)
+
+- 位置づけ: Trial/DEV。Writer新旧比較ではなく「評価方法の評価」のみ。新規Writer生成なし・Checker変更なし。VALIDATED/APPROVED_FOR_PRODUCTION ではない。
+- 目的: Fact台帳+Writer文(+最小前後文)を、Checkerとは別の評価LLMで A問題なし/B曖昧/C重大 に独立判定し、不一致・重大候補だけ人間確認する方式が機能するかを確認。
+- ケース10件(人間既知の区分): K01 重大(ユーザー確認済みC、META Rollback)/ K02 重大(人間確認済み、不在断定)/ K03 重大(ユーザー確認済みC、gold A5-0)/ K11 重大寄り参考(ユーザー判断C寄りBの余地)/ K04 境界(JA Rollback語義、Sonnet暫定)/ K06 境界(不在・非公開断定、Sonnet暫定)/ K10 境界(因果追加型、M2対象外)/ K08・K09・K12 問題なし(ユーザー確認済みA、M2)。出典 `er052_output/writer_eval_dual_llm_method_trial_01/CASES_01.md`。
+- 構成: 主=gpt-6-luna 2rep、参考=gpt-5.6-luna 2rep(同Luna系、別vendor未達)。DeepSeek未使用(ユーザー判断)。事前登録 `PREREGISTRATION_01.md`(0-R実行時確定)。Opus条件A所見9件を事前に反映(`docs/pm/opus_a_review_writer_eval_dual_llm_01.md`)。
+- 結果表(各セル rep1, rep2。6-luna=gpt-6-luna、5.6-luna=gpt-5.6-luna): K01 6-luna B/A, 5.6-luna A/A | K02 B/B, B/B | K03 B/B, C/C | K04 B/B, A/A | K06 B/B, B/B | K08 A/A, A/A | K09 A/B, A/A | K10 A/A, A/A | K11 B/B, B/B | K12 A/A, A/A。Fact/Writer文/Checker参考判定を含む全文表は `RESULT_TABLE_01.md` 表1(Checker判定は正解扱いしない)。
+- M1: 主 gpt-6-luna 6判定=B,A,B,B,B,B(Aが1つ、K01 rep2)-> REJECTED。参考 5.6-luna=A,A,B,B,C,C -> REJECTED。K02は全4判定B(プロンプト定義上「不在断定」はCにならない)。
+- M2: 主 B/C=1(K09 rep2のB)・C=0 PASS。参考 0 PASS。
+- M3(参考、同系統2モデル): 不一致 rep1 3/10(K01,K03,K04)、rep2 3/10(K03,K04,K09)。C不一致1(K03)、両B 3(K02,K06,K11)。独立性が弱く信頼度低。
+- M4: 6-luna 8/10(K01,K09が不一致、80%ちょうど)、5.6-luna 10/10。temperatureは両モデルとも指定拒否(実効未指定)。
+- 人間確認対象率: 定義1(不一致のみ)3/10、定義2(不一致+両B)6/10、6-luna自己不一致込み7/10。
+- 任意ブロック(space_weapons旧腕EN22文、gpt-6-luna 1rep、合否外): A=12/B=10/C=0、確認対象(B+C)=10/22(45%)。対応付け品質別(A/B/C): direct=6/3/0(9文中B 33%)、partial=5/4/0、weak=1/3/0。partial/weakのBは対応付け不良由来か文の逸脱か要区別。
+- 実費: 約JPY 2.46(本体1.763+任意0.695、見積4.7-23.2円/1.57-7.55円より小)。形式違反0、API例外0、再呼び出し0(62試行すべて初回有効)。プロンプト・ケース・閾値は結果後に変更していない。
+- Status=REJECTED(Fable最終判定、2026-10-09)。根拠: 確認済み重大(K01,K02,K03)を安定して拾えない(ユーザー成功条件「重大を見逃す」)。留保: 評価者がLuna系のみで、ユーザー指示の「異なる2系統」(別vendor)は未達。本判定は「Luna系を評価者にする構成」へのものであり、別vendor評価者での二重LLM方式自体は未検証。大規模Writer比較Trialへは進まない。
+- 次の選択肢(未決): (a)別vendor評価者(DeepSeek/Gemini、単価登録が前提)で再試行 (b)不在断定(K02型)の3分類定義の見直し (c)方式を見直す。
+- 出典: `er052_output/writer_eval_dual_llm_method_trial_01/{RESULT_TABLE_01.md,RUN_LOG_01.md,aggregate_01.json,PREREGISTRATION_01.md,CASES_01.md,OPTIONAL_BLOCK_01.md}`、`docs/pm/delegation_log/2026-10-09_WRITER-EVAL-DUAL-LLM-METHOD-TRIAL-01_{01,01c,01d,02,03}.md`。
