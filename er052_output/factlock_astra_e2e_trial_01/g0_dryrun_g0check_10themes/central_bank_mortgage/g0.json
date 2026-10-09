@@ -1,0 +1,73 @@
+{
+  "checks": {
+    "ledger_sha256_recorded": {
+      "pass": true,
+      "sha256": "7a5593c4a002333a70e1b6328198f696ab8cf98ea50dd564ceedd9275fa30a78",
+      "sha256_lf": "171c235b93161ae972b1b4798e760a516b7841abe0e911a591b6fee81a2d5651",
+      "note": "新6: 凍結pinはmanifestで照合"
+    },
+    "brief_original_sha256": {
+      "pass": true,
+      "sha256": "cddeced887f1a38c32eabad27631915507ee4ab5341d15deace76f6c84479349",
+      "expected16": null
+    },
+    "annotated_strip_equals_original": {
+      "pass": true,
+      "status": "PASS",
+      "strict_equal": true,
+      "reason": ""
+    },
+    "json_original_matches_md": {
+      "pass": true,
+      "json_sha256": "3bdae8e15e55dda64a51075a0193314e70b2e08a6b2fa777c5a3ccdaaa5eead5"
+    },
+    "annotated_json_vs_original": {
+      "pass": true,
+      "skipped": "auto-derived annotated JSON(v2未定義)",
+      "would_be_status": "PASS",
+      "reason": ""
+    },
+    "annotated_json_tags_equal_md": {
+      "pass": true
+    },
+    "manifest_ledger_sha256_lf": {
+      "pass": true,
+      "expected": "171c235b93161ae972b1b4798e760a516b7841abe0e911a591b6fee81a2d5651"
+    },
+    "manifest_brief_sha256_lf": {
+      "pass": true,
+      "expected": "bfbd63d8e580ea127584a0eca5ff4225bdd663aa5723220743f376b97851c9dd"
+    },
+    "manifest_json_sha256_lf": {
+      "pass": true,
+      "expected": "1835cabaed53279d5d9708eb9ab4f3be658963d55118404f5af7f2a5a3b2b0b3"
+    },
+    "spec_sha256_matches_raw_or_lf": {
+      "pass": true
+    }
+  },
+  "substitutions": [
+    "ledger=Stage R出力から取得",
+    "B3=Stage R出力(委任_06)から取得",
+    "注記版brief=dry-run用の機械的な仮注記(箇条書きへ【事実N】を足すだけ。v2注記仕様の成果物ではない)",
+    "注記版JSON=原JSONのselected_fact_brief_textのFacts部を注記版briefのFacts部へ差し替えて自動生成(仮)"
+  ],
+  "spec_sha256": {
+    "B3_ANNOTATION_SPEC_v2_ANNOTATOR.md": {
+      "recorded": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+      "raw": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+      "lf_normalized": "2b963fe4d68151daca51147bf2d0df0e3010efcd87b4a4453e602b1d7baa5f64"
+    },
+    "ANNOTATION_DELEGATION_TEMPLATE_v2.md": {
+      "recorded": "e77e1ed6716291ad2d58275fd96013b5ccbc52732cabcdc99f5e01c41808bf09",
+      "raw": "e77e1ed6716291ad2d58275fd96013b5ccbc52732cabcdc99f5e01c41808bf09",
+      "lf_normalized": "e77e1ed6716291ad2d58275fd96013b5ccbc52732cabcdc99f5e01c41808bf09"
+    },
+    "B3_ANNOTATION_SPEC_v2.md": {
+      "recorded": "b8dd84b09cfefc3e065a2978a11943909b80af1ab598c45dc1a4867189049fc1",
+      "raw": "b8dd84b09cfefc3e065a2978a11943909b80af1ab598c45dc1a4867189049fc1",
+      "lf_normalized": "0d043a28494918694ae8d6d2a43662e807b6e410edd7c3c677d2485392c3b087"
+    }
+  },
+  "pass": true
+}

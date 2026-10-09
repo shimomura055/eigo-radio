@@ -1,0 +1,73 @@
+{
+  "checks": {
+    "ledger_sha256_recorded": {
+      "pass": true,
+      "sha256": "06ae3dca98cd237a3bf4ab8b3a58b3e8103ff7761662a5868ba0f46c9b67dafd",
+      "sha256_lf": "a7a2d0d910a62e62da94059c61579d9b9d5b4d989acbc4dbe9de7ce8bb7aea34",
+      "note": "新6: 凍結pinはmanifestで照合"
+    },
+    "brief_original_sha256": {
+      "pass": true,
+      "sha256": "f374a470436438e3cbf01b3dc0b98bfc1dedab7bc78c99c926f3a97dc07181b0",
+      "expected16": null
+    },
+    "annotated_strip_equals_original": {
+      "pass": true,
+      "status": "PASS_LAYOUT_NORMALIZED",
+      "strict_equal": false,
+      "reason": ""
+    },
+    "json_original_matches_md": {
+      "pass": true,
+      "json_sha256": "393dc8a333f6811c4a8419ad0ffe6145123e07a03b3cb959123fbde8f3537984"
+    },
+    "annotated_json_vs_original": {
+      "pass": true,
+      "skipped": "auto-derived annotated JSON(v2未定義)",
+      "would_be_status": "FAIL",
+      "reason": "許されない差分: 注記版[無料交換を行う。\\n\\n- 【事実1】対象台数は唐系142,89] 原文[無料交換を行う。\\n\\n対象台数は唐系142,895台、秦系40] (注記版位置127, 原文位置127)"
+    },
+    "annotated_json_tags_equal_md": {
+      "pass": true
+    },
+    "manifest_ledger_sha256_lf": {
+      "pass": true,
+      "expected": "a7a2d0d910a62e62da94059c61579d9b9d5b4d989acbc4dbe9de7ce8bb7aea34"
+    },
+    "manifest_brief_sha256_lf": {
+      "pass": true,
+      "expected": "f9c86fc8c3cfc5a3b63c840c9b7b014593d67d31c8c2722ac993528a1df9c9b1"
+    },
+    "manifest_json_sha256_lf": {
+      "pass": true,
+      "expected": "1eb4a1cdc08105d38c74da62e996826f412c9b2f38d9ff8569f4c21a779d261a"
+    },
+    "spec_sha256_matches_raw_or_lf": {
+      "pass": true
+    }
+  },
+  "substitutions": [
+    "ledger=Stage R出力から取得",
+    "B3=Stage R出力(委任_06)から取得",
+    "注記版brief=dry-run用の機械的な仮注記(箇条書きへ【事実N】を足すだけ。v2注記仕様の成果物ではない)",
+    "注記版JSON=原JSONのselected_fact_brief_textのFacts部を注記版briefのFacts部へ差し替えて自動生成(仮)"
+  ],
+  "spec_sha256": {
+    "B3_ANNOTATION_SPEC_v2_ANNOTATOR.md": {
+      "recorded": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+      "raw": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+      "lf_normalized": "2b963fe4d68151daca51147bf2d0df0e3010efcd87b4a4453e602b1d7baa5f64"
+    },
+    "ANNOTATION_DELEGATION_TEMPLATE_v2.md": {
+      "recorded": "e77e1ed6716291ad2d58275fd96013b5ccbc52732cabcdc99f5e01c41808bf09",
+      "raw": "e77e1ed6716291ad2d58275fd96013b5ccbc52732cabcdc99f5e01c41808bf09",
+      "lf_normalized": "e77e1ed6716291ad2d58275fd96013b5ccbc52732cabcdc99f5e01c41808bf09"
+    },
+    "B3_ANNOTATION_SPEC_v2.md": {
+      "recorded": "b8dd84b09cfefc3e065a2978a11943909b80af1ab598c45dc1a4867189049fc1",
+      "raw": "b8dd84b09cfefc3e065a2978a11943909b80af1ab598c45dc1a4867189049fc1",
+      "lf_normalized": "0d043a28494918694ae8d6d2a43662e807b6e410edd7c3c677d2485392c3b087"
+    }
+  },
+  "pass": true
+}

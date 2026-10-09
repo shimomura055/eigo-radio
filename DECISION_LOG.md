@@ -20366,3 +20366,9 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **Fable判断**: 継続(新6テーマ完成を優先)、streaming/semiconductorはtopicを1社・1イベントに絞る、1テーマ¥35で停止、補欠入替なし、委任_07上限¥80。結果: 10テーマ全てB3生成済み(STAGE_R_COMPLETE)。
 - **仕様v2運用明確化(規則変更ではなく未定義事例への適用判断)**: (a) 個別記録にdate_or_period/numeric_value欄が無い場合は当該記録に限り代替規則(statement内の主数字・日付)を適用。(b) 丸め(hormuz「約25時間後」vs台帳「約24時間48分後」)はunmapped_claimsの「新数値(丸め)」とし、STOP条件該当は注記統合時に機械判定。記録: `er052_output/factlock_astra_e2e_trial_01/stage_r/SPEC_V2_CLARIFICATIONS.md`。
 - **Status**: API支出累計¥178.25、Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言。未解決: AMBIGUOUS台帳記録がB3選択に含まれる件の注記スクリプト側扱い。
+
+## FACTLOCK-ASTRA-E2E-TRIAL-01 委任_05: 2腕runner実装・G0 dry-run完了とユーザー決定(2026-10-09)
+- **ユーザー決定**: 注記仕様v2固定。D案(旧4テーマは凍結台帳再利用+B3新規生成、新6は研究から、全10 B3を仕様v2で注記)。B1採用、M1 ON(Advancedのみ)、M3 ON、M2 OFF、Astra Standard同期、予算上限¥1,000、TTS後回し。自律実行範囲はG2テキスト完走まで。
+- **Fable判断**: 注記者形式FAILは1回再委任後STOP/sha256はLF正規化後/B1枠は記事1回(R2後FC MAJORとEN段共通)/G1は検査通過なら本番run採用/ラウンド1は4並列+自動降格、ラウンド2は3並列/最悪予算約¥915。
+- **実装**: `er052_factlock_astra_e2e_runner_01.py`(2腕・subprocess/環境分離・B1・横断予算ガード・(m)research/B3即停止・G0照合)、stub、集計、ws_check、テスト31件。gpt-6-astra単価はStandardのみ登録(commit 46be02ad、Trial/DEV用であり本番採用ではない)。
+- **Status**: IMPL_READY / G0_PASS(stub、API支出¥0)。stub値は実測ではない。実API経路(Astra応答形、動的fixtureのChecker、M1/M3実挙動)は未検証でG1が初の実証。Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言。

@@ -1,0 +1,412 @@
+{
+  "note": "G0 dry-run(API stub, API生成支出0)。費用値はstub(実測ではない)。入力: Stage R(委任_06)出力の台帳・B3(旧4=凍結台帳+再生成B3)、注記版=dry-run用の機械的な仮注記(v2注記仕様の成果物ではない)",
+  "root": "er052_output/factlock_astra_e2e_trial_01/g0_dryrun",
+  "totals": {
+    "settled_guard_jpy": 296.064,
+    "open_reserved_jpy": 0,
+    "total_jpy": 296.064,
+    "settled_raw_jpy": 217.344
+  },
+  "b1_counter": [
+    {
+      "theme": "space_weapons",
+      "trigger": "r2_fc_major",
+      "n_before": 0,
+      "ts": "2026-10-09T09:08:43"
+    },
+    {
+      "theme": "hormuz",
+      "trigger": "en_ja_source_major",
+      "n_before": 1,
+      "ts": "2026-10-09T09:08:48"
+    }
+  ],
+  "themes": {
+    "meta": {
+      "scenario": "default",
+      "g0_pass": true,
+      "g0_checks": {
+        "ledger_frozen_file_integrity": true,
+        "ledger_equals_frozen": true,
+        "brief_original_sha256": true,
+        "annotated_strip_equals_original": true,
+        "json_original_matches_md": true,
+        "annotated_json_vs_original": true,
+        "annotated_json_tags_equal_md": true,
+        "ledger_cross_equal": true,
+        "manifest_ledger_sha256_lf": true,
+        "manifest_brief_sha256_lf": true,
+        "manifest_json_sha256_lf": true,
+        "spec_sha256_matches_raw_or_lf": true
+      },
+      "substitutions": [
+        "ledger=Stage R出力から取得",
+        "B3=Stage R出力(委任_06)から取得",
+        "注記版brief=dry-run用の機械的な仮注記(箇条書きへ【事実N】を足すだけ。v2注記仕様の成果物ではない)",
+        "注記版JSON=原JSONのselected_fact_brief_textのFacts部を注記版briefのFacts部へ差し替えて自動生成(仮)"
+      ],
+      "ledger_sha256": "ea0ce587e605beeac8f02315ae4520899156393bbba2e059d99f45988b7c5f56",
+      "brief_original_sha256": "83c29bc213a7c8bd22000e04446dded2dce4c047b9273ae6575e260339fa22e0",
+      "brief_annotated_sha256": "9dfe2fed6b3ff3571b38f92d2e45c55df61b925033b58218c882bb39a9667ad7",
+      "arms": {
+        "old": {
+          "stage_status": {
+            "old_ja": "done",
+            "old_ii": "done",
+            "old_adv": "done",
+            "old_std": "done",
+            "old_shadow": "done",
+            "old_check_adv": "done",
+            "old_check_std": "done"
+          },
+          "state_events": [
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done"
+          ],
+          "b1_recovery": 0,
+          "shadow_stop_events": [],
+          "ja_recheck_events": 0,
+          "writer_run_summary_M1_env": [
+            "None"
+          ],
+          "checker_env_protect_flags": "",
+          "provenance_entries": 7
+        },
+        "new": {
+          "stage_status": {
+            "new_r0": "done",
+            "new_r1": "done",
+            "new_r2": "done",
+            "new_ii": "done",
+            "new_en_adv": "done",
+            "new_en_std": "done",
+            "new_shadow": "done",
+            "new_check_adv": "done",
+            "new_check_std": "done"
+          },
+          "state_events": [
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done"
+          ],
+          "b1_recovery": 0,
+          "shadow_stop_events": [],
+          "ja_recheck_events": 0,
+          "writer_run_summary_M1_env": [
+            "1"
+          ],
+          "checker_env_protect_flags": "changed_actor",
+          "provenance_entries": 9
+        }
+      }
+    },
+    "hormuz": {
+      "scenario": {
+        "ja_recheck": {
+          "new": 1,
+          "old": 1
+        },
+        "en_attempt1_summary_major": true
+      },
+      "g0_pass": true,
+      "g0_checks": {
+        "ledger_frozen_file_integrity": true,
+        "ledger_equals_frozen": true,
+        "brief_original_sha256": true,
+        "annotated_strip_equals_original": true,
+        "json_original_matches_md": true,
+        "annotated_json_vs_original": true,
+        "annotated_json_tags_equal_md": true,
+        "ledger_cross_equal": true,
+        "manifest_ledger_sha256_lf": true,
+        "manifest_brief_sha256_lf": true,
+        "manifest_json_sha256_lf": true,
+        "spec_sha256_matches_raw_or_lf": true
+      },
+      "substitutions": [
+        "ledger=Stage R出力から取得",
+        "B3=Stage R出力(委任_06)から取得",
+        "注記版brief=dry-run用の機械的な仮注記(箇条書きへ【事実N】を足すだけ。v2注記仕様の成果物ではない)",
+        "注記版JSON=原JSONのselected_fact_brief_textのFacts部を注記版briefのFacts部へ差し替えて自動生成(仮)"
+      ],
+      "ledger_sha256": "9bd6834e68e7e4378ba0ebccdd84c0128df2a5cd0aca7c1e84df612ae77ae1a6",
+      "brief_original_sha256": "c884047d621da143545c5ef7d774e370628ef62987caf94823c0e6f19471706a",
+      "brief_annotated_sha256": "0cf3d298c362cfbb11a8c424887f3fb0440eb92c2eaadbe91d9a94efd3ec36fa",
+      "arms": {
+        "old": {
+          "stage_status": {
+            "old_ja": "done",
+            "old_ii": "done",
+            "old_adv": "done",
+            "old_std": "done",
+            "old_shadow": "done",
+            "old_check_adv": "done",
+            "old_check_std": "done"
+          },
+          "state_events": [
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done"
+          ],
+          "b1_recovery": 0,
+          "shadow_stop_events": [],
+          "ja_recheck_events": 1,
+          "writer_run_summary_M1_env": [
+            "None"
+          ],
+          "checker_env_protect_flags": "",
+          "provenance_entries": 6
+        },
+        "new": {
+          "stage_status": {
+            "new_r0": "done",
+            "new_r1": "done",
+            "new_r2": "done",
+            "new_ii": "done",
+            "new_en_adv": "done",
+            "new_en_std": "done",
+            "new_shadow": "done",
+            "new_check_adv": "done",
+            "new_check_std": "done"
+          },
+          "state_events": [
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_recheck",
+            "b1_recovery",
+            "reset",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done"
+          ],
+          "b1_recovery": 1,
+          "shadow_stop_events": [],
+          "ja_recheck_events": 1,
+          "writer_run_summary_M1_env": [
+            "1"
+          ],
+          "checker_env_protect_flags": "changed_actor",
+          "provenance_entries": 14
+        }
+      }
+    },
+    "space_weapons": {
+      "scenario": {
+        "fc_major": {
+          "new_r2_fc": 1,
+          "ja_r2_check": 1
+        }
+      },
+      "g0_pass": true,
+      "g0_checks": {
+        "ledger_frozen_file_integrity": true,
+        "ledger_equals_frozen": true,
+        "brief_original_sha256": true,
+        "annotated_strip_equals_original": true,
+        "json_original_matches_md": true,
+        "annotated_json_vs_original": true,
+        "annotated_json_tags_equal_md": true,
+        "ledger_cross_equal": true,
+        "manifest_ledger_sha256_lf": true,
+        "manifest_brief_sha256_lf": true,
+        "manifest_json_sha256_lf": true,
+        "spec_sha256_matches_raw_or_lf": true
+      },
+      "substitutions": [
+        "ledger=Stage R出力から取得",
+        "B3=Stage R出力(委任_06)から取得",
+        "注記版brief=dry-run用の機械的な仮注記(箇条書きへ【事実N】を足すだけ。v2注記仕様の成果物ではない)",
+        "注記版JSON=原JSONのselected_fact_brief_textのFacts部を注記版briefのFacts部へ差し替えて自動生成(仮)"
+      ],
+      "ledger_sha256": "f172a253f24b99d66cf0ffbe187857dddb3f6e3fa6cc1186700942519f4a6868",
+      "brief_original_sha256": "84c69f1329262f9868be25af77baa47b6afc2f7184ec8999affc232e19b421f9",
+      "brief_annotated_sha256": "79120e24be0d9d6a11d9ac3658b2f15d2f3cbf37c66fd4d4895e5fb17a2a7f53",
+      "arms": {
+        "old": {
+          "stage_status": {
+            "old_ja": "done",
+            "old_ii": "done",
+            "old_adv": "done",
+            "old_std": "done",
+            "old_shadow": "done",
+            "old_check_adv": "done",
+            "old_check_std": "done"
+          },
+          "state_events": [
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done"
+          ],
+          "b1_recovery": 0,
+          "shadow_stop_events": [],
+          "ja_recheck_events": 0,
+          "writer_run_summary_M1_env": [
+            "None"
+          ],
+          "checker_env_protect_flags": "",
+          "provenance_entries": 7
+        },
+        "new": {
+          "stage_status": {
+            "new_r0": "done",
+            "new_r1": "done",
+            "new_r2": "done",
+            "new_ii": "done",
+            "new_en_adv": "done",
+            "new_en_std": "done",
+            "new_shadow": "done",
+            "new_check_adv": "done",
+            "new_check_std": "done"
+          },
+          "state_events": [
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "shadow_stop",
+            "b1_recovery",
+            "reset",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done"
+          ],
+          "b1_recovery": 1,
+          "shadow_stop_events": [
+            {
+              "ts": "2026-10-09T09:08:43",
+              "ev": "shadow_stop",
+              "final": false,
+              "n_major": 1
+            }
+          ],
+          "ja_recheck_events": 0,
+          "writer_run_summary_M1_env": [
+            "1"
+          ],
+          "checker_env_protect_flags": "changed_actor",
+          "provenance_entries": 12
+        }
+      }
+    },
+    "small_bag": {
+      "scenario": "default",
+      "g0_pass": true,
+      "g0_checks": {
+        "ledger_frozen_file_integrity": true,
+        "ledger_equals_frozen": true,
+        "brief_original_sha256": true,
+        "annotated_strip_equals_original": true,
+        "json_original_matches_md": true,
+        "annotated_json_vs_original": true,
+        "annotated_json_tags_equal_md": true,
+        "manifest_ledger_sha256_lf": true,
+        "manifest_brief_sha256_lf": true,
+        "manifest_json_sha256_lf": true,
+        "spec_sha256_matches_raw_or_lf": true
+      },
+      "substitutions": [
+        "ledger=Stage R出力から取得",
+        "B3=Stage R出力(委任_06)から取得",
+        "注記版brief=dry-run用の機械的な仮注記(箇条書きへ【事実N】を足すだけ。v2注記仕様の成果物ではない)",
+        "注記版JSON=原JSONのselected_fact_brief_textのFacts部を注記版briefのFacts部へ差し替えて自動生成(仮)"
+      ],
+      "ledger_sha256": "0cc8ca3f2e73a1f9ee822087673e675b954aec9ce4d4492d5bcfcd448d8b6f0f",
+      "brief_original_sha256": "a4cfad728fafb255be93d912dfa3049101847f3a7b9d5cb2bbe2d861c1af7a3c",
+      "brief_annotated_sha256": "9476e9128d8055996462575ade7954f7b0779ae63e8d1b29f211301e271c75ec",
+      "arms": {
+        "old": {
+          "stage_status": {
+            "old_ja": "done",
+            "old_ii": "done",
+            "old_adv": "done",
+            "old_std": "done",
+            "old_shadow": "done",
+            "old_check_adv": "done",
+            "old_check_std": "done"
+          },
+          "state_events": [
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done"
+          ],
+          "b1_recovery": 0,
+          "shadow_stop_events": [],
+          "ja_recheck_events": 0,
+          "writer_run_summary_M1_env": [
+            "None"
+          ],
+          "checker_env_protect_flags": "",
+          "provenance_entries": 7
+        },
+        "new": {
+          "stage_status": {
+            "new_r0": "done",
+            "new_r1": "done",
+            "new_r2": "done",
+            "new_ii": "done",
+            "new_en_adv": "done",
+            "new_en_std": "done",
+            "new_shadow": "done",
+            "new_check_adv": "done",
+            "new_check_std": "done"
+          },
+          "state_events": [
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done",
+            "stage_done"
+          ],
+          "b1_recovery": 0,
+          "shadow_stop_events": [],
+          "ja_recheck_events": 0,
+          "writer_run_summary_M1_env": [
+            "1"
+          ],
+          "checker_env_protect_flags": "changed_actor",
+          "provenance_entries": 9
+        }
+      }
+    }
+  }
+}
