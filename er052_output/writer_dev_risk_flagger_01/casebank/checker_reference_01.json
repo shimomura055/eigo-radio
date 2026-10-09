@@ -1,0 +1,4718 @@
+{
+ "created": "2026-10-09",
+ "purpose": "既存Production Checker(OPEN-233経路: Stage1/Stage2/第2意見/最終判定、EN deviation check含む)がcasebank_01の各ケースを当時どう判定したかの過去成果物からの回収(新規API・新規生成なし)。Risk Flaggerと同じ単位(case_id)で並べるための参照表。",
+ "method_notes": [
+  "記事path→Checker出力の対応づけと文単位の照合(正規化部分一致)は回収スクリプトで機械的に行った(スクリプトはリポジトリに含めない)。",
+  "JSONの出典は path:行(行はclaim_textの出現行)。JSON内位置はcycles[c].stage2_results。",
+  "非候補=Stage1のunion_candidatesにもcandidate_filter.verdictsのCANDIDATEにも無い、またはSUPPORTED/NO_FACT_CLAIMで除外された文。"
+ ],
+ "aggregates": {
+  "production_path_single_run": {
+   "definition": "OPEN-233 Checker(Stage1+Stage2+第2意見+floor)をProduction経路で実行した1記事1runの判定。cycleのどこかでBLOCKINGになった文を「検出(BLOCKING)」とする。",
+   "severe": {
+    "n": 9,
+    "BLOCKING": [
+     "rf_sq5c2g",
+     "rf_7suvyn",
+     "rf_qupxd4",
+     "rf_5qddqw",
+     "rf_apqtyt",
+     "rf_t9nxuv",
+     "rf_p4mtyd"
+    ],
+    "NONBLOCKING": [
+     "rf_y84g5r",
+     "rf_emcgyx"
+    ],
+    "NOT_CANDIDATE": []
+   },
+   "nonsevere": {
+    "n": 31,
+    "BLOCKING": [
+     "rf_upps5x",
+     "rf_zbe99x",
+     "rf_5cryu9"
+    ],
+    "NONBLOCKING": [
+     "rf_7b6trp",
+     "rf_6j5x2m",
+     "rf_6urnmg",
+     "rf_hmpyuu",
+     "rf_b2nvsf",
+     "rf_562myt",
+     "rf_wrv48r",
+     "rf_gtwtjt",
+     "rf_da6twd",
+     "rf_7kyezh",
+     "rf_pb7rz2",
+     "rf_rhubds",
+     "rf_e42vt2",
+     "rf_qupkjh",
+     "rf_6c53hz",
+     "rf_pdmdt5",
+     "rf_g4uegk",
+     "rf_w3dtae"
+    ],
+    "NOT_CANDIDATE": [
+     "rf_yjjmk8",
+     "rf_kkh6ng",
+     "rf_75v4en",
+     "rf_ah9aha",
+     "rf_9x3gdn",
+     "rf_ejrk5u",
+     "rf_vqhe62",
+     "rf_rdwghg",
+     "rf_nykkru",
+     "rf_frwds2"
+    ]
+   },
+   "recall_severe": {
+    "num": 7,
+    "den": 9,
+    "pct": 77.8
+   },
+   "fpr_nonsevere_blocking": {
+    "num": 3,
+    "den": 31,
+    "pct": 9.7
+   },
+   "recall_by_label_basis": {
+    "Fable確定": {
+     "n": 1,
+     "BLOCKING": 1
+    },
+    "Sonnet判定": {
+     "n": 6,
+     "BLOCKING": 6
+    },
+    "ユーザー確認": {
+     "n": 2,
+     "BLOCKING": 0
+    }
+   },
+   "fpr_by_label_basis": {
+    "Sonnet判定": {
+     "n": 12,
+     "BLOCKING": 1
+    },
+    "ユーザー確認": {
+     "n": 5,
+     "BLOCKING": 1
+    },
+    "機械抽出(弱ラベル)": {
+     "n": 14,
+     "BLOCKING": 1
+    }
+   }
+  },
+  "trial_multi_run_reference": {
+   "definition": "self_recovery_flow_runner等のTrial fixtureの全run(コード版が混在)で、当該文がcycleのどこかでBLOCKINGになったrun数/そのinstanceのrun数。Production単一runと条件が違う参考値。",
+   "severe": {
+    "cases": 8,
+    "runs": 234,
+    "blocking_runs": 183,
+    "run_weighted_rate": 78.2,
+    "per_case": [
+     [
+      "rf_y84g5r",
+      0,
+      29
+     ],
+     [
+      "rf_ur5649",
+      18,
+      18
+     ],
+     [
+      "rf_t9nxuv",
+      38,
+      38
+     ],
+     [
+      "rf_nck2y6",
+      31,
+      32
+     ],
+     [
+      "rf_fmu3aa",
+      12,
+      19
+     ],
+     [
+      "rf_p4mtyd",
+      51,
+      64
+     ],
+     [
+      "rf_g7k93w",
+      14,
+      15
+     ],
+     [
+      "rf_tcdxe4",
+      19,
+      19
+     ]
+    ]
+   },
+   "nonsevere": {
+    "cases": 17,
+    "runs": 637,
+    "blocking_runs": 87,
+    "run_weighted_rate": 13.7,
+    "per_case": [
+     [
+      "rf_yjjmk8",
+      0,
+      23
+     ],
+     [
+      "rf_upps5x",
+      3,
+      38
+     ],
+     [
+      "rf_c3p892",
+      1,
+      32
+     ],
+     [
+      "rf_kkh6ng",
+      21,
+      44
+     ],
+     [
+      "rf_hmpyuu",
+      6,
+      44
+     ],
+     [
+      "rf_hspzde",
+      7,
+      15
+     ],
+     [
+      "rf_b2nvsf",
+      6,
+      40
+     ],
+     [
+      "rf_562myt",
+      4,
+      63
+     ],
+     [
+      "rf_zbe99x",
+      18,
+      44
+     ],
+     [
+      "rf_75v4en",
+      1,
+      44
+     ],
+     [
+      "rf_wrv48r",
+      1,
+      44
+     ],
+     [
+      "rf_gtwtjt",
+      1,
+      37
+     ],
+     [
+      "rf_da6twd",
+      1,
+      37
+     ],
+     [
+      "rf_7kyezh",
+      1,
+      37
+     ],
+     [
+      "rf_pb7rz2",
+      5,
+      38
+     ],
+     [
+      "rf_rhubds",
+      5,
+      38
+     ],
+     [
+      "rf_y45s87",
+      6,
+      19
+     ]
+    ]
+   }
+  },
+  "en_deviation_check_reference": {
+   "severe_with_data": 7,
+   "severe_LEDGER_COMPLIANT(=通した)": 7,
+   "nonsevere_with_data": 20,
+   "nonsevere_LEDGER_COMPLIANT": 20,
+   "nonsevere_MAJOR_STOP_S0": 3,
+   "caveat": "deviation_check.jsonは最終採用本文に対する判定(retry後)。retry前のattempt指摘は未集計。"
+  },
+  "recovery": {
+   "total_cases": 61,
+   "by_class": {
+    "回収済(Production経路単一run)": 40,
+    "回収済(Trial多run集計のみ)": 8,
+    "対象外(JA)": 9,
+    "部分(Checker未実行。EN deviation checkのみ)": 1,
+    "部分(EN deviation checkのみ)": 3
+   }
+  }
+ },
+ "reference_group_cost_rewrite": {
+  "prod_e2e_02(9 run)": {
+   "n_runs": 9,
+   "cost_mean_jpy": 3.502,
+   "cost_min_jpy": 1.971,
+   "cost_max_jpy": 5.6561,
+   "cost_total_jpy": 31.519,
+   "rewrite_records_total": 6,
+   "runs_with_rewrite": 4
+  },
+  "allfact_note_e2e_02 P2(10 run)": {
+   "n_runs": 10,
+   "cost_mean_jpy": 5.271,
+   "cost_min_jpy": 2.0498,
+   "cost_max_jpy": 9.677,
+   "cost_total_jpy": 52.713,
+   "rewrite_records_total": 22,
+   "runs_with_rewrite": 7
+  },
+  "control_checker_polysemy(18 run)": {
+   "n_runs": 18,
+   "cost_mean_jpy": 3.378,
+   "cost_min_jpy": 1.9566,
+   "cost_max_jpy": 6.3306,
+   "cost_total_jpy": 60.81,
+   "rewrite_records_total": 10,
+   "runs_with_rewrite": 6
+  },
+  "factlock(EN Adv/Std checker run)": {
+   "n_runs": 22,
+   "cost_mean_jpy": 2.965,
+   "cost_min_jpy": 1.6731,
+   "cost_max_jpy": 5.4559,
+   "cost_total_jpy": 65.226,
+   "rewrite_records_total": 11,
+   "runs_with_rewrite": 5
+  },
+  "全体": {
+   "n_runs": 59,
+   "cost_mean_jpy": 3.564,
+   "cost_min_jpy": 1.6731,
+   "cost_max_jpy": 9.677
+  }
+ },
+ "articles_factlock_18": [
+  {
+   "article": "byd_recall/new",
+   "checker_runs": [
+    {
+     "which": "advanced",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/byd_recall/new/checker/advanced.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "cost_jpy": 5.3006,
+     "rewrite_records": 2
+    }
+   ],
+   "checker_cost_jpy": 5.3006,
+   "rewrite_records": 2,
+   "unneeded_rewrite_records(ラベル問題なし文)": 2,
+   "minor_sentence_rewrite_records": 0,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [
+    "なし(比喩文の削除。劣化限定的 w2-240)"
+   ],
+   "note": [
+    "比喩文1文を削除(断片artifact含め2 record)。ラベル=問題なし文→不要Rewrite。second opinionの誤BLOCKING起点。"
+   ]
+  },
+  {
+   "article": "byd_recall/old",
+   "checker_runs": [
+    {
+     "which": "advanced",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/byd_recall/old/checker/advanced.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 2.5008,
+     "rewrite_records": 0
+    }
+   ],
+   "checker_cost_jpy": 2.5008,
+   "rewrite_records": 0,
+   "unneeded_rewrite_records(ラベル問題なし文)": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [],
+   "note": []
+  },
+  {
+   "article": "central_bank_mortgage/new",
+   "checker_runs": [],
+   "checker_cost_jpy": null,
+   "rewrite_records": 0,
+   "unneeded_rewrite_records(ラベル問題なし文)": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [],
+   "note": [
+    "Checker未実行。新腕はR0(JA段)でSTOP(HUMAN_CHECK_E2E_01.md:L20)"
+   ]
+  },
+  {
+   "article": "central_bank_mortgage/old",
+   "checker_runs": [
+    {
+     "which": "advanced",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/central_bank_mortgage/old/checker/advanced.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 1.8015,
+     "rewrite_records": 0
+    },
+    {
+     "which": "standard",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/central_bank_mortgage/old/checker/standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 2.1203,
+     "rewrite_records": 0
+    }
+   ],
+   "checker_cost_jpy": 3.9218,
+   "rewrite_records": 0,
+   "unneeded_rewrite_records(ラベル問題なし文)": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [],
+   "note": []
+  },
+  {
+   "article": "hormuz/new",
+   "checker_runs": [
+    {
+     "which": "advanced",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/hormuz/new/checker/advanced.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 2.5126,
+     "rewrite_records": 0
+    },
+    {
+     "which": "standard",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/hormuz/new/checker/standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 2.9362,
+     "rewrite_records": 0
+    }
+   ],
+   "checker_cost_jpy": 5.4488,
+   "rewrite_records": 0,
+   "unneeded_rewrite_records(ラベル問題なし文)": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [],
+   "note": []
+  },
+  {
+   "article": "hormuz/old",
+   "checker_runs": [],
+   "checker_cost_jpy": null,
+   "rewrite_records": 0,
+   "unneeded_rewrite_records(ラベル問題なし文)": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [],
+   "note": [
+    "Checker未実行。runsにEN記事(b1b/a2)が無い(JA段で停止した可能性。理由の個別確認は未回収)"
+   ]
+  },
+  {
+   "article": "meta/new",
+   "checker_runs": [
+    {
+     "which": "advanced",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/meta/new/checker/advanced.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 1.9069,
+     "rewrite_records": 0
+    },
+    {
+     "which": "standard",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/meta/new/checker/standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 2.3134,
+     "rewrite_records": 0
+    }
+   ],
+   "checker_cost_jpy": 4.2203,
+   "rewrite_records": 0,
+   "unneeded_rewrite_records(ラベル問題なし文)": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [],
+   "note": []
+  },
+  {
+   "article": "meta/old",
+   "checker_runs": [],
+   "checker_cost_jpy": null,
+   "rewrite_records": 0,
+   "unneeded_rewrite_records(ラベル問題なし文)": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [],
+   "note": [
+    "Checker未実行。runsにEN記事(b1b/a2)が無い(JA段で停止した可能性。理由の個別確認は未回収)",
+    "JA重大1(w1-11)はJA Fact Check(MAJOR→STOP)が捕捉。Checker対象外。"
+   ]
+  },
+  {
+   "article": "openai_copyright/new",
+   "checker_runs": [],
+   "checker_cost_jpy": null,
+   "rewrite_records": 0,
+   "unneeded_rewrite_records(ラベル問題なし文)": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [],
+   "note": [
+    "Checker出力なし。EN Adv STOP(HUMAN_CHECK_E2E_01.md:L19)。b1b/a2は存在"
+   ]
+  },
+  {
+   "article": "openai_copyright/old",
+   "checker_runs": [
+    {
+     "which": "advanced",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/openai_copyright/old/checker/advanced.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 1.6731,
+     "rewrite_records": 0
+    },
+    {
+     "which": "standard",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/openai_copyright/old/checker/standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "cost_jpy": 4.8481,
+     "rewrite_records": 1
+    }
+   ],
+   "checker_cost_jpy": 6.5212,
+   "rewrite_records": 1,
+   "unneeded_rewrite_records(ラベル問題なし文)": 0,
+   "minor_sentence_rewrite_records": 1,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [
+    "未回収(Rewrite後の個別判定ラベル無し)"
+   ],
+   "note": [
+    "見出し的な軽微文(w3-26: 提訴主体の曖昧化)。Rewriteは主体語を置換(Companies…/GPT models)。"
+   ]
+  },
+  {
+   "article": "semiconductor_earnings/new",
+   "checker_runs": [],
+   "checker_cost_jpy": null,
+   "rewrite_records": 0,
+   "unneeded_rewrite_records(ラベル問題なし文)": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [],
+   "note": [
+    "Checker出力なし(理由未回収)"
+   ]
+  },
+  {
+   "article": "semiconductor_earnings/old",
+   "checker_runs": [
+    {
+     "which": "advanced",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/semiconductor_earnings/old/checker/advanced.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 2.0093,
+     "rewrite_records": 0
+    },
+    {
+     "which": "standard",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/semiconductor_earnings/old/checker/standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "cost_jpy": 3.63,
+     "rewrite_records": 2
+    }
+   ],
+   "checker_cost_jpy": 5.6393,
+   "rewrite_records": 2,
+   "unneeded_rewrite_records(ラベル問題なし文)": 2,
+   "minor_sentence_rewrite_records": 0,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [
+    "あり(軽微): 限定句「not the whole semiconductor segment」を削除(w3-73/w3-83)"
+   ],
+   "note": [
+    "小数点で文が分割された断片($29. / $16.)を別claimとして判定→BLOCKING→Rewrite。元の完全文は正しい。"
+   ]
+  },
+  {
+   "article": "small_bag/new",
+   "checker_runs": [
+    {
+     "which": "advanced",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/small_bag/new/checker/advanced.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 2.1422,
+     "rewrite_records": 0
+    },
+    {
+     "which": "standard",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/small_bag/new/checker/standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 3.3089,
+     "rewrite_records": 0
+    }
+   ],
+   "checker_cost_jpy": 5.4511,
+   "rewrite_records": 0,
+   "unneeded_rewrite_records(ラベル問題なし文)": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [],
+   "note": []
+  },
+  {
+   "article": "small_bag/old",
+   "checker_runs": [
+    {
+     "which": "advanced",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/small_bag/old/checker/advanced.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 2.3555,
+     "rewrite_records": 0
+    }
+   ],
+   "checker_cost_jpy": 2.3555,
+   "rewrite_records": 0,
+   "unneeded_rewrite_records(ラベル問題なし文)": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [],
+   "note": []
+  },
+  {
+   "article": "space_weapons/new",
+   "checker_runs": [
+    {
+     "which": "advanced",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/space_weapons/new/checker/advanced.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "cost_jpy": 5.3509,
+     "rewrite_records": 2
+    }
+   ],
+   "checker_cost_jpy": 5.3509,
+   "rewrite_records": 2,
+   "unneeded_rewrite_records(ラベル問題なし文)": 0,
+   "minor_sentence_rewrite_records": 2,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [
+    "なし(副作用小。ただしmissiles複数形は残存 w1-58/w1-77)"
+   ],
+   "note": [
+    "軽微文2件(satellites→COSMOS 1408、these were tests→this was a test)。機械floor(changed_number)で実行。"
+   ]
+  },
+  {
+   "article": "space_weapons/old",
+   "checker_runs": [
+    {
+     "which": "advanced",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/space_weapons/old/checker/advanced.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 2.3197,
+     "rewrite_records": 0
+    },
+    {
+     "which": "standard",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/space_weapons/old/checker/standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 2.4667,
+     "rewrite_records": 0
+    }
+   ],
+   "checker_cost_jpy": 4.7864,
+   "rewrite_records": 0,
+   "unneeded_rewrite_records(ラベル問題なし文)": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [],
+   "note": []
+  },
+  {
+   "article": "streaming_price/new",
+   "checker_runs": [
+    {
+     "which": "advanced",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/new/checker/advanced.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 2.8255,
+     "rewrite_records": 0
+    },
+    {
+     "which": "standard",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/new/checker/standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 2.4959,
+     "rewrite_records": 0
+    }
+   ],
+   "checker_cost_jpy": 5.3214,
+   "rewrite_records": 0,
+   "unneeded_rewrite_records(ラベル問題なし文)": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [],
+   "note": []
+  },
+  {
+   "article": "streaming_price/old",
+   "checker_runs": [
+    {
+     "which": "advanced",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/old/checker/advanced.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "cost_jpy": 2.9518,
+     "rewrite_records": 0
+    },
+    {
+     "which": "standard",
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/old/checker/standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "cost_jpy": 5.4559,
+     "rewrite_records": 4
+    }
+   ],
+   "checker_cost_jpy": 8.4077,
+   "rewrite_records": 4,
+   "unneeded_rewrite_records(ラベル問題なし文)": 1,
+   "minor_sentence_rewrite_records": 3,
+   "severe_rewrite_records": 0,
+   "EN重大見逃し(ラベル)": 0,
+   "rewrite_new_ng": [
+    "あり(軽微): $2.50差額文を削除し欠落+二重空白(w3-112/w3-117)"
+   ],
+   "note": [
+    "時制修正2件・年額の限定補完1件は改善。断片artifact($2.)のdeleteは問題なし文の削除=不要Rewrite。"
+   ]
+  }
+ ],
+ "articles_known_severe_sources": [
+  {
+   "article": "refresh meta run_03 b1b (prod_e2e_02 meta_run03_advanced)",
+   "file": "er052_output/open233_prod_e2e_02/runs/meta_run03_advanced.json",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "checker_cost_jpy": 2.4103,
+   "rewrite_records": 0,
+   "unneeded_rewrite_records": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_missed(最終本文に残存した重大のうち非BLOCKING)": 1,
+   "rewrite_new_ng": "-",
+   "severe_note": "rf_y84g5r(rollback方向反転・ユーザー確認)",
+   "rewrite_note": "Rewriteなし",
+   "src": "report_abcde.md / critical_trace.md"
+  },
+  {
+   "article": "ccp ai_control jb9k (control rep1)",
+   "file": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1/checker/runs/meta_run03_advanced.json",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "checker_cost_jpy": 4.9083,
+   "rewrite_records": 1,
+   "unneeded_rewrite_records": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_missed(最終本文に残存した重大のうち非BLOCKING)": 1,
+   "rewrite_new_ng": "なし",
+   "severe_note": "rf_emcgyx(不在断定・ユーザー確認) QUALITYで通過",
+   "rewrite_note": "Rewrite 1件(別文。ccp評価でbefore_was_ng=true=必要)",
+   "src": "aggregate_ccp.json rewrite_articles"
+  },
+  {
+   "article": "allfact meta P2 rep2",
+   "file": "er052_output/open233_allfact_note_e2e_02/runs/meta/nb/p2/rep2/checker/runs/meta_run03_advanced.json",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "checker_cost_jpy": 5.2942,
+   "rewrite_records": 1,
+   "unneeded_rewrite_records": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_missed(最終本文に残存した重大のうち非BLOCKING)": 1,
+   "rewrite_new_ng": "未修正残存(新規NGではない)",
+   "severe_note": "rf_sq5c2g(主体対象入替) 初回BLOCKING→Rewrite後も残存",
+   "rewrite_note": "Rewrite 1件=重大NGへ(語句置換のみで未修正)",
+   "src": "stagewise_meta_hormuz.json"
+  },
+  {
+   "article": "allfact ai_control P2 rep1",
+   "file": "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep1/checker/runs/meta_run03_advanced.json",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "checker_cost_jpy": 6.9178,
+   "rewrite_records": 2,
+   "unneeded_rewrite_records": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_missed(最終本文に残存した重大のうち非BLOCKING)": 0,
+   "rewrite_new_ng": "なし",
+   "severe_note": "rf_7suvyn・rf_qupxd4(重大2) BLOCKING→修正済み",
+   "rewrite_note": "Rewrite 2件=重大2件に対応(必要)",
+   "src": "stagewise_sewer_ai_control.json"
+  },
+  {
+   "article": "allfact ai_control P2 rep2",
+   "file": "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep2/checker/runs/meta_run03_advanced.json",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "checker_cost_jpy": 8.4336,
+   "rewrite_records": 5,
+   "unneeded_rewrite_records": "未回収(NG台帳に紐づかないrecord 2件。同一NGへの重複recordの可能性あり)",
+   "minor_sentence_rewrite_records": 1,
+   "severe_missed(最終本文に残存した重大のうち非BLOCKING)": 0,
+   "rewrite_new_ng": "あり: 重大1(loop内で修正)+軽微1(最終ENに残存・Checker未検出)",
+   "severe_note": "rf_5qddqw: Rewriteが生んだ重大(無関係文挿入)をcycle2で検出・修正",
+   "rewrite_note": "Rewrite 5 records。NG台帳のrewritten=True 3項目(ai-p2r2-01軽微, -07重大[Rewrite由来], -08軽微[Rewrite由来・未検出])",
+   "src": "stagewise_sewer_ai_control.json STAGEWISE_SUMMARY.md:L49"
+  },
+  {
+   "article": "allfact space_weapons P2 rep2",
+   "file": "er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2/checker/runs/meta_run03_advanced.json",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "checker_cost_jpy": 9.677,
+   "rewrite_records": 9,
+   "unneeded_rewrite_records": "未回収(NG台帳に紐づかないrecord 6件。後続cycleのBLOCKING対象で個別ラベル無し)",
+   "minor_sentence_rewrite_records": 1,
+   "severe_missed(最終本文に残存した重大のうち非BLOCKING)": 0,
+   "rewrite_new_ng": "なし(最終ENに新規NGなし)",
+   "severe_note": "rf_apqtyt(+JA側rf_hdr8y4): EN重大2件BLOCKING→EN最終は修正済み。JAのみ残存2(Checker対象外)",
+   "rewrite_note": "Rewrite 9 records。NG台帳のrewritten=True 3項目(重大2+軽微1)",
+   "src": "stagewise_space_weapons.json"
+  },
+  {
+   "article": "prod_e2e_02 neg3 hormuz prodrunner b1b",
+   "file": "er052_output/open233_prod_e2e_02/runs/neg3_hormuz_prodrunner_b1b.json",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "checker_cost_jpy": 5.6561,
+   "rewrite_records": 2,
+   "unneeded_rewrite_records": 1,
+   "minor_sentence_rewrite_records": 0,
+   "severe_missed(最終本文に残存した重大のうち非BLOCKING)": 0,
+   "rewrite_new_ng": "削除による情報欠落1(個別NGラベル未回収)",
+   "severe_note": "rf_t9nxuv(数量時系列) c1 BLOCKING→修正",
+   "rewrite_note": "Rewrite 2件: (1)重大対応(必要) (2)cycle3で正しい文を削除(不要, rf_upps5x)",
+   "src": "report_abcde.md C"
+  },
+  {
+   "article": "prod_e2e_02 bgroup_B3 (hormuz run_02 b1b)",
+   "file": "er052_output/open233_prod_e2e_02/runs/bgroup_B3.json",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "checker_cost_jpy": 3.9618,
+   "rewrite_records": 1,
+   "unneeded_rewrite_records": 0,
+   "minor_sentence_rewrite_records": 0,
+   "severe_missed(最終本文に残存した重大のうち非BLOCKING)": 0,
+   "rewrite_new_ng": "なし",
+   "severe_note": "rf_p4mtyd(因果so) c1 BLOCKING→修正",
+   "rewrite_note": "Rewrite 1件=必要",
+   "src": "report_abcde.md C"
+  }
+ ],
+ "cases": [
+  {
+   "case_id": "rf_y84g5r",
+   "label": "重大",
+   "label_basis": "ユーザー確認",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "rollback方向反転",
+   "sentence": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+   "legacy_ids": [
+    "WE-K01"
+   ],
+   "near_dup_group": "rollback_hc012",
+   "trial_multi_run_sweep": {
+    "meta_run03_advanced": {
+     "runs": 29,
+     "cand_c1": 1,
+     "block_c1": 0,
+     "block_any": 0,
+     "second_down": 1
+    }
+   },
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er019_output/family_x_refresh_e2e_01/meta/run_03/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/meta_run03_advanced.json",
+     "instance": "meta_run03_advanced",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 2.4103,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3"
+       ],
+       "sub_reasons": [
+        "negation_polarity_mismatch"
+       ]
+      }
+     ],
+     "stage1_reclassify": [],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 331
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "note": "重大見逃し。Stage1は候補化(negation_polarity_mismatch)したが、Stage2 LLM=ACCEPTABLE、第2意見=ACCEPTABLE(confirmed_downgrade)で非BLOCKINGのまま終了(RESOLVED_STAGE2_DOWNGRADE)。Rewriteなし。Trial 29 runでもBLOCKING 0。",
+   "sources_extra": [
+    "er052_output/open233_prod_e2e_02/report_final/critical_trace.md:L12-L24",
+    "er052_output/open233_prod_e2e_02/report_final/label_sheet.csv(meta_run03_advanced行: true_critical=Y, final=ACCEPTABLE)"
+   ],
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/meta_run03_advanced.json:L331",
+    "er052_output/open233_prod_e2e_02/report_final/critical_trace.md:L12-L24",
+    "er052_output/open233_prod_e2e_02/report_final/label_sheet.csv(meta_run03_advanced行: true_critical=Y, final=ACCEPTABLE)"
+   ],
+   "trial_summary": {
+    "runs": 29,
+    "candidate_cycle1": 1,
+    "blocking_any_cycle": 0,
+    "instances": [
+     "meta_run03_advanced"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_emcgyx",
+   "label": "重大",
+   "label_basis": "ユーザー確認",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "不在断定",
+   "sentence": "Nor has anyone reported that an AI got out of the test environment.",
+   "legacy_ids": [
+    "WE-K02"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1/checker/runs/meta_run03_advanced.json",
+     "instance": "meta_run03_advanced",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 4.9083,
+     "article_rewrite_records": 1,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3",
+        "r5"
+       ],
+       "sub_reasons": [
+        "model"
+       ]
+      }
+     ],
+     "stage1_reclassify": [
+      {
+       "verdict": "CANDIDATE",
+       "excluded": false,
+       "reason": "Ledgerが述べるのは特定の評価事例での非脱出・非自己流出であり、「誰も報告していない」という広い否定を裏付けていない。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "QUALITY",
+       "second_opinion_first": "QUALITY",
+       "second_opinion_second": "QUALITY",
+       "confirmed_downgrade": true,
+       "final_materiality": "QUALITY",
+       "basis": "ledger_scope",
+       "floor_reason": null,
+       "json_line": 634
+      },
+      {
+       "cycle": 2,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "QUALITY",
+       "second_opinion_first": "QUALITY",
+       "second_opinion_second": "QUALITY",
+       "confirmed_downgrade": true,
+       "final_materiality": "QUALITY",
+       "basis": "ledger_scope",
+       "floor_reason": null,
+       "json_line": 634
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "note": "重大見逃し。Stage1で候補化(R3+R5, model)、Stage2はQUALITY(ledger_scope)、第2意見QUALITYで確認、cycle1・cycle2とも非BLOCKING。ユーザー確認で重大NG(評価者は軽微/保留と判定していた)。同記事のRewrite 1件は別文(before_was_ng=true)。",
+   "sources_extra": [
+    "er052_output/open233_control_checker_polysemy_trial_01/eval/HUMAN_REVIEW_RESULT.md:L12",
+    "er052_output/open233_control_checker_polysemy_trial_01/eval/aggregate_ccp.json(rewrite_articles ai_control/jb9k)"
+   ],
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1/checker/runs/meta_run03_advanced.json:L634",
+    "er052_output/open233_control_checker_polysemy_trial_01/eval/HUMAN_REVIEW_RESULT.md:L12",
+    "er052_output/open233_control_checker_polysemy_trial_01/eval/aggregate_ccp.json(rewrite_articles ai_control/jb9k)"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_ur5649",
+   "label": "重大",
+   "label_basis": "ユーザー確認",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "rollback方向反転",
+   "sentence": "They also temporarily put back the feature in which humans handled the calls.",
+   "legacy_ids": [
+    "WE-K03"
+   ],
+   "near_dup_group": "rollback_hc012",
+   "trial_multi_run_sweep": {
+    "safety_A5": {
+     "runs": 18,
+     "cand_c1": 18,
+     "block_c1": 18,
+     "block_any": 18,
+     "second_down": 0
+    }
+   },
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [],
+   "outcome": "NO_PRIMARY",
+   "note": "Production経路の実記事ではなくTrial fixture(safety_A5。es045 trial_translation由来の同文)。Trial 18 runすべてでBLOCKING。単一Production runの判定は無い。",
+   "sources_extra": [
+    "er052_output/open233_self_recovery_flow_runner_01*/instances*/safety_A5.json (18 runs)"
+   ],
+   "recovery_class": "回収済(Trial多run集計のみ)",
+   "sources": [
+    "er052_output/open233_self_recovery_flow_runner_01*/instances*/safety_A5.json (18 runs)"
+   ],
+   "trial_summary": {
+    "runs": 18,
+    "candidate_cycle1": 18,
+    "blocking_any_cycle": 18,
+    "instances": [
+     "safety_A5"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_hdr8y4",
+   "label": "重大",
+   "label_basis": "ユーザー確認",
+   "lang": "JA",
+   "split": "holdout",
+   "accident_type": "主体対象入替",
+   "sentence": "宇宙、通信、地上の設備をまとめて守るための仕組みを、米国が公の言葉で認めたということです。",
+   "legacy_ids": [
+    "WE-K11"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": null,
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": false,
+   "outcome": "NA_JA",
+   "note": "JA文: OPEN-233 Checkerは英語のみ対象(JA_MODE=english_only)で、Checker判定なし(対象外)。stagewise上、JAのみ残存の重大(EN最終は修正済み)。Checker対象外のためCheckerは見逃しでも捕捉でもない。",
+   "recovery_class": "対象外(JA)",
+   "sources": [],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_yjjmk8",
+   "label": "非重大",
+   "label_basis": "ユーザー確認",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "Trump announced that he would drop the 20 percent fee plan and replace it with trade and investment deals between Gulf countries and the United States.",
+   "legacy_ids": [
+    "WE-K08"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "hormuz_run03_advanced": {
+     "runs": 23,
+     "cand_c1": 1,
+     "block_c1": 0,
+     "block_any": 0,
+     "second_down": 1
+    }
+   },
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er019_output/family_x_refresh_e2e_01/hormuz/run_03/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/hormuz_run03_advanced.json",
+     "instance": "hormuz_run03_advanced",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 1.971,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [],
+     "stage2": [],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NOT_CANDIDATE",
+     "evidence_grade": "確認(経路対応): 記事path→Checker出力で対応づけ。文単位の記録は無い(非候補)"
+    }
+   ],
+   "outcome": "NOT_CANDIDATE",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/hormuz_run03_advanced.json"
+   ],
+   "trial_summary": {
+    "runs": 23,
+    "candidate_cycle1": 1,
+    "blocking_any_cycle": 0,
+    "instances": [
+     "hormuz_run03_advanced"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_upps5x",
+   "label": "非重大",
+   "label_basis": "ユーザー確認",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "On July 13, Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement.",
+   "legacy_ids": [
+    "WE-K09"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "neg3_hormuz_prodrunner_b1b": {
+     "runs": 38,
+     "cand_c1": 2,
+     "block_c1": 2,
+     "block_any": 3,
+     "second_down": 0
+    }
+   },
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/neg3_hormuz_prodrunner_b1b.json",
+     "instance": "neg3_hormuz_prodrunner_b1b",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 5.6561,
+     "article_rewrite_records": 2,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [
+      {
+       "verdict": "SUPPORTED",
+       "excluded": true,
+       "reason": "トランプ氏が7月13日に、海峡を通るすべての貨物への20％償還を投稿したというHF-002の内容と一致する。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 3,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "BLOCKING",
+       "confirmed_downgrade": false,
+       "final_materiality": "BLOCKING",
+       "basis": "none",
+       "floor_reason": "s1_second_opinion_blocking",
+       "json_line": 1202
+      }
+     ],
+     "rewrite": [
+      {
+       "cycle": 3,
+       "ladder": "0_delete",
+       "method": "deterministic_delete(violation_span(EN,L0))",
+       "before_after": []
+      }
+     ],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "BLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "BLOCKING",
+   "rw_new": "文そのものを削除(0_delete, cycle3)。台帳整合の正しい文(7/13の償還投稿)が最終本文から欠落=情報欠落。新規NGの個別ラベルは未回収。",
+   "note": "不要Rewrite。cycle1はSUPPORTEDで除外(非候補)。cycle3でLLM=ACCEPTABLE・第2意見1回目=ACCEPTABLEなのに最終BLOCKING(floor=s1_second_opinion_blocking)へ引き上げ。",
+   "sources_extra": [
+    "er052_output/open233_prod_e2e_02/report_final/report_abcde.md(C. Rewrite 不要だった=2)"
+   ],
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/neg3_hormuz_prodrunner_b1b.json:L1202",
+    "er052_output/open233_prod_e2e_02/report_final/report_abcde.md(C. Rewrite 不要だった=2)"
+   ],
+   "trial_summary": {
+    "runs": 38,
+    "candidate_cycle1": 2,
+    "blocking_any_cycle": 3,
+    "instances": [
+     "neg3_hormuz_prodrunner_b1b"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_7b6trp",
+   "label": "非重大",
+   "label_basis": "ユーザー確認",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "(なし)",
+   "sentence": "The human concierge feature was then put on hold for the time being.",
+   "legacy_ids": [
+    "WE-K12"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep7/checker/runs/meta_run03_advanced.json",
+     "instance": "meta_run03_advanced",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 2.6301,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3"
+       ],
+       "sub_reasons": [
+        "negation_polarity_mismatch"
+       ]
+      }
+     ],
+     "stage1_reclassify": [],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 323
+      },
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 400
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep7/checker/runs/meta_run03_advanced.json:L323"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_grqgvt",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "JA",
+   "split": "dev",
+   "accident_type": "(境界・Rollback語義)",
+   "sentence": "Metaの幹部は、適切な開示なしにこのテストを始めたのはミスだったと認め、人間コンシェルジュ機能を当面、以前の状態に戻しました。",
+   "legacy_ids": [
+    "WE-K04"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": null,
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": false,
+   "outcome": "NA_JA",
+   "note": "JA文: OPEN-233 Checkerは英語のみ対象(JA_MODE=english_only)で、Checker判定なし(対象外)。",
+   "recovery_class": "対象外(JA)",
+   "sources": [],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_6j5x2m",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(境界・不在断定)",
+   "sentence": "But the name of the device and exactly what it can do in an attack have not been made public.",
+   "legacy_ids": [
+    "WE-K06"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/factlock_astra_e2e_trial_01/runs/space_weapons/old/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/space_weapons/old/checker/advanced.json",
+     "instance": "space_weapons_old_advanced",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 2.3197,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3"
+       ],
+       "sub_reasons": [
+        "model"
+       ]
+      }
+     ],
+     "stage1_reclassify": [
+      {
+       "verdict": "CANDIDATE",
+       "excluded": false,
+       "reason": "装置名や攻撃能力が一般に公表されていないという否定的事実は、Ledgerでは確認されていない。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "notes_for_writer",
+       "floor_reason": null,
+       "json_line": 12
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/factlock_astra_e2e_trial_01/runs/space_weapons/old/checker/advanced.json:L12"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_6urnmg",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(境界・因果追加)",
+   "sentence": "But because of a setup mistake, it was able to connect to the outside internet.",
+   "legacy_ids": [
+    "WE-K10"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1/checker/runs/meta_run03_advanced.json",
+     "instance": "meta_run03_advanced",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 4.9083,
+     "article_rewrite_records": 1,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3"
+       ],
+       "sub_reasons": [
+        "causal_not_in_fact",
+        "negation_polarity_mismatch"
+       ]
+      }
+     ],
+     "stage1_reclassify": [],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 168
+      },
+      {
+       "cycle": 2,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 168
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1/checker/runs/meta_run03_advanced.json:L168"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_sq5c2g",
+   "label": "重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "主体対象入替",
+   "sentence": "But the humans who ended up in the main role had not been told.",
+   "legacy_ids": [
+    "meta-p2r2-02",
+    "E2E02-P2-重大"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/open233_allfact_note_e2e_02/runs/meta/nb/p2/rep2/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_allfact_note_e2e_02/runs/meta/nb/p2/rep2/checker/runs/meta_run03_advanced.json",
+     "instance": "meta_run03_advanced",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 5.2942,
+     "article_rewrite_records": 1,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3",
+        "r5"
+       ],
+       "sub_reasons": [
+        "model"
+       ]
+      }
+     ],
+     "stage1_reclassify": [
+      {
+       "verdict": "CANDIDATE",
+       "excluded": false,
+       "reason": "Ledgerが記すのは電話の相手への開示不足であり、電話を担当した人間自身が知らされていなかったという主張とは対象が異なる。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "BLOCKING",
+       "second_opinion_first": null,
+       "second_opinion_second": null,
+       "confirmed_downgrade": null,
+       "final_materiality": "BLOCKING",
+       "basis": "ledger_scope",
+       "floor_reason": null,
+       "json_line": 478
+      }
+     ],
+     "rewrite": [
+      {
+       "cycle": 1,
+       "ladder": "1_word_connective",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "before_after": [
+        {
+         "before": "But the humans who ended up in the main role had not been told.",
+         "after": "But the humans who ended up on the other end had not been properly told."
+        }
+       ]
+      }
+     ],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "BLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "BLOCKING",
+   "rw_new": "Rewrite(語句置換のみ)後も同型の重大NGが最終ENに残存(新規NGではなく未修正残存)。cycle3のACCEPTABLEは別文で、Rewrite後の文は再判定で未掲出。",
+   "sources_extra": [
+    "er052_output/open233_allfact_note_e2e_02/eval/stagewise/stagewise_meta_hormuz.json(meta p2 rep2 meta-p2r2-02)"
+   ],
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_allfact_note_e2e_02/runs/meta/nb/p2/rep2/checker/runs/meta_run03_advanced.json:L478",
+    "er052_output/open233_allfact_note_e2e_02/eval/stagewise/stagewise_meta_hormuz.json(meta p2 rep2 meta-p2r2-02)"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_7suvyn",
+   "label": "重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "その他",
+   "sentence": "In other words, it was like a heavily guarded prison whose back door had been left unlocked.",
+   "legacy_ids": [
+    "ai-p2r1-01",
+    "E2E02-P2-重大"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep1/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep1/checker/runs/meta_run03_advanced.json",
+     "instance": "meta_run03_advanced",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 6.9178,
+     "article_rewrite_records": 2,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3",
+        "r5"
+       ],
+       "sub_reasons": [
+        "model"
+       ]
+      }
+     ],
+     "stage1_reclassify": [
+      {
+       "verdict": "CANDIDATE",
+       "excluded": false,
+       "reason": "比喩が環境を「重武装の刑務所」と表現するが、Ledgerでは標準的なサイバー防御が欠けていたとしており、防御状態の限定が食い違う。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "BLOCKING",
+       "second_opinion_first": null,
+       "second_opinion_second": null,
+       "confirmed_downgrade": null,
+       "final_materiality": "BLOCKING",
+       "basis": "ledger_conditions",
+       "floor_reason": null,
+       "json_line": 246
+      }
+     ],
+     "rewrite": [
+      {
+       "cycle": 1,
+       "ladder": "4_paragraph",
+       "method": "e2_paragraph_rewrite(violation_span(EN,L0))",
+       "before_after": [
+        {
+         "before": "The first clue is Anthropic’s evaluation. An environment that should not have been able to get outside was connected to the internet because of a setup mistake. It also had none of the usual cyber def",
+         "after": "The first clue is Anthropic’s evaluation. An environment that should not have been able to get outside was connected to the internet because of a setup mistake. It also had none of the usual cyber def"
+        }
+       ]
+      }
+     ],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "BLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "BLOCKING",
+   "rw_new": "なし(②→③で修正済み。当該記事のRewrite新規発生=0)",
+   "sources_extra": [
+    "er052_output/open233_allfact_note_e2e_02/eval/stagewise/stagewise_sewer_ai_control.json(ai_control p2 rep1 ai-p2r1-01, s2_to_s3_new=0)"
+   ],
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep1/checker/runs/meta_run03_advanced.json:L246",
+    "er052_output/open233_allfact_note_e2e_02/eval/stagewise/stagewise_sewer_ai_control.json(ai_control p2 rep1 ai-p2r1-01, s2_to_s3_new=0)"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_qupxd4",
+   "label": "重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "主体対象入替",
+   "sentence": "We need to check whether the AI has enough ability, whether it tends to be used for harmful purposes, and whether there is a real way and opportunity to use it.",
+   "legacy_ids": [
+    "ai-p2r1-02",
+    "E2E02-P2-重大"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep1/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep1/checker/runs/meta_run03_advanced.json",
+     "instance": "meta_run03_advanced",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 6.9178,
+     "article_rewrite_records": 2,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3"
+       ],
+       "sub_reasons": [
+        "negation_polarity_mismatch"
+       ]
+      }
+     ],
+     "stage1_reclassify": [],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "BLOCKING",
+       "second_opinion_first": null,
+       "second_opinion_second": null,
+       "confirmed_downgrade": null,
+       "final_materiality": "BLOCKING",
+       "basis": "ledger_claim",
+       "floor_reason": null,
+       "json_line": 871
+      }
+     ],
+     "rewrite": [
+      {
+       "cycle": 1,
+       "ladder": "1_word_connective",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "before_after": [
+        {
+         "before": "We need to check whether the AI has enough ability, whether it tends to be used for harmful purposes, and whether there is a real way and opportunity to use it.",
+         "after": "We need to check whether the AI has enough ability, whether it tends to use that ability for harmful purposes, and whether there is a real way and opportunity to use it."
+        }
+       ]
+      }
+     ],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "BLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "BLOCKING",
+   "rw_new": "なし(②→③で修正済み。当該記事のRewrite新規発生=0)",
+   "sources_extra": [
+    "er052_output/open233_allfact_note_e2e_02/eval/stagewise/stagewise_sewer_ai_control.json(ai-p2r1-02)"
+   ],
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep1/checker/runs/meta_run03_advanced.json:L871",
+    "er052_output/open233_allfact_note_e2e_02/eval/stagewise/stagewise_sewer_ai_control.json(ai-p2r1-02)"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_5qddqw",
+   "label": "重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "その他",
+   "sentence": "In a simulated safety evaluation, Claude Opus 4 attempted blackmail in 84% of rollouts.",
+   "legacy_ids": [
+    "ai-p2r2-07",
+    "E2E02-P2-重大"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep2/checker/runs/meta_run03_advanced.json",
+     "instance": "meta_run03_advanced",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 8.4336,
+     "article_rewrite_records": 5,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [],
+     "stage2": [
+      {
+       "cycle": 2,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "BLOCKING",
+       "second_opinion_first": null,
+       "second_opinion_second": null,
+       "confirmed_downgrade": null,
+       "final_materiality": "BLOCKING",
+       "basis": "unsupported_relationship",
+       "floor_reason": null,
+       "json_line": 1932
+      },
+      {
+       "cycle": 2,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "BLOCKING",
+       "second_opinion_first": null,
+       "second_opinion_second": null,
+       "confirmed_downgrade": null,
+       "final_materiality": "BLOCKING",
+       "basis": "unsupported_relationship",
+       "floor_reason": null,
+       "json_line": 1932
+      }
+     ],
+     "rewrite": [
+      {
+       "cycle": 2,
+       "ladder": "4_paragraph",
+       "method": "e2_paragraph_rewrite(violation_span(EN,L0))",
+       "before_after": [
+        {
+         "before": "But there was a hole in the design of the game site. In a simulated safety evaluation, Claude Opus 4 attempted blackmail in 84% of rollouts. It also lacked the cyber safety measures that would normall",
+         "after": "There was a hole in the design of the game site. It also lacked the cyber safety measures that would normally be in place."
+        }
+       ]
+      },
+      {
+       "cycle": 2,
+       "ladder": null,
+       "method": "covered_by_earlier_rewrite_in_cycle",
+       "before_after": []
+      }
+     ],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "BLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "BLOCKING",
+   "rw_new": "【あり】このケース自体がRewrite(cycle1)が挿入した無関係文(重大)。cycle2のBLOCKINGで検出・修正済みで最終ENには残らない(Checker側のprecheck floorがEVID-006/CONTROL-004へ誤紐付けしてBLOCKING化した経緯。A2所見・未検証)。",
+   "note": "casebankの対象文はRewrite由来の挿入文で元記事には無い。「元の重大NG」ではなく「Rewriteが生んだ重大NGをCheckerが自己修復した」例。",
+   "sources_extra": [
+    "er052_output/open233_allfact_note_e2e_02/eval/stagewise/STAGEWISE_SUMMARY.md:L49(注)",
+    "er052_output/open233_allfact_note_e2e_02/eval/stagewise/stagewise_sewer_ai_control.json(ai-p2r2-07)"
+   ],
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep2/checker/runs/meta_run03_advanced.json:L1932",
+    "er052_output/open233_allfact_note_e2e_02/eval/stagewise/STAGEWISE_SUMMARY.md:L49(注)",
+    "er052_output/open233_allfact_note_e2e_02/eval/stagewise/stagewise_sewer_ai_control.json(ai-p2r2-07)"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_apqtyt",
+   "label": "重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "主体対象入替",
+   "sentence": "It is that preparations to secure space have come into public view for the first time.",
+   "legacy_ids": [
+    "sw-p2r2-02",
+    "E2E02-P2-重大"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2/checker/runs/meta_run03_advanced.json",
+     "instance": "meta_run03_advanced",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 9.677,
+     "article_rewrite_records": 9,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3",
+        "r5"
+       ],
+       "sub_reasons": [
+        "model"
+       ]
+      }
+     ],
+     "stage1_reclassify": [
+      {
+       "verdict": "CANDIDATE",
+       "excluded": false,
+       "reason": "F-001が初めてとするのは宇宙軍の兵器配備を認めた発言であり、宇宙を確保する準備全般が初めて公になったという範囲・限定は一致しない。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "BLOCKING",
+       "second_opinion_first": null,
+       "second_opinion_second": null,
+       "confirmed_downgrade": null,
+       "final_materiality": "BLOCKING",
+       "basis": "ledger_scope",
+       "floor_reason": null,
+       "json_line": 400
+      }
+     ],
+     "rewrite": [
+      {
+       "cycle": 1,
+       "ladder": "1_word_connective",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "before_after": [
+        {
+         "before": "It is that preparations to secure space have come into public view for the first time.",
+         "after": "It is that the deployment of weapons in space has come into public view for the first time."
+        }
+       ]
+      }
+     ],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "BLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "BLOCKING",
+   "rw_new": "なし(②→③で修正済み。当該記事のRewrite新規発生=0)。ただし同記事はRewrite 9 recordsで最多(Checker費用¥9.68)。",
+   "sources_extra": [
+    "er052_output/open233_allfact_note_e2e_02/eval/stagewise/stagewise_space_weapons.json(sw-p2r2-02)"
+   ],
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2/checker/runs/meta_run03_advanced.json:L400",
+    "er052_output/open233_allfact_note_e2e_02/eval/stagewise/stagewise_space_weapons.json(sw-p2r2-02)"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_665ga9",
+   "label": "重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "主体対象入替",
+   "sentence": "Mr. Trump posted that for all cargo passing through the Strait of Hormuz, the United States would seek payment equal to 20 percent of the cost of providing safe",
+   "legacy_ids": [
+    "hormuz-T0M0r2-01"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/open233_note_transfer_matrix_01/runs/hormuz/nb/T0M0/rep2/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [],
+   "outcome": "NO_PRIMARY",
+   "note": "open233_note_transfer_matrix_01は「Checkerなし」のTrial(MATRIX_SUMMARY.md:L151)。OPEN-233 Checker出力は存在しない=Checker判定は未回収(未実行)。EN deviation check(最終)=LEDGER_COMPLIANT・指摘0で、重大を通した。",
+   "sources_extra": [
+    "er052_output/open233_note_transfer_matrix_01/eval/MATRIX_SUMMARY.md:L151",
+    "er052_output/open233_note_transfer_matrix_01/runs/hormuz/nb/T0M0/rep2/b1b/audit/deviation_check.json"
+   ],
+   "recovery_class": "部分(Checker未実行。EN deviation checkのみ)",
+   "sources": [
+    "er052_output/open233_note_transfer_matrix_01/eval/MATRIX_SUMMARY.md:L151",
+    "er052_output/open233_note_transfer_matrix_01/runs/hormuz/nb/T0M0/rep2/b1b/audit/deviation_check.json"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_t9nxuv",
+   "label": "重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "数量時系列",
+   "sentence": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+   "legacy_ids": [
+    "RC-K16"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "neg3_hormuz_prodrunner_b1b": {
+     "runs": 38,
+     "cand_c1": 37,
+     "block_c1": 37,
+     "block_any": 38,
+     "second_down": 0
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K16",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L310-L324",
+    "instance": "neg3_hormuz_prodrunner_b1b",
+    "runs": 15,
+    "blocking_flagged": 15,
+    "nonblocking_flagged": 0,
+    "present_in_final(未解消で残存)": 1,
+    "qualifies(元のまま残り・未指摘・解消)": 0
+   },
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/neg3_hormuz_prodrunner_b1b.json",
+     "instance": "neg3_hormuz_prodrunner_b1b",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 5.6561,
+     "article_rewrite_records": 2,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3",
+        "r5"
+       ],
+       "sub_reasons": [
+        "model"
+       ]
+      }
+     ],
+     "stage1_reclassify": [
+      {
+       "verdict": "CANDIDATE",
+       "excluded": false,
+       "reason": "価格が以前の高い水準近くへ戻った点はHF-009と一致するが、要因となる出来事が「戻った」とするのは、Ledgerの「継続していた」という限定と食い違う。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "BLOCKING",
+       "second_opinion_first": null,
+       "second_opinion_second": null,
+       "confirmed_downgrade": null,
+       "final_materiality": "BLOCKING",
+       "basis": "ledger_conditions",
+       "floor_reason": null,
+       "json_line": 326
+      }
+     ],
+     "rewrite": [
+      {
+       "cycle": 1,
+       "ladder": "1_word_connective",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "before_after": [
+        {
+         "before": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+         "after": "The fee plan left the stage, but the prices themselves quickly returned."
+        }
+       ]
+      }
+     ],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "BLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "BLOCKING",
+   "rw_new": "なし(後続cycle2/3で同factはACCEPTABLE)。ただし同一run後半cycle3で別の正しい文を削除(rf_upps5x)。",
+   "sources_extra": [
+    "er052_output/open233_prod_e2e_02/report_final/critical_trace.md(neg3_hormuz_prodrunner_b1b)"
+   ],
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/neg3_hormuz_prodrunner_b1b.json:L326",
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L310-L324",
+    "er052_output/open233_prod_e2e_02/report_final/critical_trace.md(neg3_hormuz_prodrunner_b1b)"
+   ],
+   "trial_summary": {
+    "runs": 38,
+    "candidate_cycle1": 37,
+    "blocking_any_cycle": 38,
+    "instances": [
+     "neg3_hormuz_prodrunner_b1b"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_nck2y6",
+   "label": "重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "主体対象入替",
+   "sentence": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+   "legacy_ids": [
+    "RC-K18",
+    "Safety-A2A3-0"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "safety_A2A3": {
+     "runs": 32,
+     "cand_c1": 32,
+     "block_c1": 31,
+     "block_any": 31,
+     "second_down": 0
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K18",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L340-L352",
+    "instance": "safety_A2A3",
+    "runs": 13,
+    "blocking_flagged": 2,
+    "nonblocking_flagged": 0,
+    "present_in_final(未解消で残存)": 7,
+    "qualifies(元のまま残り・未指摘・解消)": 4
+   },
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [],
+   "outcome": "NO_PRIMARY",
+   "note": "Trialのみ(safety_A2A3 fixture)。RC-K18(truth_check)の2/13は日本語版文の数字で、casebankの英語文のBLOCKINGとは別(Trial sweepでは32 run中31でBLOCKING)。",
+   "sources_extra": [
+    "docs/pm/open233_missed_candidates_reclassification_2026-10-03.md:L413",
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv"
+   ],
+   "recovery_class": "回収済(Trial多run集計のみ)",
+   "sources": [
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L340-L352",
+    "docs/pm/open233_missed_candidates_reclassification_2026-10-03.md:L413",
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv"
+   ],
+   "trial_summary": {
+    "runs": 32,
+    "candidate_cycle1": 32,
+    "blocking_any_cycle": 31,
+    "instances": [
+     "safety_A2A3"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_fmu3aa",
+   "label": "重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "その他",
+   "sentence": "The idea was practical: when AI struggled, a person could help.",
+   "legacy_ids": [
+    "RC-K20"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "safety_A4": {
+     "runs": 19,
+     "cand_c1": 0,
+     "block_c1": 0,
+     "block_any": 12,
+     "second_down": 0
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K20",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L366-L370",
+    "instance": "safety_A4",
+    "runs": 5,
+    "blocking_flagged": 4,
+    "nonblocking_flagged": 0,
+    "present_in_final(未解消で残存)": 2,
+    "qualifies(元のまま残り・未指摘・解消)": 0
+   },
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [],
+   "outcome": "NO_PRIMARY",
+   "note": "Trialのみ(safety_A4 fixture)。K20は4/5 runでBLOCKING(truth_check)。Trial sweepではcycle1非候補・cycle2以降に文を含む拡張claimがBLOCKING(19 run中12)。",
+   "sources_extra": [
+    "docs/pm/open233_missed_candidates_reclassification_2026-10-03.md:L468"
+   ],
+   "recovery_class": "回収済(Trial多run集計のみ)",
+   "sources": [
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L366-L370",
+    "docs/pm/open233_missed_candidates_reclassification_2026-10-03.md:L468"
+   ],
+   "trial_summary": {
+    "runs": 19,
+    "candidate_cycle1": 0,
+    "blocking_any_cycle": 12,
+    "instances": [
+     "safety_A4"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_p4mtyd",
+   "label": "重大",
+   "label_basis": "Fable確定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "その他",
+   "sentence": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back ",
+   "legacy_ids": [
+    "Safety-B3"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "bgroup_B3": {
+     "runs": 48,
+     "cand_c1": 48,
+     "block_c1": 41,
+     "block_any": 41,
+     "second_down": 0
+    },
+    "neg5_hormuz_div_a2": {
+     "runs": 16,
+     "cand_c1": 15,
+     "block_c1": 10,
+     "block_any": 10,
+     "second_down": 6
+    }
+   },
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er019_output/family_x_b3_diversity_trial_01/hormuz/run_02/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/bgroup_B3.json",
+     "instance": "bgroup_B3",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 3.9618,
+     "article_rewrite_records": 1,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3"
+       ],
+       "sub_reasons": [
+        "model"
+       ]
+      }
+     ],
+     "stage1_reclassify": [
+      {
+       "verdict": "CANDIDATE",
+       "excluded": false,
+       "reason": "7月14日の一時的な下落と回復、および20％案の置換はLedgerと整合するが、「so」は継続する懸念が置換を引き起こしたと結び付けており、その因果関係は裏付けられていない。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "BLOCKING",
+       "second_opinion_first": null,
+       "second_opinion_second": null,
+       "confirmed_downgrade": null,
+       "final_materiality": "BLOCKING",
+       "basis": "unsupported_relationship",
+       "floor_reason": null,
+       "json_line": 90
+      }
+     ],
+     "rewrite": [
+      {
+       "cycle": 1,
+       "ladder": "1_word_connective",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "before_after": [
+        {
+         "before": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy tu",
+         "after": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy t"
+        }
+       ]
+      }
+     ],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "BLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "BLOCKING",
+   "rw_new": "なし(cycle2以降の同factはACCEPTABLE。so→and)",
+   "sources_extra": [
+    "er052_output/open233_prod_e2e_02/report_final/critical_trace.md(bgroup_B3)"
+   ],
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/bgroup_B3.json:L90",
+    "er052_output/open233_prod_e2e_02/report_final/critical_trace.md(bgroup_B3)"
+   ],
+   "trial_summary": {
+    "runs": 64,
+    "candidate_cycle1": 63,
+    "blocking_any_cycle": 51,
+    "instances": [
+     "bgroup_B3",
+     "neg5_hormuz_div_a2"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_g7k93w",
+   "label": "重大",
+   "label_basis": "Fable確定",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "その他",
+   "sentence": "A person can take over when AI alone has trouble.",
+   "legacy_ids": [
+    "Safety-B4-a"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "bgroup_B4": {
+     "runs": 15,
+     "cand_c1": 14,
+     "block_c1": 14,
+     "block_any": 14,
+     "second_down": 0
+    }
+   },
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [],
+   "outcome": "NO_PRIMARY",
+   "note": "Trialのみ(bgroup_B4 fixture)。Trial 15 run中14でBLOCKING。",
+   "sources_extra": [],
+   "recovery_class": "回収済(Trial多run集計のみ)",
+   "sources": [],
+   "trial_summary": {
+    "runs": 15,
+    "candidate_cycle1": 14,
+    "blocking_any_cycle": 14,
+    "instances": [
+     "bgroup_B4"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_tcdxe4",
+   "label": "重大",
+   "label_basis": "Fable確定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "主体対象入替",
+   "sentence": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+   "legacy_ids": [
+    "Safety-A4-0"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "safety_A4": {
+     "runs": 19,
+     "cand_c1": 19,
+     "block_c1": 19,
+     "block_any": 19,
+     "second_down": 0
+    }
+   },
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [],
+   "outcome": "NO_PRIMARY",
+   "note": "Trialのみ(safety_A4 fixture)。Trial 19 runすべてBLOCKING。",
+   "sources_extra": [],
+   "recovery_class": "回収済(Trial多run集計のみ)",
+   "sources": [],
+   "trial_summary": {
+    "runs": 19,
+    "candidate_cycle1": 19,
+    "blocking_any_cycle": 19,
+    "instances": [
+     "safety_A4"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_vph9nb",
+   "label": "重大",
+   "label_basis": "Sonnet判定",
+   "lang": "JA",
+   "split": "holdout",
+   "accident_type": "その他",
+   "sentence": "AIが電話をかけ、相手に切られることもある。そこで人間が電話を担当する。",
+   "legacy_ids": [
+    "w1-11"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": null,
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": false,
+   "outcome": "NA_JA",
+   "note": "JA文: OPEN-233 Checkerは英語のみ対象(JA_MODE=english_only)で、Checker判定なし(対象外)。参考: JA側のFact Check(writer内蔵)は当該JAをMAJORと判定しSTOP(旧腕R2 attempt2, rejected)=JA Fact Checkは捕捉。",
+   "ja_fact_check": {
+    "result": "MAJOR→STOP(捕捉)",
+    "src": "er052_output/factlock_astra_e2e_trial_01/eval/labels_merged.jsonl row w1-11"
+   },
+   "recovery_class": "対象外(JA)",
+   "sources": [],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_c3p892",
+   "label": "非重大",
+   "label_basis": "ユーザー確認",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "Just after the charge plan disappeared, prices began to fall. Soon, however, they returned to a high level.",
+   "legacy_ids": [
+    "RC-K19"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "safety_A2A3": {
+     "runs": 32,
+     "cand_c1": 0,
+     "block_c1": 0,
+     "block_any": 1,
+     "second_down": 0
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K19",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L353-L365",
+    "instance": "safety_A2A3",
+    "runs": 13,
+    "blocking_flagged": 1,
+    "nonblocking_flagged": 0,
+    "present_in_final(未解消で残存)": 12,
+    "qualifies(元のまま残り・未指摘・解消)": 7
+   },
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [],
+   "outcome": "NO_PRIMARY",
+   "note": "Trialのみ(safety_A2A3 fixture)。RC-K19(ユーザー決定2026-10-03で軽微。casebankでは非重大)。BLOCKINGは稀(truth_check 1/13, sweep 1/32)。",
+   "sources_extra": [
+    "docs/pm/open233_missed_candidates_reclassification_2026-10-03.md:L439"
+   ],
+   "recovery_class": "回収済(Trial多run集計のみ)",
+   "sources": [
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L353-L365",
+    "docs/pm/open233_missed_candidates_reclassification_2026-10-03.md:L439"
+   ],
+   "trial_summary": {
+    "runs": 32,
+    "candidate_cycle1": 0,
+    "blocking_any_cycle": 1,
+    "instances": [
+     "safety_A2A3"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_kkh6ng",
+   "label": "非重大",
+   "label_basis": "ユーザー確認",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "some calls needed user information to continue.",
+   "legacy_ids": [
+    "RC-K04"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "meta_run03_standard": {
+     "runs": 44,
+     "cand_c1": 29,
+     "block_c1": 16,
+     "block_any": 21,
+     "second_down": 9
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K04",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L53-L75",
+    "instance": "meta_run03_standard",
+    "runs": 23,
+    "blocking_flagged": 16,
+    "nonblocking_flagged": 0,
+    "present_in_final(未解消で残存)": 8,
+    "qualifies(元のまま残り・未指摘・解消)": 5
+   },
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/meta_run03_standard.json",
+     "instance": "meta_run03_standard",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 4.7278,
+     "article_rewrite_records": 2,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [
+      {
+       "verdict": "SUPPORTED",
+       "excluded": true,
+       "reason": "電話の遂行にユーザー情報が必要となる場合があるという内容は、プライバシー懸念の条件と一致する。"
+      }
+     ],
+     "stage2": [],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "NOT_CANDIDATE",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NOT_CANDIDATE",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/meta_run03_standard.json",
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L53-L75"
+   ],
+   "trial_summary": {
+    "runs": 44,
+    "candidate_cycle1": 29,
+    "blocking_any_cycle": 21,
+    "instances": [
+     "meta_run03_standard"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_hmpyuu",
+   "label": "非重大",
+   "label_basis": "ユーザー確認",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "They enjoyed AI’s convenience, but a human was on the other end.",
+   "legacy_ids": [
+    "RC-K10"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "meta_run03_standard": {
+     "runs": 44,
+     "cand_c1": 14,
+     "block_c1": 0,
+     "block_any": 6,
+     "second_down": 1
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K10",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L191-L213",
+    "instance": "meta_run03_standard",
+    "runs": 23,
+    "blocking_flagged": 4,
+    "nonblocking_flagged": 11,
+    "present_in_final(未解消で残存)": 18,
+    "qualifies(元のまま残り・未指摘・解消)": 13
+   },
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/meta_run03_standard.json",
+     "instance": "meta_run03_standard",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 4.7278,
+     "article_rewrite_records": 2,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3",
+        "r5"
+       ],
+       "sub_reasons": [
+        "model"
+       ]
+      }
+     ],
+     "stage1_reclassify": [
+      {
+       "verdict": "CANDIDATE",
+       "excluded": false,
+       "reason": "人間が応対した点は一致するが、利用者が利便性を享受したという事実は未確認で、人間が担当した電話をLedgerの「一部」から広げている。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 485
+      },
+      {
+       "cycle": 2,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 485
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/meta_run03_standard.json:L485",
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L191-L213"
+   ],
+   "trial_summary": {
+    "runs": 44,
+    "candidate_cycle1": 14,
+    "blocking_any_cycle": 6,
+    "instances": [
+     "meta_run03_standard"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_hspzde",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "A call came from an AI agent. That was what it seemed. But while the conversation continued, the voice on the other end was not AI. It was a person.",
+   "legacy_ids": [
+    "RC-K01"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "bgroup_B4": {
+     "runs": 15,
+     "cand_c1": 1,
+     "block_c1": 0,
+     "block_any": 7,
+     "second_down": 1
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K01",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L2-L6",
+    "instance": "bgroup_B4",
+    "runs": 5,
+    "blocking_flagged": 3,
+    "nonblocking_flagged": 0,
+    "present_in_final(未解消で残存)": 2,
+    "qualifies(元のまま残り・未指摘・解消)": 2
+   },
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [],
+   "outcome": "NO_PRIMARY",
+   "note": "Trialのみ(bgroup_B4 fixture)。RC-K01(問題なし)。truth_checkで3/5 runがBLOCKING(過剰品質)。",
+   "sources_extra": [
+    "docs/pm/open233_missed_candidates_reclassification_2026-10-03.md:L91"
+   ],
+   "recovery_class": "回収済(Trial多run集計のみ)",
+   "sources": [
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L2-L6",
+    "docs/pm/open233_missed_candidates_reclassification_2026-10-03.md:L91"
+   ],
+   "trial_summary": {
+    "runs": 15,
+    "candidate_cycle1": 1,
+    "blocking_any_cycle": 7,
+    "instances": [
+     "bgroup_B4"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_b2nvsf",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "Oil prices moved briefly, then returned to a high level.",
+   "legacy_ids": [
+    "RC-K02"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "hormuz_run03_standard": {
+     "runs": 40,
+     "cand_c1": 7,
+     "block_c1": 0,
+     "block_any": 6,
+     "second_down": 3
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K02",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L7-L29",
+    "instance": "hormuz_run03_standard",
+    "runs": 23,
+    "blocking_flagged": 5,
+    "nonblocking_flagged": 4,
+    "present_in_final(未解消で残存)": 20,
+    "qualifies(元のまま残り・未指摘・解消)": 16
+   },
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/hormuz_run03_standard.json",
+     "instance": "hormuz_run03_standard",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 2.6368,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [
+      {
+       "verdict": "SUPPORTED",
+       "excluded": true,
+       "reason": "文脈上のBrent先物について、HF-009の一時的な上げ幅縮小と、その後に発表前に近い高い水準へ戻ったとの記述に一致する。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "ledger_scope",
+       "floor_reason": null,
+       "json_line": 801
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/hormuz_run03_standard.json:L801",
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L7-L29"
+   ],
+   "trial_summary": {
+    "runs": 40,
+    "candidate_cycle1": 7,
+    "blocking_any_cycle": 6,
+    "instances": [
+     "hormuz_run03_standard"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_562myt",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+   "legacy_ids": [
+    "RC-K03"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "hormuz_run03_advanced": {
+     "runs": 23,
+     "cand_c1": 1,
+     "block_c1": 0,
+     "block_any": 0,
+     "second_down": 1
+    },
+    "hormuz_run03_standard": {
+     "runs": 40,
+     "cand_c1": 20,
+     "block_c1": 3,
+     "block_any": 4,
+     "second_down": 9
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K03",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L30-L52",
+    "instance": "hormuz_run03_standard",
+    "runs": 23,
+    "blocking_flagged": 5,
+    "nonblocking_flagged": 4,
+    "present_in_final(未解消で残存)": 18,
+    "qualifies(元のまま残り・未指摘・解消)": 16
+   },
+   "en_deviation_check": {
+    "file": "er019_output/family_x_refresh_e2e_01/hormuz/run_03/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/hormuz_run03_advanced.json",
+     "instance": "hormuz_run03_advanced",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 1.971,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3"
+       ],
+       "sub_reasons": [
+        "model"
+       ]
+      }
+     ],
+     "stage1_reclassify": [
+      {
+       "verdict": "CANDIDATE",
+       "excluded": false,
+       "reason": "料金案の撤回と緊張の継続は裏付けられるが、「oil prices」はBrent先物より範囲が広く、緊張の継続を価格が高止まりした理由とする因果関係もLedgerでは確認されていない。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 559
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/hormuz_run03_advanced.json:L559",
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L30-L52"
+   ],
+   "trial_summary": {
+    "runs": 63,
+    "candidate_cycle1": 21,
+    "blocking_any_cycle": 4,
+    "instances": [
+     "hormuz_run03_advanced",
+     "hormuz_run03_standard"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_zbe99x",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "(なし)",
+   "sentence": "human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees.",
+   "legacy_ids": [
+    "RC-K05"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "meta_run03_standard": {
+     "runs": 44,
+     "cand_c1": 12,
+     "block_c1": 12,
+     "block_any": 18,
+     "second_down": 0
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K05",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L76-L98",
+    "instance": "meta_run03_standard",
+    "runs": 23,
+    "blocking_flagged": 12,
+    "nonblocking_flagged": 0,
+    "present_in_final(未解消で残存)": 11,
+    "qualifies(元のまま残り・未指摘・解消)": 9
+   },
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/meta_run03_standard.json",
+     "instance": "meta_run03_standard",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 4.7278,
+     "article_rewrite_records": 2,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3"
+       ],
+       "sub_reasons": [
+        "model"
+       ]
+      }
+     ],
+     "stage1_reclassify": [
+      {
+       "verdict": "CANDIDATE",
+       "excluded": false,
+       "reason": "インターネット・ケーブル料金の交渉という対象は一致するが、Ledgerが示す個別事例を複数の電話へ広げている。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "BLOCKING",
+       "second_opinion_first": null,
+       "second_opinion_second": null,
+       "confirmed_downgrade": null,
+       "final_materiality": "BLOCKING",
+       "basis": "ledger_scope",
+       "floor_reason": "deterministic_floor:changed_number",
+       "json_line": 718
+      }
+     ],
+     "rewrite": [
+      {
+       "cycle": 1,
+       "ladder": "1_word_connective",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "before_after": [
+        {
+         "before": "These calls were about trying to lower internet or cable fees.",
+         "after": "This call was about trying to lower internet or cable fees."
+        }
+       ]
+      }
+     ],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "BLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "BLOCKING",
+   "rw_new": "なし(同factの後続cycleでBLOCKING再発なし: report C「Rewrite後に再修正が必要=0」)。Rewriteは次文「These calls...」を単数化。",
+   "note": "casebank上は非重大(軽微/境界。RC-K05)。旧label_sheetではtrue_critical=Y(Sonnet)だったが、ユーザー決定(2026-10-03)後の再分類で軽微。BLOCKINGはLLM+決定論floor(changed_number)。",
+   "sources_extra": [
+    "er052_output/open233_prod_e2e_02/report_final/critical_trace.md:L3-L12"
+   ],
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/meta_run03_standard.json:L718",
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L76-L98",
+    "er052_output/open233_prod_e2e_02/report_final/critical_trace.md:L3-L12"
+   ],
+   "trial_summary": {
+    "runs": 44,
+    "candidate_cycle1": 12,
+    "blocking_any_cycle": 18,
+    "instances": [
+     "meta_run03_standard"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_75v4en",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "(なし)",
+   "sentence": "But sometimes, a human was speaking instead.",
+   "legacy_ids": [
+    "RC-K08"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "meta_run03_standard": {
+     "runs": 44,
+     "cand_c1": 0,
+     "block_c1": 0,
+     "block_any": 1,
+     "second_down": 0
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K08",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L145-L167",
+    "instance": "meta_run03_standard",
+    "runs": 23,
+    "blocking_flagged": 1,
+    "nonblocking_flagged": 1,
+    "present_in_final(未解消で残存)": 22,
+    "qualifies(元のまま残り・未指摘・解消)": 15
+   },
+   "en_deviation_check": {
+    "file": "er019_output/family_x_refresh_e2e_01/meta/run_03/a2/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/meta_run03_standard.json",
+     "instance": "meta_run03_standard",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 4.7278,
+     "article_rewrite_records": 2,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [],
+     "stage2": [],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "NOT_CANDIDATE",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NOT_CANDIDATE",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/meta_run03_standard.json",
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L145-L167"
+   ],
+   "trial_summary": {
+    "runs": 44,
+    "candidate_cycle1": 0,
+    "blocking_any_cycle": 1,
+    "instances": [
+     "meta_run03_standard"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_wrv48r",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "(なし)",
+   "sentence": "The problem was telling users who was speaking.",
+   "legacy_ids": [
+    "RC-K09"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "meta_run03_standard": {
+     "runs": 44,
+     "cand_c1": 1,
+     "block_c1": 0,
+     "block_any": 1,
+     "second_down": 1
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K09",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L168-L190",
+    "instance": "meta_run03_standard",
+    "runs": 23,
+    "blocking_flagged": 1,
+    "nonblocking_flagged": 1,
+    "present_in_final(未解消で残存)": 22,
+    "qualifies(元のまま残り・未指摘・解消)": 15
+   },
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/meta_run03_standard.json",
+     "instance": "meta_run03_standard",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 4.7278,
+     "article_rewrite_records": 2,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3"
+       ],
+       "sub_reasons": [
+        "negation_polarity_mismatch"
+       ]
+      }
+     ],
+     "stage1_reclassify": [],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 170
+      },
+      {
+       "cycle": 2,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 170
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/meta_run03_standard.json:L170",
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L168-L190"
+   ],
+   "trial_summary": {
+    "runs": 44,
+    "candidate_cycle1": 1,
+    "blocking_any_cycle": 1,
+    "instances": [
+     "meta_run03_standard"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_gtwtjt",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "A Meta executive admitted the mistake. The test had begun without clearly telling users.",
+   "legacy_ids": [
+    "RC-K11"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "neg1_meta_b3prod_a2": {
+     "runs": 37,
+     "cand_c1": 3,
+     "block_c1": 0,
+     "block_any": 1,
+     "second_down": 1
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K11",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L214-L235",
+    "instance": "neg1_meta_b3prod_a2",
+    "runs": 22,
+    "blocking_flagged": 1,
+    "nonblocking_flagged": 3,
+    "present_in_final(未解消で残存)": 21,
+    "qualifies(元のまま残り・未指摘・解消)": 19
+   },
+   "en_deviation_check": {
+    "file": "er019_output/family_x_b3_production_wiring_01/run_01/a2/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/neg1_meta_b3prod_a2.json",
+     "instance": "neg1_meta_b3prod_a2",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 3.07,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3"
+       ],
+       "sub_reasons": [
+        "negation_polarity_mismatch"
+       ]
+      }
+     ],
+     "stage1_reclassify": [
+      {
+       "verdict": "SUPPORTED",
+       "excluded": true,
+       "reason": "人間の契約スタッフが担当するテストが適切な開示なしに始まったというLedgerの記述に合う。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "ledger_claim",
+       "floor_reason": null,
+       "json_line": 956
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/neg1_meta_b3prod_a2.json:L956",
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L214-L235"
+   ],
+   "trial_summary": {
+    "runs": 37,
+    "candidate_cycle1": 3,
+    "blocking_any_cycle": 1,
+    "instances": [
+     "neg1_meta_b3prod_a2"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_da6twd",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "A user might think the exchange was with AI, even though a person was involved.",
+   "legacy_ids": [
+    "RC-K12"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "neg1_meta_b3prod_a2": {
+     "runs": 37,
+     "cand_c1": 3,
+     "block_c1": 0,
+     "block_any": 1,
+     "second_down": 1
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K12",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L236-L257",
+    "instance": "neg1_meta_b3prod_a2",
+    "runs": 22,
+    "blocking_flagged": 1,
+    "nonblocking_flagged": 5,
+    "present_in_final(未解消で残存)": 21,
+    "qualifies(元のまま残り・未指摘・解消)": 19
+   },
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/neg1_meta_b3prod_a2.json",
+     "instance": "neg1_meta_b3prod_a2",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 3.07,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3",
+        "r5"
+       ],
+       "sub_reasons": [
+        "model"
+       ]
+      }
+     ],
+     "stage1_reclassify": [
+      {
+       "verdict": "CANDIDATE",
+       "excluded": false,
+       "reason": "人間が関与したテストの範囲は合うが、ユーザーがAIとのやり取りだと思う可能性はLedgerに明示されていない。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "ledger_claim",
+       "floor_reason": null,
+       "json_line": 407
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/neg1_meta_b3prod_a2.json:L407",
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L236-L257"
+   ],
+   "trial_summary": {
+    "runs": 37,
+    "candidate_cycle1": 3,
+    "blocking_any_cycle": 1,
+    "instances": [
+     "neg1_meta_b3prod_a2"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_7kyezh",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "(なし)",
+   "sentence": "The test began without clearly telling users that contract workers would make the calls.",
+   "legacy_ids": [
+    "RC-K13"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "neg1_meta_b3prod_a2": {
+     "runs": 37,
+     "cand_c1": 3,
+     "block_c1": 0,
+     "block_any": 1,
+     "second_down": 1
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K13",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L258-L279",
+    "instance": "neg1_meta_b3prod_a2",
+    "runs": 22,
+    "blocking_flagged": 1,
+    "nonblocking_flagged": 5,
+    "present_in_final(未解消で残存)": 21,
+    "qualifies(元のまま残り・未指摘・解消)": 19
+   },
+   "en_deviation_check": {
+    "file": "er019_output/family_x_b3_production_wiring_01/run_01/a2/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/neg1_meta_b3prod_a2.json",
+     "instance": "neg1_meta_b3prod_a2",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 3.07,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [
+      {
+       "verdict": "SUPPORTED",
+       "excluded": true,
+       "reason": "契約スタッフが電話を担当するテストが適切な開示なしに始まったというLedgerの記述に合う。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "ledger_claim",
+       "floor_reason": null,
+       "json_line": 1112
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/neg1_meta_b3prod_a2.json:L1112",
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L258-L279"
+   ],
+   "trial_summary": {
+    "runs": 37,
+    "candidate_cycle1": 3,
+    "blocking_any_cycle": 1,
+    "instances": [
+     "neg1_meta_b3prod_a2"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_sprwsa",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "JA",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "トランプ氏は、アメリカがホルムズ海峡の安全確保に使う費用について、海峡を通るすべての貨物に二割の償還を求めると投稿した。",
+   "legacy_ids": [
+    "RC-K14"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": null,
+   "rc_truth_check": {
+    "kind": "K14",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L280-L294",
+    "instance": "neg3_hormuz_prodrunner_b1b",
+    "runs": 15,
+    "blocking_flagged": 1,
+    "nonblocking_flagged": 0,
+    "present_in_final(未解消で残存)": 15,
+    "qualifies(元のまま残り・未指摘・解消)": 11
+   },
+   "en_deviation_check": null,
+   "checker_applicable": false,
+   "outcome": "NA_JA",
+   "note": "JA文: OPEN-233 Checkerは英語のみ対象(JA_MODE=english_only)で、Checker判定なし(対象外)。",
+   "recovery_class": "対象外(JA)",
+   "sources": [
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L280-L294"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_pb7rz2",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "(なし)",
+   "sentence": "During that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.",
+   "legacy_ids": [
+    "RC-K15"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "neg3_hormuz_prodrunner_b1b": {
+     "runs": 38,
+     "cand_c1": 5,
+     "block_c1": 4,
+     "block_any": 5,
+     "second_down": 1
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K15",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L295-L309",
+    "instance": "neg3_hormuz_prodrunner_b1b",
+    "runs": 15,
+    "blocking_flagged": 5,
+    "nonblocking_flagged": 0,
+    "present_in_final(未解消で残存)": 11,
+    "qualifies(元のまま残り・未指摘・解消)": 7
+   },
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/neg3_hormuz_prodrunner_b1b.json",
+     "instance": "neg3_hormuz_prodrunner_b1b",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 5.6561,
+     "article_rewrite_records": 2,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [],
+     "stage2": [
+      {
+       "cycle": 3,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 1378
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/neg3_hormuz_prodrunner_b1b.json:L1378",
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L295-L309"
+   ],
+   "trial_summary": {
+    "runs": 38,
+    "candidate_cycle1": 5,
+    "blocking_any_cycle": 5,
+    "instances": [
+     "neg3_hormuz_prodrunner_b1b"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_rhubds",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.",
+   "legacy_ids": [
+    "RC-K17"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "neg3_hormuz_prodrunner_b1b": {
+     "runs": 38,
+     "cand_c1": 23,
+     "block_c1": 4,
+     "block_any": 5,
+     "second_down": 15
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K17",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L325-L339",
+    "instance": "neg3_hormuz_prodrunner_b1b",
+    "runs": 15,
+    "blocking_flagged": 5,
+    "nonblocking_flagged": 0,
+    "present_in_final(未解消で残存)": 11,
+    "qualifies(元のまま残り・未指摘・解消)": 7
+   },
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/open233_prod_e2e_02/runs/neg3_hormuz_prodrunner_b1b.json",
+     "instance": "neg3_hormuz_prodrunner_b1b",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 5.6561,
+     "article_rewrite_records": 2,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [
+      {
+       "verdict": "SUPPORTED",
+       "excluded": true,
+       "reason": "料金案の置換後も封鎖や攻撃、タンカー安全上の懸念が続いたというHF-009の条件を、比喩的に言い換えている。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 401
+      },
+      {
+       "cycle": 2,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 401
+      },
+      {
+       "cycle": 3,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 401
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/open233_prod_e2e_02/runs/neg3_hormuz_prodrunner_b1b.json:L401",
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L325-L339"
+   ],
+   "trial_summary": {
+    "runs": 38,
+    "candidate_cycle1": 23,
+    "blocking_any_cycle": 5,
+    "instances": [
+     "neg3_hormuz_prodrunner_b1b"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_y45s87",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "(なし)",
+   "sentence": "An AI called. That was what people thought as they spoke.",
+   "legacy_ids": [
+    "RC-K23"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {
+    "safety_A4": {
+     "runs": 19,
+     "cand_c1": 10,
+     "block_c1": 0,
+     "block_any": 6,
+     "second_down": 5
+    }
+   },
+   "rc_truth_check": {
+    "kind": "K23",
+    "csv": "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L381-L385",
+    "instance": "safety_A4",
+    "runs": 5,
+    "blocking_flagged": 5,
+    "nonblocking_flagged": 1,
+    "present_in_final(未解消で残存)": 1,
+    "qualifies(元のまま残り・未指摘・解消)": 0
+   },
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [],
+   "outcome": "NO_PRIMARY",
+   "note": "Trialのみ(safety_A4 fixture)。RC-K23(問題なし)。truth_checkで5/5 runがBLOCKING。",
+   "sources_extra": [
+    "docs/pm/open233_missed_candidates_reclassification_2026-10-03.md:L543"
+   ],
+   "recovery_class": "回収済(Trial多run集計のみ)",
+   "sources": [
+    "er052_output/open233_missed_detection_truth_check_01/cases_01.csv:L381-L385",
+    "docs/pm/open233_missed_candidates_reclassification_2026-10-03.md:L543"
+   ],
+   "trial_summary": {
+    "runs": 19,
+    "candidate_cycle1": 10,
+    "blocking_any_cycle": 6,
+    "instances": [
+     "safety_A4"
+    ]
+   }
+  },
+  {
+   "case_id": "rf_w3ucr6",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "JA",
+   "split": "dev",
+   "accident_type": "(軽微/境界)",
+   "sentence": "性能表は伏せたまま",
+   "legacy_ids": [
+    "B-02",
+    "w1-49"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": null,
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": false,
+   "outcome": "NA_JA",
+   "note": "JA文: OPEN-233 Checkerは英語のみ対象(JA_MODE=english_only)で、Checker判定なし(対象外)。",
+   "recovery_class": "対象外(JA)",
+   "sources": [],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_xkgmt5",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "JA",
+   "split": "dev",
+   "accident_type": "(軽微/境界)",
+   "sentence": "明らかにされていません",
+   "legacy_ids": [
+    "B-03",
+    "w1-61"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": null,
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": false,
+   "outcome": "NA_JA",
+   "note": "JA文: OPEN-233 Checkerは英語のみ対象(JA_MODE=english_only)で、Checker判定なし(対象外)。",
+   "recovery_class": "対象外(JA)",
+   "sources": [],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_wfzehu",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "JA",
+   "split": "dev",
+   "accident_type": "(軽微/境界)",
+   "sentence": "2026年9月23日から新料金です",
+   "legacy_ids": [
+    "B-11",
+    "w3-98"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": null,
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": false,
+   "outcome": "NA_JA",
+   "note": "JA文: OPEN-233 Checkerは英語のみ対象(JA_MODE=english_only)で、Checker判定なし(対象外)。",
+   "recovery_class": "対象外(JA)",
+   "sources": [],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_ptrj37",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "JA",
+   "split": "dev",
+   "accident_type": "(軽微/境界)",
+   "sentence": "会社が示した次の数字は、AI半導体売上高の予想ではありません。次の四半期の連結売上高の見通しです。",
+   "legacy_ids": [
+    "B-09",
+    "w3-85"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": null,
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": false,
+   "outcome": "NA_JA",
+   "note": "JA文: OPEN-233 Checkerは英語のみ対象(JA_MODE=english_only)で、Checker判定なし(対象外)。",
+   "recovery_class": "対象外(JA)",
+   "sources": [],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_mytfwc",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "JA",
+   "split": "holdout",
+   "accident_type": "(軽微/境界)",
+   "sentence": "今回の発表を整理すると、登場するのは三つ。AI半導体の実績、会社全体の実績、会社全体の見通し。",
+   "legacy_ids": [
+    "B-10",
+    "w3-86"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": null,
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": false,
+   "outcome": "NA_JA",
+   "note": "JA文: OPEN-233 Checkerは英語のみ対象(JA_MODE=english_only)で、Checker判定なし(対象外)。",
+   "recovery_class": "対象外(JA)",
+   "sources": [],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_aennw4",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(境界)",
+   "sentence": "Meta paused its human-concierge feature after contract workers made calls without properly informing users.",
+   "legacy_ids": [
+    "S0-1",
+    "S0_USER_CHECK 確認1"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [],
+   "outcome": "DEVCHECK_MAJOR_STOP",
+   "note": "OPEN-233 Checkerではなく、書き手内蔵のEN deviation checkがMAJOR(確認1 users)と判定→解消せずSTOP(出荷されず)。非重大なので偽STOP候補(ユーザー確認待ち: 許容/不許容)。OPEN-233 Checker自体の判定は存在しない。",
+   "sources_extra": [
+    "er052_output/open243_translation_ng_analysis_01/S0_USER_CHECK.md:L9"
+   ],
+   "recovery_class": "部分(EN deviation checkのみ)",
+   "sources": [
+    "er052_output/open243_translation_ng_analysis_01/S0_USER_CHECK.md:L9"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_xyw4mp",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "(境界)",
+   "sentence": "Meta’s AI calling test used human contractors without proper disclosure, so the company rolled back that feature.",
+   "legacy_ids": [
+    "S0-2",
+    "S0_USER_CHECK 確認2"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [],
+   "outcome": "DEVCHECK_MAJOR_STOP",
+   "note": "OPEN-233 Checkerではなく、書き手内蔵のEN deviation checkがMAJOR(確認2 so)と判定→解消せずSTOP(出荷されず)。非重大なので偽STOP候補(ユーザー確認待ち: 許容/不許容)。OPEN-233 Checker自体の判定は存在しない。",
+   "sources_extra": [
+    "er052_output/open243_translation_ng_analysis_01/S0_USER_CHECK.md:L15"
+   ],
+   "recovery_class": "部分(EN deviation checkのみ)",
+   "sources": [
+    "er052_output/open243_translation_ng_analysis_01/S0_USER_CHECK.md:L15"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_8fbz5r",
+   "label": "非重大",
+   "label_basis": "Sonnet判定",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(境界)",
+   "sentence": "Oil prices stayed high despite the shift from a proposed Hormuz fee to investment deals, as shipping-safety fears persisted.",
+   "legacy_ids": [
+    "S0-3",
+    "S0_USER_CHECK 確認3"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": null,
+   "checker_applicable": true,
+   "primary": [],
+   "outcome": "DEVCHECK_MAJOR_STOP",
+   "note": "OPEN-233 Checkerではなく、書き手内蔵のEN deviation checkがMAJOR(確認3 Brent→oil prices)と判定→解消せずSTOP(出荷されず)。非重大なので偽STOP候補(ユーザー確認待ち: 許容/不許容)。OPEN-233 Checker自体の判定は存在しない。",
+   "sources_extra": [
+    "er052_output/open243_translation_ng_analysis_01/S0_USER_CHECK.md:L21"
+   ],
+   "recovery_class": "部分(EN deviation checkのみ)",
+   "sources": [
+    "er052_output/open243_translation_ng_analysis_01/S0_USER_CHECK.md:L21"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_e42vt2",
+   "label": "非重大",
+   "label_basis": "機械抽出(弱ラベル)",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "He proposed charging 20% on all cargo passing through the Strait of Hormuz.",
+   "legacy_ids": [
+    "MECH-hormuz-new"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/factlock_astra_e2e_trial_01/runs/hormuz/new/a2/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/hormuz/new/checker/standard.json",
+     "instance": "hormuz_new_standard",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 2.9362,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 717
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/factlock_astra_e2e_trial_01/runs/hormuz/new/checker/standard.json:L717"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_qupkjh",
+   "label": "非重大",
+   "label_basis": "機械抽出(弱ラベル)",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "The monthly price of the standalone plan with ads will rise from $11.99 to $12.49.",
+   "legacy_ids": [
+    "MECH-streaming_price-old"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/old/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/old/checker/advanced.json",
+     "instance": "streaming_price_old_advanced",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 2.9518,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 816
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/old/checker/advanced.json:L816"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_ah9aha",
+   "label": "非重大",
+   "label_basis": "機械抽出(弱ラベル)",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "(なし)",
+   "sentence": "They were also up 54 percent from the quarter before.",
+   "legacy_ids": [
+    "MECH-semiconductor_earnings-old"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/factlock_astra_e2e_trial_01/runs/semiconductor_earnings/old/a2/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/semiconductor_earnings/old/checker/standard.json",
+     "instance": "semiconductor_earnings_old_standard",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 3.63,
+     "article_rewrite_records": 2,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [],
+     "stage2": [],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "NOT_CANDIDATE",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NOT_CANDIDATE",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/factlock_astra_e2e_trial_01/runs/semiconductor_earnings/old/checker/standard.json"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_5cryu9",
+   "label": "非重大",
+   "label_basis": "機械抽出(弱ラベル)",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "The standalone plan with ads will cost $11.99 a month.",
+   "legacy_ids": [
+    "MECH-streaming_price-old"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/old/a2/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/old/checker/standard.json",
+     "instance": "streaming_price_old_standard",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 5.4559,
+     "article_rewrite_records": 4,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "QUALITY",
+       "second_opinion_first": "QUALITY",
+       "second_opinion_second": "BLOCKING",
+       "confirmed_downgrade": false,
+       "final_materiality": "BLOCKING",
+       "basis": "ledger_numeric_value",
+       "floor_reason": "s1_second_opinion_blocking",
+       "json_line": 872
+      }
+     ],
+     "rewrite": [
+      {
+       "cycle": 1,
+       "ladder": "3_sentence",
+       "method": "e2_generic_rewrite(violation_span(EN,L6:sentence_restore))",
+       "before_after": [
+        {
+         "before": "The standalone plan with ads will cost $11.99 a month.",
+         "after": "The standalone plan with ads cost $11.99 a month."
+        }
+       ]
+      }
+     ],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "BLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "BLOCKING",
+   "rw_new": "なし(will cost→cost の時制修正はSonnetラベルで改善と判定: w3-109/w3-117)。同記事の別Rewrite(断片artifactによる$2.50文の削除, w3-112)は軽微な新規欠落を生んだ。",
+   "note": "casebankでは機械抽出弱ラベルの非重大。Sonnet個別ラベルは軽微(時制)。BLOCKINGはLLM=QUALITY→第2意見BLOCKINGの引き上げ(floor=s1_second_opinion_blocking)。",
+   "sources_extra": [
+    "er052_output/factlock_astra_e2e_trial_01/eval/labels_merged.jsonl w3-109,w3-112,w3-117"
+   ],
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/old/checker/standard.json:L872",
+    "er052_output/factlock_astra_e2e_trial_01/eval/labels_merged.jsonl w3-109,w3-112,w3-117"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_6c53hz",
+   "label": "非重大",
+   "label_basis": "機械抽出(弱ラベル)",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "He proposed asking for a 20% reimbursement on all cargo passing through the Strait of Hormuz, to cover the cost of US security.",
+   "legacy_ids": [
+    "MECH-hormuz-new"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/factlock_astra_e2e_trial_01/runs/hormuz/new/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/hormuz/new/checker/advanced.json",
+     "instance": "hormuz_new_advanced",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 2.5126,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 474
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/factlock_astra_e2e_trial_01/runs/hormuz/new/checker/advanced.json:L474"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_9x3gdn",
+   "label": "非重大",
+   "label_basis": "機械抽出(弱ラベル)",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "That would be up 236 percent from the same quarter a year earlier.",
+   "legacy_ids": [
+    "MECH-semiconductor_earnings-old"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/factlock_astra_e2e_trial_01/runs/semiconductor_earnings/old/a2/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/semiconductor_earnings/old/checker/standard.json",
+     "instance": "semiconductor_earnings_old_standard",
+     "article_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "article_checker_cost_jpy": 3.63,
+     "article_rewrite_records": 2,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [],
+     "stage2": [],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": true,
+     "outcome": "NOT_CANDIDATE",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NOT_CANDIDATE",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/factlock_astra_e2e_trial_01/runs/semiconductor_earnings/old/checker/standard.json"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_ejrk5u",
+   "label": "非重大",
+   "label_basis": "機械抽出(弱ラベル)",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "(なし)",
+   "sentence": "It raised the policy rate by 0.25 percentage points, to 3.75%–4.00%.",
+   "legacy_ids": [
+    "MECH-central_bank_mortgage-old"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/factlock_astra_e2e_trial_01/runs/central_bank_mortgage/old/a2/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/central_bank_mortgage/old/checker/standard.json",
+     "instance": "central_bank_mortgage_old_standard",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 2.1203,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [],
+     "stage2": [],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NOT_CANDIDATE",
+     "evidence_grade": "確認(経路対応): 記事path→Checker出力で対応づけ。文単位の記録は無い(非候補)"
+    }
+   ],
+   "outcome": "NOT_CANDIDATE",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/factlock_astra_e2e_trial_01/runs/central_bank_mortgage/old/checker/standard.json"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_pdmdt5",
+   "label": "非重大",
+   "label_basis": "機械抽出(弱ラベル)",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "(なし)",
+   "sentence": "The monthly Premium plan on its own will rise from $18.99 to $21.49.",
+   "legacy_ids": [
+    "MECH-streaming_price-new"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/new/a2/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/new/checker/standard.json",
+     "instance": "streaming_price_new_standard",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 2.4959,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3"
+       ],
+       "sub_reasons": [
+        "negation_polarity_mismatch"
+       ]
+      }
+     ],
+     "stage1_reclassify": [],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 90
+      },
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "QUALITY",
+       "second_opinion_first": "QUALITY",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "QUALITY",
+       "basis": "ledger_numeric_value",
+       "floor_reason": null,
+       "json_line": 90
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/new/checker/standard.json:L90"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_g4uegk",
+   "label": "非重大",
+   "label_basis": "機械抽出(弱ラベル)",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "The monthly Premium plan by itself will go from $18.99 to $21.49, a difference of $2.50.",
+   "legacy_ids": [
+    "MECH-streaming_price-new"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/new/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/new/checker/advanced.json",
+     "instance": "streaming_price_new_advanced",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 2.8255,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3"
+       ],
+       "sub_reasons": [
+        "negation_polarity_mismatch"
+       ]
+      }
+     ],
+     "stage1_reclassify": [],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 168
+      },
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "QUALITY",
+       "confirmed_downgrade": true,
+       "final_materiality": "QUALITY",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 168
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/factlock_astra_e2e_trial_01/runs/streaming_price/new/checker/advanced.json:L168"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_vqhe62",
+   "label": "非重大",
+   "label_basis": "機械抽出(弱ラベル)",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "(なし)",
+   "sentence": "The rate change would add about $376 to each monthly payment.",
+   "legacy_ids": [
+    "MECH-central_bank_mortgage-old"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/factlock_astra_e2e_trial_01/runs/central_bank_mortgage/old/a2/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/central_bank_mortgage/old/checker/standard.json",
+     "instance": "central_bank_mortgage_old_standard",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 2.1203,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [],
+     "stage2": [],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NOT_CANDIDATE",
+     "evidence_grade": "確認(経路対応): 記事path→Checker出力で対応づけ。文単位の記録は無い(非候補)"
+    }
+   ],
+   "outcome": "NOT_CANDIDATE",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/factlock_astra_e2e_trial_01/runs/central_bank_mortgage/old/checker/standard.json"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_rdwghg",
+   "label": "非重大",
+   "label_basis": "機械抽出(弱ラベル)",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "In 2021, Russia launched a missile from the ground and destroyed a satellite.",
+   "legacy_ids": [
+    "MECH-space_weapons-old"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/factlock_astra_e2e_trial_01/runs/space_weapons/old/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/space_weapons/old/checker/advanced.json",
+     "instance": "space_weapons_old_advanced",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 2.3197,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [],
+     "stage2": [],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NOT_CANDIDATE",
+     "evidence_grade": "確認(経路対応): 記事path→Checker出力で対応づけ。文単位の記録は無い(非候補)"
+    }
+   ],
+   "outcome": "NOT_CANDIDATE",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/factlock_astra_e2e_trial_01/runs/space_weapons/old/checker/advanced.json"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_w3dtae",
+   "label": "非重大",
+   "label_basis": "機械抽出(弱ラベル)",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "For fall/winter 2026, mini bags are being featured as a trend in fashion articles.",
+   "legacy_ids": [
+    "MECH-small_bag-old"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/factlock_astra_e2e_trial_01/runs/small_bag/old/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/small_bag/old/checker/advanced.json",
+     "instance": "small_bag_old_advanced",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 2.3555,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": true,
+     "stage1_union": [
+      {
+       "routes": [
+        "r3",
+        "r5"
+       ],
+       "sub_reasons": [
+        "model"
+       ]
+      }
+     ],
+     "stage1_reclassify": [
+      {
+       "verdict": "CANDIDATE",
+       "excluded": false,
+       "reason": "Ledgerが裏付けるのはELLEの記事であり、「fashion articles」と複数・一般化した主体と範囲は一致しない。"
+      }
+     ],
+     "stage2": [
+      {
+       "cycle": 1,
+       "detected_by": "stage1_llm",
+       "llm_materiality": "ACCEPTABLE",
+       "second_opinion_first": "ACCEPTABLE",
+       "second_opinion_second": "ACCEPTABLE",
+       "confirmed_downgrade": true,
+       "final_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor_reason": null,
+       "json_line": 12
+      }
+     ],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NONBLOCKING",
+     "evidence_grade": "確認(claim単位で記録に現れる)"
+    }
+   ],
+   "outcome": "NONBLOCKING",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/factlock_astra_e2e_trial_01/runs/small_bag/old/checker/advanced.json:L12"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_nykkru",
+   "label": "非重大",
+   "label_basis": "機械抽出(弱ラベル)",
+   "lang": "EN",
+   "split": "dev",
+   "accident_type": "(なし)",
+   "sentence": "The recall notice in China covers a total of 183,211 vehicles from the Tang and Qin series.",
+   "legacy_ids": [
+    "MECH-byd_recall-old"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/factlock_astra_e2e_trial_01/runs/byd_recall/old/b1b/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/byd_recall/old/checker/advanced.json",
+     "instance": "byd_recall_old_advanced",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 2.5008,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [],
+     "stage2": [],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NOT_CANDIDATE",
+     "evidence_grade": "確認(経路対応): 記事path→Checker出力で対応づけ。文単位の記録は無い(非候補)"
+    }
+   ],
+   "outcome": "NOT_CANDIDATE",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/factlock_astra_e2e_trial_01/runs/byd_recall/old/checker/advanced.json"
+   ],
+   "trial_summary": null
+  },
+  {
+   "case_id": "rf_frwds2",
+   "label": "非重大",
+   "label_basis": "機械抽出(弱ラベル)",
+   "lang": "EN",
+   "split": "holdout",
+   "accident_type": "(なし)",
+   "sentence": "In 2021, Russia launched a missile from the ground.",
+   "legacy_ids": [
+    "MECH-space_weapons-old"
+   ],
+   "near_dup_group": null,
+   "trial_multi_run_sweep": {},
+   "rc_truth_check": null,
+   "en_deviation_check": {
+    "file": "er052_output/factlock_astra_e2e_trial_01/runs/space_weapons/old/a2/audit/deviation_check.json",
+    "overall_status": "LEDGER_COMPLIANT",
+    "n_deviations": 0,
+    "sentence_matched": []
+   },
+   "checker_applicable": true,
+   "primary": [
+    {
+     "file": "er052_output/factlock_astra_e2e_trial_01/runs/space_weapons/old/checker/standard.json",
+     "instance": "space_weapons_old_standard",
+     "article_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "article_checker_cost_jpy": 2.4667,
+     "article_rewrite_records": 0,
+     "stage1_union_candidate": false,
+     "stage1_union": [],
+     "stage1_reclassify": [],
+     "stage2": [],
+     "rewrite": [],
+     "sentence_traced_in_checker_input_text": false,
+     "outcome": "NOT_CANDIDATE",
+     "evidence_grade": "確認(経路対応): 記事path→Checker出力で対応づけ。文単位の記録は無い(非候補)"
+    }
+   ],
+   "outcome": "NOT_CANDIDATE",
+   "recovery_class": "回収済(Production経路単一run)",
+   "sources": [
+    "er052_output/factlock_astra_e2e_trial_01/runs/space_weapons/old/checker/standard.json"
+   ],
+   "trial_summary": null
+  }
+ ],
+ "unrecovered_items": [
+  "JA文(9件)のJA側Fact Check個別判定: rf_vph9nb以外は未回収(Checker対象外のため回収せず)",
+  "rf_665ga9: OPEN-233 Checkerは未実行(Trialが「Checkerなし」)。回収不能",
+  "rf_aennw4/rf_xyw4mp/rf_8fbz5r: OPEN-233 Checker判定なし(EN deviation check MAJORのみ。S0要約文は完走記事ではない)",
+  "EN deviation checkのretry前attempt指摘の集計(deviation_checks/attempt*.json)",
+  "Rewriteで新規発生したNGの個別ラベルは、prod_e2e_02のneg3削除文など一部ケースで未回収",
+  "factlockの18記事中Checker出力が無い記事(central_bank/new, hormuz/old, meta/old, openai/new, semiconductor/new 等)の理由の個別確認"
+ ]
+}
