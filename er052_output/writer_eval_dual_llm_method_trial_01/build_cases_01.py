@@ -26,7 +26,7 @@ CASES = [
          sentence="The company also restored the human concierge feature to the way it had been before, at least for now.",
          before="A Meta executive admitted that starting the test without properly explaining it was a mistake.",
          after="The real challenge for AI phone calls is not just how they talk.",
-         sentence_src="er052_output/open233_prod_e2e_02 meta_run03_advanced EN(claim逐語は labels/labels_merged.json 他)。前後文は同文を含む er019_output/meta/run_03/b1b/article.md L17-L19 から採取【推測: prod_e2e_02の記事本体は未保存のため同一記事とみなす】",
+         sentence_src="er052_output/open233_prod_e2e_02 meta_run03_advanced EN(claim逐語は labels/labels_merged.json 他)。対象文・前後文とも runs/meta_run03_advanced.json の local_context から逐語採取【確認】",
          human_tier="Fable確定+ユーザー呼称", human="重大(方向反転: ロールバックを復元と記述)",
          human_src="er052_output/open233_prod_e2e_02/labels/labels_w2_notes.md L24-L26; report_final/critical_trace.md L12-L14; DECISION_LOG.md L20019(Fable確定)・L20053(ユーザーが『今回発見した重大見逃し』と呼称)。ユーザー個別ラベルの記録は未発見(docs/pm/rollback_misread_history_01.md §5)",
          checker="見逃し: 機械候補(negation_polarity_mismatch)→Stage1/Stage2=ACCEPTABLE→S1第2意見=ACCEPTABLE→最終 RESOLVED_STAGE2_DOWNGRADE",
@@ -63,7 +63,7 @@ CASES = [
          sentence="The company also changed the human concierge feature back to how it was before, at least for now.",
          before="A Meta executive admitted that starting the test without explaining it clearly was a mistake.",
          after="The real challenge for AI phone calls is not only how they speak.",
-         sentence_src="claim逐語: er052_output/open233_prod_e2e_02/labels/labels_merged.json idx96。前後文は同文を含む er019_output/meta/run_03/a2/article.md L17-L19 から採取【推測: neg2記事本体は一部のみ保存】",
+         sentence_src="claim逐語: er052_output/open233_prod_e2e_02/labels/labels_merged.json idx96。対象文・前後文とも runs/neg2_meta_refresh_a2.json の local_context から逐語採取【確認】",
          human_tier="Sonnet暫定(ラベル揺れあり)",
          human="Sonnet W3=問題なし(N)。一方、方向Trialのgold設定G-06は『曖昧』。Fable/ユーザーの最終ラベルなし",
          human_src="labels_merged.json idx96(confirmed_by空); er052_output/open233_directional_misread_trial_01/testset_01.json G-06",
@@ -116,6 +116,34 @@ CASES = [
          expect="A"),
 ]
 
+# 委任_01b: 前後文の出典整合(対象文と前後文が同一artifactから逐語で取れていることを確認した結果)。
+# context_source は評価LLMへ渡さない運用情報(eval_items_01.jsonには監査用に載せるが、runnerは5項目のみ渡す)。
+RB = "er052_output/open233_prod_e2e_02/runs/"
+CTX = {
+ "K01": (RB + "meta_run03_advanced.json 内 local_context(Checkerが実際に評価した記事の抜粋。対象文・前文・後文が同一local_context内に逐語で存在【確認】)。補足: er019_output/meta/run_03/b1b/article.md L17-L19 とも逐語一致"),
+ "K02": ("er052_output/open233_control_checker_polysemy_trial_01/eval/blind/ai_control/jb9k/b1b/article.md L15(対象文・前文とも同一段落【確認】)。後文は同記事L17に存在するが非採用(片側のみ)"),
+ "K03": ("er045_output/family_x_no_heading_segmentation_trial_01/meta/trial_translation.json(同一段落内に前文・対象文・後文が逐語で存在【確認】)"),
+ "K04": ("er019_output/meta/run_03/ja_writer/original.md L11(前文=段落末尾)・L13(対象文)・L15(後文=段落冒頭)、同一ファイル【確認】"),
+ "K05": (RB + "neg2_meta_refresh_a2.json 内 local_context(Checkerが実際に評価した記事の抜粋。対象文・前文・後文が同一local_context内に逐語で存在【確認】)。旧記載のer019 a2/article.md由来【推測】は不要になったため撤回"),
+ "K06": ("er052_output/factlock_astra_e2e_trial_01/runs/space_weapons/old/b1b/article.md L5(対象文・前文・後文とも同一段落【確認】)"),
+ "K07": ("前後文なし(単独の要約1文。S0_USER_CHECK.md 確認2)"),
+ "K08": ("er019_output/family_x_refresh_e2e_01/hormuz/run_03/b1b/article.md L9(対象文・前文とも同一段落【確認】)。後文は同段落に存在するが非採用(片側のみ)"),
+ "K09": ("前後文なし(記事本体未保存のため。対象文のみ testset_01.json F-15)"),
+ "K10": ("er052_output/open233_control_checker_polysemy_trial_01/eval/blind/ai_control/jb9k/b1b/article.md L5(対象文・前文とも同一段落【確認】)。後文は同記事に存在するが非採用(片側のみ)"),
+}
+# K08-K10(問題なし群)の根拠: 台帳Fact逐語 vs Writer文逐語 と差分
+COMPARE = {
+ "K08": ("[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+         "Trump announced that he would drop the 20 percent fee plan and replace it with trade and investment deals between Gulf countries and the United States.",
+         "20%=20 percent、置き換え=replace、湾岸諸国による対米貿易・投資案件=trade and investment deals between Gulf countries and the United States、主体=Trump が一致。差分: Writer文は日付・時刻(7月14日11:04)を省略(前文の『the next day』で相対表現)。『投稿した』→『announced』(語の選択差、意味は同方向)。矛盾・方向反転・追加主張なし。前日(HF-002=7月13日)との整合も『the next day』で一致。"),
+ "K09": ("[VERIFIED] HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。",
+         "On July 13, Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement.",
+         "7月13日=July 13、投稿した=posted、ホルムズ海峡を通るすべての貨物=all cargo passing through the Strait of Hormuz、20％の率で償還=a 20 percent reimbursement が一致。差分: 時刻(10:16)・『安全確保に要する費用』の目的説明を省略(情報の省略のみで、矛盾・追加主張なし)。"),
+ "K10": ("(EVID-008)... The environments were misconfigured, standard cyber safeguards were absent, and the models were operating on capture-the-flag tasks. ... Claude models reached the internet from third-party evaluation environments ...",
+         "But because of a setup mistake, it was able to connect to the outside internet.",
+         "misconfigured=a setup mistake、reached the internet=connect to the outside internet、capture-the-flag(前文: a made-up game of capturing flags)が一致。差分: 『third-party evaluation environments』の第三者性は省略、『it』は単数(台帳はmodels複数・3件)。いずれも省略/平易化の範囲で、台帳に反する主張・方向反転なし。注意: 『but because of』の因果語は台帳の『misconfigured』が原因の一つとして記すためOK(台帳 conditions: Third-party evaluation misconfiguration)。"),
+}
+
 
 def main():
     rng = random.Random(SEED_ID)
@@ -138,7 +166,8 @@ def main():
     for i in order:
         c = CASES[i]
         items.append(dict(case_id=c["case_id"], fact=c["fact"], target_sentence=c["sentence"],
-                          context_before=c["before"], context_after=c["after"]))
+                          context_before=c["before"], context_after=c["after"],
+                          context_source=CTX[c["key"]] + ("" if (c["before"] or c["after"]) else "【前後文なし】")))
     with open(os.path.join(HERE, "eval_items_01.json"), "w", encoding="utf-8") as f:
         json.dump(dict(items=items), f, ensure_ascii=False, indent=1)
     L = ["# CASES_01: 評価方式Trial用ケース一覧(人間/Checker情報つき、評価LLMには渡さない)", "",
@@ -155,8 +184,13 @@ def main():
               f"- Fact({c['fact_id']}): {c['fact']}", f"  - 出典: {c['fact_src']}",
               f"- Writer文({c['lang']}): {c['sentence']}", f"  - 出典: {c['sentence_src']}",
               f"- 前文: {c['before'] or '(なし)'}", f"- 後文: {c['after'] or '(なし)'}",
+              f"- context_source: {CTX[c['key']]}",
               f"- 人間既知判定[{c['human_tier']}]: {c['human']}", f"  - 出典: {c['human_src']}",
               f"- Checker参考判定(正解扱いしない): {c['checker']}", f"  - 出典: {c['checker_src']}"]
+    L += ["", "## 付録: K08〜K10(問題なし群)の根拠対比(台帳Fact逐語 / Writer文逐語 / 差分)", ""]
+    for k in ("K08", "K09", "K10"):
+        a, b, d = COMPARE[k]
+        L += [f"### {k}", f"- 台帳Fact逐語: {a}", f"- Writer文逐語: {b}", f"- 差分: {d}", ""]
     with open(os.path.join(HERE, "CASES_01.md"), "w", encoding="utf-8") as f:
         f.write("\n".join(L) + "\n")
     print("ok", len(CASES), "cases; order", [CASES[i]["key"] for i in order])

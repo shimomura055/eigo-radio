@@ -46,20 +46,25 @@
 | gpt-5.6-luna | 0.00102〜0.00510 | 1.6〜8.2 | 3.3〜16.3 | 登録済み単価 |
 | gpt-5.6-sol | 0.0255〜0.1275 | 41〜204 | 82〜408 | 登録済み単価 |
 | gpt-6-astra | 0.045〜0.215 | 72〜344 | 144〜688 | 登録済み単価(Trial用) |
-| deepseek-v4-flash | 0.0014〜0.0036 | 2.2〜5.8 | 4.4〜11.6 | **単価未登録。input・outputとも$0.66/1Mと仮定した上限寄りの粗い値**【推測】 |
+| deepseek-v4-flash | 算出不能 | 算出不能 | 算出不能 | **単価未確認のため算出不能**(委任_01bで仮定値を削除。repo内の記録状況は下記「DeepSeek単価の記録調査」) |
 | Claude subagent | API費用0 | 0 | 0 | サブスク枠内。Fable/Sonnetのトークン消費はあるがAPI請求なし【推測】 |
 | Gemini(テキスト) | - | - | - | 単価未登録のため見積不可 |
 
 構成別の総額見積(1rep=各系統10件、2rep=各系統20件):
 | 構成 | 1rep | 2rep(自己一致あり) |
 |---|---|---|
-| P1 luna+DeepSeek | ¥2.9〜9.2 | ¥5.8〜18.5 |
-| P2 astra+DeepSeek | ¥74〜350 | ¥148〜700 |
+| P1 luna+DeepSeek | luna分のみ ¥0.7〜3.4 + DeepSeek分は単価未確認のため算出不能 | luna分のみ ¥1.4〜6.9 + DeepSeek分は算出不能 |
+| P2 astra+DeepSeek | astra分のみ ¥72〜344 + DeepSeek分は算出不能 | astra分のみ ¥144〜688 + DeepSeek分は算出不能 |
 | P3 luna(または5.6-luna)+Claude subagent | ¥0.7〜3.4 | ¥1.4〜6.9 |
 
 ## 5. 提案(最終判断はFable/ユーザー)
-- 最小費用で方式の成否を見るなら P1(2rep)。総額は見積で高く見ても約¥20以内。ただし系統1がWriter/Checkerと同系統である点と、DeepSeek単価の登録が前提。
+- 最小費用で方式の成否を見るなら P1(2rep)。luna分は¥1.4〜6.9(2rep)。DeepSeek分は単価未確認のため総額は未算出(luna分に上乗せ)。ただし系統1がWriter/Checkerと同系統である点と、DeepSeek単価の登録が前提。
 - 段2の独立性を重視するなら P3(Claude subagentをB)。ただし再現性・隔離の制約を結果解釈に明記する必要がある。
-- P2は10ケースの判定に対して費用が大きい(見積¥148〜700/2rep)。まずP1かP3で方式の見込みを見て、必要ならastra追加を別判断にする案を推奨する。
+- P2は10ケースの判定に対して費用が大きい(astra分だけで見積¥144〜688/2rep)。まずP1かP3で方式の見込みを見て、必要ならastra追加を別判断にする案を推奨する。
 - いずれも `docs/pm/PM_GOVERNANCE.md` の予算Guardrailに従い、実行前にFable/ユーザーの承認を得る。本委任では実行しない。
 - 実行前に確認が必要な未確認事項: (1)DeepSeekの最新単価と登録 (2)各モデルのtemperature/seed/reasoning指定の可否 (3)推論トークン量の実測(¥0.1未満の1ケース試し呼び出しで確認可能。ただし実行は別委任)。
+
+## 6. DeepSeek単価の記録調査(委任_01b、新規登録はしていない)
+- 【確認】repo内の記録は `ER-005-RESEARCH-MODEL-AB-01_report.md` L113 の本文1箇所のみ: 「output: DeepSeek $0.66/1M vs Luna $1.20/1M、off-peak」。出典URL・取得日・公式ページ保存・請求照合は付いていない(二次的な報告書記述)。
+- 【確認】input単価・キャッシュhit/miss単価の記録は repo内に見つからない。`er005_output/cost_baseline_01/pricing_snapshot.json` と `er005_cost_logger.py` にDeepSeekの記載なし(未登録)。`raw_usage_log.jsonl` はトークン数のみで円換算の単価情報を含まない。
+- したがって一次資料としての単価は無く、本書の費用表にはDeepSeek分を載せない。上記$0.66/1M(output、off-peak)は「参考(出典不明の報告書記述、本表には不使用)」。DeepSeek単価の新規登録(pricing_snapshotへの追加)はユーザー承認事項であり、本委任では行わない。
