@@ -20412,11 +20412,11 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **留保**: 評価者がLuna系のみ(本番Writer/Checkerと同系統)で、ユーザー指示の「異なる2系統」(別vendor)は未達。本REJECTEDは「Luna系を評価者にする構成」への判定であり、別vendor評価者での二重LLM方式自体は未検証。
 - **VALIDATED / APPROVED_FOR_PRODUCTION ではない**。大規模Writer比較Trialへは進まない。Production変更なし・Checker変更なし・新規Writer生成なし。次の選択肢(未決): (a)別vendor評価者で再試行(単価登録が前提) (b)不在断定(K02型)の3分類定義の見直し (c)方式を見直す。詳細REPORT §112。
 
-## WRITER-EVAL-DUAL-LLM-METHOD-TRIAL-01 追加Trial(Sol・DeepSeek)委任_04/04b(2026-10-09、機械Status=REJECTED、Fable最終判定=Fable待ち)
+## WRITER-EVAL-DUAL-LLM-METHOD-TRIAL-01 追加Trial(Sol・DeepSeek)委任_04/04b(2026-10-09、機械Status=REJECTED、Fable最終判定=REJECTED)
 - **ユーザー指示**: 逐語は docs/pm/ACTIVE_TASK.md(一時)転記。要旨: Sol・DeepSeekで同一10ケースを追加評価、Sol=モデル性能依存、DeepSeek=モデル/vendor依存、両方不可=LLM主要Checker方式の現実性に強い疑義、成功しても「客観的に正しい」とは結論しない。solは2rep実施(Fable判断で上限をJPY50/rep、合計JPY100へ引上げ、実行前にPREREGISTRATION_02 s8へ固定、08491e12)。
 - **事前登録**: PREREGISTRATION_02.md(118be069)。入力sha256不変。DeepSeekのみmax_tokens 6000->32000。
 - **DeepSeek単価登録**: 出典 https://api-docs.deepseek.com/quick_start/pricing、取得日2026-10-09。Peak標準 input $0.30 / cache hit $0.006 / output $1.20 per 1M。Off-peakは記録のみ。pricing_snapshot.json(er005_output/cost_baseline_01)に登録。
 - **結果**: M1 C数/6 = 6-luna 0 / 5.6-luna 2 / sol 2 / DeepSeek 4。全モデルK01でA(見逃し)、M1 REJECTED。M2全PASS。M4 80/100/100/90%。K11全B/B。形式違反0。実費 sol JPY 25.98、DeepSeek 6.06。
 - **機械Status**: モデル別全REJECTED、Trial全体REJECTED(「改善」定義では Sol・DeepSeek とも改善あり、ただし安定検出ゼロ。解釈規則の衝突を論点として残す)。
-- **Fable最終判定**: Fable待ち。VALIDATED/Production採用ではない。Production変更なし。
+- **Fable最終判定(2026-10-09)=REJECTED(Trial全体)。根拠: 事前登録の解釈規則「両方でも重大を安定検出できない→LLMを主要Checker/客観評価器にする方式自体の現実性に強い疑義」に該当。4モデル(6-luna/5.6-luna/sol/DeepSeek)全てがK01(META Rollback方向反転、ユーザー確認済み重大)を2repともAと判定。C検出数 DeepSeek4/6>sol2/6=5.6-luna2/6>6-luna0/6で改善はモデル/vendor依存の部分的なもの(DeepSeekが最良、solは同等以下で費用約4倍)。M2全PASS。成功モデルなしのため「LLM Checkerが客観的に正しい」とは結論しない。VALIDATED/Production採用ではなく、大規模Trialへ進まない。留保・次の論点(未決): (1)K01を全モデルがAと読む理由(「restored…to the way it had been before」を言い換えと解釈、台帳JA「ロールバック」との照合)は各モデルのreason欄で¥0分析可能(ケース定義/プロンプト問題かモデル能力かの切り分け) (2)本方式を使うなら決定論の方向語検査との併用か台帳方向を明示する前処理が必要だが方式変更=ユーザー決定 (3)n=10・HC-012偏重の限界。** Production変更なし。
 - 詳細: REPORT §112 追加Trial、er052_output/writer_eval_dual_llm_method_trial_01/RESULT_TABLE_02.md。
