@@ -1,7 +1,7 @@
 # 委任_11 結果 FACTLOCK-ASTRA-E2E-TRIAL-01(2026-10-09) Status=G1 PASS(新腕全項目通過、旧腕Advanced経路のみ未実証。G2は未起動)
 
 ## 1. 成果物・commit
-- commit hash / raw URL は末尾(push後に追記)。
+- commit: e83d67b187faba534a6918a01a1dc754b2b777b9(push済み)。raw URLは末尾。
 - 実行出力: `er052_output/factlock_astra_e2e_trial_01/runs/`(meta/new, meta/old, shared, ledger_costs_worker1.jsonl, g1_logs/)。検証チェック: `docs/pm/delegation_log/2026-10-09_FACTLOCK-ASTRA-E2E-TRIAL-01_11_check.json`
 - 修正: `b3_annotation_check_01.py`(ハイフン無し台帳IDマスク5行、修正前=`annotation/prefix_scripts/b3_annotation_check_01.pre_delegation11.py`)、`b3_annotation_check_01_test.py`(42件OK=+1)
 - 新規: `annotation/run_audits_11.py`、`annotation/audit/v2round_*`、`audit_all_11.json`、`annotation/out/*/inbound_tourism/check_result_delegation11.json`
@@ -54,3 +54,12 @@
 - 旧腕Advanced経路(上記5-1)。m3_protected出力仕様(5-3)。
 - 注記版JSONの整合検査はG1でスキップなし(G0実照合済み)。
 - Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言。
+
+## raw URL
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/pm/delegation_log/2026-10-09_FACTLOCK-ASTRA-E2E-TRIAL-01_11_result.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/pm/delegation_log/2026-10-09_FACTLOCK-ASTRA-E2E-TRIAL-01_11_check.json
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/runs/ledger_costs_worker1.jsonl
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/runs/meta/new/checker/advanced.json
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/runs/meta/new/ja_writer/revision2.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/b3_annotation_check_01.py
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/DECISION_LOG.md
