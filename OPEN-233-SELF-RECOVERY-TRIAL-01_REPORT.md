@@ -5957,3 +5957,15 @@ MEASURED(Trial、Production変更なし)。Fable最終判定=総合『同等・�
 - 実費(登録単価): sol JPY 25.98、DeepSeek 6.06、前Trial luna分1.76。追加Trial分 JPY 32.04。詳細 `RESULT_TABLE_02.md`、`RUN_LOG_02.md`。
 - VALIDATED/APPROVED_FOR_PRODUCTION ではない。LLM Checkerが客観的に正しいとは結論しない。
 - Fable最終判定(2026-10-09)=REJECTED(Trial全体)。根拠: 事前登録の解釈規則「両方でも重大を安定検出できない→LLMを主要Checker/客観評価器にする方式自体の現実性に強い疑義」に該当。4モデル(6-luna/5.6-luna/sol/DeepSeek)全てがK01(META Rollback方向反転、ユーザー確認済み重大)を2repともAと判定。C検出数 DeepSeek4/6>sol2/6=5.6-luna2/6>6-luna0/6で改善はモデル/vendor依存の部分的なもの(DeepSeekが最良、solは同等以下で費用約4倍)。M2全PASS。成功モデルなしのため「LLM Checkerが客観的に正しい」とは結論しない。VALIDATED/Production採用ではなく、大規模Trialへ進まない。留保・次の論点(未決): (1)K01を全モデルがAと読む理由(「restored…to the way it had been before」を言い換えと解釈、台帳JA「ロールバック」との照合)は各モデルのreason欄で¥0分析可能(ケース定義/プロンプト問題かモデル能力かの切り分け) (2)本方式を使うなら決定論の方向語検査との併用か台帳方向を明示する前処理が必要だが方式変更=ユーザー決定 (3)n=10・HC-012偏重の限界。
+
+## §113 WRITER-DEV-RISK-FLAGGER-DESIGN-01 委任_03 開発用Risk Flagger 記事モード・保留最終評価(2026-10-10、MEASURED・EVAL_DONE_PENDING_FABLE、Production変更なし)
+
+- 目的: Fact Lock+Astra記事の重大NG確認を人間が現実的に行える開発用Risk Flaggerの構成を、記事モード(P3)と保留セット(P4、1回のみ)で測る。合否判定・Production停止・Rewrite・自動修正は行わない(Flagを立てるだけ)。Production Checker廃止の判断ではない。モデル gpt-6.1-sol のみ。
+- ループ2のFable判断(反映済み): 主構成 C_main = D0 rollback ∪ D2(記事=D2rank上位3強制列挙)。副構成 D1v2(D0ゲート+新タイプ『因果創作』、各Flag上限3)。D1プロンプトを『台帳+文を先頭、タイプ別指示を末尾』に並べ替え(dev3ケースで文単位のFlagは不変、K03のみ同文に否定反転Flagが追加)。D1の未測定74呼び出しは補完しない。rf_zbe99xと人間確認候補5件は確認パックへ。
+- P3ゲート(事前登録、KPI3平均<=5 かつ dev既知重大元記事Recall@top3>=50%): KPI3平均 3.07(新旧28記事、新腕3.14/旧腕3.00)、Recall@top3 2/3(67%) -> 合格、P4へ自動進行。dev既知重大元記事 3本(meta P2rep2、space P2rep2 EN、ai_control P2rep2のCheckercycle0 Rewrite後EN本文[rf_5qddqw挿入含む]。保留側ケースを含む元記事は不使用)。
+- P4保留(重大11[人間確認3: K01/K02/K11]、非重大26、合成保留7): C_main Recall_all 8/11(73%, CI 43-90%)、Recall_human 3/3(K01汚染済み回帰を除くと2/2)、FPR_clear 3/18・boundary 1/3・hard-negative 0/5。D1v2 Recall_all 9/11(82%)、FPR_clear 2/18・hard-negative 1/5。記事モード Recall@top3 6/7(K01除外5/6)。合成保留 C_main 4/7、D1v2 3/7。見逃し(C_main): rf_t9nxuv(時期の創作)、rf_fmu3aa(因果の創作)、rf_vph9nb。
+- Checker比較(保留重大11): 両方4 / Flaggerだけ2(K01, K02=ユーザー確認の重大) / Checkerだけ2(rf_t9nxuv, rf_fmu3aa) / どちらも拾えず0 / 比較対象外3。結論(残す/外す)は書かない。
+- 万能 vs 専用: 万能D2が主、専用D1は上乗せ小で高コスト(保留casebank D2 ¥61.6 vs D1v2 ¥209.9)。因果創作はdev(rf_5qddqw)では効かず、保留は1〜2件に依存(rf_fmu3aaは非重大自己判定でKPI上のヒットに数えない)。
+- 費用: 本委任 ¥479.7(上限¥520以内)、台帳累計 ¥650.26/¥1,000。P3 ¥177.8(上限¥250)、P4 ¥291.2(上限¥150を約¥141超過。保留側台帳が大きくキャッシュ不発の見積外れ。P3未使用枠で吸収、Fable判断事項)。P5(astra確認層)は残枠不足で省略(理由は FINAL_REPORT_DRAFT_01.md §9)。
+- 未取得: KPI5(新腕14記事42Flagの人間回答)、ラベル再確認(rf_zbe99x+5件)、S0_USER_CHECK 3件。Fable最終判定は『Fable待ち』(REJECTED/VALIDATED/USER_DECISION_REQUIRED)。VALIDATEDでもProduction採用ではない。
+- 出典: `er052_output/writer_dev_risk_flagger_01/{FINAL_REPORT_DRAFT_01.md,HUMAN_CHECK_RISK_FLAGGER_01.md,detectors/results/{P3_RESULT_01.md,P4_RESULT_01.md,P2_RESULT_01.md},detectors/COST_UPDATE_01.md}`、`docs/pm/delegation_log/2026-10-09_WRITER-DEV-RISK-FLAGGER-DESIGN-01_03.md`。

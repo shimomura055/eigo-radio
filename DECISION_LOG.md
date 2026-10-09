@@ -20429,3 +20429,11 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **成果物**: `docs/pm/PM_GOVERNANCE.md` 25節、`docs/pm/dev_eval_model_inventory_01.md`(公式モデル棚卸し・pricing_snapshot登録状況・直近Trial使用モデル・旧モデル計画の整理)、`CLAUDE.md`に参照1行。
 - **棚卸し要点(公式取得2026-10-09)**: OpenAIは gpt-6-astra(旗艦)/ gpt-6.1-sol(推奨、$2/$10)/ gpt-6-luna(効率)。gpt-6.1-sol・deepseek-v4-pro・Gemini 3.8系は単価未登録。追加Trialで使った gpt-5.6-sol・deepseek-v4-flash(V4.1-Flash)は最新の最上位/推奨系ではなく、置換案を同ファイル5節に整理(置換Trialの実施はFable/ユーザー判断、未実施)。
 - **未実施・保留**: 置換Trialの実施、pricing_snapshot.jsonへの新単価登録、FACTLOCK-ASTRA-E2E-TRIAL-01のラベル再付与(いずれもFable/ユーザー判断待ち)。
+
+## WRITER-DEV-RISK-FLAGGER-DESIGN-01 委任_03: ループ2判断・P3ゲート・P4結果(2026-10-10、Fable最終判定=Fable待ち、EVAL_DONE_PENDING_FABLE)
+- **ループ2のFable判断**: (A)主構成=C_main(D0rollback ∪ D2rank上位3強制列挙)、副=D1full(D0ゲート)。devでD2≒D1かつ費用1/4〜1/5のため。(B)共通見逃し(因果・仕組みの創作)対応としてD1に新タイプ『台帳にない因果・仕組み・理由の創作』(因果創作)を1つ追加(Trial内の設計自由度。効果は保留P4でのみ主張)。(C)D1プロンプトを『台帳+文を先頭、タイプ別指示を末尾』に並べ替え(dev3ケースの文単位Flag不変を確認、実費¥10.75)。(D)未測定のD1非ゲート74呼び出しは補完しない。(E)rf_zbe99xと人間確認候補5件を朝の確認パックへ(ラベル不変)。改善ループ: 2/3使用(Opusレビュー込み)。
+- **P3ゲート(事前登録)**: KPI3平均<=5かつdev既知重大元記事Recall@top3>=50% -> 実測 3.07 / 2/3(67%) で合格、P4へ自動進行。構成はP3で確定しP4で変更していない。
+- **P4結果(保留1回のみ、gpt-6.1-sol)**: C_main Recall_all 8/11(73%)、Recall_human 3/3(K01汚染除外2/2)、FPR_clear 3/18。記事モード Recall@top3 6/7。D1v2 Recall_all 9/11、費用約3.4倍。Checker比較: 両方4/Flaggerだけ2/Checkerだけ2/どちらも0/比較対象外3。詳細 REPORT §113。
+- **費用判断(Fable確認事項)**: P4が上限¥150を約¥141超過(¥291.2)。P3未使用枠(¥72)を充当し、本委任合計 ¥479.7(上限¥520)・台帳累計 ¥650.26/¥1,000に収めた。P5(astra確認層)は残枠不足で省略。
+- **Fable最終判定**: Fable待ち(REJECTED/VALIDATED/USER_DECISION_REQUIRED のいずれか)。VALIDATEDでもProduction採用ではない。Production変更なし。Production Checker廃止は未決(判断材料のみ提供)。
+- **新仕様候補(未実装・要承認)**: 『台帳にない定量・事実の挿入』検出、確信度閾値による可変件数提示、D1のコスト削減(D2ベース+疑義時のみ専用呼び出し)。いずれもAPPROVED_FOR_PRODUCTIONではない。

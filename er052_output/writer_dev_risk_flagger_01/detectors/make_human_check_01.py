@@ -92,7 +92,7 @@ def main():
     p4 = os.path.join(RES, "P4_RESULT_01.json")
     if os.path.exists(p4):
         r = json.load(open(p4, encoding="utf-8"))
-        L += ["| 反転対象|構成 | Recall_all | Recall_human | FPR_boundary |", "|---|---|---|---|---|"]
+        L += ["(保留セットのみの再計算。S0-2はdev側のため『全て』でも保留の値は変わらない)", "", "| 反転対象 / 構成 | Recall_all | Recall_human | FPR_boundary |", "|---|---|---|---|"]
         for k, v in r.get("s0", {}).items():
             def fr(d):
                 return "-" if not d or not d.get("n") else "%d/%d" % (d["k"], d["n"])
