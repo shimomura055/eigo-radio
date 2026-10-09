@@ -685,7 +685,7 @@
     }
   },
   "final_minor_items_total": {
-    "JA/new": 5,
+    "JA/new": 4,
     "JA/old": 9,
     "EN-Adv/new": 3,
     "EN-Adv/old": 3,
@@ -699,17 +699,17 @@
         "old": 7
       },
       "items_all_shipped": {
-        "new": 5,
+        "new": 4,
         "old": 9
       },
       "paired_n": 6,
-      "paired_new": 5,
+      "paired_new": 4,
       "paired_old": 9,
-      "mean_new": 0.83,
+      "mean_new": 0.67,
       "mean_old": 1.5,
       "new_fewer_pairs": 3,
-      "new_more_pairs": 1,
-      "ties": 2,
+      "new_more_pairs": 0,
+      "ties": 3,
       "pairs": {
         "space_weapons": [
           1,
@@ -724,7 +724,7 @@
           3
         ],
         "openai_copyright": [
-          1,
+          0,
           0
         ],
         "semiconductor_earnings": [
@@ -737,7 +737,7 @@
         ]
       },
       "machine_verdict": "同等",
-      "sign_test_p_one_sided_new_fewer": 0.312
+      "sign_test_p_one_sided_new_fewer": 0.125
     },
     "EN-Adv": {
       "bodies_shipped": {
@@ -912,14 +912,6 @@
     },
     {
       "theme": "openai_copyright",
-      "arm": "new",
-      "col": "JA",
-      "n": 1,
-      "row_ids": "w3-40",
-      "desc": "見出し『AI訴訟は…』の一般化(記事としてはEN Adv STOPで未出荷)"
-    },
-    {
-      "theme": "openai_copyright",
       "arm": "old",
       "col": "EN-Std",
       "n": 1,
@@ -1090,9 +1082,9 @@
     },
     "軽微JA(対のあるテーマ)": {
       "new_better": 3,
-      "old_better": 1,
-      "ties": 2,
-      "p_one_sided_new_better": 0.312
+      "old_better": 0,
+      "ties": 3,
+      "p_one_sided_new_better": 0.125
     }
   },
   "machine_verdicts": {
@@ -1103,7 +1095,7 @@
       "machine": "判定不能(床効果: 両腕の総数が2件以下)"
     },
     "2-2 軽微 JA列": {
-      "new": 5,
+      "new": 4,
       "old": 9,
       "machine": "同等"
     },
@@ -1144,6 +1136,31 @@
       "diff": 0.0,
       "machine": "同等"
     }
+  },
+  "excluded_unshipped_minor_items": [
+    {
+      "theme": "openai_copyright",
+      "arm": "new",
+      "col": "JA",
+      "n": 1,
+      "row_ids": "w3-40",
+      "desc": "見出し『AI訴訟は…』の一般化(記事はEN Adv STOPで未出荷。v1では計上、v2で除外)"
+    }
+  ],
+  "b3_origin_separate_5_11": {
+    "item": "semiconductor_earnings新 EN Advanced STOP(原因文=brief内の指示文、unmapped_claims qualifier該当)",
+    "adv_stop_new_excluding_b3_origin": 1,
+    "adv_stop_old": 0,
+    "human_intervention_events_excluding_b3_origin": {
+      "new_events": 5,
+      "old_events": 6
+    },
+    "human_intervention_rate_excluding_b3_origin": {
+      "new": 0.278,
+      "old": 0.333
+    },
+    "verdict_changed": false,
+    "note": "除外しても各判定線の機械判定は不変(2-4 Adv: 差1記事<3記事=同等、人手介入: 差<0.15=同等)"
   },
   "overall_2_6_machine": {
     "group": [

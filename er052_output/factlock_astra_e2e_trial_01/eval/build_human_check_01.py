@@ -3,6 +3,7 @@
 本文は runs/<theme>/<arm>/ の成果物をそのまま埋め込む(手編集なし)。質問文はこのscriptに書いてある。"""
 import json
 import os
+import random
 import re
 
 BASE = os.path.dirname(os.path.abspath(__file__))
@@ -32,10 +33,11 @@ def block(title, text):
 def main():
     L = []
     A = L.append
-    A("""# HUMAN_CHECK_E2E_01: ユーザー人間確認パック(FACTLOCK-ASTRA-E2E-TRIAL-01、委任_15、2026-10-09)
+    A("""# HUMAN_CHECK_E2E_01 v2: ユーザー人間確認パック(FACTLOCK-ASTRA-E2E-TRIAL-01、委任_15で作成・委任_16でv2、2026-10-09)
 
 位置づけ: Trial/DEV(Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言)。**ラベルはSonnetの暫定推測で、本パックの目的はその境界例をあなたが確定すること。**
 腕名は開示している。旧腕=Luna Writer(Production相当経路)、新腕=Fact Lock+gpt-6-astra(R0→Astra R1→R2)。両腕とも**同じ台帳・同じB3(新腕は注記版)**から作った本文である。R1は載せない。
+**v2の変更点(委任_16)**: 事実確認3記事(2〜5節)はそのまま。**6節に『面白さ』の比較(pairwise)3対を追加**。6節だけは腕名・順序を伏せ(A/B表記)、対応表は `eval/_private/PAIRWISE_MAP_01.json` に置いた(回答前に開かない)。
 本文は成果物のまま(手直しなし)。STOP記事の『採用されなかった本文』は、そのrunでは出荷されなかった本文である(別枠で、判定線には入らない)。
 
 ## 0. 回答の仕方(三択)
@@ -120,9 +122,41 @@ Fable候補との一致: byd_recall(w2)、central_bank_mortgage(w2)、openai_cop
 
 S-1とS-2を**同じ判断**にするかどうかが論点です(両腕とも出荷本文に残っているので、重大とすると両腕に等しく入り、新旧の差には効きませんが、『出荷本文の重大見逃し0』という前提が崩れます)。
 """)
+    # ---------------- pairwise(面白さ)
+    PAIRS = [
+        ("space_weapons", "宇宙兵器(米国の軌道上兵器配備の公式認定)"),
+        ("streaming_price", "動画配信の値上げ"),
+        ("small_bag", "ミニバッグのトレンド"),
+    ]
+    rng = random.Random(20261009)
+    pmap = {}
+    A("\n---\n\n## 6. 面白さの比較(pairwise、腕名を伏せたA/B。3対、約10分)\n")
+    A("""**目的**: 事実の安全とは別に、**どちらの記事のほうが聞いて/読んで面白いか**を判断してください(音声ラジオ用の台本としての面白さ)。観点は『冒頭で引き込まれるか』『例え・言い回しが効いているか』『最後まで読ませるか』『分かりやすさ』。長さや文体の違いも含めた**総合の印象**で選んで構いません。
+各対の本文は同じテーマ・同じ台帳(事実)から作られています。A/Bの順序は対ごとにランダムで、**どちらが新腕か旧腕かは伏せています**(対応表は `eval/_private/PAIRWISE_MAP_01.json`。回答後に照合)。(P-1は5節で見た文面から腕を推測できる可能性があります。推測は気にせず印象で選んでください。文体・長さの違いで腕が推測できる点は既知の盲検の限界です。)
+回答は各対で ①面白さ(A / B / 差なし)、②事実の不安(『なし』、または不安な文を引用)、③一言理由(任意)。台帳は各テーマの `runs/<theme>/shared/ledger.txt` を参照できます。
+""")
+    for i, (theme, label) in enumerate(PAIRS, 1):
+        arms = ["new", "old"]
+        rng.shuffle(arms)
+        a_arm, b_arm = arms
+        pmap[f"P-{i}"] = {"theme": theme, "A": a_arm, "B": b_arm, "source": f"runs/{theme}/<arm>/ja_writer/revision2.md"}
+        A(f"### P-{i}. {theme}({label})\n\n台帳: `runs/{theme}/shared/ledger.txt`\n")
+        A(block(f"P-{i} 記事A", rd(theme, a_arm, "ja_writer", "revision2.md")))
+        A(block(f"P-{i} 記事B", rd(theme, b_arm, "ja_writer", "revision2.md")))
+        A(f"""| 対 | ①面白さ(A / B / 差なし) | ②事実の不安(なし/該当文の引用) | ③一言理由(任意) |
+|---|---|---|---|
+| P-{i} | | | |
+""")
+    os.makedirs(os.path.join(BASE, "_private"), exist_ok=True)
+    with open(os.path.join(BASE, "_private", "PAIRWISE_MAP_01.json"), "w", encoding="utf-8", newline="\n") as f:
+        json.dump({"seed": 20261009, "note": "A/B順序のランダム化の対応表。回答前に開かない。本文は成果物のまま(手直しなし)", "pairs": pmap}, f, ensure_ascii=False, indent=2)
     A("""
-## 6. 回答後にFableが行うこと(あなたの作業ではない)
+**面白さの総括(任意)**: 3対を通して新旧のどちらが好みか、気づいた違い(長さ、例え、テンポ)があれば自由記述: ________
+""")
+    A("""
+## 7. 回答後にFableが行うこと(あなたの作業ではない)
 - 回答は `confirmed_by=user_<日付>` で `eval/labels_merged.jsonl` の該当行に**追記**する(元ラベルは保存)。
+- 6節(面白さ)の回答は MAP と照合して新旧に戻し、EVALの『面白さ』欄に記録する(人間1名の暫定pairwise)。事実の不安の引用は境界例として別途ラベル追記する。
 - 事前登録2-1の要確認フラグ(B-1)、STOP妥当性(O-1・C-1〜C-3)、基準解釈(S-1・S-2)をEVAL_E2E_01.md 2節・3節の機械判定に反映するかをFableが判断する。
 - 判定線の最終判定・VALIDATED・APPROVED_FOR_PRODUCTION は、本パックの回答だけでは宣言しない。
 """)

@@ -20398,3 +20398,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **機械照合の結果(最終判定ではない)**: 重大=判定不能(床効果、出荷本文の重大残存は両腕0)、軽微JA/EN=同等または判定不能、EN STOP率(Adv/Std)=同等、Rewrite率=同等、人手介入必要率=同等(新0.333対旧0.333、層別は反対方向)、総合=同等/混在。費用は新約¥43.9/記事対旧約¥7.1/記事。
 - **Fable判定待ち**: 判定線の最終判定、境界例11件の扱い、OPEN項目候補10件の起票要否、集計scriptの帰属誤り(旧腕EN STOPのレベル、M1発火)の扱い。ユーザー人間確認(`HUMAN_CHECK_E2E_01.md`、byd_recall・openai_copyright・central_bank_mortgage+基準質問1)待ち。
 - **Status**: MEASURED(ラベル暫定)。Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言。`CURRENT_SPEC.md`・`OPEN_ITEMS.md`は未編集。
+
+
+## FACTLOCK-ASTRA-E2E-TRIAL-01 委任_16: 評価文書v2・Fable最終判定(2026-10-09、Fable判断、MEASURED)
+- **Fable最終判定**: 2-1 重大=判定不能(床効果、B-05回答待ち)/ 2-2 軽微JA=同等(検出力不足、新4対旧9は記述的傾向のみ)/ EN Adv=同等(3対3)/ EN Std=判定不能 / 2-4 EN Adv STOP=同等(§5-11適用で新1)/ EN Std STOP=同等(2対2)/ Rewrite率=同等 / Human Review=判定不能 / 人手介入必要率=同等・混在(0.333対0.333、感度0.444対0.333、層別逆向き)/ **総合=同等・混在。事実安全の良化は示されなかった(測定力不足を含む)。費用約6倍(新約¥43.9対旧約¥7.1/記事)。面白さは未測定。**
+- **Opus任意レビュー反映**: semiconductor新EN STOPの帰属を訂正(注記前のbrief内指示文がFact Lock R0経由で事実扱いされた新腕固有の経路、注記の副作用ではない)、JA列から未出荷本文を除外、感度値の主表格上げ、ラベル基準統一(OC-8)、言い過ぎの訂正、層別逆転の妥当順説明。人間確認パックに面白さpairwise 3対を追加。
+- **VALIDATED / APPROVED_FOR_PRODUCTION は宣言しない**。Production変更なし、API支出¥0。
+- **ユーザー判断待ち(USER_DECISION_REQUIRED)**: 方向判断(REPORT §111の選択肢(a)人間確認+pairwise / (b)OC-1/OC-3/OC-8のOPEN化+凍結JAでEN段+Checker再実行[推定¥30〜150] / (e)判定基準組替え+次Trial事前登録 / (c)指示文の本文化対策[最小実験推定¥20〜55、新5再実行推定¥180〜230] / (d)保留)。費用は全て推定。B1回復の見直しは仕様変更=ユーザー決定。`CURRENT_SPEC.md`・`OPEN_ITEMS.md`は未編集(OPEN起票はFable判断)。

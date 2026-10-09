@@ -211,6 +211,16 @@ def main():
                 and ("発火" in txt or "M1後" in txt)):
             m["qa_note"] = ("M1発火と記載されているが、runログ(new_en_std.log)は『must-fixで1回再生成』のみ。"
                             "REPORT §110: M1はAdvanced枝のみ(Standard未実装)。M1発火の帰属はEVAL 3-4で不一致として扱う。")
+    # v2(委任_16、Opusレビュー論点4): 『不在・非公開の断定』を同じ基準(OC-8)にそろえる統合時メモ(原本ラベルは変更しない)。
+    # semiconductor新のEN Adv STOP文(w3が『問題なし』=偽陽性)と space_weapons 両腕の不在断定(w1が『軽微』、確信0.5)は同型である。
+    # 現ラベルは worker ごとの判断で食い違っており、基準が確定するまで『同型・同基準待ち』として扱う(ラベル値はそのまま)。
+    OC8_NOTE = ("OC-8 同型メモ(委任_16): 台帳が『補わない』『確認していない』と指示しただけの事柄を本文が『示されていない/秘密/説明がない』と"
+                "不在・非公開として断定する型。semiconductor新EN Adv(w3-90/92: 問題なし=偽陽性)とspace_weapons両腕(w1-49,76,61,62,73,75: 軽微、"
+                "確信0.5)は同型で、ラベルが分かれている。基準(OC-8)が確定するまで同じ基準で扱う。原本ラベルは不変。")
+    OC8_ROWS = {"w3-90", "w3-92", "w1-49", "w1-76", "w1-61", "w1-62", "w1-73", "w1-75"}
+    for m in merged:
+        if m["row_id"] in OC8_ROWS:
+            m["qa_note"] = (m["qa_note"] + " / " if m.get("qa_note") else "") + OC8_NOTE
     merged.sort(key=lambda m: (m["worker"], int(m["row_id"].split("-")[1])))
 
     out = os.path.join(BASE, "labels_merged.jsonl")

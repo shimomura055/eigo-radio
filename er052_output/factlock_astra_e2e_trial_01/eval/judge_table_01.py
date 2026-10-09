@@ -44,7 +44,8 @@ FINAL_MINOR_ITEMS = [
     ("byd_recall", "new", "EN-Adv", 2, "w2-196", "要約『極端な場合』条件欠落/『A recall notice…named』単数(低確信)"),
     ("byd_recall", "old", "JA", 3, "w2-198", "交換の因果付与/『ことがあります』(低確信)/公告単数(低確信)"),
     ("byd_recall", "old", "EN-Adv", 1, "w2-199", "要約の条件・中国限定の欠落"),
-    ("openai_copyright", "new", "JA", 1, "w3-40", "見出し『AI訴訟は…』の一般化(記事としてはEN Adv STOPで未出荷)"),
+    # v2(委任_16、Opusレビュー論点2): openai新 w3-40(見出し『AI訴訟は…』の一般化)は記事がEN Adv STOPで未出荷の本文のため、
+    # 『出荷最終本文の残存』から除外(旧v1では新JA列に1件計上されていた)。除外した記録は EXCLUDED_UNSHIPPED に残す。
     ("openai_copyright", "old", "EN-Std", 1, "w3-38", "見出し『They Want AI Models Destroyed』の限定脱落(JA見出しには無い=EN段)"),
     ("semiconductor_earnings", "old", "JA", 1, "w3-56", "免責の範囲拡張(低確信)"),
     ("semiconductor_earnings", "old", "EN-Std", 1, "w3-83", "Checker Rewrite起因: 限定句『not the whole semiconductor segment』が消えた"),
@@ -53,6 +54,11 @@ FINAL_MINOR_ITEMS = [
     ("streaming_price", "old", "EN-Std", 1, "w3-117", "Checker Rewrite起因: Premium月額差額の文が消えた"),
     ("streaming_price", "new", "JA", 1, "w3-121", "見出しの米国限定欠落"),
     ("streaming_price", "new", "EN-Std", 2, "w3-139", "『a different day for each person』過一般化/『The price list tells you how much you will pay』第三者請求の例外脱落"),
+]
+
+
+EXCLUDED_UNSHIPPED = [
+    ("openai_copyright", "new", "JA", 1, "w3-40", "見出し『AI訴訟は…』の一般化(記事はEN Adv STOPで未出荷。v1では計上、v2で除外)"),
 ]
 
 
@@ -329,6 +335,20 @@ def main():
                            "machine": "判定不能(床効果: 総イベント4件以下)" if tot_hi <= 4 else
                            ("傾向良化" if d_hi <= -0.15 else ("傾向悪化" if d_hi >= 0.15 else "同等"))}
     out["machine_verdicts"] = V
+    out["excluded_unshipped_minor_items"] = [dict(zip(["theme", "arm", "col", "n", "row_ids", "desc"], x)) for x in EXCLUDED_UNSHIPPED]
+    # v2: 事前登録§5-11 『B3由来』別集計(unmapped_claims該当)。semiconductor新のEN Adv STOPは、原因文が
+    # brief_original.md L7(旧腕briefにも同文)の指示文で、annotation.json の unmapped_claims(type=qualifier)に該当する。
+    b3_new_adv_stop = 1 if R[("semiconductor_earnings", "new")]["en_adv_stop"] else 0
+    hi_wo = {"new_events": hi["new"]["events"] - b3_new_adv_stop, "old_events": hi["old"]["events"]}
+    out["b3_origin_separate_5_11"] = {
+        "item": "semiconductor_earnings新 EN Advanced STOP(原因文=brief内の指示文、unmapped_claims qualifier該当)",
+        "adv_stop_new_excluding_b3_origin": en["Adv"]["new"]["stop_articles"] - b3_new_adv_stop,
+        "adv_stop_old": en["Adv"]["old"]["stop_articles"],
+        "human_intervention_events_excluding_b3_origin": hi_wo,
+        "human_intervention_rate_excluding_b3_origin": {"new": round(hi_wo["new_events"] / PLANNED, 3), "old": round(hi_wo["old_events"] / PLANNED, 3)},
+        "verdict_changed": False,
+        "note": "除外しても各判定線の機械判定は不変(2-4 Adv: 差1記事<3記事=同等、人手介入: 差<0.15=同等)",
+    }
     # 2-6 総合(参考。判定指標群={2-2 JA,2-2 EN,2-4,Rewrite,人手介入})
     grp = [V["2-2 軽微 JA列"]["machine"], mn["EN(Adv+Std合算)"]["machine_verdict"], V["2-4 EN Adv"]["machine"],
            V["2-4 EN Std"]["machine"], V["2-5 Rewrite率"]["machine"], V["2-5 人手介入必要率"]["machine"]]
@@ -341,7 +361,8 @@ def main():
     print(json.dumps({k: out[k] for k in ("stop", "aggregate_json_attribution", "m1_logged_by_runlog", "m1_logged_themes",
                                            "human_intervention", "rewrite", "human_review", "en", "ja_fc_ii",
                                            "first_ja_recheck", "b1", "sign_tests", "machine_verdicts",
-                                           "overall_2_6_machine", "final_minor_items_total", "ii_label_rows_unique")},
+                                           "overall_2_6_machine", "final_minor_items_total", "ii_label_rows_unique",
+                                           "b3_origin_separate_5_11", "excluded_unshipped_minor_items")},
                      ensure_ascii=False, indent=1, default=str))
     print(json.dumps(out["minor_2_2"], ensure_ascii=False, indent=1))
 

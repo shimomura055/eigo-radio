@@ -77,3 +77,16 @@ Opusレビュー自体はユーザー承認Gateではない。Production採用�
 
 ## Fable採用判断(2026-10-09)
 - 上記8件を全て採用し、v2をユーザー提示用とする。USER_DECISION_REQUIREDに該当するProduction採用の判断はなし。STOP条件(11-3)の該当なし。
+
+## 評価レビュー(任意、2026-10-09): EVAL_E2E_01 v1(委任_15)
+性質: Opus任意レビュー(Fable裁量、1日2回枠内)の要点。**本節はFableの手元にあるレビュー全文からの転記(委任_16の委任文経由、Opus原文ファイルは未作成)**。レビュー対象: `er052_output/factlock_astra_e2e_trial_01/eval/EVAL_E2E_01.md` v1。反映先: EVAL_E2E_01.md v2・HUMAN_CHECK_E2E_01.md v2・`eval/judge_table_01.py`・`eval/merge_labels_01.py`。Opusレビュー自体はユーザー承認Gateではない。Production採用は人間ユーザーのみ承認する。
+1. **semiconductor新 EN STOPの帰属訂正**: 『B3注記のqualifier文由来』は誤り。原因文は注記前のB3 Storyline本文(`runs/semiconductor_earnings/shared/brief_original.md` L7、旧腕briefにも同文)にある指示文。新腕ではFact Lock R0が本文化し【事実1】タグを付け(`new/new_writer/r0_with_tags.md` L11)、Astra R2が不在断定へ強め(`r2.raw.md` L13)、EN検査がMAJOR(`b1b/audit/deviation_checks/advanced_attempt1.json` L20)。帰属=brief内の指示文がFact Lock R0経由で事実扱いされ、Astraが不在断定へ強めた新腕固有の経路。注記の副作用ではない(箇条書き化が促した可能性は推測)。unmapped_claims該当のため事前登録§5-11の『B3由来』別集計値を併記(Adv STOP 新1/9、人手介入 5対6、判定不変)。
+2. 2-2 JA列からopenai新(w3-40、未出荷本文)を除外。平均比と符号検定を再計算(判定『同等』は不変)。
+3. 人手介入の感度値(実際に失ったChecker run: 新8/旧6=0.444対0.333)を主表へ格上げ。
+4. ラベル基準の統一: semi(偽陽性)とspace B-02/B-03(不在断定=軽微境界)は同型。同じ基準(OC-8)に揃える。
+5. 言い過ぎの訂正: 注記起因の過剰ブロックは確認0件(central周辺扱いが未検証の候補1件のみ)。『新腕はChecker欠陥に強い』は母数不足による見かけ。M3保護6件は便益・コストとも観測不能(床効果)。
+6. 層別逆転の説明(妥当順): B1枠の消費順による移転(事実)、開発セットへの適合(旧4=Fact Lock/Astra matrixの開発テーマ、新5=out-of-sample。新5の新腕介入5/10対1/10は汎化性能の正直な推定値)、偶然、B3形式、注記粒度。
+7. Fable最終判定(判定線ごと)、8. 人間確認パックに面白さpairwise追加(¥0)、9. OPEN候補の優先度(OC-1最上位、OC-3/OC-8次点)、Production Checker文分割器の配線確認、次の選択肢(a)〜(e)。
+
+### Fable採用判断(2026-10-09)
+- 上記を全て採用し、EVAL v2・HUMAN_CHECK v2へ反映(委任_16)。USER_DECISION_REQUIREDに該当するProduction採用の判断はなし。STOP条件(11-3)の該当なし。Opusレビュー後もProduction採用は人間ユーザーだけが承認する。
