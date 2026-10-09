@@ -328,7 +328,7 @@ def extract_output(text):
         side = json.loads(m2.group(1))
     except ValueError as e:
         raise Stop(f"サイドカーJSONが不正: {e}")
-    return m1.group(1) + "\n", side
+    return m1.group(1).rstrip("\n") + "\n", side  # 委任_09 P4
 
 
 def build_delegation(template, annotator, slug, spec_text, brief_text, ledger_text, spec_sha, brief_sha):

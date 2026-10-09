@@ -1,0 +1,57 @@
+{
+  "tool_use_count": 3,
+  "violations": [
+    {
+      "tool": "Bash",
+      "targets": [
+        "mkdir -p /c/Users/tensh/eigo-radio/er052_output/factlock_astra_e2e_trial_01/annotation/out/B/space_weapons && cat > /c/Users/tensh/eigo-radio/er052_output/factlock_astra_e2e_trial_01/annotation/out/B/space_weapons/reply.md <<'EOF'\n=== ANNOTATED_BRIEF_BEGIN ===\n# Selected Fact Brief\n\n## Storyline\n米国が軌道上の「space control weapons」配備を初めて公に認めた発言を起点に、従来の地上発射ASATや通常の衛星任務、広義のcounterspaceと区別し、既存条約が禁じる範囲を誇張せず整理する。\n\n## Selected Facts\n- 【事実1】F-001：2026年9月14日【中核数値】、米空軍長官Troy Meinkは、敵対的な相手の行動から統合軍を防護できる軌道上のspace control weaponsを米国が配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。具体的なシステム名や攻撃能力は補わない。\n- 【事実2】F-003：地上発射型ASATミサイルによる衛星破壊は過去にも行われており、ロシアは2021年【周辺数値】にCOSMOS 1408【周辺数値】を破壊した。これは地上から発射した試験であり、兵器の軌道上配備とは区別する。\n- 【事実3】F-011：米宇宙軍の用語では、counterspace operationsは軌道、通信リンク、地上の各セグメントでの行動を指す。したがってcounterspaceは、宇宙空間に置かれた兵器だけを意味しない。\n- 【事実4】F-015：GPS、ミサイル追跡、宇宙領域認識、衛星アーキテクチャのレジリエンスは、米宇宙軍が継続的な任務・優先事項として説明している。こうした衛星運用・保護の任務は、攻撃兵器の軌道上配備とは分けて扱う。\n- 【事実5】F-016：Outer Space Treaty第4条【周辺数値】は、核兵器その他の大量破壊兵器の軌道上配備などを禁じる一方、宇宙兵器全般を包括的に禁止するとは記していない。この条文だけから個別の配備の適法性を断定しない。\n=== ANNOTATED_BRIEF_END ===\n=== SIDECAR_JSON_BEGIN ===\n{\n  \"slug\": \"space_weapons\", \"annotator\": \"B\",\n  \"spec_sha256\": \"8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57\",\n  \"brief_sha256\": \"84c69f1329262f9868be25af77baa47b6afc2f7184ec8999affc232e19b421f9\",\n  \"facts\": [\n    {\"n\": 1, \"ledger_ids\": [\"F-001\"]},\n    {\"n\": 2, \"ledger_ids\": [\"F-003\"]},\n    {\"n\": 3, \"ledger_ids\": [\"F-011\"]},\n    {\"n\": 4, \"ledger_ids\": [\"F-015\"]},\n    {\"n\": 5, \"ledger_ids\": [\"F-016\"]}\n  ],\n  \"numbers\": [\n    {\"surface\": \"2026年9月14日\", \"kind\": \"date_time\", \"concept\": \"C_meink_date\", \"ledger_ids\": [\"F-001\"], \"class\": \"core\", \"role\": \"Meink長官の発言日\"},\n    {\"surface\": \"2021年\", \"kind\": \"year\", \"concept\": \"C_cosmos_year\", \"ledger_ids\": [\"F-003\"], \"class\": \"peripheral\", \"role\": \"COSMOS 1408破壊の年\"},\n    {\"surface\": \"COSMOS 1408\", \"kind\": \"name_embedded\", \"concept\": \"C_cosmos_name\", \"ledger_ids\": [\"F-003\"], \"class\": \"peripheral\", \"role\": \"衛星名の一部の番号\"},\n    {\"surface\": \"第4条\", \"kind\": \"ordinal\", \"concept\": \"C_ost_art4\", \"ledger_ids\": [\"F-016\"], \"class\": \"peripheral\", \"role\": \"Outer Space Treaty条文番号\"}\n  ],\n  \"unmapped_claims\": [],\n  \"annotation_notes\": [\n    {\"where\": \"概念 C_meink_date\", \"question\": \"適格で上限(n=1、上限3)の内側\", \"options\": [\"中核\", \"周辺\"], \"chosen\": \"中核\", \"rule\": \"§3-5\"},\n    {\"where\": \"COSMOS 1408\", \"question\": \"量か名称内番号か\", \"options\": [\"magnitude\", \"name_embedded\"], \"chosen\": \"name_embedded\", \"rule\": \"§5-3\"},\n    {\"where\": \"2021年\", \"question\": \"年だけの表記(台帳の日付は2021年11月15日)\", \"options\": [\"date_time\", \"year\"], \"chosen\": \"year(常に周辺)\", \"rule\": \"§3-2\"}\n  ]\n}\n=== SIDECAR_JSON_END ===\nEOF"
+      ],
+      "forbidden_hits": [
+        "factlock_astra_e2e_trial_01"
+      ],
+      "web_or_mcp": false
+    }
+  ],
+  "tool_uses": [
+    {
+      "tool": "Read",
+      "targets": [
+        "C:\\Users\\tensh\\eigo-radio\\er052_output\\factlock_astra_e2e_trial_01\\annotation\\prompts\\space_weapons__B.md"
+      ],
+      "forbidden_hits": [],
+      "web_or_mcp": false
+    },
+    {
+      "tool": "Bash",
+      "targets": [
+        "mkdir -p /c/Users/tensh/eigo-radio/er052_output/factlock_astra_e2e_trial_01/annotation/out/B/space_weapons && cat > /c/Users/tensh/eigo-radio/er052_output/factlock_astra_e2e_trial_01/annotation/out/B/space_weapons/reply.md <<'EOF'\n=== ANNOTATED_BRIEF_BEGIN ===\n# Selected Fact Brief\n\n## Storyline\n米国が軌道上の「space control weapons」配備を初めて公に認めた発言を起点に、従来の地上発射ASATや通常の衛星任務、広義のcounterspaceと区別し、既存条約が禁じる範囲を誇張せず整理する。\n\n## Selected Facts\n- 【事実1】F-001：2026年9月14日【中核数値】、米空軍長官Troy Meinkは、敵対的な相手の行動から統合軍を防護できる軌道上のspace control weaponsを米国が配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。具体的なシステム名や攻撃能力は補わない。\n- 【事実2】F-003：地上発射型ASATミサイルによる衛星破壊は過去にも行われており、ロシアは2021年【周辺数値】にCOSMOS 1408【周辺数値】を破壊した。これは地上から発射した試験であり、兵器の軌道上配備とは区別する。\n- 【事実3】F-011：米宇宙軍の用語では、counterspace operationsは軌道、通信リンク、地上の各セグメントでの行動を指す。したがってcounterspaceは、宇宙空間に置かれた兵器だけを意味しない。\n- 【事実4】F-015：GPS、ミサイル追跡、宇宙領域認識、衛星アーキテクチャのレジリエンスは、米宇宙軍が継続的な任務・優先事項として説明している。こうした衛星運用・保護の任務は、攻撃兵器の軌道上配備とは分けて扱う。\n- 【事実5】F-016：Outer Space Treaty第4条【周辺数値】は、核兵器その他の大量破壊兵器の軌道上配備などを禁じる一方、宇宙兵器全般を包括的に禁止するとは記していない。この条文だけから個別の配備の適法性を断定しない。\n=== ANNOTATED_BRIEF_END ===\n=== SIDECAR_JSON_BEGIN ===\n{\n  \"slug\": \"space_weapons\", \"annotator\": \"B\",\n  \"spec_sha256\": \"8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57\",\n  \"brief_sha256\": \"84c69f1329262f9868be25af77baa47b6afc2f7184ec8999affc232e19b421f9\",\n  \"facts\": [\n    {\"n\": 1, \"ledger_ids\": [\"F-001\"]},\n    {\"n\": 2, \"ledger_ids\": [\"F-003\"]},\n    {\"n\": 3, \"ledger_ids\": [\"F-011\"]},\n    {\"n\": 4, \"ledger_ids\": [\"F-015\"]},\n    {\"n\": 5, \"ledger_ids\": [\"F-016\"]}\n  ],\n  \"numbers\": [\n    {\"surface\": \"2026年9月14日\", \"kind\": \"date_time\", \"concept\": \"C_meink_date\", \"ledger_ids\": [\"F-001\"], \"class\": \"core\", \"role\": \"Meink長官の発言日\"},\n    {\"surface\": \"2021年\", \"kind\": \"year\", \"concept\": \"C_cosmos_year\", \"ledger_ids\": [\"F-003\"], \"class\": \"peripheral\", \"role\": \"COSMOS 1408破壊の年\"},\n    {\"surface\": \"COSMOS 1408\", \"kind\": \"name_embedded\", \"concept\": \"C_cosmos_name\", \"ledger_ids\": [\"F-003\"], \"class\": \"peripheral\", \"role\": \"衛星名の一部の番号\"},\n    {\"surface\": \"第4条\", \"kind\": \"ordinal\", \"concept\": \"C_ost_art4\", \"ledger_ids\": [\"F-016\"], \"class\": \"peripheral\", \"role\": \"Outer Space Treaty条文番号\"}\n  ],\n  \"unmapped_claims\": [],\n  \"annotation_notes\": [\n    {\"where\": \"概念 C_meink_date\", \"question\": \"適格で上限(n=1、上限3)の内側\", \"options\": [\"中核\", \"周辺\"], \"chosen\": \"中核\", \"rule\": \"§3-5\"},\n    {\"where\": \"COSMOS 1408\", \"question\": \"量か名称内番号か\", \"options\": [\"magnitude\", \"name_embedded\"], \"chosen\": \"name_embedded\", \"rule\": \"§5-3\"},\n    {\"where\": \"2021年\", \"question\": \"年だけの表記(台帳の日付は2021年11月15日)\", \"options\": [\"date_time\", \"year\"], \"chosen\": \"year(常に周辺)\", \"rule\": \"§3-2\"}\n  ]\n}\n=== SIDECAR_JSON_END ===\nEOF"
+      ],
+      "forbidden_hits": [
+        "factlock_astra_e2e_trial_01"
+      ],
+      "web_or_mcp": false
+    },
+    {
+      "tool": "SubagentHandback",
+      "targets": [],
+      "forbidden_hits": [],
+      "web_or_mcp": false
+    }
+  ],
+  "verdict": "VIOLATION",
+  "unparseable_lines": 0,
+  "strict_violations": [
+    {
+      "tool": "Bash",
+      "targets": [
+        "mkdir -p /c/Users/tensh/eigo-radio/er052_output/factlock_astra_e2e_trial_01/annotation/out/B/space_weapons && cat > /c/Users/tensh/eigo-radio/er052_output/factlock_astra_e2e_trial_01/annotation/out/B/space_weapons/reply.md <<'EOF'\n=== ANNOTATED_BRIEF_BEGIN ===\n# Selected Fact Brief\n\n## Storyline\n米国が軌道上の「space control weapons」配備を初めて公に認めた発言を起点に、従来の地上発射ASATや通常の衛星任務、広義のcounterspaceと区別し、既存条約が禁じる範囲を誇張せず整理する。\n\n## Selected Facts\n- 【事実1】F-001：2026年9月14日【中核数値】、米空軍長官Troy Meinkは、敵対的な相手の行動から統合軍を防護できる軌道上のspace control weaponsを米国が配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。具体的なシステム名や攻撃能力は補わない。\n- 【事実2】F-003：地上発射型ASATミサイルによる衛星破壊は過去にも行われており、ロシアは2021年【周辺数値】にCOSMOS 1408【周辺数値】を破壊した。これは地上から発射した試験であり、兵器の軌道上配備とは区別する。\n- 【事実3】F-011：米宇宙軍の用語では、counterspace operationsは軌道、通信リンク、地上の各セグメントでの行動を指す。したがってcounterspaceは、宇宙空間に置かれた兵器だけを意味しない。\n- 【事実4】F-015：GPS、ミサイル追跡、宇宙領域認識、衛星アーキテクチャのレジリエンスは、米宇宙軍が継続的な任務・優先事項として説明している。こうした衛星運用・保護の任務は、攻撃兵器の軌道上配備とは分けて扱う。\n- 【事実5】F-016：Outer Space Treaty第4条【周辺数値】は、核兵器その他の大量破壊兵器の軌道上配備などを禁じる一方、宇宙兵器全般を包括的に禁止するとは記していない。この条文だけから個別の配備の適法性を断定しない。\n=== ANNOTATED_BRIEF_END ===\n=== SIDECAR_JSON_BEGIN ===\n{\n  \"slug\": \"space_weapons\", \"annotator\": \"B\",\n  \"spec_sha256\": \"8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57\",\n  \"brief_sha256\": \"84c69f1329262f9868be25af77baa47b6afc2f7184ec8999affc232e19b421f9\",\n  \"facts\": [\n    {\"n\": 1, \"ledger_ids\": [\"F-001\"]},\n    {\"n\": 2, \"ledger_ids\": [\"F-003\"]},\n    {\"n\": 3, \"ledger_ids\": [\"F-011\"]},\n    {\"n\": 4, \"ledger_ids\": [\"F-015\"]},\n    {\"n\": 5, \"ledger_ids\": [\"F-016\"]}\n  ],\n  \"numbers\": [\n    {\"surface\": \"2026年9月14日\", \"kind\": \"date_time\", \"concept\": \"C_meink_date\", \"ledger_ids\": [\"F-001\"], \"class\": \"core\", \"role\": \"Meink長官の発言日\"},\n    {\"surface\": \"2021年\", \"kind\": \"year\", \"concept\": \"C_cosmos_year\", \"ledger_ids\": [\"F-003\"], \"class\": \"peripheral\", \"role\": \"COSMOS 1408破壊の年\"},\n    {\"surface\": \"COSMOS 1408\", \"kind\": \"name_embedded\", \"concept\": \"C_cosmos_name\", \"ledger_ids\": [\"F-003\"], \"class\": \"peripheral\", \"role\": \"衛星名の一部の番号\"},\n    {\"surface\": \"第4条\", \"kind\": \"ordinal\", \"concept\": \"C_ost_art4\", \"ledger_ids\": [\"F-016\"], \"class\": \"peripheral\", \"role\": \"Outer Space Treaty条文番号\"}\n  ],\n  \"unmapped_claims\": [],\n  \"annotation_notes\": [\n    {\"where\": \"概念 C_meink_date\", \"question\": \"適格で上限(n=1、上限3)の内側\", \"options\": [\"中核\", \"周辺\"], \"chosen\": \"中核\", \"rule\": \"§3-5\"},\n    {\"where\": \"COSMOS 1408\", \"question\": \"量か名称内番号か\", \"options\": [\"magnitude\", \"name_embedded\"], \"chosen\": \"name_embedded\", \"rule\": \"§5-3\"},\n    {\"where\": \"2021年\", \"question\": \"年だけの表記(台帳の日付は2021年11月15日)\", \"options\": [\"date_time\", \"year\"], \"chosen\": \"year(常に周辺)\", \"rule\": \"§3-2\"}\n  ]\n}\n=== SIDECAR_JSON_END ===\nEOF"
+      ],
+      "reason": "許可パス(自分のプロンプトのRead)以外"
+    },
+    {
+      "tool": "SubagentHandback",
+      "targets": [],
+      "reason": "許可パス(自分のプロンプトのRead)以外"
+    }
+  ]
+}

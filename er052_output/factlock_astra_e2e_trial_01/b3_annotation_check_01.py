@@ -115,7 +115,7 @@ def main_numbers(surface, kind):
 def parse_ledger(text):
     recs, cur = {}, None
     for line in norm_nl(text).split("\n"):
-        m = re.match(r"^\[(\w+)\]\s+([A-Za-z0-9][A-Za-z0-9_-]*):\s*(.*)$", line)
+        m = re.match(r"^\[(\w+)(?:[^\]]*)\]\s+([A-Za-z0-9][A-Za-z0-9_-]*):\s*(.*)$", line)
         if m:
             cur = {"status": m.group(1), "id": m.group(2), "statement": m.group(3), "fields": {}}
             recs[m.group(2)] = cur
@@ -312,7 +312,7 @@ def align(orig, ann, ins_range=None):
                 last, last2 = " ", "-"
                 continue
             if ann.startswith("- ", i) and TAG_RE.match(ann, i + 2) and \
-                    ((not seen_nonws_in_range) or (last2 == "。" and last == "\n")):
+                    ((not seen_nonws_in_range) or (last2 == "。" and last == "\n") or (last == "\n" and re.search(r"。\n+$", orig[max(0, j - 12):j]))):  # 委任_09 P3
                 ops.append((j, "- "))
                 i += 2
                 last, last2 = " ", "-"

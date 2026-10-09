@@ -1,0 +1,180 @@
+{
+  "spec": "B3_ANNOTATION_SPEC_v2",
+  "ledger_records": 6,
+  "f_ledger_schema": {
+    "status": "INFO",
+    "records": 6,
+    "field_counts": {
+      "scope": 6,
+      "conditions": 6,
+      "date_or_period": 6,
+      "causal_strength": 6,
+      "notes_for_writer": 6
+    },
+    "numeric_value_fallback_to_statement": true,
+    "date_or_period_fallback_to_statement": false,
+    "non_verified_ids": [],
+    "per_record": {
+      "MB-01": {
+        "status": "VERIFIED",
+        "fields": [
+          "causal_strength",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "scope"
+        ]
+      },
+      "MB-02": {
+        "status": "VERIFIED",
+        "fields": [
+          "causal_strength",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "scope"
+        ]
+      },
+      "MB-03": {
+        "status": "VERIFIED",
+        "fields": [
+          "causal_strength",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "scope"
+        ]
+      },
+      "MB-04": {
+        "status": "VERIFIED",
+        "fields": [
+          "causal_strength",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "scope"
+        ]
+      },
+      "MB-05": {
+        "status": "VERIFIED",
+        "fields": [
+          "causal_strength",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "scope"
+        ]
+      },
+      "MB-06": {
+        "status": "VERIFIED",
+        "fields": [
+          "causal_strength",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "scope"
+        ]
+      }
+    },
+    "warnings": [
+      "台帳に numeric_value 欄が1件も無い: 量のE1判定は statement 内の主数字で代替する (fallback)"
+    ]
+  },
+  "a_strip_equal": {
+    "status": "FAIL",
+    "reason": "許されない差分: 注記版[すものではない。\\n\\n- 【事実1】ELLEは2026年9月【] 原文[すものではない。\\n\\nELLEは2026年9月、ミニバッグをF] (注記版位置288, 原文位置276)",
+    "strict_equal_after_strip": false,
+    "inserted_split_breaks": 0,
+    "inserted_bullet_markers": 0,
+    "brief_sha256": "badd77f2536f425a7b27ff4f728bb3f8c952ce8a501db0c7e07a451559089144",
+    "stripped_annotated_sha256": "0c7118a9adf9acd2abe2636c51f7f9c859a5eb29b871faf3a0bcb8feff821bd1"
+  },
+  "d_sequence": {
+    "status": "PASS",
+    "fact_numbers": [
+      1,
+      2,
+      3
+    ],
+    "problems": []
+  },
+  "b_ledger_mapping": {
+    "status": "PASS",
+    "mapping": {
+      "1": [
+        "MB-01"
+      ],
+      "2": [
+        "MB-05"
+      ],
+      "3": [
+        "MB-06",
+        "MB-01",
+        "MB-05"
+      ]
+    },
+    "problems": [],
+    "warnings": []
+  },
+  "c_numbers": {
+    "status": "PASS",
+    "problems": [],
+    "warnings": [],
+    "surface_diff": [],
+    "eligibility": {
+      "C_year2026": [],
+      "C_elle_date": [
+        "E2p"
+      ],
+      "C_fall2026": []
+    },
+    "countable_concepts": 1,
+    "core_cap": 3,
+    "expected_core_concepts": [
+      "C_elle_date"
+    ],
+    "declared_core_concepts": [
+      "C_elle_date"
+    ],
+    "cap_dropped_concepts": [],
+    "cap_dropped_count": 0,
+    "eligible_concepts": [
+      "C_elle_date"
+    ],
+    "concept_detail": {
+      "C_year2026": {
+        "kind": "year",
+        "eligible": [],
+        "group": 9,
+        "in_storyline": true,
+        "expected_class": "peripheral"
+      },
+      "C_elle_date": {
+        "kind": "date_time",
+        "eligible": [
+          "E2p"
+        ],
+        "group": 2,
+        "in_storyline": false,
+        "expected_class": "core"
+      },
+      "C_fall2026": {
+        "kind": "name_embedded",
+        "eligible": [],
+        "group": 9,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      }
+    },
+    "kanji_numeral_candidates": [],
+    "stop_candidates": []
+  },
+  "e_sidecar_meta": {
+    "status": "PASS",
+    "problems": [],
+    "warnings": [],
+    "unmapped_claims_by_type": {}
+  },
+  "skipped": [],
+  "verdict": "FAIL"
+}

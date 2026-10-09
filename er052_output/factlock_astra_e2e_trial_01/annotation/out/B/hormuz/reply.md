@@ -1,0 +1,41 @@
+=== ANNOTATED_BRIEF_BEGIN ===
+# Selected Fact Brief
+
+## Storyline
+トランプ氏はホルムズ海峡を通る全貨物に20％【中核数値】の米国費用償還を提案したが、中東指導者との協議を理由に約25時間【周辺数値】後、湾岸諸国との貿易・投資案件へ置き換えた。撤回後のBrentは一時上げ幅を縮めたものの、海上封鎖などの供給懸念が続き高値圏へ戻った。
+
+## Selected Facts
+Storyline: トランプ氏はホルムズ海峡を通る全貨物に20％【中核数値】の米国費用償還を提案したが、中東指導者との協議を理由に約25時間【周辺数値】後、湾岸諸国との貿易・投資案件へ置き換えた。撤回後のBrentは一時上げ幅を縮めたものの、海上封鎖などの供給懸念が続き高値圏へ戻った。
+
+素材: 7月13日【周辺数値】午前、トランプ氏はホルムズ海峡を通るすべての貨物について、米国が安全確保に要する費用の償還として20％【中核数値】を求めると投稿した（HF-002）。約24時間48分【周辺数値】後の7月14日【周辺数値】、同氏はこの案を湾岸諸国による対米貿易・投資案件に置き換えると投稿し、中東指導者との協議を理由に挙げた（HF-007）。発表後、Brent先物は一時上げ幅を縮めたが、ほどなく発表前に近い高い水準へ戻った。報道時点では約2.6％【中核数値】高で1バレル85ドル超【中核数値】。米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念は続いていた（HF-009）。
+=== ANNOTATED_BRIEF_END ===
+=== SIDECAR_JSON_BEGIN ===
+{
+  "slug": "hormuz",
+  "annotator": "B",
+  "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+  "brief_sha256": "c884047d621da143545c5ef7d774e370628ef62987caf94823c0e6f19471706a",
+  "facts": [],
+  "numbers": [
+    {"surface": "20％", "kind": "magnitude", "concept": "C_rate", "ledger_ids": ["HF-002", "HF-003", "HF-007"], "class": "core", "role": "提案された償還率(Storyline量)"},
+    {"surface": "約25時間", "kind": "magnitude", "concept": "C_25h", "ledger_ids": [], "class": "peripheral", "role": "提案から置換までの経過時間(丸め表現、台帳外)"},
+    {"surface": "7月13日", "kind": "date_time", "concept": "C_0713", "ledger_ids": ["HF-002", "HF-003"], "class": "peripheral", "role": "償還率提案の日"},
+    {"surface": "約24時間48分", "kind": "magnitude", "concept": "C_24h48", "ledger_ids": ["HF-007"], "class": "peripheral", "role": "提案から置換までの経過時間"},
+    {"surface": "7月14日", "kind": "date_time", "concept": "C_0714", "ledger_ids": ["HF-007"], "class": "peripheral", "role": "置換投稿の日"},
+    {"surface": "約2.6％", "kind": "magnitude", "concept": "C_up26", "ledger_ids": ["HF-009"], "class": "core", "role": "報道時点のBrent上昇率"},
+    {"surface": "1バレル85ドル超", "kind": "magnitude", "concept": "C_p85", "ledger_ids": ["HF-009", "HF-004"], "class": "core", "role": "報道時点のBrent価格"}
+  ],
+  "unmapped_claims": [
+    {"text": "約25時間後", "type": "new_number"}
+  ],
+  "annotation_notes": [
+    {"where": "Selected Facts節全体", "question": "項目が「Storyline:」重複行と「素材:」行のみで、【事実N】を付ける対象項目が無い", "options": ["素材行に【事実N】を付ける", "付けない"], "chosen": "付けない(facts空)", "rule": "§2 / §5-6"},
+    {"where": "約25時間後(Storyline)", "question": "台帳(HF-007)は約24時間48分後。丸め表現で台帳に無い数値。STOP(ii)に該当しうるか", "options": ["STOP", "unmappedに記録して継続"], "chosen": "依頼文(b)に従い新数値(丸め)として記録し継続。STOP判定は統合時", "rule": "§4 / 依頼文(b)"},
+    {"where": "約25時間", "question": "ledger_idsが空で中核にできない", "options": ["中核", "周辺"], "chosen": "周辺", "rule": "§3-4"},
+    {"where": "約24時間48分", "question": "numeric_value欄に無く(HF-007の注記にのみ記載)、適格性を確認できない", "options": ["中核", "周辺"], "chosen": "周辺(ledger_idsはHF-007)", "rule": "§5-2"},
+    {"where": "概念 C_0713 / C_0714", "question": "日付は適格(HF-002/HF-003の2026-07-13、HF-007の2026-07-14と月日一致)だが上限3の外", "options": ["中核", "周辺"], "chosen": "周辺 (cap超過で周辺化)", "rule": "§3-5-6"},
+    {"where": "7月13日午前", "question": "「午前」を表記に含めるか", "options": ["7月13日", "7月13日午前"], "chosen": "7月13日(時刻の数字を含まないため)", "rule": "§3-1 / §5-5"},
+    {"where": "概念 C_p85", "question": "HF-004にもBrent約85ドルがある", "options": ["HF-009のみ", "HF-009とHF-004"], "chosen": "両方を併記", "rule": "§5-4"}
+  ]
+}
+=== SIDECAR_JSON_END ===

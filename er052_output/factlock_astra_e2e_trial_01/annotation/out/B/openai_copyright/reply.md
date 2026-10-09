@@ -1,0 +1,35 @@
+=== ANNOTATED_BRIEF_BEGIN ===
+# Selected Fact Brief
+
+## Storyline
+USA TODAY Co.傘下の14法人【中核数値】・事業体が報道コンテンツの無断利用などを主張してOpenAIをニューヨーク南部地区連邦地方裁判所に提訴し、損害賠償などを求めたが、確認できるのは提訴段階で、侵害は裁判所に認定されておらず、Reuters報道時点でOpenAIは直ちにコメントしていない。
+
+## Selected Facts
+Storyline: USA TODAY Co.傘下の14法人【中核数値】・事業体が報道コンテンツの無断利用などを主張してOpenAIをニューヨーク南部地区連邦地方裁判所に提訴し、損害賠償などを求めたが、確認できるのは提訴段階で、侵害は裁判所に認定されておらず、Reuters報道時点でOpenAIは直ちにコメントしていない。
+
+- 【事実1】訴状に記載された原告は、USA TODAY Co., Inc.を含む傘下の14法人【中核数値】・事業体。訴状では、OpenAIが原告らの報道コンテンツを許可なく取得・複製してモデルの訓練に使い、モデル出力で複製または再構成したほか、著作権管理情報を除去したと主張している。これらは原告側の主張であり、確定した事実ではない。原告らは損害賠償額が2億5,000万ドル【中核数値】を超えるとする請求のほか、利益の返還、差止め、費用等や、原告らのコンテンツを組み込んだGPTなどのモデルおよび訓練セットの破棄を求めている。いずれも訴状上の請求で、認容済みではない。Reutersは2026年10月8日【中核数値】、OpenAIの広報担当者がコメント依頼に直ちには応じなかったと報じた。同日、事件番号1:26-cv-08892【周辺数値】としてニューヨーク南部地区連邦地方裁判所に提出された新規訴訟であり、確認できるのは提訴段階で、裁判所による著作権侵害の認定や本案判断はない。
+=== ANNOTATED_BRIEF_END ===
+=== SIDECAR_JSON_BEGIN ===
+{
+  "slug": "openai_copyright", "annotator": "B",
+  "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+  "brief_sha256": "3051aa83a58f45213d4db7246af3328e49d9bc033e9954370312fe11923d4c35",
+  "facts": [ {"n": 1, "ledger_ids": ["F1", "F2", "F4", "F6", "F7", "F8"]} ],
+  "numbers": [
+    {"surface": "14法人", "kind": "magnitude", "concept": "C_plaintiffs", "ledger_ids": ["F2"], "class": "core", "role": "原告の法人・事業体数(Storylineに出る量)"},
+    {"surface": "2億5,000万ドル", "kind": "magnitude", "concept": "C_damages", "ledger_ids": ["F6"], "class": "core", "role": "請求された損害賠償額"},
+    {"surface": "2026年10月8日", "kind": "date_time", "concept": "C_date", "ledger_ids": ["F1", "F2", "F3", "F5", "F6", "F7", "F8"], "class": "core", "role": "Reuters報道日(提訴日と同日)"},
+    {"surface": "1:26-cv-08892", "kind": "name_embedded", "concept": "C_case_no", "ledger_ids": ["F8"], "class": "peripheral", "role": "事件番号(識別子)"}
+  ],
+  "unmapped_claims": [],
+  "annotation_notes": [
+    {"where": "Selected Facts 本文段落", "question": "7文が台帳F1,F2,F4,F6,F7,F8の5つ以上の別IDに由来し、4つ以上に分けたくなる", "options": ["最大3つに分ける", "分けない(1事実)"], "chosen": "分けない(1事実、ledger_idsに全て併記)", "rule": "§2 / §5-1"},
+    {"where": "限定する文(これらは原告側の主張であり〜/いずれも訴状上の請求で〜)", "question": "別の事実にするか", "options": ["別事実", "直前の主張と同じ事実"], "chosen": "同じ事実", "rule": "§2"},
+    {"where": "2億5,000万ドル", "question": "「を超える」はヘッジ語として表記に含めるか", "options": ["含める", "含めない"], "chosen": "含めない(数字に直接つく語ではない)", "rule": "§3-1 / §5-5"},
+    {"where": "2億5,000万ドル", "question": "主数字は末尾の5,000(5000)。台帳numeric_valueの2億5,000万ドル超に5,000を含む", "options": ["適格", "不適格"], "chosen": "適格(n=3、上限3のため中核)", "rule": "§3-5"},
+    {"where": "1:26-cv-08892", "question": "量か名称内番号(識別子)か", "options": ["magnitude", "name_embedded"], "chosen": "name_embedded(常に周辺)", "rule": "§3-2 / §5-3"},
+    {"where": "概念数", "question": "n=3(14法人・2億5,000万ドル・2026年10月8日)で上限max(3,..)=3、適格3概念は全て上限内", "options": ["中核", "周辺"], "chosen": "全て中核", "rule": "§3-5"},
+    {"where": "Storyline: 重複行", "question": "【事実N】を付けるか", "options": ["付ける", "付けない"], "chosen": "付けない(数字の印のみ)", "rule": "§2"}
+  ]
+}
+=== SIDECAR_JSON_END ===

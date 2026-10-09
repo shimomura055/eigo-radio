@@ -1,0 +1,62 @@
+{
+  "slug": "meta",
+  "annotator": "MERGED",
+  "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+  "brief_sha256": "83c29bc213a7c8bd22000e04446dded2dce4c047b9273ae6575e260339fa22e0",
+  "facts": [
+    {
+      "n": 1,
+      "ledger_ids": [
+        "MUSE-HC-006"
+      ]
+    },
+    {
+      "n": 2,
+      "ledger_ids": [
+        "MUSE-HC-010"
+      ]
+    },
+    {
+      "n": 3,
+      "ledger_ids": [
+        "MUSE-HC-012"
+      ]
+    }
+  ],
+  "numbers": [],
+  "unmapped_claims": [],
+  "annotation_notes": [
+    {
+      "where": "Selected Facts 第4文「これは機能の試験に関する話であり、Muse全体の停止ではない。」",
+      "question": "限定文を別事実にするか、直前の事実3に含めるか",
+      "options": [
+        "別事実にする",
+        "事実3に含める"
+      ],
+      "chosen": "事実3に含める(台帳 MUSE-HC-012 の notes_for_writer に由来、同一ID)",
+      "rule": "§2",
+      "annotator": "A"
+    },
+    {
+      "where": "本文全体",
+      "question": "算用数字を含む表記が存在しない(漢数字のみの数量も無い)",
+      "options": [
+        "numbers を空にする"
+      ],
+      "chosen": "numbers は空配列",
+      "rule": "§3",
+      "annotator": "A"
+    },
+    {
+      "where": "Selected Facts 第4文「これは機能の試験に関する話であり、Muse全体の停止ではない。」",
+      "question": "限定する文を別事実にするか",
+      "options": [
+        "別事実4",
+        "直前の事実3に含める"
+      ],
+      "chosen": "事実3に含める",
+      "rule": "§2 限定する文は直前の主張と同じ事実",
+      "annotator": "B"
+    }
+  ]
+}

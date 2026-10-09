@@ -1,0 +1,410 @@
+{
+  "spec": "B3_ANNOTATION_SPEC_v2",
+  "ledger_records": 11,
+  "f_ledger_schema": {
+    "status": "INFO",
+    "records": 11,
+    "field_counts": {
+      "scope": 11,
+      "conditions": 11,
+      "numeric_value": 9,
+      "date_or_period": 11,
+      "causal_strength": 9,
+      "notes_for_writer": 11,
+      "ambiguity_note": 1
+    },
+    "numeric_value_fallback_to_statement": false,
+    "date_or_period_fallback_to_statement": false,
+    "non_verified_ids": [],
+    "per_record": {
+      "F01": {
+        "status": "VERIFIED",
+        "fields": [
+          "causal_strength",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "numeric_value",
+          "scope"
+        ]
+      },
+      "F02": {
+        "status": "VERIFIED",
+        "fields": [
+          "causal_strength",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "numeric_value",
+          "scope"
+        ]
+      },
+      "F03": {
+        "status": "VERIFIED",
+        "fields": [
+          "ambiguity_note",
+          "causal_strength",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "numeric_value",
+          "scope"
+        ]
+      },
+      "F07": {
+        "status": "VERIFIED",
+        "fields": [
+          "causal_strength",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "numeric_value",
+          "scope"
+        ]
+      },
+      "F08": {
+        "status": "VERIFIED",
+        "fields": [
+          "causal_strength",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "numeric_value",
+          "scope"
+        ]
+      },
+      "F09": {
+        "status": "VERIFIED",
+        "fields": [
+          "causal_strength",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "numeric_value",
+          "scope"
+        ]
+      },
+      "F10": {
+        "status": "VERIFIED",
+        "fields": [
+          "causal_strength",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "numeric_value",
+          "scope"
+        ]
+      },
+      "F11": {
+        "status": "VERIFIED",
+        "fields": [
+          "causal_strength",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "numeric_value",
+          "scope"
+        ]
+      },
+      "F13": {
+        "status": "VERIFIED",
+        "fields": [
+          "causal_strength",
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "scope"
+        ]
+      },
+      "F14": {
+        "status": "VERIFIED",
+        "fields": [
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "numeric_value",
+          "scope"
+        ]
+      },
+      "F15": {
+        "status": "VERIFIED",
+        "fields": [
+          "conditions",
+          "date_or_period",
+          "notes_for_writer",
+          "scope"
+        ]
+      }
+    },
+    "warnings": []
+  },
+  "a_strip_equal": {
+    "status": "PASS",
+    "reason": "",
+    "strict_equal_after_strip": true,
+    "inserted_split_breaks": 0,
+    "inserted_bullet_markers": 0,
+    "brief_sha256": "3d7bae52602be096c23adc631c50c55eeb770bf3195f8f50844e80031f40bbfd",
+    "stripped_annotated_sha256": "3d7bae52602be096c23adc631c50c55eeb770bf3195f8f50844e80031f40bbfd"
+  },
+  "d_sequence": {
+    "status": "PASS",
+    "fact_numbers": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "problems": []
+  },
+  "b_ledger_mapping": {
+    "status": "FAIL",
+    "mapping": {
+      "1": [
+        "F01"
+      ],
+      "2": [
+        "F02"
+      ],
+      "3": [
+        "F03"
+      ],
+      "4": [
+        "F06"
+      ]
+    },
+    "problems": [
+      "事実4: 台帳に存在しないID F06"
+    ],
+    "warnings": []
+  },
+  "c_numbers": {
+    "status": "FAIL",
+    "problems": [
+      "概念 C_2026_08 と C_2019_08: 短い表記が長い表記に含まれ台帳IDも共通なのに別概念 ('8月' / '2019年8月')",
+      "概念 C_2026_08 ['2026年8月', '8月']: 規則では中核(適格 ['E2p']、上限6内)なのに周辺と宣言 (付け漏れ)",
+      "概念 C_aug19_total ['2,520,134人']: 中核適格性なし (E1=量が台帳numeric_valueの主数字と一致 / E2'=日付が台帳date_or_periodの先頭日付表現と一致、のどちらでもない)",
+      "分類漏れの数字(宣言なし・印なし): ['01', '02', '03', '06']"
+    ],
+    "warnings": [
+      "31,882,049人: ledger_ids ['F06'] が台帳にない",
+      "42,683,301人: ledger_ids ['F06'] が台帳にない"
+    ],
+    "surface_diff": [],
+    "eligibility": {
+      "C_2026_08": [
+        "E2p"
+      ],
+      "C_aug26_total": [
+        "E1"
+      ],
+      "C_aug_yoy": [
+        "E1"
+      ],
+      "C_2025_08": [],
+      "C_aug25_total": [
+        "E1"
+      ],
+      "C_2026_01_08": [
+        "E2p"
+      ],
+      "C_ytd26_total": [
+        "E1"
+      ],
+      "C_y2025": [],
+      "C_ytd_yoy": [
+        "E1"
+      ],
+      "C_2019_08": [],
+      "C_aug19_total": [],
+      "C_diff_aug": [],
+      "C_diff_aug_pct": [],
+      "C_y2019": [],
+      "C_y2019_total": [],
+      "C_y2025_total_final": [],
+      "C_y2026": []
+    },
+    "countable_concepts": 14,
+    "core_cap": 6,
+    "expected_core_concepts": [
+      "C_aug26_total",
+      "C_aug_yoy",
+      "C_aug25_total",
+      "C_ytd26_total",
+      "C_ytd_yoy",
+      "C_2026_08"
+    ],
+    "declared_core_concepts": [
+      "C_aug19_total",
+      "C_aug25_total",
+      "C_aug26_total",
+      "C_aug_yoy",
+      "C_ytd26_total",
+      "C_ytd_yoy"
+    ],
+    "cap_dropped_concepts": [
+      "C_2026_01_08"
+    ],
+    "cap_dropped_count": 1,
+    "eligible_concepts": [
+      "C_aug26_total",
+      "C_aug_yoy",
+      "C_aug25_total",
+      "C_ytd26_total",
+      "C_ytd_yoy",
+      "C_2026_08",
+      "C_2026_01_08"
+    ],
+    "concept_detail": {
+      "C_2026_08": {
+        "kind": "date_time",
+        "eligible": [
+          "E2p"
+        ],
+        "group": 2,
+        "in_storyline": true,
+        "expected_class": "core"
+      },
+      "C_aug26_total": {
+        "kind": "magnitude",
+        "eligible": [
+          "E1"
+        ],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "core"
+      },
+      "C_aug_yoy": {
+        "kind": "magnitude",
+        "eligible": [
+          "E1"
+        ],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "core"
+      },
+      "C_2025_08": {
+        "kind": "date_time",
+        "eligible": [],
+        "group": 2,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      },
+      "C_aug25_total": {
+        "kind": "magnitude",
+        "eligible": [
+          "E1"
+        ],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "core"
+      },
+      "C_2026_01_08": {
+        "kind": "date_time",
+        "eligible": [
+          "E2p"
+        ],
+        "group": 2,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      },
+      "C_ytd26_total": {
+        "kind": "magnitude",
+        "eligible": [
+          "E1"
+        ],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "core"
+      },
+      "C_y2025": {
+        "kind": "year",
+        "eligible": [],
+        "group": 9,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      },
+      "C_ytd_yoy": {
+        "kind": "magnitude",
+        "eligible": [
+          "E1"
+        ],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "core"
+      },
+      "C_2019_08": {
+        "kind": "date_time",
+        "eligible": [],
+        "group": 2,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      },
+      "C_aug19_total": {
+        "kind": "magnitude",
+        "eligible": [],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      },
+      "C_diff_aug": {
+        "kind": "magnitude",
+        "eligible": [],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      },
+      "C_diff_aug_pct": {
+        "kind": "magnitude",
+        "eligible": [],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      },
+      "C_y2019": {
+        "kind": "year",
+        "eligible": [],
+        "group": 9,
+        "in_storyline": true,
+        "expected_class": "peripheral"
+      },
+      "C_y2019_total": {
+        "kind": "magnitude",
+        "eligible": [],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      },
+      "C_y2025_total_final": {
+        "kind": "magnitude",
+        "eligible": [],
+        "group": 1,
+        "in_storyline": false,
+        "expected_class": "peripheral"
+      },
+      "C_y2026": {
+        "kind": "year",
+        "eligible": [],
+        "group": 9,
+        "in_storyline": true,
+        "expected_class": "peripheral"
+      }
+    },
+    "kanji_numeral_candidates": [],
+    "percent_sign_variants": [
+      "％"
+    ],
+    "stop_candidates": []
+  },
+  "e_sidecar_meta": {
+    "status": "PASS",
+    "problems": [],
+    "warnings": [],
+    "unmapped_claims_by_type": {
+      "generalization": 1,
+      "qualifier": 1
+    }
+  },
+  "skipped": [],
+  "verdict": "FAIL"
+}

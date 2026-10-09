@@ -1,0 +1,140 @@
+{
+  "slug": "openai_copyright",
+  "annotator": "B",
+  "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+  "brief_sha256": "3051aa83a58f45213d4db7246af3328e49d9bc033e9954370312fe11923d4c35",
+  "facts": [
+    {
+      "n": 1,
+      "ledger_ids": [
+        "F1",
+        "F2",
+        "F4",
+        "F6",
+        "F7",
+        "F8"
+      ]
+    }
+  ],
+  "numbers": [
+    {
+      "surface": "14法人",
+      "kind": "magnitude",
+      "concept": "C_plaintiffs",
+      "ledger_ids": [
+        "F2"
+      ],
+      "class": "core",
+      "role": "原告の法人・事業体数(Storylineに出る量)"
+    },
+    {
+      "surface": "2億5,000万ドル",
+      "kind": "magnitude",
+      "concept": "C_damages",
+      "ledger_ids": [
+        "F6"
+      ],
+      "class": "core",
+      "role": "請求された損害賠償額"
+    },
+    {
+      "surface": "2026年10月8日",
+      "kind": "date_time",
+      "concept": "C_date",
+      "ledger_ids": [
+        "F1",
+        "F2",
+        "F3",
+        "F5",
+        "F6",
+        "F7",
+        "F8"
+      ],
+      "class": "core",
+      "role": "Reuters報道日(提訴日と同日)"
+    },
+    {
+      "surface": "1:26-cv-08892",
+      "kind": "name_embedded",
+      "concept": "C_case_no",
+      "ledger_ids": [
+        "F8"
+      ],
+      "class": "peripheral",
+      "role": "事件番号(識別子)"
+    }
+  ],
+  "unmapped_claims": [],
+  "annotation_notes": [
+    {
+      "where": "Selected Facts 本文段落",
+      "question": "7文が台帳F1,F2,F4,F6,F7,F8の5つ以上の別IDに由来し、4つ以上に分けたくなる",
+      "options": [
+        "最大3つに分ける",
+        "分けない(1事実)"
+      ],
+      "chosen": "分けない(1事実、ledger_idsに全て併記)",
+      "rule": "§2 / §5-1"
+    },
+    {
+      "where": "限定する文(これらは原告側の主張であり〜/いずれも訴状上の請求で〜)",
+      "question": "別の事実にするか",
+      "options": [
+        "別事実",
+        "直前の主張と同じ事実"
+      ],
+      "chosen": "同じ事実",
+      "rule": "§2"
+    },
+    {
+      "where": "2億5,000万ドル",
+      "question": "「を超える」はヘッジ語として表記に含めるか",
+      "options": [
+        "含める",
+        "含めない"
+      ],
+      "chosen": "含めない(数字に直接つく語ではない)",
+      "rule": "§3-1 / §5-5"
+    },
+    {
+      "where": "2億5,000万ドル",
+      "question": "主数字は末尾の5,000(5000)。台帳numeric_valueの2億5,000万ドル超に5,000を含む",
+      "options": [
+        "適格",
+        "不適格"
+      ],
+      "chosen": "適格(n=3、上限3のため中核)",
+      "rule": "§3-5"
+    },
+    {
+      "where": "1:26-cv-08892",
+      "question": "量か名称内番号(識別子)か",
+      "options": [
+        "magnitude",
+        "name_embedded"
+      ],
+      "chosen": "name_embedded(常に周辺)",
+      "rule": "§3-2 / §5-3"
+    },
+    {
+      "where": "概念数",
+      "question": "n=3(14法人・2億5,000万ドル・2026年10月8日)で上限max(3,..)=3、適格3概念は全て上限内",
+      "options": [
+        "中核",
+        "周辺"
+      ],
+      "chosen": "全て中核",
+      "rule": "§3-5"
+    },
+    {
+      "where": "Storyline: 重複行",
+      "question": "【事実N】を付けるか",
+      "options": [
+        "付ける",
+        "付けない"
+      ],
+      "chosen": "付けない(数字の印のみ)",
+      "rule": "§2"
+    }
+  ]
+}

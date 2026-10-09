@@ -1,0 +1,116 @@
+{
+  "slug": "small_bag",
+  "annotator": "B",
+  "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+  "brief_sha256": "a4cfad728fafb255be93d912dfa3049101847f3a7b9d5cb2bbe2d861c1af7a3c",
+  "facts": [
+    {
+      "n": 1,
+      "ledger_ids": [
+        "MB-01"
+      ]
+    },
+    {
+      "n": 2,
+      "ledger_ids": [
+        "MB-05"
+      ]
+    },
+    {
+      "n": 3,
+      "ledger_ids": [
+        "MB-06",
+        "MB-01",
+        "MB-05"
+      ]
+    }
+  ],
+  "numbers": [
+    {
+      "surface": "2026年",
+      "kind": "year",
+      "concept": "C_year2026",
+      "ledger_ids": [
+        "MB-03",
+        "MB-04",
+        "MB-05"
+      ],
+      "class": "peripheral",
+      "role": "Storylineの年(年のみ)"
+    },
+    {
+      "surface": "2026年9月",
+      "kind": "date_time",
+      "concept": "C_elle_date",
+      "ledger_ids": [
+        "MB-01"
+      ],
+      "class": "core",
+      "role": "ELLE記事の掲載月"
+    },
+    {
+      "surface": "Fall 2026",
+      "kind": "name_embedded",
+      "concept": "C_fall2026",
+      "ledger_ids": [
+        "MB-01",
+        "MB-05"
+      ],
+      "class": "peripheral",
+      "role": "シーズン名の一部"
+    }
+  ],
+  "unmapped_claims": [],
+  "annotation_notes": [
+    {
+      "where": "概念 C_elle_date (2026年9月)",
+      "question": "適格(MB-01 date_or_period先頭の2026年9月8日と年月が一致)で、n=1・上限3の内側",
+      "options": [
+        "中核",
+        "周辺"
+      ],
+      "chosen": "中核",
+      "rule": "§3-5"
+    },
+    {
+      "where": "2026年 と 2026年9月",
+      "question": "短い表記が長い表記に含まれ台帳IDも共通になり得るが、kind(year/date_time)が異なり同一概念にできない",
+      "options": [
+        "同一概念(kind不一致)",
+        "別概念で2026年のledger_idsからMB-01を除く"
+      ],
+      "chosen": "別概念(C_year2026)、ledger_idsはMB-03/MB-04/MB-05",
+      "rule": "§5-6"
+    },
+    {
+      "where": "Fall 2026",
+      "question": "量か名称内番号か(シーズン名)",
+      "options": [
+        "magnitude/date_time",
+        "name_embedded"
+      ],
+      "chosen": "name_embedded",
+      "rule": "§5-3"
+    },
+    {
+      "where": "事実3の第2・第3文",
+      "question": "限定文(「これらは〜立証するものではない」「混同しないこと」)は事実3に含め、由来する台帳IDを追加するか",
+      "options": [
+        "別事実にする",
+        "事実3に含めMB-01/MB-05を追加"
+      ],
+      "chosen": "事実3に含め、ledger_idsにMB-01とMB-05を追加",
+      "rule": "§2"
+    },
+    {
+      "where": "Selected Factsの1段落",
+      "question": "5文のうち事実を3つに分けるか",
+      "options": [
+        "1つ",
+        "3つ(ELLE/WWWまとめ/別WWW記事)"
+      ],
+      "chosen": "3つ(S1・S2成立、上限3以内)",
+      "rule": "§2"
+    }
+  ]
+}

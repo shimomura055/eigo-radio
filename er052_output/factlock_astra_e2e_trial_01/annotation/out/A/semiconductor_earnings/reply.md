@@ -1,0 +1,45 @@
+=== ANNOTATED_BRIEF_BEGIN ===
+# Selected Fact Brief
+
+## Storyline
+Broadcomの2026年度第3四半期【周辺数値】決算では連結売上高が295億9,100万ドル【中核数値】、AI半導体売上高が167億ドル【中核数値】となり、CEOはAI関連需要が非常に強いと述べ、次四半期の連結売上高を約348億ドル【中核数値】と見込んだ。ただし、この発表が「最も最近」かはLedger上確定できない。
+
+## Selected Facts
+- 【事実1】Broadcomは2026年9月2日【周辺数値】に、2026年8月2日【周辺数値】終了の2026年度第3四半期【周辺数値】決算を発表した。連結純売上高は295億9,100万ドル【中核数値】。AI半導体売上高は167億ドル【中核数値】で、CEOは前年同期比221％【周辺数値】増、前四半期比54％【周辺数値】増と説明した。次の四半期の連結売上高について、会社は約348億ドル【中核数値】を見込んだ。CEOはカスタムAIアクセラレーターとネットワーキングへの需要が引き続き非常に強いと述べた。これらの需要評価と業績・見通しの間に、Ledgerで確認されていない因果関係を付け加えないこと。また、Ledgerは「最も最近」の発表という選定条件を確定できないとしているため、Broadcomをその条件を満たす企業と断定しないこと。
+
+
+=== ANNOTATED_BRIEF_END ===
+=== SIDECAR_JSON_BEGIN ===
+{
+  "slug": "semiconductor_earnings", "annotator": "A",
+  "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+  "brief_sha256": "12638264343d0c336dcc99a98f3c164dc57e5f0cfdf87f941789c234cdbc0a13",
+  "facts": [ {"n": 1, "ledger_ids": ["F1", "F2", "F3", "F4", "F6"]} ],
+  "numbers": [
+    {"surface": "2026年度第3四半期", "kind": "ordinal", "concept": "C_fiscal_q3", "ledger_ids": ["F1", "F2", "F3"], "class": "peripheral", "role": "決算対象の会計年度・四半期の識別"},
+    {"surface": "295億9,100万ドル", "kind": "magnitude", "concept": "C_revenue", "ledger_ids": ["F2"], "class": "core", "role": "第3四半期の連結純売上高"},
+    {"surface": "167億ドル", "kind": "magnitude", "concept": "C_ai_revenue", "ledger_ids": ["F3"], "class": "core", "role": "AI半導体売上高"},
+    {"surface": "約348億ドル", "kind": "magnitude", "concept": "C_guidance", "ledger_ids": ["F4"], "class": "core", "role": "次四半期の連結売上高見通し"},
+    {"surface": "2026年9月2日", "kind": "date_time", "concept": "C_release_date", "ledger_ids": ["F1"], "class": "peripheral", "role": "決算発表日"},
+    {"surface": "2026年8月2日", "kind": "date_time", "concept": "C_quarter_end", "ledger_ids": ["F1", "F2", "F3"], "class": "peripheral", "role": "第3四半期の終了日"},
+    {"surface": "221％", "kind": "magnitude", "concept": "C_ai_yoy", "ledger_ids": ["F3"], "class": "peripheral", "role": "AI半導体売上高の前年同期比増加率"},
+    {"surface": "54％", "kind": "magnitude", "concept": "C_ai_qoq", "ledger_ids": ["F3"], "class": "peripheral", "role": "AI半導体売上高の前四半期比増加率"}
+  ],
+  "unmapped_claims": [
+    {"text": "CEOはAI関連需要が非常に強いと述べ(Storyline)", "type": "generalization"},
+    {"text": "これらの需要評価と業績・見通しの間に、Ledgerで確認されていない因果関係を付け加えないこと。", "type": "qualifier"},
+    {"text": "Ledgerは「最も最近」の発表という選定条件を確定できないとしているため、Broadcomをその条件を満たす企業と断定しないこと。", "type": "qualifier"}
+  ],
+  "annotation_notes": [
+    {"where": "Selected Facts 全体", "question": "文ごとの台帳IDが F1・F2・F3・F4・F6 の5つに分かれ、分けると4つ以上になる", "options": ["5つに分ける", "最大3つに分ける", "分けない(1事実)"], "chosen": "分けない(1事実、ledger_idsに F1,F2,F3,F4,F6 を併記)", "rule": "§2 / §5-1"},
+    {"where": "限定する文2つ(因果を付け加えない、断定しない)", "question": "別の事実にするか", "options": ["別事実にする", "直前の主張と同じ事実に入れる"], "chosen": "同じ事実(事実1)に入れる。後者はF1のAMBIGUOUS注記に由来し、F1をledger_idsに含めた", "rule": "§2"},
+    {"where": "2026年度第3四半期", "question": "年だけ(year)か、序数(ordinal)か、期間(date_time)か", "options": ["year", "ordinal", "date_time"], "chosen": "ordinal(会計年度・四半期の識別。月を含まないためdate_timeにしない。常に周辺)", "rule": "§3-2 / §5-6"},
+    {"where": "概念 C_release_date(2026年9月2日)", "question": "適格(F1のdate_or_period先頭と一致)だが上限3の外", "options": ["中核", "周辺"], "chosen": "周辺", "rule": "§3-5-6 cap超過で周辺化"},
+    {"where": "概念 C_quarter_end(2026年8月2日)", "question": "F1のdate_or_period先頭は2026年9月2日、F2/F3の先頭は「2026年度第3四半期」で月の表現を含まない。適格か確認できず、かつ上限の外", "options": ["中核", "周辺"], "chosen": "周辺", "rule": "§5-2 / §3-5-6 cap超過で周辺化"},
+    {"where": "概念 C_ai_yoy(221％)・C_ai_qoq(54％)", "question": "適格(F3のnumeric_valueに含まれる)だが上限3の外", "options": ["中核", "周辺"], "chosen": "周辺", "rule": "§3-5-6 cap超過で周辺化"},
+    {"where": "n と上限", "question": "概念数 n=7(295億9,100万ドル・167億ドル・約348億ドル・221％・54％・2026年9月2日・2026年8月2日。2026年度第3四半期はordinalのため数えない)で上限3", "options": ["上限3"], "chosen": "優先順(Storylineの量: 295億9,100万ドル→167億ドル→約348億ドル)の3つを中核", "rule": "§3-5-3"},
+    {"where": "295億9,100万ドル", "question": "主数字の取り方", "options": ["9,100(表記末尾)", "295"], "chosen": "表記末尾の9,100(=9100)。台帳numeric_valueの括弧内「295億9,100万ドル」に含まれ適格", "rule": "§3-5-1"},
+    {"where": "F1 (AMBIGUOUS)", "question": "『最も最近』の選定条件は台帳で確定できない", "options": ["断定する", "曖昧さを保持する"], "chosen": "ニュース欄の記述どおり印のみ付与し、断定はしない。STOP条件には当たらないと判断", "rule": "§4 / §5-6"}
+  ]
+}
+=== SIDECAR_JSON_END ===
