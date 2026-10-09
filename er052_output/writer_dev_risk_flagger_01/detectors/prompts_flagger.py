@@ -1,16 +1,26 @@
 # -*- coding: utf-8 -*-
-"""D1(タイプ別専用Prompt)・D2(万能Flagger)のPrompt。DEV専用。
+"""D1(タイプ別専用Prompt)・D2(万能Flagger)・D2rank(記事モード順位付け)のPrompt。DEV専用。
 共通方針: 合否判定しない・修正案を出さない・書き換えない。『人間が確認した方がよい箇所』にFlagを立てるだけ。
 出力はJSON1個のみ。Flagが無ければ flags=[]。
+
+委任_02 P0(Opus条件Aレビュー反映):
+ - D1map廃止。D1fullのみ(台帳全体を渡す)。casebankユニットにも当該記事の全台帳を渡し、判定対象は sentences の文のみ。
+ - D1の各呼び出しはFlag上限3件(確信度の高い順)。
+ - D2は確信度を正直に付け、小さな疑いは低い確信度で出させる(confidence閾値曲線のため)。
+ - D2rank: 記事モードで疑わしい上位3文を必ず列挙(確信度・食い違う語・根拠Fact付き)。
+ - タイプ別Promptの適用先をラベルで選ばない(全件、またはD0のラベル不使用ゲート)。
 """
 
 TYPES = ["rollback反転", "主体対象入替", "否定反転", "数量時系列", "不在断定"]
+D1_MAX_FLAGS = 3
+D2RANK_N = 3
 
 COMMON_HEAD = (
-    "あなたは記事の校閲補助です。記事の各文を、根拠である台帳Fact(事実の一覧)と照らし、"
+    "あなたは記事の校閲補助です。記事の各文を、根拠である台帳Fact(事実の一覧、記事全体の根拠)と照らし、"
     "人間が確認した方がよい箇所にFlagを立てます。合否判定・修正案の提示・書き換えはしません。\n"
-    "入力はJSONで、facts(fact_id, text)と sentences(sid, text, before, after)です。"
-    "before/afterは文脈で、判定対象ではありません。\n"
+    "入力はJSONで、facts(fact_id, text: 台帳の全Fact)と sentences(sid, text, before, after)です。"
+    "判定対象は sentences の text だけです。factsは根拠として参照するだけで、判定対象ではありません。"
+    "before/afterは文脈で、判定対象ではありません。台帳は日本語、記事の文は英語や日本語のことがあります。\n"
 )
 
 COMMON_OUT = (
@@ -52,7 +62,8 @@ def d1_system(typ):
     assert typ in TYPE_DESC
     return (COMMON_HEAD + "あなたの役割は次の1タイプだけを探すことです。他のタイプの逸脱は無視してください。\n"
             + TYPE_DESC[typ] + "\n出力のtypeは必ず「" + typ + "」。severityは、読者に事実と逆・別の意味を与えるなら『重大』、"
-            "ニュアンスの違いにとどまるなら『非重大』。確信が低くても重大の可能性があるものは出す。" + COMMON_OUT)
+            "ニュアンスの違いにとどまるなら『非重大』。確信が低くても重大の可能性があるものは出す。"
+            "ただしFlagは最大%d件まで、確信度の高い順に並べる(多数の文に薄く立てない)。" % D1_MAX_FLAGS + COMMON_OUT)
 
 
 def d2_system():
@@ -60,11 +71,27 @@ def d2_system():
             "軽微な言い換え・省略・表現の硬さ・文体の問題は出さないでください。重大候補の例: "
             + " / ".join(TYPES) + "(各タイプの定義: 動作の向きの反転、主体や対象や範囲の入替、肯定否定の反転、"
             "数値・日付・順序の変更、台帳にない不在の断定)。typeには上の5つのいずれか、当てはまらなければ『その他』。"
-            "severityは常に『重大』。" + COMMON_OUT)
+            "severityは常に『重大』。confidenceは正直に付けること: 疑いが小さくても重大の可能性が少しでもあれば"
+            "低めの確信度(0.1〜0.4)で出してよい(人間に見せるかどうかは後で確信度の閾値で決める)。"
+            "明らかに台帳どおりの文は出さない。" + COMMON_OUT)
+
+
+def d2rank_system(n_sentences=None):
+    n = D2RANK_N if not n_sentences else min(D2RANK_N, n_sentences)
+    return (COMMON_HEAD + "あなたの役割は、記事の中で『台帳Factと食い違って読者に誤った事実を伝えているおそれが最も高い文』を、"
+            "疑わしい順に必ずちょうど%d文だけ挙げることです(全部が問題なさそうでも、相対的に最も疑わしい%d文を挙げる。"
+            "『問題なし』で済ませない)。軽微な言い換え・文体の問題は対象外で、重大(読者に事実と逆・別の意味を与える)かどうかで比べます。"
+            "重大候補の種類の例: " % (n, n) + " / ".join(TYPES) + "。typeはこの5つのいずれか、当てはまらなければ『その他』。\n"
+            "出力はJSON1個のみ(前後に説明文を付けない):\n"
+            '{"flags":[{"rank":1,"sentence_id":"<sid>","type":"<タイプ名>","fact_ids":["<根拠fact_id>"],"confidence":0.0-1.0,'
+            '"severity":"重大|非重大","mismatch_terms":["台帳側の語","文側の語"],"question":"人間向けの確認質問を日本語1文"}]}\n'
+            "rankは1が最も疑わしい。confidenceは『この文が重大な誤りである確率』として正直に付ける(低くてよい)。"
+            "mismatch_termsは食い違っている(と疑う)語の組を台帳側・文側の順で入れる(食い違いが見当たらないなら空配列)。"
+            "sentence_idとfact_idsは入力に存在するIDのみ。questionは1文で『〜ではありませんか』の形。同じsentence_idを2回挙げない。\n")
 
 
 def build_user(unit, facts_override=None, sentences_override=None):
-    """LLMへ渡す入力。ラベル・Checker参考判定・context_source等は一切渡さない。"""
+    """LLMへ渡す入力。ラベル・Checker参考判定・出典パス(src/source)等は一切渡さない。"""
     import json
     facts = facts_override if facts_override is not None else unit["facts"]
     sents = sentences_override if sentences_override is not None else unit["sentences"]

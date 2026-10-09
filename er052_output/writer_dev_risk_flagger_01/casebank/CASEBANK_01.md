@@ -172,3 +172,10 @@ FACTLOCK-ASTRA-E2E-TRIAL-01 の新腕・旧腕。JA=`ja_writer/revision2.md`(R2�
 6. 文の所在を特定できなかった軽微項目: B-04(w1-52), B-07(w2-204), B-06(w2-201)(R0 attempt等の途中稿の引用で、最終記事ファイルに存在しないため除外)。
 7. 前後文なし(`context`のbefore/after両方null)のケースがある。記事ファイルに当該文が単独で残っていない、または途中稿・要約単体のみ。Flagger入力の評価では『文単体+台帳』でも判定できる形にしておく。
 8. WRITER-EVAL由来(K01等)の旧case_idは `legacy_case_id`。本バンクの `case_id` は `rf_` 接頭辞。
+
+## 付記(委任_02 P0、2026-10-09、Opus条件A反映)
+
+- **K01(rf_y84g5r)はD0の語彙設計時に参照した『回帰テスト(汚染済み)』**。D0(決定論)の汎化証拠からは除外する。保留側で独立な人間確認済み重大は実質K02・K11の2件(K03は開発側)。
+- 合成のうち S-01/S-04〜S-07/S-10 は台帳と別Factの方向を入れ替えた文のため、事故タイプを『方向反転(別Fact)』へ訂正(`detectors/make_blind_01.py`のラベル側のみで適用。`casebank_01.json`原本は変更しない)。KPI4の副指標に使う。
+- 検出器入力は `casebank/casebank_01_<split>_blind.json`(ラベル・出典を除去、当該記事の全台帳を付与)。ラベルは `casebank_01_labels.json`(集計専用)。台帳の復元元は `casebank_01_ledger_origin.json`。
+- hard-negative(重大と同一Factの忠実文): K12/K08/K09/RC-K10/S0-1/S0-2/S0-3。

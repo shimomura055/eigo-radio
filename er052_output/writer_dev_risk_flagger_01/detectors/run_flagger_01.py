@@ -1,24 +1,30 @@
 # -*- coding: utf-8 -*-
-"""WRITER-DEV-RISK-FLAGGER-DESIGN-01 委任_01B harness骨格(DEV専用・Production経路とは無関係)。
+"""WRITER-DEV-RISK-FLAGGER-DESIGN-01 harness(DEV専用・Production経路とは無関係)。委任_01B骨格 -> 委任_02 P0で改修。
 
 Risk Flagger: 合否判定しない/Productionを止めない/Rewriteしない/自動修正しない。Flagを立てるだけ。
 
 入力(2方式)
-  A) ケース集合 casebank_blind.json  (`make_blind_01.py` で casebank_01.json からラベル列を落として生成)
-     スキーマ: {"cases":[{case_id, fact(str) | facts([{fact_id,text}]), sentence, context_before, context_after
-                           (または context), article_path}]}
-  B) 記事: --ledger ledger.json(list か {"facts":[...]}、各 {fact_id,text}) --article article.md
-評価時にラベルを読まない: このファイルはラベルファイルを開かない。ラベル列(label等)を含む入力は拒否する(終了コード2)。
+  A) ケース集合 casebank_01_<split>_blind.json  (`make_blind_01.py` が casebank_01.json から生成。ラベル・出典を除去済み)
+     実スキーマ: {"cases":[{case_id, lang, fact{id,text[,src]}, sentence, context{before,after[,source]},
+                            ledger[{fact_id,text}] (=当該記事の全台帳、無ければfact.srcから復元)}]}
+     LLMへ渡すのは facts(=全台帳: fact_id,text) と sentences(対象文+before/after)のみ。src/source/notes等は渡さない。
+  B) 記事: --ledger ledger.json か verified_fact_ledger.txt と --article article.md
+     記事モードは全文を渡す。見出しも文として残す(削除しない)。
+評価時にラベルを読まない: このファイルはラベルファイルを開かない。ラベル列(flagger_lib.LABEL_KEYS)を含む入力は拒否する(終了コード2)。
 出力: detectors/results/<detector>_<model>_<set>.jsonl  (既存ファイルは上書きしない)
-検出器: d0(決定論) / d1map / d1full(タイプ別専用Prompt、Fact対応付け=D0近似 or 台帳全体) / d2(万能)
-        d3は --union で既存results同士を和集合(API呼び出しなし)
+検出器: d0(決定論) / d1full(タイプ別専用Prompt、台帳全体を渡す。D1mapは廃止) / d2(万能) / d2rank(記事モード: 上位3文を必ず列挙)
+        d3は --union で既存results同士を和集合(API呼び出しなし)。D0の和集合投入は rollback反転 のみ(gate_only除外)。
+D1のタイプ別適用先はラベルで選ばない: 既定=全5タイプ。--gate d0 でD0のラベル不使用ゲート(d0_directional.gate_types)で絞れる。
 費用ガード: --max-yen(LLM検出器は必須) + 全検出器合算台帳 cost_ledger.jsonl の累計が --total-cap-yen を超えたら停止。
+  注意(費用台帳の限界): 上限判定は『呼び出し前』に行うため、最後の1呼び出し分だけ上限を超え得る。また課金後に
+  タイムアウト等で応答を受け取れなかった呼び出しはusageが取れず台帳に載らない(過少計上)。実費は台帳×登録単価の概算。
 再試行: 一時障害2回 / JSON・検証違反は1回だけ再呼び出し(上限を増やさない)。
 使い方例:
-  python run_flagger_01.py --input casebank_blind.json --set cb01 --detector d0
-  python run_flagger_01.py --input casebank_blind.json --set cb01 --detector d1map --model gpt-6.1-sol --dry-run
-  python run_flagger_01.py --input casebank_blind.json --set cb01 --detector d2 --model gpt-6.1-sol --max-yen 20
-  python run_flagger_01.py --union d0,d1map --model gpt-6.1-sol --set cb01 --out-name d3_d0_d1map
+  python run_flagger_01.py --input ../casebank/casebank_01_dev_blind.json --set dev --detector d0
+  python run_flagger_01.py --input ../casebank/casebank_01_dev_blind.json --set dev --detector d1full --dry-run
+  python run_flagger_01.py --input ../casebank/casebank_01_dev_blind.json --set dev_rep1 --detector d2 --max-yen 20
+  python run_flagger_01.py --ledger L.txt --article a.md --set art1 --detector d2rank --max-yen 5
+  python run_flagger_01.py --union d0,d1full --model gpt-6.1-sol --set dev --out-name d3_d0_d1full
 """
 import argparse
 import datetime
@@ -32,25 +38,25 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import d0_directional as D0  # noqa: E402
 import flagger_lib as L  # noqa: E402
+import ledger_restore_01 as LR  # noqa: E402
 import prompts_flagger as P  # noqa: E402
 
 RESULTS_DIR = os.path.join(HERE, "results")
 LOGS_DIR = os.path.join(HERE, "logs")
-# 評価対象の入力に含まれてはいけないキー(含む入力は拒否)。ラベルの読み込みは行わない。
-FORBIDDEN_KEYS = {"label", "labels", "gold", "expected", "human_label", "human_judgement", "severity_label",
-                  "known_incident", "incident_id", "checker_reference", "checker_verdict", "label_note"}
+# 評価対象の入力に含まれてはいけないキー(含む入力は拒否)。make_blind_01.pyと共有(flagger_lib.LABEL_KEYS)。
+FORBIDDEN_KEYS = set(L.LABEL_KEYS)
 VALID_SEVERITY = ("重大", "非重大")
 VALID_TYPES = tuple(P.TYPES) + ("その他",)
 TRANSIENT_RETRIES = 2
 FORMAT_RETRIES = 1
-LLM_DETECTORS = ("d1map", "d1full", "d2")
+LLM_DETECTORS = ("d1full", "d2", "d2rank")
 ALL_DETECTORS = ("d0",) + LLM_DETECTORS
-OUT_LOW, OUT_HIGH = 400, 3000  # dry-run見積の出力token幅(推論込み)
+OUT_LOW, OUT_HIGH = 400, 3000  # dry-run見積の出力token幅(推論込み)。P1実測後に detectors/COST_UPDATE_01.md で更新する。
 
 
 # ---------------------------------------------------------------- 入力
 def _split_sentences(text):
-    text = re.sub(r"^#.*$", "", text, flags=re.M)
+    """見出し行も文として残す(委任_02 P0: 見出しを削除しない)。空行・改行・文末記号で分割。"""
     parts = re.split(r"(?<=[.!?。！？])\s+|\n+", text)
     return [p.strip() for p in parts if p and p.strip()]
 
@@ -65,7 +71,7 @@ def check_no_labels(obj, where="input"):
                     bad.append(path + "/" + k)
                 walk(v, path + "/" + k)
         elif isinstance(o, list):
-            for i, v in enumerate(o[:2000]):
+            for i, v in enumerate(o[:5000]):
                 walk(v, path + "[%d]" % i)
 
     walk(obj, where)
@@ -73,16 +79,40 @@ def check_no_labels(obj, where="input"):
 
 
 def case_to_unit(c):
-    facts = c.get("facts")
-    if not facts:
-        facts = [dict(fact_id=c.get("fact_id", "F"), text=c["fact"])]
-    before = c.get("context_before", "")
-    after = c.get("context_after", "")
-    if not before and not after and c.get("context"):
-        before = c["context"]
-    return dict(unit_id=c["case_id"], facts=facts,
-                sentences=[dict(sid="s1", text=c["sentence"], before=before, after=after)],
-                article_path=c.get("article_path", ""))
+    """casebank実スキーマ -> unit。LLMに渡るのは facts(fact_id,text) と sentences(sid,text,before,after) のみ。
+    fact.src / context.source / notes 等は読まない(渡さない)。台帳は c['ledger'] があればそれ、無ければ fact.srcから復元、
+    それも無理ならfact単体。"""
+    fact = c.get("fact")
+    ctx = c.get("context") or {}
+    if isinstance(fact, str):  # 旧フラット形式(互換)
+        fact = dict(id=c.get("fact_id", "F"), text=fact)
+    fact = fact or {}
+    ledger = c.get("ledger")
+    complete = bool(c.get("ledger_complete", bool(ledger)))
+    if not ledger:
+        r = LR.restore_for_cases([c]).get(c["case_id"])
+        ledger, complete = (r["ledger"], r["ledger_complete"]) if r else ([], False)
+    facts = [dict(fact_id=f["fact_id"], text=f["text"]) for f in ledger]
+    if not facts and fact.get("text"):
+        facts = [dict(fact_id=fact.get("id") or "F", text=LR.strip_prefix(fact["text"]))]
+    before = ctx.get("before", "") or c.get("context_before", "")
+    after = ctx.get("after", "") or c.get("context_after", "")
+    return dict(unit_id=c["case_id"], mode="case", facts=facts, ledger_complete=complete,
+                sentences=[dict(sid="s1", text=c["sentence"], before=before, after=after)])
+
+
+def load_ledger(path):
+    if path.lower().endswith(".txt"):
+        facts = LR.parse_ledger_file(path)
+    else:
+        with open(path, encoding="utf-8") as f:
+            ld = json.load(f)
+        bad = check_no_labels(ld, "ledger")
+        if bad:
+            raise ValueError("台帳にラベル列が含まれています: %s" % bad[:5])
+        facts = ld["facts"] if isinstance(ld, dict) else ld
+        facts = [dict(fact_id=x.get("fact_id") or x.get("id"), text=x["text"]) for x in facts]
+    return facts
 
 
 def load_units(input_path=None, ledger=None, article=None):
@@ -95,27 +125,20 @@ def load_units(input_path=None, ledger=None, article=None):
         cases = data["cases"] if isinstance(data, dict) else data
         return [case_to_unit(c) for c in cases]
     if ledger and article:
-        with open(ledger, encoding="utf-8") as f:
-            ld = json.load(f)
-        bad = check_no_labels(ld, "ledger")
-        if bad:
-            raise ValueError("台帳にラベル列が含まれています: %s" % bad[:5])
-        facts = ld["facts"] if isinstance(ld, dict) else ld
-        facts = [dict(fact_id=x.get("fact_id") or x.get("id"), text=x["text"]) for x in facts]
+        facts = load_ledger(ledger)
         with open(article, encoding="utf-8") as f:
             sents = _split_sentences(f.read())
-        ss = []
-        for i, s in enumerate(sents):
-            # 記事モードは全文を渡すため before/after は空(トークン重複を避ける)
-            ss.append(dict(sid="s%d" % (i + 1), text=s, before="", after=""))
-        return [dict(unit_id=os.path.splitext(os.path.basename(article))[0], facts=facts, sentences=ss,
-                     article_path=article)]
+        # 記事モードは全文を渡すため before/after は空(トークン重複を避ける)
+        ss = [dict(sid="s%d" % (i + 1), text=s, before="", after="") for i, s in enumerate(sents)]
+        return [dict(unit_id=os.path.splitext(os.path.basename(article))[0], mode="article", facts=facts, sentences=ss,
+                     ledger_complete=True, article_path=article)]
     raise ValueError("--input か (--ledger と --article) が必要です")
 
 
 # ---------------------------------------------------------------- 検証
-def validate_flags(text, unit, allowed_types=None):
-    """戻り値 (flags_or_None, violations)。"""
+def validate_flags(text, unit, allowed_types=None, max_flags=None, rank_n=None):
+    """戻り値 (flags_or_None, violations)。max_flags: D1の上限(超過分は確信度順で切り捨てて採用、違反にしない)。
+    rank_n: d2rank用。ちょうどrank_n件・sentence_id重複なしを要求。"""
     try:
         obj = json.loads(text)
     except Exception as e:  # noqa: BLE001
@@ -151,47 +174,64 @@ def validate_flags(text, unit, allowed_types=None):
         fi = fl.get("fact_ids")
         if not isinstance(fi, list) or any(x not in fids for x in fi):
             v.append("flag%d_fact_ids_invalid" % i)
+        mt = fl.get("mismatch_terms", [])
+        if rank_n and (not isinstance(mt, list) or any(not isinstance(x, str) for x in mt)):
+            v.append("flag%d_mismatch_terms_invalid" % i)
         if not v:
             sent = next(s for s in unit["sentences"] if s["sid"] == fl["sentence_id"])
-            out.append(dict(unit_id=unit["unit_id"], sentence_id=fl["sentence_id"], sentence=sent["text"], type=typ,
-                            fact_ids=fi, confidence=round(float(c), 2), severity=fl["severity"], question=q.strip()))
-    return (out if not v else None), v
+            row = dict(unit_id=unit["unit_id"], sentence_id=fl["sentence_id"], sentence=sent["text"], type=typ,
+                       fact_ids=fi, confidence=round(float(c), 2), severity=fl["severity"], question=q.strip())
+            if rank_n:
+                row["mismatch_terms"] = mt
+                row["rank"] = fl.get("rank")
+            out.append(row)
+    if rank_n and not v:
+        if len(out) != rank_n:
+            v.append("rank_count_%d_expected_%d" % (len(out), rank_n))
+        elif len({x["sentence_id"] for x in out}) != len(out):
+            v.append("rank_duplicate_sentence_id")
+    if v:
+        return None, v
+    if max_flags and len(out) > max_flags:
+        out = sorted(out, key=lambda x: -x["confidence"])[:max_flags]
+        for x in out:
+            x["truncated_to_max"] = True
+    return out, []
 
 
 # ---------------------------------------------------------------- 計画(呼び出し一覧)
-def plan_calls(detector, unit, types=None):
-    """[(label, system, user, allowed_types)] を返す。d0は空。"""
+def d1_types(unit, types=None, gate=None):
+    ts = list(types or P.TYPES)
+    if gate == "d0":
+        g = D0.gate_types(unit)
+        ts = [t for t in ts if t in g]
+    return ts
+
+
+def plan_calls(detector, unit, types=None, gate=None):
+    """[(label, system, user, allowed_types, max_flags, rank_n)] を返す。d0は空。"""
+    user = P.build_user(unit)
     if detector == "d2":
-        return [("d2", P.d2_system(), P.build_user(unit), None)]
-    types = types or P.TYPES
-    calls = []
+        return [("d2", P.d2_system(), user, None, None, None)]
+    if detector == "d2rank":
+        n = min(P.D2RANK_N, len(unit["sentences"]))
+        return [("d2rank", P.d2rank_system(len(unit["sentences"])), user, None, None, n)]
     if detector == "d1full":
-        facts = unit["facts"]
-    else:  # d1map: D0の近似対応付け(固有名詞・数値の重なり上位3件)の和集合だけを渡す
-        ids, facts = set(), []
-        for s in unit["sentences"]:
-            for _sc, f in D0.map_facts(s["text"], unit["facts"], top_k=3):
-                if f["fact_id"] not in ids:
-                    ids.add(f["fact_id"])
-                    facts.append(f)
-        facts = facts or unit["facts"][:3]
-    user = P.build_user(unit, facts_override=facts)
-    for t in types:
-        calls.append(("d1:" + t, P.d1_system(t), user, (t,)))
-    return calls
+        return [("d1:" + t, P.d1_system(t), user, (t,), P.D1_MAX_FLAGS, None) for t in d1_types(unit, types, gate)]
+    return []
 
 
-def dry_run(units, detector, model, max_yen, types=None):
-    print("[DRY-RUN] detector=%s model=%s units=%d (API非呼び出し)" % (detector, model, len(units)))
+def dry_run(units, detector, model, max_yen, types=None, gate=None):
+    print("[DRY-RUN] detector=%s model=%s units=%d gate=%s (API非呼び出し)" % (detector, model, len(units), gate))
     if detector == "d0":
         print("  費用 JPY 0 (決定論)")
         return 0
     prices = L.load_prices(model)
     n_calls, in_tok = 0, 0
     for u in units:
-        for _lab, sysm, user, _a in plan_calls(detector, u, types):
+        for call in plan_calls(detector, u, types, gate):
             n_calls += 1
-            in_tok += L.estimate_tokens(sysm) + L.estimate_tokens(user)
+            in_tok += L.estimate_tokens(call[1]) + L.estimate_tokens(call[2])
     print("  呼び出し数(最小)=%d / 最大(形式再呼び出し全件)=%d  見積入力token=%d  出力token/呼び出し=%d-%d"
           % (n_calls, n_calls * (1 + FORMAT_RETRIES), in_tok, OUT_LOW, OUT_HIGH))
     if prices:
@@ -204,7 +244,7 @@ def dry_run(units, detector, model, max_yen, types=None):
 
 
 # ---------------------------------------------------------------- 実行
-def run_llm(units, detector, model, set_name, max_yen, total_cap_yen, types=None, effort="medium"):
+def run_llm(units, detector, model, set_name, max_yen, total_cap_yen, types=None, effort="medium", gate=None):
     prices = L.load_prices(model)
     if not prices:
         print("[REFUSED] %s は単価未登録。" % model)
@@ -219,8 +259,9 @@ def run_llm(units, detector, model, set_name, max_yen, total_cap_yen, types=None
     spent = 0.0
     with open(out_path, "a", encoding="utf-8") as fres, open(raw_path, "a", encoding="utf-8") as fraw:
         for unit in units:
-            unit_flags, unit_cost, attempts_total, ok_all, usage_sum = [], 0.0, 0, True, 0
-            for label, sysm, user, allowed in plan_calls(detector, unit, types):
+            unit_flags, unit_cost, attempts_total, ok_all, called = [], 0.0, 0, True, []
+            for label, sysm, user, allowed, max_flags, rank_n in plan_calls(detector, unit, types, gate):
+                called.append(label)
                 adopted, fmt_used, trans_used = None, 0, 0
                 while True:
                     if spent >= max_yen or L.ledger_total() >= total_cap_yen:
@@ -246,7 +287,7 @@ def run_llm(units, detector, model, set_name, max_yen, total_cap_yen, types=None
                     unit_cost += c
                     L.ledger_append(dict(purpose="flagger", detector=detector, set=set_name, model=model,
                                          unit_id=unit["unit_id"], call=label, cost_jpy=c, usage=usage, response_id=rid))
-                    flags, viol = validate_flags(text, unit, allowed)
+                    flags, viol = validate_flags(text, unit, allowed, max_flags, rank_n)
                     fraw.write(json.dumps(dict(unit_id=unit["unit_id"], call=label, ts=ts, request=dict(system=sysm, user=user),
                                                response_text=text, usage=usage, response_id=rid, model_id=mid,
                                                violations=viol, cost_jpy=c), ensure_ascii=False) + "\n")
@@ -267,7 +308,7 @@ def run_llm(units, detector, model, set_name, max_yen, total_cap_yen, types=None
                     unit_flags += adopted
             fres.write(json.dumps(dict(unit_id=unit["unit_id"], detector=detector, model=model, set=set_name,
                                        flags=unit_flags, valid_json=ok_all, attempts=attempts_total,
-                                       cost_jpy=unit_cost), ensure_ascii=False) + "\n")
+                                       cost_jpy=unit_cost, calls=called, gate=gate), ensure_ascii=False) + "\n")
             fres.flush()
     print("完了: %s %s units=%d run費用 JPY %.3f 台帳累計 JPY %.3f" % (detector, model, len(units), spent, L.ledger_total()))
     return 0
@@ -293,13 +334,16 @@ def result_paths(detector, model, set_name):
 
 
 # ---------------------------------------------------------------- D3 和集合
-def union_flags(flag_lists):
+def union_flags(flag_lists, include_gate_only=False):
     """flag_lists: [(source_name, [flag,...]), ...]。重複除去規則:
     (unit_id, sentence_id, type) が同じFlagは1件に統合し、confidence=最大、sources=検出元の和集合、
-    fact_ids=和集合、questionは最大confidenceのものを採用。typeが違えば別Flag(同一文でも残す)。"""
+    fact_ids=和集合、questionは最大confidenceのものを採用。typeが違えば別Flag(同一文でも残す)。
+    D0のgate_only Flag(不在断定・数量時系列・増減/許可反転)は和集合に入れない(include_gate_only=Trueの時のみ)。"""
     merged = {}
     for src, flags in flag_lists:
         for fl in flags:
+            if fl.get("gate_only") and not include_gate_only:
+                continue
             key = (fl["unit_id"], fl["sentence_id"], fl["type"])
             if key not in merged:
                 m = dict(fl)
@@ -321,8 +365,8 @@ def union_flags(flag_lists):
     return list(merged.values())
 
 
-def run_union(parts, model, set_name, out_name):
-    """parts: 'd0','d1map' など。d0はmodel=none、他は--model。"""
+def run_union(parts, model, set_name, out_name, include_gate_only=False):
+    """parts: 'd0','d1full' など。d0はmodel=none、他は--model。"""
     out_path = os.path.join(RESULTS_DIR, "%s_%s_%s.jsonl" % (out_name, model, set_name))
     if os.path.exists(out_path):
         print("既存の結果ファイルがあるため中止(上書き禁止): %s" % out_path)
@@ -338,7 +382,7 @@ def run_union(parts, model, set_name, out_name):
                     per.setdefault(r["unit_id"], []).append((p, r))
     with open(out_path, "w", encoding="utf-8") as f:
         for uid, lst in per.items():
-            flags = union_flags([(p, r["flags"]) for p, r in lst])
+            flags = union_flags([(p, r["flags"]) for p, r in lst], include_gate_only)
             f.write(json.dumps(dict(unit_id=uid, detector=out_name, model=model, set=set_name, flags=flags,
                                     valid_json=all(r["valid_json"] for _p, r in lst), attempts=sum(r["attempts"] for _p, r in lst),
                                     cost_jpy=sum(r["cost_jpy"] or 0 for _p, r in lst)), ensure_ascii=False) + "\n")
@@ -349,25 +393,27 @@ def run_union(parts, model, set_name, out_name):
 # ---------------------------------------------------------------- CLI
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("--input", help="ラベル列を落としたケース集合json(make_blind_01.pyの出力)")
-    ap.add_argument("--ledger")
+    ap.add_argument("--input", help="盲検ケース集合json(make_blind_01.pyの出力 casebank_01_<split>_blind.json)")
+    ap.add_argument("--ledger", help="台帳(json または verified_fact_ledger.txt)")
     ap.add_argument("--article")
     ap.add_argument("--set", default="adhoc", dest="set_name")
     ap.add_argument("--detector", choices=ALL_DETECTORS)
     ap.add_argument("--model", default="gpt-6.1-sol", choices=sorted(L.MODELS))
-    ap.add_argument("--types", help="d1で実行するタイプ(カンマ区切り、既定=全5タイプ)")
+    ap.add_argument("--types", help="d1fullで実行するタイプ(カンマ区切り、既定=全5タイプ。ラベルで選ばないこと)")
+    ap.add_argument("--gate", choices=["d0"], help="d1fullのタイプ絞り込み: D0のラベル不使用ゲート(d0_directional.gate_types)")
     ap.add_argument("--effort", default="medium", choices=["low", "medium", "high"])
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--max-yen", type=float, default=None)
     ap.add_argument("--total-cap-yen", type=float, default=900.0, help="cost_ledger.jsonl累計の停止上限(総予算1000円の安全側)")
-    ap.add_argument("--union", help="例: d0,d1map (和集合。API呼び出しなし)")
-    ap.add_argument("--out-name", help="--union の出力検出器名(例 d3_d0_d1map)")
+    ap.add_argument("--union", help="例: d0,d1full (和集合。API呼び出しなし。D0はrollback反転のみ)")
+    ap.add_argument("--include-gate-only", action="store_true", help="--union時にD0のgate_only Flagも含める(既定は含めない)")
+    ap.add_argument("--out-name", help="--union の出力検出器名(例 d3_d0_d1full)")
     a = ap.parse_args(argv)
     if a.union:
         if not a.out_name:
             print("[REFUSED] --out-name が必要")
             return 2
-        return run_union(a.union.split(","), a.model, a.set_name, a.out_name)
+        return run_union(a.union.split(","), a.model, a.set_name, a.out_name, a.include_gate_only)
     if not a.detector:
         print("[REFUSED] --detector か --union が必要")
         return 2
@@ -376,15 +422,18 @@ def main(argv=None):
     except ValueError as e:
         print("[REFUSED] %s" % e)
         return 2
+    if a.detector == "d2rank" and any(u["mode"] != "article" for u in units):
+        print("[REFUSED] d2rank は記事モード(--ledger と --article)専用です。")
+        return 2
     types = a.types.split(",") if a.types else None
     if a.dry_run:
-        return dry_run(units, a.detector, a.model, a.max_yen, types)
+        return dry_run(units, a.detector, a.model, a.max_yen, types, a.gate)
     if a.detector == "d0":
         return run_d0(units, a.set_name)
     if a.max_yen is None:
         print("[REFUSED] LLM検出器は --max-yen が必須です。")
         return 2
-    return run_llm(units, a.detector, a.model, a.set_name, a.max_yen, a.total_cap_yen, types, a.effort)
+    return run_llm(units, a.detector, a.model, a.set_name, a.max_yen, a.total_cap_yen, types, a.effort, a.gate)
 
 
 if __name__ == "__main__":

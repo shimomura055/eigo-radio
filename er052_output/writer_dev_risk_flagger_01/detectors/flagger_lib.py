@@ -22,6 +22,15 @@ MODELS = {
 }
 
 
+# 盲検: 検出器に渡してはいけない/ラベル側ファイルにだけ置くキー(make_blind_01.pyとrun_flagger_01.pyが共有)。
+# 委任_02 P0(Opus所見1,2): label_basis*/label_src/accident_type/notes/near_dup_group/legacy_ids/synthetic/split等を追加。
+LABEL_KEYS = {"label", "labels", "gold", "expected", "human_label", "human_judgement", "severity_label",
+              "known_incident", "incident_id", "checker_reference", "checker_verdict", "label_note", "type_label",
+              "label_basis", "label_basis_detail", "label_src", "accident_type", "secondary_type", "notes",
+              "near_dup_group", "legacy_ids", "legacy_case_id", "synthetic", "split", "neg_group", "hard_negative",
+              "sentence_locator", "article_full_text", "ja_counterpart", "origin", "note"}
+
+
 def estimate_tokens(text):
     ascii_n = sum(1 for c in text if ord(c) < 128)
     return int(ascii_n / 4 + (len(text) - ascii_n) * 1.3) + 1
