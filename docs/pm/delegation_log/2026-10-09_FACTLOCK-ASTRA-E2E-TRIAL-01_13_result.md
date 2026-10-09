@@ -84,4 +84,10 @@
 7. Production変更なし、判定線評価は未実施。VALIDATED/APPROVED_FOR_PRODUCTION未宣言。
 
 ## commit・raw URL
-(commit後に追記)
+commit: 8607777455551defb83bc44c91781df552db9b3b
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/runs/final_aggregate/AGGREGATE.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/runs/USER_PACK_E2E_01.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_output/factlock_astra_e2e_trial_01/runs/USER_PACK_E2E_EN_01.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/pm/delegation_log/2026-10-09_FACTLOCK-ASTRA-E2E-TRIAL-01_13_result.md
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_factlock_astra_e2e_final_aggregate_01.py
+https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er052_factlock_astra_e2e_user_pack_01.py
