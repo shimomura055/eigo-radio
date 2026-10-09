@@ -5976,3 +5976,12 @@ MEASURED(Trial、Production変更なし)。Fable最終判定=総合『同等・�
 - 費用: 委任_04は有料測定なし、台帳累計 ¥650.26/¥1,000(変更なし)。P3の¥167.88(結果記載)と¥177.76(台帳実費)の差約¥9.88は途中停止の再実行分。工程番号の正本はP3_RESULT/P4_RESULT/COST_UPDATE(設計書§6のP4/P5とは入替)。
 - ユーザー待ち: KPI5回答(パックv2)、ラベル再確認6件、S0_USER_CHECK 3件、P4費用超過の事後承認、新仕様候補3件(台帳にない定量挿入の検出/可変件数提示/D2ベース+疑義時のみ専用)の採否。改善ループは3/3使用済み。
 - 出典: `er052_output/writer_dev_risk_flagger_01/{FINAL_REPORT_01.md,HUMAN_CHECK_RISK_FLAGGER_01.md}`、`docs/pm/delegation_log/2026-10-10_WRITER-DEV-RISK-FLAGGER-DESIGN-01_04.md`。
+
+## §114 WRITER-R0-MODEL-IMPACT-TRIAL-01 委任_01 Fact Lock付きR0のモデル差Trial(Luna/Sol/Astra x 3テーマ、2026-10-10、MEASURED・Closeout分類提案=USER_DECISION_REQUIRED、Production変更なし)
+- 目的/範囲: Fact Lock付きR0 Writer(R0時点のみ)で gpt-6-luna / gpt-6.1-sol / gpt-6-astra の違いがFact逸脱リスクに影響するかを、既存Risk Flagger(D0 + D2記事モード、gpt-6.1-sol/medium)のFlag総数・confidence・内容で比較材料として出す。優劣・有用/誤検知は確定しない。R1/R2/EN/Checker/Production wiringには進まない。
+- 構成: 入力はFACTLOCK-ASTRA-E2E-TRIAL-01新仕様腕の台帳・注記版B3(spec v2、3テーマ揃い)を再利用(research/B3は再生成なし)。Fact Lockは同一LLM呼び出し内(構造a)。R0はFact Check・must-fixなしの生成1回のみ(全セル共通、事前登録済み解釈)。モデル以外の条件は機械照合で全セル同一。
+- 結果(実測): R0 9/9完走・再試行0、Flagger 9/9完走。Flag総数(D0rb∪D2): Disney+ Luna4/Sol1/Astra0、宇宙兵器 0/0/0、BYD 0/0/0、合計 Luna4/Sol1/Astra0。D2が出したのはDisney+のLuna(0.78〜0.90)・Sol(0.96)のみ。D0 gate_only(許可禁止反転、参考)は宇宙兵器でLuna2/Sol2/Astra3。
+- 重要所見: streaming_priceの台帳のF01・F07(`[AMBIGUOUS - ...]`見出し)を既存Flaggerのパーサ(ledger_restore_01.py)が読み飛ばし、Flagger入力は5/7件。F07は「理由の明示なし/Reuters回答状況」を台帳として明記しているため、Disney+の5Flagは入力欠落由来の可能性が高い(Sonnet暫定・未確定)。Flagger側修正は未実施(STOP候補、Fable判断待ち)。
+- 費用(実測、usage x 登録単価): R0 JPY150.40(Luna1.24/Sol22.07/Astra127.08)、Flagger JPY15.58、合計JPY165.97(見積約JPY295・上限JPY500以内)。
+- 成果物: `er052_output/writer_r0_model_impact_trial_01/{PREREGISTRATION_01.md,RESULT_01.md,FLAG_LIST_01.md,RUN_LOG_01.md,r0/,flags/,cost_ledger_01.jsonl}`。Production変更なし、APPROVED_FOR_PRODUCTIONなし。
+- 未解決: (1)F01・F07欠落の扱い(補足再実行案: Disney+ 3セルのみ約JPY4〜5)、(2)D2全件の記事モードが多くのセルで0Flag(D2rank等の補助実行の要否)、(3)Fact Check/must-fix省略の解釈承認、(4)ユーザーのFlagピックアップ(人間確認)。

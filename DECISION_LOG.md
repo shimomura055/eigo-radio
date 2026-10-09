@@ -20446,3 +20446,8 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **Production変更なし**。Production Checkerを残す/外すの判断材料は提供したが、根拠は双方とも弱く判断はしない(選択バイアス、n小)。
 - 成果物: `er052_output/writer_dev_risk_flagger_01/{FINAL_REPORT_01.md,HUMAN_CHECK_RISK_FLAGGER_01.md}`、REPORT §113。
 
+
+## WRITER-R0-MODEL-IMPACT-TRIAL-01 委任_01: 実施記録(2026-10-10、Closeout分類提案=USER_DECISION_REQUIRED、Fable確定待ち)
+- 実施: Fact Lock付きR0(Luna/Sol/Astra x streaming_price・space_weapons・byd_recall)を同一Prompt・同一入力で新規生成し、既存Risk Flagger(D0 + D2記事モード、gpt-6.1-sol)を同一条件で実行。R0 9/9・Flagger 9/9完走、再試行0、実費JPY165.97(R0 150.40 + Flagger 15.58)。詳細はREPORT §114、`er052_output/writer_r0_model_impact_trial_01/`。
+- 重要所見: 既存Flaggerの台帳パーサが`[AMBIGUOUS - ...]`見出しのFact(streaming_priceのF01・F07)を読み飛ばす。Flagger側修正は未実施(Fable判断待ち)。
+- 境界: Production変更なし、`APPROVED_FOR_PRODUCTION`なし、採用判断なし、モデル優劣の確定なし、有用/誤検知の確定なし(ユーザーのFlagピックアップ待ち)。
