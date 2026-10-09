@@ -8,29 +8,37 @@ case_idは固定seed 20261011、提示順は固定seed 20261012 でシャッフ�
 
 | K | case_id | 枠 | 言語 | 人間既知の区分 | 事前期待 | 採点対象 |
 |---|---|---|---|---|---|---|
-| K01 | y84g5r | 重大(人間確認済み寄り) | EN | Fable確定+ユーザー呼称 | C | M1必須 |
+| K01 | y84g5r | 重大(ユーザー確認済み) | EN | ユーザー確認済み(C、2026-10-09) | C | M1必須 |
 | K02 | ur5649 | 重大(人間確認済み) | EN | ユーザー確認済み | C | M1必須 |
-| K03 | hdr8y4 | 重大(Fable確定gold) | EN | Fable確定 | C | 参考(M1必須外) |
+| K03 | hdr8y4 | 重大(ユーザー確認済み、gold A5-0) | EN | ユーザー確認済み(C、2026-10-09) | C | M1必須 |
 | K04 | yjjmk8 | 境界(JA、Rollback語義) | JA | Sonnet暫定(未ラベル) | B? | 境界(採点なし) |
-| K11 | z63yng | 重大(参考・実Writer出力、Sonnet判定) | JA | Sonnet判定(ユーザー未確認) | C | 参考(M1必須外) |
+| K11 | z63yng | 重大寄り(参考・実Writer出力、ユーザー判断C寄りB余地) | JA | ユーザー判断(C寄り・Bの余地あり、2026-10-09) | C or B | 参考(M1必須外。Aなら見逃しとして報告) |
 | K06 | 7b6trp | 境界(不在・非公開の断定) | EN | Sonnet暫定(ユーザー未裁定) | B? | 境界(採点なし) |
 | K12 | 9ywt6e | 問題なし(A対照・HC-012の忠実文、実Writer出力、Sonnet判定) | EN | Sonnet暫定(Rollback評価で『正しい』、ユーザー未確認) | A | M2 |
 | K08 | 6urnmg | 明らかに問題なし(日付・数値あり) | EN | Sonnet暫定(明白、本委任で逐語照合) | A | M2 |
 | K09 | sq5c2g | 明らかに問題なし(日付・数値あり) | EN | Sonnet暫定(明白) | A | M2 |
 | K10 | 7suvyn | 境界(因果追加型、M2採点対象外) | EN | Sonnet暫定(因果語を含むため境界へ移動) | B? | 境界(採点なし) |
 
-期待欄: C=重大 / A=問題なし / B?=境界(期待を固定しない)。K03はFable確定gold、K11はSonnet判定(ユーザー未確認)のため、M1必須から外し参考扱い。
+期待欄: C=重大 / A=問題なし / B?=境界(期待を固定しない)。K01,K02,K03はユーザー確認済みCのためM1必須(K01,K03は2026-10-09確認、旧区分Fable確定は履歴)。K11はユーザー判断「C寄り・Bの余地あり」のため期待=CまたはB、参考扱い(Aなら見逃しとして報告)。
 
 ## 委任_01c(Opus条件Aレビュー反映)での変更
 
 - K05(K01とほぼ同文でラベル揺れ)を削除し、K11(space_weapons P2 r2のsw-p2r2-01、JA R2の実Writer出力・逐語、Sonnet判定重大・ユーザー未確認)を追加。
 - K07(open243の『so』因果、未裁定)を削除し、K12(HC-012の忠実文=A対照、ua6f EN最終稿の実Writer出力・逐語、Rollback評価で『正しい』・ユーザー未確認)を追加。合成文ではない。
 - K10(因果追加型)は境界枠へ移動しM2採点対象外。
-- 枠: 重大=K01,K02(M1必須)+K03,K11(参考) / 境界=K04,K06,K10 / 問題なし(M2採点)=K08,K09,K12。合計10件。
+- 枠: 重大=K01,K02,K03(M1必須、委任_01dでK03昇格)+K11(参考) / 境界=K04,K06,K10 / 問題なし(M2採点)=K08,K09,K12。合計10件。
 - 既存8件のcase_idは不変。新規2件のcase_idはseed 20261011。提示順は固定seed 20261012 で再シャッフル(`eval_order`は cases_01.json に記録)。
 
 
-## K01 (case_id=y84g5r) 重大(人間確認済み寄り)
+## 委任_01d(ユーザー判定の記録、2026-10-09)
+
+- ユーザー判断(逐語): 「1. K01 → C 2. K03 → C 3. K11 → C寄り。ただしBの余地あり」(A=問題なし/B=境界・曖昧/C=重大NG)。
+- K01=C(ユーザー確認済み)、K03=C(ユーザー確認済み)、K11=C寄り・B余地あり(ユーザー判断)。従来の「Fable確定」「Sonnet判定」は履歴として各ケースに残す。
+- K03はM1必須へ昇格。K11は参考のまま、期待=CまたはB(Aなら見逃しとして報告)。
+- eval_items_01.json(評価LLMへ渡す版)は変更なし(人間判定を含めない)。
+
+
+## K01 (case_id=y84g5r) 重大(ユーザー確認済み)
 
 - Fact(MUSE-HC-012): MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。
   - 出典: er019_output/meta/run_03/ledger/verified_fact_ledger.txt L74
@@ -39,7 +47,7 @@ case_idは固定seed 20261011、提示順は固定seed 20261012 でシャッフ�
 - 前文: A Meta executive admitted that starting the test without properly explaining it was a mistake.
 - 後文: The real challenge for AI phone calls is not just how they talk.
 - context_source: er052_output/open233_prod_e2e_02/runs/meta_run03_advanced.json 内 local_context(Checkerが実際に評価した記事の抜粋。対象文・前文・後文が同一local_context内に逐語で存在【確認】)。補足: er019_output/meta/run_03/b1b/article.md L17-L19 とも逐語一致
-- 人間既知判定[Fable確定+ユーザー呼称]: 重大(方向反転: ロールバックを復元と記述)
+- 人間既知判定[ユーザー確認済み(C、2026-10-09)]: C=重大(ユーザー確認済み 2026-10-09。方向反転: ロールバックを復元と記述)。履歴: Fable確定+ユーザー呼称(旧区分)
   - 出典: er052_output/open233_prod_e2e_02/labels/labels_w2_notes.md L24-L26; report_final/critical_trace.md L12-L14; DECISION_LOG.md L20019(Fable確定)・L20053(ユーザーが『今回発見した重大見逃し』と呼称)。ユーザー個別ラベルの記録は未発見(docs/pm/rollback_misread_history_01.md §5)
 - Checker参考判定(正解扱いしない): 見逃し: 機械候補(negation_polarity_mismatch)→Stage1/Stage2=ACCEPTABLE→S1第2意見=ACCEPTABLE→最終 RESOLVED_STAGE2_DOWNGRADE
   - 出典: critical_trace.md L12-L14 / rollback_misread_history_01.md §2 #4
@@ -58,7 +66,7 @@ case_idは固定seed 20261011、提示順は固定seed 20261012 でシャッフ�
 - Checker参考判定(正解扱いしない): 見逃し: Stage1 dev=MAJOR(scope拡大・unsupported_new_claim)→Stage2 materiality=QUALITY(basis=ledger_scope)→第2意見QUALITY→最終 RESOLVED_REWRITE_THEN_DOWNGRADE(PASS系)
   - 出典: er052_output/open233_control_checker_polysemy_trial_01/eval/RCA_jb9k_qvqc.md RCA-①
 
-## K03 (case_id=hdr8y4) 重大(Fable確定gold)
+## K03 (case_id=hdr8y4) 重大(ユーザー確認済み、gold A5-0)
 
 - Fact(MUSE-HC-012): MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。
   - 出典: 同上(HC-012)
@@ -67,7 +75,7 @@ case_idは固定seed 20261011、提示順は固定seed 20261012 でシャッフ�
 - 前文: Meta executives admitted that starting the test without a proper explanation was a mistake.
 - 後文: They did not stop Muse itself.
 - context_source: er045_output/family_x_no_heading_segmentation_trial_01/meta/trial_translation.json(同一段落内に前文・対象文・後文が逐語で存在【確認】)
-- 人間既知判定[Fable確定]: 重大(再有効化と読める意味反転。Safety-critical gold A5-0)
+- 人間既知判定[ユーザー確認済み(C、2026-10-09)]: C=重大(ユーザー確認済み 2026-10-09。再有効化と読める意味反転。Safety-critical gold A5-0)。履歴: Fable確定(旧区分)
   - 出典: DECISION_LOG.md L17940-L17943(A5-0=時期・経過の創作[重大])、docs/pm/investigation_ledger_deviation_check_01_part_b.md A-5(MAJOR)。ユーザー個別確認の一次記録は本委任では未発見
 - Checker参考判定(正解扱いしない): Checkerではなく旧Deviation Check: v1でMAJOR検出→must-fix retry 1回→LEDGER_COMPLIANT(当時は検出できた事例)
   - 出典: docs/pm/investigation_ledger_deviation_check_01_part_b.md A-5
@@ -86,7 +94,7 @@ case_idは固定seed 20261011、提示順は固定seed 20261012 でシャッフ�
 - Checker参考判定(正解扱いしない): なし(JA R0はChecker未適用)
   - 出典: docs/pm/rollback_misread_history_01.md §2 #2
 
-## K11 (case_id=z63yng) 重大(参考・実Writer出力、Sonnet判定)
+## K11 (case_id=z63yng) 重大寄り(参考・実Writer出力、ユーザー判断C寄りB余地)
 
 - Fact(F-001): 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。
   - 出典: er052_output/open233_allfact_note_e2e_02/ledger/space_weapons/research_ledger/verified_fact_ledger.txt L1
@@ -95,7 +103,7 @@ case_idは固定seed 20261011、提示順は固定seed 20261012 でシャッフ�
 - 前文: つまり今回の発表は、「衛星を狙う兵器を配備した」と単純に読む話ではありません。
 - 後文: では、なぜ今この話が出てきたのでしょうか。
 - context_source: er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2/ja_writer/revision2.md(対象文・前文は同一段落、後文は次段落冒頭、同一ファイル逐語【確認】)
-- 人間既知判定[Sonnet判定(ユーザー未確認)]: 重大(Sonnet判定。認められたのは『軌道上space control weapons配備』だが、counterspace定義(F-011)を発表内容にすり替え。主体・対象の取り違え)。ユーザー未確認
+- 人間既知判定[ユーザー判断(C寄り・Bの余地あり、2026-10-09)]: C寄り・B余地あり(ユーザー判断 2026-10-09)。履歴: 重大(Sonnet判定。認められたのは『軌道上space control weapons配備』だが、counterspace定義(F-011)を発表内容にすり替え。主体・対象の取り違え)で、当時ユーザー未確認
   - 出典: er052_output/open233_allfact_note_e2e_02/eval/stagewise/NG_space_weapons.md L66(sw-p2r2-01、重大); docs/pm/ng_root_cause_01/ng_origin_by_stage.md L95
 - Checker参考判定(正解扱いしない): JA文のためChecker評価対象外(Checkerはなし EN のみ評価)。同内容のEN文はRewrite cycle1で BLOCKING検出→修正済(NG_space_weapons.md L66)
   - 出典: NG_space_weapons.md L66

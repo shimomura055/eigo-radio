@@ -22,13 +22,13 @@ HF002 = ("ドナルド・トランプ米大統領は7月13日午前10時16分（
          "同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。")
 
 CASES = [
-    dict(key="K01", frame="重大(人間確認済み寄り)", fact_id="MUSE-HC-012",
+    dict(key="K01", frame="重大(ユーザー確認済み)", fact_id="MUSE-HC-012",
          fact_src="er019_output/meta/run_03/ledger/verified_fact_ledger.txt L74", fact=HC012, lang="EN",
          sentence="The company also restored the human concierge feature to the way it had been before, at least for now.",
          before="A Meta executive admitted that starting the test without properly explaining it was a mistake.",
          after="The real challenge for AI phone calls is not just how they talk.",
          sentence_src="er052_output/open233_prod_e2e_02 meta_run03_advanced EN(claim逐語は labels/labels_merged.json 他)。対象文・前後文とも runs/meta_run03_advanced.json の local_context から逐語採取【確認】",
-         human_tier="Fable確定+ユーザー呼称", human="重大(方向反転: ロールバックを復元と記述)",
+         human_tier="ユーザー確認済み(C、2026-10-09)", human="C=重大(ユーザー確認済み 2026-10-09。方向反転: ロールバックを復元と記述)。履歴: Fable確定+ユーザー呼称(旧区分)",
          human_src="er052_output/open233_prod_e2e_02/labels/labels_w2_notes.md L24-L26; report_final/critical_trace.md L12-L14; DECISION_LOG.md L20019(Fable確定)・L20053(ユーザーが『今回発見した重大見逃し』と呼称)。ユーザー個別ラベルの記録は未発見(docs/pm/rollback_misread_history_01.md §5)",
          checker="見逃し: 機械候補(negation_polarity_mismatch)→Stage1/Stage2=ACCEPTABLE→S1第2意見=ACCEPTABLE→最終 RESOLVED_STAGE2_DOWNGRADE",
          checker_src="critical_trace.md L12-L14 / rollback_misread_history_01.md §2 #4", expect="C", scoring="M1必須"),
@@ -42,15 +42,15 @@ CASES = [
          human_src="er052_output/open233_control_checker_polysemy_trial_01/eval/HUMAN_REVIEW_RESULT.md L12; DECISION_LOG.md L20214付近(2026-10-07 ユーザー人間判定)",
          checker="見逃し: Stage1 dev=MAJOR(scope拡大・unsupported_new_claim)→Stage2 materiality=QUALITY(basis=ledger_scope)→第2意見QUALITY→最終 RESOLVED_REWRITE_THEN_DOWNGRADE(PASS系)",
          checker_src="er052_output/open233_control_checker_polysemy_trial_01/eval/RCA_jb9k_qvqc.md RCA-①", expect="C", scoring="M1必須"),
-    dict(key="K03", frame="重大(Fable確定gold)", fact_id="MUSE-HC-012", fact_src="同上(HC-012)", fact=HC012, lang="EN",
+    dict(key="K03", frame="重大(ユーザー確認済み、gold A5-0)", fact_id="MUSE-HC-012", fact_src="同上(HC-012)", fact=HC012, lang="EN",
          sentence="They also temporarily put back the feature in which humans handled the calls.",
          before="Meta executives admitted that starting the test without a proper explanation was a mistake.",
          after="They did not stop Muse itself.",
          sentence_src="er045_output/family_x_no_heading_segmentation_trial_01/meta/trial_translation.json(同文を含む段落)",
-         human_tier="Fable確定", human="重大(再有効化と読める意味反転。Safety-critical gold A5-0)",
+         human_tier="ユーザー確認済み(C、2026-10-09)", human="C=重大(ユーザー確認済み 2026-10-09。再有効化と読める意味反転。Safety-critical gold A5-0)。履歴: Fable確定(旧区分)",
          human_src="DECISION_LOG.md L17940-L17943(A5-0=時期・経過の創作[重大])、docs/pm/investigation_ledger_deviation_check_01_part_b.md A-5(MAJOR)。ユーザー個別確認の一次記録は本委任では未発見",
          checker="Checkerではなく旧Deviation Check: v1でMAJOR検出→must-fix retry 1回→LEDGER_COMPLIANT(当時は検出できた事例)",
-         checker_src="docs/pm/investigation_ledger_deviation_check_01_part_b.md A-5", expect="C", scoring="参考(M1必須外)"),
+         checker_src="docs/pm/investigation_ledger_deviation_check_01_part_b.md A-5", expect="C", scoring="M1必須"),
     dict(key="K04", frame="境界(JA、Rollback語義)", fact_id="MUSE-HC-012", fact_src="同上(HC-012)", fact=HC012, lang="JA",
          sentence="Metaの幹部は、適切な開示なしにこのテストを始めたのはミスだったと認め、人間コンシェルジュ機能を当面、以前の状態に戻しました。",
          before="ただし、これは一件の報告です。契約スタッフ全体の話に広げることはできません。",
@@ -60,17 +60,17 @@ CASES = [
          human="未確定: Sonnetは『誤読はJA R0で既に発生』と記述(ユーザー未確認)。同型の『元に戻した』系はRB/CCP評価で『曖昧』(ユーザーはCCPの10件に異議なし)、Opusは『元に戻したを禁じると正しい読みまで禁じる』と指摘",
          human_src="docs/pm/ledger_clarity_p_trial/00c_before_evidence.md L10; docs/pm/opus_l2_review_pn_design_01.md L47; er052_output/open233_control_checker_polysemy_trial_01/eval/HUMAN_REVIEW_RESULT.md L16",
          checker="なし(JA R0はChecker未適用)", checker_src="docs/pm/rollback_misread_history_01.md §2 #2", expect="B?", scoring="境界(採点なし)"),
-    dict(key="K11", frame="重大(参考・実Writer出力、Sonnet判定)", fact_id="F-001",
+    dict(key="K11", frame="重大寄り(参考・実Writer出力、ユーザー判断C寄りB余地)", fact_id="F-001",
          fact_src="er052_output/open233_allfact_note_e2e_02/ledger/space_weapons/research_ledger/verified_fact_ledger.txt L1", fact=F001, lang="JA",
          sentence="宇宙、通信、地上の設備をまとめて守るための仕組みを、米国が公の言葉で認めたということです。",
          before="つまり今回の発表は、「衛星を狙う兵器を配備した」と単純に読む話ではありません。",
          after="では、なぜ今この話が出てきたのでしょうか。",
          sentence_src="er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2/ja_writer/revision2.md(JA R2、実Writer出力・逐語)。sw-p2r2-01(docs/pm/ng_root_cause_01/ng_origin_by_stage.md §4 L95)",
-         human_tier="Sonnet判定(ユーザー未確認)",
-         human="重大(Sonnet判定。認められたのは『軌道上space control weapons配備』だが、counterspace定義(F-011)を発表内容にすり替え。主体・対象の取り違え)。ユーザー未確認",
+         human_tier="ユーザー判断(C寄り・Bの余地あり、2026-10-09)",
+         human="C寄り・B余地あり(ユーザー判断 2026-10-09)。履歴: 重大(Sonnet判定。認められたのは『軌道上space control weapons配備』だが、counterspace定義(F-011)を発表内容にすり替え。主体・対象の取り違え)で、当時ユーザー未確認",
          human_src="er052_output/open233_allfact_note_e2e_02/eval/stagewise/NG_space_weapons.md L66(sw-p2r2-01、重大); docs/pm/ng_root_cause_01/ng_origin_by_stage.md L95",
          checker="JA文のためChecker評価対象外(Checkerはなし EN のみ評価)。同内容のEN文はRewrite cycle1で BLOCKING検出→修正済(NG_space_weapons.md L66)",
-         checker_src="NG_space_weapons.md L66", expect="C", scoring="参考(M1必須外)"),
+         checker_src="NG_space_weapons.md L66", expect="C or B", scoring="参考(M1必須外。Aなら見逃しとして報告)"),
     dict(key="K06", frame="境界(不在・非公開の断定)", fact_id="F-001",
          fact_src="er052_output/factlock_astra_e2e_trial_01/runs/space_weapons/shared/ledger.txt L1", fact=F001, lang="EN",
          sentence="But the name of the device and exactly what it can do in an attack have not been made public.",
@@ -168,7 +168,7 @@ def main():
                 break
     order = list(range(len(CASES)))
     random.Random(SEED_ORDER).shuffle(order)
-    private = dict(created="2026-10-09", revision="委任_01c", seeds=dict(case_id_new_only=SEED_ID, order=SEED_ORDER),
+    private = dict(created="2026-10-09", revision="委任_01d", seeds=dict(case_id_new_only=SEED_ID, order=SEED_ORDER),
                    eval_order=[CASES[i]["case_id"] for i in order], cases=CASES)
     with open(os.path.join(HERE, "cases_01.json"), "w", encoding="utf-8") as f:
         json.dump(private, f, ensure_ascii=False, indent=1)
@@ -188,13 +188,18 @@ def main():
     for c in CASES:
         L.append(f"| {c['key']} | {c['case_id']} | {c['frame']} | {c['lang']} | {c['human_tier']} | {c['expect']} | {c['scoring']} |")
     L.append("")
-    L.append("期待欄: C=重大 / A=問題なし / B?=境界(期待を固定しない)。K03はFable確定gold、K11はSonnet判定(ユーザー未確認)のため、M1必須から外し参考扱い。")
+    L.append("期待欄: C=重大 / A=問題なし / B?=境界(期待を固定しない)。K01,K02,K03はユーザー確認済みCのためM1必須(K01,K03は2026-10-09確認、旧区分Fable確定は履歴)。K11はユーザー判断「C寄り・Bの余地あり」のため期待=CまたはB、参考扱い(Aなら見逃しとして報告)。")
     L += ["", "## 委任_01c(Opus条件Aレビュー反映)での変更", "",
           "- K05(K01とほぼ同文でラベル揺れ)を削除し、K11(space_weapons P2 r2のsw-p2r2-01、JA R2の実Writer出力・逐語、Sonnet判定重大・ユーザー未確認)を追加。",
           "- K07(open243の『so』因果、未裁定)を削除し、K12(HC-012の忠実文=A対照、ua6f EN最終稿の実Writer出力・逐語、Rollback評価で『正しい』・ユーザー未確認)を追加。合成文ではない。",
           "- K10(因果追加型)は境界枠へ移動しM2採点対象外。",
-          "- 枠: 重大=K01,K02(M1必須)+K03,K11(参考) / 境界=K04,K06,K10 / 問題なし(M2採点)=K08,K09,K12。合計10件。",
+          "- 枠: 重大=K01,K02,K03(M1必須、委任_01dでK03昇格)+K11(参考) / 境界=K04,K06,K10 / 問題なし(M2採点)=K08,K09,K12。合計10件。",
           f"- 既存8件のcase_idは不変。新規2件のcase_idはseed {SEED_ID}。提示順は固定seed {SEED_ORDER} で再シャッフル(`eval_order`は cases_01.json に記録)。", ""]
+    L += ["", "## 委任_01d(ユーザー判定の記録、2026-10-09)", "",
+          "- ユーザー判断(逐語): 「1. K01 → C 2. K03 → C 3. K11 → C寄り。ただしBの余地あり」(A=問題なし/B=境界・曖昧/C=重大NG)。",
+          "- K01=C(ユーザー確認済み)、K03=C(ユーザー確認済み)、K11=C寄り・B余地あり(ユーザー判断)。従来の「Fable確定」「Sonnet判定」は履歴として各ケースに残す。",
+          "- K03はM1必須へ昇格。K11は参考のまま、期待=CまたはB(Aなら見逃しとして報告)。",
+          "- eval_items_01.json(評価LLMへ渡す版)は変更なし(人間判定を含めない)。", ""]
     for c in CASES:
         L += ["", f"## {c['key']} (case_id={c['case_id']}) {c['frame']}", "",
               f"- Fact({c['fact_id']}): {c['fact']}", f"  - 出典: {c['fact_src']}",

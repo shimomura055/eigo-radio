@@ -1,6 +1,6 @@
 {
  "created": "2026-10-09",
- "revision": "委任_01c",
+ "revision": "委任_01d",
  "seeds": {
   "case_id_new_only": 20261011,
   "order": 20261012
@@ -20,7 +20,7 @@
  "cases": [
   {
    "key": "K01",
-   "frame": "重大(人間確認済み寄り)",
+   "frame": "重大(ユーザー確認済み)",
    "fact_id": "MUSE-HC-012",
    "fact_src": "er019_output/meta/run_03/ledger/verified_fact_ledger.txt L74",
    "fact": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
@@ -29,8 +29,8 @@
    "before": "A Meta executive admitted that starting the test without properly explaining it was a mistake.",
    "after": "The real challenge for AI phone calls is not just how they talk.",
    "sentence_src": "er052_output/open233_prod_e2e_02 meta_run03_advanced EN(claim逐語は labels/labels_merged.json 他)。対象文・前後文とも runs/meta_run03_advanced.json の local_context から逐語採取【確認】",
-   "human_tier": "Fable確定+ユーザー呼称",
-   "human": "重大(方向反転: ロールバックを復元と記述)",
+   "human_tier": "ユーザー確認済み(C、2026-10-09)",
+   "human": "C=重大(ユーザー確認済み 2026-10-09。方向反転: ロールバックを復元と記述)。履歴: Fable確定+ユーザー呼称(旧区分)",
    "human_src": "er052_output/open233_prod_e2e_02/labels/labels_w2_notes.md L24-L26; report_final/critical_trace.md L12-L14; DECISION_LOG.md L20019(Fable確定)・L20053(ユーザーが『今回発見した重大見逃し』と呼称)。ユーザー個別ラベルの記録は未発見(docs/pm/rollback_misread_history_01.md §5)",
    "checker": "見逃し: 機械候補(negation_polarity_mismatch)→Stage1/Stage2=ACCEPTABLE→S1第2意見=ACCEPTABLE→最終 RESOLVED_STAGE2_DOWNGRADE",
    "checker_src": "critical_trace.md L12-L14 / rollback_misread_history_01.md §2 #4",
@@ -60,7 +60,7 @@
   },
   {
    "key": "K03",
-   "frame": "重大(Fable確定gold)",
+   "frame": "重大(ユーザー確認済み、gold A5-0)",
    "fact_id": "MUSE-HC-012",
    "fact_src": "同上(HC-012)",
    "fact": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
@@ -69,13 +69,13 @@
    "before": "Meta executives admitted that starting the test without a proper explanation was a mistake.",
    "after": "They did not stop Muse itself.",
    "sentence_src": "er045_output/family_x_no_heading_segmentation_trial_01/meta/trial_translation.json(同文を含む段落)",
-   "human_tier": "Fable確定",
-   "human": "重大(再有効化と読める意味反転。Safety-critical gold A5-0)",
+   "human_tier": "ユーザー確認済み(C、2026-10-09)",
+   "human": "C=重大(ユーザー確認済み 2026-10-09。再有効化と読める意味反転。Safety-critical gold A5-0)。履歴: Fable確定(旧区分)",
    "human_src": "DECISION_LOG.md L17940-L17943(A5-0=時期・経過の創作[重大])、docs/pm/investigation_ledger_deviation_check_01_part_b.md A-5(MAJOR)。ユーザー個別確認の一次記録は本委任では未発見",
    "checker": "Checkerではなく旧Deviation Check: v1でMAJOR検出→must-fix retry 1回→LEDGER_COMPLIANT(当時は検出できた事例)",
    "checker_src": "docs/pm/investigation_ledger_deviation_check_01_part_b.md A-5",
    "expect": "C",
-   "scoring": "参考(M1必須外)",
+   "scoring": "M1必須",
    "case_id": "hdr8y4"
   },
   {
@@ -100,7 +100,7 @@
   },
   {
    "key": "K11",
-   "frame": "重大(参考・実Writer出力、Sonnet判定)",
+   "frame": "重大寄り(参考・実Writer出力、ユーザー判断C寄りB余地)",
    "fact_id": "F-001",
    "fact_src": "er052_output/open233_allfact_note_e2e_02/ledger/space_weapons/research_ledger/verified_fact_ledger.txt L1",
    "fact": "2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。",
@@ -109,13 +109,13 @@
    "before": "つまり今回の発表は、「衛星を狙う兵器を配備した」と単純に読む話ではありません。",
    "after": "では、なぜ今この話が出てきたのでしょうか。",
    "sentence_src": "er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2/ja_writer/revision2.md(JA R2、実Writer出力・逐語)。sw-p2r2-01(docs/pm/ng_root_cause_01/ng_origin_by_stage.md §4 L95)",
-   "human_tier": "Sonnet判定(ユーザー未確認)",
-   "human": "重大(Sonnet判定。認められたのは『軌道上space control weapons配備』だが、counterspace定義(F-011)を発表内容にすり替え。主体・対象の取り違え)。ユーザー未確認",
+   "human_tier": "ユーザー判断(C寄り・Bの余地あり、2026-10-09)",
+   "human": "C寄り・B余地あり(ユーザー判断 2026-10-09)。履歴: 重大(Sonnet判定。認められたのは『軌道上space control weapons配備』だが、counterspace定義(F-011)を発表内容にすり替え。主体・対象の取り違え)で、当時ユーザー未確認",
    "human_src": "er052_output/open233_allfact_note_e2e_02/eval/stagewise/NG_space_weapons.md L66(sw-p2r2-01、重大); docs/pm/ng_root_cause_01/ng_origin_by_stage.md L95",
    "checker": "JA文のためChecker評価対象外(Checkerはなし EN のみ評価)。同内容のEN文はRewrite cycle1で BLOCKING検出→修正済(NG_space_weapons.md L66)",
    "checker_src": "NG_space_weapons.md L66",
-   "expect": "C",
-   "scoring": "参考(M1必須外)",
+   "expect": "C or B",
+   "scoring": "参考(M1必須外。Aなら見逃しとして報告)",
    "case_id": "z63yng"
   },
   {
