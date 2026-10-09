@@ -1,7 +1,7 @@
 # 委任_05 結果 FACTLOCK-ASTRA-E2E-TRIAL-01(2026-10-09) Status=IMPL_READY / G0_PASS(stub、API支出¥0)
 
 ## 1. 成果物・commit・テスト
-- commit1(単価登録): 46be02ad / commit2(本体): 下記追記(hash追記commitで確定)
+- commit1(単価登録): 46be02ad / commit2(本体): 8b2abc14
 - 新規: er052_factlock_astra_e2e_runner_01.py(1258行、指針450-600行を超過)、_stub_01.py、_aggregate_01.py、_ws_check_01.py、_runner_01_test.py(31件)
 - 変更: er005_output/cost_baseline_01/pricing_snapshot.json、er006_model_routing_pricing_coverage_test_01.py(commit1)
 - テスト: runner test 31件 OK(282秒)、er006 pricing 9件 OK、m123 16件 OK。既存全体回帰 325件中1 error(TtsModeCliTests.test_batch_mode_without_reason_errors_via_subprocess。PYTHONUTF8未設定時のcp932起因の既存環境問題、PYTHONUTF8=1でPASS、本変更と無関係)。
