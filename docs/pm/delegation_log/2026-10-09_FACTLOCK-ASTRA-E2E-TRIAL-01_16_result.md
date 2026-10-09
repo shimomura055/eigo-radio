@@ -1,7 +1,7 @@
 # 委任_16 結果: FACTLOCK-ASTRA-E2E-TRIAL-01 評価文書 v2(2026-10-09、API支出¥0、Production変更なし)
 
 ## 1. 成果物・commit hash・raw URL
-- commit: HASH_TBD(pushed to origin/main)。Status=MEASURED、USER_DECISION_REQUIRED(方向判断待ち)。VALIDATED/APPROVED_FOR_PRODUCTION未宣言。
+- commit: c5db43c6a99be1eb3fdc13e1358832a2187fb567(pushed to origin/main)。Status=MEASURED、USER_DECISION_REQUIRED(方向判断待ち)。VALIDATED/APPROVED_FOR_PRODUCTION未宣言。
 - 主成果物(`er052_output/factlock_astra_e2e_trial_01/eval/`): `EVAL_E2E_01.md`(v2)、`HUMAN_CHECK_E2E_01.md`(v2、6節=面白さpairwise)、`judge_table_01.py/json`(再計算)、`merge_labels_01.py`/`labels_merged.jsonl`(8行にqa_noteのみ追記、原本labels_w*不変)、`build_human_check_01.py`、`_private/PAIRWISE_MAP_01.json`(対応表、回答前に開かない)。
 - SSOT/記録: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`(§111)、`DECISION_LOG.md`、`docs/pm/REPORT_LEDGER.md`、`docs/pm/OPUS_FINDINGS_LEDGER.md`(OF-111〜119)、`docs/pm/opus_a_review_factlock_astra_e2e_01.md`(評価レビュー節)。`docs/pm/ACTIVE_TASK.md`・`RESULT_PACKET.md`は.gitignore対象の一時ファイル(更新済み、commitされない)。
 - raw URL(主要):
