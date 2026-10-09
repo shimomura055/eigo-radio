@@ -28,6 +28,7 @@ D1のタイプ別適用先はラベルで選ばない: 既定=全5タイプ。--
 """
 import argparse
 import datetime
+import hashlib
 import json
 import os
 import re
@@ -46,18 +47,19 @@ LOGS_DIR = os.path.join(HERE, "logs")
 # 評価対象の入力に含まれてはいけないキー(含む入力は拒否)。make_blind_01.pyと共有(flagger_lib.LABEL_KEYS)。
 FORBIDDEN_KEYS = set(L.LABEL_KEYS)
 VALID_SEVERITY = ("重大", "非重大")
-VALID_TYPES = tuple(P.TYPES) + ("その他",)
+VALID_TYPES = tuple(P.TYPES) + (P.CAUSAL_TYPE, "その他")
 TRANSIENT_RETRIES = 2
 FORMAT_RETRIES = 1
-LLM_DETECTORS = ("d1full", "d2", "d2rank")
+LLM_DETECTORS = ("d1full", "d1v2", "d2", "d2rank")
 ALL_DETECTORS = ("d0",) + LLM_DETECTORS
+NO_CAUSAL = False  # --no-causal: d1v2から因果創作を外す(レイアウト回帰確認用)
 OUT_LOW, OUT_HIGH = 400, 3000  # dry-run見積の出力token幅(推論込み)。P1実測後に detectors/COST_UPDATE_01.md で更新する。
 
 
 # ---------------------------------------------------------------- 入力
 def _split_sentences(text):
     """見出し行も文として残す(委任_02 P0: 見出しを削除しない)。空行・改行・文末記号で分割。"""
-    parts = re.split(r"(?<=[.!?。！？])\s+|\n+", text)
+    parts = re.split(r"(?<=[.!?])\s+|(?<=[。！？])(?![」』）)\s])\s*|\n+", text)  # 委任_03: 日本語は『。』の直後(空白なし)でも分割
     return [p.strip() for p in parts if p and p.strip()]
 
 
@@ -218,6 +220,15 @@ def plan_calls(detector, unit, types=None, gate=None):
         return [("d2rank", P.d2rank_system(len(unit["sentences"])), user, None, None, n)]
     if detector == "d1full":
         return [("d1:" + t, P.d1_system(t), user, (t,), P.D1_MAX_FLAGS, None) for t in d1_types(unit, types, gate)]
+    if detector == "d1v2":
+        # 委任_03: レイアウトv2(台帳+文を先頭・タイプ別指示を末尾)。既定=D0ゲートの対象タイプ + 因果創作(ゲートなしで常に呼ぶ)。
+        # --types を指定した場合はその通り(因果創作を含めたければ明示する)。
+        if types:
+            ts = list(types)
+        else:
+            ts = d1_types(unit, None, gate) if gate else list(P.TYPES)
+            ts = [t for t in P.TYPES if t in ts] + ([] if NO_CAUSAL else [P.CAUSAL_TYPE])
+        return [("d1:" + t, P.d1v2_system(), P.d1v2_user(t, unit), (t,), P.D1_MAX_FLAGS, None) for t in ts]
     return []
 
 
@@ -244,21 +255,28 @@ def dry_run(units, detector, model, max_yen, types=None, gate=None):
 
 
 # ---------------------------------------------------------------- 実行
-def run_llm(units, detector, model, set_name, max_yen, total_cap_yen, types=None, effort="medium", gate=None):
+def run_llm(units, detector, model, set_name, max_yen, total_cap_yen, types=None, effort="medium", gate=None, resume=False):
     prices = L.load_prices(model)
     if not prices:
         print("[REFUSED] %s は単価未登録。" % model)
         return 2
     out_path, raw_path = result_paths(detector, model, set_name)
+    done_ids = set()
     if os.path.exists(out_path):
-        print("既存の結果ファイルがあるため中止(上書き禁止): %s" % out_path)
-        return 3
+        if not resume:
+            print("既存の結果ファイルがあるため中止(上書き禁止): %s" % out_path)
+            return 3
+        # resume: 完了済みunit_id(valid_json=True)はスキップ。追記のみで、既存行は書き換えない。
+        with open(out_path, encoding="utf-8") as f0:
+            done_ids = {json.loads(x)["unit_id"] for x in f0 if x.strip()}
     os.makedirs(RESULTS_DIR, exist_ok=True)
     os.makedirs(LOGS_DIR, exist_ok=True)
     client = L.client_for(L.MODELS[model])
     spent = 0.0
     with open(out_path, "a", encoding="utf-8") as fres, open(raw_path, "a", encoding="utf-8") as fraw:
         for unit in units:
+            if unit["unit_id"] in done_ids:
+                continue
             unit_flags, unit_cost, attempts_total, ok_all, called = [], 0.0, 0, True, []
             for label, sysm, user, allowed, max_flags, rank_n in plan_calls(detector, unit, types, gate):
                 called.append(label)
@@ -271,7 +289,7 @@ def run_llm(units, detector, model, set_name, max_yen, total_cap_yen, types=None
                     attempts_total += 1
                     ts = datetime.datetime.now().isoformat(timespec="seconds")
                     try:
-                        text, usage, rid, mid = L.call_model(client, model, sysm, user, effort=effort)
+                        text, usage, rid, mid = L.call_model(client, model, sysm, user, effort=effort, cache_key="rf-%s-%s" % (detector, hashlib.md5(json.dumps(unit["facts"], ensure_ascii=False).encode("utf-8")).hexdigest()[:10]))
                     except Exception as e:  # noqa: BLE001
                         fraw.write(json.dumps(dict(unit_id=unit["unit_id"], call=label, ts=ts,
                                                    error=type(e).__name__ + ": " + str(e)[:300]), ensure_ascii=False) + "\n")
@@ -404,12 +422,16 @@ def main(argv=None):
     ap.add_argument("--gate", choices=["d0"], help="d1fullのタイプ絞り込み: D0のラベル不使用ゲート(d0_directional.gate_types)")
     ap.add_argument("--effort", default="medium", choices=["low", "medium", "high"])
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--no-causal", action="store_true", help="d1v2の既定に含まれる因果創作を外す")
+    ap.add_argument("--resume", action="store_true", help="既存結果の完了済みunitをスキップして追記(上書きはしない)")
     ap.add_argument("--max-yen", type=float, default=None)
     ap.add_argument("--total-cap-yen", type=float, default=900.0, help="cost_ledger.jsonl累計の停止上限(総予算1000円の安全側)")
     ap.add_argument("--union", help="例: d0,d1full または d0:dev,d1full:dev_gate (和集合。API呼び出しなし。D0はrollback反転のみ)")
     ap.add_argument("--include-gate-only", action="store_true", help="--union時にD0のgate_only Flagも含める(既定は含めない)")
     ap.add_argument("--out-name", help="--union の出力検出器名(例 d3_d0_d1full)")
     a = ap.parse_args(argv)
+    global NO_CAUSAL
+    NO_CAUSAL = a.no_causal
     if a.union:
         if not a.out_name:
             print("[REFUSED] --out-name が必要")
@@ -434,7 +456,7 @@ def main(argv=None):
     if a.max_yen is None:
         print("[REFUSED] LLM検出器は --max-yen が必須です。")
         return 2
-    return run_llm(units, a.detector, a.model, a.set_name, a.max_yen, a.total_cap_yen, types, a.effort, a.gate)
+    return run_llm(units, a.detector, a.model, a.set_name, a.max_yen, a.total_cap_yen, types, a.effort, a.gate, a.resume)
 
 
 if __name__ == "__main__":

@@ -494,7 +494,7 @@ class FakeLLMTest(unittest.TestCase):
         units = units or [R.case_to_unit(blind["dev"][1])]  # c3 (K03)
         calls = []
 
-        def fake_call(client, model, system, user, max_out=None, effort="medium"):
+        def fake_call(client, model, system, user, max_out=None, effort="medium", cache_key=None):
             calls.append((system, user))
             return seq[min(len(calls) - 1, len(seq) - 1)], dict(input_tokens=1000, output_tokens=500, cached_tokens=0), "rid", model
 
@@ -569,3 +569,40 @@ class PromptTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class D1V2LayoutTest(unittest.TestCase):
+    """委任_03: D1v2のレイアウト(台帳+文が先頭で全タイプ共通、タイプ別指示は末尾)と因果創作タイプ。"""
+
+    def _unit(self):
+        return dict(unit_id="u", mode="article", ledger_complete=True,
+                    facts=[dict(fact_id="F1", text="会社は機能をロールバックした。")],
+                    sentences=[dict(sid="s1", text="The company restored it in 2025.", before="", after="")])
+
+    def test_shared_prefix_and_causal(self):
+        u = self._unit()
+        calls = R.plan_calls("d1v2", u, None, None)
+        self.assertEqual([c[0] for c in calls], ["d1:" + t for t in P.TYPES] + ["d1:因果創作"])
+        systems = {c[1] for c in calls}
+        self.assertEqual(len(systems), 1)
+        head = P.build_user(u)
+        for c in calls:
+            self.assertTrue(c[2].startswith(head))
+        self.assertEqual(len({c[2] for c in calls}), len(calls))
+        self.assertIn("台帳にない", calls[-1][2])
+
+    def test_valid_causal_type_accepted(self):
+        u = self._unit()
+        txt = json.dumps(dict(flags=[dict(sentence_id="s1", type="因果創作", fact_ids=["F1"], confidence=0.5,
+                                          severity="重大", question="台帳にない理由ではありませんか")]), ensure_ascii=False)
+        flags, viol = R.validate_flags(txt, u, ("因果創作",), 3, None)
+        self.assertEqual(viol, [])
+        self.assertEqual(flags[0]["type"], "因果創作")
+
+    def test_no_causal_flag(self):
+        R.NO_CAUSAL = True
+        try:
+            calls = R.plan_calls("d1v2", self._unit(), None, None)
+        finally:
+            R.NO_CAUSAL = False
+        self.assertNotIn("d1:因果創作", [c[0] for c in calls])

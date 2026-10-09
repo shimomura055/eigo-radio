@@ -99,3 +99,33 @@ def build_user(unit, facts_override=None, sentences_override=None):
         facts=[dict(fact_id=f["fact_id"], text=f["text"]) for f in facts],
         sentences=[dict(sid=s["sid"], text=s["text"], before=s.get("before", ""), after=s.get("after", "")) for s in sents],
     ), ensure_ascii=False)
+
+
+# ---------------------------------------------------------------- 委任_03 ループ2: D1v2(キャッシュ効率化レイアウト)+ D1causal
+# Fable判断B: 共通見逃し(因果・仕組みの創作)に対する新タイプを1つ追加(Trial内の設計自由度。効果は保留P4でのみ主張する)。
+# Fable判断C: 『台帳+文を先頭、タイプ別指示を末尾』へ並べ替え。systemは全タイプ共通、userの先頭(台帳+文のJSON)も全タイプ共通で、
+#   末尾にタイプ別指示だけを付ける(プレフィックスキャッシュが5-6タイプで共有される)。判定ロジックの文言はD1(v1)と同一。
+CAUSAL_TYPE = "因果創作"
+CAUSAL_DESC = (
+    "【探す逸脱: 因果創作(台帳にない因果・仕組み・理由の創作)】文が、出来事の原因・理由・目的・仕組み・結果の関係"
+    "(〜のため/〜によって/〜から/そのため/〜するための仕組み/〜を防ぐため/その結果 など)を述べているが、台帳のどのFactにも"
+    "その因果・理由・仕組みが書かれていない場合。また、台帳の別々のFactを、台帳にない因果でつないでいる場合。"
+    "一般常識として自然な説明でも、台帳にない因果・理由・仕組みならFlag(確信度は低めでよい)。"
+    "台帳Factが同じ因果・理由・仕組みを述べていて文がそれを写しているだけならFlagしない。"
+    "数値の変更や主体の入れ替えそのものは他タイプの担当なので、ここでは『台帳にない説明が付け足されている』ことだけを見る。")
+D1V2_TYPES = list(TYPES) + [CAUSAL_TYPE]
+ALL_D1_TYPE_DESC = dict(TYPE_DESC)
+ALL_D1_TYPE_DESC[CAUSAL_TYPE] = CAUSAL_DESC
+
+
+def d1v2_system():
+    """全タイプ共通のsystem(キャッシュプレフィックス)。"""
+    return (COMMON_HEAD + "あなたは、これから末尾で指定される『探す逸脱』の1タイプだけを探します。他のタイプの逸脱は無視してください。")
+
+
+def d1v2_user(typ, unit):
+    """userの先頭=台帳+文のJSON(全タイプ共通)、末尾=タイプ別指示。"""
+    assert typ in ALL_D1_TYPE_DESC
+    return (build_user(unit) + chr(10) + chr(10) + "=====" + chr(10) + ALL_D1_TYPE_DESC[typ] + chr(10) + "出力のtypeは必ず「" + typ + "」。severityは、読者に事実と逆・別の意味を与えるなら『重大』、"
+            "ニュアンスの違いにとどまるなら『非重大』。確信が低くても重大の可能性があるものは出す。"
+            "ただしFlagは最大%d件まで、確信度の高い順に並べる(多数の文に薄く立てない)。" % D1_MAX_FLAGS + COMMON_OUT)

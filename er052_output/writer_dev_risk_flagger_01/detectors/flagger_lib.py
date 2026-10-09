@@ -103,13 +103,15 @@ def client_for(cfg):
     return OpenAI(api_key=key)
 
 
-def call_model(client, model, system, user, max_out=None, effort="medium"):
+def call_model(client, model, system, user, max_out=None, effort="medium", cache_key=None):
     """1回呼び出し。戻り値 (text, usage_dict, response_id, model_id)。temperature/seedは送らない(最新モデルは非対応が多い)。"""
     cfg = MODELS[model]
     max_out = max_out or cfg["max_out"]
     if cfg["provider"] == "openai":
-        resp = client.responses.create(model=model, instructions=system, input=user,
-                                       reasoning={"effort": effort}, max_output_tokens=max_out)
+        kw = dict(model=model, instructions=system, input=user, reasoning={"effort": effort}, max_output_tokens=max_out)
+        if cache_key:  # 委任_03: 同一プレフィックスを同じキャッシュへ寄せる(prompt_cache_key)
+            kw["prompt_cache_key"] = cache_key
+        resp = client.responses.create(**kw)
         u = resp.usage
         usage = dict(input_tokens=getattr(u, "input_tokens", None), output_tokens=getattr(u, "output_tokens", None),
                      reasoning_tokens=getattr(getattr(u, "output_tokens_details", None), "reasoning_tokens", None),
