@@ -11,3 +11,8 @@
    - 9本は Write でなく **Bash** を使用(固定文言は「Grep/Glob/Bash...を使わない」例外外): byd B / cbm B / inbound B / meta B / openai A,B / small_bag A / space A,B。コマンド骨格は `mkdir -p <自分のout先> && cat > <自分のreply.md> <<'EOF' ... EOF`(+一部 `echo ok`)のみで、reply.md以外のパスへの接触は0。openai A は Bash と Write の両方で同一内容を書込み。判定: DISALLOWED_TOOL_USE(ツール規律違反。内容面の隔離違反ではない)。
    - 20本とも SubagentHandback の本文は保存済み reply.md と一致(meta A のみ末尾に保存先注記1行の差)。注記抽出は注記者が書込んだ reply.md を使用(呼出側の書込みではない)。
 3. 結論: 隔離(他ファイル非参照)は20/20で維持。ツール規律は9/20で逸脱(Bash経由のreply.md書込み、実質は許可Writeと同じ効果)。これらの注記を採用するかはFable判断。採用した統合6テーマの内訳: byd(B=Bash)、cbm(B=Bash)、meta(B=Bash)、openai(A,B=Bash)、small_bag(A=Bash)、space(A,B=Bash)。
+
+## 委任_11 追補: 再注記6本(hormuz / streaming_price / inbound_tourism の A・B、B3 v2ラウンド)の監査
+- 特定: 本日09:15以降に終了し、先頭発話が`あなたは注記者`で始まりプロンプトパス(`annotation\prompts\<slug>__<A|B>.md`)を含むsubagent jsonlを各1本(6/6一意、09:20:35-09:21:06終了)。`annotation/run_audits_11.py`で`annotation/out/<N>/<slug>/transcript.jsonl`へ保存(旧v1ラウンドの分は`transcript_v1round.jsonl`へ退避)。結果 `annotation/audit/v2round_<slug>__<N>.{strict,base,extra}.json`、`annotation/audit/audit_all_11.json`。
+- 結果: 6/6 補助監査 PASS_ONLY_ALLOWED(ツールはRead[自プロンプトのみ]・Write[自reply.md]・SubagentHandbackのみ。Bash 0、他パスRead 0)。strict/baseは委任_09と同じ理由(許可済みWrite・返却ツールを違反扱い)で VIOLATION 3 と出るが、補助監査を正とする。
+- 注: v2ラウンド6本はBash使用0(委任_09のv1ラウンドは9/20がBash)。

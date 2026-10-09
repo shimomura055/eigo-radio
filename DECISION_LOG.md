@@ -20378,3 +20378,9 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **(d)** 注記者がWriteでなくBash `cat >` で自分のreply.mdを書いた件(9/20本)は、他パス接触0・隔離維持のため採用。既存監査scriptのVIOLATIONは許可済みWrite/返却ツールと自プロンプトパスの禁止語該当による誤判定で、補助監査(AUDIT_SUMMARY.md)を正とする。
 - **(e)** 「・」行頭への【事実N】挿入は検査PASS・仕様§2に反しないため許容。仕様sha256はLF正規化後を正、CRLF生バイト値は併記。
 - **Status**: API支出¥0、Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言。正本は`er052_output/factlock_astra_e2e_trial_01/stage_r/SPEC_V2_CLARIFICATIONS.md`。
+
+## FACTLOCK-ASTRA-E2E-TRIAL-01 委任_11: inbound_tourism除外とB3 v2共有(2026-10-09、Fable判断)
+- **inbound_tourism**: 再委任1回後もA/B双方c_numbers FAIL(概念統合の誤り)。RUN_ANNOTATION §6により「注記不能」としてSTOP記録、本Trialは9テーマ(旧4+新5)で進める。`ID_RE`のハイフン無しID(F01等)誤検出は検査script欠陥として修正(修正前は`annotation/prefix_scripts/b3_annotation_check_01.pre_delegation11.py`、テスト+1件)したが、再検査でもA(`8`分類漏れ)・B(概念重複+`2026`)の実FAILは残存し除外のまま。新テーマはn=5となり層別・判定線(特に軽微の6対以上条件等)の到達可能性が下がる点を事前登録の注記として追記。
+- **B3 v2共有**: hormuz・streaming_priceは両腕ともB3 v2(対の設計)。旧4の「凍結B3」はhormuzのみv2に置換された。
+- **(c)AMBIGUOUS許容**はFable判断で継続(ユーザーが覆せばsemiconductor/streamingを除外)。
+- **Status**: Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言。

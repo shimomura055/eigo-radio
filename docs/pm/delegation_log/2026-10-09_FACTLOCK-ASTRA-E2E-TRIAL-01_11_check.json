@@ -1,0 +1,36 @@
+{
+  "task": "FACTLOCK-ASTRA-E2E-TRIAL-01 委任_11 G1",
+  "date": "2026-10-09",
+  "run_root": "er052_output/factlock_astra_e2e_trial_01/runs",
+  "commands": [
+    "run --root er052_output/factlock_astra_e2e_trial_01/runs --themes meta --arms new --until new_check_adv --worker-id 1 --cap-jpy 70 --alert-jpy 60",
+    "run --root ... --themes meta --arms old --until old_adv --worker-id 1 --cap-jpy 70 --alert-jpy 60"
+  ],
+  "cost_jpy": {"new_raw": 38.8809, "new_guard": 56.3417, "old_raw": 1.7596, "old_guard": 1.7596, "total_raw": 40.6405, "total_guard": 58.1013,
+               "astra_raw": 34.922, "astra_guard_x1.5": 52.382, "astra_usd": 0.2183,
+               "by_stage_raw": {"new_r0": 0.3158, "new_r1": 21.1066, "new_r2": 14.0612, "new_ii": 0.3445, "new_en_adv": 0.3941, "new_en_std": 0.572, "new_shadow": 0.1798, "new_check_adv": 1.9069, "old_ja": 1.7596}},
+  "trial_cumulative_raw_jpy": 219.63,
+  "elapsed": {"new_arm_sec": 409, "old_arm_sec": 115, "wall": "09:32:56-09:41:40"},
+  "checks": {
+    "astra_response_shape": "PASS: r1/r2.response.json = model gpt-6-astra, reasoning.effort=high, previous_response_id_used=false, developer_message=null, user_message_sha256記録、本文取得(969/1031字)",
+    "factlock_r0_tags_and_strip": "PASS: r0_with_tags.md に【事実1-3】6文、r0.md/R1/R2/revision/EN入力にタグ残存0",
+    "symbol_postprocess": "PASS: r2.raw.md の全角ダッシュ連続が revision2.md で除去、symbol_gate_findings=[]",
+    "ja_fc": "PASS: R0/R1/R2 全て LEDGER_COMPLIANT(major 0)、shadow_stop=false",
+    "en_adv_std_m1": "PASS: Adv/Std とも attempt1 STRUCTURE_PASS+LEDGER_COMPLIANT、M1(b)発火なし、m1a影対照(old_input)記録あり、standard側は M1未測定の注記あり",
+    "checker_dynamic_fixture": "PASS: final_state=RESOLVED_STAGE2_DOWNGRADE、stage1_source=fresh、calls=5、¥1.91、provenance_violations=[]、waste_flags=[]",
+    "m3_telemetry": "PASS(件数記録): telemetry/g3_telemetry.jsonl 26行、candidate_filter n_protected_keys=0",
+    "approval_switch_floor_mode": "PASS: provenance.switches FLOOR_MODE=number_only、STAGE1_MODE=coverage_union 等、assert通過",
+    "old_arm_advanced": "NOT_VERIFIED: 旧腕は old_ja で JA FC STOP(rc46、R2 LEDGER_DEVIATION、must-fix Rewrite後もMAJOR)。Production挙動の正当な結果。再実行はcherry-picking禁止",
+    "cost_ledger_and_reservation": "PASS: ledger_costs_worker1.jsonl に reserve/release/settle、guard x1.5 反映",
+    "provenance": "PASS: new/provenance.jsonl 8段、flags OPEN243_M1=1, M2=None, PROTECT=changed_actor、script sha記録",
+    "r0_echo": "PASS: r0_echo / r2_echo_after_revision 記録(両方 false)",
+    "no_research_calls": "PASS: 全raw_usage行 web_search_call_count=0、research_ledgerはStage R出力の再利用"
+  },
+  "defects_minor": [
+    "theme_summary.json / run_summary_worker1.json が後続invocation(--arms old)で上書きされ、新腕の要約が消える(state.jsonlは無傷)",
+    "m3_protected.jsonl は protected 0 のため出力なし(要確認)"
+  ],
+  "script_fix": {"b3_annotation_check_01.py": "ハイフン無し台帳IDマスク追加(+5行)、テスト42件OK(+1)", "prefix": "annotation/prefix_scripts/b3_annotation_check_01.pre_delegation11.py"},
+  "inbound_recheck": {"A": "FAIL c_numbers 分類漏れ ['8']", "B": "FAIL c_numbers 概念重複2件+分類漏れ ['2026']", "files": "annotation/out/{A,B}/inbound_tourism/check_result_delegation11.json"},
+  "transcript_audit_v2round": "6/6 PASS_ONLY_ALLOWED (annotation/audit/audit_all_11.json)"
+}

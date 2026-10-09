@@ -315,6 +315,23 @@ class SyntheticTests(unittest.TestCase):
         self.assertTrue(b["warnings"])
         self.assertEqual(b["ambiguous_fact"], {"2": ["A-002"]})
 
+    def test_hyphenless_ledger_id_in_text_not_counted_as_digits(self):
+        # 委任_11: 括弧内のハイフン無し台帳ID(F02)の数字が「分類漏れ」と誤検出されない
+        led = LEDGER.replace("A-002", "F02")
+        side = copy.deepcopy(SIDE)
+        for f in side["facts"]:
+            f["ledger_ids"] = ["F02" if x == "A-002" else x for x in f["ledger_ids"]]
+        for n in side["numbers"]:
+            n["ledger_ids"] = ["F02" if x == "A-002" else x for x in n["ledger_ids"]]
+        brief = BRIEF.replace("開かれる。", "開かれる（F02）。")
+        annot = ANNOT.replace("開かれる。", "開かれる（F02）。")
+        r = chk.run(brief, annot, led, side)
+        self.assertFalse([p for p in r["c_numbers"]["problems"] if "分類漏れ" in p], r["c_numbers"])
+        # 比較: 台帳に無いIDなら従来どおり数字として扱われる
+        led2 = LEDGER
+        r2 = chk.run(brief, annot, led2, SIDE)
+        self.assertTrue([p for p in r2["c_numbers"]["problems"] if "分類漏れ" in p], r2["c_numbers"])
+
     def test_unmapped_claims_typed(self):
         side = _side(unmapped_claims=[{"text": "x", "type": "new_fact"}])
         self.assertEqual(_run(side=side)["e_sidecar_meta"]["unmapped_claims_by_type"], {"new_fact": 1})

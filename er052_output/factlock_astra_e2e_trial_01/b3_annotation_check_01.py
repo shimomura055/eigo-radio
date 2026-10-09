@@ -616,6 +616,11 @@ def check_c(annotated, ledger, sidecar, schema=None):
                                 for c, v in exp["concepts"].items()})
     # --- 印の位置・分類漏れ
     masked = ID_RE.sub(lambda m: "\0" * len(m.group(0)), text)
+    # delegation11: ハイフン無し台帳ID(F01等)もledgerキーに限りマスク(本文括弧内の番号を数字として誤検出しない)
+    _lids = sorted((k for k in ledger if isinstance(k, str) and k), key=len, reverse=True)
+    if _lids:
+        _lre = re.compile(r"(?<![A-Za-z0-9])(?:" + "|".join(re.escape(k) for k in _lids) + r")(?![A-Za-z0-9])")
+        masked = _lre.sub(lambda m: "\0" * len(m.group(0)), masked)
     if items:
         alts = sorted({fw(i["surface"]) for i in items}, key=len, reverse=True)
         pat = re.compile("(" + "|".join(re.escape(a) for a in alts) + ")(【中核数値】|【周辺数値】)?")
