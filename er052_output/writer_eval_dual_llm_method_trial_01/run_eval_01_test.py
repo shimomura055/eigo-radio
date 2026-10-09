@@ -104,6 +104,38 @@ class GuardTest(unittest.TestCase):
         self.assertIsNone(R.load_prices("deepseek-v4-flash"))
 
 
+class Luna56Test(unittest.TestCase):
+    def test_gpt56_registered_and_priced(self):
+        self.assertIn("gpt-5.6-luna", R.MODELS)
+        self.assertEqual(R.MODELS["gpt-5.6-luna"]["provider"], "openai")
+        self.assertEqual(R.load_prices("gpt-5.6-luna"), (0.20, 0.02, 1.20))
+        self.assertEqual(R.load_prices("gpt-6-luna")[0], 0.10)
+
+    def test_gpt56_requires_max_yen_and_dry_run(self):
+        self.assertEqual(R.main(["--model", "gpt-5.6-luna", "--rep", "1"]), 2)
+        self.assertEqual(R.main(["--model", "gpt-5.6-luna", "--dry-run", "--max-yen", "30"]), 0)
+
+
+class OptionalBlockTest(unittest.TestCase):
+    def test_items_pass_only_five_keys_and_22(self):
+        import run_optional_block_01 as O
+        items = R.load_items(O.OPT_ITEMS)
+        self.assertEqual(len(items), 22)
+        for it in items:
+            self.assertEqual(list(json.loads(R.build_user_message(it)).keys()), list(R.PASS_KEYS))
+            self.assertTrue(it["fact"] and it["target_sentence"])
+
+    def test_optional_runner_never_opens_cases_json(self):
+        for fn in ("run_optional_block_01.py", "build_optional_items_01.py"):
+            src = open(os.path.join(HERE, fn), encoding="utf-8").read()
+            self.assertIsNone(re.search(r"cases_01|CASES_01|human_tier", src))
+
+    def test_optional_dry_run(self):
+        import run_optional_block_01 as O
+        self.assertEqual(O.main(["--dry-run", "--max-yen", "15"]), 0)
+        self.assertEqual(O.main(["--rep", "1"]), 2)
+
+
 class RunLoopTest(unittest.TestCase):
     """call_model を差し替えた疑似APIで、再呼び出し上限・保存・上書き禁止を確認(実APIは呼ばない)。"""
 

@@ -80,3 +80,18 @@ K01,K02,K03 × 2モデル = 6判定について(委任_01dでK03を追加。旧:
 - M1の最終定義: K01・K02・K03 × 2モデル = 6判定。Aが1つでもある → REJECTED / Aなし・B混在 → USER_DECISION_REQUIRED / 全6判定C → PASS。
 - K11は参考(M1必須外)、期待=CまたはB。Aなら見逃しとして報告。
 - 他の閾値(M2、M3等)は不変。M6のChecker比較対象はK01,K02に加えK03も事実として並置してよい(正解にしない)。
+
+## 0-R. 委任_02 実行時確定(評価LLM呼び出し前に固定、2026-10-09。閾値は変更しない)
+ユーザー判断(2026-10-09、逐語):「Lunaだけで確認(Deepseekは使わない)任意ブロックはOK、実施。問題なしの三件は確認し、問題なしでOK。Goしてください」。Fable解釈に基づく以下を、結果を見る前に固定する。
+1. **評価者はLuna系のみ**。主評価者=`gpt-6-luna`(rep1,rep2)。参考の第2評価者=`gpt-5.6-luna`(rep1,rep2、単価は`pricing_snapshot.json`登録済み: input $0.20/cached $0.02/output $1.20 per 1M)。DeepSeekは使わない。**別vendor(異なる2系統)の条件は本Trialでは未達**で、限界欄(§5・§6-5)と結論に明記する。同一vendor・同一世代系のため、2評価者の一致は独立性の証拠としては弱い。
+2. **M1/M2は gpt-6-luna の2rep**で判定する。M1=K01,K02,K03×2rep=6判定、M2=K08,K09,K12×2rep=6判定(閾値・§6-1段階判定は不変)。ユーザー向け指示文に「K01/K02/K03で4判定」とあるが、K03昇格後は3ケース×2rep=6判定であり、6判定で運用する(要Fable確認)。gpt-5.6-lunaにも同じ式を適用して**参考集計**し、Statusには使わない。
+3. **M3(不一致)は「gpt-6-luna vs gpt-5.6-luna」を参考指標**とし、rep1同士・rep2同士を別々に算出して併記する。**M4(自己一致)を主指標に格上げ**する(各評価者のrep1↔rep2一致率、10ケース)。実効temperatureを全呼び出しでログする。
+4. **Status割当(機械式、2本を併記)**:
+   - (主) M1/M2/M4による割当: M2=FAIL→REJECTED。M1に§6-1の段階判定(Aあり→REJECTED/Aなし・B混在→USER_DECISION_REQUIRED/全C→PASS)。M1,M2=PASS のとき、gpt-6-luna の M4 <80% なら USER_DECISION_REQUIRED(格下げ。temperatureの効き方にかかわらず適用。§6-4の「temperature固定時は参考扱い」より保守側)、M4 ≥80% なら VALIDATED。
+   - (参考) 元の§3表にM3(gpt-6-luna vs gpt-5.6-luna、rep1/rep2の件数の大きい方)を当てはめた割当。M3が7件以上→REJECTED / 5〜6件→USER_DECISION_REQUIRED / 4件以下→主割当を維持。別vendorでないためM3は「系統間不一致」ではなく「同系統内モデル差」として扱う。
+   - どちらを採用するか、論点の整理はFableが最終判定する。
+5. **人間確認対象率**は定義1(不一致のみ)・定義2(不一致+両モデルB)を、(i) 6-luna vs 5.6-luna(rep別)、(ii) 6-luna rep1 vs rep2(自己不一致)の両方で件数とcase_idつきに報告する。
+6. K08・K09・K12はユーザー確認済みA(2026-10-09)。`human_tier`を更新済み(`cases_01.json`/`CASES_01.md`/`build_cases_01.py`)。期待ラベル・M2対象・閾値は不変。
+7. **任意ブロック**(OPTIONAL_BLOCK_01 方式A): space_weapons旧腕EN最終稿(`old/b1b/article.md`)の27文のうち、質問文・「No.」・助言文を除く22文を対象にする。Factの事前対応付けはSonnetが台帳から人手で作成(`build_optional_items_01.py`、`optional_block_items_01.json`)。評価LLMへ渡すのは本編と同じ5項目(文+Fact+前後文)のみ。`gpt-6-luna` 1rep、本編と同一プロンプト。**合否外**。報告: A/B/C件数、記事1本あたり確認対象数(C+B、またはC+B+判定不能)、A文への過剰B率(対応付けが「直接(direct)」の文のうちBが付いた割合、および全体)。5.6-lunaは実施しない。
+8. 費用上限: 本体4プロセス(6-luna rep1,rep2 各¥6、5.6-luna rep1,rep2 各¥9)の合計を最大¥30、任意ブロック¥15。STOP条件: 費用上限到達 / API認証失敗 / 形式違反が全件の30%超。
+9. 再実行・差し替え禁止(§4)を継続。形式違反は1回だけ再呼び出し、全試行を保存する。

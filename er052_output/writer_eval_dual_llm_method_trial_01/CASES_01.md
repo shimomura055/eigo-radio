@@ -14,9 +14,9 @@ case_idは固定seed 20261011、提示順は固定seed 20261012 でシャッフ�
 | K04 | yjjmk8 | 境界(JA、Rollback語義) | JA | Sonnet暫定(未ラベル) | B? | 境界(採点なし) |
 | K11 | z63yng | 重大寄り(参考・実Writer出力、ユーザー判断C寄りB余地) | JA | ユーザー判断(C寄り・Bの余地あり、2026-10-09) | C or B | 参考(M1必須外。Aなら見逃しとして報告) |
 | K06 | 7b6trp | 境界(不在・非公開の断定) | EN | Sonnet暫定(ユーザー未裁定) | B? | 境界(採点なし) |
-| K12 | 9ywt6e | 問題なし(A対照・HC-012の忠実文、実Writer出力、Sonnet判定) | EN | Sonnet暫定(Rollback評価で『正しい』、ユーザー未確認) | A | M2 |
-| K08 | 6urnmg | 明らかに問題なし(日付・数値あり) | EN | Sonnet暫定(明白、本委任で逐語照合) | A | M2 |
-| K09 | sq5c2g | 明らかに問題なし(日付・数値あり) | EN | Sonnet暫定(明白) | A | M2 |
+| K12 | 9ywt6e | 問題なし(A対照・HC-012の忠実文、実Writer出力、Sonnet判定) | EN | ユーザー確認済み(A、2026-10-09)。履歴: Sonnet暫定(Rollback評価で『正しい』) | A | M2 |
+| K08 | 6urnmg | 明らかに問題なし(日付・数値あり) | EN | ユーザー確認済み(A、2026-10-09)。履歴: Sonnet暫定(明白、逐語照合) | A | M2 |
+| K09 | sq5c2g | 明らかに問題なし(日付・数値あり) | EN | ユーザー確認済み(A、2026-10-09)。履歴: Sonnet暫定(明白) | A | M2 |
 | K10 | 7suvyn | 境界(因果追加型、M2採点対象外) | EN | Sonnet暫定(因果語を含むため境界へ移動) | B? | 境界(採点なし) |
 
 期待欄: C=重大 / A=問題なし / B?=境界(期待を固定しない)。K01,K02,K03はユーザー確認済みCのためM1必須(K01,K03は2026-10-09確認、旧区分Fable確定は履歴)。K11はユーザー判断「C寄り・Bの余地あり」のため期待=CまたはB、参考扱い(Aなら見逃しとして報告)。
@@ -131,7 +131,7 @@ case_idは固定seed 20261011、提示順は固定seed 20261012 でシャッフ�
 - 前文: By September 22, the vice president of Meta's Superintelligence Labs division acknowledged that starting the tests without proper disclosure had been a “mistake.”
 - 後文: Meta explained that it would launch the phone feature publicly only when it was ready and could give proper information.
 - context_source: er052_output/open233_control_checker_polysemy_trial_01/eval/blind/meta/ua6f/b1b/article.md L15(対象文・前文は同一段落、後文はL17冒頭文、同一ファイル逐語【確認】)
-- 人間既知判定[Sonnet暫定(Rollback評価で『正しい』、ユーザー未確認)]: 問題なし(Rollback評価ラベル=correct。『取りやめ/put on hold』で方向が確定、と単独評価)。ただしユーザー未確認。なお『put on hold』は台帳の『ロールバック』と語が異なる点でBと読める余地もある【推測】
+- 人間既知判定[ユーザー確認済み(A、2026-10-09)。履歴: Sonnet暫定(Rollback評価で『正しい』)]: 問題なし(Rollback評価ラベル=correct。『取りやめ/put on hold』で方向が確定、と単独評価)。ユーザー確認済み(A、2026-10-09、委任_02)。なお『put on hold』は台帳の『ロールバック』と語が異なる点でBと読める余地もある【推測】
   - 出典: er052_output/open233_control_checker_polysemy_trial_01/eval/rollback_x/meta_ua6f.json(en_final=correct); SUMMARY_CCP.md L28
 - Checker参考判定(正解扱いしない): 記事は最終PASS系(当該文でCheckerが候補化したかは未確認)
   - 出典: -
@@ -145,7 +145,7 @@ case_idは固定seed 20261011、提示順は固定seed 20261012 でシャッフ�
 - 前文: Then, the next day, the story suddenly changed.
 - 後文: (なし)
 - context_source: er019_output/family_x_refresh_e2e_01/hormuz/run_03/b1b/article.md L9(対象文・前文とも同一段落【確認】)。後文は同段落に存在するが非採用(片側のみ)
-- 人間既知判定[Sonnet暫定(明白、本委任で逐語照合)]: 問題なし(類似文F-12は新9 runでSonnetが問題なしとラベル。この文自体のFable/ユーザー確認なし)
+- 人間既知判定[ユーザー確認済み(A、2026-10-09)。履歴: Sonnet暫定(明白、逐語照合)]: 問題なし(類似文F-12は新9 runでSonnetが問題なしとラベル。この文自体は2026-10-09にユーザー確認済み=A)
   - 出典: er052_output/open233_directional_misread_trial_01/testset_01.json F-12(類似); 本委任で台帳と照合
 - Checker参考判定(正解扱いしない): 当該文は候補化されず(local_contextとして登場のみ)
   - 出典: er052_output/open233_prod_e2e_02/runs/hormuz_run03_advanced.json stage2_results
@@ -159,7 +159,7 @@ case_idは固定seed 20261011、提示順は固定seed 20261012 でシャッフ�
 - 前文: (なし)
 - 後文: (なし)
 - context_source: 前後文なし(記事本体未保存のため。対象文のみ testset_01.json F-15)
-- 人間既知判定[Sonnet暫定(明白)]: 問題なし(新9 runでSonnetが問題なしとラベル、台帳とほぼ逐語一致)
+- 人間既知判定[ユーザー確認済み(A、2026-10-09)。履歴: Sonnet暫定(明白)]: 問題なし(ユーザー確認済み 2026-10-09。新9 runでSonnetが問題なしとラベル、台帳とほぼ逐語一致)
   - 出典: testset_01.json F-15 origin=新9 runラベル問題なし
 - Checker参考判定(正解扱いしない): 未確認(参考なし)
   - 出典: -

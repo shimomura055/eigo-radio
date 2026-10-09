@@ -32,6 +32,7 @@ SEED = 20261009
 MAX_OUTPUT_TOKENS = 6000  # 推論トークン込み(DeepSeekは可視出力と同一予算)
 MODELS = {
     "gpt-6-luna": dict(provider="openai", env_key="OPENAI_API_KEY", priced=True),
+    "gpt-5.6-luna": dict(provider="openai", env_key="OPENAI_API_KEY", priced=True),  # 委任_02追加(参考の第2評価者、同じLuna系)
     "deepseek-v4-flash": dict(provider="deepseek", env_key="DEEPSEEK_API_KEY", priced=False),
 }
 OUT_LOW, OUT_HIGH = 600, 4000  # dry-run見積の出力token幅(MODEL_OPTIONS_COST_01.md 4節と同じ)
