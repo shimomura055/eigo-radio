@@ -20437,3 +20437,12 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **費用判断(Fable確認事項)**: P4が上限¥150を約¥141超過(¥291.2)。P3未使用枠(¥72)を充当し、本委任合計 ¥479.7(上限¥520)・台帳累計 ¥650.26/¥1,000に収めた。P5(astra確認層)は残枠不足で省略。
 - **Fable最終判定**: Fable待ち(REJECTED/VALIDATED/USER_DECISION_REQUIRED のいずれか)。VALIDATEDでもProduction採用ではない。Production変更なし。Production Checker廃止は未決(判断材料のみ提供)。
 - **新仕様候補(未実装・要承認)**: 『台帳にない定量・事実の挿入』検出、確信度閾値による可変件数提示、D1のコスト削減(D2ベース+疑義時のみ専用呼び出し)。いずれもAPPROVED_FOR_PRODUCTIONではない。
+
+## WRITER-DEV-RISK-FLAGGER-DESIGN-01 委任_04: Fable最終判定・Closeout(2026-10-10、USER_DECISION_REQUIRED)
+- **Fable最終判定(確定)**: **USER_DECISION_REQUIRED**。事前登録KPI1〜4は判定線上は合格(KPI1 Recall_all 8/11・KPI2 FPR_clear 3/18は余裕なし、KPI3は強制列挙3件のため構造上必ず合格、KPI4は既知事故の同型再確認で汎化の証拠ではない)。KPI5(未知ケースへの有用性、ユーザー裁定)が未取得のため、登録規則によりVALIDATEDは確定できない。KPI5が合格線(有用率40%以上、または新規重大候補1件以上かつ25%以上)を満たし、ラベル回答でKPI1・2が合格を保てば、開発用Risk Flagger方式として『開発時の補助として限定的に有用』の範囲でVALIDATED候補。Production採用ではない。
+- **改善ループ**: 3/3使用(ループ1=Opus条件A 14所見、ループ2=Fable判断、ループ3=Opus Closeout前レビュー10所見)。全所見採用、KPI定義・判定線は不変。Opus所見の採否は `docs/pm/OPUS_FINDINGS_LEDGER.md` OF-129〜OF-152。
+- **費用累計**: ¥650.26/¥1,000(委任_04は¥0。D2 promptがP0以降不変のためdev4件の再確認も不要)。P4上限超過(約¥141)の事後承認はユーザー判断待ち。
+- **新仕様候補(未実装・要ユーザー承認、APPROVED_FOR_PRODUCTIONではない)**: (a)台帳にない定量・事実の挿入の検出、(b)確信度閾値による可変件数提示、(c)D2ベース+疑義時のみ専用呼び出し。
+- **Production変更なし**。Production Checkerを残す/外すの判断材料は提供したが、根拠は双方とも弱く判断はしない(選択バイアス、n小)。
+- 成果物: `er052_output/writer_dev_risk_flagger_01/{FINAL_REPORT_01.md,HUMAN_CHECK_RISK_FLAGGER_01.md}`、REPORT §113。
+

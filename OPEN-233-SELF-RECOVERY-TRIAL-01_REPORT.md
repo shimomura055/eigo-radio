@@ -5958,7 +5958,7 @@ MEASURED(Trial、Production変更なし)。Fable最終判定=総合『同等・�
 - VALIDATED/APPROVED_FOR_PRODUCTION ではない。LLM Checkerが客観的に正しいとは結論しない。
 - Fable最終判定(2026-10-09)=REJECTED(Trial全体)。根拠: 事前登録の解釈規則「両方でも重大を安定検出できない→LLMを主要Checker/客観評価器にする方式自体の現実性に強い疑義」に該当。4モデル(6-luna/5.6-luna/sol/DeepSeek)全てがK01(META Rollback方向反転、ユーザー確認済み重大)を2repともAと判定。C検出数 DeepSeek4/6>sol2/6=5.6-luna2/6>6-luna0/6で改善はモデル/vendor依存の部分的なもの(DeepSeekが最良、solは同等以下で費用約4倍)。M2全PASS。成功モデルなしのため「LLM Checkerが客観的に正しい」とは結論しない。VALIDATED/Production採用ではなく、大規模Trialへ進まない。留保・次の論点(未決): (1)K01を全モデルがAと読む理由(「restored…to the way it had been before」を言い換えと解釈、台帳JA「ロールバック」との照合)は各モデルのreason欄で¥0分析可能(ケース定義/プロンプト問題かモデル能力かの切り分け) (2)本方式を使うなら決定論の方向語検査との併用か台帳方向を明示する前処理が必要だが方式変更=ユーザー決定 (3)n=10・HC-012偏重の限界。
 
-## §113 WRITER-DEV-RISK-FLAGGER-DESIGN-01 委任_03 開発用Risk Flagger 記事モード・保留最終評価(2026-10-10、MEASURED・EVAL_DONE_PENDING_FABLE、Production変更なし)
+## §113 WRITER-DEV-RISK-FLAGGER-DESIGN-01 委任_03 開発用Risk Flagger 記事モード・保留最終評価(2026-10-10、MEASURED・委任_04でFable最終判定=USER_DECISION_REQUIRED、Production変更なし)
 
 - 目的: Fact Lock+Astra記事の重大NG確認を人間が現実的に行える開発用Risk Flaggerの構成を、記事モード(P3)と保留セット(P4、1回のみ)で測る。合否判定・Production停止・Rewrite・自動修正は行わない(Flagを立てるだけ)。Production Checker廃止の判断ではない。モデル gpt-6.1-sol のみ。
 - ループ2のFable判断(反映済み): 主構成 C_main = D0 rollback ∪ D2(記事=D2rank上位3強制列挙)。副構成 D1v2(D0ゲート+新タイプ『因果創作』、各Flag上限3)。D1プロンプトを『台帳+文を先頭、タイプ別指示を末尾』に並べ替え(dev3ケースで文単位のFlagは不変、K03のみ同文に否定反転Flagが追加)。D1の未測定74呼び出しは補完しない。rf_zbe99xと人間確認候補5件は確認パックへ。
@@ -5969,3 +5969,10 @@ MEASURED(Trial、Production変更なし)。Fable最終判定=総合『同等・�
 - 費用: 本委任 ¥479.7(上限¥520以内)、台帳累計 ¥650.26/¥1,000。P3 ¥177.8(上限¥250)、P4 ¥291.2(上限¥150を約¥141超過。保留側台帳が大きくキャッシュ不発の見積外れ。P3未使用枠で吸収、Fable判断事項)。P5(astra確認層)は残枠不足で省略(理由は FINAL_REPORT_DRAFT_01.md §9)。
 - 未取得: KPI5(新腕14記事42Flagの人間回答)、ラベル再確認(rf_zbe99x+5件)、S0_USER_CHECK 3件。Fable最終判定は『Fable待ち』(REJECTED/VALIDATED/USER_DECISION_REQUIRED)。VALIDATEDでもProduction採用ではない。
 - 出典: `er052_output/writer_dev_risk_flagger_01/{FINAL_REPORT_DRAFT_01.md,HUMAN_CHECK_RISK_FLAGGER_01.md,detectors/results/{P3_RESULT_01.md,P4_RESULT_01.md,P2_RESULT_01.md},detectors/COST_UPDATE_01.md}`、`docs/pm/delegation_log/2026-10-09_WRITER-DEV-RISK-FLAGGER-DESIGN-01_03.md`。
+- **委任_04 Closeout確定(2026-10-10)**: Fable最終判定 = **USER_DECISION_REQUIRED**。事前登録KPI1〜4は判定線上は合格(KPI1 Recall_all 8/11・KPI2 FPR_clear 3/18は余裕なし、KPI3は強制列挙3件のため構造上必ず合格、KPI4は既知事故の同型再確認[Rollback 4/4=K01保留+K03/S-12/S-13 dev、K12誤Flagなし、6系統4〜5/6]で汎化の証拠ではない)。KPI5(未知ケースへの有用性、ユーザー裁定)が未取得のため、登録規則によりVALIDATEDは確定できない。KPI5が合格線(有用率40%以上、または新規重大候補1件以上かつ25%以上)を満たし、ラベル回答でKPI1・2が合格を保てば、開発用Risk Flagger方式として『開発時の補助として限定的に有用』の範囲でVALIDATED候補。Production採用ではない。
+- Opus独立技術レビュー(ループ3/3使用、10所見、全件採用): `docs/pm/opus_review_risk_flagger_closeout_01.md`、台帳 `docs/pm/OPUS_FINDINGS_LEDGER.md` OF-129〜OF-152(ループ1の14件=OF-129〜142、ループ3の10件=OF-143〜152)。
+- 修正: (1)FINAL_REPORT_DRAFT_01.md を FINAL_REPORT_01.md へ改名・確定(KPI判定表追加、Recall_human注記[独立証拠はK02のみ]、§5/§7の結論緩和、費用説明、新仕様候補3件=要ユーザー承認)。(2)HUMAN_CHECK_RISK_FLAGGER_01.md v2(C_main 44 Flag必須提示+D1v2追加分8 Flagを分離、4択、新規重大候補欄、KPI5登録条件との差を冒頭に明記、ラベル再確認6件に『疑われている点』、登録時ラベルを主値、S0 3文と質問)。(3)D2 promptはP0以降不変のためdev4件の再確認は不要(¥0)。
+- rank1確信度分布(¥0集計): 保留既知重大記事7本 平均0.77(0.14〜0.97、0.5以上6本)vs 新腕14本 平均0.18(0.05〜0.35、0.5以上0本)。
+- 費用: 委任_04は有料測定なし、台帳累計 ¥650.26/¥1,000(変更なし)。P3の¥167.88(結果記載)と¥177.76(台帳実費)の差約¥9.88は途中停止の再実行分。工程番号の正本はP3_RESULT/P4_RESULT/COST_UPDATE(設計書§6のP4/P5とは入替)。
+- ユーザー待ち: KPI5回答(パックv2)、ラベル再確認6件、S0_USER_CHECK 3件、P4費用超過の事後承認、新仕様候補3件(台帳にない定量挿入の検出/可変件数提示/D2ベース+疑義時のみ専用)の採否。改善ループは3/3使用済み。
+- 出典: `er052_output/writer_dev_risk_flagger_01/{FINAL_REPORT_01.md,HUMAN_CHECK_RISK_FLAGGER_01.md}`、`docs/pm/delegation_log/2026-10-10_WRITER-DEV-RISK-FLAGGER-DESIGN-01_04.md`。
