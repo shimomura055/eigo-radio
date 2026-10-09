@@ -39,3 +39,9 @@
 - 上限: sol 2rep 合計 JPY 40、DeepSeek 2rep 合計 JPY 20。dry-run見積が上限を超える場合はSTOPして報告。実費 = usage × 登録単価(USD/JPY=160)。
 - STOP条件: 上限到達 / 認証失敗 / 形式違反が全件の30%超。
 - 限界: 前Trial PREREGISTRATION_01.md の§5・§6-5(n=10、HC-012偏重、K12はSonnet暫定等)を継承して結果報告に引用する。加えて、DeepSeekはthinking modeがデフォルトでtemperature等が無視される可能性がある(実効値をログ)。
+
+## 8. sol上限引き上げ(実行前、委任_04b、Fable判断、2026-10-09)
+- 変更: §7のsol上限「2rep合計 JPY 40」を **1rep JPY 50(2rep合計 JPY 100)** へ引き上げる。DeepSeek上限・他の条件は不変。
+- 理由: 委任_04でdry-run見積(1rep JPY 40.45〜203.65、worst-case出力想定)が旧上限を超えSTOPした。ユーザーはsol 2rep実施を指示済み。JPY 40はFable側ガードであり小額支出の範囲内と判断。
+- 見積根拠: Luna実測token×sol単価換算で1rep約JPY 16〜22(2rep約JPY 32〜44)。worst-case見積は出力上限全消費の仮定で過大。
+- 実行規則: `--max-yen 50` で rep1 を実行。rep1が上限で中断した場合は rep2 を走らせずSTOPして報告。完走時は rep2 も同条件。入力・Prompt・式・解釈規則は不変。
