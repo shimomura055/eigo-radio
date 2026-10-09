@@ -87,6 +87,29 @@ class PricingCoverageTest(unittest.TestCase):
             self.assertAlmostEqual(usd, 60.0, places=6)
 
 
+
+    def test_flagger_design_models_registered(self):
+        """WRITER-DEV-RISK-FLAGGER-DESIGN-01 委任_01B: gpt-6.1-sol / deepseek-v4-pro 追加、gpt-5.6-sol を公式現行値へ更新(2026-10-09取得)。"""
+        price = efam._load_pricing()
+        self.assertEqual(price("openai", "gpt-6.1-sol", "input_tokens"), 2.00)
+        self.assertEqual(price("openai", "gpt-6.1-sol", "cached_input_tokens"), 0.10)
+        self.assertEqual(price("openai", "gpt-6.1-sol", "output_tokens"), 10.00)
+        self.assertEqual(price("openai", "gpt-6.1-sol", "cache_write_input_tokens"), 2.50)
+        self.assertEqual(price("openai", "gpt-5.6-sol", "input_tokens"), 4.00)
+        self.assertEqual(price("openai", "gpt-5.6-sol", "cached_input_tokens"), 0.40)
+        self.assertEqual(price("openai", "gpt-5.6-sol", "output_tokens"), 20.00)
+        with open(SNAPSHOT, encoding="utf-8") as f:
+            prices = json.load(f)["prices"]
+        old = {p["meter"]: p["price_history"][0]["price"] for p in prices
+               if p["model"] == "gpt-5.6-sol" and "price_history" in p}
+        self.assertEqual(old, {"input_tokens": 5.0, "cached_input_tokens": 0.5, "output_tokens": 30.0})
+        pro = {p["meter"]: p["price"] for p in prices if p["model"] == "deepseek-v4-pro" and p["tier"] == "Standard"}
+        self.assertEqual(pro, {"cached_input_tokens": 0.044, "input_tokens": 1.32, "output_tokens": 3.96})
+        off = {p["meter"]: p["price"] for p in prices if p["model"] == "deepseek-v4-pro" and p["tier"] != "Standard"}
+        self.assertEqual(off, {"cached_input_tokens": 0.022, "input_tokens": 0.66, "output_tokens": 1.98})
+        self.assertNotIn("gpt-6.1-sol", set(routing.PROCESS_MODEL_MAP.values()))
+        self.assertNotIn("deepseek-v4-pro", set(routing.PROCESS_MODEL_MAP.values()))
+
     def test_deepseek_flash_prices_registered(self):
         """WRITER-EVAL-DUAL-LLM-METHOD-TRIAL-01 委任_04: DeepSeek公式単価(Standard=Peak、2026-10-09取得)。
         Off-peak割引は別tierで記録のみ。routingのPROCESS_MODEL_MAPには割り当てない。"""
