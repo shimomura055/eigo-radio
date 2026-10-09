@@ -1,20 +1,21 @@
 {
  "created": "2026-10-09",
+ "revision": "委任_01c",
  "seeds": {
-  "case_id": 20261009,
-  "order": 20261010
+  "case_id_new_only": 20261011,
+  "order": 20261012
  },
  "eval_order": [
-  "6urnmg",
-  "upps5x",
-  "ur5649",
-  "sq5c2g",
-  "6j5x2m",
   "hdr8y4",
-  "7suvyn",
-  "y84g5r",
+  "ur5649",
   "yjjmk8",
-  "7b6trp"
+  "7b6trp",
+  "z63yng",
+  "7suvyn",
+  "6urnmg",
+  "sq5c2g",
+  "y84g5r",
+  "9ywt6e"
  ],
  "cases": [
   {
@@ -34,6 +35,7 @@
    "checker": "見逃し: 機械候補(negation_polarity_mismatch)→Stage1/Stage2=ACCEPTABLE→S1第2意見=ACCEPTABLE→最終 RESOLVED_STAGE2_DOWNGRADE",
    "checker_src": "critical_trace.md L12-L14 / rollback_misread_history_01.md §2 #4",
    "expect": "C",
+   "scoring": "M1必須",
    "case_id": "y84g5r"
   },
   {
@@ -53,6 +55,7 @@
    "checker": "見逃し: Stage1 dev=MAJOR(scope拡大・unsupported_new_claim)→Stage2 materiality=QUALITY(basis=ledger_scope)→第2意見QUALITY→最終 RESOLVED_REWRITE_THEN_DOWNGRADE(PASS系)",
    "checker_src": "er052_output/open233_control_checker_polysemy_trial_01/eval/RCA_jb9k_qvqc.md RCA-①",
    "expect": "C",
+   "scoring": "M1必須",
    "case_id": "ur5649"
   },
   {
@@ -72,6 +75,7 @@
    "checker": "Checkerではなく旧Deviation Check: v1でMAJOR検出→must-fix retry 1回→LEDGER_COMPLIANT(当時は検出できた事例)",
    "checker_src": "docs/pm/investigation_ledger_deviation_check_01_part_b.md A-5",
    "expect": "C",
+   "scoring": "参考(M1必須外)",
    "case_id": "hdr8y4"
   },
   {
@@ -91,26 +95,28 @@
    "checker": "なし(JA R0はChecker未適用)",
    "checker_src": "docs/pm/rollback_misread_history_01.md §2 #2",
    "expect": "B?",
+   "scoring": "境界(採点なし)",
    "case_id": "yjjmk8"
   },
   {
-   "key": "K05",
-   "frame": "境界(Rollback語義、ラベル揺れ)",
-   "fact_id": "MUSE-HC-012",
-   "fact_src": "同上(HC-012)",
-   "fact": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
-   "lang": "EN",
-   "sentence": "The company also changed the human concierge feature back to how it was before, at least for now.",
-   "before": "A Meta executive admitted that starting the test without explaining it clearly was a mistake.",
-   "after": "The real challenge for AI phone calls is not only how they speak.",
-   "sentence_src": "claim逐語: er052_output/open233_prod_e2e_02/labels/labels_merged.json idx96。対象文・前後文とも runs/neg2_meta_refresh_a2.json の local_context から逐語採取【確認】",
-   "human_tier": "Sonnet暫定(ラベル揺れあり)",
-   "human": "Sonnet W3=問題なし(N)。一方、方向Trialのgold設定G-06は『曖昧』。Fable/ユーザーの最終ラベルなし",
-   "human_src": "labels_merged.json idx96(confirmed_by空); er052_output/open233_directional_misread_trial_01/testset_01.json G-06",
-   "checker": "未確認(当該runのCheckerでの候補化有無は今回未読)",
-   "checker_src": "-",
-   "expect": "B?",
-   "case_id": "upps5x"
+   "key": "K11",
+   "frame": "重大(参考・実Writer出力、Sonnet判定)",
+   "fact_id": "F-001",
+   "fact_src": "er052_output/open233_allfact_note_e2e_02/ledger/space_weapons/research_ledger/verified_fact_ledger.txt L1",
+   "fact": "2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。",
+   "lang": "JA",
+   "sentence": "宇宙、通信、地上の設備をまとめて守るための仕組みを、米国が公の言葉で認めたということです。",
+   "before": "つまり今回の発表は、「衛星を狙う兵器を配備した」と単純に読む話ではありません。",
+   "after": "では、なぜ今この話が出てきたのでしょうか。",
+   "sentence_src": "er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2/ja_writer/revision2.md(JA R2、実Writer出力・逐語)。sw-p2r2-01(docs/pm/ng_root_cause_01/ng_origin_by_stage.md §4 L95)",
+   "human_tier": "Sonnet判定(ユーザー未確認)",
+   "human": "重大(Sonnet判定。認められたのは『軌道上space control weapons配備』だが、counterspace定義(F-011)を発表内容にすり替え。主体・対象の取り違え)。ユーザー未確認",
+   "human_src": "er052_output/open233_allfact_note_e2e_02/eval/stagewise/NG_space_weapons.md L66(sw-p2r2-01、重大); docs/pm/ng_root_cause_01/ng_origin_by_stage.md L95",
+   "checker": "JA文のためChecker評価対象外(Checkerはなし EN のみ評価)。同内容のEN文はRewrite cycle1で BLOCKING検出→修正済(NG_space_weapons.md L66)",
+   "checker_src": "NG_space_weapons.md L66",
+   "expect": "C",
+   "scoring": "参考(M1必須外)",
+   "case_id": "z63yng"
   },
   {
    "key": "K06",
@@ -129,26 +135,28 @@
    "checker": "最終EN本文に残存(residual_miss。Checkerは修正せず)",
    "checker_src": "labels_merged.jsonl w1-73(kind=residual_miss)",
    "expect": "B?",
+   "scoring": "境界(採点なし)",
    "case_id": "7b6trp"
   },
   {
-   "key": "K07",
-   "frame": "境界(因果語 so)",
+   "key": "K12",
+   "frame": "問題なし(A対照・HC-012の忠実文、実Writer出力、Sonnet判定)",
    "fact_id": "MUSE-HC-012",
    "fact_src": "同上(HC-012)",
    "fact": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
    "lang": "EN",
-   "sentence": "Meta's AI calling test used human contractors without proper disclosure, so the company rolled back that feature.",
-   "before": "",
-   "after": "",
-   "sentence_src": "er052_output/open243_translation_ng_analysis_01/S0_USER_CHECK.md 確認2(要約の1文、前後文なし)",
-   "human_tier": "未裁定",
-   "human": "ユーザー回答待ち(S0_USER_CHECK 確認2: 許容/不許容)",
-   "human_src": "er052_output/open243_translation_ng_analysis_01/S0_USER_CHECK.md",
-   "checker": "Checkerではなく翻訳Deviation Check: MAJOR(changed_causality)が解消せずSTOP",
-   "checker_src": "er052_output/open243_translation_ng_analysis_01/S0_AUDIT_01.md G09 / S0_USER_CHECK.md",
-   "expect": "B?",
-   "case_id": "6j5x2m"
+   "sentence": "The human concierge feature was then put on hold for the time being.",
+   "before": "By September 22, the vice president of Meta's Superintelligence Labs division acknowledged that starting the tests without proper disclosure had been a “mistake.”",
+   "after": "Meta explained that it would launch the phone feature publicly only when it was ready and could give proper information.",
+   "sentence_src": "er052_output/open233_control_checker_polysemy_trial_01/eval/blind/meta/ua6f/b1b/article.md L15(EN、実Writer出力・逐語。前文は同段落、後文は次段落冒頭)",
+   "human_tier": "Sonnet暫定(Rollback評価で『正しい』、ユーザー未確認)",
+   "human": "問題なし(Rollback評価ラベル=correct。『取りやめ/put on hold』で方向が確定、と単独評価)。ただしユーザー未確認。なお『put on hold』は台帳の『ロールバック』と語が異なる点でBと読める余地もある【推測】",
+   "human_src": "er052_output/open233_control_checker_polysemy_trial_01/eval/rollback_x/meta_ua6f.json(en_final=correct); SUMMARY_CCP.md L28",
+   "checker": "記事は最終PASS系(当該文でCheckerが候補化したかは未確認)",
+   "checker_src": "-",
+   "expect": "A",
+   "scoring": "M2",
+   "case_id": "9ywt6e"
   },
   {
    "key": "K08",
@@ -167,6 +175,7 @@
    "checker": "当該文は候補化されず(local_contextとして登場のみ)",
    "checker_src": "er052_output/open233_prod_e2e_02/runs/hormuz_run03_advanced.json stage2_results",
    "expect": "A",
+   "scoring": "M2",
    "case_id": "6urnmg"
   },
   {
@@ -186,11 +195,12 @@
    "checker": "未確認(参考なし)",
    "checker_src": "-",
    "expect": "A",
+   "scoring": "M2",
    "case_id": "sq5c2g"
   },
   {
    "key": "K10",
-   "frame": "明らかに問題なし(ai_control)",
+   "frame": "境界(因果追加型、M2採点対象外)",
    "fact_id": "EVID-008",
    "fact_src": "同上(EVID-008)",
    "fact": "Anthropic reported that a review of 141,006 evaluation runs identified three incidents in which Claude models reached the internet from third-party evaluation environments and gained unauthorized access to real systems belonging to three organizations. The environments were misconfigured, standard cyber safeguards were absent, and the models were operating on capture-the-flag tasks. Anthropic stated that the models did not exfiltrate themselves or deliberately attempt to escape their test environments.",
@@ -199,12 +209,13 @@
    "before": "The AI was trying a task like a made-up game of capturing flags.",
    "after": "",
    "sentence_src": "er052_output/open233_control_checker_polysemy_trial_01/eval/blind/ai_control/jb9k/b1b/article.md L5",
-   "human_tier": "Sonnet暫定(明白、本委任で逐語照合)",
-   "human": "問題なし(台帳: misconfigured・インターネットへ到達。ユーザー判定の対象は別文)",
+   "human_tier": "Sonnet暫定(因果語を含むため境界へ移動)",
+   "human": "未確定(台帳のmisconfiguredと矛盾しないが『because of』で因果を明示=因果追加型。Opus所見によりM2から除外。ユーザー判定の対象は別文)",
    "human_src": "HUMAN_REVIEW_RESULT.md(重大1文は別。この文の人間確認なし)",
    "checker": "Stage1で候補化(causal_not_in_fact, negation_polarity_mismatch)→Stage2 ACCEPTABLE",
    "checker_src": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1/checker/runs/meta_run03_advanced.json cycles[0].stage2_results[2]",
-   "expect": "A",
+   "expect": "B?",
+   "scoring": "境界(採点なし)",
    "case_id": "7suvyn"
   }
  ]

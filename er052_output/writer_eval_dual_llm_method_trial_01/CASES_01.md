@@ -2,24 +2,33 @@
 
 凡例: 【確認】=一次資料で逐語確認 / 【推測】=資料から推した解釈 / 人間既知判定の区分: ユーザー確認済み > Fable確定 > Sonnet暫定 > 未裁定。
 評価LLMへ渡すのは `eval_items_01.json`(case_id・Fact・対象文・前後文のみ)。本ファイルと `cases_01.json` は評価LLMへ渡さない。
-case_idは固定seed 20261009、提示順は固定seed 20261010 でシャッフル(`build_cases_01.py`、API呼び出しなし)。
+case_idは固定seed 20261011、提示順は固定seed 20261012 でシャッフル(委任_01cで再シャッフル)(`build_cases_01.py`、API呼び出しなし)。
 
 ## 一覧(K番号順)
 
-| K | case_id | 枠 | 言語 | 人間既知の区分 | 事前期待 |
-|---|---|---|---|---|---|
-| K01 | y84g5r | 重大(人間確認済み寄り) | EN | Fable確定+ユーザー呼称 | C |
-| K02 | ur5649 | 重大(人間確認済み) | EN | ユーザー確認済み | C |
-| K03 | hdr8y4 | 重大(Fable確定gold) | EN | Fable確定 | C |
-| K04 | yjjmk8 | 境界(JA、Rollback語義) | JA | Sonnet暫定(未ラベル) | B? |
-| K05 | upps5x | 境界(Rollback語義、ラベル揺れ) | EN | Sonnet暫定(ラベル揺れあり) | B? |
-| K06 | 7b6trp | 境界(不在・非公開の断定) | EN | Sonnet暫定(ユーザー未裁定) | B? |
-| K07 | 6j5x2m | 境界(因果語 so) | EN | 未裁定 | B? |
-| K08 | 6urnmg | 明らかに問題なし(日付・数値あり) | EN | Sonnet暫定(明白、本委任で逐語照合) | A |
-| K09 | sq5c2g | 明らかに問題なし(日付・数値あり) | EN | Sonnet暫定(明白) | A |
-| K10 | 7suvyn | 明らかに問題なし(ai_control) | EN | Sonnet暫定(明白、本委任で逐語照合) | A |
+| K | case_id | 枠 | 言語 | 人間既知の区分 | 事前期待 | 採点対象 |
+|---|---|---|---|---|---|---|
+| K01 | y84g5r | 重大(人間確認済み寄り) | EN | Fable確定+ユーザー呼称 | C | M1必須 |
+| K02 | ur5649 | 重大(人間確認済み) | EN | ユーザー確認済み | C | M1必須 |
+| K03 | hdr8y4 | 重大(Fable確定gold) | EN | Fable確定 | C | 参考(M1必須外) |
+| K04 | yjjmk8 | 境界(JA、Rollback語義) | JA | Sonnet暫定(未ラベル) | B? | 境界(採点なし) |
+| K11 | z63yng | 重大(参考・実Writer出力、Sonnet判定) | JA | Sonnet判定(ユーザー未確認) | C | 参考(M1必須外) |
+| K06 | 7b6trp | 境界(不在・非公開の断定) | EN | Sonnet暫定(ユーザー未裁定) | B? | 境界(採点なし) |
+| K12 | 9ywt6e | 問題なし(A対照・HC-012の忠実文、実Writer出力、Sonnet判定) | EN | Sonnet暫定(Rollback評価で『正しい』、ユーザー未確認) | A | M2 |
+| K08 | 6urnmg | 明らかに問題なし(日付・数値あり) | EN | Sonnet暫定(明白、本委任で逐語照合) | A | M2 |
+| K09 | sq5c2g | 明らかに問題なし(日付・数値あり) | EN | Sonnet暫定(明白) | A | M2 |
+| K10 | 7suvyn | 境界(因果追加型、M2採点対象外) | EN | Sonnet暫定(因果語を含むため境界へ移動) | B? | 境界(採点なし) |
 
-期待欄: C=重大 / A=問題なし / B?=境界(期待を固定しない)。K03はユーザー個別確認ではなくFable確定goldのため、PREREGISTRATION_01では必須判定から外し参考扱い。
+期待欄: C=重大 / A=問題なし / B?=境界(期待を固定しない)。K03はFable確定gold、K11はSonnet判定(ユーザー未確認)のため、M1必須から外し参考扱い。
+
+## 委任_01c(Opus条件Aレビュー反映)での変更
+
+- K05(K01とほぼ同文でラベル揺れ)を削除し、K11(space_weapons P2 r2のsw-p2r2-01、JA R2の実Writer出力・逐語、Sonnet判定重大・ユーザー未確認)を追加。
+- K07(open243の『so』因果、未裁定)を削除し、K12(HC-012の忠実文=A対照、ua6f EN最終稿の実Writer出力・逐語、Rollback評価で『正しい』・ユーザー未確認)を追加。合成文ではない。
+- K10(因果追加型)は境界枠へ移動しM2採点対象外。
+- 枠: 重大=K01,K02(M1必須)+K03,K11(参考) / 境界=K04,K06,K10 / 問題なし(M2採点)=K08,K09,K12。合計10件。
+- 既存8件のcase_idは不変。新規2件のcase_idはseed 20261011。提示順は固定seed 20261012 で再シャッフル(`eval_order`は cases_01.json に記録)。
+
 
 ## K01 (case_id=y84g5r) 重大(人間確認済み寄り)
 
@@ -77,19 +86,19 @@ case_idは固定seed 20261009、提示順は固定seed 20261010 でシャッフ�
 - Checker参考判定(正解扱いしない): なし(JA R0はChecker未適用)
   - 出典: docs/pm/rollback_misread_history_01.md §2 #2
 
-## K05 (case_id=upps5x) 境界(Rollback語義、ラベル揺れ)
+## K11 (case_id=z63yng) 重大(参考・実Writer出力、Sonnet判定)
 
-- Fact(MUSE-HC-012): MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。
-  - 出典: 同上(HC-012)
-- Writer文(EN): The company also changed the human concierge feature back to how it was before, at least for now.
-  - 出典: claim逐語: er052_output/open233_prod_e2e_02/labels/labels_merged.json idx96。対象文・前後文とも runs/neg2_meta_refresh_a2.json の local_context から逐語採取【確認】
-- 前文: A Meta executive admitted that starting the test without explaining it clearly was a mistake.
-- 後文: The real challenge for AI phone calls is not only how they speak.
-- context_source: er052_output/open233_prod_e2e_02/runs/neg2_meta_refresh_a2.json 内 local_context(Checkerが実際に評価した記事の抜粋。対象文・前文・後文が同一local_context内に逐語で存在【確認】)。旧記載のer019 a2/article.md由来【推測】は不要になったため撤回
-- 人間既知判定[Sonnet暫定(ラベル揺れあり)]: Sonnet W3=問題なし(N)。一方、方向Trialのgold設定G-06は『曖昧』。Fable/ユーザーの最終ラベルなし
-  - 出典: labels_merged.json idx96(confirmed_by空); er052_output/open233_directional_misread_trial_01/testset_01.json G-06
-- Checker参考判定(正解扱いしない): 未確認(当該runのCheckerでの候補化有無は今回未読)
-  - 出典: -
+- Fact(F-001): 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。
+  - 出典: er052_output/open233_allfact_note_e2e_02/ledger/space_weapons/research_ledger/verified_fact_ledger.txt L1
+- Writer文(JA): 宇宙、通信、地上の設備をまとめて守るための仕組みを、米国が公の言葉で認めたということです。
+  - 出典: er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2/ja_writer/revision2.md(JA R2、実Writer出力・逐語)。sw-p2r2-01(docs/pm/ng_root_cause_01/ng_origin_by_stage.md §4 L95)
+- 前文: つまり今回の発表は、「衛星を狙う兵器を配備した」と単純に読む話ではありません。
+- 後文: では、なぜ今この話が出てきたのでしょうか。
+- context_source: er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2/ja_writer/revision2.md(対象文・前文は同一段落、後文は次段落冒頭、同一ファイル逐語【確認】)
+- 人間既知判定[Sonnet判定(ユーザー未確認)]: 重大(Sonnet判定。認められたのは『軌道上space control weapons配備』だが、counterspace定義(F-011)を発表内容にすり替え。主体・対象の取り違え)。ユーザー未確認
+  - 出典: er052_output/open233_allfact_note_e2e_02/eval/stagewise/NG_space_weapons.md L66(sw-p2r2-01、重大); docs/pm/ng_root_cause_01/ng_origin_by_stage.md L95
+- Checker参考判定(正解扱いしない): JA文のためChecker評価対象外(Checkerはなし EN のみ評価)。同内容のEN文はRewrite cycle1で BLOCKING検出→修正済(NG_space_weapons.md L66)
+  - 出典: NG_space_weapons.md L66
 
 ## K06 (case_id=7b6trp) 境界(不在・非公開の断定)
 
@@ -105,19 +114,19 @@ case_idは固定seed 20261009、提示順は固定seed 20261010 でシャッフ�
 - Checker参考判定(正解扱いしない): 最終EN本文に残存(residual_miss。Checkerは修正せず)
   - 出典: labels_merged.jsonl w1-73(kind=residual_miss)
 
-## K07 (case_id=6j5x2m) 境界(因果語 so)
+## K12 (case_id=9ywt6e) 問題なし(A対照・HC-012の忠実文、実Writer出力、Sonnet判定)
 
 - Fact(MUSE-HC-012): MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。
   - 出典: 同上(HC-012)
-- Writer文(EN): Meta's AI calling test used human contractors without proper disclosure, so the company rolled back that feature.
-  - 出典: er052_output/open243_translation_ng_analysis_01/S0_USER_CHECK.md 確認2(要約の1文、前後文なし)
-- 前文: (なし)
-- 後文: (なし)
-- context_source: 前後文なし(単独の要約1文。S0_USER_CHECK.md 確認2)
-- 人間既知判定[未裁定]: ユーザー回答待ち(S0_USER_CHECK 確認2: 許容/不許容)
-  - 出典: er052_output/open243_translation_ng_analysis_01/S0_USER_CHECK.md
-- Checker参考判定(正解扱いしない): Checkerではなく翻訳Deviation Check: MAJOR(changed_causality)が解消せずSTOP
-  - 出典: er052_output/open243_translation_ng_analysis_01/S0_AUDIT_01.md G09 / S0_USER_CHECK.md
+- Writer文(EN): The human concierge feature was then put on hold for the time being.
+  - 出典: er052_output/open233_control_checker_polysemy_trial_01/eval/blind/meta/ua6f/b1b/article.md L15(EN、実Writer出力・逐語。前文は同段落、後文は次段落冒頭)
+- 前文: By September 22, the vice president of Meta's Superintelligence Labs division acknowledged that starting the tests without proper disclosure had been a “mistake.”
+- 後文: Meta explained that it would launch the phone feature publicly only when it was ready and could give proper information.
+- context_source: er052_output/open233_control_checker_polysemy_trial_01/eval/blind/meta/ua6f/b1b/article.md L15(対象文・前文は同一段落、後文はL17冒頭文、同一ファイル逐語【確認】)
+- 人間既知判定[Sonnet暫定(Rollback評価で『正しい』、ユーザー未確認)]: 問題なし(Rollback評価ラベル=correct。『取りやめ/put on hold』で方向が確定、と単独評価)。ただしユーザー未確認。なお『put on hold』は台帳の『ロールバック』と語が異なる点でBと読める余地もある【推測】
+  - 出典: er052_output/open233_control_checker_polysemy_trial_01/eval/rollback_x/meta_ua6f.json(en_final=correct); SUMMARY_CCP.md L28
+- Checker参考判定(正解扱いしない): 記事は最終PASS系(当該文でCheckerが候補化したかは未確認)
+  - 出典: -
 
 ## K08 (case_id=6urnmg) 明らかに問題なし(日付・数値あり)
 
@@ -147,7 +156,7 @@ case_idは固定seed 20261009、提示順は固定seed 20261010 でシャッフ�
 - Checker参考判定(正解扱いしない): 未確認(参考なし)
   - 出典: -
 
-## K10 (case_id=7suvyn) 明らかに問題なし(ai_control)
+## K10 (case_id=7suvyn) 境界(因果追加型、M2採点対象外)
 
 - Fact(EVID-008): Anthropic reported that a review of 141,006 evaluation runs identified three incidents in which Claude models reached the internet from third-party evaluation environments and gained unauthorized access to real systems belonging to three organizations. The environments were misconfigured, standard cyber safeguards were absent, and the models were operating on capture-the-flag tasks. Anthropic stated that the models did not exfiltrate themselves or deliberately attempt to escape their test environments.
   - 出典: 同上(EVID-008)
@@ -156,12 +165,12 @@ case_idは固定seed 20261009、提示順は固定seed 20261010 でシャッフ�
 - 前文: The AI was trying a task like a made-up game of capturing flags.
 - 後文: (なし)
 - context_source: er052_output/open233_control_checker_polysemy_trial_01/eval/blind/ai_control/jb9k/b1b/article.md L5(対象文・前文とも同一段落【確認】)。後文は同記事に存在するが非採用(片側のみ)
-- 人間既知判定[Sonnet暫定(明白、本委任で逐語照合)]: 問題なし(台帳: misconfigured・インターネットへ到達。ユーザー判定の対象は別文)
+- 人間既知判定[Sonnet暫定(因果語を含むため境界へ移動)]: 未確定(台帳のmisconfiguredと矛盾しないが『because of』で因果を明示=因果追加型。Opus所見によりM2から除外。ユーザー判定の対象は別文)
   - 出典: HUMAN_REVIEW_RESULT.md(重大1文は別。この文の人間確認なし)
 - Checker参考判定(正解扱いしない): Stage1で候補化(causal_not_in_fact, negation_polarity_mismatch)→Stage2 ACCEPTABLE
   - 出典: er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1/checker/runs/meta_run03_advanced.json cycles[0].stage2_results[2]
 
-## 付録: K08〜K10(問題なし群)の根拠対比(台帳Fact逐語 / Writer文逐語 / 差分)
+## 付録: K08・K09・K12(問題なし群)およびK10(境界)の根拠対比(台帳Fact逐語 / Writer文逐語 / 差分)
 
 ### K08
 - 台帳Fact逐語: [VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。
@@ -173,8 +182,13 @@ case_idは固定seed 20261009、提示順は固定seed 20261010 でシャッフ�
 - Writer文逐語: On July 13, Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement.
 - 差分: 7月13日=July 13、投稿した=posted、ホルムズ海峡を通るすべての貨物=all cargo passing through the Strait of Hormuz、20％の率で償還=a 20 percent reimbursement が一致。差分: 時刻(10:16)・『安全確保に要する費用』の目的説明を省略(情報の省略のみで、矛盾・追加主張なし)。
 
+### K12
+- 台帳Fact逐語: [VERIFIED] MUSE-HC-012: ...副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。
+- Writer文逐語: The human concierge feature was then put on hold for the time being.
+- 差分: 当面=for the time being、機能(人間コンシェルジュ)=The human concierge feature、ミス認定の後=then(前文が acknowledged ... a mistake)が一致。差分: 『ロールバック』を『put on hold(保留)』と表現。方向は『止めた/引いた』側で、restoredのような再開方向ではない。ただし『rollback=元に戻した』と『保留』は厳密には同義でなく、評価LLMがBと読む余地は残る【推測】。Sonnet(Rollback評価)はcorrectとラベル、ユーザー未確認。
+
 ### K10
 - 台帳Fact逐語: (EVID-008)... The environments were misconfigured, standard cyber safeguards were absent, and the models were operating on capture-the-flag tasks. ... Claude models reached the internet from third-party evaluation environments ...
 - Writer文逐語: But because of a setup mistake, it was able to connect to the outside internet.
-- 差分: misconfigured=a setup mistake、reached the internet=connect to the outside internet、capture-the-flag(前文: a made-up game of capturing flags)が一致。差分: 『third-party evaluation environments』の第三者性は省略、『it』は単数(台帳はmodels複数・3件)。いずれも省略/平易化の範囲で、台帳に反する主張・方向反転なし。注意: 『but because of』の因果語は台帳の『misconfigured』が原因の一つとして記すためOK(台帳 conditions: Third-party evaluation misconfiguration)。
+- 差分: misconfigured=a setup mistake、reached the internet=connect to the outside internet、capture-the-flag(前文: a made-up game of capturing flags)が一致。差分: 『third-party evaluation environments』の第三者性は省略、『it』は単数(台帳はmodels複数・3件)。いずれも省略/平易化の範囲で、台帳に反する主張・方向反転なし。注意: 『but because of』の因果語は台帳の『misconfigured』が原因の一つとして記すためOK(台帳 conditions: Third-party evaluation misconfiguration)。ただし委任_01cのOpus所見により『因果追加型』として境界枠へ移し、M2採点対象外(Checkerも因果で候補化)。
 

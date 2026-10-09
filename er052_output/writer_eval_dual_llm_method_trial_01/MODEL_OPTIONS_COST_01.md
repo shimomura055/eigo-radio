@@ -68,3 +68,9 @@
 - 【確認】repo内の記録は `ER-005-RESEARCH-MODEL-AB-01_report.md` L113 の本文1箇所のみ: 「output: DeepSeek $0.66/1M vs Luna $1.20/1M、off-peak」。出典URL・取得日・公式ページ保存・請求照合は付いていない(二次的な報告書記述)。
 - 【確認】input単価・キャッシュhit/miss単価の記録は repo内に見つからない。`er005_output/cost_baseline_01/pricing_snapshot.json` と `er005_cost_logger.py` にDeepSeekの記載なし(未登録)。`raw_usage_log.jsonl` はトークン数のみで円換算の単価情報を含まない。
 - したがって一次資料としての単価は無く、本書の費用表にはDeepSeek分を載せない。上記$0.66/1M(output、off-peak)は「参考(出典不明の報告書記述、本表には不使用)」。DeepSeek単価の新規登録(pricing_snapshotへの追加)はユーザー承認事項であり、本委任では行わない。
+
+## 7. 委任_01c追記: Fable採用案
+- **Fable採用案 = P1(gpt-6-luna + DeepSeek V4 Flash)、各2rep。** P3(Claude subagent)は隔離・再現性の理由で不採用(Opus所見5)。
+- P1の系統1(luna)は本番Writer/Checkerと同系統のため自己系統バイアスの限界あり(PREREGISTRATION_01 §6-5)。次段階で比較する両Writerと別系統の評価者が必要。
+- DeepSeek単価は登録しない(ユーザー承認事項)。runnerは単価未登録のDeepSeekを費用ガード対象外として警告し、`--allow-unpriced` なしでは起動しない(run_eval_01.py)。
+- luna分の費用見積は§4(2rep・10ケースで¥1.4〜6.9)のまま。ケース差替えで件数は10のままなので不変。

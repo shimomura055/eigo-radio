@@ -44,3 +44,5 @@
 - VALIDATEDでも、そのまま大規模Writer比較Trialへ進めない。次はユーザー判断。
 
 - 委任_01b追記: `eval_items_01.json` の `context_source` は監査用の運用情報であり、評価LLMへは渡さない(runnerは上記5項目のみ渡す)。設計(プロンプト・事前登録・閾値)は変更していない。
+
+- 委任_01c追記: `run_eval_01.py`(runner)と `run_eval_01_test.py`(単体テスト、API不要)を作成済み(未実行)。引数は本書3節の案から `--model`(gpt-6-luna / deepseek-v4-flash)、`--max-yen`、`--allow-unpriced` に簡素化。DeepSeekは単価未登録のため `--allow-unpriced` なしでは起動拒否。ケースは差替え済み(CASES_01.md冒頭)。M2対象は K08,K09,K12。任意ブロックは OPTIONAL_BLOCK_01.md(設計のみ)。
