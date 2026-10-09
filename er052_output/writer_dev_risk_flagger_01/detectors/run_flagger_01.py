@@ -372,9 +372,10 @@ def run_union(parts, model, set_name, out_name, include_gate_only=False):
         print("既存の結果ファイルがあるため中止(上書き禁止): %s" % out_path)
         return 3
     per = {}
-    for p in parts:
+    for part in parts:
+        p, _, pset = part.partition(":")  # 'd1full:dev_gate' のように検出器ごとに別set名を指定可(省略時は --set)
         m = "none" if p == "d0" else model
-        path = result_paths(p, m, set_name)[0]
+        path = result_paths(p, m, pset or set_name)[0]
         with open(path, encoding="utf-8") as f:
             for ln in f:
                 if ln.strip():
@@ -405,7 +406,7 @@ def main(argv=None):
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--max-yen", type=float, default=None)
     ap.add_argument("--total-cap-yen", type=float, default=900.0, help="cost_ledger.jsonl累計の停止上限(総予算1000円の安全側)")
-    ap.add_argument("--union", help="例: d0,d1full (和集合。API呼び出しなし。D0はrollback反転のみ)")
+    ap.add_argument("--union", help="例: d0,d1full または d0:dev,d1full:dev_gate (和集合。API呼び出しなし。D0はrollback反転のみ)")
     ap.add_argument("--include-gate-only", action="store_true", help="--union時にD0のgate_only Flagも含める(既定は含めない)")
     ap.add_argument("--out-name", help="--union の出力検出器名(例 d3_d0_d1full)")
     a = ap.parse_args(argv)

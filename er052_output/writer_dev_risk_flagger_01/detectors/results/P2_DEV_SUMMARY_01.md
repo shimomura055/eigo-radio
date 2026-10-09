@@ -1,0 +1,40 @@
+| 検出器 | units(重大/人間確認/非重大) | Recall_human(主) | Recall_all(副) | FPR_clear | FPR_boundary | FPR_hardneg | Flag(unit,sent,type)/unit | Flag固有文/unit | Rollback | 方向反転(別Fact) | 費用JPY |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| d0_none_dev | 24(6/1/18) | 1/1 (100%, CI 21%-100%) | 1/6 (17%, CI 3%-56%) | 0/11 (0%, CI 0%-26%) | 1/5 (20%, CI 4%-62%) | 0/2 (0%, CI 0%-66%) | 0.08 | 0.08 | 1/1 | 0/0 | 0.00 |
+| d1full_gpt-6.1-sol_dev_gate | 24(6/1/18) | 1/1 (100%, CI 21%-100%) | 4/6 (67%, CI 30%-90%) | 1/11 (9%, CI 2%-38%) | 1/5 (20%, CI 4%-62%) | 0/2 (0%, CI 0%-66%) | 0.25 | 0.25 | 1/1 | 0/0 | 67.68 |
+| d2_gpt-6.1-sol_dev_rep1 | 24(6/1/18) | 1/1 (100%, CI 21%-100%) | 4/6 (67%, CI 30%-90%) | 1/11 (9%, CI 2%-38%) | 0/5 (0%, CI 0%-43%) | 0/2 (0%, CI 0%-66%) | 0.21 | 0.21 | 1/1 | 0/0 | 13.18 |
+| d2_gpt-6.1-sol_dev_rep2 | 24(6/1/18) | 1/1 (100%, CI 21%-100%) | 4/6 (67%, CI 30%-90%) | 1/11 (9%, CI 2%-38%) | 0/5 (0%, CI 0%-43%) | 0/2 (0%, CI 0%-66%) | 0.21 | 0.21 | 1/1 | 0/0 | 18.85 |
+| d3_d0rb_d1gate_dev_gpt-6.1-sol_dev | 24(6/1/18) | 1/1 (100%, CI 21%-100%) | 4/6 (67%, CI 30%-90%) | 1/11 (9%, CI 2%-38%) | 1/5 (20%, CI 4%-62%) | 0/2 (0%, CI 0%-66%) | 0.25 | 0.25 | 1/1 | 0/0 | 67.68 |
+| d3_d0rb_d2r1_dev_gpt-6.1-sol_dev | 24(6/1/18) | 1/1 (100%, CI 21%-100%) | 4/6 (67%, CI 30%-90%) | 1/11 (9%, CI 2%-38%) | 1/5 (20%, CI 4%-62%) | 0/2 (0%, CI 0%-66%) | 0.25 | 0.25 | 1/1 | 0/0 | 13.18 |
+| d3_all_r1_dev_gpt-6.1-sol_dev | 24(6/1/18) | 1/1 (100%, CI 21%-100%) | 4/6 (67%, CI 30%-90%) | 1/11 (9%, CI 2%-38%) | 1/5 (20%, CI 4%-62%) | 0/2 (0%, CI 0%-66%) | 0.25 | 0.25 | 1/1 | 0/0 | 80.86 |
+
+見逃し重大 / 誤Flag(clear・boundary・hardneg):
+- d0_none_dev: 見逃し=rf_sq5c2g,rf_qupxd4,rf_5qddqw,rf_apqtyt,rf_g7k93w / 誤Flag clear=- boundary=rf_grqgvt hardneg=-
+- d1full_gpt-6.1-sol_dev_gate: 見逃し=rf_5qddqw,rf_g7k93w / 誤Flag clear=rf_zbe99x boundary=rf_grqgvt hardneg=-
+- d2_gpt-6.1-sol_dev_rep1: 見逃し=rf_5qddqw,rf_g7k93w / 誤Flag clear=rf_zbe99x boundary=- hardneg=-
+- d2_gpt-6.1-sol_dev_rep2: 見逃し=rf_5qddqw,rf_g7k93w / 誤Flag clear=rf_zbe99x boundary=- hardneg=-
+- d3_d0rb_d1gate_dev_gpt-6.1-sol_dev: 見逃し=rf_5qddqw,rf_g7k93w / 誤Flag clear=rf_zbe99x boundary=rf_grqgvt hardneg=-
+- d3_d0rb_d2r1_dev_gpt-6.1-sol_dev: 見逃し=rf_5qddqw,rf_g7k93w / 誤Flag clear=rf_zbe99x boundary=rf_grqgvt hardneg=-
+- d3_all_r1_dev_gpt-6.1-sol_dev: 見逃し=rf_5qddqw,rf_g7k93w / 誤Flag clear=rf_zbe99x boundary=rf_grqgvt hardneg=-
+
+### 既知事故別(拾った/件数)
+| 検出器 | Rollback方向反転 | 『初めて』の範囲拡張 | 因果・仕組みの創作 | 開示対象の取り違え |
+|---|---|---|---|---|
+| d0_none_dev | 1/1 | 0/1 | 0/1 | 0/1 |
+| d1full_gpt-6.1-sol_dev_gate | 1/1 | 1/1 | 0/1 | 1/1 |
+| d2_gpt-6.1-sol_dev_rep1 | 1/1 | 1/1 | 0/1 | 1/1 |
+| d2_gpt-6.1-sol_dev_rep2 | 1/1 | 1/1 | 0/1 | 1/1 |
+| d3_d0rb_d1gate_dev_gpt-6.1-sol_dev | 1/1 | 1/1 | 0/1 | 1/1 |
+| d3_d0rb_d2r1_dev_gpt-6.1-sol_dev | 1/1 | 1/1 | 0/1 | 1/1 |
+| d3_all_r1_dev_gpt-6.1-sol_dev | 1/1 | 1/1 | 0/1 | 1/1 |
+
+### タイプ別Recall(重大ケースのaccident_type別、hit/n)
+| 検出器 | rollback方向反転 | その他 | 主体対象入替 |
+|---|---|---|---|
+| d0_none_dev | 1/1 | 0/2 | 0/3 |
+| d1full_gpt-6.1-sol_dev_gate | 1/1 | 0/2 | 3/3 |
+| d2_gpt-6.1-sol_dev_rep1 | 1/1 | 0/2 | 3/3 |
+| d2_gpt-6.1-sol_dev_rep2 | 1/1 | 0/2 | 3/3 |
+| d3_d0rb_d1gate_dev_gpt-6.1-sol_dev | 1/1 | 0/2 | 3/3 |
+| d3_d0rb_d2r1_dev_gpt-6.1-sol_dev | 1/1 | 0/2 | 3/3 |
+| d3_all_r1_dev_gpt-6.1-sol_dev | 1/1 | 0/2 | 3/3 |
