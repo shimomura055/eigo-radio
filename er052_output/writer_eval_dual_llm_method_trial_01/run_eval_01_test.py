@@ -89,19 +89,25 @@ class IsolationTest(unittest.TestCase):
 
 
 class GuardTest(unittest.TestCase):
-    def test_deepseek_refused_without_flag(self):
+    def test_deepseek_requires_max_yen(self):
+        # 委任_04: DeepSeekは公式単価登録済みで費用ガード対象。--max-yen必須
         self.assertEqual(R.main(["--model", "deepseek-v4-flash", "--rep", "1"]), 2)
+        self.assertEqual(R.main(["--model", "gpt-5.6-sol", "--rep", "1"]), 2)
 
     def test_luna_requires_max_yen(self):
         self.assertEqual(R.main(["--model", "gpt-6-luna", "--rep", "1"]), 2)
 
     def test_dry_run_ok_both(self):
         self.assertEqual(R.main(["--model", "gpt-6-luna", "--dry-run", "--max-yen", "30"]), 0)
-        self.assertEqual(R.main(["--model", "deepseek-v4-flash", "--dry-run"]), 0)
+        self.assertEqual(R.main(["--model", "deepseek-v4-flash", "--dry-run", "--max-yen", "20"]), 0)
+        self.assertEqual(R.main(["--model", "gpt-5.6-sol", "--dry-run", "--max-yen", "40"]), 0)
 
-    def test_pricing_luna_registered_deepseek_not(self):
+    def test_pricing_registered_all(self):
         self.assertIsNotNone(R.load_prices("gpt-6-luna"))
-        self.assertIsNone(R.load_prices("deepseek-v4-flash"))
+        # 委任_04: Standard(Peak、割引なし)単価を使う。Off-peak tierは無視される
+        self.assertEqual(R.load_prices("deepseek-v4-flash"), (0.3, 0.006, 1.2))
+        self.assertEqual(R.load_prices("gpt-5.6-sol"), (5.0, 0.5, 30.0))
+        self.assertEqual(R.DEEPSEEK_MAX_TOKENS, 32000)
 
 
 class Luna56Test(unittest.TestCase):

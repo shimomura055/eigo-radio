@@ -87,6 +87,21 @@ class PricingCoverageTest(unittest.TestCase):
             self.assertAlmostEqual(usd, 60.0, places=6)
 
 
+    def test_deepseek_flash_prices_registered(self):
+        """WRITER-EVAL-DUAL-LLM-METHOD-TRIAL-01 委任_04: DeepSeek公式単価(Standard=Peak、2026-10-09取得)。
+        Off-peak割引は別tierで記録のみ。routingのPROCESS_MODEL_MAPには割り当てない。"""
+        with open(SNAPSHOT, encoding="utf-8") as f:
+            prices = json.load(f)["prices"]
+        ds = [p for p in prices if p["provider"] == "deepseek" and p["model"] == "deepseek-v4-flash"]
+        std = {p["meter"]: p["price"] for p in ds if p["tier"] == "Standard"}
+        self.assertEqual(std, {"cached_input_tokens": 0.006, "input_tokens": 0.3, "output_tokens": 1.2})
+        off = {p["meter"]: p["price"] for p in ds if p["tier"] != "Standard"}
+        self.assertEqual(off, {"cached_input_tokens": 0.003, "input_tokens": 0.15, "output_tokens": 0.6})
+        for p in ds:
+            self.assertIn("api-docs.deepseek.com", p["source_url"])
+        self.assertNotIn("deepseek-v4-flash", set(routing.PROCESS_MODEL_MAP.values()))
+
+
 class FailClosedTest(unittest.TestCase):
     def test_efam_price_unknown_model_raises(self):
         price = efam._load_pricing()

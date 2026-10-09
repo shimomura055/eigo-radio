@@ -33,8 +33,12 @@ MAX_OUTPUT_TOKENS = 6000  # 推論トークン込み(DeepSeekは可視出力と�
 MODELS = {
     "gpt-6-luna": dict(provider="openai", env_key="OPENAI_API_KEY", priced=True),
     "gpt-5.6-luna": dict(provider="openai", env_key="OPENAI_API_KEY", priced=True),  # 委任_02追加(参考の第2評価者、同じLuna系)
-    "deepseek-v4-flash": dict(provider="deepseek", env_key="DEEPSEEK_API_KEY", priced=False),
+    "gpt-5.6-sol": dict(provider="openai", env_key="OPENAI_API_KEY", priced=True),  # 委任_04追加(単価登録済み)
+    "deepseek-v4-flash": dict(provider="deepseek", env_key="DEEPSEEK_API_KEY", priced=True),  # 委任_04で公式単価登録
 }
+# DeepSeekはreasoning tokenが可視出力と同一予算(er005 _deepseek_call の注記と同じ)。6000だと切り詰めが起きうるため
+# 事前登録(PREREGISTRATION_02)でAPI仕様上の必須調整として32000に固定。プロンプト・ケースは不変。
+DEEPSEEK_MAX_TOKENS = 32000
 OUT_LOW, OUT_HIGH = 600, 4000  # dry-run見積の出力token幅(MODEL_OPTIONS_COST_01.md 4節と同じ)
 TRANSIENT_RETRIES = 2  # timeout/5xx/429
 FORMAT_RETRIES = 1  # JSON/列挙値違反は1回だけ再呼び出し(上限を増やさない)
@@ -101,6 +105,8 @@ def load_prices(model):
         return None
     got = {}
     for p in snap.get("prices", []):
+        if p.get("tier", "Standard") != "Standard":
+            continue  # 割引tier(DeepSeek Off-peak等)は費用算出に使わない(委任_04)
         if p.get("model") == model or str(p.get("service", "")).startswith(model):
             got[p.get("meter")] = p.get("price")
     if "input_tokens" in got and "output_tokens" in got:
@@ -189,7 +195,7 @@ def call_model(client, model, cfg, prompt, user_msg, temperature, eff):
                      cached_tokens=getattr(getattr(u, "input_tokens_details", None), "cached_tokens", None))
         return resp.output_text, usage, resp.id, getattr(resp, "model", model)
     kw = dict(model=model, messages=[{"role": "system", "content": prompt}, {"role": "user", "content": user_msg}],
-              response_format={"type": "json_object"}, max_tokens=MAX_OUTPUT_TOKENS)
+              response_format={"type": "json_object"}, max_tokens=DEEPSEEK_MAX_TOKENS)
     eff.update(reasoning="provider_default", seed="not_supported_not_sent")
     send_t = eff.get("temperature") != "unspecified(rejected)" and temperature is not None
     if send_t:
