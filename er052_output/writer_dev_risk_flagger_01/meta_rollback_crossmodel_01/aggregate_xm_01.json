@@ -1,0 +1,1324 @@
+{
+ "task": "WRITER-RISK-FLAGGER-META-ROLLBACK-CROSSMODEL-01",
+ "target": {
+  "sid": "s23",
+  "text": "The company also restored the human concierge feature to the way it had been before, at least for now."
+ },
+ "rule": {
+  "ledger_re": "ロールバック|rolled back|rollback|撤回|保留|当面|停止|縮小|撤退|中止|取り下げ",
+  "body_re": "restore|復元|元に戻|以前の状態|再開|復活|戻した",
+  "contrast_re": "逆|反転|ではなく|読め|ように|とありますが|ありますが|に見え|一方",
+  "note": "Yes=3語群すべて一致 / Partial=s23 Flagありでそれ以外 / No=s23 Flagなし(出力無効含む)。人間確認なし"
+ },
+ "models": {
+  "luna": {
+   "model_key": "luna",
+   "levels": {
+    "A3": {
+     "valid_json": true,
+     "attempts": 1,
+     "cost_jpy": 0.186,
+     "elapsed_s": 17.13,
+     "s23_flagged": true,
+     "s23_class": "Yes",
+     "s23_flag": {
+      "unit_id": "RB01",
+      "sentence_id": "s23",
+      "sentence": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+      "type": "rollback反転",
+      "fact_ids": [
+       "MUSE-HC-012"
+      ],
+      "confidence": 0.97,
+      "severity": "重大",
+      "question": "「restored the human concierge feature」は機能を再開した意味に読めますが、Factでは人間コンシェルジュ機能を当面ロールバックしたのではありませんか。",
+      "detector": "d2",
+      "call": "d2"
+     },
+     "n_flags": 4,
+     "other_flags": [
+      {
+       "sentence_id": "s3",
+       "type": "その他",
+       "confidence": 0.84,
+       "fact_ids": [
+        "MUSE-HC-006"
+       ]
+      },
+      {
+       "sentence_id": "s14",
+       "type": "不在断定",
+       "confidence": 0.34,
+       "fact_ids": [
+        "MUSE-HC-006",
+        "MUSE-HC-012"
+       ]
+      },
+      {
+       "sentence_id": "s15",
+       "type": "その他",
+       "confidence": 0.32,
+       "fact_ids": [
+        "MUSE-HC-006",
+        "MUSE-HC-012"
+       ]
+      }
+     ],
+     "usage": [
+      {
+       "input_tokens": 5060,
+       "output_tokens": 1313,
+       "reasoning_tokens": 970,
+       "cached_tokens": 0
+      }
+     ],
+     "thinking_setting": "provider_default",
+     "thinking_blocks": [
+      null
+     ],
+     "reasoning_tokens": [
+      970
+     ],
+     "sonnet_thinking_tokens": null,
+     "finish_reasons": [
+      null
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9"
+     }
+    },
+    "A4": {
+     "valid_json": true,
+     "attempts": 1,
+     "cost_jpy": 0.2377,
+     "elapsed_s": 25.76,
+     "s23_flagged": true,
+     "s23_class": "Yes",
+     "s23_flag": {
+      "unit_id": "RB01",
+      "sentence_id": "s23",
+      "sentence": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+      "type": "rollback反転",
+      "fact_ids": [
+       "MUSE-HC-012"
+      ],
+      "confidence": 0.3,
+      "severity": "重大",
+      "question": "“restored the human concierge feature”は、台帳の「人間コンシェルジュ機能をロールバックした」と逆に、機能を再開したように読める文ではありませんか。",
+      "detector": "d2",
+      "call": "d2"
+     },
+     "n_flags": 5,
+     "other_flags": [
+      {
+       "sentence_id": "s3",
+       "type": "主体対象入替",
+       "confidence": 0.38,
+       "fact_ids": [
+        "MUSE-HC-006"
+       ]
+      },
+      {
+       "sentence_id": "s14",
+       "type": "不在断定",
+       "confidence": 0.72,
+       "fact_ids": [
+        "MUSE-HC-010",
+        "MUSE-HC-012"
+       ]
+      },
+      {
+       "sentence_id": "s15",
+       "type": "不在断定",
+       "confidence": 0.55,
+       "fact_ids": [
+        "MUSE-HC-006",
+        "MUSE-HC-012"
+       ]
+      },
+      {
+       "sentence_id": "s19",
+       "type": "数量時系列",
+       "confidence": 0.34,
+       "fact_ids": [
+        "MUSE-HC-011"
+       ]
+      }
+     ],
+     "usage": [
+      {
+       "input_tokens": 5210,
+       "output_tokens": 1929,
+       "reasoning_tokens": 1494,
+       "cached_tokens": 0
+      }
+     ],
+     "thinking_setting": "provider_default",
+     "thinking_blocks": [
+      null
+     ],
+     "reasoning_tokens": [
+      1494
+     ],
+     "sonnet_thinking_tokens": null,
+     "finish_reasons": [
+      null
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01"
+     }
+    }
+   },
+   "label": "Luna",
+   "model_id_requested": "gpt-6-luna",
+   "model_ids_returned": [
+    "gpt-6-luna"
+   ],
+   "cost_jpy_2call": 0.4237,
+   "overall_direction": "Yes",
+   "closeout": "DETECTED",
+   "invalid_output_levels": []
+  },
+  "sol": {
+   "model_key": "sol",
+   "levels": {
+    "A3": {
+     "valid_json": true,
+     "attempts": 1,
+     "cost_jpy": 2.7456,
+     "elapsed_s": 14.63,
+     "s23_flagged": false,
+     "s23_class": "No",
+     "s23_flag": null,
+     "n_flags": 5,
+     "other_flags": [
+      {
+       "sentence_id": "s3",
+       "type": "主体対象入替",
+       "confidence": 0.4,
+       "fact_ids": [
+        "MUSE-HC-006"
+       ]
+      },
+      {
+       "sentence_id": "s14",
+       "type": "主体対象入替",
+       "confidence": 0.93,
+       "fact_ids": [
+        "MUSE-HC-004",
+        "MUSE-HC-006",
+        "MUSE-HC-012"
+       ]
+      },
+      {
+       "sentence_id": "s14",
+       "type": "不在断定",
+       "confidence": 0.72,
+       "fact_ids": [
+        "MUSE-HC-012"
+       ]
+      },
+      {
+       "sentence_id": "s15",
+       "type": "主体対象入替",
+       "confidence": 0.91,
+       "fact_ids": [
+        "MUSE-HC-004",
+        "MUSE-HC-006"
+       ]
+      },
+      {
+       "sentence_id": "s19",
+       "type": "数量時系列",
+       "confidence": 0.45,
+       "fact_ids": [
+        "MUSE-HC-011"
+       ]
+      }
+     ],
+     "usage": [
+      {
+       "input_tokens": 5060,
+       "output_tokens": 704,
+       "reasoning_tokens": 197,
+       "cached_tokens": 0
+      }
+     ],
+     "thinking_setting": "provider_default",
+     "thinking_blocks": [
+      null
+     ],
+     "reasoning_tokens": [
+      197
+     ],
+     "sonnet_thinking_tokens": null,
+     "finish_reasons": [
+      null
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9"
+     }
+    },
+    "A4": {
+     "valid_json": true,
+     "attempts": 1,
+     "cost_jpy": 3.0352,
+     "elapsed_s": 19.92,
+     "s23_flagged": false,
+     "s23_class": "No",
+     "s23_flag": null,
+     "n_flags": 5,
+     "other_flags": [
+      {
+       "sentence_id": "s3",
+       "type": "主体対象入替",
+       "confidence": 0.58,
+       "fact_ids": [
+        "MUSE-HC-006"
+       ]
+      },
+      {
+       "sentence_id": "s10",
+       "type": "否定反転",
+       "confidence": 0.48,
+       "fact_ids": [
+        "MUSE-HC-010",
+        "MUSE-HC-012"
+       ]
+      },
+      {
+       "sentence_id": "s14",
+       "type": "主体対象入替",
+       "confidence": 0.94,
+       "fact_ids": [
+        "MUSE-HC-004",
+        "MUSE-HC-006",
+        "MUSE-HC-012"
+       ]
+      },
+      {
+       "sentence_id": "s14",
+       "type": "不在断定",
+       "confidence": 0.76,
+       "fact_ids": [
+        "MUSE-HC-012"
+       ]
+      },
+      {
+       "sentence_id": "s15",
+       "type": "主体対象入替",
+       "confidence": 0.9,
+       "fact_ids": [
+        "MUSE-HC-004",
+        "MUSE-HC-006"
+       ]
+      }
+     ],
+     "usage": [
+      {
+       "input_tokens": 5210,
+       "output_tokens": 855,
+       "reasoning_tokens": 350,
+       "cached_tokens": 0
+      }
+     ],
+     "thinking_setting": "provider_default",
+     "thinking_blocks": [
+      null
+     ],
+     "reasoning_tokens": [
+      350
+     ],
+     "sonnet_thinking_tokens": null,
+     "finish_reasons": [
+      null
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01"
+     }
+    }
+   },
+   "label": "Sol",
+   "model_id_requested": "gpt-6.1-sol",
+   "model_ids_returned": [
+    "gpt-6.1-sol"
+   ],
+   "cost_jpy_2call": 5.7808,
+   "overall_direction": "No",
+   "closeout": "NOT_DETECTED",
+   "invalid_output_levels": []
+  },
+  "gemini35fl": {
+   "model_key": "gemini35fl",
+   "levels": {
+    "A3": {
+     "valid_json": true,
+     "attempts": 1,
+     "cost_jpy": 0.2711,
+     "elapsed_s": 1.69,
+     "s23_flagged": true,
+     "s23_class": "Yes",
+     "s23_flag": {
+      "unit_id": "RB01",
+      "sentence_id": "s23",
+      "sentence": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+      "type": "その他",
+      "fact_ids": [
+       "MUSE-HC-012"
+      ],
+      "confidence": 0.7,
+      "severity": "重大",
+      "question": "Metaが人間コンシェルジュ機能を「元の状態に戻した（restored... to the way it had been before）」とありますが、台帳Fact-012では「ロールバックした（当面ロールバックした）」とされています。機能をもとに戻したのではなく停止・撤回したという意味ではありませんか？",
+      "detector": "d2",
+      "call": "d2"
+     },
+     "n_flags": 1,
+     "other_flags": [],
+     "usage": [
+      {
+       "input_tokens": 4765,
+       "output_tokens": 106,
+       "reasoning_tokens": 0,
+       "cached_tokens": 0,
+       "finish_reason": "STOP"
+      }
+     ],
+     "thinking_setting": "provider_default",
+     "thinking_blocks": [
+      null
+     ],
+     "reasoning_tokens": [
+      0
+     ],
+     "sonnet_thinking_tokens": null,
+     "finish_reasons": [
+      "STOP"
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9"
+     }
+    },
+    "A4": {
+     "valid_json": true,
+     "attempts": 1,
+     "cost_jpy": 0.2701,
+     "elapsed_s": 1.38,
+     "s23_flagged": true,
+     "s23_class": "Yes",
+     "s23_flag": {
+      "unit_id": "RB01",
+      "sentence_id": "s23",
+      "sentence": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+      "type": "rollback反転",
+      "fact_ids": [
+       "MUSE-HC-012"
+      ],
+      "confidence": 0.8,
+      "severity": "重大",
+      "question": "「restored the human concierge feature to the way it had been before」とありますが、台帳では「ロールバックした(rolled back)」とされていませんか。",
+      "detector": "d2",
+      "call": "d2"
+     },
+     "n_flags": 1,
+     "other_flags": [],
+     "usage": [
+      {
+       "input_tokens": 4885,
+       "output_tokens": 89,
+       "reasoning_tokens": 0,
+       "cached_tokens": 0,
+       "finish_reason": "STOP"
+      }
+     ],
+     "thinking_setting": "provider_default",
+     "thinking_blocks": [
+      null
+     ],
+     "reasoning_tokens": [
+      0
+     ],
+     "sonnet_thinking_tokens": null,
+     "finish_reasons": [
+      "STOP"
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01"
+     }
+    }
+   },
+   "label": "Gemini 3.5 Flash-Lite",
+   "model_id_requested": "gemini-3.5-flash-lite",
+   "model_ids_returned": [
+    "gemini-3.5-flash-lite"
+   ],
+   "cost_jpy_2call": 0.5412,
+   "overall_direction": "Yes",
+   "closeout": "DETECTED",
+   "invalid_output_levels": []
+  },
+  "gemini38f": {
+   "model_key": "gemini38f",
+   "levels": {
+    "A3": {
+     "valid_json": true,
+     "attempts": 1,
+     "cost_jpy": 2.3124,
+     "elapsed_s": 19.14,
+     "s23_flagged": true,
+     "s23_class": "Yes",
+     "s23_flag": {
+      "unit_id": "RB01",
+      "sentence_id": "s23",
+      "sentence": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+      "type": "rollback反転",
+      "fact_ids": [
+       "MUSE-HC-012"
+      ],
+      "confidence": 0.85,
+      "severity": "重大",
+      "question": "台帳では人間コンシェルジュ機能そのものが当面ロールバック（取り下げ・無効化）されたとされていますが、文中では「人間コンシェルジュ機能を以前の状態に復元した」と反転して表現されていませんか。",
+      "detector": "d2",
+      "call": "d2"
+     },
+     "n_flags": 2,
+     "other_flags": [
+      {
+       "sentence_id": "s14",
+       "type": "主体対象入替",
+       "confidence": 0.75,
+       "fact_ids": [
+        "MUSE-HC-004",
+        "MUSE-HC-006"
+       ]
+      }
+     ],
+     "usage": [
+      {
+       "input_tokens": 4765,
+       "output_tokens": 2901,
+       "reasoning_tokens": 2645,
+       "cached_tokens": 0,
+       "finish_reason": "STOP"
+      }
+     ],
+     "thinking_setting": "provider_default",
+     "thinking_blocks": [
+      null
+     ],
+     "reasoning_tokens": [
+      2645
+     ],
+     "sonnet_thinking_tokens": null,
+     "finish_reasons": [
+      "STOP"
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9"
+     }
+    },
+    "A4": {
+     "valid_json": true,
+     "attempts": 1,
+     "cost_jpy": 1.5486,
+     "elapsed_s": 14.97,
+     "s23_flagged": false,
+     "s23_class": "No",
+     "s23_flag": null,
+     "n_flags": 2,
+     "other_flags": [
+      {
+       "sentence_id": "s14",
+       "type": "主体対象入替",
+       "confidence": 0.7,
+       "fact_ids": [
+        "MUSE-HC-004",
+        "MUSE-HC-006"
+       ]
+      },
+      {
+       "sentence_id": "s15",
+       "type": "主体対象入替",
+       "confidence": 0.7,
+       "fact_ids": [
+        "MUSE-HC-004",
+        "MUSE-HC-006"
+       ]
+      }
+     ],
+     "usage": [
+      {
+       "input_tokens": 4885,
+       "output_tokens": 1604,
+       "reasoning_tokens": 1427,
+       "cached_tokens": 0,
+       "finish_reason": "STOP"
+      }
+     ],
+     "thinking_setting": "provider_default",
+     "thinking_blocks": [
+      null
+     ],
+     "reasoning_tokens": [
+      1427
+     ],
+     "sonnet_thinking_tokens": null,
+     "finish_reasons": [
+      "STOP"
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01"
+     }
+    }
+   },
+   "label": "Gemini 3.8 Flash",
+   "model_id_requested": "gemini-3.8-flash",
+   "model_ids_returned": [
+    "gemini-3.8-flash"
+   ],
+   "cost_jpy_2call": 3.861,
+   "overall_direction": "Yes",
+   "closeout": "DETECTED",
+   "invalid_output_levels": []
+  },
+  "dsflash": {
+   "model_key": "dsflash",
+   "levels": {
+    "A3": {
+     "valid_json": false,
+     "attempts": 2,
+     "cost_jpy": 0.5163,
+     "elapsed_s": 6.87,
+     "s23_flagged": false,
+     "s23_class": "No",
+     "s23_flag": null,
+     "n_flags": 0,
+     "other_flags": [],
+     "usage": [
+      {
+       "input_tokens": 4873,
+       "output_tokens": 915,
+       "reasoning_tokens": null,
+       "cached_tokens": 0,
+       "finish_reason": "stop"
+      },
+      {
+       "input_tokens": 4873,
+       "output_tokens": 498,
+       "reasoning_tokens": null,
+       "cached_tokens": 4736,
+       "finish_reason": "stop"
+      }
+     ],
+     "thinking_setting": "disabled",
+     "thinking_blocks": [
+      null,
+      null
+     ],
+     "reasoning_tokens": [
+      null,
+      null
+     ],
+     "sonnet_thinking_tokens": null,
+     "finish_reasons": [
+      "stop",
+      "stop"
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9"
+     },
+     "invalid_output_reference": [
+      {
+       "attempt": 1,
+       "s23": [
+        {
+         "type": "rollback反転",
+         "confidence": 0.7,
+         "question": "台帳では副社長が機能を『当面ロールバックした』と説明していますが、この文の「restored the human concierge feature to the way it had been before」はロールバックと逆方向（元に戻す＝復旧）に読めませんか？"
+        },
+        {
+         "type": "範囲の広げ縮め",
+         "confidence": 0.4,
+         "question": "台帳ではロールバック対象は『人間コンシェルジュ機能』と限定されていますが、この文の「the human concierge feature」は対象範囲が適切に限定されているか確認できませんか？"
+        }
+       ]
+      },
+      {
+       "attempt": 2,
+       "s23": [
+        {
+         "type": "rollback反転",
+         "confidence": 0.3,
+         "question": "「restored the human concierge feature to the way it had been before」は、機能を以前の状態に戻したという意味になり、台帳の『ロールバック（機能を停止・撤回）』と逆の意味に読めませんか？"
+        }
+       ]
+      }
+     ]
+    },
+    "A4": {
+     "valid_json": true,
+     "attempts": 2,
+     "cost_jpy": 0.5232,
+     "elapsed_s": 6.94,
+     "s23_flagged": true,
+     "s23_class": "Partial",
+     "s23_flag": {
+      "unit_id": "RB01",
+      "sentence_id": "s23",
+      "sentence": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+      "type": "rollback反転",
+      "fact_ids": [
+       "MUSE-HC-012"
+      ],
+      "confidence": 0.4,
+      "severity": "重大",
+      "question": "『restored the human concierge feature to the way it had been before』が、台帳の『機能を当面ロールバックした』と同じ向きの動作を表しているか確認が必要ではありませんか？",
+      "detector": "d2",
+      "call": "d2"
+     },
+     "n_flags": 9,
+     "other_flags": [
+      {
+       "sentence_id": "s6",
+       "type": "その他",
+       "confidence": 0.4,
+       "fact_ids": [
+        "MUSE-HC-004"
+       ]
+      },
+      {
+       "sentence_id": "s6",
+       "type": "その他",
+       "confidence": 0.3,
+       "fact_ids": [
+        "MUSE-HC-004"
+       ]
+      },
+      {
+       "sentence_id": "s8",
+       "type": "その他",
+       "confidence": 0.2,
+       "fact_ids": [
+        "MUSE-HC-006"
+       ]
+      },
+      {
+       "sentence_id": "s14",
+       "type": "その他",
+       "confidence": 0.35,
+       "fact_ids": [
+        "MUSE-HC-006",
+        "MUSE-HC-010"
+       ]
+      },
+      {
+       "sentence_id": "s17",
+       "type": "その他",
+       "confidence": 0.3,
+       "fact_ids": [
+        "MUSE-HC-010"
+       ]
+      },
+      {
+       "sentence_id": "s19",
+       "type": "その他",
+       "confidence": 0.3,
+       "fact_ids": [
+        "MUSE-HC-011"
+       ]
+      },
+      {
+       "sentence_id": "s22",
+       "type": "主体対象入替",
+       "confidence": 0.5,
+       "fact_ids": [
+        "MUSE-HC-012"
+       ]
+      },
+      {
+       "sentence_id": "s29",
+       "type": "その他",
+       "confidence": 0.35,
+       "fact_ids": [
+        "MUSE-HC-006"
+       ]
+      }
+     ],
+     "usage": [
+      {
+       "input_tokens": 5008,
+       "output_tokens": 721,
+       "reasoning_tokens": null,
+       "cached_tokens": 384,
+       "finish_reason": "stop"
+      },
+      {
+       "input_tokens": 5008,
+       "output_tokens": 786,
+       "reasoning_tokens": null,
+       "cached_tokens": 4864,
+       "finish_reason": "stop"
+      }
+     ],
+     "thinking_setting": "disabled",
+     "thinking_blocks": [
+      null,
+      null
+     ],
+     "reasoning_tokens": [
+      null,
+      null
+     ],
+     "sonnet_thinking_tokens": null,
+     "finish_reasons": [
+      "stop",
+      "stop"
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01"
+     }
+    }
+   },
+   "label": "DeepSeek V4 Flash",
+   "model_id_requested": "deepseek-flash",
+   "model_ids_returned": [
+    "deepseek-flash"
+   ],
+   "cost_jpy_2call": 1.0395,
+   "overall_direction": "Partial",
+   "closeout": "PARTIALLY_DETECTED",
+   "invalid_output_levels": [
+    "A3"
+   ]
+  },
+  "dsflash_think": {
+   "model_key": "dsflash_think",
+   "levels": {
+    "A3": {
+     "valid_json": true,
+     "attempts": 1,
+     "cost_jpy": 1.7446,
+     "elapsed_s": 32.82,
+     "s23_flagged": false,
+     "s23_class": "No",
+     "s23_flag": null,
+     "n_flags": 1,
+     "other_flags": [
+      {
+       "sentence_id": "s3",
+       "type": "その他",
+       "confidence": 0.3,
+       "fact_ids": [
+        "MUSE-HC-006"
+       ]
+      }
+     ],
+     "usage": [
+      {
+       "input_tokens": 4898,
+       "output_tokens": 7862,
+       "reasoning_tokens": 7757,
+       "cached_tokens": 0,
+       "finish_reason": "stop"
+      }
+     ],
+     "thinking_setting": "enabled",
+     "thinking_blocks": [
+      null
+     ],
+     "reasoning_tokens": [
+      7757
+     ],
+     "sonnet_thinking_tokens": null,
+     "finish_reasons": [
+      "stop"
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9"
+     }
+    },
+    "A4": {
+     "valid_json": false,
+     "attempts": 2,
+     "cost_jpy": 3.3083,
+     "elapsed_s": 70.24,
+     "s23_flagged": false,
+     "s23_class": "No",
+     "s23_flag": null,
+     "n_flags": 0,
+     "other_flags": [],
+     "usage": [
+      {
+       "input_tokens": 5033,
+       "output_tokens": 8000,
+       "reasoning_tokens": 7916,
+       "cached_tokens": 384,
+       "finish_reason": "length"
+      },
+      {
+       "input_tokens": 5033,
+       "output_tokens": 8000,
+       "reasoning_tokens": 8000,
+       "cached_tokens": 4864,
+       "finish_reason": "length"
+      }
+     ],
+     "thinking_setting": "enabled",
+     "thinking_blocks": [
+      null,
+      null
+     ],
+     "reasoning_tokens": [
+      7916,
+      8000
+     ],
+     "sonnet_thinking_tokens": null,
+     "finish_reasons": [
+      "length",
+      "length"
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01"
+     },
+     "invalid_output_reference": [
+      {
+       "attempt": 1,
+       "s23": null,
+       "note": "JSONとして解釈不能/空(JSONDecodeError)"
+      },
+      {
+       "attempt": 2,
+       "s23": null,
+       "note": "JSONとして解釈不能/空(JSONDecodeError)"
+      }
+     ]
+    }
+   },
+   "label": "DeepSeek V4 Flash Thinking",
+   "model_id_requested": "deepseek-flash",
+   "model_ids_returned": [
+    "deepseek-flash"
+   ],
+   "cost_jpy_2call": 5.0529,
+   "overall_direction": "No",
+   "closeout": "NOT_DETECTED",
+   "invalid_output_levels": [
+    "A4"
+   ]
+  },
+  "haiku45": {
+   "model_key": "haiku45",
+   "levels": {
+    "A3": {
+     "valid_json": true,
+     "attempts": 1,
+     "cost_jpy": 1.2376,
+     "elapsed_s": 4.26,
+     "s23_flagged": true,
+     "s23_class": "Yes",
+     "s23_flag": {
+      "unit_id": "RB01",
+      "sentence_id": "s23",
+      "sentence": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+      "type": "rollback反転",
+      "fact_ids": [
+       "MUSE-HC-012"
+      ],
+      "confidence": 0.85,
+      "severity": "重大",
+      "question": "「restored the human concierge feature to the way it had been before」という表現は、機能を「復旧した」という意味に読めますが、実際には「ロールバック（機能を当面停止）した」のではありませんか？",
+      "detector": "d2",
+      "call": "d2"
+     },
+     "n_flags": 2,
+     "other_flags": [
+      {
+       "sentence_id": "s8",
+       "type": "その他",
+       "confidence": 0.72,
+       "fact_ids": [
+        "MUSE-HC-006"
+       ]
+      }
+     ],
+     "usage": [
+      {
+       "input_tokens": 6070,
+       "output_tokens": 333,
+       "reasoning_tokens": null,
+       "cached_tokens": 0,
+       "cache_creation_tokens": 0,
+       "thinking_blocks": 0,
+       "stop_reason": "end_turn"
+      }
+     ],
+     "thinking_setting": "provider_default",
+     "thinking_blocks": [
+      0
+     ],
+     "reasoning_tokens": [
+      null
+     ],
+     "sonnet_thinking_tokens": [
+      null
+     ],
+     "finish_reasons": [
+      "end_turn"
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9"
+     }
+    },
+    "A4": {
+     "valid_json": true,
+     "attempts": 1,
+     "cost_jpy": 1.6229,
+     "elapsed_s": 8.46,
+     "s23_flagged": true,
+     "s23_class": "Partial",
+     "s23_flag": {
+      "unit_id": "RB01",
+      "sentence_id": "s23",
+      "sentence": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+      "type": "rollback反転",
+      "fact_ids": [
+       "MUSE-HC-012"
+      ],
+      "confidence": 0.7,
+      "severity": "重大",
+      "question": "「人間コンシェルジュ機能を以前の状態に戻した」という表現は、台帳の「機能をロールバックした」という説明と一致していますか？「以前の状態」が何を指すのか、ロールバック前の状態と相違ないでしょうか？",
+      "detector": "d2",
+      "call": "d2"
+     },
+     "n_flags": 5,
+     "other_flags": [
+      {
+       "sentence_id": "s3",
+       "type": "その他",
+       "confidence": 0.65,
+       "fact_ids": [
+        "MUSE-HC-006"
+       ]
+      },
+      {
+       "sentence_id": "s8",
+       "type": "その他",
+       "confidence": 0.55,
+       "fact_ids": [
+        "MUSE-HC-005",
+        "MUSE-HC-006"
+       ]
+      },
+      {
+       "sentence_id": "s12",
+       "type": "その他",
+       "confidence": 0.45,
+       "fact_ids": [
+        "MUSE-HC-006",
+        "MUSE-HC-010"
+       ]
+      },
+      {
+       "sentence_id": "s29",
+       "type": "その他",
+       "confidence": 0.6,
+       "fact_ids": [
+        "MUSE-HC-006"
+       ]
+      }
+     ],
+     "usage": [
+      {
+       "input_tokens": 6248,
+       "output_tokens": 779,
+       "reasoning_tokens": null,
+       "cached_tokens": 0,
+       "cache_creation_tokens": 0,
+       "thinking_blocks": 0,
+       "stop_reason": "end_turn"
+      }
+     ],
+     "thinking_setting": "provider_default",
+     "thinking_blocks": [
+      0
+     ],
+     "reasoning_tokens": [
+      null
+     ],
+     "sonnet_thinking_tokens": [
+      null
+     ],
+     "finish_reasons": [
+      "end_turn"
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01"
+     }
+    }
+   },
+   "label": "Claude Haiku 4.5",
+   "model_id_requested": "claude-haiku-4-5-20251001",
+   "model_ids_returned": [
+    "claude-haiku-4-5-20251001"
+   ],
+   "cost_jpy_2call": 2.8605,
+   "overall_direction": "Yes",
+   "closeout": "DETECTED",
+   "invalid_output_levels": []
+  },
+  "sonnet5": {
+   "model_key": "sonnet5",
+   "levels": {
+    "A3": {
+     "valid_json": true,
+     "attempts": 1,
+     "cost_jpy": 6.0726,
+     "elapsed_s": 25.5,
+     "s23_flagged": true,
+     "s23_class": "Yes",
+     "s23_flag": {
+      "unit_id": "RB01",
+      "sentence_id": "s23",
+      "sentence": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+      "type": "rollback反転",
+      "fact_ids": [
+       "MUSE-HC-012"
+      ],
+      "confidence": 0.45,
+      "severity": "重大",
+      "question": "台帳では『機能を当面ロールバック(停止)した』とありますが、本文の『人間コンシェルジュ機能を以前の状態に“復元”した』という表現は、機能を停止・取りやめた事実と逆の印象を与えませんか。",
+      "detector": "d2",
+      "call": "d2"
+     },
+     "n_flags": 2,
+     "other_flags": [
+      {
+       "sentence_id": "s3",
+       "type": "その他",
+       "confidence": 0.2,
+       "fact_ids": [
+        "MUSE-HC-006"
+       ]
+      }
+     ],
+     "usage": [
+      {
+       "input_tokens": 6907,
+       "output_tokens": 2414,
+       "reasoning_tokens": null,
+       "cached_tokens": 0,
+       "cache_creation_tokens": 0,
+       "thinking_blocks": 1,
+       "stop_reason": "end_turn"
+      }
+     ],
+     "thinking_setting": "provider_default",
+     "thinking_blocks": [
+      1
+     ],
+     "reasoning_tokens": [
+      null
+     ],
+     "sonnet_thinking_tokens": [
+      2119
+     ],
+     "finish_reasons": [
+      "end_turn"
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9"
+     }
+    },
+    "A4": {
+     "valid_json": true,
+     "attempts": 1,
+     "cost_jpy": 5.2669,
+     "elapsed_s": 20.44,
+     "s23_flagged": true,
+     "s23_class": "Yes",
+     "s23_flag": {
+      "unit_id": "RB01",
+      "sentence_id": "s23",
+      "sentence": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+      "type": "rollback反転",
+      "fact_ids": [
+       "MUSE-HC-012"
+      ],
+      "confidence": 0.55,
+      "severity": "重大",
+      "question": "台帳では人間コンシェルジュ機能を『ロールバックした(当面停止した)』とありますが、この文の『以前の状態に戻した(restored)』という表現は機能を再開・継続しているかのように読めてしまうのではありませんか?",
+      "detector": "d2",
+      "call": "d2"
+     },
+     "n_flags": 2,
+     "other_flags": [
+      {
+       "sentence_id": "s22",
+       "type": "主体対象入替",
+       "confidence": 0.2,
+       "fact_ids": [
+        "MUSE-HC-012"
+       ]
+      }
+     ],
+     "usage": [
+      {
+       "input_tokens": 7094,
+       "output_tokens": 1873,
+       "reasoning_tokens": null,
+       "cached_tokens": 0,
+       "cache_creation_tokens": 0,
+       "thinking_blocks": 1,
+       "stop_reason": "end_turn"
+      }
+     ],
+     "thinking_setting": "provider_default",
+     "thinking_blocks": [
+      1
+     ],
+     "reasoning_tokens": [
+      null
+     ],
+     "sonnet_thinking_tokens": [
+      1579
+     ],
+     "finish_reasons": [
+      "end_turn"
+     ],
+     "checksums": {
+      "article": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+      "ledger": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+      "system": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01"
+     }
+    }
+   },
+   "label": "Claude Sonnet 5",
+   "model_id_requested": "claude-sonnet-5",
+   "model_ids_returned": [
+    "claude-sonnet-5"
+   ],
+   "cost_jpy_2call": 11.3395,
+   "overall_direction": "Yes",
+   "closeout": "DETECTED",
+   "invalid_output_levels": []
+  }
+ },
+ "lists": {
+  "A3_detected": [
+   "luna",
+   "gemini35fl",
+   "gemini38f",
+   "haiku45",
+   "sonnet5"
+  ],
+  "A4_detected": [
+   "luna",
+   "gemini35fl",
+   "dsflash",
+   "haiku45",
+   "sonnet5"
+  ],
+  "both_detected": [
+   "luna",
+   "gemini35fl",
+   "haiku45",
+   "sonnet5"
+  ],
+  "flagged_without_direction": [
+   "dsflash"
+  ],
+  "not_detected": [
+   "sol",
+   "dsflash_think"
+  ],
+  "unavailable": [],
+  "direction_yes": [
+   "luna",
+   "gemini35fl",
+   "gemini38f",
+   "haiku45",
+   "sonnet5"
+  ]
+ },
+ "cost": {
+  "actual_total_jpy": 30.8992,
+  "ledger_rows": 19,
+  "ledger_sum": 30.8992,
+  "estimate_total": {
+   "low": 13.599,
+   "central": 18.323,
+   "high": 47.924
+  },
+  "per_model_estimate": {
+   "luna": {
+    "low": 0.201,
+    "central": 0.27,
+    "high": 0.539
+   },
+   "sol": {
+    "low": 4.017,
+    "central": 5.404,
+    "high": 10.792
+   },
+   "gemini35fl": {
+    "low": 0.708,
+    "central": 1.023,
+    "high": 3.866
+   },
+   "gemini38f": {
+    "low": 1.506,
+    "central": 2.026,
+    "high": 6.464
+   },
+   "dsflash": {
+    "low": 0.571,
+    "central": 0.747,
+    "high": 1.428
+   },
+   "dsflash_think": {
+    "low": 0.571,
+    "central": 0.747,
+    "high": 2.202
+   },
+   "haiku45": {
+    "low": 2.008,
+    "central": 2.702,
+    "high": 5.396
+   },
+   "sonnet5": {
+    "low": 4.017,
+    "central": 5.404,
+    "high": 17.237
+   }
+  }
+ }
+}

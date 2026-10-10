@@ -1,0 +1,154 @@
+{
+  "level": 4,
+  "model_key": "gemini38f",
+  "label": "Gemini 3.8 Flash",
+  "model_id_requested": "gemini-3.8-flash",
+  "model_ids_returned": [
+    "gemini-3.8-flash"
+  ],
+  "provider": "gemini",
+  "thinking_setting": "provider_default",
+  "started": "2026-10-10T13:58:06+0900",
+  "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+  "max_out": 8000,
+  "article": "er019_output/meta/run_03/b1b/article.md",
+  "article_sha256": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+  "ledger": "er019_output/meta/run_03/ledger/verified_fact_ledger.txt",
+  "ledger_sha256": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+  "n_facts": 15,
+  "n_sentences": 29,
+  "target_sids": [
+    "s23"
+  ],
+  "rc": 0,
+  "valid_json": true,
+  "attempts": 1,
+  "cost_jpy": 1.5486,
+  "elapsed_s": 14.97,
+  "usage": [
+    {
+      "input_tokens": 4885,
+      "output_tokens": 1604,
+      "reasoning_tokens": 1427,
+      "cached_tokens": 0,
+      "finish_reason": "STOP"
+    }
+  ],
+  "flags": [
+    {
+      "unit_id": "RB01",
+      "sentence_id": "s14",
+      "sentence": "And if this was not properly explained, users had no way to know whether they were talking to AI or a person.",
+      "type": "主体対象入替",
+      "fact_ids": [
+        "MUSE-HC-004",
+        "MUSE-HC-006"
+      ],
+      "confidence": 0.7,
+      "severity": "重大",
+      "question": "台帳ではユーザーが店舗への架電を依頼し契約スタッフが店舗へ電話をかける仕組みとされていますが、ユーザー自身がAIや人と通話していたかのような表現になっていませんか。",
+      "detector": "d2",
+      "call": "d2"
+    },
+    {
+      "unit_id": "RB01",
+      "sentence_id": "s15",
+      "sentence": "They were enjoying the convenience of AI, only to find a human on the other end of the call without realizing it.",
+      "type": "主体対象入替",
+      "fact_ids": [
+        "MUSE-HC-004",
+        "MUSE-HC-006"
+      ],
+      "confidence": 0.7,
+      "severity": "重大",
+      "question": "ユーザーが通話の相手方に人間を見出すかのように書かれていますが、実際に電話を受けたのは企業や店舗側ではありませんか。",
+      "detector": "d2",
+      "call": "d2"
+    }
+  ],
+  "sentences": {
+    "s1": "# Some AI Phone Calls Had Humans Behind the Scenes",
+    "s2": "It was a small twist.",
+    "s3": "Behind a service that lets people ask AI to make phone calls, humans were actually making the calls.",
+    "s4": "That kind of test was being carried out.",
+    "s5": "The main player was Muse, Meta’s AI assistant.",
+    "s6": "Muse can call businesses and stores in the United States to book haircuts, check whether items are in stock, and get price estimates from businesses.",
+    "s7": "If AI can take care of troublesome phone calls, it seems very useful.",
+    "s8": "However, in some tests of its calling feature, trained human contract workers made the calls instead of AI.",
+    "s9": "They handled the conversations all the way to the end.",
+    "s10": "The issue was not that humans made the calls themselves.",
+    "s11": "The issue was how to tell users who was speaking.",
+    "s12": "People who asked Muse to make a call might think that AI was making it.",
+    "s13": "But in some cases, a human was speaking.",
+    "s14": "And if this was not properly explained, users had no way to know whether they were talking to AI or a person.",
+    "s15": "They were enjoying the convenience of AI, only to find a human on the other end of the call without realizing it.",
+    "s16": "That was what was happening behind the scenes.",
+    "s17": "Also, when user information was needed to continue a call, it might be shared unintentionally with contract workers at a call center.",
+    "s18": "Meta employees pointed this out internally as a privacy concern.",
+    "s19": "News reports also cited an employee’s report that human staff made inappropriate comments about race during calls to negotiate internet or cable fees.",
+    "s20": "However, this is one report.",
+    "s21": "It would be wrong to apply it to all contract workers.",
+    "s22": "A Meta executive admitted that starting the test without properly explaining it was a mistake.",
+    "s23": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+    "s24": "The real challenge for AI phone calls is not just how they talk.",
+    "s25": "It is whether they can honestly tell people who is on the other end of the call.",
+    "s26": "The more useful a service is, the less it should hide the people working behind the scenes.",
+    "s27": "The Muse case showed us this simple but important point.",
+    "s28": "## In one line",
+    "s29": "Some calls made through Meta’s AI assistant were actually handled by humans, without users being properly told."
+  },
+  "facts": {
+    "MUSE-HC-001": "Metaは2026年9月8日、個人向けAIエージェント「Muse」を発表した。米国でiOS、Android、muse.ai向けに展開すると説明している。\n  scope: 米国のMuse提供地域・対象ユーザー\n  conditions: Metaの発表時点の提供範囲\n  date_or_period: 2026年9月8日\n  notes_for_writer: Meta公式発表に基づく製品仕様。独立検証ではなく、Meta自身の説明として扱う。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))",
+    "MUSE-HC-002": "Metaの説明では、Museは専用のクラウド仮想マシン「Muse Secure VM」上で動作し、ブラウザーを開く、フォームに入力する、ユーザーに代わって交渉するなどの作業を実行できる。\n  scope: Museの公式製品設計・機能説明\n  conditions: Museに必要な権限が付与され、対象サービスへ接続されている場合\n  date_or_period: 2026年9月8日時点\n  notes_for_writer: 機能の存在を示す事実。実際の性能や成功率を示す事実ではない。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))",
+    "MUSE-HC-003": "Metaの公式説明では、Muse Secure VMではユーザーごとに専用のクラウドコンピューターが割り当てられ、接続サービスのデータや認証情報を保存する。Sentinelという別のエージェントが外部通信やコネクター操作の許可を管理する。\n  scope: Museの公式セキュリティ設計\n  conditions: Metaが公開した製品設計上の説明\n  date_or_period: 2026年9月8日時点\n  notes_for_writer: Meta自身の設計説明。人間コンシェルジュ実験における請負業者への情報共有範囲を直接説明する資料ではない。 ([research.meta.ai](https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse))",
+    "MUSE-HC-004": "Museの電話機能では、ユーザーが米国内の企業・店舗へ電話をかけるよう指示し、散髪の予約、在庫確認、業者からの見積もり取得などを依頼できるとReutersが報じた。\n  scope: 米国内の企業・店舗への発信\n  conditions: Museの電話機能が利用可能なユーザー\n  date_or_period: 2026年9月中旬までに公開・展開\n  notes_for_writer: Reuters報道の転載。Meta公式発表ページでは電話機能の詳細までは確認できない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-005": "MetaはMuseの電話発信機能を、2026年8月から従業員にテストさせ、Museの一般公開後の数日間にユーザー向けへ段階的に展開したと、社内投稿に基づくReuters報道で伝えられた。\n  scope: Meta従業員およびMuseユーザー\n  conditions: 社内投稿に基づく報道内容\n  date_or_period: 2026年8月〜2026年9月中旬\n  notes_for_writer: 2026年8月開始という時期は社内投稿に基づく報道。公式の製品発表日と混同しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-006": "MetaはMuse経由の電話の一部について、AIではなく訓練を受けた人間の契約スタッフが電話をかけ、相手とのやり取りを完了させる「human concierge」「human agent calls」のテストを実施した。\n  scope: Muse経由で発信された電話の一部\n  conditions: Museから人間の訓練済みエージェントへ依頼が引き渡されるテスト条件\n  date_or_period: 2026年9月中旬\n  notes_for_writer: 全ての電話を人間が担当したとは書かない。「一部の電話」「テスト」と限定する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-007": "人間コンシェルジュ機能は、2026年9月22日のReuters報道時点で、Meta従業員の半数に有効化されていた。利用を望まない従業員向けにオプトアウト用のグループも設けられていた。\n  scope: Meta従業員の一部\n  conditions: Museの社内テスト参加者に対する機能有効化\n  numeric_value: 50%相当（半数） (numeric_scope: Meta従業員に対する有効化範囲)\n  date_or_period: 2026年9月中旬〜2026年9月22日\n  notes_for_writer: 50%を全Meta従業員の厳密な割合として断定しない。分母の不確定性を保持する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-008": "Metaの社内投稿では、人間が電話を担当した一部テストで、成功率が95〜98%に達する可能性が示された。一方、AIだけで電話をかけた場合の成功率は、それより低いとされたが、具体的な数値は示されていない。\n  scope: 人間が電話を担当した一部テスト\n  conditions: 成功率の定義、サンプル数、比較対象、測定方法は公開されていない\n  numeric_value: 95%〜98% (numeric_scope: 人間が電話を担当した一部テストの成功率)\n  date_or_period: 2026年9月時点の社内テスト\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 「人間の方が95〜98%で成功した」と一般化しない。「一部テストで95〜98%の範囲が示された」と書く。因果関係や統計的有意性は確認できない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-009": "社内投稿では、MuseがAIだと認識した相手側から電話を切られる事例が報告された。報道では、保険会社がMuseのAI発信だと分かると繰り返し電話を切ったという従業員の報告が紹介された。\n  scope: Museが発信した電話の一部\n  conditions: 電話の相手が発信者をAIだと認識した場合\n  date_or_period: 2026年9月時点\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 「AI電話は一般に切られる」と拡張しない。個別の従業員報告として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-010": "Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。\n  scope: 人間の契約スタッフがMuse経由の電話を担当するテスト\n  conditions: 電話の遂行にユーザー情報が必要となる場合\n  date_or_period: 2026年9月中旬〜2026年9月22日\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 懸念の存在を示す事実。実際の大規模な情報漏えいが発生したと断定しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-011": "Museにインターネット・ケーブル料金の交渉を依頼した従業員は、電話の記録に人間の契約スタッフによる人種に関する不適切な発言があったと報告した。\n  scope: インターネット・ケーブル料金交渉の1件として報道された事例\n  conditions: 人間の契約スタッフが電話を担当したケース\n  numeric_value: 1件の従業員報告 (numeric_scope: 報道で紹介された個別事例)\n  date_or_period: 2026年9月時点\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 従業員の報告として記録する。契約スタッフ全体の行動や実験全体の性質へ一般化しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-012": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。\n  scope: Meta社内テストの人間コンシェルジュ機能\n  conditions: 適切な開示なしで契約スタッフが電話を担当していたテスト\n  date_or_period: 2026年9月22日まで\n  notes_for_writer: 「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-013": "Metaの広報担当者Daniel Robertsは、従業員の反応は「圧倒的に肯定的」だったと述べ、テストの目的を、安全・プライバシー保護を実装し、公開前に機能を改善するためのフィードバック収集だと説明した。\n  scope: Meta従業員を対象とした人間コンシェルジュ機能のテスト\n  conditions: Meta広報担当者によるReutersへの説明\n  date_or_period: 2026年9月22日\n  notes_for_writer: Meta広報担当者の説明として記録する。客観的なユーザー満足度の測定値とは扱わない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-014": "Metaは、電話機能について、商業者との改善を続け、準備が整い、適切な開示ができる場合にのみ公開展開すると広報担当者を通じて説明した。\n  scope: Museの電話機能および人間コンシェルジュを含む可能性のある運用\n  conditions: 準備完了および適切な開示が整うこと\n  date_or_period: 2026年9月22日時点\n  notes_for_writer: 公開済みの一般機能と、ロールバックされた人間コンシェルジュ実験を区別する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-015": "Metaは公式説明で、Museについて、ユーザーが接続アプリとアクセス権限を選択でき、メール送信や購入などの敏感な操作の前に確認を求め、操作履歴を表示すると説明している。\n  scope: Museの公式製品仕様\n  conditions: Metaが公開した通常の製品設計\n  date_or_period: 2026年9月8日時点\n  notes_for_writer: 公式の製品設計上の説明と、実験時の実際の情報共有運用を混同しない。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))"
+  },
+  "raw_http": [
+    {
+      "http_status": 200,
+      "body": {
+        "candidates": [
+          {
+            "content": {
+              "parts": [
+                {
+                  "text": "```json\n{\"flags\":[{\"sentence_id\":\"s14\",\"type\":\"主体対象入替\",\"fact_ids\":[\"MUSE-HC-004\",\"MUSE-HC-006\"],\"confidence\":0.7,\"severity\":\"重大\",\"question\":\"台帳ではユーザーが店舗への架電を依頼し契約スタッフが店舗へ電話をかける仕組みとされていますが、ユーザー自身がAIや人と通話していたかのような表現になっていませんか。\"},{\"sentence_id\":\"s15\",\"type\":\"主体対象入替\",\"fact_ids\":[\"MUSE-HC-004\",\"MUSE-HC-006\"],\"confidence\":0.7,\"severity\":\"重大\",\"question\":\"ユーザーが通話の相手方に人間を見出すかのように書かれていますが、実際に電話を受けたのは企業や店舗側ではありませんか。\"}]}\n```",
+                  "thoughtSignature": "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"
+                }
+              ],
+              "role": "model"
+            },
+            "finishReason": "STOP",
+            "index": 0
+          }
+        ],
+        "usageMetadata": {
+          "promptTokenCount": 4885,
+          "candidatesTokenCount": 177,
+          "totalTokenCount": 6489,
+          "promptTokensDetails": [
+            {
+              "modality": "TEXT",
+              "tokenCount": 4885
+            }
+          ],
+          "thoughtsTokenCount": 1427,
+          "serviceTier": "standard"
+        },
+        "modelVersion": "gemini-3.8-flash",
+        "responseId": "3sXJatmvI9nM2roPhefmqAI"
+      }
+    }
+  ]
+}

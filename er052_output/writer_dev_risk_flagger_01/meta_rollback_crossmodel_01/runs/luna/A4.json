@@ -1,0 +1,283 @@
+{
+  "level": 4,
+  "model_key": "luna",
+  "label": "Luna",
+  "model_id_requested": "gpt-6-luna",
+  "model_ids_returned": [
+    "gpt-6-luna"
+  ],
+  "provider": "openai",
+  "thinking_setting": "provider_default",
+  "started": "2026-10-10T13:56:40+0900",
+  "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+  "max_out": 8000,
+  "article": "er019_output/meta/run_03/b1b/article.md",
+  "article_sha256": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+  "ledger": "er019_output/meta/run_03/ledger/verified_fact_ledger.txt",
+  "ledger_sha256": "6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4",
+  "n_facts": 15,
+  "n_sentences": 29,
+  "target_sids": [
+    "s23"
+  ],
+  "rc": 0,
+  "valid_json": true,
+  "attempts": 1,
+  "cost_jpy": 0.23768,
+  "elapsed_s": 25.76,
+  "usage": [
+    {
+      "input_tokens": 5210,
+      "output_tokens": 1929,
+      "reasoning_tokens": 1494,
+      "cached_tokens": 0
+    }
+  ],
+  "flags": [
+    {
+      "unit_id": "RB01",
+      "sentence_id": "s3",
+      "sentence": "Behind a service that lets people ask AI to make phone calls, humans were actually making the calls.",
+      "type": "主体対象入替",
+      "fact_ids": [
+        "MUSE-HC-006"
+      ],
+      "confidence": 0.38,
+      "severity": "重大",
+      "question": "“humans were actually making the calls”は、台帳の「電話の一部を人間が担当した」より対象範囲を広く読める文ではありませんか。",
+      "detector": "d2",
+      "call": "d2"
+    },
+    {
+      "unit_id": "RB01",
+      "sentence_id": "s14",
+      "sentence": "And if this was not properly explained, users had no way to know whether they were talking to AI or a person.",
+      "type": "不在断定",
+      "fact_ids": [
+        "MUSE-HC-010",
+        "MUSE-HC-012"
+      ],
+      "confidence": 0.72,
+      "severity": "重大",
+      "question": "“users had no way to know”は、台帳の「適切な開示なし」より強く、ユーザーが知る手段はなかったと断定している文ではありませんか。",
+      "detector": "d2",
+      "call": "d2"
+    },
+    {
+      "unit_id": "RB01",
+      "sentence_id": "s15",
+      "sentence": "They were enjoying the convenience of AI, only to find a human on the other end of the call without realizing it.",
+      "type": "不在断定",
+      "fact_ids": [
+        "MUSE-HC-006",
+        "MUSE-HC-012"
+      ],
+      "confidence": 0.55,
+      "severity": "重大",
+      "question": "“without realizing it”は、台帳で確認できる「適切な開示がなかった」から、ユーザーが実際に気づかなかったと断定している文ではありませんか。",
+      "detector": "d2",
+      "call": "d2"
+    },
+    {
+      "unit_id": "RB01",
+      "sentence_id": "s19",
+      "sentence": "News reports also cited an employee’s report that human staff made inappropriate comments about race during calls to negotiate internet or cable fees.",
+      "type": "数量時系列",
+      "fact_ids": [
+        "MUSE-HC-011"
+      ],
+      "confidence": 0.34,
+      "severity": "重大",
+      "question": "“during calls”は、台帳の「1件の従業員報告として紹介された個別事例」より複数の電話で起きたように読める文ではありませんか。",
+      "detector": "d2",
+      "call": "d2"
+    },
+    {
+      "unit_id": "RB01",
+      "sentence_id": "s23",
+      "sentence": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+      "type": "rollback反転",
+      "fact_ids": [
+        "MUSE-HC-012"
+      ],
+      "confidence": 0.3,
+      "severity": "重大",
+      "question": "“restored the human concierge feature”は、台帳の「人間コンシェルジュ機能をロールバックした」と逆に、機能を再開したように読める文ではありませんか。",
+      "detector": "d2",
+      "call": "d2"
+    }
+  ],
+  "sentences": {
+    "s1": "# Some AI Phone Calls Had Humans Behind the Scenes",
+    "s2": "It was a small twist.",
+    "s3": "Behind a service that lets people ask AI to make phone calls, humans were actually making the calls.",
+    "s4": "That kind of test was being carried out.",
+    "s5": "The main player was Muse, Meta’s AI assistant.",
+    "s6": "Muse can call businesses and stores in the United States to book haircuts, check whether items are in stock, and get price estimates from businesses.",
+    "s7": "If AI can take care of troublesome phone calls, it seems very useful.",
+    "s8": "However, in some tests of its calling feature, trained human contract workers made the calls instead of AI.",
+    "s9": "They handled the conversations all the way to the end.",
+    "s10": "The issue was not that humans made the calls themselves.",
+    "s11": "The issue was how to tell users who was speaking.",
+    "s12": "People who asked Muse to make a call might think that AI was making it.",
+    "s13": "But in some cases, a human was speaking.",
+    "s14": "And if this was not properly explained, users had no way to know whether they were talking to AI or a person.",
+    "s15": "They were enjoying the convenience of AI, only to find a human on the other end of the call without realizing it.",
+    "s16": "That was what was happening behind the scenes.",
+    "s17": "Also, when user information was needed to continue a call, it might be shared unintentionally with contract workers at a call center.",
+    "s18": "Meta employees pointed this out internally as a privacy concern.",
+    "s19": "News reports also cited an employee’s report that human staff made inappropriate comments about race during calls to negotiate internet or cable fees.",
+    "s20": "However, this is one report.",
+    "s21": "It would be wrong to apply it to all contract workers.",
+    "s22": "A Meta executive admitted that starting the test without properly explaining it was a mistake.",
+    "s23": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+    "s24": "The real challenge for AI phone calls is not just how they talk.",
+    "s25": "It is whether they can honestly tell people who is on the other end of the call.",
+    "s26": "The more useful a service is, the less it should hide the people working behind the scenes.",
+    "s27": "The Muse case showed us this simple but important point.",
+    "s28": "## In one line",
+    "s29": "Some calls made through Meta’s AI assistant were actually handled by humans, without users being properly told."
+  },
+  "facts": {
+    "MUSE-HC-001": "Metaは2026年9月8日、個人向けAIエージェント「Muse」を発表した。米国でiOS、Android、muse.ai向けに展開すると説明している。\n  scope: 米国のMuse提供地域・対象ユーザー\n  conditions: Metaの発表時点の提供範囲\n  date_or_period: 2026年9月8日\n  notes_for_writer: Meta公式発表に基づく製品仕様。独立検証ではなく、Meta自身の説明として扱う。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))",
+    "MUSE-HC-002": "Metaの説明では、Museは専用のクラウド仮想マシン「Muse Secure VM」上で動作し、ブラウザーを開く、フォームに入力する、ユーザーに代わって交渉するなどの作業を実行できる。\n  scope: Museの公式製品設計・機能説明\n  conditions: Museに必要な権限が付与され、対象サービスへ接続されている場合\n  date_or_period: 2026年9月8日時点\n  notes_for_writer: 機能の存在を示す事実。実際の性能や成功率を示す事実ではない。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))",
+    "MUSE-HC-003": "Metaの公式説明では、Muse Secure VMではユーザーごとに専用のクラウドコンピューターが割り当てられ、接続サービスのデータや認証情報を保存する。Sentinelという別のエージェントが外部通信やコネクター操作の許可を管理する。\n  scope: Museの公式セキュリティ設計\n  conditions: Metaが公開した製品設計上の説明\n  date_or_period: 2026年9月8日時点\n  notes_for_writer: Meta自身の設計説明。人間コンシェルジュ実験における請負業者への情報共有範囲を直接説明する資料ではない。 ([research.meta.ai](https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse))",
+    "MUSE-HC-004": "Museの電話機能では、ユーザーが米国内の企業・店舗へ電話をかけるよう指示し、散髪の予約、在庫確認、業者からの見積もり取得などを依頼できるとReutersが報じた。\n  scope: 米国内の企業・店舗への発信\n  conditions: Museの電話機能が利用可能なユーザー\n  date_or_period: 2026年9月中旬までに公開・展開\n  notes_for_writer: Reuters報道の転載。Meta公式発表ページでは電話機能の詳細までは確認できない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-005": "MetaはMuseの電話発信機能を、2026年8月から従業員にテストさせ、Museの一般公開後の数日間にユーザー向けへ段階的に展開したと、社内投稿に基づくReuters報道で伝えられた。\n  scope: Meta従業員およびMuseユーザー\n  conditions: 社内投稿に基づく報道内容\n  date_or_period: 2026年8月〜2026年9月中旬\n  notes_for_writer: 2026年8月開始という時期は社内投稿に基づく報道。公式の製品発表日と混同しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-006": "MetaはMuse経由の電話の一部について、AIではなく訓練を受けた人間の契約スタッフが電話をかけ、相手とのやり取りを完了させる「human concierge」「human agent calls」のテストを実施した。\n  scope: Muse経由で発信された電話の一部\n  conditions: Museから人間の訓練済みエージェントへ依頼が引き渡されるテスト条件\n  date_or_period: 2026年9月中旬\n  notes_for_writer: 全ての電話を人間が担当したとは書かない。「一部の電話」「テスト」と限定する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-007": "人間コンシェルジュ機能は、2026年9月22日のReuters報道時点で、Meta従業員の半数に有効化されていた。利用を望まない従業員向けにオプトアウト用のグループも設けられていた。\n  scope: Meta従業員の一部\n  conditions: Museの社内テスト参加者に対する機能有効化\n  numeric_value: 50%相当（半数） (numeric_scope: Meta従業員に対する有効化範囲)\n  date_or_period: 2026年9月中旬〜2026年9月22日\n  notes_for_writer: 50%を全Meta従業員の厳密な割合として断定しない。分母の不確定性を保持する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-008": "Metaの社内投稿では、人間が電話を担当した一部テストで、成功率が95〜98%に達する可能性が示された。一方、AIだけで電話をかけた場合の成功率は、それより低いとされたが、具体的な数値は示されていない。\n  scope: 人間が電話を担当した一部テスト\n  conditions: 成功率の定義、サンプル数、比較対象、測定方法は公開されていない\n  numeric_value: 95%〜98% (numeric_scope: 人間が電話を担当した一部テストの成功率)\n  date_or_period: 2026年9月時点の社内テスト\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 「人間の方が95〜98%で成功した」と一般化しない。「一部テストで95〜98%の範囲が示された」と書く。因果関係や統計的有意性は確認できない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-009": "社内投稿では、MuseがAIだと認識した相手側から電話を切られる事例が報告された。報道では、保険会社がMuseのAI発信だと分かると繰り返し電話を切ったという従業員の報告が紹介された。\n  scope: Museが発信した電話の一部\n  conditions: 電話の相手が発信者をAIだと認識した場合\n  date_or_period: 2026年9月時点\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 「AI電話は一般に切られる」と拡張しない。個別の従業員報告として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-010": "Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。\n  scope: 人間の契約スタッフがMuse経由の電話を担当するテスト\n  conditions: 電話の遂行にユーザー情報が必要となる場合\n  date_or_period: 2026年9月中旬〜2026年9月22日\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 懸念の存在を示す事実。実際の大規模な情報漏えいが発生したと断定しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-011": "Museにインターネット・ケーブル料金の交渉を依頼した従業員は、電話の記録に人間の契約スタッフによる人種に関する不適切な発言があったと報告した。\n  scope: インターネット・ケーブル料金交渉の1件として報道された事例\n  conditions: 人間の契約スタッフが電話を担当したケース\n  numeric_value: 1件の従業員報告 (numeric_scope: 報道で紹介された個別事例)\n  date_or_period: 2026年9月時点\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 従業員の報告として記録する。契約スタッフ全体の行動や実験全体の性質へ一般化しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-012": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。\n  scope: Meta社内テストの人間コンシェルジュ機能\n  conditions: 適切な開示なしで契約スタッフが電話を担当していたテスト\n  date_or_period: 2026年9月22日まで\n  notes_for_writer: 「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-013": "Metaの広報担当者Daniel Robertsは、従業員の反応は「圧倒的に肯定的」だったと述べ、テストの目的を、安全・プライバシー保護を実装し、公開前に機能を改善するためのフィードバック収集だと説明した。\n  scope: Meta従業員を対象とした人間コンシェルジュ機能のテスト\n  conditions: Meta広報担当者によるReutersへの説明\n  date_or_period: 2026年9月22日\n  notes_for_writer: Meta広報担当者の説明として記録する。客観的なユーザー満足度の測定値とは扱わない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-014": "Metaは、電話機能について、商業者との改善を続け、準備が整い、適切な開示ができる場合にのみ公開展開すると広報担当者を通じて説明した。\n  scope: Museの電話機能および人間コンシェルジュを含む可能性のある運用\n  conditions: 準備完了および適切な開示が整うこと\n  date_or_period: 2026年9月22日時点\n  notes_for_writer: 公開済みの一般機能と、ロールバックされた人間コンシェルジュ実験を区別する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+    "MUSE-HC-015": "Metaは公式説明で、Museについて、ユーザーが接続アプリとアクセス権限を選択でき、メール送信や購入などの敏感な操作の前に確認を求め、操作履歴を表示すると説明している。\n  scope: Museの公式製品仕様\n  conditions: Metaが公開した通常の製品設計\n  date_or_period: 2026年9月8日時点\n  notes_for_writer: 公式の製品設計上の説明と、実験時の実際の情報共有運用を混同しない。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))"
+  },
+  "raw_http": [
+    {
+      "id": "resp_0cae1f5b7fadbdd8006ac9c58aecb487d09f5ec222402629f2",
+      "created_at": 1791608203.0,
+      "error": null,
+      "incomplete_details": null,
+      "instructions": "あなたは記事の校閲補助です。記事の各文を、根拠である台帳Fact(事実の一覧、記事全体の根拠)と照らし、人間が確認した方がよい箇所にFlagを立てます。合否判定・修正案の提示・書き換えはしません。\n入力はJSONで、facts(fact_id, text: 台帳の全Fact)と sentences(sid, text, before, after)です。判定対象は sentences の text だけです。factsは根拠として参照するだけで、判定対象ではありません。before/afterは文脈で、判定対象ではありません。台帳は日本語、記事の文は英語や日本語のことがあります。\nあなたの役割は、台帳Factと食い違って読者に誤った事実を伝えうる『重大』な箇所だけを列挙することです。軽微な言い換え・省略・表現の硬さ・文体の問題は出さないでください。重大候補の例: rollback反転 / 主体対象入替 / 否定反転 / 数量時系列 / 不在断定(各タイプの定義: 動作の向きの反転、主体や対象や範囲の入替、肯定否定の反転、数値・日付・順序の変更、台帳にない不在の断定)。typeには上の5つのいずれか、当てはまらなければ『その他』。severityは常に『重大』。confidenceは正直に付けること: 疑いが小さくても重大の可能性が少しでもあれば低めの確信度(0.1〜0.4)で出してよい(人間に見せるかどうかは後で確信度の閾値で決める)。台帳どおりの文は出さない。候補にするのは、(a) 台帳と明確に食い違う文に加えて、(b) 台帳の言い換え・要約・一般化・範囲の広げ縮めによって、台帳が述べているより強い意味、または別の範囲・意味に読める文。(c) 台帳に対応するFactはあるが、数値・日付・固有名・主体・範囲・順序のどれかが台帳と一致しているか確認しきれない文。出すかどうか迷う場合は、出さない側ではなく出す側に倒し、確信度を低めに付ける。(d) 台帳のどのFactにも対応する記述が見つからない事実の主張(数値・日付・固有名・因果・理由・仕組み・不在・断定のいずれかを含む文)。食い違いまでは言えず台帳で確認できないだけの文は、確信度を低く付ける。対応するFactが無い場合、fact_idsは空配列でよい。(e) 注意書き(ambiguity_note、conditions、notes_for_writerなど)が付いたFactに関わる文で、その注意書きが落ちて断定的に読める文。\n出力件数に目標・下限・上限はありません。各文について『この文は人間に確認させる価値があるか』を自分で判断し、価値があると判断した文だけを出してください。該当する文が無ければ {\"flags\":[]} で構いません。\n出力はJSON1個のみ(前後に説明文を付けない):\n{\"flags\":[{\"sentence_id\":\"<sid>\",\"type\":\"<タイプ名>\",\"fact_ids\":[\"<fact_id>\"],\"confidence\":0.0-1.0,\"severity\":\"重大|非重大\",\"question\":\"人間向けの確認質問を日本語1文\"}]}\nFlagが無ければ {\"flags\":[]}。sentence_idとfact_idsは入力に存在するIDのみ使うこと。questionは1文で、断定せず『〜ではありませんか』の形で、どの語とどの語が食い違うかを示す。\n",
+      "metadata": {},
+      "model": "gpt-6-luna",
+      "object": "response",
+      "output": [
+        {
+          "id": "rs_0cae1f5b7fadbdd8006ac9c58c5c8c87d0a6b72fb2a1fbbde3",
+          "summary": [],
+          "type": "reasoning",
+          "content": [],
+          "encrypted_content": "gAAAAABqycWiNp4f46bYFh3HrEUasDqgJ4_hou3a53ReirzX5k_y_vht_L8RK2yNm-wx6CKotgUgS8sJDxo_PcU5hyxKqJW36Vf4UdVDqX0pOrG9tG3BwQi3Pe_TcqZi-v4q_dSlDK-ZdhwqGbEZud8L8Pvrbe725Ebez8kIPyRb7nxk2in1wv-9u66R19OSKvtp1c5-sqXDUF1wgz8rBxUnM2JTNEoGz0JGk-sOf1zQCWbNGqzApxnBCG9USqjVd0fxXBY7XYPH41DqOsaEiwGrJ487ryr6CKnR8JZE-itvKTA0CmJ7xTSaWL3xJKvw4yClEWpoK_hChahNGcNxHYSSIe_KX0FXWWv0NNsJDiYmELr-Z92qFGS8GWZGJQYBBf7NdRRBL1yk9vU4AEEmLO_w7mh7nU7H0jU3goSI55bWKaW2RSoaj6_iUOi4_yaPZZS6lCJAWTDJo0BxGzRsQocVLcnxw6kp7ldzsVjyckkcU9HsJLv9g1tGr88ekiE_fFE4snrWt73fYxRn4xzlj6ZlRukB3H_on0MR9tijIzX46umpah96qkgZjAgdflC8LBqZ7Q7Ai4o9YGNCz2JDIVDxvSSowc7Hr1GusoOHm4CPYk77hhQ_pdRAStp7xe_8ODnvJNPPbLYzHkY2Us3YnXC1RwIMixt0Y4HZNkz1bB39Tw9NKerT-aZa7_new-c59B8cEw_L3YfLyru7eraPbuUF_TATlEXTQKNE0H3Zzqfwj8W2_HmWkGv4Wa8aqC3q0SQlLSxnnbZn9qk5GHXjcJwF47KFHiQHTr1K4I-e3ZYecup0g8Zt-JSUD7KYI7sxV8ZW4G447BRoS0kom7jmnLp_3AdXP2mGGuIZguaxk1mAjeRqVinKxs-DRI3XD6GiC23G53U2hW80h1y55E8GhfKNY_FxgK9LGt2JytHA3KG1r9B_7ultiqau5H6et1Hvv0eJvxL1x0h51TesktMZlcfMQ1toatYhCket2v8BlQmjKbtm1ZsTQBYm9mred9F-YlfQXIxJ_jpuzroQlxy000lRw55sZC9sSmO-MmOScMOEBhAyVkLw4iPjF6I_EFEm23kcYcslO1ZECv09Z9S_ksmLpSFr_ogbUF7gDvXB4O7QV6IAU9h6GMMdu1tgzDS0vguJnTdYwu9HDoX_rMJzQBsyDizgIE4wpL2j0q1fM531SRLWwBin9jjuqfK-6OJVO654rnCH-Y8vo-rLWRn_RImZeTq0coVuv3EqbYsvCf_RA7BtpJErYq_uMgwrs4truL2t5fABsBh9zlpolLyDMWUtTgk-STZDKs6_uh-4GR7y3X5uephFg9GfEX7pRWG9d8TRiTYZcUz-s9sDrRxDcvYkkCumwwFXFI5GZy-2YhZ8JMSpeiQWqQOpfd2A2Tg8N7_JR02s3IL2COyPGX0EmcXnmrXQjmSGbXrqiavnoRezISMCvbCbAIiV6mwP8guF1V_LvXzUSkoLDs2kQvDia2fAYA7RQuVdtqKhpqobCxciVRjTF9axsz8jHsps8MpWEJQKUi68VUT_Sd_5Ag7PLE8Gpybscezc5TOn1xYWXHt6z6Vz0JoZ4m1orVC-bl1iXw7mGJcJkRyLJ9ZOXqfjKtuRg_IMFDHoMgy0zJY4XqULIcjC0o-gh8vIeRd5IMGg3BqQWFB2g-RGzCsaRPCx5qNInwyTxh1ZU7h4G6B9NXMsKVGjdHGGBLUzyDhFmXB6JX6vZlMPVMzL0bxmi79SnsD5ykQ7MqhtLJs6xc8Nfyv1gGXMflWSV-MAjVPFbNLDnay_W7pXi6F2wQCkKVXsfxh7i7i1X1mlCTDpoBgKRgvaogSUviAdhvooWye-V4NJCNpRS8UhBzYYpSOBbQvF8FBQNx3dkj6EQNArEWqZOs4n5petbGXwahAq3xXtw8licepNrkysmK1dxcHz-cmzUpTPbjajigb3pfLNEnvD4TbGr1X2Ru0iF_JBAKBKJnMDpMouG4ws0Kb7QUpEN82yW9i8QnJDw4OvGIsLRrYpDzCY2oLWfLjCTqepr9d_Aif4HHIyy7FpO1otCPuBYVHJp8V2tXlgEL6xn9QvbNVu7WXvCIpZNqijI9DABX3cHFUaB5Sp5eh6fpyuToHU7bxzQmhK07duSh5Qyp6ScV77-46OiDMuNZnOuNk12DG95BWAKqP2qaWakVo8MoE7dtirP8XDkYz9bjXXMYMYG9WNe2QZ9XRVLnvj5nFxGwgQPlf7HPSZSXrpzwvdyQVmvva4jrXnbRqY6wb153GdflqmZfKGAS-xCJlxT4AuUoFU6Ck7PJ3UcJT1s_PJyiMxTcAF021lrH852kBvcDmyBMBY0NZ-NrT89nPk1bmgrJ1wPS31VXYyQUHNcvlg7tSn9BmJFSrtFhSpEura9wKk6HoJEeKNud9dMpWVVyhhKT8dmDGvcV2SzsMiJWBCI9w_Ri5WOZMZa16YpVbe-vzJlRhVXed4zy7ewy6wmH6eXczKMnF3EajzToYRqZkd-EeKGn2yxTPV9E_O28ywhHbg5azbgTUPEBEvPW3tUWE4oDYx0cJOIq6gRTf1GOKljq0GA1N-tqWG0JlUyObutMVqgG2lIb20QU7ugg0f5SF63NCIP1Vn0jm-s57LztMx8B0W2J5QgQq2Kxmsl0fgNg2RGYf0EQqL4kdTFLF7ci7j2SRrJ_A60h5G6IT2O1TzPHMBFsEM2C7bSY7xgV1FnGm-V1XLEoHtCD-vvyOAZ5_OZP3acHxDPEfLWR3EkZMJZCqeFNUhNXUZ0LUx4hBocjmhbfLTFMab3H17QWwkI3cTL1AHTxDUMfRrBQaBMqSmv_J2V0EvKrz7IIFx8XPiInHmWx63i7Q6ca-6fj8jEnlPsMKIJjk8qXJ9KUcXYcJaFia60aShFoPlqABdy4CCikJY0r1PsoXgi4b3w0Q8B7ekWXKkhYQf5VdSXHtMujX3tuCPQVLUu_lnEJSORF5mkg9oXH4DZae6jPaNuzzrkyNA5EY6YS45ZZkSncicYI61N8HxizaxYe3KaViUeNoAmjXFbavX4l1ZGRujW_qct_jtEUILJoUE4uohHQyP1jhLBnAD39EJw3xf2Q3sYew7AD0bNKj6TddKF7Dl0eH0hG_YBnLbSBMAxLSogKiEdAoU1MwkpmQfURNJEuQC5KmaEnYNwiSKQs80Fh5L147_r33UtradqQT2mXeCoVXgvTKQxf6uOp4e0wHbFjtP1B-x7TT3r-0xD5LyB_pzBo0FCBShxuL7KTWH0MFqtKELuF46J4B0_I5pALD-_Wl5gmaaCw0dA4aZzVC0Kls7FDnfnQwgNJ_CLxSc3mIgydA9eeKcI085wq5EOBn-6rdbHSTSiJENUTysx50R25kEziwLD8su1wIbKfTzYjVH1NSvZrq-Hh1LYWRTF9dPbCIvBbTkXkJfSvrtUmk82GMec6llugquv2nWw7I59Q-qyDa-JBK5rO4xodpgG36BKS37t0rHYyjYh8q4dqTsZQ5C6JDbhDGQn_dypISKAfv1CDUJWMU5y1MwpI2cU1XeRVXrg0QiyZS2oIXJyrU2TGxfOH6DaqzyldaxZb891q6uRgdmBxYVooE4tqpTp-W3erjV-_VGOqk1-GesRpfEiksIwp2NEi4dO_HUJv2lbMLMTccfWF9XMN038sFKhKBTlRIsXTHchWkRryYq2-g4R_zdcLh7w6Zg6cdjwE1mcU5Cs78v4-aPnW9XW79bSy2Ai2LOfKpPg9hiv0pd7FdAE2C-N3aJDjSkOjpem2_mpIF3-jMbC3Qqap6lgZzeElff8rWqHKFY1O--b4DTjzfZyRliBr9jZRncKktipaKpO-ow9i-Dn9kKqsF70iYbnJJK5rKcFY7_X8mB1ecuaTRX6gQ0jwLHUYkhVlNvtvFOvmbYSbF4O6kwKefgpQ0fR1IAZouYvFMxEiUzNPONEDz0QwwRCPyQv4XIQQrduT5iBvW502c-4erbqexZEnp8vZTiDULmi74sgOy5zRRfkRec-37Fntc5r2AeXEwhoIvgCVIvJXjIT-c7yz6dkZlew-q-0XySV8KtC9xRoS9Nv3588EZ8uX3p093y8H8GQylK3if7TB0gv-kyaBDN5mjy4EtEN4rRvo1eFO6FhBsmQHdyjJDH_XVc1cikfp6xSc2R8rP2QskO5-VxwhwajNXmNt6eW81jOP_eG3d5Zyz9Epvf2ZvY3B97YrUCw07dJpBKzXfhJP0mR3lgYVA-RBTmCE1Nrh9nlIovH0ZRjCTvyCpx8qfkcFy3IS47Wga6EbfVLXZm6Hfnn5SJXzwmr2WwZGFX0bo3KNWxm4qfA5Lg-lQ6FTVv11AwCDLSWpfHodL9HHIqm22RlWHOJYGeImy2G5LP_azI8Bx9x9vdj1BtYmcM9xej3FOrs31hnlhFidp2eSbAROZ-lqd0ge9tp8Wuow14Oby598KWtUt-EXn8ylx7vOIlBzh995UfRLNDijPHWzqByr2gqLB2TrEwmBgnJZIGwbLJQ1LK0omTF0d-R_7ESeEhGStW6c199vrGZFi6CLWFGSJZztEmus-rVdFZ4jJmzTdUjR4VgVmWswfUWTgyIqDZLgY6dtYlIYixmYDEEuHtdcxrb1heTpgdzGTvw8RaclQSHU4o48OV8fLMO9EBPSP9aKPyEfuBvgbNoGS5uZdS3nKRzK0qpneLqYkTMr0gvyBxDWItx2YjHV6AgdNzxwpd383OgZrCpYu-n1BKQEINs993IKrtAxcX5y2i5aKJFzBLS1Wmgx9XoAQxeiIFvWQlWyTXwipS5dAfZTEXO5JTOVkrqJm210XqlkPcg9OnkYl6NV4qMB6KwTQZzAg0jO0EfwJYUgAlopnqXMWto8-_rGJZo2GzLeY8Wc1vseCFIxT5Ola1bX0GVyD3yNgTzo2M8j6jz-X4PYJJbVD2FIgoz1eVzoU4UvmzMZk9VSoOzxWEIe3FLUNwU4s0zMjMNk8TuGUzrhtSlPHkTMo0zxf4kLMxOU2-_ESh3cKbrWDVbgYKLMVuu-ftBTHI493zLBr8n1YLsS2PUIgW9-WsWWGxTVdgVq1PR9KB7cNRLvMU6XcQQdxYD65MwzjpsMW1flFhuD1D-H7bQfAzy3JL7hWmaohL0VOiWcW5-WCLRLGUBggE3mfOCrV3R4KnPVeLjjIPurrtt5RWIhl0R3pELGNJIo1S9bOY2YXwLpfWkvilwmDTL71RALWygfMBPxq_1wPfk3MVtms8iHaI7GPl4jfukWEUzWZBzJDiYcjW_u_8t9J4BKWwPelbWXmCJnc4vZMQ6EssGKVIsiRmVnBhYzK42ucHy4I72GnIeqwBHamQOzijToxj75-jCjsHIyhMrT04m_bejRBOZzqszW1KWQWLIyVz4YWTeS7vE4IxZbL9afmgrSVDk_96ECCsecwWdIKVeHzE7Ivd7U3tpkTawm782EVIIma969J3Ud8cJb5mAOtqM5fgIK6Vwh8uQcEZwLUIX8eSAw6CIq9AWcw2HVJDu9ZMBrgRarX7YemdNhR1kTaX2y5NnPPjSphL40nrbwL3ZkH9KDnSfHwhKlWyear94j9H-iecWA87P_oIBIWltOdtuB3ktYTaC9z50772BM6XwnPHj_wmuv3p8g4lpfFYmMjM2qsr5wIvDPoybEdbZfqjIHlOBlOjfPb4syte9lRB4R4cnYIn_OzyE27reroOexZJNL4wAKWymU7NTzp2lP8jSe_9Q9zH82hzxkfLNlUqLlKzomG9b5qeXF2XlOWAWCMembb5Ksfvq1Ue_f827hmS_XjjGLQUDYVsowPsTEzDP4qhai77Hx3j8_R4dLNVT_1AjPLSnwxkRBO9yZqIHfTQtBYD90m7soYnOb-njyD5ywdwqxLsrOJkqT5JAbwJ3PeYWZbdVgu5olWkiKRORJChdyi6jVprpnM50cOkFd2YoJKM4XCZI4_3ytg16WIiEePqX5P7IdMqlV0vCrWO6Cj_cSbHu4WYybB7CXmhCBtp2yEgYsTZD5yk-4VkwOcRjAFAai9uKpfSW17ozpNk6nbfJfm0NN7ta4fzjKVUQ-552DrIFTOFfPydO05R4QicDJdzDV08aBNvoGnfd8-IPZY8a1kmH5ZL8wl38Y_Kw1r6aRp61ndotzj__Hbhl09xXlCWZBtNHsnkV9pUgA6CfQKzB4QCr5hQzXyR36IahlN0D8DpJrc25mhXuuulGwye14jLTDzN2hL648BWLyIazmPYmQmFvAPs1MmedZs4K2UWb5RJGV540uBTc2Q-jTCniuVJyLLsqjV1FVoT7M2AwozyuoGC7WkzKjv4P2JTHVEZ6TxE_bWH9TI4daL2qrsuwKlLfvfZ9LLCn34H8ecdi2mHBfy9Hb9ONoTJYRJVcaqp1d9hj7Cgyw_cHxddaPQzx70TzlRBuGHhDeLc0D3dHWd1uh4zMGj8JH8zoHlOTVMnLbvR52sJUJHKQJMsMxA4ehoFLNIKyC9GuGT57_n-Epdfa0yFk3m-hfjlI2l9rUphi5rndmiJvDFPIZAxW4frjr-TaeMtLm2FBeejciJgr7NS9DnH01w64VMyOrAjiTZA6936c81hx_5_ndDuwQekuLuXi5P4LqAcR4g5WWUK2EXiCdLttVGD4FocZVs-KdFgVi-bKiibOPddDgZ9s-xlklmWwuX4KUW1zsqooyX3OPWMDerWQeNIsZl5HPWmLGtTpBJ5l0hfUWFZq3hSRbRuYCFod6_FI70MJ9ax05rBHlLgSmzDVo1R_LjaBwdaRyh14RXUA16H9S1l8Eq2YGuo5VUhrQJXhpOupZWYvKHoi_lAoeWLNfyiSKyte0iqhGGS7gIrNz3oTBm-ewnH2kR5GuIXaaHjWcdfnbZD6xipcSeCTykDPG89B4YGb-cpF8Pca3FvIX0OpaO2GQ-bUQPVoyy5STBLGa7njE5H5HnOLbtZwP13v8mGvGLETJLaYw3LN7YWYCmI8BEgNQyZZuCAMAUqL-6NlpjFY6hwGWfYdDh811vDLAxRIu0c_9X2XjBlK5BglZp13g158VgOfKiDjssl_Nyop_sFJwGHJHSajNpeOQlYyDTamCrnkXRnGbU4M_cNZk0XU8czCjoa3SXyqxF4-FRdhikttY9tL-ebRozoAhieWWqnRJteMZyZMLTFQLXl3uvNE5W5NIjLuUlgB1S1TXk7PlRPJYCIxmm1_YrDTgPqniz1N2E8YrYkbcGawDhShKT4rD00qcHAu9WpaSqYZa7YDenQwVO5TpZNb0nS1ZEcuU4gEoX3oayF7Y2YQevsL0D6XX8H9ebk18O9fb78lBGUxKSJ8J0TM8g6hbKcGcDwjsJns3mrBB7fYOFbe0QjQ4BjnLvT1keo7jOcI8KMtrE4SB95CRyHtFMMEuSRztpRmwa3vgs-g6Rqz74cNfKRZBfYPtOLeLCfli1J1fMX985x8aSvpaaS7tTomRBg3ZtPYBaKjSMQ7DETBCh814bMHJvmMsAs81pqqbgSftjKzqCj_6xMR7v-ch3R6GkO82oc1HgpH7mZjcqp98EtYmlocxgf6Cih_S8xxue2WfS2xg4subQO6xoJgHbH3TH0Lhg8n4FelkMDBsqQG19vvHgJtV_XmCKtG27E4_gi3a0HkrpGC4zzHFxVgBFw3MAKJcMGEfZd43VyIMM1ObUq4AcxMrJbRGP5NK3_vYvWdjRaaWJoJWKlQnQJ_zRfxIHSCQkqGhHPMNEDA7TG7mk6owOHbIKK-rHIGUOkVuebSoQF0bzljvqHfOz5xLARsexN-utTLkZ2ejYDgrViW3DG4znnfnBYbv8aQ9PQQCaj6rJeuT45bObwFWQ0ef52jfw8rX5pQXKHsViSz4ivYQoPwYqmw4SwUSSk0Fbuxv88TWk76QuUgcx8jEy2Fjw8uvqQgwZ-UpNeaRfrOVMDhsKPuAT15C6Xlz_bn96KU7XtxhK8xRP8cDLkJEXioO2X5pKFXeQkyjqqlO89X80QtFbaFDQY_cuSXCnXYZWMVSVxZIkbP52w2r0oKvenoAAAAuEjdk4Uae3z82ys02OBiuqLM01zJtv-G--7Ye-fguKlI9EBdLNxBolsiK52akfPMNFXHIJ2f7pDZ80VzFQYyR--OwtFOUg5F0cVw0YUZSXofpDPGAaguu6Y5XoonCTRnDU5AiHAlJbPvJsFKc06-LH8ErQS-jXSDV4cd6goXpxtAZnGVrEod8PW1i3Wizakk7DqxmBe64WeDCTasDYpqc9a-3sbhow=",
+          "status": null
+        },
+        {
+          "id": "rs_0cae1f5b7fadbdd8006ac9c593042487d09b1fa40df28c754b",
+          "summary": [],
+          "type": "reasoning",
+          "content": [],
+          "encrypted_content": "gAAAAABqycWifw8RY1TFQ846n-R_VGrfbRSgBllgINEhcjGQ5lJrMOvlt5e5RurQig-XIursKejaG2UiBfTr4G496kW8e9-Gaa22N7jOn3X-R_fK-98W-U4kCvwYgW_hCeR8UOp9-ePl7deX1Z0YbbupZLhhyZR2IKIiYxycWai-u2CEokRcozh7fboFQBXUKZo7lACSyud9p0U1Jm81KKl2_5meonozgnP_zm--FWQ2HkcQ509mhfRJnHhnOw1gov14tzBJGTXZMzukuIgpaVBgTg29SRe3X47d4yGhMclxBdXTB2pX0aWZ6BftK4784BfsRAV8m8wA06PIiqiskwUQWNHpW_Tnmnw1Jf3jmEPStD2s2KsEhZJ80_qihdYCM9XRVzujQEItHBAxQVsgR3quBF8Hwv5AgUcD04ONBxfi8bI5XB-nb3IDAAlsU-cyEPVjTgrRv5L-CBbtJ0u2bBsMp2jU6iybpNP1Vz5S0vnqPzzGYM2Yz1l8DgKA4_Pvbw2dCEzQ2icKLneFVeFR2KBMIWfoEE4Gm5EGuL8OaQV9YGYzlVLP_FU8drssMr4JXuxP9oTpozcR0yCVX2iqy95aS8fvtCVl-Y1savQo1DkpBv9Mn7gvY8cBeggCxNL4cYJRGk664HwAUPoSjqJpnrbuj0fFVnrbg5hYRyv6aKgma2BeYVQaeZvdawEeQUKsUQ5bXdZ1-clDiahu7a153Fr0IoOlLEKEBUlrTFn7Sx70I5EnElpBYgJsTfk1MNxBEVsSCT1Sfo3QeD3yxFq-dOb4RZWV26IvpkY3DJUOHRZO25PG9l91O1RzDrtBNxqeGXxW8lRauxVA5M589LiSms-VmbS207iXryb4fZHHelRkpRM174rxjId9mKzSXKotC2Msggs-jQcIncjeOXvM2jPuKqIDZQEXiOQ8M5OrHgptXeamtYnDfDCNhPLk6fIR6k3UFW3b_Hh103s9H20GGfiPnItkELhEk5LGES30OXJW9pgmoarquZwHI1JJsYzkq7nDX5_8-t97CWIzNgl0EEEhJohjuMWYrFnyyoYyHNy8Aj94rM5KDzvBWrgnceaDtZZjmPp9cDzyh69lwA0QX7Zg6AlbDph01W_X-r3rAjmf4WCxAT2vHRLfktMFPmyZTIgAnW9vznSrwxu5pKjMXR9C9l0D0iq4EAkG0xh2iOAt3av2z0LhmLHcBctFZj7v4YfM52CS1mvcoCG-YFRuiparnpwNdOhSE2ugbjzSrzOaeiLK7PMn9mIzcDjmoL2LekbWhr230Fb04VUCJ3CmcspuWB8C4efu98OFNVASEvAdeNS6rl9WQxSaXnSRoOZj8kD3v8o6ghDrY7dOdCuAimRdV3l5mgVBspDvuEHv04FF4VynlLMV0o5WopVl59E_e7Lqtr7h-OAyWLYjkuVEQFw6r57wf1HmHk5rw5z9wOxTacOCq0gqmB2uMhvPKkuRuxhMU2xnvN9v5Ck8UsZF22IaUzm53vglcKI6voPL_Kxb_JYGFY1L6FdARDigg3OAS8Ml3NJFEVq0dn6YK9oYg5bn1Y4TKLYN-yoN-AxWslSMs9pU6DioEyjHQCRqwM7b0yAMwgWKwwi6wBu0hfT4Ic4BJLF5Fzjz5AYJnU4VhxKl0GRxEWaTqK0NxD-7xCp4tbYCYugm-OyHHmtRlSRZTRpwDbs4IbZjB0TKCaOfia9P0iWD4nuHemnXaelRDzrF4rZeijMo1DDdhQiSbhz--2064GsI2ksQ3twMDoqd81rNu3C2yFMAUAodkAkh8geFmsGGF4f1rerYDXEJiVF4_yIciWkpLdcemjZQAH2SduDorOU3BQ-JMHDpuggOPrFoo03XdqlHvjsjmO988SzqtpQbmIw8o96cEBydev2XZn1lDLKfLAQVua07zAJsTU-NZijtmyirOpJwp_nXJpm0GHccaeTZa_bIu_scG2anq90gApzJUcKMcrvic-JYMYsvFPxyrpQV_i9RSGpTb6MEuysdAL4PL5LBhiENyxWxeSGenlXuOU6Gzm6JfFlTJXdCrnCf6fNCepAqsfOHWUr7FyyKKWIoIdr-Uy6Rdq9e96hEmFxogqjUfFFMUVqzLZQYDiDnlxVSuWzhP5hAGQX-USqcL_neNt7XbLFVAYIpqlEILLfO9brBQreLm7GGEXSZa5-umd1PHr3P4BjKFtMNP2OoG_mWUZJSTw1F0Fzcu2pEEeqJsmaj2vtnNbjdhNCgZ7foV8NSRJbRnhxCjArMNThnvhafC9aOpLynQ3en65qDfWmkuOuIjjz0gyySftsnespuhcAxeVHP5DltC1kItru4esvwEsa3LwN1DYrc6B6FPBbpTRSrfup9XbPqEQ0QjD82I96zkSqJPwnZqH07fHr49fZAJpCyfA8gbFNh4GbjxsMDV-wrbx181xVrTKER-_FfMLLiDZMnm_MJxy-gwDnSm_9mdT63n8D8uiRPlh1fTI0TbYCg_dWXCN7y4olfRssPaXxvE0D074GaxYKgDcclFBWwthffu16henKtvirgblXSjxEv2_6g-iSyQ18TvzFQmA5ZuRnvzuN8muVeFR_a4l7qmcAxACfJ-3NTFeWpez26TYaI9aoZjmxUE3wLqlvsMkv-mhSf8KUU_bntVx0ymJn_LPp-LZOUVPq43E1mGnZQz7_LeJnKY7kEXJ0xiJMiHE3G-qjzQ1cRAU9iH8xkyyEnWnOVWVgowEX1t5ZdFb13TlODN8rCBv6DuR1JWTLBUlDIxFrnGes_3VBlJE87rl--rKSyzOgcjtUbGi_ReN4Enr1b1HtrkZrEQ61C7djRlBsAEfj2rXDWrSN_GaTN3uwb2PImvo7cLOZ-td3QcGgqQGDJRyaRxjKhkvDUeNxSP3AG4pkws1gXh6Dsl-GvGrU2Shv2NDyjQrhdH-5jN5v9L-5uFnsc24l02zI8PhbtaPBq_PXO2F3xbFQBhu3oidJMZ2-roKfRHO2xtXfpLIYlerbZ80cBR7zU6jjXfYJULpPV65dHyG9OxITs8qwNkfk7dHhQlfmHmkeu4YMYJiX2y9DuiHxRP9GRaZw0s9KYzcnZma5Bgqlpyw8JuehhF_D7j5TyawBaeglFuA9hrbu8N8aW_lVQyewtZAKjDrl0oYkESVOdMCI3Cn5jH2Xd5gdAWGBrHlzQOkPhsdLN2CxI0YI6TQbQme8M_goHgnugvoG1JEw7EtGWphoBiB7fDRViANiAhnIzN245ASdBvwaZaDdybt-EXmOvo3jyVuLgm8yXsG7rXtZMLCRJJUqhkzhdJis1z998u_skJVu6W5hHP0vmtzKq4VZt2lk9JutplmqzTgj0vXEK8EtAzdC_5sQry5TJDcfYk--PsNftLXi-93zRkjaFCaYwzNYM8EWT0Vaqj6s3IB_COMCy5RNdTM2wUhKzLCtXTWMDn-DDzWUhna6TtuBNK3vht_dwCYvCQE4C8UaID5YDfDwHzhxcW7u0-W7VPA5opeAtZ5Gk5VE8dXPi6HK7NCiicMAp8fO4TIkDflo5_UYK3wx4HmU0MaJuUeOZ9FzymqmzZ_CmMZ_uTlgyiI9DrUQN8PrexD-gxtlvF6ls5NHyj6Hvo5RmQ9xb_HVDw4mlF0ogLIA89q6LNkFN3oUlLTmlxpU-_YAv0H5Nzf2ckpfhR2ecRUwtxt93y2AHeD52jVdKf9IhUkY1Z12kcAvnAX1EH476HW54vaDR6hnF9balbA4txfCqXlymJrGRu7J6MMpreHC8abWbicP46SwxxHLsX4f66oRO7FQb94jWhG39nkSN1iuAMRv9ye5-vseMWR_8VBM7tdmJkrE5tuQvAgug4AA-9CwyEDQq_O0-s9zSewPJV2blQTX-x902Zgd_UxSX9aoflS6AukOlSxzpqxuOZAviUqky7y-1ELNf2bluOBadggCwrg4paZiRBh93knVDfn64BhocNcZ4_3WCBYRL3MvS5qJpEtEBrRmLrqsV3s3uiQwOJjrpR2ke7S0FWKD4Yl-2uv4Ewe1q6AFUx0s7FmN6uaW_qLlokMvBsgrnzcvWwj4eaDONwnKezBufCPwSOJdUfZ_mAhaVuTizgSQ3YNXtCWr_FTK1uPaHBx5qdoQJqhw8W6Dm5A4q7wViSa1Ae-wv9xk8GkkN3g5QmuLgWxea8EWGfxoJdwRojeq5iODpKfOeN6EphQ33a_8v7XpP56R8f5aw9y9BTcWhh339POHrAbDFp8kCQXwGj-lqZ3cAIUVjk_oGa3D4_Gey0fH-XXsNhfkotDnn3BNzUVBv2xJ2FNqpw-WWplzJvpG4uuVWuaqKXz0Twq2fbpi4ymQSUYkiREwkcaNJggbBF-tR2o0_uaxPJYpzdYYYpat-q8wYkVBsUq5YhvJqZWs7feI-vCRhGDZMJctAbLzhCxybzNQhg1WCugEEXzf7PIKonZ2RW2Cco36-xRmAgGmlEQjW1KBG5B00w5tPPKqn8bETnHdQjAWMxS56ZJQl4DE_3ty0wNClWKBQ4G56e8XjZ9EtEOTqklxV780yUa-Ln6scB_vIefMRWIYLc0aCtvJIfD4_B8jEXanYOBCSDUDSZcRfWnhhoXGra9EiACaPIsWVzWU2cSsEtDJzS033scgq-5ayhV26e5rKo7dhBd-VSvkWBP5LsZYGiVtaAJvU65ECIqHDFdwcROtCOxmyHKLSOgLPfNAABdzov7coSKBKqfuXhVS8BulChbzUbqRvNEYj4eTYuRb2_iNJfWdE1Z1X5AIaiY28hy_etdNGRO9sWPkqIBVQqQRnjAmBBLI95cA4m1YGSSFx4zbAOKpxNfbeOyolBWEQhmUToF5n3zVxpjDM8wJYVz6i708yeKzP_SKPpu4JJHpBWk6XNsMTR6WVnyggw-LVick0_BWwxAxgNBBqG6GMtD7IVax46aycw1R_-K2RrIy2vxZ1qvEfCuTgfc5MAuM3VlTh6dztUGp4PqyRxL_srsguqsRZsVjubQwyQC_NJJ5OR_fOHlHMZ1F3U3_UwN9-1uOPaP_TeF5gfPmJM0YaXKkfJva-K1ffCdtvGd8VKVAH9X05LCUMQBOUd29wpX6hJxX5ZTImMnmHZeZFv5KQgzoaGNbz8pmfJHqsI5EODs7SDbqXPdG56DTong0oW2Rnlb_Dwjm4Luj6VfykkUjBgL1UcxnBl0VKe5SihhueSfrYiRz5nDjCO-Wn1Xj2IhcbgpoVXNicHzm1Y1zJJ4J639kq7OXVGARAycWeIhX-O-QVpkBq_iJkXYF-SKc7fvB0NKDZEVbd8dpHHVvYEAmsNes0A60r2Vux0mqisvfTT0CX-Itj5dBMDxGjmWWDmX7THVoW8BDrLBkzdZnQHQ9MAgREKv0m4_2oRlEOGdm-G80DVu18jIibNhNJqjOX51WDADUvqlBLuFfQMKJjWVmJeUlC35pUENXUNYpL9WwnwGVXhgj2B9FbNjVa9zvwwIdt7UIQRqbhrBVeIEXbIFqFqtIoAE-U4vBaTteZB4vSwMiM_NXH2-uOrmzeUwTxnRMYqeqUrny2duSYzyIvGr79E3-9jtj8jjjrOkdQyY33uwotTx2aRZ9Fhz0o2vx7-ujdz9LyEbywFSd_CWgQZS6M7Jf37pQxRgA6C4StBlMQPqw-ViioMDv4xG8Kqw4on3gp_S-nKYmBdJ05-yZY5zLdte6nz0u3Wt-P1oNoIaesv0xbjytQz4lEhcbDBrErfbhMRTCoWGkYU7DCMzdWw2F7O8pLWyv3KbXBjSkuKclqg99Bcq-TCejNM6l-KyrMnUK7EnXCsRH3aU1AyCPJ5RiDZ27TIYrEF-_AZP_e6Ud5IEh3rLIJ2doW-hJK9f-P748SqaNCxG1ZfY980iXG5WHHi_3hmvNIw-_zptOfcSIBDlE9semv6Rp5WEk6IJDf4xsNFGMv5rdv6H67F-BwayQEwMfAjlGoLXlk25eywwQuoP5441GzdYi2A8AeQuG5ZopA_Hlj8HA2O-yk-GeXGsMniBQge3hEsefQVjhpR8Y1X-XJxM_2-uKPndudjyXqPDHjqpPClfVoq2mu6XmvIPtvY6GWM3SQnIMV6ISHfku0Tu6_Xpt3t5nh_CCYPHnJDgOSDQ5LadxbBxwbcALDK1-a6VbrHlf6UBbJcI1qysAB1XVlhcI7BFZS5qNpiFad6xc8w2J8hkzUHkn-_I_I2dySamiRFwXtpn7UVwB9Aq0J5DRP8U7FIon92KGJfvWKELnqEgvtajfvvXzAL29mjpTfxLMcfMAx57TC2KBC7xmDqdvbeffECmihQQvnCCfM9-Gs8OKF4l2D3G65cjLKNxfQQsjj2Zq0R5cqb6ui5sM6WfAV7NyBF7hALVctW_GlFbeeLzX3BxdHuU4wfgZK9M8vSot0KW412AT1ST_4zwGCwAdbeUwuHcsxOBHGwNU1woHE-9HLMMw5aDH0P17KH0jeybDSDwrFIRkDANkQK_Y8nGORfPqmtHoZeXd94z53pThMl_LqRODg5lSCKSJJEuiQArTnymh-B2yffh89Pbvl97y9EAeh5njCjJ8HsrQUdWuTWeXFWzisiveXlIfqbyAWo3P5HDz_ub7XQNXDn3fHck4AuNRMzs6xGEuAzzqtq5fgUTkDUBvUznvyaDAqIM62etG57PnIzNi8nHkbHmUVABQ-K8-zreM2a3iZUH1vJD95_gek3Kyc_VeL3mhsy8ivZs5iOL6YWovxrpW9yT8xu26_CpWJW_Cdzb_VG5fs2Bz1J2w6PXtH9Q7ULt1Fty4GB29HWKKz0o_ALUXa8ZV7-aGHu7jN2QhCAhfasdu_hmViNoQSCG2dOdOIrXxnfHC5YSU6qYKUWs2ym_2GltTBdZl_xMwjE7E_EedO8bSGtea8IqLmRNGUUIkKx8sU_3X-q53MZfpGvlEM4k4GbvecBP6_XJ1TwarBH4pACe9Op2cBkVHjVohpEXm7sDPOy7ddmvxXnjSodBmLcW-AkZgFqeuzDMJFPpoVYvYTw0CNmCucWGPxZe4mBTOzwcutJx0EPJJHX7MfazW2bfOWMHo-tsFyMjFvHJfAyMNE4tPtdzvl9SJO10BLCjWaMtr5l2nC-KVabCQXMJacz9OZVEB5413Wh8Ch97wLZ8AgN94qoTPeY33VolcJEDoNzNXM_EWSzgMIFGJDztavdPaP_uf1QZOFuE6uZKZ1Qr17tpYqFIPAeZRjtciid2fX76cPRcouZjXICqW9RUHmiSVlzKD9YWnf57v-XGIIQXro7eFE_R7XVe9D9FMCvPR5voNkf3sGwSRw4UJPEwHOjKJWrcpoHHLi86XMb4OgWbHzBFMTIXSUjJXqcFKtNc-gh35IhkO50OzkzHlY_Er3G4rK7as6Td7aRXQiWkBkt18wt1lsmwEuv7KTSNcdsWhQ8h98bU9R6PPzCC4xPylKCC5-GWT4i9iI-UJIk7FZa5eo0LI4YRxwYbzO53LY2xIm3IHQOFNBsWy0RWjvrUKc0aqM8fb8dYVGaCqvN6tNKmQzQ9AHiM5VurTEgN0eyBWSSjdsT1bHEl5rN9zYEtxR4oEz_EMRHLE-7A8eSPB031m_3-h2vAZZL3kRcjIKyKuGqm9srCMUzlsnf9DJ7Yege_5slt2CLQAp_27gLfFWKSzXbWmiNQ6Dd1oxTdSwlwF6CE8liz6p8kVRRoZHSGdGluDiSWkiA_14xf4xUn8MK-Wgr5U4lsBkivuct6LM98m-bqcCwI_n4rdpBZsEbKVaYZ6nda0_j19VClrzgc-W_MrKzFXU-f_kvZtkNM6t3p9ngt653Isp6CSo7bpAonJ8MeJ7w7O_jKTc20WbxG3br_gbeTpS-M6xnyjKMudBAq3DQeLzycSuDU0ZLWSsA5dvaBBQRj6eRfoQS7YRJ0nNAFW4zLMEVWlAE0Ud90GcOrDyx9bbGYlp1V3qJ0lvarX-rrnhJ8ppOrNv5vy-kWYEXotACwjYnlMptB_xC1GG2NCYglDBWY_lhNzs3oZrLPfKPa6rwtnqvdYLbXjn4kGoAALRLD6EIZ9GaU7zaayvipwvL0hHcxH7B9LrHg8ehpXnKJzXY9v5-1lwRtwd6PAqxblQkEjLil8XgIXu4R1czErZWs3V2YrRhylvIOIxxagMlElTt37hQN9EwQ4qn7NoSkiU0ytOVP1IY9dbJfOIryFGaNzOYbx-ltnfcjIhT1VJHX03RRQxP3cDRt3NRJ7E",
+          "status": null
+        },
+        {
+          "id": "rs_0cae1f5b7fadbdd8006ac9c598f0cc87d08de7886249b3a16c",
+          "summary": [],
+          "type": "reasoning",
+          "content": [],
+          "encrypted_content": "gAAAAABqycWigmpqItVh50kt8r-xFnHqUNC6Pr8uwCjszGYqfM25KIt0_NYZ8Jq1UgurzwpnBps9FzVrUnUJE5bhxSqeXjr4CuiiTV_wo8lC91QMmfuuNuxVNlcuucvXOwCHpAnozKe3DFPljEZzHYc2V1yJsgz5mfbZ-LC5cDaQGHw2xH6I3iWtoiydEuONJD8hF8T1tUjJnnalZ-BFNZg8ycU5OD2jftBnT2oZKxDbH04JbQx8YlJ_dmB1-VaVP1VLrE8Ab8pus-p3WCKnJ8pL9ZSXCY8PL818yEwlPCK3n3aKFfZWwhan9dDbdGbTZNuDAZ-F6Uj3zkR-oxui93I7EaerUr05SgPaoaVVTD9Me4LiYjnGkEHvKN5rL9Xf1xUnY4FTLGh3QaHi5JCKHlKjKB1Gg-SUy1SwX5rZCCGxl6XPHECUB2xQ5Yf6ryYbkf_6uhJfkKHvSUaeELxOm4Wy42wMFvR7vytdiBJCoVFxAWrAFIk82QnHvXGyjAnB2ZL2u58stqn7OGZU7xN78DDUZMpYTU8t9XXFCnF8yHLdsBxRFVP5y_dGvsM_2xT3Ua-1sX-CX2ZaE4C18SGdtZ3h653uGH1eyMfpM47x1eN1HBiaYkQPN3V54Tucv3tFQo6rKdxFsbJ0BVueuuyTU0rkIGcA7lF6GSuui-jUFh2ANwyOODqxk5nUBbCKxNDK56NtBRdVjVYlbUyxlMAS7RRlKrgtvjr30gKAtr_PHhIatFmRgAEXnz8FAZZRQFzgvUIAX8e_GSYmn3c41Y4q8NwlS4CG6tFHK0rPJXyhR0TgvFNQrU3PODgmUEawl6qqfYI-8ISqsgOGKFG0DPjRm-i-A6NGLwxNOIZ4uyzIEgSHiNDEtbkIcbWNlfc7J5f0HVvH4k4Cge1BXyI0aMTsOO9HiK5OyY4Lb2u3NkUQ3OfzEjo9on9Pce7juCtVndmi9THlEAAxcmf7XTsibHUW7Ln81EMPe2JaJQPquelZEheoqzjGdUANFXtHvy1bYtZnNOAZUZkya3VD_0FJWlEABu_b8V88DVRLPUkag0aLQysRejKxn9ug6aK7fvlc5yl7_PP9fpUZK5CNUGIcIG5YwEhwySp20kf9bdPSi1cW20gYVLB0ZR_UmDIt7po62s4UA9dRtCN6V9YhN5A8UXqKeqHkRTpnFhaTCrkoM-oXsAlDhVbez8Wcl4ELFfCK0O3sw8dFNXPJUE5FRdJSBBHIQD9-PCZ30yWG1axUelSGuydkzPG_ctkccqtTl3OZji_x-A9XakDShYAY6_n-mvV0imNLVlYSqHSuxuRF8aepEZjwo-uwtY05QL6RDywLCoZ6-11VAERHUa3HWbrkagvaZjmZFNLMMMYsqT0FWLpzgvU6U3qQ25OQIcgAgujqpVHK6CMDov-V2i4Spftk7x9mqu5hc22HAWMYzDDYQaLGE6b8G_H0-O4wx9FAAJf9FeERvJ6w8WPGDfTF6VeTcdH3i1dTzTyi24NEh3wAf07I-HTmYoT-LlfdPFOWtS87I2svjJgV2sobjq-POYJPs26FBhnBnl_0_BXLHSATjvlCC9_A4B9YMsPWdwGgHqJgF0DapC8_855hzGs9luE8xSAEj8QWHw7KvQ96Xb7-NUj1OMEChXXfci5RRHZQHjnM4V25LwiDtfaF2216Vu_LoIuH45UeA8qfs6i2d5M_nO4_uSFh4KM0p07QpQ-k5uOYz0eb1Ycp629kdtF5Flix3hkvFAffGNrTnFZCttiUHYGF2em7WVePpa-hF_riolgkqbBPXNKZJ_S0ihsF39PNvbHHuiD19cmMq_y9OP79yyktVgRbuZcy-utG0TX2ZkvkZmtScYOAd8bkBmDhe1QCiPXHMpaS3OtVeNznUd9tdC_dKpE3su-UZh2ImYJK4pYIfcB76Sramrxpjw0IAVjCoB-kmRm6HdUIlMZFJ53Q2KiU4eA2_u4Vx1Tpg9fxniGpSxIfQ7ZevIqdb_F7TlHSSBUalKcAlsx7i9AZB_nnu9wlKGQXJS_UL7Yzqgs94DH1leDFqKvLf9YNvc9VPGUsU4o2RsXcJcETRWSAqCkZH6RJVixML4TV6BUuMnK6RvCnUqDv-e07H4uPUZzIFTA1eJKKwkfVgBAYgdpTsQRz2U3ZgIBkt8qqA7ZaY08dRMB1_z0URY0b0llC10fRm0OjGjyWc9AZ37rYdTZi6TEu81pFIFtQnOerMcm3fr8P5-8_fjDtKZ_6g-QpCK37jpm7kpY664KgUN-HHM_NdrNd26ckcrOyMh16-sYxhrKqMnVYCB1n4pcPoUGbhF_vtQRYF9Fgl7_mhghUh-dbrQ-JJZKortFZyI6YVwpJ-N2k11CxTvzw_UB_6yw7KVkXrYkTKunzhiFHswmOnybCMxpVlQjXGMd7_BQI0015-4z2rvWY6c_8-4TO7JHHsSVeCCACAie-fQB6VE67MMy9NMgpPZMdj4rEN3OTZj5tv9DfqXfK3jOWRsxjfkWtMEvzuEi9Vs8kBZvA4bannAeFcWuDDQTk4c9wZ4mKjZDzzpAnzjZ35TEBc1yGPdOE_eV_mG6pznXp49i7XMlL1gMt8h4rRBs8t2ACjM4GaMsM8p_mwfqe7DyOApUQedOXeYReKDfM7XzuLSz9dzjHMJYJ52IeQuQONtQKn6ejj2YTyGCbIL5saKMU1EdFDN-w_6exRBEbYtIDKjnvDS9y6ZMH0D2ZHovGcDvNEWZOyapFAhLJjqS58CBoLOoFn8evohw9Mchwwqv8AYYi1IDBr-_RFh-gw01U5ugZcHcZxHHpZPjFSrb_VCRXdEdwFRv6xWE6zHaCGoIZsd33ec6u8LIfgpcSg2aF3ImLQEF8WVDt52n8CYUUQQAl68i8-ZMhA3igOnedQPRRFDgf6BiF3WlztavsAvCR2xNGD1yTmCXTkgxNRBcO3KISuFcA3vVMXUOYT1zDLur0IVuNH40srKy5i0Vk3TLh0gtTBJXZoI1LBl4e-ovnEmUCju9mABWxevIWBB8eZFMbR-Pq-4o9RD4Fdlng-Fh6ur_p_muJbNOCltLPHw9edZRubxPcWYgnG_4ZMw5pSO9mf06Mz3KpP03zZAe6OXIUjl7fYCNt9Llz30lA1RajWpIhoy5I-vUBi6JWGZCtLc7HHP0dQ_xalm9-ry40xqWOxmbDbtzWJQ0FidXB4DkbKHuu46PcRHeKDjpOu_CdqV6DlOYFM4eP-f89svW5H0VbVjLFPKUTetVsteFAPVorAIZtWf3ZmTmbXp1lx6XoyNYZyDDQ7HeyBX6IkT_S7HppY95U6yTRuyc2MoD4NNG38_LwsWCLVuMcy9N8dzRrIsgvlQGKAMFaOtCY-ZESyNGlr5EMre-3zTyzRsawdz5_1MCkj_r3JBsiua6o2X6lYWbLHj9p7sOIFdtPKOU9mRk0MRuK5aK0qNTjS1Ae1KYD0QkyzgNrAMhK6sJHsfuhoNWDyZE7dSSd6czCA33BEtA41ouvwX2ry3RosPgmSOA0JoVoYWLv28rPRwFQ-idM1qGA6F6FKk2lIOhSZ0z-hVLzEdzc4aO4tXeWH7w0LWkYSf_dxOe2mPqIjRuH-FiFOf_aFwRfwRdGC8yhgHkV28TLw5h_xxUctSFTszcUhMT5adOXMUFA0XoIBMO0GN18-JgCi0dJIrVJ9MilvHiNcmQUVsuR8aysksArvGVkzOk6MauaNRP53LAnsMbDzsRGbjaXtVXmOW8ZJmaEMnto-SPqVO9i3baENY_wKOlWnDc4uvVmrxdntmySKdds-s8hoBPrgtnBM1vclpmy8n3CzPs4BDgW81IDdgnS5IzAWOdXo86ZF0MmvM0jrpfN2mW1QvULUnpTVf-0DEKGWIe37u4sepo2tQ4ESn4cSmjrMpSGLBsX5sAdqzWctjwSqgJgyCQnHlbdZfQmMzIB4Dy5j1AkCIHQyZlVMBPXiIoSWMFSB7dyNAB2CiJLz8a0AfYPzO6Z7H4gB4bkVPdgUsQolfdVsv-oR_x4CcxIXAc1DCJacxdVdIiiio1aEKFTL1sWFTTQ7LwPnyt5ZPm1QvXVa3-QuNm_ZxZb9RGjkI2q_6jqCgF-pN34YEAUZ4FreLKxrPwL47A5aoxjJEpCHDgqH_JgcNKWmmCzX2_uRZvBizeIPHrFEqsMgp7k4rZDcTNdxtG1X692YbQEhA32Mu652mmGe4dQAvcK5afYS4Ype5j2VGNNvpCZjhqvIsbz6bhYZhn_XStu9RuIMn6oypxOFhgD5Ddy6HQaxTt-i1IjqWZvMG08wPsuM73MXJQFCA55zjXuLKUubCGj5MqxnLxSWMp3fDqFZOMxyKGIvMMuwTONjejuUWzv8WiCtE3sYdJzmsrEIFjSWROXXKBQ1WazNuam133Y_TmQXWiGYJUHbkzAa9InQAJuUMlX1-hPqc5MRKNjeVTkb96t5GfGgX-7mfaEaWL4nqYrypjuCmX-39HiCARAisbFplfKk_V8z4UhaNl0MjnMISbfWXoE9wl82ia1ZB2TomV_eT2DMxHaoUqi1w_yu2G4RgOmoSMRa2BYrFVwXamWvDZbbFtiV7KMxGEoEdvAb2D15me3pVgwg0w3t2gqyHpRB1bQzMFhEPOsCGvYRfDhWaxff1XXbOFjEXbFpSVl1Na8ljqktXrEKQOX3APE66jhw5ZWUP-vvVHpbHYwbP83c-ggoIgRklw3D8EF1YOGUt8IvmfEzms9MLEQ8PMMEr_tkLryryemvj-Ca0rVQby8RNc2gFknMpu6cg1HHo4fzSJFMjYXMZwbEiIp6Q7kAvJdDegfKG7bO_-jmQ-6uIKBytDdZShzEybyhoCRc7cjGVvxtUaa5w5E88Fc-hlSMg6lJq8CjzNTmSSCGbz1cvNAlKeT1GdWiPqmv_VCsU76dAmfDowqv_gC3rVLILqXFmWYkyfsdsA255pZ7iFT_E0wQ7q-6K75OfkjoDJQGG4T8CCrN-OX70WVcuaXs7SyKclsoqrJSCTZWSyrqLMj2IkpPifAmLfHJ-uXzJEXSryXSGSfj8v7M-LUOWTCeXCihm3mvFkwQAgr0HUijBMzg0lVOJS9601Ee_ZcS4cI7gYBkdVmy2ldCrh6gizeJpbrlgrOmqc_zadpzQr-w0NoY3o2HTJciuWmHKMYWfmH0wEVVd4qxL7UJI85K_JwQw89GJZPcwhcpzE9thbKMYEtA6MKDNLfH1Zl65mUyLZxbzFaPrnlqg8DpnG4--Qm1fquL2syEBuYKn7gkuvMj7xfvMKvqFruSSMOEBZQIfjirpPrQIs1ScbiA43CR-n1wsKspa27eWqzoMmYrqyeAddRKVTf2aToJpH-WIoWou2nlk6F-vdgL6p11eXiOBHk7br03TZI-pWpxbbk4ek5FH0_gPLvCinK0UpJ62Eq-gN3AIdJpXeF-KAiqEeDHemqnu1zJnqSyVW2rniZOgNbfqpxQBS5sug_Nkkqa6pQ8FTsHl2yVqyEc4h5DMR8F62Xvv6vFvaE_ovLQyIrKsr6tl6y3qya3SfrL-PU-W6s0e8qbZ6MjGYWcyyzbCiMu-MwAlcjza-rspMUPDlzUYR7k01HiBwpFN9xvktw2RmHQHCixR8TGt0DUda9aFRbK0-5i8QoVKHpPKwxsUT0Q-AOhSxX0SEg3KqCvkNAd3yitKs-NaMROyxurHvdysINTBm8u9-CJYj31Q3mdBDXSzXDcmAahZ5OY29VoyummTkMsCVVTqH4s4zE5RhWaaHbGzj90Q_nHd7m8I5GW1tm0STPBSAVQRHAogslYqCBsr0vEjOlXi0twxZlTOOrxXji_HeywTemJOCPh3wlCDNiCtgVrlM21Ix3xKTVzh8FcoNlrwfGsiXujToyfkFi-VvDTg4KH1hxRdlUBa7cFasddvOEWy8zW1atxOSjm2XS9dneqF6eKSRk9YApM30PajPVxaK3o07swuFUqeIZvrV0uEAK8fSff1V6o53erxwW4FAMQVSddV3mjpZY-OjoC58Be-4PdfC2g6GWP69YhagvBmdcUL8zH4GBZK997azpK3P0xhZX1Zw4OqPmcoIH88PLOf6y9qI__s3H7WBybVHmHXmJj6fniXIj8QAHc6dIuX0-x6a-zfaTJhKB8osfsNvab0cDIikxZZpjm-MUhheYlVeQ51h4HZQmaPpBj2-WA8zMut4dmPac5cJVmjhfW2TR93ePUKpWDWyBvC9zGvLd_RVMM7B2FhzMbh6wN9Ld9KWXXDvZfGMVDcB26n0tO1DZVeBka2GhXPa0NCVw_dEAYq7gnIFF6yQHzS7mjnCSTTZYIZ3A7vs-ihOPNrrafR85_sh6Ybe6pdTJ8pPKITSs_st2JRpP6zcYhPOhE8c6lSSbKSJrr3j4y6_QI9zyhRhX-ZPRbmKoWRkYlddK-NpZmzmjKfFmMq36Hsx_4KFNiU3m0sT2ZtoU2hrObKaInuDkMjQRF57S2kn_y6F5c9fJzgu9-VO-8jPMSI_tpcPWBBEuy2l8MgXTUqmRX7x2zuTUbJrXRXf3Rg57tv12OtYaI4qpqXyJgAaAeidBeXR8E8YDxDdONPgLdghm_e1GWEsNIYrqxS2KOlscOTPUlE7MHoqZyyjtARSk7r3IbU9GvcKC9AD_SkXb_xKBxGx3qKCx4ub3EeQp7GmVcMKQolQeyrIhKocpCBD3TJMOBAptQmTNfkWttxFRWAaRrisA_Npxgnijk_N9Bk8yqa-JIRQJeg90aTLr6CF0KCSSriMLyt9UOf-39YsA9RQBI9o2fgqvbNnCaBhteotZjdJYKmKmTTcuHHZ-byuqkWCx-YvjRbIJ9RGlxPDPrVKze5tRpDRTUIibbzEyttJ7NxXVUiBciKv7V4RtYDS6vno-OeHQaw_z4xz1h4bi_Bea3pVfMzWweaAYs2nTwBCUlWO2HXCl1JhDEJBu00Je7lea3DEa5Qr-AOmZPvNFAUhQiJz_xjt0hUaA6Qbkse1V1-9G3AYsDlKnV7ic_OhL5bLyESbjlx2TkuL7T2Un8genUT5AJIdgRg9V0CJVMt43MHAzX1B9gq4X0bXdEBoKGJdeL6TZu8QUvIpAjq5Boc8LG5wyH6vHRmzZoXnLfUNDHYa6GNgv7nk8E6CWGfEs3_lHzHBzyYqBdHUgKdatixCIz8LUpqO-2_QDtvVDi830y27bysk4HXAPkmTLNGrc_j_rKJbki2TcbggmEGu87ABujWazz-SvgocWsUJbF0PONe73uVeCA9hTfheeQl4icetbLFj0M3-OW-GchEL49igUR0e-KU0kP0FFUElVPkOLfdxuYQgAE-_4PRpP5aSpBCevhdx-syIYXSM8YM3Y7qS_RDLuZKQb6Vl_sUokDoUukjkfDIOGujKwQ1b30dPXPDQre3tFmLB1qF-M9D88N8vHILxNacR4BPqaEFN9PipJiKfWa2cnhpMJg0BmRqyw2Nx6KVpNDw==",
+          "status": null
+        },
+        {
+          "id": "msg_0cae1f5b7fadbdd8006ac9c59e91cc87d082ccc5e3b2d43d8c",
+          "content": [
+            {
+              "annotations": [],
+              "text": "{\"flags\":[{\"sentence_id\":\"s3\",\"type\":\"主体対象入替\",\"fact_ids\":[\"MUSE-HC-006\"],\"confidence\":0.38,\"severity\":\"重大\",\"question\":\"“humans were actually making the calls”は、台帳の「電話の一部を人間が担当した」より対象範囲を広く読める文ではありませんか。\"},{\"sentence_id\":\"s14\",\"type\":\"不在断定\",\"fact_ids\":[\"MUSE-HC-010\",\"MUSE-HC-012\"],\"confidence\":0.72,\"severity\":\"重大\",\"question\":\"“users had no way to know”は、台帳の「適切な開示なし」より強く、ユーザーが知る手段はなかったと断定している文ではありませんか。\"},{\"sentence_id\":\"s15\",\"type\":\"不在断定\",\"fact_ids\":[\"MUSE-HC-006\",\"MUSE-HC-012\"],\"confidence\":0.55,\"severity\":\"重大\",\"question\":\"“without realizing it”は、台帳で確認できる「適切な開示がなかった」から、ユーザーが実際に気づかなかったと断定している文ではありませんか。\"},{\"sentence_id\":\"s19\",\"type\":\"数量時系列\",\"fact_ids\":[\"MUSE-HC-011\"],\"confidence\":0.34,\"severity\":\"重大\",\"question\":\"“during calls”は、台帳の「1件の従業員報告として紹介された個別事例」より複数の電話で起きたように読める文ではありませんか。\"},{\"sentence_id\":\"s23\",\"type\":\"rollback反転\",\"fact_ids\":[\"MUSE-HC-012\"],\"confidence\":0.3,\"severity\":\"重大\",\"question\":\"“restored the human concierge feature”は、台帳の「人間コンシェルジュ機能をロールバックした」と逆に、機能を再開したように読める文ではありませんか。\"}]}",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ],
+          "role": "assistant",
+          "status": "completed",
+          "type": "message",
+          "phase": "final_answer"
+        }
+      ],
+      "parallel_tool_calls": true,
+      "temperature": 1.0,
+      "tool_choice": "auto",
+      "tools": [],
+      "top_p": 0.98,
+      "background": false,
+      "completed_at": 1791608226.0,
+      "conversation": null,
+      "max_output_tokens": 8000,
+      "max_tool_calls": null,
+      "moderation": null,
+      "previous_response_id": null,
+      "prompt": null,
+      "prompt_cache_key": null,
+      "prompt_cache_options": null,
+      "prompt_cache_retention": "24h",
+      "reasoning": {
+        "context": "all_turns",
+        "effort": "medium",
+        "generate_summary": null,
+        "mode": "standard",
+        "summary": null
+      },
+      "safety_identifier": null,
+      "service_tier": "default",
+      "status": "completed",
+      "text": {
+        "format": {
+          "type": "text"
+        },
+        "verbosity": "medium"
+      },
+      "top_logprobs": 0,
+      "truncation": "disabled",
+      "usage": {
+        "input_tokens": 5210,
+        "input_tokens_details": {
+          "cache_write_tokens": 5207,
+          "cached_tokens": 0
+        },
+        "output_tokens": 1929,
+        "output_tokens_details": {
+          "reasoning_tokens": 1494
+        },
+        "total_tokens": 7139
+      },
+      "user": null,
+      "access_programs": null,
+      "billing": {
+        "payer": "developer"
+      },
+      "frequency_penalty": 0.0,
+      "presence_penalty": 0.0,
+      "store": true,
+      "tool_usage": {
+        "image_gen": {
+          "input_tokens": 0,
+          "input_tokens_details": {
+            "image_tokens": 0,
+            "text_tokens": 0
+          },
+          "output_tokens": 0,
+          "output_tokens_details": {
+            "image_tokens": 0,
+            "text_tokens": 0
+          },
+          "total_tokens": 0
+        },
+        "web_search": {
+          "num_requests": 0
+        }
+      }
+    }
+  ]
+}

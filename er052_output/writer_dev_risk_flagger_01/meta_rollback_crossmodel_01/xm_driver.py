@@ -215,7 +215,7 @@ def cmd_run(model_key, level):
     R.RESULTS_DIR = run_dir; R.LOGS_DIR = run_dir
     cell = "xm_A%d_meta_run03_b1b" % level
     t0 = time.time(); ts = time.strftime("%Y-%m-%dT%H:%M:%S%z")
-    rc = R.run_llm([unit], "d2", model_key, cell, 8.0, 40.0, None, EFFORT, None, False)
+    rc = R.run_llm([unit], "d2", model_key, cell, 12.0, 60.0, None, EFFORT, None, False)
     el = time.time() - t0
     rp = R.result_paths("d2", model_key, cell)
     d2 = json.loads(open(rp[0], encoding="utf-8").readline())
