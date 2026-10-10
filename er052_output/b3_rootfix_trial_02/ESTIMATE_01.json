@@ -1,0 +1,76 @@
+{
+ "basis": {
+  "price_usd_per_M": {
+   "gpt-6-luna": [
+    0.1,
+    0.5
+   ],
+   "gpt-6.1-sol": [
+    2.0,
+    10.0
+   ]
+  },
+  "usd_jpy": 160.0,
+  "measured_C1_b3_jpy_mean": 0.455,
+  "measured_Aprime_b3_jpy_mean": 0.464,
+  "avg_dplus_in_tokens_est": 4442,
+  "avg_sep_in_tokens_est": 1474,
+  "avg_base_in_tokens_est": 3679,
+  "assumptions": "出力tokenは仮定(low/mid/high)。D-plusの追加出力=number_ranks JSON(約45tok/数値x7-15個)+規則適用の追加reasoning。Separate-callはFact抜粋のみ入力・reasoning少なめ想定。いずれも見積であり実測ではない"
+ },
+ "scenarios": {
+  "low": {
+   "dplus_b3_per_call_jpy": 0.499,
+   "dplus_18_calls_jpy": 8.99,
+   "sepcall_luna_per_article_jpy": 0.088,
+   "sepcall_luna_18_calls_jpy": 1.58,
+   "sepcall_sol_per_article_jpy": 1.75,
+   "sepcall_sol_6_calls_jpy": 10.51,
+   "sepcall_sol_18_calls_jpy": 31.53
+  },
+  "mid": {
+   "dplus_b3_per_call_jpy": 0.587,
+   "dplus_18_calls_jpy": 10.57,
+   "sepcall_luna_per_article_jpy": 0.184,
+   "sepcall_luna_18_calls_jpy": 3.3,
+   "sepcall_sol_per_article_jpy": 3.67,
+   "sepcall_sol_6_calls_jpy": 22.03,
+   "sepcall_sol_18_calls_jpy": 66.09
+  },
+  "high": {
+   "dplus_b3_per_call_jpy": 0.707,
+   "dplus_18_calls_jpy": 12.73,
+   "sepcall_luna_per_article_jpy": 0.384,
+   "sepcall_luna_18_calls_jpy": 6.9,
+   "sepcall_sol_per_article_jpy": 7.67,
+   "sepcall_sol_6_calls_jpy": 46.03,
+   "sepcall_sol_18_calls_jpy": 138.09
+  }
+ },
+ "r0_e9": {
+  "measured_ROOTFIX01_R0_luna_per_call_jpy": 0.45,
+  "conservative_per_call_jpy": 1.24,
+  "calls_6_themes_x1": 6,
+  "calls_6_themes_x2arms": 12,
+  "6_calls_jpy": [
+   2.7,
+   7.44
+  ],
+  "12_calls_jpy": [
+   5.4,
+   14.88
+  ]
+ },
+ "totals_jpy_default_plan": {
+  "plan": "D-plus 18 call + Separate-call(Luna) 18 call + E9 R0 12 call(D-plus 6 + 対照6)",
+  "low": 16.0,
+  "mid": 23.5,
+  "high": 34.5
+ },
+ "totals_jpy_with_optional": {
+  "optional": "D-plus-min 18 call + Separate-call Sol 6 call(Luna不成立時のみ)",
+  "low": 35.5,
+  "mid": 56.1,
+  "high": 93.3
+ }
+}

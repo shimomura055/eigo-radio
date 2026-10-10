@@ -1,0 +1,153 @@
+{
+ "model": "gpt-6-luna",
+ "reasoning": {
+  "effort": "high"
+ },
+ "text": {
+  "format": {
+   "type": "json_schema",
+   "name": "storyline_b3_fact_selection",
+   "schema": {
+    "type": "object",
+    "properties": {
+     "selected_storyline": {
+      "type": "string"
+     },
+     "fact_tests": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "fact_id": {
+         "type": "string"
+        },
+        "test1_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "test2_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "test3_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "test4_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "decision": {
+         "type": "string",
+         "enum": [
+          "selected",
+          "excluded"
+         ]
+        },
+        "reason": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "fact_id",
+        "test1_answer",
+        "test2_answer",
+        "test3_answer",
+        "test4_answer",
+        "decision",
+        "reason"
+       ],
+       "additionalProperties": false
+      }
+     },
+     "selected_fact_ids": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "selected_fact_brief": {
+      "type": "string"
+     },
+     "recheck_note": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "number_ranks": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "fact_id": {
+         "type": "string"
+        },
+        "surface": {
+         "type": "string"
+        },
+        "kind": {
+         "type": "string",
+         "enum": [
+          "magnitude",
+          "date_time",
+          "range",
+          "year",
+          "ordinal",
+          "name_embedded"
+         ]
+        },
+        "role": {
+         "type": "string",
+         "enum": [
+          "core",
+          "peripheral"
+         ]
+        }
+       },
+       "required": [
+        "fact_id",
+        "surface",
+        "kind",
+        "role"
+       ],
+       "additionalProperties": false
+      }
+     }
+    },
+    "required": [
+     "selected_storyline",
+     "fact_tests",
+     "selected_fact_ids",
+     "selected_fact_brief",
+     "recheck_note",
+     "number_ranks"
+    ],
+    "additionalProperties": false
+   },
+   "strict": true
+  }
+ },
+ "input": [
+  {
+   "role": "developer",
+   "content": "あなたはNews記事のFact選定を行うEditorです。Full Fact Ledgerの中から記事として一本化しやすい中心Storylineを1つ決定し、そのStorylineに本当に必要な最小限のFactだけを選び出してください。記事本文そのものは書きません。"
+  },
+  {
+   "role": "user",
+   "content": "以下は、あるテーマについてWeb調査で収集し独立検証済みのFull Fact Ledgerです。\n\n【テーマ】\nCurrent news topic: the latest earnings of a leading semiconductor company and the outlook for AI-driven demand. Using only facts confirmed by web search (the company's earnings release, Reuters/AP/Bloomberg-level reporting), cover the reporting period, revenue and profit figures, the data-center / AI segment results, the company's guidance for the next quarter, and the stated drivers or risks (e.g. export controls, supply). Separate reported results from analyst forecasts. Do not invent details and do not use the assistant's own prior knowledge.\n\n【Full Fact Ledger】\n[AMBIGUOUS - 断定禁止、曖昧さを保持すること] F1: 対象企業はBroadcom Inc.。同社は2026年9月2日、2026年度第3四半期の決算を発表した。\r\n  scope: Broadcom Inc.の連結業績\r\n  date_or_period: 2026年9月2日発表。2026年度第3四半期（2026年8月2日終了）\r\n  制約(ambiguity_note): Broadcomが2026年9月2日に2026年度第3四半期（2026年8月2日終了）の決算を発表したことは確認できました。ただし、対象テーマの「最も最近の発表」という選定条件は、Broadcomの発表日だけでは確認できません。たとえば「leading AI chipmaker」にAI向けメモリのMicronも含めるなら、同社は9月30日にFY2026第4四半期の決算を発表しており、Broadcomより後です。分類の範囲が曖昧なため、Broadcomを選定対象とする前提は確定できません。([investors.broadcom.com](https://investors.broadcom.com/news-releases/news-release-details/broadcom-inc-announces-third-quarter-fiscal-year-2026-financial))\r\n\r\n[VERIFIED] F2: Broadcomの第3四半期の純売上高は295億9,100万ドルだった。\r\n  scope: Broadcom Inc.全体の四半期純売上高\r\n  conditions: 決算リリースの財務ハイライトでは金額を百万ドル単位で表示。\r\n  numeric_value: 29,591百万ドル（295億9,100万ドル） (numeric_scope: 連結純売上高)\r\n  date_or_period: 2026年度第3四半期（2026年8月2日終了）\r\n\r\n[VERIFIED] F3: Broadcomの第3四半期のAI半導体売上高は167億ドル。CEOは前年同期比221％増、前四半期比54％増と説明した。\r\n  scope: AI半導体売上高。Broadcom全体の純売上高や半導体部門全体とは別の数値。\r\n  conditions: 金額はCEO発言で10億ドル単位に丸めて示された。\r\n  numeric_value: 167億ドル。前年同期比+221％、前四半期比+54％。 (numeric_scope: 同四半期のAI半導体売上高と、その前年同期・前四半期比)\r\n  date_or_period: 2026年度第3四半期（2026年8月2日終了）\r\n  causal_strength: OBSERVED_REPORTED\r\n  制約(notes_for_writer): 「AI半導体売上高」と記し、半導体ソリューション部門全体の売上高と混同しない。\r\n\r\n[VERIFIED] F4: Broadcomは次の四半期の連結売上高を約348億ドルと見込んだ。同社は前年比93％増に相当すると説明した。\r\n  scope: Broadcom Inc.全体の次四半期連結売上高\r\n  conditions: 2026年9月2日時点の会社見通し。会社は見通しを推定値とし、実績は異なり、差が重要となる可能性があると記載。\r\n  numeric_value: 約348億ドル。前年同期比+93％。 (numeric_scope: 2026年度第4四半期の連結売上高見通しと前年同期比)\r\n  date_or_period: 2026年度第4四半期（2026年11月1日終了予定）\r\n  制約(notes_for_writer): 会社の見通しとして記載し、確定した実績値として扱わない。\r\n\r\n[VERIFIED] F5: BroadcomのCEOは、次の四半期のAI半導体売上高を217億ドルと見込み、前年同期比236％増になると述べた。\r\n  scope: BroadcomのAI半導体売上高。連結売上高見通しとは別の数値。\r\n  conditions: 会社CEOによる決算リリース時点の見通し。\r\n  numeric_value: 217億ドル。前年同期比+236％。 (numeric_scope: 2026年度第4四半期のAI半導体売上高見通しと前年同期比)\r\n  date_or_period: 2026年度第4四半期（2026年11月1日終了予定）\r\n  制約(notes_for_writer): 会社の見通しとして記載し、実績値と混同しない。\r\n\r\n[VERIFIED] F6: BroadcomのCEOは、カスタムAIアクセラレーターとネットワーキングへの需要が引き続き非常に強いと述べた。\r\n  scope: 同社のカスタムAIアクセラレーターおよびネットワーキングに対する需要についてのCEOの説明\r\n  conditions: 経営陣による定性的な評価。\r\n  date_or_period: 2026年9月2日発表の2026年度第3四半期決算リリース\r\n  causal_strength: OBSERVED_REPORTED\r\n  制約(notes_for_writer): 会社CEOの評価として帰属を明記し、独立に確認された市場全体の需要事実として一般化しない。\r\n\n\n【Ledgerの読み方】\n各Factは「Fact本文」(ID行の文と、scope・conditions・numeric_value・date_or_periodなどの欄)と、「Writerへの制約」(notes_for_writer・ambiguity_noteの欄。`制約(…)`と表記されることがあります)に分かれています。\n- Fact本文は、Fact選択とStorylineの材料です。\n- Writerへの制約は、のちに記事を書く工程が守るガードレールです。Storylineやselected_fact_briefの内容・文言として転記・言い換えしないでください(「〜しない」「〜と断定しない」などの指示調の文を入れない)。Storylineには事実の記述だけを書き、制約に反する断定をしないでください。制約そのものは、システムが選択Factに対応づけて別途Writerへ渡します。\n\nあなたの仕事は次の6つです。\n\n1. このFull Ledgerの中から、記事として一本化しやすい中心Storyline(のちの記事が伝える「何が起きて、なぜそうなったか」という一続きの筋)を1つ決定してください。\n2. 決定したStorylineを1行の日本語で明示してください(これが後工程でWriterへ渡すテーマ文としてそのまま使われます)。Storylineには、Fact本文に基づく事実の記述だけを書き、注意・禁止・書き方の指示は含めないでください。\n3. Full Ledgerの全fact_idそれぞれについて、以下4つのテストを適用してください。\n\nTest1: そのFactを削除しても中心Storylineを理解できるか。YESなら原則除外。\nTest2: そのFactは他Factとの因果関係に実際に使われるか。NOなら原則除外。\nTest3: そのFactがないとStoryline上重要な「なぜ?」が説明できなくなるか。NOなら原則除外。\nTest4: そのFactを残した理由が「面白い/具体的/数字がある/珍しい/補足として便利」だけではないか。YESなら原則除外。\n\n4. 各Factについて、4テストの回答を踏まえてselected(採用)/excluded(除外)を決定し、理由(reason)を記載してください。判定に迷うFactについては、迷った理由も含めてreasonへ記載して構いません。\n5. 採用したFactだけを使って、Writerへそのまま渡す「Selected Fact Brief」(必要最小限のFactを簡潔にまとめた文章。冒頭にStorylineの1行を含める)を作成してください。Selected Fact Briefは記事本文そのものではなく、Writerへの素材です。\n6. 採用したFactそれぞれについて、そのFact本文(ID行の文)に書かれている数字・日付の表記を1つずつ洗い出し、number_ranksへ中核(core)か周辺(peripheral)の別とともに記載してください。\n- surface: 数字・単位・「約」「超」などのヘッジ語まで含めた形で、Fact本文に書かれている通りに写してください(例: 約3.4％、2,300件超、7月13日)。Fact本文に無い数字、Ledgerの他の欄にしかない数字、別のFactの数字は書かないでください。数字を含まない表記は不要です。\n- kind: magnitude(量・割合・金額・件数など)/date_time(月を含む日付・時刻・四半期)/range(範囲)/year(年だけ)/ordinal(第12回など識別子の序数)/name_embedded(名称の一部の番号)のどれか。\n- role: 次の順で決めてください。(a)year・ordinal・name_embeddedは常にperipheral。(b)量とrangeは、そのFactのnumeric_value欄の数字(numeric_scopeの括弧内を除く)に含まれるものだけがcore候補(Ledger全体にnumeric_value欄が1件も無い場合に限り、Fact本文の数字で比べる)。日付は、表記に月があり、そのFactのdate_or_period欄の先頭の日付と、表記にある年・月・日が全て一致するものだけがcore候補(Ledger全体にdate_or_period欄が1件も無い場合に限り、Fact本文の最初の日付で比べる。年だけ・日だけ・時刻だけ・四半期の表記は候補になりません)。(c)core候補を、Storylineに出る量、それ以外の量、日付の順に並べ(同じ順位ではFactの採用順・本文の出現順)、先頭から最大 max(3, min(6, floor(n/2))) 個をcore、残りと候補でないものをperipheralとする(nは量・range・日付の概念の総数。概念=同じFactの中で主数字と単位が同じ表記のまとまり。同じ概念の表記は全て同じroleにする)。迷ったらperipheral。\n\n【採用Fact数についての注意】\n目安は3〜5件です。Hard ruleではありませんが、6件以上採用する場合は、本当にそれら全てが中心Storylineの理解に必要かをもう一度自問し、recheck_noteフィールドへその検討内容を明記してください(3件未満でも、Storylineが単独で成立するなら構いません)。5件以下の場合、recheck_noteはnullにしてください。\n\n【出力】\nJSON schemaの指示に従い、以下を出力してください:\n- selected_storyline: 決定したStorylineの1行\n- fact_tests: Full Ledgerの全fact_idについて、test1_answer/test2_answer/test3_answer/test4_answer(いずれも\"YES\"か\"NO\")・reason・decision(\"selected\"か\"excluded\")\n- selected_fact_ids: 採用したfact_idのリスト(fact_testsでdecision=\"selected\"のものと一致させること)\n- selected_fact_brief: Writerへ渡すSelected Fact Brief本文(Storylineの1行を含む)\n- recheck_note: 採用Fact数が6件以上の場合のみ記入。5件以下の場合はnull。\n- number_ranks: 手順6の結果(採用Factの数字・日付の表記ごとに fact_id・surface・kind・role)。数字が1つも無い場合は空配列。\n\n【重要】fact_idは、上記Full Ledgerに実在するfact_idのみを使用してください。Ledgerに存在しないfact_idを作り出さないでください。number_ranksのfact_idは採用したFactのみ、surfaceは当該Factのfact本文に実在する表記のみとしてください。"
+  }
+ ]
+}

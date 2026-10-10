@@ -1,0 +1,71 @@
+{
+ "model": "gpt-6-luna",
+ "reasoning": {
+  "effort": "high"
+ },
+ "text": {
+  "format": {
+   "type": "json_schema",
+   "name": "number_ranks_only",
+   "schema": {
+    "type": "object",
+    "properties": {
+     "number_ranks": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "fact_id": {
+         "type": "string"
+        },
+        "surface": {
+         "type": "string"
+        },
+        "kind": {
+         "type": "string",
+         "enum": [
+          "magnitude",
+          "date_time",
+          "range",
+          "year",
+          "ordinal",
+          "name_embedded"
+         ]
+        },
+        "role": {
+         "type": "string",
+         "enum": [
+          "core",
+          "peripheral"
+         ]
+        }
+       },
+       "required": [
+        "fact_id",
+        "surface",
+        "kind",
+        "role"
+       ],
+       "additionalProperties": false
+      }
+     }
+    },
+    "required": [
+     "number_ranks"
+    ],
+    "additionalProperties": false
+   },
+   "strict": true
+  }
+ },
+ "input": [
+  {
+   "role": "developer",
+   "content": "あなたはNews記事の数値整理を行うEditorです。採用済みFactの本文に書かれている数字・日付の表記を洗い出し、中核(core)か周辺(peripheral)かを規則に従って分類してください。記事本文は書きません。Factの採否やStorylineは変更しません。"
+  },
+  {
+   "role": "user",
+   "content": "以下は、あるテーマについて、中心Storylineと、そのStorylineのために採用済みのFactです。\n\n【テーマ】\nCurrent news topic: the emerging era of weapons and counterspace capabilities being deployed in or for use against space systems. In researching this, clearly distinguish between: (1) events, systems, or capabilities that have actually been announced, tested, launched, or confirmed by governments, militaries, space agencies, or credible reporting (Reuters, AP, official government/military statements, etc.); (2) terminology differences between space-based weapons (weapons placed in space), counterspace weapons (systems meant to disable or destroy satellites, including anti-satellite/ASAT weapons, jamming, cyberattacks, and directed-energy systems), and defensive or protective space systems; (3) what can legitimately be described as 'deploying weapons to space' versus existing, long-standing space security activities (such as surveillance or missile-warning satellites) that are not new; (4) facts that can be confirmed under existing treaties and international rules (such as the Outer Space Treaty and UN discussions on space arms control); and (5) forward-looking predictions or expert interpretation, clearly separated from confirmed current fact. Do not sensationalize. Do not use language such as 'a space war has begun' unless directly and explicitly supported by a source. Do not make political or security-policy judgments; focus the coverage on confirmed events and how they differ from prior space activity, using only facts confirmed by web search (no invented details, no facts supplied from the assistant's own prior knowledge).\n\n【Storyline】\n米国が軌道上の「space control weapons」配備を初めて公に認めた発言を起点に、従来の地上発射ASATや通常の衛星任務、広義のcounterspaceと区別し、既存条約が禁じる範囲を誇張せず整理する。\n\n【採用Fact】\nF-001: 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。\n  date_or_period: 2026年9月14日発言、2026年9月15日公式掲載\nF-003: ロシアは2021年11月15日、地上発射型の直接上昇式ASATミサイルでロシアの衛星COSMOS 1408を破壊し、1,500個超の追跡可能な軌道デブリを発生させた。\n  numeric_value: >1,500個 (numeric_scope: 追跡可能な軌道デブリ)\n  date_or_period: 2021年11月15日\nF-011: 米宇宙軍の2025年Space Warfighting frameworkは、counterspace operationsを軌道、リンク、地上の各セグメントで行う攻撃・防御行動の総称と定義している。\n  date_or_period: 2025年公表の米宇宙軍framework\nF-015: 米宇宙軍は、GPS機能、ミサイル追跡、宇宙領域認識、衛星アーキテクチャのレジリエンスを継続的な任務・優先事項として説明している。これらは衛星を軍事・社会インフラとして運用・保護する活動であり、任務説明だけから攻撃兵器の軌道上配備を意味するとは確認できない。\n  date_or_period: 2025年3月時点の米宇宙軍説明\nF-016: Outer Space Treaty第4条は、地球周回軌道に核兵器その他の大量破壊兵器を搭載した物体を置くこと、月その他の天体にその兵器を設置すること、宇宙空間にその他の方法で配備することを禁止している。また、天体上での軍事基地、要塞、兵器の試験、軍事演習を禁止している。\n  date_or_period: 1967年発効の条約規定\n\nあなたの仕事は次の1つです。\n採用したFactそれぞれについて、そのFact本文(ID行の文)に書かれている数字・日付の表記を1つずつ洗い出し、number_ranksへ中核(core)か周辺(peripheral)の別とともに記載してください。\n- surface: 数字・単位・「約」「超」などのヘッジ語まで含めた形で、Fact本文に書かれている通りに写してください(例: 約3.4％、2,300件超、7月13日)。Fact本文に無い数字、Ledgerの他の欄にしかない数字、別のFactの数字は書かないでください。数字を含まない表記は不要です。\n- kind: magnitude(量・割合・金額・件数など)/date_time(月を含む日付・時刻・四半期)/range(範囲)/year(年だけ)/ordinal(第12回など識別子の序数)/name_embedded(名称の一部の番号)のどれか。\n- role: 次の順で決めてください。(a)year・ordinal・name_embeddedは常にperipheral。(b)量とrangeは、そのFactのnumeric_value欄の数字(numeric_scopeの括弧内を除く)に含まれるものだけがcore候補(Ledger全体にnumeric_value欄が1件も無い場合に限り、Fact本文の数字で比べる)。日付は、表記に月があり、そのFactのdate_or_period欄の先頭の日付と、表記にある年・月・日が全て一致するものだけがcore候補(Ledger全体にdate_or_period欄が1件も無い場合に限り、Fact本文の最初の日付で比べる。年だけ・日だけ・時刻だけ・四半期の表記は候補になりません)。(c)core候補を、Storylineに出る量、それ以外の量、日付の順に並べ(同じ順位ではFactの採用順・本文の出現順)、先頭から最大 max(3, min(6, floor(n/2))) 個をcore、残りと候補でないものをperipheralとする(nは量・range・日付の概念の総数。概念=同じFactの中で主数字と単位が同じ表記のまとまり。同じ概念の表記は全て同じroleにする)。迷ったらperipheral。\n\n【出力】\nJSON schemaの指示に従い、number_ranks(採用Factの数字・日付の表記ごとに fact_id・surface・kind・role)を出力してください。数字が1つも無い場合は空配列。\n\n【重要】fact_idは、上記の採用Factに実在するもののみを使用してください。surfaceは当該Factのfact本文に実在する表記のみとしてください。"
+  }
+ ]
+}

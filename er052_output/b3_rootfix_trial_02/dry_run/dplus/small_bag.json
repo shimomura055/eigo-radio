@@ -1,0 +1,153 @@
+{
+ "model": "gpt-6-luna",
+ "reasoning": {
+  "effort": "high"
+ },
+ "text": {
+  "format": {
+   "type": "json_schema",
+   "name": "storyline_b3_fact_selection",
+   "schema": {
+    "type": "object",
+    "properties": {
+     "selected_storyline": {
+      "type": "string"
+     },
+     "fact_tests": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "fact_id": {
+         "type": "string"
+        },
+        "test1_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "test2_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "test3_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "test4_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "decision": {
+         "type": "string",
+         "enum": [
+          "selected",
+          "excluded"
+         ]
+        },
+        "reason": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "fact_id",
+        "test1_answer",
+        "test2_answer",
+        "test3_answer",
+        "test4_answer",
+        "decision",
+        "reason"
+       ],
+       "additionalProperties": false
+      }
+     },
+     "selected_fact_ids": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "selected_fact_brief": {
+      "type": "string"
+     },
+     "recheck_note": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "number_ranks": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "fact_id": {
+         "type": "string"
+        },
+        "surface": {
+         "type": "string"
+        },
+        "kind": {
+         "type": "string",
+         "enum": [
+          "magnitude",
+          "date_time",
+          "range",
+          "year",
+          "ordinal",
+          "name_embedded"
+         ]
+        },
+        "role": {
+         "type": "string",
+         "enum": [
+          "core",
+          "peripheral"
+         ]
+        }
+       },
+       "required": [
+        "fact_id",
+        "surface",
+        "kind",
+        "role"
+       ],
+       "additionalProperties": false
+      }
+     }
+    },
+    "required": [
+     "selected_storyline",
+     "fact_tests",
+     "selected_fact_ids",
+     "selected_fact_brief",
+     "recheck_note",
+     "number_ranks"
+    ],
+    "additionalProperties": false
+   },
+   "strict": true
+  }
+ },
+ "input": [
+  {
+   "role": "developer",
+   "content": "あなたはNews記事のFact選定を行うEditorです。Full Fact Ledgerの中から記事として一本化しやすい中心Storylineを1つ決定し、そのStorylineに本当に必要な最小限のFactだけを選び出してください。記事本文そのものは書きません。"
+  },
+  {
+   "role": "user",
+   "content": "以下は、あるテーマについてWeb調査で収集し独立検証済みのFull Fact Ledgerです。\n\n【テーマ】\nCurrent news/lifestyle topic: whether small (\"mini\" or \"micro\") handbags are genuinely gaining renewed attention in fashion right now, as a light, consumer/lifestyle-oriented story (not hard news such as AI, space security, or policy).\n\n【Full Fact Ledger】\n[VERIFIED] MB-01: ELLEの2026年9月8日付記事は、ミニバッグをFall 2026のトレンドとして紹介し、Khaiteの手のひらサイズのイブニングバッグや、複数ブランドの小型バッグを取り上げた。([elle.com](https://www.elle.com/fashion/a73435817/mini-bag-trend-fall-2026/))\r\n  scope: ELLEの米国向けファッション・ショッピング記事。掲載商品およびFall 2026コレクションの紹介範囲。\r\n  conditions: 編集部によるトレンド／商品紹介であり、消費者の購買数や市場シェアの調査ではない。\r\n  date_or_period: 2026年9月8日（Fall 2026向け）\r\n  causal_strength: OBSERVED_REPORTED\r\n  制約(notes_for_writer): Fall 2026の編集上の注目を示す根拠として使用可能。消費者全体での再流行や販売増の証拠とは区別する。\r\n\r\n[VERIFIED] MB-02: Who What Wearは2026年5月、Bottega VenetaのMini Andiamoについて、ニューヨークとロサンゼルスのファッション関係者に好まれていると報じ、SNS上の着用例を紹介した。同記事は同モデルが「前月」に発売されたとしている。([whowhatwear.com](https://www.whowhatwear.com/fashion/luxury/bottega-veneta-mini-andiamo-bag-trend-2026))\r\n  scope: 同記事が取り上げた特定のバッグと、ニューヨーク／ロサンゼルスの着用例。\r\n  conditions: ファッション媒体による編集者の観察とSNS投稿の紹介。地域全体や消費者全体の代表調査ではない。\r\n  date_or_period: 2026年5月（記事掲載月。発売は記事によればその前月）\r\n  causal_strength: OBSERVED_REPORTED\r\n  制約(notes_for_writer): 特定モデルの局所的な注目例。ミニバッグ全般の市場復調や、XLバッグからの広範な乗り換えを示す証拠として一般化しない。\r\n\r\n[VERIFIED] MB-03: Vogueの2026年6月のSummer 2026バッグ特集は、ランウェイで大型化した「roomy totes」を取り上げる一方、beaded mini toteやpetite pouchなど小型バッグも掲載した。([vogue.com](https://www.vogue.com/article/spring-2026-handbag-trends))\r\n  scope: Vogueが紹介したSpring/Summer 2026のデザイナーコレクションおよび商品例。\r\n  conditions: 編集記事によるトレンド整理。掲載数は市場の販売比率や消費者需要の比率を表さない。\r\n  date_or_period: 2026年6月10日（Summer 2026）\r\n  causal_strength: OBSERVED_REPORTED\r\n  制約(notes_for_writer): 2026年春夏を小型バッグ一色と描写しないための根拠。特集には大型・実用的な形と小型の装飾的／用途限定の形が併存する。\r\n\r\n[VERIFIED] MB-04: Christie’sのHandbags and Accessories部門責任者は、2026年春夏のランウェイについて、スラウチーなバッグが目立ち、ゆとりのあるトートが多く見られたと説明した。記事はロンドン、パリ、ニューヨークのランウェイ傾向を扱う。([christies.com](https://www.christies.com/en/stories/how-to-start-a-handbag-collection-in-2026-46662fd3cff14b259a115d5b9fc8645a))\r\n  scope: 記事が扱うロンドン、パリ、ニューヨークのランウェイ。\r\n  conditions: Christie’sの専門家によるランウェイ傾向の評価であり、商品販売や消費者調査ではない。\r\n  date_or_period: 2026年7月2日掲載（Spring/Summer 2026コレクション）\r\n  causal_strength: OBSERVED_REPORTED\r\n  制約(notes_for_writer): 大型・ roomy なバッグが同時期のランウェイで目立ったことを示す専門家コメント。定量的な市場シェアとして扱わない。\r\n\r\n[VERIFIED] MB-05: Who What WearのFall 2026ランウェイまとめは、Dior、Chanel、Chloéに小さなミノディエールが登場したと報じる一方、それらを実用性より芸術性の強い小型クラッチとして説明した。同まとめでは大型・ゆったりした形も複数の主要傾向として扱っている。([whowhatwear.com](https://www.whowhatwear.com/fashion/runway/fall-winter-bag-trends-2026))\r\n  scope: Who What Wearが取り上げた複数ブランドのランウェイ。\r\n  conditions: ファッション編集者によるコレクションの観察と解釈。\r\n  date_or_period: Fall 2026コレクション\r\n  causal_strength: OBSERVED_REPORTED\r\n  制約(notes_for_writer): 小型バッグは装飾的・コレクション上のアクセントとして存在するが、日常使い向けの主流形状と同一視しない。\r\n\r\n[VERIFIED] MB-06: Who What Wearの2026年10月掲載ショッピング記事は、「極小（micro）バッグのトレンドは短期間で終わった」とする編集者の見解を示し、代わりにmicroより大きくトートより小さいバッグを紹介した。([whowhatwear.com](https://www.whowhatwear.com/what-to-buy-now))\r\n  scope: Who What Wearのショッピング記事内の編集者コメント。\r\n  conditions: 記事内の一編集者による評価。販売・検索・消費者意識データに基づく結論とは明示されていない。\r\n  date_or_period: 2026年10月\r\n  causal_strength: OBSERVED_REPORTED\r\n  制約(notes_for_writer): 「mini」と「micro」を同じ傾向としてまとめない。現時点の情報は、ミニバッグの一部に編集上の再注目がある一方、microバッグ全般の消費者需要の再上昇までは立証しない。\r\n\n\n【Ledgerの読み方】\n各Factは「Fact本文」(ID行の文と、scope・conditions・numeric_value・date_or_periodなどの欄)と、「Writerへの制約」(notes_for_writer・ambiguity_noteの欄。`制約(…)`と表記されることがあります)に分かれています。\n- Fact本文は、Fact選択とStorylineの材料です。\n- Writerへの制約は、のちに記事を書く工程が守るガードレールです。Storylineやselected_fact_briefの内容・文言として転記・言い換えしないでください(「〜しない」「〜と断定しない」などの指示調の文を入れない)。Storylineには事実の記述だけを書き、制約に反する断定をしないでください。制約そのものは、システムが選択Factに対応づけて別途Writerへ渡します。\n\nあなたの仕事は次の6つです。\n\n1. このFull Ledgerの中から、記事として一本化しやすい中心Storyline(のちの記事が伝える「何が起きて、なぜそうなったか」という一続きの筋)を1つ決定してください。\n2. 決定したStorylineを1行の日本語で明示してください(これが後工程でWriterへ渡すテーマ文としてそのまま使われます)。Storylineには、Fact本文に基づく事実の記述だけを書き、注意・禁止・書き方の指示は含めないでください。\n3. Full Ledgerの全fact_idそれぞれについて、以下4つのテストを適用してください。\n\nTest1: そのFactを削除しても中心Storylineを理解できるか。YESなら原則除外。\nTest2: そのFactは他Factとの因果関係に実際に使われるか。NOなら原則除外。\nTest3: そのFactがないとStoryline上重要な「なぜ?」が説明できなくなるか。NOなら原則除外。\nTest4: そのFactを残した理由が「面白い/具体的/数字がある/珍しい/補足として便利」だけではないか。YESなら原則除外。\n\n4. 各Factについて、4テストの回答を踏まえてselected(採用)/excluded(除外)を決定し、理由(reason)を記載してください。判定に迷うFactについては、迷った理由も含めてreasonへ記載して構いません。\n5. 採用したFactだけを使って、Writerへそのまま渡す「Selected Fact Brief」(必要最小限のFactを簡潔にまとめた文章。冒頭にStorylineの1行を含める)を作成してください。Selected Fact Briefは記事本文そのものではなく、Writerへの素材です。\n6. 採用したFactそれぞれについて、そのFact本文(ID行の文)に書かれている数字・日付の表記を1つずつ洗い出し、number_ranksへ中核(core)か周辺(peripheral)の別とともに記載してください。\n- surface: 数字・単位・「約」「超」などのヘッジ語まで含めた形で、Fact本文に書かれている通りに写してください(例: 約3.4％、2,300件超、7月13日)。Fact本文に無い数字、Ledgerの他の欄にしかない数字、別のFactの数字は書かないでください。数字を含まない表記は不要です。\n- kind: magnitude(量・割合・金額・件数など)/date_time(月を含む日付・時刻・四半期)/range(範囲)/year(年だけ)/ordinal(第12回など識別子の序数)/name_embedded(名称の一部の番号)のどれか。\n- role: 次の順で決めてください。(a)year・ordinal・name_embeddedは常にperipheral。(b)量とrangeは、そのFactのnumeric_value欄の数字(numeric_scopeの括弧内を除く)に含まれるものだけがcore候補(Ledger全体にnumeric_value欄が1件も無い場合に限り、Fact本文の数字で比べる)。日付は、表記に月があり、そのFactのdate_or_period欄の先頭の日付と、表記にある年・月・日が全て一致するものだけがcore候補(Ledger全体にdate_or_period欄が1件も無い場合に限り、Fact本文の最初の日付で比べる。年だけ・日だけ・時刻だけ・四半期の表記は候補になりません)。(c)core候補を、Storylineに出る量、それ以外の量、日付の順に並べ(同じ順位ではFactの採用順・本文の出現順)、先頭から最大 max(3, min(6, floor(n/2))) 個をcore、残りと候補でないものをperipheralとする(nは量・range・日付の概念の総数。概念=同じFactの中で主数字と単位が同じ表記のまとまり。同じ概念の表記は全て同じroleにする)。迷ったらperipheral。\n\n【採用Fact数についての注意】\n目安は3〜5件です。Hard ruleではありませんが、6件以上採用する場合は、本当にそれら全てが中心Storylineの理解に必要かをもう一度自問し、recheck_noteフィールドへその検討内容を明記してください(3件未満でも、Storylineが単独で成立するなら構いません)。5件以下の場合、recheck_noteはnullにしてください。\n\n【出力】\nJSON schemaの指示に従い、以下を出力してください:\n- selected_storyline: 決定したStorylineの1行\n- fact_tests: Full Ledgerの全fact_idについて、test1_answer/test2_answer/test3_answer/test4_answer(いずれも\"YES\"か\"NO\")・reason・decision(\"selected\"か\"excluded\")\n- selected_fact_ids: 採用したfact_idのリスト(fact_testsでdecision=\"selected\"のものと一致させること)\n- selected_fact_brief: Writerへ渡すSelected Fact Brief本文(Storylineの1行を含む)\n- recheck_note: 採用Fact数が6件以上の場合のみ記入。5件以下の場合はnull。\n- number_ranks: 手順6の結果(採用Factの数字・日付の表記ごとに fact_id・surface・kind・role)。数字が1つも無い場合は空配列。\n\n【重要】fact_idは、上記Full Ledgerに実在するfact_idのみを使用してください。Ledgerに存在しないfact_idを作り出さないでください。number_ranksのfact_idは採用したFactのみ、surfaceは当該Factのfact本文に実在する表記のみとしてください。"
+  }
+ ]
+}

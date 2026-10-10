@@ -1,0 +1,153 @@
+{
+ "model": "gpt-6-luna",
+ "reasoning": {
+  "effort": "high"
+ },
+ "text": {
+  "format": {
+   "type": "json_schema",
+   "name": "storyline_b3_fact_selection",
+   "schema": {
+    "type": "object",
+    "properties": {
+     "selected_storyline": {
+      "type": "string"
+     },
+     "fact_tests": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "fact_id": {
+         "type": "string"
+        },
+        "test1_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "test2_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "test3_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "test4_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "decision": {
+         "type": "string",
+         "enum": [
+          "selected",
+          "excluded"
+         ]
+        },
+        "reason": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "fact_id",
+        "test1_answer",
+        "test2_answer",
+        "test3_answer",
+        "test4_answer",
+        "decision",
+        "reason"
+       ],
+       "additionalProperties": false
+      }
+     },
+     "selected_fact_ids": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "selected_fact_brief": {
+      "type": "string"
+     },
+     "recheck_note": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "number_ranks": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "fact_id": {
+         "type": "string"
+        },
+        "surface": {
+         "type": "string"
+        },
+        "kind": {
+         "type": "string",
+         "enum": [
+          "magnitude",
+          "date_time",
+          "range",
+          "year",
+          "ordinal",
+          "name_embedded"
+         ]
+        },
+        "role": {
+         "type": "string",
+         "enum": [
+          "core",
+          "peripheral"
+         ]
+        }
+       },
+       "required": [
+        "fact_id",
+        "surface",
+        "kind",
+        "role"
+       ],
+       "additionalProperties": false
+      }
+     }
+    },
+    "required": [
+     "selected_storyline",
+     "fact_tests",
+     "selected_fact_ids",
+     "selected_fact_brief",
+     "recheck_note",
+     "number_ranks"
+    ],
+    "additionalProperties": false
+   },
+   "strict": true
+  }
+ },
+ "input": [
+  {
+   "role": "developer",
+   "content": "あなたはNews記事のFact選定を行うEditorです。Full Fact Ledgerの中から記事として一本化しやすい中心Storylineを1つ決定し、そのStorylineに本当に必要な最小限のFactだけを選び出してください。記事本文そのものは書きません。"
+  },
+  {
+   "role": "user",
+   "content": "以下は、あるテーマについてWeb調査で収集し独立検証済みのFull Fact Ledgerです。\n\n【テーマ】\n原油市場の主役は、消えた二割の請求書(代替: 元theme未記録。hormuz元記事JA original(er019_output/family_x_refresh_e2e_01/hormuz/input/article_ja.md)の見出し行を両条件共通topicとして採用。参考: er003_v1_spoken_first_01_generate.py TOPIC=「ホルムズ海峡を通航する船舶への20％通航料をめぐる発言の撤回と市場反応」は別台帳世代で、本台帳との同一性は未確認)\n\n【Full Fact Ledger】\n[VERIFIED] HF-001: 国際海事機関（IMO）理事会は、第137回会合で、ホルムズ海峡の通航は国際法およびIMO条約に従い、通航料・手数料を課されない状態を維持すべきだと再確認した。\r\n  scope: 国際航行に使用されるホルムズ海峡を通航する全船舶\r\n  conditions: 沿岸国間の取り決めは、全船舶の無差別かつ妨げられない通過通航権を保証する必要がある。\r\n  numeric_value: 第137回理事会 (numeric_scope: IMO理事会の会合番号)\r\n  date_or_period: 2026-07-06～2026-07-10（第137回理事会開催期間）、2026-07-13公表\r\n  制約(notes_for_writer): この決議と7月14日の発言撤回との因果関係は一次資料で確認できない。撤回の原因として記述しない。\r\n\r\n[VERIFIED] HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。\r\n  scope: ホルムズ海峡を通じて輸送される「すべての貨物」\r\n  conditions: 米国が海峡の安全と警備を提供するための費用の償還として提示。投稿は手続きと体制づくりを直ちに開始するとした。\r\n  numeric_value: 20% (numeric_scope: 投稿上の償還率。課税標準または算定基礎は明記されていない。)\r\n  date_or_period: 2026-07-13 10:16 EDT\r\n  制約(notes_for_writer): 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。\r\n\r\n[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\r\n  scope: ホルムズ海峡の貨物通航に対する米国の償還料案\r\n  numeric_value: 20% (numeric_scope: 提案された率のみが示され、算定・徴収方法は未提示)\r\n  date_or_period: 2026-07-13\r\n  制約(notes_for_writer): 「米国が20％通航料を導入した」と確定形で書かず、「提案した」「徴収方針を表明した」とする。\r\n\r\n[VERIFIED] HF-004: 20％を貨物価値に適用すると仮定した試算では、約200万バレルを積むVLCCの貨物価値はBrent約85ドル時点で約1億7000万ドルとなり、20％相当額は約3400万ドルとなる。別の専門家試算は約3200万ドルだった。\r\n  scope: 約200万バレルを満載した超大型原油タンカー（VLCC）1隻・1航海\r\n  conditions: 20％を積載原油の市場価値に掛けるとの仮定。Brent価格を1バレル約85ドルとして計算。\r\n  numeric_value: 貨物量約2,000,000バレル、Brent約85ドル/バレル、貨物価値約170,000,000ドル、20％相当約34,000,000ドル、別試算約32,000,000ドル (numeric_scope: 仮定に基づくVLCC1隻当たりのシナリオ試算であり、実際に徴収された金額ではない)\r\n  date_or_period: 2026-07-14時点の試算\r\n  制約(notes_for_writer): 実額または確定通航料として扱わない。「貨物価値に適用した場合の試算」と明示する。\r\n\r\n[VERIFIED] HF-005: Financial TimesのBrent先物ヒストリカル表は、7月13日の取引について始値78.00ドル、日中高値83.86ドル、日中安値77.28ドル、終値83.30ドルを記録している。\r\n  scope: Financial Times掲載の期近Brent原油先物ヒストリカルデータ\r\n  conditions: 日次OHLCデータ。価格単位は1バレル当たり米ドル。\r\n  numeric_value: 始値 $78.00、高値 $83.86、安値 $77.28、終値 $83.30 (numeric_scope: 7月13日の取引日全体。$83.86は日中高値、$83.30は終値・Reuters報道の清算値に対応)\r\n  date_or_period: 2026-07-13取引日\r\n  causal_strength: OBSERVED_REPORTED\r\n  制約(notes_for_writer): 日中高値83.86ドルと終値83.30ドルを混同しない。\r\n\r\n[VERIFIED] HF-006: Brent原油先物は7月13日に7.29ドル、9.59％上昇し、1バレル83.30ドルで清算された。Reutersはこの上昇を、翌日に始まる予定とされた米国の対イラン海上封鎖と、ホルムズ海峡を通るエネルギー輸送への懸念に関連付けた。\r\n  scope: Brent原油先物の当日清算値と前日比\r\n  conditions: 米国とイランの軍事的緊張、海上封鎖方針、ホルムズ海峡の供給懸念が同時に存在した市場環境\r\n  numeric_value: $83.30/バレル、前日比 +$7.29、+9.59% (numeric_scope: 7月13日のBrent原油先物清算値。日中高値ではない)\r\n  date_or_period: 2026-07-13清算時点\r\n  causal_strength: CAUSAL_STATED_BY_SOURCE\r\n  制約(notes_for_writer): 7月13日の上昇全体を「20％料だけが原因」と断定しない。7月14日の撤回はこの清算値より後の出来事。\r\n\r\n[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。\r\n  scope: 7月13日に提案したホルムズ海峡通航貨物への20％償還料\r\n  conditions: トランプ氏は、中東指導者との「非常に生産的な協議」に基づく決定だと説明した。\r\n  numeric_value: 20% (numeric_scope: 撤回・置換対象となった償還率)\r\n  date_or_period: 2026-07-14 11:04 EDT\r\n  causal_strength: CAUSAL_STATED_BY_SOURCE\r\n  制約(notes_for_writer): この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。\r\n\r\n[VERIFIED] HF-008: トランプ大統領は7月14日、記者団に対し、ホルムズ海峡を通航する船舶に誰も料金を課すべきではないとの考えを示し、料金という考え方自体を好まないと述べた。\r\n  scope: ホルムズ海峡を通航する船舶への料金一般\r\n  conditions: 米国が世界のために海峡を防護する負担は公平でないとの主張も併記された。\r\n  date_or_period: 2026-07-14（Truth Socialでの置換発表後）\r\n  制約(notes_for_writer): 7月14日の撤回を確認する補強Fact。7月13日の提案と同日の発言として混同しない。\r\n\r\n[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。\r\n  scope: 国際指標Brent原油先物の短時間の値動き\r\n  conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。\r\n  numeric_value: 約 +2.6%、$85/バレル超 (numeric_scope: 記事掲載時点のリアルタイムに近い価格スナップショット。日中高値でも終値でもない)\r\n  date_or_period: 2026-07-14、撤回発表後の取引時間中\r\n  causal_strength: CAUSAL_STATED_BY_SOURCE\r\n  制約(notes_for_writer): 撤回後に原油価格が全面的に下落したとは書かない。観測されたのは一時的な上げ幅縮小と、その後の回復。\r\n\r\n[VERIFIED] HF-010: Financial TimesのBrent先物ヒストリカル表は、7月14日の取引について始値84.00ドル、日中高値87.55ドル、日中安値83.37ドル、終値84.73ドルを記録している。\r\n  scope: Financial Times掲載の期近Brent原油先物ヒストリカルデータ\r\n  conditions: 日次OHLCデータ。価格単位は1バレル当たり米ドル。\r\n  numeric_value: 始値 $84.00、高値 $87.55、安値 $83.37、終値 $84.73 (numeric_scope: 7月14日の取引日全体。$87.55は日中高値、$84.73は終値・Reuters報道の清算値に対応)\r\n  date_or_period: 2026-07-14取引日\r\n  causal_strength: OBSERVED_REPORTED\r\n  制約(notes_for_writer): 速報時点値と日次高値を区別する。87.55ドルを使用する場合は「FTのヒストリカル表による」と帰属を付ける。\r\n\r\n[VERIFIED] HF-011: Brent原油先物は7月14日に1.43ドル、1.7％上昇し、1バレル84.73ドルで清算された。これは2営業日連続で6月12日以来の高い清算値だった。\r\n  scope: Brent原油先物の当日清算値と前日比\r\n  conditions: 20％償還料案は同日の取引時間中に撤回されたが、海上封鎖、米・イラン間の攻撃、タンカー被害などの供給懸念は継続していた。\r\n  numeric_value: $84.73/バレル、前日比 +$1.43、+1.7% (numeric_scope: 7月14日のBrent原油先物清算値。日中高値ではない)\r\n  date_or_period: 2026-07-14清算時点\r\n  causal_strength: OBSERVED_REPORTED\r\n  制約(notes_for_writer): 7月14日は撤回があったにもかかわらず日次清算値は上昇した。これだけから撤回が価格を上昇させた、または下落させなかったと因果推論しない。\r\n\r\n[VERIFIED] HF-012: Reutersは7月14日、トランプ氏が海峡をイラン以外の船舶に開放すると述べた後、米WTI先物が一時マイナス圏へ転じ、その後、イランの巡航ミサイルがUAEの石油タンカー2隻を攻撃したとの報道を受けて価格が回復したと報じた。\r\n  scope: Reutersが明示した米WTI原油先物の短時間の値動き。Brentに同一の反応があったとは明記されていない\r\n  conditions: 同日に複数の政策発言と軍事・海運ニュースが連続して発生した。\r\n  date_or_period: 2026-07-14取引時間中\r\n  causal_strength: CAUSAL_STATED_BY_SOURCE\r\n  制約(notes_for_writer): Brentの反応として転用しない。市場反応が同日中に複数回反転したことを示す補助Factとしてのみ使用する。\r\n\n\n【Ledgerの読み方】\n各Factは「Fact本文」(ID行の文と、scope・conditions・numeric_value・date_or_periodなどの欄)と、「Writerへの制約」(notes_for_writer・ambiguity_noteの欄。`制約(…)`と表記されることがあります)に分かれています。\n- Fact本文は、Fact選択とStorylineの材料です。\n- Writerへの制約は、のちに記事を書く工程が守るガードレールです。Storylineやselected_fact_briefの内容・文言として転記・言い換えしないでください(「〜しない」「〜と断定しない」などの指示調の文を入れない)。Storylineには事実の記述だけを書き、制約に反する断定をしないでください。制約そのものは、システムが選択Factに対応づけて別途Writerへ渡します。\n\nあなたの仕事は次の6つです。\n\n1. このFull Ledgerの中から、記事として一本化しやすい中心Storyline(のちの記事が伝える「何が起きて、なぜそうなったか」という一続きの筋)を1つ決定してください。\n2. 決定したStorylineを1行の日本語で明示してください(これが後工程でWriterへ渡すテーマ文としてそのまま使われます)。Storylineには、Fact本文に基づく事実の記述だけを書き、注意・禁止・書き方の指示は含めないでください。\n3. Full Ledgerの全fact_idそれぞれについて、以下4つのテストを適用してください。\n\nTest1: そのFactを削除しても中心Storylineを理解できるか。YESなら原則除外。\nTest2: そのFactは他Factとの因果関係に実際に使われるか。NOなら原則除外。\nTest3: そのFactがないとStoryline上重要な「なぜ?」が説明できなくなるか。NOなら原則除外。\nTest4: そのFactを残した理由が「面白い/具体的/数字がある/珍しい/補足として便利」だけではないか。YESなら原則除外。\n\n4. 各Factについて、4テストの回答を踏まえてselected(採用)/excluded(除外)を決定し、理由(reason)を記載してください。判定に迷うFactについては、迷った理由も含めてreasonへ記載して構いません。\n5. 採用したFactだけを使って、Writerへそのまま渡す「Selected Fact Brief」(必要最小限のFactを簡潔にまとめた文章。冒頭にStorylineの1行を含める)を作成してください。Selected Fact Briefは記事本文そのものではなく、Writerへの素材です。\n6. 採用したFactそれぞれについて、そのFact本文(ID行の文)に書かれている数字・日付の表記を1つずつ洗い出し、number_ranksへ中核(core)か周辺(peripheral)の別とともに記載してください。\n- surface: 数字・単位・「約」「超」などのヘッジ語まで含めた形で、Fact本文に書かれている通りに写してください(例: 約3.4％、2,300件超、7月13日)。Fact本文に無い数字、Ledgerの他の欄にしかない数字、別のFactの数字は書かないでください。数字を含まない表記は不要です。\n- kind: magnitude(量・割合・金額・件数など)/date_time(月を含む日付・時刻・四半期)/range(範囲)/year(年だけ)/ordinal(第12回など識別子の序数)/name_embedded(名称の一部の番号)のどれか。\n- role: 次の順で決めてください。(a)year・ordinal・name_embeddedは常にperipheral。(b)量とrangeは、そのFactのnumeric_value欄の数字(numeric_scopeの括弧内を除く)に含まれるものだけがcore候補(Ledger全体にnumeric_value欄が1件も無い場合に限り、Fact本文の数字で比べる)。日付は、表記に月があり、そのFactのdate_or_period欄の先頭の日付と、表記にある年・月・日が全て一致するものだけがcore候補(Ledger全体にdate_or_period欄が1件も無い場合に限り、Fact本文の最初の日付で比べる。年だけ・日だけ・時刻だけ・四半期の表記は候補になりません)。(c)core候補を、Storylineに出る量、それ以外の量、日付の順に並べ(同じ順位ではFactの採用順・本文の出現順)、先頭から最大 max(3, min(6, floor(n/2))) 個をcore、残りと候補でないものをperipheralとする(nは量・range・日付の概念の総数。概念=同じFactの中で主数字と単位が同じ表記のまとまり。同じ概念の表記は全て同じroleにする)。迷ったらperipheral。\n\n【採用Fact数についての注意】\n目安は3〜5件です。Hard ruleではありませんが、6件以上採用する場合は、本当にそれら全てが中心Storylineの理解に必要かをもう一度自問し、recheck_noteフィールドへその検討内容を明記してください(3件未満でも、Storylineが単独で成立するなら構いません)。5件以下の場合、recheck_noteはnullにしてください。\n\n【出力】\nJSON schemaの指示に従い、以下を出力してください:\n- selected_storyline: 決定したStorylineの1行\n- fact_tests: Full Ledgerの全fact_idについて、test1_answer/test2_answer/test3_answer/test4_answer(いずれも\"YES\"か\"NO\")・reason・decision(\"selected\"か\"excluded\")\n- selected_fact_ids: 採用したfact_idのリスト(fact_testsでdecision=\"selected\"のものと一致させること)\n- selected_fact_brief: Writerへ渡すSelected Fact Brief本文(Storylineの1行を含む)\n- recheck_note: 採用Fact数が6件以上の場合のみ記入。5件以下の場合はnull。\n- number_ranks: 手順6の結果(採用Factの数字・日付の表記ごとに fact_id・surface・kind・role)。数字が1つも無い場合は空配列。\n\n【重要】fact_idは、上記Full Ledgerに実在するfact_idのみを使用してください。Ledgerに存在しないfact_idを作り出さないでください。number_ranksのfact_idは採用したFactのみ、surfaceは当該Factのfact本文に実在する表記のみとしてください。"
+  }
+ ]
+}

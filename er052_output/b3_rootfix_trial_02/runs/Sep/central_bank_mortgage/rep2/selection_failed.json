@@ -1,0 +1,45 @@
+{
+ "arm": "Sep",
+ "theme": "central_bank_mortgage",
+ "rep": 2,
+ "attempts_log": [
+  {
+   "attempt": 1,
+   "validation_errors": [
+    "DUPLICATE:F007:30年"
+   ],
+   "flags": [],
+   "latency_seconds": 64.6,
+   "model": "gpt-6-luna"
+  },
+  {
+   "attempt": 2,
+   "validation_errors": [
+    "DUPLICATE:F007:30年"
+   ],
+   "flags": [
+    "SURFACE_ONLY_IN_LEDGER_FIELD_NOT_CLAIM:F002:2026-09-17",
+    "SURFACE_ONLY_IN_LEDGER_FIELD_NOT_CLAIM:F003:2026-09-16"
+   ],
+   "latency_seconds": 81.2,
+   "model": "gpt-6-luna"
+  }
+ ],
+ "latency_seconds": 145.8,
+ "usage_rows": [
+  {
+   "input_tokens": 1982,
+   "output_tokens": 7757,
+   "reasoning_tokens": 7250,
+   "elapsed_seconds": 64.629,
+   "attempt_number": 10
+  },
+  {
+   "input_tokens": 2062,
+   "output_tokens": 9449,
+   "reasoning_tokens": 8891,
+   "elapsed_seconds": 81.168,
+   "attempt_number": 11
+  }
+ ]
+}
