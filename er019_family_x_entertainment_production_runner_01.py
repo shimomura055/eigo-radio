@@ -243,6 +243,8 @@ def load_reused_ja_text(out_dir: str) -> str:
         raise LegacyWriterProvenanceStop(
             "[STOP] U-1 PROVENANCE_MISMATCH: ja_writer/runtime_evidence.json の annotated_md_sha256 が"
             "現在の注記済みB3(契約検証済み)と一致しません。JA記事は別の注記版から生成されたものです。"
+            "B3を再生成した場合は、続けて `--regenerate-stage writer` を実行してJA記事を新しい注記版から作り直してください"
+            "(下流の自動再生成は行いません=安全側)。"
             f"(evidence={ev.get('annotated_md_sha256')}, contract={annotated.annotated_md_sha256})")
     return load_text(f"{out_dir}/ja_writer/revision2.md")
 

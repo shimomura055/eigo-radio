@@ -13,7 +13,8 @@ Writer入力briefを**決定論で**組み立てる:
 出力(契約: er053_b3_annotation_contract_01 と DESIGN_03 3節):
   storyline_b3/selected_brief_annotated.md / annotation.json(annotator=DETERMINISTIC) / annotation_manifest.json(producer="deterministic_v2")
   storyline_b3/writer_constraints.txt(制約ブロック。空なら空ファイル。manifest.writer_constraints_sha256 で束縛)
-  storyline_b3/fact_selection_evidence.json の selected_fact_brief_text 欄(維持。中身は決定論出力。元のB3 LLM文は b3_llm_selected_fact_brief_text へ退避)
+  storyline_b3/fact_selection_evidence.json へ追記(元の selected_fact_brief_text 欄は**不変**。決定論出力は別キー deterministic_selected_fact_brief_text ほか。
+    新経路(W-1)は annotated md / 別キーのみを読む。manifest.input_shas.fact_selection_evidence_json は追記キーを除いた元欄の正規化shaで冪等)
 
 移植契約: 下の「移植元」ブロックは Trial 3ファイルの該当constant/関数を**ソース逐語**で移植した(関数本体のbyte-identicalをtestで機械証明):
   b3sep_build_01.py(ROOTFIX-01 assembler: assemble_D ほか。assemble_Aprime[A'腕]は不要につき移植せず)
@@ -728,7 +729,7 @@ def _check_inputs(ledger_text: str, ids, story, brief_story: str) -> list:
         probs.append(f"selected_fact_ids not in ledger (REJECTED or unknown): {unknown}")
     if not isinstance(story, str) or not story.strip():
         probs.append("selected_storyline missing")
-    elif story != brief_story:
+    elif story.strip() != brief_story.strip():
         probs.append("evidence.selected_storyline != Storyline of selected_brief.md")
     return probs
 
@@ -824,6 +825,15 @@ def run_internal_checks(plain: dict, annotated_md: str, sidecar: dict, der: dict
     return {k: {"status": "FAIL" if v else "PASS", "problems": v} for k, v in res.items()}
 
 
+DERIVED_EVIDENCE_KEYS = ("deterministic_selected_fact_brief_text", "deterministic_selected_fact_brief_text_source",
+                         "writer_constraints_text", "writer_news_field_text")
+
+
+def _evidence_base_sha(ev0: dict) -> str:
+    """producerが追記したキーを除いた元evidenceの正規化sha(再実行しても同値=冪等)。"""
+    return _sha(json.dumps(ev0, ensure_ascii=False, sort_keys=True).encode("utf-8"))
+
+
 def _write_bytes(p: str, b: bytes) -> None:
     os.makedirs(os.path.dirname(p), exist_ok=True)
     with open(p, "wb") as f:
@@ -854,10 +864,12 @@ def produce_annotated_b3(out_dir: str) -> dict:
         brief_story, _ = w1.parse_brief_md(raw["brief"].decode("utf-8"))
     except (UnicodeDecodeError, ValueError) as e:
         raise AnnotationProducerError([f"input unreadable/invalid: {type(e).__name__}: {e}"])
+    ev0 = {k: v for k, v in ev.items() if k not in DERIVED_EVIDENCE_KEYS}     # producerが追記するキーを除いた元欄
     ids, story = ev.get("selected_fact_ids"), ev.get("selected_storyline")
     probs = _check_inputs(ledger_text, ids, story, brief_story)
     if probs:
         raise AnnotationProducerError(probs)
+    story = story.strip()          # F3: 比較はstrip後。以降の組立もstrip後の値(brief側のStorylineはparse_brief_mdがstrip済み)
 
     plain = assemble_plain(ledger_text, ids, story)
     der = ddet(ledger_text, ids, story)
@@ -888,7 +900,7 @@ def produce_annotated_b3(out_dir: str) -> dict:
         "checks": {k: v["status"] for k, v in checks.items()}, "model_ids": [],
         "writer_constraints_sha256": _sha(cons_b),
         "rule_version": RULE_VERSION, "rules_sha256": rsha, "llm_calls": 0,
-        "input_shas": {"selected_brief_md": _sha(raw["brief"]), "ledger": _sha(raw["ledger"]), "fact_selection_evidence_json": _sha(raw["evidence"])},
+        "input_shas": {"selected_brief_md": _sha(raw["brief"]), "ledger": _sha(raw["ledger"]), "fact_selection_evidence_json": _evidence_base_sha(ev0)},
         "internal_checks": checks, "n_facts": len(plain["ordered_ids"]), "n_number_surfaces": len(sidecar["numbers"]),
         "cap": der["cap"], "n_concepts": der["n_concepts"],
     }
@@ -896,10 +908,9 @@ def produce_annotated_b3(out_dir: str) -> dict:
     _write_bytes(os.path.join(sdir, SIDECAR_NAME), side_b)
     _write_bytes(os.path.join(sdir, CONSTRAINTS_NAME), cons_b)
     _write_bytes(os.path.join(sdir, MANIFEST_NAME), json.dumps(manifest, ensure_ascii=False, indent=2).encode("utf-8"))
-    # evidence: selected_fact_brief_text 欄は維持し中身を決定論出力へ(下流契約不変)。元のB3 LLM文は初回のみ退避。
-    ev.setdefault("b3_llm_selected_fact_brief_text", ev.get("selected_fact_brief_text"))
-    ev["selected_fact_brief_text"] = plain["facts_text"]
-    ev["selected_fact_brief_text_source"] = PRODUCER
+    # evidence: 元の selected_fact_brief_text(B3 LLM出力)は不変。決定論出力は別キーへ追記(F2)。
+    ev["deterministic_selected_fact_brief_text"] = plain["facts_text"]
+    ev["deterministic_selected_fact_brief_text_source"] = PRODUCER
     ev["writer_constraints_text"] = plain["constraints_text"]
     ev["writer_news_field_text"] = plain["news_field"]
     _write_bytes(paths["evidence"], json.dumps(ev, ensure_ascii=False, indent=2).encode("utf-8"))

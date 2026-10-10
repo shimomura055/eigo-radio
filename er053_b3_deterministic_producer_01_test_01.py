@@ -101,7 +101,8 @@ class GoldenTests(unittest.TestCase):
             ledger = _rd(os.path.join(d, "research_ledger", "verified_fact_ledger.txt"))
             ev = json.load(open(sd(d, "fact_selection_evidence.json"), encoding="utf-8"))
             a = B1.assemble_D(ledger, ev["selected_fact_ids"], ev["selected_storyline"], "Dfull")
-            self.assertEqual(ev["selected_fact_brief_text"], a["facts_text"], th)          # evidence欄は維持・中身は決定論出力
+            self.assertEqual(ev["deterministic_selected_fact_brief_text"], a["facts_text"], th)   # 決定論出力は別キー(F2)
+            self.assertNotEqual(ev["selected_fact_brief_text"], a["facts_text"], th)             # 元の selected_fact_brief_text(B3 LLM文)は不変
             self.assertEqual(ev["writer_constraints_text"], a["constraints_text"], th)
             self.assertEqual(ev["writer_news_field_text"], a["news_field"], th)
             self.assertEqual(_rd(sd(d, "writer_constraints.txt")), a["constraints_text"], th)
@@ -196,11 +197,12 @@ class GoldenTests(unittest.TestCase):
         after = {n: _sha(open(sd(d, n), "rb").read()) for n in before}
         self.assertEqual(before, after)
         ev2 = json.load(open(sd(d, "fact_selection_evidence.json"), encoding="utf-8"))
-        self.assertEqual(ev1["b3_llm_selected_fact_brief_text"], ev2["b3_llm_selected_fact_brief_text"])
         orig = json.load(open(os.path.join(T_CHK, "g0_real_annotation_01", th, "shared", "fact_selection_evidence_original.json"), encoding="utf-8"))
-        self.assertEqual(ev2["b3_llm_selected_fact_brief_text"], orig["selected_fact_brief_text"])        # 元のB3 LLM文は失われない
-        self.assertEqual(ev2["selected_fact_brief_text_source"], "deterministic_v2")
-        self.assertNotEqual(ev2["selected_fact_brief_text"], orig["selected_fact_brief_text"])
+        self.assertEqual(ev2["selected_fact_brief_text"], orig["selected_fact_brief_text"])        # F2: 元欄は不変(上書きしない)
+        self.assertNotIn("b3_llm_selected_fact_brief_text", ev2)
+        self.assertEqual(ev2["deterministic_selected_fact_brief_text_source"], "deterministic_v2")
+        self.assertNotEqual(ev2["deterministic_selected_fact_brief_text"], orig["selected_fact_brief_text"])
+        self.assertEqual(ev1, ev2)
 
 
 class PortFidelityTests(unittest.TestCase):

@@ -280,9 +280,13 @@ def call_luna_r0(client, user: str, stage: str):
     API call前に routing.require_model(FAMILY_X_FACTLOCK_R0)(リテラル固定の gpt-6-luna と一致しなければ ModelContractViolation)。"""
     model = routing.require_model("FAMILY_X_FACTLOCK_R0", R0_MODEL)
     with cl.logging_context(THEME_TAG, stage):
-        return client.responses.create(
+        resp = client.responses.create(
             model=model, reasoning={"effort": R0_EFFORT},
             input=[{"role": "developer", "content": jaw.DEVELOPER_MESSAGE}, {"role": "user", "content": user}])
+    # F4: 返却modelがR0_MODELで始まらなければSTOP(Provenance。Astra段と同じ扱い。DESIGN_03/W-1移植契約)
+    if not str(getattr(resp, "model", "")).startswith(R0_MODEL):
+        raise ProvenanceViolation(f"[STOP] R0段のmodelが{R0_MODEL}で始まらない: {getattr(resp, 'model', None)}")
+    return resp
 
 
 def _resp_meta(resp) -> dict:
@@ -362,7 +366,7 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
             raise JASymbolCheckStopError("r0_symbol", "[STOP] JA_SYMBOL_CHECK_STOP: W-1 R0音声化禁止記号Check、"
                                          f"再生成後も禁止記号が残りました(findings={f0b})。本文を手で直さずSTOPします。", text0b, f0b)
         text0 = text0b
-    for c in r0_calls:                     # model_id requested/returned を記録(不一致は記録のみ。新規STOP条件は追加しない)
+    for c in r0_calls:                     # model_id requested/returned を記録(返却model不一致はcall_luna_r0でSTOP済み)
         c["model_requested"] = R0_MODEL
         c["model_mismatch"] = bool(c["model"]) and not str(c["model"]).startswith(R0_MODEL)
     clean0 = clean_ja_for_next(text0).strip() + "\n"          # タグ除去の単一経路(残存はTagLeak=STOP)
@@ -432,12 +436,14 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
     echo = detect_r0_echo(final)
     wt(os.path.join(d, "original.md"), clean0)
     wt(os.path.join(d, "revision1.md"), p1)
-    wt(os.path.join(d, "revision2.md"), final)                  # = 下流(EN翻訳)が読む
     ev.update({"original": {"model": r0_calls[-1]["model"], "response_id": r0_calls[-1]["response_id"],
                             "model_requested": R0_MODEL, "r0_calls": r0_calls},
                "r1": m1, "r2": m2, "r2_all_attempts": r2_meta_all, "r2_echo_after_revision": echo,
                "title": extract_title(final), "ja_text_sha256": sha_text(final), "finished":
                datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")})
+    # F6: 来歴(runtime_evidence.json)を revision2.md より先に書く。revision2.mdだけ残って来歴が無い状態を作らない
+    # (途中中断時は来歴のみが残り、load_reused_ja_text は revision2.md 不在でSTOP/再生成になる=安全側)
     wj(os.path.join(d, "runtime_evidence.json"), ev)
+    wt(os.path.join(d, "revision2.md"), final)                  # = 下流(EN翻訳)が読む
     return {"ja_text": final, "title": ev["title"], "runtime_evidence": ev,
             "paths": {"revision2": os.path.join(d, "revision2.md"), "runtime_evidence": os.path.join(d, "runtime_evidence.json")}}

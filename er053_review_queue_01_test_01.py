@@ -165,8 +165,9 @@ class QueueTests(unittest.TestCase):
             os.chdir(old)
 
     def test_derive_article_id(self):
-        self.assertEqual(rq.derive_article_id("er019_output/meta/run_03/"), "run_03")
-        self.assertEqual(rq.derive_article_id("er019_output/meta/run_03"), "run_03")
+        self.assertEqual(rq.derive_article_id("er019_output/meta/run_03/"), "meta__run_03")      # F1: <slug>__<run>
+        self.assertEqual(rq.derive_article_id("er019_output/meta/run_03"), "meta__run_03")
+        self.assertNotEqual(rq.derive_article_id("er019_output/meta/run_01"), rq.derive_article_id("er019_output/byd_recall/run_01"))
 
 
 class RepoTests(unittest.TestCase):

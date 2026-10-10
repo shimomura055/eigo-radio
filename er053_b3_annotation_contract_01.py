@@ -52,7 +52,8 @@ MANIFEST_REQUIRED_KEYS = ("schema_version", "producer", "source_selected_brief_s
                           "sidecar_sha256", "spec_sha256", "generated_at", "checks", "model_ids")
 CHECK_KEYS = ("a_alignment", "b_numbers", "c_core_peripheral", "d_tags", "e_sidecar")
 CHECK_OK = ("PASS", "PASS_LAYOUT_NORMALIZED")
-ANNOTATORS = ("A", "B", "MERGED", "DETERMINISTIC")     # C4: DETERMINISTIC=決定論producer(er053_b3_deterministic_producer_01)
+# F8: Productionで許容するannotatorは DETERMINISTIC のみ(Lane B=LLM注記はREJECTED)。A/B/MERGEDはTrial成果物の検査側(Trial checker)にのみ残る。
+ANNOTATORS = ("DETERMINISTIC",)     # DETERMINISTIC=決定論producer(er053_b3_deterministic_producer_01)
 DETERMINISTIC = "DETERMINISTIC"
 
 BRIEF_NAME = "selected_brief.md"
@@ -155,7 +156,7 @@ def validate_annotated_b3(out_dir: str) -> AnnotatedB3:
     sc, mf = js["sidecar"], js["manifest"]
     # サイドカーschema(構造のみ)
     if sc.get("annotator") not in ANNOTATORS:
-        bad("V1", "sidecar.annotator must be A|B|MERGED")
+        bad("V1", "sidecar.annotator must be DETERMINISTIC")
     for key in ("slug", "spec_sha256", "brief_sha256"):
         if not isinstance(sc.get(key), str) or not sc.get(key):
             bad("V1", f"sidecar.{key} missing")
