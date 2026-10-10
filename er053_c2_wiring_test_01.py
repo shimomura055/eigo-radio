@@ -24,6 +24,7 @@ from unittest import mock
 import er005_cost_logger as cl
 import er019_family_x_entertainment_production_runner_01 as runner
 import er053_b3_annotation_contract_01 as contract
+import er053_b3_deterministic_producer_01 as annot
 import er053_dev_b3_fixture_adapter_01 as adapter
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -49,6 +50,15 @@ class Rec:
     def storyline(self, client, topic, ledger_text, out_dir):
         self.events.append("storyline_b3")
         return {"selected_storyline": "S", "selected_fact_brief_text": "B"}
+
+    def annotation(self, out_dir):
+        """C4: runner.run_annotation_producer のstub。順序を記録し、入力(台帳/selected_brief/evidence)が揃っていれば本番producerを実行する。"""
+        self.events.append("annotation")
+        if all(os.path.isfile(os.path.join(out_dir, r)) for r in (
+                "research_ledger/verified_fact_ledger.txt", "storyline_b3/selected_brief.md", "storyline_b3/fact_selection_evidence.json")):
+            import er053_b3_deterministic_producer_01 as prod
+            return prod.produce_annotated_b3(out_dir)
+        return {}
 
     def writer(self, client, out_dir, budget_jpy):
         self.events.append("writer")
@@ -78,6 +88,7 @@ def run_main(out_dir, argv_extra, rec, pre=None):
         mock.patch.object(runner.vfl01, "get_client", return_value=object()),
         mock.patch.object(runner, "run_research_and_ledger", side_effect=rec.research),
         mock.patch.object(runner, "run_storyline_b3", side_effect=rec.storyline),
+        mock.patch.object(runner, "run_annotation_producer", side_effect=rec.annotation),
         mock.patch.object(runner, "run_ja_writer", side_effect=rec.writer),
         mock.patch.object(runner.efam, "run_writer_stage", side_effect=rec.writer_stage),
         mock.patch.object(runner, "run_post_en_risk_flag", side_effect=rec.risk_flag),
@@ -117,7 +128,7 @@ class MainOrderTests(unittest.TestCase):
     def test_initial_full_run_order_advanced_rf_standard_rf(self):
         rec = Rec(self.out)
         run_main(self.out, [], rec)       # --stage all(既定)、初回(storyline/writerとも新規)
-        self.assertEqual(rec.events, ["research_ledger", "storyline_b3", "writer", "advanced", "rf:b1b", "standard", "rf:a2"])
+        self.assertEqual(rec.events, ["research_ledger", "storyline_b3", "annotation", "writer", "advanced", "rf:b1b", "standard", "rf:a2"])
 
     def test_rf_is_outside_logging_context_and_writer_stages_inside(self):
         rec = Rec(self.out)
@@ -183,7 +194,7 @@ class ResumeAndRegenerationPathTests(unittest.TestCase):
         try:
             rec = Rec(out)
             run_main(out, ["--stage", "standard"], rec)
-            self.assertEqual(rec.events, ["research_ledger", "standard", "rf:a2"])    # Writer再実行なし
+            self.assertEqual(rec.events, ["research_ledger", "annotation", "standard", "rf:a2"])    # Writer再実行なし
         finally:
             shutil.rmtree(out, ignore_errors=True)
 
@@ -192,7 +203,7 @@ class ResumeAndRegenerationPathTests(unittest.TestCase):
         try:
             rec = Rec(out)
             run_main(out, ["--stage", "advanced", "--stop-after", "advanced"], rec)
-            self.assertEqual(rec.events, ["research_ledger", "advanced", "rf:b1b"])
+            self.assertEqual(rec.events, ["research_ledger", "annotation", "advanced", "rf:b1b"])
         finally:
             shutil.rmtree(out, ignore_errors=True)
 
@@ -206,7 +217,7 @@ class ResumeAndRegenerationPathTests(unittest.TestCase):
             rec = Rec(out)
             with self.assertRaises(runner.LegacyWriterProvenanceStop):
                 run_main(out, ["--stage", "standard"], rec)
-            self.assertEqual(rec.events, ["research_ledger"])           # 英訳・RFへ進まない
+            self.assertEqual(rec.events, ["research_ledger", "annotation"])           # 英訳・RFへ進まない
         finally:
             shutil.rmtree(out, ignore_errors=True)
 
@@ -245,14 +256,15 @@ class ResumeAndRegenerationPathTests(unittest.TestCase):
         try:
             rec = Rec(out)
             run_main(out, ["--regenerate-stage", "storyline_b3", "--stop-after", "storyline_b3"], rec)
-            self.assertEqual(rec.events, ["research_ledger", "storyline_b3"])
+            self.assertEqual(rec.events, ["research_ledger", "storyline_b3", "annotation"])
         finally:
             shutil.rmtree(out, ignore_errors=True)
 
 
 class MainContractFailClosedTests(unittest.TestCase):
     def test_no_annotation_stops_at_writer_before_translation_rf_and_api(self):
-        """実 run_ja_writer(契約検証)を通す。注記なし -> AnnotatedB3ContractViolation、英訳・RFは呼ばれない。"""
+        """実 run_annotation_producer / run_ja_writer(契約検証)を通す。C4: 注記なし(台帳・evidence欠落でproducer生成不能)->
+        AnnotationProducerError(課金前STOP)、W-1/英訳・RFは呼ばれない(注記なしB3へのfallbackなし)。"""
         out = tempfile.mkdtemp(prefix="c2_main_noann_")
         try:
             os.makedirs(os.path.join(out, "storyline_b3"))
@@ -268,7 +280,7 @@ class MainContractFailClosedTests(unittest.TestCase):
                     mock.patch.object(runner.efam, "assert_budget_ok", return_value=0.0), \
                     mock.patch.object(runner.w1, "call_astra", side_effect=_boom), \
                     mock.patch.object(runner.w1, "call_luna_r0", side_effect=_boom):
-                with self.assertRaises(contract.AnnotatedB3ContractViolation):
+                with self.assertRaises(annot.AnnotationProducerError):
                     runner.main()
             self.assertEqual(rec.events, ["research_ledger"])
         finally:

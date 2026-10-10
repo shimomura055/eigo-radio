@@ -46,6 +46,7 @@ import er005_cost_logger as cl
 import er012_e_family_entertainment_two_level_runner_01 as efam
 import er019_family_x_storyline_b3_fact_selection_01 as b3
 import er053_b3_annotation_contract_01 as contract
+import er053_b3_deterministic_producer_01 as annot
 import er053_cost_aggregate_01 as ca
 import er053_family_x_factlock_ja_writer_01 as w1
 import er053_review_queue_01 as rq
@@ -187,6 +188,24 @@ def run_storyline_b3(client, topic: str, ledger_text: str, out_dir: str) -> dict
 # ------------------------------------------------------------
 class LegacyWriterProvenanceStop(RuntimeError):
     """U-1: W-1来歴のない(または契約と不一致の)JA記事を通常Production経路で再利用しようとした場合のSTOP。"""
+
+
+def run_annotation_producer(out_dir: str) -> dict:
+    """C4: 正式 annotated B3 producer(D-det v2 + 決定論assembler、LLM call 0)。storyline_b3 の確定直後に必ず呼ぶ
+    (初回/--regenerate-stage storyline_b3/resume/既存B3再利用のすべての分岐。決定論・冪等)。
+    注記なしB3へのfallbackは無い: 失敗は AnnotationProducerError(課金前STOP、技術QA)で伝播し、Writerへ進まない。
+    出力は契約検証(contract.validate_annotated_b3、W-1入口T-19)の対象。runtime evidenceは storyline_b3/audit/annotation_producer_evidence.json。"""
+    result = annot.produce_annotated_b3(out_dir)
+    save_json(f"{out_dir}/storyline_b3/audit/annotation_producer_evidence.json", {
+        "producer": result["producer"], "rule_version": result["rule_version"], "rules_sha256": result["rules_sha256"],
+        "rules_sha_table": annot.rules_sha_table(), "input_shas": result["input_shas"],
+        "annotated_md_sha256": result["annotated_md_sha256"], "writer_constraints_sha256": result["writer_constraints_sha256"],
+        "n_facts": result["n_facts"], "llm_calls": 0,
+        "internal_checks": {k: v["status"] for k, v in result["manifest"]["internal_checks"].items()},
+        "producer_module_sha256": self_sha256(annot.__file__)})
+    print(f"[B3-RUNNER][annotation] producer={result['producer']} rules_sha={result['rules_sha256'][:12]} "
+          f"facts={result['n_facts']} annotated_sha={result['annotated_md_sha256'][:12]}(LLM 0 call)")
+    return result
 
 
 def run_ja_writer(client, out_dir: str, budget_jpy: float) -> dict:
@@ -355,6 +374,7 @@ def main() -> None:
         "b3_module_sha256": self_sha256(b3.__file__),
         "ja_writer_module_sha256": self_sha256(w1.__file__),
         "annotation_contract_module_sha256": self_sha256(contract.__file__),
+        "annotation_producer_module_sha256": self_sha256(annot.__file__),
         "risk_flagger_module_sha256": self_sha256(rf.__file__),
         "review_queue_module_sha256": self_sha256(rq.__file__),
         "args": vars(args),
@@ -388,6 +408,7 @@ def main() -> None:
         else:
             storyline_result = run_storyline_b3(client, args.theme, ledger_text, out_dir)
             efam.assert_budget_ok(out_dir, args.budget_jpy, "after storyline_b3")
+        run_annotation_producer(out_dir)    # C4: 初回・regeneration・resume・再利用のすべてで storyline_b3 確定直後(Writer/契約検証の前)に呼ぶ
         if stage == "storyline_b3" or args.stop_after == "storyline_b3":
             print("[B3-RUNNER] stage=storyline_b3で停止(--stop-after storyline_b3)。")
             _write_cost_json(out_dir)
