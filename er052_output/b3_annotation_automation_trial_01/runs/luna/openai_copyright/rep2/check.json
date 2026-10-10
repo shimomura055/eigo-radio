@@ -1,0 +1,232 @@
+{
+ "spec": "B3_ANNOTATION_SPEC_v2",
+ "ledger_records": 8,
+ "f_ledger_schema": {
+  "status": "INFO",
+  "records": 8,
+  "field_counts": {
+   "scope": 8,
+   "conditions": 8,
+   "date_or_period": 8,
+   "notes_for_writer": 8,
+   "numeric_value": 6
+  },
+  "numeric_value_fallback_to_statement": false,
+  "date_or_period_fallback_to_statement": false,
+  "non_verified_ids": [],
+  "per_record": {
+   "F1": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "scope"
+    ]
+   },
+   "F2": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F3": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F4": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F5": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F6": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F7": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "scope"
+    ]
+   },
+   "F8": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   }
+  },
+  "warnings": []
+ },
+ "a_strip_equal": {
+  "status": "PASS_LAYOUT_NORMALIZED",
+  "reason": "",
+  "strict_equal_after_strip": false,
+  "inserted_split_breaks": 2,
+  "inserted_bullet_markers": 1,
+  "brief_sha256": "6f7ce6bd62d49d6c17873cf4f138cfb198ae9c249cadb9213e4f7e344ed91db3",
+  "stripped_annotated_sha256": "c508506aed9d2c4d91c139cbce004a6f4832cb3cd7c9563c236b8200d789df3f"
+ },
+ "d_sequence": {
+  "status": "PASS",
+  "fact_numbers": [
+   1,
+   2,
+   3
+  ],
+  "problems": []
+ },
+ "b_ledger_mapping": {
+  "status": "PASS",
+  "mapping": {
+   "1": [
+    "F2"
+   ],
+   "2": [
+    "F4"
+   ],
+   "3": [
+    "F6",
+    "F7",
+    "F8"
+   ]
+  },
+  "problems": [],
+  "warnings": [],
+  "ambiguous_fact": {}
+ },
+ "c_numbers": {
+  "status": "PASS",
+  "problems": [],
+  "warnings": [],
+  "surface_diff": [
+   {
+    "surface": "14法人・事業体",
+    "ledger_ids": [
+     "F2"
+    ]
+   },
+   {
+    "surface": "2026年10月8日",
+    "ledger_ids": [
+     "F7"
+    ]
+   }
+  ],
+  "eligibility": {
+   "C_plaintiffs": [
+    "E1"
+   ],
+   "C_damages": [
+    "E1"
+   ],
+   "C_reporting_date": [
+    "E2p"
+   ],
+   "C_case_number": []
+  },
+  "countable_concepts": 3,
+  "core_cap": 3,
+  "expected_core_concepts": [
+   "C_plaintiffs",
+   "C_damages",
+   "C_reporting_date"
+  ],
+  "declared_core_concepts": [
+   "C_damages",
+   "C_plaintiffs",
+   "C_reporting_date"
+  ],
+  "cap_dropped_concepts": [],
+  "cap_dropped_count": 0,
+  "eligible_concepts": [
+   "C_plaintiffs",
+   "C_damages",
+   "C_reporting_date"
+  ],
+  "concept_detail": {
+   "C_plaintiffs": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 0,
+    "in_storyline": true,
+    "expected_class": "core"
+   },
+   "C_damages": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C_reporting_date": {
+    "kind": "date_time",
+    "eligible": [
+     "E2p"
+    ],
+    "group": 2,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C_case_number": {
+    "kind": "name_embedded",
+    "eligible": [],
+    "group": 9,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   }
+  },
+  "kanji_numeral_candidates": [],
+  "stop_candidates": []
+ },
+ "e_sidecar_meta": {
+  "status": "PASS",
+  "problems": [],
+  "warnings": [],
+  "unmapped_claims_by_type": {}
+ },
+ "skipped": [],
+ "verdict": "PASS"
+}

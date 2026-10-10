@@ -1,0 +1,61 @@
+{
+ "slug": "meta",
+ "annotator": "A",
+ "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+ "brief_sha256": "83c29bc213a7c8bd22000e04446dded2dce4c047b9273ae6575e260339fa22e0",
+ "facts": [
+  {
+   "n": 1,
+   "ledger_ids": [
+    "MUSE-HC-006"
+   ]
+  },
+  {
+   "n": 2,
+   "ledger_ids": [
+    "MUSE-HC-010"
+   ]
+  },
+  {
+   "n": 3,
+   "ledger_ids": [
+    "MUSE-HC-012"
+   ]
+  }
+ ],
+ "numbers": [],
+ "unmapped_claims": [],
+ "annotation_notes": [
+  {
+   "where": "Selected Facts 全体(4文の段落)",
+   "question": "4文を何個の事実に分けるか。文1=MUSE-HC-006、文2=MUSE-HC-010、文3=MUSE-HC-012、文4=限定文",
+   "options": [
+    "1つにまとめる",
+    "3つに分ける(文1/文2/文3+文4)",
+    "4つに分ける"
+   ],
+   "chosen": "3つに分ける(S1・S2を満たし、上限3以内)",
+   "rule": "§2"
+  },
+  {
+   "where": "文4「これは機能の試験に関する話であり、Muse全体の停止ではない。」",
+   "question": "限定文を別の事実にするか",
+   "options": [
+    "別の事実にする",
+    "直前の文3(事実3)に含める"
+   ],
+   "chosen": "事実3に含める(MUSE-HC-012の notes_for_writer と対応するため、新しいIDは追加しない)",
+   "rule": "§2"
+  },
+  {
+   "where": "本文全体",
+   "question": "算用数字(全角を含む)を含む表記が本文にない(Superintelligence Labs や Muse に数字なし。台帳IDの形も本文にない)。数字の印は必要か",
+   "options": [
+    "印を付ける",
+    "付けない(numbers は空)"
+   ],
+   "chosen": "付けない(numbers は空)",
+   "rule": "§3"
+  }
+ ]
+}

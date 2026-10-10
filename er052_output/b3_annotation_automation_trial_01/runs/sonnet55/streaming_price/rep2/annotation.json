@@ -1,0 +1,204 @@
+{
+ "slug": "streaming_price",
+ "annotator": "A",
+ "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+ "brief_sha256": "776ac8d80c32dbeda5c60ae37dd86a24e13e0df40a4f1368bdfeba1b9cc7625d",
+ "facts": [
+  {
+   "n": 1,
+   "ledger_ids": [
+    "F01",
+    "F02",
+    "F03",
+    "F04",
+    "F05",
+    "F06",
+    "F07"
+   ]
+  }
+ ],
+ "numbers": [
+  {
+   "surface": "2026年9月23日",
+   "kind": "date_time",
+   "concept": "C_date_0923",
+   "ledger_ids": [
+    "F01",
+    "F02",
+    "F03",
+    "F04",
+    "F05",
+    "F06",
+    "F07"
+   ],
+   "class": "peripheral",
+   "role": "発表日・新規契約者向け新価格の開始日(適格だが上限の外)"
+  },
+  {
+   "surface": "2026年10月8日",
+   "kind": "date_time",
+   "concept": "C_date_1008",
+   "ledger_ids": [
+    "F01"
+   ],
+   "class": "peripheral",
+   "role": "調査基準日(date_or_periodの先頭の日付ではないため不適格)"
+  },
+  {
+   "surface": "11.99ドル",
+   "kind": "magnitude",
+   "concept": "C_ad_old",
+   "ledger_ids": [
+    "F02"
+   ],
+   "class": "core",
+   "role": "広告付き単体月額の旧価格"
+  },
+  {
+   "surface": "12.49ドル",
+   "kind": "magnitude",
+   "concept": "C_ad_new",
+   "ledger_ids": [
+    "F02"
+   ],
+   "class": "core",
+   "role": "広告付き単体月額の新価格"
+  },
+  {
+   "surface": "18.99ドル",
+   "kind": "magnitude",
+   "concept": "C_prem_m_old",
+   "ledger_ids": [
+    "F03"
+   ],
+   "class": "core",
+   "role": "Premium単体月額の旧価格"
+  },
+  {
+   "surface": "21.49ドル",
+   "kind": "magnitude",
+   "concept": "C_prem_m_new",
+   "ledger_ids": [
+    "F03"
+   ],
+   "class": "core",
+   "role": "Premium単体月額の新価格"
+  },
+  {
+   "surface": "189.99ドル",
+   "kind": "magnitude",
+   "concept": "C_prem_y_old",
+   "ledger_ids": [
+    "F04"
+   ],
+   "class": "peripheral",
+   "role": "Premium単体年額の旧価格(適格だが上限の外)"
+  },
+  {
+   "surface": "214.99ドル",
+   "kind": "magnitude",
+   "concept": "C_prem_y_new",
+   "ledger_ids": [
+    "F04"
+   ],
+   "class": "peripheral",
+   "role": "Premium単体年額の新価格(適格だが上限の外)"
+  },
+  {
+   "surface": "2026年10月21日",
+   "kind": "date_time",
+   "concept": "C_date_1021",
+   "ledger_ids": [
+    "F02",
+    "F03",
+    "F04",
+    "F06"
+   ],
+   "class": "peripheral",
+   "role": "既存契約者の価格変更が始まる請求サイクルの基準日(date_or_periodの先頭の日付ではないため不適格)"
+  }
+ ],
+ "unmapped_claims": [],
+ "annotation_notes": [
+  {
+   "where": "Selected Facts 節(1段落・7文)",
+   "question": "文ごとに事実を分けるか。S1=F01、S2=F02〜F04、S3・S4=F06、S5=F07、S6=F05 で、限定文を前の文に寄せても4つ以上に分かれる",
+   "options": [
+    "4つ以上に分ける",
+    "分けない(1つの事実)"
+   ],
+   "chosen": "分けない。1つの【事実1】とし、ledger_ids に F01〜F07 を併記",
+   "rule": "§2 / §5-1"
+  },
+  {
+   "where": "Selected Facts 節の行頭",
+   "question": "節の先頭の行頭に `- ` を入れ、その直後に【事実1】を置く",
+   "options": [
+    "入れる",
+    "入れない"
+   ],
+   "chosen": "入れる(定義済みの改行・行頭挿入)",
+   "rule": "§1"
+  },
+  {
+   "where": "概念 C_prem_y_old / C_prem_y_new",
+   "question": "台帳の numeric_value に一致し適格だが、概念数 n=9(量6+日付3)で上限は4。優先順(他の量を上から)で5・6番目になる",
+   "options": [
+    "中核",
+    "周辺"
+   ],
+   "chosen": "周辺",
+   "rule": "§3-5-6 cap超過で周辺化"
+  },
+  {
+   "where": "概念 C_date_0923(2026年9月23日)",
+   "question": "date_or_periodの先頭の日付と一致し適格だが、日付は量より後の順位で上限の外",
+   "options": [
+    "中核",
+    "周辺"
+   ],
+   "chosen": "周辺",
+   "rule": "§3-5-6 cap超過で周辺化"
+  },
+  {
+   "where": "概念 C_date_1021(2026年10月21日)",
+   "question": "F02・F03・F04・F06の date_or_period の先頭の日付表現は 2026-09-23 で、2026-10-21 ではない。numeric_value 欄にはあるが日付の適格判定は date_or_period の先頭の日付による",
+   "options": [
+    "適格として扱う",
+    "不適格として扱う"
+   ],
+   "chosen": "不適格(周辺)",
+   "rule": "§3-5-2 / §5-2"
+  },
+  {
+   "where": "概念 C_date_1008(2026年10月8日)",
+   "question": "F01 の date_or_period の先頭の日付表現は発表日 2026-09-23 で、調査基準日 2026-10-08 は先頭ではない",
+   "options": [
+    "適格として扱う",
+    "不適格として扱う"
+   ],
+   "chosen": "不適格(周辺)",
+   "rule": "§3-5-2 / §5-2"
+  },
+  {
+   "where": "「2026年10月21日以降」の「以降」",
+   "question": "ヘッジ語として表記に含めるか。仕様のヘッジ語の一覧にない",
+   "options": [
+    "含める",
+    "含めない"
+   ],
+   "chosen": "含めない。表記は 2026年10月21日 のみ",
+   "rule": "§3-1 / §5-5"
+  },
+  {
+   "where": "概念数 n",
+   "question": "上限の計算。量6(11.99・12.49・18.99・21.49・189.99・214.99)+日付3(2026年9月23日・10月8日・10月21日)=9。Storylineに出る量はなし",
+   "options": [
+    "上限3",
+    "上限4"
+   ],
+   "chosen": "上限4(floor(9/2)=4)。中核は他の量の上から4つ",
+   "rule": "§3-5-3"
+  }
+ ]
+}

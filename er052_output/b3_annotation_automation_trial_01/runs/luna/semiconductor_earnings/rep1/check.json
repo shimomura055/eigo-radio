@@ -1,0 +1,290 @@
+{
+ "spec": "B3_ANNOTATION_SPEC_v2",
+ "ledger_records": 6,
+ "f_ledger_schema": {
+  "status": "INFO",
+  "records": 6,
+  "field_counts": {
+   "scope": 6,
+   "date_or_period": 6,
+   "ambiguity_note": 1,
+   "conditions": 5,
+   "numeric_value": 4,
+   "causal_strength": 2,
+   "notes_for_writer": 4
+  },
+  "numeric_value_fallback_to_statement": false,
+  "date_or_period_fallback_to_statement": false,
+  "non_verified_ids": [
+   "F1"
+  ],
+  "per_record": {
+   "F1": {
+    "status": "AMBIGUOUS",
+    "fields": [
+     "ambiguity_note",
+     "date_or_period",
+     "scope"
+    ]
+   },
+   "F2": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F3": {
+    "status": "VERIFIED",
+    "fields": [
+     "causal_strength",
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F4": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F5": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F6": {
+    "status": "VERIFIED",
+    "fields": [
+     "causal_strength",
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "scope"
+    ]
+   }
+  },
+  "warnings": [
+   "VERIFIED でない記録: ['F1']"
+  ]
+ },
+ "a_strip_equal": {
+  "status": "PASS_LAYOUT_NORMALIZED",
+  "reason": "",
+  "strict_equal_after_strip": false,
+  "inserted_split_breaks": 5,
+  "inserted_bullet_markers": 1,
+  "brief_sha256": "9fef5229e10c43eb2fc4cb1090d8fc882d7ae3777291de8db1c6d06233f96fa8",
+  "stripped_annotated_sha256": "1e6d6649b88efb698aac2c98eb818e91e99fc10a5aeb2aeea437b4e5c9c32e68"
+ },
+ "d_sequence": {
+  "status": "PASS",
+  "fact_numbers": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "problems": []
+ },
+ "b_ledger_mapping": {
+  "status": "PASS",
+  "mapping": {
+   "1": [
+    "F1"
+   ],
+   "2": [
+    "F2"
+   ],
+   "3": [
+    "F3"
+   ],
+   "4": [
+    "F4"
+   ],
+   "5": [
+    "F6"
+   ],
+   "6": [
+    "F1"
+   ]
+  },
+  "problems": [],
+  "warnings": [
+   "事実1: 台帳ID F1 は AMBIGUOUS (ambiguous_fact)",
+   "事実6: 台帳ID F1 は AMBIGUOUS (ambiguous_fact)"
+  ],
+  "ambiguous_fact": {
+   "1": [
+    "F1"
+   ],
+   "6": [
+    "F1"
+   ]
+  }
+ },
+ "c_numbers": {
+  "status": "FAIL",
+  "problems": [
+   "概念 C_next_quarter_revenue ['約348億ドル']: 規則では中核(適格 ['E1']、上限3内)なのに周辺と宣言 (付け漏れ)",
+   "概念 C_ai_yoy_growth ['221％']: 適格だが上限3または優先順で中核に入らない (規則では周辺)"
+  ],
+  "warnings": [],
+  "surface_diff": [],
+  "eligibility": {
+   "C_fiscal_year": [],
+   "C_fiscal_quarter": [],
+   "C_consolidated_revenue": [
+    "E1"
+   ],
+   "C_ai_revenue": [
+    "E1"
+   ],
+   "C_next_quarter_revenue": [
+    "E1"
+   ],
+   "C_announcement_date": [
+    "E2p"
+   ],
+   "C_quarter_end_date": [],
+   "C_ai_yoy_growth": [
+    "E1"
+   ],
+   "C_ai_qoq_growth": [
+    "E1"
+   ]
+  },
+  "countable_concepts": 7,
+  "core_cap": 3,
+  "expected_core_concepts": [
+   "C_consolidated_revenue",
+   "C_ai_revenue",
+   "C_next_quarter_revenue"
+  ],
+  "declared_core_concepts": [
+   "C_ai_revenue",
+   "C_ai_yoy_growth",
+   "C_consolidated_revenue"
+  ],
+  "cap_dropped_concepts": [
+   "C_ai_yoy_growth",
+   "C_ai_qoq_growth",
+   "C_announcement_date"
+  ],
+  "cap_dropped_count": 3,
+  "eligible_concepts": [
+   "C_consolidated_revenue",
+   "C_ai_revenue",
+   "C_next_quarter_revenue",
+   "C_ai_yoy_growth",
+   "C_ai_qoq_growth",
+   "C_announcement_date"
+  ],
+  "concept_detail": {
+   "C_fiscal_year": {
+    "kind": "year",
+    "eligible": [],
+    "group": 9,
+    "in_storyline": true,
+    "expected_class": "peripheral"
+   },
+   "C_fiscal_quarter": {
+    "kind": "ordinal",
+    "eligible": [],
+    "group": 9,
+    "in_storyline": true,
+    "expected_class": "peripheral"
+   },
+   "C_consolidated_revenue": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 0,
+    "in_storyline": true,
+    "expected_class": "core"
+   },
+   "C_ai_revenue": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 0,
+    "in_storyline": true,
+    "expected_class": "core"
+   },
+   "C_next_quarter_revenue": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 0,
+    "in_storyline": true,
+    "expected_class": "core"
+   },
+   "C_announcement_date": {
+    "kind": "date_time",
+    "eligible": [
+     "E2p"
+    ],
+    "group": 2,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   },
+   "C_quarter_end_date": {
+    "kind": "date_time",
+    "eligible": [],
+    "group": 2,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   },
+   "C_ai_yoy_growth": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   },
+   "C_ai_qoq_growth": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   }
+  },
+  "kanji_numeral_candidates": [],
+  "percent_sign_variants": [
+   "％"
+  ],
+  "stop_candidates": []
+ },
+ "e_sidecar_meta": {
+  "status": "PASS",
+  "problems": [],
+  "warnings": [],
+  "unmapped_claims_by_type": {}
+ },
+ "skipped": [],
+ "verdict": "FAIL"
+}

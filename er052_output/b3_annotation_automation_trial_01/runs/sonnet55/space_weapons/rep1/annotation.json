@@ -1,0 +1,159 @@
+{
+ "slug": "space_weapons",
+ "annotator": "A",
+ "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+ "brief_sha256": "84c69f1329262f9868be25af77baa47b6afc2f7184ec8999affc232e19b421f9",
+ "facts": [
+  {
+   "n": 1,
+   "ledger_ids": [
+    "F-001"
+   ]
+  },
+  {
+   "n": 2,
+   "ledger_ids": [
+    "F-003"
+   ]
+  },
+  {
+   "n": 3,
+   "ledger_ids": [
+    "F-011"
+   ]
+  },
+  {
+   "n": 4,
+   "ledger_ids": [
+    "F-015"
+   ]
+  },
+  {
+   "n": 5,
+   "ledger_ids": [
+    "F-016"
+   ]
+  }
+ ],
+ "numbers": [
+  {
+   "surface": "2026年9月14日",
+   "kind": "date_time",
+   "concept": "C_meink_statement_date",
+   "ledger_ids": [
+    "F-001"
+   ],
+   "class": "core",
+   "role": "米空軍長官の発言日"
+  },
+  {
+   "surface": "2021年",
+   "kind": "year",
+   "concept": "C_cosmos_year",
+   "ledger_ids": [
+    "F-003"
+   ],
+   "class": "peripheral",
+   "role": "COSMOS 1408破壊の年(年のみ)"
+  },
+  {
+   "surface": "COSMOS 1408",
+   "kind": "name_embedded",
+   "concept": "C_cosmos_name",
+   "ledger_ids": [
+    "F-003"
+   ],
+   "class": "peripheral",
+   "role": "衛星名の一部の番号"
+  },
+  {
+   "surface": "第4条",
+   "kind": "ordinal",
+   "concept": "C_ost_art4",
+   "ledger_ids": [
+    "F-016"
+   ],
+   "class": "peripheral",
+   "role": "Outer Space Treaty条文番号"
+  }
+ ],
+ "unmapped_claims": [
+  {
+   "text": "この条文だけから個別の配備の適法性を断定しない",
+   "type": "qualifier"
+  }
+ ],
+ "annotation_notes": [
+  {
+   "where": "概念 C_meink_statement_date (2026年9月14日)",
+   "question": "日付は適格か、中核にできるか",
+   "options": [
+    "中核",
+    "周辺"
+   ],
+   "chosen": "中核",
+   "rule": "§3-5 台帳F-001のdate_or_period先頭の日付表現2026年9月14日と年月日が全て一致して適格。n=1で上限は3、適格な概念は他になく上限の内側"
+  },
+  {
+   "where": "事実1 (F-001の3文)",
+   "question": "3文を分けるか",
+   "options": [
+    "分ける",
+    "分けない"
+   ],
+   "chosen": "分けない",
+   "rule": "§2 全てF-001が根拠で、3文目は限定する文のため同一事実"
+  },
+  {
+   "where": "事実2 (F-003の2文)",
+   "question": "「これは地上から発射した試験であり…区別する」を別事実にするか",
+   "options": [
+    "分ける",
+    "分けない"
+   ],
+   "chosen": "分けない",
+   "rule": "§2 限定する文は直前と同じ事実"
+  },
+  {
+   "where": "事実2 「過去にも行われており」",
+   "question": "過去の他事例(F-004・F-005)にもまたがる一般化とみて、ledger_idsにF-004・F-005を加えるか",
+   "options": [
+    "F-003のみ",
+    "F-003・F-004・F-005"
+   ],
+   "chosen": "F-003のみ",
+   "rule": "§2 ニュース欄に書かれた台帳ID(F-003)とledger_idsを一致させる。文中の具体的主張はF-003で足りる"
+  },
+  {
+   "where": "事実5 第2文",
+   "question": "第2文「この条文だけから個別の配備の適法性を断定しない」を別事実にするか、F-017を加えるか、台帳外の記述とするか",
+   "options": [
+    "分ける",
+    "F-017を併記",
+    "F-016に含め、限定としてunmappedに記録"
+   ],
+   "chosen": "F-016に含め、限定としてunmappedに記録",
+   "rule": "§2 限定する文は直前と同じ事実。§5-1 分けない。§5-6 ニュース欄の台帳IDと一致させる"
+  },
+  {
+   "where": "2021年 / COSMOS 1408 / 第4条",
+   "question": "年のみ、名称内番号、条文番号は数量か",
+   "options": [
+    "数量",
+    "year / name_embedded / ordinal"
+   ],
+   "chosen": "year / name_embedded / ordinal(常に周辺)",
+   "rule": "§3-2 / §5-3"
+  },
+  {
+   "where": "漢数字・台帳ID形",
+   "question": "F-001等の台帳IDの形は数字として扱うか",
+   "options": [
+    "扱う",
+    "扱わない"
+   ],
+   "chosen": "扱わない(印を付けない)",
+   "rule": "§3"
+  }
+ ]
+}

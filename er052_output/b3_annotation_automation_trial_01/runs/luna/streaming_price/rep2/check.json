@@ -1,0 +1,301 @@
+{
+ "spec": "B3_ANNOTATION_SPEC_v2",
+ "ledger_records": 7,
+ "f_ledger_schema": {
+  "status": "INFO",
+  "records": 7,
+  "field_counts": {
+   "scope": 7,
+   "conditions": 7,
+   "date_or_period": 7,
+   "ambiguity_note": 2,
+   "notes_for_writer": 7,
+   "numeric_value": 4
+  },
+  "numeric_value_fallback_to_statement": false,
+  "date_or_period_fallback_to_statement": false,
+  "non_verified_ids": [
+   "F01",
+   "F07"
+  ],
+  "per_record": {
+   "F01": {
+    "status": "AMBIGUOUS",
+    "fields": [
+     "ambiguity_note",
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "scope"
+    ]
+   },
+   "F02": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F03": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F04": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F05": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "scope"
+    ]
+   },
+   "F06": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F07": {
+    "status": "AMBIGUOUS",
+    "fields": [
+     "ambiguity_note",
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "scope"
+    ]
+   }
+  },
+  "warnings": [
+   "VERIFIED でない記録: ['F01', 'F07']"
+  ]
+ },
+ "a_strip_equal": {
+  "status": "PASS_LAYOUT_NORMALIZED",
+  "reason": "",
+  "strict_equal_after_strip": false,
+  "inserted_split_breaks": 4,
+  "inserted_bullet_markers": 1,
+  "brief_sha256": "4f6183a27599d9e46eddb158d5cfeedc6fc6657aee3eee31fd0e2c877719a28b",
+  "stripped_annotated_sha256": "4f8edb2dbb4468699af5269e83f41a2117c5c11e4edfa0ce7f09d02ab558d74d"
+ },
+ "d_sequence": {
+  "status": "PASS",
+  "fact_numbers": [
+   1,
+   2,
+   3,
+   4,
+   5
+  ],
+  "problems": []
+ },
+ "b_ledger_mapping": {
+  "status": "PASS",
+  "mapping": {
+   "1": [
+    "F01"
+   ],
+   "2": [
+    "F02",
+    "F03",
+    "F04"
+   ],
+   "3": [
+    "F06"
+   ],
+   "4": [
+    "F07"
+   ],
+   "5": [
+    "F05",
+    "F06"
+   ]
+  },
+  "problems": [],
+  "warnings": [
+   "事実1: 台帳ID F01 は AMBIGUOUS (ambiguous_fact)",
+   "事実4: 台帳ID F07 は AMBIGUOUS (ambiguous_fact)"
+  ],
+  "ambiguous_fact": {
+   "1": [
+    "F01"
+   ],
+   "4": [
+    "F07"
+   ]
+  }
+ },
+ "c_numbers": {
+  "status": "PASS",
+  "problems": [],
+  "warnings": [],
+  "surface_diff": [],
+  "eligibility": {
+   "C_date_0923": [
+    "E2p"
+   ],
+   "C_date_1008": [],
+   "C_ad_supported_old_monthly": [
+    "E1"
+   ],
+   "C_ad_supported_new_monthly": [
+    "E1"
+   ],
+   "C_premium_old_monthly": [
+    "E1"
+   ],
+   "C_premium_new_monthly": [
+    "E1"
+   ],
+   "C_premium_old_annual": [
+    "E1"
+   ],
+   "C_premium_new_annual": [
+    "E1"
+   ],
+   "C_date_1021": []
+  },
+  "countable_concepts": 9,
+  "core_cap": 4,
+  "expected_core_concepts": [
+   "C_ad_supported_old_monthly",
+   "C_ad_supported_new_monthly",
+   "C_premium_old_monthly",
+   "C_premium_new_monthly"
+  ],
+  "declared_core_concepts": [
+   "C_ad_supported_new_monthly",
+   "C_ad_supported_old_monthly",
+   "C_premium_new_monthly",
+   "C_premium_old_monthly"
+  ],
+  "cap_dropped_concepts": [
+   "C_premium_old_annual",
+   "C_premium_new_annual",
+   "C_date_0923"
+  ],
+  "cap_dropped_count": 3,
+  "eligible_concepts": [
+   "C_ad_supported_old_monthly",
+   "C_ad_supported_new_monthly",
+   "C_premium_old_monthly",
+   "C_premium_new_monthly",
+   "C_premium_old_annual",
+   "C_premium_new_annual",
+   "C_date_0923"
+  ],
+  "concept_detail": {
+   "C_date_0923": {
+    "kind": "date_time",
+    "eligible": [
+     "E2p"
+    ],
+    "group": 2,
+    "in_storyline": true,
+    "expected_class": "peripheral"
+   },
+   "C_date_1008": {
+    "kind": "date_time",
+    "eligible": [],
+    "group": 2,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   },
+   "C_ad_supported_old_monthly": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C_ad_supported_new_monthly": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C_premium_old_monthly": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C_premium_new_monthly": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C_premium_old_annual": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   },
+   "C_premium_new_annual": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   },
+   "C_date_1021": {
+    "kind": "date_time",
+    "eligible": [],
+    "group": 2,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   }
+  },
+  "kanji_numeral_candidates": [],
+  "stop_candidates": []
+ },
+ "e_sidecar_meta": {
+  "status": "PASS",
+  "problems": [],
+  "warnings": [],
+  "unmapped_claims_by_type": {}
+ },
+ "skipped": [],
+ "verdict": "PASS"
+}

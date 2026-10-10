@@ -1,0 +1,195 @@
+{
+ "slug": "streaming_price",
+ "annotator": "A",
+ "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+ "brief_sha256": "776ac8d80c32dbeda5c60ae37dd86a24e13e0df40a4f1368bdfeba1b9cc7625d",
+ "facts": [
+  {
+   "n": 1,
+   "ledger_ids": [
+    "F01",
+    "F02",
+    "F03",
+    "F04",
+    "F05",
+    "F06",
+    "F07"
+   ]
+  }
+ ],
+ "numbers": [
+  {
+   "surface": "2026年9月23日",
+   "kind": "date_time",
+   "concept": "C_date_0923",
+   "ledger_ids": [
+    "F01",
+    "F02",
+    "F03",
+    "F04",
+    "F05",
+    "F06",
+    "F07"
+   ],
+   "class": "peripheral",
+   "role": "発表日・新規契約者向け新価格の開始日(適格だが上限の外)"
+  },
+  {
+   "surface": "2026年10月8日",
+   "kind": "date_time",
+   "concept": "C_date_1008",
+   "ledger_ids": [
+    "F01"
+   ],
+   "class": "peripheral",
+   "role": "調査基準日(date_or_period の先頭の日付ではないため不適格)"
+  },
+  {
+   "surface": "11.99ドル",
+   "kind": "magnitude",
+   "concept": "C_ad_old",
+   "ledger_ids": [
+    "F02"
+   ],
+   "class": "core",
+   "role": "広告付き単体月額の旧価格"
+  },
+  {
+   "surface": "12.49ドル",
+   "kind": "magnitude",
+   "concept": "C_ad_new",
+   "ledger_ids": [
+    "F02"
+   ],
+   "class": "core",
+   "role": "広告付き単体月額の新価格"
+  },
+  {
+   "surface": "18.99ドル",
+   "kind": "magnitude",
+   "concept": "C_premium_month_old",
+   "ledger_ids": [
+    "F03"
+   ],
+   "class": "core",
+   "role": "Premium単体月額の旧価格"
+  },
+  {
+   "surface": "21.49ドル",
+   "kind": "magnitude",
+   "concept": "C_premium_month_new",
+   "ledger_ids": [
+    "F03"
+   ],
+   "class": "core",
+   "role": "Premium単体月額の新価格"
+  },
+  {
+   "surface": "189.99ドル",
+   "kind": "magnitude",
+   "concept": "C_premium_year_old",
+   "ledger_ids": [
+    "F04"
+   ],
+   "class": "peripheral",
+   "role": "Premium単体年額の旧価格(適格だが上限の外)"
+  },
+  {
+   "surface": "214.99ドル",
+   "kind": "magnitude",
+   "concept": "C_premium_year_new",
+   "ledger_ids": [
+    "F04"
+   ],
+   "class": "peripheral",
+   "role": "Premium単体年額の新価格(適格だが上限の外)"
+  },
+  {
+   "surface": "2026年10月21日",
+   "kind": "date_time",
+   "concept": "C_date_1021",
+   "ledger_ids": [
+    "F02",
+    "F03",
+    "F04",
+    "F06"
+   ],
+   "class": "peripheral",
+   "role": "既存契約者の請求サイクル適用の基準日(date_or_period の先頭の日付ではないため不適格)"
+  }
+ ],
+ "unmapped_claims": [],
+ "annotation_notes": [
+  {
+   "where": "Selected Facts 節の段落全体",
+   "question": "文の境目で分けるか。台帳IDの異なるまとまりが5つ(F01 / F02-F04 / F06 / F07 / F05)になり、上限3を超える",
+   "options": [
+    "5つに分ける",
+    "3つに丸めて分ける",
+    "分けない(1事実)"
+   ],
+   "chosen": "分けない(1事実、ledger_ids は F01〜F07 を併記)",
+   "rule": "§2 / §5-1"
+  },
+  {
+   "where": "「第三者請求パートナー経由では価格や適用条件が異なる場合がある。」",
+   "question": "限定する文として直前の F07 の文に含めるか、F05 由来の別文か",
+   "options": [
+    "直前の文と同じ事実",
+    "別の台帳ID(F05)由来"
+   ],
+   "chosen": "段落全体を1事実にしたため分割せず、F05 を ledger_ids に併記",
+   "rule": "§2 / §5-1"
+  },
+  {
+   "where": "概念 C_premium_year_old / C_premium_year_new",
+   "question": "適格だが上限4の外(n=9)",
+   "options": [
+    "中核",
+    "周辺"
+   ],
+   "chosen": "周辺",
+   "rule": "§3-5-6 cap超過で周辺化"
+  },
+  {
+   "where": "概念 C_date_0923(2026年9月23日)",
+   "question": "日付は適格(F01等の先頭の日付と一致)だが、量が優先され上限4の外",
+   "options": [
+    "中核",
+    "周辺"
+   ],
+   "chosen": "周辺",
+   "rule": "§3-5-6 cap超過で周辺化"
+  },
+  {
+   "where": "概念 C_date_1021(2026年10月21日)",
+   "question": "date_or_period の先頭の日付は2026-09-23で、10月21日は先頭の日付ではない。numeric_value 欄には載っているが、日付の適格は date_or_period の先頭で判定する",
+   "options": [
+    "適格として扱う",
+    "不適格として扱う"
+   ],
+   "chosen": "周辺(適格を台帳で確認できない)",
+   "rule": "§5-2"
+  },
+  {
+   "where": "概念 C_date_1008(2026年10月8日)",
+   "question": "F01 の date_or_period の先頭は発表日2026-09-23で、2026-10-08は調査基準日(2番目)",
+   "options": [
+    "適格として扱う",
+    "不適格として扱う"
+   ],
+   "chosen": "周辺",
+   "rule": "§5-2"
+  },
+  {
+   "where": "同じ表記 2026年9月23日(Storyline と Selected Facts の2か所)",
+   "question": "同じ表記の分類",
+   "options": [
+    "場所ごとに変える",
+    "全て同じ印にする"
+   ],
+   "chosen": "全て【周辺数値】",
+   "rule": "§3-1"
+  }
+ ]
+}

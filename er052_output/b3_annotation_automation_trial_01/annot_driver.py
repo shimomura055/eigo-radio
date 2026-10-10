@@ -25,7 +25,15 @@ CONDS = {
     "claude-sonnet-5": dict(provider="anthropic", model_id="claude-sonnet-5"),
     "gpt-6.1-sol": dict(provider="openai", model_id="gpt-6.1-sol"),
     "gpt-6-astra": dict(provider="openai", model_id="gpt-6-astra"),
+    # Phase 2 (ユーザー方針): 実行対象はこの2つのみ。models list(無料)で実在確認済み(2026-10-10)
+    "sonnet55": dict(provider="anthropic", model_id="claude-sonnet-5-5"),
+    "luna": dict(provider="openai", model_id="gpt-6-luna"),
 }
+PRICES = {"claude-sonnet-5-5": (2.0, 0.10, 10.0), "gpt-6-luna": (0.10, 0.01, 0.50)}   # USD/MTok (in, cached, out)
+USDJPY = 160.0
+GUARD_JPY = 1200.0
+LEDGER = os.path.join(HERE, "cost_ledger_annot_01.jsonl")
+FORMAL9 = [t for t in THEMES if t != "inbound_tourism"]
 
 
 def sha_b(b):
@@ -135,14 +143,112 @@ def replay():
     return 0
 
 
+def cost_jpy(model_id, u):
+    pin, pc, pout = PRICES[model_id]
+    inp, out, c = u.get("input_tokens") or 0, u.get("output_tokens") or 0, u.get("cached_tokens") or 0
+    return ((inp - c) * pin + c * pc + out * pout) / 1e6 * USDJPY
+
+
+def ledger_total():
+    if not os.path.exists(LEDGER):
+        return 0.0
+    return sum(json.loads(l)["cost_jpy"] for l in open(LEDGER, encoding="utf-8") if l.strip())
+
+
+def call_api(cond, body):
+    """(text, usage, resp_id, model_returned, raw)。技術retryのみ(通信/429/5xx 最大2回)。内容を見た再実行はしない。"""
+    from dotenv import load_dotenv
+    load_dotenv(os.path.join(REPO, ".env"))
+    last = None
+    for attempt in range(3):
+        try:
+            if cond["provider"] == "openai":
+                from openai import OpenAI
+                r = OpenAI(api_key=os.environ["OPENAI_API_KEY"]).responses.create(**body)
+                u = r.usage
+                usage = dict(input_tokens=u.input_tokens, output_tokens=u.output_tokens,
+                             reasoning_tokens=getattr(getattr(u, "output_tokens_details", None), "reasoning_tokens", None),
+                             cached_tokens=getattr(getattr(u, "input_tokens_details", None), "cached_tokens", 0) or 0, status=getattr(r, "status", None))
+                return r.output_text, usage, r.id, r.model, r.model_dump()
+            import requests
+            h = {"anthropic-version": "2023-06-01", "content-type": "application/json", "x-api-key": os.environ["ANTHROPIC_API_KEY"]}
+            r = requests.post("https://api.anthropic.com/v1/messages", headers=h, json=body, timeout=600)
+            if r.status_code in (429, 500, 502, 503, 504, 529):
+                last = "HTTP %s" % r.status_code
+                import time; time.sleep(5 * (attempt + 1)); continue
+            j = r.json()
+            if r.status_code != 200:
+                raise RuntimeError("HTTP %s %s" % (r.status_code, json.dumps(j, ensure_ascii=False)[:300]))
+            txt = "".join(b.get("text", "") for b in j.get("content", []) if b.get("type") == "text")
+            u = j.get("usage", {}); cr = u.get("cache_read_input_tokens", 0) or 0; cc = u.get("cache_creation_input_tokens", 0) or 0
+            usage = dict(input_tokens=(u.get("input_tokens", 0) or 0) + cr + cc, output_tokens=u.get("output_tokens", 0), cached_tokens=cr,
+                         stop_reason=j.get("stop_reason"))
+            return txt, usage, j.get("id"), j.get("model"), j
+        except (OSError, ConnectionError) as e:   # 通信系のみ(requests例外もOSError系)
+            last = repr(e)
+            import time; time.sleep(5 * (attempt + 1))
+    raise RuntimeError("technical retry exhausted: %s" % last)
+
+
+def run_one(model_key, rep, slug):
+    import time
+    cond = CONDS[model_key]
+    d = os.path.join(HERE, "runs", model_key, slug, "rep%d" % rep)
+    if os.path.exists(os.path.join(d, "response_raw.json")) or os.path.exists(os.path.join(d, "request.json")):
+        sys.exit("既存結果あり(上書き禁止): " + d)
+    tot = ledger_total()
+    if tot >= GUARD_JPY:
+        sys.exit("費用ガード到達 JPY%.1f >= %.0f: 実行しない(STOP)" % (tot, GUARD_JPY))
+    prov, body_text = verify_provenance(slug, "A")
+    if not (prov["prompt_file_sha_matches_registry"] and prov["template_fill_is_prefix_of_trial_body"]):
+        sys.exit("provenance FAIL: " + slug)
+    req = build_request(cond, body_text)
+    body = req["body"]
+    ref = json.load(open(os.path.join(HERE, "dry_run", "claude-sonnet-5__%s__A.json" % slug), encoding="utf-8"))["body"]["messages"][0]["content"]
+    assert ref == body_text, "dry_run payloadとuserが不一致"
+    os.makedirs(d)
+    json.dump(dict(model_key=model_key, **req), open(os.path.join(d, "request.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    t0 = time.time()
+    try:
+        txt, usage, rid, mret, raw = call_api(cond, body)
+    except Exception as e:
+        json.dump(dict(error=str(e)), open(os.path.join(d, "response_raw.json"), "w", encoding="utf-8"))
+        print("API_ERROR", model_key, slug, rep, e); return None
+    el = time.time() - t0
+    json.dump(raw, open(os.path.join(d, "response_raw.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    open(os.path.join(d, "reply.txt"), "w", encoding="utf-8", newline="").write(txt)
+    cj = cost_jpy(cond["model_id"], usage)
+    res = pipeline_one(slug, "A", txt, d)
+    chk_res = dict(status=res["status"], reason=res.get("reason"))
+    if "md" in res:
+        os.replace(os.path.join(d, "A.annotated.md"), os.path.join(d, "annotated.md"))
+        os.replace(os.path.join(d, "A.annotation.json"), os.path.join(d, "annotation.json"))
+    p = paths(slug)
+    if "md" in res:   # 詳細検査結果も保存
+        full = chk.run(rd(p["brief"]), res["md"], rd(p["ledger"]), res["sidecar"], spec_sha256=sha_b(open(p["spec"], "rb").read()),
+                       brief_sha256=sha_b(open(p["brief"], "rb").read()))
+        json.dump(full, open(os.path.join(d, "check.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    row = dict(ts=time.strftime("%Y-%m-%dT%H:%M:%S%z"), model_key=model_key, model_id_requested=cond["model_id"], model_id_returned=mret,
+               theme=slug, rep=rep, usage=usage, cost_jpy=round(cj, 4), latency_s=round(el, 2), resp_id=rid, check=chk_res["status"],
+               prompt_chars=len(body_text), reply_chars=len(txt))
+    open(LEDGER, "a", encoding="utf-8").write(json.dumps(row, ensure_ascii=False) + chr(10))
+    print(json.dumps(row, ensure_ascii=False))
+    return row
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["dry-run", "replay", "run"])
     ap.add_argument("--models", default=",".join(CONDS))
     ap.add_argument("--themes", default=",".join(THEMES))
+    ap.add_argument("--model")
+    ap.add_argument("--rep", type=int)
     a = ap.parse_args()
     if a.cmd == "run":
-        sys.exit("Phase 1ではAPI実行は実装しない。Phase 2は承認後に別途配線する。")
+        assert a.model in ("sonnet55", "luna") and a.rep in (1, 2)
+        for t in a.themes.split(","):
+            run_one(a.model, a.rep, t)
+        sys.exit(0)
     if a.cmd == "dry-run":
         sys.exit(dry_run(a.models.split(","), a.themes.split(",")))
     sys.exit(replay())

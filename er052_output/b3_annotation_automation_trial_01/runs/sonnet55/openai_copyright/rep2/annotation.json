@@ -1,0 +1,150 @@
+{
+ "slug": "openai_copyright",
+ "annotator": "A",
+ "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+ "brief_sha256": "3051aa83a58f45213d4db7246af3328e49d9bc033e9954370312fe11923d4c35",
+ "facts": [
+  {
+   "n": 1,
+   "ledger_ids": [
+    "F2",
+    "F4",
+    "F6",
+    "F7",
+    "F8"
+   ]
+  }
+ ],
+ "numbers": [
+  {
+   "surface": "14法人",
+   "kind": "magnitude",
+   "concept": "C_plaintiffs",
+   "ledger_ids": [
+    "F2"
+   ],
+   "class": "core",
+   "role": "原告の法人・事業体数(Storylineに出る量。主数字14はF2のnumeric_valueに一致)"
+  },
+  {
+   "surface": "2億5,000万ドル",
+   "kind": "magnitude",
+   "concept": "C_damages",
+   "ledger_ids": [
+    "F6"
+   ],
+   "class": "core",
+   "role": "原告が請求する損害賠償額(主数字5000はF6のnumeric_valueに一致)"
+  },
+  {
+   "surface": "2026年10月8日",
+   "kind": "date_time",
+   "concept": "C_date",
+   "ledger_ids": [
+    "F1",
+    "F2",
+    "F3",
+    "F5",
+    "F6",
+    "F7",
+    "F8"
+   ],
+   "class": "core",
+   "role": "Reuters報道日(台帳のdate_or_period 2026-10-08と年月日が一致)"
+  },
+  {
+   "surface": "1:26-cv-08892",
+   "kind": "name_embedded",
+   "concept": "C_case",
+   "ledger_ids": [
+    "F8"
+   ],
+   "class": "peripheral",
+   "role": "連邦裁判所の事件番号(識別子)"
+  }
+ ],
+ "unmapped_claims": [],
+ "annotation_notes": [
+  {
+   "where": "Selected Facts の段落(「訴状に記載された原告は…」から最後の文まで)",
+   "question": "文の境目で分けるか。S1・S2は満たすが、別々の台帳IDに由来するまとまりが5つ(F2、F4+限定文、F6+限定文、F7、F8)になり、上限の3つを超える",
+   "options": [
+    "5つに分ける",
+    "3つに分ける",
+    "分けない(1項目=1事実)"
+   ],
+   "chosen": "分けない。【事実1】1つで、ledger_idsにF2・F4・F6・F7・F8を併記",
+   "rule": "§2(最大3つ)/§5-1"
+  },
+  {
+   "where": "Selected Facts 節の段落の行頭",
+   "question": "段落は節の先頭の行ではない。【事実1】は箇条書きの行頭にだけ付けられるため、行頭に定義済みの `- ` を入れるか",
+   "options": [
+    "`- ` を入れる",
+    "入れず印も付けない"
+   ],
+   "chosen": "`- ` を入れて【事実1】を付ける",
+   "rule": "§1/§5-6"
+  },
+  {
+   "where": "Selected Facts 節の「Storyline: …」の行",
+   "question": "コロンが半角だが、Storylineの重複行として扱うか",
+   "options": [
+    "重複行として扱い【事実N】を付けない",
+    "事実として番号を付ける"
+   ],
+   "chosen": "重複行として扱い、【事実N】は付けず数字の印だけ付ける",
+   "rule": "§2/§5-6"
+  },
+  {
+   "where": "「14法人・事業体」",
+   "question": "表記を「14法人」とするか「14法人・事業体」とするか",
+   "options": [
+    "14法人",
+    "14法人・事業体"
+   ],
+   "chosen": "数字と単位が直接つながる「14法人」",
+   "rule": "§3-1/§5-5"
+  },
+  {
+   "where": "「2億5,000万ドルを超える」",
+   "question": "「超える」をヘッジ語として表記に含めるか",
+   "options": [
+    "含める",
+    "含めない"
+   ],
+   "chosen": "「を」を挟み数字に直接つかないので含めない。主数字は5000で、F6のnumeric_valueの「2億5,000万ドル超」に含まれる",
+   "rule": "§3-1/§5-5"
+  },
+  {
+   "where": "概念 C_date「2026年10月8日」の ledger_ids",
+   "question": "同日付がdate_or_period欄にある台帳IDが複数ある。どれを書くか",
+   "options": [
+    "F7のみ",
+    "該当するIDを全て"
+   ],
+   "chosen": "date_or_periodが2026-10-08のF1・F2・F3・F5・F6・F7・F8を全て記載",
+   "rule": "§3-4/§5-4"
+  },
+  {
+   "where": "事件番号「1:26-cv-08892」",
+   "question": "量か名称内番号(識別子)か",
+   "options": [
+    "magnitude",
+    "name_embedded"
+   ],
+   "chosen": "番号を変えると別の事件を指すのでname_embedded(常に周辺)",
+   "rule": "§3-2/§5-3"
+  },
+  {
+   "where": "概念の数 n=3(14法人・2億5,000万ドル・2026年10月8日)",
+   "question": "上限はmax(3,min(6,floor(3/2)))=3。適格な3概念が全て上限内に入るか",
+   "options": [
+    "全て中核",
+    "一部を周辺"
+   ],
+   "chosen": "全て適格で上限内なので中核。優先順は14法人(Storylineの量)、2億5,000万ドル(他の量)、日付",
+   "rule": "§3-5"
+  }
+ ]
+}

@@ -1,0 +1,376 @@
+{
+ "spec": "B3_ANNOTATION_SPEC_v2",
+ "ledger_records": 11,
+ "f_ledger_schema": {
+  "status": "INFO",
+  "records": 11,
+  "field_counts": {
+   "scope": 11,
+   "conditions": 11,
+   "date_or_period": 10,
+   "notes_for_writer": 11,
+   "numeric_value": 5,
+   "causal_strength": 6
+  },
+  "numeric_value_fallback_to_statement": false,
+  "date_or_period_fallback_to_statement": false,
+  "non_verified_ids": [],
+  "per_record": {
+   "F001": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "scope"
+    ]
+   },
+   "F002": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F003": {
+    "status": "VERIFIED",
+    "fields": [
+     "causal_strength",
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F004": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "scope"
+    ]
+   },
+   "F005": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F006": {
+    "status": "VERIFIED",
+    "fields": [
+     "causal_strength",
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F007": {
+    "status": "VERIFIED",
+    "fields": [
+     "causal_strength",
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F008": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "notes_for_writer",
+     "scope"
+    ]
+   },
+   "F009": {
+    "status": "VERIFIED",
+    "fields": [
+     "causal_strength",
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "scope"
+    ]
+   },
+   "F010": {
+    "status": "VERIFIED",
+    "fields": [
+     "causal_strength",
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "scope"
+    ]
+   },
+   "F011": {
+    "status": "VERIFIED",
+    "fields": [
+     "causal_strength",
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "scope"
+    ]
+   }
+  },
+  "warnings": []
+ },
+ "a_strip_equal": {
+  "status": "PASS_LAYOUT_NORMALIZED",
+  "reason": "",
+  "strict_equal_after_strip": false,
+  "inserted_split_breaks": 1,
+  "inserted_bullet_markers": 0,
+  "brief_sha256": "bfbd63d8e580ea127584a0eca5ff4225bdd663aa5723220743f376b97851c9dd",
+  "stripped_annotated_sha256": "c6db2e19d703842a486b44f9bd8f79178c681b76d7925584c5409001917120f0"
+ },
+ "d_sequence": {
+  "status": "PASS",
+  "fact_numbers": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "problems": []
+ },
+ "b_ledger_mapping": {
+  "status": "PASS",
+  "mapping": {
+   "1": [
+    "F001"
+   ],
+   "2": [
+    "F002"
+   ],
+   "3": [
+    "F003"
+   ],
+   "4": [
+    "F007"
+   ],
+   "5": [
+    "F008"
+   ],
+   "6": [
+    "F010",
+    "F007",
+    "F002"
+   ]
+  },
+  "problems": [],
+  "warnings": [],
+  "ambiguous_fact": {}
+ },
+ "c_numbers": {
+  "status": "FAIL",
+  "problems": [
+   "分類漏れの数字(宣言なし・印なし): ['2', '10', '9']"
+  ],
+  "warnings": [],
+  "surface_diff": [
+   {
+    "surface": "0.25ポイント",
+    "ledger_ids": [
+     "F002"
+    ]
+   }
+  ],
+  "eligibility": {
+   "C_oct8": [
+    "E2p"
+   ],
+   "C_sep16": [
+    "E2p"
+   ],
+   "C_hike": [
+    "E1"
+   ],
+   "C_target_range": [
+    "E1"
+   ],
+   "C_inflation_target": [
+    "E1"
+   ],
+   "C_30year": [
+    "E1"
+   ],
+   "C_feb_late": [
+    "E2p"
+   ],
+   "C_rate_598": [
+    "E1"
+   ],
+   "C_rate_740": [
+    "E1"
+   ],
+   "C_loan_example": [],
+   "C_monthly_increase": [
+    "E1"
+   ]
+  },
+  "countable_concepts": 11,
+  "core_cap": 5,
+  "expected_core_concepts": [
+   "C_hike",
+   "C_target_range",
+   "C_inflation_target",
+   "C_30year",
+   "C_rate_598"
+  ],
+  "declared_core_concepts": [
+   "C_30year",
+   "C_hike",
+   "C_inflation_target",
+   "C_rate_598",
+   "C_target_range"
+  ],
+  "cap_dropped_concepts": [
+   "C_rate_740",
+   "C_monthly_increase",
+   "C_oct8",
+   "C_sep16",
+   "C_feb_late"
+  ],
+  "cap_dropped_count": 5,
+  "eligible_concepts": [
+   "C_hike",
+   "C_target_range",
+   "C_inflation_target",
+   "C_30year",
+   "C_rate_598",
+   "C_rate_740",
+   "C_monthly_increase",
+   "C_oct8",
+   "C_sep16",
+   "C_feb_late"
+  ],
+  "concept_detail": {
+   "C_oct8": {
+    "kind": "date_time",
+    "eligible": [
+     "E2p"
+    ],
+    "group": 2,
+    "in_storyline": true,
+    "expected_class": "peripheral"
+   },
+   "C_sep16": {
+    "kind": "date_time",
+    "eligible": [
+     "E2p"
+    ],
+    "group": 2,
+    "in_storyline": true,
+    "expected_class": "peripheral"
+   },
+   "C_hike": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 0,
+    "in_storyline": true,
+    "expected_class": "core"
+   },
+   "C_target_range": {
+    "kind": "range",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C_inflation_target": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C_30year": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C_feb_late": {
+    "kind": "date_time",
+    "eligible": [
+     "E2p"
+    ],
+    "group": 2,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   },
+   "C_rate_598": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C_rate_740": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   },
+   "C_loan_example": {
+    "kind": "magnitude",
+    "eligible": [],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   },
+   "C_monthly_increase": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   }
+  },
+  "kanji_numeral_candidates": [],
+  "percent_sign_variants": [
+   "％"
+  ],
+  "stop_candidates": []
+ },
+ "e_sidecar_meta": {
+  "status": "PASS",
+  "problems": [],
+  "warnings": [],
+  "unmapped_claims_by_type": {}
+ },
+ "skipped": [],
+ "verdict": "FAIL"
+}

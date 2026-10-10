@@ -1,0 +1,197 @@
+{
+ "slug": "central_bank_mortgage",
+ "annotator": "A",
+ "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+ "brief_sha256": "cddeced887f1a38c32eabad27631915507ee4ab5341d15deace76f6c84479349",
+ "facts": [
+  {
+   "n": 1,
+   "ledger_ids": [
+    "F001"
+   ]
+  },
+  {
+   "n": 2,
+   "ledger_ids": [
+    "F002"
+   ]
+  },
+  {
+   "n": 3,
+   "ledger_ids": [
+    "F003"
+   ]
+  },
+  {
+   "n": 4,
+   "ledger_ids": [
+    "F007"
+   ]
+  },
+  {
+   "n": 5,
+   "ledger_ids": [
+    "F008"
+   ]
+  },
+  {
+   "n": 6,
+   "ledger_ids": [
+    "F010",
+    "F007",
+    "F002"
+   ]
+  }
+ ],
+ "numbers": [
+  {
+   "surface": "2026年10月8日",
+   "kind": "date_time",
+   "concept": "C_oct8",
+   "ledger_ids": [
+    "F001",
+    "F006",
+    "F007"
+   ],
+   "class": "peripheral",
+   "role": "確認時点・金利比較日"
+  },
+  {
+   "surface": "9月16日",
+   "kind": "date_time",
+   "concept": "C_sep16",
+   "ledger_ids": [
+    "F001",
+    "F002"
+   ],
+   "class": "peripheral",
+   "role": "FOMC決定日"
+  },
+  {
+   "surface": "25ベーシスポイント",
+   "kind": "magnitude",
+   "concept": "C_hike",
+   "ledger_ids": [
+    "F002"
+   ],
+   "class": "core",
+   "role": "利上げ幅"
+  },
+  {
+   "surface": "0.25ポイント",
+   "kind": "magnitude",
+   "concept": "C_hike",
+   "ledger_ids": [
+    "F002"
+   ],
+   "class": "core",
+   "role": "利上げ幅"
+  },
+  {
+   "surface": "3.75～4.00％",
+   "kind": "range",
+   "concept": "C_target_range",
+   "ledger_ids": [
+    "F002"
+   ],
+   "class": "core",
+   "role": "政策金利の新目標レンジ"
+  },
+  {
+   "surface": "2％",
+   "kind": "magnitude",
+   "concept": "C_inflation_target",
+   "ledger_ids": [
+    "F003"
+   ],
+   "class": "core",
+   "role": "インフレ目標"
+  },
+  {
+   "surface": "30年",
+   "kind": "magnitude",
+   "concept": "C_30year",
+   "ledger_ids": [
+    "F006",
+    "F007"
+   ],
+   "class": "core",
+   "role": "固定ローン期間"
+  },
+  {
+   "surface": "2026年2月下旬",
+   "kind": "date_time",
+   "concept": "C_feb_late",
+   "ledger_ids": [
+    "F007"
+   ],
+   "class": "peripheral",
+   "role": "金利比較の開始時期"
+  },
+  {
+   "surface": "5.98％",
+   "kind": "magnitude",
+   "concept": "C_rate_598",
+   "ledger_ids": [
+    "F007"
+   ],
+   "class": "core",
+   "role": "比較開始時の平均金利"
+  },
+  {
+   "surface": "10月8日",
+   "kind": "date_time",
+   "concept": "C_oct8",
+   "ledger_ids": [
+    "F006",
+    "F007"
+   ],
+   "class": "peripheral",
+   "role": "金利比較日"
+  },
+  {
+   "surface": "7.40％",
+   "kind": "magnitude",
+   "concept": "C_rate_740",
+   "ledger_ids": [
+    "F006",
+    "F007"
+   ],
+   "class": "peripheral",
+   "role": "比較時の平均金利"
+  },
+  {
+   "surface": "40万ドル",
+   "kind": "magnitude",
+   "concept": "C_loan_example",
+   "ledger_ids": [
+    "F007"
+   ],
+   "class": "peripheral",
+   "role": "借入例の金額"
+  },
+  {
+   "surface": "376ドル",
+   "kind": "magnitude",
+   "concept": "C_monthly_increase",
+   "ledger_ids": [
+    "F007"
+   ],
+   "class": "peripheral",
+   "role": "月額費用の概算増"
+  }
+ ],
+ "unmapped_claims": [],
+ "annotation_notes": [
+  {
+   "where": "概念 C_rate_740、C_monthly_increase、C_oct8、C_sep16、C_feb_late",
+   "question": "適格な概念だが中核数値の上限を超える",
+   "options": [
+    "中核",
+    "周辺"
+   ],
+   "chosen": "周辺",
+   "rule": "§3-5-6 cap超過で周辺化"
+  }
+ ]
+}

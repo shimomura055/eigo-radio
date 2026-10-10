@@ -1,0 +1,165 @@
+{
+ "slug": "streaming_price",
+ "annotator": "A",
+ "spec_sha256": "8d145c3d7cb3953ef2d344056e2e9979698fff7d1f60aec7a6b6d922e7cf1e57",
+ "brief_sha256": "776ac8d80c32dbeda5c60ae37dd86a24e13e0df40a4f1368bdfeba1b9cc7625d",
+ "facts": [
+  {
+   "n": 1,
+   "ledger_ids": [
+    "F01"
+   ]
+  },
+  {
+   "n": 2,
+   "ledger_ids": [
+    "F02",
+    "F03",
+    "F04"
+   ]
+  },
+  {
+   "n": 3,
+   "ledger_ids": [
+    "F06"
+   ]
+  },
+  {
+   "n": 4,
+   "ledger_ids": [
+    "F07"
+   ]
+  },
+  {
+   "n": 5,
+   "ledger_ids": [
+    "F05",
+    "F06"
+   ]
+  }
+ ],
+ "numbers": [
+  {
+   "surface": "2026年9月23日",
+   "kind": "date_time",
+   "concept": "C_date_0923",
+   "ledger_ids": [
+    "F01",
+    "F02",
+    "F03",
+    "F04",
+    "F05",
+    "F06",
+    "F07"
+   ],
+   "class": "peripheral",
+   "role": "値上げ発表日・新価格の開始日"
+  },
+  {
+   "surface": "2026年10月8日",
+   "kind": "date_time",
+   "concept": "C_date_1008",
+   "ledger_ids": [
+    "F01"
+   ],
+   "class": "peripheral",
+   "role": "調査基準日"
+  },
+  {
+   "surface": "11.99ドル",
+   "kind": "magnitude",
+   "concept": "C_ad_supported_old_monthly",
+   "ledger_ids": [
+    "F02"
+   ],
+   "class": "core",
+   "role": "広告付き単体月額の改定前価格"
+  },
+  {
+   "surface": "12.49ドル",
+   "kind": "magnitude",
+   "concept": "C_ad_supported_new_monthly",
+   "ledger_ids": [
+    "F02"
+   ],
+   "class": "core",
+   "role": "広告付き単体月額の改定後価格"
+  },
+  {
+   "surface": "18.99ドル",
+   "kind": "magnitude",
+   "concept": "C_premium_old_monthly",
+   "ledger_ids": [
+    "F03"
+   ],
+   "class": "core",
+   "role": "Premium単体月額の改定前価格"
+  },
+  {
+   "surface": "21.49ドル",
+   "kind": "magnitude",
+   "concept": "C_premium_new_monthly",
+   "ledger_ids": [
+    "F03"
+   ],
+   "class": "core",
+   "role": "Premium単体月額の改定後価格"
+  },
+  {
+   "surface": "189.99ドル",
+   "kind": "magnitude",
+   "concept": "C_premium_old_annual",
+   "ledger_ids": [
+    "F04"
+   ],
+   "class": "peripheral",
+   "role": "Premium単体年額の改定前価格"
+  },
+  {
+   "surface": "214.99ドル",
+   "kind": "magnitude",
+   "concept": "C_premium_new_annual",
+   "ledger_ids": [
+    "F04"
+   ],
+   "class": "peripheral",
+   "role": "Premium単体年額の改定後価格"
+  },
+  {
+   "surface": "2026年10月21日",
+   "kind": "date_time",
+   "concept": "C_date_1021",
+   "ledger_ids": [
+    "F02",
+    "F03",
+    "F04",
+    "F06"
+   ],
+   "class": "peripheral",
+   "role": "既存契約者の価格変更が始まる請求サイクルの基準日"
+  }
+ ],
+ "unmapped_claims": [],
+ "annotation_notes": [
+  {
+   "where": "概念 C_premium_old_annual、C_premium_new_annual",
+   "question": "適格だが上限4の外",
+   "options": [
+    "中核",
+    "周辺"
+   ],
+   "chosen": "周辺",
+   "rule": "§3-5-6 cap超過で周辺化"
+  },
+  {
+   "where": "概念 C_date_0923",
+   "question": "適格だが上限4の外",
+   "options": [
+    "中核",
+    "周辺"
+   ],
+   "chosen": "周辺",
+   "rule": "§3-5-6 cap超過で周辺化"
+  }
+ ]
+}
