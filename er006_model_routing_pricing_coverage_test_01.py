@@ -69,7 +69,9 @@ class PricingCoverageTest(unittest.TestCase):
             self.assertIn("161df7d8126a8287e0c0c4bc80950f977ab6b54a597d9bced35baeedbbb3a807", p["source_url"])
             self.assertIn("2026-10-08T16:38", p["source_url"])
             self.assertIn("platform.openai.com/docs/pricing", p["source_url"])
-        self.assertNotIn("gpt-6-astra", set(routing.PROCESS_MODEL_MAP.values()))
+        # RISK-FLAGGER-PRODUCTION-WIRING-01 ユーザー決定2026-10-10: astraは FAMILY_X_FACTLOCK_REVISE のみに登録
+        astra_keys = {k for k, v in routing.PROCESS_MODEL_MAP.items() if v == "gpt-6-astra"}
+        self.assertEqual(astra_keys, {"FAMILY_X_FACTLOCK_REVISE"})
 
     def test_astra_pricing_not_found_error_resolved(self):
         """登録前は PricingNotFoundError だった astra の費用計算が、登録後は例外にならず正しい額になる。"""
