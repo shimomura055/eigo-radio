@@ -20494,3 +20494,5 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 実行できたモデル: gpt-6-luna / gpt-6.1-sol / gpt-6-astra(OpenAI直接API、effort=medium、全9 call再試行0・失敗0)。**UNAVAILABLE: Fable/Opus/Sonnet(Anthropic API)**=ANTHROPIC_API_KEYなし・SDKなし、鍵なし疎通は3件とも401 authentication_error(モデル存在・権限は未検証)。別モデルへの置換なし。ユーザー指示7のfallbackでGPT系3モデルのみ先行実施。
 - 結果(件数はA/B/C/D): Luna 4/2/13/10、Sol 3/4/6/16、Astra 3/3/8/15。3モデル全一致17/29、Sol-Astra一致27/29。実費JPY80.62(見積中央249.5)。詳細 REPORT §117、`er052_output/writer_dev_risk_flagger_01/pre_sorter_blind_trial_01/{RESULT_01,PREREGISTRATION_01,BLIND_PACKET_01,COST_ESTIMATE_01}.md`。
 - 境界: Production変更なし、detectors/antenna_trial_01/post_en_trial_01は読み取りのみ、AI Pre-sorterのProduction wiringなし、Prompt tuning・再実行なし、`PRODUCTION_WIRED`なし、User判定との照合なし。未決: Anthropic 3モデルの実行にはAPI鍵が必要(ユーザー判断)、User判定との照合・採否はChatGPT側/ユーザー。
+
+- 2026-10-10 | WRITER-RISK-FLAGGER-META-ROLLBACK-CHECK-01 実施記録: Meta rollback方向反転文(er019 meta run_03 b1b s23)に対するA3/A4(gpt-6.1-sol/medium、各1回)の検出確認。結果NOT_DETECTED(s23未Flag、方向反転認識No、実費JPY5.405)。Production変更なし、仕様変更なし、改善へ進まない。詳細 REPORT §118、`er052_output/writer_dev_risk_flagger_01/meta_rollback_check_01/RESULT_01.md`。

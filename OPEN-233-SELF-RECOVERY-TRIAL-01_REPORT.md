@@ -6023,3 +6023,10 @@ MEASURED(Trial、Production変更なし)。Fable最終判定=総合『同等・�
 - 実行: Luna gpt-6-luna / Sol gpt-6.1-sol / Astra gpt-6-astra(effort=medium、直接API、全9 call再試行0)。UNAVAILABLE: Fable/Opus/Sonnet(鍵・SDKなし、401 evidence。置換なし)。
 - 結果: A/B/C/D = Luna 4/2/13/10、Sol 3/4/6/16、Astra 3/3/8/15。全一致17/29。費用 Luna JPY0.97、Sol 13.40、Astra 66.26(見積中央249.5のreasoning仮定が過大)。23番(X09-s8)は3モデルともflag理由を実質判定(B/A/A)、Solは「fragment」に言及しつつ重大と判定。
 - Closeout提案: USER_DECISION_REQUIRED。成果物 `er052_output/writer_dev_risk_flagger_01/pre_sorter_blind_trial_01/{RESULT_01,PREREGISTRATION_01,BLIND_PACKET_01,COST_ESTIMATE_01}.md`、`runs/`。Production変更なし、`PRODUCTION_WIRED`なし。
+
+### §118 WRITER-RISK-FLAGGER-META-ROLLBACK-CHECK-01: A3/A4によるMeta rollback方向反転文の検出確認(2026-10-10、MEASURED、API費用 JPY5.405、Production変更なし)
+- 対象: `er019_output/meta/run_03/b1b/article.md`(Advanced B1b、sha256 `cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327`)s23「The company also restored the human concierge feature to the way it had been before, at least for now.」。台帳 `er019_output/meta/run_03/ledger/verified_fact_ledger.txt` sha256 `6e271bb24fdf3a587bd803d80cec5d32aaaaeb047ca3389c1597283aa3719db4`、Fact 15/15(parsed一致、MUSE-HC-001..015)。
+- 条件: gpt-6.1-sol(実測)、effort=medium、A3 sha `9d995042...`/A4 sha `c87b95e5...`(POST-EN-TRIAL-01と同一)、各1回(N=1x2)・valid・再試行なし、Prompt変更・ラベル誘導なし。
+- 結果: **NOT_DETECTED**。s23はA3/A4とも未Flag。方向反転(rollback/withdraw/hold<->restore)として正しく認識したか=No。他Flag: A3 4件(s3, s14, s15, s19)/A4 3件(s3, s14, s15)、いずれも主体対象入替(s3・s15・s19は範囲拡大/役割入替、s14は通話当事者入替・不在断定)の指摘で、方向反転の指摘は0件。HC-012はs14/s15のrelated Factに出るが指摘内容は方向と無関係。
+- 費用: 実測 JPY5.405(A3 2.726/A4 2.678)、見積中央4.88・上限20以内。
+- 境界: 改善へ進まない。Production変更・仕様変更・改善提案・追加Trialなし。一般化・再現性は未評価(N=1x2)。成果物 `er052_output/writer_dev_risk_flagger_01/meta_rollback_check_01/RESULT_01.md`、`runs/`、`inputs/`。
