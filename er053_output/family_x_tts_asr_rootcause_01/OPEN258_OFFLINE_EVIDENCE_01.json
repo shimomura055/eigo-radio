@@ -1,0 +1,2530 @@
+{
+ "tiny": {
+  "attempts\\japanese_title_attempt1_customb8f0ff16.wav": {
+   "plain": "AIの電話に人間が出面、問題はキャスト変更の押しらせでした。",
+   "beam5_noprompt": "AIの電話に人間が出面、問題はキャスト変更のお知らせでした。"
+  },
+  "attempts\\japanese_title_attempt2_customb8f0ff16.wav": {
+   "plain": "AIの電話に人間が出演、問題はキャスト変更の押しらせでした。",
+   "beam5_noprompt": "AIの電話に人間が出演、問題はキャスト変更の押しらせでした。"
+  },
+  "attempts\\japanese_title_attempt3_minimalfallback.wav": {
+   "plain": "AIの電話に人間が出演、問題はキャスト変更の押しらせでした。",
+   "beam5_noprompt": "AIの電話に人間が出演、問題はキャスト変更の押しらせでした。"
+  }
+ },
+ "small": {
+  "attempts\\japanese_title_attempt1_customb8f0ff16.wav": {
+   "plain": "AIの電話に人間が出面 問題はキャスト変更のお知らせでした",
+   "beam5_noprompt": "AIの電話に人間が出面問題はキャスト変更のお知らせでした"
+  },
+  "attempts\\japanese_title_attempt2_customb8f0ff16.wav": {
+   "plain": "AIの電話に人間が出演 問題はキャスト変更のお知らせでした",
+   "beam5_noprompt": "AIの電話に人間が出演 問題はキャスト変更のお知らせでした"
+  },
+  "attempts\\japanese_title_attempt3_minimalfallback.wav": {
+   "plain": "AIの電話に人間が出演、問題はキャスト変更のお知らせでした。",
+   "beam5_noprompt": "AIの電話に人間が出演、問題はキャスト変更のお知らせでした。"
+  }
+ },
+ "medium": {
+  "attempts\\japanese_title_attempt1_customb8f0ff16.wav": {
+   "plain": "AIの電話に人間が出面問題はキャスト変更のお知らせでした",
+   "beam5_noprompt": "AI の電話に人間が出面 問題はキャスト変更のお知らせでした"
+  },
+  "attempts\\japanese_title_attempt2_customb8f0ff16.wav": {
+   "plain": "AIの電話に人間が出演 問題はキャスト変更のお知らせでした",
+   "beam5_noprompt": "AIの電話に人間が出演 問題はキャスト変更のお知らせでした"
+  },
+  "attempts\\japanese_title_attempt3_minimalfallback.wav": {
+   "plain": "AIの電話に人間が出演 問題はキャスト変更のお知らせでした",
+   "beam5_noprompt": "AIの電話に人間が出演 問題はキャスト変更のお知らせでした"
+  }
+ },
+ "impact_estimate_from_logs": {
+  "method": "er*_output/**/attempts/*.json language=ja (630 attempt files, 468 segment groups); canonical proxy = ASR text of the later verified attempt; current classify_ja_asr_match (Resolver LLM OFF) re-evaluated; Secondary proxy = local faster-whisper small (NOT Azure)",
+  "V1": {
+   "label": "V1 all TCM except obvious TTS prompt-echo",
+   "groups_eligible": 32,
+   "secondary_calls": 44,
+   "azure_cost_usd": 0.07547,
+   "groups_rescued_by_secondary_proxy": 14,
+   "regens_avoided": 16,
+   "rescued": [
+    [
+     "kp2_ja_charon",
+     2,
+     1
+    ],
+    [
+     "meaning_4",
+     2,
+     1
+    ],
+    [
+     "kp4_ja_charon",
+     2,
+     1
+    ],
+    [
+     "kp5_ja_aoede",
+     4,
+     2
+    ],
+    [
+     "kp5_ja_charon",
+     2,
+     1
+    ],
+    [
+     "kp2_ja_charon",
+     2,
+     1
+    ],
+    [
+     "comment_3",
+     2,
+     1
+    ],
+    [
+     "meaning_2",
+     2,
+     1
+    ],
+    [
+     "comment_3",
+     2,
+     1
+    ],
+    [
+     "meaning_2",
+     2,
+     1
+    ],
+    [
+     "kp1_ja_charon",
+     2,
+     1
+    ],
+    [
+     "meaning_2",
+     2,
+     1
+    ],
+    [
+     "meaning_5",
+     3,
+     1
+    ],
+    [
+     "comment_1",
+     2,
+     1
+    ]
+   ]
+  },
+  "V2": {
+   "label": "V2 small(<=2char) replace only",
+   "groups_eligible": 16,
+   "secondary_calls": 18,
+   "azure_cost_usd": 0.02786,
+   "groups_rescued_by_secondary_proxy": 3,
+   "regens_avoided": 4,
+   "rescued": [
+    [
+     "kp2_ja_charon",
+     2,
+     1
+    ],
+    [
+     "kp2_ja_charon",
+     2,
+     1
+    ],
+    [
+     "meaning_5",
+     3,
+     1
+    ]
+   ]
+  },
+  "groups": [
+   {
+    "dir": "er011_output\\discovery_generalization_towels_trial_11\\a2\\narration\\attempts",
+    "seg": "comment_2",
+    "n_attempts": 6,
+    "n_tcm": 6,
+    "final_verified": false,
+    "proxy_canonical": null,
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "洗濯して乾かしても、ニオイが残ることがあります。では、タオルの中には、時間が経つと何が残るのでしょうか?",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "洗濯して乾かしても匂いが残ることがあります ではタオルの中には時間が経つと何が残るのでしょうか",
+      "now_cls": "PHONETIC_MATCH",
+      "now_diffs": [
+       [
+        "た",
+        "経"
+       ]
+      ]
+     },
+     {
+      "n": 2,
+      "asr": "洗濯して乾かしても、においが残ることがあります。では、タオルの中には、時間が経つと何が残るのでしょうか?",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "洗濯して乾かしても匂いが残ることがあります ではタオルの中には時間が経つと何が残るのでしょうか",
+      "now_cls": "PHONETIC_MATCH",
+      "now_diffs": [
+       [
+        "た",
+        "経"
+       ]
+      ]
+     },
+     {
+      "n": 3,
+      "asr": "洗濯して乾かしても、においが残ることがあります。では、タオルの中には、時間が経つと何が残るのでしょうか。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "洗濯して乾かしても匂いが残ることがあります。ではタオルの中には、時間が経つと何が残るのでしょうか。",
+      "now_cls": "PHONETIC_MATCH",
+      "now_diffs": [
+       [
+        "た",
+        "経"
+       ]
+      ]
+     },
+     {
+      "n": 4,
+      "asr": "洗濯して乾かしても、ニオイが残ることがあります。では、タオルの中には時間が経つと何が残るのでしょうか。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "洗濯して乾かしても匂いが残ることがあります ではタオルの中には時間が経つと何が残るのでしょうか",
+      "now_cls": "PHONETIC_MATCH",
+      "now_diffs": [
+       [
+        "た",
+        "経"
+       ]
+      ]
+     },
+     {
+      "n": 5,
+      "asr": "洗濯して乾かしても、ニオイが残ることがあります。では、タオルの中には、時間が経つと何が残るのでしょうか。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "洗濯して乾かしても匂いが残ることがあります ではタオルの中には時間が経つと何が残るのでしょうか",
+      "now_cls": "PHONETIC_MATCH",
+      "now_diffs": [
+       [
+        "た",
+        "経"
+       ]
+      ]
+     },
+     {
+      "n": 6,
+      "asr": "洗濯して乾かしても、臭いが残ることがあります。では、タオルの中には、時間が経つと何が残るのでしょうか。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "洗濯して乾かしても匂いが残ることがあります ではタオルの中には時間が経つと何が残るのでしょうか",
+      "now_cls": "PHONETIC_MATCH",
+      "now_diffs": [
+       [
+        "にお",
+        "臭"
+       ],
+       [
+        "た",
+        "経"
+       ]
+      ]
+     }
+    ]
+   },
+   {
+    "dir": "er011_output\\discovery_generalization_towels_trial_11\\a2\\narration\\attempts",
+    "seg": "meaning_4",
+    "n_attempts": 4,
+    "n_tcm": 3,
+    "final_verified": true,
+    "proxy_canonical": "活動し続ける",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "活動をし続ける。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "insert",
+        "",
+        "を"
+       ]
+      ],
+      "only_replace": false,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "活動をし続ける",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "",
+        "を"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     },
+     {
+      "n": 2,
+      "asr": "活動を広げる",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "し続け",
+        "を広げ"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "活動をし続ける",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "し続け",
+        "を広げ"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     },
+     {
+      "n": 3,
+      "asr": "活動を続ける",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "し",
+        "を"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "活動をし続ける",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "し",
+        "を"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er011_output\\discovery_generalization_towels_trial_11\\b1b\\narration\\attempts",
+    "seg": "kp2_ja_charon",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "においを出す",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "においを断つ。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "出す",
+        "断つ"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "匂いを出す",
+      "whisper_vs_proxy": "PHONETIC_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "出す",
+        "断つ"
+       ]
+      ],
+      "whisper_now": "PHONETIC_MATCH",
+      "whisper_agrees_now": true
+     }
+    ]
+   },
+   {
+    "dir": "er011_output\\discovery_generalization_wake_before_alarm_trial_12\\b1b\\narration\\attempts",
+    "seg": "kp4_ja_charon",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "体内時計",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "体内毒行",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "時計",
+        "毒行"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "体内どこ?",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "時計",
+        "毒行"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er011_output\\family_a_completion_a2_trend_end_to_end_01\\b1b\\narration\\attempts",
+    "seg": "kp2_ja_charon",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "証拠だと受け取られる。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "証拠がと受け取られる。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "だ",
+        "が"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "倉庫がと受け取られる",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "だ",
+        "が"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er011_output\\family_a_completion_a2_trend_end_to_end_01\\b1b\\narration\\attempts",
+    "seg": "kp4_ja_charon",
+    "n_attempts": 3,
+    "n_tcm": 2,
+    "final_verified": true,
+    "proxy_canonical": "名所を中心にした旅程。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "名勝を中心にした旅亭。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "所",
+        "勝"
+       ],
+       [
+        "replace",
+        "程",
+        "亭"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "名称中心にした予定",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "所",
+        "勝"
+       ],
+       [
+        "程",
+        "亭"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     },
+     {
+      "n": 2,
+      "asr": "名称を中心にした旅亭。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "所",
+        "称"
+       ],
+       [
+        "replace",
+        "程",
+        "亭"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "名称を中心にした両手",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "所",
+        "称"
+       ],
+       [
+        "程",
+        "亭"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er011_output\\family_a_completion_a2_trend_end_to_end_01\\b1b\\narration\\attempts",
+    "seg": "kp5_ja_charon",
+    "n_attempts": 7,
+    "n_tcm": 6,
+    "final_verified": true,
+    "proxy_canonical": "まだ取り組むべき課題",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "形に始める",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "まだ取り組むべき課題",
+        "形に始める"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "形に始める",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "まだ取り組むべき課題",
+        "形に始める"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     },
+     {
+      "n": 2,
+      "asr": "形にはじめはじめる",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "まだ取り組むべき課題",
+        "形にはじめはじめる"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "形に始め始める",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "まだ取り組むべき課題",
+        "形にはじめはじめる"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     },
+     {
+      "n": 3,
+      "asr": "かたちにはじめる",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "まだ取り組むべき課題",
+        "かたちにはじめる"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "形に始める。",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "まだ取り組むべき課題",
+        "かたちにはじめる"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     },
+     {
+      "n": 4,
+      "asr": "かたちにはじめあいます。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "insert",
+        "",
+        "かたちにはじめあい"
+       ],
+       [
+        "replace",
+        "だ取り組むべき課題",
+        "す"
+       ]
+      ],
+      "only_replace": false,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "形に始め合います",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "",
+        "かたちにはじめあい"
+       ],
+       [
+        "だ取り組むべき課題",
+        "す"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     },
+     {
+      "n": 5,
+      "asr": "形にはじめはじめる",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "まだ取り組むべき課題",
+        "形にはじめはじめる"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "形に始め始める",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "まだ取り組むべき課題",
+        "形にはじめはじめる"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     },
+     {
+      "n": 6,
+      "asr": "形に始める",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "まだ取り組むべき課題",
+        "形に始める"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "形に始める",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "まだ取り組むべき課題",
+        "形に始める"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er011_output\\household_unified_final_candidate_01\\a2\\narration\\attempts",
+    "seg": "meaning_4",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "湿度",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "死図塔",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "湿度",
+        "死図塔"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "湿度",
+      "whisper_vs_proxy": "EXACT_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "湿度",
+        "死図塔"
+       ]
+      ],
+      "whisper_now": "EXACT_MATCH",
+      "whisper_agrees_now": true
+     }
+    ]
+   },
+   {
+    "dir": "er011_output\\household_unified_final_candidate_01\\b1b\\narration\\attempts",
+    "seg": "kp4_ja_charon",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "熟すと出るガス。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "じくすと出るカス。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "熟",
+        "じく"
+       ],
+       [
+        "replace",
+        "ガ",
+        "カ"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "ジュクスト出るガス",
+      "whisper_vs_proxy": "PHONETIC_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "熟",
+        "じく"
+       ],
+       [
+        "ガ",
+        "カ"
+       ]
+      ],
+      "whisper_now": "PHONETIC_MATCH",
+      "whisper_agrees_now": true
+     }
+    ]
+   },
+   {
+    "dir": "er011_output\\open112_trend_theme2_b_final_audio_rerun_02\\a2\\narration\\attempts",
+    "seg": "meaning_2",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "丸1か月の休み。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "丸一ヶ月の休み。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "1か",
+        "一ヶ"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": true,
+      "whisper_small": "まるいかげつのやすみ",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "NORMALIZED_MATCH",
+      "now_diffs": []
+     }
+    ]
+   },
+   {
+    "dir": "er011_output\\open112_trend_theme2_b_final_audio_rerun_04\\a2\\narration\\attempts",
+    "seg": "meaning_2",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "丸1か月の休み。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "丸一ヶ月の休み。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "1か",
+        "一ヶ"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": true,
+      "whisper_small": "まるいかげつのやすみ",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "NORMALIZED_MATCH",
+      "now_diffs": []
+     }
+    ]
+   },
+   {
+    "dir": "er012_output\\editorial_b_family_voices_a2_production_wiring_01\\kp_fix_01\\a2\\narration\\attempts",
+    "seg": "kp5_ja_aoede",
+    "n_attempts": 4,
+    "n_tcm": 2,
+    "final_verified": true,
+    "proxy_canonical": "理屈の上では",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "肉の上では",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "理屈",
+        "肉"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "肉術の上では",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "理屈",
+        "肉"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     },
+     {
+      "n": 2,
+      "asr": "リクスの上では",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "理屈",
+        "リクス"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "理屈の上では",
+      "whisper_vs_proxy": "EXACT_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "理屈",
+        "リクス"
+       ]
+      ],
+      "whisper_now": "EXACT_MATCH",
+      "whisper_agrees_now": true
+     }
+    ]
+   },
+   {
+    "dir": "er012_output\\editorial_b_voices_a2_free_address_02\\a2\\narration\\attempts",
+    "seg": "kp1_ja_aoede",
+    "n_attempts": 3,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "縛られず、自由になれる感じの。",
+    "attempts": [
+     {
+      "n": 2,
+      "asr": "縛られる、自由になれる感じの。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "ず",
+        "る"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "縛られる自由になれる感じの",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "ず",
+        "る"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er012_output\\editorial_b_voices_a2_free_address_03\\a2\\narration\\attempts",
+    "seg": "kp1_ja_aoede",
+    "n_attempts": 3,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "縛られず、自由になれる感じの。",
+    "attempts": [
+     {
+      "n": 2,
+      "asr": "縛られる、自由になれる感じの。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "ず",
+        "る"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "縛られる自由になれる感じの",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "ず",
+        "る"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er012_output\\editorial_b_voices_a2_free_address_04\\a2\\narration\\attempts",
+    "seg": "kp1_ja_aoede",
+    "n_attempts": 3,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "縛られず、自由になれる感じの。",
+    "attempts": [
+     {
+      "n": 2,
+      "asr": "縛られる、自由になれる感じの。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "ず",
+        "る"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "縛られる自由になれる感じの",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "ず",
+        "る"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er012_output\\e_family_two_level_wiring_01\\meta\\a2\\narration\\attempts",
+    "seg": "comment_2",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "メタは、利用者の代わりに電話をかけるAIサービスを準備していました。では、その電話の中で、実際には誰が対応していたのでしょうか。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "メタは、利用者の代わりに電話をかけるAIサービスを準備していました。 では、その電話の中で、実際には誰が多用していたのでしょうか。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "対応",
+        "多用"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "メタは利用者の代わりに電話をかける AI サービスを準備していました ではその電話の中で実際には誰が多用していたのでしょうか",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "対応",
+        "多用"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er012_output\\e_family_two_level_wiring_01\\meta\\a2\\narration\\attempts",
+    "seg": "comment_4",
+    "n_attempts": 3,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "ここまでの話では、電話の中でAIだけでなく、人も関わっていたことが見えてきました。 便利さの一方で、会話を誰が聞き、誰が答えているのかという不安もあります。 では、最後に、この話の大事な点を英語でまとめて聞いてみましょう。",
+    "attempts": [
+     {
+      "n": 2,
+      "asr": "ここまでの話では、電話の中でAIだけではなく、人も関わっていたことが見えてきました。便利さの一方で、会話を誰が聞き、誰が答えているのかという不安もあります。では最後に、この話の大事な点を英語でまとめて聞いてみましょう。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "insert",
+        "",
+        "は"
+       ]
+      ],
+      "only_replace": false,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "ここまでの話では電話の中でAIだけではなく人も関わっていたことが見えてきました便利さの一方で会話を誰が聞き誰が答えているのかという不安もありますでは最後にこの話の大事な点を英語でまとめて聞いてみましょう",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "",
+        "は"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er012_output\\personalized_news_b1_rebuild_01\\audio\\b1_2v_fix01\\b1b\\narration\\attempts",
+    "seg": "kp5_ja_charon",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "最新のニュースについていく",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "最新のニュースに追いついていく。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "insert",
+        "",
+        "追い"
+       ]
+      ],
+      "only_replace": false,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "最新のニュースについていく",
+      "whisper_vs_proxy": "EXACT_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "",
+        "追い"
+       ]
+      ],
+      "whisper_now": "EXACT_MATCH",
+      "whisper_agrees_now": true
+     }
+    ]
+   },
+   {
+    "dir": "er014_output\\four_type_observation_01\\discovery\\audio\\a2\\narration\\attempts",
+    "seg": "meaning_2",
+    "n_attempts": 4,
+    "n_tcm": 2,
+    "final_verified": true,
+    "proxy_canonical": "話し声より大きく感じられる。",
+    "attempts": [
+     {
+      "n": 2,
+      "asr": "強制されたように感じる。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "話し声",
+        "強制された"
+       ],
+       [
+        "replace",
+        "り大きく",
+        "うに"
+       ],
+       [
+        "delete",
+        "られ",
+        ""
+       ]
+      ],
+      "only_replace": false,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "強絶されたように感じる",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "話し声",
+        "強制された"
+       ],
+       [
+        "り大きく",
+        "うに"
+       ],
+       [
+        "られ",
+        ""
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     },
+     {
+      "n": 3,
+      "asr": "強制されたように感じる。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "話し声",
+        "強制された"
+       ],
+       [
+        "replace",
+        "り大きく",
+        "うに"
+       ],
+       [
+        "delete",
+        "られ",
+        ""
+       ]
+      ],
+      "only_replace": false,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "強絶されたように感じる",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "話し声",
+        "強制された"
+       ],
+       [
+        "り大きく",
+        "うに"
+       ],
+       [
+        "られ",
+        ""
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er014_output\\four_type_observation_01\\trend\\audio\\a2\\narration\\attempts",
+    "seg": "comment_4",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "ここまでの話では、すべてをスマートフォンから映すのではなく、することに合わせて使う場所が変わっていく様子が見えてきます。こうした変化は、新しい端末を一から広げるより、すでに人が使っている車や家の機器などに機能を加える形で進もうとしています。では、この流れを英語でどうまとめているのか、続けて聞いてみましょう。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "ここまでの話では、すべてをスマートフォンからルツスのではなく、することに合わせて使う場所が変わっていく様子が見えてきます。こうした変化は、新しい端末を一から広げるより、すでに人が使っている車や家の機器などに機能を加える形で進もうとしています。では、この流れを英語でどうまとめているのか、続けて聞いてみましょう。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "映す",
+        "ルツス"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "ここまでの話では、すべてをスマートフォンから 映すのではなく、することに合わせて使う場所が変わっていく様子が見えてきます。こうした変化は、新しい端末を1から広げるより、 既に人が使っている車や家の危機などに機能を加える形で進もうとしています。では、この流れを英語でどうまとめているのか、続けて聞いてみましょう。",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "映す",
+        "ルツス"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er014_output\\four_type_observation_01\\voices\\audio\\b1_2v_v2\\b1b\\narration\\attempts",
+    "seg": "kp2_ja_charon",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "クリックを集めるように調整される。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "クリックを集めるように調整する。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "され",
+        "す"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "クリックを集めるように調整される。",
+      "whisper_vs_proxy": "EXACT_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "され",
+        "す"
+       ]
+      ],
+      "whisper_now": "EXACT_MATCH",
+      "whisper_agrees_now": true
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\coffee_prices__run_l3_01\\a2\\narration\\attempts",
+    "seg": "comment_3",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "世界市場の価格は下がりましたが、米国のコーヒー価格は前年同月より高いままでした。この二つは比べる期間が違い、豆の値下がりが店頭価格に現れるまでには時間がかかります。こうした違いを踏まえて、続きに耳を傾けてみましょう。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "世界市場の価格は下がりましたが、米国のコーヒー価格は前年同月より高いままでした。この2つは比べる期間が違い、豆の値下がりが店頭価格に表れるまでには時間がかかります。こうした違いを踏まえて、鈴木に耳を傾けてみましょう。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "現",
+        "表"
+       ],
+       [
+        "replace",
+        "続き",
+        "鈴木"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "世界史上の価格は下がりましたが、米国のコーヒー価格は前年同月より高いままでした。この2つは比べる期間が違い、豆の根下がりが転倒価格に現れるまでには時間がかかります。こうした違いを踏まえて、続きに耳を傾けてみましょう。",
+      "whisper_vs_proxy": "PHONETIC_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "続き",
+        "鈴木"
+       ]
+      ],
+      "whisper_now": "PHONETIC_MATCH",
+      "whisper_agrees_now": true
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\coffee_prices__run_l3_01\\a2\\narration\\attempts",
+    "seg": "japanese_title",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "相場は下落、値札はいのこり、コーヒー価格のジサボケ",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "相場は下落、値札はいのこり、コーヒー価格の実差ボケ",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "ジサ",
+        "実差"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "相場はげらく、寝ふだわい残り、 コーヒー価格の地サボ家",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "ジサ",
+        "実差"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\coffee_prices__run_l3_01\\a2\\narration\\attempts",
+    "seg": "meaning_2",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "倍線前のコーヒー豆",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "買いせまいのコーヒー豆。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "倍線前",
+        "買いせまい"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "バイセン前のコーヒー豆",
+      "whisper_vs_proxy": "PHONETIC_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "倍線前",
+        "買いせまい"
+       ]
+      ],
+      "whisper_now": "PHONETIC_MATCH",
+      "whisper_agrees_now": true
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\coffee_prices__run_l3_01_ttsonly\\a2\\narration\\attempts",
+    "seg": "comment_3",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "世界市場の価格は下がりましたが、米国のコーヒー価格は前年同月より高いままでした。この二つは比べる期間が違い、豆の値下がりが店頭価格に現れるまでには時間がかかります。こうした違いを踏まえて、続きに耳を傾けてみましょう。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "世界市場の価格は下がりましたが、米国のコーヒー価格は前年同月より高いままでした。この2つは比べる期間が違い、豆の値下がりが店頭価格に表れるまでには時間がかかります。こうした違いを踏まえて、鈴木に耳を傾けてみましょう。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "現",
+        "表"
+       ],
+       [
+        "replace",
+        "続き",
+        "鈴木"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "世界史上の価格は下がりましたが、米国のコーヒー価格は前年同月より高いままでした。この2つは比べる期間が違い、豆の根下がりが転倒価格に現れるまでには時間がかかります。こうした違いを踏まえて、続きに耳を傾けてみましょう。",
+      "whisper_vs_proxy": "PHONETIC_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "続き",
+        "鈴木"
+       ]
+      ],
+      "whisper_now": "PHONETIC_MATCH",
+      "whisper_agrees_now": true
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\coffee_prices__run_l3_01_ttsonly\\a2\\narration\\attempts",
+    "seg": "japanese_title",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "相場は下落、値札はいのこり、コーヒー価格のジサボケ",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "相場は下落、値札はいのこり、コーヒー価格の実差ボケ",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "ジサ",
+        "実差"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "相場はげらく、寝ふだわい残り、 コーヒー価格の地サボ家",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "ジサ",
+        "実差"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\coffee_prices__run_l3_01_ttsonly\\a2\\narration\\attempts",
+    "seg": "meaning_2",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "倍線前のコーヒー豆",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "買いせまいのコーヒー豆。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "倍線前",
+        "買いせまい"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "バイセン前のコーヒー豆",
+      "whisper_vs_proxy": "PHONETIC_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "倍線前",
+        "買いせまい"
+       ]
+      ],
+      "whisper_now": "PHONETIC_MATCH",
+      "whisper_agrees_now": true
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\hormuz__run_02\\b1b\\narration\\attempts",
+    "seg": "kp1_ja_charon",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "上がった分をいったん吐き出す。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "上がった分を一旦履きます。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "いったん吐",
+        "一旦履"
+       ],
+       [
+        "replace",
+        "出",
+        "ま"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "上がった分を一旦吐き出す",
+      "whisper_vs_proxy": "PHONETIC_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "いったん吐",
+        "一旦履"
+       ],
+       [
+        "出",
+        "ま"
+       ]
+      ],
+      "whisper_now": "PHONETIC_MATCH",
+      "whisper_agrees_now": true
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\hormuz__run_02\\b1b\\narration\\attempts",
+    "seg": "kp2_ja_charon",
+    "n_attempts": 4,
+    "n_tcm": 3,
+    "final_verified": true,
+    "proxy_canonical": "海からのふうさ",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "海からの風さ",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "ふう",
+        "風"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "海からの風さ",
+      "whisper_vs_proxy": "PHONETIC_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "PHONETIC_MATCH",
+      "now_diffs": [
+       [
+        "ふう",
+        "風"
+       ]
+      ]
+     },
+     {
+      "n": 2,
+      "asr": "海からの風さ",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "ふう",
+        "風"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "海からのふうさ",
+      "whisper_vs_proxy": "EXACT_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "PHONETIC_MATCH",
+      "now_diffs": [
+       [
+        "ふう",
+        "風"
+       ]
+      ]
+     },
+     {
+      "n": 3,
+      "asr": "海からの風さ",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "ふう",
+        "風"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "海からの封鎖",
+      "whisper_vs_proxy": "PHONETIC_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "PHONETIC_MATCH",
+      "now_diffs": [
+       [
+        "ふう",
+        "風"
+       ]
+      ]
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\hormuz__run_03_flashlite\\a2\\narration\\attempts",
+    "seg": "comment_3",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "ここまでで、ホルムズ海峡を通る貨物への20%の負担案が約24時間後に米国との貿易投資計画へ変わり、船に料金を求めない方針になったことを押さえてください。 続いては、この急な変更の前後で原油価格に何が起きたのかを聞いていきます。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "ここまでで、ホルムズ海峡を通る貨物への20%の負担が約24時間後に米国との貿易投資計画へ変わり、船に料金を求めない方針になったことを押さえてください。続いては、この急な変更の前後で、原油価格に何が起きたのかを聞いていきます。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "delete",
+        "案",
+        ""
+       ]
+      ],
+      "only_replace": false,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "ここまでで、ホルムズ海峡を通る貨物への20%の負担眼が、約24時間後に米国との貿易投資計画へ代わり、船に料金を求めない方針になったことを押さえてください。続いては、この急な変更の前後で、現有価格に何が起きたのかを聞いていきます。",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "案",
+        ""
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\hormuz__run_03_flashlite\\a2\\narration\\attempts",
+    "seg": "comment_4",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "ここまで、ホルムズ海峡を通る貨物に20%の負担を求める案が出た後、湾岸諸国とアメリカの貿易や投資の計画に置き換えられた流れを見てきました。発表後、原油価格は一旦上げ幅を縮めましたが、その後は高い水準に戻りました。この流れを踏まえて、最後のまとめを英語で聞いてみましょう。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "ここまで、ホルムズ海峡を通る貨物に20%の負担を求める案が出た後、湾岸諸国とアメリカの貿易や投資の計画に置き換えられたなどを見てきました。発表後、原油価格は一旦上げ幅を縮めましたが、その後は高い水準に戻りました。この流れを踏まえて、最後のまとめを英語で聞いてみましょう。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "流れ",
+        "など"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "ここまでホルムズ海峡を通る貨物に20%の負担を求める案が出た後、湾岸諸国とアメリカの貿易や投資の計画に置き換えられたなうれを見てきました。発表後、原油価格は一旦上幅を縮めましたが、その後は高い水準に戻りました。この流れを踏まえて、最後のまとめを英語で聞いてみましょう。",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "流れ",
+        "など"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\hormuz__run_06_flashlite_full_kp\\a2\\narration\\attempts",
+    "seg": "meaning_2",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "海を封鎖すること。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "海をふささすること。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "封鎖",
+        "ふささ"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "海を封鎖すること",
+      "whisper_vs_proxy": "NORMALIZED_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "封鎖",
+        "ふささ"
+       ]
+      ],
+      "whisper_now": "NORMALIZED_MATCH",
+      "whisper_agrees_now": true
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\small_bag__run_02\\a2\\narration\\attempts",
+    "seg": "comment_2",
+    "n_attempts": 4,
+    "n_tcm": 3,
+    "final_verified": true,
+    "proxy_canonical": "前半では、ミニバッグは大きなバッグに変わるものではなく、見た目を作る役割があるとわかりました。 では、エルの例では、ミニバッグは何のために使われているのでしょうか?",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "前半では、ミニバッグは大きなバッグに変わるものではなく、見た目を作る役割があるとわかりました。では、Lの例では、ミニバッグは何のために使われているのでしょうか。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "エル",
+        "l"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "前半では、ミニバッグは大きなバッグに変わるものではなく、見た目を作る役割があると分かりました。では、Lの例ではミニバッグは何のために使われているのでしょうか。",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "エル",
+        "l"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     },
+     {
+      "n": 2,
+      "asr": "前半では、ミニバッグは大きなバッグに変わるものではなく、見た目を作る役割があるとわかりました。では、Lの例では、ミニバッグは何のために使われているのでしょうか。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "エル",
+        "l"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "前半ではミニバッグは大きなバッグに変わるものではなく、見た目を作る役割があると分かりました。では、Lの例ではミニバッグは何のために使われているのでしょうか。",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "エル",
+        "l"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     },
+     {
+      "n": 3,
+      "asr": "前半では、ミニバッグは大きなバッグに代わるものではなく、見た目を作る役割があるとわかりました。では、Lの例では、ミニバッグは何のために使われているのでしょうか。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "変",
+        "代"
+       ],
+       [
+        "replace",
+        "エル",
+        "l"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "前半ではミニバッグは大きなバッグに変わるものではなく 見た目を作る役割があると分かりましたではLの例ではミニバッグは何のために使われているのでしょうか",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "エル",
+        "l"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\small_bag__run_02\\a2\\narration\\attempts",
+    "seg": "meaning_5",
+    "n_attempts": 3,
+    "n_tcm": 2,
+    "final_verified": true,
+    "proxy_canonical": "目を引く",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "目をしく。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "引",
+        "し"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "目を引く",
+      "whisper_vs_proxy": "EXACT_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "引",
+        "し"
+       ]
+      ],
+      "whisper_now": "EXACT_MATCH",
+      "whisper_agrees_now": true
+     },
+     {
+      "n": 2,
+      "asr": "目をしつ",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "引く",
+        "しつ"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": true,
+      "has_digit": false,
+      "whisper_small": "目を引く",
+      "whisper_vs_proxy": "EXACT_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "引く",
+        "しつ"
+       ]
+      ],
+      "whisper_now": "EXACT_MATCH",
+      "whisper_agrees_now": true
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_production_wiring_01__run_01\\a2\\narration\\attempts",
+    "seg": "japanese_title",
+    "n_attempts": 4,
+    "n_tcm": 3,
+    "final_verified": true,
+    "proxy_canonical": "AIからの電話だと思ったら、中に人がいた?メタのミューズで起きたまさかの展開",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "AIからの電話だと思ったら、中に人がいた?メタのミューズで起きたまさかの展開",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [],
+      "only_replace": false,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "AIからの電話だと思ったら中に人がいた? メタのミューズで起きたまさかの展開",
+      "whisper_vs_proxy": "NORMALIZED_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "EXACT_MATCH",
+      "now_diffs": []
+     },
+     {
+      "n": 2,
+      "asr": "AIからの電話だと思ったら、中に人がいた!? メタのミューズで起きたまさかの展開",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [],
+      "only_replace": false,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "AIからの電話だと思ったら中に人がいた? メタのミューズで起きたまさかの展開",
+      "whisper_vs_proxy": "NORMALIZED_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "NORMALIZED_MATCH",
+      "now_diffs": []
+     },
+     {
+      "n": 3,
+      "asr": "AIからの電話だと思ったら、中に人がいた!?メタのミューズで起きたまさかの展開",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [],
+      "only_replace": false,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "AIからの電話だと思ったら中に人がいた?メタのミューズで起きたまさかの展開",
+      "whisper_vs_proxy": "NORMALIZED_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "NORMALIZED_MATCH",
+      "now_diffs": []
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\meta__run_regen_01\\a2\\narration\\attempts",
+    "seg": "japanese_title",
+    "n_attempts": 3,
+    "n_tcm": 3,
+    "final_verified": false,
+    "proxy_canonical": null,
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "AIの電話に人間が出現。問題は、キャスト変更のお知らせでした。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "AIの電話に人間が出面問題はキャスト変更のお知らせでした",
+      "now_cls": null
+     },
+     {
+      "n": 2,
+      "asr": "AIの電話に人間が出現。問題は、キャスト変更のお知らせでした。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "AIの電話に人間が出演 問題はキャスト変更のお知らせでした",
+      "now_cls": null
+     },
+     {
+      "n": 3,
+      "asr": "AIの電話に人間が出現、問題はキャスト変更のお知らせでした。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "AIの電話に人間が出演、問題はキャスト変更のお知らせでした。",
+      "now_cls": null
+     }
+    ]
+   },
+   {
+    "dir": "er019_output\\family_x_audio_production_wiring_01\\variable_role_style_wiring_regression_01\\hormuz\\narration\\attempts",
+    "seg": "comment_1",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "まず、20%という計画が発表された後、支払い方法など、何がまだ決まっていなかったのかに注目してください。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "まず、20パーセントという計画が発表された後、支払い方法など何がまだ決まっていなかったのかに注目してください。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "%",
+        "パーセント"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "まず20%という計画が発表された後、支払い方法など何がまだ決まっていなかったのかに注目してください。",
+      "whisper_vs_proxy": "NORMALIZED_MATCH",
+      "whisper_agrees": true,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "%",
+        "パーセント"
+       ]
+      ],
+      "whisper_now": "NORMALIZED_MATCH",
+      "whisper_agrees_now": true
+     }
+    ]
+   },
+   {
+    "dir": "er022_output\\tts_gemini_3_8_flash_lite_ab_trial_01\\b\\narration\\attempts",
+    "seg": "comment_2",
+    "n_attempts": 3,
+    "n_tcm": 2,
+    "final_verified": true,
+    "proxy_canonical": "ここからは、この問いをめぐる異なる立場の声を順番に聞いていきます。それぞれの声から、同じ場面がどう見えるのかを聞いてみましょう。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "The message below has two clearly separated sections. Thank you. ありがとうございます。 Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "ここからはこの問",
+        "themessagebelowhastwoclearlyseparatedsections.thankyou.ありがとうござ"
+       ],
+       [
+        "delete",
+        "をめぐる異なる立場の声を順番に聞いていき",
+        ""
+       ],
+       [
+        "replace",
+        "それぞれの声から同じ場面がどう見えるのかを聞いてみましょう",
+        "donotshout,forceemotion,exaggeratefeelingsthatarenotpresentinthescript,orsoundlikeasportscommentatorormovietrailer."
+       ]
+      ],
+      "only_replace": false,
+      "small_replace": false,
+      "has_digit": false,
+      "whisper_small": "メッセージの下に2丁目のセクションがあります。ありがとうございます。ありがとうございます。動き、動き、気持ちが悪くなり、スポーツコメンテーターや映像の話を聞いています。",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "ここからはこの問",
+        "themessagebelowhastwoclearlyseparatedsections.thankyou.ありがとうござ"
+       ],
+       [
+        "をめぐる異なる立場の声を順番に聞いていき",
+        ""
+       ],
+       [
+        "それぞれの声から同じ場面がどう見えるのかを聞いてみましょう",
+        "donotshout,forceemotion,exaggeratefeelingsthatarenotpresentinthescript,orsoundlikeasportscommentatorormovietrailer."
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     },
+     {
+      "n": 2,
+      "asr": "次の文章を翻訳・言い換えせず、日本語のまま読み上げてください。会議のテーマは新しいアイデア出しです。参加者はプロダクトマネージャーが5名とデザイナーが4名の計9名でした。チームを3つに分けてアイデアを出してもらったところ、どれも素晴らしいものでした。 Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer. ここからは、この問いをめぐる異なる立場の声を順番に聞いていきます。それぞれの声から、同じ場面がどう見えるのかを聞いてみましょう。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "insert",
+        "",
+        "次の文章を翻訳言い換えせず日本語のまま読み上げてください会議のテーマは新しいアイデア出しです参加者はプロダクトマネージャーが5名とデザイナーが4名の計9名でしたチームを3つに分けてアイデアを出してもらったところどれも素晴らしいものでしたdonotshout,forceemotion,exaggeratefeelingsthatarenotpresentinthescript,orsoundlikeasportscommentatorormovietrailer."
+       ]
+      ],
+      "only_replace": false,
+      "small_replace": false,
+      "has_digit": true,
+      "whisper_small": "The message below has two clearly separated sections.次の文章を翻訳言い返せず、日本語のまま読み上げてください。会議のテーマは、新しいアイデア出しです。参加者は、プロダクトマネージャーが5名とデザイナーが4名の計9名でした。チームを3つに分けてアイデアを出してもらったところ、どれも素晴らしいものでした。Do not shout, force emotion, exaggerate feelings that are not present in the script,ここからは、この問いを巡る異なる立場の声を順番に聞いていきます。それぞれの声から同じ場面がどう見えるのかを聞いてみましょう。",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er022_output\\tts_gemini_3_8_flash_lite_ab_trial_01\\b\\narration\\attempts",
+    "seg": "comment_3",
+    "n_attempts": 2,
+    "n_tcm": 2,
+    "final_verified": false,
+    "proxy_canonical": null,
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "次の文章を本訳言い換えせず、日本語のまま読み上げてください。 皆さん、こんにちは。この数年で環境ががらりと変わったと感じる方はたくさんいると思います。 そんな中で、これからの仕事や生活がどうなっていくのかを考える必要が出てきたのではないでしょうか。人との関わり方、働き方が大きく変わる中で、私たちにはこの新しい生活様式に適応していくことが求められているのだと思います。多くの人とのふれあいや、人との絆、それらが新しい自分を形作る大切なものになっていくのではないでしょうか。 ここまで話を聞いてくださり、ありがとうございました。このお話をぜひこれからの人生の参考にしていただけると嬉しいです。 ここまで同じ採用の場面について、異なる立場の声を聞いてきました。どの声が正しいかを決める前に、なぜ同じ場面が人によって違って感じられるのかを考えてみましょう。これからその違いに目を向けます。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "The message below has two clearly separated sections.次の文章を本役言い返せず日本語のまま読み上げてください。みなさんこんにちは。この数年で環境がガラリと変わったと感じる方はたくさんいると思います。そんな中で、これからの仕事や生活がどうなっていくのかを考える必要が出てきたのではないでしょうか。人との関わり方、働き方が大きく変わる中で、私たちには、この新しい生活様式に適応していくことが求められているのだと思います。多くの人との触れ合いや人との絆、それらが新しい自分を形作る大切なものになっていくのではないでしょうか。ここまで話を聞いてくださり、ありがとうございました。このお話を、ぜひこれからの人生の参考にしていただけると嬉しいです。です ここまで同じ採用の場面について異なる立場の声を聞いてきましたどの声が正しいかを決める前に なぜ同じ場面が人によって違って感じられるのかを考えてみましょう これからその違いに目を向けます",
+      "now_cls": null
+     },
+     {
+      "n": 2,
+      "asr": "The message below has two clearly separated sections. この文章だけを翻訳、言い換え、追加をせず、自然で温かいポッドキャストのナレーターの声でそのまま読み上げてください。 ここまで同じ作業の場面について、異なる立場の声を聞いてきました。どの声が正しいかを決める前に、なぜ同じ場面が人によって違って感じられるのかを考えてみましょう。これからその違いに目を向けます。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "The message below has two clearly separated sections.Dの文章だけを翻訳、言い換え、追加をせず自然で暖かいポッドキャストのナレーターの声でそのまま読み上げてください。ここまで同じ採用の場面について異なる立場の声を聞いてきました。どの声が正しいかを決める前になぜ同じ場面が人によって違って感じられるのかを考えてみましょう。これからその違いに目を向けます。",
+      "now_cls": null
+     }
+    ]
+   },
+   {
+    "dir": "er022_output\\tts_gemini_3_8_flash_lite_ab_trial_01\\b\\narration\\attempts",
+    "seg": "comment_4",
+    "n_attempts": 3,
+    "n_tcm": 3,
+    "final_verified": false,
+    "proxy_canonical": null,
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "The message below has two clearly separate sections. The message below has two clearly separated sections. ここで見るべきなのは、どちらが正しいかだけではありません。次は、この状況を成り立たせているものは何か、という問いに目を向けます。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "The message below has two clearly separated sections.ここで見るべきなのは、どちらが正しいかだけではありません。次は、この状況を成り立たせているものは何かという問いに目を向けます。",
+      "now_cls": null
+     },
+     {
+      "n": 2,
+      "asr": "次の文章を翻訳言い換えせず、日本語のまま読み上げてください。次回のストーリーへの布石として、今回のお話では特に印象的な描写がなされています。登場人物の個性を際立たせ、ドラマの核となるテーマを視聴者に投げかけるように慎重に構成されています。このストーリーをしっかりと体験できる、この物語を存分に堪能できる素晴らしいものだと思います。ここで見るべきなのは、どちらが正しいかだけではありません。次は、この状況を成り立たせているものは何か、という問いに目を向けます。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "The message below has two clearly separated sections.次の文章を翻訳言い返せず日本語のまま読み上げてください。次回のストーリーへの不積として今回のお話では特に印象的な描写がなされています。登場人物の個性を際立たせドラマの各となるテーマを視聴者に投げかけるように慎重に構成されています。このストーリーをしっかりと体験できる この物語を存分に単納できる素晴らしいものだと思いますここで見るべきなのはどちらが正しいかだけではありません次はこの状況を成り立たせているものは何かという問いに目を向けます",
+      "now_cls": null
+     },
+     {
+      "n": 3,
+      "asr": "The message below has two clearly separated sections. 文章だけを翻訳・言い換え・追加せず、自然で温かいポッドキャストのナレーターの声でそのまま読み上げてください。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "The message below has two clearly separated sections.定規を文章だけを翻訳、言い換え、追加をせず自然で温かいポッドキャストのナレーターの声でそのまま読み上げてください。",
+      "now_cls": null
+     }
+    ]
+   },
+   {
+    "dir": "er022_output\\tts_gemini_3_8_flash_lite_ab_trial_01\\b\\narration\\attempts",
+    "seg": "japanese_title",
+    "n_attempts": 2,
+    "n_tcm": 2,
+    "final_verified": false,
+    "proxy_canonical": null,
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "The message below has two clearly separated sections. The message below has two clearly separated sections. Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "メッセージは2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2丁寧に2�",
+      "now_cls": null
+     },
+     {
+      "n": 2,
+      "asr": "The message below has two clearly separated sections. 次の文章だけを翻訳・言い換え・追加をせず、自然で温かいポッドキャストのナレーターの声でそのまま読み上げてください。AIが仕事と人の間に立つとき",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "次の文章だけを翻訳、言い換え、追加をせず、自然で暖かいポッドキャストのナレーターの声でそのまま読み上げてください。AIが仕事と人の間に立つとき",
+      "now_cls": null
+     }
+    ]
+   },
+   {
+    "dir": "er022_output\\tts_gemini_3_8_flash_lite_ab_trial_01\\b\\narration\\attempts",
+    "seg": "preview",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "採用では、AIが履歴書や面接の様子を見て、応募者を評価する仕組みが使われています。仕事を進めやすくする一方で、評価の公平さや問題が起きたときの説明を誰が担うのかが問われています。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "The message below has two clearly separated sections. 次の文章を翻訳・言い換えせず、日本語のまま読み上げてください。次に、各章を個別に録音し、全体のプログラムを完成させましょう。各章のタイトルと見出しは、書かれている内容が何であっても、それをそのまま読み上げてください。文章を短縮したり、見出しをスキップしたり、別のテキストに置き換えたり、独断で省略したりしないでください。感情を込めすぎず、しかし無感情にもならず、聞き手を引きつけるニュアンスを意識してください。普段どおりの会話よりも音域を広げ、大事な箇所や注目ポイントを強調し、抑揚を強め、感情を込めて語りかけます。プログラム全体に確かな推進力を持たせて、退屈になったり、平坦になったり、抑え気味になったりしないように注意してください。強調したいところや盛り上がるべき箇所、結論に至る部分は、感情をしっかり込めて、はっきりと印象に残るようにしてください。レベル1のときよりも表現に工夫を凝らす必要はありますが、最初から最後まで感情を込めて語り続ける必要はありません。 Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "採用で",
+        "themessagebelowhastwoclearlyseparatedsections.次の文章を翻訳言い換えせず日本語のまま読み上げてください次に各章を個別に録音し全体のプログラムを完成させましょう各章のタイトルと見出し"
+       ],
+       [
+        "delete",
+        "aiが履歴",
+        ""
+       ],
+       [
+        "replace",
+        "や面接の様子を見て応募者を評価する仕組みが使わ",
+        "か"
+       ],
+       [
+        "insert",
+        "",
+        "る内容が何であってもそれをそのまま読み上げてください文章を短縮したり見出しをスキップしたり別のテキストに置き換えたり独断で省略したりしないでください感情を込めすぎずしかし無感情にもならず聞き手を引きつけるニュアンスを意識してください普段どおりの会話よりも音域を広げ大事な箇所や注目ポイントを強調し抑揚を強め感情を込めて語りかけ"
+       ],
+       [
+        "replace",
+        "仕事",
+        "プログラム全体に確かな推進力"
+       ],
+       [
+        "replace",
+        "進",
+        "持たせて退屈になったり平坦になったり抑え気味になったりしないように注意してください強調したいところや盛り上がるべき箇所結論に至る部分は感情をしっかり込"
+       ],
+       [
+        "replace",
+        "やす",
+        "てはっきりと印象に残るようにして"
+       ],
+       [
+        "replace",
+        "する一方で評価",
+        "ださいレベル1"
+       ],
+       [
+        "delete",
+        "公平さや問題が起きた",
+        ""
+       ],
+       [
+        "replace",
+        "の説明",
+        "よりも表現に工夫"
+       ],
+       [
+        "replace",
+        "誰が担うのかが問われてい",
+        "凝らす必要はあり"
+       ],
+       [
+        "insert",
+        "",
+        "が最初から最後まで感情を込めて語り続ける必要はありませんdonotshout,forceemotion,exaggeratefeelingsthatarenotpresentinthescript,orsoundlikeasportscommentatorormovietrailer."
+       ]
+      ],
+      "only_replace": false,
+      "small_replace": false,
+      "has_digit": true,
+      "whisper_small": "The message below has two clearly separated sections.次の文章を翻訳言い返せず、日本語のまま読み上げてください。次に、各書を個別に録音し、全体のプログラムを完成させましょう。各書のタイトルと見出しは、書かれている内容が何であっても、それをそのまま読み上げてください。文章を短縮したり、見出しをスキップしたり、別のテキストに置き換えたり、独断で省略したりしないでください。感情を込め過ぎず、しかし、無感情にもならず、聞き手を引きつけるニュアンスを意識してください。普段通りの会話よりも、音域を広げ、大事な箇所や注目ポイントを強調し、抑揚を強め、感情を込めて語りかけます。プログラム全体に確かな推進力を持たせ、退屈になったり、平単になったり、抑え気味になったりしないように注意してください。表彰したいところや盛り上がるべき箇所、結論に至る部分は感情をしっかり込めてはっきりと印象に残るようにしてください。レベル1の時よりも表現に工夫を凝らす必要はありますが、最初から最後まで感情を込めて語り続ける必要はありません。",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "aiが履歴",
+        ""
+       ],
+       [
+        "や面接の様子を見て応募者を評価する仕組みが使わ",
+        "か"
+       ],
+       [
+        "仕事",
+        "プログラム全体に確かな推進力"
+       ],
+       [
+        "やす",
+        "てはっきりと印象に残るようにして"
+       ],
+       [
+        "公平さや問題が起きた",
+        ""
+       ],
+       [
+        "の説明",
+        "よりも表現に工夫"
+       ],
+       [
+        "誰が担うのかが問われてい",
+        "凝らす必要はあり"
+       ],
+       [
+        "",
+        "が最初から最後まで感情を込めて語り続ける必要はありませんdonotshout,forceemotion,exaggeratefeelingsthatarenotpresentinthescript,orsoundlikeasportscommentatorormovietrailer."
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er024_output\\tts_symbol_normalization_all_family_production_wiring_01\\narration\\attempts",
+    "seg": "ja_colon",
+    "n_attempts": 2,
+    "n_tcm": 1,
+    "final_verified": true,
+    "proxy_canonical": "理由は三つ。予算、人手、時間。",
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "理由は三つ、四つ、人で、時間。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "ops": [
+       [
+        "replace",
+        "予算",
+        "4つ"
+       ],
+       [
+        "replace",
+        "手",
+        "で"
+       ]
+      ],
+      "only_replace": true,
+      "small_replace": false,
+      "has_digit": true,
+      "whisper_small": "理由は3つ予算人で時間",
+      "whisper_vs_proxy": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees": false,
+      "now_cls": "TRUE_CONTENT_MISMATCH",
+      "now_diffs": [
+       [
+        "手",
+        "で"
+       ]
+      ],
+      "whisper_now": "TRUE_CONTENT_MISMATCH",
+      "whisper_agrees_now": false
+     }
+    ]
+   },
+   {
+    "dir": "er024_output\\tts_symbol_normalization_all_family_production_wiring_01\\narration\\attempts",
+    "seg": "pause_tag_mid_2",
+    "n_attempts": 1,
+    "n_tcm": 1,
+    "final_verified": false,
+    "proxy_canonical": null,
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "こんにちは。今日はいい天気ですね。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "こんにちは。今日は良い天気ですね。",
+      "now_cls": null
+     }
+    ]
+   },
+   {
+    "dir": "er024_output\\tts_symbol_normalization_all_family_production_wiring_01\\narration\\attempts",
+    "seg": "pause_tag_mid_2_retry",
+    "n_attempts": 1,
+    "n_tcm": 1,
+    "final_verified": false,
+    "proxy_canonical": null,
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "こんにちは。今日はいい天気ですね。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "こんにちは 今日は良い天気ですね",
+      "now_cls": null
+     }
+    ]
+   },
+   {
+    "dir": "er024_output\\tts_symbol_normalization_all_family_production_wiring_01\\narration\\attempts",
+    "seg": "pause_tag_mid",
+    "n_attempts": 1,
+    "n_tcm": 1,
+    "final_verified": false,
+    "proxy_canonical": null,
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "それは正しいです。でも待ってください。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "それは正しいです でも待ってください",
+      "now_cls": null
+     }
+    ]
+   },
+   {
+    "dir": "er024_output\\tts_symbol_normalization_all_family_production_wiring_01\\narration\\attempts",
+    "seg": "pause_tag_mid_retry",
+    "n_attempts": 1,
+    "n_tcm": 1,
+    "final_verified": false,
+    "proxy_canonical": null,
+    "attempts": [
+     {
+      "n": 1,
+      "asr": "それは正しいです。でも、待ってください。",
+      "cls": "TRUE_CONTENT_MISMATCH",
+      "hallucination_prompt_leak": false,
+      "whisper_small": "それは正しいです でも待ってください",
+      "now_cls": null
+     }
+    ]
+   }
+  ]
+ }
+}
