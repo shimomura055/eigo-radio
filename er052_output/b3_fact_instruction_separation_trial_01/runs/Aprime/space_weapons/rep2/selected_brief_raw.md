@@ -1,0 +1,7 @@
+# Selected Fact Brief
+
+## Storyline
+米国が軌道上のspace control weapons配備を初めて公式に認めたことを軸に、従来の地上発射型ASAT試験や防衛用センサー衛星との違い、counterspaceという用語の範囲、既存条約の規制線を整理する。
+
+## Selected Facts
+2026年9月14日、米空軍長官Troy Meinkは、米国が敵対的な相手の行動から統合軍を防護する軌道上のspace control weaponsを配備していると述べ、米政府機関はこれをSpace Forceによる宇宙兵器配備の初めての公式承認として記録した。ロシアは2021年11月15日、地上発射型の直接上昇式ASATミサイルで衛星COSMOS 1408を破壊し、1,500個超の追跡可能な軌道デブリを発生させた。米宇宙軍の2025年Space Warfighting frameworkでは、counterspace operationsは軌道、通信リンク、地上の各セグメントにおける行動を指す。米ミサイル防衛庁と宇宙開発庁は2024年、ミサイル警戒・追跡・防衛のためのセンサー衛星実証として、HBTSS衛星2基と追跡衛星4基の低軌道への打ち上げ計画を発表した。Outer Space Treaty第4条は、地球周回軌道への核兵器その他の大量破壊兵器の配置や、宇宙空間へのそのような兵器の配備を禁止している。

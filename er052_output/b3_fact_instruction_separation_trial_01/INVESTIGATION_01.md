@@ -1,3 +1,5 @@
+# 注: 本書は委任_03でOpus是正R3を反映済み(『Ledger段は文を追加していない』を訂正、space F-017は推定、semiconductor B3新規の理由は仮説と明記、『notes由来7件確定+1件推定』)。
+
 # INVESTIGATION_01: B3「Selected Facts」へ指示・制約文が混ざった原因の調査(Phase 1、read-only)
 
 管理ID: B3-FACT-INSTRUCTION-SEPARATION-ROOTFIX-TRIAL-01 / 委任_01 / 2026-10-10
@@ -7,7 +9,7 @@
 ## 0. 結論(先に)
 
 1. 混ざった直接の原因は **B3生成Promptが「Factを簡潔にまとめた文章を自由に書け」と言うだけで、台帳の`notes_for_writer`(Writer向け注意書き)をどう扱うか一切指示していない**こと(er019 L68)。Writerは台帳を直接読まずB3 briefだけを読む(OPEN-237 (b)で確認済み)ため、B3 LLMが自己判断で一部のnotesを命令文のまま本文へ取り込み、一部は落とし、一部は自分で新しい注意文を作った。
-2. 5問題テーマの指示・制約文は10件(Writer向け命令文)。内訳: `notes_for_writer`由来 8件(逐語3・言い換え4・未選定factのnotes転用と推定1)、Verifierの曖昧メモ(`ambiguity_note`)由来 1件、Ledgerに対応文がなくB3 LLMが新規に作ったもの 1件。**Research段階・Ledger段階で新たに追加されたものはゼロ**(Ledgerのnotesは Researcher draft と100%同一)。正常系(meta/byd/openai/streaming)の命令文は0件。
+2. 5問題テーマの指示・制約文は10件(Writer向け命令文)。内訳: `notes_for_writer`由来 7件確定(逐語3・言い換え4)+1件推定(space_weapons F-016付近の『適法性を断定しない』は未選定F-017のnotes転用と**推定**。逐語一致なし)、Verifierの曖昧メモ(`ambiguity_note`)由来 1件、Ledgerに対応文がなくB3 LLMが新規に作ったもの 1件。**[委任_03で是正]** `notes_for_writer`はResearcher draftからLedgerへ**無加工**(Stage R新規6テーマで100%一致)。ただしLedger段は決定論で、AMBIGUOUS factに`[AMBIGUOUS - 断定禁止、曖昧さを保持すること]`という**指示タグ**と、Verifier由来文(`ambiguity_note`)を付与する(`build_verified_ledger_text` L292-309)。したがって『Ledger段は文を追加していない』とは言えない。正常系(meta/byd/openai/streaming)の命令文は0件。
 3. バグか意図された設計かの判定: **仕様化された設計ではなく、B3導入(2026-09-26)による経路切断の副作用**。B3導入前はWriterが台帳全文(notes込み)を直接読んでいた。B3導入後はWriterの唯一の入力がB3 briefになり、notesの受け渡し経路が仕様から抜け落ちた。ただしその後のFact Lock R0規則4とB3注記仕様v2は「限定文がニュース欄に混在する」ことを前提に書かれており、下流は現状の混在を吸収する形で承認されている(= 混在が既成事実化している)。
 4. 台帳には既に欄が分かれている(`claim/scope/conditions/ambiguity/notes_for_writer`)。B3の自由記述が欄を混ぜ直しているだけなので、**LLM追加callなしの上流修正が可能**(DESIGN_01.md)。
 
@@ -66,17 +68,17 @@ B3注記仕様v2 §2(`B3_ANNOTATION_SPEC_v2_ANNOTATOR.md`):
 
 | テーマ | 命令文(件) | 由来の内訳 | 備考 |
 |---|---|---|---|
-| semiconductor_earnings | 2 | ①B3新規 1(「因果関係を付け加えないこと」。Ledgerに対応文なし。B3自身の`fact_tests[].reason`(F2/F3/F6)に「因果関係の確認はない」旨あり=推論メモがbriefへ漏出)②Verifier由来 1(F1の`ambiguity_note`=Verifierの`verification_notes`。Researcher draftのambiguityはnull) | 5 factが1段落(後に単一`【事実1】`)へ統合され、命令文2件がその中に入る。Storyline行にも「ただし…Ledger上確定できない」 |
+| semiconductor_earnings | 2 | ①B3新規 1(「因果関係を付け加えないこと」。Ledgerに対応文なし。B3自身の`fact_tests[].reason`(F2/F3/F6)に「因果関係の確認はない」旨あり=推論メモがbriefへ漏出した、という**仮説**。確認はしていない)②Verifier由来 1(F1の`ambiguity_note`=Verifierの`verification_notes`。Researcher draftのambiguityはnull) | 5 factが1段落(後に単一`【事実1】`)へ統合され、命令文2件がその中に入る。Storyline行にも「ただし…Ledger上確定できない」 |
 | small_bag | 1 | MB-06 notes逐語(「「mini」と「micro」を混同しないこと。」15字一致) | `Storyline：`重複行が`Selected Facts`先頭に残存(Prompt L68由来)。記述文の限定1件(MB-01 conditions+notesの言い換え) |
-| space_weapons | 4 (+Storyline内1) | F-001/F-003/F-015のnotesの言い換え3、F-016付近の「適法性を断定しない」は未選定F-017のnotes転用と推定1(逐語一致なし)。Storyline内「誇張せず整理する」はB3新規 | 22 fact中18がnotes命令形。採用5件に対し命令文4+1 |
+| space_weapons | 4 (+Storyline内1) | F-001/F-003/F-015のnotesの言い換え3、F-016付近の「適法性を断定しない」は未選定F-017のnotes転用と**推定**1(逐語一致なし)。Storyline内「誇張せず整理する」はB3新規 | 22 fact中18がnotes命令形。採用5件に対し命令文4+1 |
 | hormuz | 2 | HF-006 notes言い換え1、HF-009 notes逐語(24字)1 | 選定4件 |
 | central_bank_mortgage | 1 (+記述文2) | F007 notes逐語(20字)1。記述文「政策の目的・見込みであり…確認ではない」はF003 notes逐語(19字、**欄は`notes_for_writer`だが内容は事実の確かさの限定=境界例**)、「全借り手の支払額ではない」はF007 scope | 6件採用、recheck_noteあり |
 | (正常系)meta / byd_recall / openai_copyright / streaming_price | 0 | meta: HC-012 notes「「サービス全体を停止した」とは書かない」をB3が**記述文**へ変換して取り込んだ(命令文0)。byd: 台帳notesに命令形が約7件(推定)あるが**briefには1件も届いていない**(落とされた)。openai/streaming: 限定はFact本文(claim)由来 | |
 
 5つの調査観点への回答(10件の命令文):
 - (1) Research段階の原文に存在: 該当notesは存在する(8件)。semiconductor/central_bankはdraft JSONで逐語確認。旧凍結4テーマ(hormuz/space/small_bag/meta)はdraft JSON未保存だが、`build_verified_ledger_text`がnotesを無加工で出す規則(L306-307)であり、Stage R新規6テーマ(semiconductor/central_bank/byd/openai/streaming/inbound)で台帳notes==draft notesが100%一致(`ledger_provenance_check_01.json`: 52/52)。
-- (2) Ledgerで追加された: **ない**(notes)。唯一の例外は`ambiguity_note`で、AMBIGUOUS時にVerifierの`verification_notes`が入る(semiconductor F1)。これはVerifierの出力でありLedger工程が文を作ったわけではない。
-- (3) notes_for_writer由来: 8/10(逐語3、言い換え4、未選定factのnotes転用と推定1)。
+- (2) Ledgerで追加された: `notes_for_writer`は**無加工**。ただしLedger段(決定論コード)が、AMBIGUOUS factに`[AMBIGUOUS - 断定禁止、曖昧さを保持すること]`の指示タグとVerifier由来の`ambiguity_note`(Researcher draftのambiguityが空ならVerifierの`verification_notes`、semiconductor F1)を付与する。文を作るのはVerifierのLLMだが、Ledger段が欄として出力する。[委任_03で是正]
+- (3) notes_for_writer由来: 7/10確定(逐語3、言い換え4)+1件推定(未選定factのnotes転用)。
 - (4) B3が新規に追加: 1/10(+Storyline内1件、+`Storyline：`重複行の構造問題)。
 - (5) B3 Promptが要求: **要求していない**。ただし「簡潔にまとめた文章」「必要最小限のFactだけ」の自由記述指示が、台帳の欄区別を保持させる仕組みを持たない。
 

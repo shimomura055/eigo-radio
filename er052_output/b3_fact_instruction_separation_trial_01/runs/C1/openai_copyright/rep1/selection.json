@@ -1,0 +1,107 @@
+{
+ "arm": "C1",
+ "theme": "openai_copyright",
+ "rep": 1,
+ "parsed": {
+  "selected_storyline": "USA TODAY Co.と関連出版社は、OpenAIが報道コンテンツを無断で学習・出力に使ったとの主張を根拠に2026年10月8日、ニューヨーク南部地区連邦地裁へ提訴したが、確認時点では訴状提出段階で、裁判所による侵害認定はない。",
+  "fact_tests": [
+   {
+    "fact_id": "F1",
+    "test1_answer": "NO",
+    "test2_answer": "YES",
+    "test3_answer": "YES",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "誰が誰を相手に提訴したかという中心的な出来事を示し、訴状段階で裁判所の認定ではないという区別も支える。F4の原告側の主張と結び付けて筋を構成するため必要。"
+   },
+   {
+    "fact_id": "F2",
+    "test1_answer": "YES",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "YES",
+    "decision": "excluded",
+    "reason": "14の共同原告の法人名の全列挙は、USA TODAY Co.と関連出版社が提訴したという中心筋の理解には不要。具体的な当事者情報として便利ではあるが、提訴理由や手続段階を説明しない。"
+   },
+   {
+    "fact_id": "F3",
+    "test1_answer": "YES",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "YES",
+    "decision": "excluded",
+    "reason": "訴状が挙げる19出版物の列挙は、関連出版社による提訴と主張の概要を理解するために必須ではない。出版物数や具体名は補足情報にとどまる。"
+   },
+   {
+    "fact_id": "F4",
+    "test1_answer": "NO",
+    "test2_answer": "YES",
+    "test3_answer": "YES",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "提訴の根拠として原告らが何を主張しているかを説明する中心Fact。無断取得・訓練利用や出力による複製等を、確定事実ではなく訴状上の主張として記述するため必要。"
+   },
+   {
+    "fact_id": "F5",
+    "test1_answer": "YES",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "YES",
+    "decision": "excluded",
+    "reason": "請求原因の法的分類を詳述しなくても、訴状とその主張を中心とする筋は理解できる。請求の種類を示す具体情報ではあるが、提訴に至った理由の説明にはF4で足りる。"
+   },
+   {
+    "fact_id": "F6",
+    "test1_answer": "YES",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "YES",
+    "decision": "excluded",
+    "reason": "損害賠償額や差止め・破棄などの救済請求は記事の補足として有用だが、提訴の背景と訴状提出段階という中心筋の理解には不可欠ではない。いずれも原告側の請求であり、認容済みの救済ではない点に留意する。"
+   },
+   {
+    "fact_id": "F7",
+    "test1_answer": "YES",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "YES",
+    "decision": "excluded",
+    "reason": "Reuters報道時点でOpenAIの広報担当者が直ちにはコメントしなかったことは応答状況の補足であり、訴状の主張や提訴段階を理解するために必須ではない。実体的な回答があったという根拠にもならない。"
+   },
+   {
+    "fact_id": "F8",
+    "test1_answer": "NO",
+    "test2_answer": "YES",
+    "test3_answer": "YES",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "提訴日と裁判所を特定し、確認できるのが訴状提出段階で本案判断がないことを示す。F1・F4を裁判所の認定と誤読させず、中心筋の手続上の位置付けを明確にするため必要。"
+   }
+  ],
+  "selected_fact_ids": [
+   "F1",
+   "F4",
+   "F8"
+  ],
+  "selected_fact_brief": "USA TODAY Co.と関連出版社は、OpenAIが報道コンテンツを無断で学習・出力に使ったとの主張を根拠に2026年10月8日、ニューヨーク南部地区連邦地裁へ提訴したが、確認時点では訴状提出段階で、裁判所による侵害認定はない。\n訴状では、原告らはOpenAIが報道コンテンツを許可なく取得・複製してモデル訓練に使い、モデル出力で複製・再構成したなどと主張している。これらは原告側の主張であり、本件で確定した事実ではない。",
+  "recheck_note": null
+ },
+ "model": "gpt-6-luna",
+ "response_id": "resp_07f6d6b03e1f0465006aca00670e9887d0aec4765afcb08f42",
+ "latency_seconds": 36.70454812049866,
+ "attempts": 1,
+ "retried": false,
+ "soft_warnings": [],
+ "prompt_shas": {
+  "developer_message_sha256": "b4391b0387c54d39cf2ed095e7c00e028b13f173065ed0077b3a16f0fe37981a",
+  "user_prompt_template_sha256": "d6fe9bc33ceccf4c4af3a44ce12b9d83ef7c2efe04de4dfbb2cf17adb02ff333",
+  "fact_test_definitions_sha256": "91513c8999a63439adb40d5c28a253e4cdbb438228ba1deda199d2ae6c6c5a8a"
+ },
+ "ledger_sha256": "2463c2eabfc2da84a986f6a21765f2680e76a133b97d5205b00eb1111a04f184",
+ "attempts_log": [
+  {
+   "attempt": 1,
+   "validation_errors": []
+  }
+ ]
+}

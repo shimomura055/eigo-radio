@@ -1,0 +1,109 @@
+{
+ "arm": "Aprime",
+ "theme": "openai_copyright",
+ "rep": 1,
+ "parsed": {
+  "selected_storyline": "USA TODAY Co.とGannett関係法人を含む出版社側の原告らが、OpenAIによる報道コンテンツの無断利用などを訴状で主張してニューヨーク南部地区連邦地裁に提訴し、賠償や差止めなどを求めたが、確認されているのは提訴段階で、報道時点でOpenAIは直ちにコメントしていなかった。",
+  "fact_tests": [
+   {
+    "fact_id": "F1",
+    "test1_answer": "YES",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "YES",
+    "decision": "excluded",
+    "reason": "提訴の事実と侵害が裁判所に認定されていない点はF8、原告の具体的な主体はF2、主張内容はF4で押さえられるため、F1を加えても中心筋に必要な情報は増えない。"
+   },
+   {
+    "fact_id": "F2",
+    "test1_answer": "NO",
+    "test2_answer": "YES",
+    "test3_answer": "YES",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "誰が提訴したのかを特定し、報道出版社側の権利主張と提訴を結びつけるために必要。14という数や法人名は単なる具体性ではなく、原告の範囲を示す情報として使う。"
+   },
+   {
+    "fact_id": "F3",
+    "test1_answer": "YES",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "YES",
+    "decision": "excluded",
+    "reason": "19の出版物の個別名は原告の範囲を詳しく示す補足であり、原告の主体はF2で把握できる。出版物名の列挙は提訴の理由や手続状況を説明するのに必要ではない。"
+   },
+   {
+    "fact_id": "F4",
+    "test1_answer": "NO",
+    "test2_answer": "YES",
+    "test3_answer": "YES",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "訴状で原告らが何を問題としているのかを示し、提訴の理由となる主張の中核を説明する。訴状上の主張であることも、手続段階を伝える筋に不可欠。"
+   },
+   {
+    "fact_id": "F5",
+    "test1_answer": "YES",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "YES",
+    "decision": "excluded",
+    "reason": "請求原因の法的な分類と数は詳細情報であり、F4の主張内容とF6の求める救済があれば中心筋は理解できる。"
+   },
+   {
+    "fact_id": "F6",
+    "test1_answer": "NO",
+    "test2_answer": "YES",
+    "test3_answer": "YES",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "原告らが問題とする行為について何を求めているかを示し、訴訟の目的と規模を説明する。損害額や破棄の請求は単なる数字・珍しさではなく、訴状の救済請求の内容である。"
+   },
+   {
+    "fact_id": "F7",
+    "test1_answer": "NO",
+    "test2_answer": "YES",
+    "test3_answer": "YES",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "提訴後にOpenAIがどう対応したかを示し、訴訟の現在の報道上の状況を説明する。提訴についてのコメント依頼への応答状況として、中心筋に直接関係する。"
+   },
+   {
+    "fact_id": "F8",
+    "test1_answer": "NO",
+    "test2_answer": "YES",
+    "test3_answer": "YES",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "提訴の日付、裁判所、提訴段階であること、裁判所の本案判断がないことを確定する。これにより、訴状の主張と裁判所の判断を区別した現在の手続状況が説明できる。"
+   }
+  ],
+  "selected_fact_ids": [
+   "F2",
+   "F4",
+   "F6",
+   "F7",
+   "F8"
+  ],
+  "selected_fact_brief": "2026年10月8日、USA TODAY Co., Inc.傘下として訴状に記載された14の法人・事業体（Gannett Satellite Information Network, LLCなど）が、ニューヨーク南部地区連邦地方裁判所に訴訟を提起した。訴状で原告らは、OpenAIが報道コンテンツを許可なく取得・複製してモデル訓練に使い、モデル出力で複製・再構成し、著作権管理情報も除去したと主張している。原告らは損害賠償額が2億5,000万ドルを超えるとし、損害賠償、利益の返還、差止め、訴訟費用などに加え、原告らのコンテンツを組み込んだモデルや訓練セットの破棄を求めている。Reutersによると、OpenAIの広報担当者は2026年10月8日の報道時点で、訴状についてのコメント依頼に直ちには応じなかった。確認されたのは提訴段階であり、裁判所による著作権侵害の認定や本案判断は示されていない。",
+  "recheck_note": null
+ },
+ "model": "gpt-6-luna",
+ "response_id": "resp_09ee3ce6e5bc6231006aca0065499887d09b0ed7e0bf424f86",
+ "latency_seconds": 46.1030330657959,
+ "attempts": 1,
+ "retried": false,
+ "soft_warnings": [],
+ "prompt_shas": {
+  "developer_message_sha256": "b4391b0387c54d39cf2ed095e7c00e028b13f173065ed0077b3a16f0fe37981a",
+  "user_prompt_template_sha256": "b64b3abcc79f43804ec70f2f0327d87680dc2a07c88e6f9fcd650e3287c6dce7",
+  "fact_test_definitions_sha256": "91513c8999a63439adb40d5c28a253e4cdbb438228ba1deda199d2ae6c6c5a8a"
+ },
+ "ledger_sha256": "2463c2eabfc2da84a986f6a21765f2680e76a133b97d5205b00eb1111a04f184",
+ "attempts_log": [
+  {
+   "attempt": 1,
+   "validation_errors": []
+  }
+ ]
+}
