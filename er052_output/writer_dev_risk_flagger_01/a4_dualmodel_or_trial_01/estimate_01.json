@@ -1,0 +1,13 @@
+{
+ "task": "WRITER-RISK-FLAGGER-A4-DUALMODEL-OR-TRIAL-01 Phase1 (課金API 0件。見積のみ)",
+ "usd_jpy": 160,
+ "basis": "POST-EN実測(Sol A3 avg in 4938/out 354, A4 avg in 5088/out 447, 11本) + META CROSSMODEL実測(Luna A3 in5060/out1313, A4 in5210/out1929; Gemini3.5FL A3 in4765/out106, A4 in4885/out89)。N=1の実測のため中央は丸め、高位は入力x1.35・出力を厳しめに仮定",
+ "prices_usd_per_Mtok": {"gpt-6-luna": [0.10, 0.50], "gemini-3.5-flash-lite": [0.30, 2.50]},
+ "sets": {
+  "POST_EN_11": {"articles": 11, "calls": {"luna_A3": 11, "luna_A4": 11, "gemini_A3": 11, "gemini_A4": 11, "total": 44},
+   "jpy": {"luna": {"central": 4.4, "high": 9.4}, "gemini": {"central": 5.9, "high": 24.2}, "total": {"central": 10.3, "high": 33.6}, "worst_with_1_retry_each": 67.2}},
+  "ANTENNA_JA_9": {"articles": 9, "calls": {"total": 36}, "jpy": {"total": {"central": "約9-10", "high": "約30"}}, "note": "日本語はtoken数が多い可能性。antenna実測(Sol)に基づく補正は未実施の概算"}
+ },
+ "reusable_existing_calls": 0,
+ "note": "Luna/Gemini呼出は全件新規。既存Sol A3/A4(POST-EN 22 call)は再実行不要で補助指標に使う。JPY100目安を大きく下回る"
+}
