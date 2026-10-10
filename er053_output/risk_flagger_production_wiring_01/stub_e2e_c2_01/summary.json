@@ -1,0 +1,182 @@
+{
+ "purpose": "C2 stub E2E (API 0)",
+ "out_dir_is_temp": true,
+ "main": "completed (Mandatory STOP reached)",
+ "second_invocation": "completed (reuse path, no W-1 API call)",
+ "events": [
+  "research_ledger(reuse fixture ledger)",
+  "budget_check:after research_ledger",
+  "budget_check:w1 writer",
+  "w1_api_call:gpt-6-luna",
+  "budget_check:w1 writer",
+  "w1_api_call:gpt-6-astra",
+  "budget_check:w1 writer",
+  "w1_api_call:gpt-6-astra",
+  "budget_check:after ja_writer",
+  "advanced_translation",
+  "in_one_line(M1a ja_text=True ledger_text=True)",
+  "budget_check:after advanced writer",
+  "budget_check:after advanced",
+  "budget_check:risk_flag b1b",
+  "rf_call:luna",
+  "budget_check:risk_flag b1b",
+  "rf_call:luna",
+  "budget_check:risk_flag b1b",
+  "rf_call:gemini35fl",
+  "budget_check:risk_flag b1b",
+  "rf_call:gemini35fl",
+  "queue_save:b1b",
+  "budget_check:after risk_flag b1b",
+  "standard_level_adjust",
+  "budget_check:after standard writer",
+  "budget_check:after standard",
+  "budget_check:risk_flag a2",
+  "rf_call:luna",
+  "budget_check:risk_flag a2",
+  "rf_call:luna",
+  "budget_check:risk_flag a2",
+  "rf_call:gemini35fl",
+  "budget_check:risk_flag a2",
+  "rf_call:gemini35fl",
+  "queue_save:a2",
+  "budget_check:after risk_flag a2",
+  "--- second invocation: --stage standard (reuse ja_writer after provenance check) ---",
+  "research_ledger(reuse fixture ledger)",
+  "budget_check:after research_ledger",
+  "standard_level_adjust",
+  "budget_check:after standard writer",
+  "budget_check:after standard",
+  "budget_check:risk_flag a2",
+  "rf_call:luna",
+  "budget_check:risk_flag a2",
+  "rf_call:luna",
+  "budget_check:risk_flag a2",
+  "rf_call:gemini35fl",
+  "budget_check:risk_flag a2",
+  "rf_call:gemini35fl",
+  "queue_save:a2",
+  "budget_check:after risk_flag a2"
+ ],
+ "w1_api_calls": [
+  "w1_api_call:gpt-6-luna",
+  "w1_api_call:gpt-6-astra",
+  "w1_api_call:gpt-6-astra"
+ ],
+ "old_checker_called": false,
+ "files": {
+  "ja_writer/revision2.md": "9cbe3849e63e78f4cd9200cf2368746aee8bb23a1fa56061c6225d7a411faa7e",
+  "b1b/article.md": "0b9670e007defc27a4aeede271a61c849975270cd708cf8670b8bf32c3d5bf36",
+  "a2/article.md": "db247b6aab1d8f76166b23b6d4619ab1385d2ecf40cfeeedadaf2a453587300e"
+ },
+ "w1_runtime_evidence": {
+  "chain_method": "W-1",
+  "annotated_md_sha256": "6371e1022d8076b1cf2aa5738416b9fe23ab9d8fd75ba9f6d698106720d1448d",
+  "annotation_manifest_producer": "trial_fixture"
+ },
+ "entry_point_risk_flagger": {
+  "a2": {
+   "status": "OK",
+   "reason": null,
+   "rf_run_id": "rf20261010T102856Z-77a3",
+   "article_sha256": "db247b6aab1d8f76166b23b6d4619ab1385d2ecf40cfeeedadaf2a453587300e",
+   "ledger_sha256": "ea0ce587e605beeac8f02315ae4520899156393bbba2e059d99f45988b7c5f56",
+   "splitter_version": "en_split_v1",
+   "timestamp": "2026-10-10T10:28:56+00:00",
+   "producer": "trial_fixture",
+   "run_label": "C2_STUB_E2E_RESUME",
+   "issue_count": 0,
+   "conditions": [
+    {
+     "model_key": "luna",
+     "condition": "A3",
+     "status": "OK",
+     "reason": null,
+     "flag_count": 0,
+     "cost_jpy": 0.00056
+    },
+    {
+     "model_key": "luna",
+     "condition": "A4",
+     "status": "OK",
+     "reason": null,
+     "flag_count": 0,
+     "cost_jpy": 0.00056
+    },
+    {
+     "model_key": "gemini35fl",
+     "condition": "A3",
+     "status": "OK",
+     "reason": null,
+     "flag_count": 0,
+     "cost_jpy": 0.00248
+    },
+    {
+     "model_key": "gemini35fl",
+     "condition": "A4",
+     "status": "OK",
+     "reason": null,
+     "flag_count": 0,
+     "cost_jpy": 0.00248
+    }
+   ]
+  }
+ },
+ "entry_point_run_label_of_last_invocation": "C2_STUB_E2E_RESUME",
+ "queue_index": [
+  {
+   "article_id": "article_stub",
+   "article_level": "b1b",
+   "article_sha256": "0b9670e007defc27a4aeede271a61c849975270cd708cf8670b8bf32c3d5bf36",
+   "run_id": "rf20261010T102856Z-59d8",
+   "timestamp": "2026-10-10T10:28:56+00:00",
+   "status": "OK",
+   "reason": null,
+   "issue_count": 0,
+   "queue_path": "article_stub/b1b__rf20261010T102856Z-59d8",
+   "producer": "trial_fixture",
+   "run_label": "C2_STUB_E2E",
+   "splitter_version": "en_split_v1",
+   "cost_jpy": 0.00608
+  },
+  {
+   "article_id": "article_stub",
+   "article_level": "a2",
+   "article_sha256": "db247b6aab1d8f76166b23b6d4619ab1385d2ecf40cfeeedadaf2a453587300e",
+   "run_id": "rf20261010T102856Z-c895",
+   "timestamp": "2026-10-10T10:28:56+00:00",
+   "status": "OK",
+   "reason": null,
+   "issue_count": 0,
+   "queue_path": "article_stub/a2__rf20261010T102856Z-c895",
+   "producer": "trial_fixture",
+   "run_label": "C2_STUB_E2E",
+   "splitter_version": "en_split_v1",
+   "cost_jpy": 0.00608
+  },
+  {
+   "article_id": "article_stub",
+   "article_level": "a2",
+   "article_sha256": "db247b6aab1d8f76166b23b6d4619ab1385d2ecf40cfeeedadaf2a453587300e",
+   "run_id": "rf20261010T102856Z-77a3",
+   "timestamp": "2026-10-10T10:28:56+00:00",
+   "status": "OK",
+   "reason": null,
+   "issue_count": 0,
+   "queue_path": "article_stub/a2__rf20261010T102856Z-77a3",
+   "producer": "trial_fixture",
+   "run_label": "C2_STUB_E2E_RESUME",
+   "splitter_version": "en_split_v1",
+   "cost_jpy": 0.00608
+  }
+ ],
+ "a2_derived_from_advanced": {
+  "derived_from_advanced_sha256": "dd10b9dfef39cf33006f08fa1855b9234847c872abd4ef2fe498f3ed214a2815",
+  "standard_article_sha256": "d9fb8e83a222ba5715bd62719223d869908f9ea39ae9e2e2a6969c981bac0c86",
+  "purpose": "S3-2 observation only (not used for any judgement/STOP)"
+ },
+ "no_old_checker_files": {
+  "b1b/audit/deviation_check.json": false,
+  "a2/audit/deviation_check.json": false,
+  "ja_writer/audit/deviation_checks": false
+ }
+}
