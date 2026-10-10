@@ -542,9 +542,11 @@ class StaticTests(unittest.TestCase):
             self.assertNotIn("er053_dev_b3_fixture_adapter", open(f, encoding="utf-8", errors="replace").read(), os.path.basename(f))
 
     def test_w1_rf_queue_contract_referenced_only_by_entertainment_runner_after_c2(self):
-        """C2: W-1/RF/Queue/契約moduleを参照してよい非er053ファイルはentertainment runner(正式入口)だけ。
-        audio runner(C3で保険を追加する予定)・er012_e・jaw・その他のrunnerは参照しない。"""
+        """C2/C3: W-1/RF/Queue/契約moduleを参照してよい非er053ファイルはentertainment runner(正式入口)だけ。
+        例外(C3): audio runnerはTTS直前保険のためRF module・Review Queue moduleだけを参照してよい
+        (W-1・契約moduleは不可)。er012_e・jaw・その他のrunnerは参照しない。"""
         allowed = {"er019_family_x_entertainment_production_runner_01.py"}
+        audio_allowed = {"er053_risk_flagger_production_01", "er053_review_queue_01"}
         for f in self._root_py_files():
             b = os.path.basename(f)
             src = open(f, encoding="utf-8", errors="replace").read()
@@ -552,7 +554,9 @@ class StaticTests(unittest.TestCase):
                       "er053_b3_annotation_contract_01"):
                 if b in allowed:
                     continue
-                self.assertNotIn(m, src, f"{b} references {m} (C2: only the entertainment runner may wire it; audio runner is C3)")
+                if b == "er019_family_x_audio_production_runner_01.py" and m in audio_allowed:
+                    continue
+                self.assertNotIn(m, src, f"{b} references {m} (only the entertainment runner may wire it; audio runner: RF+Queue only [C3])")
         src = open(os.path.join(HERE, "er019_family_x_entertainment_production_runner_01.py"), encoding="utf-8").read()
         for m in ("er053_family_x_factlock_ja_writer_01", "er053_risk_flagger_production_01", "er053_review_queue_01",
                   "er053_b3_annotation_contract_01"):

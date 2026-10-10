@@ -364,7 +364,8 @@ def default_call_fn(model_key: str, model_id: str, system: str, user: str):
     return parse_gemini_response(j)
 
 
-def _record_gemini_cost(model_id: str, usage: dict, response_id, elapsed: float, attempt: int, success: bool, error: str = None):
+def _record_gemini_cost(model_id: str, usage: dict, response_id, elapsed: float, attempt: int, success: bool, error: str = None,
+                        prices: dict = None):
     """GeminiはSDK patchの外(REST)なので、er005_cost_logger互換レコードを本moduleが書く(Lunaは書かない)。
     logger未初期化(init_logger未呼出)でもRFは止めない(戻り値でwarningを返す)。"""
     entry = {"provider": "gemini", "api": "rest.generateContent(text)", "model_id": model_id,
@@ -376,6 +377,11 @@ def _record_gemini_cost(model_id: str, usage: dict, response_id, elapsed: float,
                       "total_tokens": (usage.get("input_tokens") or 0) + (usage.get("output_tokens") or 0),
                       "cached_input_tokens": usage.get("cached_tokens"),
                       "reasoning_tokens": usage.get("reasoning_tokens")})
+        if prices is not None:
+            # C3-2(G-4): audio側compute_cost_jpy_so_farは cost_usd があればそれを実額として採用する。
+            # model_idは pinned model(単価キー)、output_tokensはthinking込み、cost_usdはG-2式(cached割引込み)。
+            entry["cost_usd"] = cost_jpy(prices, usage.get("input_tokens") or 0, usage.get("output_tokens") or 0,
+                                         usage.get("cached_tokens") or 0) / USD_JPY
     else:
         entry["error"] = (error or "")[:500]
     try:
@@ -432,7 +438,7 @@ def run_condition(model_key, condition, level, model_id, unit, user, prices, cal
                 break
             el = time.time() - t0
             if provider == "gemini":
-                w = _record_gemini_cost(model_id, usage, rid, el, attempt_no, True)
+                w = _record_gemini_cost(model_id, usage, rid, el, attempt_no, True, prices=prices)
                 if w:
                     warnings.append(w)
         cond["api_calls"] += 1

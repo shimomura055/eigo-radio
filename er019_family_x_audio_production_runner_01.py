@@ -54,6 +54,8 @@ import er006_model_routing_contract_01 as routing
 import er019_family_x_audio_plan_01 as plan
 import er019_family_x_kp_explanation_01 as kp_explanation_gen
 import er020_tts_retry_local_rewrite_01 as retry_primitive
+import er053_review_queue_01 as rq
+import er053_risk_flagger_production_01 as rf
 
 MANAGEMENT_ID = "NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01"
 
@@ -329,6 +331,9 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
             )
         level_out_dir = f"{out_dir}/{level}"
         save_json(f"{level_out_dir}/parts.json", parts)
+        # C3-1(RISK-FLAGGER-PRODUCTION-WIRING-01): scaffold時点の元記事sha256を記録する
+        # (TTS直前の三者sha照合[scaffold時sha == source記事sha == Queue sha]の1者目)。
+        record_scaffold_article_sha(out_dir, level, article_path)
 
         if level == "b1b":
             support = run_family_x_b1_scaffold(client, parts, level_out_dir)
@@ -1519,9 +1524,15 @@ def _load_pricing():
     prices = load_json(PRICING_SNAPSHOT_PATH)["prices"]
 
     def price(provider, model, meter):
-        return next(p["price"] for p in prices
-                    if p["provider"] == provider and p["model"] == model and p["meter"] == meter
-                    and p.get("tier", "Standard") == "Standard")
+        try:
+            return next(p["price"] for p in prices
+                        if p["provider"] == provider and p["model"] == model and p["meter"] == meter
+                        and p.get("tier", "Standard") == "Standard")
+        except StopIteration as e:
+            # C3-2(G-4): fail-closed。単価未登録を0円扱いにしない(efam._load_pricingと同じ
+            # PricingNotFoundError)。cost_usd付きレコードはprice()を呼ばない(下記)。
+            raise routing.PricingNotFoundError(
+                f"[STOP] 単価未登録model: {provider}/{model} meter={meter}") from e
     return price
 
 
@@ -1554,14 +1565,13 @@ def compute_cost_jpy_so_far(cost_log_path: str) -> tuple:
             if rec.get("cost_usd") is not None:
                 usd = rec["cost_usd"]
             else:
-                try:
-                    if provider in ("gemini", "openai", "openai_asr") and model:
-                        in_tok = rec.get("input_tokens") or 0
-                        out_tok = rec.get("output_tokens") or 0
-                        usd = in_tok * price(provider, model, "input_tokens") / 1e6 \
-                            + out_tok * price(provider, model, "output_tokens") / 1e6
-                except StopIteration:
-                    usd = 0.0
+                # C3-2(G-4): 旧`except StopIteration: usd = 0.0`(fail-open)を撤去。単価未登録は
+                # price()がPricingNotFoundErrorを送出し、Budget Guardが盲目にならない。
+                if provider in ("gemini", "openai", "openai_asr") and model:
+                    in_tok = rec.get("input_tokens") or 0
+                    out_tok = rec.get("output_tokens") or 0
+                    usd = in_tok * price(provider, model, "input_tokens") / 1e6 \
+                        + out_tok * price(provider, model, "output_tokens") / 1e6
             total_usd += usd
             by_provider[provider] = by_provider.get(provider, 0.0) + usd
     jpy = total_usd * USD_JPY
@@ -1839,6 +1849,150 @@ def assert_production_tts_backend(tts_backend: str, allow_legacy_backend: bool) 
         "(課金前にSTOPしました)。")
 
 
+# ------------------------------------------------------------
+# C3-1: TTS直前のRisk Flagger保険(RISK-FLAGGER-PRODUCTION-WIRING-01, DESIGN_03 4-2/15-2 #8)
+# 三者sha照合 = (1) scaffold時に記録した元記事sha256 (2) 現在のsource記事(source_dir/<level>/article.md)のsha256
+#              (3) Review Queue上の(article_id, level, article_sha256)。
+# 三者が一致しない、または該当Queueが無い場合は、その場でRisk Flaggerを実行(非Blocking、Level明示、
+# producer/run_label記録)してからTTSへ進む。RF_UNAVAILABLE/PARTIAL/Queue保存失敗でもTTSは止めない。
+# 例外として伝播するのは予算超過STOP(rf.BudgetCheckStop)と記事sha変化(rf.ArticleModifiedError)のみ。
+# ------------------------------------------------------------
+SCAFFOLD_SHA_RECORD = "audit/scaffold_article_sha256.json"
+RF_TTS_GUARD_RECORD = "audit/rf_tts_guard.json"
+
+
+def file_sha256(path: str) -> str:
+    """Review Queue(rf module)と同じ定義: ファイルのraw bytesのsha256。"""
+    with open(path, "rb") as f:
+        return hashlib.sha256(f.read()).hexdigest()
+
+
+def record_scaffold_article_sha(out_dir: str, level: str, article_path: str) -> str:
+    """scaffold時の元記事sha256を out_dir/audit/scaffold_article_sha256.json の [level] へ記録(既存levelは保持)。"""
+    p = f"{out_dir}/{SCAFFOLD_SHA_RECORD}"
+    data = load_json(p) if os.path.exists(p) else {}
+    sha = file_sha256(article_path)
+    data[level] = {"article_sha256": sha, "article_path": article_path}
+    save_json(p, data)
+    return sha
+
+
+def _read_scaffold_sha(out_dir: str, level: str):
+    p = f"{out_dir}/{SCAFFOLD_SHA_RECORD}"
+    if not os.path.exists(p):
+        return None
+    try:
+        return (load_json(p).get(level) or {}).get("article_sha256")
+    except (OSError, ValueError):
+        return None
+
+
+def _queue_shas(source_dir: str, article_id: str, level: str, queue_root: str) -> set:
+    """Review Queue(index.jsonl)と、Queue保存失敗時のfallback(source_dir/risk_flagger_fallback/<level>__*/queue.json)上の
+    (article_id, level)に対応するarticle_sha256の集合。"""
+    shas = set()
+    try:
+        for e in rq.read_index(queue_root):
+            if e.get("article_id") == article_id and e.get("article_level") == level and e.get("article_sha256"):
+                shas.add(e["article_sha256"])
+    except (OSError, ValueError):
+        pass
+    fb_root = f"{source_dir}/risk_flagger_fallback"
+    if os.path.isdir(fb_root):
+        for name in os.listdir(fb_root):
+            qp = os.path.join(fb_root, name, "queue.json")
+            try:
+                if name.startswith(f"{rq.safe_component(level)}__") and os.path.exists(qp):
+                    q = load_json(qp)
+                    if q.get("article_id") == article_id and q.get("article_level") == level and q.get("article_sha256"):
+                        shas.add(q["article_sha256"])
+            except (OSError, ValueError):
+                pass
+    return shas
+
+
+def _derived_sha_warning(source_dir: str, level: str):
+    """S3-2: a2の派生元(b1b)sha不一致は警告記録のみ(判定・STOPに使わない)。"""
+    if level != "a2":
+        return None
+    p = f"{source_dir}/a2/audit/derived_from_advanced_sha256.json"
+    b1b = f"{source_dir}/b1b/article.md"
+    if not (os.path.exists(p) and os.path.exists(b1b)):
+        return None
+    try:
+        recorded = load_json(p).get("derived_from_advanced_sha256")
+        now = file_sha256(b1b)
+    except (OSError, ValueError):
+        return None
+    if recorded and recorded != now:
+        return {"warning": "a2_derived_from_advanced_sha_mismatch(観測のみ)", "recorded": recorded, "current_b1b": now}
+    return None
+
+
+def _annotation_producer(source_dir: str):
+    try:
+        return load_json(f"{source_dir}/ja_writer/runtime_evidence.json").get("annotation_manifest_producer")
+    except (OSError, ValueError):
+        return None
+
+
+def ensure_rf_record(source_dir: str, out_dir: str, level: str, budget_jpy: float, run_label: str | None = None,
+                     queue_root: str | None = None, rf_runner=None) -> dict:
+    """TTS直前の三者sha照合。一致ならRF実行なし(action=verified)、不一致/Queueなしならその場でRF+Queue保存(action=rf_executed)。
+    rf_runner: test用差し替え(既定 rf.run_risk_flagger)。戻り値は out_dir/audit/rf_tts_guard.json の [level] にも記録。"""
+    assert level in ("a2", "b1b"), level
+    queue_root = queue_root or rq.QUEUE_ROOT          # 呼出時に解決(test/運用でQUEUE_ROOTを差し替え可能)
+    article_path = f"{source_dir}/{level}/article.md"
+    article_id = rq.derive_article_id(source_dir)
+    src_sha = file_sha256(article_path)
+    scaffold_sha = _read_scaffold_sha(out_dir, level)
+    queue_shas = _queue_shas(source_dir, article_id, level, queue_root)
+    reasons = []
+    if scaffold_sha is None:
+        reasons.append("scaffold_sha_missing")
+    elif scaffold_sha != src_sha:
+        reasons.append("scaffold_sha_ne_source_sha")
+    if not queue_shas:
+        reasons.append("no_queue_record")
+    elif src_sha not in queue_shas:
+        reasons.append("source_sha_ne_queue_sha")
+    rec = {"level": level, "article_id": article_id, "scaffold_sha256": scaffold_sha, "source_sha256": src_sha,
+           "queue_shas": sorted(queue_shas), "match": not reasons, "mismatch_reasons": reasons,
+           "action": "verified", "rf_status": None, "queue_saved": None, "warnings": []}
+    w = _derived_sha_warning(source_dir, level)
+    if w:
+        rec["warnings"].append(w)
+        print(f"[FAMILY-X-AUDIO-RUNNER][WARN] {level}: {w['warning']}(警告記録のみ)")
+    if not reasons:
+        print(f"[FAMILY-X-AUDIO-RUNNER][rf_guard] {level}: 三者sha一致(scaffold == source == Queue)。RF再実行なし。")
+    else:
+        rec["action"] = "rf_executed"
+        print(f"[FAMILY-X-AUDIO-RUNNER][rf_guard] {level}: 三者sha不一致/Queueなし({','.join(reasons)})。"
+              "TTS前にRisk Flaggerを実行します(非Blocking)。")
+        runner_fn = rf_runner or rf.run_risk_flagger
+        label = f"audio_tts_guard:{run_label}" if run_label else "audio_tts_guard"
+        try:
+            result = runner_fn(
+                article_path=article_path, ledger_path=f"{source_dir}/research_ledger/verified_fact_ledger.txt",
+                article_id=article_id, article_level=level, out_dir=out_dir, producer=_annotation_producer(source_dir),
+                run_label=label, budget_check=lambda: assert_budget_ok(out_dir, budget_jpy, f"rf_guard {level}"))
+            saved = rq.save_queue(result, out_dir=out_dir, root=queue_root)
+            rec.update(rf_status=result.get("status"), rf_reason=result.get("reason"), rf_run_id=result.get("rf_run_id"),
+                       queue_saved=saved.get("saved"), run_label=label, issue_count=len(result.get("issues", [])))
+        except (rf.BudgetCheckStop, rf.ArticleModifiedError):
+            raise
+        except Exception as exc:  # noqa: BLE001 - 非Blocking: RF側の想定外もRF_UNAVAILABLEとして可視化しTTSへ進む
+            rec.update(rf_status="RF_UNAVAILABLE", rf_reason=f"audio_wrapper_exception: {type(exc).__name__}", run_label=label)
+            print(f"[WARN][RF] {level}: 想定外の例外 {type(exc).__name__}: {str(exc)[:200]}(非Blocking: TTSへ進みます)")
+        if file_sha256(article_path) != src_sha:
+            raise rf.ArticleModifiedError(f"article sha changed across RF in audio guard: {article_path}")
+    p = f"{out_dir}/{RF_TTS_GUARD_RECORD}"
+    data = load_json(p) if os.path.exists(p) else {}
+    data[level] = rec
+    save_json(p, data)
+    return rec
+
+
 def main() -> None:
     parser = build_arg_parser()
     args = parser.parse_args()
@@ -1909,6 +2063,11 @@ def main() -> None:
         # W5(Opus L2所見MAJOR-3是正): 課金が発生するTTS呼び出し(下の
         # generate_family_x_*_segments())の直前でbackendをfail-fastする。
         assert_production_tts_backend(args.tts_backend, args.allow_legacy_backend)
+        # C3-1: TTS直前のRisk Flagger保険(三者sha照合。`--stage tts`単独でも抜けない)。RFは
+        # cl.logging_contextの外で呼ぶ契約(RF moduleが条件ごとに自前でstage tagを張る)。
+        # 非Blocking: RF_UNAVAILABLE/PARTIAL/Queue保存失敗でもTTSへ進む。
+        for level in levels:
+            ensure_rf_record(source_dir, out_dir, level, args.budget_jpy)
         with cl.logging_context(args.slug, "tts"):
             for level in levels:
                 if level == "b1b":
