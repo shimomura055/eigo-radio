@@ -2,20 +2,21 @@
 # er012_e_family_entertainment_two_level_runner_01.py
 # NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01
 # ============================================================
-# Production正式runner(delegation D1)。入力=日本語完成Entertainment R2
-# 記事ファイル(path+sha256を記録、由来管理IDは呼び出し側が--source-idで
-# 明示)。日本語記事の自動生成(Original→R1→R2)自体の配線は本タスク範囲外
-# (CURRENT_SPEC.md行828 WIRING INCOMPLETE)。本runnerは「完成JA記事を
-# 受け取る」入口として、以下を実行する:
+# Production writer stage(run_writer_stage)の実体。正式入口は
+# er019_family_x_entertainment_production_runner_01.py(新Writer W-1+注記済みB3契約検証+RF配線)であり、
+# 本module単体のCLI(--ja-article / --stage writer等)はRISK-FLAGGER-PRODUCTION-WIRING-01 C2(U-2)で封鎖した
+# (契約検証もRFも通らずb1b/a2を作れる経路を残さないため)。以下は従来の設計記録:
+# 入力=日本語完成Entertainment R2記事。本moduleは以下を実行する:
 #   1. Verified Fact Ledger(既存reuse、または既存Researcher/Verification
 #      [web_search]による新規構築、delegation D5)
 #   2. Advanced(Natural English Adaptation、CEFR B1、delegation D2、
 #      `er003_v1_n3_01_advanced_adaptation_generate.py`)
 #   3. Standard(CEFR A2、v5 6,000語ライン、delegation D3、
 #      `er003_v1_n3_01_standard_a2_generate.py`)
-#   4. 各段でVerified Fact Ledgerに対するdeviation check(既存
-#      `vfl01.run_deviation_check`、delegation D5。MAJORの場合は1回だけ
-#      再生成しても解消しない場合はSTOP、本文を手で直さない)
+#   4. (RISK-FLAGGER-PRODUCTION-WIRING-01 C2、2026-10-10) 旧Fact Checker
+#      (各段の台帳照合・指摘起点の再生成・STOP)は物理削除した(案P)。事実面の
+#      確認はRisk Flagger(RF、非Blocking。呼出は正式入口のentertainment runner側)+Human
+#      Reviewが担う。技術QA(段落3分割retry・予算ガード等)は維持。
 #   5. downstream(delegation D7): 既存`er003_v1_n3_01_scaffold_
 #      generate.py`(Preview/Comment 1-4、Key Phrase選定)・
 #      `er003_v1_n3_01_tts_generate.py`(TTS)・`er003_v1_n3_01_assemble.py`
@@ -26,8 +27,9 @@
 #      本runner専用の新規レイアウト関数)。
 #
 # 実行方法:
+#   (封鎖済み U-2: --ja-article / --stage writer|all / --regenerate-stage はSTOPする。残るのは --stage ledger のみ)
 #   .venv/Scripts/python.exe er012_e_family_entertainment_two_level_runner_01.py \
-#       --ja-article <path> --slug <sewer|meta> --out-dir <dir> \
+#       --slug <slug> --out-dir <dir> --topic "<topic>" --stage ledger \
 #       [--ledger-file <既存Ledger再利用path>] [--source-id <管理ID>] \
 #       [--budget-jpy 300] [--stage ledger|writer|scaffold|tts|assemble|player|all] \
 #       [--regenerate-stage advanced|standard] \
@@ -59,7 +61,6 @@ import er003_v1_n3_01_scaffold_generate as sc
 import er003_v1_n3_01_standard_a2_generate as std_gen
 import er003_v1_n3_01_tts_generate as tts_gen
 import er005_cost_logger as cl
-import er019_family_x_ja_writer_o_r1_r2_01 as jaw
 from er006_model_routing_contract_01 import PricingNotFoundError
 
 PRICING_SNAPSHOT_PATH = "er005_output/cost_baseline_01/pricing_snapshot.json"
@@ -275,47 +276,13 @@ def _extract_title(article_text: str) -> str:
     return ""
 
 
-# ------------------------------------------------------------
-# NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01(Stage 1、2026-09-27、
-# ユーザー正式決定によりAPPROVED_FOR_PRODUCTION)で追加: English側
-# (Advanced/Standard)deviation checkのmust-fix retry・issue persistence・
-# JA由来判定。既存の「1回だけ再生成→なおMAJORならSTOP」という上限・
-# Gate自体は変更しない(既存retry回数の枠内での拡張)。
-# ------------------------------------------------------------
-class JARecheckRequiredError(RuntimeError):
-    """English側MAJORのclaim_in_articleがJA R2由来(origin=ja_source)と
-    Checkerが判定した場合のSTOP。Englishを盲目的に再生成せず、JA側の
-    再確認が必要であることを呼び出し元へ伝える(自動ループしない)。"""
-
-    def __init__(self, stage: str, message: str, major_deviations: list):
-        super().__init__(message)
-        self.stage = stage
-        self.major_deviations = major_deviations
-
-
-def _major_deviations(deviation_result: dict) -> list:
-    return [d for d in deviation_result["parsed"].get("deviations", []) if d.get("severity") == "MAJOR"]
-
-
-def _must_fix_from_deviations(major_devs: list) -> list:
-    return [
-        {
-            "fact_id": d.get("related_fact_id", ""),
-            "claim_in_article": d.get("claim_in_article", ""),
-            "issue": d.get("issue", ""),
-            "explanation": d.get("explanation", ""),
-        }
-        for d in major_devs
-    ]
-
-
 def _family_x_ensure_split_or_paragraph_retry(article_text: str, regen_fn, label: str) -> dict:
     """FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1): sc.split_family_x_
     article_text_v2()がTOO_FEW_PARAGRAPHSを返した場合のみ、regen_fn()
     (段落保持を強調したmust-fixで1回だけ再生成するゼロ引数callable、
     新しいarticle_textを返す)を1回だけ実行し、それでも3分割不能なら
-    RuntimeError(STOP)にする。既存Deviation Check→MAJOR時must-fix retry
-    (1回のみ)とは完全に独立したretry軸(段落数と事実整合性は別問題)。
+    RuntimeError(STOP)にする。技術QA(構造Gate)としてのretry軸であり、
+    事実照合起点のretryは持たない(旧Fact Checker起点のretryはC2で撤去済み)。
     Standard/Advancedの両方から同一ロジックで呼ぶことで非対称にしない
     (設計書§3(b))。"""
     split_result = sc.split_family_x_article_text_v2(article_text)
@@ -355,113 +322,13 @@ _FAMILY_X_PARAGRAPH_RETRY_MUST_FIX = [{
 }]
 
 
-# ============================================================
-# OPEN-243-TRANSLATION-NG-ANALYSIS-01 委任_03 M1 / G3(Trial専用、既定OFF)
-# ============================================================
-# OPEN243_M1=1: (a) 要約「In one line」の生成入力へ日本語R2本文とLedgerを加える、
-#   (b) 初回検査で「要約だけがMAJOR」なら本文を作り直さず要約だけを最大2回再生成する
-#   (本文にもMAJORがある場合・ja_source MAJORは従来どおり)。
-# OPEN243_G3_TELEMETRY_PATH=<jsonl>: translation起源のMINORをtelemetryへ記録(観測のみ、API費用0)。
-# どちらも未設定なら従来動作と完全に同一(承認済みChecker構成とは無関係)。
-import re as _open243_re
-
-
-def open243_m1_enabled() -> bool:
-    return adv_gen.open243_m1_enabled()
-
-
-def _open243_norm(t: str) -> str:
-    return _open243_re.sub(r"[^0-9a-z]+", "", (t or "").lower())
-
-
-def open243_majors_only_in_summary(major_devs: list, summary_text: str, body_text: str) -> bool:
-    """MAJORの全件が「要約の文」を指し、本文には含まれない場合のみTrue。引用が短すぎる(8文字未満)・
-    空の場合は判定不能としてFalse(=従来どおり本文再生成の経路)。"""
-    if not major_devs:
-        return False
-    s_n, b_n = _open243_norm(summary_text), _open243_norm(body_text)
-    if not s_n:
-        return False
-    for d in major_devs:
-        c = _open243_norm(_open243_re.sub(r"^\s*(##\s*)?in one line\s*:?", "", d.get("claim_in_article") or "",
-                                          flags=_open243_re.I))  # 「In one line:」ラベル付き引用を許容
-        if len(c) < 8:
-            return False
-        if c in b_n:
-            return False
-        if not (c in s_n or s_n in c):
-            return False
-    return True
-
-
-def open243_m1_summary_only_retry(client, *, ledger_text: str, ja_text: str, title: str, body: str,
-                                  must_fix: list, max_attempts: int = 2, dev_check_fn=None) -> dict:
-    """要約だけを再生成(最大max_attempts回)。各回: 要約再生成(JA本文+Ledger+前回指摘を入力)
-    -> EN deviation check(prior_issues付き)。COMPLIANTかつ前回指摘が全て解消なら成功。
-    再生成後に本文側のMAJOR・ja_source MAJORが出た場合は要約再生成を続けず失敗として返す
-    (呼び出し側がSTOP)。dev_check_fn(text, prior_issues)->run_deviation_check相当の戻り値(テスト/検証用に差し替え可)。"""
-    if dev_check_fn is None:
-        def dev_check_fn(text, prior):
-            return vfl01.run_deviation_check(client, ledger_text, text, hook_aware=False,
-                                             include_related_fact_id=True, source_article_text=ja_text,
-                                             prior_issues=prior)
-    attempts = []
-    cur_fix = list(must_fix)
-    for k in range(1, max_attempts + 1):
-        iol = adv_gen.generate_family_x_in_one_line(client, title, body, ja_text=ja_text,
-                                                    ledger_text=ledger_text, must_fix=cur_fix)
-        text = f"# {title}\n\n{body}\n\n## In one line\n{iol['text']}"
-        dev = dev_check_fn(text, cur_fix)
-        status = dev["parsed"].get("overall_status")
-        resolved = bool(dev["parsed"].get("all_prior_issues_resolved", False))
-        majors = _major_deviations(dev)
-        rec = {"attempt": k, "summary": iol["text"], "text": text, "iol": iol, "deviation": dev,
-               "overall_status": status, "all_prior_issues_resolved": resolved,
-               "n_major": len(majors), "must_fix_in": cur_fix}
-        attempts.append(rec)
-        if status == "LEDGER_COMPLIANT" and resolved:
-            return {"success": True, "attempts": attempts, "final_text": text, "final_deviation": dev,
-                    "reason": "resolved"}
-        if majors and not open243_majors_only_in_summary(majors, iol["text"], body):
-            return {"success": False, "attempts": attempts, "final_text": text, "final_deviation": dev,
-                    "reason": "non_summary_or_unlocatable_major_after_summary_retry"}
-        if any(d.get("origin") == "ja_source" for d in majors):
-            return {"success": False, "attempts": attempts, "final_text": text, "final_deviation": dev,
-                    "reason": "ja_source_major_after_summary_retry"}
-        if majors:
-            cur_fix = _must_fix_from_deviations(majors)
-    last = attempts[-1]
-    return {"success": False, "attempts": attempts, "final_text": last["text"],
-            "final_deviation": last["deviation"], "reason": "unresolved_after_max_attempts"}
-
-
-def open243_g3_record_translation_minor(deviation: dict, *, stage: str, out_dir: str) -> int:
-    """OPEN243_G3_TELEMETRY_PATHが設定されているときだけ、translation起源のMINOR(severity=MINOR)を
-    jsonl 1行/件で追記する(観測のみ、API費用0)。戻り値=追記件数(未設定は0)。"""
-    path = os.environ.get("OPEN243_G3_TELEMETRY_PATH")
-    if not path:
-        return 0
-    n = 0
-    os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
-    with open(path, "a", encoding="utf-8") as f:
-        for d in (deviation.get("parsed") or {}).get("deviations", []):
-            if d.get("severity") == "MINOR" and d.get("origin") == "translation":
-                f.write(json.dumps({
-                    "kind": "en_deviation_translation_minor", "stage": stage, "out_dir": out_dir,
-                    "claim_in_article": d.get("claim_in_article"), "related_fact_id": d.get("related_fact_id"),
-                    "flags": [k for k in vfl01.DEVIATION_FLAG_KEYS if d.get(k)],
-                    "issue": d.get("issue"), "ts": time.strftime("%Y-%m-%dT%H:%M:%S"),
-                }, ensure_ascii=False) + "\n")
-                n += 1
-    return n
-
-
-def _open243_iol(client, title: str, body: str, ja_text: str, ledger_text: str) -> dict:
-    """要約の初回/本文再生成後の生成。M1 OFFなら従来と完全同一の呼び出し。"""
-    if open243_m1_enabled():
-        return adv_gen.generate_family_x_in_one_line(client, title, body, ja_text=ja_text,
-                                                      ledger_text=ledger_text)
-    return adv_gen.generate_family_x_in_one_line(client, title, body)
+def _advanced_in_one_line(client, title: str, body: str, ja_text: str, ledger_text: str) -> dict:
+    """Advancedの「In one line」生成(M1(a)、Advanced限定の意図的Level非対称、ユーザー正式採用2026-10-10)。
+    生成入力へ日本語R2本文(W-1最終文)とLedgerを**常に**加える(環境変数・runtime switchなし)。
+    Standardはこの関数を呼ばない(StandardはAdvanced英文からのLevel調整のため、差は伝播して吸収される)。
+    初回生成と段落retry再生成の両方でこの同じ関数を使う。"""
+    return adv_gen.generate_family_x_in_one_line(client, title, body, ja_text=ja_text,
+                                                  ledger_text=ledger_text)
 
 
 def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
@@ -475,12 +342,16 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
     +決定論的3分割(sc.split_family_x_article_text_v2())へ切替えた。旧
     `adv_gen.generate_advanced_adaptation()`/`std_gen.generate_standard_
     a2()`/`sc.split_article_text()`(h3見出し2つ前提)は本経路では一切
-    呼ばない(関数自体は無変更のまま残置、Trial互換のため)。"""
+    呼ばない(関数自体は無変更のまま残置、Trial互換のため)。
+
+    RISK-FLAGGER-PRODUCTION-WIRING-01 C2(2026-10-10): 旧Fact Checker(各段の台帳照合・指摘起点の
+    再生成・STOP・JA差し戻し)は物理削除した。残る再生成は技術QAの段落3分割retry(1回)のみ。
+    Risk Flaggerは呼出側(entertainment runner)が各段の完了直後に実行する(本関数は呼ばない)。"""
     out_dir = theme["out_dir"]
     b1b_dir = f"{out_dir}/b1b"
     a2_dir = f"{out_dir}/a2"
-    os.makedirs(f"{b1b_dir}/audit/deviation_checks", exist_ok=True)
-    os.makedirs(f"{a2_dir}/audit/deviation_checks", exist_ok=True)
+    os.makedirs(b1b_dir, exist_ok=True)
+    os.makedirs(a2_dir, exist_ok=True)
     evidence = {}
 
     if only in (None, "advanced"):
@@ -494,10 +365,10 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
             nonlocal adv_result, advanced_title, advanced_body
             adv_result = retry_result
             advanced_title, advanced_body = retry_result.title, retry_result.body
-            iol = _open243_iol(client, advanced_title, advanced_body, ja_text, ledger_text)
+            iol = _advanced_in_one_line(client, advanced_title, advanced_body, ja_text, ledger_text)
             return f"# {advanced_title}\n\n{advanced_body}\n\n## In one line\n{iol['text']}"
 
-        iol_result = _open243_iol(client, advanced_title, advanced_body, ja_text, ledger_text)
+        iol_result = _advanced_in_one_line(client, advanced_title, advanced_body, ja_text, ledger_text)
         advanced_text = f"# {advanced_title}\n\n{advanced_body}\n\n## In one line\n{iol_result['text']}"
         para_outcome = _family_x_ensure_split_or_paragraph_retry(
             advanced_text, _advanced_paragraph_retry_regen, "Advanced")
@@ -505,90 +376,8 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
         advanced_split = para_outcome["split"]
         paragraph_retried_advanced = para_outcome["paragraph_retried"]
 
-        print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Advanced deviation check開始...")
-        deviation = vfl01.run_deviation_check(client, ledger_text, advanced_text, hook_aware=False,
-                                               include_related_fact_id=True, source_article_text=ja_text)
-        save_json(f"{b1b_dir}/audit/deviation_checks/advanced_attempt1.json",
-                   vfl01.deviation_audit_record(deviation))
-        dev_status = deviation["parsed"].get("overall_status")
-        open243_g3_record_translation_minor(deviation, stage="advanced_attempt1", out_dir=out_dir)
-        retried_for_deviation = False
-        must_fix_used = []
-        m1_summary_only_handled = False
-        if dev_status == "LEDGER_DEVIATION":
-            major_devs = _major_deviations(deviation)
-            ja_sourced = [d for d in major_devs if d.get("origin") == "ja_source"]
-            if ja_sourced:
-                raise JARecheckRequiredError(
-                    stage="advanced",
-                    message=f"[STOP] JA_RECHECK_REQUIRED: Advanced deviation MAJORのうち"
-                            f"{len(ja_sourced)}件がJA R2由来(origin=ja_source)と判定されました。"
-                            "Englishを盲目的に再生成せず、JA側の再確認が必要です。",
-                    major_deviations=major_devs,
-                )
-            must_fix_used = _must_fix_from_deviations(major_devs)
-            # OPEN-243 M1(Trial、OPEN243_M1=1のときのみ): 要約だけがMAJORなら本文は作り直さず要約だけを再生成(最大2回)
-            if open243_m1_enabled() and open243_majors_only_in_summary(major_devs, advanced_text.split("## In one line\n")[-1], advanced_body):
-                print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Advanced deviation MAJORは要約のみ。"
-                      f"[OPEN243_M1]要約だけを最大2回再生成します(major_count={len(major_devs)})...")
-                m1 = open243_m1_summary_only_retry(client, ledger_text=ledger_text, ja_text=ja_text,
-                                                   title=advanced_title, body=advanced_body,
-                                                   must_fix=must_fix_used, max_attempts=2)
-                for rec in m1["attempts"]:
-                    save_json(f"{b1b_dir}/audit/deviation_checks/advanced_attempt{rec['attempt'] + 1}.json",
-                               vfl01.deviation_audit_record(rec["deviation"]))
-                    open243_g3_record_translation_minor(rec["deviation"], stage=f"advanced_m1_summary_retry{rec['attempt']}",
-                                                         out_dir=out_dir)
-                deviation = m1["final_deviation"]
-                advanced_text = m1["final_text"]
-                advanced_split = sc.split_family_x_article_text_v2(advanced_text)
-                dev_status = deviation["parsed"].get("overall_status")
-                all_resolved = deviation["parsed"].get("all_prior_issues_resolved", False)
-                retried_for_deviation = True
-                m1_summary_only_handled = True
-                if not m1["success"]:
-                    save_json(f"{b1b_dir}/audit/deviation_check.json", deviation["parsed"])
-                    save_text(f"{b1b_dir}/audit/rejected_advanced_m1_summary_retry.md", advanced_text)
-                    raise RuntimeError(
-                        f"[STOP] Advanced deviation check: 要約のみ再生成(OPEN243_M1)後もMAJOR、または前回指摘の未解消あり"
-                        f"(reason={m1['reason']}, attempts={len(m1['attempts'])})。本文を手で直さずSTOPします。"
-                    )
-        if dev_status == "LEDGER_DEVIATION" and not m1_summary_only_handled:
-            print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Advanced deviation MAJOR。"
-                  f"must-fixで1回だけ再生成します(major_count={len(major_devs)})...")
-            adv_result = adv_gen.generate_family_x_faithful_translation(
-                ja_text, client=client, must_fix=must_fix_used)
-            advanced_title, advanced_body = adv_result.title, adv_result.body
-            iol_result = _open243_iol(client, advanced_title, advanced_body, ja_text, ledger_text)
-            advanced_text = f"# {advanced_title}\n\n{advanced_body}\n\n## In one line\n{iol_result['text']}"
-            advanced_split = sc.split_family_x_article_text_v2(advanced_text)
-            if advanced_split["status"] != "OK":
-                raise RuntimeError(
-                    f"[STOP] Family X Advanced: deviation must-fix retry後にparagraph_count="
-                    f"{advanced_split.get('paragraph_count')}<3になりました。段落数retryは既に"
-                    "使用済みのため、これ以上自動再生成せずSTOPします。"
-                )
-            deviation = vfl01.run_deviation_check(client, ledger_text, advanced_text, hook_aware=False,
-                                                   include_related_fact_id=True, source_article_text=ja_text,
-                                                   prior_issues=must_fix_used)
-            save_json(f"{b1b_dir}/audit/deviation_checks/advanced_attempt2.json",
-                       vfl01.deviation_audit_record(deviation))
-            dev_status = deviation["parsed"].get("overall_status")
-            all_resolved = deviation["parsed"].get("all_prior_issues_resolved", False)
-            retried_for_deviation = True
-            if not (dev_status == "LEDGER_COMPLIANT" and all_resolved):
-                save_json(f"{b1b_dir}/audit/deviation_check.json", deviation["parsed"])
-                # STOPでも未採用の生成text自体は監査証跡として保存する(本文としては
-                # 採用しない、article.mdとは別名で保存)。
-                save_text(f"{b1b_dir}/audit/rejected_advanced_attempt2.md", advanced_text)
-                raise RuntimeError(
-                    f"[STOP] Advanced deviation check: 再生成後もMAJOR、または前回指摘の未解消あり"
-                    f"(retry_for_deviation={retried_for_deviation}, "
-                    f"all_prior_issues_resolved={all_resolved})。本文を手で直さずSTOPします。"
-                )
         save_text(f"{b1b_dir}/article.md", advanced_text)
         save_json(f"{b1b_dir}/parts.json", advanced_split)
-        save_json(f"{b1b_dir}/audit/deviation_check.json", deviation["parsed"])
         evidence["advanced"] = {
             "process_label": "FAMILY_X_FAITHFUL_TRANSLATION",
             "model_id_requested": adv_result.model_id_requested,
@@ -598,17 +387,14 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
             "structure_status": adv_result.structure_status,
             "attempts": adv_result.attempts,
             "retried": adv_result.retried,
-            "retried_for_deviation": retried_for_deviation,
             "paragraph_retried": paragraph_retried_advanced,
-            "must_fix_used": must_fix_used,
-            "deviation_overall_status": dev_status,
             "usage": adv_result.usage,
             "cost_usd": adv_result.cost_usd,
             "cost_jpy": adv_result.cost_jpy,
             "elapsed_seconds": adv_result.elapsed_seconds,
             "title": advanced_title,
         }
-        assert_budget_ok(out_dir, budget_jpy, "after advanced writer+deviation")
+        assert_budget_ok(out_dir, budget_jpy, "after advanced writer")
 
     if only in (None, "standard"):
         if only == "standard":
@@ -630,56 +416,16 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
         standard_split = para_outcome["split"]
         paragraph_retried_standard = para_outcome["paragraph_retried"]
 
-        print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Standard deviation check開始...")
-        deviation = vfl01.run_deviation_check(client, ledger_text, standard_text, hook_aware=False,
-                                               include_related_fact_id=True, source_article_text=ja_text)
-        save_json(f"{a2_dir}/audit/deviation_checks/standard_attempt1.json",
-                   vfl01.deviation_audit_record(deviation))
-        dev_status = deviation["parsed"].get("overall_status")
-        retried_for_deviation = False
-        must_fix_used = []
-        if dev_status == "LEDGER_DEVIATION":
-            major_devs = _major_deviations(deviation)
-            ja_sourced = [d for d in major_devs if d.get("origin") == "ja_source"]
-            if ja_sourced:
-                raise JARecheckRequiredError(
-                    stage="standard",
-                    message=f"[STOP] JA_RECHECK_REQUIRED: Standard deviation MAJORのうち"
-                            f"{len(ja_sourced)}件がJA R2由来(origin=ja_source)と判定されました。"
-                            "Englishを盲目的に再生成せず、JA側の再確認が必要です。",
-                    major_deviations=major_devs,
-                )
-            must_fix_used = _must_fix_from_deviations(major_devs)
-            print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] Standard deviation MAJOR。"
-                  f"must-fixで1回だけ再生成します(major_count={len(major_devs)})...")
-            std_result = std_gen.generate_family_x_standard_a2_no_heading(
-                advanced_text, client=client, must_fix=must_fix_used)
-            standard_text = std_result.text
-            standard_split = sc.split_family_x_article_text_v2(standard_text)
-            if standard_split["status"] != "OK":
-                raise RuntimeError(
-                    f"[STOP] Family X Standard: deviation must-fix retry後にparagraph_count="
-                    f"{standard_split.get('paragraph_count')}<3になりました。段落数retryは既に"
-                    "使用済みのため、これ以上自動再生成せずSTOPします。"
-                )
-            deviation = vfl01.run_deviation_check(client, ledger_text, standard_text, hook_aware=False,
-                                                   include_related_fact_id=True, source_article_text=ja_text,
-                                                   prior_issues=must_fix_used)
-            save_json(f"{a2_dir}/audit/deviation_checks/standard_attempt2.json",
-                       vfl01.deviation_audit_record(deviation))
-            dev_status = deviation["parsed"].get("overall_status")
-            all_resolved = deviation["parsed"].get("all_prior_issues_resolved", False)
-            retried_for_deviation = True
-            if not (dev_status == "LEDGER_COMPLIANT" and all_resolved):
-                save_json(f"{a2_dir}/audit/deviation_check.json", deviation["parsed"])
-                raise RuntimeError(
-                    f"[STOP] Standard deviation check: 再生成後もMAJOR、または前回指摘の未解消あり"
-                    f"(retry_for_deviation={retried_for_deviation}, "
-                    f"all_prior_issues_resolved={all_resolved})。本文を手で直さずSTOPします。"
-                )
         save_text(f"{a2_dir}/article.md", standard_text)
         save_json(f"{a2_dir}/parts.json", standard_split)
-        save_json(f"{a2_dir}/audit/deviation_check.json", deviation["parsed"])
+        # S3-2(観測のみ、判定・STOPには使わない): StandardがどのAdvanced英文(sha256)から派生したかを記録する。
+        # Advanced単独再生成後にStandardが古いAdvanced由来のまま残る運用(--stop-after advanced等)を事後に検知できる。
+        derived_from_advanced_sha256 = sha256_text(advanced_text)
+        save_json(f"{a2_dir}/audit/derived_from_advanced_sha256.json", {
+            "derived_from_advanced_sha256": derived_from_advanced_sha256,
+            "standard_article_sha256": sha256_text(standard_text),
+            "purpose": "S3-2 observation only (not used for any judgement/STOP)",
+        })
         evidence["standard"] = {
             "process_label": "FAMILY_X_STANDARD_A2_NO_HEADING",
             "model_id_requested": std_result.model_id_requested,
@@ -689,18 +435,16 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
             "structure_status": std_result.structure_status,
             "attempts": std_result.attempts,
             "retried": std_result.retried,
-            "retried_for_deviation": retried_for_deviation,
             "paragraph_retried": paragraph_retried_standard,
-            "must_fix_used": must_fix_used,
-            "deviation_overall_status": dev_status,
             "usage": std_result.usage,
             "cost_usd": std_result.cost_usd,
             "cost_jpy": std_result.cost_jpy,
             "elapsed_seconds": std_result.elapsed_seconds,
             "checks": std_result.checks,
             "title": standard_split.get("title"),
+            "derived_from_advanced_sha256": derived_from_advanced_sha256,
         }
-        assert_budget_ok(out_dir, budget_jpy, "after standard writer+deviation")
+        assert_budget_ok(out_dir, budget_jpy, "after standard writer")
 
     # NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01(Fable差し戻し1回目、
     # Gate 3 #13): run_writer_stage(only=...)を段階分割で複数回呼ぶ運用
@@ -716,123 +460,11 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
     return evidence
 
 
-# ------------------------------------------------------------
-# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W6、2026-09-29、ユーザー
-# 明示決定によりAPPROVED_FOR_PRODUCTION、ただしGate 3までPRODUCTION_WIRED
-# としない)で追加: ja_source MAJOR(JARecheckRequiredError)への暫定対応
-# 「案B」。English側を盲目的に再生成するのではなく、_run_writer_stage_once()が
-# JARecheckRequiredErrorを送出した場合に限り、その具体的な指摘をJA
-# Writer O(er019_family_x_ja_writer_o_r1_r2_01.run_ja_writer_o_r1_r2)
-# のOriginal段へmust-fixとして差し戻し、JAをOriginal→R1→R2→Fact Check
-# の全体で1回だけ再生成し、Advanced/Standardを再実行する。1回上限・
-# fail-closedを維持し(再実行後もJARecheckRequiredErrorなら
-# ja_recheck_attempts=1を付記してそのままSTOP、無限retryはしない)、
-# Checker Prompt本体(vfl01.DEVIATION_PROMPT_TEMPLATE等)・severity判定・
-# Ledger/Deviation設計・JA Writer Prompt本文は一切変更しない(既存の
-# must-fixブロック機構[build_must_fix_block/build_original_prompt]を
-# そのまま再利用するのみ)。storyline_line/selected_fact_brief_textが
-# 渡されない場合(既定None、後方互換)は本機構自体が無効化され、従来通り
-# JARecheckRequiredErrorがそのまま呼び出し元へ伝播する(挙動不変)。
-# ------------------------------------------------------------
 def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
-                      budget_jpy: float, only: str | None = None,
-                      storyline_line: str | None = None,
-                      selected_fact_brief_text: str | None = None,
-                      _ja_recheck_attempted: bool = False) -> dict:
-    """_run_writer_stage_once()の薄いwrapper。storyline_line/selected_
-    fact_brief_textの両方が渡された場合のみ、JARecheckRequiredError
-    (ja_source MAJOR)を捕捉して案B(JA 1回再生成→Advanced/Standard
-    再実行)を行う。呼び出し元契約(戻り値evidence構造)は変更しない
-    (ja_recheck_used/ja_recheck_attemptsキーを追加するのみ)。"""
-    try:
-        result = _run_writer_stage_once(client, theme, ja_text, ledger_text, budget_jpy, only=only)
-        result.setdefault("ja_recheck_used", False)
-        result.setdefault("ja_recheck_attempts", 0)
-        return result
-    except JARecheckRequiredError as exc:
-        if _ja_recheck_attempted or storyline_line is None or selected_fact_brief_text is None:
-            raise
-        out_dir = theme["out_dir"]
-        ja_writer_dir = f"{out_dir}/ja_writer"
-        os.makedirs(f"{ja_writer_dir}/audit", exist_ok=True)
-        ja_sourced = [d for d in exc.major_deviations if d.get("origin") == "ja_source"]
-        must_fix_for_ja = _must_fix_from_deviations(ja_sourced or exc.major_deviations)
-        print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] JA_RECHECK_REQUIRED"
-              f"(stage={exc.stage}、ja_sourced_count={len(ja_sourced)})。"
-              "案B: JA Writer Oへmust-fixを差し戻し、JAを1回だけ再生成します"
-              "(ja_recheck_attempts=1)...")
-        pre_recheck_sha256 = {}
-        for fname in ("original.md", "revision1.md", "revision2.md"):
-            fpath = f"{ja_writer_dir}/{fname}"
-            if os.path.exists(fpath):
-                pre_recheck_sha256[fname] = sha256_file(fpath)
-
-        try:
-            ja_result = jaw.run_ja_writer_o_r1_r2(
-                client, storyline_line, selected_fact_brief_text,
-                full_ledger_text=ledger_text, original_must_fix=must_fix_for_ja)
-        except jaw.JAFactCheckStopError as ja_exc:
-            save_json(f"{ja_writer_dir}/audit/ja_recheck_attempt1.json", {
-                "trigger_stage": exc.stage,
-                "major_deviations_ja_sourced": ja_sourced,
-                "must_fix_used": must_fix_for_ja,
-                "pre_recheck_sha256": pre_recheck_sha256,
-                "outcome": "JA_FACT_CHECK_STOP",
-                "ja_fact_check_stage": ja_exc.stage,
-            })
-            save_text(f"{ja_writer_dir}/audit/ja_recheck_rejected_{ja_exc.stage}.md", ja_exc.rejected_text)
-            raise RuntimeError(
-                f"[STOP] JA_RECHECK_REQUIRED(ja_recheck_attempts=1): 案Bによる"
-                f"JA再生成中のFact Check(stage={ja_exc.stage})でMAJORが解消され"
-                f"ませんでした。本文を手で直さずSTOPします。{ja_exc}"
-            ) from ja_exc
-
-        new_ja_text = ja_result["final_text"]
-        for fname, stage_key in (("original.md", "original"), ("revision1.md", "r1"),
-                                  ("revision2.md", "r2")):
-            save_text(f"{ja_writer_dir}/{fname}", ja_result["stages"][stage_key]["text"])
-        fact_checks_summary = {}
-        if "fact_checks" in ja_result:
-            fact_checks_summary = {
-                stage_key: {"must_fix_applied": fc["must_fix_applied"], "final_status": fc["final_status"]}
-                for stage_key, fc in ja_result["fact_checks"].items()
-            }
-        save_json(f"{ja_writer_dir}/audit/ja_recheck_attempt1.json", {
-            "trigger_stage": exc.stage,
-            "major_deviations_ja_sourced": ja_sourced,
-            "must_fix_used": must_fix_for_ja,
-            "pre_recheck_sha256": pre_recheck_sha256,
-            "new_ja_text_sha256": sha256_text(new_ja_text),
-            "fact_checks_summary": fact_checks_summary,
-            "outcome": "REGENERATED",
-        })
-
-        try:
-            result = _run_writer_stage_once(client, theme, new_ja_text, ledger_text, budget_jpy, only=None)
-        except JARecheckRequiredError as exc2:
-            save_json(f"{ja_writer_dir}/audit/ja_recheck_attempt1_result.json", {
-                "outcome": "STILL_MAJOR_AFTER_RECHECK", "stage": exc2.stage,
-                "major_deviations": exc2.major_deviations,
-            })
-            raise JARecheckRequiredError(
-                stage=exc2.stage,
-                message=f"{exc2} (ja_recheck_attempts=1、案Bで再生成後もMAJORが解消せずSTOP。"
-                        "これ以上JAを自動再生成しません。)",
-                major_deviations=exc2.major_deviations,
-            ) from exc2
-
-        save_json(f"{ja_writer_dir}/audit/ja_recheck_attempt1_result.json", {"outcome": "RESOLVED"})
-        # writer_run_summary.jsonへja_recheck使用実績を記録(_run_writer_stage_once
-        # が保存した後のファイルへ追記マージする)。
-        summary_path = f"{out_dir}/writer_run_summary.json"
-        summary = load_json(summary_path) if os.path.exists(summary_path) else {}
-        summary["ja_recheck_used"] = True
-        summary["ja_recheck_attempts"] = 1
-        summary["ja_recheck_trigger_stage"] = exc.stage
-        save_json(summary_path, summary)
-        result["ja_recheck_used"] = True
-        result["ja_recheck_attempts"] = 1
-        return result
+                      budget_jpy: float, only: str | None = None) -> dict:
+    """Advanced/Standard英訳stage(_run_writer_stage_once()の薄いwrapper)。
+    C2: 旧Fact Checker起点のJA差し戻し・JA再生成(案B)は旧Fact Checker撤去とともに物理削除した。"""
+    return _run_writer_stage_once(client, theme, ja_text, ledger_text, budget_jpy, only=only)
 
 
 # ------------------------------------------------------------
@@ -1100,19 +732,36 @@ Standard=A2 v5(6,000語ライン+自然さ優先)。</p>
 # ------------------------------------------------------------
 # CLI
 # ------------------------------------------------------------
+U2_CLI_BLOCK_MESSAGE = (
+    "[STOP][RISK-FLAGGER-PRODUCTION-WIRING-01 U-2] er012_e単体CLIのFamily X writer経路"
+    "(--ja-article / --stage writer / --stage all / --regenerate-stage)は封鎖されました。"
+    "この経路は注記済みB3の契約検証(V1-V10)もRisk Flagger(RF)も通らずb1b/a2を作れてしまうため、"
+    "ユーザー決定U-2(2026-10-10)で廃止しました。正式入口は "
+    "er019_family_x_entertainment_production_runner_01.py(新Writer W-1+契約検証+RF)です。"
+    "旧経路(旧Writer+旧Checker)の再現が必要な場合は、C2適用前のmain(例: commit f71dbb41)をgit worktreeで使ってください。"
+)
+
+
+def guard_standalone_cli(args) -> None:
+    """U-2: 単体CLIのFamily X writer経路を封鎖する(課金・ファイル出力より前に呼ぶ)。"""
+    if (getattr(args, "ja_article", None) or args.stage in ("writer", "all") or args.regenerate_stage):
+        raise RuntimeError(U2_CLI_BLOCK_MESSAGE)
+
+
 def build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--ja-article", required=True)
+    parser.add_argument("--ja-article", default=None,
+                         help="(封鎖済み、U-2)指定するとSTOPする。")
     parser.add_argument("--slug", required=True)
     parser.add_argument("--out-dir", required=True)
     parser.add_argument("--ledger-file", default=None, help="既存Ledgerを再利用する場合のpath")
     parser.add_argument("--source-id", default="",
-                         help="日本語記事の由来管理ID(evidenceとして記録のみ)")
+                         help="由来管理ID(evidenceとして記録のみ)")
     parser.add_argument("--topic", default=None,
                          help="Ledger新規構築時のResearcher/Verification用topic文字列"
                               "(--ledger-file指定時は不要)")
     parser.add_argument("--budget-jpy", type=float, default=300.0)
-    parser.add_argument("--stage", default="all",
+    parser.add_argument("--stage", default="ledger",
                          choices=("ledger", "writer", "scaffold", "tts", "assemble", "player", "all"))
     parser.add_argument("--regenerate-stage", default=None, choices=("advanced", "standard"))
     parser.add_argument("--tts-mode", default="STANDARD", choices=("STANDARD", "BATCH"),
@@ -1128,6 +777,8 @@ def main() -> None:
     parser = build_arg_parser()
     args = parser.parse_args()
 
+    guard_standalone_cli(args)      # U-2: 課金・ファイル出力より前に封鎖
+
     if args.tts_mode == "BATCH" and not args.batch_reason:
         parser.error("--tts-mode BATCH を指定する場合は --batch-reason で"
                       "PM_GOVERNANCE.md 7-2の例外条件に該当する理由を明示すること。")
@@ -1137,17 +788,10 @@ def main() -> None:
     os.makedirs(args.out_dir, exist_ok=True)
     cl.install(f"{args.out_dir}/raw_usage_log.jsonl")
 
-    ja_text = load_text(args.ja_article)
-    ja_sha256 = sha256_text(ja_text)
-    japanese_title = _extract_title(ja_text) or ja_text.splitlines()[0].strip()
-
     save_json(f"{args.out_dir}/entry_point.json", {
         "runner": "er012_e_family_entertainment_two_level_runner_01.py",
-        "ja_article_path": args.ja_article,
-        "ja_article_sha256": ja_sha256,
         "source_management_id": args.source_id,
         "slug": args.slug,
-        "japanese_title": japanese_title,
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "tts_execution_mode": args.tts_mode,
         "tts_batch_reason": args.batch_reason,
@@ -1155,59 +799,28 @@ def main() -> None:
 
     theme = {
         "theme_id": args.slug,
-        "topic": args.topic or japanese_title,
+        "topic": args.topic or args.slug,
         "out_dir": args.out_dir,
         "ledger_path": f"{args.out_dir}/ledger/verified_fact_ledger.txt",
     }
 
     client = vfl01.get_client()
 
-    if args.stage in ("ledger", "writer", "all") or args.regenerate_stage:
-        ledger_text = load_or_build_ledger(client, args.out_dir, theme["topic"], args.ledger_file)
+    if args.stage == "ledger":
+        load_or_build_ledger(client, args.out_dir, theme["topic"], args.ledger_file)
         assert_budget_ok(args.out_dir, args.budget_jpy, "after ledger")
-    else:
-        ledger_text = load_text(theme["ledger_path"]) if os.path.exists(theme["ledger_path"]) else ""
 
-    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W6、案B): --out-dirに
-    # storyline_b3/fact_selection_evidence.json(er019 production runnerが
-    # 保存するSelected Fact Brief情報)が存在する場合のみ、ja_source MAJOR
-    # (JARecheckRequiredError)発生時のJA 1回再生成(案B)を有効化する。
-    # 存在しない場合(このCLIを単体テスト/他用途で使う既存呼び出し)は
-    # storyline_line/selected_fact_brief_textがNoneのままとなり、
-    # run_writer_stage()は従来通りJARecheckRequiredErrorをそのまま伝播する
-    # (挙動不変、後方互換)。
-    storyline_line = None
-    selected_fact_brief_text = None
-    fact_selection_path = f"{args.out_dir}/storyline_b3/fact_selection_evidence.json"
-    if os.path.exists(fact_selection_path):
-        fact_evidence = load_json(fact_selection_path)
-        storyline_line = fact_evidence.get("selected_storyline")
-        selected_fact_brief_text = fact_evidence.get("selected_fact_brief_text")
-
-    if args.regenerate_stage:
-        run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only=args.regenerate_stage,
-                          storyline_line=storyline_line, selected_fact_brief_text=selected_fact_brief_text)
-        print(f"[E-FAMILY-RUNNER] regenerate-stage={args.regenerate_stage} 完了。")
-        return
-
-    if args.stage in ("writer", "all"):
-        run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only=None,
-                          storyline_line=storyline_line, selected_fact_brief_text=selected_fact_brief_text)
-
-    if args.stage in ("scaffold", "all"):
+    if args.stage == "scaffold":
         run_scaffold_stage(client, theme)
-        assert_budget_ok(args.out_dir, args.budget_jpy, "after scaffold")
 
-    if args.stage in ("tts", "all"):
-        run_tts_stage(theme, japanese_title)
-        assert_budget_ok(args.out_dir, args.budget_jpy, "after tts")
+    if args.stage == "tts":
+        run_tts_stage(theme, "")
 
-    if args.stage in ("assemble", "all"):
+    if args.stage == "assemble":
         run_assemble_stage(theme)
 
-    if args.stage in ("player", "all"):
-        player_path = build_player_html(theme, japanese_title)
-        print(f"[E-FAMILY-RUNNER] player.html: {os.path.abspath(player_path)}")
+    if args.stage == "player":
+        build_player_html(theme, "")
 
     final_jpy, by_provider = compute_cost_jpy_so_far(f"{args.out_dir}/raw_usage_log.jsonl")
     print(f"[E-FAMILY-RUNNER] 完了。stage={args.stage} 累計費用(JPY)={final_jpy:.2f} by_provider={by_provider}")
