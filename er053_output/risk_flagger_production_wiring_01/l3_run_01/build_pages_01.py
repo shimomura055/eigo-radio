@@ -137,6 +137,15 @@ for lv, (lab, wav) in LV.items():
                    f'<td>{E(x["text"])}</td><td class="style">{E(x["style_prefix"])}</td><td>{E(x["voice"])}</td>'
                    f'<td>phrase_repeat = english と同一path/master_audio_id: {same}</td></tr>\n')
         sp += "</tbody></table>\n"
+    en_styles = {}
+    for r in sorted(kp, key=int):
+        sx = kp[r]["english"].get("style_prefix")
+        if sx:
+            en_styles.setdefault(sx, []).append(r)
+    sp += '<p class="meta">Key Phrase 英語component(Phrase本体)のstyle_prefix(全文、master reuse分はreuse元のstyleのためここには出ない):</p>\n<table class="seg"><thead><tr><th>rank</th><th>style_prefix(全文)</th></tr></thead><tbody>\n'
+    for sx, rk in en_styles.items():
+        sp += f'<tr><td>{",".join(rk)}</td><td class="style">{E(sx).replace(chr(10), "<br>")}</td></tr>\n'
+    sp += "</tbody></table>\n"
     sp += "<h3>固定shell Champion(Production Master Store)</h3>\n" + shell_table(res) + "\n"
     parts.append(sp)
 
