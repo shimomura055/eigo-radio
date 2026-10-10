@@ -311,7 +311,9 @@ class FlowTests(unittest.TestCase):
         ev = json.load(open(os.path.join(d, "runtime_evidence.json"), encoding="utf-8"))
         self.assertEqual(ev["chain_method"], "W-1")
         self.assertEqual(ev["annotated_md_sha256"], contract.validate_annotated_b3(self.out).annotated_md_sha256)
-        self.assertEqual(ev["annotation_manifest_producer"], "trial_fixture")
+        self.assertEqual(ev["annotation_manifest_producer"], "deterministic_v2")
+        self.assertTrue(ev["annotation_rules_sha256"])                       # C4: producerの規則sha・入力shaをevidenceへ
+        self.assertEqual(set(ev["annotation_input_shas"]), {"selected_brief_md", "ledger", "fact_selection_evidence_json"})
         self.assertEqual(ev["title"], "新タイトル")
         self.assertEqual(ev["r1"]["model"], "gpt-6-astra-2026")
         self.assertEqual(ev["original"]["model"], "gpt-6-luna-2026")
@@ -325,7 +327,11 @@ class FlowTests(unittest.TestCase):
         c, _ = self.run_w1([(R0_OK, "gpt-6-luna"), (R1_RAW, "gpt-6-astra"), (R2_RAW, "gpt-6-astra")])
         ann = open(os.path.join(self.out, "storyline_b3", "selected_brief_annotated.md"), encoding="utf-8").read()
         storyline, facts = w1.parse_brief_md(ann)
-        self.assertEqual(c.calls[0]["input"][1]["content"], w1.build_r0_prompt(storyline, facts))
+        a3 = contract.validate_annotated_b3(self.out)
+        self.assertTrue(a3.constraints_text)                                 # C4: metaは制約ブロックあり
+        self.assertEqual(a3.news_field_text, facts.rstrip("\n") + "\n\n" + a3.constraints_text.rstrip("\n") + "\n")
+        self.assertEqual(c.calls[0]["input"][1]["content"], w1.build_r0_prompt(storyline, a3.news_field_text))   # R0 Prompt本体は不変、[ニュース]欄=Facts+制約ブロック
+        self.assertIn(a3.constraints_text.splitlines()[0], c.calls[0]["input"][1]["content"])
         self.assertIn("【事実1】", c.calls[0]["input"][1]["content"])      # 注記済み(タグ付き)factsが入る
         self.assertIn("[ニュース]", c.calls[0]["input"][1]["content"])
 
@@ -356,7 +362,8 @@ class FlowTests(unittest.TestCase):
         ann = open(os.path.join(self.out, "storyline_b3", "selected_brief_annotated.md"), encoding="utf-8").read()
         storyline, facts = w1.parse_brief_md(ann)
         findings = safety.detect_prohibited_symbols(bad, language="ja")          # タグ付き本文に対する判定
-        self.assertEqual(c.calls[1]["input"][1]["content"], w1.build_r0_prompt(storyline, facts) + "\n\n" + safety.build_symbol_violation_prompt_note(findings))
+        news = contract.validate_annotated_b3(self.out).news_field_text
+        self.assertEqual(c.calls[1]["input"][1]["content"], w1.build_r0_prompt(storyline, news) + "\n\n" + safety.build_symbol_violation_prompt_note(findings))
         self.assertTrue(r["runtime_evidence"]["symbol_qa"]["r0"]["regenerated"])
 
     def test_r0_symbol_qa_stop_if_remains_and_no_astra_call(self):

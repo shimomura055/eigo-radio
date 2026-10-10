@@ -31,6 +31,8 @@ Artifact(<out_dir>/storyline_b3/):
   V7 サイドカー facts[].n の集合 == V5のN集合、facts[].ledger_ids が台帳に実在
   V8 manifest.checks 5項目が全て PASS / PASS_LAYOUT_NORMALIZED
   V9 sidecar.spec_sha256 == manifest.spec_sha256、sidecar.brief_sha256 == manifest.source_selected_brief_sha256
+  V10 [C4追記: annotator=DETERMINISTICのとき、Fact本文の原本は selected_brief.md のFactsではなく「台帳+選択IDからの決定論再導出(D-full)」。
+       制約ブロック(writer_constraints.txt)も再導出と一致。V2/V3: DETERMINISTICはmanifest.writer_constraints_sha256必須、あればファイル存在・sha整合]
   V10 Storyline完全一致 + タグ・数値印を除いた事実本文の連結が、空白・箇条記号・改行を除いて原Factsと一致(文字列一致であり内容判定ではない)
      [解釈追加3] 注記済みStorylineには数値印が付く(実Trial成果物9本中5本)ため、Storylineは**数値印・タグを除去した後**に原Storylineと完全一致を要求する。
 """
@@ -50,12 +52,14 @@ MANIFEST_REQUIRED_KEYS = ("schema_version", "producer", "source_selected_brief_s
                           "sidecar_sha256", "spec_sha256", "generated_at", "checks", "model_ids")
 CHECK_KEYS = ("a_alignment", "b_numbers", "c_core_peripheral", "d_tags", "e_sidecar")
 CHECK_OK = ("PASS", "PASS_LAYOUT_NORMALIZED")
-ANNOTATORS = ("A", "B", "MERGED")
+ANNOTATORS = ("A", "B", "MERGED", "DETERMINISTIC")     # C4: DETERMINISTIC=決定論producer(er053_b3_deterministic_producer_01)
+DETERMINISTIC = "DETERMINISTIC"
 
 BRIEF_NAME = "selected_brief.md"
 ANNOTATED_NAME = "selected_brief_annotated.md"
 SIDECAR_NAME = "annotation.json"
 MANIFEST_NAME = "annotation_manifest.json"
+CONSTRAINTS_NAME = "writer_constraints.txt"        # C4: 制約ブロック(Writerのニュース欄に注記済みFactの後ろへ連結される別欄。manifest.writer_constraints_sha256で束縛)
 LEDGER_REL = os.path.join("research_ledger", "verified_fact_ledger.txt")
 _BULLET_RE = re.compile(r"^\s*(?:-|・)\s*")
 _ANY_NUM_MARK_RE = re.compile(r"【[^】\n]*数値[^】\n]*】")
@@ -84,6 +88,8 @@ class AnnotatedB3:
     manifest: dict
     producer: str
     fact_numbers: list = field(default_factory=list)
+    constraints_text: str = ""        # C4: 制約ブロック(空=制約なし)
+    news_field_text: str = ""         # C4: Writer R0 [ニュース]欄の唯一の文字列 = 注記済みFacts + 制約ブロック(制約が空ならFactsのみ)
 
 
 def _sha(b: bytes) -> str:
@@ -174,6 +180,8 @@ def validate_annotated_b3(out_dir: str) -> AnnotatedB3:
         bad("V2", f"manifest.schema_version != {MANIFEST_SCHEMA_VERSION}: {mf.get('schema_version')!r}")
     if not isinstance(mf.get("checks"), dict) or any(k not in mf["checks"] for k in CHECK_KEYS):
         bad("V2", f"manifest.checks must have keys {list(CHECK_KEYS)}")
+    if sc.get("annotator") == DETERMINISTIC and not isinstance(mf.get("writer_constraints_sha256"), str):
+        bad("V2", "manifest.writer_constraints_sha256 is required for annotator=DETERMINISTIC")
     if V:
         _fail(out_dir, V)
 
@@ -183,6 +191,20 @@ def validate_annotated_b3(out_dir: str) -> AnnotatedB3:
         got = _sha(raw[rawkey])
         if got != mf.get(mkey):
             bad("V3", f"sha mismatch {label}: file={got[:12]} manifest.{mkey}={str(mf.get(mkey))[:12]}")
+
+    constraints_text = ""
+    if "writer_constraints_sha256" in mf:                # C4: 制約ブロック(別欄)。manifestに束縛されている場合のみ存在・sha整合を要求
+        cpath = os.path.join(sdir, CONSTRAINTS_NAME)
+        if not os.path.isfile(cpath):
+            bad("V3", f"missing file: {os.path.relpath(cpath, out_dir)} (manifest.writer_constraints_sha256 is set)")
+        else:
+            craw = open(cpath, "rb").read()
+            if _sha(craw) != mf["writer_constraints_sha256"]:
+                bad("V3", f"sha mismatch writer_constraints: file={_sha(craw)[:12]} manifest={str(mf['writer_constraints_sha256'])[:12]}")
+            try:
+                constraints_text = craw.decode("utf-8")
+            except UnicodeDecodeError:
+                bad("V3", "writer_constraints.txt is not UTF-8")
 
     # ---------------- V4 ----------------
     storyline = facts_text = None
@@ -263,11 +285,32 @@ def validate_annotated_b3(out_dir: str) -> AnnotatedB3:
             o_story, o_facts = w1.parse_brief_md(text["brief"])
             if w1.strip_tags(storyline) != o_story:
                 bad("V10", "Storyline differs from original selected_brief.md (after removing number marks)")
-            a, b = _norm_text(facts_text), _norm_text(o_facts)
-            if a != b:
-                i = next((i for i in range(min(len(a), len(b))) if a[i] != b[i]), min(len(a), len(b)))
-                bad("V10", f"fact text differs from original after removing tags/marks/whitespace/bullets (first diff at normalized char {i}: "
-                           f"annotated={a[i:i + 15]!r} original={b[i:i + 15]!r})")
+            if sc.get("annotator") == DETERMINISTIC:
+                # C4: 決定論producerのFact欄はB3 LLM文ではなく「台帳+選択IDからの決定論再導出(D-full)」が原本。
+                #     原本をここで再導出し(同じ規則moduleを遅延import)、タグ・印を除いたFact本文と制約ブロックが一致することを要求する。
+                from er053_b3_deterministic_producer_01 import assemble_plain
+                fs = sorted(sc["facts"], key=lambda f: f["n"])
+                if any(len(f["ledger_ids"]) != 1 for f in fs):
+                    bad("V10", "DETERMINISTIC sidecar.facts[].ledger_ids must have exactly one id per fact")
+                else:
+                    try:
+                        plain = assemble_plain(text["ledger"], [f["ledger_ids"][0] for f in fs], o_story)
+                    except (KeyError, ValueError) as e:
+                        bad("V10", f"deterministic re-assembly failed: {type(e).__name__}: {e}")
+                    else:
+                        a, b = _norm_text(facts_text), _norm_text(plain["facts_text"])
+                        if a != b:
+                            i = next((i for i in range(min(len(a), len(b))) if a[i] != b[i]), min(len(a), len(b)))
+                            bad("V10", f"fact text differs from deterministic re-assembly (first diff at normalized char {i}: "
+                                       f"annotated={a[i:i + 15]!r} expected={b[i:i + 15]!r})")
+                        if constraints_text != plain["constraints_text"]:
+                            bad("V10", "writer_constraints.txt differs from deterministic re-assembly")
+            else:
+                a, b = _norm_text(facts_text), _norm_text(o_facts)
+                if a != b:
+                    i = next((i for i in range(min(len(a), len(b))) if a[i] != b[i]), min(len(a), len(b)))
+                    bad("V10", f"fact text differs from original after removing tags/marks/whitespace/bullets (first diff at normalized char {i}: "
+                               f"annotated={a[i:i + 15]!r} original={b[i:i + 15]!r})")
         except ValueError as e:
             bad("V10", f"original selected_brief.md not parsable: {e}")
 
@@ -275,6 +318,8 @@ def validate_annotated_b3(out_dir: str) -> AnnotatedB3:
         _fail(out_dir, V)
     with open(paths["annotated"], encoding="utf-8") as f:       # text mode(Writer/Trialと同じCRLF->LF)
         annotated_text = f.read()
+    from er053_b3_deterministic_producer_01 import compose_news_field      # 遅延import(循環回避)。ニュース欄の唯一の連結関数
     return AnnotatedB3(out_dir=out_dir, storyline=storyline, facts_text=facts_text, annotated_md_text=annotated_text,
+                       constraints_text=constraints_text, news_field_text=compose_news_field(facts_text, constraints_text),
                        annotated_md_path=paths["annotated"], annotated_md_sha256=_sha(raw["annotated"]), sidecar=sc, manifest=mf,
                        producer=str(mf.get("producer")), fact_numbers=nums)

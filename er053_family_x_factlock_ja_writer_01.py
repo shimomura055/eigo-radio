@@ -321,6 +321,8 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
 
     annotated = validate_annotated_b3(out_dir)                          # 失敗なら課金前にSTOP
     storyline, facts_text = parse_brief_md(annotated.annotated_md_text)   # 入力は注記済みmdをparse_brief_mdした結果に限定
+    # C4: R0 [ニュース]欄 = 注記済みFacts + 制約ブロック(契約検証済みの別欄。制約が空ならFactsのみ=従来と文字列同一)。R0 Prompt本体は不変。
+    news_text = annotated.news_field_text
     budget_check = budget_check or _noop
     # model contractはAPI call前に確認(R0/Astra共に)
     routing.require_model("FAMILY_X_FACTLOCK_R0", R0_MODEL)
@@ -331,12 +333,15 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
     fdir = os.path.join(d, "factlock")
     ev = {"chain_method": CHAIN_METHOD, "chain_method_detail": CHAIN_METHOD_DETAIL,
           "annotated_md_sha256": annotated.annotated_md_sha256, "annotation_manifest_producer": annotated.producer,
-          "annotated_md_path": annotated.annotated_md_path, "verbatim_shas": verbatim_shas(), "symbol_qa": {},
+          "annotated_md_path": annotated.annotated_md_path, "verbatim_shas": verbatim_shas(),
+          "writer_constraints_sha256": sha_text(annotated.constraints_text), "news_field_sha256": sha_text(news_text),
+          "annotation_rule_version": annotated.manifest.get("rule_version"), "annotation_rules_sha256": annotated.manifest.get("rules_sha256"),
+          "annotation_input_shas": annotated.manifest.get("input_shas"), "symbol_qa": {},
           "started": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds")}
 
     # ---------------- R0 (Luna, Fact Lock) ----------------
     budget_check()
-    prompt0 = build_r0_prompt(storyline, facts_text)
+    prompt0 = build_r0_prompt(storyline, news_text)
     resp0 = call_luna_r0(client, prompt0, "w1_r0")
     text0 = resp0.output_text.strip()
     r0_calls = [{"stage": "w1_r0", **_resp_meta(resp0), "prompt_sha256": sha_text(prompt0)}]
@@ -346,7 +351,7 @@ def run_w1_writer(out_dir: str, client=None, budget_check=None) -> dict:
     if safety.symbol_gate_requires_stop(f0):
         print(f"[W1][r0] 音声化禁止記号を検出。1回だけ再生成します(count={len(f0)})...")
         budget_check()
-        prompt0b = build_r0_symbol_regen_prompt(storyline, facts_text, f0)
+        prompt0b = build_r0_symbol_regen_prompt(storyline, news_text, f0)
         resp0b = call_luna_r0(client, prompt0b, "w1_r0_symbol_regen")
         text0b = resp0b.output_text.strip()
         r0_calls.append({"stage": "w1_r0_symbol_regen", **_resp_meta(resp0b), "prompt_sha256": sha_text(prompt0b)})
