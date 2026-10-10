@@ -1,0 +1,99 @@
+以下のB1英語記事本文から、初回リスニングで意味を取れず、その後の理解を止める可能性が高い英語表現を、支援価値の高い順にちょうど5個選んでください。
+
+まず初回リスニングで難しい箇所を見つけ、その箇所をコピーするのではなく、学ぶべき最小の単語・句・コロケーションへ抽出してください。
+
+display_phraseは1〜5語にしてください。完全文、主語と有限動詞を持つ節、記事固有の長い説明は禁止です。
+
+動詞表現は本文の時制を残さず、原則として基本形へ直してください。受動表現を学ぶ価値がある場合は、be + past participleの見出し形を使用できます。
+
+文字で読み返したときではなく、音声で一度だけ聞いたときに意味を処理できるかを最優先してください。
+
+優先順位は、初回音声での処理困難、未知の可能性、瞬時の推測困難、本文の事実・感情・面白さへの影響、記事内重要度、汎用性の順です。
+
+未知単語、題材固有表現、短い複数語パターン、比喩・感情表現を同格の候補として扱ってください。構成語から意味を容易に推測できる透明表現は、記事上重要でも優先度を下げてください。
+
+「ソロ旅行を～％とする」のように、数値を補わないと意味が成立しない句・日本語グロス(数値の穴埋めを必要とする不完全な表現)は選ばないでください。それ単体で意味が成立する句・グロスを選んでください。
+
+選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。
+
+日本語グロスは、辞書的に正しいだけでなく、日本人の英語学習者が聞いてすぐ意味を理解できる、自然で平易な現代日本語にしてください。直訳調や、「常態」「是正」のような過度に硬い報道語・漢語、一般的な学習者には伝わりにくい表現は避けてください。
+
+日本語グロスには、括弧（　）を使って別の訳し方・専門用語・補足情報を書き添えないでください。音声だけで聞いてそのまま意味が伝わる、平易な言い換えだけの一文にしてください。
+
+日本語グロスは、辞書的な表記として自然な範囲であれば「～」「〜」を使ってもかまいません(例: 「～を示す」)。ただし「…」のようなプレースホルダー記号は使わないでください。日本語グロスに数字を含める場合は、算用数字(1、2、3…)ではなく漢数字(一、二、三…)で書いてください。
+
+5個のうち1個は、汎用性や一般的な学習重要度は必ずしも高くなくても、この記事に特有であり、事前に意味・用法・音を理解しておくことでこの記事の本文全体を追いやすくなる語または表現を選んでください(key_phrase_role="topic")。判断基準は「この語・表現を事前に理解していると、この記事の本文を明確に追いやすくなるか」です。人名・企業名・ブランド名・地名だから選ぶ、専門用語だから選ぶ、といった特定の種類を優先するルールではありません。該当する語・表現が見当たらない場合でも、topicの項目を空にせず、その記事の中で最も近いと考えられる候補を選んでください。残り4個は、上記の基準に従って選んでください(key_phrase_role="important")。このkey_phrase_roleは、候補の種類・区分とは独立した、選定後の役割ラベルです。
+
+【Topic】title: A Human Joined an AI Phone Call. The Problem Was the “Cast Change” Notice
+
+【重要な単語・単語群候補】
+- id: C16 | candidate: "concierge feature" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S15
+- id: C17 | candidate: "contract workers" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S9
+- id: C18 | candidate: "contract workers made" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S9
+- id: C19 | candidate: "human concierge" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S15
+- id: C20 | candidate: "human concierge feature" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S15
+- id: C21 | candidate: "Phone Call" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S1
+- id: C22 | candidate: "workers made" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S9
+- id: C23 | candidate: "breaking-news" | type: important_word | occ: 1 | evidence: heuristic[rare_technical_single_word_heuristic] | sentence: S16
+- id: C24 | candidate: "concierge" | type: important_word | occ: 2 | evidence: heuristic[rare_technical_single_word_heuristic] | sentence: S15
+
+【phrase / idiom / phrasal verb候補】
+- id: C1 | candidate: "bring in" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S20
+- id: C2 | candidate: "brushed aside" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S27
+- id: C3 | candidate: "done by" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb]+irregular_rescue | sentence: S12
+- id: C4 | candidate: "end of" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S5
+- id: C5 | candidate: "end of the line" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S5
+- id: C6 | candidate: "pulled back" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S17
+- id: C7 | candidate: "put up" | type: phrasal_verb | occ: 1 | evidence: wiktionary[idiom,phrasal_verb] | sentence: S12
+- id: C8 | candidate: "rolled back" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S15
+- id: C9 | candidate: "science fiction" | type: phrase | occ: 1 | evidence: cefr_j | sentence: S6
+- id: C10 | candidate: "Some people" | type: idiom | occ: 4 | evidence: wiktionary[idiom] | sentence: S26
+- id: C11 | candidate: "take over" | type: phrasal_verb | occ: 2 | evidence: wiktionary[phrasal_verb] | sentence: S22
+- id: C12 | candidate: "taking part" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S8
+- id: C13 | candidate: "talking to" | type: phrasal_verb | occ: 3 | evidence: wiktionary[idiom,phrasal_verb] | sentence: S26
+- id: C14 | candidate: "vice president" | type: phrase | occ: 2 | evidence: cefr_j | sentence: S14
+- id: C15 | candidate: "worked out" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S27
+
+【word候補】
+- id: C25 | candidate: "pausing" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S19
+- id: C26 | candidate: "Canceling" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S19
+- id: C27 | candidate: "helper" | type: word | occ: 1 | evidence: cefr_j | sentence: S20
+- id: C28 | candidate: "clap" | type: word | occ: 1 | evidence: cefr_j | sentence: S23
+- id: C29 | candidate: "brushed" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S27
+
+【SENTENCE REFERENCE】(文脈参照専用。この表の文字列をそのままitemへ書かないでください)
+S1: "A Human Joined an AI Phone Call"
+S5: "But the person handling the request on the other end of the line was human"
+S6: "Wait—what a sudden change of genre, from science fiction to a workplace drama"
+S8: "It is whether people were properly told about the change in who was taking part"
+S9: "Meta was testing some calls made through Muse in which trained contract workers made the calls and completed the conversations with the other person"
+S12: "It's too soon to put up a caption saying, "Actually, it was all done by people"
+S14: "The vice president of Meta's Superintelligence Labs division admitted in an internal post that starting a test in which contract workers made calls without proper disclosure was a "mistake"
+S15: "The vice president also said that Meta had rolled back its human concierge feature for now"
+S16: "Let's check the breaking-news caption once more"
+S17: "What they pulled back was the human concierge feature"
+S19: "Canceling an entire show and pausing one segment are two different things"
+S20: "So, is it bad in itself to bring in a human helper"
+S22: "But there is a big difference between telling someone, "A person will take over from here," and quietly changing the cast backstage"
+S23: "In a movie, you might clap and say, "Ah, so that's who it is"
+S26: "Some people may choose their words or feel differently when they think they are talking to AI than when they know they are talking to a person"
+S27: "Even if the request is handled without a problem, that does not mean the disclosure issue can be brushed aside with "it all worked out in the end"
+
+【選定方針】
+- 最終的に選ぶ5件は、必ず下記の候補一覧の中から選んでください。候補に
+  無い新しい表現を作らないでください。
+- 5個のうち少なくとも1個は、[重要な単語・単語群候補]区分から選んで
+  ください(記事理解・再利用価値の高い重要な名詞・専門用語・複合語)。
+- 残りは、[phrase / idiom / phrasal verb候補]区分を優先してください。
+  良い候補が不足する場合のみ[word候補]区分で補ってください。
+- CEFR難易度・語彙レベルを主要な判断軸にしないでください。
+- 各itemのsource_candidate_idには、下記候補一覧の各行に付与されている
+  candidate ID(例: C7)のうち、実際に選んだ候補のIDを1つだけ指定して
+  ください。本文の文字列そのもの(元のsource_sentence/source_span相当の
+  自由記述)は一切書かないでください。
+- surface_echoには、選んだ候補が表す表現を短く(1〜6語程度)書いて
+  ください。これは内部確認用の参考情報であり、正誤判定には使用しません。
+- 上記5件とは別に、backup_itemとして、重要語・重要表現
+  (key_phrase_role="important")の予備候補を1件、上記5件とは異なる
+  candidate IDで選んでください。topicの候補が正しく選べた場合でも、
+  backup_itemは必ず1件返してください(その場合は採用されません)。

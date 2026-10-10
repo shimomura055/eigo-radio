@@ -1,0 +1,79 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# A Human Joined an AI Phone Call. The Problem Was the “Cast Change” Notice
+
+I was impressed: “AI can even make phone calls. The future is here!” But the person taking the request at the other end was human. Wait—what a sudden change, from science fiction to a workplace drama. Still, the main point is not, “So it was a person after all!” The question is whether people were clearly told that a new person had joined.
+
+Meta was testing some calls made through Muse. Trained contract workers made these calls and finished the conversations with the other person. They tested a setup where Muse passed the work to a human helper. People did not handle every call. So it is too soon to put up a caption saying, “Actually, people did it all!”
+
+But this test missed one important notice. The vice president of Meta’s Superintelligence Labs division wrote a post for Meta staff. There, the vice president called it a “mistake.” The mistake was starting a test where contract workers made calls without clearly telling people. The vice president also said Meta had paused its human concierge feature for now.
+
+Let’s check the breaking-news caption once more. What Meta pulled back was the human concierge feature. It did not stop all calls through Muse. Canceling a whole show and pausing one part are different things.
+
+So, is it wrong by itself to bring in a human helper? Sometimes, passing the conversation to a person can help it move forward. But saying, “A person will take over from here,” is very different. Quietly changing the cast behind the scenes is not the same. In a movie, you might clap when a mysterious person is revealed. You might say, “Ah, so that’s who it is!” But you may not want that surprise in a conversation you are part of.
+
+Some people may speak or feel differently if they think they are talking to AI. Knowing they are talking to a person may change that. Even if the request goes well, we cannot ignore the missing notice. We cannot just say, “It all worked out in the end.” That was exactly what Meta admitted it had got wrong.
+
+Convenience matters. But some people care just as much about knowing who they are talking to. If AI passes the baton to a person, it should say so. That one line is part of the service, too. The person taking over does not have to be a secret guest.
+
+## In one line
+Meta admitted it was a mistake to have contractors handle some Muse calls without telling the people they called.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "human concierge feature",
+    "japanese_gloss": "人が依頼を受けて対応する機能",
+    "source_sentence": "The vice president also said Meta had paused its human concierge feature for now"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "pull back",
+    "japanese_gloss": "いったん引き下げる",
+    "source_sentence": "What Meta pulled back was the human concierge feature"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "behind the scenes",
+    "japanese_gloss": "人に見えないところで",
+    "source_sentence": "Quietly changing the cast behind the scenes is not the same"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "take over",
+    "japanese_gloss": "引き継いで担当する",
+    "source_sentence": "But saying, \"A person will take over from here,\" is very different"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "bring in",
+    "japanese_gloss": "人を呼んで加える",
+    "source_sentence": "So, is it wrong by itself to bring in a human helper"
+  }
+]

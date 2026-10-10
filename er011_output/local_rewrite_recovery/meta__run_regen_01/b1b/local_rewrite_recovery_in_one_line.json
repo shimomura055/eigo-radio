@@ -1,0 +1,1260 @@
+{
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "in_one_line",
+  "segment_role_label": "In One Line (the closing one-line summary of the episode)",
+  "canonical_text": "Meta admitted it was a mistake to have contractors handle some Muse calls without telling the people they called.",
+  "last_asr_text": "Meta admitted it was a mistake to have contractors handle some user calls without telling the people they called.",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "contractors handle some muse calls without telling",
+    "asr_span_with_context": "contractors handle some user calls without telling",
+    "canonical_changed_words": [
+      "muse"
+    ],
+    "asr_changed_words": [
+      "user"
+    ],
+    "context_window_word_indices": [
+      8,
+      15
+    ]
+  },
+  "candidate_gen": {
+    "candidates": [
+      {
+        "id": "1",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "Meta admitted it was a mistake to have contractors manage some Muse calls without telling the people they called.",
+        "changed_span_before": "contractors handle some Muse calls without telling",
+        "changed_span_after": "contractors manage some Muse calls without telling",
+        "rationale": "Swaps in a natural verb while keeping the summary’s meaning and structure."
+      },
+      {
+        "id": "2",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Meta admitted it was a mistake to have contractors take some calls for Muse without telling the people they called.",
+        "changed_span_before": "contractors handle some Muse calls without telling",
+        "changed_span_after": "contractors take some calls for Muse without telling",
+        "rationale": "Recasts the noun phrase so Muse is heard in a different context."
+      },
+      {
+        "id": "3",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Meta admitted it was a mistake to have contractors field some calls connected to Muse without telling the people they called.",
+        "changed_span_before": "contractors handle some Muse calls without telling",
+        "changed_span_after": "contractors field some calls connected to Muse without telling",
+        "rationale": "Uses idiomatic wording to describe calls associated with Muse."
+      },
+      {
+        "id": "4",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Meta admitted it was a mistake to have contractors deal with some calls about Muse without telling the people they called.",
+        "changed_span_before": "contractors handle some Muse calls without telling",
+        "changed_span_after": "contractors deal with some calls about Muse without telling",
+        "rationale": "Reorders the phrase while retaining the same subject and action."
+      },
+      {
+        "id": "5",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Meta admitted it was a mistake to have contractors handle some calls tied to Muse without telling the people they called.",
+        "changed_span_before": "contractors handle some Muse calls without telling",
+        "changed_span_after": "contractors handle some calls tied to Muse without telling",
+        "rationale": "Keeps the original verb but changes the phrasing around Muse calls."
+      }
+    ],
+    "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"Meta admitted it was a mistake to have contractors manage some Muse calls without telling the people they called.\",\"changed_span_before\":\"contractors handle some Muse calls without telling\",\"changed_span_after\":\"contractors manage some Muse calls without telling\",\"rationale\":\"Swaps in a natural verb while keeping the summary’s meaning and structure.\"},{\"id\":\"2\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Meta admitted it was a mistake to have contractors take some calls for Muse without telling the people they called.\",\"changed_span_before\":\"contractors handle some Muse calls without telling\",\"changed_span_after\":\"contractors take some calls for Muse without telling\",\"rationale\":\"Recasts the noun phrase so Muse is heard in a different context.\"},{\"id\":\"3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Meta admitted it was a mistake to have contractors field some calls connected to Muse without telling the people they called.\",\"changed_span_before\":\"contractors handle some Muse calls without telling\",\"changed_span_after\":\"contractors field some calls connected to Muse without telling\",\"rationale\":\"Uses idiomatic wording to describe calls associated with Muse.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Meta admitted it was a mistake to have contractors deal with some calls about Muse without telling the people they called.\",\"changed_span_before\":\"contractors handle some Muse calls without telling\",\"changed_span_after\":\"contractors deal with some calls about Muse without telling\",\"rationale\":\"Reorders the phrase while retaining the same subject and action.\"},{\"id\":\"5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Meta admitted it was a mistake to have contractors handle some calls tied to Muse without telling the people they called.\",\"changed_span_before\":\"contractors handle some Muse calls without telling\",\"changed_span_after\":\"contractors handle some calls tied to Muse without telling\",\"rationale\":\"Keeps the original verb but changes the phrasing around Muse calls.\"}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_0c901786dd5a867e006aca72afb20c87d0a44bcc70cbec3d94",
+    "_prompt": "Segment role: In One Line (the closing one-line summary of the episode)\n\nFull segment (contains the problem span):\n\"Meta admitted it was a mistake to have contractors handle some Muse calls without telling the people they called.\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['user'] instead of ['muse']):\n\"contractors handle some muse calls without telling\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+  },
+  "qa": {
+    "evaluations": [
+      {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Manage” is a close substitute for “handle” in this sentence."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still works as a one-line closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence stands on its own."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural way to describe contractors managing calls."
+        }
+      },
+      {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Take calls for Muse” suggests answering incoming calls, rather than handling calls that the contractors made."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still has the form and function of a one-line closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": false,
+          "reason": "The usual meaning of “take calls” clashes with the sentence’s reference to people the contractors called."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "Although “take calls for” is idiomatic by itself, it sounds mismatched with “the people they called” here."
+        }
+      },
+      {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Field calls” tends to suggest responding to incoming calls, and “connected to Muse” is less specific than “Muse calls.”"
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still reads as a one-line closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": false,
+          "reason": "“Field calls” usually implies receiving calls, which clashes with the reference to people the contractors called."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The combination of “field calls” and “the people they called” sounds mismatched in this narration."
+        }
+      },
+      {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Calls about Muse” makes Muse the topic of the calls, rather than identifying them as Muse calls."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still serves as a one-line closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "The changed relationship to Muse does not directly contradict an explicit fact in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence reads coherently on its own."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Deal with calls about Muse” is a natural phrase in spoken narration."
+        }
+      },
+      {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Calls tied to Muse” naturally conveys calls associated with Muse, and “handle” is unchanged."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still works as a one-line closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence stands on its own."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Calls tied to Muse” is an idiomatic way to express the association."
+        }
+      }
+    ],
+    "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"1\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Manage” is a close substitute for “handle” in this sentence.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still works as a one-line closing summary.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no claim that conflicts with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence stands on its own.\"},\"natural_english\":{\"pass\":true,\"reason\":\"This is a natural way to describe contractors managing calls.\"}},{\"candidate_id\":\"2\",\"meaning_preserved\":{\"pass\":false,\"reason\":\"“Take calls for Muse” suggests answering incoming calls, rather than handling calls that the contractors made.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still has the form and function of a one-line closing summary.\"},\"fact_non_contradiction\":{\"pass\":false,\"reason\":\"The usual meaning of “take calls” clashes with the sentence’s reference to people the contractors called.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided.\"},\"natural_english\":{\"pass\":false,\"reason\":\"Although “take calls for” is idiomatic by itself, it sounds mismatched with “the people they called” here.\"}},{\"candidate_id\":\"3\",\"meaning_preserved\":{\"pass\":false,\"reason\":\"“Field calls” tends to suggest responding to incoming calls, and “connected to Muse” is less specific than “Muse calls.”\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still reads as a one-line closing summary.\"},\"fact_non_contradiction\":{\"pass\":false,\"reason\":\"“Field calls” usually implies receiving calls, which clashes with the reference to people the contractors called.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided.\"},\"natural_english\":{\"pass\":false,\"reason\":\"The combination of “field calls” and “the people they called” sounds mismatched in this narration.\"}},{\"candidate_id\":\"4\",\"meaning_preserved\":{\"pass\":false,\"reason\":\"“Calls about Muse” makes Muse the topic of the calls, rather than identifying them as Muse calls.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still serves as a one-line closing summary.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"The changed relationship to Muse does not directly contradict an explicit fact in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence reads coherently on its own.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Deal with calls about Muse” is a natural phrase in spoken narration.\"}},{\"candidate_id\":\"5\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Calls tied to Muse” naturally conveys calls associated with Muse, and “handle” is unchanged.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still works as a one-line closing summary.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no claim that conflicts with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence stands on its own.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Calls tied to Muse” is an idiomatic way to express the association.\"}}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_0d7b87c31b722892006aca72c7131087d089a4d7cbdee3751e",
+    "_prompt": "Segment role: In One Line (the closing one-line summary of the episode)\n\nORIGINAL segment:\n\"Meta admitted it was a mistake to have contractors handle some Muse calls without telling the people they called.\"\n\nCandidates to evaluate:\n- candidate_id='1': \"Meta admitted it was a mistake to have contractors manage some Muse calls without telling the people they called.\"\n- candidate_id='2': \"Meta admitted it was a mistake to have contractors take some calls for Muse without telling the people they called.\"\n- candidate_id='3': \"Meta admitted it was a mistake to have contractors field some calls connected to Muse without telling the people they called.\"\n- candidate_id='4': \"Meta admitted it was a mistake to have contractors deal with some calls about Muse without telling the people they called.\"\n- candidate_id='5': \"Meta admitted it was a mistake to have contractors handle some calls tied to Muse without telling the people they called.\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+  },
+  "candidates": [
+    {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Meta admitted it was a mistake to have contractors manage some Muse calls without telling the people they called.",
+      "changed_span_before": "contractors handle some Muse calls without telling",
+      "changed_span_after": "contractors manage some Muse calls without telling",
+      "rationale": "Swaps in a natural verb while keeping the summary’s meaning and structure.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Manage” is a close substitute for “handle” in this sentence."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still works as a one-line closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence stands on its own."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural way to describe contractors managing calls."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          9,
+          10
+        ],
+        "criterion6_allowed_window": [
+          8,
+          15
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9474
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "2",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Meta admitted it was a mistake to have contractors take some calls for Muse without telling the people they called.",
+      "changed_span_before": "contractors handle some Muse calls without telling",
+      "changed_span_after": "contractors take some calls for Muse without telling",
+      "rationale": "Recasts the noun phrase so Muse is heard in a different context.",
+      "qa_llm": {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Take calls for Muse” suggests answering incoming calls, rather than handling calls that the contractors made."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still has the form and function of a one-line closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": false,
+          "reason": "The usual meaning of “take calls” clashes with the sentence’s reference to people the contractors called."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "Although “take calls for” is idiomatic by itself, it sounds mismatched with “the people they called” here."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          9,
+          13
+        ],
+        "criterion6_allowed_window": [
+          8,
+          15
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.8947
+      },
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": false,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false
+    },
+    {
+      "id": "3",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Meta admitted it was a mistake to have contractors field some calls connected to Muse without telling the people they called.",
+      "changed_span_before": "contractors handle some Muse calls without telling",
+      "changed_span_after": "contractors field some calls connected to Muse without telling",
+      "rationale": "Uses idiomatic wording to describe calls associated with Muse.",
+      "qa_llm": {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Field calls” tends to suggest responding to incoming calls, and “connected to Muse” is less specific than “Muse calls.”"
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still reads as a one-line closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": false,
+          "reason": "“Field calls” usually implies receiving calls, which clashes with the reference to people the contractors called."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The combination of “field calls” and “the people they called” sounds mismatched in this narration."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          9,
+          13
+        ],
+        "criterion6_allowed_window": [
+          8,
+          15
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.8947
+      },
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": false,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false
+    },
+    {
+      "id": "4",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Meta admitted it was a mistake to have contractors deal with some calls about Muse without telling the people they called.",
+      "changed_span_before": "contractors handle some Muse calls without telling",
+      "changed_span_after": "contractors deal with some calls about Muse without telling",
+      "rationale": "Reorders the phrase while retaining the same subject and action.",
+      "qa_llm": {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Calls about Muse” makes Muse the topic of the calls, rather than identifying them as Muse calls."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still serves as a one-line closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "The changed relationship to Muse does not directly contradict an explicit fact in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence reads coherently on its own."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Deal with calls about Muse” is a natural phrase in spoken narration."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          9,
+          13
+        ],
+        "criterion6_allowed_window": [
+          8,
+          15
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.8947
+      },
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false
+    },
+    {
+      "id": "5",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Meta admitted it was a mistake to have contractors handle some calls tied to Muse without telling the people they called.",
+      "changed_span_before": "contractors handle some Muse calls without telling",
+      "changed_span_after": "contractors handle some calls tied to Muse without telling",
+      "rationale": "Keeps the original verb but changes the phrasing around Muse calls.",
+      "qa_llm": {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Calls tied to Muse” naturally conveys calls associated with Muse, and “handle” is unchanged."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still works as a one-line closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence stands on its own."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Calls tied to Muse” is an idiomatic way to express the association."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          11,
+          13
+        ],
+        "criterion6_allowed_window": [
+          8,
+          15
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9474
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    }
+  ],
+  "selection": {
+    "selected": {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Meta admitted it was a mistake to have contractors manage some Muse calls without telling the people they called.",
+      "changed_span_before": "contractors handle some Muse calls without telling",
+      "changed_span_after": "contractors manage some Muse calls without telling",
+      "rationale": "Swaps in a natural verb while keeping the summary’s meaning and structure.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Manage” is a close substitute for “handle” in this sentence."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still works as a one-line closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence stands on its own."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural way to describe contractors managing calls."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          9,
+          10
+        ],
+        "criterion6_allowed_window": [
+          8,
+          15
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9474
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    "status": "SELECTED",
+    "selection_rationale": "全7 Gate PASSの候補は2件(['1', '5'])。unchanged_ratio=0.9474(最小限の変更)が最大の'1'を採用。Natural English Gate理由: This is a natural way to describe contractors managing calls.",
+    "all_passing_candidate_ids": [
+      "1",
+      "5"
+    ]
+  },
+  "retts_result": {
+    "status": "OK",
+    "text": "Meta admitted it was a mistake to have contractors manage some calls for Muse without telling the people they called.",
+    "path": "er019_output/family_x_audio_production_wiring_01/meta__run_regen_01/b1b/narration/in_one_line.wav",
+    "asr_verified": true,
+    "asr_text": "Meta admitted it was a mistake to have contractors manage some calls for Muse without telling the people they called.",
+    "attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "Meta admitted it was a mistake to have contractors manage some use calls without telling the people they called.",
+        "instruction_type": "english_style_prefix_wide_margin",
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "semantic_equivalence_info": {
+          "tier_applied": "tier3_attempted_no_corroboration",
+          "sub_reason": "entity_only",
+          "corroborated_by": [],
+          "warning": false,
+          "role": "IN_ONE_LINE",
+          "diff_spans": {
+            "index": 11,
+            "canonical_word": "muse",
+            "asr_word": "use"
+          }
+        },
+        "length_ok": true,
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 6.36,
+          "raw_leading_silence_seconds": 0.28,
+          "raw_trailing_silence_seconds": 0.32,
+          "trimmed_duration_seconds": 6.36,
+          "leading_margin_retained_seconds": 0.28,
+          "trailing_margin_retained_seconds": 0.32
+        },
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/meta__run_regen_01/b1b/narration/attempts/in_one_line_attempt2_englishstyleprefixwidemargin.wav"
+      },
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "Meta admitted it was a mistake to have contractors manage some calls for Muse without telling the people they called.",
+        "instruction_type": "english_style_prefix_wide_margin",
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "semantic_equivalence_info": null,
+        "length_ok": true,
+        "verified": true,
+        "trim_info": {
+          "raw_duration_seconds": 6.76,
+          "raw_leading_silence_seconds": 0.26,
+          "raw_trailing_silence_seconds": 0.36,
+          "trimmed_duration_seconds": 6.75,
+          "leading_margin_retained_seconds": 0.26,
+          "trailing_margin_retained_seconds": 0.35
+        },
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 20,
+          "transcript": "meta  admitted  it  was  a  mistake  to  have  contractors  manage  some  calls  for  muse  without  telling  the  people  they  called",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/meta__run_regen_01/b1b/narration/attempts/in_one_line_attempt3_englishstyleprefixwidemargin.wav"
+      }
+    ],
+    "instruction_type": "english_style_prefix_wide_margin",
+    "trim_info": {
+      "raw_duration_seconds": 6.76,
+      "raw_leading_silence_seconds": 0.26,
+      "raw_trailing_silence_seconds": 0.36,
+      "trimmed_duration_seconds": 6.75,
+      "leading_margin_retained_seconds": 0.26,
+      "trailing_margin_retained_seconds": 0.35
+    },
+    "safety_margin_seconds": 0.35,
+    "clipping_detected": false,
+    "audio_classification": "EXACT_MATCH",
+    "connected_speech_info": null,
+    "disfluency_checked": true,
+    "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 20,
+      "transcript": "meta  admitted  it  was  a  mistake  to  have  contractors  manage  some  calls  for  muse  without  telling  the  people  they  called",
+      "method": "faster_whisper_small_local_verbatim"
+    },
+    "repetition_qa_checked": false,
+    "repetition_qa_evidence": null,
+    "en_pronunciation_resolver_info": {
+      "hints_applied": false,
+      "cache_hits": [],
+      "low_confidence_retry_attempted": false,
+      "low_confidence_retry_improved": false,
+      "research_meta": null
+    },
+    "cooldown_events": [],
+    "tts_backend": "speech_metadata_flash_lite",
+    "semantic_equivalence_info": null,
+    "model": "gemini-3.8-flash-lite-tts",
+    "voice": "Aoede",
+    "tts_model_id": "gemini-3.8-flash-lite-tts",
+    "style_prefix": "<default:ENGLISH_STYLE_PREFIX>",
+    "local_rewrite_recovery": {
+      "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+      "segment_id": "in_one_line",
+      "segment_role_label": "In One Line (the closing one-line summary of the episode)",
+      "canonical_text": "Meta admitted it was a mistake to have contractors manage some Muse calls without telling the people they called.",
+      "last_asr_text": "Meta admitted it was a mistake to have contractors manage some use calls without telling the people they called.",
+      "ng_span": {
+        "found": true,
+        "diff_tag": "replace",
+        "canonical_span_with_context": "contractors manage some muse calls without telling",
+        "asr_span_with_context": "contractors manage some use calls without telling",
+        "canonical_changed_words": [
+          "muse"
+        ],
+        "asr_changed_words": [
+          "use"
+        ],
+        "context_window_word_indices": [
+          8,
+          15
+        ]
+      },
+      "candidate_gen": {
+        "candidates": [
+          {
+            "id": "1",
+            "rewrite_type": "short_phrase_rewrite",
+            "rewritten_segment": "Meta admitted it was a mistake to have contractors manage some calls for Muse without telling the people they called.",
+            "changed_span_before": "some Muse calls",
+            "changed_span_after": "some calls for Muse",
+            "rationale": "Moves Muse after “calls” while keeping the reference and meaning intact."
+          },
+          {
+            "id": "2",
+            "rewrite_type": "short_phrase_rewrite",
+            "rewritten_segment": "Meta admitted it was a mistake to have contractors handle some calls for Muse without telling the people they called.",
+            "changed_span_before": "manage some Muse calls",
+            "changed_span_after": "handle some calls for Muse",
+            "rationale": "Uses a natural synonym for “manage” and changes the noun order to avoid the troublesome wording."
+          },
+          {
+            "id": "3",
+            "rewrite_type": "short_phrase_rewrite",
+            "rewritten_segment": "Meta admitted it was a mistake to have contractors take charge of some calls for Muse without telling the people they called.",
+            "changed_span_before": "manage some Muse calls",
+            "changed_span_after": "take charge of some calls for Muse",
+            "rationale": "Recasts the action idiomatically while preserving the contractors’ role."
+          },
+          {
+            "id": "4",
+            "rewrite_type": "short_phrase_rewrite",
+            "rewritten_segment": "Meta admitted it was a mistake to have contractors manage some of Muse's calls without telling the people they called.",
+            "changed_span_before": "some Muse calls",
+            "changed_span_after": "some of Muse's calls",
+            "rationale": "Uses a natural possessive construction for the calls."
+          },
+          {
+            "id": "5",
+            "rewrite_type": "short_phrase_rewrite",
+            "rewritten_segment": "Meta admitted it was a mistake to have contractors look after some calls for Muse without telling the people they called.",
+            "changed_span_before": "manage some Muse calls",
+            "changed_span_after": "look after some calls for Muse",
+            "rationale": "Uses a conversational alternative for managing the calls and avoids the original word order."
+          }
+        ],
+        "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Meta admitted it was a mistake to have contractors manage some calls for Muse without telling the people they called.\",\"changed_span_before\":\"some Muse calls\",\"changed_span_after\":\"some calls for Muse\",\"rationale\":\"Moves Muse after “calls” while keeping the reference and meaning intact.\"},{\"id\":\"2\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Meta admitted it was a mistake to have contractors handle some calls for Muse without telling the people they called.\",\"changed_span_before\":\"manage some Muse calls\",\"changed_span_after\":\"handle some calls for Muse\",\"rationale\":\"Uses a natural synonym for “manage” and changes the noun order to avoid the troublesome wording.\"},{\"id\":\"3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Meta admitted it was a mistake to have contractors take charge of some calls for Muse without telling the people they called.\",\"changed_span_before\":\"manage some Muse calls\",\"changed_span_after\":\"take charge of some calls for Muse\",\"rationale\":\"Recasts the action idiomatically while preserving the contractors’ role.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Meta admitted it was a mistake to have contractors manage some of Muse's calls without telling the people they called.\",\"changed_span_before\":\"some Muse calls\",\"changed_span_after\":\"some of Muse's calls\",\"rationale\":\"Uses a natural possessive construction for the calls.\"},{\"id\":\"5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Meta admitted it was a mistake to have contractors look after some calls for Muse without telling the people they called.\",\"changed_span_before\":\"manage some Muse calls\",\"changed_span_after\":\"look after some calls for Muse\",\"rationale\":\"Uses a conversational alternative for managing the calls and avoids the original word order.\"}]}",
+        "_model_id": "gpt-6-luna",
+        "_response_id": "resp_0e8353691e93998e006aca73579b6487d09bc808bd6509fee5",
+        "_prompt": "Segment role: In One Line (the closing one-line summary of the episode)\n\nFull segment (contains the problem span):\n\"Meta admitted it was a mistake to have contractors manage some Muse calls without telling the people they called.\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['use'] instead of ['muse']):\n\"contractors manage some muse calls without telling\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+      },
+      "qa": {
+        "evaluations": [
+          {
+            "candidate_id": "1",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Manage calls for Muse” preserves the original action and the calls’ association with Muse."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a concise closing summary of the episode."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no claim that contradicts the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "No surrounding context was provided; the line works as a standalone summary."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "This is a natural, idiomatic way to describe contractors managing calls on Muse’s behalf."
+            }
+          },
+          {
+            "candidate_id": "2",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Handle” conveys dealing with or managing the calls, preserving the original claim."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a concise closing summary of the episode."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no claim that contradicts the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "No surrounding context was provided; the line works as a standalone summary."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Handle calls for Muse” is a common, idiomatic phrase."
+            }
+          },
+          {
+            "candidate_id": "3",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Take charge of” conveys responsibility for managing the calls, preserving the core claim."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a concise closing summary of the episode."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no claim that contradicts the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "No surrounding context was provided; the line works as a standalone summary."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Take charge of calls” is a natural way to describe assuming responsibility for them."
+            }
+          },
+          {
+            "candidate_id": "4",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Muse’s calls” is a natural possessive paraphrase of “Muse calls” and retains the original claim."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a concise closing summary of the episode."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no claim that contradicts the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "No surrounding context was provided; the line works as a standalone summary."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Some of Muse’s calls” is idiomatic English."
+            }
+          },
+          {
+            "candidate_id": "5",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Look after” can convey taking care of or managing the calls, retaining the broad claim."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a concise closing summary of the episode."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no claim that contradicts the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "No surrounding context was provided; the line works as a standalone summary."
+            },
+            "natural_english": {
+              "pass": false,
+              "reason": "“Look after calls” is not a common or idiomatic way to say that contractors managed or handled calls."
+            }
+          }
+        ],
+        "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"1\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Manage calls for Muse” preserves the original action and the calls’ association with Muse.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a concise closing summary of the episode.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no claim that contradicts the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided; the line works as a standalone summary.\"},\"natural_english\":{\"pass\":true,\"reason\":\"This is a natural, idiomatic way to describe contractors managing calls on Muse’s behalf.\"}},{\"candidate_id\":\"2\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Handle” conveys dealing with or managing the calls, preserving the original claim.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a concise closing summary of the episode.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no claim that contradicts the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided; the line works as a standalone summary.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Handle calls for Muse” is a common, idiomatic phrase.\"}},{\"candidate_id\":\"3\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Take charge of” conveys responsibility for managing the calls, preserving the core claim.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a concise closing summary of the episode.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no claim that contradicts the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided; the line works as a standalone summary.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Take charge of calls” is a natural way to describe assuming responsibility for them.\"}},{\"candidate_id\":\"4\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Muse’s calls” is a natural possessive paraphrase of “Muse calls” and retains the original claim.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a concise closing summary of the episode.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no claim that contradicts the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided; the line works as a standalone summary.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Some of Muse’s calls” is idiomatic English.\"}},{\"candidate_id\":\"5\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Look after” can convey taking care of or managing the calls, retaining the broad claim.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a concise closing summary of the episode.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no claim that contradicts the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided; the line works as a standalone summary.\"},\"natural_english\":{\"pass\":false,\"reason\":\"“Look after calls” is not a common or idiomatic way to say that contractors managed or handled calls.\"}}]}",
+        "_model_id": "gpt-6-luna",
+        "_response_id": "resp_04fdea8c57d29634006aca7372587887d0939be4fe65d895ad",
+        "_prompt": "Segment role: In One Line (the closing one-line summary of the episode)\n\nORIGINAL segment:\n\"Meta admitted it was a mistake to have contractors manage some Muse calls without telling the people they called.\"\n\nCandidates to evaluate:\n- candidate_id='1': \"Meta admitted it was a mistake to have contractors manage some calls for Muse without telling the people they called.\"\n- candidate_id='2': \"Meta admitted it was a mistake to have contractors handle some calls for Muse without telling the people they called.\"\n- candidate_id='3': \"Meta admitted it was a mistake to have contractors take charge of some calls for Muse without telling the people they called.\"\n- candidate_id='4': \"Meta admitted it was a mistake to have contractors manage some of Muse's calls without telling the people they called.\"\n- candidate_id='5': \"Meta admitted it was a mistake to have contractors look after some calls for Muse without telling the people they called.\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+      },
+      "candidates": [
+        {
+          "id": "1",
+          "rewrite_type": "short_phrase_rewrite",
+          "rewritten_segment": "Meta admitted it was a mistake to have contractors manage some calls for Muse without telling the people they called.",
+          "changed_span_before": "some Muse calls",
+          "changed_span_after": "some calls for Muse",
+          "rationale": "Moves Muse after “calls” while keeping the reference and meaning intact.",
+          "qa_llm": {
+            "candidate_id": "1",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Manage calls for Muse” preserves the original action and the calls’ association with Muse."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a concise closing summary of the episode."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no claim that contradicts the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "No surrounding context was provided; the line works as a standalone summary."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "This is a natural, idiomatic way to describe contractors managing calls on Muse’s behalf."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              11,
+              13
+            ],
+            "criterion6_allowed_window": [
+              8,
+              15
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.9474
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        },
+        {
+          "id": "2",
+          "rewrite_type": "short_phrase_rewrite",
+          "rewritten_segment": "Meta admitted it was a mistake to have contractors handle some calls for Muse without telling the people they called.",
+          "changed_span_before": "manage some Muse calls",
+          "changed_span_after": "handle some calls for Muse",
+          "rationale": "Uses a natural synonym for “manage” and changes the noun order to avoid the troublesome wording.",
+          "qa_llm": {
+            "candidate_id": "2",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Handle” conveys dealing with or managing the calls, preserving the original claim."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a concise closing summary of the episode."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no claim that contradicts the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "No surrounding context was provided; the line works as a standalone summary."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Handle calls for Muse” is a common, idiomatic phrase."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              9,
+              13
+            ],
+            "criterion6_allowed_window": [
+              8,
+              15
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.8947
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        },
+        {
+          "id": "3",
+          "rewrite_type": "short_phrase_rewrite",
+          "rewritten_segment": "Meta admitted it was a mistake to have contractors take charge of some calls for Muse without telling the people they called.",
+          "changed_span_before": "manage some Muse calls",
+          "changed_span_after": "take charge of some calls for Muse",
+          "rationale": "Recasts the action idiomatically while preserving the contractors’ role.",
+          "qa_llm": {
+            "candidate_id": "3",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Take charge of” conveys responsibility for managing the calls, preserving the core claim."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a concise closing summary of the episode."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no claim that contradicts the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "No surrounding context was provided; the line works as a standalone summary."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Take charge of calls” is a natural way to describe assuming responsibility for them."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              9,
+              13
+            ],
+            "criterion6_allowed_window": [
+              8,
+              15
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.8947
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        },
+        {
+          "id": "4",
+          "rewrite_type": "short_phrase_rewrite",
+          "rewritten_segment": "Meta admitted it was a mistake to have contractors manage some of Muse's calls without telling the people they called.",
+          "changed_span_before": "some Muse calls",
+          "changed_span_after": "some of Muse's calls",
+          "rationale": "Uses a natural possessive construction for the calls.",
+          "qa_llm": {
+            "candidate_id": "4",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Muse’s calls” is a natural possessive paraphrase of “Muse calls” and retains the original claim."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a concise closing summary of the episode."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no claim that contradicts the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "No surrounding context was provided; the line works as a standalone summary."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Some of Muse’s calls” is idiomatic English."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              11,
+              12
+            ],
+            "criterion6_allowed_window": [
+              8,
+              15
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.9474
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        },
+        {
+          "id": "5",
+          "rewrite_type": "short_phrase_rewrite",
+          "rewritten_segment": "Meta admitted it was a mistake to have contractors look after some calls for Muse without telling the people they called.",
+          "changed_span_before": "manage some Muse calls",
+          "changed_span_after": "look after some calls for Muse",
+          "rationale": "Uses a conversational alternative for managing the calls and avoids the original word order.",
+          "qa_llm": {
+            "candidate_id": "5",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Look after” can convey taking care of or managing the calls, retaining the broad claim."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a concise closing summary of the episode."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no claim that contradicts the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "No surrounding context was provided; the line works as a standalone summary."
+            },
+            "natural_english": {
+              "pass": false,
+              "reason": "“Look after calls” is not a common or idiomatic way to say that contractors managed or handled calls."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              9,
+              13
+            ],
+            "criterion6_allowed_window": [
+              8,
+              15
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.8947
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": false,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": false
+        }
+      ],
+      "selection": {
+        "selected": {
+          "id": "1",
+          "rewrite_type": "short_phrase_rewrite",
+          "rewritten_segment": "Meta admitted it was a mistake to have contractors manage some calls for Muse without telling the people they called.",
+          "changed_span_before": "some Muse calls",
+          "changed_span_after": "some calls for Muse",
+          "rationale": "Moves Muse after “calls” while keeping the reference and meaning intact.",
+          "qa_llm": {
+            "candidate_id": "1",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Manage calls for Muse” preserves the original action and the calls’ association with Muse."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It remains a concise closing summary of the episode."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It introduces no claim that contradicts the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "No surrounding context was provided; the line works as a standalone summary."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "This is a natural, idiomatic way to describe contractors managing calls on Muse’s behalf."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              11,
+              13
+            ],
+            "criterion6_allowed_window": [
+              8,
+              15
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.9474
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        },
+        "status": "SELECTED",
+        "selection_rationale": "全7 Gate PASSの候補は4件(['1', '2', '3', '4'])。unchanged_ratio=0.9474(最小限の変更)が最大の'1'を採用。Natural English Gate理由: This is a natural, idiomatic way to describe contractors managing calls on Muse’s behalf.",
+        "all_passing_candidate_ids": [
+          "1",
+          "2",
+          "3",
+          "4"
+        ]
+      },
+      "retts_result": {
+        "status": "OK",
+        "text": "Meta admitted it was a mistake to have contractors manage some calls for Muse without telling the people they called.",
+        "path": "er019_output/family_x_audio_production_wiring_01/meta__run_regen_01/b1b/narration/in_one_line.wav",
+        "asr_verified": true,
+        "asr_text": "Meta admitted it was a mistake to have contractors manage some calls for Muse without telling the people they called.",
+        "attempts_log": [
+          {
+            "attempt": 1,
+            "status": "OK",
+            "asr_text": "Meta admitted it was a mistake to have contractors manage some calls for Muse without telling the people they called.",
+            "instruction_type": "english_style_prefix_wide_margin",
+            "audio_classification": "EXACT_MATCH",
+            "connected_speech_info": null,
+            "semantic_equivalence_info": null,
+            "length_ok": true,
+            "verified": true,
+            "trim_info": {
+              "raw_duration_seconds": 6.76,
+              "raw_leading_silence_seconds": 0.26,
+              "raw_trailing_silence_seconds": 0.36,
+              "trimmed_duration_seconds": 6.75,
+              "leading_margin_retained_seconds": 0.26,
+              "trailing_margin_retained_seconds": 0.35
+            },
+            "disfluency_checked": true,
+            "disfluency_evidence": {
+              "flagged": false,
+              "repeats": [],
+              "word_count": 20,
+              "transcript": "meta  admitted  it  was  a  mistake  to  have  contractors  manage  some  calls  for  muse  without  telling  the  people  they  called",
+              "method": "faster_whisper_small_local_verbatim"
+            },
+            "repetition_qa_checked": false,
+            "repetition_qa_evidence": null,
+            "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/meta__run_regen_01/b1b/narration/attempts/in_one_line_attempt3_englishstyleprefixwidemargin.wav"
+          }
+        ],
+        "instruction_type": "english_style_prefix_wide_margin",
+        "trim_info": {
+          "raw_duration_seconds": 6.76,
+          "raw_leading_silence_seconds": 0.26,
+          "raw_trailing_silence_seconds": 0.36,
+          "trimmed_duration_seconds": 6.75,
+          "leading_margin_retained_seconds": 0.26,
+          "trailing_margin_retained_seconds": 0.35
+        },
+        "safety_margin_seconds": 0.35,
+        "clipping_detected": false,
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 20,
+          "transcript": "meta  admitted  it  was  a  mistake  to  have  contractors  manage  some  calls  for  muse  without  telling  the  people  they  called",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "en_pronunciation_resolver_info": {
+          "hints_applied": false,
+          "cache_hits": [],
+          "low_confidence_retry_attempted": false,
+          "low_confidence_retry_improved": false,
+          "research_meta": null
+        },
+        "cooldown_events": [],
+        "tts_backend": "speech_metadata_flash_lite",
+        "semantic_equivalence_info": null,
+        "model": "gemini-3.8-flash-lite-tts",
+        "voice": "Aoede",
+        "tts_model_id": "gemini-3.8-flash-lite-tts",
+        "style_prefix": "<default:ENGLISH_STYLE_PREFIX>"
+      },
+      "status": "RESOLVED_BY_LOCAL_REWRITE"
+    },
+    "canonical_text_before_local_rewrite": "Meta admitted it was a mistake to have contractors manage some Muse calls without telling the people they called."
+  },
+  "status": "RESOLVED_BY_LOCAL_REWRITE"
+}

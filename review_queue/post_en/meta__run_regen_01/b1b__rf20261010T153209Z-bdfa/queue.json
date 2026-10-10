@@ -1,0 +1,366 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "meta__run_regen_01",
+  "article_level": "b1b",
+  "article_sha256": "c6318609e9df7ffed67d5ea6830964b91f4faa1c24b1103c8f0c6e263f6a6d51",
+  "ledger_sha256": "ea0ce587e605beeac8f02315ae4520899156393bbba2e059d99f45988b7c5f56",
+  "run_id": "rf20261010T153209Z-bdfa",
+  "timestamp": "2026-10-10T15:32:09+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "meta_regen_l3",
+  "sentence_count": 34,
+  "fact_count": 15,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5252,
+      "output_tokens": 1387,
+      "cached_tokens": 0,
+      "cost_jpy": 0.194992,
+      "flag_count": 2,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5402,
+      "output_tokens": 1876,
+      "cached_tokens": 0,
+      "cost_jpy": 0.236512,
+      "flag_count": 4,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4964,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.239872,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5084,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.245632,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "meta__run_regen_01__b1b__c6318609__rf20261010T153209Z-bdfa__s5",
+      "article_id": "meta__run_regen_01",
+      "article_level": "b1b",
+      "article_sha256": "c6318609e9df7ffed67d5ea6830964b91f4faa1c24b1103c8f0c6e263f6a6d51",
+      "run_id": "rf20261010T153209Z-bdfa",
+      "timestamp": "2026-10-10T15:32:09+00:00",
+      "sentence_id": "s5",
+      "sentence_text": "But the person handling the request on the other end of the line was human.",
+      "context": {
+        "before": [
+          "I was impressed: “AI can even make phone calls.",
+          "The future is here!”"
+        ],
+        "after": [
+          "Wait—what a sudden change of genre, from science fiction to a workplace drama.",
+          "Still, the heart of this story is not “So it was a human after all!”"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "MUSE-HC-006"
+      ],
+      "facts": [
+        {
+          "fact_id": "MUSE-HC-006",
+          "text": "MetaはMuse経由の電話の一部について、AIではなく訓練を受けた人間の契約スタッフが電話をかけ、相手とのやり取りを完了させる「human concierge」「human agent calls」のテストを実施した。\n  scope: Muse経由で発信された電話の一部\n  conditions: Museから人間の訓練済みエージェントへ依頼が引き渡されるテスト条件\n  date_or_period: 2026年9月中旬\n  notes_for_writer: 全ての電話を人間が担当したとは書かない。「一部の電話」「テスト」と限定する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "主体対象入替",
+          "question": "「相手側で依頼を処理した人」という表現は、台帳が示す「電話をかけてやり取りを完了させた契約スタッフ」と役割や位置を取り違えていませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.3,
+          "type": "主体対象入替",
+          "fact_ids": [
+            "MUSE-HC-006"
+          ],
+          "question": "「相手側で依頼を処理した人」という表現は、台帳が示す「電話をかけてやり取りを完了させた契約スタッフ」と役割や位置を取り違えていませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "issue_id": "meta__run_regen_01__b1b__c6318609__rf20261010T153209Z-bdfa__s18",
+      "article_id": "meta__run_regen_01",
+      "article_level": "b1b",
+      "article_sha256": "c6318609e9df7ffed67d5ea6830964b91f4faa1c24b1103c8f0c6e263f6a6d51",
+      "run_id": "rf20261010T153209Z-bdfa",
+      "timestamp": "2026-10-10T15:32:09+00:00",
+      "sentence_id": "s18",
+      "sentence_text": "They did not stop all calls through Muse.",
+      "context": {
+        "before": [
+          "Let’s check the breaking-news caption once more.",
+          "What they pulled back was the human concierge feature."
+        ],
+        "after": [
+          "Canceling an entire show and pausing one segment are two different things.",
+          "So, is it bad in itself to bring in a human helper?"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "MUSE-HC-012",
+        "MUSE-HC-014"
+      ],
+      "facts": [
+        {
+          "fact_id": "MUSE-HC-012",
+          "text": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。\n  scope: Meta社内テストの人間コンシェルジュ機能\n  conditions: 適切な開示なしで契約スタッフが電話を担当していたテスト\n  date_or_period: 2026年9月22日まで\n  notes_for_writer: 「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+        },
+        {
+          "fact_id": "MUSE-HC-014",
+          "text": "Metaは、電話機能について、商業者との改善を続け、準備が整い、適切な開示ができる場合にのみ公開展開すると広報担当者を通じて説明した。\n  scope: Museの電話機能および人間コンシェルジュを含む可能性のある運用\n  conditions: 準備完了および適切な開示が整うこと\n  date_or_period: 2026年9月22日時点\n  notes_for_writer: 公開済みの一般機能と、ロールバックされた人間コンシェルジュ実験を区別する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "不在断定",
+          "question": "「They did not stop all calls through Muse」は、ロールバック対象が人間コンシェルジュ機能だったという事実だけでは他の電話が継続したことまでは確認できませんが、断定していませんか。"
+        },
+        {
+          "type": "不在断定",
+          "question": "「Muse経由の通話は止めていない」という断定は、台帳にある「人間コンシェルジュ機能をロールバックした」という情報だけでは確認できない運用状況まで述べていませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.34,
+          "type": "不在断定",
+          "fact_ids": [
+            "MUSE-HC-012",
+            "MUSE-HC-014"
+          ],
+          "question": "「They did not stop all calls through Muse」は、ロールバック対象が人間コンシェルジュ機能だったという事実だけでは他の電話が継続したことまでは確認できませんが、断定していませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.3,
+          "type": "不在断定",
+          "fact_ids": [
+            "MUSE-HC-012",
+            "MUSE-HC-014"
+          ],
+          "question": "「Muse経由の通話は止めていない」という断定は、台帳にある「人間コンシェルジュ機能をロールバックした」という情報だけでは確認できない運用状況まで述べていませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.34
+    },
+    {
+      "issue_id": "meta__run_regen_01__b1b__c6318609__rf20261010T153209Z-bdfa__s26",
+      "article_id": "meta__run_regen_01",
+      "article_level": "b1b",
+      "article_sha256": "c6318609e9df7ffed67d5ea6830964b91f4faa1c24b1103c8f0c6e263f6a6d51",
+      "run_id": "rf20261010T153209Z-bdfa",
+      "timestamp": "2026-10-10T15:32:09+00:00",
+      "sentence_id": "s26",
+      "sentence_text": "Some people may choose their words or feel differently when they think they are talking to AI than when they know they are talking to a person.",
+      "context": {
+        "before": [
+          "when a mysterious person is revealed.",
+          "But you may not want a surprise reveal in a conversation you are part of."
+        ],
+        "after": [
+          "Even if the request is handled without a problem, that does not mean the disclosure issue can be brushed aside with “it all worked out in the end.”",
+          "That was exactly the point Meta itself admitted it had got wrong."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [],
+      "facts": [],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「AIか人間かによって人々の言葉や感じ方が変わる」という一般化は、台帳に裏付けがない内容ではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.25,
+          "type": "その他",
+          "fact_ids": [],
+          "question": "「AIか人間かによって人々の言葉や感じ方が変わる」という一般化は、台帳に裏付けがない内容ではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.25
+    },
+    {
+      "issue_id": "meta__run_regen_01__b1b__c6318609__rf20261010T153209Z-bdfa__s34",
+      "article_id": "meta__run_regen_01",
+      "article_level": "b1b",
+      "article_sha256": "c6318609e9df7ffed67d5ea6830964b91f4faa1c24b1103c8f0c6e263f6a6d51",
+      "run_id": "rf20261010T153209Z-bdfa",
+      "timestamp": "2026-10-10T15:32:09+00:00",
+      "sentence_id": "s34",
+      "sentence_text": "Meta admitted it was a mistake to have contractors handle some Muse calls without telling the people they called.",
+      "context": {
+        "before": [
+          "The person taking over does not have to be a secret guest.",
+          "## In one line"
+        ],
+        "after": [],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "MUSE-HC-012"
+      ],
+      "facts": [
+        {
+          "fact_id": "MUSE-HC-012",
+          "text": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。\n  scope: Meta社内テストの人間コンシェルジュ機能\n  conditions: 適切な開示なしで契約スタッフが電話を担当していたテスト\n  date_or_period: 2026年9月22日まで\n  notes_for_writer: 「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「without telling the people they called」は、事実にある「without proper disclosure」より開示の相手を電話の相手と特定していますが、その点まで確認できていますか。"
+        },
+        {
+          "type": "その他",
+          "question": "「電話をかけた相手に知らせなかった」という表現は、台帳の「適切な開示なし」よりも、開示の対象と内容を具体的に断定していませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.32,
+          "type": "その他",
+          "fact_ids": [
+            "MUSE-HC-012"
+          ],
+          "question": "「without telling the people they called」は、事実にある「without proper disclosure」より開示の相手を電話の相手と特定していますが、その点まで確認できていますか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.35,
+          "type": "その他",
+          "fact_ids": [
+            "MUSE-HC-012"
+          ],
+          "question": "「電話をかけた相手に知らせなかった」という表現は、台帳の「適切な開示なし」よりも、開示の対象と内容を具体的に断定していませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.35
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 10654,
+      "output_tokens": 3263,
+      "cost_jpy": 0.431504,
+      "a3_flag_count": 2,
+      "a4_flag_count": 4,
+      "unique_issue": 4,
+      "overlap_a3_a4": 2,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 10048,
+      "output_tokens": 8,
+      "cost_jpy": 0.485504,
+      "a3_flag_count": 0,
+      "a4_flag_count": 0,
+      "unique_issue": 0,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 1
+    },
+    "_all": {
+      "article_level": "b1b",
+      "article_status": "OK",
+      "unique_issue": 4,
+      "cost_jpy": 0.917008,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}
