@@ -18,14 +18,14 @@ import prompts_flagger as P
 import antenna_prompts as A
 
 level, theme, model = int(sys.argv[1]), sys.argv[2], sys.argv[3]
-FLAGGER_MODEL, EFFORT, CAP_TOTAL, MAX_CELL = "gpt-6.1-sol", "medium", 200.0, 12.0
+FLAGGER_MODEL, EFFORT, CAP_TOTAL, MAX_CELL = "gpt-6.1-sol", "medium", 400.0, 12.0
 HDR = re.compile(r"^\[(?P<st>[A-Z_]+)(?:\s+-\s+[^\]]*)?\]\s+(?P<id>[^\s:]+):\s*(?P<text>.*)$")
 LR._HDR = HDR   # process内のみ(FIX01/FIX02と同一)。detectors配下のファイルは変更しない
 cell = "ant%d_%s__%s" % (level, theme, model)
 R.RESULTS_DIR = os.path.join(HERE, "results")
 R.LOGS_DIR = os.path.join(HERE, "logs")
 os.makedirs(os.path.join(HERE, "flags", "A%d" % level, theme), exist_ok=True)
-L.LEDGER_PATH = os.path.join(HERE, "cost_ledger_antenna_01.jsonl")   # 全セル共有の合算台帳(累計¥200で新規呼び出し停止)
+L.LEDGER_PATH = os.path.join(HERE, "cost_ledger_antenna_01.jsonl")   # 全セル共有の合算台帳(累計¥400で新規呼び出し停止(ユーザー決定で200→400))
 P.d2_system = lambda: A.antenna_system(level)   # process内のみ。R.plan_calls は P.d2_system() を呼ぶ
 assert P.d2_system() == A.antenna_system(level)
 

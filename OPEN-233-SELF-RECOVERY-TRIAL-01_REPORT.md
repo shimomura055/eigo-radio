@@ -6004,3 +6004,10 @@ MEASURED(Trial、Production変更なし)。Fable最終判定=総合『同等・�
 - 結果(D0rb∪D2、confidence閾値別): 12本中Flagは1件のみ(宇宙兵器・前回R0・s6 不在断定 conf0.30、対応Fact F-001、D2)。>=0.10/0.20/0.30 は1件、>=0.50 は0件。今回R0 9本は全て0件(FIX01-A Disney+ 0/0/0と一致)。D0 gate_only参考件数(総数外): 宇宙兵器 前回R0 4 / Luna 2 / Sol 2 / Astra 3。優劣は未確定、Flagger 0件は問題なしの保証ではない。
 - 費用: JPY20.03(上限JPY30内)、D2 12回、再試行0・失敗0。Trial累計 JPY189.39(委任_01 165.97 + FIX01-A 3.39 + FIX02 20.03)。
 - 成果物: `er052_output/writer_r0_model_impact_trial_01/fix02/{PREREGISTRATION_FIX02.md,RESULT_FIX02.md,fix02_driver.py,aggregate_fix02.py,manifest_fix02.json,flags/,results/,logs/,cost_ledger_fix02.jsonl}`。Status=USER_DECISION_REQUIRED(STOP)。Production変更なし、APPROVED_FOR_PRODUCTIONなし、採用判断なし。
+
+### §115 WRITER-DEV-RISK-FLAGGER-ANTENNA-TRIAL-01 Phase 2/3: Antenna 1〜6 感度段階Trial(2026-10-10、MEASURED、API費用 JPY106.38、Production変更なし)
+- 条件: 9記事(R0再生成なし)・完全Fact台帳(FIX02と同一sha)・Flagger gpt-6.1-sol(最新最上位系)/effort=medium・D2記事モードのみ(D0はレベル非依存)。Promptは事前登録どおり不変(重大定義・確信度方針・出力形式は6段階でバイト一致、Antenna1=現行D2 sha b8dacc14)。54回、再試行0・失敗0。上限JPY400(ユーザー決定)に対し実費JPY106.38。
+- 結果(記事/Flag): A1 0/0(FIX02と一致) / A2 3/3 / A3 5/5 / A4 7/13 / A5 7/20 / A6 6/13。遷移(維持/消失/新規): A2 0/0/3、A3 3/0/2、A4 4/1/9、A5 12/1/8、A6 12/8/1。重要Flag消失(既知候補または確信度0.5以上)は5遷移中2回(A3→A4のDisney+ s17 確信度0.99、A5→A6のDisney+ s16・s18)=判定の不安定性として明示。
+- 既知候補10文: 宇宙兵器・BYD・制動灯の6文は初出以降A6まで継続(初出 A3:1 / A4:3 / A5:2)。Disney+4文は別区分で、C01・C03はA4-A5のみ、C02はA3のみ、C04は一度も出ず。C02はFlagger理由が台帳F07との主語入替(回答主体Disney/Reuters)で、事前登録の『F07に根拠あり』と異なる可能性(注記のみ、最終判定はユーザー)。
+- Closeout提案: USER_DECISION_REQUIRED(採用Antennaレベルはユーザー判断、Claude側採用なし)。Production wiring・CURRENT_SPEC・Checker変更なし。`APPROVED_FOR_PRODUCTION`なし。
+- 成果物: `er052_output/writer_dev_risk_flagger_01/antenna_trial_01/{RESULT_01.md,USER_SUMMARY_01.md,HUMAN_CHECK_ANTENNA_01.md,MATCHING_RULE_01.md,aggregate_antenna.py,aggregate_antenna_01.json,make_human_check.py,cost_ledger_antenna_01.jsonl,flags/,results/,logs/}`。

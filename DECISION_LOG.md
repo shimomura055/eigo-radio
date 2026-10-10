@@ -20462,3 +20462,9 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - Fable判断により「前回R0」=FACTLOCK-ASTRA-E2E-TRIAL-01 new腕 new_writer/r0.md(old腕は含めない)。3テーマ x 4源=12本を完全台帳・同一条件でFlagger実行(実費JPY20.03、上限JPY30内)。
 - 結果: Flag1件(宇宙兵器・前回R0・不在断定 conf0.30)、今回R0 9本は0件。詳細REPORT §114 FIX02、`er052_output/writer_r0_model_impact_trial_01/fix02/RESULT_FIX02.md`。
 - 境界: Production変更なし、detectors配下変更なし、`APPROVED_FOR_PRODUCTION`なし、採用判断なし、モデル優劣の確定なし、有用/誤検知の確定なし。
+
+## WRITER-DEV-RISK-FLAGGER-ANTENNA-TRIAL-01 Phase 2/3: Antenna 1〜6 感度段階Trial(2026-10-10、Status=USER_DECISION_REQUIRED)
+- ユーザー承認: 事前設計・事前登録、費用上限JPY400、A4〜A6は重大定義変更ではなく候補生成感度を広げる範囲、件数強制方式は採用候補にしない。
+- 結果: 9記事x6段階=54回(実費JPY106.38)。記事/Flag: A1 0/0, A2 3/3, A3 5/5, A4 7/13, A5 7/20, A6 6/13。重要Flag消失2遷移(A3→A4, A5→A6)。既知非Disney+6文は初出後A6まで継続。詳細REPORT §115、`er052_output/writer_dev_risk_flagger_01/antenna_trial_01/{RESULT_01,USER_SUMMARY_01,HUMAN_CHECK_ANTENNA_01}.md`。
+- 未決(ユーザー判断): 採用Antennaレベル(または不採用)、Disney+ C02の扱い、A6消失の反復確認の要否、確信度閾値併用、低確信度候補の確認対象化。
+- 境界: Production変更なし、detectors配下変更なし、CURRENT_SPEC変更なし、Checker変更なし、`APPROVED_FOR_PRODUCTION`なし、Claude側の採用決定なし。
