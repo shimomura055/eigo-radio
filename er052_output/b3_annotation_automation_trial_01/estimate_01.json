@@ -1,0 +1,179 @@
+{
+ "basis": {
+  "themes": 10,
+  "avg_prompt_chars": 15078,
+  "avg_reply_chars": 3460,
+  "usdjpy": 160,
+  "note": "tokens/char(0.5/0.75/1.0)とreasoning tokens(0/3000/8000)は未確認の仮定。キャッシュ割引は見込まない。"
+ },
+ "prices": {
+  "claude-sonnet-5": {
+   "in": 2.0,
+   "cached": 0.2,
+   "out": 10.0,
+   "src": "https://platform.claude.com/docs/en/about-claude/pricing"
+  },
+  "gpt-6.1-sol": {
+   "in": 2.0,
+   "cached": 0.1,
+   "out": 10.0,
+   "src": "https://developers.openai.com/api/docs/pricing; er005_output/cost_baseline_01/pricing_snapshot.json"
+  },
+  "gpt-6-astra": {
+   "in": 10.0,
+   "cached": 1.0,
+   "out": 50.0,
+   "src": "er005_output/cost_baseline_01/pricing_snapshot.json"
+  }
+ },
+ "matrix": {
+  "claude-sonnet-5 | M-A/M-B shared A+B calls (verbatim)": {
+   "low": {
+    "calls": 40,
+    "in_tok_per_call": 7539,
+    "out_tok_per_call": 1730,
+    "usd": 1.295,
+    "jpy": 207.2
+   },
+   "mid": {
+    "calls": 40,
+    "in_tok_per_call": 11309,
+    "out_tok_per_call": 5595,
+    "usd": 3.143,
+    "jpy": 502.9
+   },
+   "high": {
+    "calls": 40,
+    "in_tok_per_call": 15078,
+    "out_tok_per_call": 11460,
+    "usd": 5.79,
+    "jpy": 926.5
+   }
+  },
+  "claude-sonnet-5 | M-C new-prompt sidecar-only (A only)": {
+   "low": {
+    "calls": 20,
+    "in_tok_per_call": 8670,
+    "out_tok_per_call": 1730,
+    "usd": 0.693,
+    "jpy": 110.9
+   },
+   "mid": {
+    "calls": 20,
+    "in_tok_per_call": 13005,
+    "out_tok_per_call": 5595,
+    "usd": 1.639,
+    "jpy": 262.3
+   },
+   "high": {
+    "calls": 20,
+    "in_tok_per_call": 17340,
+    "out_tok_per_call": 11460,
+    "usd": 2.986,
+    "jpy": 477.7
+   }
+  },
+  "gpt-6.1-sol | M-A/M-B shared A+B calls (verbatim)": {
+   "low": {
+    "calls": 40,
+    "in_tok_per_call": 7539,
+    "out_tok_per_call": 1730,
+    "usd": 1.295,
+    "jpy": 207.2
+   },
+   "mid": {
+    "calls": 40,
+    "in_tok_per_call": 11309,
+    "out_tok_per_call": 5595,
+    "usd": 3.143,
+    "jpy": 502.9
+   },
+   "high": {
+    "calls": 40,
+    "in_tok_per_call": 15078,
+    "out_tok_per_call": 11460,
+    "usd": 5.79,
+    "jpy": 926.5
+   }
+  },
+  "gpt-6.1-sol | M-C new-prompt sidecar-only (A only)": {
+   "low": {
+    "calls": 20,
+    "in_tok_per_call": 8670,
+    "out_tok_per_call": 1730,
+    "usd": 0.693,
+    "jpy": 110.9
+   },
+   "mid": {
+    "calls": 20,
+    "in_tok_per_call": 13005,
+    "out_tok_per_call": 5595,
+    "usd": 1.639,
+    "jpy": 262.3
+   },
+   "high": {
+    "calls": 20,
+    "in_tok_per_call": 17340,
+    "out_tok_per_call": 11460,
+    "usd": 2.986,
+    "jpy": 477.7
+   }
+  },
+  "gpt-6-astra | M-A/M-B shared A+B calls (verbatim)": {
+   "low": {
+    "calls": 40,
+    "in_tok_per_call": 7539,
+    "out_tok_per_call": 1730,
+    "usd": 6.476,
+    "jpy": 1036.2
+   },
+   "mid": {
+    "calls": 40,
+    "in_tok_per_call": 11309,
+    "out_tok_per_call": 5595,
+    "usd": 15.714,
+    "jpy": 2514.3
+   },
+   "high": {
+    "calls": 40,
+    "in_tok_per_call": 15078,
+    "out_tok_per_call": 11460,
+    "usd": 28.952,
+    "jpy": 4632.3
+   }
+  },
+  "gpt-6-astra | M-C new-prompt sidecar-only (A only)": {
+   "low": {
+    "calls": 20,
+    "in_tok_per_call": 8670,
+    "out_tok_per_call": 1730,
+    "usd": 3.464,
+    "jpy": 554.3
+   },
+   "mid": {
+    "calls": 20,
+    "in_tok_per_call": 13005,
+    "out_tok_per_call": 5595,
+    "usd": 8.196,
+    "jpy": 1311.4
+   },
+   "high": {
+    "calls": 20,
+    "in_tok_per_call": 17340,
+    "out_tok_per_call": 11460,
+    "usd": 14.928,
+    "jpy": 2388.5
+   }
+  }
+ },
+ "total_verbatim_2models_sonnet5_sol_jpy": {
+  "low": 414.4,
+  "mid": 1005.8,
+  "high": 1853.0
+ },
+ "total_verbatim_3models_incl_astra_jpy": {
+  "low": 1450.6,
+  "mid": 3520.1,
+  "high": 6485.3
+ }
+}
