@@ -1,6 +1,7 @@
 # CURRENT_SPEC — 現在有効な正式仕様
 
 **管理ID: ER-PM-001**
+**最終更新(最新): 2026-10-11(`RISK-FLAGGER-PRODUCTION-WIRING-01` 委任_16、Family X Production経路の配線後実挙動への更新)**: 新節「Family X Production経路 — W-1 Fact Lock Writer + Risk Flagger + Review Queue」を追加し、Family X Productionの旧Fact Checker/must-fix/JA差し戻し/案B関連の旧記述に「撤去済み(2026-10-10)」注記を付した(旧記述は履歴として残置)。Status=配線済み(最終Gate判定待ち)、`PRODUCTION_WIRED`ではない。
 **最終更新: 2026-09-13(第32弾、PM-TOKEN-EFFICIENCY-TOOL-USES-REDUCTION-
 PRODUCTION-WIRING-01/PM-CLOSEOUT-CONSOLIDATION-117、PM委任文標準の
 Production配線)**: PM委任文標準(D-2、`docs/pm/PM_GOVERNANCE.md` 11節、
@@ -901,6 +902,8 @@ REMINDER_JA`はTrial-02で検証されていない未Trial追加仕様だった�
 AN3はOriginal側のみ[Trial-02=`er039`実測時と同一条件]。R1/R2は既存
 Revision指示[`REVISION_INSTRUCTIONS["r1"/"r2"]`]のみ)。
 
+**【撤去済み注記(2026-10-10、`RISK-FLAGGER-PRODUCTION-WIRING-01`)】** 本節のAN3-T0 Prompt block自体はW-1 Writer R0 Promptに含まれたまま有効(sha `067030ff…`)。ただし下記「適用path」にある「Original Fact Check must-fix retry」「R2 Fact Check must-fix retry」「通常R1/R2」(旧Writer chain)は、Family X Productionでは旧Fact Checker撤去とW-1 Writer差替えにより**撤去済み(2026-10-10)**。現行経路は新節「Family X Production経路 — W-1 Fact Lock Writer + Risk Flagger + Review Queue」を参照。
+
 **ユーザー正式思想(逐語)**: 「細かい数字・時刻・過度な精度は極力使わず、
 記事理解に本当に必要な数字だけ最小限残す。固有名詞も同様に、理解上
 必要なものだけ残す。」**「数字を0にする」とは絶対に定義しない。**
@@ -1147,6 +1150,46 @@ Twins A2「The door opened.」(3語segment、Voice境界+scene boundary保持
 
 日付: 2026-09-16。
 
+## Family X Production経路 — W-1 Fact Lock Writer + Risk Flagger + Review Queue(2026-10-10配線、`RISK-FLAGGER-PRODUCTION-WIRING-01`)
+
+**Status**: **配線済み(最終Gate判定待ち)**。`APPROVED_FOR_PRODUCTION`(ユーザー正式決定2026-10-10、`DECISION_LOG.md` 2026-10-10エントリ群)の仕様を配線した。**`PRODUCTION_WIRED`とは記載しない**(判定はFable/ユーザー。完了条件18点の照合: `er053_output/risk_flagger_production_wiring_01/completion_matrix_01.md`)。事実: 2026-10-10 main merge `3a80b77c`(`feature/factlock-rf-wiring-01`、`--no-ff`、rollback tag `rollback/pre-factlock-rf-wiring-01-20261010`=main `35406ebc`、rollbackは`git revert -m 1 3a80b77c`)。OPEN-251修正 `8ba79fdc`(後述)。本節はこの配線後のFamily X Production正式経路の実挙動を記す(根拠: `docs/pm/delegation_log/2026-10-10_RISK-FLAGGER-PRODUCTION-WIRING-01_01〜_14.md`、`docs/pm/design/2026-10-10_RISK-FLAGGER-PRODUCTION-WIRING-01_DESIGN_03.md`、実装ファイル、最終L3 `er019_output/coffee_prices/run_l3_01/`)。
+
+### 経路全体図(正式入口: `er019_family_x_entertainment_production_runner_01.py`、`--stage all`)
+
+research → verified fact ledger → `storyline_b3`(Selected Fact Brief)→ **決定論B3 producer**(`er053_b3_deterministic_producer_01.py::produce_annotated_b3`、D-full assembler+D-det v2 number marks、`llm_calls=0`、`RULE_VERSION=deterministic_v2.0`、`rules_sha256=525f2309b5212e68a5891794e7fa6194fb25cbf92f1954727c286796597910d8`、¥0/記事。呼出は`run_annotation_producer(out_dir)`の1箇所のみ=storyline_b3確定直後で、初回/regeneration/resume/再利用の全分岐を通る。注記なしB3へのfallback・switch・CLI・環境変数は存在しない)→ **注記済みB3入力契約 V1〜V10**(`er053_b3_annotation_contract_01.py::validate_annotated_b3`、fail-closed、違反は課金前STOP)→ **W-1 Writer**(`er053_family_x_factlock_ja_writer_01.py::run_w1_writer`)→ Advanced英訳(M1(a)入り)→ **Advanced RF** → Standard Level調整(入力=Advanced英文)→ **Standard RF** → Review Queue保存(各RF直後)→ Mandatory STOP(ユーザー確認前にaudioへ進まない)→ audio runner(`er019_family_x_audio_production_runner_01.py`: scaffold → TTS前3者照合guard → tts → assemble → player)。
+
+- **W-1 Writer**: R0 = `gpt-6-luna`(effort high、developer message=`DEVELOPER_MESSAGE`、単発、previous_response_idなし)。R1・R2 = `gpt-6-astra`(effort high、developer none、service_tier指定なし、previous_response_idなし)。**R2入力=R1のraw出力**(`factlock/r1.raw.md`)。routing key: `FAMILY_X_FACTLOCK_R0`/`FAMILY_X_FACTLOCK_REVISE`(`er006_model_routing_contract_01.py`、リテラル固定、`require_model`でAPI前確認)。返却model不一致はSTOP(`model_mismatch`をruntime_evidenceへ記録)。音声化禁止記号QA(案A): R0は禁止記号検出で1回だけ再生成、R2は検出時に**R2のみ同一R1 rawで1回だけ再実行**、残ればSTOP(`JASymbolCheckStopError`)。Prompt本体・Fact Lock構造・Astra Revision方式はTrialからbyte-identical移植(`verbatim_shas`をruntime_evidenceに記録、変更は`USER_DECISION_REQUIRED`)。R0の[ニュース]欄に渡す文字列=注記済みFacts+制約ブロック(`annotated.news_field_text`、R0 Prompt本体は不変)。AN3-T0(Concreteness Control)はR0 Promptに含まれたまま(`CONCRETENESS_CONTROL_AN3_BLOCK` sha `067030ff…`、runtime_evidence記録)。
+- **M1(a)**: Advanced限定・無条件ON(`er012_e_family_entertainment_two_level_runner_01.py::_advanced_in_one_line`、環境変数条件なし。日本語R2本文+Ledgerを「In one line」生成へ常に追加)。Standardは呼ばない(意図的Level非対称、Advanced英文からのLevel調整で差が伝播)。
+- **技術QAは維持**(旧Fact Checkerとは別): ASR/発音QA、clipping/headroom、KP source gate、disfluency QA、repetition QA、segment構造検証、required structure validation、TTS technical retry、音声化禁止記号QA、段落3分割retry(`_symbol_must_fix`/`_FAMILY_X_PARAGRAPH_RETRY_MUST_FIX`等の技術QA語彙)。
+
+### Risk Flagger(RF)— `er053_risk_flagger_production_01.py`
+
+- **4条件**: `gpt-6-luna` A3 / `gpt-6-luna` A4 / `gemini-3.5-flash-lite` A3 / `gemini-3.5-flash-lite` A4(逐次実行。Luna=OpenAI Responses API effort `medium`、Gemini=REST generateContent・provider既定・thinking込みoutput_tokens)。両Level(Advanced=`b1b`、Standard=`a2`)の**完成英文×完全Ledger**へ実行。routing key: `FAMILY_X_RF_LUNA`/`FAMILY_X_RF_GEMINI`。
+- **Prompt sha256**(`A3_SYSTEM_SHA256`/`A4_SYSTEM_SHA256`、import時assert。最終L3の`queue.json` `conditions[].system_prompt_sha256`と一致を確認): A3 = `9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9` / A4 = `c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01`。Trial `antenna_prompts.antenna_system(3/4)`とbyte-identical移植。
+- **OR統合+重複統合**: いずれか1条件がFlagすれば候補、同一文のFlagは1 issueに統合し`detected_by[]`(model_key/model_id/condition/confidence/raw_flag_source)を保持(`merge_issues`)。重複キー=記事ID+文ID。splitterは共通module`er053_en_sentence_splitter_01.py`(`SPLITTER_VERSION="en_split_v1"`)。
+- **非Blocking**: RFは合否判定せず、記事を書き換えず(開始/終了sha256不一致は`ArticleModifiedError`)、自動Rewrite・自動retry(RF結果起点)・自動削除なし。API技術retryのみ(transient 2回・format 1回)。**伝播する例外は`BudgetCheckStop`(予算超過)と`ArticleModifiedError`の2種のみ**。それ以外(台帳不完全`ledger_incomplete`・文0件・model contract違反・単価未登録`pricing_not_found`・全条件API失敗・想定外例外)は`status=RF_UNAVAILABLE`としてQueue/`entry_point.json`へ記録して次工程へ進む。一部条件のみ失敗は`PARTIAL`、4条件すべて成功は`OK`。Gemini A4が0件でも停止・削除・model変更しない(経過観察、`model_stats`でモデル別集計)。ChatGPT Pre評価・Pre-sorterはrunnerへ組み込まない。
+- **Review Queue**(`er053_review_queue_01.py`): `review_queue/post_en/<slug>__<run>/<level>__<rf_run_id>/{queue.json,queue.md,inputs/,raw/}`+追記専用`review_queue/post_en/index.jsonl`(`schema_version=review_queue_post_en_v1`)。GitHubから参照可能な追跡対象(読み方: `review_queue/post_en/README.md`)。**`review_state`は持たない**(判定状態はHuman Review側)。runnerにgit責務はなく、commit/pushの運用責務は`OPEN_ITEMS.md` OPEN-245(未解決)。Queue保存失敗時はout_dir配下`risk_flagger_fallback/`+WARN+`entry_point.json`。
+- **TTS前3者照合guard**(`ensure_rf_record`): scaffold時のsha256 == TTS時のsource記事sha256 == Queue記録sha256を照合。一致ならRF再実行なし(`audit/rf_tts_guard.json`に`match`/`action=verified`)、不一致またはQueueなしならその場でRFを実行しQueue保存(非Blocking)。Standard(a2)の派生元Advanced sha不一致は観測のみ(警告記録、STOPに使わない設計)。
+
+### 旧Fact Checker撤去(2026-10-10、`APPROVED_FOR_PRODUCTION`・配線済み)
+
+Family X Production正式経路(初回path+retry/fallback/regeneration/resume)から**撤去済み(2026-10-10)**: JA Original直後・**JA R2後**のFact Check+must-fix再生成+STOP、`JAFactCheckStopError`/`JARecheckRequiredError`、英訳後のLedger Deviation Check(Advanced/Standard)、MAJOR must-fix全文再生成+Hard STOP、`origin=ja_source`のJA差し戻し(案B)、M1(b)/G3(要約のみ再生成)、`fact_selection_evidence.json`読込による案B有効化、`run_writer_stage`の差し戻し機構(薄いwrapper化)。撤去28行の実施表: `docs/pm/delegation_log/2026-10-10_RISK-FLAGGER-PRODUCTION-WIRING-01_08.md` §2(R-01〜R-28)。共有関数`vfl01.run_deviation_check`+`DEVIATION_PROMPT`は旧Family A/B/C用に残置(Family X経路からの参照0、AST+spy testで固定、R-21)。Dangling Reference Check(`er053_output/risk_flagger_production_wiring_01/l3_run_01/dangling_on_main.json`): Fact Checker専用シンボル0。OPEN-233 Self-Recovery系はFamily XのProductionへ未配線のまま`SUPERSEDED`(`OPEN_ITEMS.md` OPEN-244行)。**以降の節にある旧Fact Checker/Ledger Deviation/must-fix/JA差し戻し/案B前提の記述は、Family X Productionについては本節で置換済み**(Family A/B/C等の旧経路の記述は対象外)。
+
+### U-1 / U-2(ユーザー確定2026-10-10)
+
+- **U-1**: W-1来歴のないJA記事は通常Production経路で再利用しない。`load_reused_ja_text`が`ja_writer/runtime_evidence.json`の`chain_method=="W-1"`かつ`annotated_md_sha256`が現行契約と一致する場合のみ再利用、違えば`LegacyWriterProvenanceStop`(`[STOP] U-1 LEGACY_WRITER_PROVENANCE`/`PROVENANCE_MISMATCH`)。`--regenerate-stage storyline_b3`でB3選定が変わると注記shaが変わりU-1でSTOP(自動で下流再生成しない。要否は`OPEN_ITEMS.md` OPEN-249)。audio側の旧記事TTS再生成へのU-1相当確認は未実装(OPEN-250、現状は安全側)。
+- **U-2**: `er012_e_family_entertainment_two_level_runner_01.py`単体CLIのFamily X writer経路(`--ja-article`/`--stage writer|all`/`--regenerate-stage`)は封鎖(`guard_standalone_cli`、課金・ファイル出力より前にSTOP)。残るのは`--stage ledger`のみ。正式入口は`er019_family_x_entertainment_production_runner_01.py`。
+
+### 単価登録・費用機構(fail-closed)
+
+- `er005_output/cost_baseline_01/pricing_snapshot.json`に`gemini-3.5-flash-lite`(provider=gemini、input 0.30/cached_input 0.03/output 2.50 USD per 1M、output=thinking込み)を登録。RFは最初のAPI呼出前に単価を検証し、未登録なら`RF_UNAVAILABLE(pricing_not_found)`でAPIを1回も呼ばない。
+- `er009_n1_routing_governance_10_actual_model_cost.py::PRICING_USD_PER_M`に`("openai","gpt-6-luna"): (0.10, 0.01, 0.50)`を追加(OPEN-251、commit `8ba79fdc`、pricing_snapshot登録値の転記)。audio runnerのKP選定(er030 db_hybrid)で`UnknownModelPricingError: gpt-6-luna`が出ていた潜在不具合の解消。未知modelはfail-closed維持。`gpt-6-astra`はW-1専用の別集計経路(Production予算ガードは請求照合[OPEN-246]まで係数1.0、Cap設定にマージン)。
+- audio runnerの`compute_cost_jpy_so_far`は`StopIteration`を握りつぶさず`PricingNotFoundError`へ(fail-closed)。entertainment runnerの`cost.json`はRF Geminiを含む`compute_stage_cost_breakdown_multi`(`er053_cost_aggregate_01.py`)で集計(`by_provider_jpy`・RF Level別内訳)。
+
+### 実行時evidence(最終L3、テーマ「コーヒー価格はなぜ上がっている?」、Production正式経路)
+
+`er019_output/coffee_prices/run_l3_01/`(`entry_point.json`・`ja_writer/runtime_evidence.json`・`cost.json`)、`review_queue/post_en/coffee_prices__run_l3_01/`、`er019_output/family_x_audio_production_wiring_01/coffee_prices__run_l3_01/`。Research〜Queue ¥89.05、audio ¥15.80、追加証跡(Standard再生成・tts単独)¥5.58、**L3累計¥110.43**。R0 `gpt-6-luna`/R1・R2 `gpt-6-astra`(`model_mismatch=false`)、producer `deterministic_v2`(rules_sha256上記)、RF 4条件×2 Level全て`status=OK`(`model_id_returned`が要求と一致)。b1b: 4 issue(Luna A3 2/A4 3、Gemini A3 0/A4 0)、a2: 5 issue(Luna A3 3/A4 5、Gemini A3 1/A4 1)。audio: scaffold/rf_guard(3者一致、RF再実行なし)/tts/assemble/player発火、a2 21・b1b 25 segment全OK。**未確定事項(別委任で確認中、本節では結論しない)**: (a) a2の`a2_derived_from_advanced_sha_mismatch`警告(recorded `2c627b38…` vs current b1b `5e8979df…`)、(b) `tts_generation_results.json`の`retry_count=0`表示とASR自動retry発生の関係、(c) META再生成結果。RF_UNAVAILABLE/PARTIAL・記号QA再実行・U-1 STOPはProduction正式経路での実発火は未観測(stub E2E/unit testでの検証のみ)。
+
 ## Family X(Entertainment News)音声構造 — 2026-09-26新設(ユーザー確定ルールのSSOT記録、`PM-USER-DECISIONS-SSOT-CONSOLIDATION-04`)
 
 **Status**: 本節は2026-09-26にユーザーが確定した、Family X(日本語
@@ -1239,6 +1282,7 @@ Notification音、Comment役割C1〜C4等)はFamily Aのまま無変更であり
    Advanced段まで伝播していたLedger外一般化をJA段で捕捉・解消)。固定費
    約¥2.20/記事・latency約110秒(改善候補は`OPEN_ITEMS.md` OPEN-189)。
    関連: `OPEN_ITEMS.md` OPEN-187(`CLOSED`)、OPEN-189。
+   **【撤去済み(2026-10-10、`RISK-FLAGGER-PRODUCTION-WIRING-01`)】** 上記Fact Check方針(JA Original直後+JA R2後のFull Ledger照合、must-fix retry、JA差し戻し、`JAFactCheckStopError`/`JARecheckRequiredError`)は、Family X Production正式経路から撤去した(旧Fact Checker撤去、ユーザー決定2026-10-10)。置換: W-1 Writer+Risk Flagger(新節「Family X Production経路」)。以下は履歴として残置。
 5. **ja_source MAJOR時の暫定retry拡張(案B、`APPROVED_FOR_PRODUCTION`・
    Gate 3待ち、2026-09-29追記、`FAMILY-X-REFRESH-E2E-PRODUCTION-
    WIRING-01`W6)**: English側(Advanced/Standard)のDeviation Checkが
@@ -1269,6 +1313,7 @@ Notification音、Comment役割C1〜C4等)はFamily Aのまま無変更であり
    `FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§W6/§E2E Meta
    run_03、`docs/pm/design_family_x_refresh_e2e_production_wiring_01.md`
    §9-W6、`DECISION_LOG.md`同日エントリ。
+   **【撤去済み(2026-10-10、`RISK-FLAGGER-PRODUCTION-WIRING-01`)】** 上記案B(`origin=ja_source` MAJOR時のJA差し戻し1回retry)は、Family X Productionの旧Fact Checker撤去(Deviation Check自体の撤去)により撤去済み。`run_writer_stage()`の差し戻し機構は薄いwrapperに置換。以下は履歴として残置。
 6. **新記事構造(途中Heading廃止・忠実英訳・段落境界3分割・Comment1→
    本文1→Comment2→本文2→Comment3→本文3→Comment4→In One Line・
    Heading Readout撤去・In One Line短文、`APPROVED_FOR_PRODUCTION`→
@@ -2410,6 +2455,8 @@ $0.25/$1.20、Standard tier、一次ソース`https://platform.openai.com/docs/p
 - 詳細: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md` §63。
 
 ### OPEN-233 Self-Recovery Production Flow仕様(`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`は完了条件1〜12達成後、2026-10-05、委任_09、`OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01`)
+
+**【2026-10-10注記】** 本OPEN-233 Self-Recovery系はFamily XのProductionへ未配線のまま`SUPERSEDED`(`OPEN_ITEMS.md` OPEN-244行、ユーザー決定2026-10-10: 旧Fact Checker撤去+W-1+Risk Flagger+Human Review)。以下は履歴として残置。
 
 **【2026-10-05追記(委任_18)KPI例外】Cost KPI(平均追加+¥2/Standard+Advanced 1セット以内)のみ、今回のOPEN-233についてユーザーが例外承認した(`DECISION_LOG.md` 2026-10-05「E2E-ACCEPTANCE-01」の理由1〜5を参照、本管理ID限定)。Safety KPI(重大Fact見逃し0件)とHuman Review/USER_DECISION_REQUIRED 0件は不変。Cost未達は解決済みとせず`OPEN-233-COST-REDUCTION-01`で継続。E2E PASS時の到達Statusは`VALIDATED`まで(Production未反映、`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`の自動付与なし)。**
 
