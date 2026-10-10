@@ -373,6 +373,9 @@ class ShadowNoStandardArticleTest(unittest.TestCase):      # 委任_12: EN Stand
             shutil.rmtree(d)
 
 
+@unittest.skip("LEGACY(RISK-FLAGGER-PRODUCTION-WIRING-01 C2, 2026-10-10): Trial E2E runnerの旧Checker腕(jaw.full_ledger_text/original_must_fix, "
+               "efam.open243_*/JARecheckRequiredError等)はC2で撤去したHEAD上では動かない(DESIGN_03 S3-4で承認済み)。"
+               "再現はC2適用前commit f71dbb41のworktreeで行う。")
 class StubDryRunTest(unittest.TestCase):
     def setUp(self):
         self.root = tempfile.mkdtemp()

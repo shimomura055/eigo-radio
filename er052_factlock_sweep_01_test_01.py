@@ -96,7 +96,7 @@ def _run_variant(variants, vid):
     saved = sw.apply_sweep_patches(v, state=state)
     c = FakeClient("題\n本文です。【事実1】\n")
     try:
-        res = jaw.run_ja_writer_o_r1_r2(c, "テーマ", "- 【事実1】事実。", full_ledger_text=None)
+        res = jaw.run_ja_writer_o_r1_r2(c, "テーマ", "- 【事実1】事実。")
         r0_prompt_seen = jaw.build_original_prompt("テーマ", "- 【事実1】事実。")
     finally:
         sw.restore_sweep_patches(saved)
@@ -223,7 +223,7 @@ def test_chain_cut_input_composition(variants):
         return r
     c.responses.create = create
     try:
-        res = jaw.run_ja_writer_o_r1_r2(c, "テーマ", "- 【事実1】事実。", full_ledger_text=None)
+        res = jaw.run_ja_writer_o_r1_r2(c, "テーマ", "- 【事実1】事実。")
     finally:
         sw.restore_sweep_patches(saved)
     r1, r2 = c.calls[1], c.calls[2]

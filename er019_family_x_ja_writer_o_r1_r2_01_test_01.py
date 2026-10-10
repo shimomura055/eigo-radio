@@ -3,8 +3,8 @@
 # NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01
 # ============================================================
 # er019_family_x_ja_writer_o_r1_r2_01.pyの単体テスト。実API呼び出しは
-# 行わない(writer呼び出しはfake client、Fact Check
-# [vfl01.run_deviation_check]はmock.patch.objectで直接差し替える)。
+# 行わない(writer呼び出しはfake client)。C2で旧Fact Check系testを削除し、
+# 維持対象の記号QA(技術QA)testと旧Checker不到達testに置換した。
 #
 # 実行方法:
 #   .venv/Scripts/python.exe -m unittest er019_family_x_ja_writer_o_r1_r2_01_test_01 -v
@@ -40,175 +40,81 @@ class _FakeClient:
         self.responses = _FakeResponses(outputs)
 
 
-def _check(status: str, major_devs: list | None = None,
-           all_prior_issues_resolved: bool | None = None) -> dict:
-    parsed = {"overall_status": status, "deviations": major_devs or []}
-    if all_prior_issues_resolved is not None:
-        parsed["all_prior_issues_resolved"] = all_prior_issues_resolved
-    return {"parsed": parsed,
-            "prompt": "P", "raw_text": "R", "model": "gpt-5.6-luna", "response_id": "chk_1",
-            "usage": {}, "elapsed_seconds": 0.1, "hook_aware": False}
+class FactCheckRemovedTests(unittest.TestCase):
+    """RISK-FLAGGER-PRODUCTION-WIRING-01 C2(2026-10-10): 旧Fact Checker(Original直後/R2直後の台帳照合・
+    指摘起点の再生成・Fact用STOP例外)は物理削除済み。Luna連鎖(Trial互換)は3回のcallで完結する。"""
 
-
-def _major(fact_id="F1"):
-    return {"claim_in_article": "claim", "issue": "issue", "severity": "MAJOR",
-            "explanation": "expl", "related_fact_id": fact_id}
-
-
-class BackwardCompatNoLedgerTests(unittest.TestCase):
-    def test_no_full_ledger_text_skips_fact_check_entirely(self):
+    def test_chain_makes_exactly_three_calls_and_never_calls_old_checker(self):
         client = _FakeClient([
             _fake_response("Original text", response_id="r_orig"),
             _fake_response("R1 text", response_id="r_r1"),
             _fake_response("R2 text", response_id="r_r2"),
         ])
-        with mock.patch.object(jaw.vfl01, "run_deviation_check") as m_check:
+        with mock.patch.object(jaw.vfl01, "run_deviation_check", side_effect=AssertionError("old checker")) as m_check:
             result = jaw.run_ja_writer_o_r1_r2(client, "storyline", "brief text")
         m_check.assert_not_called()
         self.assertEqual(len(client.responses.calls), 3)
-        self.assertNotIn("fact_checks", result)
         self.assertEqual(result["final_text"], "R2 text")
+        self.assertNotIn("fact_checks", result)
+
+    def test_removed_symbols_are_gone(self):
+        for name in ("build_must_fix_block", "JAFactCheckStopError", "_major_deviations", "_must_fix_from_deviations"):
+            self.assertFalse(hasattr(jaw, name), name)
+
+    def test_build_original_prompt_has_no_fact_check_args(self):
+        import inspect
+        params = list(inspect.signature(jaw.build_original_prompt).parameters)
+        self.assertEqual(params, ["storyline_line", "selected_fact_brief_text"])
+        self.assertEqual(list(inspect.signature(jaw.run_ja_writer_o_r1_r2).parameters),
+                         ["client", "storyline_line", "selected_fact_brief_text"])
 
 
-class OriginalFactCheckTests(unittest.TestCase):
-    def test_original_pass_no_must_fix(self):
+class SymbolQaMaintainedTests(unittest.TestCase):
+    """技術QA T-01/T-02(音声化禁止記号Validator、検出時1回再生成->なお残ればSTOP)は維持(JASymbolCheckStopErrorへ分離)。"""
+
+    BAD = "これはテスト（括弧）です。"      # 全角括弧=禁止記号
+    GOOD = "これはテストです。"
+
+    def test_original_symbol_regenerates_once_then_passes(self):
         client = _FakeClient([
-            _fake_response("Original text", response_id="r_orig"),
+            _fake_response(self.BAD, response_id="r_orig"),
+            _fake_response(self.GOOD, response_id="r_orig2"),      # 記号再生成
             _fake_response("R1 text", response_id="r_r1"),
             _fake_response("R2 text", response_id="r_r2"),
         ])
-        with mock.patch.object(jaw.vfl01, "run_deviation_check",
-                                side_effect=[_check("LEDGER_COMPLIANT"), _check("LEDGER_COMPLIANT")]) as m_check:
-            result = jaw.run_ja_writer_o_r1_r2(client, "storyline", "brief text",
-                                                full_ledger_text="FULL LEDGER TEXT")
-        self.assertEqual(m_check.call_count, 2)
-        self.assertEqual(len(client.responses.calls), 3)
-        self.assertFalse(result["fact_checks"]["original"]["must_fix_applied"])
-        self.assertFalse(result["fact_checks"]["r2"]["must_fix_applied"])
-        self.assertEqual(result["stages"]["original"]["text"], "Original text")
-
-    def test_original_major_then_must_fix_then_pass(self):
-        client = _FakeClient([
-            _fake_response("Original text", response_id="r_orig"),
-            _fake_response("Original text FIXED", response_id="r_orig_mf"),
-            _fake_response("R1 text", response_id="r_r1"),
-            _fake_response("R2 text", response_id="r_r2"),
-        ])
-        with mock.patch.object(jaw.vfl01, "run_deviation_check",
-                                side_effect=[
-                                    _check("LEDGER_DEVIATION", [_major()]),
-                                    _check("LEDGER_COMPLIANT", all_prior_issues_resolved=True),
-                                    _check("LEDGER_COMPLIANT"),
-                                ]) as m_check:
-            result = jaw.run_ja_writer_o_r1_r2(client, "storyline", "brief text",
-                                                full_ledger_text="FULL LEDGER TEXT")
-        self.assertEqual(m_check.call_count, 3)
+        result = jaw.run_ja_writer_o_r1_r2(client, "storyline", "brief")
         self.assertEqual(len(client.responses.calls), 4)
-        self.assertTrue(result["fact_checks"]["original"]["must_fix_applied"])
-        self.assertEqual(result["stages"]["original"]["text"], "Original text FIXED")
-        self.assertEqual(result["stages"]["original"]["response_id"], "r_orig_mf")
-        self.assertEqual(len(result["fact_checks"]["original"]["must_fix_used"]), 1)
-        self.assertEqual(result["fact_checks"]["original"]["must_fix_used"][0]["fact_id"], "F1")
-        # R1がmust-fix後のresponse_idから連鎖していること(previous_response_id)。
-        r1_call = client.responses.calls[2]
-        self.assertEqual(r1_call["previous_response_id"], "r_orig_mf")
-        # retry checkにはprior_issues(前回のmust_fix内容)が渡されていること。
-        retry_check_kwargs = m_check.call_args_list[1].kwargs
-        self.assertEqual(len(retry_check_kwargs.get("prior_issues")), 1)
+        self.assertTrue(result["stages"]["original"]["symbol_must_fix_applied"])
+        self.assertEqual(result["stages"]["original"]["text"], self.GOOD)
 
-    def test_original_major_persists_raises_stop_error(self):
+    def test_original_symbol_persists_raises_symbol_stop(self):
+        client = _FakeClient([_fake_response(self.BAD, response_id="a"), _fake_response(self.BAD, response_id="b")])
+        with self.assertRaises(jaw.JASymbolCheckStopError) as cm:
+            jaw.run_ja_writer_o_r1_r2(client, "storyline", "brief")
+        self.assertEqual(cm.exception.stage, "original_symbol")
+        self.assertIn("JA_SYMBOL_CHECK_STOP", str(cm.exception))
+        self.assertEqual(len(client.responses.calls), 2)           # 再生成は1回のみ(上限不変)
+        self.assertTrue(cm.exception.findings)
+
+    def test_r2_symbol_regenerates_once_then_passes(self):
         client = _FakeClient([
-            _fake_response("Original text", response_id="r_orig"),
-            _fake_response("Original text STILL BAD", response_id="r_orig_mf"),
+            _fake_response(self.GOOD, response_id="o"),
+            _fake_response("R1 text", response_id="r1"),
+            _fake_response(self.BAD, response_id="r2"),
+            _fake_response(self.GOOD, response_id="r2b"),
         ])
-        with mock.patch.object(jaw.vfl01, "run_deviation_check",
-                                side_effect=[
-                                    _check("LEDGER_DEVIATION", [_major()]),
-                                    _check("LEDGER_DEVIATION", [_major()]),
-                                ]):
-            with self.assertRaises(jaw.JAFactCheckStopError) as ctx:
-                jaw.run_ja_writer_o_r1_r2(client, "storyline", "brief text",
-                                           full_ledger_text="FULL LEDGER TEXT")
-        self.assertEqual(ctx.exception.stage, "original")
-        self.assertEqual(ctx.exception.rejected_text, "Original text STILL BAD")
+        result = jaw.run_ja_writer_o_r1_r2(client, "storyline", "brief")
+        self.assertEqual(result["final_text"], self.GOOD)
+        self.assertTrue(result["stages"]["r2"]["symbol_must_fix_applied"])
 
-    def test_original_overall_compliant_but_prior_issue_unresolved_still_stops(self):
-        # NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01 要件3: overall_status
-        # だけがLEDGER_COMPLIANTでも、prior_issues_resolvedが未解消ならSTOPする
-        # (Checkerの自己申告overall_statusだけに頼らない安全側判定)。
+    def test_r2_symbol_persists_raises_symbol_stop(self):
         client = _FakeClient([
-            _fake_response("Original text", response_id="r_orig"),
-            _fake_response("Original text STILL BAD", response_id="r_orig_mf"),
+            _fake_response(self.GOOD, response_id="o"), _fake_response("R1 text", response_id="r1"),
+            _fake_response(self.BAD, response_id="r2"), _fake_response(self.BAD, response_id="r2b"),
         ])
-        with mock.patch.object(jaw.vfl01, "run_deviation_check",
-                                side_effect=[
-                                    _check("LEDGER_DEVIATION", [_major()]),
-                                    _check("LEDGER_COMPLIANT", all_prior_issues_resolved=False),
-                                ]):
-            with self.assertRaises(jaw.JAFactCheckStopError) as ctx:
-                jaw.run_ja_writer_o_r1_r2(client, "storyline", "brief text",
-                                           full_ledger_text="FULL LEDGER TEXT")
-        self.assertEqual(ctx.exception.stage, "original")
-        self.assertEqual(len(ctx.exception.checks), 2)
-
-
-class R2FactCheckTests(unittest.TestCase):
-    def test_r2_major_then_must_fix_then_pass(self):
-        client = _FakeClient([
-            _fake_response("Original text", response_id="r_orig"),
-            _fake_response("R1 text", response_id="r_r1"),
-            _fake_response("R2 text", response_id="r_r2"),
-            _fake_response("R2 text FIXED", response_id="r_r2_mf"),
-        ])
-        with mock.patch.object(jaw.vfl01, "run_deviation_check",
-                                side_effect=[
-                                    _check("LEDGER_COMPLIANT"),  # original
-                                    _check("LEDGER_DEVIATION", [_major()]),  # r2 attempt1
-                                    _check("LEDGER_COMPLIANT", all_prior_issues_resolved=True),  # r2 attempt2
-                                ]) as m_check:
-            result = jaw.run_ja_writer_o_r1_r2(client, "storyline", "brief text",
-                                                full_ledger_text="FULL LEDGER TEXT")
-        self.assertEqual(m_check.call_count, 3)
-        self.assertEqual(len(client.responses.calls), 4)
-        self.assertTrue(result["fact_checks"]["r2"]["must_fix_applied"])
-        self.assertEqual(result["stages"]["r2"]["text"], "R2 text FIXED")
-        self.assertEqual(result["final_text"], "R2 text FIXED")
-        # must-fix retryはR1からのrevisionとして連鎖する(previous_response_id=r1のid)。
-        must_fix_call = client.responses.calls[3]
-        self.assertEqual(must_fix_call["previous_response_id"], "r_r1")
-        retry_check_kwargs = m_check.call_args_list[2].kwargs
-        self.assertEqual(len(retry_check_kwargs.get("prior_issues")), 1)
-
-    def test_r2_major_persists_raises_stop_error(self):
-        client = _FakeClient([
-            _fake_response("Original text", response_id="r_orig"),
-            _fake_response("R1 text", response_id="r_r1"),
-            _fake_response("R2 text", response_id="r_r2"),
-            _fake_response("R2 text STILL BAD", response_id="r_r2_mf"),
-        ])
-        with mock.patch.object(jaw.vfl01, "run_deviation_check",
-                                side_effect=[
-                                    _check("LEDGER_COMPLIANT"),
-                                    _check("LEDGER_DEVIATION", [_major()]),
-                                    _check("LEDGER_DEVIATION", [_major()]),
-                                ]):
-            with self.assertRaises(jaw.JAFactCheckStopError) as ctx:
-                jaw.run_ja_writer_o_r1_r2(client, "storyline", "brief text",
-                                           full_ledger_text="FULL LEDGER TEXT")
-        self.assertEqual(ctx.exception.stage, "r2")
-        self.assertEqual(ctx.exception.rejected_text, "R2 text STILL BAD")
-
-
-class BuildMustFixBlockTests(unittest.TestCase):
-    def test_block_contains_fact_id_claim_issue_explanation_and_ledger(self):
-        must_fix = [{"fact_id": "F1", "claim_in_article": "claim-X", "issue": "issue-X",
-                     "explanation": "expl-X"}]
-        block = jaw.build_must_fix_block(must_fix, "FULL LEDGER TEXT HERE")
-        self.assertIn("F1", block)
-        self.assertIn("claim-X", block)
-        self.assertIn("issue-X", block)
-        self.assertIn("expl-X", block)
-        self.assertIn("FULL LEDGER TEXT HERE", block)
+        with self.assertRaises(jaw.JASymbolCheckStopError) as cm:
+            jaw.run_ja_writer_o_r1_r2(client, "storyline", "brief")
+        self.assertEqual(cm.exception.stage, "r2_symbol")
 
 
 if __name__ == "__main__":

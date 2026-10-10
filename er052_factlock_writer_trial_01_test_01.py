@@ -48,7 +48,7 @@ def test_prompt_injection_reaches_r0_r1_r2_and_restores():
     saved = h.apply_factlock_patches()
     try:
         c = FakeClient()
-        res = jaw.run_ja_writer_o_r1_r2(c, "テーマ", "- 【事実1】事実。", full_ledger_text=None)
+        res = jaw.run_ja_writer_o_r1_r2(c, "テーマ", "- 【事実1】事実。")
         users = [_user_text(k) for k in c.calls]
         assert len(users) == 3
         assert "【出典タグの規則(Fact Lock)】" in users[0]

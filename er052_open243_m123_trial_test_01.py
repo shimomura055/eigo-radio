@@ -36,6 +36,7 @@ class M1Tests(unittest.TestCase):
             os.environ["OPEN243_M1"] = "1"
             self.assertTrue(adv.open243_m1_enabled())
 
+    @unittest.skip("LEGACY(RISK-FLAGGER-PRODUCTION-WIRING-01 C2, 2026-10-10): 対象関数は旧Fact Checker撤去(案P)でer012_eから物理削除された。再現はC2適用前commit f71dbb41のworktreeで行う。")
     def test_majors_only_in_summary(self):
         body = "Meta tested a feature. Contract workers made calls."
         summ = "Meta paused a calling feature after contract workers made calls without informing users."
@@ -49,6 +50,7 @@ class M1Tests(unittest.TestCase):
         self.assertFalse(runner.open243_majors_only_in_summary(short, summ, body))
         self.assertFalse(runner.open243_majors_only_in_summary([], summ, body))
 
+    @unittest.skip("LEGACY(RISK-FLAGGER-PRODUCTION-WIRING-01 C2, 2026-10-10): 対象関数は旧Fact Checker撤去(案P)でer012_eから物理削除された。再現はC2適用前commit f71dbb41のworktreeで行う。")
     def test_summary_only_retry_success_and_failure(self):
         def fake_iol(client, title, body, **kw):
             return {"text": "S-new", "model": "m", "usage": {}}
@@ -74,6 +76,7 @@ class M1Tests(unittest.TestCase):
             self.assertEqual(g.call_count, 2)  # 最大2回
             self.assertEqual(r["reason"], "unresolved_after_max_attempts")
 
+    @unittest.skip("LEGACY(RISK-FLAGGER-PRODUCTION-WIRING-01 C2, 2026-10-10): 対象関数は旧Fact Checker撤去(案P)でer012_eから物理削除された。再現はC2適用前commit f71dbb41のworktreeで行う。")
     def test_g3_translation_minor_gated_by_env(self):
         dev = {"parsed": {"deviations": [{"severity": "MINOR", "origin": "translation", "claim_in_article": "c",
                                           "changed_number": True}]}}
@@ -157,6 +160,7 @@ class M3Tests(unittest.TestCase):
 
 
 class G3TelemetryTests(unittest.TestCase):
+    @unittest.skip("LEGACY(RISK-FLAGGER-PRODUCTION-WIRING-01 C2, 2026-10-10): 対象関数は旧Fact Checker撤去(案P)でer012_eから物理削除された。再現はC2適用前commit f71dbb41のworktreeで行う。")
     def test_translation_minor_written_when_path_set(self):
         import json
         import tempfile
