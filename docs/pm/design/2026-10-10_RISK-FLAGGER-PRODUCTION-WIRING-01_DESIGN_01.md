@@ -490,3 +490,68 @@ PRODUCTION_WIRED判定にはL2以上が必要(「実Production正式pathで1記�
 - 費用実測: `compute_stage_cost_breakdown`/`compute_cost_jpy_so_far`を既存`raw_usage_log.jsonl`へread-only実行、`a4_dualmodel_or_trial_01/runs/*/A*.json`の`cost_jpy`合算、`COST_STAGE_R.md`・`AGGREGATE.md`§7。
 - .gitignore: `git check-ignore -v`(4候補path、rc=1=非ignore)、`git ls-files`件数(`er019_output`1,034、`er052_output`17,302)。
 - 委任文保存・検証(T-0): `docs/pm/delegation_log/2026-10-10_RISK-FLAGGER-PRODUCTION-WIRING-01_01.md`+`_check.json`(**FAIL**: 本委任文がテンプレート見出し構成[性質/事前指定Read/実行コマンド全文/SSOT追記文、固定ブロックE-1/D-1/G-1/F-1]を持たないため。作業は継続、非ブロッキング運用)。
+
+---
+
+## 14. Opus独立レビュー結果(2026-10-10)
+
+(条件A新構造設計+条件C重要変更のProduction採用提案前。本節は追記のみで、1〜13節および旧14節(付録)は変更しない。旧付録と節番号が重複するが、指示どおりこの見出しで追記する。)
+
+**総合: 条件付き同意。** 撤去棚卸(R-01〜R-22)はコードで確認済みで、技術QAを壊す削除はない。
+
+### 論点1(撤去範囲): 同意+補足
+- T-17/T-18(`er019_family_x_storyline_b3_fact_selection_01.py` のFact ID整合STOP L20-23/L242、research_ledger の `run_verification_for_topic`)を「維持」と明記すべき。
+- `_open243_iol`(efam L459-464): 環境変数`OPEN243_M1`依存をProduction経路から外し、常にM1なしで呼ぶ。adv_gen側M1 promptはTrial用として残置。
+
+### 論点2(撤去方式): 案P同意、ただし凍結コピーは不可
+- 凍結コピーはimport先が現行ツリーのため凍結にならず、同名モジュール取り違えリスクがある。
+- 代替: 撤去直前commitにgit tag、旧腕再現はgit worktree。
+- Trial影響: `er052_open233_self_recovery_flow_runner_01.py` は影響なし。`er052_factlock_astra_e2e_runner_01.py` はL896-914 monkeypatch/L372 `_SCRIPTS` shaにより再開時STOP(tag固定で足りる)。
+
+### 論点3(段階導入): 段階案を推奨
+1. RF+Queue配線、Checker維持、runtime evidence取得
+2. 旧Writer既存記事(`audit/deviation_checks/*.json`あり)にRFをL1で数本実行し、旧Checker MAJORとRF Flagの一致度を測る(1本約JPY0.75)
+3. Checker撤去
+4. 新Writer配線は別ID
+
+RF追加とChecker撤去は触るファイルが重ならず、分割の手戻りなし。
+
+### 論点4(挿入位置・UNAVAILABLE等): 修正必須あり
+- audio runnerの`all`はplanを含まない(L1876, L1892-1932)ため、個別stage実行でrisk_flagが抜ける。tts直前に「article.md sha256に一致するQueueレコードがあるか、なければその場でRF実行(非Blocking)」の保険が必須。
+- 挿入位置: entertainment runner末尾(Standard完了直後・Mandatory STOP L396の前)を主、audio側tts前を保険。
+- RF_UNAVAILABLE: WARN表示+`entry_point.json`記録+MODEL_STATSのUNAVAILABLE件数+報告時列挙を必須。
+- 台帳完全性assert不一致→RF_UNAVAILABLE(ledger_incomplete)は妥当。実装前に既存`er019_output`配下の`verified_fact_ledger.txt`全件をJPY0走査するテストを追加。
+- S-5(有界API技術retry)に同意。
+
+### 論点5(Review Queue schema): 条件付き
+- levelは記事レベル(b1b/a2)で、A3/A4はdetected_by側。同一文のA3/A4は1 issueに統合される(正)。フィールドは`article_level`へ改名推奨。
+- 修正: (a) pathにlevelが無い→1path=1levelか同居かを確定 (b) issue_idに`article_sha256`先頭8桁またはrf run_idを含める (c) `review_state=UNREVIEWED`固定は誤解を招く→削除、または書き戻し先を別ファイル定義 (d) 全文ID対応表`inputs/sentences.json`と台帳全文をQueueに同梱。
+- S-9: push漏れ検知(git status/ls-files)をCloseout必須化。`index.jsonl`追記はlock/単一process。保存pathは`__file__`基準。
+
+### 論点6(splitter共通化): 同意
+新モジュール追加、既存(A)(B)(C)は無変更。golden test(略語33語)+`splitter_version`記録。S-7は実害小だが、LLMへ渡すsentence listが変わる点を報告に明記する。
+
+### 論点7(費用計測): 事実誤認の修正必須
+- audio runnerの`compute_cost_jpy_so_far`は単価未登録を0円扱い=fail-open(L1557-1564、`cost_usd`があれば採用 L1554)。efam側はfail-closed(L148-151)で`cost_usd`無視。RFレコードがentertainment out_dirにあると`--regenerate-stage`→`assert_budget_ok`で`PricingNotFoundError` STOPとなり、設計6-2と矛盾する。
+- 最小修正: Gemini単価登録をPhase 2前提条件とする。単価キーはpinしたmodel_id(返却model_idは別フィールド)。output_tokens=candidates+thoughts、`cost_usd`併記。LunaはSDK patchが自動記録(cost_logger L110-146)のため二重記録しない。`er005_cost_logger`の`_CONTEXT`がglobal(L42/L79)のため、4条件は逐次実行(約25秒/記事)か、競合解消後に並列。
+
+### 論点8(runtime evidence・その他)
+- L2は`ja_writer/`をコピーするとJA再利用分岐(er019 entertainment runner L354-357)でjaw(R-01〜R-05)を通らない。research_ledgerとstoryline_b3のみ再利用しJA再生成(+約JPY3.5)。古い`audit/deviation_checks`をコピーしない(R10誤判定防止)。
+- RF前後で`article.md` sha256不変をassert+テスト。
+- Queue保存失敗時はTTS継続+out_dir fallback+WARN+`entry_point.json`記録、except範囲を明記。古いQueue検知はtts前sha照合。
+- a2はAdvancedから別LLMで書き直し(efam L617)のため、Checker撤去+RFがAdvancedのみだとa2を見る網がゼロ(S-3判断材料)。
+- 残留リスク(記録のみ): 旧Checkerの「EN対JA翻訳一致」観点(`source_article_text=ja_text`)はRFでは代替されない。
+
+### 実装前必須修正8点
+1. T-17/T-18の「維持」明記と`_open243_iol`のM1非依存化(論点1)
+2. 凍結コピー案を撤回し、git tag+git worktreeへ変更(論点2)
+3. audio側tts前のQueue sha照合+必要時RF実行の保険(論点4)
+4. RF_UNAVAILABLEの可視化4点(WARN/entry_point.json/MODEL_STATS/報告列挙)と、台帳全件JPY0走査テスト(論点4)
+5. Queue schema修正(a)〜(d)(論点5)
+6. S-9運用: push漏れ検知、index.jsonl排他、`__file__`基準path(論点5)
+7. 費用計測の修正(Gemini単価登録の前提化、fail-open/closed不整合解消、二重記録回避、逐次実行)(論点7)
+8. L2手順(ja_writer非コピー、古いdeviation_checks非コピー、article.md sha不変assert、Queue保存失敗時の扱い)(論点8)
+
+### ユーザー判断
+- **S-1 / S-3 / D-1**: ユーザー判断が必要。
+- S-2 / S-10: 設計書推奨の確認で足りる。
