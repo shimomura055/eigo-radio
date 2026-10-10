@@ -1,0 +1,25 @@
+管理ID: RISK-FLAGGER-PRODUCTION-WIRING-01(ユーザー起票 2026-10-10)。委任_01 = **Phase 1: 棚卸・設計のみ。Productionコード・CURRENT_SPEC・Promptの変更禁止。課金APIコール0件。pip install禁止。** 成果物は設計書と棚卸表。Phase 2(実装)はOpus独立レビュー(条件A/C)とFable照合後に別委任。
+
+## ユーザー正式決定(APPROVED_FOR_PRODUCTION、今回PRODUCTION_WIREDまで配線する対象)
+英訳完了後・TTS開始前に Risk Flagger 4条件(Luna A3 / Luna A4 / Gemini 3.5 Flash-Lite A3 / Gemini 3.5 Flash-Lite A4)を実行し、OR統合(1つでもFlagすれば候補)・重複統合(1 issueに detected_by 等の元情報を保持)し、Repo上のReview Queueへ保存(GitHubからChatGPTがread-only参照できること必須、ローカル専用禁止)。Risk Flaggerは非Blocking・自動Rewriteなし・自動retryなし・自動削除なし。ChatGPT Pre評価をrunnerへAPI組み込みしない(Pre-sorter TrialはProduction配線しない)。旧Fact Checker(Fact Ledger比較によるBLOCK/Rewrite/retry/regeneration)はProduction正式経路(初回path+retry/fallback/regeneration)から撤去。技術QA(TTS失敗検知/TTS technical retry/ASR・発音QA/disfluency QA/segment構造検証/required structure validation/Key Phrase構造・source整合/音声欠落検知/manifest・artifact整合)は維持。Gemini A4が0件でも停止・削除・モデル変更しない(経過観察、モデル別集計可能にする)。
+
+## Phase 1でやること(すべて読み取り・設計)
+1. **Production正式経路の特定**: CURRENT_SPEC.md の「Production経路」「PRODUCTION_WIRED」行を根拠に、現在の正式runner群(例: er012_b_family_production_runner_01.py / er013_family_c_production_runner_01.py / er019_family_x_entertainment_production_runner_01.py / er003_discovery_focus_staged_production_01.py 等)と、Fact Lock Writer(新Writer)・OPEN-233 Checker・Fact Check(ja_original_check)・Deviation Check・翻訳(EN)・TTS の呼び出し順序を、runnerごとに「stage順序表」にする。どのrunnerが「新Writer」経路でFact Checkerを呼んでいるか、OPEN-233 Checker Floor Production E2E(docs/pm/delegation_log/2026-10-06_OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01_*)でどこへ配線されたかを事実で特定。
+2. **旧Fact Checker撤去対象の棚卸表**(ファイル:関数:行番号、到達経路=初回/retry/fallback/regeneration/resume、動作=BLOCK/Hard STOP/must-fix retry/local rewrite/full rewrite/recheck/ja差し戻し、トリガー語=Stage1/Stage2/reclassify/MAJOR/JA_RECHECK_REQUIRED/must-fix/Deviation Check/origin=ja_source 等)。ユーザー列挙8項目を最低限カバー。
+3. **技術QA維持対象の棚卸表**(同形式)と、2.との境界が「コード上明確か」の判定。境界不明箇所があれば具体的に列挙(STOP候補)。
+4. **既存sentence splitter**: Risk Flagger側(post_en_trial_01 等の英語splitter、FIX02 splitter)と `vs_sentence_segments_l6()`(所在ファイル・略語リスト)の実装差。Trialで「ensuring U.S.」が文末誤認で切れた事実をartifact(post_en_trial_01 / a4_dualmodel_or_trial_01 の sentences/flags)で確認し、該当記事ID・文IDを記録(確認できなければ「未確認」)。共通化案(既存実装の再利用 or 共通モジュール化)と他Production経路への影響範囲。
+5. **Review Queue保存先**: 既存の human_review_queue 系(例: er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl)・HUMAN_REVIEW_*.md・.gitignore ルール(er0XX_output の追跡状況)を調査し、GitHubから参照可能(追跡対象、ignore対象外)な保存先候補を2〜3案(既存流用/新設 review_queue/post_en/ 等)と、1 issueの必須フィールド(article_id/sentence_id/sentence text/surrounding context/related Fact ID/Fact本文/Flag理由/detected_by(model×A3/A4×confidence)/raw flag source path/generated timestamp/run id)のJSON+Markdown schema案。重複統合キー(記事ID+文ID、MATCHING_RULE_01.md準拠)。
+6. **外部API障害時ルール**: 既存Productionの外部API障害ルール(OpenAI/Gemini/TTSのtransient retry・fallback方針、CURRENT_SPEC/PM_GOVERNANCE該当箇所)を引用し、Risk Flagger技術障害時の最小設計案(例: 既存transient retry後も失敗なら「RF_UNAVAILABLE」をQueueに記録してTTSへ進む、STOPしない)。
+7. **Risk Flagger Production入力の同一性**: Trial入力(英語稿全文+完全台帳+A3/A4 Prompt sha 9d995042…/c87b95e5…+schema)がProduction経路で同じ意味で構築できるか(Production側の英語稿・台帳の所在、`[AMBIGUOUS - …]`見出しのparser問題(FIX01)がProduction台帳にも該当するか、完全台帳の保証方法)。意味的に異なる点があれば列挙(STOP候補)。
+8. **Model routing**: Luna actual model_id のruntime記録方法、gemini-3.5-flash-lite 固定(環境変数/定数)、runtime evidence(model_id/call count/cost/error・retry/flag count、モデル別集計: articles processed/A3 flag count/A4 flag count/unique issue count/overlap count/zero-flag article count)の記録設計。記事単価参考値(Luna ¥0.31/記事、Gemini ¥0.43/記事、合計¥0.75/記事)。
+9. **Dangling reference候補**: 撤去後に孤立する参照(retry/fallback/error handling/docs/tests/Prompt/validator/runtime switch)の候補一覧。Trial/DEV artifactに残すものと、Production到達不能にすべきものの区分。
+10. **既存APPROVED項目との整合**: R0後Hard STOP撤去/翻訳後Hard STOP撤去/新Writer+Checkerなし+A3/A4+Human Review(OPEN-244)/A3+A4英訳後配置=VALIDATED と矛盾しないか。OPEN-233 の現Status・superseded関係の整理案(変更はしない)。
+11. **Runtime evidence計画**: 実Production正式pathで1記事以上を通す必要がある。新規記事はテーマをFable/Claudeが決めない(PM_GOVERNANCE 13節)ため、ユーザー選定用のテーマ候補3〜5件(英語・日本語・短い理由)を提示。加えて、既存記事のregen経路で検証できる場合はその案(対象記事・経路)も併記。1記事あたりの見積(新Writer+翻訳+RF 4call+TTS)は既存実測を根拠に(推測禁止、根拠行を明記)。
+12. **実装計画(Phase 2)**: 変更ファイル一覧・変更種別(追加/削除/無効化)・影響範囲・テスト(splitter regression: "U.S. officials"/"U.K. government"/"Mr. Trump"/"Dr. Smith"/"Jan. 5" が途中分割されない+通常文末分割、retry/fallback経路で旧Checker不到達のstatic test、Review Queue保存test)・Gate 3チェックリスト(Static 8項目/Runtime 11項目/Model evidence)。
+13. 成果物: docs/pm/design/2026-10-10_RISK-FLAGGER-PRODUCTION-WIRING-01_DESIGN_01.md(上記1〜12)、委任ログ docs/pm/delegation_log/2026-10-10_RISK-FLAGGER-PRODUCTION-WIRING-01_01.md、ACTIVE_TASK.md固定ヘッダ(前タスク群保持)、RESULT_PACKET.md。commit/push(今回分のみ明示add、-A/-f禁止)。hash と raw URL。
+
+## STOP(設計書に「STOP候補」として明記しFableへ)
+旧Checkerと技術QAの境界がコード上不明/Production入力がTrial入力と意味的に異なる/A3/A4 Prompt変更なしに配線できない/Review QueueをGitHub追跡対象にできない/retry・fallbackに設計判断が必要な旧Checker依存/splitter共通化が他経路へ大きく影響/新しい仕様判断が必要。該当があっても設計書は完成させて報告する(勝手に新仕様を作らない)。
+
+## 報告(RESULT_PACKET.md)
+runner別stage順序表の要約、撤去対象件数・技術QA件数・境界判定、splitter事実、Review Queue推奨案、入力同一性の結論、STOP候補一覧、テーマ候補、Phase 2変更ファイル一覧と規模、設計書URL。
