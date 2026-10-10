@@ -207,12 +207,62 @@ def compute_unchanged_ratio(original_text: str, rewritten_text: str) -> float:
 
 
 LOCAL_REWRITE_MIN_UNCHANGED_RATIO = 0.7
-FULL_SEGMENT_PREFIX_CHECK_CHARS = 15
+# OPEN-256(2026-10-11 APPROVED_FOR_PRODUCTION): 旧実装は「先頭15文字一致」で
+# 全文性を判定しており、問題語が文頭付近にある候補("Some Muse calls ..."
+# -> "Certain Muse calls ...")を機械的に拒否していた。位置非依存の全文性検証へ
+# 置換する(断片・置換句のみ・不完全文・過度変更は引き続き拒否)。
+# しきい値根拠: er011_output/local_rewrite_recovery/** の実候補90件
+# (OPEN256_DESIGN_01.md)。他の7 Gate(特にGate 6/7)は不変で、これは追加の前段。
+FULL_SEGMENT_MIN_ORIG_COVERAGE = 0.6   # 原文トークンの保持率下限(Gate7の0.7より緩い床、断片拒否用)
+FULL_SEGMENT_MIN_LENGTH_RATIO = 0.7    # 候補文字数/原文文字数の下限(断片・途中切れ拒否)
+FULL_SEGMENT_MAX_LENGTH_RATIO = 1.5    # 同上限(過剰追記拒否)
+FULL_SEGMENT_TERMINAL_CHARS = ".!?。！？…"  # 文終端(半角/全角)
+_CLOSERS = "\"'”’)」』）]"
+
+
+def _strip_closers(text: str) -> str:
+    return text.rstrip().rstrip(_CLOSERS).rstrip()
+
+
+def _coverage_tokens(text: str) -> list:
+    words = _WORD_RE.findall(text.lower())
+    if words:
+        return words
+    # 日本語等(ASCII語が無い)は文字単位
+    return [ch for ch in text if not ch.isspace()]
+
+
+def diagnose_candidate_full_segment(canonical_text: str, rewritten_segment: str) -> dict:
+    """位置非依存の全文性検証。reasonは判定理由コード(record用)。
+    ok=Trueでも他の7 Gateは別途必須(これは全文性のみ)。"""
+    orig = (canonical_text or "").strip()
+    cand = (rewritten_segment or "").strip()
+    if not orig or not cand:
+        return {"ok": False, "reason": "EMPTY"}
+    ratio = len(cand) / len(orig)
+    info = {"length_ratio": round(ratio, 4)}
+    if cand in orig and cand != orig:
+        return {"ok": False, "reason": "FRAGMENT_SUBSTRING_OF_ORIGINAL", **info}
+    if ratio < FULL_SEGMENT_MIN_LENGTH_RATIO:
+        return {"ok": False, "reason": "TOO_SHORT_FRAGMENT", **info}
+    if ratio > FULL_SEGMENT_MAX_LENGTH_RATIO:
+        return {"ok": False, "reason": "TOO_LONG_OVER_EXPANDED", **info}
+    o_end = _strip_closers(orig)[-1:]
+    c_end = _strip_closers(cand)[-1:]
+    if (o_end in FULL_SEGMENT_TERMINAL_CHARS) != (c_end in FULL_SEGMENT_TERMINAL_CHARS):
+        return {"ok": False, "reason": "TERMINAL_PUNCTUATION_MISMATCH", **info}
+    o_tok = _coverage_tokens(orig)
+    c_tok = _coverage_tokens(cand)
+    sm = difflib.SequenceMatcher(None, o_tok, c_tok, autojunk=False)
+    coverage = sum(b.size for b in sm.get_matching_blocks()) / max(1, len(o_tok))
+    info["orig_coverage"] = round(coverage, 4)
+    if coverage < FULL_SEGMENT_MIN_ORIG_COVERAGE:
+        return {"ok": False, "reason": "LOW_ORIGINAL_COVERAGE_OVER_MODIFIED_OR_UNRELATED", **info}
+    return {"ok": True, "reason": "FULL_SEGMENT_OK", **info}
 
 
 def validate_candidate_is_full_segment(canonical_text: str, rewritten_segment: str) -> bool:
-    return (rewritten_segment[:FULL_SEGMENT_PREFIX_CHECK_CHARS].strip().lower()
-            == canonical_text[:FULL_SEGMENT_PREFIX_CHECK_CHARS].strip().lower())
+    return diagnose_candidate_full_segment(canonical_text, rewritten_segment)["ok"]
 
 
 def _extract_json_object(raw_text: str) -> dict:
@@ -509,6 +559,7 @@ def build_full_candidate_records(canonical_text: str, candidates: list, qa_evalu
         record = dict(c)
         record["qa_llm"] = qa
         record["is_full_segment_format_valid"] = is_full_segment
+        record["full_segment_check"] = diagnose_candidate_full_segment(canonical_text, c["rewritten_segment"])
         record["locality_check"] = locality
         record["seven_gates"] = gates
         record["all_seven_gates_pass"] = all_pass
