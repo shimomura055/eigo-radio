@@ -1,0 +1,71 @@
+{
+ "model": "gpt-6-luna",
+ "reasoning": {
+  "effort": "high"
+ },
+ "text": {
+  "format": {
+   "type": "json_schema",
+   "name": "number_ranks_only",
+   "schema": {
+    "type": "object",
+    "properties": {
+     "number_ranks": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "fact_id": {
+         "type": "string"
+        },
+        "surface": {
+         "type": "string"
+        },
+        "kind": {
+         "type": "string",
+         "enum": [
+          "magnitude",
+          "date_time",
+          "range",
+          "year",
+          "ordinal",
+          "name_embedded"
+         ]
+        },
+        "role": {
+         "type": "string",
+         "enum": [
+          "core",
+          "peripheral"
+         ]
+        }
+       },
+       "required": [
+        "fact_id",
+        "surface",
+        "kind",
+        "role"
+       ],
+       "additionalProperties": false
+      }
+     }
+    },
+    "required": [
+     "number_ranks"
+    ],
+    "additionalProperties": false
+   },
+   "strict": true
+  }
+ },
+ "input": [
+  {
+   "role": "developer",
+   "content": "あなたはNews記事の数値整理を行うEditorです。採用済みFactの本文に書かれている数字・日付の表記を洗い出し、中核(core)か周辺(peripheral)かを規則に従って分類してください。記事本文は書きません。Factの採否やStorylineは変更しません。"
+  },
+  {
+   "role": "user",
+   "content": "以下は、あるテーマについて、中心Storylineと、そのStorylineのために採用済みのFactです。\n\n【テーマ】\nCurrent news topic: the latest earnings of a leading semiconductor company and the outlook for AI-driven demand. Using only facts confirmed by web search (the company's earnings release, Reuters/AP/Bloomberg-level reporting), cover the reporting period, revenue and profit figures, the data-center / AI segment results, the company's guidance for the next quarter, and the stated drivers or risks (e.g. export controls, supply). Separate reported results from analyst forecasts. Do not invent details and do not use the assistant's own prior knowledge.\n\n【Storyline】\nBroadcomの2026年度第3四半期決算では連結売上高が295億9,100万ドル、AI半導体売上高が167億ドルとなり、CEOはAI関連需要が非常に強いと述べ、次四半期の連結売上高を約348億ドルと見込んだ。ただし、この発表が「最も最近」かはLedger上確定できない。\n\n【採用Fact】\nF1: 対象企業はBroadcom Inc.。同社は2026年9月2日、2026年度第3四半期の決算を発表した。\n  date_or_period: 2026年9月2日発表。2026年度第3四半期（2026年8月2日終了）\nF2: Broadcomの第3四半期の純売上高は295億9,100万ドルだった。\n  numeric_value: 29,591百万ドル（295億9,100万ドル） (numeric_scope: 連結純売上高)\n  date_or_period: 2026年度第3四半期（2026年8月2日終了）\nF3: Broadcomの第3四半期のAI半導体売上高は167億ドル。CEOは前年同期比221％増、前四半期比54％増と説明した。\n  numeric_value: 167億ドル。前年同期比+221％、前四半期比+54％。 (numeric_scope: 同四半期のAI半導体売上高と、その前年同期・前四半期比)\n  date_or_period: 2026年度第3四半期（2026年8月2日終了）\nF4: Broadcomは次の四半期の連結売上高を約348億ドルと見込んだ。同社は前年比93％増に相当すると説明した。\n  numeric_value: 約348億ドル。前年同期比+93％。 (numeric_scope: 2026年度第4四半期の連結売上高見通しと前年同期比)\n  date_or_period: 2026年度第4四半期（2026年11月1日終了予定）\nF6: BroadcomのCEOは、カスタムAIアクセラレーターとネットワーキングへの需要が引き続き非常に強いと述べた。\n  date_or_period: 2026年9月2日発表の2026年度第3四半期決算リリース\n\nあなたの仕事は次の1つです。\n採用したFactそれぞれについて、そのFact本文(ID行の文)に書かれている数字・日付の表記を1つずつ洗い出し、number_ranksへ中核(core)か周辺(peripheral)の別とともに記載してください。\n- surface: 数字・単位・「約」「超」などのヘッジ語まで含めた形で、Fact本文に書かれている通りに写してください(例: 約3.4％、2,300件超、7月13日)。Fact本文に無い数字、Ledgerの他の欄にしかない数字、別のFactの数字は書かないでください。数字を含まない表記は不要です。\n- kind: magnitude(量・割合・金額・件数など)/date_time(月を含む日付・時刻・四半期)/range(範囲)/year(年だけ)/ordinal(第12回など識別子の序数)/name_embedded(名称の一部の番号)のどれか。\n- role: 次の順で決めてください。(a)year・ordinal・name_embeddedは常にperipheral。(b)量とrangeは、そのFactのnumeric_value欄の数字(numeric_scopeの括弧内を除く)に含まれるものだけがcore候補(Ledger全体にnumeric_value欄が1件も無い場合に限り、Fact本文の数字で比べる)。日付は、表記に月があり、そのFactのdate_or_period欄の先頭の日付と、表記にある年・月・日が全て一致するものだけがcore候補(Ledger全体にdate_or_period欄が1件も無い場合に限り、Fact本文の最初の日付で比べる。年だけ・日だけ・時刻だけ・四半期の表記は候補になりません)。(c)core候補を、Storylineに出る量、それ以外の量、日付の順に並べ(同じ順位ではFactの採用順・本文の出現順)、先頭から最大 max(3, min(6, floor(n/2))) 個をcore、残りと候補でないものをperipheralとする(nは量・range・日付の概念の総数。概念=同じFactの中で主数字と単位が同じ表記のまとまり。同じ概念の表記は全て同じroleにする)。迷ったらperipheral。\n\n【出力】\nJSON schemaの指示に従い、number_ranks(採用Factの数字・日付の表記ごとに fact_id・surface・kind・role)を出力してください。数字が1つも無い場合は空配列。\n\n【重要】fact_idは、上記の採用Factに実在するもののみを使用してください。surfaceは当該Factのfact本文に実在する表記のみとしてください。"
+  }
+ ]
+}

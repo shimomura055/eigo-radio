@@ -1,0 +1,431 @@
+{
+ "extract": {
+  "20％の償還": {
+   "got": [
+    "20%"
+   ],
+   "want": [
+    "20%"
+   ],
+   "pass": true
+  },
+  "7月13日午前10時16分に": {
+   "got": [
+    "7月13日午前10時16分"
+   ],
+   "want": [
+    "7月13日午前10時16分"
+   ],
+   "pass": true
+  },
+  "約3.4％上昇、2,300件超": {
+   "got": [
+    "約3.4%",
+    "2,300件超"
+   ],
+   "want": [
+    "約3.4%",
+    "2,300件超"
+   ],
+   "pass": true
+  },
+  "3.75～4.00％": {
+   "got": [
+    "3.75~4.00%"
+   ],
+   "want": [
+    "3.75~4.00%"
+   ],
+   "pass": true
+  },
+  "第137回理事会": {
+   "got": [
+    "第137回"
+   ],
+   "want": [
+    "第137回"
+   ],
+   "pass": true
+  },
+  "2026年9月": {
+   "got": [
+    "2026年9月"
+   ],
+   "want": [
+    "2026年9月"
+   ],
+   "pass": true
+  },
+  "約200万バレル": {
+   "got": [
+    "約200万バレル"
+   ],
+   "want": [
+    "約200万バレル"
+   ],
+   "pass": true
+  }
+ },
+ "derive_9themes": {
+  "semiconductor_earnings": {
+   "concepts": 9,
+   "cap": 4,
+   "core": 4,
+   "items": 11
+  },
+  "small_bag": {
+   "concepts": 2,
+   "cap": 3,
+   "core": 2,
+   "items": 4
+  },
+  "space_weapons": {
+   "concepts": 3,
+   "cap": 3,
+   "core": 3,
+   "items": 6
+  },
+  "hormuz": {
+   "concepts": 11,
+   "cap": 5,
+   "core": 6,
+   "items": 13
+  },
+  "central_bank_mortgage": {
+   "concepts": 16,
+   "cap": 6,
+   "core": 6,
+   "items": 20
+  },
+  "meta": {
+   "concepts": 0,
+   "cap": 3,
+   "core": 0,
+   "items": 0
+  },
+  "byd_recall": {
+   "concepts": 5,
+   "cap": 3,
+   "core": 3,
+   "items": 5
+  },
+  "openai_copyright": {
+   "concepts": 3,
+   "cap": 3,
+   "core": 4,
+   "items": 5
+  },
+  "streaming_price": {
+   "concepts": 9,
+   "cap": 4,
+   "core": 4,
+   "items": 10
+  }
+ },
+ "validate": {
+  "good": {
+   "errors": 0,
+   "flags": [],
+   "err_head": []
+  },
+  "unknown_fact": {
+   "errors": 1,
+   "flags": [],
+   "err_head": [
+    "UNKNOWN_FACT_ID:ZZ-9"
+   ]
+  },
+  "not_selected": {
+   "errors": 1,
+   "flags": [],
+   "err_head": [
+    "FACT_NOT_SELECTED:HF-001"
+   ]
+  },
+  "invented_number": {
+   "errors": 1,
+   "flags": [],
+   "err_head": [
+    "SURFACE_NOT_IN_FACT:HF-002:99.9％"
+   ]
+  },
+  "swapped_fact": {
+   "errors": 1,
+   "flags": [
+    "MISSING_SURFACES:HF-002:['7月13日午前10時16分']"
+   ],
+   "err_head": [
+    "SURFACE_NOT_IN_FACT:HF-009:7月13日午前10時16分"
+   ]
+  },
+  "missing_one": {
+   "errors": 0,
+   "flags": [
+    "MISSING_SURFACES:HF-002:['7月13日午前10時16分']"
+   ],
+   "err_head": []
+  },
+  "role_flip": {
+   "errors": 0,
+   "flags": [
+    "ROLE_DISAGREES_WITH_RULE:[('HF-002', '7月13日午前10時16分', 'core', 'periphe"
+   ],
+   "err_head": []
+  },
+  "dup": {
+   "errors": 1,
+   "flags": [],
+   "err_head": [
+    "DUPLICATE:HF-002:7月13日午前10時16分"
+   ]
+  },
+  "no_core": {
+   "errors": 0,
+   "flags": [
+    "NO_CORE",
+    "ROLE_DISAGREES_WITH_RULE:[('HF-002', '20%', 'peripheral', 'core'), ('H"
+   ],
+   "err_head": []
+  }
+ },
+ "validate_checks": {
+  "good_no_errors": true,
+  "unknown_detected": true,
+  "not_selected_detected": true,
+  "invented_detected": true,
+  "swapped_detected_as_error_or_missing": true,
+  "missing_flagged": true,
+  "role_flip_flagged": true,
+  "dup_detected": true,
+  "no_core_flagged": true
+ },
+ "insert_marks": {
+  "semiconductor_earnings": {
+   "roundtrip_equal": true,
+   "marks_core": 4,
+   "marks_periph": 7,
+   "double_marks": 0
+  },
+  "small_bag": {
+   "roundtrip_equal": true,
+   "marks_core": 2,
+   "marks_periph": 2,
+   "double_marks": 0
+  },
+  "space_weapons": {
+   "roundtrip_equal": true,
+   "marks_core": 3,
+   "marks_periph": 3,
+   "double_marks": 0
+  },
+  "hormuz": {
+   "roundtrip_equal": true,
+   "marks_core": 6,
+   "marks_periph": 7,
+   "double_marks": 0
+  },
+  "central_bank_mortgage": {
+   "roundtrip_equal": true,
+   "marks_core": 7,
+   "marks_periph": 14,
+   "double_marks": 0
+  },
+  "meta": {
+   "roundtrip_equal": true,
+   "marks_core": 0,
+   "marks_periph": 0,
+   "double_marks": 0
+  },
+  "byd_recall": {
+   "roundtrip_equal": true,
+   "marks_core": 3,
+   "marks_periph": 2,
+   "double_marks": 0
+  },
+  "openai_copyright": {
+   "roundtrip_equal": true,
+   "marks_core": 4,
+   "marks_periph": 1,
+   "double_marks": 0
+  },
+  "streaming_price": {
+   "roundtrip_equal": true,
+   "marks_core": 4,
+   "marks_periph": 6,
+   "double_marks": 0
+  }
+ },
+ "A_checks": {
+  "A1_pos_1.5%と5%": {
+   "got": "1.5%と5%【中核数値】",
+   "want": "1.5%と5%【中核数値】",
+   "pass": true
+  },
+  "A1_pos_13日と3日": {
+   "got": "13日と3日【中核数値】",
+   "want": "13日と3日【中核数値】",
+   "pass": true
+  },
+  "A1_pos_19月と9月": {
+   "got": "19月と9月【中核数値】",
+   "want": "19月と9月【中核数値】",
+   "pass": true
+  },
+  "A1_pos_2,300件と300": {
+   "got": "2,300件と300【中核数値】",
+   "want": "2,300件と300【中核数値】",
+   "pass": true
+  },
+  "A1_pos_5.5と5": {
+   "got": "5.5と5【中核数値】",
+   "want": "5.5と5【中核数値】",
+   "pass": true
+  },
+  "A1_pos_全角NFKC": {
+   "got": "売上は１２％【中核数値】増",
+   "want": "売上は１２％【中核数値】増",
+   "pass": true
+  },
+  "A1_contains_1.5%に5%は無い": {
+   "got": "False",
+   "want": "False",
+   "pass": true
+  },
+  "A1_contains_13日に3日は無い": {
+   "got": "False",
+   "want": "False",
+   "pass": true
+  },
+  "A1_contains_正常": {
+   "got": "True",
+   "want": "True",
+   "pass": true
+  },
+  "A2_extract_9月に": {
+   "got": "['9月']",
+   "want": "['9月']",
+   "pass": true
+  },
+  "A2_extract_第2四半期の売上": {
+   "got": "['第2四半期']",
+   "want": "['第2四半期']",
+   "pass": true
+  },
+  "A2_extract_2026年第3四半期": {
+   "got": "['2026年第3四半期']",
+   "want": "['2026年第3四半期']",
+   "pass": true
+  },
+  "A2_extract_午前10時16分に": {
+   "got": "['午前10時16分']",
+   "want": "['午前10時16分']",
+   "pass": true
+  },
+  "A2_extract_1万5000円": {
+   "got": "['1万5000円']",
+   "want": "['1万5000円']",
+   "pass": true
+  },
+  "A2_extract_三千人と数百件": {
+   "got": "[]",
+   "want": "[]",
+   "pass": true
+  },
+  "A2_extract_翌14日の": {
+   "got": "['14日']",
+   "want": "['14日']",
+   "pass": true
+  },
+  "A2_extract_3日間": {
+   "got": "['3日間']",
+   "want": "['3日間']",
+   "pass": true
+  },
+  "A2_extract_3時間": {
+   "got": "['3時間']",
+   "want": "['3時間']",
+   "pass": true
+  },
+  "A2_extract_1日あたり200万バレル": {
+   "got": "['200万バレル']",
+   "want": "['200万バレル']",
+   "pass": true
+  },
+  "A2_extract_$78.00": {
+   "got": "['$78.00']",
+   "want": "['$78.00']",
+   "pass": true
+  },
+  "A2_extract_7月13日": {
+   "got": "['7月13日']",
+   "want": "['7月13日']",
+   "pass": true
+  },
+  "A2_extract_2億5,000万ドル": {
+   "got": "['2億5,000万ドル']",
+   "want": "['2億5,000万ドル']",
+   "pass": true
+  },
+  "A2_extract_2026-10-08に": {
+   "got": "['2026-10-08']",
+   "want": "['2026-10-08']",
+   "pass": true
+  },
+  "A2_extract_事件番号は1:26-cv-08892": {
+   "got": "['1:26-cv-08892']",
+   "want": "['1:26-cv-08892']",
+   "pass": true
+  },
+  "A2_compound_main": {
+   "got": "('M', '15000')",
+   "want": "('M', '15000')",
+   "pass": true
+  },
+  "A2_compound_main_oku": {
+   "got": "('M', '250000000')",
+   "want": "('M', '250000000')",
+   "pass": true
+  },
+  "A2_iso_kind": {
+   "got": "date_time",
+   "want": "date_time",
+   "pass": true
+  },
+  "A2_docket_kind": {
+   "got": "name_embedded",
+   "want": "name_embedded",
+   "pass": true
+  },
+  "A3_alt_numeric_all_eligible": {
+   "got": "[('120億円', True), ('20%', True), ('約3.4%', True)]",
+   "want": "[('120億円', True), ('20%', True), ('約3.4%', True)]",
+   "pass": true
+  },
+  "A3_no_alt_when_field_exists_elsewhere": {
+   "got": "{'約3.4%': False, '120億円': True, '20%': False}",
+   "want": "{'約3.4%': False, '120億円': True, '20%': False}",
+   "pass": true
+  },
+  "A3_item_key_has_fact_id": {
+   "got": "2",
+   "want": "2",
+   "pass": true
+  },
+  "A3_same_surface_merged_concept": {
+   "got": "1",
+   "want": "1",
+   "pass": true
+  },
+  "A3_unit_splits_concepts": {
+   "got": "2",
+   "want": "2",
+   "pass": true
+  },
+  "A3_date_eligibility": {
+   "got": "{'7月13日': True, '9月': False}",
+   "want": "{'7月13日': True, '9月': False}",
+   "pass": true
+  }
+ },
+ "ALL_PASS": true
+}

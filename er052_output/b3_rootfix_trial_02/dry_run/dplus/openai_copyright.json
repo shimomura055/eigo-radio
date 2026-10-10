@@ -1,0 +1,153 @@
+{
+ "model": "gpt-6-luna",
+ "reasoning": {
+  "effort": "high"
+ },
+ "text": {
+  "format": {
+   "type": "json_schema",
+   "name": "storyline_b3_fact_selection",
+   "schema": {
+    "type": "object",
+    "properties": {
+     "selected_storyline": {
+      "type": "string"
+     },
+     "fact_tests": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "fact_id": {
+         "type": "string"
+        },
+        "test1_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "test2_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "test3_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "test4_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "decision": {
+         "type": "string",
+         "enum": [
+          "selected",
+          "excluded"
+         ]
+        },
+        "reason": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "fact_id",
+        "test1_answer",
+        "test2_answer",
+        "test3_answer",
+        "test4_answer",
+        "decision",
+        "reason"
+       ],
+       "additionalProperties": false
+      }
+     },
+     "selected_fact_ids": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "selected_fact_brief": {
+      "type": "string"
+     },
+     "recheck_note": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "number_ranks": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "fact_id": {
+         "type": "string"
+        },
+        "surface": {
+         "type": "string"
+        },
+        "kind": {
+         "type": "string",
+         "enum": [
+          "magnitude",
+          "date_time",
+          "range",
+          "year",
+          "ordinal",
+          "name_embedded"
+         ]
+        },
+        "role": {
+         "type": "string",
+         "enum": [
+          "core",
+          "peripheral"
+         ]
+        }
+       },
+       "required": [
+        "fact_id",
+        "surface",
+        "kind",
+        "role"
+       ],
+       "additionalProperties": false
+      }
+     }
+    },
+    "required": [
+     "selected_storyline",
+     "fact_tests",
+     "selected_fact_ids",
+     "selected_fact_brief",
+     "recheck_note",
+     "number_ranks"
+    ],
+    "additionalProperties": false
+   },
+   "strict": true
+  }
+ },
+ "input": [
+  {
+   "role": "developer",
+   "content": "あなたはNews記事のFact選定を行うEditorです。Full Fact Ledgerの中から記事として一本化しやすい中心Storylineを1つ決定し、そのStorylineに本当に必要な最小限のFactだけを選び出してください。記事本文そのものは書きません。"
+  },
+  {
+   "role": "user",
+   "content": "以下は、あるテーマについてWeb調査で収集し独立検証済みのFull Fact Ledgerです。\n\n【テーマ】\nCurrent news topic: the copyright infringement lawsuit filed against OpenAI by USA Today (and affiliated news publishers). Using only facts confirmed by web search (court filings, Reuters/AP-level reporting), clearly distinguish that this is a lawsuit filing stage and NOT a court finding of infringement: who the plaintiff(s) are (USA Today / Gannett and any others), which court and when it was filed, what the plaintiffs allege and what relief they seek, what OpenAI has said in response, and the current procedural status of the case. Do not state allegations as established facts. Do not invent details and do not use the assistant's own prior knowledge.\n\n【Full Fact Ledger】\n[VERIFIED] F1: USA TODAY Co., Inc. と複数の関連出版社は、OpenAI側の複数法人を相手取り、著作権侵害等を主張する訴状を提出した。これは原告の主張を記載した訴状であり、裁判所による侵害認定ではない。\r\n  scope: 米国連邦裁判所への本件訴状提出\r\n  conditions: 訴状提出段階。訴状の主張と裁判所の事実認定を区別する。\r\n  date_or_period: 2026-10-08\r\n  制約(notes_for_writer): 「提訴した」「訴状で主張した」と表現する。「裁判所が侵害を認定した」とは書かない。\r\n\r\n[VERIFIED] F2: 訴状に記載された原告は14の法人・事業体で、USA TODAY Co., Inc.、Gannett Satellite Information Network, LLC、Gannett GP Media, Inc.、The Courier-Journal, Inc.、Des Moines Register and Tribune Company、Detroit Free Press, Inc.、Detroit Newspaper Partnership, L.P.、CA Florida Holdings, LLC、Scripps NP Operating, LLC、CA North Carolina Holdings, Inc.、GateHouse Media Oklahoma Holdings, Inc.、Journal Sentinel Inc.、GateHouse Media Ohio Holdings II, Inc.、Phoenix Newspapers, Inc.である。訴状は、これらをUSA TODAY Co., Inc.傘下の原告らとしている。\r\n  scope: 本件訴状に名を連ねる法人・事業体\r\n  conditions: 訴状に記載された当事者名。各出版物そのものがすべて別個の法人原告だという意味ではない。\r\n  numeric_value: 14 (numeric_scope: 訴状の共同原告として記載された法人・事業体数)\r\n  date_or_period: 2026-10-08時点の訴状\r\n  制約(notes_for_writer): 原告数14と、訴状が対象として挙げる出版物数19を混同しない。\r\n\r\n[VERIFIED] F3: 訴状は、原告らがUSA TODAY、The Tennessean、Indy Star、The Bergen Record、The Enquirer、Asbury Park Press、Democrat & Chronicle、The Knoxville News-Sentinel、Naples Daily News、The Oklahoman、Milwaukee Journal Sentinel、The Columbus Dispatch、The Arizona Republic、The Courier-Journal、The Des Moines Register、Detroit Free Press、The Detroit News、The Palm Beach Post、Star Newsの19出版物に掲載されたコンテンツの著作権を有すると主張している。\r\n  scope: 訴状が列挙する19出版物に掲載されたコンテンツ\r\n  conditions: 著作権保有・権利関係は訴状上の原告側の主張として記録する。\r\n  numeric_value: 19 (numeric_scope: 訴状が列挙する出版物数)\r\n  date_or_period: 2026-10-08時点の訴状\r\n  制約(notes_for_writer): 「訴状によれば、原告らは19出版物のコンテンツの著作権を有すると主張」とする。裁判所による権利帰属の認定ではない。\r\n\r\n[VERIFIED] F4: 訴状は、OpenAIが原告側の報道コンテンツを許可なく取得・複製してAIモデルの訓練に使用し、モデル出力でそのコンテンツを複製または再構成したと主張する。また、OpenAIが著作権管理情報を除去したとも主張する。いずれも原告側の主張であり、本件で確定した事実ではない。\r\n  scope: 原告らの報道コンテンツ、AIモデルの訓練データおよびモデル出力\r\n  conditions: 著作権侵害や著作権管理情報の除去は、訴状上の主張として扱う。\r\n  numeric_value: 数十万件の報道記事その他の資料（訴状の表現） (numeric_scope: OpenAIが訓練に使ったと原告が主張する対象コンテンツの規模。裁判所が確認した件数ではない。)\r\n  date_or_period: 訴状が対象とする期間。具体的な開始・終了日は本Factでは特定しない。\r\n  制約(notes_for_writer): 「OpenAIが無断使用した」ではなく「原告らは、OpenAIが無断使用したと主張」とする。\r\n\r\n[VERIFIED] F5: 訴状は、(1)著作権侵害、(2)代位責任に基づく著作権侵害、(3)著作権管理情報の除去に関するDigital Millennium Copyright Act違反の3つの請求を掲げている。\r\n  scope: 本件訴状の請求原因\r\n  conditions: 請求原因の記載であり、請求の成立や責任について裁判所の判断が下されたことを意味しない。\r\n  numeric_value: 3 (numeric_scope: 訴状に掲げられた請求原因の数)\r\n  date_or_period: 2026-10-08に提出された訴状\r\n  制約(notes_for_writer): 請求原因の数と、裁判所が認定した違反の数を混同しない。\r\n\r\n[VERIFIED] F6: 原告らは、損害賠償額が2億5,000万ドルを超えるとする請求を記載し、法定・補償的損害賠償、利益の返還・吐き出し、宣言的救済、恒久的差止め、訴訟費用・弁護士費用等を求めている。さらに、原告らのコンテンツを組み込んだGPTその他の大規模言語モデルおよび訓練セットの破棄も請求している。\r\n  scope: 本件訴状のPrayer for Reliefおよび損害額に関する記載\r\n  conditions: 請求された救済であり、裁判所が認めた損害額・救済ではない。\r\n  numeric_value: 2億5,000万ドル超 (numeric_scope: 原告らが訴状で求める損害賠償額。認容額ではない。)\r\n  date_or_period: 2026-10-08に提出された訴状\r\n  制約(notes_for_writer): 金額とモデル・訓練セットの破棄はいずれも原告側の請求。認容・命令済みと書かない。\r\n\r\n[VERIFIED] F7: Reutersは2026-10-08の報道で、OpenAIの広報担当者は訴状についてのコメント依頼に直ちには応じなかったと報じた。これは報道時点での取材状況であり、OpenAIによる訴状への実体的な回答や法廷上の答弁を示すものではない。\r\n  scope: Reutersが報じたコメント依頼への応答状況\r\n  conditions: 「直ちには応じなかった」という報道時点の記述。以後の対応の有無はこのFactでは扱わない。\r\n  date_or_period: 2026-10-08（Reuters報道時点）\r\n  制約(notes_for_writer): 本件に関するOpenAIの実体的な反論が確認された、と書かない。\r\n\r\n[VERIFIED] F8: 本件は2026-10-08にニューヨーク南部地区連邦地方裁判所へ提出された新規訴訟で、事件番号は1:26-cv-08892である。確認した訴状と同日報道が示すのは提訴段階であり、裁判所による著作権侵害の認定や本案判断ではない。\r\n  scope: 米国ニューヨーク南部地区連邦地方裁判所における本件訴訟\r\n  conditions: 検索時点で確認できたのは提訴の事実。これ以後の手続更新があれば別途確認を要する。\r\n  numeric_value: 1:26-cv-08892 (numeric_scope: 本件の連邦裁判所事件番号)\r\n  date_or_period: 2026-10-08時点\r\n  制約(notes_for_writer): 必ず「訴状提出段階」「侵害は裁判所により認定されていない」と区別する。\r\n\n\n【Ledgerの読み方】\n各Factは「Fact本文」(ID行の文と、scope・conditions・numeric_value・date_or_periodなどの欄)と、「Writerへの制約」(notes_for_writer・ambiguity_noteの欄。`制約(…)`と表記されることがあります)に分かれています。\n- Fact本文は、Fact選択とStorylineの材料です。\n- Writerへの制約は、のちに記事を書く工程が守るガードレールです。Storylineやselected_fact_briefの内容・文言として転記・言い換えしないでください(「〜しない」「〜と断定しない」などの指示調の文を入れない)。Storylineには事実の記述だけを書き、制約に反する断定をしないでください。制約そのものは、システムが選択Factに対応づけて別途Writerへ渡します。\n\nあなたの仕事は次の6つです。\n\n1. このFull Ledgerの中から、記事として一本化しやすい中心Storyline(のちの記事が伝える「何が起きて、なぜそうなったか」という一続きの筋)を1つ決定してください。\n2. 決定したStorylineを1行の日本語で明示してください(これが後工程でWriterへ渡すテーマ文としてそのまま使われます)。Storylineには、Fact本文に基づく事実の記述だけを書き、注意・禁止・書き方の指示は含めないでください。\n3. Full Ledgerの全fact_idそれぞれについて、以下4つのテストを適用してください。\n\nTest1: そのFactを削除しても中心Storylineを理解できるか。YESなら原則除外。\nTest2: そのFactは他Factとの因果関係に実際に使われるか。NOなら原則除外。\nTest3: そのFactがないとStoryline上重要な「なぜ?」が説明できなくなるか。NOなら原則除外。\nTest4: そのFactを残した理由が「面白い/具体的/数字がある/珍しい/補足として便利」だけではないか。YESなら原則除外。\n\n4. 各Factについて、4テストの回答を踏まえてselected(採用)/excluded(除外)を決定し、理由(reason)を記載してください。判定に迷うFactについては、迷った理由も含めてreasonへ記載して構いません。\n5. 採用したFactだけを使って、Writerへそのまま渡す「Selected Fact Brief」(必要最小限のFactを簡潔にまとめた文章。冒頭にStorylineの1行を含める)を作成してください。Selected Fact Briefは記事本文そのものではなく、Writerへの素材です。\n6. 採用したFactそれぞれについて、そのFact本文(ID行の文)に書かれている数字・日付の表記を1つずつ洗い出し、number_ranksへ中核(core)か周辺(peripheral)の別とともに記載してください。\n- surface: 数字・単位・「約」「超」などのヘッジ語まで含めた形で、Fact本文に書かれている通りに写してください(例: 約3.4％、2,300件超、7月13日)。Fact本文に無い数字、Ledgerの他の欄にしかない数字、別のFactの数字は書かないでください。数字を含まない表記は不要です。\n- kind: magnitude(量・割合・金額・件数など)/date_time(月を含む日付・時刻・四半期)/range(範囲)/year(年だけ)/ordinal(第12回など識別子の序数)/name_embedded(名称の一部の番号)のどれか。\n- role: 次の順で決めてください。(a)year・ordinal・name_embeddedは常にperipheral。(b)量とrangeは、そのFactのnumeric_value欄の数字(numeric_scopeの括弧内を除く)に含まれるものだけがcore候補(Ledger全体にnumeric_value欄が1件も無い場合に限り、Fact本文の数字で比べる)。日付は、表記に月があり、そのFactのdate_or_period欄の先頭の日付と、表記にある年・月・日が全て一致するものだけがcore候補(Ledger全体にdate_or_period欄が1件も無い場合に限り、Fact本文の最初の日付で比べる。年だけ・日だけ・時刻だけ・四半期の表記は候補になりません)。(c)core候補を、Storylineに出る量、それ以外の量、日付の順に並べ(同じ順位ではFactの採用順・本文の出現順)、先頭から最大 max(3, min(6, floor(n/2))) 個をcore、残りと候補でないものをperipheralとする(nは量・range・日付の概念の総数。概念=同じFactの中で主数字と単位が同じ表記のまとまり。同じ概念の表記は全て同じroleにする)。迷ったらperipheral。\n\n【採用Fact数についての注意】\n目安は3〜5件です。Hard ruleではありませんが、6件以上採用する場合は、本当にそれら全てが中心Storylineの理解に必要かをもう一度自問し、recheck_noteフィールドへその検討内容を明記してください(3件未満でも、Storylineが単独で成立するなら構いません)。5件以下の場合、recheck_noteはnullにしてください。\n\n【出力】\nJSON schemaの指示に従い、以下を出力してください:\n- selected_storyline: 決定したStorylineの1行\n- fact_tests: Full Ledgerの全fact_idについて、test1_answer/test2_answer/test3_answer/test4_answer(いずれも\"YES\"か\"NO\")・reason・decision(\"selected\"か\"excluded\")\n- selected_fact_ids: 採用したfact_idのリスト(fact_testsでdecision=\"selected\"のものと一致させること)\n- selected_fact_brief: Writerへ渡すSelected Fact Brief本文(Storylineの1行を含む)\n- recheck_note: 採用Fact数が6件以上の場合のみ記入。5件以下の場合はnull。\n- number_ranks: 手順6の結果(採用Factの数字・日付の表記ごとに fact_id・surface・kind・role)。数字が1つも無い場合は空配列。\n\n【重要】fact_idは、上記Full Ledgerに実在するfact_idのみを使用してください。Ledgerに存在しないfact_idを作り出さないでください。number_ranksのfact_idは採用したFactのみ、surfaceは当該Factのfact本文に実在する表記のみとしてください。"
+  }
+ ]
+}

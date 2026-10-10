@@ -1,0 +1,1444 @@
+{
+ "models": "gpt-6-luna (B3系・Sep; Sol条件付き)",
+ "e9": "NOT_EXECUTED_IN_THIS_DELEGATION (Phase 2b)",
+ "arms": {},
+ "M1": {
+  "C1": {
+   "n_outputs": 18,
+   "failed": 0,
+   "mean_selected": 3.2778,
+   "rate_3_to_5": 0.6111,
+   "n_3_to_5": 11,
+   "selected_total": 59,
+   "ambiguous_adoption_rate": 0.0508,
+   "constrained_adoption_rate": 1.0,
+   "jaccard_rep1_vs_rep2_mean": 0.6979,
+   "jaccard_exact_match_themes": 2,
+   "jaccard_vs_C0_mean": 0.6489
+  },
+  "D-plus": {
+   "n_outputs": 18,
+   "failed": 1,
+   "mean_selected": 3.7059,
+   "rate_3_to_5": 0.7059,
+   "n_3_to_5": 12,
+   "selected_total": 63,
+   "ambiguous_adoption_rate": 0.0317,
+   "constrained_adoption_rate": 1.0,
+   "jaccard_rep1_vs_rep2_mean": 0.7667,
+   "jaccard_exact_match_themes": 3,
+   "jaccard_vs_C0_mean": 0.6324
+  },
+  "RoleOnly": {
+   "n_outputs": 18,
+   "failed": 0,
+   "mean_selected": 3.7778,
+   "rate_3_to_5": 0.8333,
+   "n_3_to_5": 15,
+   "selected_total": 68,
+   "ambiguous_adoption_rate": 0.0294,
+   "constrained_adoption_rate": 0.9706,
+   "jaccard_rep1_vs_rep2_mean": 0.6731,
+   "jaccard_exact_match_themes": 3,
+   "jaccard_vs_C0_mean": 0.7446
+  },
+  "C0_reference": {
+   "mean_selected": 4.6667
+  }
+ },
+ "M2": {
+  "C1": {
+   "n": 18,
+   "len_ok_rate": 0.944,
+   "mean_len": 101.9444,
+   "mean_fact_coverage": 0.5332,
+   "imp_hit_outputs": 0,
+   "notes_common_ge12": 1,
+   "limit_expr_count": 2,
+   "story_new_number_outputs": 4
+  },
+  "D-plus": {
+   "n": 17,
+   "len_ok_rate": 0.706,
+   "mean_len": 131.0588,
+   "mean_fact_coverage": 0.6756,
+   "imp_hit_outputs": 0,
+   "notes_common_ge12": 2,
+   "limit_expr_count": 1,
+   "story_new_number_outputs": 3
+  },
+  "RoleOnly": {
+   "n": 18,
+   "len_ok_rate": 0.778,
+   "mean_len": 132.5,
+   "mean_fact_coverage": 0.6201,
+   "imp_hit_outputs": 0,
+   "notes_common_ge12": 1,
+   "limit_expr_count": 1,
+   "story_new_number_outputs": 5
+  },
+  "C0": {
+   "n": 9,
+   "len_ok_rate": 1.0,
+   "mean_len": 124.2222,
+   "mean_fact_coverage": 0.5299,
+   "imp_hit_outputs": 0,
+   "notes_common_ge12": 2,
+   "limit_expr_count": 0,
+   "story_new_number_outputs": 0
+  }
+ },
+ "M4": {
+  "D-plus": {
+   "constraints_total": 65,
+   "constraints_exact_in_block": 65,
+   "assembled_fact_lines_imp_hits": 0
+  },
+  "RoleOnly": {
+   "constraints_total": 68,
+   "constraints_exact_in_block": 68,
+   "assembled_fact_lines_imp_hits": 0
+  }
+ },
+ "retry": {
+  "D-plus": {
+   "outputs": 18,
+   "stop": 1,
+   "retried": 1,
+   "retry_numberranks_only": 1,
+   "retry_other": 0,
+   "stop_numberranks_only": 1,
+   "stop_other": 0,
+   "first_attempt_error_types": {
+    "NUMBER_RANKS_SURFACE_NOT_IN_FACT": 3
+   }
+  },
+  "RoleOnly": {
+   "outputs": 18,
+   "stop": 0,
+   "retried": 0,
+   "retry_numberranks_only": 0,
+   "retry_other": 0,
+   "stop_numberranks_only": 0,
+   "stop_other": 0,
+   "first_attempt_error_types": {}
+  },
+  "Sep": {
+   "outputs": 18,
+   "stop": 2,
+   "retried": 0,
+   "retry_numberranks_only": 0,
+   "retry_other": 0,
+   "stop_numberranks_only": 0,
+   "stop_other": 2,
+   "first_attempt_error_types": {
+    "DUPLICATE": 2
+   }
+  }
+ },
+ "cost_latency": {
+  "D-plus": {
+   "records": 18,
+   "total_jpy": 16.474,
+   "mean_jpy_per_record": 0.9152,
+   "max_jpy": 2.906,
+   "latency_mean": 66.2824,
+   "latency_p95": 93.2,
+   "latency_max": 93.2
+  },
+  "RoleOnly": {
+   "records": 18,
+   "total_jpy": 9.614,
+   "mean_jpy_per_record": 0.5341,
+   "max_jpy": 0.8481,
+   "latency_mean": 51.8056,
+   "latency_p95": 76.9,
+   "latency_max": 76.9
+  },
+  "Sep": {
+   "records": 18,
+   "total_jpy": 5.589,
+   "mean_jpy_per_record": 0.3105,
+   "max_jpy": 1.4412,
+   "latency_mean": 16.6687,
+   "latency_p95": 29.4,
+   "latency_max": 29.4
+  },
+  "SepSol": null,
+  "C1_baseline": {
+   "records": 18,
+   "mean_jpy": 0.4547,
+   "latency_mean": 43.6444
+  }
+ },
+ "usage": {
+  "D-plus": {
+   "api_rows": 20,
+   "mean_in": 4654,
+   "mean_out": 9365,
+   "mean_reasoning": 7419
+  },
+  "RoleOnly": {
+   "api_rows": 18,
+   "mean_in": 3910,
+   "mean_out": 5894,
+   "mean_reasoning": 4277
+  },
+  "Sep": {
+   "api_rows": 20,
+   "mean_in": 1703,
+   "mean_out": 3153,
+   "mean_reasoning": 2891
+  },
+  "SepSol": null
+ },
+ "M5_M6_M7_M8": {
+  "D-plus": {
+   "n_outputs": 17,
+   "item_n": 104,
+   "role_agree_with_rule_items": 96,
+   "role_agree_rate": 0.9231,
+   "kind_agree_rate": 0.9423,
+   "outputs_with_no_core": 0,
+   "outputs_with_no_core_but_rule_eligible": 0,
+   "missing_items_total": 1,
+   "det_fact_items_total": 99,
+   "missing_surfaces_outputs": 1,
+   "surface_only_in_ledger_field_outputs": 2,
+   "final_hard_errors_outputs": 0,
+   "storyline_new_number_outputs": 3,
+   "mean_jaccard_concepts_vs_ddet": 0.7993,
+   "llm_only_surface_total": 25,
+   "det_only_surface_total": 20
+  },
+  "Sep": {
+   "n_outputs": 16,
+   "item_n": 118,
+   "role_agree_with_rule_items": 107,
+   "role_agree_rate": 0.9068,
+   "kind_agree_rate": 0.9492,
+   "outputs_with_no_core": 0,
+   "outputs_with_no_core_but_rule_eligible": 0,
+   "missing_items_total": 0,
+   "det_fact_items_total": 108,
+   "missing_surfaces_outputs": 0,
+   "surface_only_in_ledger_field_outputs": 3,
+   "final_hard_errors_outputs": 0,
+   "storyline_new_number_outputs": 0,
+   "mean_jaccard_concepts_vs_ddet": 0.7431,
+   "llm_only_surface_total": 33,
+   "det_only_surface_total": 23,
+   "gt_vs_llm_roles": {
+    "gt_n": 78,
+    "gt_core": 38,
+    "matched": 69,
+    "agree": 59,
+    "gt_core_hit": 34,
+    "arm_core_matched": 42,
+    "arm_core_matched_and_gt_core": 34,
+    "agree_rate_matched": 0.8551,
+    "gt_core_recall": 0.8947,
+    "core_precision_matched": 0.8095
+   },
+   "gt_vs_rule_derived_from_llm_surfaces": {
+    "gt_n": 78,
+    "gt_core": 38,
+    "matched": 69,
+    "agree": 65,
+    "gt_core_hit": 36,
+    "arm_core_matched": 40,
+    "arm_core_matched_and_gt_core": 36,
+    "agree_rate_matched": 0.942,
+    "gt_core_recall": 0.9474,
+    "core_precision_matched": 0.9
+   }
+  }
+ },
+ "M8_repro_Sep": {
+  "jaccard_triplets_mean": 0.6736,
+  "jaccard_surfaces_mean": 0.7938,
+  "role_agree_on_shared": "45/50",
+  "per_theme": {
+   "semiconductor_earnings": 0.538,
+   "small_bag": 0.333,
+   "space_weapons": 1.0,
+   "hormuz": 0.667,
+   "meta": 1.0,
+   "byd_recall": 0.25,
+   "openai_copyright": 1.0,
+   "streaming_price": 0.6
+  }
+ },
+ "M8_repro_Dplus_common_facts": {
+  "jaccard_on_common_facts_mean": 0.7399,
+  "per_theme": {
+   "semiconductor_earnings": {
+    "common_facts": 3,
+    "jaccard": 1.0
+   },
+   "small_bag": {
+    "common_facts": 3,
+    "jaccard": 1.0
+   },
+   "space_weapons": {
+    "common_facts": 1,
+    "jaccard": 1.0
+   },
+   "hormuz": {
+    "common_facts": 3,
+    "jaccard": 0.267
+   },
+   "meta": {
+    "common_facts": 1,
+    "jaccard": 1.0
+   },
+   "byd_recall": {
+    "common_facts": 4,
+    "jaccard": 0.667
+   },
+   "openai_copyright": {
+    "common_facts": 5,
+    "jaccard": 0.286
+   },
+   "streaming_price": {
+    "common_facts": 5,
+    "jaccard": 0.7
+   }
+  }
+ },
+ "D_det_GT": {
+  "per_theme": [
+   {
+    "theme": "semiconductor_earnings",
+    "gt_n": 8,
+    "gt_core": 3,
+    "matched": 7,
+    "agree": 5,
+    "gt_core_hit": 3,
+    "arm_core_matched": 5,
+    "arm_core_matched_and_gt_core": 3
+   },
+   {
+    "theme": "small_bag",
+    "gt_n": 3,
+    "gt_core": 1,
+    "matched": 2,
+    "agree": 2,
+    "gt_core_hit": 0,
+    "arm_core_matched": 0,
+    "arm_core_matched_and_gt_core": 0
+   },
+   {
+    "theme": "space_weapons",
+    "gt_n": 4,
+    "gt_core": 1,
+    "matched": 3,
+    "agree": 3,
+    "gt_core_hit": 1,
+    "arm_core_matched": 1,
+    "arm_core_matched_and_gt_core": 1
+   },
+   {
+    "theme": "hormuz",
+    "gt_n": 8,
+    "gt_core": 4,
+    "matched": 8,
+    "agree": 7,
+    "gt_core_hit": 4,
+    "arm_core_matched": 5,
+    "arm_core_matched_and_gt_core": 4
+   },
+   {
+    "theme": "central_bank_mortgage",
+    "gt_n": 16,
+    "gt_core": 6,
+    "matched": 13,
+    "agree": 10,
+    "gt_core_hit": 4,
+    "arm_core_matched": 5,
+    "arm_core_matched_and_gt_core": 4
+   },
+   {
+    "theme": "meta",
+    "gt_n": 0,
+    "gt_core": 0,
+    "matched": 0,
+    "agree": 0,
+    "gt_core_hit": 0,
+    "arm_core_matched": 0,
+    "arm_core_matched_and_gt_core": 0
+   },
+   {
+    "theme": "byd_recall",
+    "gt_n": 3,
+    "gt_core": 3,
+    "matched": 3,
+    "agree": 3,
+    "gt_core_hit": 3,
+    "arm_core_matched": 3,
+    "arm_core_matched_and_gt_core": 3
+   },
+   {
+    "theme": "openai_copyright",
+    "gt_n": 4,
+    "gt_core": 3,
+    "matched": 4,
+    "agree": 4,
+    "gt_core_hit": 3,
+    "arm_core_matched": 3,
+    "arm_core_matched_and_gt_core": 3
+   },
+   {
+    "theme": "streaming_price",
+    "gt_n": 9,
+    "gt_core": 4,
+    "matched": 9,
+    "agree": 8,
+    "gt_core_hit": 4,
+    "arm_core_matched": 5,
+    "arm_core_matched_and_gt_core": 4
+   }
+  ],
+  "total": {
+   "gt_n": 55,
+   "gt_core": 25,
+   "matched": 49,
+   "agree": 42,
+   "gt_core_hit": 22,
+   "arm_core_matched": 27,
+   "arm_core_matched_and_gt_core": 22,
+   "agree_rate_matched": 0.8571,
+   "gt_core_recall": 0.88,
+   "core_precision_matched": 0.8148
+  },
+  "deterministic_rerun_equal": true,
+  "gt_core_distribution": {
+   "semiconductor_earnings": 3,
+   "small_bag": 1,
+   "space_weapons": 1,
+   "hormuz": 4,
+   "central_bank_mortgage": 6,
+   "meta": 0,
+   "byd_recall": 3,
+   "openai_copyright": 3,
+   "streaming_price": 4
+  },
+  "note": "GT=C0 brief注記(MERGED)。D-detの既知値(予備プローブと同系統)。GTは人間正解ではない"
+ },
+ "M11": {
+  "D-det_on_C0": {
+   "summary": {
+    "themes": 9,
+    "pass": 0,
+    "problem_categories": {
+     "meta:annotator": 9
+    }
+   },
+   "per_theme": {
+    "semiconductor_earnings": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 10,
+     "skipped": []
+    },
+    "small_bag": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 4,
+     "skipped": []
+    },
+    "space_weapons": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 6,
+     "skipped": []
+    },
+    "hormuz": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 11,
+     "skipped": []
+    },
+    "central_bank_mortgage": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 20,
+     "skipped": []
+    },
+    "meta": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 0,
+     "skipped": []
+    },
+    "byd_recall": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 5,
+     "skipped": []
+    },
+    "openai_copyright": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 4,
+     "skipped": []
+    },
+    "streaming_price": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 11,
+     "skipped": []
+    }
+   }
+  },
+  "D-plus_rep1": {
+   "summary": {
+    "themes": 8,
+    "pass": 0,
+    "problem_categories": {
+     "mark:unclassified_digits": 4,
+     "meta:annotator": 8,
+     "mark:mismatch": 1
+    }
+   },
+   "per_theme": {
+    "semiconductor_earnings": {
+     "verdict": "FAIL",
+     "problems": {
+      "c_numbers": [
+       "分類漏れの数字(宣言なし・印なし): ['2026', '10']"
+      ],
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 6,
+     "skipped": []
+    },
+    "small_bag": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 3,
+     "skipped": []
+    },
+    "space_weapons": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 1,
+     "skipped": []
+    },
+    "hormuz": {
+     "verdict": "FAIL",
+     "problems": {
+      "c_numbers": [
+       "印の不一致/欠落: '7月13日' (期待 【中核数値】, 実際 None) 位置531",
+       "分類漏れの数字(宣言なし・印なし): ['14']"
+      ],
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 8,
+     "skipped": []
+    },
+    "meta": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 0,
+     "skipped": []
+    },
+    "byd_recall": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 8,
+     "skipped": []
+    },
+    "openai_copyright": {
+     "verdict": "FAIL",
+     "problems": {
+      "c_numbers": [
+       "分類漏れの数字(宣言なし・印なし): ['2026', '10', '8', '2', '5,000']"
+      ],
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 3,
+     "skipped": []
+    },
+    "streaming_price": {
+     "verdict": "FAIL",
+     "problems": {
+      "c_numbers": [
+       "分類漏れの数字(宣言なし・印なし): ['2026', '09', '23', '2026', '10', '21', '2026', '09', '23', '2026', '10', '21']"
+      ],
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 8,
+     "skipped": []
+    }
+   }
+  },
+  "D-det_on_Dplus_rep1": {
+   "summary": {
+    "themes": 8,
+    "pass": 0,
+    "problem_categories": {
+     "meta:annotator": 8
+    }
+   },
+   "per_theme": {
+    "semiconductor_earnings": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 8,
+     "skipped": []
+    },
+    "small_bag": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 3,
+     "skipped": []
+    },
+    "space_weapons": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 1,
+     "skipped": []
+    },
+    "hormuz": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 10,
+     "skipped": []
+    },
+    "meta": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 0,
+     "skipped": []
+    },
+    "byd_recall": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 8,
+     "skipped": []
+    },
+    "openai_copyright": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 5,
+     "skipped": []
+    },
+    "streaming_price": {
+     "verdict": "FAIL",
+     "problems": {
+      "e_sidecar_meta": [
+       "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+      ]
+     },
+     "n_numbers": 10,
+     "skipped": []
+    }
+   }
+  }
+ },
+ "m2_rows": {
+  "C1": [
+   {
+    "theme": "semiconductor_earnings",
+    "rep": 1,
+    "len": 123,
+    "len_in_75_155": true,
+    "fact_coverage": 0.75,
+    "imp_sentences": 0,
+    "notes_common_chars": 11,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "semiconductor_earnings",
+    "rep": 2,
+    "len": 86,
+    "len_in_75_155": true,
+    "fact_coverage": 0.429,
+    "imp_sentences": 0,
+    "notes_common_chars": 8,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "small_bag",
+    "rep": 1,
+    "len": 99,
+    "len_in_75_155": true,
+    "fact_coverage": 0.5,
+    "imp_sentences": 0,
+    "notes_common_chars": 9,
+    "limit_expr": true,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "small_bag",
+    "rep": 2,
+    "len": 86,
+    "len_in_75_155": true,
+    "fact_coverage": 0.4,
+    "imp_sentences": 0,
+    "notes_common_chars": 12,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "space_weapons",
+    "rep": 1,
+    "len": 68,
+    "len_in_75_155": false,
+    "fact_coverage": 1.0,
+    "imp_sentences": 0,
+    "notes_common_chars": 6,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "space_weapons",
+    "rep": 2,
+    "len": 107,
+    "len_in_75_155": true,
+    "fact_coverage": 0.727,
+    "imp_sentences": 0,
+    "notes_common_chars": 8,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "hormuz",
+    "rep": 1,
+    "len": 106,
+    "len_in_75_155": true,
+    "fact_coverage": 0.385,
+    "imp_sentences": 0,
+    "notes_common_chars": 5,
+    "limit_expr": true,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "hormuz",
+    "rep": 2,
+    "len": 96,
+    "len_in_75_155": true,
+    "fact_coverage": 0.364,
+    "imp_sentences": 0,
+    "notes_common_chars": 3,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "central_bank_mortgage",
+    "rep": 1,
+    "len": 119,
+    "len_in_75_155": true,
+    "fact_coverage": 0.455,
+    "imp_sentences": 0,
+    "notes_common_chars": 7,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": [
+     "STORYLINE_NUMBER_NOT_IN_SELECTED_FACTS:['0.25ポイント']"
+    ]
+   },
+   {
+    "theme": "central_bank_mortgage",
+    "rep": 2,
+    "len": 102,
+    "len_in_75_155": true,
+    "fact_coverage": 0.444,
+    "imp_sentences": 0,
+    "notes_common_chars": 7,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "meta",
+    "rep": 1,
+    "len": 99,
+    "len_in_75_155": true,
+    "fact_coverage": 0.571,
+    "imp_sentences": 0,
+    "notes_common_chars": 11,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "meta",
+    "rep": 2,
+    "len": 81,
+    "len_in_75_155": true,
+    "fact_coverage": 0.833,
+    "imp_sentences": 0,
+    "notes_common_chars": 11,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "byd_recall",
+    "rep": 1,
+    "len": 104,
+    "len_in_75_155": true,
+    "fact_coverage": 0.364,
+    "imp_sentences": 0,
+    "notes_common_chars": 8,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "byd_recall",
+    "rep": 2,
+    "len": 99,
+    "len_in_75_155": true,
+    "fact_coverage": 0.273,
+    "imp_sentences": 0,
+    "notes_common_chars": 6,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "openai_copyright",
+    "rep": 1,
+    "len": 116,
+    "len_in_75_155": true,
+    "fact_coverage": 0.636,
+    "imp_sentences": 0,
+    "notes_common_chars": 9,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": [
+     "STORYLINE_NUMBER_NOT_IN_SELECTED_FACTS:['2026年10月8日']"
+    ]
+   },
+   {
+    "theme": "openai_copyright",
+    "rep": 2,
+    "len": 155,
+    "len_in_75_155": true,
+    "fact_coverage": 0.667,
+    "imp_sentences": 0,
+    "notes_common_chars": 7,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": [
+     "STORYLINE_NUMBER_NOT_IN_SELECTED_FACTS:['2026年10月8日']"
+    ]
+   },
+   {
+    "theme": "streaming_price",
+    "rep": 1,
+    "len": 75,
+    "len_in_75_155": true,
+    "fact_coverage": 0.4,
+    "imp_sentences": 0,
+    "notes_common_chars": 7,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "streaming_price",
+    "rep": 2,
+    "len": 114,
+    "len_in_75_155": true,
+    "fact_coverage": 0.4,
+    "imp_sentences": 0,
+    "notes_common_chars": 10,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": [
+     "STORYLINE_NUMBER_NOT_IN_SELECTED_FACTS:['9月23日', '10月21日']"
+    ]
+   }
+  ],
+  "D-plus": [
+   {
+    "theme": "semiconductor_earnings",
+    "rep": 1,
+    "len": 107,
+    "len_in_75_155": true,
+    "fact_coverage": 0.667,
+    "imp_sentences": 0,
+    "notes_common_chars": 8,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "semiconductor_earnings",
+    "rep": 2,
+    "len": 112,
+    "len_in_75_155": true,
+    "fact_coverage": 0.778,
+    "imp_sentences": 0,
+    "notes_common_chars": 8,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "small_bag",
+    "rep": 1,
+    "len": 109,
+    "len_in_75_155": true,
+    "fact_coverage": 0.7,
+    "imp_sentences": 0,
+    "notes_common_chars": 12,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "small_bag",
+    "rep": 2,
+    "len": 122,
+    "len_in_75_155": true,
+    "fact_coverage": 0.625,
+    "imp_sentences": 0,
+    "notes_common_chars": 10,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "space_weapons",
+    "rep": 1,
+    "len": 132,
+    "len_in_75_155": true,
+    "fact_coverage": 0.857,
+    "imp_sentences": 0,
+    "notes_common_chars": 3,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "space_weapons",
+    "rep": 2,
+    "len": 167,
+    "len_in_75_155": false,
+    "fact_coverage": 0.812,
+    "imp_sentences": 0,
+    "notes_common_chars": 9,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "hormuz",
+    "rep": 1,
+    "len": 155,
+    "len_in_75_155": true,
+    "fact_coverage": 0.562,
+    "imp_sentences": 0,
+    "notes_common_chars": 5,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": [
+     "STORYLINE_NUMBER_NOT_IN_SELECTED_FACTS:['85ドル超']"
+    ]
+   },
+   {
+    "theme": "hormuz",
+    "rep": 2,
+    "len": 111,
+    "len_in_75_155": true,
+    "fact_coverage": 0.643,
+    "imp_sentences": 0,
+    "notes_common_chars": 6,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "central_bank_mortgage",
+    "rep": 2,
+    "len": 118,
+    "len_in_75_155": true,
+    "fact_coverage": 0.556,
+    "imp_sentences": 0,
+    "notes_common_chars": 5,
+    "limit_expr": true,
+    "story_numbers_not_in_selected": [
+     "STORYLINE_NUMBER_NOT_IN_SELECTED_FACTS:['0.25ポイント']"
+    ]
+   },
+   {
+    "theme": "meta",
+    "rep": 1,
+    "len": 59,
+    "len_in_75_155": false,
+    "fact_coverage": 0.75,
+    "imp_sentences": 0,
+    "notes_common_chars": 9,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "meta",
+    "rep": 2,
+    "len": 89,
+    "len_in_75_155": true,
+    "fact_coverage": 0.571,
+    "imp_sentences": 0,
+    "notes_common_chars": 11,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "byd_recall",
+    "rep": 1,
+    "len": 109,
+    "len_in_75_155": true,
+    "fact_coverage": 0.583,
+    "imp_sentences": 0,
+    "notes_common_chars": 8,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "byd_recall",
+    "rep": 2,
+    "len": 102,
+    "len_in_75_155": true,
+    "fact_coverage": 0.545,
+    "imp_sentences": 0,
+    "notes_common_chars": 9,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "openai_copyright",
+    "rep": 1,
+    "len": 204,
+    "len_in_75_155": false,
+    "fact_coverage": 0.682,
+    "imp_sentences": 0,
+    "notes_common_chars": 12,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": [
+     "STORYLINE_NUMBER_NOT_IN_SELECTED_FACTS:['2026年10月8日']"
+    ]
+   },
+   {
+    "theme": "openai_copyright",
+    "rep": 2,
+    "len": 183,
+    "len_in_75_155": false,
+    "fact_coverage": 0.722,
+    "imp_sentences": 0,
+    "notes_common_chars": 6,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "streaming_price",
+    "rep": 1,
+    "len": 132,
+    "len_in_75_155": true,
+    "fact_coverage": 0.667,
+    "imp_sentences": 0,
+    "notes_common_chars": 8,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "streaming_price",
+    "rep": 2,
+    "len": 217,
+    "len_in_75_155": false,
+    "fact_coverage": 0.765,
+    "imp_sentences": 0,
+    "notes_common_chars": 7,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   }
+  ],
+  "RoleOnly": [
+   {
+    "theme": "semiconductor_earnings",
+    "rep": 1,
+    "len": 124,
+    "len_in_75_155": true,
+    "fact_coverage": 0.6,
+    "imp_sentences": 0,
+    "notes_common_chars": 8,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": [
+     "STORYLINE_NUMBER_NOT_IN_SELECTED_FACTS:['8月2日']"
+    ]
+   },
+   {
+    "theme": "semiconductor_earnings",
+    "rep": 2,
+    "len": 122,
+    "len_in_75_155": true,
+    "fact_coverage": 0.8,
+    "imp_sentences": 0,
+    "notes_common_chars": 8,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "small_bag",
+    "rep": 1,
+    "len": 109,
+    "len_in_75_155": true,
+    "fact_coverage": 0.727,
+    "imp_sentences": 0,
+    "notes_common_chars": 9,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "small_bag",
+    "rep": 2,
+    "len": 87,
+    "len_in_75_155": true,
+    "fact_coverage": 0.375,
+    "imp_sentences": 0,
+    "notes_common_chars": 8,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "space_weapons",
+    "rep": 1,
+    "len": 76,
+    "len_in_75_155": true,
+    "fact_coverage": 1.0,
+    "imp_sentences": 0,
+    "notes_common_chars": 4,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "space_weapons",
+    "rep": 2,
+    "len": 195,
+    "len_in_75_155": false,
+    "fact_coverage": 0.789,
+    "imp_sentences": 0,
+    "notes_common_chars": 13,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "hormuz",
+    "rep": 1,
+    "len": 124,
+    "len_in_75_155": true,
+    "fact_coverage": 0.385,
+    "imp_sentences": 0,
+    "notes_common_chars": 5,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "hormuz",
+    "rep": 2,
+    "len": 117,
+    "len_in_75_155": true,
+    "fact_coverage": 0.417,
+    "imp_sentences": 0,
+    "notes_common_chars": 5,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "central_bank_mortgage",
+    "rep": 1,
+    "len": 135,
+    "len_in_75_155": true,
+    "fact_coverage": 0.385,
+    "imp_sentences": 0,
+    "notes_common_chars": 7,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": [
+     "STORYLINE_NUMBER_NOT_IN_SELECTED_FACTS:['0.25ポイント']"
+    ]
+   },
+   {
+    "theme": "central_bank_mortgage",
+    "rep": 2,
+    "len": 213,
+    "len_in_75_155": false,
+    "fact_coverage": 0.556,
+    "imp_sentences": 0,
+    "notes_common_chars": 7,
+    "limit_expr": true,
+    "story_numbers_not_in_selected": [
+     "STORYLINE_NUMBER_NOT_IN_SELECTED_FACTS:['0.25ポイント', '約376ドル']"
+    ]
+   },
+   {
+    "theme": "meta",
+    "rep": 1,
+    "len": 104,
+    "len_in_75_155": true,
+    "fact_coverage": 0.778,
+    "imp_sentences": 0,
+    "notes_common_chars": 11,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "meta",
+    "rep": 2,
+    "len": 108,
+    "len_in_75_155": true,
+    "fact_coverage": 0.556,
+    "imp_sentences": 0,
+    "notes_common_chars": 9,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "byd_recall",
+    "rep": 1,
+    "len": 128,
+    "len_in_75_155": true,
+    "fact_coverage": 0.562,
+    "imp_sentences": 0,
+    "notes_common_chars": 8,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "byd_recall",
+    "rep": 2,
+    "len": 139,
+    "len_in_75_155": true,
+    "fact_coverage": 0.6,
+    "imp_sentences": 0,
+    "notes_common_chars": 9,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "openai_copyright",
+    "rep": 1,
+    "len": 179,
+    "len_in_75_155": false,
+    "fact_coverage": 0.6,
+    "imp_sentences": 0,
+    "notes_common_chars": 7,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": [
+     "STORYLINE_NUMBER_NOT_IN_SELECTED_FACTS:['2026年10月8日']"
+    ]
+   },
+   {
+    "theme": "openai_copyright",
+    "rep": 2,
+    "len": 175,
+    "len_in_75_155": false,
+    "fact_coverage": 0.706,
+    "imp_sentences": 0,
+    "notes_common_chars": 9,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": [
+     "STORYLINE_NUMBER_NOT_IN_SELECTED_FACTS:['2026年10月8日']"
+    ]
+   },
+   {
+    "theme": "streaming_price",
+    "rep": 1,
+    "len": 101,
+    "len_in_75_155": true,
+    "fact_coverage": 0.625,
+    "imp_sentences": 0,
+    "notes_common_chars": 7,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "streaming_price",
+    "rep": 2,
+    "len": 149,
+    "len_in_75_155": true,
+    "fact_coverage": 0.7,
+    "imp_sentences": 0,
+    "notes_common_chars": 7,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   }
+  ],
+  "C0": [
+   {
+    "theme": "semiconductor_earnings",
+    "rep": 0,
+    "len": 137,
+    "len_in_75_155": true,
+    "fact_coverage": 0.667,
+    "imp_sentences": 0,
+    "notes_common_chars": 11,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "small_bag",
+    "rep": 0,
+    "len": 104,
+    "len_in_75_155": true,
+    "fact_coverage": 0.2,
+    "imp_sentences": 0,
+    "notes_common_chars": 12,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "space_weapons",
+    "rep": 0,
+    "len": 108,
+    "len_in_75_155": true,
+    "fact_coverage": 0.625,
+    "imp_sentences": 0,
+    "notes_common_chars": 12,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "hormuz",
+    "rep": 0,
+    "len": 138,
+    "len_in_75_155": true,
+    "fact_coverage": 0.429,
+    "imp_sentences": 0,
+    "notes_common_chars": 6,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "central_bank_mortgage",
+    "rep": 0,
+    "len": 124,
+    "len_in_75_155": true,
+    "fact_coverage": 0.417,
+    "imp_sentences": 0,
+    "notes_common_chars": 7,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "meta",
+    "rep": 0,
+    "len": 103,
+    "len_in_75_155": true,
+    "fact_coverage": 0.5,
+    "imp_sentences": 0,
+    "notes_common_chars": 9,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "byd_recall",
+    "rep": 0,
+    "len": 125,
+    "len_in_75_155": true,
+    "fact_coverage": 0.562,
+    "imp_sentences": 0,
+    "notes_common_chars": 8,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "openai_copyright",
+    "rep": 0,
+    "len": 146,
+    "len_in_75_155": true,
+    "fact_coverage": 0.769,
+    "imp_sentences": 0,
+    "notes_common_chars": 7,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   },
+   {
+    "theme": "streaming_price",
+    "rep": 0,
+    "len": 133,
+    "len_in_75_155": true,
+    "fact_coverage": 0.6,
+    "imp_sentences": 0,
+    "notes_common_chars": 8,
+    "limit_expr": false,
+    "story_numbers_not_in_selected": []
+   }
+  ]
+ }
+}

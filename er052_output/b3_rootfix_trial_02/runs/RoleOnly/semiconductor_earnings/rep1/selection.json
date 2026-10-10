@@ -1,0 +1,98 @@
+{
+ "arm": "RoleOnly",
+ "theme": "semiconductor_earnings",
+ "rep": 1,
+ "parsed": {
+  "selected_storyline": "Broadcomの2026年度第3四半期（8月2日終了）にAI半導体売上高が167億ドルとなり、CEOがカスタムAIアクセラレーターとネットワーキングへの需要を非常に強いと評価するなか、同社は次の第4四半期にAI半導体売上高217億ドルを見込んだ。",
+  "fact_tests": [
+   {
+    "fact_id": "F1",
+    "test1_answer": "YES",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "YES",
+    "decision": "excluded",
+    "reason": "F3に会社名と対象となる第3四半期の期間が含まれており、F1を加えなくても中心Storylineは把握できる。また、決算発表日や「最も最近の発表」かどうかは中心Storylineの因果説明には使わない。"
+   },
+   {
+    "fact_id": "F2",
+    "test1_answer": "YES",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "YES",
+    "decision": "excluded",
+    "reason": "連結売上高は第3四半期の全社業績を示すが、選定したAI半導体売上高と次四半期見通しの筋を理解するためには必須ではなく、需要についての説明にも使われない。"
+   },
+   {
+    "fact_id": "F3",
+    "test1_answer": "NO",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "第3四半期に実際に計上されたAI半導体売上高とその伸びを示す、Storylineの中心となる実績。強い需要が売上高を生んだという明示的な因果関係まではLedgerにないが、実績を欠くと記事の中心となる出来事が抜ける。"
+   },
+   {
+    "fact_id": "F4",
+    "test1_answer": "YES",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "YES",
+    "decision": "excluded",
+    "reason": "次四半期の連結売上高見通しは全社の見通しであり、AI半導体の実績とAI需要のStorylineを理解するためには必須ではない。"
+   },
+   {
+    "fact_id": "F5",
+    "test1_answer": "NO",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "次四半期のAI半導体売上高見通しは、選定したStorylineのもう一つの中心的な出来事。F6の需要評価との明示的な因果関係はLedgerで確認できないため、見通し自体を需要の結果とは扱わない。"
+   },
+   {
+    "fact_id": "F6",
+    "test1_answer": "NO",
+    "test2_answer": "NO",
+    "test3_answer": "YES",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "CEOによる需要評価は、AI売上高の実績と見通しに関するStorylineの重要な説明的文脈となる。ただし、Ledgerは需要評価と見通しの直接の因果関係までは記していないため、両者を因果で結びつけずに採用する。"
+   }
+  ],
+  "selected_fact_ids": [
+   "F3",
+   "F5",
+   "F6"
+  ],
+  "selected_fact_brief": "Broadcomの2026年度第3四半期（8月2日終了）にAI半導体売上高が167億ドルとなり、CEOがカスタムAIアクセラレーターとネットワーキングへの需要を非常に強いと評価するなか、同社は次の第4四半期にAI半導体売上高217億ドルを見込んだ。\n\n第3四半期のAI半導体売上高は167億ドルで、CEOによると前年同期比221％増、前四半期比54％増だった。CEOはカスタムAIアクセラレーターとネットワーキングへの需要が引き続き非常に強いと述べた。CEOは、2026年度第4四半期（11月1日終了予定）のAI半導体売上高を217億ドル、前年同期比236％増と見込んだ。",
+  "recheck_note": null
+ },
+ "model": "gpt-6-luna",
+ "response_id": "resp_052b1b25fe4f76bf006aca1519282087d09b13f0a8f96047be",
+ "latency_seconds": 62.463772773742676,
+ "attempts": 1,
+ "retried": false,
+ "soft_warnings": [],
+ "prompt_shas": {
+  "developer_message_sha256": "b4391b0387c54d39cf2ed095e7c00e028b13f173065ed0077b3a16f0fe37981a",
+  "user_prompt_template_sha256": "43ee853edb9946a3bb697eba603de1b2610c6651a967052d98203f108ecb685a",
+  "fact_test_definitions_sha256": "91513c8999a63439adb40d5c28a253e4cdbb438228ba1deda199d2ae6c6c5a8a"
+ },
+ "ledger_sha256": "36b2c87dbc570a776c65cb335a516e33a497451f1bb9446fbc7a5bcd2aec3c97",
+ "attempts_log": [
+  {
+   "attempt": 1,
+   "validation_errors": []
+  }
+ ],
+ "usage_rows": [
+  {
+   "input_tokens": 2572,
+   "output_tokens": 6925,
+   "reasoning_tokens": 5788,
+   "elapsed_seconds": 62.463,
+   "attempt_number": 2
+  }
+ ]
+}

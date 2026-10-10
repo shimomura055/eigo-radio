@@ -6061,3 +6061,13 @@ MEASURED(Trial、Production変更なし)。Fable最終判定=総合『同等・�
 - 使用モデル(25節): B3=gpt-6-luna(Production B3同一条件、最新世代、最上位系かは未確認)、R0=gpt-6-luna(effort high)。
 - Status提案: VALIDATED(Trial限定、案D)。ただしProduction採用はUSER_DECISION_REQUIRED(Q1 brief決定論生成=ユーザー確定事項(7)の読み方/D-min vs D-full/固定限定文/Storyline行/Lane A調整/Lane B注記方式の扱い/別管理ID候補「B3呼出への中核数値構造化出力」)。VALIDATEDでもAPPROVED_FOR_PRODUCTIONではなく、Production実装には進まない。A'は事前登録E3不達で不採用。
 - 成果物: `er052_output/b3_fact_instruction_separation_trial_01/{RESULT_01.md,PREREGISTRATION_02.md,DESIGN_02.md,PROMPT_DIFF.md,HUMAN_CHECK_B3SEP_01.md,INVESTIGATION_01.md[R3是正],cost_ledger_b3sep_01.jsonl,eval/,runs/,b3sep_*.py}`。
+
+### §123 B3-FACT-INSTRUCTION-SEPARATION-ROOTFIX-TRIAL-02 (ROOTFIX-02) 全体: 問題1(中核/周辺数値ランク)・問題2(Storyline側注意書き混入)の同時解消Trial(2026-10-10、Phase 2a+2b、MEASURED、API費用 JPY34.30、Production変更なし)
+- 目的/条件: ユーザー決定で案D(決定論assemble)をAPPROVED_FOR_PRODUCTIONとしたうえで、問題1(中核/周辺数値ランク)・問題2(Storyline混入)を同時解消する方式を比較。腕=D-det(決定論、call 0)/D-plus-single-call(B3 同一callでnumber_ranks)/Separate-call(Luna別call)/役割宣言のみ(Prompt変更)。9テーマ、台帳凍結。Opus独立レビュー(条件A)の是正A1〜A7・U1削除を事前登録PREREGISTRATION_02に反映後に実行。
+- Phase 2a結果(JPY31.68): D-plus=REJECTED(STOP 1/18、JPY0.915/出力、66秒)、Separate-call(Luna)=REJECTED(STOP 2/18、再現性0.67<0.90、Sol未実施)、役割宣言のみ=VALIDATED(Trial限定・no-harm)。D-detはcentral_bankで危険な誤り1件(Storyline「25ベーシスポイント」とFact「0.25パーセントポイント」が紐付かず周辺化)、既存注記検査9/9でannotator欄以外PASS、LLMが補えた実在の表記0件。
+- ユーザーGo(2026-10-10)でD-det v2(単位換算表: ベーシスポイント=0.01パーセントポイント等)を実施。Phase 2b結果(JPY2.62、E9 R0 6 call): v2はcentral_bankの誤判定を解消(25bpと0.25ppとも中核。副作用=7.40%が上限枠から押し出されて周辺)、他8テーマは出力完全同一(副作用0)、既存注記検査9/9でannotator欄以外0、再実行完全一致、GT参考比較(既知値)一致0.857→0.875・中核再現0.88→0.917。E9: 制約行への【事実N】0、制約文転記0、台帳ID/内部語漏出0、記号Gate0、印漏出0、タグ整合6/6。数値印により中核数値が記事に出る(対照=印なしは数値がほぼ出ない)。気になる点: hormuzで周辺数値(85ドル・1バレル)を記事に書いた1件、central_bankで範囲表記を書き換えた1件、R0冒頭復唱1件(OPEN-175既知)。
+- post-hoc開示: v2はcentral_bankの結果を見て設計(独立予測ではない)。freeze前に動作確認probe1回、probe後に規則変更なし。
+- 使用モデル(25節): B3系・Separate-call・R0=gpt-6-luna(最新世代、最上位系かは未確認。例外理由=Production条件との同一性)。D-det v2はLLM不使用。
+- Status提案: D-det v2=VALIDATED(Trial限定)、Production採用はUSER_DECISION_REQUIRED(Claude側意見=採用推奨)。D-plus/Sep=REJECTED、役割宣言のみ=VALIDATED(採用はPrompt変更のためユーザー判断)。VALIDATEDでもAPPROVED_FOR_PRODUCTIONではない。U2=該当なし(LLM腕不採用)、U3=決定論方式への切替はユーザー判断。
+- Lane A interface含意: annotated B3 producer=決定論assembler+D-det v2、`number_ranks`不要、B3 Prompt/schema変更不要。annotation.jsonの`unmapped_claims`/`annotation_notes`/`annotator`値は要仕様化。
+- 成果物: `er052_output/b3_rootfix_trial_02/{RESULT_2A_01.md,RESULT_01.md,PREREGISTRATION_02.md,PREREGISTRATION_03.md,HUMAN_CHECK_B3R2_01.md,HUMAN_CHECK_B3R2_02.md,cost_ledger_b3r2_01.jsonl,frozen_b3r2_02.json,frozen_b3r2_03.json,b3r2_*.py,eval/,eval_v2/,e9/,runs/}`。

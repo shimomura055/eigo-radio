@@ -1,0 +1,260 @@
+{
+ "spec": "B3_ANNOTATION_SPEC_v2",
+ "ledger_records": 6,
+ "f_ledger_schema": {
+  "status": "INFO",
+  "records": 6,
+  "field_counts": {
+   "scope": 6,
+   "date_or_period": 6,
+   "ambiguity_note": 1,
+   "conditions": 5,
+   "numeric_value": 4,
+   "causal_strength": 2,
+   "notes_for_writer": 4
+  },
+  "numeric_value_fallback_to_statement": false,
+  "date_or_period_fallback_to_statement": false,
+  "non_verified_ids": [
+   "F1"
+  ],
+  "per_record": {
+   "F1": {
+    "status": "AMBIGUOUS",
+    "fields": [
+     "ambiguity_note",
+     "date_or_period",
+     "scope"
+    ]
+   },
+   "F2": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F3": {
+    "status": "VERIFIED",
+    "fields": [
+     "causal_strength",
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F4": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F5": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F6": {
+    "status": "VERIFIED",
+    "fields": [
+     "causal_strength",
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "scope"
+    ]
+   }
+  },
+  "warnings": [
+   "VERIFIED でない記録: ['F1']"
+  ]
+ },
+ "a_strip_equal": {
+  "status": "PASS",
+  "reason": "",
+  "strict_equal_after_strip": true,
+  "inserted_split_breaks": 0,
+  "inserted_bullet_markers": 0,
+  "brief_sha256": "ed81007e3ada29f5dc4987de8ff8816832459ba1ccfd399279b3ed309450bdf8",
+  "stripped_annotated_sha256": "ed81007e3ada29f5dc4987de8ff8816832459ba1ccfd399279b3ed309450bdf8"
+ },
+ "d_sequence": {
+  "status": "PASS",
+  "fact_numbers": [
+   1,
+   2,
+   3
+  ],
+  "problems": []
+ },
+ "b_ledger_mapping": {
+  "status": "PASS",
+  "mapping": {
+   "1": [
+    "F3"
+   ],
+   "2": [
+    "F5"
+   ],
+   "3": [
+    "F6"
+   ]
+  },
+  "problems": [],
+  "warnings": [],
+  "ambiguous_fact": {}
+ },
+ "c_numbers": {
+  "status": "PASS",
+  "problems": [],
+  "warnings": [
+   "2026年度: ledger_ids ['_STORY'] が台帳にない"
+  ],
+  "surface_diff": [],
+  "eligibility": {
+   "C1": [],
+   "C2": [
+    "E1"
+   ],
+   "C3": [
+    "E1"
+   ],
+   "C4": [
+    "E1"
+   ],
+   "C5": [],
+   "C6": [
+    "E1"
+   ],
+   "C7": [
+    "E1"
+   ],
+   "C8": []
+  },
+  "countable_concepts": 8,
+  "core_cap": 4,
+  "expected_core_concepts": [
+   "C2",
+   "C6",
+   "C3",
+   "C4"
+  ],
+  "declared_core_concepts": [
+   "C2",
+   "C3",
+   "C4",
+   "C6"
+  ],
+  "cap_dropped_concepts": [
+   "C7"
+  ],
+  "cap_dropped_count": 1,
+  "eligible_concepts": [
+   "C2",
+   "C6",
+   "C3",
+   "C4",
+   "C7"
+  ],
+  "concept_detail": {
+   "C1": {
+    "kind": "date_time",
+    "eligible": [],
+    "group": 2,
+    "in_storyline": true,
+    "expected_class": "peripheral"
+   },
+   "C2": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 0,
+    "in_storyline": true,
+    "expected_class": "core"
+   },
+   "C3": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C4": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C5": {
+    "kind": "magnitude",
+    "eligible": [],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   },
+   "C6": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 0,
+    "in_storyline": true,
+    "expected_class": "core"
+   },
+   "C7": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   },
+   "C8": {
+    "kind": "magnitude",
+    "eligible": [],
+    "group": 0,
+    "in_storyline": true,
+    "expected_class": "peripheral"
+   }
+  },
+  "kanji_numeral_candidates": [],
+  "percent_sign_variants": [
+   "％"
+  ],
+  "stop_candidates": [
+   "2026年度: 台帳に無い数字がStoryline(記事の中心)に有る [STOP候補(ii)]"
+  ]
+ },
+ "e_sidecar_meta": {
+  "status": "FAIL",
+  "problems": [
+   "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+  ],
+  "warnings": [
+   "spec_sha256: 照合用の実ファイル未指定 (SKIPPED)"
+  ],
+  "unmapped_claims_by_type": {}
+ },
+ "skipped": [],
+ "verdict": "FAIL"
+}

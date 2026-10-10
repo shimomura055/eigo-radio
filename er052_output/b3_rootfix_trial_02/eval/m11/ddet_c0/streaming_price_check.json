@@ -1,0 +1,329 @@
+{
+ "spec": "B3_ANNOTATION_SPEC_v2",
+ "ledger_records": 7,
+ "f_ledger_schema": {
+  "status": "INFO",
+  "records": 7,
+  "field_counts": {
+   "scope": 7,
+   "conditions": 7,
+   "date_or_period": 7,
+   "ambiguity_note": 2,
+   "notes_for_writer": 7,
+   "numeric_value": 4
+  },
+  "numeric_value_fallback_to_statement": false,
+  "date_or_period_fallback_to_statement": false,
+  "non_verified_ids": [
+   "F01",
+   "F07"
+  ],
+  "per_record": {
+   "F01": {
+    "status": "AMBIGUOUS",
+    "fields": [
+     "ambiguity_note",
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "scope"
+    ]
+   },
+   "F02": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F03": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F04": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F05": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "scope"
+    ]
+   },
+   "F06": {
+    "status": "VERIFIED",
+    "fields": [
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "numeric_value",
+     "scope"
+    ]
+   },
+   "F07": {
+    "status": "AMBIGUOUS",
+    "fields": [
+     "ambiguity_note",
+     "conditions",
+     "date_or_period",
+     "notes_for_writer",
+     "scope"
+    ]
+   }
+  },
+  "warnings": [
+   "VERIFIED でない記録: ['F01', 'F07']"
+  ]
+ },
+ "a_strip_equal": {
+  "status": "PASS",
+  "reason": "",
+  "strict_equal_after_strip": true,
+  "inserted_split_breaks": 0,
+  "inserted_bullet_markers": 0,
+  "brief_sha256": "3d1d767db1ad903de52c3be19286781d6a636b0f17118aca9e9650fe435925f8",
+  "stripped_annotated_sha256": "3d1d767db1ad903de52c3be19286781d6a636b0f17118aca9e9650fe435925f8"
+ },
+ "d_sequence": {
+  "status": "PASS",
+  "fact_numbers": [
+   1,
+   2,
+   3,
+   4,
+   5,
+   6
+  ],
+  "problems": []
+ },
+ "b_ledger_mapping": {
+  "status": "PASS",
+  "mapping": {
+   "1": [
+    "F01"
+   ],
+   "2": [
+    "F02"
+   ],
+   "3": [
+    "F03"
+   ],
+   "4": [
+    "F04"
+   ],
+   "5": [
+    "F06"
+   ],
+   "6": [
+    "F07"
+   ]
+  },
+  "problems": [],
+  "warnings": [
+   "事実1: 台帳ID F01 は AMBIGUOUS (ambiguous_fact)",
+   "事実6: 台帳ID F07 は AMBIGUOUS (ambiguous_fact)"
+  ],
+  "ambiguous_fact": {
+   "1": [
+    "F01"
+   ],
+   "6": [
+    "F07"
+   ]
+  }
+ },
+ "c_numbers": {
+  "status": "PASS",
+  "problems": [],
+  "warnings": [],
+  "surface_diff": [],
+  "eligibility": {
+   "C1": [],
+   "C2": [
+    "E2p"
+   ],
+   "C3": [
+    "E1"
+   ],
+   "C4": [
+    "E1"
+   ],
+   "C5": [
+    "E2p"
+   ],
+   "C6": [],
+   "C7": [
+    "E1"
+   ],
+   "C8": [
+    "E1"
+   ],
+   "C9": [
+    "E1"
+   ],
+   "C10": [
+    "E1"
+   ],
+   "C11": []
+  },
+  "countable_concepts": 11,
+  "core_cap": 5,
+  "expected_core_concepts": [
+   "C3",
+   "C4",
+   "C7",
+   "C8",
+   "C9"
+  ],
+  "declared_core_concepts": [
+   "C3",
+   "C4",
+   "C7",
+   "C8",
+   "C9"
+  ],
+  "cap_dropped_concepts": [
+   "C10",
+   "C2",
+   "C5"
+  ],
+  "cap_dropped_count": 3,
+  "eligible_concepts": [
+   "C3",
+   "C4",
+   "C7",
+   "C8",
+   "C9",
+   "C10",
+   "C2",
+   "C5"
+  ],
+  "concept_detail": {
+   "C1": {
+    "kind": "date_time",
+    "eligible": [],
+    "group": 2,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   },
+   "C2": {
+    "kind": "date_time",
+    "eligible": [
+     "E2p"
+    ],
+    "group": 2,
+    "in_storyline": true,
+    "expected_class": "peripheral"
+   },
+   "C3": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C4": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C5": {
+    "kind": "date_time",
+    "eligible": [
+     "E2p"
+    ],
+    "group": 2,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   },
+   "C6": {
+    "kind": "date_time",
+    "eligible": [],
+    "group": 2,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   },
+   "C7": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C8": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C9": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "core"
+   },
+   "C10": {
+    "kind": "magnitude",
+    "eligible": [
+     "E1"
+    ],
+    "group": 1,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   },
+   "C11": {
+    "kind": "date_time",
+    "eligible": [],
+    "group": 2,
+    "in_storyline": false,
+    "expected_class": "peripheral"
+   }
+  },
+  "kanji_numeral_candidates": [],
+  "stop_candidates": []
+ },
+ "e_sidecar_meta": {
+  "status": "FAIL",
+  "problems": [
+   "annotator が A/B/MERGED でない: 'DETERMINISTIC'"
+  ],
+  "warnings": [
+   "spec_sha256: 照合用の実ファイル未指定 (SKIPPED)"
+  ],
+  "unmapped_claims_by_type": {}
+ },
+ "skipped": [],
+ "verdict": "FAIL"
+}

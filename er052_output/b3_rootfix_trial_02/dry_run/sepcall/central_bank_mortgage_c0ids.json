@@ -1,0 +1,71 @@
+{
+ "model": "gpt-6-luna",
+ "reasoning": {
+  "effort": "high"
+ },
+ "text": {
+  "format": {
+   "type": "json_schema",
+   "name": "number_ranks_only",
+   "schema": {
+    "type": "object",
+    "properties": {
+     "number_ranks": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "fact_id": {
+         "type": "string"
+        },
+        "surface": {
+         "type": "string"
+        },
+        "kind": {
+         "type": "string",
+         "enum": [
+          "magnitude",
+          "date_time",
+          "range",
+          "year",
+          "ordinal",
+          "name_embedded"
+         ]
+        },
+        "role": {
+         "type": "string",
+         "enum": [
+          "core",
+          "peripheral"
+         ]
+        }
+       },
+       "required": [
+        "fact_id",
+        "surface",
+        "kind",
+        "role"
+       ],
+       "additionalProperties": false
+      }
+     }
+    },
+    "required": [
+     "number_ranks"
+    ],
+    "additionalProperties": false
+   },
+   "strict": true
+  }
+ },
+ "input": [
+  {
+   "role": "developer",
+   "content": "あなたはNews記事の数値整理を行うEditorです。採用済みFactの本文に書かれている数字・日付の表記を洗い出し、中核(core)か周辺(peripheral)かを規則に従って分類してください。記事本文は書きません。Factの採否やStorylineは変更しません。"
+  },
+  {
+   "role": "user",
+   "content": "以下は、あるテーマについて、中心Storylineと、そのStorylineのために採用済みのFactです。\n\n【テーマ】\nCurrent news/lifestyle topic: the latest central bank interest rate decision and what it means for mortgage borrowers. Using only facts confirmed by web search (official central bank statements, Reuters/AP/Bloomberg-level reporting), cover the most recent rate decision (which central bank, date, size and direction of the move), the stated reasoning, and the reported effect on mortgage rates or home loan payments for borrowers (fixed vs variable where reported). Separate confirmed facts from forecasts. Do not invent details and do not use the assistant's own prior knowledge.\n\n【Storyline】\n2026年10月8日時点で直近の完了済みFOMCは、インフレ高止まりへの対応として9月16日に25ベーシスポイント利上げした一方、住宅ローン金利は政策金利に自動連動せず、複数の市場要因で上昇しており、固定ローンの借り手には月額負担増が示されている。\n\n【採用Fact】\nF001: 米国の直近の完了済みFOMC金利決定は2026年9月16日。2026年10月8日時点で、Federal Reserveの政策ページには次回会合が10月27～28日と掲載されている。\n  date_or_period: 直近決定：2026-09-16。確認時点：2026-10-08。次回会合予定：2026-10-27～28。\nF002: FOMCは2026年9月16日、フェデラルファンド金利の目標レンジを0.25パーセントポイント引き上げ、3.75～4.00％とした。声明は12対0で承認された。\n  numeric_value: 25ベーシスポイント引き上げ。新レンジは3.75～4.00％。採決は12対0。 (numeric_scope: 政策金利目標レンジとFOMCの採決)\n  date_or_period: 2026-09-16の発表。実施日は2026-09-17。\nF003: FOMC声明は、経済活動が堅調に拡大し、国内支出が底堅く、生産性の伸びと設備投資が強い一方、雇用増は労働力の伸びに見合い、失業率は大きく変わらず、インフレは高止まりしていると説明した。委員会は利上げがインフレを2％目標へより早く戻す助けになると述べた。\n  numeric_value: インフレ目標：2％。 (numeric_scope: FOMCの長期インフレ目標)\n  date_or_period: 2026-09-16の声明\nF007: APは2026年10月8日、30年固定の全米平均金利が7週連続で上昇し、2023年11月16日以来の高水準になったと報じた。30年金利が2月下旬の5.98％から10月8日の7.40％へ上がった場合、40万ドルの住宅ローンを組む借り手では月額費用が概算376ドル増えるとの試算も掲載した。\n  numeric_value: 月額費用の概算増：376ドル。30年固定平均金利：5.98％から7.40％へ上昇。 (numeric_scope: 40万ドルを借りる例に関するAPの試算。7.40％は2026-10-08週の平均。)\n  date_or_period: 金利比較：2026年2月下旬～2026-10-08。報道日：2026-10-08。\nF008: 米連邦準備制度理事会の消費者向け説明によると、フェデラルファンド金利は住宅ローン金利を直接決めない。住宅ローン金利は貸し手と契約条件によって定まり、固定金利型は契約期間中に金利が固定され、変動・調整金利型は契約条件に応じて金利が変わり得る。\nF010: APは、2026年秋の住宅ローン金利上昇について、インフレ、Fed政策、債券市場投資家の経済見通しが影響要因であり、住宅ローン金利は一般に10年米国債利回りの動きに沿うと報じた。同記事は、直近の上昇に債券市場の変動や原油高によるインフレ懸念も関わったと報じている。\n  date_or_period: 2026年2月下旬以降の上昇について。報道日：2026-10-08。\n\nあなたの仕事は次の1つです。\n採用したFactそれぞれについて、そのFact本文(ID行の文)に書かれている数字・日付の表記を1つずつ洗い出し、number_ranksへ中核(core)か周辺(peripheral)の別とともに記載してください。\n- surface: 数字・単位・「約」「超」などのヘッジ語まで含めた形で、Fact本文に書かれている通りに写してください(例: 約3.4％、2,300件超、7月13日)。Fact本文に無い数字、Ledgerの他の欄にしかない数字、別のFactの数字は書かないでください。数字を含まない表記は不要です。\n- kind: magnitude(量・割合・金額・件数など)/date_time(月を含む日付・時刻・四半期)/range(範囲)/year(年だけ)/ordinal(第12回など識別子の序数)/name_embedded(名称の一部の番号)のどれか。\n- role: 次の順で決めてください。(a)year・ordinal・name_embeddedは常にperipheral。(b)量とrangeは、そのFactのnumeric_value欄の数字(numeric_scopeの括弧内を除く)に含まれるものだけがcore候補(Ledger全体にnumeric_value欄が1件も無い場合に限り、Fact本文の数字で比べる)。日付は、表記に月があり、そのFactのdate_or_period欄の先頭の日付と、表記にある年・月・日が全て一致するものだけがcore候補(Ledger全体にdate_or_period欄が1件も無い場合に限り、Fact本文の最初の日付で比べる。年だけ・日だけ・時刻だけ・四半期の表記は候補になりません)。(c)core候補を、Storylineに出る量、それ以外の量、日付の順に並べ(同じ順位ではFactの採用順・本文の出現順)、先頭から最大 max(3, min(6, floor(n/2))) 個をcore、残りと候補でないものをperipheralとする(nは量・range・日付の概念の総数。概念=同じFactの中で主数字と単位が同じ表記のまとまり。同じ概念の表記は全て同じroleにする)。迷ったらperipheral。\n\n【出力】\nJSON schemaの指示に従い、number_ranks(採用Factの数字・日付の表記ごとに fact_id・surface・kind・role)を出力してください。数字が1つも無い場合は空配列。\n\n【重要】fact_idは、上記の採用Factに実在するもののみを使用してください。surfaceは当該Factのfact本文に実在する表記のみとしてください。"
+  }
+ ]
+}

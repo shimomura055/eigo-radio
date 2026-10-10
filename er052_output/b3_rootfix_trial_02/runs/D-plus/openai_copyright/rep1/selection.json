@@ -1,0 +1,147 @@
+{
+ "arm": "D-plus",
+ "theme": "openai_copyright",
+ "rep": 1,
+ "parsed": {
+  "selected_storyline": "USA TODAY Co., Inc.と関連出版社は2026年10月8日、OpenAIが報道コンテンツを無断で訓練利用し、出力で複製・再構成したなどと訴状で主張してニューヨーク南部地区連邦地裁に提訴し、2億5,000万ドル超の損害賠償や関連モデル・訓練セットの破棄を求めた；ReutersによればOpenAI広報は同日、コメント依頼に直ちには応じず、事件は訴状提出段階で裁判所による侵害認定や本案判断はない。",
+  "fact_tests": [
+   {
+    "fact_id": "F1",
+    "test1_answer": "NO",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "誰が提訴したかを示す唯一のFactで、原告の特定は中心Storylineの理解に必要。訴訟の理由を説明する因果要素ではないが、テーマで求められている当事者情報として採用する。"
+   },
+   {
+    "fact_id": "F2",
+    "test1_answer": "YES",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "YES",
+    "decision": "excluded",
+    "reason": "共同原告の全名称と14という数は、USA TODAY Co., Inc.と関連出版社が提訴したという理解には不要で、Storyline上の理由や因果関係も補わない。"
+   },
+   {
+    "fact_id": "F3",
+    "test1_answer": "YES",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "YES",
+    "decision": "excluded",
+    "reason": "訴状に挙げられた19出版物の一覧は具体的な補足であり、提訴の経緯や中心となる主張を理解するためには不要。"
+   },
+   {
+    "fact_id": "F4",
+    "test1_answer": "NO",
+    "test2_answer": "YES",
+    "test3_answer": "YES",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "提訴の理由となる原告側の主張を示す中心Fact。訓練利用や出力での複製・再構成などの主張がなぜ訴訟に至ったかを説明する。"
+   },
+   {
+    "fact_id": "F5",
+    "test1_answer": "YES",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "YES",
+    "decision": "excluded",
+    "reason": "訴状の請求原因を三つに分けた詳細は、原告側の主張の概要をF4で伝えるStorylineには必須でない。"
+   },
+   {
+    "fact_id": "F6",
+    "test1_answer": "NO",
+    "test2_answer": "YES",
+    "test3_answer": "YES",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "原告らが訴状で求める金銭的・非金銭的救済を示し、主張と訴訟で求める結果をつなぐ。テーマで求められている救済内容にも必要。"
+   },
+   {
+    "fact_id": "F7",
+    "test1_answer": "NO",
+    "test2_answer": "NO",
+    "test3_answer": "NO",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "提訴の原因を説明するFactではないが、確認できるOpenAIの対応状況を示す唯一のFactであり、テーマで求められている応答情報として採用する。"
+   },
+   {
+    "fact_id": "F8",
+    "test1_answer": "NO",
+    "test2_answer": "YES",
+    "test3_answer": "YES",
+    "test4_answer": "NO",
+    "decision": "selected",
+    "reason": "提訴先・日付と手続の段階を示す。事件が提訴段階にあり、侵害認定や本案判断がないことは、訴状上の主張と裁判所の判断を区別するために必要。"
+   }
+  ],
+  "selected_fact_ids": [
+   "F1",
+   "F4",
+   "F6",
+   "F7",
+   "F8"
+  ],
+  "selected_fact_brief": "USA TODAY Co., Inc.と関連出版社は2026年10月8日、OpenAIが報道コンテンツを無断で訓練利用し、出力で複製・再構成したなどと訴状で主張してニューヨーク南部地区連邦地裁に提訴し、2億5,000万ドル超の損害賠償や関連モデル・訓練セットの破棄を求めた；ReutersによればOpenAI広報は同日、コメント依頼に直ちには応じず、事件は訴状提出段階で裁判所による侵害認定や本案判断はない。\n訴状は、OpenAIが原告側の報道コンテンツを許可なく取得・複製してモデル訓練に用い、出力で複製・再構成したほか、著作権管理情報を除去したと主張している。原告らは法定・補償的損害賠償、利益の返還なども求めている。事件番号は1:26-cv-08892。",
+  "recheck_note": null,
+  "number_ranks": [
+   {
+    "fact_id": "F6",
+    "surface": "2億5,000万ドルを超える",
+    "kind": "magnitude",
+    "role": "core"
+   },
+   {
+    "fact_id": "F7",
+    "surface": "2026-10-08",
+    "kind": "date_time",
+    "role": "core"
+   },
+   {
+    "fact_id": "F8",
+    "surface": "2026-10-08",
+    "kind": "date_time",
+    "role": "core"
+   },
+   {
+    "fact_id": "F8",
+    "surface": "1:26-cv-08892",
+    "kind": "name_embedded",
+    "role": "peripheral"
+   }
+  ],
+  "_number_rank_flags": [
+   "STORYLINE_NUMBER_NOT_IN_SELECTED_FACTS:['2026年10月8日']"
+  ]
+ },
+ "model": "gpt-6-luna",
+ "response_id": "resp_0cbc02c39feeea60006aca1572820487d0b8a04370350dd181",
+ "latency_seconds": 71.73230814933777,
+ "attempts": 1,
+ "retried": false,
+ "soft_warnings": [],
+ "prompt_shas": {
+  "developer_message_sha256": "b4391b0387c54d39cf2ed095e7c00e028b13f173065ed0077b3a16f0fe37981a",
+  "user_prompt_template_sha256": "9c2f7cfed7a1077157ec9faeb525bd2792010bf352ec7108fc73b85e66050b3a",
+  "fact_test_definitions_sha256": "91513c8999a63439adb40d5c28a253e4cdbb438228ba1deda199d2ae6c6c5a8a"
+ },
+ "ledger_sha256": "2463c2eabfc2da84a986f6a21765f2680e76a133b97d5205b00eb1111a04f184",
+ "attempts_log": [
+  {
+   "attempt": 1,
+   "validation_errors": []
+  }
+ ],
+ "usage_rows": [
+  {
+   "input_tokens": 4071,
+   "output_tokens": 8459,
+   "reasoning_tokens": 6875,
+   "elapsed_seconds": 71.732,
+   "attempt_number": 3
+  }
+ ]
+}

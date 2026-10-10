@@ -1,0 +1,153 @@
+{
+ "model": "gpt-6-luna",
+ "reasoning": {
+  "effort": "high"
+ },
+ "text": {
+  "format": {
+   "type": "json_schema",
+   "name": "storyline_b3_fact_selection",
+   "schema": {
+    "type": "object",
+    "properties": {
+     "selected_storyline": {
+      "type": "string"
+     },
+     "fact_tests": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "fact_id": {
+         "type": "string"
+        },
+        "test1_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "test2_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "test3_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "test4_answer": {
+         "type": "string",
+         "enum": [
+          "YES",
+          "NO"
+         ]
+        },
+        "decision": {
+         "type": "string",
+         "enum": [
+          "selected",
+          "excluded"
+         ]
+        },
+        "reason": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "fact_id",
+        "test1_answer",
+        "test2_answer",
+        "test3_answer",
+        "test4_answer",
+        "decision",
+        "reason"
+       ],
+       "additionalProperties": false
+      }
+     },
+     "selected_fact_ids": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "selected_fact_brief": {
+      "type": "string"
+     },
+     "recheck_note": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "number_ranks": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "fact_id": {
+         "type": "string"
+        },
+        "surface": {
+         "type": "string"
+        },
+        "kind": {
+         "type": "string",
+         "enum": [
+          "magnitude",
+          "date_time",
+          "range",
+          "year",
+          "ordinal",
+          "name_embedded"
+         ]
+        },
+        "role": {
+         "type": "string",
+         "enum": [
+          "core",
+          "peripheral"
+         ]
+        }
+       },
+       "required": [
+        "fact_id",
+        "surface",
+        "kind",
+        "role"
+       ],
+       "additionalProperties": false
+      }
+     }
+    },
+    "required": [
+     "selected_storyline",
+     "fact_tests",
+     "selected_fact_ids",
+     "selected_fact_brief",
+     "recheck_note",
+     "number_ranks"
+    ],
+    "additionalProperties": false
+   },
+   "strict": true
+  }
+ },
+ "input": [
+  {
+   "role": "developer",
+   "content": "あなたはNews記事のFact選定を行うEditorです。Full Fact Ledgerの中から記事として一本化しやすい中心Storylineを1つ決定し、そのStorylineに本当に必要な最小限のFactだけを選び出してください。記事本文そのものは書きません。"
+  },
+  {
+   "role": "user",
+   "content": "以下は、あるテーマについてWeb調査で収集し独立検証済みのFull Fact Ledgerです。\n\n【テーマ】\nCurrent news/lifestyle topic: the latest central bank interest rate decision and what it means for mortgage borrowers. Using only facts confirmed by web search (official central bank statements, Reuters/AP/Bloomberg-level reporting), cover the most recent rate decision (which central bank, date, size and direction of the move), the stated reasoning, and the reported effect on mortgage rates or home loan payments for borrowers (fixed vs variable where reported). Separate confirmed facts from forecasts. Do not invent details and do not use the assistant's own prior knowledge.\n\n【Full Fact Ledger】\n[VERIFIED] F001: 米国の直近の完了済みFOMC金利決定は2026年9月16日。2026年10月8日時点で、Federal Reserveの政策ページには次回会合が10月27～28日と掲載されている。\r\n  scope: 米国の金融政策決定\r\n  conditions: 「直近」は2026年10月8日時点で確認できる完了済み会合を指す。\r\n  date_or_period: 直近決定：2026-09-16。確認時点：2026-10-08。次回会合予定：2026-10-27～28。\r\n  制約(notes_for_writer): 政策ページの直近文書一覧と次回会合日程を基にした、米国に対象を限定した最新決定の確認。\r\n\r\n[VERIFIED] F002: FOMCは2026年9月16日、フェデラルファンド金利の目標レンジを0.25パーセントポイント引き上げ、3.75～4.00％とした。声明は12対0で承認された。\r\n  scope: 米国のフェデラルファンド金利目標レンジ。住宅ローン金利そのものではない。\r\n  conditions: Fedの声明に記載された目標レンジの変更。\r\n  numeric_value: 25ベーシスポイント引き上げ。新レンジは3.75～4.00％。採決は12対0。 (numeric_scope: 政策金利目標レンジとFOMCの採決)\r\n  date_or_period: 2026-09-16の発表。実施日は2026-09-17。\r\n  制約(notes_for_writer): 住宅ローン金利が同じ幅だけ上がったという意味ではない。\r\n\r\n[VERIFIED] F003: FOMC声明は、経済活動が堅調に拡大し、国内支出が底堅く、生産性の伸びと設備投資が強い一方、雇用増は労働力の伸びに見合い、失業率は大きく変わらず、インフレは高止まりしていると説明した。委員会は利上げがインフレを2％目標へより早く戻す助けになると述べた。\r\n  scope: FOMCが米国経済と物価について示した評価\r\n  conditions: 「2％」はFOMCの長期インフレ目標。\r\n  numeric_value: インフレ目標：2％。 (numeric_scope: FOMCの長期インフレ目標)\r\n  date_or_period: 2026-09-16の声明\r\n  causal_strength: CAUSAL_STATED_BY_SOURCE\r\n  制約(notes_for_writer): 2％への回帰は政策の目標・期待として記載されたものであり、利上げの効果が既に実現したという確認ではない。\r\n\r\n[VERIFIED] F004: 【予測・実績ではない】9月会合の議事要旨で、参加者の大半は年末までにフェデラルファンド金利の目標レンジをもう一度引き上げることが適切になりそうだと判断していた。同時に、今後の決定は入手データと見通し・リスクの変化に依存すると記した。\r\n  scope: 当該会合に参加したFOMC参加者の評価\r\n  conditions: 議事要旨に記録された見通しであり、将来の決定を確約するものではない。\r\n  date_or_period: 2026-09-15～16会合の議事要旨。議事要旨公表：2026-10-07。対象期間：2026年末まで。\r\n  制約(notes_for_writer): 「大半」の人数内訳はこの記述だけでは特定しない。年内追加利上げを決定済みと書かない。\r\n\r\n[VERIFIED] F005: 【予測・実績ではない】2026年9月の経済見通し（SEP）で、フェデラルファンド金利の2026年末の中央値は4.1％だった。これは参加者各自の適切と考える政策金利の予測中央値である。\r\n  scope: 2026年9月会合で見通しを提出した18人の参加者。政策金利の中央値。\r\n  conditions: 参加者それぞれの経済見通し・適切な政策判断を前提とする予測。実際の決定ではない。\r\n  numeric_value: 4.1％ (numeric_scope: 2026年末のフェデラルファンド金利予測の中央値。SEP上の金利予測は目標レンジまたは目標水準の中央値を示す。)\r\n  date_or_period: 2026-09-16公表。予測対象：2026年末。\r\n  制約(notes_for_writer): 中央値は参加者の予測を集約した値で、FOMCの確定的な将来金利目標ではない。住宅ローン金利の予測値ではない。\r\n\r\n[VERIFIED] F006: Freddie Macの2026年10月8日週の全米平均固定住宅ローン金利は、30年固定が7.40％、15年固定が6.73％だった。前週（10月1日）はそれぞれ7.28％、6.60％だった。\r\n  scope: Freddie Macの全米週次平均。対象は30年固定・15年固定で、個別借り手への提示金利ではない。\r\n  conditions: 借り手の信用、所得、ローン条件などにより実際の提示金利は異なり得る。\r\n  numeric_value: 30年固定：7.40％（前週7.28％）。15年固定：6.73％（前週6.60％）。 (numeric_scope: Freddie Mac週次調査の米国平均金利。ARM（変動金利型）はこの数値に含まれない。)\r\n  date_or_period: 2026-10-08週と前週の2026-10-01\r\n  causal_strength: OBSERVED_REPORTED\r\n  制約(notes_for_writer): 観測された週次平均の上昇であり、FOMCの9月利上げがこの上昇を直接引き起こしたとは、この数値だけからは言えない。\r\n\r\n[VERIFIED] F007: APは2026年10月8日、30年固定の全米平均金利が7週連続で上昇し、2023年11月16日以来の高水準になったと報じた。30年金利が2月下旬の5.98％から10月8日の7.40％へ上がった場合、40万ドルの住宅ローンを組む借り手では月額費用が概算376ドル増えるとの試算も掲載した。\r\n  scope: APが示した40万ドル借入の例。金利は全米平均30年固定の比較値であり、全借り手の実際の支払額ではない。\r\n  conditions: 金利差に基づく概算。借入額・ローン条件・実際の提示金利などにより支払額は異なる。\r\n  numeric_value: 月額費用の概算増：376ドル。30年固定平均金利：5.98％から7.40％へ上昇。 (numeric_scope: 40万ドルを借りる例に関するAPの試算。7.40％は2026-10-08週の平均。)\r\n  date_or_period: 金利比較：2026年2月下旬～2026-10-08。報道日：2026-10-08。\r\n  causal_strength: CAUSAL_STATED_BY_SOURCE\r\n  制約(notes_for_writer): この比較は2月下旬から10月8日までの金利差による試算で、9月のFed利上げだけに帰属させない。\r\n\r\n[VERIFIED] F008: 米連邦準備制度理事会の消費者向け説明によると、フェデラルファンド金利は住宅ローン金利を直接決めない。住宅ローン金利は貸し手と契約条件によって定まり、固定金利型は契約期間中に金利が固定され、変動・調整金利型は契約条件に応じて金利が変わり得る。\r\n  scope: 米国の住宅ローン一般\r\n  conditions: 固定・変動の扱いは個別ローン契約の条件に従う。\r\n  制約(notes_for_writer): 固定金利型の契約金利はFed決定だけで自動的に変わらない。変動金利型も、改定時期や指標など具体的な条件を契約書で確認する必要がある。\r\n\r\n[VERIFIED] F009: セントルイス連銀の解説では、30年固定住宅ローン金利は10年米国債利回りを基準の一つとしており、Fedの政策は将来の短期金利・インフレ期待などを通じて長期金利や住宅ローン担保証券の利回りに影響し得る。Fedの政策変更後に住宅ローン金利が直ちに同方向へ動くとは限らない。\r\n  scope: 米国の長期固定住宅ローン市場に関する解説\r\n  conditions: 金利は長期市場の期待、インフレ、経済状況、住宅ローン担保証券の利回りやスプレッド等にも左右される。\r\n  date_or_period: 2026-10-01公表の解説\r\n  causal_strength: CAUSAL_STATED_BY_SOURCE\r\n  制約(notes_for_writer): Fed金利変更と30年固定金利を一対一で結び付けない。政策の影響は市場期待などを介する間接的なものとして記述する。\r\n\r\n[VERIFIED] F010: APは、2026年秋の住宅ローン金利上昇について、インフレ、Fed政策、債券市場投資家の経済見通しが影響要因であり、住宅ローン金利は一般に10年米国債利回りの動きに沿うと報じた。同記事は、直近の上昇に債券市場の変動や原油高によるインフレ懸念も関わったと報じている。\r\n  scope: 米国の住宅ローン金利市場についてのAP報道\r\n  conditions: 複数要因の報道であり、特定要因が上昇全体を単独で説明するとはしていない。\r\n  date_or_period: 2026年2月下旬以降の上昇について。報道日：2026-10-08。\r\n  causal_strength: CAUSAL_STATED_BY_SOURCE\r\n  制約(notes_for_writer): 観測された金利上昇をFedの9月決定だけの効果として説明しない。APは複数の要因を挙げている。\r\n\r\n[VERIFIED] F011: 【予測・実績ではない】APは9月の利上げ後、調整金利型住宅ローン（ARM）の金利がFed利上げを織り込む形で上昇する可能性があると報じた。\r\n  scope: 米国のARM借り手に関する一般的な可能性\r\n  conditions: 実際の金利改定は個別契約の指標、改定日、上限等に依存する。\r\n  date_or_period: 報道日：2026-09-16\r\n  causal_strength: CAUSAL_STATED_BY_SOURCE\r\n  制約(notes_for_writer): 可能性の報道と、確認済みの実際の支払増を混同しない。\r\n\n\n【Ledgerの読み方】\n各Factは「Fact本文」(ID行の文と、scope・conditions・numeric_value・date_or_periodなどの欄)と、「Writerへの制約」(notes_for_writer・ambiguity_noteの欄。`制約(…)`と表記されることがあります)に分かれています。\n- Fact本文は、Fact選択とStorylineの材料です。\n- Writerへの制約は、のちに記事を書く工程が守るガードレールです。Storylineやselected_fact_briefの内容・文言として転記・言い換えしないでください(「〜しない」「〜と断定しない」などの指示調の文を入れない)。Storylineには事実の記述だけを書き、制約に反する断定をしないでください。制約そのものは、システムが選択Factに対応づけて別途Writerへ渡します。\n\nあなたの仕事は次の6つです。\n\n1. このFull Ledgerの中から、記事として一本化しやすい中心Storyline(のちの記事が伝える「何が起きて、なぜそうなったか」という一続きの筋)を1つ決定してください。\n2. 決定したStorylineを1行の日本語で明示してください(これが後工程でWriterへ渡すテーマ文としてそのまま使われます)。Storylineには、Fact本文に基づく事実の記述だけを書き、注意・禁止・書き方の指示は含めないでください。\n3. Full Ledgerの全fact_idそれぞれについて、以下4つのテストを適用してください。\n\nTest1: そのFactを削除しても中心Storylineを理解できるか。YESなら原則除外。\nTest2: そのFactは他Factとの因果関係に実際に使われるか。NOなら原則除外。\nTest3: そのFactがないとStoryline上重要な「なぜ?」が説明できなくなるか。NOなら原則除外。\nTest4: そのFactを残した理由が「面白い/具体的/数字がある/珍しい/補足として便利」だけではないか。YESなら原則除外。\n\n4. 各Factについて、4テストの回答を踏まえてselected(採用)/excluded(除外)を決定し、理由(reason)を記載してください。判定に迷うFactについては、迷った理由も含めてreasonへ記載して構いません。\n5. 採用したFactだけを使って、Writerへそのまま渡す「Selected Fact Brief」(必要最小限のFactを簡潔にまとめた文章。冒頭にStorylineの1行を含める)を作成してください。Selected Fact Briefは記事本文そのものではなく、Writerへの素材です。\n6. 採用したFactそれぞれについて、そのFact本文(ID行の文)に書かれている数字・日付の表記を1つずつ洗い出し、number_ranksへ中核(core)か周辺(peripheral)の別とともに記載してください。\n- surface: 数字・単位・「約」「超」などのヘッジ語まで含めた形で、Fact本文に書かれている通りに写してください(例: 約3.4％、2,300件超、7月13日)。Fact本文に無い数字、Ledgerの他の欄にしかない数字、別のFactの数字は書かないでください。数字を含まない表記は不要です。\n- kind: magnitude(量・割合・金額・件数など)/date_time(月を含む日付・時刻・四半期)/range(範囲)/year(年だけ)/ordinal(第12回など識別子の序数)/name_embedded(名称の一部の番号)のどれか。\n- role: 次の順で決めてください。(a)year・ordinal・name_embeddedは常にperipheral。(b)量とrangeは、そのFactのnumeric_value欄の数字(numeric_scopeの括弧内を除く)に含まれるものだけがcore候補(Ledger全体にnumeric_value欄が1件も無い場合に限り、Fact本文の数字で比べる)。日付は、表記に月があり、そのFactのdate_or_period欄の先頭の日付と、表記にある年・月・日が全て一致するものだけがcore候補(Ledger全体にdate_or_period欄が1件も無い場合に限り、Fact本文の最初の日付で比べる。年だけ・日だけ・時刻だけ・四半期の表記は候補になりません)。(c)core候補を、Storylineに出る量、それ以外の量、日付の順に並べ(同じ順位ではFactの採用順・本文の出現順)、先頭から最大 max(3, min(6, floor(n/2))) 個をcore、残りと候補でないものをperipheralとする(nは量・range・日付の概念の総数。概念=同じFactの中で主数字と単位が同じ表記のまとまり。同じ概念の表記は全て同じroleにする)。迷ったらperipheral。\n\n【採用Fact数についての注意】\n目安は3〜5件です。Hard ruleではありませんが、6件以上採用する場合は、本当にそれら全てが中心Storylineの理解に必要かをもう一度自問し、recheck_noteフィールドへその検討内容を明記してください(3件未満でも、Storylineが単独で成立するなら構いません)。5件以下の場合、recheck_noteはnullにしてください。\n\n【出力】\nJSON schemaの指示に従い、以下を出力してください:\n- selected_storyline: 決定したStorylineの1行\n- fact_tests: Full Ledgerの全fact_idについて、test1_answer/test2_answer/test3_answer/test4_answer(いずれも\"YES\"か\"NO\")・reason・decision(\"selected\"か\"excluded\")\n- selected_fact_ids: 採用したfact_idのリスト(fact_testsでdecision=\"selected\"のものと一致させること)\n- selected_fact_brief: Writerへ渡すSelected Fact Brief本文(Storylineの1行を含む)\n- recheck_note: 採用Fact数が6件以上の場合のみ記入。5件以下の場合はnull。\n- number_ranks: 手順6の結果(採用Factの数字・日付の表記ごとに fact_id・surface・kind・role)。数字が1つも無い場合は空配列。\n\n【重要】fact_idは、上記Full Ledgerに実在するfact_idのみを使用してください。Ledgerに存在しないfact_idを作り出さないでください。number_ranksのfact_idは採用したFactのみ、surfaceは当該Factのfact本文に実在する表記のみとしてください。"
+  }
+ ]
+}
