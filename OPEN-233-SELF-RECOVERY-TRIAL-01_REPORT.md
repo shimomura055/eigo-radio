@@ -6017,3 +6017,9 @@ MEASURED(Trial、Production変更なし)。Fable最終判定=総合『同等・�
 - 結果: sentence-level 45(A3 20+A4 25)、A3/A4 overlap 16、Union 29、意味上の問題単位23(提案)、1記事平均Union 2.64(既定8本2.75)。OpenAI actor drift(X11 s7)はA3 0.96・A4 0.94で主体入替として拾った。Semiconductor境界例U08 s25はA3 0.68/A4 0.35。Hormuz『oil prices』(X09)・BYD In One Line文(U05 s27)は未Flag。新規候補例: BYD『A recall notice』(2公告合算、A3 .88/A4 .94)。
 - 所在差異: ユーザー指示のOpenAI日本語R2(OpenAI明示=B1回復後)と英語引用(models' output=B1回復前)は別世代。
 - Closeout提案: USER_DECISION_REQUIRED。成果物: `er052_output/writer_dev_risk_flagger_01/post_en_trial_01/{RESULT_01.md,HUMAN_REVIEW_POST_EN_01.md,INVENTORY_01.md,LEDGER_COMPLETENESS_01.md,EN_ADAPTATION_01.md,PREREGISTRATION_01.md,aggregate_post_en_01.json,cost_ledger_post_en_01.jsonl,flags/,results/,logs/,inputs/}`。Production変更なし、`PRODUCTION_WIRED`なし。
+
+### §117 POST-EN-HUMAN-PRE-SORTER-BLIND-TRIAL-01: Human Review前AI Pre-sorterのBlind比較(2026-10-10、MEASURED、API費用 JPY80.62、Production変更なし)
+- 条件: Union 29件(POST-EN-TRIAL-01、件数・内容変更なし)を3バッチ(10/10/9)で、各モデル完全独立・各1回。rubric A/B/C/D・出力schema固定(prompt sha c04f5784...)。packet sha f13dcbec...。confidence/type/旧Checker/Known-New/Humanコメント除外、grepでリークなし確認。User/ChatGPT判定は未参照・一致率計算なし。
+- 実行: Luna gpt-6-luna / Sol gpt-6.1-sol / Astra gpt-6-astra(effort=medium、直接API、全9 call再試行0)。UNAVAILABLE: Fable/Opus/Sonnet(鍵・SDKなし、401 evidence。置換なし)。
+- 結果: A/B/C/D = Luna 4/2/13/10、Sol 3/4/6/16、Astra 3/3/8/15。全一致17/29。費用 Luna JPY0.97、Sol 13.40、Astra 66.26(見積中央249.5のreasoning仮定が過大)。23番(X09-s8)は3モデルともflag理由を実質判定(B/A/A)、Solは「fragment」に言及しつつ重大と判定。
+- Closeout提案: USER_DECISION_REQUIRED。成果物 `er052_output/writer_dev_risk_flagger_01/pre_sorter_blind_trial_01/{RESULT_01,PREREGISTRATION_01,BLIND_PACKET_01,COST_ESTIMATE_01}.md`、`runs/`。Production変更なし、`PRODUCTION_WIRED`なし。

@@ -20485,3 +20485,12 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 所在差異: ユーザー指示のOpenAI日本語R2(OpenAI明示)と英語引用(models' output)は別世代の稿(B1回復後/前)。詳細 `er052_output/writer_dev_risk_flagger_01/post_en_trial_01/INVENTORY_01.md` §2。
 - 未決(ユーザー判断): 上記3件の配置・Check除去、confidence閾値の要否、文分割改善、見逃し既知例の扱い。詳細 REPORT §116、`er052_output/writer_dev_risk_flagger_01/post_en_trial_01/{RESULT_01,HUMAN_REVIEW_POST_EN_01}.md`。
 - 境界: Production変更なし、detectors/antenna_trial_01配下変更なし、CURRENT_SPEC変更なし、Checker変更なし、`PRODUCTION_WIRED`なし、Claude側の採用決定なし、有用/不要の最終ラベル確定なし。
+
+## ユーザー決定(2026-10-10、POST-EN-HUMAN-PRE-SORTER-BLIND-TRIAL-01起票時): POST-EN-TRIAL-01を受けた正式判断
+- A3+A4 Risk Flaggerを英訳後・音声化前に置く: **VALIDATED**。R0後Hard STOP Fact Checkを外す: **APPROVED_FOR_PRODUCTION**。翻訳後Hard STOP Fact Checkを外す: **APPROVED_FOR_PRODUCTION**。運用コンセプト「新Writer + Production Checkerなし + A3/A4 + Human Review」は引き続き`APPROVED_FOR_PRODUCTION`。ただし上記はいずれも**`PRODUCTION_WIRED`ではない(未配線)**。AI Pre-sorterは新規Trialであり、Production採用は未決。
+
+## POST-EN-HUMAN-PRE-SORTER-BLIND-TRIAL-01: Human Review前のAI Pre-sorter Blind比較(2026-10-10、Status提案=USER_DECISION_REQUIRED)
+- 実施: POST-EN-TRIAL-01のUnion 29件(新たな重複除去・除外・Flag追加なし)を、同一Blind packet・同一rubric(A/B/C/D)・同一3バッチ(10/10/9)で各モデル1回ずつ判定。User/ChatGPTのA/B/C/D判定は未参照(照合はChatGPT側)。
+- 実行できたモデル: gpt-6-luna / gpt-6.1-sol / gpt-6-astra(OpenAI直接API、effort=medium、全9 call再試行0・失敗0)。**UNAVAILABLE: Fable/Opus/Sonnet(Anthropic API)**=ANTHROPIC_API_KEYなし・SDKなし、鍵なし疎通は3件とも401 authentication_error(モデル存在・権限は未検証)。別モデルへの置換なし。ユーザー指示7のfallbackでGPT系3モデルのみ先行実施。
+- 結果(件数はA/B/C/D): Luna 4/2/13/10、Sol 3/4/6/16、Astra 3/3/8/15。3モデル全一致17/29、Sol-Astra一致27/29。実費JPY80.62(見積中央249.5)。詳細 REPORT §117、`er052_output/writer_dev_risk_flagger_01/pre_sorter_blind_trial_01/{RESULT_01,PREREGISTRATION_01,BLIND_PACKET_01,COST_ESTIMATE_01}.md`。
+- 境界: Production変更なし、detectors/antenna_trial_01/post_en_trial_01は読み取りのみ、AI Pre-sorterのProduction wiringなし、Prompt tuning・再実行なし、`PRODUCTION_WIRED`なし、User判定との照合なし。未決: Anthropic 3モデルの実行にはAPI鍵が必要(ユーザー判断)、User判定との照合・採否はChatGPT側/ユーザー。
