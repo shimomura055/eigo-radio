@@ -28,6 +28,7 @@ import er053_family_x_factlock_ja_writer_01 as w1
 HERE = os.path.dirname(os.path.abspath(__file__))
 T = os.path.join(HERE, "er052_output", "factlock_astra_e2e_trial_01")
 GOLDEN = os.path.join(HERE, "er053_output", "risk_flagger_production_wiring_01", "golden", "w1_golden_prompts_01.json")
+GOLDEN_PLAIN = os.path.join(HERE, "er053_output", "risk_flagger_production_wiring_01", "golden", "w1_golden_plain_pre_c2_01.json")
 
 
 def sh(s):
@@ -90,10 +91,30 @@ class Identity(unittest.TestCase):
         for k, v in live.items():
             self.assertEqual(v, PINNED[k], k)
 
-    def test_E5_build_original_prompt_source_pre_c2_only(self):
-        """E5(jaw.build_original_prompt のソースsha)は C2(must_fix/full_ledger_text引数の削除)で変わる。
-        C2では本testをgolden出力比較(test_golden_r0_prompts)へ置換すること。C1(現HEAD)ではまだ不変。"""
-        self.assertEqual(sh(inspect.getsource(jaw.build_original_prompt)), PINNED["E5"])
+    def test_E5_golden_after_c2_prompt_assembly_unchanged(self):
+        """E5(DESIGN_03 15-2 #1): C2で jaw.build_original_prompt から must_fix/full_ledger_text 引数と
+        build_must_fix_block を削除したため関数ソースshaは変わる(許容)。代わりにR0 Prompt組立の**出力**を担保する:
+          (1) C2前(commit f71dbb41)のjawが出力したplain prompt(golden)と、C2後のjaw.build_original_prompt(patchなし)が文字列完全一致
+          (2) Trialのfactlock patches適用下のC2後jaw.build_original_prompt == C2前に保存したTrial経路golden == Production w1.build_r0_prompt"""
+        gp = json.load(open(GOLDEN_PLAIN, encoding="utf-8"))
+        g = json.load(open(GOLDEN, encoding="utf-8"))
+        n = 0
+        for group in ("annotation_final", "new_arm_runs"):
+            for slug, e in gp["plain_original_prompt"][group].items():
+                text = open(os.path.join(HERE, e["md_path"]), encoding="utf-8").read()
+                self.assertEqual(sh(text), e["md_sha256"], slug)
+                storyline, facts = w1.parse_brief_md(text)
+                self.assertEqual(jaw.build_original_prompt(storyline, facts), e["plain_prompt"], slug)       # (1)
+                saved = self.fl.apply_factlock_patches()
+                try:
+                    patched = jaw.build_original_prompt(storyline, facts)
+                finally:
+                    self.fl.restore_factlock_patches(saved)
+                self.assertEqual(patched, g[group][slug]["r0_prompt"], slug)                                 # (2)
+                self.assertEqual(w1.build_r0_prompt(storyline, facts), g[group][slug]["r0_prompt"], slug)
+                n += 1
+        self.assertEqual(n, 17)
+        self.assertNotEqual(sh(inspect.getsource(jaw.build_original_prompt)), PINNED["E5"])   # ソースは変わった(許容差の明示)
 
     def test_production_constants_equal_trial(self):
         e2e, fl = self.e2e, self.fl
@@ -290,7 +311,9 @@ class FlowTests(unittest.TestCase):
         ev = json.load(open(os.path.join(d, "runtime_evidence.json"), encoding="utf-8"))
         self.assertEqual(ev["chain_method"], "W-1")
         self.assertEqual(ev["annotated_md_sha256"], contract.validate_annotated_b3(self.out).annotated_md_sha256)
-        self.assertEqual(ev["annotation_manifest_producer"], "trial_fixture")
+        self.assertEqual(ev["annotation_manifest_producer"], "deterministic_v2")
+        self.assertTrue(ev["annotation_rules_sha256"])                       # C4: producerの規則sha・入力shaをevidenceへ
+        self.assertEqual(set(ev["annotation_input_shas"]), {"selected_brief_md", "ledger", "fact_selection_evidence_json"})
         self.assertEqual(ev["title"], "新タイトル")
         self.assertEqual(ev["r1"]["model"], "gpt-6-astra-2026")
         self.assertEqual(ev["original"]["model"], "gpt-6-luna-2026")
@@ -304,7 +327,11 @@ class FlowTests(unittest.TestCase):
         c, _ = self.run_w1([(R0_OK, "gpt-6-luna"), (R1_RAW, "gpt-6-astra"), (R2_RAW, "gpt-6-astra")])
         ann = open(os.path.join(self.out, "storyline_b3", "selected_brief_annotated.md"), encoding="utf-8").read()
         storyline, facts = w1.parse_brief_md(ann)
-        self.assertEqual(c.calls[0]["input"][1]["content"], w1.build_r0_prompt(storyline, facts))
+        a3 = contract.validate_annotated_b3(self.out)
+        self.assertTrue(a3.constraints_text)                                 # C4: metaは制約ブロックあり
+        self.assertEqual(a3.news_field_text, facts.rstrip("\n") + "\n\n" + a3.constraints_text.rstrip("\n") + "\n")
+        self.assertEqual(c.calls[0]["input"][1]["content"], w1.build_r0_prompt(storyline, a3.news_field_text))   # R0 Prompt本体は不変、[ニュース]欄=Facts+制約ブロック
+        self.assertIn(a3.constraints_text.splitlines()[0], c.calls[0]["input"][1]["content"])
         self.assertIn("【事実1】", c.calls[0]["input"][1]["content"])      # 注記済み(タグ付き)factsが入る
         self.assertIn("[ニュース]", c.calls[0]["input"][1]["content"])
 
@@ -335,7 +362,8 @@ class FlowTests(unittest.TestCase):
         ann = open(os.path.join(self.out, "storyline_b3", "selected_brief_annotated.md"), encoding="utf-8").read()
         storyline, facts = w1.parse_brief_md(ann)
         findings = safety.detect_prohibited_symbols(bad, language="ja")          # タグ付き本文に対する判定
-        self.assertEqual(c.calls[1]["input"][1]["content"], w1.build_r0_prompt(storyline, facts) + "\n\n" + safety.build_symbol_violation_prompt_note(findings))
+        news = contract.validate_annotated_b3(self.out).news_field_text
+        self.assertEqual(c.calls[1]["input"][1]["content"], w1.build_r0_prompt(storyline, news) + "\n\n" + safety.build_symbol_violation_prompt_note(findings))
         self.assertTrue(r["runtime_evidence"]["symbol_qa"]["r0"]["regenerated"])
 
     def test_r0_symbol_qa_stop_if_remains_and_no_astra_call(self):
@@ -520,12 +548,26 @@ class StaticTests(unittest.TestCase):
         for f in self._root_py_files() + er053:
             self.assertNotIn("er053_dev_b3_fixture_adapter", open(f, encoding="utf-8", errors="replace").read(), os.path.basename(f))
 
-    def test_w1_and_rf_not_called_from_any_production_runner_in_c1(self):
+    def test_w1_rf_queue_contract_referenced_only_by_entertainment_runner_after_c2(self):
+        """C2/C3: W-1/RF/Queue/契約moduleを参照してよい非er053ファイルはentertainment runner(正式入口)だけ。
+        例外(C3): audio runnerはTTS直前保険のためRF module・Review Queue moduleだけを参照してよい
+        (W-1・契約moduleは不可)。er012_e・jaw・その他のrunnerは参照しない。"""
+        allowed = {"er019_family_x_entertainment_production_runner_01.py"}
+        audio_allowed = {"er053_risk_flagger_production_01", "er053_review_queue_01"}
         for f in self._root_py_files():
+            b = os.path.basename(f)
             src = open(f, encoding="utf-8", errors="replace").read()
             for m in ("er053_family_x_factlock_ja_writer_01", "er053_risk_flagger_production_01", "er053_review_queue_01",
                       "er053_b3_annotation_contract_01"):
-                self.assertNotIn(m, src, f"{os.path.basename(f)} references {m} (C1 is additive only; wiring is C2)")
+                if b in allowed:
+                    continue
+                if b == "er019_family_x_audio_production_runner_01.py" and m in audio_allowed:
+                    continue
+                self.assertNotIn(m, src, f"{b} references {m} (only the entertainment runner may wire it; audio runner: RF+Queue only [C3])")
+        src = open(os.path.join(HERE, "er019_family_x_entertainment_production_runner_01.py"), encoding="utf-8").read()
+        for m in ("er053_family_x_factlock_ja_writer_01", "er053_risk_flagger_production_01", "er053_review_queue_01",
+                  "er053_b3_annotation_contract_01"):
+            self.assertIn(m, src)
 
 
 if __name__ == "__main__":

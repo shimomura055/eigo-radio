@@ -1,5 +1,10 @@
 # ============================================================
 # er019_writer_run_summary_reconstruction_01.py
+# 【LEGACY / 無効化(RISK-FLAGGER-PRODUCTION-WIRING-01 Phase 2 C2、2026-10-10)】
+# 旧Fact Checker撤去(案P)により run_writer_stage() は audit/deviation_check.json を書かず、
+# writer_run_summary.json から deviation_overall_status 等を出さなくなった。本ツールは旧Checker出力
+# (deviation_check.json)前提の事後再構成ツールで、C2後の新run(Deviation出力なし)では不要。
+# 旧run(C2前に生成済みの記録)の再構成用に残置するのみ(Production経路・新runからは呼ばない)。
 # NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01(Fable差し戻し1回目、
 # Gate 3 #13対応)
 # ============================================================

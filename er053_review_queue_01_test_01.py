@@ -95,6 +95,23 @@ class QueueTests(unittest.TestCase):
         self.assertEqual(errs, [])
         self.assertEqual(sorted(x["i"] for x in rq.read_index(self.root)), list(range(12)))
 
+    def test_concurrent_appends_12_threads_x_25_rounds_zero_failures(self):
+        """C3-5: Windowsで別スレッドがlock保持・削除中のopen(O_EXCL)がPermissionErrorになる再現。
+        12スレッド x 25回で失敗0・欠落0(修正前はPermissionErrorで失敗)。"""
+        errs = []
+
+        def w(i):
+            for k in range(25):
+                try:
+                    rq.append_index(self.root, {"i": i, "k": k})
+                except Exception as e:  # noqa: BLE001
+                    errs.append(repr(e))
+        ts = [threading.Thread(target=w, args=(i,)) for i in range(12)]
+        [t.start() for t in ts]
+        [t.join() for t in ts]
+        self.assertEqual(errs, [])
+        self.assertEqual(len(rq.read_index(self.root)), 12 * 25)
+
     def test_lock_timeout_raises_from_append_but_save_queue_is_nonblocking(self):
         os.makedirs(self.root, exist_ok=True)
         lock = os.path.join(self.root, "index.jsonl.lock")
@@ -148,8 +165,9 @@ class QueueTests(unittest.TestCase):
             os.chdir(old)
 
     def test_derive_article_id(self):
-        self.assertEqual(rq.derive_article_id("er019_output/meta/run_03/"), "run_03")
-        self.assertEqual(rq.derive_article_id("er019_output/meta/run_03"), "run_03")
+        self.assertEqual(rq.derive_article_id("er019_output/meta/run_03/"), "meta__run_03")      # F1: <slug>__<run>
+        self.assertEqual(rq.derive_article_id("er019_output/meta/run_03"), "meta__run_03")
+        self.assertNotEqual(rq.derive_article_id("er019_output/meta/run_01"), rq.derive_article_id("er019_output/byd_recall/run_01"))
 
 
 class RepoTests(unittest.TestCase):

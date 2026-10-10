@@ -8,18 +8,18 @@
 #   -> B3 4テストを全Factへ適用 -> Selected Fact Brief -> Writer
 #   -> Original->R1->R2 -> Advanced -> Standard
 #
-# 既存Production primitiveの再利用のみで構成する(新規実装は
-# Storyline+B3 1 call [er019_family_x_storyline_b3_fact_selection_01.py]
-# とJA Writer Production移設[er019_family_x_ja_writer_o_r1_r2_01.py]の
-# 2点のみ):
+# RISK-FLAGGER-PRODUCTION-WIRING-01 Phase 2 C2(2026-10-10)での変更:
+#   - Writer = 新Writer W-1(er053_family_x_factlock_ja_writer_01: Fact Lock R0[Luna]->Astra R1/R2)。
+#     入口は注記済みB3の契約検証(er053_b3_annotation_contract_01、V1-V10、課金前fail-closed)のみ。
+#     注記なしB3をWriterへ渡す経路・switchは存在しない。再利用分岐(ja_writer/revision2.md)でも
+#     W-1来歴(chain_method=="W-1" かつ annotated_md_sha256が契約と一致)を確認し、違えばSTOP(U-1)。
+#   - 旧Fact Checker(各段の台帳照合・指摘起点の再生成/STOP・JA差し戻し)は物理削除(案P)。
+#   - Advanced英訳完了直後にAdvanced RF、Standard生成完了直後にStandard RF(Risk Flagger、非Blocking、
+#     4条件逐次、er053_review_queue_01へLevel明示で保存)。RF呼出は cl.logging_context ブロックの外。
+# 既存Production primitiveの再利用(Research/Ledger/Advanced/Standardは従来どおりefam primitive):
 #   - Research/Ledger: er012_e_family_entertainment_two_level_runner_01.
 #     run_researcher_for_topic/run_verification_for_topic
-#     (関数を直接呼ぶ。ステージ別costタグ付けのため、同runnerの
-#     build_ledger_for_topic()の保存ロジックをここで踏襲するが、
-#     API呼び出し自体はrun_researcher_for_topic/run_verification_for_topic
-#     をそのまま呼ぶ[重複実装しない])。
-#   - Advanced/Standard/deviation check/retry: 同runnerの
-#     run_writer_stage()をそのまま呼ぶ(無改変)。
+#   - Advanced/Standard/段落retry: 同runnerのrun_writer_stage()
 #
 # **Mandatory STOP(構造的)**: 本runnerはscaffold/tts/assemble/player関連の
 # 関数を一切importしない。Standard生成までで必ず停止する
@@ -44,8 +44,13 @@ import time
 import er003_v1_en_direct_vfl_01_generate as vfl01
 import er005_cost_logger as cl
 import er012_e_family_entertainment_two_level_runner_01 as efam
-import er019_family_x_ja_writer_o_r1_r2_01 as jaw
 import er019_family_x_storyline_b3_fact_selection_01 as b3
+import er053_b3_annotation_contract_01 as contract
+import er053_b3_deterministic_producer_01 as annot
+import er053_cost_aggregate_01 as ca
+import er053_family_x_factlock_ja_writer_01 as w1
+import er053_review_queue_01 as rq
+import er053_risk_flagger_production_01 as rf
 
 MANAGEMENT_ID = "NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01"
 RUNNER_TAG = "NEWS_FAMILY_X_B3_PRODUCTION_RUNNER_01"
@@ -179,55 +184,117 @@ def run_storyline_b3(client, topic: str, ledger_text: str, out_dir: str) -> dict
 
 
 # ------------------------------------------------------------
-# Stage 3: JA Writer(Original -> R1 -> R2 + JA Fact Check、
-# NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01 Stage 1で追加)
+# Stage 3: JA Writer = 新Writer W-1(注記済みB3契約検証 -> R0[Luna, Fact Lock] -> R1/R2[Astra])
 # ------------------------------------------------------------
-def run_ja_writer(client, storyline_line: str, selected_fact_brief_text: str, out_dir: str,
-                   full_ledger_text: str | None = None) -> dict:
-    stage_dir = f"{out_dir}/ja_writer"
-    os.makedirs(stage_dir, exist_ok=True)
-    os.makedirs(f"{stage_dir}/audit/deviation_checks", exist_ok=True)
+class LegacyWriterProvenanceStop(RuntimeError):
+    """U-1: W-1来歴のない(または契約と不一致の)JA記事を通常Production経路で再利用しようとした場合のSTOP。"""
 
+
+def run_annotation_producer(out_dir: str) -> dict:
+    """C4: 正式 annotated B3 producer(D-det v2 + 決定論assembler、LLM call 0)。storyline_b3 の確定直後に必ず呼ぶ
+    (初回/--regenerate-stage storyline_b3/resume/既存B3再利用のすべての分岐。決定論・冪等)。
+    注記なしB3へのfallbackは無い: 失敗は AnnotationProducerError(課金前STOP、技術QA)で伝播し、Writerへ進まない。
+    出力は契約検証(contract.validate_annotated_b3、W-1入口T-19)の対象。runtime evidenceは storyline_b3/audit/annotation_producer_evidence.json。"""
+    result = annot.produce_annotated_b3(out_dir)
+    save_json(f"{out_dir}/storyline_b3/audit/annotation_producer_evidence.json", {
+        "producer": result["producer"], "rule_version": result["rule_version"], "rules_sha256": result["rules_sha256"],
+        "rules_sha_table": annot.rules_sha_table(), "input_shas": result["input_shas"],
+        "annotated_md_sha256": result["annotated_md_sha256"], "writer_constraints_sha256": result["writer_constraints_sha256"],
+        "n_facts": result["n_facts"], "llm_calls": 0,
+        "internal_checks": {k: v["status"] for k, v in result["manifest"]["internal_checks"].items()},
+        "producer_module_sha256": self_sha256(annot.__file__)})
+    print(f"[B3-RUNNER][annotation] producer={result['producer']} rules_sha={result['rules_sha256'][:12]} "
+          f"facts={result['n_facts']} annotated_sha={result['annotated_md_sha256'][:12]}(LLM 0 call)")
+    return result
+
+
+def run_ja_writer(client, out_dir: str, budget_jpy: float) -> dict:
+    """W-1を実行する。入力は out_dir/storyline_b3 の注記済みB3 artifact(契約検証V1-V10、課金前fail-closed)
+    のみで、注記済みmdを parse_brief_md した結果がR0 Promptの素材になる。
+    (旧Production呼出のように fact_selection_evidence.json['selected_fact_brief_text'] を渡す経路は無い。)
+    予算ガードとして efam.assert_budget_ok をR0前・R1前・R1/R2間・R2再実行前後に呼ぶ。"""
     try:
-        result = jaw.run_ja_writer_o_r1_r2(client, storyline_line, selected_fact_brief_text,
-                                            full_ledger_text=full_ledger_text)
-    except jaw.JAFactCheckStopError as exc:
-        # JA_FACT_CHECK_STOP: must-fix Rewrite後もMAJORが残った場合。
-        # 本文を手で直さず、監査証跡(未採用本文+Checker全attempt)を保存して
-        # RuntimeErrorとしてSTOPする(既存run_writer_stage[er012]と同じ方針)。
-        for i, check in enumerate(exc.checks, start=1):
-            save_json(f"{stage_dir}/audit/deviation_checks/ja_{exc.stage}_attempt{i}.json",
-                       vfl01.deviation_audit_record(check))
-        save_text(f"{stage_dir}/audit/rejected_ja_{exc.stage}.md", exc.rejected_text)
-        save_json(f"{stage_dir}/audit/rejected_ja_{exc.stage}_must_fix.json", exc.must_fix_used)
+        result = w1.run_w1_writer(
+            out_dir, client=client,
+            budget_check=lambda: efam.assert_budget_ok(out_dir, budget_jpy, "w1 writer"))
+    except w1.JASymbolCheckStopError as exc:
+        # JA_SYMBOL_CHECK_STOP(技術QA、記号Validator): rejected本文はW-1側がja_writer/auditへ保存済み。
         raise RuntimeError(str(exc)) from exc
+    return {"ja_text": result["ja_text"], "title": result["title"], "runtime_evidence": result["runtime_evidence"]}
 
-    save_text(f"{stage_dir}/original.md", result["stages"]["original"]["text"])
-    save_text(f"{stage_dir}/revision1.md", result["stages"]["r1"]["text"])
-    save_text(f"{stage_dir}/revision2.md", result["stages"]["r2"]["text"])
 
-    runtime_evidence = {
-        "original": {k: v for k, v in result["stages"]["original"].items() if k != "text"},
-        "r1": {k: v for k, v in result["stages"]["r1"].items() if k != "text"},
-        "r2": {k: v for k, v in result["stages"]["r2"].items() if k != "text"},
-        "chain_method": result["chain_method"], "verbatim_shas": result["verbatim_shas"],
-        "title": result["title"],
-    }
-    if "fact_checks" in result:
-        runtime_evidence["fact_checks_summary"] = {
-            stage_key: {
-                "must_fix_applied": fc["must_fix_applied"],
-                "must_fix_used": fc["must_fix_used"],
-                "final_status": fc["final_status"],
-            }
-            for stage_key, fc in result["fact_checks"].items()
-        }
-        for stage_key, fc in result["fact_checks"].items():
-            for i, check in enumerate(fc["checks"], start=1):
-                save_json(f"{stage_dir}/audit/deviation_checks/ja_{stage_key}_attempt{i}.json",
-                          vfl01.deviation_audit_record(check))
-    save_json(f"{stage_dir}/runtime_evidence.json", runtime_evidence)
-    return {"ja_text": result["final_text"], "title": result["title"], "runtime_evidence": runtime_evidence}
+def load_reused_ja_text(out_dir: str) -> str:
+    """JA記事(ja_writer/revision2.md)の再利用(U-1/穴B): runtime_evidence.json の chain_method=="W-1" かつ
+    annotated_md_sha256 が現在の注記済みB3契約(validate_annotated_b3)と一致する場合のみ再利用する。
+    来歴なし(旧Writer記事)・不一致(注記がstale/差し替え)はSTOP(旧記事の再生成は旧経路の worktree で行う)。"""
+    ev_path = f"{out_dir}/ja_writer/runtime_evidence.json"
+    if not os.path.exists(ev_path):
+        raise LegacyWriterProvenanceStop(
+            "[STOP] U-1 LEGACY_WRITER_PROVENANCE: ja_writer/runtime_evidence.json がありません"
+            "(W-1来歴なしの旧Writer記事)。通常のProduction経路では再利用・再生成できません。"
+            "旧記事の再生成はC2適用前のcommitのworktreeで行ってください。")
+    ev = load_json(ev_path)
+    if ev.get("chain_method") != w1.CHAIN_METHOD:
+        raise LegacyWriterProvenanceStop(
+            f"[STOP] U-1 LEGACY_WRITER_PROVENANCE: chain_method={ev.get('chain_method')!r} は "
+            f"{w1.CHAIN_METHOD!r}(新Writer W-1)ではありません。")
+    annotated = contract.validate_annotated_b3(out_dir)   # 契約違反はAnnotatedB3ContractViolation(STOP)
+    if ev.get("annotated_md_sha256") != annotated.annotated_md_sha256:
+        raise LegacyWriterProvenanceStop(
+            "[STOP] U-1 PROVENANCE_MISMATCH: ja_writer/runtime_evidence.json の annotated_md_sha256 が"
+            "現在の注記済みB3(契約検証済み)と一致しません。JA記事は別の注記版から生成されたものです。"
+            "B3を再生成した場合は、続けて `--regenerate-stage writer` を実行してJA記事を新しい注記版から作り直してください"
+            "(下流の自動再生成は行いません=安全側)。"
+            f"(evidence={ev.get('annotated_md_sha256')}, contract={annotated.annotated_md_sha256})")
+    return load_text(f"{out_dir}/ja_writer/revision2.md")
+
+
+# ------------------------------------------------------------
+# Post-EN Risk Flagger(非Blocking)+ Review Queue保存
+# 呼出は cl.logging_context ブロックの外(RF moduleが条件ごとに自前でstage tagのcontextを張る)。
+# ------------------------------------------------------------
+LEVEL_DIR = {"b1b": "b1b", "a2": "a2"}      # article_level -> out_dir配下のdir(b1b=Advanced, a2=Standard)
+
+
+def _annotation_producer(out_dir: str):
+    """記録専用(分岐に使わない): W-1 evidenceに残った注記manifestのproducer。"""
+    try:
+        return load_json(f"{out_dir}/ja_writer/runtime_evidence.json").get("annotation_manifest_producer")
+    except (OSError, ValueError):
+        return None
+
+
+def run_post_en_risk_flag(out_dir: str, level: str, budget_jpy: float, run_label: str | None = None) -> dict:
+    """完成した英語記事(level: b1b=Advanced / a2=Standard)に対し、完全台帳でRF 4条件を逐次実行し、
+    Review Queueへ保存する。**非Blocking**: RF_UNAVAILABLE/PARTIAL/Queue保存失敗でも例外にせず次工程へ進む。
+    例外として伝播するのは (1)予算超過STOP(rf.BudgetCheckStop: 既存安全装置を回避しない)
+    (2)記事sha変化(rf.ArticleModifiedError: RFは記事を書き換えない契約の違反)のみ。"""
+    assert level in LEVEL_DIR, level
+    article_path = f"{out_dir}/{LEVEL_DIR[level]}/article.md"
+    ledger_path = f"{out_dir}/research_ledger/verified_fact_ledger.txt"
+    article_id = rq.derive_article_id(out_dir)
+    sha_before = hashlib.sha256(open(article_path, "rb").read()).hexdigest()
+    print(f"[B3-RUNNER][risk_flag/{level}] Risk Flagger開始(非Blocking、4条件逐次)...")
+    try:
+        result = rf.run_risk_flagger(
+            article_path=article_path, ledger_path=ledger_path, article_id=article_id, article_level=level,
+            out_dir=out_dir, producer=_annotation_producer(out_dir), run_label=run_label,
+            budget_check=lambda: efam.assert_budget_ok(out_dir, budget_jpy, f"risk_flag {level}"))
+    except (rf.BudgetCheckStop, rf.ArticleModifiedError):
+        raise
+    except Exception as exc:  # noqa: BLE001 - 非Blocking: 想定外もRF_UNAVAILABLEとして可視化し次工程へ進む
+        print(f"[WARN][RF] {level}: 想定外の例外 {type(exc).__name__}: {str(exc)[:200]}"
+              "(非Blocking: 次工程へ進みます)")
+        return {"status": "RF_UNAVAILABLE", "reason": f"runner_wrapper_exception: {type(exc).__name__}",
+                "queue": None}
+    saved = rq.save_queue(result, out_dir=out_dir)
+    sha_after = hashlib.sha256(open(article_path, "rb").read()).hexdigest()
+    if sha_after != sha_before:
+        raise rf.ArticleModifiedError(f"article sha changed across RF+Queue: {sha_before} -> {sha_after}")
+    print(f"[B3-RUNNER][risk_flag/{level}] status={result['status']} issues={len(result['issues'])} "
+          f"queue_saved={saved.get('saved')}")
+    return {"status": result["status"], "reason": result.get("reason"), "queue": saved,
+            "issue_count": len(result["issues"]), "rf_run_id": result["rf_run_id"]}
 
 
 # ------------------------------------------------------------
@@ -281,6 +348,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--out-dir", required=True)
     parser.add_argument("--source-note", default="",
                          help="由来メモ(evidenceとして記録のみ、Research promptには使わない)。")
+    parser.add_argument("--run-label", default="",
+                         help="実行ラベル(記録専用の自由文字列。制御には一切影響しない。Review Queueへ記録される)。")
     parser.add_argument("--budget-jpy", type=float, default=150.0)
     parser.add_argument("--stage", default="all",
                          choices=("research", "ledger", "storyline_b3", "writer",
@@ -305,7 +374,11 @@ def main() -> None:
         "management_id": MANAGEMENT_ID,
         "runner_sha256": self_sha256(__file__),
         "b3_module_sha256": self_sha256(b3.__file__),
-        "ja_writer_module_sha256": self_sha256(jaw.__file__),
+        "ja_writer_module_sha256": self_sha256(w1.__file__),
+        "annotation_contract_module_sha256": self_sha256(contract.__file__),
+        "annotation_producer_module_sha256": self_sha256(annot.__file__),
+        "risk_flagger_module_sha256": self_sha256(rf.__file__),
+        "review_queue_module_sha256": self_sha256(rq.__file__),
         "args": vars(args),
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
     })
@@ -333,14 +406,11 @@ def main() -> None:
                 and args.regenerate_stage != "storyline_b3"
                 and stage != "storyline_b3"):
             print(f"[B3-RUNNER][storyline_b3] 既存Selected Fact Briefを再利用: {storyline_dir}")
-            fact_evidence = load_json(f"{storyline_dir}/fact_selection_evidence.json")
-            storyline_result = {
-                "selected_storyline": fact_evidence["selected_storyline"],
-                "selected_fact_brief_text": fact_evidence["selected_fact_brief_text"],
-            }
+            storyline_result = None     # Writerの入力は注記済みB3 artifact(契約検証)であり、本結果は渡さない
         else:
             storyline_result = run_storyline_b3(client, args.theme, ledger_text, out_dir)
             efam.assert_budget_ok(out_dir, args.budget_jpy, "after storyline_b3")
+        run_annotation_producer(out_dir)    # C4: 初回・regeneration・resume・再利用のすべてで storyline_b3 確定直後(Writer/契約検証の前)に呼ぶ
         if stage == "storyline_b3" or args.stop_after == "storyline_b3":
             print("[B3-RUNNER] stage=storyline_b3で停止(--stop-after storyline_b3)。")
             _write_cost_json(out_dir)
@@ -353,13 +423,11 @@ def main() -> None:
     if need_writer:
         if (os.path.exists(f"{ja_writer_dir}/revision2.md")
                 and args.regenerate_stage != "writer" and stage != "writer"):
-            print(f"[B3-RUNNER][writer] 既存JA記事(R2)を再利用: {ja_writer_dir}/revision2.md")
-            ja_text = load_text(f"{ja_writer_dir}/revision2.md")
+            print(f"[B3-RUNNER][writer] 既存JA記事(R2)の再利用を検討: {ja_writer_dir}/revision2.md"
+                  "(W-1来歴+注記契約sha一致を確認、U-1)")
+            ja_text = load_reused_ja_text(out_dir)
         else:
-            writer_result = run_ja_writer(
-                client, storyline_result["selected_storyline"],
-                storyline_result["selected_fact_brief_text"], out_dir,
-                full_ledger_text=ledger_text)
+            writer_result = run_ja_writer(client, out_dir, args.budget_jpy)
             ja_text = writer_result["ja_text"]
             efam.assert_budget_ok(out_dir, args.budget_jpy, "after ja_writer")
         if stage == "writer" or args.stop_after == "writer":
@@ -367,31 +435,28 @@ def main() -> None:
             _write_cost_json(out_dir)
             return
     else:
-        ja_text = load_text(f"{ja_writer_dir}/revision2.md") if os.path.exists(f"{ja_writer_dir}/revision2.md") else ""
+        ja_text = ""
 
-    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W6、案B): storyline_result
-    # (run_storyline_b3()の戻り値、または既存selected_brief.md再利用時の
-    # 同形dict)からstoryline_line/selected_fact_brief_textを渡し、
-    # ja_source MAJOR時のJA 1回再生成(案B)をefam.run_writer_stage()内で
-    # 有効化する。advanced/standardの各stageは常にこの節に到達する前提
-    # (need_storyline計算上、writer.py:335参照)。
+    # Advanced英訳(M1(a)入り「In one line」、段落3分割retryは技術QA) -> Advanced RF(非Blocking)。
+    # RFはcl.logging_contextブロックの外で呼ぶ。Standard生成の入力はb1b/article.md(RFは記事を変更しない)。
     if stage in ("advanced", "all") or args.regenerate_stage == "advanced":
         with cl.logging_context(RUNNER_TAG, "advanced"):
-            efam.run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only="advanced",
-                                   storyline_line=storyline_result["selected_storyline"],
-                                   selected_fact_brief_text=storyline_result["selected_fact_brief_text"])
+            efam.run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only="advanced")
         efam.assert_budget_ok(out_dir, args.budget_jpy, "after advanced")
+        run_post_en_risk_flag(out_dir, "b1b", args.budget_jpy, run_label=args.run_label or None)
+        efam.assert_budget_ok(out_dir, args.budget_jpy, "after risk_flag b1b")
         if stage == "advanced" or args.stop_after == "advanced":
             print("[B3-RUNNER] stage=advancedで停止(--stop-after advanced、Mandatory STOP)。")
             _write_cost_json(out_dir)
             return
 
+    # Standard Level調整(入力=Advanced英文) -> Standard RF(完成Standard英文 x 完全台帳、非Blocking)
     if stage in ("standard", "all") or args.regenerate_stage == "standard":
         with cl.logging_context(RUNNER_TAG, "standard"):
-            efam.run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only="standard",
-                                   storyline_line=storyline_result["selected_storyline"],
-                                   selected_fact_brief_text=storyline_result["selected_fact_brief_text"])
+            efam.run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only="standard")
         efam.assert_budget_ok(out_dir, args.budget_jpy, "after standard")
+        run_post_en_risk_flag(out_dir, "a2", args.budget_jpy, run_label=args.run_label or None)
+        efam.assert_budget_ok(out_dir, args.budget_jpy, "after risk_flag a2")
 
     print("[B3-RUNNER] Standardまで完了。Mandatory STOP(ユーザー確認前に後工程[scaffold/tts/"
           "assemble/player]へは進みません。本runnerにはそれらのstage自体が実装されていません)。")
@@ -399,7 +464,11 @@ def main() -> None:
 
 
 def _write_cost_json(out_dir: str) -> None:
-    breakdown = compute_stage_cost_breakdown(f"{out_dir}/raw_usage_log.jsonl")
+    # C3-3: 非OpenAI(Gemini RF)対応のstage集計へ切替(er053_cost_aggregate_01)。式は旧関数と同じ
+    # (openai+gemini、fail-closed)。旧`compute_stage_cost_breakdown`は他経路(Trial等)用に残置。
+    # by_stage_jpy/total_jpyの形式は旧cost.jsonと互換、by_provider_jpyとRF Level別内訳を追加。
+    breakdown = ca.compute_stage_cost_breakdown_multi(f"{out_dir}/raw_usage_log.jsonl")
+    breakdown["risk_flag_by_level_model_condition_jpy"] = ca.rf_stage_summary(breakdown["by_stage_jpy"])
     save_json(f"{out_dir}/cost.json", breakdown)
     print(f"[B3-RUNNER][cost] {breakdown}")
 

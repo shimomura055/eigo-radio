@@ -5,8 +5,11 @@
 # er012_e_family_entertainment_two_level_runner_01.pyの単体テスト。実API
 # 呼び出しは行わない(mock使用)。downstream(scaffold/tts/assemble)は
 # 既存Production関数をmockし、本runner側のglue logic(Ledger reuse、
-# writer stage deviation retry、budget guard、player row mapping)のみを
-# 検証する。
+# writer stage(段落3分割retry・M1(a)・S3-2観測記録)、budget guard、
+# player row mapping、U-2 CLI封鎖)のみを検証する。
+# RISK-FLAGGER-PRODUCTION-WIRING-01 C2(2026-10-10): 旧Fact Checker(各段の台帳照合・
+# 指摘起点の再生成/STOP・JA差し戻し)は物理削除したため、そのtestは削除した
+# (旧Checker不到達はer053_c2_old_checker_removal_test_01.pyで検証)。
 #
 # 実行方法:
 #   .venv/Scripts/python.exe -m unittest er012_e_family_entertainment_two_level_runner_test_01 -v
@@ -186,21 +189,6 @@ def _fake_in_one_line(client, title, body, **kwargs):
             "usage": {}, "cost_usd": 0.0001, "cost_jpy": 0.016, "elapsed_seconds": 0.1}
 
 
-def _deviation_result(status: str, deviations: list | None = None,
-                       all_prior_issues_resolved: bool | None = None) -> dict:
-    parsed = {"overall_status": status, "deviations": deviations or []}
-    if all_prior_issues_resolved is not None:
-        parsed["all_prior_issues_resolved"] = all_prior_issues_resolved
-    return {"parsed": parsed}
-
-
-def _major_deviation(origin: str = "translation", fact_id: str = "F1") -> dict:
-    return {
-        "claim_in_article": "claim X", "issue": "issue X", "severity": "MAJOR",
-        "explanation": "expl X", "related_fact_id": fact_id, "origin": origin,
-    }
-
-
 class RunWriterStageTests(unittest.TestCase):
     def setUp(self):
         self.tmp_dir = tempfile.mkdtemp()
@@ -210,7 +198,12 @@ class RunWriterStageTests(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.tmp_dir, ignore_errors=True)
 
-    def test_writer_stage_success_no_deviation_retry(self):
+    def _forbid_old_checker(self):
+        def _boom(*a, **k):
+            raise AssertionError("旧Checker(vfl01.run_deviation_check)が呼ばれた")
+        return mock.patch.object(runner.vfl01, "run_deviation_check", side_effect=_boom)
+
+    def test_writer_stage_success_no_old_checker_call(self):
         adv_result = _FakeFaithfulTranslationResult(title=ADVANCED_TITLE, body=ADVANCED_BODY)
         std_result = _FakeWriterResult(text=STANDARD_TEXT)
         with mock.patch.object(runner.adv_gen, "generate_family_x_faithful_translation",
@@ -219,85 +212,102 @@ class RunWriterStageTests(unittest.TestCase):
                                 side_effect=_fake_in_one_line), \
              mock.patch.object(runner.std_gen, "generate_family_x_standard_a2_no_heading",
                                 return_value=std_result) as m_std, \
-             mock.patch.object(runner.vfl01, "run_deviation_check",
-                                return_value=_deviation_result("LEDGER_COMPLIANT")) as m_dev, \
+             self._forbid_old_checker() as m_dev, \
              mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
             evidence = runner.run_writer_stage(client=object(), theme=self.theme, ja_text="日本語本文",
                                                 ledger_text="[VERIFIED] X: y.", budget_jpy=300.0, only=None)
 
         self.assertEqual(m_adv.call_count, 1)
         self.assertEqual(m_std.call_count, 1)
-        self.assertEqual(m_dev.call_count, 2)  # advanced + standard, no retry
-        self.assertEqual(evidence["advanced"]["deviation_overall_status"], "LEDGER_COMPLIANT")
-        self.assertEqual(evidence["standard"]["deviation_overall_status"], "LEDGER_COMPLIANT")
+        m_dev.assert_not_called()
+        for lv in ("advanced", "standard"):
+            for dead in ("deviation_overall_status", "retried_for_deviation", "must_fix_used"):
+                self.assertNotIn(dead, evidence[lv])
         self.assertFalse(evidence["advanced"]["paragraph_retried"])
         self.assertFalse(evidence["standard"]["paragraph_retried"])
-        self.assertTrue(os.path.exists(os.path.join(self.theme["out_dir"], "b1b", "article.md")))
-        self.assertTrue(os.path.exists(os.path.join(self.theme["out_dir"], "a2", "article.md")))
+        for lv in ("b1b", "a2"):
+            self.assertTrue(os.path.exists(os.path.join(self.theme["out_dir"], lv, "article.md")))
+            self.assertFalse(os.path.exists(os.path.join(self.theme["out_dir"], lv, "audit", "deviation_check.json")))
+            self.assertFalse(os.path.isdir(os.path.join(self.theme["out_dir"], lv, "audit", "deviation_checks")))
         # OPEN-228: 新構造はheadingを持たない(旧h3見出しcontractへの復帰なし)。
         with open(os.path.join(self.theme["out_dir"], "b1b", "article.md"), encoding="utf-8") as f:
             b1b_article = f.read()
         self.assertNotIn("### ", b1b_article)
 
-    def test_writer_stage_retries_once_on_major_deviation_then_passes(self):
+    def test_m1a_in_one_line_always_gets_ja_text_and_ledger_advanced_only(self):
+        """M1(a)無条件ON(環境変数なし): Advancedの「In one line」生成は常にja_text+ledger_textを渡す。Standardは呼ばない。"""
         adv_result = _FakeFaithfulTranslationResult(title=ADVANCED_TITLE, body=ADVANCED_BODY)
         std_result = _FakeWriterResult(text=STANDARD_TEXT)
-        with mock.patch.object(runner.adv_gen, "generate_family_x_faithful_translation",
-                                return_value=adv_result) as m_adv, \
-             mock.patch.object(runner.adv_gen, "generate_family_x_in_one_line",
-                                side_effect=_fake_in_one_line), \
-             mock.patch.object(runner.std_gen, "generate_family_x_standard_a2_no_heading",
-                                return_value=std_result), \
-             mock.patch.object(runner.vfl01, "run_deviation_check",
-                                side_effect=[
-                                    _deviation_result("LEDGER_DEVIATION", deviations=[_major_deviation()]),
-                                    _deviation_result("LEDGER_COMPLIANT", all_prior_issues_resolved=True),
-                                    _deviation_result("LEDGER_COMPLIANT"),
-                                ]) as m_dev, \
-             mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
-            evidence = runner.run_writer_stage(client=object(), theme=self.theme, ja_text="日本語本文",
-                                                ledger_text="[VERIFIED] X: y.", budget_jpy=300.0, only=None)
-        self.assertEqual(m_dev.call_count, 3)
-        self.assertTrue(evidence["advanced"]["retried_for_deviation"])
-        # 2回目(retry)呼び出しはmust_fix/prior_issuesを渡していること。
+        env = {k: v for k, v in os.environ.items() if not k.startswith("OPEN243")}
+        with mock.patch.dict(os.environ, env, clear=True), \
+             mock.patch.object(runner.adv_gen, "generate_family_x_faithful_translation", return_value=adv_result), \
+             mock.patch.object(runner.adv_gen, "generate_family_x_in_one_line", side_effect=_fake_in_one_line) as m_iol, \
+             mock.patch.object(runner.std_gen, "generate_family_x_standard_a2_no_heading", return_value=std_result), \
+             self._forbid_old_checker(), mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
+            runner.run_writer_stage(client=object(), theme=self.theme, ja_text="JA-R2-TEXT",
+                                     ledger_text="LEDGER-TEXT", budget_jpy=300.0, only=None)
+        self.assertEqual(m_iol.call_count, 1)        # Advancedの初回のみ(Standardは呼ばない)
+        kw = m_iol.call_args.kwargs
+        self.assertEqual(kw.get("ja_text"), "JA-R2-TEXT")
+        self.assertEqual(kw.get("ledger_text"), "LEDGER-TEXT")
+
+    def test_paragraph_retry_technical_qa_still_works_and_uses_m1a(self):
+        """技術QA維持: 3分割不能なら段落保持must-fixで1回だけ再生成(M1(a)の「In one line」も同じ関数で再生成)。"""
+        few = _FakeFaithfulTranslationResult(title=ADVANCED_TITLE, body="Only one paragraph.")
+        ok = _FakeFaithfulTranslationResult(title=ADVANCED_TITLE, body=ADVANCED_BODY)
+        with mock.patch.object(runner.adv_gen, "generate_family_x_faithful_translation", side_effect=[few, ok]) as m_adv, \
+             mock.patch.object(runner.adv_gen, "generate_family_x_in_one_line", side_effect=_fake_in_one_line) as m_iol, \
+             self._forbid_old_checker() as m_dev, mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
+            ev = runner.run_writer_stage(client=object(), theme=self.theme, ja_text="JA", ledger_text="L",
+                                          budget_jpy=300.0, only="advanced")
         self.assertEqual(m_adv.call_count, 2)
-        retry_kwargs = m_adv.call_args_list[1].kwargs
-        self.assertEqual(len(retry_kwargs.get("must_fix")), 1)
-        self.assertEqual(retry_kwargs["must_fix"][0]["fact_id"], "F1")
-        retry_check_kwargs = m_dev.call_args_list[1].kwargs
-        self.assertEqual(len(retry_check_kwargs.get("prior_issues")), 1)
+        self.assertEqual(m_adv.call_args_list[1].kwargs.get("must_fix"), runner._FAMILY_X_PARAGRAPH_RETRY_MUST_FIX)
+        self.assertEqual(m_iol.call_count, 2)
+        for c in m_iol.call_args_list:
+            self.assertEqual(c.kwargs.get("ja_text"), "JA")
+            self.assertEqual(c.kwargs.get("ledger_text"), "L")
+        m_dev.assert_not_called()
+        self.assertTrue(ev["advanced"]["paragraph_retried"])
 
-    def test_writer_stage_stops_on_persistent_major_deviation(self):
-        adv_result = _FakeFaithfulTranslationResult(title=ADVANCED_TITLE, body=ADVANCED_BODY)
-        with mock.patch.object(runner.adv_gen, "generate_family_x_faithful_translation",
-                                return_value=adv_result), \
-             mock.patch.object(runner.adv_gen, "generate_family_x_in_one_line",
-                                side_effect=_fake_in_one_line), \
-             mock.patch.object(runner.vfl01, "run_deviation_check",
-                                return_value=_deviation_result("LEDGER_DEVIATION", deviations=[_major_deviation()])), \
-             mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
-            with self.assertRaises(RuntimeError):
-                runner.run_writer_stage(client=object(), theme=self.theme, ja_text="日本語本文",
-                                         ledger_text="[VERIFIED] X: y.", budget_jpy=300.0, only=None)
+    def test_paragraph_retry_persistent_stops(self):
+        few = _FakeFaithfulTranslationResult(title=ADVANCED_TITLE, body="Only one paragraph.")
+        with mock.patch.object(runner.adv_gen, "generate_family_x_faithful_translation", return_value=few) as m_adv, \
+             mock.patch.object(runner.adv_gen, "generate_family_x_in_one_line", side_effect=_fake_in_one_line), \
+             self._forbid_old_checker(), mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
+            with self.assertRaises(RuntimeError) as cm:
+                runner.run_writer_stage(client=object(), theme=self.theme, ja_text="JA", ledger_text="L",
+                                         budget_jpy=300.0, only="advanced")
+        self.assertIn("[STOP]", str(cm.exception))
+        self.assertEqual(m_adv.call_count, 2)        # 初回+段落retry1回のみ(上限不変)
 
-    def test_writer_stage_ja_recheck_required_stop_no_blind_retry(self):
-        """NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01: English MAJORが
-        origin=ja_source(JA R2由来)と判定された場合、Englishを盲目的に
-        再生成せずJARecheckRequiredError(RuntimeErrorのサブクラス)でSTOPする
-        こと(generate_family_x_faithful_translationは1回しか呼ばれない)。"""
+    def test_budget_guard_still_called_per_stage(self):
         adv_result = _FakeFaithfulTranslationResult(title=ADVANCED_TITLE, body=ADVANCED_BODY)
-        with mock.patch.object(runner.adv_gen, "generate_family_x_faithful_translation",
-                                return_value=adv_result) as m_adv, \
-             mock.patch.object(runner.adv_gen, "generate_family_x_in_one_line",
-                                side_effect=_fake_in_one_line), \
-             mock.patch.object(runner.vfl01, "run_deviation_check",
-                                return_value=_deviation_result(
-                                    "LEDGER_DEVIATION", deviations=[_major_deviation(origin="ja_source")])), \
+        std_result = _FakeWriterResult(text=STANDARD_TEXT)
+        with mock.patch.object(runner.adv_gen, "generate_family_x_faithful_translation", return_value=adv_result), \
+             mock.patch.object(runner.adv_gen, "generate_family_x_in_one_line", side_effect=_fake_in_one_line), \
+             mock.patch.object(runner.std_gen, "generate_family_x_standard_a2_no_heading", return_value=std_result), \
+             mock.patch.object(runner, "assert_budget_ok", return_value=0.0) as m_budget:
+            runner.run_writer_stage(client=object(), theme=self.theme, ja_text="JA", ledger_text="L",
+                                     budget_jpy=300.0, only=None)
+        self.assertEqual(m_budget.call_count, 2)
+
+    def test_standard_records_derived_from_advanced_sha256_observation_only(self):
+        """S3-2: Standardの派生元Advanced英文のsha256を観測記録(判定・STOPには使わない)。"""
+        b1b_dir = os.path.join(self.theme["out_dir"], "b1b")
+        os.makedirs(b1b_dir, exist_ok=True)
+        with open(os.path.join(b1b_dir, "article.md"), "w", encoding="utf-8") as f:
+            f.write(ADVANCED_TEXT)
+        std_result = _FakeWriterResult(text=STANDARD_TEXT)
+        with mock.patch.object(runner.std_gen, "generate_family_x_standard_a2_no_heading", return_value=std_result), \
              mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
-            with self.assertRaises(runner.JARecheckRequiredError):
-                runner.run_writer_stage(client=object(), theme=self.theme, ja_text="日本語本文",
-                                         ledger_text="[VERIFIED] X: y.", budget_jpy=300.0, only=None)
-        self.assertEqual(m_adv.call_count, 1)
+            ev = runner.run_writer_stage(client=object(), theme=self.theme, ja_text="JA", ledger_text="L",
+                                          budget_jpy=300.0, only="standard")
+        expect = runner.sha256_text(ADVANCED_TEXT)
+        self.assertEqual(ev["standard"]["derived_from_advanced_sha256"], expect)
+        rec = json.load(open(os.path.join(self.theme["out_dir"], "a2", "audit", "derived_from_advanced_sha256.json"),
+                             encoding="utf-8"))
+        self.assertEqual(rec["derived_from_advanced_sha256"], expect)
+        self.assertEqual(rec["standard_article_sha256"], runner.sha256_text(STANDARD_TEXT))
 
     def test_writer_stage_only_standard_reads_existing_advanced_file(self):
         b1b_dir = os.path.join(self.theme["out_dir"], "b1b")
@@ -307,8 +317,7 @@ class RunWriterStageTests(unittest.TestCase):
         std_result = _FakeWriterResult(text=STANDARD_TEXT)
         with mock.patch.object(runner.std_gen, "generate_family_x_standard_a2_no_heading",
                                 return_value=std_result) as m_std, \
-             mock.patch.object(runner.vfl01, "run_deviation_check",
-                                return_value=_deviation_result("LEDGER_COMPLIANT")), \
+             self._forbid_old_checker(), \
              mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
             evidence = runner.run_writer_stage(client=object(), theme=self.theme, ja_text="日本語本文",
                                                 ledger_text="[VERIFIED] X: y.", budget_jpy=300.0, only="standard")
@@ -330,8 +339,7 @@ class RunWriterStageTests(unittest.TestCase):
                                 return_value=adv_result), \
              mock.patch.object(runner.adv_gen, "generate_family_x_in_one_line",
                                 side_effect=_fake_in_one_line), \
-             mock.patch.object(runner.vfl01, "run_deviation_check",
-                                return_value=_deviation_result("LEDGER_COMPLIANT")), \
+             self._forbid_old_checker(), \
              mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
             runner.run_writer_stage(client=object(), theme=self.theme, ja_text="日本語本文",
                                      ledger_text="[VERIFIED] X: y.", budget_jpy=300.0, only="advanced")
@@ -343,8 +351,7 @@ class RunWriterStageTests(unittest.TestCase):
 
         with mock.patch.object(runner.std_gen, "generate_family_x_standard_a2_no_heading",
                                 return_value=std_result), \
-             mock.patch.object(runner.vfl01, "run_deviation_check",
-                                return_value=_deviation_result("LEDGER_COMPLIANT")), \
+             self._forbid_old_checker(), \
              mock.patch.object(runner, "assert_budget_ok", return_value=0.0):
             runner.run_writer_stage(client=object(), theme=self.theme, ja_text="日本語本文",
                                      ledger_text="[VERIFIED] X: y.", budget_jpy=300.0, only="standard")
@@ -356,6 +363,44 @@ class RunWriterStageTests(unittest.TestCase):
         self.assertIn("standard", summary_after_standard)
 
 
+class U2StandaloneCliBlockTests(unittest.TestCase):
+    """U-2(ユーザー確定2026-10-10): er012_e単体CLIのFamily X writer経路(--ja-article / --stage writer|all /
+    --regenerate-stage)を封鎖。契約検証もRFも通らずb1b/a2を作れる経路を残さない。"""
+
+    def _args(self, *extra):
+        return runner.build_arg_parser().parse_args(["--slug", "s", "--out-dir", "dummy_out", *extra])
+
+    def test_ja_article_blocked(self):
+        with self.assertRaises(RuntimeError) as cm:
+            runner.guard_standalone_cli(self._args("--ja-article", "x.md"))
+        self.assertIn("U-2", str(cm.exception))
+        self.assertIn("RISK-FLAGGER-PRODUCTION-WIRING-01", str(cm.exception))
+
+    def test_stage_writer_all_and_regenerate_blocked(self):
+        for extra in (("--stage", "writer"), ("--stage", "all"), ("--regenerate-stage", "advanced"),
+                      ("--regenerate-stage", "standard")):
+            with self.assertRaises(RuntimeError, msg=str(extra)):
+                runner.guard_standalone_cli(self._args(*extra))
+
+    def test_ledger_stage_not_blocked(self):
+        runner.guard_standalone_cli(self._args("--stage", "ledger"))   # 例外なし
+
+    def test_subprocess_blocked_before_any_output(self):
+        out = os.path.join(tempfile.mkdtemp(), "should_not_exist")
+        script = os.path.join(os.path.dirname(runner.__file__), "er012_e_family_entertainment_two_level_runner_01.py")
+        res = subprocess.run([sys.executable, script, "--ja-article", "dummy.md", "--slug", "s", "--out-dir", out],
+                             capture_output=True, text=True)
+        self.assertNotEqual(res.returncode, 0)
+        self.assertIn("U-2", res.stderr)
+        self.assertFalse(os.path.exists(out), "封鎖はファイル出力(out_dir作成)より前に行う")
+
+    def test_no_writer_entry_in_main_source(self):
+        import inspect
+        src = inspect.getsource(runner.main)
+        self.assertNotIn("run_writer_stage", src)
+        self.assertNotIn("load_text(args.ja_article)", src)
+
+
 class TtsModeCliTests(unittest.TestCase):
     """PM-GOVERNANCE-DEV-TTS-STANDARD-SYNC-REMINDER-01: --tts-modeの既定は
     STANDARD(PM_GOVERNANCE.md 7-1)であり、BATCH指定時は--batch-reasonが
@@ -364,7 +409,7 @@ class TtsModeCliTests(unittest.TestCase):
     def test_default_tts_mode_is_standard(self):
         parser = runner.build_arg_parser()
         args = parser.parse_args([
-            "--ja-article", "dummy.md", "--slug", "sewer", "--out-dir", "dummy_out",
+            "--slug", "sewer", "--out-dir", "dummy_out",
         ])
         self.assertEqual(args.tts_mode, "STANDARD")
         self.assertIsNone(args.batch_reason)
@@ -372,7 +417,7 @@ class TtsModeCliTests(unittest.TestCase):
     def test_explicit_batch_mode_with_reason_parses_ok(self):
         parser = runner.build_arg_parser()
         args = parser.parse_args([
-            "--ja-article", "dummy.md", "--slug", "sewer", "--out-dir", "dummy_out",
+            "--slug", "sewer", "--out-dir", "dummy_out",
             "--tts-mode", "BATCH", "--batch-reason", "PM_GOVERNANCE 7-2(1) Batch固有挙動の検証",
         ])
         self.assertEqual(args.tts_mode, "BATCH")
@@ -382,7 +427,7 @@ class TtsModeCliTests(unittest.TestCase):
         parser = runner.build_arg_parser()
         with self.assertRaises(SystemExit):
             parser.parse_args([
-                "--ja-article", "dummy.md", "--slug", "sewer", "--out-dir", "dummy_out",
+                "--slug", "sewer", "--out-dir", "dummy_out",
                 "--tts-mode", "SOMETHING_ELSE",
             ])
 
@@ -391,7 +436,7 @@ class TtsModeCliTests(unittest.TestCase):
                                "er012_e_family_entertainment_two_level_runner_01.py")
         result = subprocess.run(
             [sys.executable, script,
-             "--ja-article", "dummy.md", "--slug", "sewer", "--out-dir", "dummy_out",
+             "--slug", "sewer", "--out-dir", "dummy_out",
              "--tts-mode", "BATCH"],
             capture_output=True, text=True,
         )

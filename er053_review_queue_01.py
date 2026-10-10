@@ -40,8 +40,10 @@ _SAFE_RE = re.compile(r"[^A-Za-z0-9._\-]")
 
 
 def derive_article_id(out_dir: str) -> str:
-    """writer/audioで共通に使う記事ID: out_dirのbasename(audio runnerの`FAMILY_X_AUDIO_{basename(out_dir)}_{level}`と同じ素材)。"""
-    return os.path.basename(os.path.normpath(out_dir))
+    """writer/audioで共通に使う記事ID: `<slug>__<run>`(out_dirの親dir名+basename。`er019_output/<slug>/<run>` 規約)。
+    runだけだと別テーマの同名run(例 run_01)が衝突するため親dir名を含める(Opus条件Cレビュー F1)。"""
+    p = os.path.normpath(os.path.abspath(out_dir))
+    return f"{os.path.basename(os.path.dirname(p))}__{os.path.basename(p)}"
 
 
 def safe_component(s: str) -> str:
@@ -181,7 +183,9 @@ class _IndexLock:
                 self.fd = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
                 os.write(self.fd, str(os.getpid()).encode())
                 return self
-            except FileExistsError:
+            except (FileExistsError, PermissionError):
+                # Windowsでは別プロセス/スレッドがlockを保持・削除中のopen(O_EXCL)が
+                # PermissionErrorになることがある(C3-5、委任_09)。FileExistsErrorと同じ待機扱い。
                 try:
                     if time.time() - os.path.getmtime(self.path) > self.stale:
                         os.remove(self.path)         # 古い(異常終了で残った)lockのみ除去

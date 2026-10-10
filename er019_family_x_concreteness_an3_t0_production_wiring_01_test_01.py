@@ -46,20 +46,15 @@ class BuildOriginalPromptIncludesAN3Tests(unittest.TestCase):
         prompt = jaw.build_original_prompt("Storyline one line.", "Brief text here.")
         self.assertIn(_normalize(jaw.CONCRETENESS_CONTROL_AN3_BLOCK), _normalize(prompt))
 
-    def test_prompt_includes_block_with_must_fix(self):
-        must_fix = [{
-            "fact_id": "FACT-001",
-            "claim_in_article": "claim text",
-            "issue": "issue text",
-            "explanation": "explanation text",
-        }]
-        prompt = jaw.build_original_prompt(
-            "Storyline one line.", "Brief text here.",
-            must_fix=must_fix, full_ledger_text="Full ledger text.",
-        )
+    def test_old_fact_check_args_removed_c2(self):
+        """C2(2026-10-10): 旧Fact Checker起点のmust_fix/full_ledger_text引数とmust-fixブロックは物理削除済み。
+        AN3ブロックを含む通常promptは不変(E5 golden比較はer053_family_x_factlock_ja_writer_01_testで担保)。"""
+        with self.assertRaises(TypeError):
+            jaw.build_original_prompt("S", "B", must_fix=[{"fact_id": "F"}], full_ledger_text="L")
+        self.assertFalse(hasattr(jaw, "build_must_fix_block"))
+        prompt = jaw.build_original_prompt("Storyline one line.", "Brief text here.")
         self.assertIn(_normalize(jaw.CONCRETENESS_CONTROL_AN3_BLOCK), _normalize(prompt))
-        # must_fixブロックもそのまま含まれていること(既存挙動の非破壊確認)
-        self.assertIn("【必ず解消すべき指摘(Fact Check MAJOR)】", prompt)
+        self.assertNotIn("Fact Check MAJOR", prompt)
 
     def test_block_appears_after_symbol_prevention_block(self):
         prompt = jaw.build_original_prompt("Storyline one line.", "Brief text here.")
@@ -100,24 +95,10 @@ class R1R2NoReminderThreeLocationsTests(unittest.TestCase):
             'REVISION_INSTRUCTIONS[stage_key] + SYMBOL_PREVENTION_BLOCK_JA',
         )
 
-    def test_r2_must_fix_instruction_matches_phase_b_before(self):
-        m = re.search(
-            r'r2_must_fix_instruction = \((.*?)\)\n            r1_response_id',
-            self.source, re.DOTALL,
-        )
-        self.assertIsNotNone(m, "r2_must_fix_instructionの組み立てが見つかりません")
-        self.assertEqual(
-            _normalize(m.group(1)),
-            _normalize(
-                'REVISION_INSTRUCTIONS["r2"] + "\\n\\n" +\n'
-                '                build_must_fix_block(must_fix_used_r2, full_ledger_text)'
-            ),
-        )
-        # 設計書§7で報告された既存の非対称性(SYMBOL_PREVENTION_BLOCK_JAが
-        # この箇所には元々含まれない)は本タスクのスコープ外として維持する
-        # (OPEN-227として別途記録)。
-        self.assertNotIn("SYMBOL_PREVENTION_BLOCK_JA", m.group(1))
-        self.assertNotIn("CONCRETENESS_CONTROL_AN3_REMINDER_JA", m.group(1))
+    def test_r2_must_fix_instruction_removed_c2(self):
+        """C2: R2のFact Check must-fix instruction組み立て(旧Fact Checker起点)は物理削除済み。"""
+        self.assertNotIn("r2_must_fix_instruction", self.source)
+        self.assertNotIn("build_must_fix_block", self.source)
 
     def test_r2_symbol_instruction_matches_phase_b_before(self):
         m = re.search(

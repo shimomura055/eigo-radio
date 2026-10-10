@@ -77,7 +77,9 @@ class PositiveTests(unittest.TestCase):
             try:
                 ad.build_fixture(slug, d)
                 r = c.validate_annotated_b3(d)
-                self.assertEqual(r.producer, "trial_fixture", slug)
+                self.assertEqual(r.producer, "deterministic_v2", slug)
+                self.assertEqual(r.sidecar["annotator"], "DETERMINISTIC", slug)
+                self.assertEqual(r.news_field_text.startswith(r.facts_text.rstrip("\n")), True, slug)
                 self.assertEqual(r.fact_numbers, list(range(1, len(r.fact_numbers) + 1)), slug)
                 self.assertTrue(r.annotated_md_text.startswith("# Selected Fact Brief"), slug)
                 self.assertEqual(r.annotated_md_sha256, sha(open(r.annotated_md_path, "rb").read()), slug)
@@ -85,8 +87,9 @@ class PositiveTests(unittest.TestCase):
                 shutil.rmtree(d, ignore_errors=True)
 
     def test_nine_fixture_set_matches_trial_final_dirs(self):
-        have = sorted(os.listdir(os.path.join(ad.TRIAL_ROOT, "annotation", "final")))
-        self.assertEqual(sorted(x for x in have if os.path.isdir(os.path.join(ad.TRIAL_ROOT, "annotation", "final", x))), sorted(ad.SLUGS))
+        root = os.path.join(ad.TRIAL_ROOT, ad.SOURCE_SUBDIR)
+        have = sorted(x for x in os.listdir(root) if os.path.isdir(os.path.join(root, x)))
+        self.assertEqual(have, sorted(ad.SLUGS))
 
     def test_original_unannotated_b3_fails_all_nine(self):
         """原B3(未注記)をannotatedとして渡すと必ずFAIL(sha整合を取っても構造検査V5で落ちる)。"""
@@ -283,40 +286,111 @@ class NegativeTests(Base):
 
     def test_producer_recorded_not_branched(self):
         mf = self.rj("annotation_manifest.json")
-        for prod in ("trial_fixture", "b3_annotation_automation_v1", "anything"):
+        for prod in ("deterministic_v2", "b3_annotation_automation_v1", "anything"):
             mf["producer"] = prod
             self.wj("annotation_manifest.json", mf)
             self.assertEqual(c.validate_annotated_b3(self.d).producer, prod)
 
 
+class DeterministicContractTests(Base):
+    """C4: annotator=DETERMINISTIC の契約(許容値・writer_constraints束縛・V10再導出)。"""
+    slug = "central_bank_mortgage"          # 制約ブロックを持つテーマ
+
+    def test_deterministic_annotator_is_allowed_and_others_still_rejected(self):
+        self.assertEqual(self.rj("annotation.json")["annotator"], "DETERMINISTIC")
+        self.assertIn("DETERMINISTIC", c.ANNOTATORS)
+        c.validate_annotated_b3(self.d)
+        sc = self.rj("annotation.json")
+        sc["annotator"] = "deterministic"            # 大文字小文字違いも拒否(完全一致のみ)
+        self.wj("annotation.json", sc)
+        self.reseal()
+        self.assertEqual(self.checks(self.violation()), {"V1"})
+
+    def test_constraints_present_and_bound_by_manifest(self):
+        r = c.validate_annotated_b3(self.d)
+        self.assertTrue(r.constraints_text.startswith("Writerへの注意(事実ではありません)："))
+        self.assertEqual(r.manifest["writer_constraints_sha256"], sha(open(self.p("writer_constraints.txt"), "rb").read()))
+        self.assertNotIn("【", r.constraints_text)       # 制約ブロックに【】を使わない(R5)
+
+    def test_v2_constraints_sha_required_for_deterministic(self):
+        mf = self.rj("annotation_manifest.json")
+        del mf["writer_constraints_sha256"]
+        self.wj("annotation_manifest.json", mf)
+        self.assertIn("V2", self.checks(self.violation()))
+
+    def test_v3_constraints_file_missing_or_stale(self):
+        os.remove(self.p("writer_constraints.txt"))
+        self.assertIn("V3", self.checks(self.violation()))
+        ad.build_fixture(self.slug, self.d)
+        with open(self.p("writer_constraints.txt"), "ab") as f:
+            f.write("追記".encode("utf-8"))
+        self.assertIn("V3", self.checks(self.violation()))
+
+    def test_v10_constraints_tamper_with_resealed_sha_fails(self):
+        t = open(self.p("writer_constraints.txt"), "rb").read().decode("utf-8")
+        open(self.p("writer_constraints.txt"), "wb").write(t.replace("事実", "事項", 1).encode("utf-8"))
+        mf = self.rj("annotation_manifest.json")
+        mf["writer_constraints_sha256"] = sha(open(self.p("writer_constraints.txt"), "rb").read())
+        self.wj("annotation_manifest.json", mf)
+        exc = self.violation()
+        self.assertIn("V10", self.checks(exc))
+        self.assertNotIn("V3", self.checks(exc))
+
+    def test_v10_fact_text_is_the_deterministic_reassembly_not_b3_llm_text(self):
+        """B3 LLM文(selected_brief.md)のFactsとは別物でもPASS。決定論再導出と1文字でも違えばFAIL。"""
+        r = c.validate_annotated_b3(self.d)
+        b3_llm_facts = c.w1.parse_brief_md(open(self.p("selected_brief.md"), encoding="utf-8").read())[1]
+        self.assertNotEqual(c._norm_text(r.facts_text), c._norm_text(b3_llm_facts))
+        self.edit_annotated(lambda t: t.replace("【事実1】", "【事実1】あ", 1))
+        self.assertIn("V10", self.checks(self.violation()))
+
+    def test_compose_news_field_without_constraints_is_facts_only(self):
+        """制約ブロックが空ならニュース欄=Factsのみ(従来のR0入力と文字列同一)。"""
+        from er053_b3_deterministic_producer_01 import compose_news_field
+        self.assertEqual(compose_news_field("X\n", ""), "X\n")
+        self.assertEqual(compose_news_field("X\n", "C\n"), "X\n\nC\n")
+
+
 class AdapterTests(unittest.TestCase):
-    def test_adapter_outputs_files_and_producer(self):
+    def test_copy_inputs_copies_b3_outputs_only_and_creates_no_annotation(self):
+        d = tempfile.mkdtemp()
+        try:
+            r = ad.copy_inputs("meta", d)
+            for f in ("selected_brief.md", "fact_selection_evidence.json"):
+                self.assertTrue(os.path.exists(os.path.join(d, "storyline_b3", f)), f)
+            self.assertTrue(os.path.exists(os.path.join(d, "research_ledger", "verified_fact_ledger.txt")))
+            for f in ("selected_brief_annotated.md", "annotation.json", "annotation_manifest.json", "writer_constraints.txt"):
+                self.assertFalse(os.path.exists(os.path.join(d, "storyline_b3", f)), f)       # 注記は本番producerが生成する
+            self.assertEqual(set(r["shas"]), {"brief", "ledger", "evidence"})
+        finally:
+            shutil.rmtree(d, ignore_errors=True)
+
+    def test_build_fixture_uses_production_producer(self):
         d = tempfile.mkdtemp()
         try:
             r = ad.build_fixture("meta", d)
-            for f in ("selected_brief.md", "selected_brief_annotated.md", "annotation.json", "annotation_manifest.json", "fact_selection_evidence.json"):
-                self.assertTrue(os.path.exists(os.path.join(d, "storyline_b3", f)), f)
-            self.assertTrue(os.path.exists(os.path.join(d, "research_ledger", "verified_fact_ledger.txt")))
-            self.assertEqual(r["manifest"]["producer"], "trial_fixture")
+            self.assertEqual(r["manifest"]["producer"], "deterministic_v2")
+            self.assertNotEqual(r["manifest"]["producer"], "trial_fixture")
+            self.assertTrue(os.path.exists(os.path.join(d, "storyline_b3", "selected_brief_annotated.md")))
             src = ad.fixture_paths("meta")
-            self.assertIn("shared", src["brief"].replace("\\", "/"))
-            self.assertIn("runs/meta/shared", src["ledger"].replace("\\", "/"))
+            self.assertIn("g0_real_annotation_01/meta/shared", src["brief"].replace("\\", "/"))
         finally:
             shutil.rmtree(d, ignore_errors=True)
 
     def test_adapter_uses_shared_original_not_frozen_b3_dir(self):
         src = ad.fixture_paths("hormuz")
-        self.assertTrue(src["brief"].replace("\\", "/").endswith("runs/hormuz/shared/brief_original.md"))
-        self.assertTrue(src["evidence"].replace("\\", "/").endswith("runs/hormuz/shared/fact_selection_evidence_original.json"))
+        self.assertTrue(src["brief"].replace("\\", "/").endswith("g0_real_annotation_01/hormuz/shared/brief_original.md"))
+        self.assertTrue(src["evidence"].replace("\\", "/").endswith("g0_real_annotation_01/hormuz/shared/fact_selection_evidence_original.json"))
 
     def test_adapter_missing_input_raises(self):
         with self.assertRaises(FileNotFoundError):
             ad.build_fixture("meta", tempfile.mkdtemp(), trial_root=os.path.join(HERE, "nonexistent_root"))
 
-    def test_adapter_constants_match_contract(self):
-        self.assertEqual(ad.SCHEMA_VERSION, c.MANIFEST_SCHEMA_VERSION)
+    def test_trial_fixture_producer_abolished(self):
+        self.assertFalse(hasattr(ad, "PRODUCER"))
+        self.assertNotIn("PRODUCER =", open(os.path.join(HERE, "er053_dev_b3_fixture_adapter_01.py"), encoding="utf-8").read())
 
-    def test_adapter_does_not_import_production_modules(self):
+    def test_adapter_imports_only_stdlib_and_the_production_producer(self):
         import ast
         tree = ast.parse(open(os.path.join(HERE, "er053_dev_b3_fixture_adapter_01.py"), encoding="utf-8").read())
         mods = set()
@@ -325,7 +399,7 @@ class AdapterTests(unittest.TestCase):
                 mods |= {a.name for a in n.names}
             elif isinstance(n, ast.ImportFrom):
                 mods.add(n.module)
-        self.assertEqual(mods, {"__future__", "datetime", "hashlib", "json", "os"})
+        self.assertEqual(mods, {"__future__", "hashlib", "os", "er053_b3_deterministic_producer_01"})
 
 
 if __name__ == "__main__":
