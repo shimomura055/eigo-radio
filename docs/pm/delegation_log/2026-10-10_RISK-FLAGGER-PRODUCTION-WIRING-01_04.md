@@ -1,0 +1,9 @@
+# RISK-FLAGGER-PRODUCTION-WIRING-01 委任_04: Lane A 設計v3(W-1確定版)+ユーザー決定のSSOT記録
+
+- 日付: 2026-10-10 / 性質: 読み取り・設計+SSOT記録のみ(Production/CURRENT_SPEC/Prompt変更なし、課金API 0件、Agent起動なし)
+- 前提: DESIGN_01(1〜13節+14節Opusレビュー)、DESIGN_02(骨格設計、STOP候補S2-1〜S2-12)。DESIGN_01/02は変更しない。並行Lane B(B3-ANNOTATION-AUTOMATION-TRIAL-01)は別agent、ACTIVE_TASK/RESULT_PACKET/DECISION_LOG/OPEN_ITEMS/git commitに触らない取り決め(本Laneが所有)。
+- ユーザー確定事項(2026-10-10、委任文の15項目): W-1正式採用(W-2/3/4不採用)、B3注記自動化は別Trial(Lane B)でW-1は配線までPRODUCTION_WIREDにしない、RF 4条件を両Level正式導入、Advanced/Standard RF位置、M1(a) Advanced限定=意図的非対称、非対称棚卸再実施、旧Checker撤去範囲(R2後JA含む)、Review Queue必須項目、splitter共通module、費用機構3ギャップ、最終L3はB3注記自動化配線後、Status語彙、軽微3件採用、S2-5はOpen Item。
+- 成果物: docs/pm/design/2026-10-10_RISK-FLAGGER-PRODUCTION-WIRING-01_DESIGN_03.md
+- SSOT: DECISION_LOG.md末尾に決定エントリ / OPEN_ITEMS.md OPEN-244更新(旧本文はOPEN_ITEMS_HISTORY.mdへ原文切り出し)・OPEN-245(Queue push責務)・OPEN-246(Astra請求照合)新規・OPEN-233/-A1-PROD/-SELF-RECOVERY-PRODUCTION-WIRING-01/-CHECKER-FLOOR-PRODUCTION-E2E-01へSUPERSEDED整理(履歴保持) / CURRENT_SPECは変更なし(実装・配線完了時に更新、DESIGN_03 14節に更新予定箇所)。
+- 結果要約: (1)W-1移植契約=sha付き30項目(新規移植21+既存Production参照9)、Prompt変更0件、Trial差分一覧あり。(2)入力契約=selected_brief_annotated.md+annotation.json+annotation_manifest.json、構造検証V1〜V9、契約違反は課金前STOP、注記なしB3フォールバックは実装しない。(3)RF位置確定(Advanced英訳→Advanced RF→Standard Level調整[er012_e L615/L617でAdvanced英文入力を確認]→Standard RF)。(4)非対称棚卸v3: ①14/②2、新仕様判断が必要な②=0、運用注意1(Standardが古いAdvanced由来のまま残りうる、S3-2)。(5)撤去28行確定(R-24はM1(a)無条件ON化へ変更)、技術QA18行+T-19。(6)開発用確認run見積: (a)JA→Queue約¥37.6〜52.9、(b)TTS込み約¥61.6〜126.6(Cap=ユーザー判断)。(7)Phase 2規模: 新規+1,500〜1,900/テスト+1,100/削除−500。(8)STOP候補S3-1(Astra段記号QA再生成方式、既定案A)・S3-3(C2/C3 main統合タイミング)・S3-6(Cap)・S3-7(Opus条件A再レビュー)ほか。
+- 注意: T-0(委任文保存検証)は委任文がテンプレート見出し構成を持たないため非準拠(非ブロッキング運用、委任_01〜03と同様)。ACTIVE_TASK/RESULT_PACKETはgitignore(commit対象外)。
