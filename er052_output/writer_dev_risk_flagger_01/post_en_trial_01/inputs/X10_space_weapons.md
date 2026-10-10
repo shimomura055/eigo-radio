@@ -1,0 +1,18 @@
+# Weapons in Space! If You Imagined a Giant Laser Cannon, Take a Deep Breath First
+
+“The U.S. is deploying weapons in space.” If a giant laser cannon just started firing in your imagination, let’s pause the movie for a moment. The main subject here is not a weapon that can blow up Earth, but the line around what counts as a “space weapon.” This is news where the label matters more than flashy sound effects.
+
+On September 14, 2026, U.S. Air Force Secretary Troy Meink said the United States was deploying space-control weapons in orbit to protect the joint force from the actions of hostile parties. An official article from a U.S. government agency records this as the first time the U.S. acknowledged that the Space Force had deployed weapons in space. The key caption is “deployed in orbit.” Do not let your mind make up a sequel about the weapons’ performance or how they work.
+
+“Wait a minute. There have been weapons that destroy satellites for a while, right?” Yes, Russia has destroyed a satellite with an anti-satellite missile launched from the ground. But that was a test launched from the ground. Targeting space from the ground and placing a weapon in orbit are different things. Mix them up, and you get the setting of the story wrong from the start.
+
+There is also the grand-sounding term “counterspace operations.” In U.S. Space Force terminology, it covers not only orbit, but also communication links and the ground. The word “space” does not mean that everything happens in space. It is too soon to flash a breaking-news banner saying “Weapons for attacking in orbit!” based on this term alone.
+
+GPS, missile tracking, knowing what is happening in space, and efforts to make satellite systems better able to keep working are also among the missions and priorities listed by the U.S. Space Force. However, work to operate and protect satellites must be kept separate from the question of deploying weapons for attack in orbit. They may appear in the same kind of “space story,” but they do not have the same role.
+
+What about the Outer Space Treaty, the rulebook? It would be nice to sum it up in one line as “all weapons in space are banned,” but the text is not that simple. It bans placing weapons of mass destruction, such as nuclear weapons, in orbit, among other things. On the other hand, it does not ban all space weapons outright, and this provision alone cannot label this deployment “legal” or “illegal.”
+
+Space may be far away, but GPS is close to home. If the word “weapon” surprises you, next ask: “What, where, and for what purpose?” Those three questions are the trick to keeping the news from ending as an exciting sci-fi trailer.
+
+## In one line
+The U.S. acknowledged deploying space-control weapons in orbit to protect the joint force from hostile actions.
