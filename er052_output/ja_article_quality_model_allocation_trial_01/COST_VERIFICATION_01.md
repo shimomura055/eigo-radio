@@ -26,7 +26,7 @@
 **検証結果: ユーザー提示値(37.36円)は実測と一致**(META・coffeeの2 run平均、丸め差のみ)。cached tokenは全call 0。出力tokenが費用の約99%(Astra R1/R2が合計約95%)。
 
 ## 3. C/D/E案の概算再計算(A案実測tokenに単価を当てた値)
-前提: tokenはA案実測(META+coffee平均)をそのまま使用。**モデルを変えると出力token数(特にreasoning)は変わる**ため、これは単価差だけの概算。Lunaに対しSolは同一入力で出力が1.0〜1.2倍程度・処理時間は約2倍という既存実測がある(`er052_output/writer_r0_model_impact_trial_01`、R0のみ3テーマ)。
+前提: tokenはA案実測(META+coffee平均)をそのまま使用。**モデルを変えると出力token数(特にreasoning)は変わる**ため、これは単価差だけの概算。同一入力でSolの出力tokenはLunaの0.6〜1.2倍(streaming_price 4,240→5,154、space_weapons 6,259→3,763)、処理時間は約1.3〜2倍という既存実測がある(`er052_output/writer_r0_model_impact_trial_01`、R0のみ3テーマ)。
 
 ### 3-1. stage×モデル別の単価換算(円/回、A案実測tokenベース)
 | stage | META luna | META sol | META astra | coffee luna | coffee sol | coffee astra |
