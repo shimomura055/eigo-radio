@@ -1,0 +1,212 @@
+{
+  "level": 4,
+  "unit": "U08",
+  "theme": "semiconductor_earnings",
+  "model_key": "luna",
+  "label": "Luna",
+  "model_id_requested": "gpt-6-luna",
+  "model_ids_returned": [
+    "gpt-6-luna"
+  ],
+  "provider": "openai",
+  "thinking_setting": "provider_default",
+  "started": "2026-10-10T14:37:52+0900",
+  "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+  "user_sha256": "37e9de8b112012f9ac85348425c98144acce7125f1558fbcba4db365c64da929",
+  "input_sha256": "b42f6bbf7bc6f32743d58039caf693d7ea247e9c6aeb350da8f7fd85112ffca5",
+  "max_out": 8000,
+  "effort": "medium",
+  "rc": 0,
+  "valid_json": true,
+  "attempts": 1,
+  "cost_jpy": 0.13246400000000003,
+  "elapsed_s": 11.1,
+  "usage": [
+    {
+      "input_tokens": 3474,
+      "output_tokens": 961,
+      "reasoning_tokens": 853,
+      "cached_tokens": 0
+    }
+  ],
+  "errors": [],
+  "violations": [
+    []
+  ],
+  "flags": [
+    {
+      "unit_id": "U08",
+      "sentence_id": "s25",
+      "sentence": "But even if the company’s forecast appears beside that line, we cannot say, “AI demand is strong, so revenue will be about $34.8 billion.” This announcement alone does not explain how the two are connected.",
+      "type": "不在断定",
+      "fact_ids": [
+        "F4",
+        "F6"
+      ],
+      "confidence": 0.3,
+      "severity": "重大",
+      "question": "F4の売上高見通しとF6の需要評価について、台帳だけでは両者の関連説明がないとは確認できないため、「発表だけではつながりを説明していない」という不在の断定は確認が必要ではありませんか。",
+      "detector": "d2",
+      "call": "d2"
+    }
+  ],
+  "sentences": {
+    "s1": "# AI Is the Star, but the Trailer Is for the Whole Company!",
+    "s2": "The “Cast” of Numbers in Broadcom’s Earnings",
+    "s3": "“AI semiconductor revenue: $16.7 billion!” If that number fills the screen, you hear a fanfare in your head.",
+    "s4": "The star, AI, seems to have pulled off another big job.",
+    "s5": "Then the words “Next: about $34.8 billion” appear.",
+    "s6": "Wow, is the sequel suddenly going to be much bigger?",
+    "s7": "Wait a minute.",
+    "s8": "Has this edit joined two different numbers?",
+    "s9": "Broadcom’s earnings report is much easier to follow if we check the “cast” of the numbers.",
+    "s10": "Revenue for the company as a whole was $29.591 billion.",
+    "s11": "That is the result for the whole company.",
+    "s12": "By contrast, $16.7 billion was revenue from AI semiconductors.",
+    "s13": "Even though both appear in the same announcement, they show different things—like a group photo of the entire cast and a close-up of the star.",
+    "s14": "So what is about $34.8 billion?",
+    "s15": "It is the company’s forecast for its total revenue in the next quarter.",
+    "s16": "In other words, what is being previewed is the whole company next time, not the future of AI semiconductors alone.",
+    "s17": "If a caption said, “AI revenue rises from $16.7 billion to $34.8 billion!”, that would not be the company’s announcement.",
+    "s18": "It would be an overly bold re-edit by the audience.",
+    "s19": "Now let’s sort out the cast list.",
+    "s20": "$16.7 billion is “AI semiconductor results.” $29.591 billion is “whole-company results.” About $34.8 billion is “whole-company forecast.” “AI or the whole company?” and “Actual results or a forecast?” If we remove these two labels, the earnings report quickly turns into a comedy of mix-ups.",
+    "s21": "Of course, AI does get its big moment.",
+    "s22": "The CEO said that demand for custom AI accelerators and networking remains very strong.",
+    "s23": "It is a strong line that gives a sense of the star’s momentum.",
+    "s24": "We should listen to it as it is.",
+    "s25": "But even if the company’s forecast appears beside that line, we cannot say, “AI demand is strong, so revenue will be about $34.8 billion.” This announcement alone does not explain how the two are connected.",
+    "s26": "We should not see two scenes next to each other and make up the script in between.",
+    "s27": "The key questions when looking at earnings are: “What is this number for?” and “Is it an actual result or a forecast?” Just these two questions are enough to clearly separate the star’s performance from the outlook for the whole production.",
+    "s28": "AI deserves applause.",
+    "s29": "But the sign for the next preview says “the whole company.” Let’s pause for a moment with the popcorn in hand and make sure we don’t miss that.",
+    "s30": "## In one line",
+    "s31": "Broadcom’s $34.8 billion forecast is for the whole company, not just AI semiconductors."
+  },
+  "facts": {
+    "F1": "対象企業はBroadcom Inc.。同社は2026年9月2日、2026年度第3四半期の決算を発表した。\n  scope: Broadcom Inc.の連結業績\n  date_or_period: 2026年9月2日発表。2026年度第3四半期（2026年8月2日終了）\n  ambiguity_note: Broadcomが2026年9月2日に2026年度第3四半期（2026年8月2日終了）の決算を発表したことは確認できました。ただし、対象テーマの「最も最近の発表」という選定条件は、Broadcomの発表日だけでは確認できません。たとえば「leading AI chipmaker」にAI向けメモリのMicronも含めるなら、同社は9月30日にFY2026第4四半期の決算を発表しており、Broadcomより後です。分類の範囲が曖昧なため、Broadcomを選定対象とする前提は確定できません。([investors.broadcom.com](https://investors.broadcom.com/news-releases/news-release-details/broadcom-inc-announces-third-quarter-fiscal-year-2026-financial))",
+    "F2": "Broadcomの第3四半期の純売上高は295億9,100万ドルだった。\n  scope: Broadcom Inc.全体の四半期純売上高\n  conditions: 決算リリースの財務ハイライトでは金額を百万ドル単位で表示。\n  numeric_value: 29,591百万ドル（295億9,100万ドル） (numeric_scope: 連結純売上高)\n  date_or_period: 2026年度第3四半期（2026年8月2日終了）",
+    "F3": "Broadcomの第3四半期のAI半導体売上高は167億ドル。CEOは前年同期比221％増、前四半期比54％増と説明した。\n  scope: AI半導体売上高。Broadcom全体の純売上高や半導体部門全体とは別の数値。\n  conditions: 金額はCEO発言で10億ドル単位に丸めて示された。\n  numeric_value: 167億ドル。前年同期比+221％、前四半期比+54％。 (numeric_scope: 同四半期のAI半導体売上高と、その前年同期・前四半期比)\n  date_or_period: 2026年度第3四半期（2026年8月2日終了）\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 「AI半導体売上高」と記し、半導体ソリューション部門全体の売上高と混同しない。",
+    "F4": "Broadcomは次の四半期の連結売上高を約348億ドルと見込んだ。同社は前年比93％増に相当すると説明した。\n  scope: Broadcom Inc.全体の次四半期連結売上高\n  conditions: 2026年9月2日時点の会社見通し。会社は見通しを推定値とし、実績は異なり、差が重要となる可能性があると記載。\n  numeric_value: 約348億ドル。前年同期比+93％。 (numeric_scope: 2026年度第4四半期の連結売上高見通しと前年同期比)\n  date_or_period: 2026年度第4四半期（2026年11月1日終了予定）\n  notes_for_writer: 会社の見通しとして記載し、確定した実績値として扱わない。",
+    "F5": "BroadcomのCEOは、次の四半期のAI半導体売上高を217億ドルと見込み、前年同期比236％増になると述べた。\n  scope: BroadcomのAI半導体売上高。連結売上高見通しとは別の数値。\n  conditions: 会社CEOによる決算リリース時点の見通し。\n  numeric_value: 217億ドル。前年同期比+236％。 (numeric_scope: 2026年度第4四半期のAI半導体売上高見通しと前年同期比)\n  date_or_period: 2026年度第4四半期（2026年11月1日終了予定）\n  notes_for_writer: 会社の見通しとして記載し、実績値と混同しない。",
+    "F6": "BroadcomのCEOは、カスタムAIアクセラレーターとネットワーキングへの需要が引き続き非常に強いと述べた。\n  scope: 同社のカスタムAIアクセラレーターおよびネットワーキングに対する需要についてのCEOの説明\n  conditions: 経営陣による定性的な評価。\n  date_or_period: 2026年9月2日発表の2026年度第3四半期決算リリース\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 会社CEOの評価として帰属を明記し、独立に確認された市場全体の需要事実として一般化しない。"
+  },
+  "raw_http": [
+    {
+      "id": "resp_0c1be8f72c9aecfc006ac9cf30a23c87d0ab8a1a2f2138bba9",
+      "access_programs": null,
+      "created_at": 1791610672.0,
+      "error": null,
+      "incomplete_details": null,
+      "instructions": "あなたは記事の校閲補助です。記事の各文を、根拠である台帳Fact(事実の一覧、記事全体の根拠)と照らし、人間が確認した方がよい箇所にFlagを立てます。合否判定・修正案の提示・書き換えはしません。\n入力はJSONで、facts(fact_id, text: 台帳の全Fact)と sentences(sid, text, before, after)です。判定対象は sentences の text だけです。factsは根拠として参照するだけで、判定対象ではありません。before/afterは文脈で、判定対象ではありません。台帳は日本語、記事の文は英語や日本語のことがあります。\nあなたの役割は、台帳Factと食い違って読者に誤った事実を伝えうる『重大』な箇所だけを列挙することです。軽微な言い換え・省略・表現の硬さ・文体の問題は出さないでください。重大候補の例: rollback反転 / 主体対象入替 / 否定反転 / 数量時系列 / 不在断定(各タイプの定義: 動作の向きの反転、主体や対象や範囲の入替、肯定否定の反転、数値・日付・順序の変更、台帳にない不在の断定)。typeには上の5つのいずれか、当てはまらなければ『その他』。severityは常に『重大』。confidenceは正直に付けること: 疑いが小さくても重大の可能性が少しでもあれば低めの確信度(0.1〜0.4)で出してよい(人間に見せるかどうかは後で確信度の閾値で決める)。台帳どおりの文は出さない。候補にするのは、(a) 台帳と明確に食い違う文に加えて、(b) 台帳の言い換え・要約・一般化・範囲の広げ縮めによって、台帳が述べているより強い意味、または別の範囲・意味に読める文。(c) 台帳に対応するFactはあるが、数値・日付・固有名・主体・範囲・順序のどれかが台帳と一致しているか確認しきれない文。出すかどうか迷う場合は、出さない側ではなく出す側に倒し、確信度を低めに付ける。(d) 台帳のどのFactにも対応する記述が見つからない事実の主張(数値・日付・固有名・因果・理由・仕組み・不在・断定のいずれかを含む文)。食い違いまでは言えず台帳で確認できないだけの文は、確信度を低く付ける。対応するFactが無い場合、fact_idsは空配列でよい。(e) 注意書き(ambiguity_note、conditions、notes_for_writerなど)が付いたFactに関わる文で、その注意書きが落ちて断定的に読める文。\n出力件数に目標・下限・上限はありません。各文について『この文は人間に確認させる価値があるか』を自分で判断し、価値があると判断した文だけを出してください。該当する文が無ければ {\"flags\":[]} で構いません。\n出力はJSON1個のみ(前後に説明文を付けない):\n{\"flags\":[{\"sentence_id\":\"<sid>\",\"type\":\"<タイプ名>\",\"fact_ids\":[\"<fact_id>\"],\"confidence\":0.0-1.0,\"severity\":\"重大|非重大\",\"question\":\"人間向けの確認質問を日本語1文\"}]}\nFlagが無ければ {\"flags\":[]}。sentence_idとfact_idsは入力に存在するIDのみ使うこと。questionは1文で、断定せず『〜ではありませんか』の形で、どの語とどの語が食い違うかを示す。\n",
+      "metadata": {},
+      "model": "gpt-6-luna",
+      "object": "response",
+      "output": [
+        {
+          "id": "rs_0c1be8f72c9aecfc006ac9cf311bdc87d0b4d770cfd37e5f16",
+          "summary": [],
+          "type": "reasoning",
+          "content": [],
+          "encrypted_content": "gAAAAABqyc87sRAMFgKYDhhWnIzmKmCH9zv2Ew3kOHBH-xzDz6mWabf7yItEN97emkBuyBBs9lLDK7gwlQ56HJsraJEcmbE8h5HORVQWWOzy-4QotP_TO0MKW2AH7l4uNaT5JyVMxNuN7JLEPd-E32xdwz0T8-fNWPC3m-aDowp6Ux6WuuNnMmdH3I4ZjMR2IrGs2lfxTcA8_crnld3dJvpoEbemxxnrYdupnXKxqhje279oOsLCd7PSK1zZk_HaAwXVwmKP8va0cAgFvFhBrCg5DH7cm95t8j4NkJDY4UUoaGzLW_hONQxx6s4A2N-gX1-5dxFXmLu8VCevIkWce3V819-H1JDU787wXPhyx9z8OZZ1nw7t52_0BEJjTAFHhzVxUlcWZ1lweL2fpcniLDxsH6HdBg-TNYDqjztdmi9PEdo_wa0FRFDFY8N6_YFj9gfSIZaihm-0bAKhugpziZyl4wwe2XuMiYGzTvA_kWzeW7RnSxuw-6hUDoPIBSz_H4a4dZsD3akIomov848L_tcWFvkF0TLyKP0QImfCzvYTWA55-CZCg0Gy7_In0Y9M8D1W6am3L9bbCJFkkrjMECrn4bcT9YfFldOdYwlZvYlPFsA0yrdD9pE8qa-wXD5rup4nGGm_HhFtQr1w2zlElp7pOsVP1nOW_MH6fS2K9n6cS_er7Xu87ZGdcj0Eitxhzri01WkWUnyCHzIdZCMcWCbte1VgRNQnMrNgd3Dt2gyYCHYL3432SaU_3jWxSfcHA8LZVUpyd1ZO65651KDD8tkAxjszzmTTh-A9zjsil4YRLSS5KdUHpbGcEI8G-d21OoWpm3L--GijRGHLWjfYrS6lf5XlrTtBIz0SAG9DnU_5Xr3hyZu4WoKUgeVHQQ27NHkAODD_sD4QJnfrcLrNFoYpZJaaDf6kbrydTrcpF84vTHGRsjGt4KRO2abD7iJ5E4dBicKtwwqZ2P8Rx6jZLtOTSkN5uCoYtP05zyOSU1VouHvs5-bdIPGLbdYSMm1trMM1CHN2y_MgSU-PPhb5yvf578OfCVgILgVzXij87q-yrKkHi8eeUYd7lscEyz9NhwrYsapxHtv-AtymMHYjuoUHXpvM9LGtHe8bQKRTUslLTfg5QM77tIXK0_YzuCC_l-3exW9sHmcqjgXHHslSKelNb-eXEzgtd510zP1GbaOpT1dRP2zaTJsT6I8DjZCqqiJ0m9jmoRYLpQy9VbFuaNcbZMZw9tufxJND1QEys4aY-XFa7Z4YkxU683lBGRBnb7gdWnAg_-WSyj2HqQ5yl7XtlMvof0zmz5CXN_i34oi8MfKeJl3hy7ubRoPb9yLPwb7TaMsMtL3Mo_XiyFGpr25uD-TZUj00HoXdbWX97MgGDah-6np-BFfGxg228NFuKh07eqsZHTcLX-7lzW8_gDHKfLCnUOpWNT3qiOcPgRwxYq-1EIAj9ec8E5kc9I3WQBPqd5HV0NT8mArgjI0juln3ODa0IbvwWLBSycu_2g7yeXHASYRr7ICvKyJjc0647YWfbDNlbnU_bvsTYqaKePrFk75dYFaeJn-GgHEhBqo9yXTncVxvw5yaOED7ibF7F_A0VF7oNSdsHeUxWcd6Z2SgMS8Em2KIHNuWpnjLgfUQ3Sc9KZsfgaZnJLM5AMbFbIbDJZZ4Xb4iGAcD8bN4YpW0gB96ENpTCT3rfJ6eO5egAp2YUUGCfCyDFEmmROzE6nofshHG6viPgl3uDUNkgDF7eE_blD05f4DK209REOoZtidMOjU_ejc79bhVW4dxcICihvlHU5SbPSfr3C9j_8azY4S2q--GMZGU5fhm6W6DFTRb913HrqApNQgRDi_IhUc6Zi8riadCI4CpF7A_fzPTtllm2HHso93DJHkK1Xas-aFtjOV2RsMUtvoeNFx8rlX8u_kpK4R88j2YD1YhZ5iVDyTa5hJs9a6SU18oSC4FxYsgVw7IUc9qdcsN8OzATy6DhwTzXjbd5nuMJR873qq0WCFLeeSTVC36Gj7MI__7SGQBldmUkkGYEwPrs5Yjuh4m9XmSLMjBKxB6lP9_YT9tNCKkf8eXOTfBkjIDDOrDiu16bFLIrj2iiyGOUTtNdgTJ7wHg2XkhN0GCrZ6-Z3EHP_x7INcddPIbbgN2KVK1zldOk1vuECGQE1ceuL9f8F7gqkhxORpPhOhRylMaLz0dGS8sZAqRVT6VI3TFWe9cbJ-bLMnCNXKviiDGDCftlSx-jJontDcs8yHiybIDu4lHJmSbYbfO1_v62hC6B8-uEFiyTNKyXAG3KjDFxQaVQT4vWKyrHUYLSTbcqQ8oub3q4o4R3ffgLiqL4ODubeL7a1gk3Bx7VdYht-vpbPEMOexcH41D2BpqbkCyaNYDb67C4vCDUUl5BTwzys6tanNh3j9XL9BBgYJxYRk4QqdjP4-29gUPjtfgYOkmdHRPTUx4k_DVQDvW2HqAoG0k_MkwMnNMjegPpXGxrCsiH8IGiLCEm19fbjbaEiV2AojSvwaHk722YFVn7CFnhK1Xg0yKdAGoeLJIFss_UPgJxVjeZ5KMxMwvke680mu2MOMMs_qf7tvsapZkMXLUOfgySWlMxgg2a3jRO52PbxmghGYLoqcjVw_mklqC1pWlDw50zFap9CmuJcgYEAWpXLkoIZVxjM5QMk1x636X1M6uPfXPLG2F20LxYSKi7ztgfiwc3sdcVx4UOhL8u6XEtU7yCIS-wuhixcc3OnDVdQcIXE6QOswQUC4EbCgmx4ReCVk87-dprkK4uM4GXNGcdtajW_9OXjhMFGLYLkLBuQ3GgJmpOfrN9z7Gtqh5QhepKS3EKWCys_6A_sGLLXF3BPWnB2IWKiO392jVFkxKwkSbk67mpmSrMYxcKTzMW1BYdVZHPGEDhu6xDgHTx6yBgdQlY_ApRSm9FlPPrMRThv1x1qSZsc4F5zf8Y1z9mYK35iB98wgt6F1wgmmXxGnv-oid4XN13hdWhKCbvYO_q0waUOFX5TCm2rAGRU_Mda6kvWrAkuESjhQrgp8GU61NK0l5KBNiBE6LKtNXsBmZFW5BtxFQv4J_6Bv6elIRlnRuennAxa5n6fyUvDAuN9y0O0lRIgaNgJ1Xf5S-uwTBVhex6MvE2LhuSz2KLZ2UwFTkQLF3eBLNEZFji8EeFZ202n3zWuE9bFD3_4xs9bJIVqklVidwNiMOCCu7qj1MxJWOdGAYMhNTT745xOurUn-id44FKv8v_sgMOzCk0ioM9YL6orwfsR87-7sp-k2TzKs-beGDYEXPjV9HDbbFHbRTThv58EfG0Liqin2rFmDvLuyy7KDguRIP_OCchyab3SoKek9-PyBduHqmT39SZpUfXF8RjVIYmLqaluW35WeFdfri_CAGwlB0ooVSeE1tUW5bgLhAev5kk5bF6X3JXUxTG8Uz6n7Z340QZPYqOJdXop0M8pxA0n2IQJ_v6amwkCGBZkV3GSwt9OGFSgWPr2ZSGp67x7S9pAnoXEnSQlqE3gs-ZH44THL6Vc2sBrMKIdgZ22S_Uymoa0Ub-SgYU0Ebr_en5QhxFnyeWkQEbyZqAGVDDEre5CPrlyQHZUSmqPKTdrAISTwxG48vQ9rPMmCbLJzMos6xBEtrdsYdXufdKK58hQjMNf6V2n-3FyFFVrwgG-G-3tRQPJFPwHbz12RCAEJobnsgs3pDhafLYOtlXshnnYwdOv9mEcTxAHwdC3zExLVUbODxOfX8apABt2seaCb1ZyrgeZ-3z6oBBsQlRnxBjCdamiNtl6bydH-F0ajo96zW4NEdBuYNswiUmB1JCWdehflOSyrhUaDH6PpN7ccN7J4oDHFuiYDH3xLzsaqsQHGDI86QSCAkEimkoq1oHKCRrvl2MpyrF61sL_UgWlDtd-YpfQhUNe_-az8n5MJb1xXD6J5LWyegwq4p3p-W2WEbz9P5ibQjLQO_nOSsH9iY1RblqtE2gb0JOa1j07qgXWYYRn8Lv0g4x1Y-1hre7NMHHMDwe8LX-8GvyTBHBcaxufFLtIwJBzjILVBJlQKqqHTFI3ezXPXzHDsAvOpKinTmeErFl8AsCHHh_KTmVCO8BDjrXkUZnanPI_Abw2K_V1XvuWzWayqTaWHDppVE4yOQpJdGfHi0DVDauC7QlPbKdPgjMDRgVkZ5IjClgQ_aQ0-857CdYFpazADTtrqZnlk4D_6x989JjSpNZKZN9u7wQS4I2vE9P8vcR8nruHlwSDzYVGYDstuKppKbUUu8kBYv2cBdM6Gm-keFRRpMK0Bt0YjjkOziHCmttAQBKKYZ7AYlO9lyglqvEQVtjzXCZI5pBfllnADedxqNX_2r4Ydqqi8ywdJk_iurfYp_HnvXiC5T_6Zm7FIhjVXtaVeo6egZhPcvJu1fah04wYByl2gvYu7l245bKJAhdZod6Ynmgh4Wz8imlC8a2cF42npvDrDuBi5zGu_339rMqwqeZBfMiNzT8ICBUuPCLJlsN-DpAt2AL8P_a1tjV1-pWVQmGHT2hcU_9A3AkqHsx9A-5YHgeIoe_O_m5lFZrim6VlDraYFKENIXHyjFjoPd3-vke5w0hSavPrmKldmrU4NPaB8gGCMYq4aXbAXXj90Ylp09SpXjAajp0agjn6N_cuhM3utEwZBhmqDDauhk_XL7XnLfgBtbA6KEb8VeHrYGzHQR_jHkO7hcAmJ5CeCs-AGhxKkDe28a_SWP6n2nrIzLgD2wfAxM8g31xfNZ_Ioel4lA9ViPDygr-Iw5Xm81aADeltqWUF69UIZV_eNHhFy2hxN3I-pQ6fMBF-hAdQzX0BmN62XTkR-Lmg4jOiVF2HXcNnZ1rdYLGVufk3v1-xLB6brtjm4iJNrg7O2l2NF_ezD31WIHrLXmLcyC85MS-drdnfECQ6gmtUasE2YyJxD7E7k0abs1-PqVNRQ_mBHkzE4Yz95izbEnKEEKT3BdCa5aZDkDOibe_Aw9ejqRggDaGAMYE_0vMUEiDQOEpiD90E3CyTbKs5ktXCAj82_1JqW8aIR0m4FXR_ctki5g60uC2NBCcHgMa9z9QHpxNqoMXdft4SFNvwZFvupBkbNRhNGWjfr6CkrbpeBUHJTbMX90qD_eSxKcW4e6uBzBJm-nzaKJPUX-45V8YDPYyvTEdfGeqLgL61uwIRFvNFDheWAE-jhzIQSIcMgVQW1PuoCHFyk4RI28deVPtIYAPCjwzIJnbXypTAXKZMfKK8t_bJ7TFWh3yAMo1lDRPaLBgZ4Xs1KUUTteIhSBc4o7cz7S35FDQ-g_hCMWh2GMBjcU31CgcyJpelvuhFuEDTbJUDgG6xOO7e8mhjKPeZpBw2fAhUcLCJVOAULe8jRbFGP77CUr96jTVK-3kTEPOPlUMrw_i8KQrvyTcrC_JndijLeBpuPLeGgvBDgacBIW8z3GjI9DrlliPztjAcArbdi7lKmUujZyGUkb19M7EscPMC-C9F9ovHpeBjPWbLzYUbDT0TtWOGsLpuar_70wdXIC74B16tVbTRQcPVoPn80kKx1SjnIO7tBaOTvJDBJ1I2a_6mtDpKgV5ELaySe_EigjJ7yWRSl8UjGNJBSo_xlF1CQwnt4B6BLpYqoqFnyNHGq4gr0FWaRNWTPyFgTijgu1cmsCmWRfKzTKmo8ajUHdYlEXRGPkThSfsp79K1I5Ow9hDZ1ybYaqHIqvL6Lje5qZkrqTx3VmqghMSbZYjclPAnA7_xZEjMVBwVsDhbsQWsATQDlahaS8l_iKEjeLIhu3IVt7YmXzHoD27j4IU3pKTtzHmPrTFn3O1gr__BD0n6SYBEnKpcNFL2q8YipHSqBy6mYPlCXfr6cG0jyr9kZwoi10ePuCfLK1J6rEo-eNI9K0XXW87dvVM6I1H_OLQWQ6_KF-SWua53BOQXWT5nT-1mXPyEqKFT3PavCvHpXjP5JSpNWU0sxaWvuFzn0efa3-NedgOySOPqyuWquPJ3CsZmrsZTs_2mg8Aveka62JI5_ZuL4BZPpoT4ooMYO1suJkOPtV7NTIq3Tiq6QvhpRPAjFqNzP1kr5B-ittI353d_7gWi5AFt45Xq9WFvXqYUt2vq9uAKciAXJ_z2GdqtcIY0ACPSHR3Wes5n37tTzFEZE49v_oiuBz0VPOrZK2HxCH4vXMxZp16tiA3TifwKfnz4LNEC4odSmlOPFdcK1aGExCXZ6BTyYqPlF-Ue66tfw9EbuBEVm3yOMEy09vmlUbPq8w5snk7hYOqMypM40R0HBF_1lZLbSciq13qcoAa-wzdsKfNxFIBFW40goh8NIDiwPNBLyZfu6JHLLMziLBpJFziaIRzqtLKqdyJQGefgWDhDEeAUTXe98DRqvktbuKT4wN5SsMRAdiU0foVLUxDF9SGhyyELeVzjTYoBfDn_Tcwqzs9iKRpJfPEeXO2IyAjZqlxhWOLoXLNHxZG7xK-7E8S7dWgqQHgkWUmZjK1YSz6xpbJT_stjC7zrbRclUivRXCyr-BoeTBwvmYZahyS3Xp7KHcMg8wAz5oBDhbGWyTgh_R2inckGI2Hqhv7BGgIzYj_ky1Xypx3PknxPqT-8SZlK-QN44bC2M6c2Zkj8dI93MdnBOUhLzvtH4SXNERi1T-b9Ic40RBXCTSjWwVk1XdUWPjwgnIiYwW-OOzfUggf7Wfx-U1VhAldr2fVMsU42d0-yUEAyafhrjJROfGVfV1YXEdVqftcuylQSJPckjuCJfyeS0Nj6qiyQQCXBAeXzQYxPp1CYEIy5fzDbABoCZFKbuFh-cylMFvGZHka_El4L9giCxXP0a7cFKVp480fN7XgfPehPhdUSJOKn_77dpoSjvVqC-LVl9bgIxyAbOwuewCnH-O_xK9U32FKUzfx0HqjxXozdG0_nUGNXlsQB2HbeYIkRoG3qhu_pPjI19V8DPfBdwnYo-qn7aeGcexGXhAo4dklnpXkVDn3gIiaQIU-5zGPz0kmCWkWfofGBsf0sVm9MTos-8knQsVr5yG0ryXn2YttpeitflfYNoeEsIYdZCqLDzNMHLtJLgwauvk6xUMxBweMUbJyKtkHNftfnLsgZz-9y9nLKH_W5RrXtUevn9dZSpzZ5k1NuVzdDuaxhSw3hpcBM0VMJ-NzfYIOsiHZa6qU5L1ZNbWJ0J_yWgM3HWgXYdti2ZgHNvmK0niocVkt0sTweQsZxsaKNgKwxR01LSmGa3i29UcgsCbxGFWM_OrAathpH7ZCp1dCs-fgZu6gJ0LK1dUonnk4q89tIOgk_hj7s-gDmhIrEvuTCNJGyY39v6tHY6ZCBKJRaCHpTqF1fiUwiDp3ItN3BmC3qI8MhwE5K-u5RRHWzGZXHojrc1PtVUWi67NNTSpZI4p5Pl7naV1LJczuoqLZ9SK7x_Sfh1Vc_bQcjRcIteh5txSykgOAFrNUkCH6lIIgPpMsKTaPbrOGKrNUXGP65e_IxYMCGQNgEyM5kSH78t4XGGt4-Y2-l0FiUId6aBgE15FMlXlnQoDNzwz06QA0kG1KnsIqiIh_9bHbtCoZ3w0AoIpQK98cbqteHDfHOPM4o4ZgDsrSI7nM8r0FsdJydWteQDHn0uf_reA7HWEbq1MntwXgVqzYnAf6N2xVKmrboXC3G8kVqLuPyBfCoYx88GEtmn2xWjl-3kUq4K25ml9jQGwUzYQWt12LALuJ5sojESqIb7TOKpNL81Jl8p_TMej_TzTfDwjrR8553bhskue-xhRbEMiX5V-WzjpBpuOtHB5GNg-V6kcE7rZVgPBWaaYhABa_3lE327E84VHVcqZm7twjvguxk2Y33NV9snveSeOpZAmDDbL7n5ooVD4Q2Hz5lnHfFMLgvUTJlmmxNfUrJp2PLSg7gKMxDrsOdkwJ7C6Fz3m",
+          "status": null
+        },
+        {
+          "id": "rs_0c1be8f72c9aecfc006ac9cf36d09487d08947d9f32f2118f6",
+          "summary": [],
+          "type": "reasoning",
+          "content": [],
+          "encrypted_content": "gAAAAABqyc87qBQRR1w8JwdWaTccB0R5SAYN5JGGFk6MAZAtxqvMNdRY_91F2p5-N0i335j7G4XXBxsjo1a0l_04AtAv6czmvLskbSj2jIXxTH09XhGatug4S0cIdFPhsCOLA3bOGtiOtlUJo-e5w1c8qBYkzKYVyGXAmo5x9fuHHDMixjUalvfD_lba9sJyP6j8HXki1OIkCO2UVO1s6UTrdoVQRGBuu2AMj6GraVGKA88tQs52PrNEOtlln8CNo-u6Ro-PC7FtfydmIO4mvPNVtk-kIvjURubqimKyEqvXWAstqPdNzN0y2CVE4eKFOU3y3FINj30PC5RnKZPVPbmu0yF98QMfQSob7R4TjyysiDOeTFSsYabBJZSeOWg81moz-dDtuiRFlOK3d3_BAsTzx-BmwCpjS-LoTv6QuDTH8LJEfG41KXWHe_CZE6GXeTWOXIN66STEOymguYPPqk62Lh9_VnAsb_G70G-DraiBKOOltTtLXBiH5PfpqMjWkIaq6dwzXBQEKbrurfi98JQamyEw8Knq5IlMLd5cshpedHhov4JHzTzDkYLrZm7SbQ705q3gT4LXtUpWQrINThDLwaqH_s6dyksrZbByvasN8i2Ot8T_gh_q-lU0ephTVLVJ7M7rR2sIFTDFFqZjGsRI6KmS3vq4mvGrKv9BKVQW4S911Dkh864A7yIIrocUfzgzqKHZGPdlwBZAZ8Sx9Ps61NWfx0rpWLsDTeOQU_RQo67xmdR6Dj-kRjKeSReja-D-ZFv6UmiuX-RY1v8Yo37R-IpdY80Uii7wquZow8dYFzQfENt4UaLNkejE_YouuLkFDlkcVndBzcHaytWAP5u5Dflc6FItvDZZ8GwH6F9HrVP9NnhpIjtBCs6nbmAjqr6_7cQHtvlS8l592LASKaD2KLy7PSvUrr45bIum_6n6dn9Qz5bvvtWMp3VgdOP8uHvuILrRFZaT1juwBwTrcWgpxzHiS51aDmlU8napxe-0xmG-DiUnQKNd220E5lz0XftRvpKd7OAvIFEG44jfAJu7wNTJaKBhhvG6j6FJ4GRMFBXhMcCrOb30jW_Q1mVIaSFQZEGHLdHC54w84A5E8IEnqx6fl5o8SJrcm9jxi8uUsZpxxiopaTUDZ7dTFYbusWiU3NogE-OiW-PhGbiasxUJ3S_e0Kw5pKUZkgWtI1lRiDOAq57fCxbE0Z5PJOQfYIY6l13oWnWAhyl6j8KDMGu9MKSFz98cxpC8lpYJ3eJmlMM2njaQJe-tw9uk9LUl2_gD0Ub1hu4Xnw9oB0hyXN5KmOcsIYF0V-P4WI4_Q0eqww7dR_oMFo5MXQwyo29ksYHnmnuRevEhgUyXKSalnmRV88Patgg8ut1F-H6viclkBN1_2TqmlJEAm-b98iS5oVVUY9MPAJmO976XYQeCDwkgU25VSMEBNDFw0R64lEmqTx_Zy4gol_JZK26qD6RIuV_1T_uadG0ra-tErZv1E0DKuofB1KgxNTrQs5nwg-L6SUj-gcCNeSW81inItPvU0Ytbcaqd5SMwHZOKQG9SCBr19vY8ZXNtRH5taFKT1BKKuzReV9TZrVSE8nIUA3ZAm2VYdzFAq3R8pj-srG1bGxYb9wFkrAzBXHQzYGbQXsDBvbz53LSK78Nm2cbWGnGtQrd5ihBtuKaROW-8eHEyoQBqoCGeJsDkDCYToyvpGYqa-lg3XutyPemIVvwxy4oTNGUqodymAYZsVqclnFlQIcEUFpChj84V4rrYB-iwAjAp6uulYYS5RXUuk4IV3373CNGc2atqOa7kinmMrbVA_t60rvoAY2TRx1LQPzDbhY4-Gx7yF19CKtXnqNT9HMju9AojipQAqxccuo_EYErqrBMVoHxqWk04lQslBvILgv2srPOG2CXagwgrbku868N5zqMHVIxuif3QRORmuDYj2ipVvcdSwA1Gmx5pbIREGoF-Mrr3KXvyvw6zDs7IvcnHgcOp9PQ9cTjjIDXkRoUKmlHBKT8LEF5dWSbykIbriTbboDqzmEj9HTiAjzglM8NWnGuqa4wJKBKP4UGCn60ER9Iy6yDy64Co2-8cQH2Xwb-vsPoLcr9ZiPVUhnXbhqMiXYH6VKkfGhT4a96U-oGkKHHpycKgYkpJOU259TfPkdt9xVaTvssj881NxG9Za6F8MbyaNA_QRiIHiC2pTAVUqGUK3IjY2rhilRzkAVtv-0FaqRLEPRL4xGRhT_ekXqtvYYvHOtLRnQK-sPBZseT2o_7yfVnEyIQo0U71bDmGesdDC6P9w67ydx2aScu89vwituCGblbSxQ0N3YQfnvGbSRcUEkohNd8ea8fFTciGfaCl1t4jkC9pfoiLZ8uhpKmDffpAtoeXwz1vyPiOHvDWmC3xb1vlS4lGbff3dPdkzDaAM1tg51Zv0xvzUJpJv_GSoyf9op9F4VBJMW2oUR-N04lm25M5xCW2yNSPlS-FTB4k8R_zkovb1kbRpX3I8CCtMFPsiOj0VDsIMXIYvUomp0qmVAJ3f4mJhl1M4-6wGkSxzGt9xe8mlf3ZMVnfp3eWKsp_qXFIqTcI5ou_aZne6gBdwBHHWbnVvO2GjNUA_w7_F2hJRu0zjgviHFkVsHReHlRhbBqQA1gySuXuvMQWH4XCNBk4AsAivQh9l68cc-Zv6efq6Cf4mfymYap7sQpl-s1fxO9FmZVsGg9ab3nLVisvc8v5HEbma1NQie0NemI26CiZxGcOKpIjk8nmTwvF7VtWjIcEc4v927H3J3gdxbqcUdV2yF7d3rofWFR1bPvLR-fofwuj6lZaOJxgp49tMunjozJxcT0AlpWHX07Pr2we5tjebZ-TUcpj_ZPGsVquRZ-KD-zbVMb6UI1yOMwMSY3ufUQWFlLVKgYZkF9fnSfIy7bJ6x4RQRg03H4Sw0unV15gAw3vBja7DORze_gyqHRn7vIqXE98I9ge865hZGs2eu_Hx11wKrMct7BKtMrUzz9Ul_nVm1l3NwK05lGnQztXCxLkdvmeQFYFLBQHT3VKy1mtyBe5DJj6Wo42zH6uuR3fw-pIGf64sFbx9HeyO6qEXIZ02HlRdE1brG2ZEchDFf5QPOrI8TIWKqMEc_hCd7TIQq0vTVG8vQnp11Jb6oJjQTSYqGSOhl6ijdbAtgrIpMLJNHV1dF9NGjkhwPFi5JmsUZsIaaqoOJUX_rbFW74Heh18wzPY97uO22rl_X-CF3-YXO6_xCfLjKdKWxRPum-9eBqHIOs1UceqZUgTgGlbgp0VJJUtOU-pUK5qMBZ4UcNfq9WXiah4Lj4rpc1uu_hyrZDUasponKymwPZzcL7Qsdh9fUN3CS9XI9UZeQMv8rkQ8vb5Ui8R-AO8nCjPLB7o1UjHC1na3iQparOBpujwTIAyqtHpT6epPZDvaTYEYO-YsbzzwKlR29CFtCpvppR1DU5w4VsSIhTU-smerwvWt2SCPBe9WvWPWd71oJSKza-Q0jFxhdd5_j4X10TjFCA4o7BYltU8HBj82wLsXFia_R6lJbgQg3NRRZfOfWuk5hbZdkEa8ip8qENZvi7q8tqEAaZdFqrd613zM7zTh5NqfrM34SaE3KlLI4J57nyRa4bkJ_7g6UhqtTnBnsVXzzYdFW-tgtUYmIogWbj4gN-cnQNGCoV9p6aZFj7z_Z_T7E71uKuBpoh4afiiA0EDPf2BAfih7qPTSlGcQr0-_ZOiYvTeh6YmLvLY71E8cG1MLya4aUbvQxCM1sN39HI7XIF-YT5UPuMPZbflu-RiNZwKvlGWfcr0J2PH8TLxF8Z_l96T-X2fCNLjsUYpN-bFfIRdzZVEUcsGfJaLmd2iyb62o5KqDYwYwml019M4c5u3cTt8dwbFWrZOUEZSbST9HoQ3DqRfUWAFnLlYYOuhaHOUUx9Oez1nE-r3bwqU2vBuA7p9igS-MfrRLEqSOhoWpRXxICDXm8VNoqlQkpdhRRuLdrOOagIA21JF-QaAOI90Hdksl6b8SVkl-9xe3HNQdWjWpI1FerDRTt4UM6zZnNRHHHQqy4NM8Id7OJJoVuBipE-0ibVAbBzqssDIVInYETTJObawM3vHWV8mJsHaYtmOEXuRYVZYua2vN1meB0Nmn5PuP8JWmTIjPfIRTexVYKuLmedLOFJXR2u4sevA8Mc41GvKL7U-cMCMLizyA94W2IqCRYHGx5rIf1eHcKAz9LEX3zNDKLiiBhW36abwcvQg1nhHNEZo7pcoAlfGCa65R3X3X01GYLjD8jblbbrN4UXVFZsk_pKI2X7iIkdam-YdT7xf7L9UCQ7mbU1wWvRz1Y5O9J5gQN506bx6Rxl9cx8D5jfMtcX_P2ehjV2-7p9Om9wz_Rb4j9rVSZ-rfjgnaHZkqdviW4rZroVwcttIVSStiHFwO0hDK3i8H6GruIzBC1vWdrRTY8bWjE19R2E9jDgKsbGMJHiS5D8WqLKd_XxqW7DXvRmJeaE2ZogFuyzEm8i-J9G_wso16391Je2M6y2uZYS5HYd6CIGNnCIDX4e6VwacEHFVIE0iapwnxd7seaTB7O-sPG6MPiMzPPIXx9pCskHZInUma9mFplDdk4qqYYmnFi6Q8Jy3JiyV9oTQOsk_lnpX4uHqiSPttou5xJFzIvctMa7IAkmvxB0VThx5tlrKmIMVPAFi4xrv9WWfUUl3HERazeKTXorOEM3A4XbqTCpcr2Ycpc5GE25616Ub4qeuDQ6CwTbLbeppo1-GITRNitDDuAWM2RjSboW20v2e6CpJGIh82CsL-vFWGoEydOp0bIrYNjiSoVpTPQTNqS2waj6FgA6qS8Bm64kYtXM4uSZi5iJotluq2QrwR8oapwH5gJ-btvuBQuiYWGGIm5DCudZDZiPH4dHeuGN23vszbcb-D55D2dHyefxVEVuVZa4fErDUSb0pSs6eU3pkM6PDtGpWuhWXcmYXetU-7CNq4a6EAJ-HpfE2qiAj_CijTLpke8A1XLPyK85WteLEE9pBvT9KWX2XntSGCzYsTYaveuDgc4ieUtD-j0-HrYCGOPJ2Er6ZHUWMR3o3SVqLrAU9mS41ftV0qHFt2zU6JJmTss4CJTYTJRa4QfgzsMMsioKndiDYOB4EM-Gfk2d6fXsZbW3R1EM-jm9EpW_7TurtPClU_t1A-LbVUa61aLq5Bu2VAEkbItC_7qoT3SnK7Xb52NcV4eq6esjKoUVQMEfS05yy9xVbv0rNEiWJAfzdGtzoE5rddz_yx4bA_6N3SW6EE_JNoKQvvQ3V9-yZqep2WSv1hCxuixNilQu5nZutNB0A-GsyeslDBYMmP7ga5yzZ3e8exOHjQUx5muxJfo52jgQd7WfDFBC4VhSL_SwZ9MVCZLjxH_DJoWD-jXHdotugrJOjsxCqB4tM_eXn6PSoFwrNZdJLl9ToEh93F0L_GeAVOLjtAiwMFNSP6L-vAzUGvCQlzI-bYTATKenosYC-vwrQXveqD6On4GsswH4wDE14jeSncnpjLJ4H39BMXNW-1gV4Zn6K_qwz9OklNFXQ5kH8bOfv_j2BpTe8Ikiacx1TIiQOk8K7youTKGv3KsgiBAPdejWOQnha8mR_jrCyfwViB49lM-26KaPpP6GJN1GpCXOz1mIhqy-QpNwCYzueMHbN3vRvho1MQKlXdfChr4LQxHhao0U1J5Heddskn0cgrP-mPiRW2W_JQFSrzGiSnlOhD13SpvJBGrVPnl5Lk9xMvntlIZ2-oy0nQwyJGAqFqk0=",
+          "status": null
+        },
+        {
+          "id": "msg_0c1be8f72c9aecfc006ac9cf3a2bc487d09a04ed05de8ce8fc",
+          "content": [
+            {
+              "annotations": [],
+              "text": "{\"flags\":[{\"sentence_id\":\"s25\",\"type\":\"不在断定\",\"fact_ids\":[\"F4\",\"F6\"],\"confidence\":0.3,\"severity\":\"重大\",\"question\":\"F4の売上高見通しとF6の需要評価について、台帳だけでは両者の関連説明がないとは確認できないため、「発表だけではつながりを説明していない」という不在の断定は確認が必要ではありませんか。\"}]}",
+              "type": "output_text",
+              "logprobs": []
+            }
+          ],
+          "role": "assistant",
+          "status": "completed",
+          "type": "message",
+          "phase": "final_answer"
+        }
+      ],
+      "parallel_tool_calls": true,
+      "temperature": 1.0,
+      "tool_choice": "auto",
+      "tools": [],
+      "top_p": 0.98,
+      "background": false,
+      "completed_at": 1791610683.0,
+      "conversation": null,
+      "max_output_tokens": 8000,
+      "max_tool_calls": null,
+      "moderation": null,
+      "previous_response_id": null,
+      "prompt": null,
+      "prompt_cache_diagnostics": null,
+      "prompt_cache_key": null,
+      "prompt_cache_options": null,
+      "prompt_cache_retention": "24h",
+      "reasoning": {
+        "context": "all_turns",
+        "effort": "medium",
+        "generate_summary": null,
+        "mode": "standard",
+        "summary": null
+      },
+      "safety_identifier": null,
+      "service_tier": "default",
+      "status": "completed",
+      "text": {
+        "format": {
+          "type": "text"
+        },
+        "verbosity": "medium"
+      },
+      "top_logprobs": 0,
+      "truncation": "disabled",
+      "usage": {
+        "input_tokens": 3474,
+        "input_tokens_details": {
+          "cache_write_tokens": 3471,
+          "cached_tokens": 0
+        },
+        "output_tokens": 961,
+        "output_tokens_details": {
+          "reasoning_tokens": 853
+        },
+        "total_tokens": 4435
+      },
+      "user": null,
+      "billing": {
+        "payer": "developer"
+      },
+      "frequency_penalty": 0.0,
+      "presence_penalty": 0.0,
+      "store": true,
+      "tool_usage": {
+        "image_gen": {
+          "input_tokens": 0,
+          "input_tokens_details": {
+            "image_tokens": 0,
+            "text_tokens": 0
+          },
+          "output_tokens": 0,
+          "output_tokens_details": {
+            "image_tokens": 0,
+            "text_tokens": 0
+          },
+          "total_tokens": 0
+        },
+        "web_search": {
+          "num_requests": 0
+        }
+      }
+    }
+  ]
+}
