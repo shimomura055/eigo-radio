@@ -1,0 +1,197 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "X09",
+  "article_level": "b1b",
+  "article_sha256": "adf6f2fb422c27fe3e8a938a6470e06d5c0bc97ac770a0399205a26f174c0363",
+  "ledger_sha256": "9bd6834e68e7e4378ba0ebccdd84c0128df2a5cd0aca7c1e84df612ae77ae1a6",
+  "run_id": "rf20261010T083520Z-1e87",
+  "timestamp": "2026-10-10T08:35:20+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "STUB_FIXTURE_NOT_REAL",
+  "run_label": "C1_STUB_E2E",
+  "sentence_count": 33,
+  "fact_count": 12,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5000,
+      "output_tokens": 700,
+      "cached_tokens": 0,
+      "cost_jpy": 0.136,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5000,
+      "output_tokens": 700,
+      "cached_tokens": 0,
+      "cost_jpy": 0.136,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5000,
+      "output_tokens": 700,
+      "cached_tokens": 0,
+      "cost_jpy": 0.52,
+      "flag_count": 1,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5000,
+      "output_tokens": 700,
+      "cached_tokens": 0,
+      "cost_jpy": 0.52,
+      "flag_count": 1,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "X09__b1b__adf6f2fb__rf20261010T083520Z-1e87__s3",
+      "article_id": "X09",
+      "article_level": "b1b",
+      "article_sha256": "adf6f2fb422c27fe3e8a938a6470e06d5c0bc97ac770a0399205a26f174c0363",
+      "run_id": "rf20261010T083520Z-1e87",
+      "timestamp": "2026-10-10T08:35:20+00:00",
+      "sentence_id": "s3",
+      "sentence_text": "The next day, the plan was withdrawn.",
+      "context": {
+        "before": [
+          "# The “20% Plan” Exits at Once, but High Oil Prices Still Won’t Go Away",
+          "A major policy plan appeared, and oil prices shot up."
+        ],
+        "after": [
+          "You might expect the market to say, “Sorry for the fuss,” and return to where it was—but that did not happen.",
+          "The lead actor left the stage, but the tension stayed behind."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "HF-001"
+      ],
+      "facts": [
+        {
+          "fact_id": "HF-001",
+          "text": "国際海事機関（IMO）理事会は、第137回会合で、ホルムズ海峡の通航は国際法およびIMO条約に従い、通航料・手数料を課されない状態を維持すべきだと再確認した。\n  scope: 国際航行に使用されるホルムズ海峡を通航する全船舶\n  conditions: 沿岸国間の取り決めは、全船舶の無差別かつ妨げられない通過通航権を保証する必要がある。\n  numeric_value: 第137回理事会 (numeric_scope: IMO理事会の会合番号)\n  date_or_period: 2026-07-06～2026-07-10（第137回理事会開催期間）、2026-07-13公表\n  notes_for_writer: この決議と7月14日の発言撤回との因果関係は一次資料で確認できない。撤回の原因として記述しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "数量時系列",
+          "question": "STUB: 台帳と食い違うのではありませんか"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "gemini35fl",
+          "model_id": "gemini-3.5-flash-lite",
+          "condition": "A3",
+          "confidence": 0.3,
+          "type": "数量時系列",
+          "fact_ids": [
+            "HF-001"
+          ],
+          "question": "STUB: 台帳と食い違うのではありませんか",
+          "severity": "重大",
+          "raw_flag_source": "raw/gemini35fl_A3.jsonl"
+        },
+        {
+          "model_key": "gemini35fl",
+          "model_id": "gemini-3.5-flash-lite",
+          "condition": "A4",
+          "confidence": 0.3,
+          "type": "数量時系列",
+          "fact_ids": [
+            "HF-001"
+          ],
+          "question": "STUB: 台帳と食い違うのではありませんか",
+          "severity": "重大",
+          "raw_flag_source": "raw/gemini35fl_A4.jsonl"
+        }
+      ],
+      "confidence": 0.3
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 10000,
+      "output_tokens": 1400,
+      "cost_jpy": 0.272,
+      "a3_flag_count": 0,
+      "a4_flag_count": 0,
+      "unique_issue": 0,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 1
+    },
+    "gemini35fl": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 10000,
+      "output_tokens": 1400,
+      "cost_jpy": 1.04,
+      "a3_flag_count": 1,
+      "a4_flag_count": 1,
+      "unique_issue": 1,
+      "overlap_a3_a4": 1,
+      "zero_flag_article": 0
+    },
+    "_all": {
+      "article_level": "b1b",
+      "article_status": "OK",
+      "unique_issue": 1,
+      "cost_jpy": 1.312,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": [
+    "cost_logger_record_failed: RuntimeError",
+    "cost_logger_record_failed: RuntimeError"
+  ]
+}
