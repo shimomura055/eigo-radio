@@ -1,0 +1,123 @@
+{
+  "attempt_number": 2,
+  "route": "custom_53fd514d",
+  "segment_id": "full_story_part3",
+  "theme_id": "coffee_prices__run_l3_01",
+  "level": "a2",
+  "source_out_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_l3_01/a2/narration/full_story_part3.wav",
+  "saved_at": "2026-10-10T22:48:35",
+  "sha256": "e12f578611d26076ca4da248a98588eaeaa1ceae031a558e90628bba04511423",
+  "loop_attempt_index": 2,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "BATCH",
+  "instruction_text": "calm, steady news narration with natural emphasis at key points and turns; not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.",
+  "asr_text": "U.S. roasters keep green beans in stock. Then they roast and pack them. Reports also say price talks with stores often happen every three months. There are several steps between the beans and the store shelf. Even when market prices fall, not every step responds, got it, cut prices now. Of course, around nine months is an estimate from market experts and others. It is not a timer for every company. It is not a promise that prices will definitely be lower nine months from now. It is too soon to circle a sale on your calendar. In other words, a fall in market prices is not an update button for price tags. The prices on shelves may reflect purchases and talks from some time ago. Next time you see a headline about falling prices, ask the price tag, say, by the way, how many months ago did you get here?",
+  "audio_classification": "NUMERIC_EQUIVALENCE_MATCH",
+  "length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 48.88,
+    "method_a_ngram": {
+      "matches": [
+        {
+          "span_text": " It  is  not  a",
+          "n_words": 4,
+          "category": "phrase",
+          "first_start_s": 22.9,
+          "first_end_s": 23.6,
+          "second_start_s": 25.06,
+          "second_end_s": 25.6,
+          "gap_seconds": 1.46,
+          "canonical_repeat_count": 2,
+          "intentional": true,
+          "flagged": false
+        }
+      ],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 152,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9961,
+          "time_a_seconds": 9.33,
+          "time_b_seconds": 18.31,
+          "lag_seconds": 8.98,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9954,
+          "time_a_seconds": 2.71,
+          "time_b_seconds": 9.34,
+          "lag_seconds": 6.63,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9945,
+          "time_a_seconds": 16.53,
+          "time_b_seconds": 18.23,
+          "lag_seconds": 1.7,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9943,
+          "time_a_seconds": 2.7,
+          "time_b_seconds": 31.87,
+          "lag_seconds": 29.17
+        },
+        {
+          "similarity": 0.9942,
+          "time_a_seconds": 18.31,
+          "time_b_seconds": 31.87,
+          "lag_seconds": 13.56
+        }
+      ],
+      "best_run_length_seconds": 0.01,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.35,
+      "time_a": 19.72,
+      "lag": 1.29,
+      "similarity_at_start": 0.7088,
+      "best_run_length_seconds": 0.35,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": false,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "U.S. roasters keep green beans in stock. Then they roast and pack them. Reports also say price talks with stores often happen every three months. There are several steps between the beans and the store shelf. Even when market prices fall, not every step responds, got it, cut prices now. Of course, around nine months is an estimate from market experts and others. It is not a timer for every company. It is not a promise that prices will definitely be lower nine months from now. It is too soon to circle a sale on your calendar. In other words, a fall in market prices is not an update button for price tags. The prices on shelves may reflect purchases and talks from some time ago. Next time you see a headline about falling prices, ask the price tag, say, by the way, how many months ago did you get here?",
+      "classification": "NUMERIC_EQUIVALENCE_MATCH",
+      "entity_like_source": []
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Market Prices Fall, Price Tags Stay Put: Coffee Prices’ “Jet Lag”
+
+“Coffee prices are falling!” Great, maybe spring will finally come to my wallet too. But on supermarket shelves, the price tags do not move at all. They look perfectly calm, as if to say, “News? Never heard of it.” If the market price of beans has fallen, why aren’t our costs getting any lower?
+
+First, let’s go back to when high prices were causing a stir in the market. Bad weather in Brazil and Vietnam disrupted supply, leaving few beans available for sale and stocks low. Then came strong global demand. It was a tough mix for prices to settle down.
+
+Around the same time, ICE’s arabica coffee futures hit a record high up to that point. But futures prices are not the prices of green beans for immediate sale, and they are not store prices, either. They may all wear the same name tag, “coffee price,” but they are not all the same thing.
+
+After that, an index showing world market prices fell by 25% over seven months. The USDA links this drop to extra supplies becoming easier to get. But in the United States, the coffee part of the Consumer Price Index was still higher than in the same month a year earlier.
+
+“Wait a minute, that doesn’t add up!” You might want to say that. But one is a world market index, and the other is the US Consumer Price Index. One shows a drop over seven months, while the other compares prices with a year earlier. They are on different stages and run on different clocks. If you pour the numbers into the same cup, the story gets muddled.
+
+And price tags follow their own schedule. Market experts and others interviewed by Reuters estimated that it takes around nine months or longer for green-bean prices to show up in store prices. If market prices are a breaking news alert, price tags are patient letters.
+
+US roasters keep green beans in stock, then roast and package them. It was also reported that price talks with retailers often happen every three months. There are several steps between the beans and the store shelf. Even when market prices fall, not every step responds with, “Got it, cut prices now!”
+
+Of course, around nine months is an estimate from market experts and others. It is not a timer that applies to every company, or a promise that “prices will definitely be lower nine months from now.” It is too soon to circle a sale on your calendar.
+
+In other words, a fall in market prices is not an update button for price tags. The prices on shelves may reflect purchases and talks from some time ago. The next time you see a headline about falling prices, ask the price tag: “By the way, how many months ago did you get here?”
+
+## In one line
+Falling coffee market prices don’t quickly lower supermarket prices because the changes take months to reach shelves.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "show up",
+    "japanese_gloss": "店頭価格に表れる",
+    "source_sentence": "Market experts and others interviewed by Reuters estimated that it takes around nine months or longer for green-bean prices to show up in store prices"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "run on",
+    "japanese_gloss": "それぞれ違う時間の流れで動く",
+    "source_sentence": "They are on different stages and run on different clocks"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "green beans",
+    "japanese_gloss": "焙煎前のコーヒー豆",
+    "source_sentence": "But futures prices are not the prices of green beans for immediate sale, and they are not store prices, either"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "cause a stir",
+    "japanese_gloss": "騒ぎを起こす",
+    "source_sentence": "First, let's go back to when high prices were causing a stir in the market"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "add up",
+    "japanese_gloss": "つじつまが合う",
+    "source_sentence": "Wait a minute, that doesn't add up"
+  }
+]

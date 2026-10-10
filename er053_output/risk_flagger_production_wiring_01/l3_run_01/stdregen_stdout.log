@@ -1,0 +1,18 @@
+[B3-RUNNER][research_ledger] 既存Ledgerを再利用(既生成済み): er019_output/coffee_prices/run_l3_01_stdregen/research_ledger
+[E-FAMILY-RUNNER][cost] so far=89.05 JPY by_provider={'openai': 87.62, 'gemini': 1.44} (after research_ledger)
+[B3-RUNNER][storyline_b3] 既存Selected Fact Briefを再利用: er019_output/coffee_prices/run_l3_01_stdregen/storyline_b3
+[B3-RUNNER][annotation] producer=deterministic_v2 rules_sha=525f2309b521 facts=5 annotated_sha=613cf4f47bfe(LLM 0 call)
+[B3-RUNNER][writer] 既存JA記事(R2)の再利用を検討: er019_output/coffee_prices/run_l3_01_stdregen/ja_writer/revision2.md(W-1来歴+注記契約sha一致を確認、U-1)
+[E-FAMILY-RUNNER][writer/coffee_prices] Standard(Family X見出し廃止A2)生成開始...
+[E-FAMILY-RUNNER][cost] so far=89.27 JPY by_provider={'openai': 87.83, 'gemini': 1.44} (after standard writer)
+[E-FAMILY-RUNNER][cost] so far=89.27 JPY by_provider={'openai': 87.83, 'gemini': 1.44} (after standard)
+[B3-RUNNER][risk_flag/a2] Risk Flagger開始(非Blocking、4条件逐次)...
+[E-FAMILY-RUNNER][cost] so far=89.27 JPY by_provider={'openai': 87.83, 'gemini': 1.44} (risk_flag a2)
+[E-FAMILY-RUNNER][cost] so far=89.50 JPY by_provider={'openai': 88.06, 'gemini': 1.44} (risk_flag a2)
+[E-FAMILY-RUNNER][cost] so far=89.77 JPY by_provider={'openai': 88.33, 'gemini': 1.44} (risk_flag a2)
+[E-FAMILY-RUNNER][cost] so far=90.15 JPY by_provider={'openai': 88.33, 'gemini': 1.82} (risk_flag a2)
+[B3-RUNNER][risk_flag/a2] status=OK issues=4 queue_saved=True
+[E-FAMILY-RUNNER][cost] so far=90.54 JPY by_provider={'openai': 88.33, 'gemini': 2.21} (after risk_flag a2)
+[B3-RUNNER] Standardまで完了。Mandatory STOP(ユーザー確認前に後工程[scaffold/tts/assemble/player]へは進みません。本runnerにはそれらのstage自体が実装されていません)。
+[B3-RUNNER][cost] {'by_stage_jpy': {'research': 21.96, 'ledger': 24.88, 'storyline_b3': 0.696, 'w1_r0': 0.543, 'w1_astra_r1': 18.162, 'w1_astra_r2': 19.664, 'advanced': 0.349, 'risk_flag.luna.A3.b1b': 0.254, 'risk_flag.luna.A4.b1b': 0.231, 'risk_flag.gemini35fl.A3.b1b': 0.335, 'risk_flag.gemini35fl.A4.b1b': 0.341, 'standard': 0.596, 'risk_flag.luna.A3.a2': 0.459, 'risk_flag.luna.A4.a2': 0.537, 'risk_flag.gemini35fl.A3.a2': 0.762, 'risk_flag.gemini35fl.A4.a2': 0.777}, 'total_jpy': 90.544, 'by_provider_jpy': {'openai': 88.33, 'gemini': 2.214}, 'risk_flag_by_level_model_condition_jpy': {'b1b': {'luna': {'A3': 0.254, 'A4': 0.231}, 'gemini35fl': {'A3': 0.335, 'A4': 0.341}}, 'a2': {'luna': {'A3': 0.459, 'A4': 0.537}, 'gemini35fl': {'A3': 0.762, 'A4': 0.777}}}}
+EXIT=0
