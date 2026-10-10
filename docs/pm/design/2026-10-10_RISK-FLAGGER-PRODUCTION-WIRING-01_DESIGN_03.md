@@ -508,3 +508,68 @@ grep実測(HEAD): L822(Fact Safety行: 旧Checker→W-1+RF+Human Review)/L1230�
 - Standard=Advanced派生: `er012_e_family_entertainment_two_level_runner_01.py` L615/L617。
 - review_queue: `git check-ignore -v review_queue/post_en/index.jsonl` rc=1、`ls review_queue`=不在。
 - tag: `git tag`=0件。
+
+---
+
+## 15. Opus独立レビュー結果(再レビュー、条件A、2026-10-10)と是正反映(v3.1)
+
+(1〜14節の本文は変更しない。是正は15-2に差分形式で記載。委任_05、設計・記録のみ、課金API 0件、Production/Prompt/CURRENT_SPEC変更なし)
+
+### 15-1 レビュー結果
+
+**総合: 条件付き同意。** 移植契約に自己矛盾1件、入力契約に抜け穴2件、TTS直前保険の照合対象ずれ1件。
+
+- **論点1 W-1移植契約(条件付き同意)**: routing一致確認済み(R0=luna effort high、jaw L48-49/routing L48。Astra=effort high・developerなし・previous_response_idなし・tierなし、E2E L622-623)。R2入力=R1生出力(L709)。new腕8本の r0_meta.json は must_fix_applied:false。
+  - **矛盾**: E5 `build_original_prompt` を「無変更・sha固定」としつつ、R-03が同関数の must_fix/full_ledger_text 引数と build_must_fix_block を削除する。C2後にshaが変わる。
+  - F11許容差は3点: TRIAL_ID→THEME_TAG、ASTRA_MODELの出所が routing require_model、`os.environ.get("E2E_STUB")`(L631)の削除(隠れswitch禁止S9)。
+  - R0記号再生成Promptは `build_r0_prompt()+"\n\n"+note`。記号QAはタグ除去前のタグ付きR0本文に対して行う。
+  - 入力はTrialと同様に、注記済みmdを `parse_brief_md`(L649)した結果に限定。旧Production呼出側は fact_selection_evidence.json["selected_fact_brief_text"](L336-361)を渡しており先頭にStorylineを含みうる→呼出側配線testが必要。
+  - R1→R2のstrip・CRLF→LFはTrialと同一(T-8b)。
+  - fixture母集団は annotation/final 9本・new腕run 8本(11本は不一致、パスで確定する)。
+- **論点2 入力契約(条件付き同意、穴2件)**:
+  - 穴A: V1〜V9は形式・shaのみで、LLMが事実本文を言い換えても通る→**V10追加**、V5強化。
+  - 穴B: entertainment runner L354 の revision2.md 再利用分岐でWriter入口検証をバイパスする。
+- **論点3 RF位置(同意)**: Standard入力=Advanced英文(er012_e L615/617)。M1(a)はAdvanced初回と段落retryの両方で _open243_iol(L497/500)。Standard RFはA2で誤検出増の可能性→非Blocking+Level別MODEL_STATSで経過観察。RF呼出は `cl.logging_context(RUNNER_TAG,"advanced"/"standard")` ブロックの外。latency: Astra R1+R2約75秒+RF約50秒、撤去されるJA Fact Check約110秒+EN deviation checkで相殺、正味ほぼ増えない見込み。
+- **論点4 S3-1**: 案A推奨(対象R2のみ、判定は後処理+タグ除去後の最終文 L734、やり直しはR2のみ同一R1生出力、2回目も残ればSTOP、両response_id記録、budget checkをR1/R2間とやり直し後に追加)。**Fable判断: 案Aを採用**(Prompt不変・既存上限1回維持=承認範囲内)。
+- **論点5 S3-3**: 案Y条件付き同意。条件: (a)独立部分G-4/G-1はC1と共に先行、(b)ブランチ存続中は er012_e・entertainment runner・jaw のmain側変更を凍結または移植義務、(c)取り込みはrebaseでなく `git merge main`、(d)rollback tagはmerge直前のmain HEAD、(e)mergeは `--no-ff`、rollbackは `git revert -m 1`、(f)開発用確認runの証跡はブランチsha付き、merge後にStatic/unit再実行。**最終判断はユーザー。**
+- **論点6 非対称棚卸(同意)**: 行8はStandard RFの前提を崩さない(既存D4仕様で説明可。`--stage all` で `--regenerate-stage advanced` はStandardも再生成 L389、古いまま残るのは `--stop-after advanced`/`--stage advanced` のみ)。S3-2採用+TTS直前保険で、a2派生元sha≠現在b1b sha は警告記録のみ。行16撤去で消滅。②-c 0件に同意。
+- **論点7 Queue/adapter(条件付き同意)**: adapterは FROZEN b3_dir ではなく、Trialが実際に使った `runs/<slug>/shared/{brief_original.md, ledger.txt, fact_selection_evidence_original.json}` を使用(metaはFROZENのbriefとStorylineが別物)。再利用分岐(L336)用に fact_selection_evidence.json も出力。manifest.producer と run_label を queue.json/index.jsonl/runtime_evidence に記録(分岐させず記録のみ)。G-C受入条件に producer != "trial_fixture"。
+- **論点8 TTS直前保険・費用・その他**: 照合はscaffold時sha・source記事sha・Queue shaの三者(audio runner L320-331/L589: 読み上げは out_dir/<level>/parts.json)。article_idはwriter/audio共通関数、issue_idは分解せずフィールド個別保持。efam budget guard(L148-153)はinput/outputのみ→Gemini output_tokensにthinking含める、G-1(Gemini単価登録)をRF初回呼出より先にする順序をtestで固定。er012_e単体CLI(L1127 `--ja-article`/`--stage writer`)は契約もRFも通らずb1b/a2を作れる経路(TTSはOPEN-228で封鎖済み)→U-2。R0 routingはリテラル"gpt-6-luna"固定+require_model(jaw call_fresh流用しない)。S3-6見積にAstra記号やり直し(+約¥15)と call_astra の全例外最大2回再試行分を含める。
+
+### 15-1A ユーザーSTOP対象
+
+- **U-1**: C2後、W-1来歴のない旧Writer記事のEN/音声再生成を許すか。既定案=来歴なしはSTOPし旧記事再生成はrollback worktreeで。代替=許可し「旧Writer由来」を記録。
+- **U-2**: er012_e単体CLIのFamily X writer経路封鎖(15-3の事実確認参照)。
+- **S3-3**: C2/C3 main統合タイミング(論点5の条件付き)。
+- **S3-6**: 開発用確認runのCap(累計JPY60 STOPとの関係)。見積にAstra記号やり直し・call_astra再試行分を含める。
+
+### 15-2 是正反映(v3.1、承認範囲内13点、差分形式)
+
+S3-1は**案A採用**(対象R2のみ・Prompt不変・やり直し1回・2回目残存はSTOP・両response_id記録・budget checkをR1/R2間とやり直し後に追加)。
+
+| # | 対象 | 差分(v3 → v3.1) |
+|---|---|---|
+| 1 | E5 sha固定の矛盾 | 「無変更・sha固定」→「C2前(pre-C2 tag)時点の出力を golden fixture として保存し、C2後は出力比較(Prompt本文一致)で担保」。関数shaは削除引数分だけ変わることを許容と明記 |
+| 2 | F11許容差 | 3点(TRIAL_ID→THEME_TAG / ASTRA_MODEL出所=routing require_model / `E2E_STUB` 削除)のみ許容。それ以外の差は不許可。隠れswitch禁止(S9) |
+| 3 | R0記号再生成 | Prompt=`build_r0_prompt()+"\n\n"+note`。記号QAはタグ除去前のタグ付きR0本文に対して実施(順序固定、testで固定) |
+| 4 | 入力限定 | 入力=注記済みmdを `parse_brief_md` した結果のみ。旧呼出側の selected_fact_brief_text(Storyline含みうる)を渡さないことを呼出側配線testで検証 |
+| 5 | T-8b | R1→R2のstrip・CRLF→LFをTrialと同一とするtest(T-8b)を追加 |
+| 6 | 入力契約V10/V5 | **V10追加**: Storyline完全一致+タグ・数値印除去後の事実本文連結が、空白・箇条記号・改行除去で原Factsと一致(文字列一致であり内容判定ではない)。**V5強化**: Facts節の空でない全行が FACT_LINE_RE 一致 |
+| 7 | 再利用分岐(穴B) | entertainment runner L354 の revision2.md 再利用時も runtime_evidence.json の chain_method がW-1値かつ annotated_md_sha256 が契約と一致を確認、違えばSTOP。旧記事の扱いは**U-1待ち** |
+| 8 | TTS直前保険 | 二者→三者照合(scaffold時sha・source記事sha・Queue sha、読み上げ対象は out_dir/<level>/parts.json)。S3-2採用(派生元sha差は警告記録のみ) |
+| 9 | article_id/producer | article_idはwriter/audio共通関数、issue_idは分解せずフィールド個別保持。manifest.producer と run_label を queue.json/index.jsonl/runtime_evidence に記録(記録のみ、分岐しない)。G-C受入条件に producer != "trial_fixture" |
+| 10 | adapter入力・fixture | adapter入力を `runs/<slug>/shared/{brief_original.md, ledger.txt, fact_selection_evidence_original.json}` に修正、fact_selection_evidence.json も出力。fixture母集団は annotation/final 9本・new腕run 8本(11本は不一致、パスで確定) |
+| 11 | RF呼出・費用 | RF呼出は `cl.logging_context` ブロックの外。Gemini output_tokensにthinking含める。G-1(Gemini単価登録)をRF初回呼出より先にする順序をtestで固定 |
+| 12 | R0 routing・budget | R0 routingはリテラル"gpt-6-luna"固定+require_model(jaw call_fresh流用しない)。budget checkをR1/R2間とやり直し後に追加。S3-6見積にAstra記号やり直し(+約¥15)とcall_astra全例外最大2回再試行分を含める |
+| 13 | ブランチ運用 | 論点5の条件a〜fはS3-3決定後に12節へ反映(決定前は未反映) |
+
+### 15-3 U-2 事実確認(読み取りのみ)
+
+- 確認範囲: CURRENT_SPEC.md / docs/pm/PM_BRIEF.md / docs/pm/PM_GOVERNANCE.md / CLAUDE.md を `ja-article`・`--stage writer` でGrep。
+- **該当あり**: CURRENT_SPEC.md L828(`NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01`追記、2026-09-25)に「完成品を受け取る入口は `er012_e_family_entertainment_two_level_runner_01.py`(`--ja-article <完成R2ファイルpath> --slug <slug>`)として定義・実装済み[path+sha256+由来管理IDをentry_point.jsonへ記録]」とある。同行の続き(2026-09-26追記)で正式フローはJA Writer自動生成配線へ更新済みだが、`--ja-article` 入口の廃止は記載されていない。
+- PM_BRIEF.md / PM_GOVERNANCE.md / CLAUDE.md: 該当記載なし。そのほか `--ja-article` を含むmd(OPEN_ITEMS.md、FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md、NEWS-ADVANCED-A2-PRODUCTION-E2E-WIRING-01_REPORT.md、docs/pm/design_family_x_refresh_e2e_production_wiring_01.md)は過去管理IDの記録。
+- **判定**: CURRENT_SPECが当該CLIを正式入口として定義した記載があり、「正式入口の記載なし」ではない。仮置き規則に従い **U-2はユーザー判断**(封鎖guardを入れるか、入口をW-1契約検証経由に限定するか)。Phase 2 C1での封鎖guard追加はユーザー決定まで着手しない。
+
+### 15-4 Status
+
+Opus再レビュー済み(条件付き同意)、是正13点反映済み(13はS3-3待ち)。STOP: U-1 / U-2(要ユーザー判断) / S3-3 / S3-6。Lane B Phase 2 Go待ち。
