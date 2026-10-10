@@ -1,0 +1,365 @@
+{
+ "generated_for": "RISK-FLAGGER-PRODUCTION-WIRING-01 Phase 2 C3",
+ "baseline_c1_total_hits": 385,
+ "after_c3_total_hits_raw": 36,
+ "after_c3_fact_checker_symbols_total": 0,
+ "after_c3_residual_by_category": {
+  "technical_qa_vocabulary": 11,
+  "review_label_not_checker": 25,
+  "trial_or_historical": 0,
+  "truly_orphaned": 0
+ },
+ "unclassified_truly_orphaned": 0,
+ "classification_rules": [
+  {
+   "category": "technical_qa_vocabulary",
+   "regex": "_symbol_must_fix|symbol_must_fix|_FAMILY_X_PARAGRAPH_RETRY_MUST_FIX",
+   "rationale": "段落3分割retry(must_fix kwargは技術QA、adv_gen/std_gen共有)・音声化禁止記号QA(T-01/T-02)のstage tag/evidence key"
+  },
+  {
+   "category": "review_label_not_checker",
+   "regex": "MAJOR-\\d",
+   "rationale": "Opus L2レビュー所見ラベル(MAJOR-n)。旧Fact Checkerのseverity語ではない"
+  }
+ ],
+ "per_file": {
+  "er012_e_family_entertainment_two_level_runner_01.py": {
+   "technical_qa_vocabulary": 2,
+   "review_label_not_checker": 5,
+   "trial_or_historical": 0,
+   "truly_orphaned": 0
+  },
+  "er019_family_x_entertainment_production_runner_01.py": {
+   "technical_qa_vocabulary": 0,
+   "review_label_not_checker": 0,
+   "trial_or_historical": 0,
+   "truly_orphaned": 0
+  },
+  "er019_family_x_ja_writer_o_r1_r2_01.py": {
+   "technical_qa_vocabulary": 9,
+   "review_label_not_checker": 0,
+   "trial_or_historical": 0,
+   "truly_orphaned": 0
+  },
+  "er019_family_x_audio_production_runner_01.py": {
+   "technical_qa_vocabulary": 0,
+   "review_label_not_checker": 20,
+   "trial_or_historical": 0,
+   "truly_orphaned": 0
+  },
+  "er053_family_x_factlock_ja_writer_01.py": {
+   "technical_qa_vocabulary": 0,
+   "review_label_not_checker": 0,
+   "trial_or_historical": 0,
+   "truly_orphaned": 0
+  },
+  "er053_risk_flagger_production_01.py": {
+   "technical_qa_vocabulary": 0,
+   "review_label_not_checker": 0,
+   "trial_or_historical": 0,
+   "truly_orphaned": 0
+  },
+  "er053_review_queue_01.py": {
+   "technical_qa_vocabulary": 0,
+   "review_label_not_checker": 0,
+   "trial_or_historical": 0,
+   "truly_orphaned": 0
+  },
+  "er053_b3_annotation_contract_01.py": {
+   "technical_qa_vocabulary": 0,
+   "review_label_not_checker": 0,
+   "trial_or_historical": 0,
+   "truly_orphaned": 0
+  },
+  "er053_en_sentence_splitter_01.py": {
+   "technical_qa_vocabulary": 0,
+   "review_label_not_checker": 0,
+   "trial_or_historical": 0,
+   "truly_orphaned": 0
+  }
+ },
+ "raw_per_file_counts": {
+  "er012_e_family_entertainment_two_level_runner_01.py": {
+   "MAJOR": 5,
+   "must_fix": 2
+  },
+  "er019_family_x_entertainment_production_runner_01.py": {},
+  "er019_family_x_ja_writer_o_r1_r2_01.py": {
+   "must_fix": 9
+  },
+  "er019_family_x_audio_production_runner_01.py": {
+   "MAJOR": 20
+  },
+  "er053_family_x_factlock_ja_writer_01.py": {},
+  "er053_risk_flagger_production_01.py": {},
+  "er053_review_queue_01.py": {},
+  "er053_b3_annotation_contract_01.py": {},
+  "er053_en_sentence_splitter_01.py": {}
+ },
+ "residual_lines": [
+  {
+   "file": "er012_e_family_entertainment_two_level_runner_01.py",
+   "line": 291,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# W5(Opus L2所見MAJOR-2是正、2026-09-29): split_family_x_article_"
+  },
+  {
+   "file": "er012_e_family_entertainment_two_level_runner_01.py",
+   "line": 364,
+   "count": 1,
+   "category": "technical_qa_vocabulary",
+   "text": "ja_text, client=client, must_fix=_FAMILY_X_PARAGRAPH_RETRY_MUST_FIX)"
+  },
+  {
+   "file": "er012_e_family_entertainment_two_level_runner_01.py",
+   "line": 408,
+   "count": 1,
+   "category": "technical_qa_vocabulary",
+   "text": "advanced_text, client=client, must_fix=_FAMILY_X_PARAGRAPH_RETRY_MUST_FIX)"
+  },
+  {
+   "file": "er012_e_family_entertainment_two_level_runner_01.py",
+   "line": 473,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W5、Opus L2所見MAJOR-4是正、"
+  },
+  {
+   "file": "er012_e_family_entertainment_two_level_runner_01.py",
+   "line": 486,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "\"[STOP][OPEN-228][MAJOR-4] Family Xのscaffold/tts/assemble/playerは\""
+  },
+  {
+   "file": "er012_e_family_entertainment_two_level_runner_01.py",
+   "line": 508,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "W5(MAJOR-4是正、OPEN-228封鎖): 本stageもfail-fastする(上記参照)。\"\"\""
+  },
+  {
+   "file": "er012_e_family_entertainment_two_level_runner_01.py",
+   "line": 674,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# W5(MAJOR-4是正、OPEN-228封鎖): assemble stage同様、player生成も"
+  },
+  {
+   "file": "er019_family_x_ja_writer_o_r1_r2_01.py",
+   "line": 214,
+   "count": 1,
+   "category": "technical_qa_vocabulary",
+   "text": "\"ja_original_symbol_must_fix\")"
+  },
+  {
+   "file": "er019_family_x_ja_writer_o_r1_r2_01.py",
+   "line": 228,
+   "count": 1,
+   "category": "technical_qa_vocabulary",
+   "text": "\"model\": response_sym.model, \"symbol_must_fix_applied\": True,"
+  },
+  {
+   "file": "er019_family_x_ja_writer_o_r1_r2_01.py",
+   "line": 230,
+   "count": 1,
+   "category": "technical_qa_vocabulary",
+   "text": "\"pre_symbol_must_fix_response_id\": stages[\"original\"][\"response_id\"],"
+  },
+  {
+   "file": "er019_family_x_ja_writer_o_r1_r2_01.py",
+   "line": 282,
+   "count": 1,
+   "category": "technical_qa_vocabulary",
+   "text": "client, r2_symbol_instruction, WRITER_EFFORT, r1_response_id_for_symbol, \"ja_r2_symbol_must_fix\")"
+  },
+  {
+   "file": "er019_family_x_ja_writer_o_r1_r2_01.py",
+   "line": 286,
+   "count": 1,
+   "category": "technical_qa_vocabulary",
+   "text": "f\"(ja_r2_symbol_must_fix): {exc}\")"
+  },
+  {
+   "file": "er019_family_x_ja_writer_o_r1_r2_01.py",
+   "line": 291,
+   "count": 1,
+   "category": "technical_qa_vocabulary",
+   "text": "\"ja_r2_symbol_must_fix\")"
+  },
+  {
+   "file": "er019_family_x_ja_writer_o_r1_r2_01.py",
+   "line": 305,
+   "count": 1,
+   "category": "technical_qa_vocabulary",
+   "text": "\"model\": response_sym.model, \"symbol_must_fix_applied\": True,"
+  },
+  {
+   "file": "er019_family_x_ja_writer_o_r1_r2_01.py",
+   "line": 306,
+   "count": 1,
+   "category": "technical_qa_vocabulary",
+   "text": "\"symbol_findings\": r2_symbol_findings, \"symbol_must_fix_chain_method\": used_method_sym,"
+  },
+  {
+   "file": "er019_family_x_ja_writer_o_r1_r2_01.py",
+   "line": 307,
+   "count": 1,
+   "category": "technical_qa_vocabulary",
+   "text": "\"pre_symbol_must_fix_response_id\": stages[\"r2\"][\"response_id\"],"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 368,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# 所見MAJOR-3是正): 可変segment(japanese_title/topic_intro/preview/"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 376,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# MAJOR-1是正): Key Phrase側の\"explanation\"(Advanced英語解説)・"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 416,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2所見MAJOR-3"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 436,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "\"\"\"FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W5、Opus L2所見MAJOR-1"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 697,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# MAJOR-3是正): 可変segment reuse判定用のcache version guard。"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 746,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# W5(Opus L2所見MAJOR-3是正): KP解説styleも_role_style()と同じbackend"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 769,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# W5(Opus L2所見MAJOR-1、english role text guard): used_form"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 804,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# W5(Opus L2所見MAJOR-1是正): text一致+style_version一致の"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 861,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "所見MAJOR-1是正・ユーザー正式決定): 上記の判断を撤回する。japanese_"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 866,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "MAJOR-1)。既定backendでは`_role_style_ja()`はNoneを返すため、"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 945,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# MAJOR-1是正、ユーザー正式決定): japanese_titleもpreview/"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 999,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# MAJOR-3是正): 可変segment reuse判定用のcache version guard。"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 1038,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# W5(Opus L2所見MAJOR-1、english role text guard)。"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 1049,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# W5(J3配線に伴うMAJOR-1系guard、Standard KP日本語意味に"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 1815,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# W5(Opus L2所見MAJOR-3是正、2026-09-29): E2E Production実行は"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 1829,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# W5(Opus L2所見MAJOR-3是正): tts stage開始前のbackend fail-fast Gate。"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 1839,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "が全Gateを通過してしまう事故(Opus L2所見MAJOR-3)を防ぐ。\"\"\""
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 1845,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "f\"[STOP][MAJOR-3] tts_backend={tts_backend!r}は、Production E2Eの承認済み\""
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 2026,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# W5(MAJOR-3是正): legacy backend実行を明示許可したかどうかの記録。"
+  },
+  {
+   "file": "er019_family_x_audio_production_runner_01.py",
+   "line": 2063,
+   "count": 1,
+   "category": "review_label_not_checker",
+   "text": "# W5(Opus L2所見MAJOR-3是正): 課金が発生するTTS呼び出し(下の"
+  }
+ ],
+ "scope_files": [
+  "er012_e_family_entertainment_two_level_runner_01.py",
+  "er019_family_x_entertainment_production_runner_01.py",
+  "er019_family_x_ja_writer_o_r1_r2_01.py",
+  "er019_family_x_audio_production_runner_01.py",
+  "er053_family_x_factlock_ja_writer_01.py",
+  "er053_risk_flagger_production_01.py",
+  "er053_review_queue_01.py",
+  "er053_b3_annotation_contract_01.py",
+  "er053_en_sentence_splitter_01.py"
+ ],
+ "note": "Fact Checker専用シンボル(JAFactCheckStopError/JARecheckRequiredError/run_deviation_check/open243_*/OPEN243_*/ja_recheck 等 25種)の残存は0。残る語は技術QA語彙とレビュー所見ラベルのみ(分類済み)。audio runnerの MAJOR 20件は全て Opus L2所見ラベル(MAJOR-1/3/4等のコメント・文字列)で C3 の対象外。"
+}

@@ -1,0 +1,207 @@
+{
+ "purpose": "C3 stub E2E (API 0)",
+ "article_id": "run_01",
+ "scenarios": {
+  "S0_writer_main": {
+   "queue_rows": [
+    [
+     "run_01",
+     "b1b",
+     "C3_STUB_E2E"
+    ],
+    [
+     "run_01",
+     "a2",
+     "C3_STUB_E2E"
+    ]
+   ],
+   "rf_calls": 8
+  },
+  "S1_scaffold_then_tts_alone_verified": {
+   "events": [
+    "tts:a2",
+    "tts:b1b"
+   ],
+   "rf_api_calls": 0,
+   "guard": {
+    "a2": {
+     "action": "verified",
+     "match": true,
+     "mismatch_reasons": [],
+     "rf_status": null,
+     "queue_saved": null,
+     "run_label": null
+    },
+    "b1b": {
+     "action": "verified",
+     "match": true,
+     "mismatch_reasons": [],
+     "rf_status": null,
+     "queue_saved": null,
+     "run_label": null
+    }
+   },
+   "scaffold_sha_record_matches_source": {
+    "a2": true,
+    "b1b": true
+   }
+  },
+  "S2_no_queue_rf_runs_in_audio": {
+   "events": [
+    "rf:a2",
+    "rf:b1b",
+    "tts:a2",
+    "tts:b1b"
+   ],
+   "rf_api_calls": 8,
+   "guard": {
+    "a2": {
+     "action": "rf_executed",
+     "match": false,
+     "mismatch_reasons": [
+      "no_queue_record"
+     ],
+     "rf_status": "OK",
+     "queue_saved": true,
+     "run_label": "audio_tts_guard"
+    },
+    "b1b": {
+     "action": "rf_executed",
+     "match": false,
+     "mismatch_reasons": [
+      "no_queue_record"
+     ],
+     "rf_status": "OK",
+     "queue_saved": true,
+     "run_label": "audio_tts_guard"
+    }
+   },
+   "queue_rows": [
+    [
+     "run_01",
+     "a2",
+     "audio_tts_guard",
+     "trial_fixture"
+    ],
+    [
+     "run_01",
+     "b1b",
+     "audio_tts_guard",
+     "trial_fixture"
+    ]
+   ]
+  },
+  "S3_tts_again_verified": {
+   "events": [
+    "tts:a2",
+    "tts:b1b"
+   ],
+   "rf_api_calls": 0,
+   "guard": {
+    "a2": {
+     "action": "verified",
+     "match": true,
+     "mismatch_reasons": [],
+     "rf_status": null,
+     "queue_saved": null,
+     "run_label": null
+    },
+    "b1b": {
+     "action": "verified",
+     "match": true,
+     "mismatch_reasons": [],
+     "rf_status": null,
+     "queue_saved": null,
+     "run_label": null
+    }
+   }
+  },
+  "S4_a2_changed_after_scaffold": {
+   "events": [
+    "rf:a2",
+    "tts:a2",
+    "tts:b1b"
+   ],
+   "rf_api_calls": 4,
+   "guard": {
+    "a2": {
+     "action": "rf_executed",
+     "match": false,
+     "mismatch_reasons": [
+      "scaffold_sha_ne_source_sha",
+      "source_sha_ne_queue_sha"
+     ],
+     "rf_status": "OK",
+     "queue_saved": true,
+     "run_label": "audio_tts_guard"
+    },
+    "b1b": {
+     "action": "verified",
+     "match": true,
+     "mismatch_reasons": [],
+     "rf_status": null,
+     "queue_saved": null,
+     "run_label": null
+    }
+   }
+  },
+  "S5_rf_down_still_tts": {
+   "events": [
+    "rf:a2",
+    "rf:b1b",
+    "tts:a2",
+    "tts:b1b"
+   ],
+   "rf_api_calls": 24,
+   "guard": {
+    "a2": {
+     "action": "rf_executed",
+     "match": false,
+     "mismatch_reasons": [
+      "scaffold_sha_ne_source_sha"
+     ],
+     "rf_status": "RF_UNAVAILABLE",
+     "queue_saved": true,
+     "run_label": "audio_tts_guard"
+    },
+    "b1b": {
+     "action": "rf_executed",
+     "match": false,
+     "mismatch_reasons": [
+      "scaffold_sha_ne_source_sha",
+      "source_sha_ne_queue_sha"
+     ],
+     "rf_status": "RF_UNAVAILABLE",
+     "queue_saved": true,
+     "run_label": "audio_tts_guard"
+    }
+   }
+  },
+  "S6_budget_exceeded_stops": {
+   "stopped": true,
+   "exception": "BudgetCheckStop",
+   "detail": "RuntimeError: [BUDGET_GUARD] cost so far 1603.07 JPY > cap 150.0 JPY. Stopping (rf_guard a2)."
+  }
+ },
+ "audio_cost": {
+  "rf_gemini_records": 18,
+  "sample": {
+   "model_id": "gemini-3.5-flash-lite",
+   "stage": "risk_flag.gemini35fl.A3.a2",
+   "input_tokens": 4000,
+   "output_tokens": 800,
+   "cost_usd": 0.0032
+  },
+  "all_successful_have_cost_usd": true,
+  "failed_call_records_without_cost_usd": 12,
+  "compute_cost_jpy_before_s6_injection": 3.072,
+  "by_provider_before_s6": {
+   "gemini": 3.07
+  },
+  "compute_cost_jpy_so_far_incl_s6_injected_10usd": 1603.072,
+  "by_provider_incl_injected": {
+   "gemini": 1603.07
+  }
+ },
+ "old_checker_called": false
+}
