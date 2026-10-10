@@ -1,0 +1,181 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "semiconductor_earnings__run_devconfirm_01",
+  "article_level": "b1b",
+  "article_sha256": "c87bf5c9a10a7dc96f00ef882e2c255e9e25bcf5f974eb0280093dbdb719f6fa",
+  "ledger_sha256": "36b2c87dbc570a776c65cb335a516e33a497451f1bb9446fbc7a5bcd2aec3c97",
+  "run_id": "rf20261010T122606Z-eb83",
+  "timestamp": "2026-10-10T12:26:06+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "W1_DOWNSTREAM_DEV_CONFIRM",
+  "sentence_count": 39,
+  "fact_count": 6,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 3550,
+      "output_tokens": 234,
+      "cached_tokens": 0,
+      "cost_jpy": 0.07552,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 3700,
+      "output_tokens": 948,
+      "cached_tokens": 0,
+      "cost_jpy": 0.13504,
+      "flag_count": 1,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 3457,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.167536,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 3577,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.173296,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "semiconductor_earnings__run_devconfirm_01__b1b__c87bf5c9__rf20261010T122606Z-eb83__s32",
+      "article_id": "semiconductor_earnings__run_devconfirm_01",
+      "article_level": "b1b",
+      "article_sha256": "c87bf5c9a10a7dc96f00ef882e2c255e9e25bcf5f974eb0280093dbdb719f6fa",
+      "run_id": "rf20261010T122606Z-eb83",
+      "timestamp": "2026-10-10T12:26:06+00:00",
+      "sentence_id": "s32",
+      "sentence_text": "If we take the talk of strong demand for AI and turn it straight into “all the figures are AI figures,” we end up starting a different movie.",
+      "context": {
+        "before": [
+          "One more thing to check before you leave.",
+          "The outlook for about $34.8 billion is also for the whole company’s revenue, not just a forecast for AI semiconductors."
+        ],
+        "after": [
+          "The highlights this time are how three things connect: the results for AI semiconductors, the CEO’s view of demand, and the outlook for the whole company’s revenue next quarter.",
+          "An earnings report doesn’t have to end with judging the past."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F6"
+      ],
+      "facts": [
+        {
+          "fact_id": "F6",
+          "text": "BroadcomのCEOは、カスタムAIアクセラレーターとネットワーキングへの需要が引き続き非常に強いと述べた。\n  scope: 同社のカスタムAIアクセラレーターおよびネットワーキングに対する需要についてのCEOの説明\n  conditions: 経営陣による定性的な評価。\n  date_or_period: 2026年9月2日発表の2026年度第3四半期決算リリース\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 会社CEOの評価として帰属を明記し、独立に確認された市場全体の需要事実として一般化しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「AIへの強い需要」と「カスタムAIアクセラレーターおよびネットワーキングへの強い需要」は範囲が異なるのではありませんか"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.3,
+          "type": "その他",
+          "fact_ids": [
+            "F6"
+          ],
+          "question": "「AIへの強い需要」と「カスタムAIアクセラレーターおよびネットワーキングへの強い需要」は範囲が異なるのではありませんか",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.3
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 7250,
+      "output_tokens": 1182,
+      "cost_jpy": 0.21056,
+      "a3_flag_count": 0,
+      "a4_flag_count": 1,
+      "unique_issue": 1,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 7034,
+      "output_tokens": 8,
+      "cost_jpy": 0.340832,
+      "a3_flag_count": 0,
+      "a4_flag_count": 0,
+      "unique_issue": 0,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 1
+    },
+    "_all": {
+      "article_level": "b1b",
+      "article_status": "OK",
+      "unique_issue": 1,
+      "cost_jpy": 0.551392,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}
