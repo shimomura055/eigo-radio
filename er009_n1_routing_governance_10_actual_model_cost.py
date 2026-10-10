@@ -24,6 +24,10 @@ USD_TO_JPY = 160.0
 PRICING_USD_PER_M = {
     ("openai", "gpt-5.6-luna"): (0.20, 0.02, 1.20),
     ("openai", "gpt-5.6-sol"): (5.00, 0.50, 30.00),
+    # OPEN-251(2026-10-10、Fable承認): Routing全7定数がgpt-6-lunaへ変更済みのため追加。
+    # 値はer005_output/cost_baseline_01/pricing_snapshot.jsonのgpt-6-luna登録値
+    # (input 0.10 / cached 0.01 / output 0.50 USD per 1M)の転記。他model単価の流用ではない。
+    ("openai", "gpt-6-luna"): (0.10, 0.01, 0.50),
 }
 
 
