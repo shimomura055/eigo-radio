@@ -1,0 +1,147 @@
+{
+ "basis": "前回実測(gpt-6.1-sol) A3 in5060/out692, A4 in5210/out632。low=in*0.9,out*0.5 / central=同値 / high=in*1.35(tokenizer差),out=max(3x,thinking既定ONなら4000)。format再試行・transient再試行が各1回発生した場合は最悪で約2倍(高位に含まず)",
+ "usd_jpy": 160,
+ "per_model": {
+  "gemini35fl": {
+   "A3": {
+    "low": 0.357,
+    "central": 0.52,
+    "high": 1.928
+   },
+   "A4": {
+    "low": 0.351,
+    "central": 0.503,
+    "high": 1.938
+   },
+   "total_2call": {
+    "low": 0.708,
+    "central": 1.023,
+    "high": 3.866
+   }
+  },
+  "gemini38f": {
+   "A3": {
+    "low": 0.754,
+    "central": 1.022,
+    "high": 3.22
+   },
+   "A4": {
+    "low": 0.752,
+    "central": 1.004,
+    "high": 3.244
+   },
+   "total_2call": {
+    "low": 1.506,
+    "central": 2.026,
+    "high": 6.464
+   }
+  },
+  "dsflash": {
+   "A3": {
+    "low": 0.285,
+    "central": 0.376,
+    "high": 0.726
+   },
+   "A4": {
+    "low": 0.286,
+    "central": 0.371,
+    "high": 0.702
+   },
+   "total_2call": {
+    "low": 0.571,
+    "central": 0.747,
+    "high": 1.428
+   }
+  },
+  "dsflash_think": {
+   "A3": {
+    "low": 0.285,
+    "central": 0.376,
+    "high": 1.096
+   },
+   "A4": {
+    "low": 0.286,
+    "central": 0.371,
+    "high": 1.106
+   },
+   "total_2call": {
+    "low": 0.571,
+    "central": 0.747,
+    "high": 2.202
+   }
+  },
+  "haiku45": {
+   "A3": {
+    "low": 1.005,
+    "central": 1.363,
+    "high": 2.754
+   },
+   "A4": {
+    "low": 1.003,
+    "central": 1.339,
+    "high": 2.642
+   },
+   "total_2call": {
+    "low": 2.008,
+    "central": 2.702,
+    "high": 5.396
+   }
+  },
+  "sonnet5": {
+   "A3": {
+    "low": 2.011,
+    "central": 2.726,
+    "high": 8.586
+   },
+   "A4": {
+    "low": 2.006,
+    "central": 2.678,
+    "high": 8.651
+   },
+   "total_2call": {
+    "low": 4.017,
+    "central": 5.404,
+    "high": 17.237
+   }
+  },
+  "luna": {
+   "A3": {
+    "low": 0.101,
+    "central": 0.136,
+    "high": 0.275
+   },
+   "A4": {
+    "low": 0.1,
+    "central": 0.134,
+    "high": 0.264
+   },
+   "total_2call": {
+    "low": 0.201,
+    "central": 0.27,
+    "high": 0.539
+   }
+  },
+  "sol": {
+   "A3": {
+    "low": 2.011,
+    "central": 2.726,
+    "high": 5.508
+   },
+   "A4": {
+    "low": 2.006,
+    "central": 2.678,
+    "high": 5.284
+   },
+   "total_2call": {
+    "low": 4.017,
+    "central": 5.404,
+    "high": 10.792
+   }
+  }
+ },
+ "total": {
+  "low": 13.599,
+  "central": 18.323,
+  "high": 47.924
+ }
+}

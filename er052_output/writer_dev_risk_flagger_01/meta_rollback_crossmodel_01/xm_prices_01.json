@@ -1,0 +1,13 @@
+{
+  "note": "META-ROLLBACK-CROSSMODEL-01 Phase1。USD/1M tokens (input, cached_input, output)。Standard tier。公式ページをHTTP取得して確認した値のみ。出典詳細は PREREGISTRATION_01.md 3節。USD/JPY=160(flagger_lib.USD_JPY)。",
+  "fetched_utc": "2026-10-10T04:50Z",
+  "prices": {
+    "gemini-3.5-flash-lite": {"in": 0.30, "cached": 0.03, "out": 2.50, "src": "https://ai.google.dev/gemini-api/docs/pricing", "note": "出力単価はthinking tokensを含む"},
+    "gemini-3.8-flash": {"in": 0.75, "cached": 0.075, "out": 3.75, "src": "https://ai.google.dev/gemini-api/docs/pricing", "note": "2026-12-31まで。2027-01-01から1.50/7.50。出力単価はthinking tokensを含む"},
+    "deepseek-flash": {"in": 0.30, "cached": 0.006, "out": 1.20, "src": "https://api-docs.deepseek.com/quick_start/pricing", "note": "Standard=Peak(既存登録と同方針)。Off-peakは半額(0.15/0.003/0.60)。thinking/non-thinking同一単価"},
+    "claude-haiku-4-5-20251001": {"in": 1.00, "cached": 0.10, "out": 5.00, "src": "https://platform.claude.com/docs/en/about-claude/pricing"},
+    "claude-sonnet-5": {"in": 2.00, "cached": 0.20, "out": 10.00, "src": "https://platform.claude.com/docs/en/about-claude/pricing"},
+    "gpt-6-luna": {"in": 0.10, "cached": 0.01, "out": 0.50, "src": "https://developers.openai.com/api/docs/pricing; er005_output/cost_baseline_01/pricing_snapshot.json"},
+    "gpt-6.1-sol": {"in": 2.00, "cached": 0.10, "out": 10.00, "src": "https://developers.openai.com/api/docs/pricing; er005_output/cost_baseline_01/pricing_snapshot.json"}
+  }
+}
