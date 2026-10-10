@@ -1,0 +1,175 @@
+## ITEM U01-s18 | Theme: Meta Muse AI agent
+
+Flagged sentence (s18): We cannot assume from this story that any information was shared.
+
+Context before:
+- (s16) In fact, employees were concerned that sensitive user information might be shared with contract workers by mistake.
+- (s17) But we mustn’t jump to saying, “Information was shared!” Concern about something possibly happening and proof that it actually happened are two different things.
+Context after:
+- (s19) In other words, the issue is not “It’s wrong for a human to make calls.” If a human is involved, what will be shared, when, and how?
+- (s20) The reveal, “Actually, it was a human,” might get applause in a magic show.
+
+Corresponding Fact(s):
+- [MUSE-HC-010] Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。   scope: 人間の契約スタッフがMuse経由の電話を担当するテスト   conditions: 電話の遂行にユーザー情報が必要となる場合   date_or_period: 2026年9月中旬〜2026年9月22日   causal_strength: OBSERVED_REPORTED   notes_for_writer: 懸念の存在を示す事実。実際の大規模な情報漏えいが発生したと断定しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))
+
+Reason(s) given by the flagger(s):
+- A4: 「any information was shared」は、台帳が未確認としている「機微情報の意図しない共有」から「情報共有全般」へと範囲を広げているのではありませんか。
+
+## ITEM U02-s18 | Theme: Hormuz / oil (draft 1/2)
+
+Flagged sentence (s18): So Brent futures did not suddenly plunge.
+
+Context before:
+- (s16) The focus shifted from charging cargo passing through the Strait to trade and investment with the United States.
+- (s17) The 20% plan left the stage, and a different deal came in.
+Context after:
+- (s19) That is the key point in this story.
+- (s20) After the announcement, Brent futures briefly gave up some of their gains.
+
+Corresponding Fact(s):
+- [HF-009] Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。   scope: 国際指標Brent原油先物の短時間の値動き   conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。   numeric_value: 約 +2.6%、$85/バレル超 (numeric_scope: 記事掲載時点のリアルタイムに近い価格スナップショット。日中高値でも終値でもない)   date_or_period: 2026-07-14、撤回発表後の取引時間中   causal_strength: CAUSAL_STATED_BY_SOURCE   notes_for_writer: 撤回後に原油価格が全面的に下落したとは書かない。観測されたのは一時的な上げ幅縮小と、その後の回復。
+- [HF-011] Brent原油先物は7月14日に1.43ドル、1.7％上昇し、1バレル84.73ドルで清算された。これは2営業日連続で6月12日以来の高い清算値だった。   scope: Brent原油先物の当日清算値と前日比   conditions: 20％償還料案は同日の取引時間中に撤回されたが、海上封鎖、米・イラン間の攻撃、タンカー被害などの供給懸念は継続していた。   numeric_value: $84.73/バレル、前日比 +$1.43、+1.7% (numeric_scope: 7月14日のBrent原油先物清算値。日中高値ではない)   date_or_period: 2026-07-14清算時点   causal_strength: OBSERVED_REPORTED   notes_for_writer: 7月14日は撤回があったにもかかわらず日次清算値は上昇した。これだけから撤回が価格を上昇させた、または下落させなかったと因果推論しない。
+
+Reason(s) given by the flagger(s):
+- A3: 「So Brent futures did not suddenly plunge」は置換発表によって急落が起きなかったという因果関係と急落の不在を示唆しますが、台帳が示すのは「一時的な上げ幅縮小とその後の回復」であり、因果関係や急落の不在までは確認できないのではありませんか
+- A4: 「So Brent futures did not suddenly plunge」は、台帳の「一時的な上げ幅縮小とその後の回復」という観測を超えて、償還料案の置換が急落を防いだという未確認の因果関係を示す表現ではありませんか。
+
+## ITEM U03-s1 | Theme: Space weapons (draft 1/2)
+
+Flagged sentence (s1): # Space Weapons: Their Special Attack Is Secret, but Their “Address” Was Made Public
+
+Context before:
+- (none)
+Context after:
+- (s2) A giant laser spits fire, and satellites duel in orbit.
+- (s3) When you hear “space weapons,” the movie director in your head starts making a trailer on its own.
+
+Corresponding Fact(s):
+- [F-001] 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/))   scope: 米空軍・米宇宙軍   conditions: 敵対的な相手の行動から統合軍を防護する用途と説明   date_or_period: 2026年9月14日発言、2026年9月15日公式掲載   causal_strength: OBSERVED_REPORTED   notes_for_writer: 『米国が軌道上兵器の配備を公式に認めた』までは使用可能。具体的なシステム名・攻撃能力・標的は推測で補わない。
+
+Reason(s) given by the flagger(s):
+- A3: 見出しの「Their Special Attack Is Secret」は、台帳の「具体的なシステム名・攻撃能力・標的は推測で補わない」よりも強く、特定の攻撃能力が存在し秘密扱いされていると述べる表現ではありませんか
+- A4: 見出しの「Their Special Attack Is Secret」は、台帳の「具体的なシステム名・攻撃能力・標的は推測で補わない」という注意書きよりも強く、攻撃能力の存在とその機密扱いを断定しているのではありませんか。
+
+## ITEM U03-s5 | Theme: Space weapons (draft 1/2)
+
+Flagged sentence (s5): The details of the system’s performance remain secret, while the U.S.
+
+Context before:
+- (s3) When you hear “space weapons,” the movie director in your head starts making a trailer on its own.
+- (s4) But the main subject this time is not a special attack.
+Context after:
+- (s6) has publicly said, “Its address is in orbit.”
+- (s7) On September 14, 2026, the U.S.
+
+Corresponding Fact(s):
+- [F-001] 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/))   scope: 米空軍・米宇宙軍   conditions: 敵対的な相手の行動から統合軍を防護する用途と説明   date_or_period: 2026年9月14日発言、2026年9月15日公式掲載   causal_strength: OBSERVED_REPORTED   notes_for_writer: 『米国が軌道上兵器の配備を公式に認めた』までは使用可能。具体的なシステム名・攻撃能力・標的は推測で補わない。
+
+Reason(s) given by the flagger(s):
+- A3: 「the system’s performance remain secret」は、台帳で具体的な性能が示されていないことを、性能が秘密扱いされているという事実に置き換えているのではありませんか
+- A4: 「the system’s performance remain secret」は、台帳の「具体的なシステム名・攻撃能力・標的は推測で補わない」とは異なり、性能の詳細が機密扱いであると断定しているのではありませんか。
+
+## ITEM U03-s13 | Theme: Space weapons (draft 1/2)
+
+Flagged sentence (s13): But no specific system names or attack capabilities have been given.
+
+Context before:
+- (s11) Space Force had deployed weapons in space.
+- (s12) “So, what can they attack?” Naturally, that is what people want to know.
+Context after:
+- (s14) “Acknowledging a deployment” and “knowing its capabilities” are two different things.
+- (s15) Add a laser cannon here, and the news turns into science fiction of our own making.
+
+Corresponding Fact(s):
+- [F-001] 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/))   scope: 米空軍・米宇宙軍   conditions: 敵対的な相手の行動から統合軍を防護する用途と説明   date_or_period: 2026年9月14日発言、2026年9月15日公式掲載   causal_strength: OBSERVED_REPORTED   notes_for_writer: 『米国が軌道上兵器の配備を公式に認めた』までは使用可能。具体的なシステム名・攻撃能力・標的は推測で補わない。
+
+Reason(s) given by the flagger(s):
+- A3: 「no specific system names or attack capabilities have been given」は、台帳の「具体的なシステム名・攻撃能力・標的は推測で補わない」を超えて、それらが一切公表されていないと断定しているのではありませんか
+- A4: 「no specific system names or attack capabilities have been given」は、台帳の「具体的なシステム名・攻撃能力・標的は推測で補わない」という注意書きを、具体名や攻撃能力の公表がないという未確認の断定に広げているのではありませんか。
+
+## ITEM U03-s17 | Theme: Space weapons (draft 1/2)
+
+Flagged sentence (s17): Russia has destroyed satellites with ground-launched anti-satellite missiles.
+
+Context before:
+- (s15) Add a laser cannon here, and the news turns into science fiction of our own making.
+- (s16) “Haven’t there already been weapons that destroy satellites?” That’s right.
+Context after:
+- (s18) But these were tests fired from the ground.
+- (s19) “Firing from the ground into space” and “placing a weapon in orbit” both involve space, but they have different starting points and locations.
+
+Corresponding Fact(s):
+- [F-003] ロシアは2021年11月15日、地上発射型の直接上昇式ASATミサイルでロシアの衛星COSMOS 1408を破壊し、1,500個超の追跡可能な軌道デブリを発生させた。([spacecom.mil](https://www.spacecom.mil/Newsroom/News/Article-Display/Article/2842957/russian-direct-ascent-anti-satellite-missile-test-creates-significant-long-last/?utm_source=openai))   scope: 低軌道、COSMOS 1408および発生デブリ   conditions: 米宇宙軍による公式発表   numeric_value: >1,500個 (numeric_scope: 追跡可能な軌道デブリ)   date_or_period: 2021年11月15日   causal_strength: CAUSAL_STATED_BY_SOURCE   notes_for_writer: 地上から発射したASATミサイルによる破壊試験であり、兵器を軌道上に恒久配備した事例とは区別する。
+
+Reason(s) given by the flagger(s):
+- A3: 「has destroyed satellites」という複数形は、台帳に記載された「COSMOS 1408」という1基の破壊を、複数の衛星を破壊した実績へ広げているのではありませんか
+- A4: 「Russia has destroyed satellites」という複数形は、台帳が記録する「COSMOS 1408」という1基の破壊を、複数の衛星を破壊した実績に広げているのではありませんか。
+
+## ITEM U03-s33 | Theme: Space weapons (draft 1/2)
+
+Flagged sentence (s33): The United States has publicly acknowledged deploying space-control weapons in orbit, but has not disclosed their capabilities.
+
+Context before:
+- (s31) When you read this news, ask not only “What can it do?” but also “Where is it?” and “What does that term include?” Before pressing play on the movie in your head, first spread out a map of the weapons’ location and the terms being used.
+- (s32) ## In one line
+Context after:
+- (none)
+
+Corresponding Fact(s):
+- [F-001] 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/))   scope: 米空軍・米宇宙軍   conditions: 敵対的な相手の行動から統合軍を防護する用途と説明   date_or_period: 2026年9月14日発言、2026年9月15日公式掲載   causal_strength: OBSERVED_REPORTED   notes_for_writer: 『米国が軌道上兵器の配備を公式に認めた』までは使用可能。具体的なシステム名・攻撃能力・標的は推測で補わない。
+
+Reason(s) given by the flagger(s):
+- A3: 「has not disclosed their capabilities」は、台帳の「具体的なシステム名・攻撃能力・標的は推測で補わない」より範囲が広く、防護用途の説明はあるにもかかわらず能力全般が非開示であると断定しているのではありませんか
+- A4: 「has not disclosed their capabilities」は、台帳の「具体的なシステム名・攻撃能力・標的は推測で補わない」という注意書きとは異なり、能力が公表されていないと断定しているのではありませんか。
+
+## ITEM U04-s7 | Theme: Small bag
+
+Flagged sentence (s7): In other words, the point is not just “What can I fit inside?” but also “How does it look as part of an outfit?” Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye.
+
+Context before:
+- (s5) ELLE has presented mini bags as an autumn trend.
+- (s6) But it would be a mistake to read this as “Small bags have all made a comeback as practical items!” An article rounding up the fall runways presents small decorative clutches as more artistic than practical.
+Context after:
+- (s8) If you judge it only by how much it can hold, you may miss its chance to shine.
+- (s9) For now, let’s set capacity checks aside and pay attention to the balance of the whole outfit.
+
+Corresponding Fact(s):
+- [MB-05] Who What WearのFall 2026ランウェイまとめは、Dior、Chanel、Chloéに小さなミノディエールが登場したと報じる一方、それらを実用性より芸術性の強い小型クラッチとして説明した。同まとめでは大型・ゆったりした形も複数の主要傾向として扱っている。([whowhatwear.com](https://www.whowhatwear.com/fashion/runway/fall-winter-bag-trends-2026))   scope: Who What Wearが取り上げた複数ブランドのランウェイ。   conditions: ファッション編集者によるコレクションの観察と解釈。   date_or_period: Fall 2026コレクション   causal_strength: OBSERVED_REPORTED   notes_for_writer: 小型バッグは装飾的・コレクション上のアクセントとして存在するが、日常使い向けの主流形状と同一視しない。
+
+Reason(s) given by the flagger(s):
+- A3: 「a mini bag」を荷物を運ぶ役割より装いのアクセントとして説明している点は、台帳の「実用性より芸術性の強い小型クラッチ」という特定の形状への評価を、ミニバッグ全般へ広げているのではありませんか。
+- A4: 台帳の「実用性より芸術性の強い小型クラッチ」という特定のランウェイ上の形状についての説明が、本文の「a mini bag」によってミニバッグ全般の役割についての説明へ広がっているのではありませんか？
+
+## ITEM U04-s15 | Theme: Small bag
+
+Flagged sentence (s15): It’s a showcase of choices: go small for decoration, or carry a big bag.
+
+Context before:
+- (s13) Both the small and the large are getting their share of the spotlight.
+- (s14) So this is not a final showdown to decide which bag size gets the crown.
+Context after:
+- (s16) The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.
+- (s17) But hold the applause before saying, “So micro bags are fully back too!” We should not treat mini bags and micro bags as one and the same.
+
+Corresponding Fact(s):
+- [MB-03] Vogueの2026年6月のSummer 2026バッグ特集は、ランウェイで大型化した「roomy totes」を取り上げる一方、beaded mini toteやpetite pouchなど小型バッグも掲載した。([vogue.com](https://www.vogue.com/article/spring-2026-handbag-trends))   scope: Vogueが紹介したSpring/Summer 2026のデザイナーコレクションおよび商品例。   conditions: 編集記事によるトレンド整理。掲載数は市場の販売比率や消費者需要の比率を表さない。   date_or_period: 2026年6月10日（Summer 2026）   causal_strength: OBSERVED_REPORTED   notes_for_writer: 2026年春夏を小型バッグ一色と描写しないための根拠。特集には大型・実用的な形と小型の装飾的／用途限定の形が併存する。
+- [MB-05] Who What WearのFall 2026ランウェイまとめは、Dior、Chanel、Chloéに小さなミノディエールが登場したと報じる一方、それらを実用性より芸術性の強い小型クラッチとして説明した。同まとめでは大型・ゆったりした形も複数の主要傾向として扱っている。([whowhatwear.com](https://www.whowhatwear.com/fashion/runway/fall-winter-bag-trends-2026))   scope: Who What Wearが取り上げた複数ブランドのランウェイ。   conditions: ファッション編集者によるコレクションの観察と解釈。   date_or_period: Fall 2026コレクション   causal_strength: OBSERVED_REPORTED   notes_for_writer: 小型バッグは装飾的・コレクション上のアクセントとして存在するが、日常使い向けの主流形状と同一視しない。
+
+Reason(s) given by the flagger(s):
+- A3: 「go small for decoration, or carry a big bag」という用途の分け方は、台帳の特定の小型クラッチについての装飾性の説明を、小型バッグ全般は装飾用で大型バッグは荷物を運ぶためのものという区分に広げているのではありませんか。
+
+## ITEM U05-s1 | Theme: BYD recall
+
+Flagged sentence (s1): # A Car’s Red Lights Say “Braking!” Even When No One Is Pressing the Pedal—A Surprising Solo Play-by-Play
+
+Context before:
+- (none)
+Context after:
+- (s2) “I’m pressing the brake!” “No, I’m not!”
+- (s3) At the back of the car, the red lights are doing their best to get attention.
+
+Corresponding Fact(s):
+- [BYD-RECALL-07] 公告によると、極端な場合には限位垫が脱落し、制動ペダルを踏んでいないときにも制動灯が点灯し続ける可能性がある。   scope: 召回対象車両のうち、限位垫が極端なケースで脱落した場合   conditions: 公告上の説明は「極端な場合」に限った条件付きの可能性。   causal_strength: CAUSAL_STATED_BY_SOURCE   notes_for_writer: 「ブレーキが効かなくなる」とは言い換えない。規制当局が明示する帰結は、ペダル非踏下時の制動灯常時点灯。
+
+Reason(s) given by the flagger(s):
+- A3: 見出しの「Red Lights Say “Braking!” Even When No One Is Pressing the Pedal」は現に起きている現象と読めますが、台帳の「極端な場合」に「点灯し続ける可能性がある」という条件付きの説明より強い断定ではありませんか

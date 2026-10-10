@@ -1,0 +1,556 @@
+# BLIND_PACKET_01 (人間可読。blind_packet_01.json と同内容。Trial/DEV)
+
+29件(ID順、バッチ10/10/9)。モデルへ渡した情報のみを収録(それ以外の付随情報は含めない)。
+
+# BATCH 1
+
+## ITEM U01-s18 | Theme: Meta Muse AI agent
+
+Flagged sentence (s18): We cannot assume from this story that any information was shared.
+
+Context before:
+- (s16) In fact, employees were concerned that sensitive user information might be shared with contract workers by mistake.
+- (s17) But we mustn’t jump to saying, “Information was shared!” Concern about something possibly happening and proof that it actually happened are two different things.
+Context after:
+- (s19) In other words, the issue is not “It’s wrong for a human to make calls.” If a human is involved, what will be shared, when, and how?
+- (s20) The reveal, “Actually, it was a human,” might get applause in a magic show.
+
+Corresponding Fact(s):
+- [MUSE-HC-010] Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。   scope: 人間の契約スタッフがMuse経由の電話を担当するテスト   conditions: 電話の遂行にユーザー情報が必要となる場合   date_or_period: 2026年9月中旬〜2026年9月22日   causal_strength: OBSERVED_REPORTED   notes_for_writer: 懸念の存在を示す事実。実際の大規模な情報漏えいが発生したと断定しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))
+
+Reason(s) given by the flagger(s):
+- A4: 「any information was shared」は、台帳が未確認としている「機微情報の意図しない共有」から「情報共有全般」へと範囲を広げているのではありませんか。
+
+## ITEM U02-s18 | Theme: Hormuz / oil (draft 1/2)
+
+Flagged sentence (s18): So Brent futures did not suddenly plunge.
+
+Context before:
+- (s16) The focus shifted from charging cargo passing through the Strait to trade and investment with the United States.
+- (s17) The 20% plan left the stage, and a different deal came in.
+Context after:
+- (s19) That is the key point in this story.
+- (s20) After the announcement, Brent futures briefly gave up some of their gains.
+
+Corresponding Fact(s):
+- [HF-009] Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。   scope: 国際指標Brent原油先物の短時間の値動き   conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。   numeric_value: 約 +2.6%、$85/バレル超 (numeric_scope: 記事掲載時点のリアルタイムに近い価格スナップショット。日中高値でも終値でもない)   date_or_period: 2026-07-14、撤回発表後の取引時間中   causal_strength: CAUSAL_STATED_BY_SOURCE   notes_for_writer: 撤回後に原油価格が全面的に下落したとは書かない。観測されたのは一時的な上げ幅縮小と、その後の回復。
+- [HF-011] Brent原油先物は7月14日に1.43ドル、1.7％上昇し、1バレル84.73ドルで清算された。これは2営業日連続で6月12日以来の高い清算値だった。   scope: Brent原油先物の当日清算値と前日比   conditions: 20％償還料案は同日の取引時間中に撤回されたが、海上封鎖、米・イラン間の攻撃、タンカー被害などの供給懸念は継続していた。   numeric_value: $84.73/バレル、前日比 +$1.43、+1.7% (numeric_scope: 7月14日のBrent原油先物清算値。日中高値ではない)   date_or_period: 2026-07-14清算時点   causal_strength: OBSERVED_REPORTED   notes_for_writer: 7月14日は撤回があったにもかかわらず日次清算値は上昇した。これだけから撤回が価格を上昇させた、または下落させなかったと因果推論しない。
+
+Reason(s) given by the flagger(s):
+- A3: 「So Brent futures did not suddenly plunge」は置換発表によって急落が起きなかったという因果関係と急落の不在を示唆しますが、台帳が示すのは「一時的な上げ幅縮小とその後の回復」であり、因果関係や急落の不在までは確認できないのではありませんか
+- A4: 「So Brent futures did not suddenly plunge」は、台帳の「一時的な上げ幅縮小とその後の回復」という観測を超えて、償還料案の置換が急落を防いだという未確認の因果関係を示す表現ではありませんか。
+
+## ITEM U03-s1 | Theme: Space weapons (draft 1/2)
+
+Flagged sentence (s1): # Space Weapons: Their Special Attack Is Secret, but Their “Address” Was Made Public
+
+Context before:
+- (none)
+Context after:
+- (s2) A giant laser spits fire, and satellites duel in orbit.
+- (s3) When you hear “space weapons,” the movie director in your head starts making a trailer on its own.
+
+Corresponding Fact(s):
+- [F-001] 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/))   scope: 米空軍・米宇宙軍   conditions: 敵対的な相手の行動から統合軍を防護する用途と説明   date_or_period: 2026年9月14日発言、2026年9月15日公式掲載   causal_strength: OBSERVED_REPORTED   notes_for_writer: 『米国が軌道上兵器の配備を公式に認めた』までは使用可能。具体的なシステム名・攻撃能力・標的は推測で補わない。
+
+Reason(s) given by the flagger(s):
+- A3: 見出しの「Their Special Attack Is Secret」は、台帳の「具体的なシステム名・攻撃能力・標的は推測で補わない」よりも強く、特定の攻撃能力が存在し秘密扱いされていると述べる表現ではありませんか
+- A4: 見出しの「Their Special Attack Is Secret」は、台帳の「具体的なシステム名・攻撃能力・標的は推測で補わない」という注意書きよりも強く、攻撃能力の存在とその機密扱いを断定しているのではありませんか。
+
+## ITEM U03-s5 | Theme: Space weapons (draft 1/2)
+
+Flagged sentence (s5): The details of the system’s performance remain secret, while the U.S.
+
+Context before:
+- (s3) When you hear “space weapons,” the movie director in your head starts making a trailer on its own.
+- (s4) But the main subject this time is not a special attack.
+Context after:
+- (s6) has publicly said, “Its address is in orbit.”
+- (s7) On September 14, 2026, the U.S.
+
+Corresponding Fact(s):
+- [F-001] 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/))   scope: 米空軍・米宇宙軍   conditions: 敵対的な相手の行動から統合軍を防護する用途と説明   date_or_period: 2026年9月14日発言、2026年9月15日公式掲載   causal_strength: OBSERVED_REPORTED   notes_for_writer: 『米国が軌道上兵器の配備を公式に認めた』までは使用可能。具体的なシステム名・攻撃能力・標的は推測で補わない。
+
+Reason(s) given by the flagger(s):
+- A3: 「the system’s performance remain secret」は、台帳で具体的な性能が示されていないことを、性能が秘密扱いされているという事実に置き換えているのではありませんか
+- A4: 「the system’s performance remain secret」は、台帳の「具体的なシステム名・攻撃能力・標的は推測で補わない」とは異なり、性能の詳細が機密扱いであると断定しているのではありませんか。
+
+## ITEM U03-s13 | Theme: Space weapons (draft 1/2)
+
+Flagged sentence (s13): But no specific system names or attack capabilities have been given.
+
+Context before:
+- (s11) Space Force had deployed weapons in space.
+- (s12) “So, what can they attack?” Naturally, that is what people want to know.
+Context after:
+- (s14) “Acknowledging a deployment” and “knowing its capabilities” are two different things.
+- (s15) Add a laser cannon here, and the news turns into science fiction of our own making.
+
+Corresponding Fact(s):
+- [F-001] 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/))   scope: 米空軍・米宇宙軍   conditions: 敵対的な相手の行動から統合軍を防護する用途と説明   date_or_period: 2026年9月14日発言、2026年9月15日公式掲載   causal_strength: OBSERVED_REPORTED   notes_for_writer: 『米国が軌道上兵器の配備を公式に認めた』までは使用可能。具体的なシステム名・攻撃能力・標的は推測で補わない。
+
+Reason(s) given by the flagger(s):
+- A3: 「no specific system names or attack capabilities have been given」は、台帳の「具体的なシステム名・攻撃能力・標的は推測で補わない」を超えて、それらが一切公表されていないと断定しているのではありませんか
+- A4: 「no specific system names or attack capabilities have been given」は、台帳の「具体的なシステム名・攻撃能力・標的は推測で補わない」という注意書きを、具体名や攻撃能力の公表がないという未確認の断定に広げているのではありませんか。
+
+## ITEM U03-s17 | Theme: Space weapons (draft 1/2)
+
+Flagged sentence (s17): Russia has destroyed satellites with ground-launched anti-satellite missiles.
+
+Context before:
+- (s15) Add a laser cannon here, and the news turns into science fiction of our own making.
+- (s16) “Haven’t there already been weapons that destroy satellites?” That’s right.
+Context after:
+- (s18) But these were tests fired from the ground.
+- (s19) “Firing from the ground into space” and “placing a weapon in orbit” both involve space, but they have different starting points and locations.
+
+Corresponding Fact(s):
+- [F-003] ロシアは2021年11月15日、地上発射型の直接上昇式ASATミサイルでロシアの衛星COSMOS 1408を破壊し、1,500個超の追跡可能な軌道デブリを発生させた。([spacecom.mil](https://www.spacecom.mil/Newsroom/News/Article-Display/Article/2842957/russian-direct-ascent-anti-satellite-missile-test-creates-significant-long-last/?utm_source=openai))   scope: 低軌道、COSMOS 1408および発生デブリ   conditions: 米宇宙軍による公式発表   numeric_value: >1,500個 (numeric_scope: 追跡可能な軌道デブリ)   date_or_period: 2021年11月15日   causal_strength: CAUSAL_STATED_BY_SOURCE   notes_for_writer: 地上から発射したASATミサイルによる破壊試験であり、兵器を軌道上に恒久配備した事例とは区別する。
+
+Reason(s) given by the flagger(s):
+- A3: 「has destroyed satellites」という複数形は、台帳に記載された「COSMOS 1408」という1基の破壊を、複数の衛星を破壊した実績へ広げているのではありませんか
+- A4: 「Russia has destroyed satellites」という複数形は、台帳が記録する「COSMOS 1408」という1基の破壊を、複数の衛星を破壊した実績に広げているのではありませんか。
+
+## ITEM U03-s33 | Theme: Space weapons (draft 1/2)
+
+Flagged sentence (s33): The United States has publicly acknowledged deploying space-control weapons in orbit, but has not disclosed their capabilities.
+
+Context before:
+- (s31) When you read this news, ask not only “What can it do?” but also “Where is it?” and “What does that term include?” Before pressing play on the movie in your head, first spread out a map of the weapons’ location and the terms being used.
+- (s32) ## In one line
+Context after:
+- (none)
+
+Corresponding Fact(s):
+- [F-001] 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/))   scope: 米空軍・米宇宙軍   conditions: 敵対的な相手の行動から統合軍を防護する用途と説明   date_or_period: 2026年9月14日発言、2026年9月15日公式掲載   causal_strength: OBSERVED_REPORTED   notes_for_writer: 『米国が軌道上兵器の配備を公式に認めた』までは使用可能。具体的なシステム名・攻撃能力・標的は推測で補わない。
+
+Reason(s) given by the flagger(s):
+- A3: 「has not disclosed their capabilities」は、台帳の「具体的なシステム名・攻撃能力・標的は推測で補わない」より範囲が広く、防護用途の説明はあるにもかかわらず能力全般が非開示であると断定しているのではありませんか
+- A4: 「has not disclosed their capabilities」は、台帳の「具体的なシステム名・攻撃能力・標的は推測で補わない」という注意書きとは異なり、能力が公表されていないと断定しているのではありませんか。
+
+## ITEM U04-s7 | Theme: Small bag
+
+Flagged sentence (s7): In other words, the point is not just “What can I fit inside?” but also “How does it look as part of an outfit?” Rather than a helper working behind the scenes to carry things, a mini bag is a little star that catches the eye.
+
+Context before:
+- (s5) ELLE has presented mini bags as an autumn trend.
+- (s6) But it would be a mistake to read this as “Small bags have all made a comeback as practical items!” An article rounding up the fall runways presents small decorative clutches as more artistic than practical.
+Context after:
+- (s8) If you judge it only by how much it can hold, you may miss its chance to shine.
+- (s9) For now, let’s set capacity checks aside and pay attention to the balance of the whole outfit.
+
+Corresponding Fact(s):
+- [MB-05] Who What WearのFall 2026ランウェイまとめは、Dior、Chanel、Chloéに小さなミノディエールが登場したと報じる一方、それらを実用性より芸術性の強い小型クラッチとして説明した。同まとめでは大型・ゆったりした形も複数の主要傾向として扱っている。([whowhatwear.com](https://www.whowhatwear.com/fashion/runway/fall-winter-bag-trends-2026))   scope: Who What Wearが取り上げた複数ブランドのランウェイ。   conditions: ファッション編集者によるコレクションの観察と解釈。   date_or_period: Fall 2026コレクション   causal_strength: OBSERVED_REPORTED   notes_for_writer: 小型バッグは装飾的・コレクション上のアクセントとして存在するが、日常使い向けの主流形状と同一視しない。
+
+Reason(s) given by the flagger(s):
+- A3: 「a mini bag」を荷物を運ぶ役割より装いのアクセントとして説明している点は、台帳の「実用性より芸術性の強い小型クラッチ」という特定の形状への評価を、ミニバッグ全般へ広げているのではありませんか。
+- A4: 台帳の「実用性より芸術性の強い小型クラッチ」という特定のランウェイ上の形状についての説明が、本文の「a mini bag」によってミニバッグ全般の役割についての説明へ広がっているのではありませんか？
+
+## ITEM U04-s15 | Theme: Small bag
+
+Flagged sentence (s15): It’s a showcase of choices: go small for decoration, or carry a big bag.
+
+Context before:
+- (s13) Both the small and the large are getting their share of the spotlight.
+- (s14) So this is not a final showdown to decide which bag size gets the crown.
+Context after:
+- (s16) The two sides of bags—as things to carry your belongings in and as things to match your clothes—come into view on the same stage.
+- (s17) But hold the applause before saying, “So micro bags are fully back too!” We should not treat mini bags and micro bags as one and the same.
+
+Corresponding Fact(s):
+- [MB-03] Vogueの2026年6月のSummer 2026バッグ特集は、ランウェイで大型化した「roomy totes」を取り上げる一方、beaded mini toteやpetite pouchなど小型バッグも掲載した。([vogue.com](https://www.vogue.com/article/spring-2026-handbag-trends))   scope: Vogueが紹介したSpring/Summer 2026のデザイナーコレクションおよび商品例。   conditions: 編集記事によるトレンド整理。掲載数は市場の販売比率や消費者需要の比率を表さない。   date_or_period: 2026年6月10日（Summer 2026）   causal_strength: OBSERVED_REPORTED   notes_for_writer: 2026年春夏を小型バッグ一色と描写しないための根拠。特集には大型・実用的な形と小型の装飾的／用途限定の形が併存する。
+- [MB-05] Who What WearのFall 2026ランウェイまとめは、Dior、Chanel、Chloéに小さなミノディエールが登場したと報じる一方、それらを実用性より芸術性の強い小型クラッチとして説明した。同まとめでは大型・ゆったりした形も複数の主要傾向として扱っている。([whowhatwear.com](https://www.whowhatwear.com/fashion/runway/fall-winter-bag-trends-2026))   scope: Who What Wearが取り上げた複数ブランドのランウェイ。   conditions: ファッション編集者によるコレクションの観察と解釈。   date_or_period: Fall 2026コレクション   causal_strength: OBSERVED_REPORTED   notes_for_writer: 小型バッグは装飾的・コレクション上のアクセントとして存在するが、日常使い向けの主流形状と同一視しない。
+
+Reason(s) given by the flagger(s):
+- A3: 「go small for decoration, or carry a big bag」という用途の分け方は、台帳の特定の小型クラッチについての装飾性の説明を、小型バッグ全般は装飾用で大型バッグは荷物を運ぶためのものという区分に広げているのではありませんか。
+
+## ITEM U05-s1 | Theme: BYD recall
+
+Flagged sentence (s1): # A Car’s Red Lights Say “Braking!” Even When No One Is Pressing the Pedal—A Surprising Solo Play-by-Play
+
+Context before:
+- (none)
+Context after:
+- (s2) “I’m pressing the brake!” “No, I’m not!”
+- (s3) At the back of the car, the red lights are doing their best to get attention.
+
+Corresponding Fact(s):
+- [BYD-RECALL-07] 公告によると、極端な場合には限位垫が脱落し、制動ペダルを踏んでいないときにも制動灯が点灯し続ける可能性がある。   scope: 召回対象車両のうち、限位垫が極端なケースで脱落した場合   conditions: 公告上の説明は「極端な場合」に限った条件付きの可能性。   causal_strength: CAUSAL_STATED_BY_SOURCE   notes_for_writer: 「ブレーキが効かなくなる」とは言い換えない。規制当局が明示する帰結は、ペダル非踏下時の制動灯常時点灯。
+
+Reason(s) given by the flagger(s):
+- A3: 見出しの「Red Lights Say “Braking!” Even When No One Is Pressing the Pedal」は現に起きている現象と読めますが、台帳の「極端な場合」に「点灯し続ける可能性がある」という条件付きの説明より強い断定ではありませんか
+
+# BATCH 2
+
+## ITEM U05-s4 | Theme: BYD recall
+
+Flagged sentence (s4): But the driver has no idea why.
+
+Context before:
+- (s2) “I’m pressing the brake!” “No, I’m not!”
+- (s3) At the back of the car, the red lights are doing their best to get attention.
+Context after:
+- (s5) If cars could talk to each other, the car behind might be confused too and say, “Could you get your story straight?” This BYD recall is about just this kind of mismatch between signals.
+- (s6) A recall notice in China named 183,211 cars from BYD’s Tang and Qin lines.
+
+Corresponding Fact(s) [The flagger did not specify a corresponding Fact. The full Fact ledger of this article is given instead.]:
+- [BYD-RECALL-01] 中国国家市场监督管理総局欠陥製品召回技術センターの2026年9月18日付の2件の召回公告では、唐系が142,895台、秦系が40,316台。両公告の台数を合算すると183,211台となる。   scope: 中国国内の2件の召回公告に記載された対象車両   conditions: 183,211台は、2件の公告に記載された対象台数を合算した数値。   numeric_value: 183,211台（唐系142,895台＋秦系40,316台） (numeric_scope: 2件の公告の対象車両の合計。単一の車種群の台数ではない。)   date_or_period: 公告日：2026-09-18。召回実施期間：2026-09-18～2028-09-18   notes_for_writer: 183,211台は中国の当該召回公告の対象台数として扱う。他市場の対象台数を示す数字ではない。
+- [BYD-RECALL-02] 公告対象は唐系、全新一代唐DM、全新一代唐EV、秦系の一部車両。二次報道による車種群別の内訳は、唐58,026台、全新一代唐DM 77,846台、全新一代唐EV 7,023台、秦40,316台。規制当局公告は唐系の対象グレード・VIN・個別生産日を列挙している。   scope: 中国国内の召回対象車両   conditions: 車種群別の唐・唐DM・唐EVの集計は、規制当局公告の個別記載に加え、CnEVPostの分類表記を参照。   numeric_value: 唐58,026台；全新一代唐DM 77,846台；全新一代唐EV 7,023台；秦40,316台 (numeric_scope: 車種群別内訳。合計183,211台。)   notes_for_writer: 車種群別内訳を記す場合は、唐系公告の個別グレード記載をCnEVPostが3群に整理した情報であることに留意。
+- [BYD-RECALL-03] 唐系58,026台は2015年3月28日～2018年12月21日生産、全新一代唐DM 77,846台は2018年5月19日～2022年1月14日生産、全新一代唐EV 7,023台は2018年12月27日～2021年10月25日生産と報じられている。   scope: 中国国内の召回対象となった唐系、全新一代唐DM、全新一代唐EV   conditions: 期間は車種群別。3群をまとめた期間は対象全車両の同一生産期間を意味しない。   numeric_value: 唐：2015-03-28～2018-12-21；全新一代唐DM：2018-05-19～2022-01-14；全新一代唐EV：2018-12-27～2021-10-25 (numeric_scope: 各車種群の召回対象車両の生産日範囲)   date_or_period: 2015-03-28～2022-01-14（車種群により異なる）   notes_for_writer: 個別生産日の照合には規制当局公告を優先する。
+- [BYD-RECALL-04] 秦系40,316台の対象車両は2014年6月27日～2019年6月9日生産。規制当局公告では複数の秦グレードとそれぞれの生産日・VIN範囲が列挙されている。   scope: 中国国内の召回対象となった秦系40,316台   conditions: 期間は召回公告に列挙された秦系対象車両全体の範囲。   numeric_value: 40,316台；生産期間2014-06-27～2019-06-09 (numeric_scope: 秦系の召回対象車両)   date_or_period: 2014-06-27～2019-06-09
+- [BYD-RECALL-05] 召回公告は中国の規制当局に提出された国内召回公告であり、対象は中国国内の公告に記載された車両。公告のみから、他国・地域で販売された車両が対象かどうかは確認できない。   scope: 中国国内の召回公告   conditions: 他市場の対象有無について、これらの公告は記載していない。   date_or_period: 公告日：2026-09-18   notes_for_writer: 「中国での召回」と限定する。これらの資料だけで世界全体の召回範囲を断定しない。
+- [BYD-RECALL-06] 規制当局公告は、製造上の問題により制動ペダルの限位垫（brake pedal stopper pad／ペダルストッパーパッド）の材料にロット単位の異常が生じたと説明している。長期間使用すると、当該部品がひび割れ・破損する可能性がある。   scope: 召回対象の唐系・秦系車両に取り付けられた制動ペダル限位垫   conditions: 公告は材料異常を製造上の問題に帰属させ、長期間使用後の破損可能性を記載。   causal_strength: CAUSAL_STATED_BY_SOURCE   notes_for_writer: 対象部品は制動ペダルの限位垫。公告が説明する不具合はこの部品の材料異常・ひび割れ・破損であり、ブレーキそのものの制動不能とは記載していない。
+- [BYD-RECALL-07] 公告によると、極端な場合には限位垫が脱落し、制動ペダルを踏んでいないときにも制動灯が点灯し続ける可能性がある。   scope: 召回対象車両のうち、限位垫が極端なケースで脱落した場合   conditions: 公告上の説明は「極端な場合」に限った条件付きの可能性。   causal_strength: CAUSAL_STATED_BY_SOURCE   notes_for_writer: 「ブレーキが効かなくなる」とは言い換えない。規制当局が明示する帰結は、ペダル非踏下時の制動灯常時点灯。
+- [BYD-RECALL-08] 規制当局は、ペダル非踏下時に制動灯が点灯し続けることで後方車両に誤った信号を伝え、安全上の懸念があるとしている。   scope: 限位垫脱落によって制動灯が常時点灯する極端な場合   conditions: 後方の道路利用者に誤った信号を送る可能性として説明されている。   causal_strength: CAUSAL_STATED_BY_SOURCE   notes_for_writer: 安全リスクは後続車等への誤信号と安全上の懸念。公告は事故発生やブレーキ機能喪失をこのリスクとして述べていない。
+- [BYD-RECALL-09] 唐系の召回公告は事故・死傷者の状況を「なし」と記載。秦系の召回公告も事故・死傷者の状況を「なし」と記載している。   scope: 唐系142,895台および秦系40,316台の各召回公告   conditions: 各公告の「事故及び人員死傷状況」欄の記載。   numeric_value: 事故・死傷者：各公告で「なし」 (numeric_scope: 各召回公告の報告欄。対象車両全体について一般的・独立に事故歴がないという意味ではない。)   date_or_period: 公告日：2026-09-18   causal_strength: OBSERVED_REPORTED   notes_for_writer: 「事故・死傷の報告は各召回公告でなし」と範囲を限定する。
+- [BYD-RECALL-10] 唐系の公告は「投诉索赔情况」（苦情・請求の状況）を286件、秦系の公告は5件と記載している。   scope: 唐系・秦系の各召回公告   conditions: 公告の苦情・請求欄の件数。事故件数・負傷者数としては記載されていない。   numeric_value: 唐系286件；秦系5件 (numeric_scope: 公告ごとの苦情・請求欄)   date_or_period: 公告日：2026-09-18   causal_strength: OBSERVED_REPORTED   notes_for_writer: 苦情・請求件数を事故件数と混同しない。
+- [BYD-RECALL-11] BYDは、召回対象車両について、改善後の限位垫へ無料交換するよう認定販売店に委託すると公告に記載している。   scope: 唐系・秦系の各召回公告に記載された対象車両   conditions: 交換費用は無料。対象車両の改善後部品への交換を行う。   date_or_period: 召回実施期間：2026-09-18～2028-09-18
+
+Reason(s) given by the flagger(s):
+- A4: 「the driver has no idea why」は運転者が原因を知らないとの断定ですが、運転者の認識については台帳に記載がなく、確認できない主張ではありませんか
+
+## ITEM U05-s6 | Theme: BYD recall
+
+Flagged sentence (s6): A recall notice in China named 183,211 cars from BYD’s Tang and Qin lines.
+
+Context before:
+- (s4) But the driver has no idea why.
+- (s5) If cars could talk to each other, the car behind might be confused too and say, “Could you get your story straight?” This BYD recall is about just this kind of mismatch between signals.
+Context after:
+- (s7) The cause was a problem with the material in the “brake pedal stopper pad.” It is a part on the pedal, one that is hard to picture from its name alone.
+- (s8) Often hidden behind showier features, this part started the trouble this time.
+
+Corresponding Fact(s):
+- [BYD-RECALL-01] 中国国家市场监督管理総局欠陥製品召回技術センターの2026年9月18日付の2件の召回公告では、唐系が142,895台、秦系が40,316台。両公告の台数を合算すると183,211台となる。   scope: 中国国内の2件の召回公告に記載された対象車両   conditions: 183,211台は、2件の公告に記載された対象台数を合算した数値。   numeric_value: 183,211台（唐系142,895台＋秦系40,316台） (numeric_scope: 2件の公告の対象車両の合計。単一の車種群の台数ではない。)   date_or_period: 公告日：2026-09-18。召回実施期間：2026-09-18～2028-09-18   notes_for_writer: 183,211台は中国の当該召回公告の対象台数として扱う。他市場の対象台数を示す数字ではない。
+
+Reason(s) given by the flagger(s):
+- A3: 「A recall notice」が183,211台を記載したという表現は、台帳の「2件の召回公告」の対象台数を合算して183,211台となるという集計範囲と食い違うのではありませんか
+- A4: 「A recall notice」に183,211台が記載されたという表現は、台帳の「2件の公告の対象台数を合算した183,211台」と公告数および数値の集計範囲が食い違うのではありませんか
+
+## ITEM U06-s8 | Theme: Streaming price
+
+Flagged sentence (s8): The monthly ad-supported plan by itself will go from $11.99 to $12.49, a difference of $0.50.
+
+Context before:
+- (s6) The star is the price tag, with the calendar as a surprising co-star.
+- (s7) First, let’s look at the numbers that directly affect your wallet.
+Context after:
+- (s9) The monthly Premium plan by itself will go from $18.99 to $21.49, a difference of $2.50.
+- (s10) The yearly price for the Premium plan by itself is changing too, so people who pay by the year should take note.
+
+Corresponding Fact(s):
+- [F02] Disney+の広告付きスタンドアロン月額プランは、月額11.99ドルから12.49ドルに改定された。   scope: 米国のDisney+スタンドアロン月額プラン   conditions: Disney+の米国価格ページは、2026-09-23より前に契約した利用者には2026-10-21以降の請求サイクルで価格変更が適用されると記載。第三者請求経由では価格が異なる場合がある。   numeric_value: 月額11.99ドルから12.49ドル（0.50ドル増） (numeric_scope: 広告付きスタンドアロン月額プラン1種)   date_or_period: 新規契約者向け新価格：2026-09-23から。既存契約者：2026-10-21以降の請求サイクルから。   notes_for_writer: Disney+単体プランの価格。バンドル価格は含めない。
+- [F05] Disney+の改定後価格は米国向けであり、公式価格ページは第三者請求パートナー経由では価格が異なる場合があると記載している。   scope: Disney+ Help Centerの米国向け価格ページに掲載された価格   conditions: 第三者請求パートナー経由の価格は、プラットフォーム上の制限や地域別価格により異なる場合がある。   date_or_period: 2026-09-23掲載の価格情報   notes_for_writer: 確認した価格を全世界共通価格として記述しない。
+- [F06] Disney+の米国価格ページは、新規契約者向け価格を2026年9月23日開始とし、それ以前に契約した利用者には2026年10月21日以降の請求サイクルで価格変更が適用されるとしている。   scope: 米国向けDisney+契約者   conditions: 既存契約者への適用日は、各利用者の請求サイクルにより異なる。第三者請求パートナー経由では価格や適用条件が異なる場合がある。   numeric_value: 2026-09-23；2026-10-21以降 (numeric_scope: 新規契約価格の開始日；既存契約者の価格変更が始まる請求サイクルの基準日)   date_or_period: 新規契約者：2026-09-23から。既存契約者：2026-10-21以降の請求サイクル。   notes_for_writer: 既存契約者全員が10月21日に同時に請求されるという意味ではない。
+
+Reason(s) given by the flagger(s):
+- A3: 「will go from」は値上げが今後始まる意味に読めますが、台帳では新規契約者には2026年9月23日から新価格が適用され、既存契約者には10月21日以降の請求サイクルから適用されるという区別ではありませんか
+- A4: 「will go from $11.99 to $12.49」は対象を限定せず一律の改定と読めますが、台帳では米国向け価格であり「第三者請求経由では価格が異なる場合がある」とされているのではありませんか。
+
+## ITEM U06-s9 | Theme: Streaming price
+
+Flagged sentence (s9): The monthly Premium plan by itself will go from $18.99 to $21.49, a difference of $2.50.
+
+Context before:
+- (s7) First, let’s look at the numbers that directly affect your wallet.
+- (s8) The monthly ad-supported plan by itself will go from $11.99 to $12.49, a difference of $0.50.
+Context after:
+- (s10) The yearly price for the Premium plan by itself is changing too, so people who pay by the year should take note.
+- (s11) The story now splits into two paths.
+
+Corresponding Fact(s):
+- [F03] Disney+ Premiumの広告なしスタンドアロン月額プランは、月額18.99ドルから21.49ドルに改定された。   scope: 米国のDisney+ Premiumスタンドアロン月額プラン   conditions: Disney+の米国価格ページは、2026-09-23より前に契約した利用者には2026-10-21以降の請求サイクルで価格変更が適用されると記載。第三者請求経由では価格が異なる場合がある。   numeric_value: 月額18.99ドルから21.49ドル（2.50ドル増、約13%増） (numeric_scope: 広告なしスタンドアロン月額プラン1種)   date_or_period: 新規契約者向け新価格：2026-09-23から。既存契約者：2026-10-21以降の請求サイクルから。   notes_for_writer: Disney+ Premiumは月額プランとして扱う。第三者請求の例外に注意。
+- [F05] Disney+の改定後価格は米国向けであり、公式価格ページは第三者請求パートナー経由では価格が異なる場合があると記載している。   scope: Disney+ Help Centerの米国向け価格ページに掲載された価格   conditions: 第三者請求パートナー経由の価格は、プラットフォーム上の制限や地域別価格により異なる場合がある。   date_or_period: 2026-09-23掲載の価格情報   notes_for_writer: 確認した価格を全世界共通価格として記述しない。
+- [F06] Disney+の米国価格ページは、新規契約者向け価格を2026年9月23日開始とし、それ以前に契約した利用者には2026年10月21日以降の請求サイクルで価格変更が適用されるとしている。   scope: 米国向けDisney+契約者   conditions: 既存契約者への適用日は、各利用者の請求サイクルにより異なる。第三者請求パートナー経由では価格や適用条件が異なる場合がある。   numeric_value: 2026-09-23；2026-10-21以降 (numeric_scope: 新規契約価格の開始日；既存契約者の価格変更が始まる請求サイクルの基準日)   date_or_period: 新規契約者：2026-09-23から。既存契約者：2026-10-21以降の請求サイクル。   notes_for_writer: 既存契約者全員が10月21日に同時に請求されるという意味ではない。
+
+Reason(s) given by the flagger(s):
+- A3: 「will go from」は値上げが今後始まる意味に読めますが、台帳では新規契約者には2026年9月23日から新価格が適用され、既存契約者には10月21日以降の請求サイクルから適用されるという区別ではありませんか
+- A4: 「will go from $18.99 to $21.49」は対象を限定せず一律の改定と読めますが、台帳では米国向け価格であり「第三者請求経由では価格が異なる場合がある」とされているのではありませんか。
+
+## ITEM U06-s16 | Theme: Streaming price
+
+Flagged sentence (s16): So the headline about the price increase is a preview sent to everyone.
+
+Context before:
+- (s14) The changeover time for each current subscriber depends on their billing cycle.
+- (s15) Even if you watch the same show on the same night, the new price’s “release date” may not be the same.
+Context after:
+- (s17) But the day the main story begins on your bill is different for each person.
+- (s18) It’s too soon to rush to the ending and ask, “The news is out.
+
+Corresponding Fact(s) [The flagger did not specify a corresponding Fact. The full Fact ledger of this article is given instead.]:
+- [F01] 2026年10月8日までに今回のWeb調査で確認できた主要な米国向け動画ストリーミング価格改定のうち、最も新しい発表としてDisney+の2026年9月23日の改定を選定した。   scope: 米国向け動画ストリーミングサービスの価格改定発表として調査で確認した範囲   conditions: 「最も新しい」は調査時点までにWeb検索で確認できた発表に基づく選定。   date_or_period: 発表日：2026-09-23。調査基準日：2026-10-08   ambiguity_note: 全世界・全地域の小規模サービスを網羅した比較ではなく、検索で確認できた主要サービスの発表からの選定。   notes_for_writer: 対象はDisney+の当該発表に限定する。他サービスとの比較はしない。
+- [F02] Disney+の広告付きスタンドアロン月額プランは、月額11.99ドルから12.49ドルに改定された。   scope: 米国のDisney+スタンドアロン月額プラン   conditions: Disney+の米国価格ページは、2026-09-23より前に契約した利用者には2026-10-21以降の請求サイクルで価格変更が適用されると記載。第三者請求経由では価格が異なる場合がある。   numeric_value: 月額11.99ドルから12.49ドル（0.50ドル増） (numeric_scope: 広告付きスタンドアロン月額プラン1種)   date_or_period: 新規契約者向け新価格：2026-09-23から。既存契約者：2026-10-21以降の請求サイクルから。   notes_for_writer: Disney+単体プランの価格。バンドル価格は含めない。
+- [F03] Disney+ Premiumの広告なしスタンドアロン月額プランは、月額18.99ドルから21.49ドルに改定された。   scope: 米国のDisney+ Premiumスタンドアロン月額プラン   conditions: Disney+の米国価格ページは、2026-09-23より前に契約した利用者には2026-10-21以降の請求サイクルで価格変更が適用されると記載。第三者請求経由では価格が異なる場合がある。   numeric_value: 月額18.99ドルから21.49ドル（2.50ドル増、約13%増） (numeric_scope: 広告なしスタンドアロン月額プラン1種)   date_or_period: 新規契約者向け新価格：2026-09-23から。既存契約者：2026-10-21以降の請求サイクルから。   notes_for_writer: Disney+ Premiumは月額プランとして扱う。第三者請求の例外に注意。
+- [F04] Disney+ Premiumの広告なしスタンドアロン年額プランは、年額189.99ドルから214.99ドルに改定された。   scope: 米国のDisney+ Premiumスタンドアロン年額プラン   conditions: 現在の年額価格はDisney+の米国価格ページに掲載。旧価格は改定前のDisney+米国申込ページの掲載価格。第三者請求経由では価格が異なる場合がある。   numeric_value: 年額189.99ドルから214.99ドル（25ドル増） (numeric_scope: 広告なしスタンドアロン年額プラン1種)   date_or_period: 新規契約者向け新価格：2026-09-23から。既存契約者：2026-10-21以降の請求サイクルから。   notes_for_writer: 年額契約の価格。月額料金を12倍した金額とは区別する。
+- [F05] Disney+の改定後価格は米国向けであり、公式価格ページは第三者請求パートナー経由では価格が異なる場合があると記載している。   scope: Disney+ Help Centerの米国向け価格ページに掲載された価格   conditions: 第三者請求パートナー経由の価格は、プラットフォーム上の制限や地域別価格により異なる場合がある。   date_or_period: 2026-09-23掲載の価格情報   notes_for_writer: 確認した価格を全世界共通価格として記述しない。
+- [F06] Disney+の米国価格ページは、新規契約者向け価格を2026年9月23日開始とし、それ以前に契約した利用者には2026年10月21日以降の請求サイクルで価格変更が適用されるとしている。   scope: 米国向けDisney+契約者   conditions: 既存契約者への適用日は、各利用者の請求サイクルにより異なる。第三者請求パートナー経由では価格や適用条件が異なる場合がある。   numeric_value: 2026-09-23；2026-10-21以降 (numeric_scope: 新規契約価格の開始日；既存契約者の価格変更が始まる請求サイクルの基準日)   date_or_period: 新規契約者：2026-09-23から。既存契約者：2026-10-21以降の請求サイクル。   notes_for_writer: 既存契約者全員が10月21日に同時に請求されるという意味ではない。
+- [F07] 今回確認したDisney+の米国価格ページとReuters報道では、Disneyが今回の値上げ理由を明示した記述は確認できない。Reutersは、DisneyがReutersのコメント要請に直ちには回答しなかったと報じた。   scope: 今回確認したDisney+米国価格ページおよびReuters記事   conditions: 確認対象に含まれない別の顧客通知等で、追加説明が行われた可能性までは否定しない。   date_or_period: 2026-09-23の価格改定報道時点   ambiguity_note: 確認できた資料の範囲で会社が示した理由は特定できない。価格改定の動機を推測して補わないこと。   notes_for_writer: 一般的な業界要因やDisneyの別時期の説明を、今回の値上げについて会社が述べた理由として転用しない。
+
+Reason(s) given by the flagger(s):
+- A4: 「a preview sent to everyone」は比喩だけでなく全員への通知送付とも読めますが、全員に送付されたという事実は台帳では確認できないのではありませんか。
+
+## ITEM U06-s17 | Theme: Streaming price
+
+Flagged sentence (s17): But the day the main story begins on your bill is different for each person.
+
+Context before:
+- (s15) Even if you watch the same show on the same night, the new price’s “release date” may not be the same.
+- (s16) So the headline about the price increase is a preview sent to everyone.
+Context after:
+- (s18) It’s too soon to rush to the ending and ask, “The news is out.
+- (s19) Does that mean my price changes today?” First, check whether you are a new subscriber or already had a subscription.
+
+Corresponding Fact(s):
+- [F06] Disney+の米国価格ページは、新規契約者向け価格を2026年9月23日開始とし、それ以前に契約した利用者には2026年10月21日以降の請求サイクルで価格変更が適用されるとしている。   scope: 米国向けDisney+契約者   conditions: 既存契約者への適用日は、各利用者の請求サイクルにより異なる。第三者請求パートナー経由では価格や適用条件が異なる場合がある。   numeric_value: 2026-09-23；2026-10-21以降 (numeric_scope: 新規契約価格の開始日；既存契約者の価格変更が始まる請求サイクルの基準日)   date_or_period: 新規契約者：2026-09-23から。既存契約者：2026-10-21以降の請求サイクル。   notes_for_writer: 既存契約者全員が10月21日に同時に請求されるという意味ではない。
+
+Reason(s) given by the flagger(s):
+- A3: 「is different for each person」は全員の適用日がそれぞれ異なるという断定に読めますが、台帳の「各利用者の請求サイクルにより異なる」は同じ日に適用される利用者もあり得るという意味ではありませんか
+- A4: 「is different for each person」は全員の適用日が互いに異なると読めますが、台帳の「各利用者の請求サイクルにより異なる」は同じ日に適用される利用者もいることを排除していないのではありませんか。
+
+## ITEM U06-s21 | Theme: Streaming price
+
+Flagged sentence (s21): The price list tells you “how much.” When you look at it together with when you signed up and your billing cycle, you can see when the change starts for you.
+
+Context before:
+- (s19) Does that mean my price changes today?” First, check whether you are a new subscriber or already had a subscription.
+- (s20) Then check your billing cycle.
+Context after:
+- (s22) We should ask the calendar to join the household budget meeting, not just the calculator.
+- (s23) Now, the question many people have is, “So why are prices going up?” But there is no clear answer here.
+
+Corresponding Fact(s):
+- [F05] Disney+の改定後価格は米国向けであり、公式価格ページは第三者請求パートナー経由では価格が異なる場合があると記載している。   scope: Disney+ Help Centerの米国向け価格ページに掲載された価格   conditions: 第三者請求パートナー経由の価格は、プラットフォーム上の制限や地域別価格により異なる場合がある。   date_or_period: 2026-09-23掲載の価格情報   notes_for_writer: 確認した価格を全世界共通価格として記述しない。
+- [F06] Disney+の米国価格ページは、新規契約者向け価格を2026年9月23日開始とし、それ以前に契約した利用者には2026年10月21日以降の請求サイクルで価格変更が適用されるとしている。   scope: 米国向けDisney+契約者   conditions: 既存契約者への適用日は、各利用者の請求サイクルにより異なる。第三者請求パートナー経由では価格や適用条件が異なる場合がある。   numeric_value: 2026-09-23；2026-10-21以降 (numeric_scope: 新規契約価格の開始日；既存契約者の価格変更が始まる請求サイクルの基準日)   date_or_period: 新規契約者：2026-09-23から。既存契約者：2026-10-21以降の請求サイクル。   notes_for_writer: 既存契約者全員が10月21日に同時に請求されるという意味ではない。
+
+Reason(s) given by the flagger(s):
+- A4: 「when you signed up and your billing cycle」で適用時期を確定できるという記述は、台帳の「第三者請求パートナー経由では価格や適用条件が異なる場合がある」という条件を落として断定しているのではありませんか。
+
+## ITEM U07-s1 | Theme: OpenAI copyright lawsuits (draft 1/2)
+
+Flagged sentence (s1): # More Than $250 Million—and a Demand to “Destroy the Models,” Too: AI Lawsuits Are About More Than Money
+
+Context before:
+- (none)
+Context after:
+- (s2) When you hear “more than $250 million,” you may first want to count the zeros.
+- (s3) But in this AI lawsuit, if you focus only on the number, you may miss another major demand.
+
+Corresponding Fact(s):
+- [F6] 原告らは、損害賠償額が2億5,000万ドルを超えるとする請求を記載し、法定・補償的損害賠償、利益の返還・吐き出し、宣言的救済、恒久的差止め、訴訟費用・弁護士費用等を求めている。さらに、原告らのコンテンツを組み込んだGPTその他の大規模言語モデルおよび訓練セットの破棄も請求している。   scope: 本件訴状のPrayer for Reliefおよび損害額に関する記載   conditions: 請求された救済であり、裁判所が認めた損害額・救済ではない。   numeric_value: 2億5,000万ドル超 (numeric_scope: 原告らが訴状で求める損害賠償額。認容額ではない。)   date_or_period: 2026-10-08に提出された訴状   notes_for_writer: 金額とモデル・訓練セットの破棄はいずれも原告側の請求。認容・命令済みと書かない。
+
+Reason(s) given by the flagger(s):
+- A4: 見出しの「AI Lawsuits Are About More Than Money」は、台帳の「本件訴状で求められた救済」をAI訴訟一般へ広げた表現ではありませんか。
+
+## ITEM U07-s5 | Theme: OpenAI copyright lawsuits (draft 1/2)
+
+Flagged sentence (s5): Their list of demands also includes the “destruction” of models such as GPT.
+
+Context before:
+- (s3) But in this AI lawsuit, if you focus only on the number, you may miss another major demand.
+- (s4) The plaintiffs are seeking more than damages.
+Context after:
+- (s6) The lawsuit against OpenAI was filed by 14 companies and other entities under USA TODAY Co.
+- (s7) The plaintiffs claim that OpenAI obtained and copied news content without permission, then used it to train AI models.
+
+Corresponding Fact(s):
+- [F6] 原告らは、損害賠償額が2億5,000万ドルを超えるとする請求を記載し、法定・補償的損害賠償、利益の返還・吐き出し、宣言的救済、恒久的差止め、訴訟費用・弁護士費用等を求めている。さらに、原告らのコンテンツを組み込んだGPTその他の大規模言語モデルおよび訓練セットの破棄も請求している。   scope: 本件訴状のPrayer for Reliefおよび損害額に関する記載   conditions: 請求された救済であり、裁判所が認めた損害額・救済ではない。   numeric_value: 2億5,000万ドル超 (numeric_scope: 原告らが訴状で求める損害賠償額。認容額ではない。)   date_or_period: 2026-10-08に提出された訴状   notes_for_writer: 金額とモデル・訓練セットの破棄はいずれも原告側の請求。認容・命令済みと書かない。
+
+Reason(s) given by the flagger(s):
+- A3: 「models such as GPT」は、台帳の「原告らのコンテンツを組み込んだGPTその他の大規模言語モデル」という限定を欠き、破棄請求の対象をGPTなどのモデル全般へ広げて読める表現ではありませんか。
+- A4: 「destruction of models such as GPT」は、台帳の「原告らのコンテンツを組み込んだ」という対象限定がなく、GPTなどのモデル全般の破棄を求めていると読める表現ではありませんか。
+
+## ITEM U07-s21 | Theme: OpenAI copyright lawsuits (draft 1/2)
+
+Flagged sentence (s21): At the time of Reuters’ report, OpenAI had not yet responded to a request for comment.
+
+Context before:
+- (s19) At this stage, what we know is that a lawsuit has been filed; the court has not found copyright infringement or made a ruling on the main issues.
+- (s20) There is a big gap between “they asked for the models to be destroyed” and “it has been decided that they will be destroyed.”
+Context after:
+- (s22) In AI news, performance and convenience often take center stage.
+- (s23) This time, the spotlight is on “what material the AI learned from” behind the scenes, and on what happens to the models after training.
+
+Corresponding Fact(s):
+- [F7] Reutersは2026-10-08の報道で、OpenAIの広報担当者は訴状についてのコメント依頼に直ちには応じなかったと報じた。これは報道時点での取材状況であり、OpenAIによる訴状への実体的な回答や法廷上の答弁を示すものではない。   scope: Reutersが報じたコメント依頼への応答状況   conditions: 「直ちには応じなかった」という報道時点の記述。以後の対応の有無はこのFactでは扱わない。   date_or_period: 2026-10-08（Reuters報道時点）   notes_for_writer: 本件に関するOpenAIの実体的な反論が確認された、と書かない。
+
+Reason(s) given by the flagger(s):
+- A4: 「had not yet responded」は、台帳の「直ちには応じなかった」より強く、Reutersの報道時点まで応答が一切なかったと断定する表現ではありませんか。
+
+# BATCH 3
+
+## ITEM U07-s22 | Theme: OpenAI copyright lawsuits (draft 1/2)
+
+Flagged sentence (s22): In AI news, performance and convenience often take center stage.
+
+Context before:
+- (s20) There is a big gap between “they asked for the models to be destroyed” and “it has been decided that they will be destroyed.”
+- (s21) At the time of Reuters’ report, OpenAI had not yet responded to a request for comment.
+Context after:
+- (s23) This time, the spotlight is on “what material the AI learned from” behind the scenes, and on what happens to the models after training.
+- (s24) The key point is that a dispute over the use of training material has now led to demands about the finished models as well.
+
+Corresponding Fact(s) [The flagger did not specify a corresponding Fact. The full Fact ledger of this article is given instead.]:
+- [F1] USA TODAY Co., Inc. と複数の関連出版社は、OpenAI側の複数法人を相手取り、著作権侵害等を主張する訴状を提出した。これは原告の主張を記載した訴状であり、裁判所による侵害認定ではない。   scope: 米国連邦裁判所への本件訴状提出   conditions: 訴状提出段階。訴状の主張と裁判所の事実認定を区別する。   date_or_period: 2026-10-08   notes_for_writer: 「提訴した」「訴状で主張した」と表現する。「裁判所が侵害を認定した」とは書かない。
+- [F2] 訴状に記載された原告は14の法人・事業体で、USA TODAY Co., Inc.、Gannett Satellite Information Network, LLC、Gannett GP Media, Inc.、The Courier-Journal, Inc.、Des Moines Register and Tribune Company、Detroit Free Press, Inc.、Detroit Newspaper Partnership, L.P.、CA Florida Holdings, LLC、Scripps NP Operating, LLC、CA North Carolina Holdings, Inc.、GateHouse Media Oklahoma Holdings, Inc.、Journal Sentinel Inc.、GateHouse Media Ohio Holdings II, Inc.、Phoenix Newspapers, Inc.である。訴状は、これらをUSA TODAY Co., Inc.傘下の原告らとしている。   scope: 本件訴状に名を連ねる法人・事業体   conditions: 訴状に記載された当事者名。各出版物そのものがすべて別個の法人原告だという意味ではない。   numeric_value: 14 (numeric_scope: 訴状の共同原告として記載された法人・事業体数)   date_or_period: 2026-10-08時点の訴状   notes_for_writer: 原告数14と、訴状が対象として挙げる出版物数19を混同しない。
+- [F3] 訴状は、原告らがUSA TODAY、The Tennessean、Indy Star、The Bergen Record、The Enquirer、Asbury Park Press、Democrat & Chronicle、The Knoxville News-Sentinel、Naples Daily News、The Oklahoman、Milwaukee Journal Sentinel、The Columbus Dispatch、The Arizona Republic、The Courier-Journal、The Des Moines Register、Detroit Free Press、The Detroit News、The Palm Beach Post、Star Newsの19出版物に掲載されたコンテンツの著作権を有すると主張している。   scope: 訴状が列挙する19出版物に掲載されたコンテンツ   conditions: 著作権保有・権利関係は訴状上の原告側の主張として記録する。   numeric_value: 19 (numeric_scope: 訴状が列挙する出版物数)   date_or_period: 2026-10-08時点の訴状   notes_for_writer: 「訴状によれば、原告らは19出版物のコンテンツの著作権を有すると主張」とする。裁判所による権利帰属の認定ではない。
+- [F4] 訴状は、OpenAIが原告側の報道コンテンツを許可なく取得・複製してAIモデルの訓練に使用し、モデル出力でそのコンテンツを複製または再構成したと主張する。また、OpenAIが著作権管理情報を除去したとも主張する。いずれも原告側の主張であり、本件で確定した事実ではない。   scope: 原告らの報道コンテンツ、AIモデルの訓練データおよびモデル出力   conditions: 著作権侵害や著作権管理情報の除去は、訴状上の主張として扱う。   numeric_value: 数十万件の報道記事その他の資料（訴状の表現） (numeric_scope: OpenAIが訓練に使ったと原告が主張する対象コンテンツの規模。裁判所が確認した件数ではない。)   date_or_period: 訴状が対象とする期間。具体的な開始・終了日は本Factでは特定しない。   notes_for_writer: 「OpenAIが無断使用した」ではなく「原告らは、OpenAIが無断使用したと主張」とする。
+- [F5] 訴状は、(1)著作権侵害、(2)代位責任に基づく著作権侵害、(3)著作権管理情報の除去に関するDigital Millennium Copyright Act違反の3つの請求を掲げている。   scope: 本件訴状の請求原因   conditions: 請求原因の記載であり、請求の成立や責任について裁判所の判断が下されたことを意味しない。   numeric_value: 3 (numeric_scope: 訴状に掲げられた請求原因の数)   date_or_period: 2026-10-08に提出された訴状   notes_for_writer: 請求原因の数と、裁判所が認定した違反の数を混同しない。
+- [F6] 原告らは、損害賠償額が2億5,000万ドルを超えるとする請求を記載し、法定・補償的損害賠償、利益の返還・吐き出し、宣言的救済、恒久的差止め、訴訟費用・弁護士費用等を求めている。さらに、原告らのコンテンツを組み込んだGPTその他の大規模言語モデルおよび訓練セットの破棄も請求している。   scope: 本件訴状のPrayer for Reliefおよび損害額に関する記載   conditions: 請求された救済であり、裁判所が認めた損害額・救済ではない。   numeric_value: 2億5,000万ドル超 (numeric_scope: 原告らが訴状で求める損害賠償額。認容額ではない。)   date_or_period: 2026-10-08に提出された訴状   notes_for_writer: 金額とモデル・訓練セットの破棄はいずれも原告側の請求。認容・命令済みと書かない。
+- [F7] Reutersは2026-10-08の報道で、OpenAIの広報担当者は訴状についてのコメント依頼に直ちには応じなかったと報じた。これは報道時点での取材状況であり、OpenAIによる訴状への実体的な回答や法廷上の答弁を示すものではない。   scope: Reutersが報じたコメント依頼への応答状況   conditions: 「直ちには応じなかった」という報道時点の記述。以後の対応の有無はこのFactでは扱わない。   date_or_period: 2026-10-08（Reuters報道時点）   notes_for_writer: 本件に関するOpenAIの実体的な反論が確認された、と書かない。
+- [F8] 本件は2026-10-08にニューヨーク南部地区連邦地方裁判所へ提出された新規訴訟で、事件番号は1:26-cv-08892である。確認した訴状と同日報道が示すのは提訴段階であり、裁判所による著作権侵害の認定や本案判断ではない。   scope: 米国ニューヨーク南部地区連邦地方裁判所における本件訴訟   conditions: 検索時点で確認できたのは提訴の事実。これ以後の手続更新があれば別途確認を要する。   numeric_value: 1:26-cv-08892 (numeric_scope: 本件の連邦裁判所事件番号)   date_or_period: 2026-10-08時点   notes_for_writer: 必ず「訴状提出段階」「侵害は裁判所により認定されていない」と区別する。
+
+Reason(s) given by the flagger(s):
+- A4: 「performance and convenience often take center stage」というAI報道全般の傾向は、台帳のどのFactにも対応する根拠がなく、別途確認が必要な主張ではありませんか。
+
+## ITEM U08-s25 | Theme: Semiconductor earnings
+
+Flagged sentence (s25): But even if the company’s forecast appears beside that line, we cannot say, “AI demand is strong, so revenue will be about $34.8 billion.” This announcement alone does not explain how the two are connected.
+
+Context before:
+- (s23) It is a strong line that gives a sense of the star’s momentum.
+- (s24) We should listen to it as it is.
+Context after:
+- (s26) We should not see two scenes next to each other and make up the script in between.
+- (s27) The key questions when looking at earnings are: “What is this number for?” and “Is it an actual result or a forecast?” Just these two questions are enough to clearly separate the star’s performance from the outlook for the whole production.
+
+Corresponding Fact(s):
+- [F4] Broadcomは次の四半期の連結売上高を約348億ドルと見込んだ。同社は前年比93％増に相当すると説明した。   scope: Broadcom Inc.全体の次四半期連結売上高   conditions: 2026年9月2日時点の会社見通し。会社は見通しを推定値とし、実績は異なり、差が重要となる可能性があると記載。   numeric_value: 約348億ドル。前年同期比+93％。 (numeric_scope: 2026年度第4四半期の連結売上高見通しと前年同期比)   date_or_period: 2026年度第4四半期（2026年11月1日終了予定）   notes_for_writer: 会社の見通しとして記載し、確定した実績値として扱わない。
+- [F6] BroadcomのCEOは、カスタムAIアクセラレーターとネットワーキングへの需要が引き続き非常に強いと述べた。   scope: 同社のカスタムAIアクセラレーターおよびネットワーキングに対する需要についてのCEOの説明   conditions: 経営陣による定性的な評価。   date_or_period: 2026年9月2日発表の2026年度第3四半期決算リリース   causal_strength: OBSERVED_REPORTED   notes_for_writer: 会社CEOの評価として帰属を明記し、独立に確認された市場全体の需要事実として一般化しない。
+
+Reason(s) given by the flagger(s):
+- A3: 文中の「This announcement alone does not explain how the two are connected」は、台帳の「連結売上高見通し」と「CEOによる需要評価」からは確認できない、発表内に両者の関連説明がないという断定ではありませんか。
+- A4: 「This announcement alone does not explain how the two are connected」という説明の不在の断定は、台帳の「連結売上高見通し」と「需要についてのCEOの説明」だけでは、決算発表全体に両者の関係の説明がないことまで確認できないのではありませんか。
+
+## ITEM X09-s8 | Theme: Hormuz / oil (draft 2/2)
+
+Flagged sentence (s8): Trump’s “20% plan.” It called for a 20% payment on all cargo passing through the Strait of Hormuz, as reimbursement for the cost of ensuring U.S.
+
+Context before:
+- (s6) This time, the oil market has not followed a simple script.
+- (s7) It all began with Mr.
+Context after:
+- (s9) security.
+- (s10) The size of the figure and the broad scope of the plan were enough to grab the headlines.
+
+Corresponding Fact(s):
+- [HF-002] ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。   scope: ホルムズ海峡を通じて輸送される「すべての貨物」   conditions: 米国が海峡の安全と警備を提供するための費用の償還として提示。投稿は手続きと体制づくりを直ちに開始するとした。   numeric_value: 20% (numeric_scope: 投稿上の償還率。課税標準または算定基礎は明記されていない。)   date_or_period: 2026-07-13 10:16 EDT   notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。
+
+Reason(s) given by the flagger(s):
+- A3: 「the cost of ensuring U.S.」は米国自体の安全確保に要する費用とも読めますが、台帳の「米国がホルムズ海峡の安全と警備を提供するための費用」とは安全確保の対象が異なるのではありませんか
+- A4: 「the cost of ensuring U.S.」は米国自体の安全確保の費用と読めますが、台帳の「米国がホルムズ海峡の安全と警備を提供するための費用」とは安全確保の対象が異なるのではありませんか。
+
+## ITEM X09-s10 | Theme: Hormuz / oil (draft 2/2)
+
+Flagged sentence (s10): The size of the figure and the broad scope of the plan were enough to grab the headlines.
+
+Context before:
+- (s8) Trump’s “20% plan.” It called for a 20% payment on all cargo passing through the Strait of Hormuz, as reimbursement for the cost of ensuring U.S.
+- (s9) security.
+Context after:
+- (s11) But the next day, it was announced that the plan would be replaced with trade and investment deals involving Gulf countries and the United States.
+- (s12) The “20%” had only just appeared, and already it was heading backstage.
+
+Corresponding Fact(s) [The flagger did not specify a corresponding Fact. The full Fact ledger of this article is given instead.]:
+- [HF-001] 国際海事機関（IMO）理事会は、第137回会合で、ホルムズ海峡の通航は国際法およびIMO条約に従い、通航料・手数料を課されない状態を維持すべきだと再確認した。   scope: 国際航行に使用されるホルムズ海峡を通航する全船舶   conditions: 沿岸国間の取り決めは、全船舶の無差別かつ妨げられない通過通航権を保証する必要がある。   numeric_value: 第137回理事会 (numeric_scope: IMO理事会の会合番号)   date_or_period: 2026-07-06～2026-07-10（第137回理事会開催期間）、2026-07-13公表   notes_for_writer: この決議と7月14日の発言撤回との因果関係は一次資料で確認できない。撤回の原因として記述しない。
+- [HF-002] ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。   scope: ホルムズ海峡を通じて輸送される「すべての貨物」   conditions: 米国が海峡の安全と警備を提供するための費用の償還として提示。投稿は手続きと体制づくりを直ちに開始するとした。   numeric_value: 20% (numeric_scope: 投稿上の償還率。課税標準または算定基礎は明記されていない。)   date_or_period: 2026-07-13 10:16 EDT   notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。
+- [HF-003] 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。   scope: ホルムズ海峡の貨物通航に対する米国の償還料案   numeric_value: 20% (numeric_scope: 提案された率のみが示され、算定・徴収方法は未提示)   date_or_period: 2026-07-13   notes_for_writer: 「米国が20％通航料を導入した」と確定形で書かず、「提案した」「徴収方針を表明した」とする。
+- [HF-004] 20％を貨物価値に適用すると仮定した試算では、約200万バレルを積むVLCCの貨物価値はBrent約85ドル時点で約1億7000万ドルとなり、20％相当額は約3400万ドルとなる。別の専門家試算は約3200万ドルだった。   scope: 約200万バレルを満載した超大型原油タンカー（VLCC）1隻・1航海   conditions: 20％を積載原油の市場価値に掛けるとの仮定。Brent価格を1バレル約85ドルとして計算。   numeric_value: 貨物量約2,000,000バレル、Brent約85ドル/バレル、貨物価値約170,000,000ドル、20％相当約34,000,000ドル、別試算約32,000,000ドル (numeric_scope: 仮定に基づくVLCC1隻当たりのシナリオ試算であり、実際に徴収された金額ではない)   date_or_period: 2026-07-14時点の試算   notes_for_writer: 実額または確定通航料として扱わない。「貨物価値に適用した場合の試算」と明示する。
+- [HF-005] Financial TimesのBrent先物ヒストリカル表は、7月13日の取引について始値78.00ドル、日中高値83.86ドル、日中安値77.28ドル、終値83.30ドルを記録している。   scope: Financial Times掲載の期近Brent原油先物ヒストリカルデータ   conditions: 日次OHLCデータ。価格単位は1バレル当たり米ドル。   numeric_value: 始値 $78.00、高値 $83.86、安値 $77.28、終値 $83.30 (numeric_scope: 7月13日の取引日全体。$83.86は日中高値、$83.30は終値・Reuters報道の清算値に対応)   date_or_period: 2026-07-13取引日   causal_strength: OBSERVED_REPORTED   notes_for_writer: 日中高値83.86ドルと終値83.30ドルを混同しない。
+- [HF-006] Brent原油先物は7月13日に7.29ドル、9.59％上昇し、1バレル83.30ドルで清算された。Reutersはこの上昇を、翌日に始まる予定とされた米国の対イラン海上封鎖と、ホルムズ海峡を通るエネルギー輸送への懸念に関連付けた。   scope: Brent原油先物の当日清算値と前日比   conditions: 米国とイランの軍事的緊張、海上封鎖方針、ホルムズ海峡の供給懸念が同時に存在した市場環境   numeric_value: $83.30/バレル、前日比 +$7.29、+9.59% (numeric_scope: 7月13日のBrent原油先物清算値。日中高値ではない)   date_or_period: 2026-07-13清算時点   causal_strength: CAUSAL_STATED_BY_SOURCE   notes_for_writer: 7月13日の上昇全体を「20％料だけが原因」と断定しない。7月14日の撤回はこの清算値より後の出来事。
+- [HF-007] トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。   scope: 7月13日に提案したホルムズ海峡通航貨物への20％償還料   conditions: トランプ氏は、中東指導者との「非常に生産的な協議」に基づく決定だと説明した。   numeric_value: 20% (numeric_scope: 撤回・置換対象となった償還率)   date_or_period: 2026-07-14 11:04 EDT   causal_strength: CAUSAL_STATED_BY_SOURCE   notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。
+- [HF-008] トランプ大統領は7月14日、記者団に対し、ホルムズ海峡を通航する船舶に誰も料金を課すべきではないとの考えを示し、料金という考え方自体を好まないと述べた。   scope: ホルムズ海峡を通航する船舶への料金一般   conditions: 米国が世界のために海峡を防護する負担は公平でないとの主張も併記された。   date_or_period: 2026-07-14（Truth Socialでの置換発表後）   notes_for_writer: 7月14日の撤回を確認する補強Fact。7月13日の提案と同日の発言として混同しない。
+- [HF-009] Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。   scope: 国際指標Brent原油先物の短時間の値動き   conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。   numeric_value: 約 +2.6%、$85/バレル超 (numeric_scope: 記事掲載時点のリアルタイムに近い価格スナップショット。日中高値でも終値でもない)   date_or_period: 2026-07-14、撤回発表後の取引時間中   causal_strength: CAUSAL_STATED_BY_SOURCE   notes_for_writer: 撤回後に原油価格が全面的に下落したとは書かない。観測されたのは一時的な上げ幅縮小と、その後の回復。
+- [HF-010] Financial TimesのBrent先物ヒストリカル表は、7月14日の取引について始値84.00ドル、日中高値87.55ドル、日中安値83.37ドル、終値84.73ドルを記録している。   scope: Financial Times掲載の期近Brent原油先物ヒストリカルデータ   conditions: 日次OHLCデータ。価格単位は1バレル当たり米ドル。   numeric_value: 始値 $84.00、高値 $87.55、安値 $83.37、終値 $84.73 (numeric_scope: 7月14日の取引日全体。$87.55は日中高値、$84.73は終値・Reuters報道の清算値に対応)   date_or_period: 2026-07-14取引日   causal_strength: OBSERVED_REPORTED   notes_for_writer: 速報時点値と日次高値を区別する。87.55ドルを使用する場合は「FTのヒストリカル表による」と帰属を付ける。
+- [HF-011] Brent原油先物は7月14日に1.43ドル、1.7％上昇し、1バレル84.73ドルで清算された。これは2営業日連続で6月12日以来の高い清算値だった。   scope: Brent原油先物の当日清算値と前日比   conditions: 20％償還料案は同日の取引時間中に撤回されたが、海上封鎖、米・イラン間の攻撃、タンカー被害などの供給懸念は継続していた。   numeric_value: $84.73/バレル、前日比 +$1.43、+1.7% (numeric_scope: 7月14日のBrent原油先物清算値。日中高値ではない)   date_or_period: 2026-07-14清算時点   causal_strength: OBSERVED_REPORTED   notes_for_writer: 7月14日は撤回があったにもかかわらず日次清算値は上昇した。これだけから撤回が価格を上昇させた、または下落させなかったと因果推論しない。
+- [HF-012] Reutersは7月14日、トランプ氏が海峡をイラン以外の船舶に開放すると述べた後、米WTI先物が一時マイナス圏へ転じ、その後、イランの巡航ミサイルがUAEの石油タンカー2隻を攻撃したとの報道を受けて価格が回復したと報じた。   scope: Reutersが明示した米WTI原油先物の短時間の値動き。Brentに同一の反応があったとは明記されていない   conditions: 同日に複数の政策発言と軍事・海運ニュースが連続して発生した。   date_or_period: 2026-07-14取引時間中   causal_strength: CAUSAL_STATED_BY_SOURCE   notes_for_writer: Brentの反応として転用しない。市場反応が同日中に複数回反転したことを示す補助Factとしてのみ使用する。
+
+Reason(s) given by the flagger(s):
+- A4: 「The size of the figure and the broad scope」が「grab the headlines」の理由だったという説明は、台帳に対応する記述がなく、確認できない因果関係を加えているのではありませんか。
+
+## ITEM X10-s5 | Theme: Space weapons (draft 2/2)
+
+Flagged sentence (s5): The main subject here is not a weapon that can blow up Earth, but the line around what counts as a “space weapon.” This is news where the label matters more than flashy sound effects.
+
+Context before:
+- (s3) “The U.S.
+- (s4) is deploying weapons in space.” If a giant laser cannon just started firing in your imagination, let’s pause the movie for a moment.
+Context after:
+- (s6) On September 14, 2026, U.S.
+- (s7) Air Force Secretary Troy Meink said the United States was deploying space-control weapons in orbit to protect the joint force from the actions of hostile parties.
+
+Corresponding Fact(s):
+- [F-001] 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/))   scope: 米空軍・米宇宙軍   conditions: 敵対的な相手の行動から統合軍を防護する用途と説明   date_or_period: 2026年9月14日発言、2026年9月15日公式掲載   causal_strength: OBSERVED_REPORTED   notes_for_writer: 『米国が軌道上兵器の配備を公式に認めた』までは使用可能。具体的なシステム名・攻撃能力・標的は推測で補わない。
+
+Reason(s) given by the flagger(s):
+- A4: 「not a weapon that can blow up Earth」は兵器の能力を否定する断定にも読めますが、台帳では具体的な攻撃能力は示されず「攻撃能力を推測で補わない」とされており、台帳で確認できる範囲を超えているのではありませんか。
+
+## ITEM X11-s4 | Theme: OpenAI copyright lawsuits (draft 2/2)
+
+Flagged sentence (s4): The plaintiffs are also asking for models such as GPT that they say contain problematic content, as well as training sets, to be destroyed.
+
+Context before:
+- (s2) “More than $250 million.” If you saw that in a headline, you might find yourself checking the number of zeros.
+- (s3) But reading the amount alone is not enough to understand this lawsuit.
+Context after:
+- (s5) The plaintiffs are 14 companies and other entities in the group, including USA TODAY Co.
+- (s6) In the complaint, they claim that OpenAI got and copied news content without permission and used it to train its models.
+
+Corresponding Fact(s):
+- [F6] 原告らは、損害賠償額が2億5,000万ドルを超えるとする請求を記載し、法定・補償的損害賠償、利益の返還・吐き出し、宣言的救済、恒久的差止め、訴訟費用・弁護士費用等を求めている。さらに、原告らのコンテンツを組み込んだGPTその他の大規模言語モデルおよび訓練セットの破棄も請求している。   scope: 本件訴状のPrayer for Reliefおよび損害額に関する記載   conditions: 請求された救済であり、裁判所が認めた損害額・救済ではない。   numeric_value: 2億5,000万ドル超 (numeric_scope: 原告らが訴状で求める損害賠償額。認容額ではない。)   date_or_period: 2026-10-08に提出された訴状   notes_for_writer: 金額とモデル・訓練セットの破棄はいずれも原告側の請求。認容・命令済みと書かない。
+
+Reason(s) given by the flagger(s):
+- A3: 「contain problematic content」は、台帳の「原告らのコンテンツを組み込んだ」と異なり、破棄請求の対象を原告らのコンテンツ以外にも広げて読める表現ではありませんか。
+- A4: 「contain problematic content」は、台帳の「原告らのコンテンツを組み込んだ」という破棄請求の対象を、原告らのコンテンツに限らない「問題のあるコンテンツ」を含むモデルへ広げて読める表現ではありませんか。
+
+## ITEM X11-s7 | Theme: OpenAI copyright lawsuits (draft 2/2)
+
+Flagged sentence (s7): They also say the models’ output copied or put articles together in new ways, and removed copyright management information.
+
+Context before:
+- (s5) The plaintiffs are 14 companies and other entities in the group, including USA TODAY Co.
+- (s6) In the complaint, they claim that OpenAI got and copied news content without permission and used it to train its models.
+Context after:
+- (s8) But let’s pause here.
+- (s9) For now, these are only the plaintiffs’ claims.
+
+Corresponding Fact(s):
+- [F4] 訴状は、OpenAIが原告側の報道コンテンツを許可なく取得・複製してAIモデルの訓練に使用し、モデル出力でそのコンテンツを複製または再構成したと主張する。また、OpenAIが著作権管理情報を除去したとも主張する。いずれも原告側の主張であり、本件で確定した事実ではない。   scope: 原告らの報道コンテンツ、AIモデルの訓練データおよびモデル出力   conditions: 著作権侵害や著作権管理情報の除去は、訴状上の主張として扱う。   numeric_value: 数十万件の報道記事その他の資料（訴状の表現） (numeric_scope: OpenAIが訓練に使ったと原告が主張する対象コンテンツの規模。裁判所が確認した件数ではない。)   date_or_period: 訴状が対象とする期間。具体的な開始・終了日は本Factでは特定しない。   notes_for_writer: 「OpenAIが無断使用した」ではなく「原告らは、OpenAIが無断使用したと主張」とする。
+
+Reason(s) given by the flagger(s):
+- A3: 「the models’ output ... removed copyright management information」は、台帳で除去の主体とされている「OpenAI」を「モデル出力」に置き換えているのではありませんか。
+- A4: 「the models’ output ... removed copyright management information」は、台帳では著作権管理情報を除去したと主張されている主体が「OpenAI」であるのに、その主体を「モデル出力」に入れ替えた記述ではありませんか。
+
+## ITEM X11-s17 | Theme: OpenAI copyright lawsuits (draft 2/2)
+
+Flagged sentence (s17): It is like seeing the total on a bill and being shocked, then turning to the next page and finding an item called “how to handle models and data.” “Please pay for using the articles” and “Please also destroy what we claim you made using those articles” are different demands.
+
+Context before:
+- (s15) That is already a large claim, but the demand to destroy models and training sets draws even more attention.
+- (s16) The focus shifts sharply from “How much should be paid?” to “What can be kept?”
+Context after:
+- (s18) Of course, asking for something to be destroyed and having it ordered to be destroyed are two different things.
+- (s19) A large demand does not mean it will happen as requested.
+
+Corresponding Fact(s):
+- [F6] 原告らは、損害賠償額が2億5,000万ドルを超えるとする請求を記載し、法定・補償的損害賠償、利益の返還・吐き出し、宣言的救済、恒久的差止め、訴訟費用・弁護士費用等を求めている。さらに、原告らのコンテンツを組み込んだGPTその他の大規模言語モデルおよび訓練セットの破棄も請求している。   scope: 本件訴状のPrayer for Reliefおよび損害額に関する記載   conditions: 請求された救済であり、裁判所が認めた損害額・救済ではない。   numeric_value: 2億5,000万ドル超 (numeric_scope: 原告らが訴状で求める損害賠償額。認容額ではない。)   date_or_period: 2026-10-08に提出された訴状   notes_for_writer: 金額とモデル・訓練セットの破棄はいずれも原告側の請求。認容・命令済みと書かない。
+
+Reason(s) given by the flagger(s):
+- A3: 「what we claim you made using those articles」は、台帳の「原告らのコンテンツを組み込んだモデルおよび訓練セット」よりも広く、記事を利用して作ったもの全般を破棄請求の対象にしているように読めるのではありませんか。
+
+## ITEM X11-s25 | Theme: OpenAI copyright lawsuits (draft 2/2)
+
+Flagged sentence (s25): At the time of Reuters’ report, OpenAI had not commented right away.
+
+Context before:
+- (s23) Still, we should not jump ahead to the ending.
+- (s24) The case is still at the filing stage, and the court has not found that there was copyright infringement or accepted the claims.
+Context after:
+- (s26) For now, all we know is that demands have been made that cannot be summed up as “pay and it’s over.” How much of that bill will be accepted remains to be seen.
+- (s27) ## In one line
+
+Corresponding Fact(s):
+- [F7] Reutersは2026-10-08の報道で、OpenAIの広報担当者は訴状についてのコメント依頼に直ちには応じなかったと報じた。これは報道時点での取材状況であり、OpenAIによる訴状への実体的な回答や法廷上の答弁を示すものではない。   scope: Reutersが報じたコメント依頼への応答状況   conditions: 「直ちには応じなかった」という報道時点の記述。以後の対応の有無はこのFactでは扱わない。   date_or_period: 2026-10-08（Reuters報道時点）   notes_for_writer: 本件に関するOpenAIの実体的な反論が確認された、と書かない。
+
+Reason(s) given by the flagger(s):
+- A3: 「OpenAI had not commented right away」は、台帳の「広報担当者がコメント依頼に直ちには応じなかった」という取材状況を、OpenAIによるコメント全般の不在に広げているのではありませんか。
