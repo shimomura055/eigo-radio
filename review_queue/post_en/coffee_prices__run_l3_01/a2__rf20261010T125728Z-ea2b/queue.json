@@ -1,0 +1,480 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "coffee_prices__run_l3_01",
+  "article_level": "a2",
+  "article_sha256": "6f5e8e5301963ad650a9538a453a3e5dd493ac61e76fd5ab5cdd6514aa618236",
+  "ledger_sha256": "e94a50c1d22686d52bd65beca4272650ecc8286de54629c3d8dfb42fa397ef7b",
+  "run_id": "rf20261010T125728Z-ea2b",
+  "timestamp": "2026-10-10T12:57:28+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "L3_PRODUCTION_E2E_01",
+  "sentence_count": 47,
+  "fact_count": 19,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 7641,
+      "output_tokens": 1314,
+      "cached_tokens": 0,
+      "cost_jpy": 0.227376,
+      "flag_count": 3,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 7791,
+      "output_tokens": 1817,
+      "cached_tokens": 0,
+      "cost_jpy": 0.270016,
+      "flag_count": 5,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 7116,
+      "output_tokens": 99,
+      "cached_tokens": 4074,
+      "cost_jpy": 0.205171,
+      "flag_count": 1,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 7236,
+      "output_tokens": 85,
+      "cached_tokens": 4075,
+      "cost_jpy": 0.205288,
+      "flag_count": 1,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "coffee_prices__run_l3_01__a2__6f5e8e53__rf20261010T125728Z-ea2b__s1",
+      "article_id": "coffee_prices__run_l3_01",
+      "article_level": "a2",
+      "article_sha256": "6f5e8e5301963ad650a9538a453a3e5dd493ac61e76fd5ab5cdd6514aa618236",
+      "run_id": "rf20261010T125728Z-ea2b",
+      "timestamp": "2026-10-10T12:57:28+00:00",
+      "sentence_id": "s1",
+      "sentence_text": "# Coffee Prices Fall, but Store Prices Stay: Coffee’s “Jet Lag”",
+      "context": {
+        "before": [],
+        "after": [
+          "“Coffee prices are falling!”",
+          "Great!"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "COFFEE-009",
+        "COFFEE-015"
+      ],
+      "facts": [
+        {
+          "fact_id": "COFFEE-009",
+          "text": "USDAはICOの月次複合価格指数を指標として、コーヒー価格が2026年7月までの7か月間に25%下落したと報告した。同報告は、追加供給の入手可能性を下落と結び付けている。\n  scope: ICO月次複合価格指数を用いた世界市場価格\n  conditions: USDAが2026年7月報告で記載した観察期間\n  numeric_value: 7か月で-25% (numeric_scope: ICO月次複合価格指数。個別品種または小売価格ではない)\n  date_or_period: 2025年末頃から2026年7月までの7か月間\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: 価格が2026年中に下落局面へ移ったことを示す。小売価格も同じ速度で下がったとは言えない。"
+        },
+        {
+          "fact_id": "COFFEE-015",
+          "text": "BLSの2026年8月CPIでは、米国の「Coffee」項目の指数は前年同月比6.1%上昇だった。\n  scope: 米都市消費者（CPI-U）におけるコーヒー項目\n  conditions: BLSの前年同月比指数。特定ブランドの価格やカフェの一杯の価格ではない\n  numeric_value: 前年同月比+6.1% (numeric_scope: 米国CPI-Uの「Coffee」項目の価格指数)\n  date_or_period: 2026年8月のCPI。公表日は2026年9月11日\n  notes_for_writer: 2026年8月時点では前年より高い一方、過去のピーク時の上昇率と同一視しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「Coffee Prices Fall」と「Store Prices Stay」は、世界市場の指標価格と米国のCPI項目という異なる範囲を、コーヒー全般と店舗価格全般の動きとして述べているのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.48,
+          "type": "その他",
+          "fact_ids": [
+            "COFFEE-009",
+            "COFFEE-015"
+          ],
+          "question": "「Coffee Prices Fall」と「Store Prices Stay」は、世界市場の指標価格と米国のCPI項目という異なる範囲を、コーヒー全般と店舗価格全般の動きとして述べているのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.48
+    },
+    {
+      "issue_id": "coffee_prices__run_l3_01__a2__6f5e8e53__rf20261010T125728Z-ea2b__s5",
+      "article_id": "coffee_prices__run_l3_01",
+      "article_level": "a2",
+      "article_sha256": "6f5e8e5301963ad650a9538a453a3e5dd493ac61e76fd5ab5cdd6514aa618236",
+      "run_id": "rf20261010T125728Z-ea2b",
+      "timestamp": "2026-10-10T12:57:28+00:00",
+      "sentence_id": "s5",
+      "sentence_text": "But supermarket prices do not change.",
+      "context": {
+        "before": [
+          "Great!",
+          "Maybe spring will finally come to my wallet, too."
+        ],
+        "after": [
+          "They look calm, as if saying, “News?",
+          "I haven’t heard any.”"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "COFFEE-014",
+        "COFFEE-015"
+      ],
+      "facts": [
+        {
+          "fact_id": "COFFEE-014",
+          "text": "Reutersが2025年12月に取材した市場関係者・専門家は、生豆価格が小売に反映されるまで少なくとも約9か月かかるとの見積もりを示した。記事は、米国ロースターが平均で生豆在庫を約2～3か月分保有し、その後の焙煎・包装にも約2～3か月かかり、小売業者との価格交渉は四半期ごとに行われることが多いと報じた。\n  scope: 米国のロースターと小売価格への価格転嫁\n  conditions: 市場関係者・専門家の推定およびReutersの取材報告であり、すべての企業の標準期間を示すものではない\n  numeric_value: 転嫁まで少なくとも約9か月との見積もり。在庫約2～3か月分、焙煎・包装約2～3か月 (numeric_scope: 米国のロースターの平均的な在庫・製造過程についての記事内説明)\n  date_or_period: 2025年12月時点の業界関係者の説明\n  causal_strength: CORRELATIONAL\n  notes_for_writer: 相場下落や関税撤廃の後も消費者価格がすぐ下がらない理由の一つとして、推定・報道の帰属を付けて記載する。"
+        },
+        {
+          "fact_id": "COFFEE-015",
+          "text": "BLSの2026年8月CPIでは、米国の「Coffee」項目の指数は前年同月比6.1%上昇だった。\n  scope: 米都市消費者（CPI-U）におけるコーヒー項目\n  conditions: BLSの前年同月比指数。特定ブランドの価格やカフェの一杯の価格ではない\n  numeric_value: 前年同月比+6.1% (numeric_scope: 米国CPI-Uの「Coffee」項目の価格指数)\n  date_or_period: 2026年8月のCPI。公表日は2026年9月11日\n  notes_for_writer: 2026年8月時点では前年より高い一方、過去のピーク時の上昇率と同一視しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "不在断定",
+          "question": "“do not change”というスーパー価格がまったく変動しないとの断定は、価格転嫁に時間がかかるとの推定や米国CPIの前年同月比上昇を超える意味ではありませんか。"
+        },
+        {
+          "type": "否定反転",
+          "question": "「supermarket prices do not change」は、米国のコーヒーCPIが前年同月比で上昇したというFactと食い違うのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.35,
+          "type": "不在断定",
+          "fact_ids": [
+            "COFFEE-014",
+            "COFFEE-015"
+          ],
+          "question": "“do not change”というスーパー価格がまったく変動しないとの断定は、価格転嫁に時間がかかるとの推定や米国CPIの前年同月比上昇を超える意味ではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.31,
+          "type": "否定反転",
+          "fact_ids": [
+            "COFFEE-015"
+          ],
+          "question": "「supermarket prices do not change」は、米国のコーヒーCPIが前年同月比で上昇したというFactと食い違うのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.35
+    },
+    {
+      "issue_id": "coffee_prices__run_l3_01__a2__6f5e8e53__rf20261010T125728Z-ea2b__s14",
+      "article_id": "coffee_prices__run_l3_01",
+      "article_level": "a2",
+      "article_sha256": "6f5e8e5301963ad650a9538a453a3e5dd493ac61e76fd5ab5cdd6514aa618236",
+      "run_id": "rf20261010T125728Z-ea2b",
+      "timestamp": "2026-10-10T12:57:28+00:00",
+      "sentence_id": "s14",
+      "sentence_text": "At about the same time, ICE’s future prices for arabica coffee reached a record high.",
+      "context": {
+        "before": [
+          "Then demand around the world was strong.",
+          "It was a hard mix for prices to settle down."
+        ],
+        "after": [
+          "But future prices are not prices for green beans sold right away.",
+          "They are not store prices, either."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "COFFEE-003"
+      ],
+      "facts": [
+        {
+          "fact_id": "COFFEE-003",
+          "text": "ICEのアラビカ先物は2025年1月29日に一時369.45米セント／ポンドの当時の過去最高値を記録し、同日終値は366.55米セント／ポンドだった。Reutersは、ブラジルの販売可能な豆の減少と次期収穫への懸念を背景として報じた。\n  scope: ICEのアラビカ先物契約。当日の取引価格\n  conditions: Reuters記事時点での過去最高値。先物価格であり、生豆の個別現物取引価格や小売価格とは異なる\n  numeric_value: 一時369.45米セント／ポンド、終値366.55米セント／ポンド (numeric_scope: ICEアラビカ先物1ポンド当たりの米ドル建て価格)\n  date_or_period: 2025年1月29日\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: 「当時の過去最高値」とする。現在までの最高値とは言い換えない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "数量時系列",
+          "question": "“a record high”という表現は、台帳の「2025年1月29日時点での当時の過去最高値」を現在までの最高値と読める形にしていませんか。"
+        },
+        {
+          "type": "数量時系列",
+          "question": "「reached a record high」は「当時の過去最高値」を現在までの最高値とも読める形で述べているのではありませんか。"
+        },
+        {
+          "type": "数量時系列",
+          "question": "s14の「ICE’s future prices for arabica coffee reached a record high」について、COFFEE-003の「当時の過去最高値(at the time record high)」が「現在までの最高値(record high)」に読めるようになっていませんか？"
+        },
+        {
+          "type": "数量時系列",
+          "question": "s14の「ICE’s future prices for arabica coffee reached a record high」は、COFFEE-003の「当時の過去最高値」という条件と食い違っていませんか？"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.31,
+          "type": "数量時系列",
+          "fact_ids": [
+            "COFFEE-003"
+          ],
+          "question": "“a record high”という表現は、台帳の「2025年1月29日時点での当時の過去最高値」を現在までの最高値と読める形にしていませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.55,
+          "type": "数量時系列",
+          "fact_ids": [
+            "COFFEE-003"
+          ],
+          "question": "「reached a record high」は「当時の過去最高値」を現在までの最高値とも読める形で述べているのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        },
+        {
+          "model_key": "gemini35fl",
+          "model_id": "gemini-3.5-flash-lite",
+          "condition": "A3",
+          "confidence": 0.9,
+          "type": "数量時系列",
+          "fact_ids": [
+            "COFFEE-003"
+          ],
+          "question": "s14の「ICE’s future prices for arabica coffee reached a record high」について、COFFEE-003の「当時の過去最高値(at the time record high)」が「現在までの最高値(record high)」に読めるようになっていませんか？",
+          "severity": "重大",
+          "raw_flag_source": "raw/gemini35fl_A3.jsonl"
+        },
+        {
+          "model_key": "gemini35fl",
+          "model_id": "gemini-3.5-flash-lite",
+          "condition": "A4",
+          "confidence": 0.7,
+          "type": "数量時系列",
+          "fact_ids": [
+            "COFFEE-003"
+          ],
+          "question": "s14の「ICE’s future prices for arabica coffee reached a record high」は、COFFEE-003の「当時の過去最高値」という条件と食い違っていませんか？",
+          "severity": "重大",
+          "raw_flag_source": "raw/gemini35fl_A4.jsonl"
+        }
+      ],
+      "confidence": 0.9
+    },
+    {
+      "issue_id": "coffee_prices__run_l3_01__a2__6f5e8e53__rf20261010T125728Z-ea2b__s31",
+      "article_id": "coffee_prices__run_l3_01",
+      "article_level": "a2",
+      "article_sha256": "6f5e8e5301963ad650a9538a453a3e5dd493ac61e76fd5ab5cdd6514aa618236",
+      "run_id": "rf20261010T125728Z-ea2b",
+      "timestamp": "2026-10-10T12:57:28+00:00",
+      "sentence_id": "s31",
+      "sentence_text": "That is how long green-bean prices take to show up in store prices.",
+      "context": {
+        "before": [
+          "Reuters spoke with market experts and others.",
+          "They estimated that it takes around nine months or longer."
+        ],
+        "after": [
+          "If market prices are a breaking news alert, price tags are patient letters.",
+          "US roasters keep green beans in stock."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "COFFEE-014"
+      ],
+      "facts": [
+        {
+          "fact_id": "COFFEE-014",
+          "text": "Reutersが2025年12月に取材した市場関係者・専門家は、生豆価格が小売に反映されるまで少なくとも約9か月かかるとの見積もりを示した。記事は、米国ロースターが平均で生豆在庫を約2～3か月分保有し、その後の焙煎・包装にも約2～3か月かかり、小売業者との価格交渉は四半期ごとに行われることが多いと報じた。\n  scope: 米国のロースターと小売価格への価格転嫁\n  conditions: 市場関係者・専門家の推定およびReutersの取材報告であり、すべての企業の標準期間を示すものではない\n  numeric_value: 転嫁まで少なくとも約9か月との見積もり。在庫約2～3か月分、焙煎・包装約2～3か月 (numeric_scope: 米国のロースターの平均的な在庫・製造過程についての記事内説明)\n  date_or_period: 2025年12月時点の業界関係者の説明\n  causal_strength: CORRELATIONAL\n  notes_for_writer: 相場下落や関税撤廃の後も消費者価格がすぐ下がらない理由の一つとして、推定・報道の帰属を付けて記載する。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「store prices」は、米国ロースターについての市場関係者らの推定を、店舗価格全般に当てはまるよう広げているのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.28,
+          "type": "その他",
+          "fact_ids": [
+            "COFFEE-014"
+          ],
+          "question": "「store prices」は、米国ロースターについての市場関係者らの推定を、店舗価格全般に当てはまるよう広げているのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.28
+    },
+    {
+      "issue_id": "coffee_prices__run_l3_01__a2__6f5e8e53__rf20261010T125728Z-ea2b__s47",
+      "article_id": "coffee_prices__run_l3_01",
+      "article_level": "a2",
+      "article_sha256": "6f5e8e5301963ad650a9538a453a3e5dd493ac61e76fd5ab5cdd6514aa618236",
+      "run_id": "rf20261010T125728Z-ea2b",
+      "timestamp": "2026-10-10T12:57:28+00:00",
+      "sentence_id": "s47",
+      "sentence_text": "Falling coffee market prices take months to lower supermarket prices.",
+      "context": {
+        "before": [
+          "Say, “By the way, how many months ago did you get here?”",
+          "## In one line"
+        ],
+        "after": [],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "COFFEE-014"
+      ],
+      "facts": [
+        {
+          "fact_id": "COFFEE-014",
+          "text": "Reutersが2025年12月に取材した市場関係者・専門家は、生豆価格が小売に反映されるまで少なくとも約9か月かかるとの見積もりを示した。記事は、米国ロースターが平均で生豆在庫を約2～3か月分保有し、その後の焙煎・包装にも約2～3か月かかり、小売業者との価格交渉は四半期ごとに行われることが多いと報じた。\n  scope: 米国のロースターと小売価格への価格転嫁\n  conditions: 市場関係者・専門家の推定およびReutersの取材報告であり、すべての企業の標準期間を示すものではない\n  numeric_value: 転嫁まで少なくとも約9か月との見積もり。在庫約2～3か月分、焙煎・包装約2～3か月 (numeric_scope: 米国のロースターの平均的な在庫・製造過程についての記事内説明)\n  date_or_period: 2025年12月時点の業界関係者の説明\n  causal_strength: CORRELATIONAL\n  notes_for_writer: 相場下落や関税撤廃の後も消費者価格がすぐ下がらない理由の一つとして、推定・報道の帰属を付けて記載する。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "“take months to lower supermarket prices”という断定は、米国の市場関係者らによる約9か月以上との推定を、スーパー価格が必ず数か月後に下がるという一般則に広げていませんか。"
+        },
+        {
+          "type": "その他",
+          "question": "「take months to lower supermarket prices」は、市場価格の下落後に小売価格が必ず下がると読め、約9か月という推定であって値下がりを保証しないという注意書きと食い違うのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.36,
+          "type": "その他",
+          "fact_ids": [
+            "COFFEE-014"
+          ],
+          "question": "“take months to lower supermarket prices”という断定は、米国の市場関係者らによる約9か月以上との推定を、スーパー価格が必ず数か月後に下がるという一般則に広げていませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.82,
+          "type": "その他",
+          "fact_ids": [
+            "COFFEE-014"
+          ],
+          "question": "「take months to lower supermarket prices」は、市場価格の下落後に小売価格が必ず下がると読め、約9か月という推定であって値下がりを保証しないという注意書きと食い違うのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.82
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "a2",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 15432,
+      "output_tokens": 3131,
+      "cost_jpy": 0.497392,
+      "a3_flag_count": 3,
+      "a4_flag_count": 5,
+      "unique_issue": 5,
+      "overlap_a3_a4": 3,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "a2",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 14352,
+      "output_tokens": 184,
+      "cost_jpy": 0.410459,
+      "a3_flag_count": 1,
+      "a4_flag_count": 1,
+      "unique_issue": 1,
+      "overlap_a3_a4": 1,
+      "zero_flag_article": 0
+    },
+    "_all": {
+      "article_level": "a2",
+      "article_status": "OK",
+      "unique_issue": 5,
+      "cost_jpy": 0.907851,
+      "issues_by_both_models": 1
+    }
+  },
+  "warnings": []
+}

@@ -1,0 +1,36 @@
+[FAMILY-X-AUDIO-SCAFFOLD] A2 Comment 1生成開始(er019_output/family_x_audio_production_wiring_01/coffee_prices__run_l3_01/a2)...
+[FAMILY-X-AUDIO-SCAFFOLD] A2 Comment 2生成開始(er019_output/family_x_audio_production_wiring_01/coffee_prices__run_l3_01/a2)...
+[FAMILY-X-AUDIO-SCAFFOLD] A2 Comment 3生成開始(er019_output/family_x_audio_production_wiring_01/coffee_prices__run_l3_01/a2)...
+[FAMILY-X-AUDIO-SCAFFOLD] A2 Comment 4生成開始(er019_output/family_x_audio_production_wiring_01/coffee_prices__run_l3_01/a2)...
+[FAMILY-X-AUDIO-SCAFFOLD] A2 Preview生成開始(er019_output/family_x_audio_production_wiring_01/coffee_prices__run_l3_01/a2)...
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 2101, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 2048, in main
+    scaffold_result = run_theme_scaffold(client, source_dir, out_dir, levels)
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 346, in run_theme_scaffold
+    kp = sc.run_key_phrases(article_text, kp_dir, article_id, level, process=kp_process,
+                             kp_backend=kp_backend)
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_scaffold_generate.py", line 711, in run_key_phrases
+    sel = run_key_phrase_selection(article_text, out_dir, article_id, source_level, process=process,
+                                    diagnostic_note=diagnostic_note, kp_backend=kp_backend,
+                                    synthetic=synthetic, shortlist_cache=shortlist_cache)
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_scaffold_generate.py", line 326, in run_key_phrase_selection
+    return _run_key_phrase_selection_db_hybrid_with_fallback(
+        article_text, out_dir, article_id, source_level, process=process,
+        diagnostic_note=diagnostic_note, synthetic=synthetic, shortlist_cache=shortlist_cache)
+  File "C:\Users\tensh\eigo-radio\er003_v1_n3_01_scaffold_generate.py", line 510, in _run_key_phrase_selection_db_hybrid_with_fallback
+    result = db_hybrid.run_db_hybrid_selection(
+        article_text, os.path.join(out_dir, "key_phrases_db_hybrid"), article_id, source_level,
+        process=process, diagnostic_note=diagnostic_note, shortlist_cache=shortlist_cache)
+  File "C:\Users\tensh\eigo-radio\er030_key_phrase_db_hybrid_selector_01.py", line 563, in run_db_hybrid_selection
+    cost_jpy = pricing.cost_jpy_for_call(
+        "openai", model_id or model, usage.get("input_tokens"),
+        usage.get("cached_input_tokens"), usage.get("output_tokens"))
+  File "C:\Users\tensh\eigo-radio\er009_n1_routing_governance_10_actual_model_cost.py", line 42, in cost_jpy_for_call
+    raise UnknownModelPricingError(
+    ...<2 lines>...
+        "いるため、まずpricing_snapshot.jsonを確認し単価を追加してください。")
+er009_n1_routing_governance_10_actual_model_cost.UnknownModelPricingError: provider=openai model_id='gpt-6-luna' の単価がPRICING_USD_PER_Mに登録されていません。未知modelへ他modelの単価を流用することは禁止されているため、まずpricing_snapshot.jsonを確認し単価を追加してください。
+EXIT=1

@@ -1,0 +1,353 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "coffee_prices__run_l3_01",
+  "article_level": "b1b",
+  "article_sha256": "5e8979dfaf1be6e63ffc29cf6d8670b1bf8c119d63daec39bdbc9c65d73d1e23",
+  "ledger_sha256": "e94a50c1d22686d52bd65beca4272650ecc8286de54629c3d8dfb42fa397ef7b",
+  "run_id": "rf20261010T125626Z-f4c2",
+  "timestamp": "2026-10-10T12:56:26+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "L3_PRODUCTION_E2E_01",
+  "sentence_count": 38,
+  "fact_count": 19,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 7481,
+      "output_tokens": 1683,
+      "cached_tokens": 0,
+      "cost_jpy": 0.254336,
+      "flag_count": 2,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 7631,
+      "output_tokens": 1356,
+      "cached_tokens": 0,
+      "cost_jpy": 0.230576,
+      "flag_count": 3,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6946,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.335008,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 7066,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.340768,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "coffee_prices__run_l3_01__b1b__5e8979df__rf20261010T125626Z-f4c2__s1",
+      "article_id": "coffee_prices__run_l3_01",
+      "article_level": "b1b",
+      "article_sha256": "5e8979dfaf1be6e63ffc29cf6d8670b1bf8c119d63daec39bdbc9c65d73d1e23",
+      "run_id": "rf20261010T125626Z-f4c2",
+      "timestamp": "2026-10-10T12:56:26+00:00",
+      "sentence_id": "s1",
+      "sentence_text": "# Market Prices Fall, Price Tags Stay Put: Coffee Prices’ “Jet Lag”",
+      "context": {
+        "before": [],
+        "after": [
+          "“Coffee prices are falling!”",
+          "Great, maybe spring will finally come to my wallet too."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "COFFEE-015"
+      ],
+      "facts": [
+        {
+          "fact_id": "COFFEE-015",
+          "text": "BLSの2026年8月CPIでは、米国の「Coffee」項目の指数は前年同月比6.1%上昇だった。\n  scope: 米都市消費者（CPI-U）におけるコーヒー項目\n  conditions: BLSの前年同月比指数。特定ブランドの価格やカフェの一杯の価格ではない\n  numeric_value: 前年同月比+6.1% (numeric_scope: 米国CPI-Uの「Coffee」項目の価格指数)\n  date_or_period: 2026年8月のCPI。公表日は2026年9月11日\n  notes_for_writer: 2026年8月時点では前年より高い一方、過去のピーク時の上昇率と同一視しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "不在断定",
+          "question": "「Price Tags Stay Put」という断定は、台帳に小売価格が動いていないとの記載がなく、米国のコーヒーCPIは前年同月比で上昇していた点と食い違うのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.28,
+          "type": "不在断定",
+          "fact_ids": [
+            "COFFEE-015"
+          ],
+          "question": "「Price Tags Stay Put」という断定は、台帳に小売価格が動いていないとの記載がなく、米国のコーヒーCPIは前年同月比で上昇していた点と食い違うのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        }
+      ],
+      "confidence": 0.28
+    },
+    {
+      "issue_id": "coffee_prices__run_l3_01__b1b__5e8979df__rf20261010T125626Z-f4c2__s2",
+      "article_id": "coffee_prices__run_l3_01",
+      "article_level": "b1b",
+      "article_sha256": "5e8979dfaf1be6e63ffc29cf6d8670b1bf8c119d63daec39bdbc9c65d73d1e23",
+      "run_id": "rf20261010T125626Z-f4c2",
+      "timestamp": "2026-10-10T12:56:26+00:00",
+      "sentence_id": "s2",
+      "sentence_text": "“Coffee prices are falling!”",
+      "context": {
+        "before": [
+          "# Market Prices Fall, Price Tags Stay Put: Coffee Prices’ “Jet Lag”"
+        ],
+        "after": [
+          "Great, maybe spring will finally come to my wallet too.",
+          "But on supermarket shelves, the price tags do not move at all."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "COFFEE-009",
+        "COFFEE-015"
+      ],
+      "facts": [
+        {
+          "fact_id": "COFFEE-009",
+          "text": "USDAはICOの月次複合価格指数を指標として、コーヒー価格が2026年7月までの7か月間に25%下落したと報告した。同報告は、追加供給の入手可能性を下落と結び付けている。\n  scope: ICO月次複合価格指数を用いた世界市場価格\n  conditions: USDAが2026年7月報告で記載した観察期間\n  numeric_value: 7か月で-25% (numeric_scope: ICO月次複合価格指数。個別品種または小売価格ではない)\n  date_or_period: 2025年末頃から2026年7月までの7か月間\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: 価格が2026年中に下落局面へ移ったことを示す。小売価格も同じ速度で下がったとは言えない。"
+        },
+        {
+          "fact_id": "COFFEE-015",
+          "text": "BLSの2026年8月CPIでは、米国の「Coffee」項目の指数は前年同月比6.1%上昇だった。\n  scope: 米都市消費者（CPI-U）におけるコーヒー項目\n  conditions: BLSの前年同月比指数。特定ブランドの価格やカフェの一杯の価格ではない\n  numeric_value: 前年同月比+6.1% (numeric_scope: 米国CPI-Uの「Coffee」項目の価格指数)\n  date_or_period: 2026年8月のCPI。公表日は2026年9月11日\n  notes_for_writer: 2026年8月時点では前年より高い一方、過去のピーク時の上昇率と同一視しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「Coffee prices are falling」と全般のコーヒー価格が下落しているように読めますが、台帳では世界市場の指標は下落した一方、米国のCPI項目は前年同月比で上昇しており、範囲が広すぎるのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.35,
+          "type": "その他",
+          "fact_ids": [
+            "COFFEE-009",
+            "COFFEE-015"
+          ],
+          "question": "「Coffee prices are falling」と全般のコーヒー価格が下落しているように読めますが、台帳では世界市場の指標は下落した一方、米国のCPI項目は前年同月比で上昇しており、範囲が広すぎるのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.35
+    },
+    {
+      "issue_id": "coffee_prices__run_l3_01__b1b__5e8979df__rf20261010T125626Z-f4c2__s4",
+      "article_id": "coffee_prices__run_l3_01",
+      "article_level": "b1b",
+      "article_sha256": "5e8979dfaf1be6e63ffc29cf6d8670b1bf8c119d63daec39bdbc9c65d73d1e23",
+      "run_id": "rf20261010T125626Z-f4c2",
+      "timestamp": "2026-10-10T12:56:26+00:00",
+      "sentence_id": "s4",
+      "sentence_text": "But on supermarket shelves, the price tags do not move at all.",
+      "context": {
+        "before": [
+          "“Coffee prices are falling!”",
+          "Great, maybe spring will finally come to my wallet too."
+        ],
+        "after": [
+          "They look perfectly calm, as if to say, “News?",
+          "Never heard of it.”"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "COFFEE-015"
+      ],
+      "facts": [
+        {
+          "fact_id": "COFFEE-015",
+          "text": "BLSの2026年8月CPIでは、米国の「Coffee」項目の指数は前年同月比6.1%上昇だった。\n  scope: 米都市消費者（CPI-U）におけるコーヒー項目\n  conditions: BLSの前年同月比指数。特定ブランドの価格やカフェの一杯の価格ではない\n  numeric_value: 前年同月比+6.1% (numeric_scope: 米国CPI-Uの「Coffee」項目の価格指数)\n  date_or_period: 2026年8月のCPI。公表日は2026年9月11日\n  notes_for_writer: 2026年8月時点では前年より高い一方、過去のピーク時の上昇率と同一視しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "不在断定",
+          "question": "「do not move at all」という断定は、台帳にスーパーの価格表示がまったく動いていないとの記載がなく、米国のコーヒーCPIは前年同月比で上昇していた点と食い違うのではありませんか。"
+        },
+        {
+          "type": "不在断定",
+          "question": "「price tags do not move at all」とスーパーの価格表示がまったく変動しないと断定していますが、台帳にはそのような不変の事実はなく、CPI項目は前年同月比で上昇しているのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.32,
+          "type": "不在断定",
+          "fact_ids": [
+            "COFFEE-015"
+          ],
+          "question": "「do not move at all」という断定は、台帳にスーパーの価格表示がまったく動いていないとの記載がなく、米国のコーヒーCPIは前年同月比で上昇していた点と食い違うのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.32,
+          "type": "不在断定",
+          "fact_ids": [
+            "COFFEE-015"
+          ],
+          "question": "「price tags do not move at all」とスーパーの価格表示がまったく変動しないと断定していますが、台帳にはそのような不変の事実はなく、CPI項目は前年同月比で上昇しているのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.32
+    },
+    {
+      "issue_id": "coffee_prices__run_l3_01__b1b__5e8979df__rf20261010T125626Z-f4c2__s38",
+      "article_id": "coffee_prices__run_l3_01",
+      "article_level": "b1b",
+      "article_sha256": "5e8979dfaf1be6e63ffc29cf6d8670b1bf8c119d63daec39bdbc9c65d73d1e23",
+      "run_id": "rf20261010T125626Z-f4c2",
+      "timestamp": "2026-10-10T12:56:26+00:00",
+      "sentence_id": "s38",
+      "sentence_text": "Falling coffee market prices don’t quickly lower supermarket prices because the changes take months to reach shelves.",
+      "context": {
+        "before": [
+          "The next time you see a headline about falling prices, ask the price tag: “By the way, how many months ago did you get here?”",
+          "## In one line"
+        ],
+        "after": [],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "COFFEE-014"
+      ],
+      "facts": [
+        {
+          "fact_id": "COFFEE-014",
+          "text": "Reutersが2025年12月に取材した市場関係者・専門家は、生豆価格が小売に反映されるまで少なくとも約9か月かかるとの見積もりを示した。記事は、米国ロースターが平均で生豆在庫を約2～3か月分保有し、その後の焙煎・包装にも約2～3か月かかり、小売業者との価格交渉は四半期ごとに行われることが多いと報じた。\n  scope: 米国のロースターと小売価格への価格転嫁\n  conditions: 市場関係者・専門家の推定およびReutersの取材報告であり、すべての企業の標準期間を示すものではない\n  numeric_value: 転嫁まで少なくとも約9か月との見積もり。在庫約2～3か月分、焙煎・包装約2～3か月 (numeric_scope: 米国のロースターの平均的な在庫・製造過程についての記事内説明)\n  date_or_period: 2025年12月時点の業界関係者の説明\n  causal_strength: CORRELATIONAL\n  notes_for_writer: 相場下落や関税撤廃の後も消費者価格がすぐ下がらない理由の一つとして、推定・報道の帰属を付けて記載する。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「changes take months to reach shelves」と一律の仕組みのように述べていますが、台帳では約9か月という見積もりは業界関係者の推定で全企業共通ではないとされており、断定が強すぎるのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.38,
+          "type": "その他",
+          "fact_ids": [
+            "COFFEE-014"
+          ],
+          "question": "「changes take months to reach shelves」と一律の仕組みのように述べていますが、台帳では約9か月という見積もりは業界関係者の推定で全企業共通ではないとされており、断定が強すぎるのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.38
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 15112,
+      "output_tokens": 3039,
+      "cost_jpy": 0.484912,
+      "a3_flag_count": 2,
+      "a4_flag_count": 3,
+      "unique_issue": 4,
+      "overlap_a3_a4": 1,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 14012,
+      "output_tokens": 8,
+      "cost_jpy": 0.675776,
+      "a3_flag_count": 0,
+      "a4_flag_count": 0,
+      "unique_issue": 0,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 1
+    },
+    "_all": {
+      "article_level": "b1b",
+      "article_status": "OK",
+      "unique_issue": 4,
+      "cost_jpy": 1.160688,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}

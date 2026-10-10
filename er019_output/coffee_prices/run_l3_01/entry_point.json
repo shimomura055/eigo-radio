@@ -1,0 +1,117 @@
+{
+  "runner": "er019_family_x_entertainment_production_runner_01.py",
+  "management_id": "NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01",
+  "runner_sha256": "6aa5b362d81df1e3901c7c4bd87e6c53540f2ce9de6a15e67a848aac1b8d6179",
+  "b3_module_sha256": "93d0e31e735057ae874bbf27be48449fdd5bd5188e535b0a280eada9d314b758",
+  "ja_writer_module_sha256": "87339033ee0d8e1b84a989fad73819012e25d6b5ad9beac1a38ca4e93f2e4a38",
+  "annotation_contract_module_sha256": "5f4c725e0b332e028b8285389532dedc28e067f29caf6c63863b0be4f0017885",
+  "annotation_producer_module_sha256": "8899d0fa4a9b2274fcd79165b447ab02988d40f799cbca01e06df51a6f7155f2",
+  "risk_flagger_module_sha256": "ed3555c9da56ed651892858bdddef3624dd375bf9f0035bc1e10996604784810",
+  "review_queue_module_sha256": "ebe746f11181888ed286f05db17d40141c60aa6fca0b163f47fcd60c0aa3f7ed",
+  "args": {
+    "theme": "Current news/lifestyle topic: why coffee prices have risen so sharply and why a cup of coffee now costs more. Using only facts confirmed by web search (International Coffee Organization, USDA reports, Reuters/AP/Bloomberg-level reporting, company announcements), cover recent coffee bean price levels and changes (with dates, and whether arabica or robusta), the reported causes (weather and harvest conditions in producing countries, currency, supply and demand, tariffs if reported), and the reported effect on retail or cafe prices for consumers. Separate confirmed facts from forecasts, and do not present one cause as the only cause unless the source says so. Do not invent details and do not use the assistant's own prior knowledge.",
+    "slug": "coffee_prices",
+    "out_dir": "er019_output/coffee_prices/run_l3_01",
+    "source_note": "",
+    "run_label": "L3_PRODUCTION_E2E_01",
+    "budget_jpy": 350.0,
+    "stage": "all",
+    "regenerate_stage": null,
+    "stop_after": "standard"
+  },
+  "timestamp": "2026-10-10T21:49:42",
+  "risk_flagger": {
+    "b1b": {
+      "status": "OK",
+      "reason": null,
+      "rf_run_id": "rf20261010T125626Z-f4c2",
+      "article_sha256": "5e8979dfaf1be6e63ffc29cf6d8670b1bf8c119d63daec39bdbc9c65d73d1e23",
+      "ledger_sha256": "e94a50c1d22686d52bd65beca4272650ecc8286de54629c3d8dfb42fa397ef7b",
+      "splitter_version": "en_split_v1",
+      "timestamp": "2026-10-10T12:56:26+00:00",
+      "producer": "deterministic_v2",
+      "run_label": "L3_PRODUCTION_E2E_01",
+      "issue_count": 4,
+      "conditions": [
+        {
+          "model_key": "luna",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 2,
+          "cost_jpy": 0.254336
+        },
+        {
+          "model_key": "luna",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 3,
+          "cost_jpy": 0.230576
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.335008
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.340768
+        }
+      ]
+    },
+    "a2": {
+      "status": "OK",
+      "reason": null,
+      "rf_run_id": "rf20261010T125728Z-ea2b",
+      "article_sha256": "6f5e8e5301963ad650a9538a453a3e5dd493ac61e76fd5ab5cdd6514aa618236",
+      "ledger_sha256": "e94a50c1d22686d52bd65beca4272650ecc8286de54629c3d8dfb42fa397ef7b",
+      "splitter_version": "en_split_v1",
+      "timestamp": "2026-10-10T12:57:28+00:00",
+      "producer": "deterministic_v2",
+      "run_label": "L3_PRODUCTION_E2E_01",
+      "issue_count": 5,
+      "conditions": [
+        {
+          "model_key": "luna",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 3,
+          "cost_jpy": 0.227376
+        },
+        {
+          "model_key": "luna",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 5,
+          "cost_jpy": 0.270016
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.205171
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.205288
+        }
+      ]
+    }
+  }
+}
