@@ -20457,3 +20457,8 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 結果: Disney+のFlagは完全台帳で全セル0件(修正前 Luna4/Sol1/Astra0)。台帳28本中2テーマ(streaming_price・semiconductor_earnings)で欠落、文単位9/78・記事7/38が影響。
 - 決定事項: WRITER-DEV-RISK-FLAGGER-DESIGN-01 の既存KPI値(FINAL_REPORT_01 §0)は再計算完了まで確定値として扱わない(値は未変更、注記のみ)。KPI影響分類「一部再計算必要」は提案であり、確定はユーザー/Fable。
 - 境界: Production変更なし、detectors配下変更なし、パーサ修正なし(修正案A〜Eは未実装)、`APPROVED_FOR_PRODUCTION`なし、採用判断なし、モデル優劣の確定なし。
+
+## WRITER-R0-MODEL-IMPACT-TRIAL-01-FIX02: 前回R0を含む12本のRisk Flagger(2026-10-10、Status=USER_DECISION_REQUIRED)
+- Fable判断により「前回R0」=FACTLOCK-ASTRA-E2E-TRIAL-01 new腕 new_writer/r0.md(old腕は含めない)。3テーマ x 4源=12本を完全台帳・同一条件でFlagger実行(実費JPY20.03、上限JPY30内)。
+- 結果: Flag1件(宇宙兵器・前回R0・不在断定 conf0.30)、今回R0 9本は0件。詳細REPORT §114 FIX02、`er052_output/writer_r0_model_impact_trial_01/fix02/RESULT_FIX02.md`。
+- 境界: Production変更なし、detectors配下変更なし、`APPROVED_FOR_PRODUCTION`なし、採用判断なし、モデル優劣の確定なし、有用/誤検知の確定なし。

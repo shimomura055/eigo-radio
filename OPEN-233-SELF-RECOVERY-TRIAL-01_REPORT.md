@@ -5997,3 +5997,10 @@ MEASURED(Trial、Production変更なし)。Fable最終判定=総合『同等・�
 - 限界: Disney+以外の影響セルの完全台帳での再実行は未実施。E2E評価ラベルは台帳原文照合でパーサ非経由と読めるが、評価ワーカー入力は再点検していない。
 - 注記を追加したファイル: `FINAL_REPORT_01.md`冒頭(KPI値は書き換えず確定値扱い停止)、`HUMAN_CHECK_RISK_FLAGGER_01.md`冒頭(影響10 Flagに★FIX01影響、F07/F1原文引用)。
 - 成果物: `er052_output/writer_r0_model_impact_trial_01/{FIX01_DISNEY_RERUN_01.md,RESULT_02.md,r0_fix01_driver.py,flags_fix01/,results_fix01/,logs_fix01/,cost_ledger_01.jsonl(phase=fix01)}`、`er052_output/writer_dev_risk_flagger_01/fix01_ledger_audit/{LEDGER_AUDIT_01.md,PARSER_USAGE_01.md,ledger_audit_01.json,audit_ledger_coverage_01.py}`。Production変更なし、APPROVED_FOR_PRODUCTIONなし、採用判断なし。
+
+### §114 FIX02: 前回R0を含む12本のRisk Flagger(完全台帳、2026-10-10、MEASURED、API費用 JPY20.03、Production変更なし)
+- 対象(Fable判断): 3テーマ x {前回R0(FACTLOCK-ASTRA-E2E-TRIAL-01 new腕 `new_writer/r0.md`、gpt-6-luna、Fact Lock付き、ja_writer/original.mdとsha一致)、今回Luna/Sol/Astra R0}=12本。old腕original.md(旧Writer構成・Fact Lockなし)は保存されているが本比較に含めない。前回R0と今回Luna R0は同構成・同モデルの別生成物で差は生成ごとのばらつきを含む(事実の注記)。
+- 条件: FIX01-Aと同一の完全台帳方式、D0+D2記事モード(gpt-6.1-sol/medium、D2rank不使用)、R0再生成なし、detectors配下無変更(5ファイルsha一致)。全セルで Fact数==台帳見出し数(7/22/11)をassert、D2 system prompt sha・台帳sha・effort一致を機械確認。
+- 結果(D0rb∪D2、confidence閾値別): 12本中Flagは1件のみ(宇宙兵器・前回R0・s6 不在断定 conf0.30、対応Fact F-001、D2)。>=0.10/0.20/0.30 は1件、>=0.50 は0件。今回R0 9本は全て0件(FIX01-A Disney+ 0/0/0と一致)。D0 gate_only参考件数(総数外): 宇宙兵器 前回R0 4 / Luna 2 / Sol 2 / Astra 3。優劣は未確定、Flagger 0件は問題なしの保証ではない。
+- 費用: JPY20.03(上限JPY30内)、D2 12回、再試行0・失敗0。Trial累計 JPY189.39(委任_01 165.97 + FIX01-A 3.39 + FIX02 20.03)。
+- 成果物: `er052_output/writer_r0_model_impact_trial_01/fix02/{PREREGISTRATION_FIX02.md,RESULT_FIX02.md,fix02_driver.py,aggregate_fix02.py,manifest_fix02.json,flags/,results/,logs/,cost_ledger_fix02.jsonl}`。Status=USER_DECISION_REQUIRED(STOP)。Production変更なし、APPROVED_FOR_PRODUCTIONなし、採用判断なし。
