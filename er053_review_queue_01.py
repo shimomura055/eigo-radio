@@ -181,7 +181,9 @@ class _IndexLock:
                 self.fd = os.open(self.path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
                 os.write(self.fd, str(os.getpid()).encode())
                 return self
-            except FileExistsError:
+            except (FileExistsError, PermissionError):
+                # Windowsでは別プロセス/スレッドがlockを保持・削除中のopen(O_EXCL)が
+                # PermissionErrorになることがある(C3-5、委任_09)。FileExistsErrorと同じ待機扱い。
                 try:
                     if time.time() - os.path.getmtime(self.path) > self.stale:
                         os.remove(self.path)         # 古い(異常終了で残った)lockのみ除去
