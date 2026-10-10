@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>META Standard 日本語タイトル 出演/出現 確認(ユーザー試聴用)</title>
+<style>body{font-family:sans-serif;max-width:900px;margin:1em auto;padding:0 1em}table{border-collapse:collapse;width:100%}td,th{border:1px solid #888;padding:6px;vertical-align:top}audio{min-width:360px}.ng{color:#b00}</style></head>
+<body>
+<h1>META Standard 日本語タイトル 出演/出現 確認(ユーザー試聴用)</h1>
+<p><b>原稿(正):</b> AIの電話に人間が出演。問題は「キャスト変更」のお知らせでした</p>
+<p>聞いてほしい点: 「出演」と発音されているか、「出現」と発音されているか。</p>
+<p><b>TTS誤発音かASR誤検知かは未確定(ユーザー試聴待ち)。</b>以下3本はすべてPrimary ASRが「出現」と認識して不合格(TRUE_CONTENT_MISMATCH)とした保存済み音声です。Secondary ASRは未実行、最終結果はSTOPPEDでした。</p>
+<table>
+<tr><th>attempt</th><th>音声</th><th>Primary ASR認識結果</th><th>判定</th><th>voice / backend</th></tr>
+<tr><td>attempt 1(標準)<br>6.12秒</td><td><audio controls preload="metadata" src="attempt1.mp3"></audio></td><td>AIの電話に人間が出現。問題は、キャスト変更のお知らせでした。</td><td class="ng">TRUE_CONTENT_MISMATCH(不合格)</td><td>Aoede / speech_metadata_flash_lite(gemini-3.8-flash-lite-tts、BATCH)</td></tr>
+<tr><td>attempt 2(標準)<br>6.00秒</td><td><audio controls preload="metadata" src="attempt2.mp3"></audio></td><td>AIの電話に人間が出現。問題は、キャスト変更のお知らせでした。</td><td class="ng">TRUE_CONTENT_MISMATCH(不合格)</td><td>Aoede / speech_metadata_flash_lite(gemini-3.8-flash-lite-tts、BATCH)</td></tr>
+<tr><td>attempt 3(fallback)<br>5.96秒</td><td><audio controls preload="metadata" src="attempt3.mp3"></audio></td><td>AIの電話に人間が出現、問題はキャスト変更のお知らせでした。</td><td class="ng">TRUE_CONTENT_MISMATCH(不合格)</td><td>Aoede / speech_metadata_flash_lite(gemini-3.8-flash-lite-tts、BATCH、minimal fallback)</td></tr>
+</table>
+<p>対象: META記事 Standard(A2)の日本語タイトル。出典run: meta__run_regen_01 / a2(保存済みattempt音声をmp3化。新規生成なし)。</p>
+</body></html>
