@@ -6011,3 +6011,9 @@ MEASURED(Trial、Production変更なし)。Fable最終判定=総合『同等・�
 - 既知候補10文: 宇宙兵器・BYD・制動灯の6文は初出以降A6まで継続(初出 A3:1 / A4:3 / A5:2)。Disney+4文は別区分で、C01・C03はA4-A5のみ、C02はA3のみ、C04は一度も出ず。C02はFlagger理由が台帳F07との主語入替(回答主体Disney/Reuters)で、事前登録の『F07に根拠あり』と異なる可能性(注記のみ、最終判定はユーザー)。
 - Closeout提案: USER_DECISION_REQUIRED(採用Antennaレベルはユーザー判断、Claude側採用なし)。Production wiring・CURRENT_SPEC・Checker変更なし。`APPROVED_FOR_PRODUCTION`なし。
 - 成果物: `er052_output/writer_dev_risk_flagger_01/antenna_trial_01/{RESULT_01.md,USER_SUMMARY_01.md,HUMAN_CHECK_ANTENNA_01.md,MATCHING_RULE_01.md,aggregate_antenna.py,aggregate_antenna_01.json,make_human_check.py,cost_ledger_antenna_01.jsonl,flags/,results/,logs/}`。
+
+### §116 WRITER-DEV-RISK-FLAGGER-POST-EN-TRIAL-01: A3+A4 Risk Flaggerの英訳後配置Trial(2026-10-10、MEASURED、API費用 JPY49.38、Production変更なし)
+- 条件: 既存英語稿11本(既定8テーマ=U01-U08[採用稿6+STOP稿2: OpenAI・Semiconductor]+既知例用追加3本[Hormuz/Space/OpenAIのB1回復前稿])、完全Fact台帳(8テーマ全PASS、expected=regex=parsed)、Flagger gpt-6.1-sol(最新最上位系)/effort=medium、A3/A4 promptはANTENNA-TRIAL-01とバイト一致(英語注記なし)、22回、再試行0・失敗0、model欄実測=gpt-6.1-sol。新規生成・再生成なし。
+- 結果: sentence-level 45(A3 20+A4 25)、A3/A4 overlap 16、Union 29、意味上の問題単位23(提案)、1記事平均Union 2.64(既定8本2.75)。OpenAI actor drift(X11 s7)はA3 0.96・A4 0.94で主体入替として拾った。Semiconductor境界例U08 s25はA3 0.68/A4 0.35。Hormuz『oil prices』(X09)・BYD In One Line文(U05 s27)は未Flag。新規候補例: BYD『A recall notice』(2公告合算、A3 .88/A4 .94)。
+- 所在差異: ユーザー指示のOpenAI日本語R2(OpenAI明示=B1回復後)と英語引用(models' output=B1回復前)は別世代。
+- Closeout提案: USER_DECISION_REQUIRED。成果物: `er052_output/writer_dev_risk_flagger_01/post_en_trial_01/{RESULT_01.md,HUMAN_REVIEW_POST_EN_01.md,INVENTORY_01.md,LEDGER_COMPLETENESS_01.md,EN_ADAPTATION_01.md,PREREGISTRATION_01.md,aggregate_post_en_01.json,cost_ledger_post_en_01.jsonl,flags/,results/,logs/,inputs/}`。Production変更なし、`PRODUCTION_WIRED`なし。

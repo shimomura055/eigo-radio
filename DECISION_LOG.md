@@ -20468,3 +20468,20 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 結果: 9記事x6段階=54回(実費JPY106.38)。記事/Flag: A1 0/0, A2 3/3, A3 5/5, A4 7/13, A5 7/20, A6 6/13。重要Flag消失2遷移(A3→A4, A5→A6)。既知非Disney+6文は初出後A6まで継続。詳細REPORT §115、`er052_output/writer_dev_risk_flagger_01/antenna_trial_01/{RESULT_01,USER_SUMMARY_01,HUMAN_CHECK_ANTENNA_01}.md`。
 - 未決(ユーザー判断): 採用Antennaレベル(または不採用)、Disney+ C02の扱い、A6消失の反復確認の要否、確信度閾値併用、低確信度候補の確認対象化。
 - 境界: Production変更なし、detectors配下変更なし、CURRENT_SPEC変更なし、Checker変更なし、`APPROVED_FOR_PRODUCTION`なし、Claude側の採用決定なし。
+
+## 2026-10-10 ユーザー決定(WRITER-DEV-RISK-FLAGGER-POST-EN-TRIAL-01起票時、ANTENNA-TRIAL-01後の判断。ユーザー指示の記録)
+- Risk Flaggerは A3+A4のUnion が採用候補。強制Top3は不採用。0件でも複数件でもよい。
+- Risk FlaggerはCheckerではない(STOPしない・PASS/FAIL判定しない・自動Rewriteしない・Human Reviewで見る場所を示すだけ)。
+- A5はノイズが多く不採用。A6も採用しない。
+- 初期量産では人間が確認する。人間が確認できない日は、そのまま記事を流す運用も許容する。
+- ユーザーは、旧Writer+Checkerより、新Writer+Checkerなしの方が実質品質は高いと判断した。
+- 運用コンセプト「**新Writer + Production Checkerなし + A3/A4 Risk Flagger + Human Review**」自体は `APPROVED_FOR_PRODUCTION`(2026-10-10ユーザー決定)。ただし **`PRODUCTION_WIRED`ではない(未配線)**。Risk Flaggerを英訳後・音声化前に置くことは**未VALIDATED**であり、Production wiringも未実施。
+- 観察(ユーザー指摘): Central Bank Mortgageで、R0後Fact Checkが軽微なscope問題を指摘して再生成した結果、Fact『0.25pt引上げ、3.75〜4.00%の目標レンジ』が再生成後に『3.75%から4.00%に引き上げた』という重大なFact誤りを新たに生成した。Checker起点のRewriteが新しい重大問題を作るリスクがある。ユーザーの基本方針はWriter自身のFact忠実性を高め、下流Checkerによる自動修正は極力入れない。
+- 未決(今回のTrial結果を確認した後にユーザーが正式判断): A3+A4の英訳後配置 / R0後Hard STOP Check除去 / 翻訳後Hard STOP Check除去。
+
+## WRITER-DEV-RISK-FLAGGER-POST-EN-TRIAL-01: A3+A4 Risk Flaggerの英訳後配置Trial(2026-10-10、Status提案=USER_DECISION_REQUIRED)
+- 実施: 既存英語稿(FACTLOCK-ASTRA-E2E-TRIAL-01)11本(既定8テーマ+既知例用の追加3本。STOP稿を含む)x A3/A4=22回、完全Fact台帳(8テーマ全PASS)、gpt-6.1-sol/medium、ANTENNA-TRIAL-01とprompt同一(sha一致、英語注記なし)。新規生成・再生成・R0/翻訳なし。実費JPY49.38(見積中央JPY50.83、上限JPY100内)。
+- 結果: sentence-level 45(A3 20+A4 25)、overlap 16、Union 29、意味上の問題単位23(提案)、平均2.64/記事(8本のみ2.75)。OpenAI actor drift(B1回復前STOP稿X11 s7)はA3(0.96)・A4(0.94)とも主体入替として拾った。Semiconductor境界例(U08 s25)はA3 0.68/A4 0.35で拾った。Hormuz『oil prices』(X09)とBYD In One Line文(U05 s27)は未Flag。
+- 所在差異: ユーザー指示のOpenAI日本語R2(OpenAI明示)と英語引用(models' output)は別世代の稿(B1回復後/前)。詳細 `er052_output/writer_dev_risk_flagger_01/post_en_trial_01/INVENTORY_01.md` §2。
+- 未決(ユーザー判断): 上記3件の配置・Check除去、confidence閾値の要否、文分割改善、見逃し既知例の扱い。詳細 REPORT §116、`er052_output/writer_dev_risk_flagger_01/post_en_trial_01/{RESULT_01,HUMAN_REVIEW_POST_EN_01}.md`。
+- 境界: Production変更なし、detectors/antenna_trial_01配下変更なし、CURRENT_SPEC変更なし、Checker変更なし、`PRODUCTION_WIRED`なし、Claude側の採用決定なし、有用/不要の最終ラベル確定なし。

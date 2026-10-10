@@ -1,0 +1,158 @@
+{
+  "level": 4,
+  "unit": "U06",
+  "theme": "streaming_price",
+  "cell": "pe_A4_U06_streaming_price",
+  "flagger_model": "gpt-6.1-sol",
+  "flagger_effort": "medium",
+  "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+  "input_path": "er052_output/writer_dev_risk_flagger_01/post_en_trial_01/inputs/U06_streaming_price.md",
+  "input_sha256": "f02847d316ccbe7eb06c2c6c4e0b53421e772765cb59039bb8753e03263fea8b",
+  "status": "採用稿(ADOPTED。Adv RESOLVED_STAGE2_DOWNGRADE)",
+  "ledger_sha256": "6488ef82b057a2bf72104db5bf90a904fdd327e5991926a0b404e20e39919019",
+  "n_sentences": 34,
+  "n_facts": 7,
+  "fact_ids": [
+    "F01",
+    "F02",
+    "F03",
+    "F04",
+    "F05",
+    "F06",
+    "F07"
+  ],
+  "rc": 0,
+  "valid_json": true,
+  "attempts": 1,
+  "cost_jpy": 2.4643200000000003,
+  "elapsed_s": 15.87,
+  "usage": [
+    {
+      "input_tokens": 3866,
+      "output_tokens": 767,
+      "reasoning_tokens": 289,
+      "cached_tokens": 0
+    }
+  ],
+  "model_ids": [
+    "gpt-6.1-sol"
+  ],
+  "flags": [
+    {
+      "unit_id": "U06",
+      "sentence_id": "s8",
+      "sentence": "The monthly ad-supported plan by itself will go from $11.99 to $12.49, a difference of $0.50.",
+      "type": "主体対象入替",
+      "fact_ids": [
+        "F02",
+        "F05"
+      ],
+      "confidence": 0.4,
+      "severity": "重大",
+      "question": "「will go from $11.99 to $12.49」は対象を限定せず一律の改定と読めますが、台帳では米国向け価格であり「第三者請求経由では価格が異なる場合がある」とされているのではありませんか。",
+      "detector": "d2",
+      "call": "d2"
+    },
+    {
+      "unit_id": "U06",
+      "sentence_id": "s9",
+      "sentence": "The monthly Premium plan by itself will go from $18.99 to $21.49, a difference of $2.50.",
+      "type": "主体対象入替",
+      "fact_ids": [
+        "F03",
+        "F05"
+      ],
+      "confidence": 0.4,
+      "severity": "重大",
+      "question": "「will go from $18.99 to $21.49」は対象を限定せず一律の改定と読めますが、台帳では米国向け価格であり「第三者請求経由では価格が異なる場合がある」とされているのではありませんか。",
+      "detector": "d2",
+      "call": "d2"
+    },
+    {
+      "unit_id": "U06",
+      "sentence_id": "s16",
+      "sentence": "So the headline about the price increase is a preview sent to everyone.",
+      "type": "その他",
+      "fact_ids": [],
+      "confidence": 0.2,
+      "severity": "重大",
+      "question": "「a preview sent to everyone」は比喩だけでなく全員への通知送付とも読めますが、全員に送付されたという事実は台帳では確認できないのではありませんか。",
+      "detector": "d2",
+      "call": "d2"
+    },
+    {
+      "unit_id": "U06",
+      "sentence_id": "s17",
+      "sentence": "But the day the main story begins on your bill is different for each person.",
+      "type": "数量時系列",
+      "fact_ids": [
+        "F06"
+      ],
+      "confidence": 0.55,
+      "severity": "重大",
+      "question": "「is different for each person」は全員の適用日が互いに異なると読めますが、台帳の「各利用者の請求サイクルにより異なる」は同じ日に適用される利用者もいることを排除していないのではありませんか。",
+      "detector": "d2",
+      "call": "d2"
+    },
+    {
+      "unit_id": "U06",
+      "sentence_id": "s21",
+      "sentence": "The price list tells you “how much.” When you look at it together with when you signed up and your billing cycle, you can see when the change starts for you.",
+      "type": "その他",
+      "fact_ids": [
+        "F05",
+        "F06"
+      ],
+      "confidence": 0.35,
+      "severity": "重大",
+      "question": "「when you signed up and your billing cycle」で適用時期を確定できるという記述は、台帳の「第三者請求パートナー経由では価格や適用条件が異なる場合がある」という条件を落として断定しているのではありませんか。",
+      "detector": "d2",
+      "call": "d2"
+    }
+  ],
+  "sentences": {
+    "s1": "# Disney+ Prices Are Going Up: Don’t Miss the “Coming Up Next” on Your Bill!",
+    "s2": "The news that “Disney+ is raising its prices” may have made tense background music start playing in your mental household budget.",
+    "s3": "Before you clutch your wallet and think, “Not my subscription fees again...,” pause here.",
+    "s4": "The new prices in the U.S.",
+    "s5": "do not mean everyone’s bill will go up on the same day.",
+    "s6": "The star is the price tag, with the calendar as a surprising co-star.",
+    "s7": "First, let’s look at the numbers that directly affect your wallet.",
+    "s8": "The monthly ad-supported plan by itself will go from $11.99 to $12.49, a difference of $0.50.",
+    "s9": "The monthly Premium plan by itself will go from $18.99 to $21.49, a difference of $2.50.",
+    "s10": "The yearly price for the Premium plan by itself is changing too, so people who pay by the year should take note.",
+    "s11": "The story now splits into two paths.",
+    "s12": "New subscribers get the new prices first.",
+    "s13": "For people who already have a subscription, the new prices start later, with a future billing cycle.",
+    "s14": "The changeover time for each current subscriber depends on their billing cycle.",
+    "s15": "Even if you watch the same show on the same night, the new price’s “release date” may not be the same.",
+    "s16": "So the headline about the price increase is a preview sent to everyone.",
+    "s17": "But the day the main story begins on your bill is different for each person.",
+    "s18": "It’s too soon to rush to the ending and ask, “The news is out.",
+    "s19": "Does that mean my price changes today?” First, check whether you are a new subscriber or already had a subscription.",
+    "s20": "Then check your billing cycle.",
+    "s21": "The price list tells you “how much.” When you look at it together with when you signed up and your billing cycle, you can see when the change starts for you.",
+    "s22": "We should ask the calendar to join the household budget meeting, not just the calculator.",
+    "s23": "Now, the question many people have is, “So why are prices going up?” But there is no clear answer here.",
+    "s24": "The Disney+ U.S.",
+    "s25": "pricing page and the Reuters report that we checked did not clearly state Disney’s reason for this change.",
+    "s26": "According to Reuters, Disney did not answer a request for comment right away.",
+    "s27": "The numbers are there.",
+    "s28": "But the sources we checked do not tell us the reason.",
+    "s29": "We must not fill this gap by writing a script based on guesses.",
+    "s30": "If you are reviewing your subscription costs, check these three things together: how much, when, and how much has been explained about the reason.",
+    "s31": "Next, check not only when your favorite shows will be available, but also when you are due to be charged.",
+    "s32": "## In one line",
+    "s33": "Disney+’s U.S.",
+    "s34": "price increases apply first to new subscribers, while existing customers switch on different billing cycles."
+  },
+  "facts": {
+    "F01": "2026年10月8日までに今回のWeb調査で確認できた主要な米国向け動画ストリーミング価格改定のうち、最も新しい発表としてDisney+の2026年9月23日の改定を選定した。\n  scope: 米国向け動画ストリーミングサービスの価格改定発表として調査で確認した範囲\n  conditions: 「最も新しい」は調査時点までにWeb検索で確認できた発表に基づく選定。\n  date_or_period: 発表日：2026-09-23。調査基準日：2026-10-08\n  ambiguity_note: 全世界・全地域の小規模サービスを網羅した比較ではなく、検索で確認できた主要サービスの発表からの選定。\n  notes_for_writer: 対象はDisney+の当該発表に限定する。他サービスとの比較はしない。",
+    "F02": "Disney+の広告付きスタンドアロン月額プランは、月額11.99ドルから12.49ドルに改定された。\n  scope: 米国のDisney+スタンドアロン月額プラン\n  conditions: Disney+の米国価格ページは、2026-09-23より前に契約した利用者には2026-10-21以降の請求サイクルで価格変更が適用されると記載。第三者請求経由では価格が異なる場合がある。\n  numeric_value: 月額11.99ドルから12.49ドル（0.50ドル増） (numeric_scope: 広告付きスタンドアロン月額プラン1種)\n  date_or_period: 新規契約者向け新価格：2026-09-23から。既存契約者：2026-10-21以降の請求サイクルから。\n  notes_for_writer: Disney+単体プランの価格。バンドル価格は含めない。",
+    "F03": "Disney+ Premiumの広告なしスタンドアロン月額プランは、月額18.99ドルから21.49ドルに改定された。\n  scope: 米国のDisney+ Premiumスタンドアロン月額プラン\n  conditions: Disney+の米国価格ページは、2026-09-23より前に契約した利用者には2026-10-21以降の請求サイクルで価格変更が適用されると記載。第三者請求経由では価格が異なる場合がある。\n  numeric_value: 月額18.99ドルから21.49ドル（2.50ドル増、約13%増） (numeric_scope: 広告なしスタンドアロン月額プラン1種)\n  date_or_period: 新規契約者向け新価格：2026-09-23から。既存契約者：2026-10-21以降の請求サイクルから。\n  notes_for_writer: Disney+ Premiumは月額プランとして扱う。第三者請求の例外に注意。",
+    "F04": "Disney+ Premiumの広告なしスタンドアロン年額プランは、年額189.99ドルから214.99ドルに改定された。\n  scope: 米国のDisney+ Premiumスタンドアロン年額プラン\n  conditions: 現在の年額価格はDisney+の米国価格ページに掲載。旧価格は改定前のDisney+米国申込ページの掲載価格。第三者請求経由では価格が異なる場合がある。\n  numeric_value: 年額189.99ドルから214.99ドル（25ドル増） (numeric_scope: 広告なしスタンドアロン年額プラン1種)\n  date_or_period: 新規契約者向け新価格：2026-09-23から。既存契約者：2026-10-21以降の請求サイクルから。\n  notes_for_writer: 年額契約の価格。月額料金を12倍した金額とは区別する。",
+    "F05": "Disney+の改定後価格は米国向けであり、公式価格ページは第三者請求パートナー経由では価格が異なる場合があると記載している。\n  scope: Disney+ Help Centerの米国向け価格ページに掲載された価格\n  conditions: 第三者請求パートナー経由の価格は、プラットフォーム上の制限や地域別価格により異なる場合がある。\n  date_or_period: 2026-09-23掲載の価格情報\n  notes_for_writer: 確認した価格を全世界共通価格として記述しない。",
+    "F06": "Disney+の米国価格ページは、新規契約者向け価格を2026年9月23日開始とし、それ以前に契約した利用者には2026年10月21日以降の請求サイクルで価格変更が適用されるとしている。\n  scope: 米国向けDisney+契約者\n  conditions: 既存契約者への適用日は、各利用者の請求サイクルにより異なる。第三者請求パートナー経由では価格や適用条件が異なる場合がある。\n  numeric_value: 2026-09-23；2026-10-21以降 (numeric_scope: 新規契約価格の開始日；既存契約者の価格変更が始まる請求サイクルの基準日)\n  date_or_period: 新規契約者：2026-09-23から。既存契約者：2026-10-21以降の請求サイクル。\n  notes_for_writer: 既存契約者全員が10月21日に同時に請求されるという意味ではない。",
+    "F07": "今回確認したDisney+の米国価格ページとReuters報道では、Disneyが今回の値上げ理由を明示した記述は確認できない。Reutersは、DisneyがReutersのコメント要請に直ちには回答しなかったと報じた。\n  scope: 今回確認したDisney+米国価格ページおよびReuters記事\n  conditions: 確認対象に含まれない別の顧客通知等で、追加説明が行われた可能性までは否定しない。\n  date_or_period: 2026-09-23の価格改定報道時点\n  ambiguity_note: 確認できた資料の範囲で会社が示した理由は特定できない。価格改定の動機を推測して補わないこと。\n  notes_for_writer: 一般的な業界要因やDisneyの別時期の説明を、今回の値上げについて会社が述べた理由として転用しない。"
+  }
+}
