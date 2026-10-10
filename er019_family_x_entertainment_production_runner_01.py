@@ -46,6 +46,7 @@ import er005_cost_logger as cl
 import er012_e_family_entertainment_two_level_runner_01 as efam
 import er019_family_x_storyline_b3_fact_selection_01 as b3
 import er053_b3_annotation_contract_01 as contract
+import er053_cost_aggregate_01 as ca
 import er053_family_x_factlock_ja_writer_01 as w1
 import er053_review_queue_01 as rq
 import er053_risk_flagger_production_01 as rf
@@ -440,7 +441,11 @@ def main() -> None:
 
 
 def _write_cost_json(out_dir: str) -> None:
-    breakdown = compute_stage_cost_breakdown(f"{out_dir}/raw_usage_log.jsonl")
+    # C3-3: 非OpenAI(Gemini RF)対応のstage集計へ切替(er053_cost_aggregate_01)。式は旧関数と同じ
+    # (openai+gemini、fail-closed)。旧`compute_stage_cost_breakdown`は他経路(Trial等)用に残置。
+    # by_stage_jpy/total_jpyの形式は旧cost.jsonと互換、by_provider_jpyとRF Level別内訳を追加。
+    breakdown = ca.compute_stage_cost_breakdown_multi(f"{out_dir}/raw_usage_log.jsonl")
+    breakdown["risk_flag_by_level_model_condition_jpy"] = ca.rf_stage_summary(breakdown["by_stage_jpy"])
     save_json(f"{out_dir}/cost.json", breakdown)
     print(f"[B3-RUNNER][cost] {breakdown}")
 

@@ -79,7 +79,11 @@ class PricingRoutingAdditionTests(unittest.TestCase):
                              capture_output=True).stdout.decode("utf-8")
         old_prices = [p for p in json.loads(old)["prices"] if p["model"] != self.NEW_MODEL]
         new_all = json.load(open(os.path.join(HERE, "er005_output/cost_baseline_01/pricing_snapshot.json"), encoding="utf-8"))["prices"]
-        self.assertEqual([p for p in new_all if p["model"] != self.NEW_MODEL], old_prices)
+
+        def _strip_astra_note(ps):
+            # C3-4(2026-10-10): gpt-6-astraのnote文言のみ更新(価格値・他キーは不変)。noteだけ比較から除く。
+            return [{k: v for k, v in p.items() if not (p["model"] == "gpt-6-astra" and k == "note")} for p in ps]
+        self.assertEqual(_strip_astra_note([p for p in new_all if p["model"] != self.NEW_MODEL]), _strip_astra_note(old_prices))
         added = [p for p in new_all if p["model"] == self.NEW_MODEL]
         self.assertEqual([(p["meter"], p["price"]) for p in added],
                          [("input_tokens", 0.3), ("cached_input_tokens", 0.03), ("output_tokens", 2.5)])
