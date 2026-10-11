@@ -64,3 +64,6 @@ Blind比較ページ: `user_test/ja_quality_model_allocation_01/index.html`(4本
 ## 7. Status分類案・未解決
 - Status案: MEASURED(N=1)。VALIDATED/REJECTEDはユーザーBlind評価後。Production採用は`USER_DECISION_REQUIRED`、本Trialは採用提案を含まない。
 - 未解決: (1)B案の扱い(5節の選択肢)、(2)Blind評価(4本ページ、順位・公開水準・コメント)、(3)費用対効果判断、(4)因子分離が必要なら別Trial、(5)Sol `gpt-6.1-sol`のpromotional価格期限は未確認(snapshot注記)、(6)Pages公開はpublic(META記事本文、既存`user_test/`と同運用)。
+
+## 8. Blind比較ページ検証
+URL https://shimomura055.github.io/eigo-radio/user_test/ja_quality_model_allocation_01/index.html : HTTP 200、Playwright(DOM)でタブ4つ・各タブ全文表示(単独可視)・音声要素0・モデル名等の手掛かり0を確認(`pages_playwright_evidence_01.json`)。
