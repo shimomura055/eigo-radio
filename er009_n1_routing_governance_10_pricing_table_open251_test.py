@@ -30,8 +30,18 @@ def test_luna_values_match_snapshot():
         s["input_tokens"], s["cached_input_tokens"], s["output_tokens"])
 
 def test_unknown_still_fail_closed():
+    # SOL61 E案でgpt-6.1-solは登録済みとなったため、未登録の別model(gpt-6-astra)でfail-closedを確認する
     with pytest.raises(cost.UnknownModelPricingError):
-        cost.cost_jpy_for_call("openai", "gpt-6.1-sol", 1000, 0, 1000)
+        cost.cost_jpy_for_call("openai", "gpt-6-astra", 1000, 0, 1000)
+
+def test_sol61_values_match_snapshot_and_cost_computes():
+    s = _snap("gpt-6.1-sol")
+    assert cost.PRICING_USD_PER_M[("openai", "gpt-6.1-sol")] == (
+        s["input_tokens"], s["cached_input_tokens"], s["output_tokens"])
+    # 1M in, 1M out -> (2.00+10.00)*160
+    assert cost.cost_jpy_for_call("openai", "gpt-6.1-sol", 1_000_000, 0, 1_000_000) == 1920.0
+    # cached 0.10: 1M in(うち1M cached), 0 out -> 0.10*160
+    assert cost.cost_jpy_for_call("openai", "gpt-6.1-sol", 1_000_000, 1_000_000, 0) == 16.0
 
 def test_luna_cost_computes():
     # 1M in, 1M out -> (0.10+0.50)*160

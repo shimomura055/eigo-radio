@@ -70,8 +70,9 @@ class PricingCoverageTest(unittest.TestCase):
             self.assertIn("2026-10-08T16:38", p["source_url"])
             self.assertIn("platform.openai.com/docs/pricing", p["source_url"])
         # RISK-FLAGGER-PRODUCTION-WIRING-01 ユーザー決定2026-10-10: astraは FAMILY_X_FACTLOCK_REVISE のみに登録
+        # SOL61 E案(2026-10-11): R1/R2はgpt-6.1-solへ移行。astraはroutingのどのキーにも割り当てない(単価登録は維持)。
         astra_keys = {k for k, v in routing.PROCESS_MODEL_MAP.items() if v == "gpt-6-astra"}
-        self.assertEqual(astra_keys, {"FAMILY_X_FACTLOCK_REVISE"})
+        self.assertEqual(astra_keys, set())
 
     def test_astra_pricing_not_found_error_resolved(self):
         """登録前は PricingNotFoundError だった astra の費用計算が、登録後は例外にならず正しい額になる。"""
@@ -109,7 +110,9 @@ class PricingCoverageTest(unittest.TestCase):
         self.assertEqual(pro, {"cached_input_tokens": 0.044, "input_tokens": 1.32, "output_tokens": 3.96})
         off = {p["meter"]: p["price"] for p in prices if p["model"] == "deepseek-v4-pro" and p["tier"] != "Standard"}
         self.assertEqual(off, {"cached_input_tokens": 0.022, "input_tokens": 0.66, "output_tokens": 1.98})
-        self.assertNotIn("gpt-6.1-sol", set(routing.PROCESS_MODEL_MAP.values()))
+        # SOL61 E案: gpt-6.1-solはFamily X日本語記事のB3/R0/R1/R2の3キーだけに割当(他キーへの混入禁止)
+        sol_keys = {k for k, v in routing.PROCESS_MODEL_MAP.items() if v == "gpt-6.1-sol"}
+        self.assertEqual(sol_keys, {"FAMILY_X_STORYLINE_B3", "FAMILY_X_FACTLOCK_R0", "FAMILY_X_FACTLOCK_REVISE"})
         self.assertNotIn("deepseek-v4-pro", set(routing.PROCESS_MODEL_MAP.values()))
 
     def test_deepseek_flash_prices_registered(self):

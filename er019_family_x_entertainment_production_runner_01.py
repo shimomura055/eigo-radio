@@ -9,7 +9,7 @@
 #   -> Original->R1->R2 -> Advanced -> Standard
 #
 # RISK-FLAGGER-PRODUCTION-WIRING-01 Phase 2 C2(2026-10-10)での変更:
-#   - Writer = 新Writer W-1(er053_family_x_factlock_ja_writer_01: Fact Lock R0[Luna]->Astra R1/R2)。
+#   - Writer = 新Writer W-1(er053_family_x_factlock_ja_writer_01: Fact Lock R0->R1/R2、E案: B3/R0/R1/R2=gpt-6.1-sol)。
 #     入口は注記済みB3の契約検証(er053_b3_annotation_contract_01、V1-V10、課金前fail-closed)のみ。
 #     注記なしB3をWriterへ渡す経路・switchは存在しない。再利用分岐(ja_writer/revision2.md)でも
 #     W-1来歴(chain_method=="W-1" かつ annotated_md_sha256が契約と一致)を確認し、違えばSTOP(U-1)。
@@ -43,6 +43,7 @@ import time
 
 import er003_v1_en_direct_vfl_01_generate as vfl01
 import er005_cost_logger as cl
+import er006_model_routing_contract_01 as routing
 import er012_e_family_entertainment_two_level_runner_01 as efam
 import er019_family_x_storyline_b3_fact_selection_01 as b3
 import er053_b3_annotation_contract_01 as contract
@@ -146,8 +147,14 @@ def run_research_and_ledger(client, topic: str, ledger_dir: str) -> dict:
 def run_storyline_b3(client, topic: str, ledger_text: str, out_dir: str) -> dict:
     stage_dir = f"{out_dir}/storyline_b3"
     os.makedirs(stage_dir, exist_ok=True)
+    # FAMILY-X-JA-MODEL-ALLOCATION-SOL61-PRODUCTION-WIRING-01(2026-10-11、E案): B3はroutingキー
+    # FAMILY_X_STORYLINE_B3(gpt-6.1-sol)。API call前にrequire_model、返却model不一致はSTOP(従来のvfl01.MODEL
+    # 暗黙参照=Lunaは廃止)。effortは従来どおりvfl01.REASONING_EFFORT(high、不変)。
+    b3_model = routing.require_model("FAMILY_X_STORYLINE_B3", routing.PROCESS_MODEL_MAP["FAMILY_X_STORYLINE_B3"])
     selection = b3.run_storyline_b3_selection(
-        client, topic, ledger_text, model=vfl01.MODEL, effort=vfl01.REASONING_EFFORT)
+        client, topic, ledger_text, model=b3_model, effort=vfl01.REASONING_EFFORT)
+    if not str(selection.get("model") or "").startswith(b3_model):
+        raise RuntimeError(f"[STOP] B3段の返却modelが{b3_model}で始まらない: {selection.get('model')!r}")
 
     ledger_fact_ids = selection["ledger_fact_ids"]
     full_ledger_record = b3.build_full_ledger_record(topic, ledger_text, ledger_fact_ids)
@@ -184,7 +191,7 @@ def run_storyline_b3(client, topic: str, ledger_text: str, out_dir: str) -> dict
 
 
 # ------------------------------------------------------------
-# Stage 3: JA Writer = 新Writer W-1(注記済みB3契約検証 -> R0[Luna, Fact Lock] -> R1/R2[Astra])
+# Stage 3: JA Writer = 新Writer W-1(注記済みB3契約検証 -> R0[Fact Lock] -> R1/R2、全段gpt-6.1-sol)
 # ------------------------------------------------------------
 class LegacyWriterProvenanceStop(RuntimeError):
     """U-1: W-1来歴のない(または契約と不一致の)JA記事を通常Production経路で再利用しようとした場合のSTOP。"""

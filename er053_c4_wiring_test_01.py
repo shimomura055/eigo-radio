@@ -38,9 +38,9 @@ class Client:
         self.responses = self
         self.n = 0
         self.prompts = []
-        self.scripts = [("メタの話\n人間が電話をしたというテストがありました。【事実1】\nこれは面白いですね。\n", "gpt-6-luna"),
-                        ("# タイトル\n\n本文その1です。続きの文です。", "gpt-6-astra"),
-                        ("# 新タイトル\n\n本文その2です。続きの文です。", "gpt-6-astra")]
+        self.scripts = [("メタの話\n人間が電話をしたというテストがありました。【事実1】\nこれは面白いですね。\n", "gpt-6.1-sol"),
+                        ("# タイトル\n\n本文その1です。続きの文です。", "gpt-6.1-sol"),
+                        ("# 新タイトル\n\n本文その2です。続きの文です。", "gpt-6.1-sol")]
 
     def create(self, **kw):
         self.events.append("w1:" + str(kw.get("model")))
@@ -141,7 +141,7 @@ class FourPathOrderTests(unittest.TestCase):
     def test_path1_initial_run_producer_then_contract_then_w1(self):
         h = Harness(self.out)
         ev = h.run([])                      # --stage all(既定)、全工程新規
-        self.assertEqual(ev[:7], ["research", "storyline", "producer", "contract", "w1:gpt-6-luna", "w1:gpt-6-astra", "w1:gpt-6-astra"])
+        self.assertEqual(ev[:7], ["research", "storyline", "producer", "contract", "w1:gpt-6.1-sol", "w1:gpt-6.1-sol", "w1:gpt-6.1-sol"])
         self.assertEqual(ev[7:], ["advanced", "rf:b1b", "standard", "rf:a2"])
         # R0のニュース欄は 注記済みFacts + 制約ブロック(producer出力)
         a = contract.validate_annotated_b3(self.out)
@@ -159,7 +159,7 @@ class FourPathOrderTests(unittest.TestCase):
         h = Harness(self.out)
         ev = h.run(["--regenerate-stage", "storyline_b3"])
         self.assertEqual(ev[:4], ["research", "storyline", "producer", "contract"])       # producer -> U-1/契約(再利用の来歴確認)
-        self.assertNotIn("w1:gpt-6-luna", ev)                                              # 同一注記shaなのでJA再利用
+        self.assertNotIn("w1:gpt-6.1-sol", ev)                                              # 同一注記shaなのでJA再利用
         self.assertEqual(ev[4:], ["advanced", "rf:b1b", "standard", "rf:a2"])
 
     def test_path2b_regeneration_with_changed_b3_selection_stops_at_u1_not_reusing_stale_ja(self):
@@ -176,7 +176,7 @@ class FourPathOrderTests(unittest.TestCase):
         adapter.copy_inputs("central_bank_mortgage", self.out)      # B3まで完了・注記なし(再開前の状態)
         h = Harness(self.out)
         ev = h.run(["--stage", "writer", "--stop-after", "writer"])
-        self.assertEqual(ev[:6], ["research", "producer", "contract", "w1:gpt-6-luna", "w1:gpt-6-astra", "w1:gpt-6-astra"])
+        self.assertEqual(ev[:6], ["research", "producer", "contract", "w1:gpt-6.1-sol", "w1:gpt-6.1-sol", "w1:gpt-6.1-sol"])
         self.assertNotIn("storyline", ev)                             # B3は再実行しない(再開)
 
     def test_path4_reuse_branch_standard_only_runs_producer_then_u1_contract(self):
@@ -186,7 +186,7 @@ class FourPathOrderTests(unittest.TestCase):
         h = Harness(self.out)
         ev = h.run(["--stage", "standard"])
         self.assertEqual(ev, ["research", "producer", "contract", "standard", "rf:a2"])
-        self.assertNotIn("w1:gpt-6-luna", ev)                         # JA記事は再利用(Writer再実行なし)
+        self.assertNotIn("w1:gpt-6.1-sol", ev)                         # JA記事は再利用(Writer再実行なし)
 
     def test_producer_failure_stops_before_contract_w1_and_api(self):
         adapter.copy_inputs("central_bank_mortgage", self.out)

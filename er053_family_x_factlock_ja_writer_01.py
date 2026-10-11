@@ -3,8 +3,8 @@
 RISK-FLAGGER-PRODUCTION-WIRING-01 Phase 2 C1(追加のみ、2026-10-10)。新Writer W-1 の Production module(先行作成)。
 
 **どのProduction runnerからも呼ばれない**(C2で配線)。C1では新規ファイルとして置くだけ。
-W-1 = 注記済みB3 → R0[Luna gpt-6-luna, Fact Lockブロック, effort=high, 単発] → 記号QA → R1[Astra gpt-6-astra, effort=high]
-      → R2[Astra, 入力=R1の生出力] → 後処理 → ja_writer/revision2.md  (DESIGN_03 2節)
+W-1 = 注記済みB3 → R0[Fact Lockブロック, effort=high, 単発] → 記号QA → R1[effort=high]
+      → R2[入力=R1の生出力] → 後処理 → ja_writer/revision2.md  (DESIGN_03 2節)
 
 移植契約(DESIGN_03 2-2 / 15-2): Trial(er052_factlock_writer_trial_01_run.py / er052_factlock_astra_e2e_runner_01.py)の
 Prompt定数・regex・関数を**byte-identical**に移植した(下の「移植元:」コメント付きブロック)。Trial moduleはimportしない
@@ -34,10 +34,12 @@ import er019_family_x_ja_writer_o_r1_r2_01 as jaw
 
 THEME_TAG = "FAMILY_X_FACTLOCK_W1_PRODUCTION_01"
 CHAIN_METHOD = "W-1"
-CHAIN_METHOD_DETAIL = "factlock_r0_luna__astra_r1_r2_independent"
-R0_MODEL = "gpt-6-luna"          # routing key FAMILY_X_FACTLOCK_R0(リテラル固定。jaw.call_freshは流用しない)
+CHAIN_METHOD_DETAIL = "factlock_r0__r1_r2_independent_sol61"
+# FAMILY-X-JA-MODEL-ALLOCATION-SOL61-PRODUCTION-WIRING-01(2026-10-11、E案): R0/R1/R2は routing(FAMILY_X_FACTLOCK_R0 /
+# FAMILY_X_FACTLOCK_REVISE = gpt-6.1-sol)から取得(module側の直書きなし)。jaw.call_freshは流用しない。
+R0_MODEL = routing.PROCESS_MODEL_MAP["FAMILY_X_FACTLOCK_R0"]
 R0_EFFORT = "high"
-ASTRA_MODEL = "gpt-6-astra"      # routing key FAMILY_X_FACTLOCK_REVISE
+ASTRA_MODEL = routing.PROCESS_MODEL_MAP["FAMILY_X_FACTLOCK_REVISE"]   # 名称ASTRA_*は互換のため維持(R1/R2段のmodel。現在gpt-6.1-sol)
 ASTRA_EFFORT = "high"
 
 
@@ -277,7 +279,7 @@ def build_r0_symbol_regen_prompt(storyline_line: str, brief_facts_text: str, fin
 
 def call_luna_r0(client, user: str, stage: str):
     """R0単発: developer=DEVELOPER_MESSAGE, user=prompt, effort=high。previous_response_id無し。
-    API call前に routing.require_model(FAMILY_X_FACTLOCK_R0)(リテラル固定の gpt-6-luna と一致しなければ ModelContractViolation)。"""
+    API call前に routing.require_model(FAMILY_X_FACTLOCK_R0)(routing値と一致しなければ ModelContractViolation)。"""
     model = routing.require_model("FAMILY_X_FACTLOCK_R0", R0_MODEL)
     with cl.logging_context(THEME_TAG, stage):
         resp = client.responses.create(

@@ -30,7 +30,10 @@ class RoutingConstantsTest(unittest.TestCase):
     def test_process_map_openai_models_all_gpt6_luna(self):
         # RISK-FLAGGER-PRODUCTION-WIRING-01 ユーザー決定2026-10-10: W-1(R1/R2)=gpt-6-astra、RF=Gemini。
         # 許可リストで明示した2キー以外は従来どおりgpt-6-luna固定を維持する。
-        allowed_non_luna = {"FAMILY_X_FACTLOCK_REVISE": "gpt-6-astra",
+        # SOL61 E案(2026-10-11ユーザー正式決定): Family X日本語記事 B3/R0/R1/R2=gpt-6.1-sol(3キーのみ許可、判定は緩和しない)。
+        allowed_non_luna = {"FAMILY_X_FACTLOCK_R0": "gpt-6.1-sol",
+                            "FAMILY_X_FACTLOCK_REVISE": "gpt-6.1-sol",
+                            "FAMILY_X_STORYLINE_B3": "gpt-6.1-sol",
                             "FAMILY_X_RF_GEMINI": "gemini-3.5-flash-lite"}
         for k, v in routing.PROCESS_MODEL_MAP.items():
             if k in allowed_non_luna:

@@ -306,7 +306,7 @@ class LedgerAndBriefSeparationTests(unittest.TestCase):
                                storyline="Storyline for separation test.")
         resp = mock.Mock()
         resp.output_text = json.dumps(parsed)
-        resp.model = "gpt-5.6-luna"
+        resp.model = "gpt-6.1-sol"
         resp.id = "resp_sep"
         client.responses.create.return_value = resp
 
@@ -325,6 +325,57 @@ class LedgerAndBriefSeparationTests(unittest.TestCase):
         self.assertIn("Storyline for separation test.", brief_text)
         self.assertNotIn(SAMPLE_LEDGER_TEXT, brief_text)
         self.assertEqual(result["selected_storyline"], "Storyline for separation test.")
+
+
+class B3Sol61ModelTests(unittest.TestCase):
+    """FAMILY-X-JA-MODEL-ALLOCATION-SOL61-PRODUCTION-WIRING-01(2026-10-11、E案): B3の正式初回経路はTrial driverの
+    override無しで自然にgpt-6.1-solを使い、返却model不一致はSTOP(旧Luna暗黙参照の廃止)。"""
+
+    def setUp(self):
+        self.tmp_dir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp_dir, ignore_errors=True)
+
+    def _client(self, returned_model):
+        client = mock.Mock()
+        parsed = _make_parsed(["FACT-001", "FACT-002"], ["FACT-001", "FACT-002", "FACT-003"], storyline="S.")
+        resp = mock.Mock()
+        resp.output_text = json.dumps(parsed)
+        resp.model = returned_model
+        resp.id = "resp_sol"
+        client.responses.create.return_value = resp
+        return client
+
+    def test_b3_requests_sol_via_routing_and_effort_high(self):
+        client = self._client("gpt-6.1-sol-2026-10")
+        result = runner.run_storyline_b3(client, "topic", SAMPLE_LEDGER_TEXT, self.tmp_dir)
+        kw = client.responses.create.call_args.kwargs
+        self.assertEqual(kw["model"], "gpt-6.1-sol")
+        self.assertEqual(kw["model"], runner.routing.PROCESS_MODEL_MAP["FAMILY_X_STORYLINE_B3"])
+        self.assertEqual(kw["reasoning"], {"effort": "high"})
+        self.assertEqual(result["runtime_evidence"]["model_id_actual"], "gpt-6.1-sol-2026-10")
+
+    def test_b3_returned_model_mismatch_is_stop(self):
+        client = self._client("gpt-6-luna")
+        with self.assertRaises(RuntimeError):
+            runner.run_storyline_b3(client, "topic", SAMPLE_LEDGER_TEXT, self.tmp_dir)
+
+    def test_b3_routing_violation_stops_before_api(self):
+        client = self._client("gpt-6.1-sol")
+        with mock.patch.dict(runner.routing.PROCESS_MODEL_MAP, {"FAMILY_X_STORYLINE_B3": "gpt-6-luna"}):
+            with mock.patch.object(runner.routing, "require_model",
+                                    side_effect=runner.routing.ModelContractViolation("x")):
+                with self.assertRaises(runner.routing.ModelContractViolation):
+                    runner.run_storyline_b3(client, "topic", SAMPLE_LEDGER_TEXT, self.tmp_dir)
+        client.responses.create.assert_not_called()
+
+    def test_b3_prompt_shas_pinned_unchanged_by_model_change(self):
+        # Prompt本文はモデル変更で不変(E案はPrompt不変の条件)。sha固定。
+        self.assertEqual(b3.prompt_shas(), {
+            "developer_message_sha256": "b4391b0387c54d39cf2ed095e7c00e028b13f173065ed0077b3a16f0fe37981a",
+            "user_prompt_template_sha256": "d6fe9bc33ceccf4c4af3a44ce12b9d83ef7c2efe04de4dfbb2cf17adb02ff333",
+            "fact_test_definitions_sha256": "91513c8999a63439adb40d5c28a253e4cdbb438228ba1deda199d2ae6c6c5a8a"})
 
 
 if __name__ == "__main__":

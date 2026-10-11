@@ -28,6 +28,10 @@ PRICING_USD_PER_M = {
     # 値はer005_output/cost_baseline_01/pricing_snapshot.jsonのgpt-6-luna登録値
     # (input 0.10 / cached 0.01 / output 0.50 USD per 1M)の転記。他model単価の流用ではない。
     ("openai", "gpt-6-luna"): (0.10, 0.01, 0.50),
+    # FAMILY-X-JA-MODEL-ALLOCATION-SOL61-PRODUCTION-WIRING-01(2026-10-11、E案Production採用): Family X
+    # B3/R0/R1/R2=gpt-6.1-sol。値はpricing_snapshot.jsonのgpt-6.1-sol登録値(input 2.00 / cached 0.10 /
+    # output 10.00 USD per 1M)の転記。他model単価の流用ではない。
+    ("openai", "gpt-6.1-sol"): (2.00, 0.10, 10.00),
 }
 
 

@@ -125,12 +125,17 @@ PROCESS_MODEL_MAP = {
     # RISK-FLAGGER-PRODUCTION-WIRING-01 Phase 2 C1(2026-10-10、ユーザーGo)で追加(追加のみ、既存キー不変)。
     # model名はリテラル固定(WRITER_MODEL等の他定数を経由しない=他定数の変更に連動しない)。環境変数での上書きなし。
     #   FAMILY_X_RF_LUNA / FAMILY_X_RF_GEMINI : Risk Flagger 4条件(Luna A3/A4・Gemini A3/A4)
-    #   FAMILY_X_FACTLOCK_R0     : 新Writer W-1 の R0(Fact Lock、Luna、effort=high)
-    #   FAMILY_X_FACTLOCK_REVISE : 新Writer W-1 の R1/R2(Astra、effort=high)。返却model不一致はSTOP
+    #   FAMILY_X_FACTLOCK_R0     : 新Writer W-1 の R0(Fact Lock、effort=high)
+    #   FAMILY_X_FACTLOCK_REVISE : 新Writer W-1 の R1/R2(effort=high)。返却model不一致はSTOP
+    # FAMILY-X-JA-MODEL-ALLOCATION-SOL61-PRODUCTION-WIRING-01(2026-10-11、ユーザー正式決定=E案
+    # APPROVED_FOR_PRODUCTION): 日本語記事のB3/R0/R1/R2をすべてgpt-6.1-solへ。FAMILY_X_STORYLINE_B3を
+    # 新設(従来B3はvfl01.MODEL=WRITER_MODEL=Lunaを暗黙参照していた)。リテラル固定、他定数に連動しない。
+    # (旧: R0=gpt-6-luna / REVISE=gpt-6-astra。Rollbackはこの値の差戻し。)
+    "FAMILY_X_STORYLINE_B3": "gpt-6.1-sol",
     "FAMILY_X_RF_LUNA": "gpt-6-luna",
     "FAMILY_X_RF_GEMINI": "gemini-3.5-flash-lite",
-    "FAMILY_X_FACTLOCK_R0": "gpt-6-luna",
-    "FAMILY_X_FACTLOCK_REVISE": "gpt-6-astra",
+    "FAMILY_X_FACTLOCK_R0": "gpt-6.1-sol",
+    "FAMILY_X_FACTLOCK_REVISE": "gpt-6.1-sol",
 }
 PROCESS_PROVIDER_MAP = {
     "EXCEPTION_SEARCH": EXCEPTION_SEARCH_PROVIDER,
