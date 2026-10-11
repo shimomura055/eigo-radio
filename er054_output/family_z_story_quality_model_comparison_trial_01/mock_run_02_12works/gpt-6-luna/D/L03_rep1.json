@@ -1,0 +1,100 @@
+{
+  "method": "D",
+  "work_id": "L03",
+  "rep": 1,
+  "eval_version": "family_z_story_quality_model_comparison_v1",
+  "mock": true,
+  "requested_model": "gpt-6-luna",
+  "actual_model_id": "gpt-6-luna",
+  "routing_key": "FAMILY_Z_TRIAL_STORY_QUALITY_EVAL",
+  "reasoning_effort": "medium",
+  "usage": {
+    "input_tokens": 5000,
+    "output_tokens": 2000
+  },
+  "elapsed_sec": 0.0,
+  "response_id": "mock-response",
+  "prompt_sha256": "39c386a139f30758a2657c37a8ae053422a5ed2d66368d48c02cc747335309e0",
+  "developer_message": "あなたは英語学習マガジンのFiction編集部の評価者である。与えられた『原作本文』だけを根拠に、その作品を『英語の短編(280〜420語、A2〜B1向け)へ再話するための素材』として評価する。作品の知名度・評判・過去の評価・あなたの記憶に頼らず、本文に書かれていることだけで判断すること。引用(evidence_quotes)は本文中の連続した文字列をそのままコピーしたものに限る(言い換え・要約・結合・省略記号は禁止。ロシア語本文の引用はロシア語のままコピーし、日本語に訳さない)。1個あたり60文字(英語・ロシア語は25語)以内。出力は指定のJSONのみ。\n評価は4項目(extractability, loss_severity, reproducibility, style_independence)それぞれ1〜5の整数で採点する。**すべて高いほど再話に適する**向きに統一する。5=非常に適する、3=標準的、1=ほぼ適さない。\n本文が示す通りに採点し、差を付ける必要も、高得点・低得点を避ける必要もない。この方式では原作の物語的な魅力そのものの高低は問わず、280〜420語の英語短編へ再話したときに原作の魅力がどれだけ残るかを評価する。\n各項目に本文からの根拠引用(1〜2個)と日本語の理由(2〜3文)を付ける。overallは総合1〜5点(平均の機械的な丸めでなくてよい)。",
+  "evaluated_at": "2026-10-11T06:01:11.626264+00:00",
+  "cost_jpy": 0.24,
+  "unit": {
+    "chars_no_ws": 5390,
+    "lang": "日本語"
+  },
+  "result": {
+    "key_facts": {
+      "central_event": "mock central event of L03",
+      "main_characters": [
+        "mock"
+      ],
+      "turning_point": "mock",
+      "ending": "mock"
+    },
+    "extractability": {
+      "score": 4,
+      "evidence_quotes": [
+        "二人の若い紳士が、すつかりイギリスの兵隊"
+      ],
+      "reason": "mock"
+    },
+    "loss_severity": {
+      "score": 4,
+      "evidence_quotes": [
+        "ことを云ひながら、あるいてをりました。「"
+      ],
+      "reason": "mock"
+    },
+    "reproducibility": {
+      "score": 4,
+      "evidence_quotes": [
+        "だなあ。」「鹿の黄いろな横つ腹なんぞに、"
+      ],
+      "reason": "mock"
+    },
+    "style_independence": {
+      "score": 5,
+      "evidence_quotes": [
+        "奥でした。案内してきた専門の鉄砲打ちも、"
+      ],
+      "reason": "mock"
+    },
+    "overall": {
+      "score": 5,
+      "comment": "mock"
+    },
+    "lost_in_compression": [
+      {
+        "element": "mock",
+        "severity": "high"
+      }
+    ],
+    "must_keep": [
+      "mock"
+    ],
+    "retelling_sketch": [
+      "a",
+      "b",
+      "c"
+    ]
+  },
+  "quote_verification": {
+    "per_axis": {
+      "extractability": [
+        true
+      ],
+      "loss_severity": [
+        true
+      ],
+      "reproducibility": [
+        true
+      ],
+      "style_independence": [
+        true
+      ]
+    },
+    "quote_total": 4,
+    "unverified_quote_count": 0,
+    "all_verified": true
+  }
+}

@@ -35,6 +35,10 @@ WORKS = {
   "L09": [("card", AZ+"000879/card43016.html"), ("text", AZ+"000879/files/43016_16836.html"),
           ("aux", "https://ja.wikipedia.org/wiki/%E3%83%88%E3%83%AD%E3%83%84%E3%82%B3")],
   "L10": [("card", AZ+"000081/card1925.html"), ("text", AZ+"000081/files/1925_17912.html")],
+  # 比較Trial委任_02で追加(L11〜L13)
+  "L11": [("card", AZ+"000074/card424.html"),  ("text", AZ+"000074/files/424_19826.html")],
+  "L12": [("card", AZ+"000148/card799.html"),  ("text", AZ+"000148/files/799_14972.html")],
+  "L13": [("card", AZ+"000879/card92.html"),   ("text", AZ+"000879/files/92_14545.html")],
 }
 # 全作品共通の補助(ルール根拠資料)
 COMMON_AUX = [("aux", "https://en.wikipedia.org/wiki/Copyright_law_of_Japan")]

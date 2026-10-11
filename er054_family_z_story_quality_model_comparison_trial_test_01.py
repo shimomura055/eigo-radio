@@ -181,11 +181,71 @@ class T(unittest.TestCase):
     def test_cost_estimate_consistent_with_prior(self):
         # 前回9call: 入力59,739tok・出力17,766tok → 約2.38円(実測)
         pr = drv.load_prices("gpt-6-luna")
-        self.assertAlmostEqual(drv.cost_jpy(pr, sum(drv.MEASURED_INPUT_TOK.values()), 17766), 2.38, places=2)
+        self.assertAlmostEqual(drv.cost_jpy(pr, sum(v for k, v in drv.MEASURED_INPUT_TOK.items() if k not in ("L11", "L12", "L13")), 17766), 2.38, places=2)
         e2, e3 = drv.estimate(2), drv.estimate(3)
-        self.assertEqual(e2["calls"], 72)
-        self.assertEqual(e3["calls"], 108)
+        self.assertEqual(e2["calls"], 96)
+        self.assertEqual(e3["calls"], 144)
         self.assertAlmostEqual(e3["total_point_jpy"] / e2["total_point_jpy"], 1.5, places=3)
+
+    # ---- 委任_02: 12作品対応
+    def test_12_works_and_96_files(self):
+        self.assertEqual(len(drv.WORKS), 12)
+        self.assertEqual(drv.WORKS[-3:], ("L11", "L12", "L13"))
+        self.assertNotIn("L06", drv.WORKS)
+        self.assertEqual(len(set(drv.WORKS)), 12)
+        out = tempfile.mkdtemp()
+        recs = drv.run_all(drv.METHODS, drv.WORKS, 2, "gpt-6-luna", drv.MockClient(), out, 6, True)
+        self.assertEqual(len(recs), 96)
+        self.assertTrue(all("result" in r for r in recs))
+        files = {os.path.join(d, f) for d, _, fs in os.walk(out) for f in fs}
+        self.assertEqual(len(files), 96)  # 方式×作品×rep別ファイル
+
+    def test_added_works_not_sealed_and_loadable(self):
+        for w in ("L11", "L12", "L13"):
+            drv.assert_not_sealed(os.path.join(drv.SRC, w, "text_plain.txt"))
+            drv.assert_not_sealed(os.path.join(drv.SCREEN, w + ".json"))
+            u = drv.build_unit(w)
+            self.assertGreater(u["chars_no_ws"], 1000)
+            self.assertTrue(drv.load_title(w))
+        # 封印ファイル(前回結果)は追加作品でも引き続き拒否
+        for p in ("PHASE_C_RESULTS_02.md", "SEALED_PAST_RESULTS_L01_L06.json", "PHASE_D_COMPARISON_01.md"):
+            with self.assertRaises(drv.SealedAccessError):
+                drv.assert_not_sealed(os.path.join(drv.BASE_POOL, p))
+
+    def test_l12_is_first_night_only(self):
+        t = drv.build_unit("L12")["text"]
+        self.assertTrue(t.startswith("第一夜"))
+        for h in ("第二夜", "第三夜", "第十夜"):
+            self.assertNotIn(h, t)
+        self.assertTrue(t.rstrip().endswith("百年はもう来ていたんだな」とこの時始めて気がついた。"))
+
+    def test_prompt_identical_for_added_works(self):
+        # 追加作品向けの文言を足していない: 作品固有のID/題/言語/長さ/本文以外は既存作品と完全同一
+        for m in drv.METHODS:
+            mm = drv.load_method(m)
+            a = drv.build_messages(mm, drv.build_unit("L10"), "T")[1]["content"]
+            b = drv.build_messages(mm, drv.build_unit("L11"), "T")[1]["content"]
+            strip = lambda x: x.split("<<<BEGIN_SOURCE_TEXT")[0].replace("L10", "Lxx").replace("L11", "Lxx")
+            size = lambda x: re.sub(r"本文の長さ: .*", "", x)
+            self.assertEqual(size(strip(a)), size(strip(b)))
+
+    def test_budget_45_guard_and_estimate_within(self):
+        e = drv.estimate(2)
+        self.assertEqual(e["calls"], 96)
+        self.assertLessEqual(e["total_point_jpy"], 45.0)
+        # 2rep一括の上限見積(x1.5)は45円を僅かに超える見込み -> rep1/rep2別バッチ(--rep-start)で各バッチ上限見積を承認額内に収める
+        self.assertLessEqual(drv.estimate(1)["total_cap_jpy"], 45.0)
+        sys.argv = ["x", "--mode", "real", "--approved-budget-jpy", "1"]
+        with self.assertRaises(SystemExit) as cm:
+            drv.main()
+        self.assertIn("超える", str(cm.exception))
+
+    def test_rep_start_batches_distinct_files(self):
+        out = tempfile.mkdtemp()
+        r1 = drv.run_all(("A",), ("L11",), 1, "gpt-6-luna", drv.MockClient(), out, 1, True, None, 1)
+        r2 = drv.run_all(("A",), ("L11",), 1, "gpt-6-luna", drv.MockClient(), out, 1, True, None, 2)
+        self.assertEqual((r1[0]["rep"], r2[0]["rep"]), (1, 2))
+        self.assertEqual(len({os.path.join(d, f) for d, _, fs in os.walk(out) for f in fs}), 2)
 
 
 if __name__ == "__main__":

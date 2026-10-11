@@ -41,7 +41,7 @@ REASONING_EFFORT = "medium"                           # 全方式同一(temperat
 EVAL_VERSION = "family_z_story_quality_model_comparison_v1"
 
 METHODS = ("A", "B", "C", "D")
-WORKS = ("L01", "L02", "L03", "L04", "L05", "L07", "L08", "L09", "L10")  # L06除外
+WORKS = ("L01", "L02", "L03", "L04", "L05", "L07", "L08", "L09", "L10", "L11", "L12", "L13")  # L06除外。L11〜L13は委任_02で追加(青空文庫・日本PD)
 SRC_DIR = {"L04": "L04_ru"}
 LANG = {"L04": "ロシア語(原語原作)"}
 
@@ -183,7 +183,8 @@ def cost_jpy(pr: dict, in_tok: int, out_tok: int) -> float:
 
 
 # 前回Trialの実測入力トークン(作品別。前回usage実績の数値のみ転記。評価内容は含まない)。方式別Prompt差分(+tok)を加算して見積に使う。
-MEASURED_INPUT_TOK = {"L01": 9929, "L02": 6110, "L03": 5953, "L04": 5309, "L05": 5981, "L07": 6413, "L08": 8253, "L09": 5101, "L10": 6691}
+MEASURED_INPUT_TOK = {"L01": 9929, "L02": 6110, "L03": 5953, "L04": 5309, "L05": 5981, "L07": 6413, "L08": 8253, "L09": 5101, "L10": 6691,
+                      "L11": 6100, "L12": 3100, "L13": 4200}  # L11〜L13は未実測。文字数からの推定(約1300+1.0x文字数、上方丸め)。委任_02実測で置換
 METHOD_PROMPT_DELTA_TOK = {"A": 700, "B": 900, "C": 700, "D": 900}      # 前回promptより基準文が長い分の想定
 METHOD_OUT_TOK_POINT = {"A": 2200, "B": 2800, "C": 2200, "D": 3000}     # 前回実績1,780〜2,147(平均約1,974)を基準に出力量で補正
 CAP_FACTOR = 1.5
@@ -364,8 +365,8 @@ class BudgetGuard:
             self.stopped, self.reason = True, reason
 
 
-def run_all(methods, works, reps, model, client, out_dir, workers, mock, guard=None):
-    tasks = [(m, w, r) for r in range(1, reps + 1) for m in methods for w in works]
+def run_all(methods, works, reps, model, client, out_dir, workers, mock, guard=None, rep_start=1):
+    tasks = [(m, w, r) for r in range(rep_start, rep_start + reps) for m in methods for w in works]
 
     def _do(t):
         m, w, r = t
@@ -391,6 +392,7 @@ def main():
     ap.add_argument("--methods", nargs="+", default=list(METHODS))
     ap.add_argument("--works", nargs="*", default=list(WORKS))
     ap.add_argument("--reps", type=int, default=2)
+    ap.add_argument("--rep-start", type=int, default=1, help="rep番号の開始(委任_02: rep1/rep2を別バッチで実行し各バッチ上限見積を承認額内に収めるため)")
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--out-dir", default=None)
     ap.add_argument("--approved-budget-jpy", type=float, default=0.0, help="ユーザーが承認した費用上限(円)。0ならrealは起動しない")
@@ -438,7 +440,7 @@ def main():
     client = vfl01.get_client()
     guard = BudgetGuard(args.approved_budget_jpy)
     with cl.logging_context("FAMILY_Z_STORY_QUALITY_MODEL_COMPARISON_TRIAL_01", "eval"):
-        recs = run_all(args.methods, args.works, args.reps, args.models[0], client, out, args.workers, False, guard)
+        recs = run_all(args.methods, args.works, args.reps, args.models[0], client, out, args.workers, False, guard, args.rep_start)
     print(json.dumps({"spent_jpy": round(guard.spent, 3), "stopped": guard.stopped, "reason": guard.reason,
                       "n_ok": sum(1 for r in recs if "result" in r), "n_err": sum(1 for r in recs if r.get("error") or r.get("skipped"))}, ensure_ascii=False))
 

@@ -278,7 +278,8 @@ def screen_one(wid, w, rules, today):
 
 def main():
     today = dt.date.fromisoformat(sys.argv[1]) if len(sys.argv) > 1 else dt.date(2026, 10, 11)
-    data = json.load(open(os.path.join(BASE, "rights_data_01.json"), encoding="utf-8"))
+    data_path = sys.argv[2] if len(sys.argv) > 2 else os.path.join(BASE, "rights_data_01.json")  # 委任_02: 追加作品用データ指定可
+    data = json.load(open(data_path, encoding="utf-8"))
     os.makedirs(OUTD, exist_ok=True)
     rows = []
     for wid, w in data["works"].items():
@@ -287,7 +288,7 @@ def main():
             json.dump(o, f, ensure_ascii=False, indent=2)
         rows.append(o)
         sys.stdout.buffer.write(("%s %s | %s\n" % (wid, o["decision"], o["decision_reason"][:150])).encode("utf-8"))
-    l06 = next(r for r in rows if r["work_id"] == "L06")
+    l06 = next((r for r in rows if r["work_id"] == "L06"), {"decision": "n/a"})
     if l06["decision"] == "PASS":
         print("STOP: L06(既知の権利NG)がPASSになった。判定ロジック欠陥の疑い。", file=sys.stderr)
         sys.exit(2)
