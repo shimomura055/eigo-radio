@@ -332,8 +332,12 @@ def protected_check_ja(canonical_norm: str, asr_norm: str,
 
 def classify_ja_asr_match(canonical_text: str, asr_text: str | None,
                            tts_failure_threshold: float = 0.4,
-                           expected_readings: dict | None = None) -> ClassificationResultJA:
-    """expected_readings(既定None): NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02
+                           expected_readings: dict | None = None,
+                           allow_reading_resolver: bool = True) -> ClassificationResultJA:
+    """allow_reading_resolver(既定True=従来どおり): OPEN-258 SCGのSecondary判定は
+    EXACT/NORMALIZEDのみがPASSでResolver(LLM)結果で判定が変わらないため、費用・遅延の
+    無駄を避ける目的でFalseを渡す。Falseは従来のResolver呼び出しだけを飛ばす。
+    expected_readings(既定None): NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02
     Phase 3b、辞書登録トークン(小文字キー、値は確定カタカナ読み)。
     protected_check_ja()へそのまま転送するだけで、他のロジックは一切
     変更しない(Noneの場合は完全後方互換)。"""
@@ -467,7 +471,7 @@ def classify_ja_asr_match(canonical_text: str, asr_text: str | None,
         # 厳密にTrueの場合のみPASSとし、それ以外(候補なし/LLM異常/
         # 例外/不一致継続)は一切PASSさせず、既存のTRUE_CONTENT_MISMATCH
         # 処理へfall throughする(fail-safe、ユーザー正式決定§2)。
-        if FEATURE_FLAG_A2_READING_RESOLVER_ENABLED:
+        if FEATURE_FLAG_A2_READING_RESOLVER_ENABLED and allow_reading_resolver:
             resolver_result = reading_resolver.resolve_reading_diff(c_norm, a_norm)
             if resolver_result["resolved_match"]:
                 return ClassificationResultJA(
