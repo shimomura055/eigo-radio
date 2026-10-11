@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coffee Prices 異音・途切れ候補 確認ページ(Trial、試聴用)</title>
+<style>
+body{font-family:"Meiryo","Hiragino Kaku Gothic ProN",sans-serif;max-width:1180px;margin:1.2em auto;padding:0 1em;line-height:1.55;color:#111}
+h1{font-size:1.35em} h2{border-bottom:2px solid #333;padding-bottom:3px;margin-top:1.8em;font-size:1.12em}
+table{border-collapse:collapse;width:100%;font-size:.86em;margin:8px 0} th,td{border:1px solid #bbb;padding:5px 7px;vertical-align:top;text-align:left} th{background:#f0f0f0}
+audio{width:100%;min-width:360px;height:36px;display:block;margin:4px 0}
+.note{background:#fffbe6;border:1px solid #e0d080;padding:9px 13px;font-size:.9em;margin:12px 0}
+.conf{display:inline-block;padding:0 6px;border-radius:8px;font-size:.8em;color:#fff}.conf.high{background:#c0392b}.conf.medium{background:#e67e22}.conf.low{background:#7f8c8d}
+button.jump{font-size:.85em;padding:2px 6px;cursor:pointer} .chk{font-size:.85em;color:#333} .sticky{position:sticky;top:0;background:#fff;border-bottom:2px solid #888;padding:6px 0;z-index:5}
+.sticky audio{display:inline-block;width:46%;min-width:360px}
+</style></head><body>
+<h1>Coffee Prices 異音・音声途切れ 候補確認ページ(Trial・試聴用)</h1>
+<div class="note"><b>管理ID: FAMILY-X-COFFEE-FINAL-LISTENING-TONE-TRIAL-01(委任_01C)</b>。無料のローカル音声解析で拾った<b>「候補」</b>です。<b>異常の確定はしません</b>(ユーザーが聴いて判断)。
+各候補は前後約3秒のクリップ(mp3)・スペクトログラム(緑線=候補時刻)・全編の該当位置へのジャンプボタンを備えています。
+重点箇所: Standard Full Story Part 3「A coffee price tag may have its own hidden clock」の coffee 付近(下記 FOCUS)。
+Production Validatorには接続していません。TTS方式: Gemini 3.8 Flash-Lite TTS(Batch、既存run音声の再解析のみ。新規TTS・API呼出なし)。
+&larr; <a href="../../coffee_new_tone_01/index.html">Coffee完成版 通しページ(Standard/Advanced)</a></div>
+<div class="sticky"><b>全編(Standard)</b> <audio id="ep_a2" controls preload="none" src="../../coffee_new_tone_01/a2/web/episode.mp3"></audio>
+<b>全編(Advanced)</b> <audio id="ep_b1b" controls preload="none" src="../../coffee_new_tone_01/b1b/web/episode.mp3"></audio></div>
+<h2>重点箇所(FOCUS)</h2>
+<p style="font-size:.9em">検知器(clip/click/dropout/long_gap/edge/level_step/spec_jump)は、この箇所の前後1.0秒以内に候補を出していません(未検出)。聴いて異常があれば、どの種の異音かを教えてください。</p>
+<table><tr><th>ID</th><th>場所</th><th>内容</th><th>再生</th><th>判断欄(表示のみ)</th></tr>
+<tr id="FOCUS-STD-P3-coffee"><td><b>FOCUS-STD-P3-coffee</b></td><td>Standard / Full Story Part 3<br>seg内 43.3s / episode 265.45s</td>
+<td>Standard Full Story Part 3「A coffee price tag may have its own hidden clock」の coffee 付近<br><small>ローカルfaster-whisper(small)のword timestampで coffee = 43.30〜43.56秒(セグメント内)、episode上 265.45〜265.71秒。前後を含め5秒クリップ。</small></td>
+<td><audio controls preload="none" src="clips/FOCUS-STD-P3-coffee.mp3"></audio><br><img loading="lazy" src="spec/FOCUS-STD-P3-coffee.png" width="320" alt="spectrogram FOCUS-STD-P3-coffee"><br>
+<button class="jump" data-lv="a2" data-t="262.45">&#9654; 全編 265.45s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>聞こえ方: ______</td></tr>
+<tr id="FOCUS-ADV-P3-coffee"><td><b>FOCUS-ADV-P3-coffee</b></td><td>Advanced / Full Story Part 3<br>seg内 39.02s / episode 260.85s</td>
+<td>(参考・対照)Advanced Full Story Part 3 の同じ文 coffee 付近<br><small>local whisper(small) coffee = 39.02〜39.30秒、episode上 260.85〜261.13秒。</small></td>
+<td><audio controls preload="none" src="clips/FOCUS-ADV-P3-coffee.mp3"></audio><br><img loading="lazy" src="spec/FOCUS-ADV-P3-coffee.png" width="320" alt="spectrogram FOCUS-ADV-P3-coffee"><br>
+<button class="jump" data-lv="b1b" data-t="257.846">&#9654; 全編 260.85s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>聞こえ方: ______</td></tr></table>
+<h2>Standard 候補(30件)</h2>
+<table><tr><th>ID / 信頼度</th><th>segment / 時刻</th><th>症状 / 指標</th><th>近傍の語(local whisper)</th><th>再生・スペクトログラム</th><th>判断欄(表示のみ)</th></tr>
+<tr id="STD-01"><td><b>STD-01</b><br><span class="conf high">high</span></td>
+<td>Key Phrase 3(英語)<br>seg内 0.214s<br>episode -<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>クリック/ポップ(瞬間的な波形の飛び)<br><small>ratio=107.6, abs_d2=0.1149, isolation=0.983</small></td>
+<td><small>[Take] time.</small></td>
+<td><audio controls preload="none" src="clips/STD-01.mp3"></audio><br><img loading="lazy" src="spec/STD-01.png" alt="spectrogram STD-01" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-02"><td><b>STD-02</b><br><span class="conf medium">medium</span></td>
+<td>Full Story Part 2<br>seg内 40.94s<br>episode 195.19s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>クリック/ポップ(瞬間的な波形の飛び)<br><small>ratio=81.1, abs_d2=0.0866, isolation=0.957</small></td>
+<td><small>roast coffee keep [robbings] in stock. Roasting</small></td>
+<td><audio controls preload="none" src="clips/STD-02.mp3"></audio><br><img loading="lazy" src="spec/STD-02.png" alt="spectrogram STD-02" width="320"><br><button class="jump" data-lv="a2" data-t="192.19">&#9654; 全編 195.19s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-03"><td><b>STD-03</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2<br>seg内 30.344s<br>episode 184.59s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>クリック/ポップ(瞬間的な波形の飛び)<br><small>ratio=40.8, abs_d2=0.0734, isolation=0.939</small></td>
+<td><small>Reuters. They estimate [robbing] prices take at</small></td>
+<td><audio controls preload="none" src="clips/STD-03.mp3"></audio><br><img loading="lazy" src="spec/STD-03.png" alt="spectrogram STD-03" width="320"><br><button class="jump" data-lv="a2" data-t="181.594">&#9654; 全編 184.59s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-04"><td><b>STD-04</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 3<br>seg内 27.549s<br>episode 249.70s<br><small>記録voice=Aoede</small></td>
+<td>クリック/ポップ(瞬間的な波形の飛び)<br><small>ratio=45.8, abs_d2=0.1523, isolation=0.881</small></td>
+<td><small>pay, and buying [beans.] Even if bean</small></td>
+<td><audio controls preload="none" src="clips/STD-04.mp3"></audio><br><img loading="lazy" src="spec/STD-04.png" alt="spectrogram STD-04" width="320"><br><button class="jump" data-lv="a2" data-t="246.699">&#9654; 全編 249.70s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-05"><td><b>STD-05</b><br><span class="conf low">low</span></td>
+<td>Comment 2<br>seg内 5.75s<br>episode 146.44s<br><small>記録voice=Aoede</small></td>
+<td>不自然に長い無音<br><small>gap_seconds=0.8, silence_thr_db=-52.3</small></td>
+<td><small>ない よう です。 [です。] では、 豆 の</small></td>
+<td><audio controls preload="none" src="clips/STD-05.mp3"></audio><br><img loading="lazy" src="spec/STD-05.png" alt="spectrogram STD-05" width="320"><br><button class="jump" data-lv="a2" data-t="143.44">&#9654; 全編 146.44s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-06"><td><b>STD-06</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2<br>seg内 8.35s<br>episode 162.60s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>音量の急変(階段状)<br><small>step_db=-10.9, before_db=-22.6, after_db=-33.5</small></td>
+<td><small>month a year [earlier.] You might wonder,</small></td>
+<td><audio controls preload="none" src="clips/STD-06.mp3"></audio><br><img loading="lazy" src="spec/STD-06.png" alt="spectrogram STD-06" width="320"><br><button class="jump" data-lv="a2" data-t="159.6">&#9654; 全編 162.60s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-07"><td><b>STD-07</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2<br>seg内 20.275s<br>episode 174.53s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>音量の急変(階段状)<br><small>step_db=11.2, before_db=-31.6, after_db=-20.5</small></td>
+<td><small>a cafe. Don&#x27;t [Don&#x27;t put] the two numbers</small></td>
+<td><audio controls preload="none" src="clips/STD-07.mp3"></audio><br><img loading="lazy" src="spec/STD-07.png" alt="spectrogram STD-07" width="320"><br><button class="jump" data-lv="a2" data-t="171.525">&#9654; 全編 174.53s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-08"><td><b>STD-08</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2<br>seg内 25.7s<br>episode 179.95s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>音量の急変(階段状)<br><small>step_db=-12.1, before_db=-26.2, after_db=-38.3</small></td>
+<td><small>to reach a [price tag?] tag? People in</small></td>
+<td><audio controls preload="none" src="clips/STD-08.mp3"></audio><br><img loading="lazy" src="spec/STD-08.png" alt="spectrogram STD-08" width="320"><br><button class="jump" data-lv="a2" data-t="176.95">&#9654; 全編 179.95s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-09"><td><b>STD-09</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2<br>seg内 44.2s<br>episode 198.45s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>音量の急変(階段状)<br><small>step_db=-11.0, before_db=-22.5, after_db=-33.5</small></td>
+<td><small>the beans also [take] time. These companies</small></td>
+<td><audio controls preload="none" src="clips/STD-09.mp3"></audio><br><img loading="lazy" src="spec/STD-09.png" alt="spectrogram STD-09" width="320"><br><button class="jump" data-lv="a2" data-t="195.45">&#9654; 全編 198.45s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-10"><td><b>STD-10</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 3<br>seg内 19.575s<br>episode 241.72s<br><small>記録voice=Aoede</small></td>
+<td>音量の急変(階段状)<br><small>step_db=11.1, before_db=-32.3, after_db=-21.2</small></td>
+<td><small>just beans. A [person] who runs a</small></td>
+<td><audio controls preload="none" src="clips/STD-10.mp3"></audio><br><img loading="lazy" src="spec/STD-10.png" alt="spectrogram STD-10" width="320"><br><button class="jump" data-lv="a2" data-t="238.725">&#9654; 全編 241.72s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-11"><td><b>STD-11</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 3<br>seg内 9.989s<br>episode 232.14s<br><small>記録voice=Aoede</small></td>
+<td>スペクトルの急変<br><small>flux_z=8.1</small></td>
+<td><small>that prices will [fall] in nine months.</small></td>
+<td><audio controls preload="none" src="clips/STD-11.mp3"></audio><br><img loading="lazy" src="spec/STD-11.png" alt="spectrogram STD-11" width="320"><br><button class="jump" data-lv="a2" data-t="229.139">&#9654; 全編 232.14s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-12"><td><b>STD-12</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 3<br>seg内 27.045s<br>episode 249.19s<br><small>記録voice=Aoede</small></td>
+<td>スペクトルの急変<br><small>flux_z=8.4</small></td>
+<td><small>cups, workers pay, [and] buying beans. Even</small></td>
+<td><audio controls preload="none" src="clips/STD-12.mp3"></audio><br><img loading="lazy" src="spec/STD-12.png" alt="spectrogram STD-12" width="320"><br><button class="jump" data-lv="a2" data-t="246.195">&#9654; 全編 249.19s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-13"><td><b>STD-13</b><br><span class="conf low">low</span></td>
+<td>In One Line<br>seg内 0.363s<br>episode 286.15s<br><small>記録voice=Aoede</small></td>
+<td>スペクトルの急変<br><small>flux_z=10.1</small></td>
+<td><small>[Falling] coffee bean prices</small></td>
+<td><audio controls preload="none" src="clips/STD-13.mp3"></audio><br><img loading="lazy" src="spec/STD-13.png" alt="spectrogram STD-13" width="320"><br><button class="jump" data-lv="a2" data-t="283.149">&#9654; 全編 286.15s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-14"><td><b>STD-14</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 1<br>seg内 1.52s<br>episode 100.42s<br><small>記録voice=Aoede</small></td>
+<td>ローカルASR転写が原稿と異なる語(読み違い・不明瞭の可能性)<br><small>op=replace, script=now, whisper=no</small></td>
+<td><small>Beans cost less, [no.] When you hear</small></td>
+<td><audio controls preload="none" src="clips/STD-14.mp3"></audio><br><img loading="lazy" src="spec/STD-14.png" alt="spectrogram STD-14" width="320"><br><button class="jump" data-lv="a2" data-t="97.416">&#9654; 全編 100.42s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-15"><td><b>STD-15</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 1<br>seg内 15.4s<br>episode 114.30s<br><small>記録voice=Aoede</small></td>
+<td>ローカルASR転写が原稿と異なる語(読み違い・不明瞭の可能性)<br><small>op=replace, script=there is, whisper=there&#x27;s</small></td>
+<td><small>It feels like [there&#x27;s] a delay. The</small></td>
+<td><audio controls preload="none" src="clips/STD-15.mp3"></audio><br><img loading="lazy" src="spec/STD-15.png" alt="spectrogram STD-15" width="320"><br><button class="jump" data-lv="a2" data-t="111.296">&#9654; 全編 114.30s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-16"><td><b>STD-16</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 1<br>seg内 21.69s<br>episode 120.59s<br><small>記録voice=Aoede</small></td>
+<td>ローカルASR転写が原稿と異なる語(読み違い・不明瞭の可能性)<br><small>op=replace, script=8.7%, whisper=8 7</small></td>
+<td><small>It fell 8 [.7] % from the</small></td>
+<td><audio controls preload="none" src="clips/STD-16.mp3"></audio><br><img loading="lazy" src="spec/STD-16.png" alt="spectrogram STD-16" width="320"><br><button class="jump" data-lv="a2" data-t="117.586">&#9654; 全編 120.59s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-17"><td><b>STD-17</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 1<br>seg内 26.99s<br>episode 125.89s<br><small>記録voice=Aoede</small></td>
+<td>ローカルASR転写が原稿と異なる語(読み違い・不明瞭の可能性)<br><small>op=insert, script=, whisper=it</small></td>
+<td><small>reached the market. [market. it.] It also expected</small></td>
+<td><audio controls preload="none" src="clips/STD-17.mp3"></audio><br><img loading="lazy" src="spec/STD-17.png" alt="spectrogram STD-17" width="320"><br><button class="jump" data-lv="a2" data-t="122.886">&#9654; 全編 125.89s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-18"><td><b>STD-18</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2<br>seg内 5.45s<br>episode 159.70s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>ローカルASR転写が原稿と異なる語(読み違い・不明瞭の可能性)<br><small>op=replace, script=6.1%, whisper=6 1</small></td>
+<td><small>coffee cost 6 [.1] % more than</small></td>
+<td><audio controls preload="none" src="clips/STD-18.mp3"></audio><br><img loading="lazy" src="spec/STD-18.png" alt="spectrogram STD-18" width="320"><br><button class="jump" data-lv="a2" data-t="156.7">&#9654; 全編 159.70s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-19"><td><b>STD-19</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2<br>seg内 30.22s<br>episode 184.47s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>ローカルASR転写が原稿と異なる語(読み違い・不明瞭の可能性)<br><small>op=replace, script=raw bean, whisper=robbing</small></td>
+<td><small>Reuters. They estimate [robbing] prices take at</small></td>
+<td><audio controls preload="none" src="clips/STD-19.mp3"></audio><br><img loading="lazy" src="spec/STD-19.png" alt="spectrogram STD-19" width="320"><br><button class="jump" data-lv="a2" data-t="181.47">&#9654; 全編 184.47s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-20"><td><b>STD-20</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2<br>seg内 41.07s<br>episode 195.32s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>ローカルASR転写が原稿と異なる語(読み違い・不明瞭の可能性)<br><small>op=replace, script=raw beans, whisper=robbings</small></td>
+<td><small>roast coffee keep [robbings] in stock. Roasting</small></td>
+<td><audio controls preload="none" src="clips/STD-20.mp3"></audio><br><img loading="lazy" src="spec/STD-20.png" alt="spectrogram STD-20" width="320"><br><button class="jump" data-lv="a2" data-t="192.32">&#9654; 全編 195.32s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-21"><td><b>STD-21</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 3<br>seg内 37.78s<br>episode 259.93s<br><small>記録voice=Aoede</small></td>
+<td>ローカルASR転写が原稿と異なる語(読み違い・不明瞭の可能性)<br><small>op=replace, script=do, whisper=2</small></td>
+<td><small>than how much [two] beans costs now.</small></td>
+<td><audio controls preload="none" src="clips/STD-21.mp3"></audio><br><img loading="lazy" src="spec/STD-21.png" alt="spectrogram STD-21" width="320"><br><button class="jump" data-lv="a2" data-t="256.93">&#9654; 全編 259.93s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-22"><td><b>STD-22</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 3<br>seg内 38.21s<br>episode 260.36s<br><small>記録voice=Aoede</small></td>
+<td>ローカルASR転写が原稿と異なる語(読み違い・不明瞭の可能性)<br><small>op=replace, script=cost, whisper=costs</small></td>
+<td><small>much two beans [costs] now. Also ask,</small></td>
+<td><audio controls preload="none" src="clips/STD-22.mp3"></audio><br><img loading="lazy" src="spec/STD-22.png" alt="spectrogram STD-22" width="320"><br><button class="jump" data-lv="a2" data-t="257.36">&#9654; 全編 260.36s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-23"><td><b>STD-23</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 3<br>seg内 45.12s<br>episode 267.27s<br><small>記録voice=Aoede</small></td>
+<td>ローカルASR転写が原稿と異なる語(読み違い・不明瞭の可能性)<br><small>op=replace, script=hidden, whisper=hitting</small></td>
+<td><small>have its own [hitting] clock, separate from</small></td>
+<td><audio controls preload="none" src="clips/STD-23.mp3"></audio><br><img loading="lazy" src="spec/STD-23.png" alt="spectrogram STD-23" width="320"><br><button class="jump" data-lv="a2" data-t="264.27">&#9654; 全編 267.27s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-24"><td><b>STD-24</b><br><span class="conf low">low</span></td>
+<td>Topic intro<br>seg内 1.44s<br>episode 14.57s<br><small>記録voice=Aoede</small></td>
+<td>ローカルASRの信頼度が低い語(聞き取りにくい可能性)<br><small>word=Coffee, whisper_prob=0.458</small></td>
+<td><small>Today&#x27;s topic is [Coffee] Bean Prices Fall.</small></td>
+<td><audio controls preload="none" src="clips/STD-24.mp3"></audio><br><img loading="lazy" src="spec/STD-24.png" alt="spectrogram STD-24" width="320"><br><button class="jump" data-lv="a2" data-t="11.566">&#9654; 全編 14.57s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-25"><td><b>STD-25</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 1<br>seg内 17.19s<br>episode 116.09s<br><small>記録voice=Aoede</small></td>
+<td>ローカルASRの信頼度が低い語(聞き取りにくい可能性)<br><small>word=International, whisper_prob=0.475</small></td>
+<td><small>a delay. The [International] Coffee Organization shared</small></td>
+<td><audio controls preload="none" src="clips/STD-25.mp3"></audio><br><img loading="lazy" src="spec/STD-25.png" alt="spectrogram STD-25" width="320"><br><button class="jump" data-lv="a2" data-t="113.086">&#9654; 全編 116.09s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-26"><td><b>STD-26</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2<br>seg内 33.63s<br>episode 187.88s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>ローカルASRの信頼度が低い語(聞き取りにくい可能性)<br><small>word=U, whisper_prob=0.472</small></td>
+<td><small>to appear in [U] .S. shop prices.</small></td>
+<td><audio controls preload="none" src="clips/STD-26.mp3"></audio><br><img loading="lazy" src="spec/STD-26.png" alt="spectrogram STD-26" width="320"><br><button class="jump" data-lv="a2" data-t="184.88">&#9654; 全編 187.88s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-27"><td><b>STD-27</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 3<br>seg内 28.56s<br>episode 250.71s<br><small>記録voice=Aoede</small></td>
+<td>ローカルASRの信頼度が低い語(聞き取りにくい可能性)<br><small>word=Even, whisper_prob=0.434</small></td>
+<td><small>and buying beans. [Even] if bean prices</small></td>
+<td><audio controls preload="none" src="clips/STD-27.mp3"></audio><br><img loading="lazy" src="spec/STD-27.png" alt="spectrogram STD-27" width="320"><br><button class="jump" data-lv="a2" data-t="247.71">&#9654; 全編 250.71s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-28"><td><b>STD-28</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 3<br>seg内 38.21s<br>episode 260.36s<br><small>記録voice=Aoede</small></td>
+<td>ローカルASRの信頼度が低い語(聞き取りにくい可能性)<br><small>word=costs, whisper_prob=0.404</small></td>
+<td><small>much two beans [costs] now. Also ask,</small></td>
+<td><audio controls preload="none" src="clips/STD-28.mp3"></audio><br><img loading="lazy" src="spec/STD-28.png" alt="spectrogram STD-28" width="320"><br><button class="jump" data-lv="a2" data-t="257.36">&#9654; 全編 260.36s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-29"><td><b>STD-29</b><br><span class="conf low">low</span></td>
+<td>In One Line<br>seg内 4.76s<br>episode 290.55s<br><small>記録voice=Aoede</small></td>
+<td>ローカルASRの信頼度が低い語(聞き取りにくい可能性)<br><small>word=U, whisper_prob=0.445</small></td>
+<td><small>months to affect [U] .S. shop prices.</small></td>
+<td><audio controls preload="none" src="clips/STD-29.mp3"></audio><br><img loading="lazy" src="spec/STD-29.png" alt="spectrogram STD-29" width="320"><br><button class="jump" data-lv="a2" data-t="287.546">&#9654; 全編 290.55s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="STD-30"><td><b>STD-30</b><br><span class="conf low">low</span></td>
+<td>Key Phrase 1(英語)<br>seg内 0.47s<br>episode -<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>ローカルASRの信頼度が低い語(聞き取りにくい可能性)<br><small>word=Robbing, whisper_prob=0.204</small></td>
+<td><small>[Robbing]</small></td>
+<td><audio controls preload="none" src="clips/STD-30.mp3"></audio><br><img loading="lazy" src="spec/STD-30.png" alt="spectrogram STD-30" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr></table>
+<h2>Advanced 候補(30件)</h2>
+<table><tr><th>ID / 信頼度</th><th>segment / 時刻</th><th>症状 / 指標</th><th>近傍の語(local whisper)</th><th>再生・スペクトログラム</th><th>判断欄(表示のみ)</th></tr>
+<tr id="ADV-01"><td><b>ADV-01</b><br><span class="conf medium">medium</span></td>
+<td>Full Story Part 1<br>seg内 12.82s<br>episode -<br><small>記録voice=Aoede</small></td>
+<td>クリック/ポップ(瞬間的な波形の飛び)<br><small>ratio=70.0, abs_d2=0.07, isolation=0.967</small></td>
+<td><small>a price tag [tag that] makes you want</small></td>
+<td><audio controls preload="none" src="clips/ADV-01.mp3"></audio><br><img loading="lazy" src="spec/ADV-01.png" alt="spectrogram ADV-01" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-02"><td><b>ADV-02</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 1 (Aoede)<br>seg内 17.627s<br>episode 117.49s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>クリック/ポップ(瞬間的な波形の飛び)<br><small>ratio=40.8, abs_d2=0.1183, isolation=0.921</small></td>
+<td><small></small></td>
+<td><audio controls preload="none" src="clips/ADV-02.mp3"></audio><br><img loading="lazy" src="spec/ADV-02.png" alt="spectrogram ADV-02" width="320"><br><button class="jump" data-lv="b1b" data-t="114.493">&#9654; 全編 117.49s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-03"><td><b>ADV-03</b><br><span class="conf low">low</span></td>
+<td>Comment 4 (Charon)<br>seg内 5.926s<br>episode 272.76s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>クリック/ポップ(瞬間的な波形の飛び)<br><small>ratio=46.6, abs_d2=0.1202, isolation=0.962</small></td>
+<td><small></small></td>
+<td><audio controls preload="none" src="clips/ADV-03.mp3"></audio><br><img loading="lazy" src="spec/ADV-03.png" alt="spectrogram ADV-03" width="320"><br><button class="jump" data-lv="b1b" data-t="269.762">&#9654; 全編 272.76s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-04"><td><b>ADV-04</b><br><span class="conf low">low</span></td>
+<td>Comment 3<br>seg内 10.956s<br>episode -<br><small>記録voice=Charon</small></td>
+<td>クリック/ポップ(瞬間的な波形の飛び)<br><small>ratio=43.5, abs_d2=0.1447, isolation=0.953</small></td>
+<td><small>か る こと [が] で きます。 次</small></td>
+<td><audio controls preload="none" src="clips/ADV-04.mp3"></audio><br><img loading="lazy" src="spec/ADV-04.png" alt="spectrogram ADV-04" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-05"><td><b>ADV-05</b><br><span class="conf low">low</span></td>
+<td>Comment 4<br>seg内 5.926s<br>episode -<br><small>記録voice=Charon</small></td>
+<td>クリック/ポップ(瞬間的な波形の飛び)<br><small>ratio=57.6, abs_d2=0.364, isolation=0.96</small></td>
+<td><small>いる の が、 [2] 年 間 に</small></td>
+<td><audio controls preload="none" src="clips/ADV-05.mp3"></audio><br><img loading="lazy" src="spec/ADV-05.png" alt="spectrogram ADV-05" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-06"><td><b>ADV-06</b><br><span class="conf low">low</span></td>
+<td>Comment 4<br>seg内 9.836s<br>episode -<br><small>記録voice=Charon</small></td>
+<td>クリック/ポップ(瞬間的な波形の飛び)<br><small>ratio=41.2, abs_d2=0.1465, isolation=0.977</small></td>
+<td><small>います。 この お [店] は、 3 年</small></td>
+<td><audio controls preload="none" src="clips/ADV-06.mp3"></audio><br><img loading="lazy" src="spec/ADV-06.png" alt="spectrogram ADV-06" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-07"><td><b>ADV-07</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 1<br>seg内 22.62s<br>episode -<br><small>記録voice=Aoede</small></td>
+<td>クリック/ポップ(瞬間的な波形の飛び)<br><small>ratio=48.9, abs_d2=0.1335, isolation=0.934</small></td>
+<td><small>% from the [the previous] month. The reason,</small></td>
+<td><audio controls preload="none" src="clips/ADV-07.mp3"></audio><br><img loading="lazy" src="spec/ADV-07.png" alt="spectrogram ADV-07" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-08"><td><b>ADV-08</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 3<br>seg内 36.424s<br>episode -<br><small>記録voice=Aoede</small></td>
+<td>クリック/ポップ(瞬間的な波形の飛び)<br><small>ratio=51.7, abs_d2=0.0726, isolation=0.956</small></td>
+<td><small>now, but also [when] does the price</small></td>
+<td><audio controls preload="none" src="clips/ADV-08.mp3"></audio><br><img loading="lazy" src="spec/ADV-08.png" alt="spectrogram ADV-08" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-09"><td><b>ADV-09</b><br><span class="conf low">low</span></td>
+<td>Preview (Charon)<br>seg内 2.244s<br>episode 26.10s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>音量の急変(階段状)<br><small>step_db=-10.7, before_db=-21.4, after_db=-32.1</small></td>
+<td><small></small></td>
+<td><audio controls preload="none" src="clips/ADV-09.mp3"></audio><br><img loading="lazy" src="spec/ADV-09.png" alt="spectrogram ADV-09" width="320"><br><button class="jump" data-lv="b1b" data-t="23.1">&#9654; 全編 26.10s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-10"><td><b>ADV-10</b><br><span class="conf low">low</span></td>
+<td>pause_0.5<br>seg内 0.149s<br>episode 35.98s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>音量の急変(階段状)<br><small>step_db=10.2, before_db=-30.1, after_db=-19.8</small></td>
+<td><small></small></td>
+<td><audio controls preload="none" src="clips/ADV-10.mp3"></audio><br><img loading="lazy" src="spec/ADV-10.png" alt="spectrogram ADV-10" width="320"><br><button class="jump" data-lv="b1b" data-t="32.975">&#9654; 全編 35.98s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-11"><td><b>ADV-11</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 1 (Aoede)<br>seg内 7.759s<br>episode 107.62s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>音量の急変(階段状)<br><small>step_db=-16.4, before_db=-19.0, after_db=-35.4</small></td>
+<td><small></small></td>
+<td><audio controls preload="none" src="clips/ADV-11.mp3"></audio><br><img loading="lazy" src="spec/ADV-11.png" alt="spectrogram ADV-11" width="320"><br><button class="jump" data-lv="b1b" data-t="104.625">&#9654; 全編 107.62s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-12"><td><b>ADV-12</b><br><span class="conf low">low</span></td>
+<td>Comment 2 (Charon)<br>seg内 5.564s<br>episode 147.95s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>音量の急変(階段状)<br><small>step_db=11.4, before_db=-33.4, after_db=-22.0</small></td>
+<td><small></small></td>
+<td><audio controls preload="none" src="clips/ADV-12.mp3"></audio><br><img loading="lazy" src="spec/ADV-12.png" alt="spectrogram ADV-12" width="320"><br><button class="jump" data-lv="b1b" data-t="144.95">&#9654; 全編 147.95s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-13"><td><b>ADV-13</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2 (Aoede)<br>seg内 17.194s<br>episode 168.55s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>音量の急変(階段状)<br><small>step_db=-14.4, before_db=-27.1, after_db=-41.5</small></td>
+<td><small></small></td>
+<td><audio controls preload="none" src="clips/ADV-13.mp3"></audio><br><img loading="lazy" src="spec/ADV-13.png" alt="spectrogram ADV-13" width="320"><br><button class="jump" data-lv="b1b" data-t="165.55">&#9654; 全編 168.55s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-14"><td><b>ADV-14</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2 (Aoede)<br>seg内 23.794s<br>episode 175.15s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>音量の急変(階段状)<br><small>step_db=-10.8, before_db=-25.8, after_db=-36.6</small></td>
+<td><small></small></td>
+<td><audio controls preload="none" src="clips/ADV-14.mp3"></audio><br><img loading="lazy" src="spec/ADV-14.png" alt="spectrogram ADV-14" width="320"><br><button class="jump" data-lv="b1b" data-t="172.15">&#9654; 全編 175.15s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-15"><td><b>ADV-15</b><br><span class="conf low">low</span></td>
+<td>Outro (Charon)<br>seg内 4.634s<br>episode 289.75s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>音量の急変(階段状)<br><small>step_db=-14.6, before_db=-30.6, after_db=-45.2</small></td>
+<td><small></small></td>
+<td><audio controls preload="none" src="clips/ADV-15.mp3"></audio><br><img loading="lazy" src="spec/ADV-15.png" alt="spectrogram ADV-15" width="320"><br><button class="jump" data-lv="b1b" data-t="286.75">&#9654; 全編 289.75s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-16"><td><b>ADV-16</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 1<br>seg内 7.775s<br>episode -<br><small>記録voice=Aoede</small></td>
+<td>音量の急変(階段状)<br><small>step_db=-11.2, before_db=-19.4, after_db=-30.6</small></td>
+<td><small>has already come [down to.] to. But the</small></td>
+<td><audio controls preload="none" src="clips/ADV-16.mp3"></audio><br><img loading="lazy" src="spec/ADV-16.png" alt="spectrogram ADV-16" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-17"><td><b>ADV-17</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2<br>seg内 8.925s<br>episode -<br><small>記録voice=Aoede</small></td>
+<td>音量の急変(階段状)<br><small>step_db=-10.8, before_db=-18.1, after_db=-28.9</small></td>
+<td><small>leave you wondering, [] did prices go</small></td>
+<td><audio controls preload="none" src="clips/ADV-17.mp3"></audio><br><img loading="lazy" src="spec/ADV-17.png" alt="spectrogram ADV-17" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-18"><td><b>ADV-18</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2<br>seg内 17.2s<br>episode -<br><small>記録voice=Aoede</small></td>
+<td>音量の急変(階段状)<br><small>step_db=-14.0, before_db=-28.8, after_db=-42.9</small></td>
+<td><small>cup at a [cafe.] Hold on before</small></td>
+<td><audio controls preload="none" src="clips/ADV-18.mp3"></audio><br><img loading="lazy" src="spec/ADV-18.png" alt="spectrogram ADV-18" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-19"><td><b>ADV-19</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2<br>seg内 23.775s<br>episode -<br><small>記録voice=Aoede</small></td>
+<td>音量の急変(階段状)<br><small>step_db=-11.7, before_db=-28.3, after_db=-40.0</small></td>
+<td><small>reach a price [price tag?] According to estimates</small></td>
+<td><audio controls preload="none" src="clips/ADV-19.mp3"></audio><br><img loading="lazy" src="spec/ADV-19.png" alt="spectrogram ADV-19" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-20"><td><b>ADV-20</b><br><span class="conf low">low</span></td>
+<td>Preview<br>seg内 2.225s<br>episode -<br><small>記録voice=Charon</small></td>
+<td>音量の急変(階段状)<br><small>step_db=-10.2, before_db=-22.7, after_db=-33.0</small></td>
+<td><small>ス は 数 [々] な 理 由</small></td>
+<td><audio controls preload="none" src="clips/ADV-20.mp3"></audio><br><img loading="lazy" src="spec/ADV-20.png" alt="spectrogram ADV-20" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-21"><td><b>ADV-21</b><br><span class="conf low">low</span></td>
+<td>Key Phrase 2<br>seg内 3.155s<br>episode 53.05s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>スペクトルの急変<br><small>flux_z=8.1</small></td>
+<td><small></small></td>
+<td><audio controls preload="none" src="clips/ADV-21.mp3"></audio><br><img loading="lazy" src="spec/ADV-21.png" alt="spectrogram ADV-21" width="320"><br><button class="jump" data-lv="b1b" data-t="50.051">&#9654; 全編 53.05s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-22"><td><b>ADV-22</b><br><span class="conf low">low</span></td>
+<td>Key Phrase 3<br>seg内 0.361s<br>episode 59.47s<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>スペクトルの急変<br><small>flux_z=8.1</small></td>
+<td><small></small></td>
+<td><audio controls preload="none" src="clips/ADV-22.mp3"></audio><br><img loading="lazy" src="spec/ADV-22.png" alt="spectrogram ADV-22" width="320"><br><button class="jump" data-lv="b1b" data-t="56.467">&#9654; 全編 59.47s から</button></td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-23"><td><b>ADV-23</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 1<br>seg内 7.88s<br>episode -<br><small>記録voice=Aoede</small></td>
+<td>ローカルASR転写が原稿と異なる語(読み違い・不明瞭の可能性)<br><small>op=replace, script=too, whisper=to</small></td>
+<td><small>already come down [to.] But the price</small></td>
+<td><audio controls preload="none" src="clips/ADV-23.mp3"></audio><br><img loading="lazy" src="spec/ADV-23.png" alt="spectrogram ADV-23" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-24"><td><b>ADV-24</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 1<br>seg内 21.34s<br>episode -<br><small>記録voice=Aoede</small></td>
+<td>ローカルASR転写が原稿と異なる語(読み違い・不明瞭の可能性)<br><small>op=replace, script=8.7%, whisper=8 7</small></td>
+<td><small>Organization fell 8 [.7] % from the</small></td>
+<td><audio controls preload="none" src="clips/ADV-24.mp3"></audio><br><img loading="lazy" src="spec/ADV-24.png" alt="spectrogram ADV-24" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-25"><td><b>ADV-25</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 1<br>seg内 27.86s<br>episode -<br><small>記録voice=Aoede</small></td>
+<td>ローカルASR転写が原稿と異なる語(読み違い・不明瞭の可能性)<br><small>op=insert, script=, whisper=it</small></td>
+<td><small>entered the market [market it,] and a good</small></td>
+<td><audio controls preload="none" src="clips/ADV-25.mp3"></audio><br><img loading="lazy" src="spec/ADV-25.png" alt="spectrogram ADV-25" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-26"><td><b>ADV-26</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2<br>seg内 4.23s<br>episode -<br><small>記録voice=Aoede</small></td>
+<td>ローカルASR転写が原稿と異なる語(読み違い・不明瞭の可能性)<br><small>op=replace, script=6.1%, whisper=6 1</small></td>
+<td><small>coffee was 6 [.1] % higher than</small></td>
+<td><audio controls preload="none" src="clips/ADV-26.mp3"></audio><br><img loading="lazy" src="spec/ADV-26.png" alt="spectrogram ADV-26" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-27"><td><b>ADV-27</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2<br>seg内 28.55s<br>episode -<br><small>記録voice=Aoede</small></td>
+<td>ローカルASR転写が原稿と異なる語(読み違い・不明瞭の可能性)<br><small>op=insert, script=, whisper=it</small></td>
+<td><small>interviewed by Reuters, [it] It takes at</small></td>
+<td><audio controls preload="none" src="clips/ADV-27.mp3"></audio><br><img loading="lazy" src="spec/ADV-27.png" alt="spectrogram ADV-27" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-28"><td><b>ADV-28</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 1<br>seg内 27.86s<br>episode -<br><small>記録voice=Aoede</small></td>
+<td>ローカルASRの信頼度が低い語(聞き取りにくい可能性)<br><small>word=it,, whisper_prob=0.481</small></td>
+<td><small>entered the market [market it,] and a good</small></td>
+<td><audio controls preload="none" src="clips/ADV-28.mp3"></audio><br><img loading="lazy" src="spec/ADV-28.png" alt="spectrogram ADV-28" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-29"><td><b>ADV-29</b><br><span class="conf low">low</span></td>
+<td>Full Story Part 2<br>seg内 21.02s<br>episode -<br><small>記録voice=Aoede</small></td>
+<td>ローカルASRの信頼度が低い語(聞き取りにくい可能性)<br><small>word=how, whisper_prob=0.468</small></td>
+<td><small>the ring. So [how] long does it</small></td>
+<td><audio controls preload="none" src="clips/ADV-29.mp3"></audio><br><img loading="lazy" src="spec/ADV-29.png" alt="spectrogram ADV-29" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr>
+<tr id="ADV-30"><td><b>ADV-30</b><br><span class="conf low">low</span></td>
+<td>Key Phrase 1(英語)<br>seg内 0.27s<br>episode -<br><small>voice記録: 本文/KPはAoede系(audit)</small></td>
+<td>ローカルASRの信頼度が低い語(聞き取りにくい可能性)<br><small>word=Lag, whisper_prob=0.413</small></td>
+<td><small>[Lag]</small></td>
+<td><audio controls preload="none" src="clips/ADV-30.mp3"></audio><br><img loading="lazy" src="spec/ADV-30.png" alt="spectrogram ADV-30" width="320"><br>(全編timelineに直接対応しない固定shell/KP内)</td>
+<td class="chk">&#9744; 異常あり &nbsp; &#9744; 問題なし &nbsp; &#9744; 判断不能<br>メモ: ______</td></tr></table>
+<h2>全編の構成(開始秒・クリックで該当位置から再生)</h2>
+<p style="font-size:.88em">Intro/Outro/Notification(SFX)は固定音源で読み上げなし。他は読み上げ(Aoede/Charon、記録voiceは各行参照)。</p>
+<h3>Standard</h3><table><tr><th>再生</th><th>segment</th><th>長さ</th></tr><tr><td><button class="jump" data-lv="a2" data-t="0.0">&#9654; 0.00s</button></td><td>Intro</td><td>10.74s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="10.736">&#9654; 10.74s</button></td><td>Welcome</td><td>1.89s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="13.126">&#9654; 13.13s</button></td><td>Topic intro</td><td>5.40s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="19.176">&#9654; 19.18s</button></td><td>Japanese title</td><td>4.52s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="24.196">&#9654; 24.20s</button></td><td>Notification 1</td><td>2.04s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="26.636">&#9654; 26.64s</button></td><td>Preview intro</td><td>1.24s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="28.526">&#9654; 28.53s</button></td><td>Preview</td><td>13.28s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="42.306">&#9654; 42.31s</button></td><td>Notification 2</td><td>2.04s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="44.746">&#9654; 44.75s</button></td><td>Key phrases intro</td><td>2.00s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="47.246">&#9654; 47.25s</button></td><td>Key Phrase 1</td><td>8.60s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="55.846">&#9654; 55.85s</button></td><td>Key Phrase 2</td><td>7.93s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="63.776">&#9654; 63.78s</button></td><td>Key Phrase 3</td><td>7.23s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="71.006">&#9654; 71.01s</button></td><td>Key Phrase 4</td><td>6.42s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="77.426">&#9654; 77.43s</button></td><td>Key Phrase 5</td><td>8.48s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="85.906">&#9654; 85.91s</button></td><td>Notification 3</td><td>2.04s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="88.346">&#9654; 88.35s</button></td><td>Full story intro</td><td>1.83s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="91.176">&#9654; 91.18s</button></td><td>Comment 1</td><td>6.92s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="98.896">&#9654; 98.90s</button></td><td>Full Story Part 1</td><td>40.79s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="140.69">&#9654; 140.69s</button></td><td>Comment 2</td><td>12.76s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="154.25">&#9654; 154.25s</button></td><td>Full Story Part 2</td><td>52.60s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="207.85">&#9654; 207.85s</button></td><td>Comment 3</td><td>13.50s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="222.15">&#9654; 222.15s</button></td><td>Full Story Part 3</td><td>48.36s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="271.506">&#9654; 271.51s</button></td><td>Comment 4</td><td>13.48s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="285.786">&#9654; 285.79s</button></td><td>In One Line</td><td>6.22s</td></tr>
+<tr><td><button class="jump" data-lv="a2" data-t="292.511">&#9654; 292.51s</button></td><td>Outro</td><td>6.14s</td></tr></table>
+<h3>Advanced</h3><table><tr><th>再生</th><th>segment</th><th>長さ</th></tr><tr><td><button class="jump" data-lv="b1b" data-t="0.0">&#9654; 0.00s</button></td><td>Intro</td><td>10.74s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="10.736">&#9654; 10.74s</button></td><td>Welcome</td><td>1.89s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="13.126">&#9654; 13.13s</button></td><td>Topic intro</td><td>5.75s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="19.526">&#9654; 19.53s</button></td><td>Notification 1</td><td>2.04s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="21.966">&#9654; 21.97s</button></td><td>Preview intro</td><td>1.24s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="23.856">&#9654; 23.86s</button></td><td>Preview</td><td>11.97s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="36.326">&#9654; 36.33s</button></td><td>Notification 2</td><td>2.04s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="38.766">&#9654; 38.77s</button></td><td>Key phrases intro</td><td>2.00s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="41.266">&#9654; 41.27s</button></td><td>Key Phrase 1</td><td>8.63s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="49.896">&#9654; 49.90s</button></td><td>Key Phrase 2</td><td>9.21s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="59.106">&#9654; 59.11s</button></td><td>Key Phrase 3</td><td>10.11s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="69.216">&#9654; 69.22s</button></td><td>Key Phrase 4</td><td>8.93s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="78.146">&#9654; 78.15s</button></td><td>Key Phrase 5</td><td>10.58s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="88.726">&#9654; 88.73s</button></td><td>Notification 3</td><td>2.04s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="91.166">&#9654; 91.17s</button></td><td>Full story intro</td><td>1.83s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="93.796">&#9654; 93.80s</button></td><td>Comment 1</td><td>5.27s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="99.866">&#9654; 99.87s</button></td><td>Full Story Part 1</td><td>41.72s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="142.386">&#9654; 142.39s</button></td><td>Comment 2</td><td>8.17s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="151.356">&#9654; 151.36s</button></td><td>Full Story Part 2</td><td>51.64s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="203.796">&#9654; 203.80s</button></td><td>Comment 3</td><td>17.23s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="221.826">&#9654; 221.83s</button></td><td>Full Story Part 3</td><td>44.21s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="266.836">&#9654; 266.84s</button></td><td>Comment 4</td><td>11.40s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="279.036">&#9654; 279.04s</button></td><td>In One Line</td><td>5.28s</td></tr>
+<tr><td><button class="jump" data-lv="b1b" data-t="285.116">&#9654; 285.12s</button></td><td>Outro</td><td>6.14s</td></tr></table>
+<script>
+document.querySelectorAll('button.jump').forEach(function(b){b.addEventListener('click',function(){
+ var a=document.getElementById('ep_'+b.dataset.lv); a.currentTime=parseFloat(b.dataset.t); a.play().catch(function(){});});});
+</script>
+</body></html>

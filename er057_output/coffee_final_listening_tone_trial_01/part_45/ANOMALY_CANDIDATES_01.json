@@ -1,0 +1,4001 @@
+{
+ "generated": "2026-10-11 22:05:27",
+ "thresholds": {
+  "CLIP_LEVEL": 0.985,
+  "CLIP_MIN_RUN": 3,
+  "PEAK_WARN": 0.99,
+  "CLICK_RATIO": 40.0,
+  "CLICK_ABS_MIN": 0.06,
+  "CLICK_ISOLATION": 0.55,
+  "DROPOUT_ZERO_MS": 4.0,
+  "DROPOUT_ABRUPT_DB": -30.0,
+  "GAP_MEDIUM_S": 1.0,
+  "GAP_LOW_S": 0.8,
+  "EDGE_HEAD_DB": -22.0,
+  "EDGE_TAIL_DB": -22.0,
+  "STEP_DB": 10.0,
+  "LEVEL_WIN_S": 1.2,
+  "STEP_STABLE_DB": 4.5,
+  "STEP_MIN_LEVEL_DB": -34.0,
+  "SPEC_JUMP_Z": 8.0,
+  "ASR_LOW_P": 0.5
+ },
+ "levels": {
+  "a2": {
+   "segments_audio_seconds": 246.89,
+   "segments_analysis_seconds": 3.9,
+   "assembled_file": "er057_output/coffee_final_listening_tone_trial_01/part_45/evidence_snapshot/a2/assembled/Family_X_Audio_A2_COFFEE_PRICES.wav",
+   "assembled_seconds": 298.655,
+   "assembled_analysis_seconds": 2.62,
+   "assembled_peak": 0.9504
+  },
+  "b1b": {
+   "segments_audio_seconds": 241.46,
+   "segments_analysis_seconds": 1.16,
+   "assembled_file": "er057_output/coffee_final_listening_tone_trial_01/part_45/evidence_snapshot/b1b/assembled/Family_X_Audio_B1_COFFEE_PRICES.wav",
+   "assembled_seconds": 291.26,
+   "assembled_analysis_seconds": 2.56,
+   "assembled_peak": 0.9203
+  }
+ },
+ "libs": {
+  "numpy": "2.5.1",
+  "soundfile": "0.14.0",
+  "faster_whisper": "1.2.1",
+  "whisper_model": "small",
+  "scipy": "1.18.0"
+ },
+ "candidates": [
+  {
+   "symptom": "long_gap",
+   "dur": 0.8,
+   "confidence": "low",
+   "metrics": {
+    "gap_seconds": 0.8,
+    "silence_thr_db": -52.3
+   },
+   "id": "a2-S001",
+   "level": "a2",
+   "source": "segment",
+   "segment": "comment_2",
+   "t_seg": 5.75,
+   "t_episode": 146.44,
+   "near_words": "ない よう です。 [です。] では、 豆 の",
+   "fixed_asset": false,
+   "display_id": "STD-05"
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.42,
+   "confidence": "low",
+   "metrics": {
+    "word": "International",
+    "whisper_prob": 0.475
+   },
+   "id": "a2-S002",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part1",
+   "t_seg": 17.19,
+   "t_episode": 116.086,
+   "near_words": "a delay. The [International] Coffee Organization shared",
+   "fixed_asset": false,
+   "display_id": "STD-25"
+  },
+  {
+   "symptom": "asr_mismatch_word",
+   "dur": 0.12,
+   "confidence": "low",
+   "metrics": {
+    "op": "replace",
+    "script": "now",
+    "whisper": "no"
+   },
+   "id": "a2-S003",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part1",
+   "t_seg": 1.52,
+   "t_episode": 100.416,
+   "near_words": "Beans cost less, [no.] When you hear",
+   "fixed_asset": false,
+   "display_id": "STD-14"
+  },
+  {
+   "symptom": "asr_mismatch_word",
+   "dur": 0.32,
+   "confidence": "low",
+   "metrics": {
+    "op": "replace",
+    "script": "there is",
+    "whisper": "there's"
+   },
+   "id": "a2-S004",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part1",
+   "t_seg": 15.4,
+   "t_episode": 114.296,
+   "near_words": "It feels like [there's] a delay. The",
+   "fixed_asset": false,
+   "display_id": "STD-15"
+  },
+  {
+   "symptom": "asr_mismatch_word",
+   "dur": 0.94,
+   "confidence": "low",
+   "metrics": {
+    "op": "replace",
+    "script": "8.7%",
+    "whisper": "8 7"
+   },
+   "id": "a2-S005",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part1",
+   "t_seg": 21.69,
+   "t_episode": 120.586,
+   "near_words": "It fell 8 [.7] % from the",
+   "fixed_asset": false,
+   "display_id": "STD-16"
+  },
+  {
+   "symptom": "asr_mismatch_word",
+   "dur": 0.1,
+   "confidence": "low",
+   "metrics": {
+    "op": "insert",
+    "script": "",
+    "whisper": "it"
+   },
+   "id": "a2-S006",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part1",
+   "t_seg": 26.99,
+   "t_episode": 125.886,
+   "near_words": "reached the market. [market. it.] It also expected",
+   "fixed_asset": false,
+   "display_id": "STD-17"
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "ratio": 40.8,
+    "abs_d2": 0.0734,
+    "isolation": 0.939
+   },
+   "id": "a2-S007",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 30.344,
+   "t_episode": 184.594,
+   "near_words": "Reuters. They estimate [robbing] prices take at",
+   "fixed_asset": false,
+   "display_id": "STD-03"
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "medium",
+   "metrics": {
+    "ratio": 81.1,
+    "abs_d2": 0.0866,
+    "isolation": 0.957
+   },
+   "id": "a2-S008",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 40.94,
+   "t_episode": 195.19,
+   "near_words": "roast coffee keep [robbings] in stock. Roasting",
+   "fixed_asset": false,
+   "display_id": "STD-02"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -10.9,
+    "before_db": -22.6,
+    "after_db": -33.5
+   },
+   "id": "a2-S009",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 8.35,
+   "t_episode": 162.6,
+   "near_words": "month a year [earlier.] You might wonder,",
+   "fixed_asset": false,
+   "display_id": "STD-06"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": 11.2,
+    "before_db": -31.6,
+    "after_db": -20.5
+   },
+   "id": "a2-S010",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 20.275,
+   "t_episode": 174.525,
+   "near_words": "a cafe. Don't [Don't put] the two numbers",
+   "fixed_asset": false,
+   "display_id": "STD-07"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -12.1,
+    "before_db": -26.2,
+    "after_db": -38.3
+   },
+   "id": "a2-S011",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 25.7,
+   "t_episode": 179.95,
+   "near_words": "to reach a [price tag?] tag? People in",
+   "fixed_asset": false,
+   "display_id": "STD-08"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -11.0,
+    "before_db": -22.5,
+    "after_db": -33.5
+   },
+   "id": "a2-S012",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 44.2,
+   "t_episode": 198.45,
+   "near_words": "the beans also [take] time. These companies",
+   "fixed_asset": false,
+   "display_id": "STD-09"
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.18,
+   "confidence": "low",
+   "metrics": {
+    "word": "U",
+    "whisper_prob": 0.472
+   },
+   "id": "a2-S013",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 33.63,
+   "t_episode": 187.88,
+   "near_words": "to appear in [U] .S. shop prices.",
+   "fixed_asset": false,
+   "display_id": "STD-26"
+  },
+  {
+   "symptom": "asr_mismatch_word",
+   "dur": 0.86,
+   "confidence": "low",
+   "metrics": {
+    "op": "replace",
+    "script": "6.1%",
+    "whisper": "6 1"
+   },
+   "id": "a2-S014",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 5.45,
+   "t_episode": 159.7,
+   "near_words": "coffee cost 6 [.1] % more than",
+   "fixed_asset": false,
+   "display_id": "STD-18"
+  },
+  {
+   "symptom": "asr_mismatch_word",
+   "dur": 0.48,
+   "confidence": "low",
+   "metrics": {
+    "op": "replace",
+    "script": "raw bean",
+    "whisper": "robbing"
+   },
+   "id": "a2-S015",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 30.22,
+   "t_episode": 184.47,
+   "near_words": "Reuters. They estimate [robbing] prices take at",
+   "fixed_asset": false,
+   "display_id": "STD-19"
+  },
+  {
+   "symptom": "asr_mismatch_word",
+   "dur": 0.54,
+   "confidence": "low",
+   "metrics": {
+    "op": "replace",
+    "script": "raw beans",
+    "whisper": "robbings"
+   },
+   "id": "a2-S016",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 41.07,
+   "t_episode": 195.32,
+   "near_words": "roast coffee keep [robbings] in stock. Roasting",
+   "fixed_asset": false,
+   "display_id": "STD-20"
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "ratio": 45.8,
+    "abs_d2": 0.1523,
+    "isolation": 0.881
+   },
+   "id": "a2-S017",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part3",
+   "t_seg": 27.549,
+   "t_episode": 249.699,
+   "near_words": "pay, and buying [beans.] Even if bean",
+   "fixed_asset": false,
+   "display_id": "STD-04"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": 11.1,
+    "before_db": -32.3,
+    "after_db": -21.2
+   },
+   "id": "a2-S018",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part3",
+   "t_seg": 19.575,
+   "t_episode": 241.725,
+   "near_words": "just beans. A [person] who runs a",
+   "fixed_asset": false,
+   "display_id": "STD-10"
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 8.1
+   },
+   "id": "a2-S019",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part3",
+   "t_seg": 9.989,
+   "t_episode": 232.139,
+   "near_words": "that prices will [fall] in nine months.",
+   "fixed_asset": false,
+   "display_id": "STD-11"
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 8.4
+   },
+   "id": "a2-S020",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part3",
+   "t_seg": 27.045,
+   "t_episode": 249.195,
+   "near_words": "cups, workers pay, [and] buying beans. Even",
+   "fixed_asset": false,
+   "display_id": "STD-12"
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.52,
+   "confidence": "low",
+   "metrics": {
+    "word": "Even",
+    "whisper_prob": 0.434
+   },
+   "id": "a2-S021",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part3",
+   "t_seg": 28.56,
+   "t_episode": 250.71,
+   "near_words": "and buying beans. [Even] if bean prices",
+   "fixed_asset": false,
+   "display_id": "STD-27"
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.3,
+   "confidence": "low",
+   "metrics": {
+    "word": "costs",
+    "whisper_prob": 0.404
+   },
+   "id": "a2-S022",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part3",
+   "t_seg": 38.21,
+   "t_episode": 260.36,
+   "near_words": "much two beans [costs] now. Also ask,",
+   "fixed_asset": false,
+   "display_id": "STD-28"
+  },
+  {
+   "symptom": "asr_mismatch_word",
+   "dur": 0.16,
+   "confidence": "low",
+   "metrics": {
+    "op": "replace",
+    "script": "do",
+    "whisper": "2"
+   },
+   "id": "a2-S023",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part3",
+   "t_seg": 37.78,
+   "t_episode": 259.93,
+   "near_words": "than how much [two] beans costs now.",
+   "fixed_asset": false,
+   "display_id": "STD-21"
+  },
+  {
+   "symptom": "asr_mismatch_word",
+   "dur": 0.3,
+   "confidence": "low",
+   "metrics": {
+    "op": "replace",
+    "script": "cost",
+    "whisper": "costs"
+   },
+   "id": "a2-S024",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part3",
+   "t_seg": 38.21,
+   "t_episode": 260.36,
+   "near_words": "much two beans [costs] now. Also ask,",
+   "fixed_asset": false,
+   "display_id": "STD-22"
+  },
+  {
+   "symptom": "asr_mismatch_word",
+   "dur": 0.24,
+   "confidence": "low",
+   "metrics": {
+    "op": "replace",
+    "script": "hidden",
+    "whisper": "hitting"
+   },
+   "id": "a2-S025",
+   "level": "a2",
+   "source": "segment",
+   "segment": "full_story_part3",
+   "t_seg": 45.12,
+   "t_episode": 267.27,
+   "near_words": "have its own [hitting] clock, separate from",
+   "fixed_asset": false,
+   "display_id": "STD-23"
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 10.1
+   },
+   "id": "a2-S026",
+   "level": "a2",
+   "source": "segment",
+   "segment": "in_one_line",
+   "t_seg": 0.363,
+   "t_episode": 286.149,
+   "near_words": "[Falling] coffee bean prices",
+   "fixed_asset": false,
+   "display_id": "STD-13"
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.28,
+   "confidence": "low",
+   "metrics": {
+    "word": "U",
+    "whisper_prob": 0.445
+   },
+   "id": "a2-S027",
+   "level": "a2",
+   "source": "segment",
+   "segment": "in_one_line",
+   "t_seg": 4.76,
+   "t_episode": 290.546,
+   "near_words": "months to affect [U] .S. shop prices.",
+   "fixed_asset": false,
+   "display_id": "STD-29"
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.94,
+   "confidence": "low",
+   "metrics": {
+    "word": "Robbing",
+    "whisper_prob": 0.204
+   },
+   "id": "a2-S028",
+   "level": "a2",
+   "source": "segment",
+   "segment": "kp1_en",
+   "t_seg": 0.47,
+   "t_episode": null,
+   "near_words": "[Robbing]",
+   "fixed_asset": false,
+   "display_id": "STD-30"
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "high",
+   "metrics": {
+    "ratio": 107.6,
+    "abs_d2": 0.1149,
+    "isolation": 0.983
+   },
+   "id": "a2-S029",
+   "level": "a2",
+   "source": "segment",
+   "segment": "kp3_en",
+   "t_seg": 0.214,
+   "t_episode": null,
+   "near_words": "[Take] time.",
+   "fixed_asset": false,
+   "display_id": "STD-01"
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.52,
+   "confidence": "low",
+   "metrics": {
+    "word": "Five.",
+    "whisper_prob": 0.199
+   },
+   "id": "a2-S030",
+   "level": "a2",
+   "source": "segment",
+   "segment": "num_five",
+   "t_seg": 0.26,
+   "t_episode": null,
+   "near_words": "[Five.]",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.48,
+   "confidence": "low",
+   "metrics": {
+    "word": "4",
+    "whisper_prob": 0.239
+   },
+   "id": "a2-S031",
+   "level": "a2",
+   "source": "segment",
+   "segment": "num_four",
+   "t_seg": 0.24,
+   "t_episode": null,
+   "near_words": "[4]",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.44,
+   "confidence": "low",
+   "metrics": {
+    "word": "one",
+    "whisper_prob": 0.232
+   },
+   "id": "a2-S032",
+   "level": "a2",
+   "source": "segment",
+   "segment": "num_one",
+   "t_seg": 0.22,
+   "t_episode": null,
+   "near_words": "[one]",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.5,
+   "confidence": "low",
+   "metrics": {
+    "word": "3.",
+    "whisper_prob": 0.363
+   },
+   "id": "a2-S033",
+   "level": "a2",
+   "source": "segment",
+   "segment": "num_three",
+   "t_seg": 0.25,
+   "t_episode": null,
+   "near_words": "[3.]",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.46,
+   "confidence": "low",
+   "metrics": {
+    "word": "Two.",
+    "whisper_prob": 0.312
+   },
+   "id": "a2-S034",
+   "level": "a2",
+   "source": "segment",
+   "segment": "num_two",
+   "t_seg": 0.23,
+   "t_episode": null,
+   "near_words": "[Two.]",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.52,
+   "confidence": "low",
+   "metrics": {
+    "word": "Coffee",
+    "whisper_prob": 0.458
+   },
+   "id": "a2-S035",
+   "level": "a2",
+   "source": "segment",
+   "segment": "topic_intro",
+   "t_seg": 1.44,
+   "t_episode": 14.566,
+   "near_words": "Today's topic is [Coffee] Bean Prices Fall.",
+   "fixed_asset": false,
+   "display_id": "STD-24"
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "medium",
+   "metrics": {
+    "ratio": 75.2,
+    "abs_d2": 0.113,
+    "isolation": 0.963
+   },
+   "id": "a2-A036",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Notification 1",
+   "t_seg": 0.023,
+   "t_episode": 24.219,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "medium",
+   "metrics": {
+    "ratio": 75.2,
+    "abs_d2": 0.113,
+    "isolation": 0.963
+   },
+   "id": "a2-A037",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Notification 2",
+   "t_seg": 0.023,
+   "t_episode": 42.329,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "medium",
+   "metrics": {
+    "ratio": 75.2,
+    "abs_d2": 0.113,
+    "isolation": 0.963
+   },
+   "id": "a2-A038",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Notification 3",
+   "t_seg": 0.023,
+   "t_episode": 85.929,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "ratio": 43.5,
+    "abs_d2": 0.0624,
+    "isolation": 0.89
+   },
+   "id": "a2-A039",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Full Story Part 3",
+   "t_seg": 27.548,
+   "t_episode": 249.698,
+   "near_words": "",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -10.9,
+    "before_db": -21.3,
+    "after_db": -32.1
+   },
+   "id": "a2-A040",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Full Story Part 2",
+   "t_seg": 8.35,
+   "t_episode": 162.6,
+   "near_words": "",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": 11.5,
+    "before_db": -30.5,
+    "after_db": -19.0
+   },
+   "id": "a2-A041",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Full Story Part 2",
+   "t_seg": 20.275,
+   "t_episode": 174.525,
+   "near_words": "",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -12.1,
+    "before_db": -24.9,
+    "after_db": -37.0
+   },
+   "id": "a2-A042",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Full Story Part 2",
+   "t_seg": 25.7,
+   "t_episode": 179.95,
+   "near_words": "",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -11.0,
+    "before_db": -21.1,
+    "after_db": -32.1
+   },
+   "id": "a2-A043",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Full Story Part 2",
+   "t_seg": 44.2,
+   "t_episode": 198.45,
+   "near_words": "",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": 10.6,
+    "before_db": -30.7,
+    "after_db": -20.1
+   },
+   "id": "a2-A044",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Full Story Part 3",
+   "t_seg": 19.55,
+   "t_episode": 241.7,
+   "near_words": "",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 9.3
+   },
+   "id": "a2-A045",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Intro",
+   "t_seg": 1.387,
+   "t_episode": 1.387,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 8.1
+   },
+   "id": "a2-A046",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Intro",
+   "t_seg": 3.605,
+   "t_episode": 3.605,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 8.8
+   },
+   "id": "a2-A047",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Intro",
+   "t_seg": 4.453,
+   "t_episode": 4.453,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 8.4
+   },
+   "id": "a2-A048",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Intro",
+   "t_seg": 5.477,
+   "t_episode": 5.477,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 8.0
+   },
+   "id": "a2-A049",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Intro",
+   "t_seg": 5.819,
+   "t_episode": 5.819,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 8.8
+   },
+   "id": "a2-A050",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Intro",
+   "t_seg": 6.331,
+   "t_episode": 6.331,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 8.6
+   },
+   "id": "a2-A051",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Full Story Part 3",
+   "t_seg": 9.989,
+   "t_episode": 232.139,
+   "near_words": "",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 8.6
+   },
+   "id": "a2-A052",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "Full Story Part 3",
+   "t_seg": 27.045,
+   "t_episode": 249.195,
+   "near_words": "",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 10.4
+   },
+   "id": "a2-A053",
+   "level": "a2",
+   "source": "assembled",
+   "segment": "In One Line",
+   "t_seg": 0.363,
+   "t_episode": 286.149,
+   "near_words": "",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "ratio": 43.5,
+    "abs_d2": 0.1447,
+    "isolation": 0.953
+   },
+   "id": "b1b-S054",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "comment_3",
+   "t_seg": 10.956,
+   "t_episode": null,
+   "near_words": "か る こと [が] で きます。 次",
+   "fixed_asset": false,
+   "display_id": "ADV-04"
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "ratio": 57.6,
+    "abs_d2": 0.364,
+    "isolation": 0.96
+   },
+   "id": "b1b-S055",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "comment_4",
+   "t_seg": 5.926,
+   "t_episode": null,
+   "near_words": "いる の が、 [2] 年 間 に",
+   "fixed_asset": false,
+   "display_id": "ADV-05"
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "ratio": 41.2,
+    "abs_d2": 0.1465,
+    "isolation": 0.977
+   },
+   "id": "b1b-S056",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "comment_4",
+   "t_seg": 9.836,
+   "t_episode": null,
+   "near_words": "います。 この お [店] は、 3 年",
+   "fixed_asset": false,
+   "display_id": "ADV-06"
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "medium",
+   "metrics": {
+    "ratio": 70.0,
+    "abs_d2": 0.07,
+    "isolation": 0.967
+   },
+   "id": "b1b-S057",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "full_story_part1",
+   "t_seg": 12.82,
+   "t_episode": null,
+   "near_words": "a price tag [tag that] makes you want",
+   "fixed_asset": false,
+   "display_id": "ADV-01"
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "ratio": 48.9,
+    "abs_d2": 0.1335,
+    "isolation": 0.934
+   },
+   "id": "b1b-S058",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "full_story_part1",
+   "t_seg": 22.62,
+   "t_episode": null,
+   "near_words": "% from the [the previous] month. The reason,",
+   "fixed_asset": false,
+   "display_id": "ADV-07"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -11.2,
+    "before_db": -19.4,
+    "after_db": -30.6
+   },
+   "id": "b1b-S059",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "full_story_part1",
+   "t_seg": 7.775,
+   "t_episode": null,
+   "near_words": "has already come [down to.] to. But the",
+   "fixed_asset": false,
+   "display_id": "ADV-16"
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.08,
+   "confidence": "low",
+   "metrics": {
+    "word": "it,",
+    "whisper_prob": 0.481
+   },
+   "id": "b1b-S060",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "full_story_part1",
+   "t_seg": 27.86,
+   "t_episode": null,
+   "near_words": "entered the market [market it,] and a good",
+   "fixed_asset": false,
+   "display_id": "ADV-28"
+  },
+  {
+   "symptom": "asr_mismatch_word",
+   "dur": 0.2,
+   "confidence": "low",
+   "metrics": {
+    "op": "replace",
+    "script": "too",
+    "whisper": "to"
+   },
+   "id": "b1b-S061",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "full_story_part1",
+   "t_seg": 7.88,
+   "t_episode": null,
+   "near_words": "already come down [to.] But the price",
+   "fixed_asset": false,
+   "display_id": "ADV-23"
+  },
+  {
+   "symptom": "asr_mismatch_word",
+   "dur": 1.0,
+   "confidence": "low",
+   "metrics": {
+    "op": "replace",
+    "script": "8.7%",
+    "whisper": "8 7"
+   },
+   "id": "b1b-S062",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "full_story_part1",
+   "t_seg": 21.34,
+   "t_episode": null,
+   "near_words": "Organization fell 8 [.7] % from the",
+   "fixed_asset": false,
+   "display_id": "ADV-24"
+  },
+  {
+   "symptom": "asr_mismatch_word",
+   "dur": 0.08,
+   "confidence": "low",
+   "metrics": {
+    "op": "insert",
+    "script": "",
+    "whisper": "it"
+   },
+   "id": "b1b-S063",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "full_story_part1",
+   "t_seg": 27.86,
+   "t_episode": null,
+   "near_words": "entered the market [market it,] and a good",
+   "fixed_asset": false,
+   "display_id": "ADV-25"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -10.8,
+    "before_db": -18.1,
+    "after_db": -28.9
+   },
+   "id": "b1b-S064",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 8.925,
+   "t_episode": null,
+   "near_words": "leave you wondering, [] did prices go",
+   "fixed_asset": false,
+   "display_id": "ADV-17"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -14.0,
+    "before_db": -28.8,
+    "after_db": -42.9
+   },
+   "id": "b1b-S065",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 17.2,
+   "t_episode": null,
+   "near_words": "cup at a [cafe.] Hold on before",
+   "fixed_asset": false,
+   "display_id": "ADV-18"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -11.7,
+    "before_db": -28.3,
+    "after_db": -40.0
+   },
+   "id": "b1b-S066",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 23.775,
+   "t_episode": null,
+   "near_words": "reach a price [price tag?] According to estimates",
+   "fixed_asset": false,
+   "display_id": "ADV-19"
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.48,
+   "confidence": "low",
+   "metrics": {
+    "word": "how",
+    "whisper_prob": 0.468
+   },
+   "id": "b1b-S067",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 21.02,
+   "t_episode": null,
+   "near_words": "the ring. So [how] long does it",
+   "fixed_asset": false,
+   "display_id": "ADV-29"
+  },
+  {
+   "symptom": "asr_mismatch_word",
+   "dur": 0.94,
+   "confidence": "low",
+   "metrics": {
+    "op": "replace",
+    "script": "6.1%",
+    "whisper": "6 1"
+   },
+   "id": "b1b-S068",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 4.23,
+   "t_episode": null,
+   "near_words": "coffee was 6 [.1] % higher than",
+   "fixed_asset": false,
+   "display_id": "ADV-26"
+  },
+  {
+   "symptom": "asr_mismatch_word",
+   "dur": 0.26,
+   "confidence": "low",
+   "metrics": {
+    "op": "insert",
+    "script": "",
+    "whisper": "it"
+   },
+   "id": "b1b-S069",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "full_story_part2",
+   "t_seg": 28.55,
+   "t_episode": null,
+   "near_words": "interviewed by Reuters, [it] It takes at",
+   "fixed_asset": false,
+   "display_id": "ADV-27"
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "ratio": 51.7,
+    "abs_d2": 0.0726,
+    "isolation": 0.956
+   },
+   "id": "b1b-S070",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "full_story_part3",
+   "t_seg": 36.424,
+   "t_episode": null,
+   "near_words": "now, but also [when] does the price",
+   "fixed_asset": false,
+   "display_id": "ADV-08"
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.54,
+   "confidence": "low",
+   "metrics": {
+    "word": "Lag",
+    "whisper_prob": 0.413
+   },
+   "id": "b1b-S071",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "kp1_en",
+   "t_seg": 0.27,
+   "t_episode": null,
+   "near_words": "[Lag]",
+   "fixed_asset": false,
+   "display_id": "ADV-30"
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.52,
+   "confidence": "low",
+   "metrics": {
+    "word": "Five.",
+    "whisper_prob": 0.199
+   },
+   "id": "b1b-S072",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "num_five_charon",
+   "t_seg": 0.26,
+   "t_episode": null,
+   "near_words": "[Five.]",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.48,
+   "confidence": "low",
+   "metrics": {
+    "word": "4",
+    "whisper_prob": 0.239
+   },
+   "id": "b1b-S073",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "num_four_charon",
+   "t_seg": 0.24,
+   "t_episode": null,
+   "near_words": "[4]",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.44,
+   "confidence": "low",
+   "metrics": {
+    "word": "one",
+    "whisper_prob": 0.232
+   },
+   "id": "b1b-S074",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "num_one_charon",
+   "t_seg": 0.22,
+   "t_episode": null,
+   "near_words": "[one]",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.5,
+   "confidence": "low",
+   "metrics": {
+    "word": "3.",
+    "whisper_prob": 0.363
+   },
+   "id": "b1b-S075",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "num_three_charon",
+   "t_seg": 0.25,
+   "t_episode": null,
+   "near_words": "[3.]",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "asr_low_conf_word",
+   "dur": 0.46,
+   "confidence": "low",
+   "metrics": {
+    "word": "Two.",
+    "whisper_prob": 0.312
+   },
+   "id": "b1b-S076",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "num_two_charon",
+   "t_seg": 0.23,
+   "t_episode": null,
+   "near_words": "[Two.]",
+   "fixed_asset": false
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -10.2,
+    "before_db": -22.7,
+    "after_db": -33.0
+   },
+   "id": "b1b-S077",
+   "level": "b1b",
+   "source": "segment",
+   "segment": "preview",
+   "t_seg": 2.225,
+   "t_episode": null,
+   "near_words": "ス は 数 [々] な 理 由",
+   "fixed_asset": false,
+   "display_id": "ADV-20"
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "medium",
+   "metrics": {
+    "ratio": 75.8,
+    "abs_d2": 0.1036,
+    "isolation": 0.963
+   },
+   "id": "b1b-A078",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Notification 1",
+   "t_seg": 0.023,
+   "t_episode": 19.549,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "medium",
+   "metrics": {
+    "ratio": 75.8,
+    "abs_d2": 0.1036,
+    "isolation": 0.963
+   },
+   "id": "b1b-A079",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Notification 2",
+   "t_seg": 0.023,
+   "t_episode": 36.349,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "medium",
+   "metrics": {
+    "ratio": 75.8,
+    "abs_d2": 0.1036,
+    "isolation": 0.963
+   },
+   "id": "b1b-A080",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Notification 3",
+   "t_seg": 0.023,
+   "t_episode": 88.749,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "ratio": 40.8,
+    "abs_d2": 0.1183,
+    "isolation": 0.921
+   },
+   "id": "b1b-A081",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Full Story Part 1 (Aoede)",
+   "t_seg": 17.627,
+   "t_episode": 117.493,
+   "near_words": "",
+   "fixed_asset": false,
+   "display_id": "ADV-02"
+  },
+  {
+   "symptom": "click",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "ratio": 46.6,
+    "abs_d2": 0.1202,
+    "isolation": 0.962
+   },
+   "id": "b1b-A082",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Comment 4 (Charon)",
+   "t_seg": 5.926,
+   "t_episode": 272.762,
+   "near_words": "",
+   "fixed_asset": false,
+   "display_id": "ADV-03"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -10.7,
+    "before_db": -21.4,
+    "after_db": -32.1
+   },
+   "id": "b1b-A083",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Preview (Charon)",
+   "t_seg": 2.244,
+   "t_episode": 26.1,
+   "near_words": "",
+   "fixed_asset": false,
+   "display_id": "ADV-09"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": 10.2,
+    "before_db": -30.1,
+    "after_db": -19.8
+   },
+   "id": "b1b-A084",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "pause_0.5",
+   "t_seg": 0.149,
+   "t_episode": 35.975,
+   "near_words": "",
+   "fixed_asset": false,
+   "display_id": "ADV-10"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -16.4,
+    "before_db": -19.0,
+    "after_db": -35.4
+   },
+   "id": "b1b-A085",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Full Story Part 1 (Aoede)",
+   "t_seg": 7.759,
+   "t_episode": 107.625,
+   "near_words": "",
+   "fixed_asset": false,
+   "display_id": "ADV-11"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": 11.4,
+    "before_db": -33.4,
+    "after_db": -22.0
+   },
+   "id": "b1b-A086",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Comment 2 (Charon)",
+   "t_seg": 5.564,
+   "t_episode": 147.95,
+   "near_words": "",
+   "fixed_asset": false,
+   "display_id": "ADV-12"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -14.4,
+    "before_db": -27.1,
+    "after_db": -41.5
+   },
+   "id": "b1b-A087",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Full Story Part 2 (Aoede)",
+   "t_seg": 17.194,
+   "t_episode": 168.55,
+   "near_words": "",
+   "fixed_asset": false,
+   "display_id": "ADV-13"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -10.8,
+    "before_db": -25.8,
+    "after_db": -36.6
+   },
+   "id": "b1b-A088",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Full Story Part 2 (Aoede)",
+   "t_seg": 23.794,
+   "t_episode": 175.15,
+   "near_words": "",
+   "fixed_asset": false,
+   "display_id": "ADV-14"
+  },
+  {
+   "symptom": "level_step",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "step_db": -14.6,
+    "before_db": -30.6,
+    "after_db": -45.2
+   },
+   "id": "b1b-A089",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Outro (Charon)",
+   "t_seg": 4.634,
+   "t_episode": 289.75,
+   "near_words": "",
+   "fixed_asset": false,
+   "display_id": "ADV-15"
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 9.3
+   },
+   "id": "b1b-A090",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Intro",
+   "t_seg": 1.387,
+   "t_episode": 1.387,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 8.1
+   },
+   "id": "b1b-A091",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Intro",
+   "t_seg": 3.605,
+   "t_episode": 3.605,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 8.8
+   },
+   "id": "b1b-A092",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Intro",
+   "t_seg": 4.453,
+   "t_episode": 4.453,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 8.4
+   },
+   "id": "b1b-A093",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Intro",
+   "t_seg": 5.477,
+   "t_episode": 5.477,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 8.8
+   },
+   "id": "b1b-A094",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Intro",
+   "t_seg": 6.331,
+   "t_episode": 6.331,
+   "near_words": "",
+   "fixed_asset": true
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 8.1
+   },
+   "id": "b1b-A095",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Key Phrase 2",
+   "t_seg": 3.155,
+   "t_episode": 53.051,
+   "near_words": "",
+   "fixed_asset": false,
+   "display_id": "ADV-21"
+  },
+  {
+   "symptom": "spec_jump",
+   "dur": 0.0,
+   "confidence": "low",
+   "metrics": {
+    "flux_z": 8.1
+   },
+   "id": "b1b-A096",
+   "level": "b1b",
+   "source": "assembled",
+   "segment": "Key Phrase 3",
+   "t_seg": 0.361,
+   "t_episode": 59.467,
+   "near_words": "",
+   "fixed_asset": false,
+   "display_id": "ADV-22"
+  }
+ ],
+ "segment_stats": [
+  {
+   "level": "a2",
+   "segment": "comment_1",
+   "duration": 6.92,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -12.6,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "comment_2",
+   "duration": 12.76,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -12.3,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "a2",
+   "segment": "comment_3",
+   "duration": 13.5,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -13.9,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "comment_4",
+   "duration": 13.48,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -13.4,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "full_story_intro",
+   "duration": 1.83,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.8,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "full_story_part1",
+   "duration": 40.793,
+   "sr": 24000,
+   "peak": 0.6989,
+   "ref_db": -14.0,
+   "natural_zero_runs": 7,
+   "n_cand": 5
+  },
+  {
+   "level": "a2",
+   "segment": "full_story_part2",
+   "duration": 52.6,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -15.3,
+   "natural_zero_runs": 4,
+   "n_cand": 10
+  },
+  {
+   "level": "a2",
+   "segment": "full_story_part3",
+   "duration": 48.356,
+   "sr": 24000,
+   "peak": 0.6997,
+   "ref_db": -14.9,
+   "natural_zero_runs": 11,
+   "n_cand": 9
+  },
+  {
+   "level": "a2",
+   "segment": "in_one_line",
+   "duration": 6.225,
+   "sr": 24000,
+   "peak": 0.6991,
+   "ref_db": -13.8,
+   "natural_zero_runs": 0,
+   "n_cand": 2
+  },
+  {
+   "level": "a2",
+   "segment": "japanese_title",
+   "duration": 4.52,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -11.8,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "key_phrases_intro",
+   "duration": 2.0,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -12.6,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "kp1_en",
+   "duration": 1.38,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -11.2,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "a2",
+   "segment": "kp2_en",
+   "duration": 1.52,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.3,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "kp3_en",
+   "duration": 1.22,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.7,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "a2",
+   "segment": "kp4_en",
+   "duration": 1.14,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -10.6,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "kp5_en",
+   "duration": 1.92,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -12.1,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "meaning_1",
+   "duration": 2.75,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.2,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "meaning_2",
+   "duration": 1.8,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -11.4,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "meaning_3",
+   "duration": 1.6,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -12.5,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "meaning_4",
+   "duration": 1.03,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -10.3,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "meaning_5",
+   "duration": 1.4,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -11.3,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "num_five",
+   "duration": 1.04,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -16.2,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "a2",
+   "segment": "num_four",
+   "duration": 0.91,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -9.8,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "a2",
+   "segment": "num_one",
+   "duration": 0.89,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -11.9,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "a2",
+   "segment": "num_three",
+   "duration": 0.99,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -10.1,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "a2",
+   "segment": "num_two",
+   "duration": 0.89,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -11.8,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "a2",
+   "segment": "point_explanation",
+   "duration": 1.61,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -13.9,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "preview",
+   "duration": 13.28,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.7,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "preview_intro",
+   "duration": 1.24,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -13.0,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "a2",
+   "segment": "topic_intro",
+   "duration": 5.4,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.2,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "a2",
+   "segment": "welcome",
+   "duration": 1.89,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -10.3,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "comment_1",
+   "duration": 5.27,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -13.7,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "comment_2",
+   "duration": 8.17,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -12.7,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "comment_3",
+   "duration": 17.23,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.9,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "b1b",
+   "segment": "comment_4",
+   "duration": 11.4,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -13.4,
+   "natural_zero_runs": 0,
+   "n_cand": 2
+  },
+  {
+   "level": "b1b",
+   "segment": "full_story_intro_charon",
+   "duration": 1.83,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.8,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "full_story_part1",
+   "duration": 41.72,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.5,
+   "natural_zero_runs": 0,
+   "n_cand": 7
+  },
+  {
+   "level": "b1b",
+   "segment": "full_story_part2",
+   "duration": 51.64,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -15.8,
+   "natural_zero_runs": 2,
+   "n_cand": 6
+  },
+  {
+   "level": "b1b",
+   "segment": "full_story_part3",
+   "duration": 44.21,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.9,
+   "natural_zero_runs": 6,
+   "n_cand": 1
+  },
+  {
+   "level": "b1b",
+   "segment": "in_one_line",
+   "duration": 5.28,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -15.5,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "key_phrases_intro_charon",
+   "duration": 2.0,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -12.6,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "kp1_en",
+   "duration": 1.14,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -12.1,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "b1b",
+   "segment": "kp1_explanation_en",
+   "duration": 3.46,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.7,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "kp2_en",
+   "duration": 1.16,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.3,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "kp2_explanation_en",
+   "duration": 4.0,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.8,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "kp3_en",
+   "duration": 1.06,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -12.8,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "kp3_explanation_en",
+   "duration": 5.0,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.3,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "kp4_en",
+   "duration": 1.24,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.0,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "kp4_explanation_en",
+   "duration": 3.54,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -13.1,
+   "natural_zero_runs": 1,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "kp5_en",
+   "duration": 1.0,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.3,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "kp5_explanation_en",
+   "duration": 5.54,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -13.6,
+   "natural_zero_runs": 1,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "num_five_charon",
+   "duration": 1.04,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -16.2,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "b1b",
+   "segment": "num_four_charon",
+   "duration": 0.91,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -9.8,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "b1b",
+   "segment": "num_one_charon",
+   "duration": 0.89,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -11.9,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "b1b",
+   "segment": "num_three_charon",
+   "duration": 0.99,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -10.1,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "b1b",
+   "segment": "num_two_charon",
+   "duration": 0.89,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -11.8,
+   "natural_zero_runs": 0,
+   "n_cand": 1
+  },
+  {
+   "level": "b1b",
+   "segment": "preview",
+   "duration": 11.97,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.6,
+   "natural_zero_runs": 1,
+   "n_cand": 1
+  },
+  {
+   "level": "b1b",
+   "segment": "preview_intro_charon",
+   "duration": 1.24,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -13.0,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "topic_intro",
+   "duration": 5.75,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -14.5,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  },
+  {
+   "level": "b1b",
+   "segment": "welcome_charon",
+   "duration": 1.89,
+   "sr": 24000,
+   "peak": 0.6999,
+   "ref_db": -10.3,
+   "natural_zero_runs": 0,
+   "n_cand": 0
+  }
+ ],
+ "total_elapsed_seconds": 10.49,
+ "published_mp3": {
+  "files": {
+   "a2": {
+    "episode_mp3": "user_test/coffee_new_tone_01/a2/web/episode.mp3",
+    "seconds": 298.655,
+    "peak": 0.9521,
+    "segment_mp3_count": 21
+   },
+   "b1b": {
+    "episode_mp3": "user_test/coffee_new_tone_01/b1b/web/episode.mp3",
+    "seconds": 291.26,
+    "peak": 0.9003,
+    "segment_mp3_count": 20
+   }
+  },
+  "candidates": [
+   {
+    "symptom": "click",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "ratio": 57.0,
+     "abs_d2": 0.0922,
+     "isolation": 0.953
+    },
+    "id": "a2-P001",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Notification 1",
+    "t_seg": 0.023,
+    "t_episode": 24.219,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "click",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "ratio": 56.8,
+     "abs_d2": 0.0954,
+     "isolation": 0.959
+    },
+    "id": "a2-P002",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Notification 2",
+    "t_seg": 0.023,
+    "t_episode": 42.329,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "click",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "ratio": 56.6,
+     "abs_d2": 0.0933,
+     "isolation": 0.962
+    },
+    "id": "a2-P003",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Notification 3",
+    "t_seg": 0.023,
+    "t_episode": 85.929,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": -10.9,
+     "before_db": -21.2,
+     "after_db": -32.1
+    },
+    "id": "a2-P004",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Full Story Part 2",
+    "t_seg": 8.35,
+    "t_episode": 162.6,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": 11.5,
+     "before_db": -30.5,
+     "after_db": -19.0
+    },
+    "id": "a2-P005",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Full Story Part 2",
+    "t_seg": 20.275,
+    "t_episode": 174.525,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": -12.1,
+     "before_db": -24.9,
+     "after_db": -37.0
+    },
+    "id": "a2-P006",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Full Story Part 2",
+    "t_seg": 25.7,
+    "t_episode": 179.95,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": -11.1,
+     "before_db": -21.1,
+     "after_db": -32.2
+    },
+    "id": "a2-P007",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Full Story Part 2",
+    "t_seg": 44.2,
+    "t_episode": 198.45,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": 10.6,
+     "before_db": -30.7,
+     "after_db": -20.1
+    },
+    "id": "a2-P008",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Full Story Part 3",
+    "t_seg": 19.55,
+    "t_episode": 241.7,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 9.4
+    },
+    "id": "a2-P009",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Intro",
+    "t_seg": 1.387,
+    "t_episode": 1.387,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 8.1
+    },
+    "id": "a2-P010",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Intro",
+    "t_seg": 3.605,
+    "t_episode": 3.605,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 8.8
+    },
+    "id": "a2-P011",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Intro",
+    "t_seg": 4.453,
+    "t_episode": 4.453,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 8.4
+    },
+    "id": "a2-P012",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Intro",
+    "t_seg": 5.477,
+    "t_episode": 5.477,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 8.0
+    },
+    "id": "a2-P013",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Intro",
+    "t_seg": 5.819,
+    "t_episode": 5.819,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 8.8
+    },
+    "id": "a2-P014",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Intro",
+    "t_seg": 6.331,
+    "t_episode": 6.331,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 8.6
+    },
+    "id": "a2-P015",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Full Story Part 3",
+    "t_seg": 9.989,
+    "t_episode": 232.139,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 8.5
+    },
+    "id": "a2-P016",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "Full Story Part 3",
+    "t_seg": 27.045,
+    "t_episode": 249.195,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 10.4
+    },
+    "id": "a2-P017",
+    "level": "a2",
+    "source": "published_episode_mp3",
+    "segment": "In One Line",
+    "t_seg": 0.363,
+    "t_episode": 286.149,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "long_gap",
+    "dur": 0.8,
+    "confidence": "low",
+    "metrics": {
+     "gap_seconds": 0.8,
+     "silence_thr_db": -52.3
+    },
+    "id": "a2-P018",
+    "level": "a2",
+    "source": "published_segment_mp3",
+    "segment": "comment_2",
+    "t_seg": 5.75,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "click",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "ratio": 55.2,
+     "abs_d2": 0.0951,
+     "isolation": 0.929
+    },
+    "id": "a2-P019",
+    "level": "a2",
+    "source": "published_segment_mp3",
+    "segment": "full_story_part2",
+    "t_seg": 30.344,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "click",
+    "dur": 0.0,
+    "confidence": "medium",
+    "metrics": {
+     "ratio": 71.1,
+     "abs_d2": 0.0825,
+     "isolation": 0.949
+    },
+    "id": "a2-P020",
+    "level": "a2",
+    "source": "published_segment_mp3",
+    "segment": "full_story_part2",
+    "t_seg": 40.94,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": -10.9,
+     "before_db": -22.6,
+     "after_db": -33.5
+    },
+    "id": "a2-P021",
+    "level": "a2",
+    "source": "published_segment_mp3",
+    "segment": "full_story_part2",
+    "t_seg": 8.35,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": 11.3,
+     "before_db": -31.7,
+     "after_db": -20.4
+    },
+    "id": "a2-P022",
+    "level": "a2",
+    "source": "published_segment_mp3",
+    "segment": "full_story_part2",
+    "t_seg": 20.275,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": -12.3,
+     "before_db": -26.1,
+     "after_db": -38.4
+    },
+    "id": "a2-P023",
+    "level": "a2",
+    "source": "published_segment_mp3",
+    "segment": "full_story_part2",
+    "t_seg": 25.7,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": 10.3,
+     "before_db": -31.5,
+     "after_db": -21.2
+    },
+    "id": "a2-P024",
+    "level": "a2",
+    "source": "published_segment_mp3",
+    "segment": "full_story_part3",
+    "t_seg": 19.525,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 8.2
+    },
+    "id": "a2-P025",
+    "level": "a2",
+    "source": "published_segment_mp3",
+    "segment": "full_story_part3",
+    "t_seg": 27.045,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 10.0
+    },
+    "id": "a2-P026",
+    "level": "a2",
+    "source": "published_segment_mp3",
+    "segment": "in_one_line",
+    "t_seg": 0.363,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "click",
+    "dur": 0.0,
+    "confidence": "high",
+    "metrics": {
+     "ratio": 112.1,
+     "abs_d2": 0.1146,
+     "isolation": 0.982
+    },
+    "id": "a2-P027",
+    "level": "a2",
+    "source": "published_segment_mp3",
+    "segment": "kp3_en",
+    "t_seg": 0.214,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "click",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "ratio": 58.7,
+     "abs_d2": 0.0869,
+     "isolation": 0.965
+    },
+    "id": "b1b-P028",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Notification 1",
+    "t_seg": 0.023,
+    "t_episode": 19.549,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "click",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "ratio": 58.7,
+     "abs_d2": 0.0869,
+     "isolation": 0.965
+    },
+    "id": "b1b-P029",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Notification 2",
+    "t_seg": 0.023,
+    "t_episode": 36.349,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "click",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "ratio": 56.2,
+     "abs_d2": 0.0875,
+     "isolation": 0.962
+    },
+    "id": "b1b-P030",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Notification 3",
+    "t_seg": 0.023,
+    "t_episode": 88.749,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "click",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "ratio": 40.3,
+     "abs_d2": 0.1157,
+     "isolation": 0.887
+    },
+    "id": "b1b-P031",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Full Story Part 1 (Aoede)",
+    "t_seg": 17.627,
+    "t_episode": 117.493,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "click",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "ratio": 45.8,
+     "abs_d2": 0.1203,
+     "isolation": 0.961
+    },
+    "id": "b1b-P032",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Comment 4 (Charon)",
+    "t_seg": 5.926,
+    "t_episode": 272.762,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": -10.6,
+     "before_db": -21.4,
+     "after_db": -32.1
+    },
+    "id": "b1b-P033",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Preview (Charon)",
+    "t_seg": 2.244,
+    "t_episode": 26.1,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": -16.4,
+     "before_db": -19.0,
+     "after_db": -35.4
+    },
+    "id": "b1b-P034",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Full Story Part 1 (Aoede)",
+    "t_seg": 7.759,
+    "t_episode": 107.625,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": -14.3,
+     "before_db": -27.1,
+     "after_db": -41.4
+    },
+    "id": "b1b-P035",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Full Story Part 2 (Aoede)",
+    "t_seg": 17.194,
+    "t_episode": 168.55,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": -10.7,
+     "before_db": -25.8,
+     "after_db": -36.5
+    },
+    "id": "b1b-P036",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Full Story Part 2 (Aoede)",
+    "t_seg": 23.794,
+    "t_episode": 175.15,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": -14.5,
+     "before_db": -30.7,
+     "after_db": -45.2
+    },
+    "id": "b1b-P037",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Outro (Charon)",
+    "t_seg": 4.634,
+    "t_episode": 289.75,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 9.2
+    },
+    "id": "b1b-P038",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Intro",
+    "t_seg": 1.387,
+    "t_episode": 1.387,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 8.1
+    },
+    "id": "b1b-P039",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Intro",
+    "t_seg": 3.605,
+    "t_episode": 3.605,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 8.8
+    },
+    "id": "b1b-P040",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Intro",
+    "t_seg": 4.453,
+    "t_episode": 4.453,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 8.4
+    },
+    "id": "b1b-P041",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Intro",
+    "t_seg": 5.477,
+    "t_episode": 5.477,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 8.0
+    },
+    "id": "b1b-P042",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Intro",
+    "t_seg": 5.819,
+    "t_episode": 5.819,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 8.8
+    },
+    "id": "b1b-P043",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Intro",
+    "t_seg": 6.331,
+    "t_episode": 6.331,
+    "near_words": "",
+    "fixed_asset": true
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 8.0
+    },
+    "id": "b1b-P044",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Key Phrase 2",
+    "t_seg": 3.155,
+    "t_episode": 53.051,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "spec_jump",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "flux_z": 8.2
+    },
+    "id": "b1b-P045",
+    "level": "b1b",
+    "source": "published_episode_mp3",
+    "segment": "Key Phrase 3",
+    "t_seg": 0.361,
+    "t_episode": 59.467,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "click",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "ratio": 43.6,
+     "abs_d2": 0.3367,
+     "isolation": 0.943
+    },
+    "id": "b1b-P046",
+    "level": "b1b",
+    "source": "published_segment_mp3",
+    "segment": "comment_4",
+    "t_seg": 5.926,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "click",
+    "dur": 0.0,
+    "confidence": "medium",
+    "metrics": {
+     "ratio": 62.3,
+     "abs_d2": 0.0694,
+     "isolation": 0.959
+    },
+    "id": "b1b-P047",
+    "level": "b1b",
+    "source": "published_segment_mp3",
+    "segment": "full_story_part1",
+    "t_seg": 12.82,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "click",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "ratio": 51.9,
+     "abs_d2": 0.1315,
+     "isolation": 0.935
+    },
+    "id": "b1b-P048",
+    "level": "b1b",
+    "source": "published_segment_mp3",
+    "segment": "full_story_part1",
+    "t_seg": 22.62,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": -10.1,
+     "before_db": -19.4,
+     "after_db": -29.5
+    },
+    "id": "b1b-P049",
+    "level": "b1b",
+    "source": "published_segment_mp3",
+    "segment": "full_story_part1",
+    "t_seg": 7.75,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": -10.9,
+     "before_db": -18.0,
+     "after_db": -28.9
+    },
+    "id": "b1b-P050",
+    "level": "b1b",
+    "source": "published_segment_mp3",
+    "segment": "full_story_part2",
+    "t_seg": 8.925,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": -13.8,
+     "before_db": -28.9,
+     "after_db": -42.7
+    },
+    "id": "b1b-P051",
+    "level": "b1b",
+    "source": "published_segment_mp3",
+    "segment": "full_story_part2",
+    "t_seg": 17.2,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": -11.4,
+     "before_db": -28.4,
+     "after_db": -39.8
+    },
+    "id": "b1b-P052",
+    "level": "b1b",
+    "source": "published_segment_mp3",
+    "segment": "full_story_part2",
+    "t_seg": 23.75,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "click",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "ratio": 48.8,
+     "abs_d2": 0.0715,
+     "isolation": 0.946
+    },
+    "id": "b1b-P053",
+    "level": "b1b",
+    "source": "published_segment_mp3",
+    "segment": "full_story_part3",
+    "t_seg": 36.424,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   },
+   {
+    "symptom": "level_step",
+    "dur": 0.0,
+    "confidence": "low",
+    "metrics": {
+     "step_db": -12.5,
+     "before_db": -20.9,
+     "after_db": -33.5
+    },
+    "id": "b1b-P054",
+    "level": "b1b",
+    "source": "published_segment_mp3",
+    "segment": "preview",
+    "t_seg": 2.25,
+    "t_episode": null,
+    "near_words": "",
+    "fixed_asset": false
+   }
+  ]
+ },
+ "focus_probe_coffee": [
+  {
+   "dur_ms": 440,
+   "peak": 0.556,
+   "rms_db": -19.0,
+   "min10ms_db_rel": -58.9,
+   "max_d2_ratio": 5.6,
+   "hf4k_ratio": 0.0054,
+   "centroid_hz": 593,
+   "zero_samples": 132,
+   "level": "a2",
+   "segment": "full_story_part1",
+   "word": "Coffee",
+   "s": 17.4,
+   "e": 17.84,
+   "whisper_prob": 0.971
+  },
+  {
+   "dur_ms": 320,
+   "peak": 0.395,
+   "rms_db": -24.2,
+   "min10ms_db_rel": -61.1,
+   "max_d2_ratio": 7.6,
+   "hf4k_ratio": 0.0041,
+   "centroid_hz": 779,
+   "zero_samples": 266,
+   "level": "a2",
+   "segment": "full_story_part1",
+   "word": "coffee",
+   "s": 19.52,
+   "e": 19.84,
+   "whisper_prob": 0.997
+  },
+  {
+   "dur_ms": 400,
+   "peak": 0.683,
+   "rms_db": -19.7,
+   "min10ms_db_rel": -51.2,
+   "max_d2_ratio": 7.6,
+   "hf4k_ratio": 0.0095,
+   "centroid_hz": 977,
+   "zero_samples": 147,
+   "level": "a2",
+   "segment": "full_story_part2",
+   "word": "coffee",
+   "s": 4.18,
+   "e": 4.58,
+   "whisper_prob": 0.967
+  },
+  {
+   "dur_ms": 360,
+   "peak": 0.465,
+   "rms_db": -24.0,
+   "min10ms_db_rel": -61.7,
+   "max_d2_ratio": 7.1,
+   "hf4k_ratio": 0.0049,
+   "centroid_hz": 887,
+   "zero_samples": 321,
+   "level": "a2",
+   "segment": "full_story_part2",
+   "word": "coffee",
+   "s": 18.3,
+   "e": 18.66,
+   "whisper_prob": 0.996
+  },
+  {
+   "dur_ms": 400,
+   "peak": 0.483,
+   "rms_db": -23.1,
+   "min10ms_db_rel": -55.7,
+   "max_d2_ratio": 5.4,
+   "hf4k_ratio": 0.0027,
+   "centroid_hz": 893,
+   "zero_samples": 190,
+   "level": "a2",
+   "segment": "full_story_part2",
+   "word": "coffee",
+   "s": 40.02,
+   "e": 40.42,
+   "whisper_prob": 0.997
+  },
+  {
+   "dur_ms": 260,
+   "peak": 0.542,
+   "rms_db": -20.8,
+   "min10ms_db_rel": -55.0,
+   "max_d2_ratio": 8.5,
+   "hf4k_ratio": 0.002,
+   "centroid_hz": 675,
+   "zero_samples": 168,
+   "level": "a2",
+   "segment": "full_story_part3",
+   "word": "coffee",
+   "s": 43.3,
+   "e": 43.56,
+   "whisper_prob": 0.976
+  },
+  {
+   "dur_ms": 440,
+   "peak": 0.66,
+   "rms_db": -20.9,
+   "min10ms_db_rel": -62.6,
+   "max_d2_ratio": 6.7,
+   "hf4k_ratio": 0.0061,
+   "centroid_hz": 912,
+   "zero_samples": 188,
+   "level": "b1b",
+   "segment": "full_story_part1",
+   "word": "Coffee",
+   "s": 19.12,
+   "e": 19.56,
+   "whisper_prob": 0.966
+  },
+  {
+   "dur_ms": 320,
+   "peak": 0.571,
+   "rms_db": -19.4,
+   "min10ms_db_rel": -67.3,
+   "max_d2_ratio": 9.7,
+   "hf4k_ratio": 0.0015,
+   "centroid_hz": 873,
+   "zero_samples": 391,
+   "level": "b1b",
+   "segment": "full_story_part2",
+   "word": "coffee",
+   "s": 3.16,
+   "e": 3.48,
+   "whisper_prob": 0.997
+  },
+  {
+   "dur_ms": 440,
+   "peak": 0.453,
+   "rms_db": -23.5,
+   "min10ms_db_rel": -61.2,
+   "max_d2_ratio": 9.7,
+   "hf4k_ratio": 0.0036,
+   "centroid_hz": 878,
+   "zero_samples": 193,
+   "level": "b1b",
+   "segment": "full_story_part2",
+   "word": "coffee",
+   "s": 38.78,
+   "e": 39.22,
+   "whisper_prob": 0.992
+  },
+  {
+   "dur_ms": 280,
+   "peak": 0.61,
+   "rms_db": -19.3,
+   "min10ms_db_rel": -60.3,
+   "max_d2_ratio": 6.1,
+   "hf4k_ratio": 0.0009,
+   "centroid_hz": 857,
+   "zero_samples": 149,
+   "level": "b1b",
+   "segment": "full_story_part3",
+   "word": "coffee",
+   "s": 39.02,
+   "e": 39.3,
+   "whisper_prob": 0.991
+  }
+ ],
+ "injection_test": {
+  "source": "a2/full_story_part3.wav(24kHz mono, 48.36s)",
+  "baseline_candidates_on_clean": 4,
+  "cases": [
+   {
+    "fault": "clip",
+    "severity": "gain x8 400ms",
+    "t0": 5.13,
+    "expected": "clip",
+    "detected_expected": true,
+    "detected_any": true,
+    "detected_symptoms": [
+     "click",
+     "clip"
+    ],
+    "best_conf": "high"
+   },
+   {
+    "fault": "clip",
+    "severity": "gain x3 400ms",
+    "t0": 5.13,
+    "expected": "clip",
+    "detected_expected": true,
+    "detected_any": true,
+    "detected_symptoms": [
+     "clip"
+    ],
+    "best_conf": "high"
+   },
+   {
+    "fault": "click",
+    "severity": "amp 0.5 1sample",
+    "t0": 10.04,
+    "expected": "click",
+    "detected_expected": true,
+    "detected_any": true,
+    "detected_symptoms": [
+     "click"
+    ],
+    "best_conf": "low"
+   },
+   {
+    "fault": "click",
+    "severity": "amp 0.3 1sample",
+    "t0": 10.04,
+    "expected": "click",
+    "detected_expected": true,
+    "detected_any": true,
+    "detected_symptoms": [
+     "click"
+    ],
+    "best_conf": "low"
+   },
+   {
+    "fault": "click",
+    "severity": "amp 0.2 1sample",
+    "t0": 10.04,
+    "expected": "click",
+    "detected_expected": false,
+    "detected_any": true,
+    "detected_symptoms": [
+     "spec_jump"
+    ],
+    "best_conf": null
+   },
+   {
+    "fault": "click",
+    "severity": "amp 0.1 1sample",
+    "t0": 10.04,
+    "expected": "click",
+    "detected_expected": false,
+    "detected_any": true,
+    "detected_symptoms": [
+     "spec_jump"
+    ],
+    "best_conf": null
+   },
+   {
+    "fault": "click",
+    "severity": "amp 0.2 3sample",
+    "t0": 11.08,
+    "expected": "click",
+    "detected_expected": true,
+    "detected_any": true,
+    "detected_symptoms": [
+     "click"
+    ],
+    "best_conf": "high"
+   },
+   {
+    "fault": "dropout",
+    "severity": "zero 30ms",
+    "t0": 15.42,
+    "expected": "dropout",
+    "detected_expected": true,
+    "detected_any": true,
+    "detected_symptoms": [
+     "dropout"
+    ],
+    "best_conf": "high"
+   },
+   {
+    "fault": "dropout",
+    "severity": "zero 10ms",
+    "t0": 15.42,
+    "expected": "dropout",
+    "detected_expected": true,
+    "detected_any": true,
+    "detected_symptoms": [
+     "dropout"
+    ],
+    "best_conf": "high"
+   },
+   {
+    "fault": "dropout",
+    "severity": "zero 5ms",
+    "t0": 15.42,
+    "expected": "dropout",
+    "detected_expected": true,
+    "detected_any": true,
+    "detected_symptoms": [
+     "dropout"
+    ],
+    "best_conf": "high"
+   },
+   {
+    "fault": "level_step",
+    "severity": "-12dB step",
+    "t0": 20.51,
+    "expected": "level_step",
+    "detected_expected": true,
+    "detected_any": true,
+    "detected_symptoms": [
+     "level_step"
+    ],
+    "best_conf": "low"
+   },
+   {
+    "fault": "level_step",
+    "severity": "-9dB step",
+    "t0": 20.51,
+    "expected": "level_step",
+    "detected_expected": true,
+    "detected_any": true,
+    "detected_symptoms": [
+     "level_step"
+    ],
+    "best_conf": "low"
+   },
+   {
+    "fault": "level_step",
+    "severity": "-6dB step",
+    "t0": 20.51,
+    "expected": "level_step",
+    "detected_expected": true,
+    "detected_any": true,
+    "detected_symptoms": [
+     "level_step"
+    ],
+    "best_conf": "low"
+   },
+   {
+    "fault": "level_step",
+    "severity": "+4dB step",
+    "t0": 20.51,
+    "expected": "level_step",
+    "detected_expected": false,
+    "detected_any": true,
+    "detected_symptoms": [
+     "clip"
+    ],
+    "best_conf": null
+   },
+   {
+    "fault": "noise_burst",
+    "severity": "40ms noise -20dB rel",
+    "t0": 25.15,
+    "expected": "spec_jump|click|level_step",
+    "detected_expected": false,
+    "detected_any": false,
+    "detected_symptoms": [],
+    "best_conf": null
+   },
+   {
+    "fault": "noise_burst",
+    "severity": "40ms noise -10dB rel",
+    "t0": 25.15,
+    "expected": "spec_jump|click|level_step",
+    "detected_expected": false,
+    "detected_any": false,
+    "detected_symptoms": [],
+    "best_conf": null
+   },
+   {
+    "fault": "mid_gap",
+    "severity": "insert 1.2s silence",
+    "t0": 30.05,
+    "expected": "long_gap|dropout",
+    "detected_expected": true,
+    "detected_any": true,
+    "detected_symptoms": [
+     "dropout",
+     "long_gap"
+    ],
+    "best_conf": "high"
+   },
+   {
+    "fault": "mid_gap",
+    "severity": "insert 0.5s silence",
+    "t0": 30.05,
+    "expected": "long_gap|dropout",
+    "detected_expected": true,
+    "detected_any": true,
+    "detected_symptoms": [
+     "dropout"
+    ],
+    "best_conf": "high"
+   },
+   {
+    "fault": "truncate",
+    "severity": "cut mid-speech at 40s",
+    "t0": 39.98,
+    "expected": "edge_abrupt",
+    "detected_expected": true,
+    "detected_any": true,
+    "detected_symptoms": [
+     "edge_abrupt"
+    ],
+    "best_conf": "medium"
+   },
+   {
+    "fault": "head_chop",
+    "severity": "start 60ms into word onset",
+    "t0": 0.0,
+    "expected": "edge_abrupt",
+    "detected_expected": true,
+    "detected_any": true,
+    "detected_symptoms": [
+     "edge_abrupt"
+    ],
+    "best_conf": "medium"
+   }
+  ]
+ },
+ "listed_candidates": [
+  {
+   "display_id": "STD-05",
+   "id": "a2-S001"
+  },
+  {
+   "display_id": "STD-25",
+   "id": "a2-S002"
+  },
+  {
+   "display_id": "STD-14",
+   "id": "a2-S003"
+  },
+  {
+   "display_id": "STD-15",
+   "id": "a2-S004"
+  },
+  {
+   "display_id": "STD-16",
+   "id": "a2-S005"
+  },
+  {
+   "display_id": "STD-17",
+   "id": "a2-S006"
+  },
+  {
+   "display_id": "STD-03",
+   "id": "a2-S007"
+  },
+  {
+   "display_id": "STD-02",
+   "id": "a2-S008"
+  },
+  {
+   "display_id": "STD-06",
+   "id": "a2-S009"
+  },
+  {
+   "display_id": "STD-07",
+   "id": "a2-S010"
+  },
+  {
+   "display_id": "STD-08",
+   "id": "a2-S011"
+  },
+  {
+   "display_id": "STD-09",
+   "id": "a2-S012"
+  },
+  {
+   "display_id": "STD-26",
+   "id": "a2-S013"
+  },
+  {
+   "display_id": "STD-18",
+   "id": "a2-S014"
+  },
+  {
+   "display_id": "STD-19",
+   "id": "a2-S015"
+  },
+  {
+   "display_id": "STD-20",
+   "id": "a2-S016"
+  },
+  {
+   "display_id": "STD-04",
+   "id": "a2-S017"
+  },
+  {
+   "display_id": "STD-10",
+   "id": "a2-S018"
+  },
+  {
+   "display_id": "STD-11",
+   "id": "a2-S019"
+  },
+  {
+   "display_id": "STD-12",
+   "id": "a2-S020"
+  },
+  {
+   "display_id": "STD-27",
+   "id": "a2-S021"
+  },
+  {
+   "display_id": "STD-28",
+   "id": "a2-S022"
+  },
+  {
+   "display_id": "STD-21",
+   "id": "a2-S023"
+  },
+  {
+   "display_id": "STD-22",
+   "id": "a2-S024"
+  },
+  {
+   "display_id": "STD-23",
+   "id": "a2-S025"
+  },
+  {
+   "display_id": "STD-13",
+   "id": "a2-S026"
+  },
+  {
+   "display_id": "STD-29",
+   "id": "a2-S027"
+  },
+  {
+   "display_id": "STD-30",
+   "id": "a2-S028"
+  },
+  {
+   "display_id": "STD-01",
+   "id": "a2-S029"
+  },
+  {
+   "display_id": "STD-24",
+   "id": "a2-S035"
+  },
+  {
+   "display_id": "ADV-04",
+   "id": "b1b-S054"
+  },
+  {
+   "display_id": "ADV-05",
+   "id": "b1b-S055"
+  },
+  {
+   "display_id": "ADV-06",
+   "id": "b1b-S056"
+  },
+  {
+   "display_id": "ADV-01",
+   "id": "b1b-S057"
+  },
+  {
+   "display_id": "ADV-07",
+   "id": "b1b-S058"
+  },
+  {
+   "display_id": "ADV-16",
+   "id": "b1b-S059"
+  },
+  {
+   "display_id": "ADV-28",
+   "id": "b1b-S060"
+  },
+  {
+   "display_id": "ADV-23",
+   "id": "b1b-S061"
+  },
+  {
+   "display_id": "ADV-24",
+   "id": "b1b-S062"
+  },
+  {
+   "display_id": "ADV-25",
+   "id": "b1b-S063"
+  },
+  {
+   "display_id": "ADV-17",
+   "id": "b1b-S064"
+  },
+  {
+   "display_id": "ADV-18",
+   "id": "b1b-S065"
+  },
+  {
+   "display_id": "ADV-19",
+   "id": "b1b-S066"
+  },
+  {
+   "display_id": "ADV-29",
+   "id": "b1b-S067"
+  },
+  {
+   "display_id": "ADV-26",
+   "id": "b1b-S068"
+  },
+  {
+   "display_id": "ADV-27",
+   "id": "b1b-S069"
+  },
+  {
+   "display_id": "ADV-08",
+   "id": "b1b-S070"
+  },
+  {
+   "display_id": "ADV-30",
+   "id": "b1b-S071"
+  },
+  {
+   "display_id": "ADV-20",
+   "id": "b1b-S077"
+  },
+  {
+   "display_id": "ADV-02",
+   "id": "b1b-A081"
+  },
+  {
+   "display_id": "ADV-03",
+   "id": "b1b-A082"
+  },
+  {
+   "display_id": "ADV-09",
+   "id": "b1b-A083"
+  },
+  {
+   "display_id": "ADV-10",
+   "id": "b1b-A084"
+  },
+  {
+   "display_id": "ADV-11",
+   "id": "b1b-A085"
+  },
+  {
+   "display_id": "ADV-12",
+   "id": "b1b-A086"
+  },
+  {
+   "display_id": "ADV-13",
+   "id": "b1b-A087"
+  },
+  {
+   "display_id": "ADV-14",
+   "id": "b1b-A088"
+  },
+  {
+   "display_id": "ADV-15",
+   "id": "b1b-A089"
+  },
+  {
+   "display_id": "ADV-21",
+   "id": "b1b-A095"
+  },
+  {
+   "display_id": "ADV-22",
+   "id": "b1b-A096"
+  }
+ ],
+ "focus": [
+  {
+   "did": "FOCUS-STD-P3-coffee",
+   "level": "a2",
+   "segment": "full_story_part3",
+   "t_seg": 43.3,
+   "label": "Standard Full Story Part 3「A coffee price tag may have its own hidden clock」の coffee 付近",
+   "note": "ローカルfaster-whisper(small)のword timestampで coffee = 43.30〜43.56秒(セグメント内)、episode上 265.45〜265.71秒。前後を含め5秒クリップ。",
+   "t_episode": 265.45
+  },
+  {
+   "did": "FOCUS-ADV-P3-coffee",
+   "level": "b1b",
+   "segment": "full_story_part3",
+   "t_seg": 39.02,
+   "label": "(参考・対照)Advanced Full Story Part 3 の同じ文 coffee 付近",
+   "note": "local whisper(small) coffee = 39.02〜39.30秒、episode上 260.85〜261.13秒。",
+   "t_episode": 260.846
+  }
+ ]
+}
