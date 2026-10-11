@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Family X 声のトーン(明るさ)比較 Trial</title>
+<style>body{font-family:Meiryo,"Hiragino Kaku Gothic ProN",sans-serif;max-width:760px;margin:1em auto;padding:0 1em;line-height:1.6;color:#111}
+.c{border:1px solid #ccc;border-radius:8px;padding:.6em 1em;margin:.8em 0}h3{margin:.2em 0}.s{font-size:.85em;color:#444;margin:.3em 0}.m{background:#f4f4f4;padding:.6em 1em;border-radius:6px}</style></head><body>
+<h1>声のトーン(明るさ)比較 Trial</h1>
+<p>Voice・TTSモデル(gemini-3.8-flash-lite-tts)・原稿・速度・音量はすべて同じ。違うのはStyle指示だけです。0が現行、数字が大きいほど明るくなる想定です(Trial、Production未採用)。</p>
+<h2>日本語ナレーター(Aoede、Standard想定)</h2>
+<p class="m">原稿: コーヒーの価格は、世界の天候や豆の供給など、いくつもの動きに左右されます。値下がりを伝えるニュースの背景をたどり、毎日の買い物とのつながりを見ていきます。</p>
+
+<div class="c"><h3>J0_CURRENT(トーン水準 0 現行(J3))</h3><audio controls preload="none" style="min-width:360px;width:100%" src="J0_CURRENT.mp3"></audio><p class="s">Style指示: 落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。</p><p class="s">長さ 13.19秒 / ASR: NORMALIZED_MATCH</p></div>
+<div class="c"><h3>J1_BRIGHT(トーン水準 1 少し明るい)</h3><audio controls preload="none" style="min-width:360px;width:100%" src="J1_BRIGHT.mp3"></audio><p class="s">Style指示: 自然で親しみやすい話し言葉で、少し明るく軽やかな声のトーンで話してください。内容に応じて自然に抑揚をつけ、落ち着きも保ってください。演技がかった話し方は避けてください。</p><p class="s">長さ 12.39秒 / ASR: EXACT_MATCH</p></div>
+<div class="c"><h3>J2_BRIGHT(トーン水準 2 明るく親しみやすい)</h3><audio controls preload="none" style="min-width:360px;width:100%" src="J2_BRIGHT.mp3"></audio><p class="s">Style指示: 明るく、温かみのある親しみやすい話し方で。聞き手に楽しく語りかけるように、自然な抑揚と軽やかなリズムをつけてください。ニュース番組としての明瞭さを保ち、演技がかった話し方は避けてください。</p><p class="s">長さ 12.68秒 / ASR: EXACT_MATCH</p></div>
+<div class="c"><h3>J3_BRIGHT(トーン水準 3 かなり明るく軽快)</h3><audio controls preload="none" style="min-width:360px;width:100%" src="J3_BRIGHT.mp3"></audio><p class="s">Style指示: 明るく生き生きとした声で、軽快なリズムと表情豊かな抑揚をつけて話してください。聞き手が思わず続きを聞きたくなるような、前向きでエネルギーのある語り口にしてください。ただし、大げさな演技や過度なテンションは避けてください。</p><p class="s">長さ 11.89秒 / ASR: EXACT_MATCH</p></div>
+<h2>英語 Preview/Comment(Charon、Advanced想定)</h2>
+<p class="m">原稿: Coffee prices have been making headlines, but the story can be hard to follow. In this episode, we’ll look at what is behind the news and what it means for people who buy coffee.</p>
+
+<div class="c"><h3>E0_CURRENT(トーン水準 0 現行)</h3><audio controls preload="none" style="min-width:360px;width:100%" src="E0_CURRENT.mp3"></audio><p class="s">Style指示: calm, conversational</p><p class="s">長さ 9.35秒 / ASR: EXACT_MATCH</p></div>
+<div class="c"><h3>E1_UPBEAT(トーン水準 1 少し明るい)</h3><audio controls preload="none" style="min-width:360px;width:100%" src="E1_UPBEAT.mp3"></audio><p class="s">Style指示: slightly upbeat, warm and conversational; natural and relaxed.</p><p class="s">長さ 9.9秒 / ASR: EXACT_MATCH</p></div>
+<div class="c"><h3>E2_UPBEAT(トーン水準 2 明るく親しみやすい)</h3><audio controls preload="none" style="min-width:360px;width:100%" src="E2_UPBEAT.mp3"></audio><p class="s">Style指示: warm, upbeat and engaging; friendly conversational delivery with lively but natural intonation.</p><p class="s">長さ 10.77秒 / ASR: EXACT_MATCH</p></div>
+<div class="c"><h3>E3_UPBEAT(トーン水準 3 かなり明るく軽快)</h3><audio controls preload="none" style="min-width:360px;width:100%" src="E3_UPBEAT.mp3"></audio><p class="s">Style指示: bright, lively and energetic; cheerful conversational delivery with expressive intonation, without sounding exaggerated.</p><p class="s">長さ 9.47秒 / ASR: EXACT_MATCH</p></div>
+<h2>旧日本語TTS参考音源</h2>
+<p>未特定(ユーザーが好評価した旧方式の日本語ナレーター音源をSSOTから特定できなかったため、掲載なし)。</p>
+</body></html>
