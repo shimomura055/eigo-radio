@@ -1,0 +1,1399 @@
+{
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "comment_2",
+  "segment_role_label": "Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)",
+  "canonical_text": "The reported price of coffee beans has fallen as more beans from Brazil entered the market. But when might that change show up on a price tag?",
+  "last_asr_text": "The reported price of coffee beans has fallen as more beans from Brazil enter the market, but when might that change show up on a price tag?",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "beans from brazil entered the market but",
+    "asr_span_with_context": "beans from brazil enter the market but",
+    "canonical_changed_words": [
+      "entered"
+    ],
+    "asr_changed_words": [
+      "enter"
+    ],
+    "context_window_word_indices": [
+      10,
+      17
+    ]
+  },
+  "candidate_gen": {
+    "candidates": [
+      {
+        "id": "1",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil reached the market. But when might that change show up on a price tag?",
+        "changed_span_before": "entered",
+        "changed_span_after": "reached",
+        "rationale": "“Reached the market” naturally conveys that the beans entered the market."
+      },
+      {
+        "id": "2",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil hit the market. But when might that change show up on a price tag?",
+        "changed_span_before": "entered",
+        "changed_span_after": "hit",
+        "rationale": "“Hit the market” is a natural spoken expression for becoming available in the market."
+      },
+      {
+        "id": "3",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil came into the market. But when might that change show up on a price tag?",
+        "changed_span_before": "entered",
+        "changed_span_after": "came into",
+        "rationale": "This short phrase preserves the meaning while sounding natural in the sentence."
+      },
+      {
+        "id": "4",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil arrived on the market. But when might that change show up on a price tag?",
+        "changed_span_before": "entered",
+        "changed_span_after": "arrived on",
+        "rationale": "“Arrived on the market” is an idiomatic way to describe the beans entering it."
+      },
+      {
+        "id": "5",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil came onto the market. But when might that change show up on a price tag?",
+        "changed_span_before": "entered",
+        "changed_span_after": "came onto",
+        "rationale": "This phrasing naturally conveys that the beans entered the market without adding a new fact."
+      }
+    ],
+    "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"The reported price of coffee beans has fallen as more beans from Brazil reached the market. But when might that change show up on a price tag?\",\"changed_span_before\":\"entered\",\"changed_span_after\":\"reached\",\"rationale\":\"“Reached the market” naturally conveys that the beans entered the market.\"},{\"id\":\"2\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"The reported price of coffee beans has fallen as more beans from Brazil hit the market. But when might that change show up on a price tag?\",\"changed_span_before\":\"entered\",\"changed_span_after\":\"hit\",\"rationale\":\"“Hit the market” is a natural spoken expression for becoming available in the market.\"},{\"id\":\"3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The reported price of coffee beans has fallen as more beans from Brazil came into the market. But when might that change show up on a price tag?\",\"changed_span_before\":\"entered\",\"changed_span_after\":\"came into\",\"rationale\":\"This short phrase preserves the meaning while sounding natural in the sentence.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The reported price of coffee beans has fallen as more beans from Brazil arrived on the market. But when might that change show up on a price tag?\",\"changed_span_before\":\"entered\",\"changed_span_after\":\"arrived on\",\"rationale\":\"“Arrived on the market” is an idiomatic way to describe the beans entering it.\"},{\"id\":\"5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The reported price of coffee beans has fallen as more beans from Brazil came onto the market. But when might that change show up on a price tag?\",\"changed_span_before\":\"entered\",\"changed_span_after\":\"came onto\",\"rationale\":\"This phrasing naturally conveys that the beans entered the market without adding a new fact.\"}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_088d2110cc6f628f006acb3ab5155c87d0bcf89ab7da665b04",
+    "_prompt": "Segment role: Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)\n\nFull segment (contains the problem span):\n\"The reported price of coffee beans has fallen as more beans from Brazil entered the market. But when might that change show up on a price tag?\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['enter'] instead of ['entered']):\n\"beans from brazil entered the market but\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+  },
+  "qa": {
+    "evaluations": [
+      {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Reached the market” preserves the claim that more beans from Brazil entered the market."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the reported price drop and leads into the question about when consumers might see a change."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with any claim in the original segment."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The question about a price tag follows naturally from the reported market change."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“More beans from Brazil reached the market” is a natural way to describe increased supply."
+        }
+      },
+      {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Hit the market” conveys that more beans from Brazil became available in the market."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It retains the recap and the forward-looking question that bridges to the summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The price-tag question connects naturally to the reported change in the market."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Hit the market” is a common, idiomatic expression in this context."
+        }
+      },
+      {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Came into the market” preserves the idea that more Brazilian beans entered the market."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still functions as a brief recap followed by a question leading toward the closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with anything stated in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The question about a price tag follows logically from the market change."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“More beans from Brazil came into the market” is a natural spoken phrasing."
+        }
+      },
+      {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Arrived on the market” conveys that more Brazilian beans became available in the market."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It preserves the recap-and-bridge function of the remark."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original segment."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The question about when the change appears on a price tag connects naturally to the reported price drop."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Arrived on the market” is idiomatic when describing goods becoming available."
+        }
+      },
+      {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Came onto the market” preserves the claim that more beans from Brazil entered the market."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the change and bridges to the question about its effect on a price tag."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The follow-up question remains a natural continuation of the market update."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Came onto the market” is a natural and common expression for goods becoming available."
+        }
+      }
+    ],
+    "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"1\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Reached the market” preserves the claim that more beans from Brazil entered the market.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the reported price drop and leads into the question about when consumers might see a change.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with any claim in the original segment.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The question about a price tag follows naturally from the reported market change.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“More beans from Brazil reached the market” is a natural way to describe increased supply.\"}},{\"candidate_id\":\"2\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Hit the market” conveys that more beans from Brazil became available in the market.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It retains the recap and the forward-looking question that bridges to the summary.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not contradict the original claim.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The price-tag question connects naturally to the reported change in the market.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Hit the market” is a common, idiomatic expression in this context.\"}},{\"candidate_id\":\"3\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Came into the market” preserves the idea that more Brazilian beans entered the market.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still functions as a brief recap followed by a question leading toward the closing summary.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with anything stated in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The question about a price tag follows logically from the market change.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“More beans from Brazil came into the market” is a natural spoken phrasing.\"}},{\"candidate_id\":\"4\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Arrived on the market” conveys that more Brazilian beans became available in the market.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It preserves the recap-and-bridge function of the remark.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not contradict the original segment.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The question about when the change appears on a price tag connects naturally to the reported price drop.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Arrived on the market” is idiomatic when describing goods becoming available.\"}},{\"candidate_id\":\"5\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Came onto the market” preserves the claim that more beans from Brazil entered the market.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the change and bridges to the question about its effect on a price tag.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with the original claim.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The follow-up question remains a natural continuation of the market update.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Came onto the market” is a natural and common expression for goods becoming available.\"}}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_0d10ed0440d7ebd5006acb3ac1a26487d0a31d47f93abb54d5",
+    "_prompt": "Segment role: Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)\n\nORIGINAL segment:\n\"The reported price of coffee beans has fallen as more beans from Brazil entered the market. But when might that change show up on a price tag?\"\n\nCandidates to evaluate:\n- candidate_id='1': \"The reported price of coffee beans has fallen as more beans from Brazil reached the market. But when might that change show up on a price tag?\"\n- candidate_id='2': \"The reported price of coffee beans has fallen as more beans from Brazil hit the market. But when might that change show up on a price tag?\"\n- candidate_id='3': \"The reported price of coffee beans has fallen as more beans from Brazil came into the market. But when might that change show up on a price tag?\"\n- candidate_id='4': \"The reported price of coffee beans has fallen as more beans from Brazil arrived on the market. But when might that change show up on a price tag?\"\n- candidate_id='5': \"The reported price of coffee beans has fallen as more beans from Brazil came onto the market. But when might that change show up on a price tag?\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+  },
+  "candidates": [
+    {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil reached the market. But when might that change show up on a price tag?",
+      "changed_span_before": "entered",
+      "changed_span_after": "reached",
+      "rationale": "“Reached the market” naturally conveys that the beans entered the market.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Reached the market” preserves the claim that more beans from Brazil entered the market."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the reported price drop and leads into the question about when consumers might see a change."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with any claim in the original segment."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The question about a price tag follows naturally from the reported market change."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“More beans from Brazil reached the market” is a natural way to describe increased supply."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0,
+        "orig_coverage": 0.963,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          13,
+          14
+        ],
+        "criterion6_allowed_window": [
+          10,
+          17
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.963
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "2",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil hit the market. But when might that change show up on a price tag?",
+      "changed_span_before": "entered",
+      "changed_span_after": "hit",
+      "rationale": "“Hit the market” is a natural spoken expression for becoming available in the market.",
+      "qa_llm": {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Hit the market” conveys that more beans from Brazil became available in the market."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It retains the recap and the forward-looking question that bridges to the summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The price-tag question connects naturally to the reported change in the market."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Hit the market” is a common, idiomatic expression in this context."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 0.9718,
+        "orig_coverage": 0.963,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          13,
+          14
+        ],
+        "criterion6_allowed_window": [
+          10,
+          17
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.963
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "3",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil came into the market. But when might that change show up on a price tag?",
+      "changed_span_before": "entered",
+      "changed_span_after": "came into",
+      "rationale": "This short phrase preserves the meaning while sounding natural in the sentence.",
+      "qa_llm": {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Came into the market” preserves the idea that more Brazilian beans entered the market."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still functions as a brief recap followed by a question leading toward the closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with anything stated in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The question about a price tag follows logically from the market change."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“More beans from Brazil came into the market” is a natural spoken phrasing."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0141,
+        "orig_coverage": 0.963,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          13,
+          14
+        ],
+        "criterion6_allowed_window": [
+          10,
+          17
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.963
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "4",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil arrived on the market. But when might that change show up on a price tag?",
+      "changed_span_before": "entered",
+      "changed_span_after": "arrived on",
+      "rationale": "“Arrived on the market” is an idiomatic way to describe the beans entering it.",
+      "qa_llm": {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Arrived on the market” conveys that more Brazilian beans became available in the market."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It preserves the recap-and-bridge function of the remark."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not contradict the original segment."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The question about when the change appears on a price tag connects naturally to the reported price drop."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Arrived on the market” is idiomatic when describing goods becoming available."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0211,
+        "orig_coverage": 0.963,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          13,
+          14
+        ],
+        "criterion6_allowed_window": [
+          10,
+          17
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.963
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "5",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil came onto the market. But when might that change show up on a price tag?",
+      "changed_span_before": "entered",
+      "changed_span_after": "came onto",
+      "rationale": "This phrasing naturally conveys that the beans entered the market without adding a new fact.",
+      "qa_llm": {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Came onto the market” preserves the claim that more beans from Brazil entered the market."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the change and bridges to the question about its effect on a price tag."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The follow-up question remains a natural continuation of the market update."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Came onto the market” is a natural and common expression for goods becoming available."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0141,
+        "orig_coverage": 0.963,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          13,
+          14
+        ],
+        "criterion6_allowed_window": [
+          10,
+          17
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.963
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    }
+  ],
+  "selection": {
+    "selected": {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil reached the market. But when might that change show up on a price tag?",
+      "changed_span_before": "entered",
+      "changed_span_after": "reached",
+      "rationale": "“Reached the market” naturally conveys that the beans entered the market.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Reached the market” preserves the claim that more beans from Brazil entered the market."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the reported price drop and leads into the question about when consumers might see a change."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with any claim in the original segment."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The question about a price tag follows naturally from the reported market change."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“More beans from Brazil reached the market” is a natural way to describe increased supply."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0,
+        "orig_coverage": 0.963,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          13,
+          14
+        ],
+        "criterion6_allowed_window": [
+          10,
+          17
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.963
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    "status": "SELECTED",
+    "selection_rationale": "全7 Gate PASSの候補は5件(['1', '2', '3', '4', '5'])。unchanged_ratio=0.963(最小限の変更)が最大の'1'を採用。Natural English Gate理由: “More beans from Brazil reached the market” is a natural way to describe increased supply.",
+    "all_passing_candidate_ids": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ]
+  },
+  "retts_result": {
+    "status": "OK",
+    "text": "The reported price of coffee beans has fallen as more beans from Brazil hit the market. But when might that change show up on a price tag?",
+    "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_e_tone_01/b1b/narration/comment_2.wav",
+    "voice": "Charon",
+    "asr_verified": true,
+    "asr_text": "The reported price of coffee beans has fallen as more beans from Brazil hit the market, but when might that change show up on a price tag?",
+    "attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "The reported price of coffee beans has fallen as more beans from Brazil reach the market, but when might that change show up on a price tag?",
+        "instruction_type": "english_style_prefix",
+        "audio_classification": "TRUE_CONTENT_MISMATCH",
+        "style_prefix": "warm, upbeat and engaging; friendly conversational delivery with lively but natural intonation.",
+        "style_source": "approved_role_style:EN_COMMENT_E2_UPBEAT",
+        "tts_model_id": "gemini-3.8-flash-lite-tts",
+        "tts_backend": "speech_metadata_flash_lite",
+        "connected_speech_info": {
+          "layer_judgment": "EQUIVALENCE_LAYER_MIXED_EVIDENCE_INSUFFICIENT",
+          "source": "equivalence_layer",
+          "existing_result": {
+            "diff": {
+              "index": 13,
+              "canonical_word": "reached",
+              "asr_word": "reach",
+              "prev_word": "Brazil",
+              "next_word": "the"
+            },
+            "expected_phoneme_boundary": null,
+            "rule": null,
+            "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+            "false_accept_risk": "N/A(パターン非該当のため既存判定を維持)"
+          },
+          "equivalence_layer_info": {
+            "diff": {
+              "index": 13,
+              "canonical_word": "reached",
+              "asr_word": "reach",
+              "prev_word": "Brazil",
+              "next_word": "the"
+            },
+            "diff_shape": "deletion",
+            "drop_info": {
+              "canonical_phones": [
+                "R",
+                "IY",
+                "CH",
+                "T"
+              ],
+              "asr_phones": [
+                "R",
+                "IY",
+                "CH"
+              ],
+              "dropped_phonemes": [
+                "T"
+              ]
+            },
+            "substitution_info": null,
+            "final_dropped_phoneme": "T",
+            "next_word_initial_phoneme": "DH",
+            "categories_matched": [
+              {
+                "category": "A",
+                "rule": "final_stop_weakening_unreleased",
+                "detail": "語末の破裂音(T)が、後続子音(DH)の前で無開放・弱化しやすい環境。"
+              },
+              {
+                "category": "B",
+                "rule": "alveolar_stop_reduction",
+                "detail": "歯茎破裂音(/t/または/d/)は特に脱落的に知覚されやすい。"
+              },
+              {
+                "category": "D",
+                "rule": "place_assimilation",
+                "detail": "歯茎音(T)が、後続子音の調音位置(dental)へ同化しやすい。"
+              },
+              {
+                "category": "F",
+                "rule": "glottalization_candidate",
+                "detail": "語末/t/は後続子音の前で声門閉鎖化しやすい。"
+              }
+            ],
+            "secondary_asr_supports_canonical": true,
+            "local_asr_supports_canonical": false,
+            "corroboration_count": 1,
+            "contradiction_count": 1
+          },
+          "secondary_asr_text": "The reported price of coffee beans has fallen as more beans from Brazil reached the market. But when might that change show up on a price tag?",
+          "secondary_asr_error": null,
+          "local_asr_text": "The reported price of coffee beans has fallen as more beans from Brazil reach the market. But when might that change show up on a price tag?"
+        },
+        "semantic_equivalence": null,
+        "length_ok": true,
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 8.6,
+          "raw_leading_silence_seconds": 0.2,
+          "raw_trailing_silence_seconds": 0.4,
+          "trimmed_duration_seconds": 8.55,
+          "leading_margin_retained_seconds": 0.2,
+          "trailing_margin_retained_seconds": 0.35
+        },
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_e_tone_01/b1b/narration/attempts/comment_2_attempt4_englishstyleprefix.wav"
+      },
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "The reported price of coffee beans has fallen as more beans from Brazil hit the market, but when might that change show up on a price tag?",
+        "instruction_type": "english_style_prefix",
+        "audio_classification": "NORMALIZED_MATCH",
+        "style_prefix": "warm, upbeat and engaging; friendly conversational delivery with lively but natural intonation.",
+        "style_source": "approved_role_style:EN_COMMENT_E2_UPBEAT",
+        "tts_model_id": "gemini-3.8-flash-lite-tts",
+        "tts_backend": "speech_metadata_flash_lite",
+        "connected_speech_info": null,
+        "semantic_equivalence": null,
+        "length_ok": true,
+        "verified": true,
+        "trim_info": {
+          "raw_duration_seconds": 8.2,
+          "raw_leading_silence_seconds": 0.26,
+          "raw_trailing_silence_seconds": 0.38,
+          "trimmed_duration_seconds": 8.17,
+          "leading_margin_retained_seconds": 0.26,
+          "trailing_margin_retained_seconds": 0.35
+        },
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 27,
+          "transcript": "The  reported  price  of  coffee  beans  has  fallen  as  more  beans  from  Brazil  hit  the  market.  But  when  might  that  change  show  up  on  a  price  tag?",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_e_tone_01/b1b/narration/attempts/comment_2_attempt5_englishstyleprefix.wav"
+      }
+    ],
+    "instruction_type": "english_style_prefix",
+    "trim_info": {
+      "raw_duration_seconds": 8.2,
+      "raw_leading_silence_seconds": 0.26,
+      "raw_trailing_silence_seconds": 0.38,
+      "trimmed_duration_seconds": 8.17,
+      "leading_margin_retained_seconds": 0.26,
+      "trailing_margin_retained_seconds": 0.35
+    },
+    "clipping_detected": false,
+    "audio_classification": "NORMALIZED_MATCH",
+    "connected_speech_info": null,
+    "disfluency_checked": true,
+    "disfluency_evidence": {
+      "flagged": false,
+      "repeats": [],
+      "word_count": 27,
+      "transcript": "The  reported  price  of  coffee  beans  has  fallen  as  more  beans  from  Brazil  hit  the  market.  But  when  might  that  change  show  up  on  a  price  tag?",
+      "method": "faster_whisper_small_local_verbatim"
+    },
+    "en_pronunciation_resolver_info": null,
+    "cooldown_events": [],
+    "tts_backend": "speech_metadata_flash_lite",
+    "model": "gemini-3.8-flash-lite-tts",
+    "style_prefix": "warm, upbeat and engaging; friendly conversational delivery with lively but natural intonation.",
+    "style_source": "approved_role_style:EN_COMMENT_E2_UPBEAT",
+    "tts_model_id": "gemini-3.8-flash-lite-tts",
+    "local_rewrite_recovery": {
+      "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+      "segment_id": "comment_2",
+      "segment_role_label": "Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)",
+      "canonical_text": "The reported price of coffee beans has fallen as more beans from Brazil reached the market. But when might that change show up on a price tag?",
+      "last_asr_text": "The reported price of coffee beans has fallen as more beans from Brazil reach the market, but when might that change show up on a price tag?",
+      "ng_span": {
+        "found": true,
+        "diff_tag": "replace",
+        "canonical_span_with_context": "beans from brazil reached the market but",
+        "asr_span_with_context": "beans from brazil reach the market but",
+        "canonical_changed_words": [
+          "reached"
+        ],
+        "asr_changed_words": [
+          "reach"
+        ],
+        "context_window_word_indices": [
+          10,
+          17
+        ]
+      },
+      "candidate_gen": {
+        "candidates": [
+          {
+            "id": "1",
+            "rewrite_type": "single_word_swap",
+            "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil hit the market. But when might that change show up on a price tag?",
+            "changed_span_before": "reached",
+            "changed_span_after": "hit",
+            "rationale": "“Hit the market” is a natural spoken alternative that preserves the meaning."
+          },
+          {
+            "id": "2",
+            "rewrite_type": "short_phrase_rewrite",
+            "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil arrived on the market. But when might that change show up on a price tag?",
+            "changed_span_before": "beans from Brazil reached the market",
+            "changed_span_after": "beans from Brazil arrived on the market",
+            "rationale": "“Arrived on the market” naturally conveys that the beans became available there."
+          },
+          {
+            "id": "3",
+            "rewrite_type": "short_phrase_rewrite",
+            "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil came onto the market. But when might that change show up on a price tag?",
+            "changed_span_before": "beans from Brazil reached the market",
+            "changed_span_after": "beans from Brazil came onto the market",
+            "rationale": "This is a conversational way to describe the beans becoming available in the market."
+          },
+          {
+            "id": "4",
+            "rewrite_type": "short_phrase_rewrite",
+            "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil entered the market. But when might that change show up on a price tag?",
+            "changed_span_before": "beans from Brazil reached the market",
+            "changed_span_after": "beans from Brazil entered the market",
+            "rationale": "“Entered the market” preserves the original meaning in a concise, idiomatic phrase."
+          },
+          {
+            "id": "5",
+            "rewrite_type": "short_phrase_rewrite",
+            "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil made their way onto the market. But when might that change show up on a price tag?",
+            "changed_span_before": "beans from Brazil reached the market",
+            "changed_span_after": "beans from Brazil made their way onto the market",
+            "rationale": "This natural spoken phrasing keeps the focus on more beans becoming available."
+          }
+        ],
+        "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"The reported price of coffee beans has fallen as more beans from Brazil hit the market. But when might that change show up on a price tag?\",\"changed_span_before\":\"reached\",\"changed_span_after\":\"hit\",\"rationale\":\"“Hit the market” is a natural spoken alternative that preserves the meaning.\"},{\"id\":\"2\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The reported price of coffee beans has fallen as more beans from Brazil arrived on the market. But when might that change show up on a price tag?\",\"changed_span_before\":\"beans from Brazil reached the market\",\"changed_span_after\":\"beans from Brazil arrived on the market\",\"rationale\":\"“Arrived on the market” naturally conveys that the beans became available there.\"},{\"id\":\"3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The reported price of coffee beans has fallen as more beans from Brazil came onto the market. But when might that change show up on a price tag?\",\"changed_span_before\":\"beans from Brazil reached the market\",\"changed_span_after\":\"beans from Brazil came onto the market\",\"rationale\":\"This is a conversational way to describe the beans becoming available in the market.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The reported price of coffee beans has fallen as more beans from Brazil entered the market. But when might that change show up on a price tag?\",\"changed_span_before\":\"beans from Brazil reached the market\",\"changed_span_after\":\"beans from Brazil entered the market\",\"rationale\":\"“Entered the market” preserves the original meaning in a concise, idiomatic phrase.\"},{\"id\":\"5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The reported price of coffee beans has fallen as more beans from Brazil made their way onto the market. But when might that change show up on a price tag?\",\"changed_span_before\":\"beans from Brazil reached the market\",\"changed_span_after\":\"beans from Brazil made their way onto the market\",\"rationale\":\"This natural spoken phrasing keeps the focus on more beans becoming available.\"}]}",
+        "_model_id": "gpt-6-luna",
+        "_response_id": "resp_076051d1993405f4006acb3b38c45887d09da390d0de2eaf7f",
+        "_prompt": "Segment role: Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)\n\nFull segment (contains the problem span):\n\"The reported price of coffee beans has fallen as more beans from Brazil reached the market. But when might that change show up on a price tag?\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['reach'] instead of ['reached']):\n\"beans from brazil reached the market but\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+      },
+      "qa": {
+        "evaluations": [
+          {
+            "candidate_id": "1",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Hit the market” preserves the idea that more Brazilian beans became available."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It still recaps the reported price drop and bridges to the question about retail prices."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It does not conflict with any claim in the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "The retained question follows naturally from the statement about falling bean prices."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Hit the market” is a common, natural expression in spoken narration."
+            }
+          },
+          {
+            "candidate_id": "2",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "It conveys that more Brazilian beans became available on the market."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It still recaps the reported price drop and bridges to the question about retail prices."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It does not conflict with any claim in the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "The retained question follows naturally from the statement about falling bean prices."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Arrived on the market” is a natural way to describe goods becoming available."
+            }
+          },
+          {
+            "candidate_id": "3",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "It preserves the idea that more Brazilian beans became available in the market."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It still recaps the reported price drop and bridges to the question about retail prices."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It does not conflict with any claim in the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "The retained question follows naturally from the statement about falling bean prices."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Came onto the market” is an idiomatic expression for goods becoming available."
+            }
+          },
+          {
+            "candidate_id": "4",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "It preserves the idea that more Brazilian beans became available in the market."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It still recaps the reported price drop and bridges to the question about retail prices."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It does not conflict with any claim in the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "The retained question follows naturally from the statement about falling bean prices."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Entered the market” is a common, natural phrasing in this context."
+            }
+          },
+          {
+            "candidate_id": "5",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "It preserves the idea that more Brazilian beans became available in the market."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It still recaps the reported price drop and bridges to the question about retail prices."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It does not conflict with any claim in the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "The retained question follows naturally from the statement about falling bean prices."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Made their way onto the market” is a natural, idiomatic phrase for goods becoming available."
+            }
+          }
+        ],
+        "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"1\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Hit the market” preserves the idea that more Brazilian beans became available.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the reported price drop and bridges to the question about retail prices.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with any claim in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The retained question follows naturally from the statement about falling bean prices.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Hit the market” is a common, natural expression in spoken narration.\"}},{\"candidate_id\":\"2\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It conveys that more Brazilian beans became available on the market.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the reported price drop and bridges to the question about retail prices.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with any claim in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The retained question follows naturally from the statement about falling bean prices.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Arrived on the market” is a natural way to describe goods becoming available.\"}},{\"candidate_id\":\"3\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It preserves the idea that more Brazilian beans became available in the market.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the reported price drop and bridges to the question about retail prices.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with any claim in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The retained question follows naturally from the statement about falling bean prices.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Came onto the market” is an idiomatic expression for goods becoming available.\"}},{\"candidate_id\":\"4\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It preserves the idea that more Brazilian beans became available in the market.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the reported price drop and bridges to the question about retail prices.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with any claim in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The retained question follows naturally from the statement about falling bean prices.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Entered the market” is a common, natural phrasing in this context.\"}},{\"candidate_id\":\"5\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It preserves the idea that more Brazilian beans became available in the market.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the reported price drop and bridges to the question about retail prices.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with any claim in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The retained question follows naturally from the statement about falling bean prices.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Made their way onto the market” is a natural, idiomatic phrase for goods becoming available.\"}}]}",
+        "_model_id": "gpt-6-luna",
+        "_response_id": "resp_076193d573c081d8006acb3b48dc5087d085685b17365fe2f7",
+        "_prompt": "Segment role: Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)\n\nORIGINAL segment:\n\"The reported price of coffee beans has fallen as more beans from Brazil reached the market. But when might that change show up on a price tag?\"\n\nCandidates to evaluate:\n- candidate_id='1': \"The reported price of coffee beans has fallen as more beans from Brazil hit the market. But when might that change show up on a price tag?\"\n- candidate_id='2': \"The reported price of coffee beans has fallen as more beans from Brazil arrived on the market. But when might that change show up on a price tag?\"\n- candidate_id='3': \"The reported price of coffee beans has fallen as more beans from Brazil came onto the market. But when might that change show up on a price tag?\"\n- candidate_id='4': \"The reported price of coffee beans has fallen as more beans from Brazil entered the market. But when might that change show up on a price tag?\"\n- candidate_id='5': \"The reported price of coffee beans has fallen as more beans from Brazil made their way onto the market. But when might that change show up on a price tag?\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+      },
+      "candidates": [
+        {
+          "id": "1",
+          "rewrite_type": "single_word_swap",
+          "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil hit the market. But when might that change show up on a price tag?",
+          "changed_span_before": "reached",
+          "changed_span_after": "hit",
+          "rationale": "“Hit the market” is a natural spoken alternative that preserves the meaning.",
+          "qa_llm": {
+            "candidate_id": "1",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Hit the market” preserves the idea that more Brazilian beans became available."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It still recaps the reported price drop and bridges to the question about retail prices."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It does not conflict with any claim in the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "The retained question follows naturally from the statement about falling bean prices."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Hit the market” is a common, natural expression in spoken narration."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "full_segment_check": {
+            "ok": true,
+            "reason": "FULL_SEGMENT_OK",
+            "length_ratio": 0.9718,
+            "orig_coverage": 0.963,
+            "span_check": "SPAN_CONSISTENT"
+          },
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              13,
+              14
+            ],
+            "criterion6_allowed_window": [
+              10,
+              17
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.963
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        },
+        {
+          "id": "2",
+          "rewrite_type": "short_phrase_rewrite",
+          "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil arrived on the market. But when might that change show up on a price tag?",
+          "changed_span_before": "beans from Brazil reached the market",
+          "changed_span_after": "beans from Brazil arrived on the market",
+          "rationale": "“Arrived on the market” naturally conveys that the beans became available there.",
+          "qa_llm": {
+            "candidate_id": "2",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "It conveys that more Brazilian beans became available on the market."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It still recaps the reported price drop and bridges to the question about retail prices."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It does not conflict with any claim in the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "The retained question follows naturally from the statement about falling bean prices."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Arrived on the market” is a natural way to describe goods becoming available."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "full_segment_check": {
+            "ok": true,
+            "reason": "FULL_SEGMENT_OK",
+            "length_ratio": 1.0211,
+            "orig_coverage": 0.963,
+            "span_check": "SPAN_CONSISTENT"
+          },
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              13,
+              14
+            ],
+            "criterion6_allowed_window": [
+              10,
+              17
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.963
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        },
+        {
+          "id": "3",
+          "rewrite_type": "short_phrase_rewrite",
+          "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil came onto the market. But when might that change show up on a price tag?",
+          "changed_span_before": "beans from Brazil reached the market",
+          "changed_span_after": "beans from Brazil came onto the market",
+          "rationale": "This is a conversational way to describe the beans becoming available in the market.",
+          "qa_llm": {
+            "candidate_id": "3",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "It preserves the idea that more Brazilian beans became available in the market."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It still recaps the reported price drop and bridges to the question about retail prices."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It does not conflict with any claim in the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "The retained question follows naturally from the statement about falling bean prices."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Came onto the market” is an idiomatic expression for goods becoming available."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "full_segment_check": {
+            "ok": true,
+            "reason": "FULL_SEGMENT_OK",
+            "length_ratio": 1.0141,
+            "orig_coverage": 0.963,
+            "span_check": "SPAN_CONSISTENT"
+          },
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              13,
+              14
+            ],
+            "criterion6_allowed_window": [
+              10,
+              17
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.963
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        },
+        {
+          "id": "4",
+          "rewrite_type": "short_phrase_rewrite",
+          "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil entered the market. But when might that change show up on a price tag?",
+          "changed_span_before": "beans from Brazil reached the market",
+          "changed_span_after": "beans from Brazil entered the market",
+          "rationale": "“Entered the market” preserves the original meaning in a concise, idiomatic phrase.",
+          "qa_llm": {
+            "candidate_id": "4",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "It preserves the idea that more Brazilian beans became available in the market."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It still recaps the reported price drop and bridges to the question about retail prices."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It does not conflict with any claim in the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "The retained question follows naturally from the statement about falling bean prices."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Entered the market” is a common, natural phrasing in this context."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "full_segment_check": {
+            "ok": true,
+            "reason": "FULL_SEGMENT_OK",
+            "length_ratio": 1.0,
+            "orig_coverage": 0.963,
+            "span_check": "SPAN_CONSISTENT"
+          },
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              13,
+              14
+            ],
+            "criterion6_allowed_window": [
+              10,
+              17
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.963
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        },
+        {
+          "id": "5",
+          "rewrite_type": "short_phrase_rewrite",
+          "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil made their way onto the market. But when might that change show up on a price tag?",
+          "changed_span_before": "beans from Brazil reached the market",
+          "changed_span_after": "beans from Brazil made their way onto the market",
+          "rationale": "This natural spoken phrasing keeps the focus on more beans becoming available.",
+          "qa_llm": {
+            "candidate_id": "5",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "It preserves the idea that more Brazilian beans became available in the market."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It still recaps the reported price drop and bridges to the question about retail prices."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It does not conflict with any claim in the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "The retained question follows naturally from the statement about falling bean prices."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Made their way onto the market” is a natural, idiomatic phrase for goods becoming available."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "full_segment_check": {
+            "ok": true,
+            "reason": "FULL_SEGMENT_OK",
+            "length_ratio": 1.0845,
+            "orig_coverage": 0.963,
+            "span_check": "SPAN_CONSISTENT"
+          },
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              13,
+              14
+            ],
+            "criterion6_allowed_window": [
+              10,
+              17
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.963
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        }
+      ],
+      "selection": {
+        "selected": {
+          "id": "1",
+          "rewrite_type": "single_word_swap",
+          "rewritten_segment": "The reported price of coffee beans has fallen as more beans from Brazil hit the market. But when might that change show up on a price tag?",
+          "changed_span_before": "reached",
+          "changed_span_after": "hit",
+          "rationale": "“Hit the market” is a natural spoken alternative that preserves the meaning.",
+          "qa_llm": {
+            "candidate_id": "1",
+            "meaning_preserved": {
+              "pass": true,
+              "reason": "“Hit the market” preserves the idea that more Brazilian beans became available."
+            },
+            "role_preserved": {
+              "pass": true,
+              "reason": "It still recaps the reported price drop and bridges to the question about retail prices."
+            },
+            "fact_non_contradiction": {
+              "pass": true,
+              "reason": "It does not conflict with any claim in the original."
+            },
+            "context_connection": {
+              "pass": true,
+              "reason": "The retained question follows naturally from the statement about falling bean prices."
+            },
+            "natural_english": {
+              "pass": true,
+              "reason": "“Hit the market” is a common, natural expression in spoken narration."
+            }
+          },
+          "is_full_segment_format_valid": true,
+          "full_segment_check": {
+            "ok": true,
+            "reason": "FULL_SEGMENT_OK",
+            "length_ratio": 0.9718,
+            "orig_coverage": 0.963,
+            "span_check": "SPAN_CONSISTENT"
+          },
+          "locality_check": {
+            "criterion6_localized_to_problem_span": true,
+            "criterion6_diff_token_range": [
+              13,
+              14
+            ],
+            "criterion6_allowed_window": [
+              10,
+              17
+            ],
+            "criterion7_not_full_rewrite": true,
+            "unchanged_ratio": 0.963
+          },
+          "seven_gates": {
+            "1_meaning_preserved": true,
+            "2_role_preserved": true,
+            "3_fact_non_contradiction": true,
+            "4_context_connection": true,
+            "5_natural_english_gate": true,
+            "6_localized_minimal_change": true,
+            "7_not_full_rewrite": true
+          },
+          "all_seven_gates_pass": true
+        },
+        "status": "SELECTED",
+        "selection_rationale": "全7 Gate PASSの候補は5件(['1', '2', '3', '4', '5'])。unchanged_ratio=0.963(最小限の変更)が最大の'1'を採用。Natural English Gate理由: “Hit the market” is a common, natural expression in spoken narration.",
+        "all_passing_candidate_ids": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+        ]
+      },
+      "retts_result": {
+        "status": "OK",
+        "text": "The reported price of coffee beans has fallen as more beans from Brazil hit the market. But when might that change show up on a price tag?",
+        "path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_e_tone_01/b1b/narration/comment_2.wav",
+        "voice": "Charon",
+        "asr_verified": true,
+        "asr_text": "The reported price of coffee beans has fallen as more beans from Brazil hit the market, but when might that change show up on a price tag?",
+        "attempts_log": [
+          {
+            "attempt": 1,
+            "status": "OK",
+            "asr_text": "The reported price of coffee beans has fallen as more beans from Brazil hit the market, but when might that change show up on a price tag?",
+            "instruction_type": "english_style_prefix",
+            "audio_classification": "NORMALIZED_MATCH",
+            "style_prefix": "warm, upbeat and engaging; friendly conversational delivery with lively but natural intonation.",
+            "style_source": "approved_role_style:EN_COMMENT_E2_UPBEAT",
+            "tts_model_id": "gemini-3.8-flash-lite-tts",
+            "tts_backend": "speech_metadata_flash_lite",
+            "connected_speech_info": null,
+            "semantic_equivalence": null,
+            "length_ok": true,
+            "verified": true,
+            "trim_info": {
+              "raw_duration_seconds": 8.2,
+              "raw_leading_silence_seconds": 0.26,
+              "raw_trailing_silence_seconds": 0.38,
+              "trimmed_duration_seconds": 8.17,
+              "leading_margin_retained_seconds": 0.26,
+              "trailing_margin_retained_seconds": 0.35
+            },
+            "disfluency_checked": true,
+            "disfluency_evidence": {
+              "flagged": false,
+              "repeats": [],
+              "word_count": 27,
+              "transcript": "The  reported  price  of  coffee  beans  has  fallen  as  more  beans  from  Brazil  hit  the  market.  But  when  might  that  change  show  up  on  a  price  tag?",
+              "method": "faster_whisper_small_local_verbatim"
+            },
+            "attempt_audio_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_e_tone_01/b1b/narration/attempts/comment_2_attempt5_englishstyleprefix.wav"
+          }
+        ],
+        "instruction_type": "english_style_prefix",
+        "trim_info": {
+          "raw_duration_seconds": 8.2,
+          "raw_leading_silence_seconds": 0.26,
+          "raw_trailing_silence_seconds": 0.38,
+          "trimmed_duration_seconds": 8.17,
+          "leading_margin_retained_seconds": 0.26,
+          "trailing_margin_retained_seconds": 0.35
+        },
+        "clipping_detected": false,
+        "audio_classification": "NORMALIZED_MATCH",
+        "connected_speech_info": null,
+        "disfluency_checked": true,
+        "disfluency_evidence": {
+          "flagged": false,
+          "repeats": [],
+          "word_count": 27,
+          "transcript": "The  reported  price  of  coffee  beans  has  fallen  as  more  beans  from  Brazil  hit  the  market.  But  when  might  that  change  show  up  on  a  price  tag?",
+          "method": "faster_whisper_small_local_verbatim"
+        },
+        "en_pronunciation_resolver_info": null,
+        "cooldown_events": [],
+        "tts_backend": "speech_metadata_flash_lite",
+        "model": "gemini-3.8-flash-lite-tts",
+        "style_prefix": "warm, upbeat and engaging; friendly conversational delivery with lively but natural intonation.",
+        "style_source": "approved_role_style:EN_COMMENT_E2_UPBEAT",
+        "tts_model_id": "gemini-3.8-flash-lite-tts"
+      },
+      "status": "RESOLVED_BY_LOCAL_REWRITE"
+    },
+    "canonical_text_before_local_rewrite": "The reported price of coffee beans has fallen as more beans from Brazil reached the market. But when might that change show up on a price tag?"
+  },
+  "status": "RESOLVED_BY_LOCAL_REWRITE"
+}

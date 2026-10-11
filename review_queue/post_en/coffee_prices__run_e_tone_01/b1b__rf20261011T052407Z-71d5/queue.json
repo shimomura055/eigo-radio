@@ -1,0 +1,409 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "coffee_prices__run_e_tone_01",
+  "article_level": "b1b",
+  "article_sha256": "d9b77190905d9060d578b2b21d634d48193decfd4c4eb90f1ae9bdb7da028e67",
+  "ledger_sha256": "e94a50c1d22686d52bd65beca4272650ecc8286de54629c3d8dfb42fa397ef7b",
+  "run_id": "rf20261011T052407Z-71d5",
+  "timestamp": "2026-10-11T05:24:07+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "COFFEE_NEW_TONE_E2E_01",
+  "sentence_count": 33,
+  "fact_count": 19,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 7354,
+      "output_tokens": 1526,
+      "cached_tokens": 0,
+      "cost_jpy": 0.239744,
+      "flag_count": 3,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 7504,
+      "output_tokens": 1766,
+      "cached_tokens": 0,
+      "cost_jpy": 0.261344,
+      "flag_count": 2,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6808,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.328384,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6928,
+      "output_tokens": 99,
+      "cached_tokens": 0,
+      "cost_jpy": 0.372144,
+      "flag_count": 1,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "coffee_prices__run_e_tone_01__b1b__d9b77190__rf20261011T052407Z-71d5__s1",
+      "article_id": "coffee_prices__run_e_tone_01",
+      "article_level": "b1b",
+      "article_sha256": "d9b77190905d9060d578b2b21d634d48193decfd4c4eb90f1ae9bdb7da028e67",
+      "run_id": "rf20261011T052407Z-71d5",
+      "timestamp": "2026-10-11T05:24:07+00:00",
+      "sentence_id": "s1",
+      "sentence_text": "# Coffee Bean Prices Fall.",
+      "context": {
+        "before": [],
+        "after": [
+          "Are Price Tags Still on a Journey?",
+          "“Beans have gotten cheaper!”"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "COFFEE-001",
+        "COFFEE-009"
+      ],
+      "facts": [
+        {
+          "fact_id": "COFFEE-001",
+          "text": "ICO Composite Indicator Price（I-CIP）は2026年9月に平均262.18米セント／ポンドとなり、2026年8月比で8.7%下落した。ICOは、ブラジルの収穫物の供給増加と潤沢な供給見通しが価格を押し下げた一方、認証済みアラビカ在庫の少なさとエルニーニョをめぐる不確実性が下支えしたと報告した。\n  scope: 国際的なICO Composite Indicator Price。コーヒー4グループの指標を含む\n  conditions: ICOの2026年9月市場報告。値下がり要因と下支え要因の双方を記録\n  numeric_value: 平均262.18米セント／ポンド、前月比-8.7% (numeric_scope: 世界のコーヒー指標価格の月平均。特定の小売商品価格ではない)\n  date_or_period: 2026年9月（8月比）\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: ICOの報告する市場要因。これだけで消費者価格が同月に下がったとは言えない。報告ページは2026年10月9日時点で9月報告を掲載。"
+        },
+        {
+          "fact_id": "COFFEE-009",
+          "text": "USDAはICOの月次複合価格指数を指標として、コーヒー価格が2026年7月までの7か月間に25%下落したと報告した。同報告は、追加供給の入手可能性を下落と結び付けている。\n  scope: ICO月次複合価格指数を用いた世界市場価格\n  conditions: USDAが2026年7月報告で記載した観察期間\n  numeric_value: 7か月で-25% (numeric_scope: ICO月次複合価格指数。個別品種または小売価格ではない)\n  date_or_period: 2025年末頃から2026年7月までの7か月間\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: 価格が2026年中に下落局面へ移ったことを示す。小売価格も同じ速度で下がったとは言えない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「Coffee Bean Prices」と「ICO複合指標価格」では対象範囲が異なるのではありませんか。"
+        },
+        {
+          "type": "主体対象入替",
+          "question": "「Coffee Bean Prices」の下落は、ICO複合指標など特定の価格指標の下落をコーヒー豆価格全般の下落に広げていませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.32,
+          "type": "その他",
+          "fact_ids": [
+            "COFFEE-001"
+          ],
+          "question": "「Coffee Bean Prices」と「ICO複合指標価格」では対象範囲が異なるのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.34,
+          "type": "主体対象入替",
+          "fact_ids": [
+            "COFFEE-001",
+            "COFFEE-009"
+          ],
+          "question": "「Coffee Bean Prices」の下落は、ICO複合指標など特定の価格指標の下落をコーヒー豆価格全般の下落に広げていませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.34
+    },
+    {
+      "issue_id": "coffee_prices__run_e_tone_01__b1b__d9b77190__rf20261011T052407Z-71d5__s3",
+      "article_id": "coffee_prices__run_e_tone_01",
+      "article_level": "b1b",
+      "article_sha256": "d9b77190905d9060d578b2b21d634d48193decfd4c4eb90f1ae9bdb7da028e67",
+      "run_id": "rf20261011T052407Z-71d5",
+      "timestamp": "2026-10-11T05:24:07+00:00",
+      "sentence_id": "s3",
+      "sentence_text": "“Beans have gotten cheaper!”",
+      "context": {
+        "before": [
+          "# Coffee Bean Prices Fall.",
+          "Are Price Tags Still on a Journey?"
+        ],
+        "after": [
+          "At that news, your wallet pumps its fist.",
+          "In your mind, the price of your usual cup has already come down, too."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "COFFEE-001"
+      ],
+      "facts": [
+        {
+          "fact_id": "COFFEE-001",
+          "text": "ICO Composite Indicator Price（I-CIP）は2026年9月に平均262.18米セント／ポンドとなり、2026年8月比で8.7%下落した。ICOは、ブラジルの収穫物の供給増加と潤沢な供給見通しが価格を押し下げた一方、認証済みアラビカ在庫の少なさとエルニーニョをめぐる不確実性が下支えしたと報告した。\n  scope: 国際的なICO Composite Indicator Price。コーヒー4グループの指標を含む\n  conditions: ICOの2026年9月市場報告。値下がり要因と下支え要因の双方を記録\n  numeric_value: 平均262.18米セント／ポンド、前月比-8.7% (numeric_scope: 世界のコーヒー指標価格の月平均。特定の小売商品価格ではない)\n  date_or_period: 2026年9月（8月比）\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: ICOの報告する市場要因。これだけで消費者価格が同月に下がったとは言えない。報告ページは2026年10月9日時点で9月報告を掲載。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「Beans have gotten cheaper」と「ICO複合指標価格が下落した」では対象範囲が異なるのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.32,
+          "type": "その他",
+          "fact_ids": [
+            "COFFEE-001"
+          ],
+          "question": "「Beans have gotten cheaper」と「ICO複合指標価格が下落した」では対象範囲が異なるのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        }
+      ],
+      "confidence": 0.32
+    },
+    {
+      "issue_id": "coffee_prices__run_e_tone_01__b1b__d9b77190__rf20261011T052407Z-71d5__s8",
+      "article_id": "coffee_prices__run_e_tone_01",
+      "article_level": "b1b",
+      "article_sha256": "d9b77190905d9060d578b2b21d634d48193decfd4c4eb90f1ae9bdb7da028e67",
+      "run_id": "rf20261011T052407Z-71d5",
+      "timestamp": "2026-10-11T05:24:07+00:00",
+      "sentence_id": "s8",
+      "sentence_text": "The price measure reported by the International Coffee Organization fell 8.7% from the previous month.",
+      "context": {
+        "before": [
+          "But the price tag in a shop may not change right away.",
+          "When you see a price tag that makes you want to say, “Haven’t you heard the news?”, it seems there is a time lag."
+        ],
+        "after": [
+          "The reason, it said, was that more beans harvested in Brazil had entered the market, and a good supply was expected to continue.",
+          "The US Department of Agriculture said that earlier high prices came from several factors happening at once: bad weather in Brazil and Vietnam, fewer beans available for sale, and strong demand."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "COFFEE-001"
+      ],
+      "facts": [
+        {
+          "fact_id": "COFFEE-001",
+          "text": "ICO Composite Indicator Price（I-CIP）は2026年9月に平均262.18米セント／ポンドとなり、2026年8月比で8.7%下落した。ICOは、ブラジルの収穫物の供給増加と潤沢な供給見通しが価格を押し下げた一方、認証済みアラビカ在庫の少なさとエルニーニョをめぐる不確実性が下支えしたと報告した。\n  scope: 国際的なICO Composite Indicator Price。コーヒー4グループの指標を含む\n  conditions: ICOの2026年9月市場報告。値下がり要因と下支え要因の双方を記録\n  numeric_value: 平均262.18米セント／ポンド、前月比-8.7% (numeric_scope: 世界のコーヒー指標価格の月平均。特定の小売商品価格ではない)\n  date_or_period: 2026年9月（8月比）\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: ICOの報告する市場要因。これだけで消費者価格が同月に下がったとは言えない。報告ページは2026年10月9日時点で9月報告を掲載。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "数量時系列",
+          "question": "s8の「8.7%下落した」という数値はICOの指標価格についてのものですが、文中で時期や対象（指標価格であること）が十分に明示されていないため、生豆の価格が直接下がったと読者に誤解を与えませんか？"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "gemini35fl",
+          "model_id": "gemini-3.5-flash-lite",
+          "condition": "A4",
+          "confidence": 0.4,
+          "type": "数量時系列",
+          "fact_ids": [
+            "COFFEE-001"
+          ],
+          "question": "s8の「8.7%下落した」という数値はICOの指標価格についてのものですが、文中で時期や対象（指標価格であること）が十分に明示されていないため、生豆の価格が直接下がったと読者に誤解を与えませんか？",
+          "severity": "重大",
+          "raw_flag_source": "raw/gemini35fl_A4.jsonl"
+        }
+      ],
+      "confidence": 0.4
+    },
+    {
+      "issue_id": "coffee_prices__run_e_tone_01__b1b__d9b77190__rf20261011T052407Z-71d5__s11",
+      "article_id": "coffee_prices__run_e_tone_01",
+      "article_level": "b1b",
+      "article_sha256": "d9b77190905d9060d578b2b21d634d48193decfd4c4eb90f1ae9bdb7da028e67",
+      "run_id": "rf20261011T052407Z-71d5",
+      "timestamp": "2026-10-11T05:24:07+00:00",
+      "sentence_id": "s11",
+      "sentence_text": "Meanwhile, US consumer price data showed that the price of coffee was 6.1% higher than in the same month a year earlier.",
+      "context": {
+        "before": [
+          "The reason, it said, was that more beans harvested in Brazil had entered the market, and a good supply was expected to continue.",
+          "The US Department of Agriculture said that earlier high prices came from several factors happening at once: bad weather in Brazil and Vietnam, fewer beans available for sale, and strong demand."
+        ],
+        "after": [
+          "It may leave you wondering, “Did prices go down or up?”",
+          "But the data covers a different month from the bean price measure."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "COFFEE-015"
+      ],
+      "facts": [
+        {
+          "fact_id": "COFFEE-015",
+          "text": "BLSの2026年8月CPIでは、米国の「Coffee」項目の指数は前年同月比6.1%上昇だった。\n  scope: 米都市消費者（CPI-U）におけるコーヒー項目\n  conditions: BLSの前年同月比指数。特定ブランドの価格やカフェの一杯の価格ではない\n  numeric_value: 前年同月比+6.1% (numeric_scope: 米国CPI-Uの「Coffee」項目の価格指数)\n  date_or_period: 2026年8月のCPI。公表日は2026年9月11日\n  notes_for_writer: 2026年8月時点では前年より高い一方、過去のピーク時の上昇率と同一視しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「the price of coffee」と「米CPIの『Coffee』項目の指数」では示している対象が異なるのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.38,
+          "type": "その他",
+          "fact_ids": [
+            "COFFEE-015"
+          ],
+          "question": "「the price of coffee」と「米CPIの『Coffee』項目の指数」では示している対象が異なるのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        }
+      ],
+      "confidence": 0.38
+    },
+    {
+      "issue_id": "coffee_prices__run_e_tone_01__b1b__d9b77190__rf20261011T052407Z-71d5__s28",
+      "article_id": "coffee_prices__run_e_tone_01",
+      "article_level": "b1b",
+      "article_sha256": "d9b77190905d9060d578b2b21d634d48193decfd4c4eb90f1ae9bdb7da028e67",
+      "run_id": "rf20261011T052407Z-71d5",
+      "timestamp": "2026-10-11T05:24:07+00:00",
+      "sentence_id": "s28",
+      "sentence_text": "Even if bean prices fall, other costs do not always fall along with them.",
+      "context": {
+        "before": [
+          "And a cup at a cafe comes with costs besides the beans.",
+          "One cafe operator in Chicago said that the cost of cups and labor, as well as the cost of buying beans, had been behind price increases."
+        ],
+        "after": [
+          "If you are waiting for the price of your usual cup to come down, think not only, “How much do beans cost now?”",
+          "but also, “When does the price of the beans reach here?”"
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "COFFEE-018"
+      ],
+      "facts": [
+        {
+          "fact_id": "COFFEE-018",
+          "text": "APが2025年10月に取材したシカゴのカフェ運営者は、4店舗でラテ、カプチーノなどの価格を約15%引き上げたと述べた。同運営者は、前年より豆の購入費が15%高くなり、カップやスリーブ、人件費も費用要因になったと説明した。\n  scope: シカゴのMomentum Coffee 4店舗の事例\n  conditions: 一事業者への取材事例。全米カフェの平均的な値上げ率ではない\n  numeric_value: 飲料価格約+15%、運営者による豆購入費前年同期比+15% (numeric_scope: 同社のラテ、カプチーノ等の価格、および同社の仕入れ費用)\n  date_or_period: 2025年10月の報道時点\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: 豆価格だけが値上げを引き起こしたと断定しない。事業者の説明として限定して記載する。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「other costs do not always fall along with them」は、台帳の費用要因の記述だけでは、他の費用が豆価格と連動して下がらないことまで確認できないのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.29,
+          "type": "その他",
+          "fact_ids": [
+            "COFFEE-018"
+          ],
+          "question": "「other costs do not always fall along with them」は、台帳の費用要因の記述だけでは、他の費用が豆価格と連動して下がらないことまで確認できないのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.29
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 14858,
+      "output_tokens": 3292,
+      "cost_jpy": 0.501088,
+      "a3_flag_count": 3,
+      "a4_flag_count": 2,
+      "unique_issue": 4,
+      "overlap_a3_a4": 1,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 13736,
+      "output_tokens": 103,
+      "cost_jpy": 0.700528,
+      "a3_flag_count": 0,
+      "a4_flag_count": 1,
+      "unique_issue": 1,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 0
+    },
+    "_all": {
+      "article_level": "b1b",
+      "article_status": "OK",
+      "unique_issue": 5,
+      "cost_jpy": 1.201616,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}
