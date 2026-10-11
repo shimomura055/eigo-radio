@@ -27,3 +27,7 @@
 | w1_astra_r2 | 19.664 | 0.08 | 4.482 |
 
 注: CのB3はAの再利用(新規0円、表のC列B3は'-')。coffeeのAは既存run_l3_01の実測(再利用)。タイトル末尾の「、」等はProduction postprocess(`normalize_ellipsis_pause_ja`)の決定論変換の結果で、モデル出力の差ではない場合がある。
+
+## 追記(委任_06、2026-10-11): D案(評価専用、Fable内部資料)
+- D=記号QA不合格のR2(`D/export/r2.md`=`rejected_w1_r2_symbol.md`逐語)。Trial評価専用・正式完成品ではない・Production経路ではSTOP。上表のA/C/E列とは別枠。
+- タイトル20字、本文849字(空白除く)、26文。実測円: STOPまでの76.51円(storyline_b3 75.51+R0-R2)。残存記号: 括弧「（」「）」各1(USDA（米農務省）)、波ダッシュ「〜」2(約2〜3か月)。選択Fact=COFFEE-009,010,014,015,019。返却model: gpt-6-astra(B3)、gpt-6-luna(R0/R1/R2)。

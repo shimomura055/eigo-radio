@@ -20540,3 +20540,4 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - OPEN-258：V1方式を採用候補として、Phase 0限定検証を正式承認。
 - Phase 1(Production実装)および本番ONは未承認。
 - Muse音韻衝突対策・META音声再生成は引き続き保留。」
+- 2026-10-11 | FAMILY-X-JA-ARTICLE-QUALITY-MODEL-ALLOCATION-TRIAL-01 委任_06 Coffee D追加・Blind比較ページ・全角括弧調査(Trial記録、課金0、正式仕様不変、Production採用判断を含まない) | ユーザー指示(2026-10-11)により、coffee D案は記号QA STOPしたR2(`rejected_w1_r2_symbol.md`、「USDA（米農務省）」「約2〜3か月」残存)を逐語のまま**Trial評価専用**として採用(`TRIAL_EVAL_ONLY.md`、Production経路ではSTOPのまま・正式完成品ではない)。コーヒーBlindページ(A/C/D/E 4タブ、記事独立seed=3330374777、対応表`BLIND_MAP_02_coffee_prices.json`はユーザー評価後に開示、Pages 200+Playwright PASS)を作成。全角括弧の原因調査(read-only): R0は括弧0でR1(Luna)で初出、W-1のR1/R2 prompt(USER_TMPL逐語固定)に禁止記号指示がなくR0のみ予防ブロックを持つ非対称、走査16 runで他の発生0件(N=1、モデル傾向は断定せず)。予防策候補P1〜P5を整理しOPEN-261へ登録(新規Trial・Production変更はユーザー承認まで実施しない)。詳細`er052_output/ja_article_quality_model_allocation_trial_01/RESULT_02.md` 8〜9節。

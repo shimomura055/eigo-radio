@@ -52,3 +52,37 @@ Status案: **MEASURED(N=1)**。hormuz=A/C/D/E 4案すべて完了。coffee_price
 1. coffee D: 再生成(追加課金約76円)かD欠落(3本評価)かの判断。Luna R2が出典括弧を出しやすい傾向の可能性(N=1、断定しない)。
 2. hormuz Ledgerは2026-09-26取得(鮮度は当時、比較目的には影響なし)。
 3. B案は保留のまま。
+
+## 8. 委任_06: Coffee D追加とコーヒーBlind比較ページ(課金0、2026-10-11)
+- ユーザー指示により、coffee D案は記号QA STOPした R2(`runs_02/coffee_prices/D/ja_writer/audit/rejected_w1_r2_symbol.md`、「USDA(米農務省)」を含む)を**逐語のまま**評価対象R2として採用(`D/export/r2.md`は同ファイルのcmp一致コピー、sha256=7883dc289ee0f296958f201001a1ea161d49e3ab7a4fc49eb8ab088c184e310f)。
+- **評価専用の扱い**: `D/TRIAL_EVAL_ONLY.md`に「記号QA不合格(全角括弧残存、R2再実行1回でも残存、JASymbolCheckStopError)・Trial評価専用・正式完成品ではない・Production経路ではSTOPとなる」を記録。Blindページには判定情報を表示しない。実際の残存は括弧「（」「）」(USDA（米農務省）1箇所)と波ダッシュ「〜」(約2〜3か月 2箇所)。
+- コーヒーBlindページ: `user_test/ja_quality_model_allocation_02/coffee/index.html`(A/C/D/Eの4タブ、記事①〜④、独立seed=int(sha256("MAQ02:coffee_prices")[:8],16)=3330374777、対応表`BLIND_MAP_02_coffee_prices.json`(Blind評価後に開示)。漏洩検査OK、Pages 200+Playwright(tab4/各全文表示/leakなし/audioなし)=`pages_playwright_evidence_02_coffee.json`。
+- D(評価専用)の補助指標(Fable内部): タイトル20字、本文849字(空白除く)、26文。Dは記号QA未通過のため、品質比較時はD案の括弧・波ダッシュ残存が評価にどう影響したかを別途Fableが整理する(Productionでは音声化へ進まない)。
+- 追加課金0。Production・Prompt・Routing不変。
+
+## 9. 全角括弧「（）」発生原因と予防策の整理(read-only調査、修正なし、2026-10-11 委任_06)
+### 9-1. 現行の仕組み(確認した事実)
+- **R0**(Luna)のuser promptには`SYMBOL_PREVENTION_BLOCK_JA`(`er019_family_x_ja_writer_o_r1_r2_01.py`、括弧「()」「（）」「[]」・波ダッシュ・三点リーダー・コロン・スラッシュの禁止、鉤括弧は対象外)が付く(`er053_family_x_factlock_ja_writer_01.py::build_r0_prompt`)。
+- **W-1のR1/R2**(`astra_stage`)のuser promptは`USER_TMPL`(「以下の記事:…事実は変えずにエンターテイメント性をもっと上げた記事にReviseください。長さは800〜1000字程度でお願いします。」、系列X逐語・変更禁止)のみで、`SYMBOL_PREVENTION_BLOCK_JA`も禁止記号の指示も**含まれない**(確認: build_r0_prompt以外に同ブロックの付加箇所なし)。旧Writer(er019 ja_writer r1/r2)は`REVISION_INSTRUCTIONS+SYMBOL_PREVENTION_BLOCK_JA`を付けていたが、W-1(2026-10-10正式採用)の移植時にR1/R2側は`USER_TMPL`のみとなっている。
+- 記号QA: R0はタグ付き本文で判定し、違反ならviolation note付きで1回再生成、残ればSTOP。R1出力には記号QAなし。R2は案A(判定は最終文、禁止記号が残ればR2のみ同一R1生出力で1回再実行、残ればSTOP、本文は手で直さない)。判定は`er003_audio_tts_asr_safety.detect_prohibited_symbols`: 括弧=`[()（）\[\]]`、スラッシュ、URL/メール、絵文字(Unicode So)、残存placeholder=`[〜～]|…+|\.{3,}|[:;：；]`(時刻H:MMコロンは許容)。STOP対象は括弧/スラッシュ/URLメール/絵文字/placeholderの5カテゴリ。
+### 9-2. 履歴(DECISION_LOG)
+- TTS-SYMBOL-NORMALIZATION-ALL-FAMILY-PRODUCTION-WIRING-01(2026-09-27)でLayer1(Prompt予防)/Layer2(Validator)/Layer4(TTS直前Gate)を導入。FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01(2026-09-28)でOPEN-227「R2 must-fix経路のSYMBOL_PREVENTION_BLOCK_JA非対称性」を起票。W-1採用: RISK-FLAGGER-PRODUCTION-WIRING-01 委任_04(2026-10-10)。
+### 9-3. Production経路での発生実績(runtime_evidence.jsonのsymbol_qa)
+- 走査可能な16 run(Production coffee run_l3_01/stdregen、meta regen、semiconductor devconfirm、Trial A/C/D/E各run含む)で、R0/R2 first attemptの記号finding=0件、再実行発動=0件。モデル別: Astra R1/R2=7 run(0件)、Luna R1/R2(C・D案)=5 run(0件)、Sol(E案)=3 run(0件)。**今回のcoffee D=Luna R1/R2で初の記号QA不合格(1件、R2再実行でも残存)**。`rejected_w1_r2_symbol.md`はリポジトリ全体でこの1件のみ。N=1の観測でありLunaの傾向とは断定できない。旧Writer経路の過去実績はDECISION_LOGの個別記録(Meta STOP実例A2 japanese_title「…」等)に限られ、全数集計は未実施。
+### 9-4. 今回D案(R2=Luna)の発生箇所と経路
+- R0(Luna)出力は括弧0・「〜」0(「USDAの…」「約2か月から3か月」)。**R1(Luna)出力で初めて**「USDA（米農務省）のブラジル現地報告」「約2〜3か月」が出現(=Luna R1がUSDAに説明括弧を付け、範囲表現を〜に変えた)。R2初回・R2再実行はR1生出力を入力とするため両方で引き継がれ、再実行でも消えなかった。
+- Fact側: selected_brief.mdに全角括弧・「〜」なし(COFFEE-009/010は「USDA」「約2か月から3か月」等の表記)。writer_constraints.txtに半角括弧「(事実ではありません)」が含まれるが、R0出力・R1出力への混入は確認されず(R0は括弧0)。つまり括弧・〜はFact由来ではなくR1でモデルが追加したもの。
+- 文脈: 「USDA（米農務省）」=組織略称の初出時の説明括弧。
+### 9-5. 原因仮説(確認できた範囲と未確認)
+1. (確認)括弧・〜はR1段で初出。R1/R2のpromptには禁止記号指示がない(W-1のUSER_TMPLは逐語固定)ため、モデルは「新聞記事風の略称説明括弧」「範囲の〜」を自然に出す。R0は予防ブロックがあるため0件。
+2. (仮説・N=1)Luna R1が略称に説明括弧を付ける傾向。Astra/Solでの発生0件(15 run)との差は、モデル差かprompt/記事内容差か切り分け不能。
+3. (確認)再実行は同一R1生出力を入力にするため、R1に括弧があるとR2再実行でも消えにくい(案Aの構造上の限界)。D案では再実行でも括弧・〜が両方残った。
+### 9-6. 予防策候補(生成段階で出さない。Rewriteによる事後修正は優先しない。いずれもユーザー承認までTrial/Production実施なし)
+| 候補 | 内容 | 影響範囲・リスク | 費用 |
+|---|---|---|---|
+| P1 | R1/R2のuser promptへ`SYMBOL_PREVENTION_BLOCK_JA`を追記(旧Writerと同型) | `USER_TMPL`逐語固定の変更=W-1 Prompt変更(Opus独立レビュー条件対象の可能性、事実忠実性・記事品質への影響をTrialで測る必要)。R1/R2出力の長さ・語調が変わるリスク | Trial数記事×R1/R2分(Astra既存実績で数十円/記事) |
+| P2 | 略称・固有名詞の表記ルールを明示(「USDAは米農務省と言い換えるか、略称だけ使い、括弧で説明しない。『USDA、すなわち米農務省』と書く」「範囲は『2か月から3か月』」) | P1に併用可。Fact Lock表記一致(ledger逐語)との整合確認が必要 | P1と同じ(追記のみ) |
+| P3 | R1直後にも記号QAを入れ、違反ならR1のみ再実行(再実行をR2でなくR1で行う) | 新しい処理フロー=Opus独立レビュー必須(条件A)。再実行回数が増える=既存安全装置の拡張(上限回数・予算の再設計) | 発生時のみR1再実行分(約18円/回、Astra実績) |
+| P4 | Structured Output/出力schemaで禁止文字をpattern制約 | APIがpattern制約に対応するか未確認。タイトル/本文の自由生成品質への影響不明 | 要調査(技術確認のみ無課金可) |
+| P5 | R0のLuna段階のみ予防ブロックがある現状を、全段(R0/R1/R2)で一貫させる設計整理(P1/P2を含む上位案) | OPEN-227(R2 must-fix経路の非対称性)と同根。整合の再点検が必要 | 設計のみ無課金 |
+- 事後修正(Local Rewrite等)は優先しない(ユーザー方針)。まずP1〜P5の設計比較(無課金)をユーザーに提示し、承認後に新規Trial(OPEN-261)を行う。
