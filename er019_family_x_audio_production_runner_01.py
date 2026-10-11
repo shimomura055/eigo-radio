@@ -385,7 +385,11 @@ _BODY_SEGMENT_NAMES = ("full_story_part1", "full_story_part2", "full_story_part3
 # EN_COMMENT_E2_UPBEAT / 旧FULL_STORY->EN_FULLSTORY_F1_5 へのstyle更新に伴いbump(旧version
 # のcache=旧toneの可変segment・KP日本語意味・KP英語解説を黙ってreuseしない)。
 # Master Store(固定phrase・KP english)は別versioning(本値を参照しない)ため影響を受けない。
-FAMILY_X_VARIABLE_ROLE_STYLE_VERSION = "v4_j2_e2upbeat_f15_tone_refresh"
+# 委任_06(2026-10-11、ユーザー正式決定③・Opus追加必須): fallback経路でも承認Style(J2/E2_UPBEAT/
+# F1_5)を維持する変更(fallback_style_prefix配線)に伴いv5へbump。旧version(v4)で生成された
+# 旧FALLBACK styleのfallback音声が、resume時に「承認Styleの音声」として黙ってreuseされない
+# ようにする。Master Audio Store(固定Master/KP英語、別versioning)は影響を受けない。
+FAMILY_X_VARIABLE_ROLE_STYLE_VERSION = "v5_j2_e2upbeat_f15_tone_refresh_fallback_style_retention"
 
 
 # ============================================================
@@ -641,6 +645,10 @@ def generate_family_x_b1_segments(
                     # を優先する。
                     style_prefix_override=(_role_style("PREVIEW" if name == "preview" else "COMMENT")
                                             or n3_tts.B1_PREVIEW_STYLE_PREFIX_CALM),
+                    # 委任_06(ユーザー正式決定③・Opus B5): 技術的fallback/LR再TTS(再生成経路)でも
+                    # 標準経路と同一のE2_UPBEAT(PREVIEW/COMMENT)を維持する。既定backendではNone
+                    # (従来FALLBACK style)。TOPIC_INTRO/IN_ONE_LINEには渡さない。
+                    fallback_style_prefix=_role_style("PREVIEW" if name == "preview" else "COMMENT"),
                     disfluency_qa=True,
                     enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
                     # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-
@@ -673,6 +681,9 @@ def generate_family_x_b1_segments(
                     # (標準ENGLISH_STYLE_PREFIX経路は無変更、§本Phase範囲外)。
                     enable_pronunciation_resolver=True,
                     style_prefix_override=_role_style("IN_ONE_LINE" if name == "in_one_line" else "FULL_STORY"),
+                    # 委任_06(Opus B5): Full Story1-3のみ標準と同一のF1_5をfallback/LR再TTSへ
+                    # 渡す(IN_ONE_LINEは従来FALLBACK style=None)。
+                    fallback_style_prefix=(None if name == "in_one_line" else _role_style("FULL_STORY")),
                     tts_backend=tts_backend), expected_text=text)
         results[name]["canonical_text"] = text
 
@@ -953,6 +964,8 @@ def generate_family_x_a2_segments(
                 # japanese_titleだけJ3対象外のまま残り、Flash-Lite backend
                 # 選択時に同一A2記事内でstyleが混在していた。
                 style_prefix_override=_role_style_ja(),
+                # 委任_06(ユーザー正式決定③・Opus B2/B5): fallbackでもJ2逐語を維持(旧minimal文を置換)。
+                fallback_style_prefix=_role_style_ja(),
                 tts_backend=tts_backend), expected_text=japanese_title)
 
     for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
@@ -963,6 +976,7 @@ def generate_family_x_a2_segments(
                 lambda text=text: n3_tts.generate_a2_japanese_with_reading_safety(
                     text, f"{narration_dir}/{name}.wav", n3_tts.expected_substring_ja(text),
                     style_prefix_override=_role_style_ja(),
+                    fallback_style_prefix=_role_style_ja(),  # 委任_06(Opus B2/B5)
                     tts_backend=tts_backend), expected_text=text)
 
     # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1、2026-09-29): Heading
@@ -984,6 +998,10 @@ def generate_family_x_a2_segments(
                     tts_input, f"{narration_dir}/{name}.wav", sub,
                     style_prefix_override=(_role_style_slower("IN_ONE_LINE" if name == "in_one_line" else "FULL_STORY")
                                             or n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER),
+                    # 委任_06(Opus B1/B5): Full Story1-3のみ、標準経路に渡す連結済み減速指示付きstyle
+                    # (_role_style_slower、F1_5+減速)をfallback/LR再TTSへもそのまま渡す。
+                    # IN_ONE_LINEは従来FALLBACK style(None)。
+                    fallback_style_prefix=(None if name == "in_one_line" else _role_style_slower("FULL_STORY")),
                     disfluency_qa=(name == "in_one_line"),
                     enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
                     enable_repetition_qa=(name in _BODY_SEGMENT_NAMES), tts_backend=tts_backend), expected_text=text)
@@ -1049,7 +1067,8 @@ def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str, cached: dict 
                 i=i: n3_tts.generate_a2_japanese_with_reading_safety(
                     ja_gloss_tts, f"{narration_dir}/meaning_{i}.wav", n3_tts.expected_substring_ja(ja_gloss_tts),
                     max_extra_chars=30, known_key_phrase_terms=[used_form],
-                    style_prefix_override=_role_style_ja(), tts_backend=tts_backend),
+                    style_prefix_override=_role_style_ja(), tts_backend=tts_backend,
+                    fallback_style_prefix=_role_style_ja()),  # 委任_06(Opus B2/B5)
                 # W5(J3配線に伴うMAJOR-1系guard、Standard KP日本語意味に
                 # もtext guard+style_version guardを適用する)。
                 expected_text=ja_gloss_tts, require_style_version=True)

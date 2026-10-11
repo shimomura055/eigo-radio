@@ -220,7 +220,10 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
                                         # (apply_a2_slowdown_postprocess)自体はbackend非依存
                                         # (既に生成済みの音声ファイルへ後段で適用するだけ、
                                         # 設計書§(e))のため無変更。
-                                        tts_backend: str = "structured_separation") -> dict:
+                                        tts_backend: str = "structured_separation",
+                                        # 委任_06(既定None=従来): generate_english_segment_with_
+                                        # fallbackへ転送する(A2 Full Story: 減速指示連結済みの値)。
+                                        fallback_style_prefix: str | None = None) -> dict:
     """通常ペースでの生成(generate_english_segment_with_fallback、既存の
     standard/fallback retry込み)→6% time-stretch→post-process後ASR
     再検証、を1セットとして扱い、post-process後の再検証だけが不一致に
@@ -250,7 +253,8 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
             tts_input, out_path, expected_substring, max_extra_chars=max_extra_chars,
             style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-            enable_repetition_qa=enable_repetition_qa, tts_backend=tts_backend)
+            enable_repetition_qa=enable_repetition_qa, tts_backend=tts_backend,
+            fallback_style_prefix=fallback_style_prefix)
         if result.get("status") != "OK":
             break  # 通常ペース自体が失敗(既存のstandard/fallback両方exhausted)
         result = apply_a2_slowdown_postprocess(name, narration_dir, tts_input, result)
@@ -411,7 +415,13 @@ def _generate_a2_japanese_minimal_instruction(
         # Trial未検証のまま既存JAPANESE_STYLE_PREFIX/minimal instruction
         # テキストを流用する設計方針[設計書§(c-2)]をfallback経路にも
         # 一貫して適用するため)。
-        tts_backend: str = "structured_separation") -> dict:
+        tts_backend: str = "structured_separation",
+        # FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01 委任_06(2026-10-11、ユーザー正式決定③・
+        # Opus B2/B5、既定None=従来の_A2_JA_MINIMAL_INSTRUCTION_PREFIX、byte-identical):
+        # Family X runnerが対象role(J2)にのみ、標準経路と同一のJ2逐語を渡す。指定時は
+        # 旧minimal文を**置換**する(旧注意文との連結はしない)。「翻訳・言い換え・追加を
+        # しない」担保は既存の全文ASR Validatorに委ねる。
+        fallback_style_prefix: str | None = None) -> dict:
     import er002_common as common
     import er003_b1_p3u_audio as p3u
     import er003_b1_p4c_audio as p4c
@@ -423,31 +433,38 @@ def _generate_a2_japanese_minimal_instruction(
     # (声・モデルはp9a._make_japanese_call_fn()と同一)。
     # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: 既定
     # backendでは上記2行とbyte-identical。
+    import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+    style_source = repro01.describe_style_source(fallback_style_prefix)
+    _ja_fb_style = fallback_style_prefix if fallback_style_prefix is not None else _A2_JA_MINIMAL_INSTRUCTION_PREFIX
+    _style_evidence = {"style_prefix": _ja_fb_style[:200], "style_source": style_source,
+                       "tts_model_id": flw.resolve_actual_model_name(p9a.JAPANESE_MODEL_NAME, tts_backend),
+                       "tts_backend": tts_backend}
     call_fn, prompt = flw.resolve_tts_call_and_prompt(
-        text, _A2_JA_MINIMAL_INSTRUCTION_PREFIX, p9a.JAPANESE_MODEL_NAME, p9a.VOICE_NAME, out_path,
+        text, _ja_fb_style, p9a.JAPANESE_MODEL_NAME, p9a.VOICE_NAME, out_path,
         tts_backend=tts_backend,
         build_tts_prompt=p4c.build_tts_prompt, make_batch_tts_call_fn=batch_wiring.make_batch_tts_call_fn)
     pcm, retries, ok, err = common._call_tts_with_retry(
         call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
     if not ok:
-        return {"status": "STOPPED", "reason": f"minimal instructionでもTTS失敗: {err}"}
+        return {"status": "STOPPED", "reason": f"minimal instructionでもTTS失敗: {err}", **_style_evidence}
     samples_raw = common.pcm_bytes_to_float_mono(pcm)
     # ER-005-E2E-TTS-ANALYSIS-FIX-01: 他のA2 fallback経路と揃えて
     # NARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS(0.35秒)を明示的に使う。
     trimmed, trim_info = p3u.trim_english_keyword_silence(
         samples_raw, common.SAMPLE_RATE, safety_margin_seconds=p3u.NARRATION_BODY_TRIM_SAFETY_MARGIN_SECONDS)
     if trimmed is None:
-        return {"status": "STOPPED", "reason": "発話区間を検出できませんでした"}
+        return {"status": "STOPPED", "reason": "発話区間を検出できませんでした", **_style_evidence}
     # ER-005-AUDIO-WASTE-REDUCTION-01: hallucinationを疑わせる異常長音声を
     # ASR実行前に検知して破棄する。
     anomaly = safety.detect_duration_anomaly(trim_info["raw_duration_seconds"], text, "ja")
     if anomaly["is_anomaly"]:
-        return {"status": "STOPPED", "reason": anomaly["reason"], "duration_anomaly": anomaly}
+        return {"status": "STOPPED", "reason": anomaly["reason"], "duration_anomaly": anomaly, **_style_evidence}
     common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
     metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
     return {"status": "OK", "text": text, "path": out_path, "trim_info": trim_info,
             "clipping_detected": metrics["clipping_detected"], "instruction": "minimal (not JAPANESE_STYLE_PREFIX)",
-            "tts_backend": tts_backend, "model": flw.resolve_actual_model_name(p9a.JAPANESE_MODEL_NAME, tts_backend)}
+            "tts_backend": tts_backend, "model": flw.resolve_actual_model_name(p9a.JAPANESE_MODEL_NAME, tts_backend),
+            **_style_evidence}
 
 
 # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-VALIDATOR-PUNCT-01
@@ -488,7 +505,11 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
                                         # (c.generate_narration_snippet_verified_strict)にのみ転送する。
                                         # fallback経路(_generate_a2_japanese_minimal_instruction)は
                                         # FAMILY-X-02 D-1の方針どおり既存テキスト流用のまま変更しない。
-                                        style_prefix_override: str | None = None) -> dict:
+                                        style_prefix_override: str | None = None,
+                                        # FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01 委任_06(既定None=
+                                        # 従来の旧minimal文。上記「fallbackは変更しない」を更新: 対象
+                                        # role(J2)のみrunnerが標準styleと同一のJ2逐語を渡す)。
+                                        fallback_style_prefix: str | None = None) -> dict:
     """標準経路(JAPANESE_STYLE_PREFIX)が合格しない場合、minimal
     instructionへフォールバックする(声・モデルは変えない)。
     ER-003-N3-ROOT-FIX-01: 短いA2日本語フレーズのinstruction
@@ -529,9 +550,12 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
     fallback_attempts = []
     fallback_budget = max(0, max_attempts - len(standard.get("attempts_log") or []))
     for attempt in range(1, fallback_budget + 1):
-        r = _generate_a2_japanese_minimal_instruction(text, out_path, tts_backend=tts_backend)
+        r = _generate_a2_japanese_minimal_instruction(
+            text, out_path, tts_backend=tts_backend, fallback_style_prefix=fallback_style_prefix)
         if r.get("status") != "OK":
-            fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason")})
+            fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason"),
+                                       "style_prefix": r.get("style_prefix"), "style_source": r.get("style_source"),
+                                       "tts_model_id": r.get("tts_model_id"), "tts_backend": r.get("tts_backend")})
             continue
         asr_text, err = routing.transcribe(out_path, language="ja-JP")
         length_ok = asr_text is not None and len(asr_text) <= max_len
@@ -546,13 +570,19 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
                                    "reading_resolver_info": getattr(cls, "reading_resolver_info", None),
                                    # OPEN-258 SCG証跡(fallback attemptでも標準経路と同様にSCGが動く)
                                    "scg_info": getattr(cls, "scg_info", None),
-                                   "verified": verified})
+                                   "verified": verified,
+                                   # 委任_06(Opus B6): style証跡。
+                                   "style_prefix": r.get("style_prefix"), "style_source": r.get("style_source"),
+                                   "tts_model_id": r.get("tts_model_id"), "tts_backend": r.get("tts_backend")})
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
         _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, "minimal_fallback", {
             "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": "ja",
             "model": flw.resolve_actual_model_name(p9a.JAPANESE_MODEL_NAME, tts_backend), "voice": p9a.VOICE_NAME,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(), "tts_backend": tts_backend,
+            # 委任_06(Opus B6): style証跡4項目。
+            "style_prefix": (r.get("style_prefix") or "")[:200], "style_source": r.get("style_source"),
+            "tts_model_id": r.get("tts_model_id"),
             "asr_text": asr_text, "audio_classification": cls.classification,
             "length_ok": length_ok, "verified": verified,
             "reading_resolver_info": getattr(cls, "reading_resolver_info", None),
@@ -601,7 +631,9 @@ def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_
                                               # TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、
                                               # 2026-09-28、既定None=従来のJAPANESE_STYLE_PREFIXを維持):
                                               # generate_a2_japanese_with_fallbackへそのまま転送する。
-                                              style_prefix_override: str | None = None) -> dict:
+                                              style_prefix_override: str | None = None,
+                                              # 委任_06(既定None=従来): fallback(minimal)経路へ転送する。
+                                              fallback_style_prefix: str | None = None) -> dict:
     placeholder_safe = tts_safe_ja(text)
     # ER-006-KP5-CANONICAL-BUG-01: B1側(generate_charon_japanese_with_
     # reading_safety)と同じゲートをA2側にも適用する(japanese_title/
@@ -662,7 +694,7 @@ def generate_a2_japanese_with_reading_safety(text: str, out_path: str, expected_
     r = generate_a2_japanese_with_fallback(
         tts_input, out_path, expected_substring, max_attempts=max_attempts, max_extra_chars=max_extra_chars,
         expected_readings=expected_readings, tts_backend=tts_backend,
-        style_prefix_override=style_prefix_override)
+        style_prefix_override=style_prefix_override, fallback_style_prefix=fallback_style_prefix)
     r["canonical_text"] = text
     r["tts_input_text_after_reading_safety"] = tts_input
     r["reading_safety_changed_text"] = (tts_input != text)

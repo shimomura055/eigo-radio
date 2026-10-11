@@ -96,3 +96,20 @@ Flash-Lite backendではstyleは`speech_metadata.style`で本文と別フィー�
 ## 9. STOP該当の有無
 - 確定的STOP(救済能力の**実測**低下・品質悪化・費用/遅延の大幅増・仕様競合)は**無し**: 案1は試行枠/費用不変、Validator/Store/version guard/HRLと整合、既定backend不変。
 - 潜在リスク(未定量): (1)style起因失敗の救済が弱まり得る(Flash-Lite時代のfallback実績がほぼ無く実測不能)。(2)JA minimal文の喪失。(3)他role拡張・案2-lite・減速連結は要ユーザー判断。ユーザー規定のSTOP報告項目(原因/救済能力への影響/案・代替/品質・コスト・期間/推奨)は§1-4・§3・§4に記載。実装前に強制fallback probe(別委任・少額)を推奨。
+
+## 10. Opus条件Aレビュー(GO with required fixes)反映と実装結果(委任_06、2026-10-11、API課金0)
+状態: 実装・test・¥0モックprobe完了(branch `feature/coffee-new-tone-fallback-01`、未merge・Production採用はユーザー承認事項)。証跡: `FALLBACK_MOCK_PROBE_01.md`、`er003_fallback_style_retention_test_01.py`、`er003_fallback_style_retention_probe_01.py`。
+
+| Opus必須 | 反映 | 場所 |
+|---|---|---|
+| B1(A2英語=連結済み減速指示をそのまま) | runnerが標準経路へ渡す`_role_style_slower("FULL_STORY")`と同一値を`fallback_style_prefix`へ渡す(新文言を合成しない) | er019 audio runner(A2 Full Story)、crosslevel/repro01 |
+| B2(JAはJ2逐語へ置換、旧注意文と連結しない) | `_generate_a2_japanese_minimal_instruction(fallback_style_prefix=...)`指定時は`_A2_JA_MINIMAL_INSTRUCTION_PREFIX`を置換(連結なし)。「翻訳・言い換え・追加なし」の担保は既存の全文ASR Validatorに委ねる | er003_v1_n3_01_tts_generate.py |
+| B3(A2英語Local Rewrite再TTS) | crosslevel `_retts_fn`→`_run_a2_minimal_fallback_attempt`へ同一styleを転送。B1B側news_tail_fixのLocal Rewrite再TTSも、対象role(Full Story)のみ`style_prefix_override`/`fallback_style_prefix`を再TTSへ渡すよう是正(従来は標準styleが再TTSへ渡っていなかった=旧ENGLISH_STYLE_PREFIXへ黙って戻っていた) | crosslevel、news_tail_fix、voice01 |
+| B4(i)(¥0モックprobe) | 全経路(初回・標準retry・fallback・regeneration・resume)×全role | `FALLBACK_MOCK_PROBE_01.md` |
+| B4(ii)(¥0統計) | Tone Trial 12件+Flash-Lite era記録 | 同上 |
+| B5(対象限定) | 既定None引数`fallback_style_prefix`を新設。runnerがJ2/E2_UPBEAT/F1.5対象segmentのみに渡す。TOPIC_INTRO/IN_ONE_LINE/HEADING/shell/KP英語/他Familyは引数を渡さず従来値 | 同上、テスト`RunnerRoleScopeTests` |
+| B6(証跡) | fallbackの戻り値・attempts_log・`save_tts_attempt_audio` metadataに`style_prefix`(先頭200字)・`style_source`・`tts_model_id`・`tts_backend`を記録。crosslevelの`"model"`固定記録を`flw.resolve_actual_model_name`へ修正。`style_source`判定は`fl_styles.describe_style_source` | repro01/crosslevel/n3/voice01/news_tail_fix/styles |
+| 追加(resume) | `FAMILY_X_VARIABLE_ROLE_STYLE_VERSION`を`v5_j2_e2upbeat_f15_tone_refresh_fallback_style_retention`へbump(旧v4 cacheは再利用されず再生成) | er019 audio runner |
+| 未確認事項(Master Store) | fixed shell(`charon_english_fixed_shell`/`charon_japanese_fixed_shell`)とKP英語(`key_phrase_english_component`)のみがMaster Store経由で、これらは`fallback_style_prefix`を渡さず従来どおり。新tone対象のfallback音声(JA/Full Story/Advanced preview・comment)はMaster Storeへ登録されず、`tts_generation_results.json`+`style_version`(v5)で管理される。よってstyle_instruction_idの整合問題は発生しない |
+
+設計からの逸脱・補足: (1) 設計§3案1の「Local Rewrite」はA2のみ言及だったが、news_tail_fixのLocal Rewrite再TTSが標準styleを渡していなかった既存ギャップを発見したため、対象role(Full Story)に限り是正(B5範囲内)。非対象role(B1B in_one_line)のLocal Rewrite再TTSは従来どおり(標準ENGLISH_STYLE_PREFIX)で、本件では変更していない(報告参照)。 (2) 強制fallback実測probe(実TTS)は本委任のスコープ外(別委任・少額)。

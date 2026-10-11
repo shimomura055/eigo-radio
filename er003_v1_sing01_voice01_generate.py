@@ -75,7 +75,13 @@ def generate_charon_english(text: str, out_path: str,
                              # "speech_metadata_flash_lite"を渡す(Family A/B/C
                              # [legacy]は無変更)。標準経路・minimal fallback経路・
                              # Local Rewrite回復経路のいずれにも転送する。
-                             tts_backend: str = "structured_separation") -> dict:
+                             tts_backend: str = "structured_separation",
+                             # FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01 委任_06(2026-10-11、
+                             # ユーザー正式決定③・Opus B5、既定None=従来のFALLBACK style):
+                             # 技術的fallback(TTS例外/発話区間検出失敗)でも承認role style
+                             # (Advanced preview/comment=E2_UPBEAT)を維持するため、Family X
+                             # runnerが対象roleにのみ標準styleと同一の文字列を渡す。
+                             fallback_style_prefix: str | None = None) -> dict:
     """ENGLISH_STYLE_PREFIX主経路(voice=Charon)+MINIMAL_INSTRUCTION
     fallback。trim安全マージンはNOVEL-AUDIO-01のtail切れ修正と同じ
     0.35秒を使う。"""
@@ -129,6 +135,9 @@ def generate_charon_english(text: str, out_path: str,
     # どうかを、以降の(発音resolverによる)再代入より前に固定しておく
     # (runtime evidence記録の既定/override判定用。既存挙動には無影響)。
     _caller_provided_style_override = style_prefix_override is not None
+    # 委任_06(Opus B6): hint付与前のcaller指定style(style_source判定用)。
+    _caller_style_override_original = style_prefix_override
+    import er033_tts_flash_lite_family_x_styles_01 as _fb_styles
     en_pronunciation_resolver_info = None
     if enable_pronunciation_resolver:
         base_style_prefix = style_prefix_override if style_prefix_override is not None else p9a.ENGLISH_STYLE_PREFIX
@@ -158,6 +167,10 @@ def generate_charon_english(text: str, out_path: str,
         # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、MAJOR-2是正):
         # 実際にTTSへ渡した最終文字列をruntime evidence用に保持する。
         _active_style_prefix = standard_style_prefix
+        # 委任_06(Opus B6): 実際にTTSへ渡したstyleの由来(標準経路)。
+        _active_style_source = (repro01.describe_style_source(_caller_style_override_original)
+                                if _caller_style_override_original is not None
+                                else "default:ENGLISH_STYLE_PREFIX")
         call_fn, prompt = flw.resolve_tts_call_and_prompt(
             text, standard_style_prefix, common.MODEL_NAME, CHARON, out_path, tts_backend=tts_backend,
             build_tts_prompt=p4c.build_tts_prompt, make_batch_tts_call_fn=batch_wiring.make_batch_tts_call_fn)
@@ -182,11 +195,16 @@ def generate_charon_english(text: str, out_path: str,
             # 短いfallback style(FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]、新規
             # style文言は考案しない)を使う。既定backend(structured_
             # separation)はMINIMAL_INSTRUCTION_PREFIXのまま(byte-identical)。
-            if tts_backend == "speech_metadata_flash_lite":
-                import er033_tts_flash_lite_family_x_styles_01 as fl_styles
-                fallback_style_prefix = fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]
+            # 委任_06(ユーザー正式決定③・Opus B5): fallback_style_prefix引数が明示された
+            # 場合(Family X対象roleのみ)は標準経路と同一のstyleを逐語で使う(新文言を
+            # 合成しない)。None=従来(下記)。ローカル変数名は引数名との衝突回避で_fb_style。
+            _fb_style_source = repro01.describe_style_source(fallback_style_prefix)
+            if fallback_style_prefix is not None:
+                _fb_style = fallback_style_prefix
+            elif tts_backend == "speech_metadata_flash_lite":
+                _fb_style = _fb_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]
             else:
-                fallback_style_prefix = repro01.MINIMAL_INSTRUCTION_PREFIX
+                _fb_style = repro01.MINIMAL_INSTRUCTION_PREFIX
             # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-
             # VALIDATOR-PUNCT-01(修正2回目、Opus L2所見S3是正・非対称
             # 解消): 標準style_prefix(style_prefix_override)側にのみ
@@ -196,27 +214,30 @@ def generate_charon_english(text: str, out_path: str,
             # 新規web lookupなしで同一hookによりそのまま適用する。
             if enable_pronunciation_resolver and en_pronunciation_resolver_info \
                     and en_pronunciation_resolver_info.get("cache_hits"):
-                fallback_style_prefix = pron_resolver_core.augment_style_prefix_with_cached_hits(
-                    fallback_style_prefix, en_pronunciation_resolver_info["cache_hits"])
+                _fb_style = pron_resolver_core.augment_style_prefix_with_cached_hits(
+                    _fb_style, en_pronunciation_resolver_info["cache_hits"])
             # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、MAJOR-2是正):
             # fallback発火時は、こちらが実際にTTSへ渡した最終文字列になる。
-            _active_style_prefix = fallback_style_prefix
+            _active_style_prefix = _fb_style
+            _active_style_source = _fb_style_source
             call_fn2, prompt2 = flw.resolve_tts_call_and_prompt(
-                text, fallback_style_prefix, common.MODEL_NAME, CHARON, out_path, tts_backend=tts_backend,
+                text, _fb_style, common.MODEL_NAME, CHARON, out_path, tts_backend=tts_backend,
                 build_tts_prompt=p4c.build_tts_prompt, make_batch_tts_call_fn=batch_wiring.make_batch_tts_call_fn)
             pcm2, retries2, ok2, err2 = common._call_tts_with_retry(
                 call_fn2, prompt2, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
             instruction_type = "minimal_fallback"
             if not ok2:
                 attempts_log.append({"attempt": attempt, "status": "STOPPED", "reason": str(err2),
-                                      "instruction_type": instruction_type})
+                                      "instruction_type": instruction_type,
+                                      "style_prefix": _active_style_prefix[:200], "style_source": _active_style_source})
                 continue
             samples_raw2 = common.pcm_bytes_to_float_mono(pcm2)
             trimmed, trim_info = p3u.trim_english_keyword_silence(
                 samples_raw2, common.SAMPLE_RATE, safety_margin_seconds=SAFETY_MARGIN)
             if trimmed is None:
                 attempts_log.append({"attempt": attempt, "status": "STOPPED", "reason": "発話区間検出失敗(fallback)",
-                                      "instruction_type": instruction_type})
+                                      "instruction_type": instruction_type,
+                                      "style_prefix": _active_style_prefix[:200], "style_source": _active_style_source})
                 continue
 
         # ER-005-AUDIO-WASTE-REDUCTION-01: hallucinationを疑わせる異常長
@@ -251,6 +272,10 @@ def generate_charon_english(text: str, out_path: str,
         verified = gate["verified"]
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                               "instruction_type": instruction_type, "audio_classification": cls.classification,
+                              # 委任_06(Opus B6): style証跡(標準/fallback共通、先頭200字)。
+                              "style_prefix": _active_style_prefix[:200], "style_source": _active_style_source,
+                              "tts_model_id": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend),
+                              "tts_backend": tts_backend,
                               "connected_speech_info": getattr(cls, "connected_speech_info", None),
                               "semantic_equivalence": getattr(cls, "semantic_equivalence_info", None),
                               "length_ok": length_ok, "verified": verified, "trim_info": trim_info,
@@ -262,6 +287,9 @@ def generate_charon_english(text: str, out_path: str,
             "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": "en",
             "model": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend), "voice": CHARON,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(), "tts_backend": tts_backend,
+            # 委任_06(Opus B6): style証跡4項目(style_prefix先頭200字/style_source/tts_model_id/tts_backend)。
+            "style_prefix": _active_style_prefix[:200], "style_source": _active_style_source,
+            "tts_model_id": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend),
             "asr_text": asr_text, "audio_classification": cls.classification,
             "length_ok": length_ok, "verified": verified,
             "disfluency_checked": gate["disfluency_checked"],
@@ -285,8 +313,10 @@ def generate_charon_english(text: str, out_path: str,
                     # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2
                     # 所見MAJOR-2/MINOR-A是正): 実際に渡した最終style文字列
                     # (override指定時のみ)・model_idのruntime evidence。
-                    "style_prefix": (_active_style_prefix if _caller_provided_style_override
+                    "style_prefix": (_active_style_prefix if (_caller_provided_style_override
+                                                              or instruction_type == "minimal_fallback")
                                       else "<default:ENGLISH_STYLE_PREFIX>"),
+                    "style_source": _active_style_source,
                     "tts_model_id": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend)}
         if stop_retrying:
             metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
@@ -294,7 +324,8 @@ def generate_charon_english(text: str, out_path: str,
                 recovered = _local_rewrite_recovery_for_charon_english(
                     text, out_path, asr_text, style_prefix_override, disfluency_qa,
                     enable_connected_speech_equivalence_layer, attempts_log,
-                    en_pronunciation_resolver_info=en_pronunciation_resolver_info, tts_backend=tts_backend)
+                    en_pronunciation_resolver_info=en_pronunciation_resolver_info, tts_backend=tts_backend,
+                    fallback_style_prefix=fallback_style_prefix)
                 if recovered is not None:
                     recovered["cooldown_events"] = cooldown_events
                     return recovered
@@ -314,7 +345,8 @@ def generate_charon_english(text: str, out_path: str,
         recovered = _local_rewrite_recovery_for_charon_english(
             text, out_path, last_asr_text, style_prefix_override, disfluency_qa,
             enable_connected_speech_equivalence_layer, attempts_log,
-            en_pronunciation_resolver_info=en_pronunciation_resolver_info, tts_backend=tts_backend)
+            en_pronunciation_resolver_info=en_pronunciation_resolver_info, tts_backend=tts_backend,
+            fallback_style_prefix=fallback_style_prefix)
         if recovered is not None:
             recovered["cooldown_events"] = cooldown_events
             return recovered
@@ -338,7 +370,9 @@ def _local_rewrite_recovery_for_charon_english(
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(既定
         # "structured_separation"で既存挙動とbyte-identical、設計書§(b):
         # regeneration経路も同一backend経由)。
-        tts_backend: str = "structured_separation") -> dict | None:
+        tts_backend: str = "structured_separation",
+        # 委任_06(既定None=従来): 再TTS内の技術的fallbackにも同一styleを渡す。
+        fallback_style_prefix: str | None = None) -> dict | None:
     """generate_charon_english()専用のLocal Rewrite回復ヘルパー(ユーザー
     承認済み仕様D: Human Review Lock到達前の回復経路)。3回とも(または
     stop_retryingで)ASR検証に合格しなかった場合のみ呼ばれる。回復成功時は
@@ -354,7 +388,7 @@ def _local_rewrite_recovery_for_charon_english(
             rewritten_text, out_path, max_attempts=1,
             style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-            tts_backend=tts_backend)
+            tts_backend=tts_backend, fallback_style_prefix=fallback_style_prefix)
 
     recovery = retry_primitive.run_local_rewrite_recovery(
         segment_id=segment_id, canonical_text=text, last_asr_text=last_asr_text,

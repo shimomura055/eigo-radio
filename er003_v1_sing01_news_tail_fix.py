@@ -100,7 +100,13 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                                          # を渡す。標準分岐・fallback(minimal instruction)分岐
                                          # (generate_english_component_minimal_instruction)の両方に
                                          # 転送する。
-                                         tts_backend: str = "structured_separation") -> dict:
+                                         tts_backend: str = "structured_separation",
+                                         # FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01 委任_06(2026-10-11、
+                                         # ユーザー正式決定③・Opus B5、既定None=従来のFALLBACK style):
+                                         # 技術的fallbackでも承認role style(Full Story=F1_5)を維持する
+                                         # ため、Family X runnerが対象role(Full Story1-3)にのみ標準
+                                         # styleと同一の文字列を渡す(IN_ONE_LINE等は渡さない)。
+                                         fallback_style_prefix: str | None = None) -> dict:
     """p9a.generate_narration_snippet(ENGLISH_STYLE_PREFIX経路)と同じ
     prompt/model/voiceを使うが、末尾trim安全マージンのみ0.35秒に広げる。
     失敗時はMINIMAL_INSTRUCTION経路(同じく広いマージン)へfallbackする。"""
@@ -126,6 +132,9 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
     # 出し元・既存promptへの影響をゼロに保つ)。
     en_pronunciation_resolver_info = None
     standard_style_prefix = style_prefix_override or p9a.ENGLISH_STYLE_PREFIX
+    # 委任_06(Opus B6): style由来の判定は、hint付与前のcaller指定styleで行う。
+    _standard_style_source = (repro01.describe_style_source(style_prefix_override)
+                              if style_prefix_override else "default:ENGLISH_STYLE_PREFIX")
     if enable_pronunciation_resolver:
         augmented_style_prefix, en_pronunciation_resolver_info = pron_resolver_core.resolve_and_augment_en_style_prefix(
             standard_style_prefix, text)
@@ -155,6 +164,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
         pcm, retries, ok, err = common._call_tts_with_retry(
             call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
         instruction_type = "english_style_prefix_wide_margin"
+        _active_style_prefix, _active_style_source = standard_style_prefix, _standard_style_source
         if ok:
             samples_raw = common.pcm_bytes_to_float_mono(pcm)
             trimmed, trim_info = p3u.trim_english_keyword_silence(
@@ -174,11 +184,16 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                                   "instruction_type": instruction_type})
             r = repro01.generate_english_component_minimal_instruction(
                 text, out_path, enable_pronunciation_resolver=enable_pronunciation_resolver,
-                tts_backend=tts_backend)
+                tts_backend=tts_backend, fallback_style_prefix=fallback_style_prefix)
             instruction_type = "minimal_fallback"
+            # 委任_06(Opus B6): fallbackが実際に渡したstyle(repro01が返す)を証跡へ引き継ぐ。
+            _active_style_prefix = r.get("style_prefix") or _active_style_prefix
+            _active_style_source = r.get("style_source") or _active_style_source
             if r.get("status") != "OK":
                 attempts_log.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason"),
-                                      "instruction_type": instruction_type})
+                                      "instruction_type": instruction_type,
+                                      "style_prefix": r.get("style_prefix"), "style_source": r.get("style_source"),
+                                      "tts_model_id": r.get("tts_model_id"), "tts_backend": r.get("tts_backend")})
                 continue
         else:
             common.write_wav_float(out_path, trimmed, common.SAMPLE_RATE, 1)
@@ -215,6 +230,10 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
         verified = rep_gate["verified"]
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                               "instruction_type": instruction_type, "audio_classification": cls.classification,
+                              # 委任_06(Opus B6): style証跡(先頭200字/由来/実モデル/backend)。
+                              "style_prefix": _active_style_prefix[:200], "style_source": _active_style_source,
+                              "tts_model_id": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend),
+                              "tts_backend": tts_backend,
                               "connected_speech_info": getattr(cls, "connected_speech_info", None),
                               # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02
                               # (2026-09-28、D-4): FULL_STORY(このgenerate_news_
@@ -241,6 +260,9 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             "loop_attempt_index": attempt, "max_attempts": max_attempts, "language": "en",
             "model": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend), "voice": p9a.VOICE_NAME,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(), "tts_backend": tts_backend,
+            # 委任_06(Opus B6): style証跡4項目。
+            "style_prefix": _active_style_prefix[:200], "style_source": _active_style_source,
+            "tts_model_id": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend),
             "asr_text": asr_text, "audio_classification": cls.classification,
             "length_ok": length_ok, "verified": verified,
             "disfluency_checked": gate["disfluency_checked"],
@@ -279,8 +301,12 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     # instruction_typeフィールドで判別可能)。
                     "voice": p9a.VOICE_NAME,
                     "tts_model_id": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend),
-                    "style_prefix": (standard_style_prefix if style_prefix_override
-                                      else "<default:ENGLISH_STYLE_PREFIX>")}
+                    # 委任_06: minimal_fallback時はfallbackが実際に渡したstyleを記録する
+                    # (従来は標準styleを記録しており、fallbackの実styleと食い違っていた)。
+                    "style_prefix": (_active_style_prefix if (style_prefix_override
+                                                              or instruction_type == "minimal_fallback")
+                                      else "<default:ENGLISH_STYLE_PREFIX>"),
+                    "style_source": _active_style_source}
         if stop_retrying:
             # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15: 固有名詞的な
             # 差分の自動PASSは共有Cascade側のD-2'(Pronunciation Ledgerに
@@ -292,7 +318,8 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     text, out_path, asr_text, max_extra_chars, disfluency_qa,
                     enable_connected_speech_equivalence_layer, enable_repetition_qa, attempts_log,
                     enable_pronunciation_resolver=enable_pronunciation_resolver,
-                    en_pronunciation_resolver_info=en_pronunciation_resolver_info, tts_backend=tts_backend)
+                    en_pronunciation_resolver_info=en_pronunciation_resolver_info, tts_backend=tts_backend,
+                    fallback_style_prefix=fallback_style_prefix, style_prefix_override=style_prefix_override)
                 if recovered is not None:
                     recovered["cooldown_events"] = cooldown_events
                     return recovered
@@ -318,7 +345,8 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             text, out_path, last_asr_text, max_extra_chars, disfluency_qa,
             enable_connected_speech_equivalence_layer, enable_repetition_qa, attempts_log,
             enable_pronunciation_resolver=enable_pronunciation_resolver,
-            en_pronunciation_resolver_info=en_pronunciation_resolver_info, tts_backend=tts_backend)
+            en_pronunciation_resolver_info=en_pronunciation_resolver_info, tts_backend=tts_backend,
+            fallback_style_prefix=fallback_style_prefix, style_prefix_override=style_prefix_override)
         if recovered is not None:
             recovered["cooldown_events"] = cooldown_events
             return recovered
@@ -347,7 +375,13 @@ def _local_rewrite_recovery_for_news_narration(
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(既定
         # "structured_separation"で既存挙動とbyte-identical、設計書§(b):
         # regeneration経路も同一backend経由)。
-        tts_backend: str = "structured_separation") -> dict | None:
+        tts_backend: str = "structured_separation",
+        # 委任_06(既定None=従来): 対象role(Full Story)のLocal Rewrite再TTSでも承認styleを
+        # 維持する。fallback_style_prefixが明示された(=対象role)場合のみ、標準経路の
+        # style_prefix_overrideも再TTSへ渡す(非対象role=IN_ONE_LINE等の既存挙動は不変、
+        # Opus B5)。
+        fallback_style_prefix: str | None = None,
+        style_prefix_override: str | None = None) -> dict | None:
     """generate_news_narration_wide_margin()専用のLocal Rewrite回復
     ヘルパー(generate_charon_english側と対になる実装、ユーザー承認済み
     仕様D)。Full Story/Point本文/In One Lineが対象。回復成功時は
@@ -363,7 +397,9 @@ def _local_rewrite_recovery_for_news_narration(
             disfluency_qa=disfluency_qa,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
             enable_repetition_qa=enable_repetition_qa,
-            enable_pronunciation_resolver=enable_pronunciation_resolver, tts_backend=tts_backend)
+            enable_pronunciation_resolver=enable_pronunciation_resolver, tts_backend=tts_backend,
+            fallback_style_prefix=fallback_style_prefix,
+            style_prefix_override=(style_prefix_override if fallback_style_prefix is not None else None))
 
     recovery = retry_primitive.run_local_rewrite_recovery(
         segment_id=segment_id, canonical_text=text, last_asr_text=last_asr_text,
