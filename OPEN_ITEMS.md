@@ -764,6 +764,12 @@ n=2ともLEDGER_COMPLIANT[deviation非検出]となり「社内テスト誤読�
 | OPEN-262 | **SYMBOL-QA-PUNCT-DUPLICATE-NOT-DETECTED-01 [OPEN・仕様候補・未承認]**(2026-10-11起票、`FAMILY-X-JA-MODEL-ALLOCATION-SOL61-PRODUCTION-WIRING-01` 委任_11) 記号QAが句読点重複「、。」を検出しない(Sol61 runtime META revision2.mdで1件)。仕様候補のため未実装・ユーザー承認待ち。 |
 
 | OPEN-263 | **SCG-HETEROPHONE-GUARD-READING-DICTIONARY-GAP-01 [OPEN候補・未承認]**(2026-10-11起票、OPEN-258 SCG委任_04) SCG同形異音語ガード(C2、`reading_is_candidate`)の読み辞書に欠落語がある(例: 「行った」[いった/おこなった]等。辞書に候補がないと除外されずSecondaryがPASSしうる)。辞書補強は**未承認仕様候補**であり実装していない。`er007_ja_secondary_asr_01._scg_heterophone_candidate`、根拠`er053_output/open258_scg_production_wiring_01/OPUS_REVIEW_FOLLOWUP_02.md`。 |
+| OPEN-264 | **FAMILY-Z-STORY-QUALITY-THRESHOLD-AND-HUMAN-READING-CALIBRATION-01 [OPEN候補・未承認]**(2026-10-11起票、FAMILY-Z-STORY-QUALITY-MODEL-COMPARISON-TRIAL-01 委任_03) Family Z Story品質評価の絶対閾値(NG/警告/採用ライン)が未定義で、人間の実読評価との照合待ち。推奨方式D/次点A(AI評価のみ、採用未承認)。ユーザー判断が必要(USER_DECISION_REQUIRED)。根拠`er054_output/family_z_story_quality_model_comparison_trial_01/RESULT_01.md`。 |
+| OPEN-265 | **FAMILY-Z-LOW-SCORE-PREDICTS-EN-RETELLING-FAILURE-UNVERIFIED-01 [OPEN候補・未承認]**(2026-10-11起票、FAMILY-Z-STORY-QUALITY-MODEL-COMPARISON-TRIAL-01 委任_03) D/A方式の低評価が英語再話の失敗を予測するかが未検証。将来のSeed化/Story生成工程でL05・L11等を実際に英語化して比較する検証条件を設ける(別Trial、予算・承認要)。 |
+| OPEN-266 | **FAMILY-Z-ORIGINAL-LANGUAGE-SOURCE-AI-UNDERSTANDING-QUALITY-01 [OPEN候補・未承認]**(2026-10-11起票、FAMILY-Z-STORY-QUALITY-MODEL-COMPARISON-TRIAL-01 委任_03) 原語原作(ロシア語等)に対するAIの理解品質(Seed化・Story生成の品質課題)。Story Pool Trialで原語原作を一次資料としたため、翻訳を介さない理解精度の検証が必要。 |
+| OPEN-267 | **FAMILY-Z-STORY-POOL-L05-KOUBI-HANDLING-AND-SOURCE-EDITION-RIGHTS-01 [OPEN候補・未承認]**(2026-10-11起票、FAMILY-Z-STORY-QUALITY-MODEL-COMPARISON-TRIAL-01 委任_03) Story Pool: L05『交尾』の扱い(過去Trial-02=NG vs 前回Story Pool Trial=4/4 vs 今回A/C/D最下位)、引用降格の運用、底本(1977 PSS・青空文庫校注)の第三者権利の個別未確認。人間の実読と合わせて判断する。 |
+| OPEN-268 | **ER054-STORY-POOL-TRIAL-02-TEST-CP932-MOJIBAKE-FIX-01 [OPEN候補・未承認]**(2026-10-11起票、FAMILY-Z-STORY-QUALITY-MODEL-COMPARISON-TRIAL-01 委任_03) 既存test `er054_family_z_story_pool_trial_02_test_01::test_real_refused_without_budget` がsubprocess出力のcp932文字化けで失敗(環境起因、本Trialの変更とは無関係、要修正)。 |
+| OPEN-269 | **FAMILY-Z-STORY-EVAL-METRIC-IMPROVEMENT-CROSSREF-01 [OPEN候補・未承認]**(2026-10-11起票、FAMILY-Z-STORY-QUALITY-MODEL-COMPARISON-TRIAL-01 委任_03) 前回Trial(Story Pool)で判明した評価指標の改善候補(3段階化・D基準明示)は、本Trialで方式B(PASS/WEAK/FAIL)/方式D(圧縮損失)として検証済み。結果はOPEN-264〜265参照(相互参照のみ、新規仕様なし)。 |
 ## 参照元
 
 [CURRENT_SPEC.md](CURRENT_SPEC.md)、[DECISION_LOG.md](DECISION_LOG.md)、

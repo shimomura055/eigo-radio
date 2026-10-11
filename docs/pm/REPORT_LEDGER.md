@@ -246,3 +246,7 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-11 | FAMILY-X-JA-MODEL-ALLOCATION-SOL61-PRODUCTION-WIRING-01 Close(委任_11、merge adb15c30・全suite照合[新規failure 0]・Dangling・SSOT記録、PRODUCTION_WIRED、OPEN-255 CLOSED、新規OPEN-262、META音声保留継続) | 初回報告日未報告(Fable判断)|費用JPY0(本委任。runtime run_sol61_01=JPY18.499は委任_10)|Status=PRODUCTION_WIRED / CLOSED
 
 - 2026-10-11 | OPEN-258-JA-SECONDARY-ASR-PRODUCTION-WIRING-01 Close(委任_04、merge 382c56c5・rollback tag・全suite照合[SCG由来新規failure 0]・Dangling 36/truly_orphaned 0・SSOT記録、PRODUCTION_WIRED、OPEN-258 CLOSED、新規OPEN-263、g8 13/14受入はユーザー確認待ち) | 初回報告日未報告(Fable判断)|費用JPY0(本委任。管理ID累計約4.30円見積/上限5円)|Status=PRODUCTION_WIRED / CLOSED
+
+- 2026-10-11 | FAMILY-Z-STORY-POOL-SCREENING-TRIAL-01 Trial記録(委任_03、DECISION_LOG/OPEN-266〜267、gpt-6-luna Trial限定、権利PASS 9/NG 1、品質評価USER_DECISION_REQUIRED、Production採用なし) | 初回報告日未報告(Fable判断)|費用JPY3.67(Trial実費、既報)|Status=Trial記録済 / 権利フローVALIDATED相当・品質USER_DECISION_REQUIRED
+
+- 2026-10-11 | FAMILY-Z-STORY-QUALITY-MODEL-COMPARISON-TRIAL-01 委任_03(RESULT_01章順整理[10章構成]、DECISION_LOG/OPEN-264〜269/REPORT_LEDGER記録、API課金0、Production採用なし・AI評価のみ) | 初回報告日未報告(Fable判断)|費用JPY0(本委任。Trial実費21.954円は委任_02)|Status=Trial記録済 / D・A=VALIDATED(Trial)・B・C=REJECTED(ゲート用途)・閾値等USER_DECISION_REQUIRED
