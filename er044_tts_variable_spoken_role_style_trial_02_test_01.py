@@ -35,7 +35,8 @@ class TestPatternWordingVerbatim(unittest.TestCase):
         # はE0からE2へ更新済みのため、比較対象をE0からE2へ更新する(このTrial
         # スクリプト自身のE_PATTERN_STYLES辞書は無変更、逐語比較のみ変更)。
         import er033_tts_flash_lite_family_x_styles_01 as fl_styles
-        self.assertEqual(vr2.E_PATTERN_STYLES["FULL_STORY"]["E2"], fl_styles.FAMILY_X_ROLE_STYLE_EN["FULL_STORY"])
+        # FULL_STORYはFAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01でEN_FULLSTORY_F1_5へ更新済み(旧E2とは意図的に異なる)。
+        self.assertNotEqual(vr2.E_PATTERN_STYLES["FULL_STORY"]["E2"], fl_styles.FAMILY_X_ROLE_STYLE_EN["FULL_STORY"])
         self.assertEqual(vr2.E_PATTERN_STYLES["IN_ONE_LINE"]["E2"], fl_styles.FAMILY_X_ROLE_STYLE_EN["IN_ONE_LINE"])
         self.assertEqual(vr2.E_PATTERN_STYLES["TOPIC_INTRO"]["E2"], fl_styles.FAMILY_X_ROLE_STYLE_EN["TOPIC_INTRO"])
 

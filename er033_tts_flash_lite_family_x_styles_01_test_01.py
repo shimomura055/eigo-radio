@@ -22,8 +22,10 @@ _STAGE3_PATH = Path(__file__).with_name("er022_tts_gemini_3_8_flash_lite_next_tr
 # TOPIC_INTRO/FULL_STORY/IN_ONE_LINEの3roleがE0(Stage3実測値)からE2
 # (TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02実測・ユーザー承認値)へ更新
 # されたため、E0のままのroleとE2へ更新されたroleを分けてテストする。
-_E2_UPDATED_ROLES = frozenset({"TOPIC_INTRO", "FULL_STORY", "IN_ONE_LINE"})
-_E0_UNCHANGED_ROLES = frozenset({"PREVIEW", "COMMENT", "HEADING_READOUT"})
+# FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01(2026-10-11): FULL_STORYはEN_FULLSTORY_F1_5、PREVIEW/COMMENTは
+# EN_COMMENT_E2_UPBEATへ更新済み(逐語固定はer033_family_x_coffee_new_tone_wiring_01_test_01)。
+_E2_UPDATED_ROLES = frozenset({"TOPIC_INTRO", "IN_ONE_LINE"})
+_E0_UNCHANGED_ROLES = frozenset({"HEADING_READOUT"})
 
 _SIX_ROLES = frozenset({
     "TOPIC_INTRO", "PREVIEW", "COMMENT", "FULL_STORY", "HEADING_READOUT", "IN_ONE_LINE",

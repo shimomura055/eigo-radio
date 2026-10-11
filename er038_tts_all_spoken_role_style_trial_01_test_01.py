@@ -130,10 +130,13 @@ class ProductionConstantsUnchangedTest(unittest.TestCase):
         self.assertEqual(fl_styles.FAMILY_X_ROLE_STYLE_EN, {
             "TOPIC_INTRO": "brief, clear, engaging news topic introduction with natural emphasis on the topic; "
                            "not dramatic.",
-            "PREVIEW": "calm, conversational",
-            "COMMENT": "calm, conversational",
-            "FULL_STORY": "calm, steady news narration with natural emphasis at key points and turns; "
-                          "not dramatic.",
+            # FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01(2026-10-11): E2_UPBEAT / F1.5へ更新(逐語)。
+            "PREVIEW": "warm, upbeat and engaging; friendly conversational delivery with lively but natural "
+                       "intonation.",
+            "COMMENT": "warm, upbeat and engaging; friendly conversational delivery with lively but natural "
+                       "intonation.",
+            "FULL_STORY": "warm, gently upbeat and engaging; natural, friendly delivery with a light sense of "
+                          "energy, while maintaining clear and credible news narration.",
             "HEADING_READOUT": "brief and clear",
             "IN_ONE_LINE": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.",
         })
@@ -149,8 +152,9 @@ class ProductionConstantsUnchangedTest(unittest.TestCase):
         # 済み)は、TOPIC_INTRO/FULL_STORY/IN_ONE_LINEの3roleではもはや
         # 一致しない(意図的な差分、E0→E2)。PREVIEW/COMMENT/HEADING_READOUT
         # の3roleはE2未検証のためProduction側も不変で、引き続き一致する。
-        self.assertEqual(trial.TRIAL_ROLE_STYLE_EN["PREVIEW"], fl_styles.FAMILY_X_ROLE_STYLE_EN["PREVIEW"])
-        self.assertEqual(trial.TRIAL_ROLE_STYLE_EN["COMMENT"], fl_styles.FAMILY_X_ROLE_STYLE_EN["COMMENT"])
+        # FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01: PREVIEW/COMMENTもE2_UPBEATへ更新済み(意図的差分)。
+        self.assertNotEqual(trial.TRIAL_ROLE_STYLE_EN["PREVIEW"], fl_styles.FAMILY_X_ROLE_STYLE_EN["PREVIEW"])
+        self.assertNotEqual(trial.TRIAL_ROLE_STYLE_EN["COMMENT"], fl_styles.FAMILY_X_ROLE_STYLE_EN["COMMENT"])
         self.assertEqual(trial.TRIAL_ROLE_STYLE_EN["HEADING"], fl_styles.FAMILY_X_ROLE_STYLE_EN["HEADING_READOUT"])
         self.assertNotEqual(trial.TRIAL_ROLE_STYLE_EN["TOPIC_INTRO"], fl_styles.FAMILY_X_ROLE_STYLE_EN["TOPIC_INTRO"])
         self.assertNotEqual(trial.TRIAL_ROLE_STYLE_EN["FULL_STORY"], fl_styles.FAMILY_X_ROLE_STYLE_EN["FULL_STORY"])

@@ -381,7 +381,11 @@ _BODY_SEGMENT_NAMES = ("full_story_part1", "full_story_part2", "full_story_part3
 # 本バージョンをbumpすることで、japanese_meaningへJ3を初適用する前に
 # 生成済みの旧音声(既定JAPANESE_STYLE_PREFIXのまま)が黙ってreuseされる
 # ことを防ぐ。
-FAMILY_X_VARIABLE_ROLE_STYLE_VERSION = "v3_j3_kp_meaning_and_explanation_guard"
+# FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01(2026-10-11): J3->JA_J2_BRIGHT / 旧PREVIEW・COMMENT->
+# EN_COMMENT_E2_UPBEAT / 旧FULL_STORY->EN_FULLSTORY_F1_5 へのstyle更新に伴いbump(旧version
+# のcache=旧toneの可変segment・KP日本語意味・KP英語解説を黙ってreuseしない)。
+# Master Store(固定phrase・KP english)は別versioning(本値を参照しない)ため影響を受けない。
+FAMILY_X_VARIABLE_ROLE_STYLE_VERSION = "v4_j2_e2upbeat_f15_tone_refresh"
 
 
 # ============================================================

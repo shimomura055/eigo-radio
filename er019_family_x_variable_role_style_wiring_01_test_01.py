@@ -52,17 +52,18 @@ class J3E2VerbatimMatchTests(unittest.TestCase):
     """(a) Production定数がTrial-02実測・ユーザー承認値と逐語一致すること。"""
 
     def test_family_x_role_style_ja_matches_trial02_j3_verbatim(self):
-        self.assertEqual(fl_styles.FAMILY_X_ROLE_STYLE_JA, trial02.J_PATTERN_STYLES["J3"])
+        # FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01(2026-10-11): J3->JA_J2_BRIGHT(J3は旧値、Trial-02定義は不変)。
+        self.assertEqual(fl_styles.FAMILY_X_ROLE_STYLE_JA, fl_styles.JA_J2_BRIGHT)
+        self.assertNotEqual(fl_styles.FAMILY_X_ROLE_STYLE_JA, trial02.J_PATTERN_STYLES["J3"])
 
     def test_family_x_role_style_en_e2_roles_match_trial02_verbatim(self):
-        for role in ("TOPIC_INTRO", "FULL_STORY", "IN_ONE_LINE"):
+        # FULL_STORYはFAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01でEN_FULLSTORY_F1_5へ置換済み(別testで固定)。
+        for role in ("TOPIC_INTRO", "IN_ONE_LINE"):
             with self.subTest(role=role):
                 self.assertEqual(fl_styles.FAMILY_X_ROLE_STYLE_EN[role], trial02.E_PATTERN_STYLES[role]["E2"])
 
     def test_unaffected_en_roles_unchanged(self):
-        # PREVIEW/COMMENT/HEADING_READOUTはE2未検証のため対象外(不変)。
-        self.assertEqual(fl_styles.FAMILY_X_ROLE_STYLE_EN["PREVIEW"], "calm, conversational")
-        self.assertEqual(fl_styles.FAMILY_X_ROLE_STYLE_EN["COMMENT"], "calm, conversational")
+        # HEADING_READOUTは対象外(不変)。PREVIEW/COMMENT/FULL_STORYはTone更新済み(Tone系testで固定)。
         self.assertEqual(fl_styles.FAMILY_X_ROLE_STYLE_EN["HEADING_READOUT"], "brief and clear")
 
 

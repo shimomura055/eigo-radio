@@ -30,6 +30,25 @@ from __future__ import annotations
 FAMILY_X_FLASH_LITE_MODEL_NAME = "gemini-3.8-flash-lite-tts"
 
 # ------------------------------------------------------------
+# FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01(2026-10-11ユーザー正式決定、
+# 3仕様とも APPROVED_FOR_PRODUCTION): Tone Trial(er053_output/
+# tts_voice_tone_brightness_trial_01 / tts_full_story_tone_trial_01)の
+# 勝ち案を逐語転記(新規style考案なし)。名称衝突回避のため、従来Full Story
+# 用Style名「E2」(下記FAMILY_X_ROLE_STYLE_EN旧TOPIC_INTRO等)とは別の内部識別子を使う:
+#   JA_J2_BRIGHT          : Standardの日本語title/preview/comment1-4/KP日本語意味(Aoede)
+#   EN_COMMENT_E2_UPBEAT  : Advancedの英語Preview/Comment1-4(Charon)。従来Full Story用「E2」とは別物
+#   EN_FULLSTORY_F1_5     : 両LevelのFull Story Part1-3(英語、Aoede)
+# TOPIC_INTRO/HEADING_READOUT/IN_ONE_LINE・KP英語・英語解説・固定フレーズは不変。
+# ------------------------------------------------------------
+JA_J2_BRIGHT = (
+    "明るく、温かみのある親しみやすい話し方で。聞き手に楽しく語りかけるように、自然な抑揚と軽やかなリズムをつけてください。"
+    "ニュース番組としての明瞭さを保ち、演技がかった話し方は避けてください。"
+)
+EN_COMMENT_E2_UPBEAT = "warm, upbeat and engaging; friendly conversational delivery with lively but natural intonation."
+EN_FULLSTORY_F1_5 = ("warm, gently upbeat and engaging; natural, friendly delivery with a light sense of energy, "
+                     "while maintaining clear and credible news narration.")
+
+# ------------------------------------------------------------
 # 英語6-role style(Trial実測値、attempt1専用。Stage3
 # ROLE_ATTEMPT1_STYLEをそのまま転記)
 # ------------------------------------------------------------
@@ -41,9 +60,9 @@ FAMILY_X_FLASH_LITE_MODEL_NAME = "gemini-3.8-flash-lite-tts"
 FAMILY_X_ROLE_STYLE_EN = {
     "TOPIC_INTRO": "brief, clear, engaging news topic introduction with natural emphasis on the topic; "
                    "not dramatic.",
-    "PREVIEW": "calm, conversational",
-    "COMMENT": "calm, conversational",
-    "FULL_STORY": "calm, steady news narration with natural emphasis at key points and turns; not dramatic.",
+    "PREVIEW": EN_COMMENT_E2_UPBEAT,
+    "COMMENT": EN_COMMENT_E2_UPBEAT,
+    "FULL_STORY": EN_FULLSTORY_F1_5,
     "HEADING_READOUT": "brief and clear",
     "IN_ONE_LINE": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.",
 }
@@ -82,19 +101,18 @@ FAMILY_X_JA_STYLE_NOTE = (
     "style field (no new short JA style invented here)."
 )
 
-# TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28):
-# TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02(er044.J_PATTERN_STYLES["J3"])で
-# 実測・ASR検証・ユーザー正式決定(APPROVED_FOR_PRODUCTION)されたJ3を、
-# 新規style考案なしで逐語転記する。日本語はEN側のようなrole別辞書ではなく、
+# TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28)で
+# J3(TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02、er044.J_PATTERN_STYLES["J3"])を
+# 採用していたが、FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01(2026-10-11)で
+# J2(JA_J2_BRIGHT、上記)へ置換した(J3は旧値、本定数からは参照しない)。
+# 以下の適用範囲説明のうち「japanese_title・Key Phrase日本語意味」は2026-09-29(W3/W5)以降
+# 適用対象(preview/comment_1〜4と同一)。旧記述:日本語はEN側のようなrole別辞書ではなく、
 # role非依存の単一style文字列(Family X Standard[A2]のJA preview/
 # comment_1〜4へ一律適用、japanese_title・Key Phraseは対象外)。
 # `speech_metadata_flash_lite` backend明示時のみ参照される(EN 6-roleと
 # 同じbackendゲート、既定backendでは`er019._role_style_ja()`がNoneを返し
 # JAPANESE_STYLE_PREFIXのまま無変更)。
-FAMILY_X_ROLE_STYLE_JA = (
-    "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。"
-    "演技がかった話し方は避けてください。"
-)
+FAMILY_X_ROLE_STYLE_JA = JA_J2_BRIGHT
 
 # ------------------------------------------------------------
 # Advanced(B1B)Key Phrase 英語解説(explanation_en)style
