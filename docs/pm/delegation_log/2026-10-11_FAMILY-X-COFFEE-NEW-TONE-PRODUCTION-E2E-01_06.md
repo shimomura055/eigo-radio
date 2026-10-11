@@ -7,3 +7,6 @@
 - 意図的な期待値更新: `er033_family_x_coffee_new_tone_wiring_01_test_01.VersionGuardTests.test_version_bumped`(v4→v5)のみ
 - 設計書追記: `er053_output/coffee_new_tone_e2e_01/FALLBACK_STYLE_RETENTION_DESIGN_01.md` §10
 - SSOT(CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS)は不変。Production採用(APPROVED_FOR_PRODUCTION)は人間ユーザー承認事項。
+- Regression(`run_project_regression.py`、commit 8cd1bde4後): collected=5428 passed=5290 failed=17 errors=75 skipped=38。baseline(REGRESSION_BASELINE_02: 5400/5262/17/75/38)との差=collected+28/passed+28(新test 28件)、failed/errors/skipped不変、FAIL/ERROR集合(sort -u 93行)はbaselineと完全一致=新規fail 0。
+  - 途中経過メモ: commit前(未commit差分あり)の1回目は4件の追加FAIL(styles module「callableなし」test、Production scope語彙scan "Local Rewrite"、er020 ProductionModuleUnchanged×2[未commit差分検知])が出たため、helperをstyles→repro01へ移設・コメント語彙修正・commitで解消済み。
+- 副作用: regression実行で追跡済み4ファイル(er005 cost_summary/er011 attempt_history/er052 budget_state/er053 ledger_scan)が更新されるが、本件の意図的変更ではないため`git checkout -- <path>`でcommit状態へ戻した。未追跡の`er020_output/*/_test_scratch/`はtest副産物のためadd対象外。
