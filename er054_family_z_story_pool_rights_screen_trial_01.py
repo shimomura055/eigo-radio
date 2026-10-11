@@ -7,6 +7,10 @@
     (本scriptは米国statusを記録欄にのみ書き、判定に一切使わない)
   - 原作がPDでも第三者の翻訳・英訳は別著作物として扱い、権利未確認なら流用しない
   - 判定不能・未確認はREVIEW_REQUIRED(推測でPASSしない)
+委任_03(原語原作ベース): 判定は「作品(原語原作)の権利 work_rights」を主とし、「利用した版/翻訳の権利 edition_rights」は参考情報
+(記事化の前提条件にしない)。既存翻訳に権利問題があっても原語原作がPDなら作品をNGにしない。
+委任_03(原語原作ベース): 判定は「作品(原語原作)の権利 work_rights」を主とし、「利用した版/翻訳の権利 edition_rights」は参考情報
+(記事化の前提条件にしない)。既存翻訳に権利問題があっても原語原作がPDなら作品をNGにしない。
 Production(er026等)から参照されない。実行: python -I er054_family_z_story_pool_rights_screen_trial_01.py [基準日YYYY-MM-DD]
 """
 import datetime as dt
@@ -76,8 +80,25 @@ def judge_subject(name, death_year, group, today):
     return base
 
 
-def parse_card(wid, kind):
-    p = os.path.join(SRC, wid, "card.html")
+def parse_card(wid, kind, sdir=None):
+    p = os.path.join(SRC, sdir or wid, "card.html")
+    if kind == "original_ru":
+        # ru.wikisource の wikitext ヘッダ(АВТОР/ДАТАПУБЛИКАЦИИ/ИСТОЧНИК/ЛИЦЕНЗИЯ)から抽出
+        wt = os.path.join(SRC, sdir or wid, "wikisource_raw.wikitext")
+        c = {}
+        if os.path.exists(wt):
+            x = read(wt)
+            m = re.search(r"АВТОР\s*=\s*\[\[(.*?)\]\]\s*\((\d{4})[—-](\d{4})\)", x)
+            c["author_on_page"] = m.group(1) if m else None
+            c["birth_year_on_card"] = int(m.group(2)) if m else None
+            c["death_year_on_card"] = int(m.group(3)) if m else None
+            m = re.search(r"ДАТАПУБЛИКАЦИИ\s*=\s*(.*?)<ref>(.*?)</ref>", x, re.S)
+            c["first_pub_on_card"] = re.sub(r"&nbsp;", " ", m.group(2)).strip() if m else None
+            m = re.search(r"ИСТОЧНИК\s*=\s*(.*)", x)
+            c["source_on_page"] = m.group(1).strip() if m else None
+            m = re.search(r"ЛИЦЕНЗИЯ\s*=\s*(\S+)", x)
+            c["license_tag_on_wikisource"] = m.group(1) if m else None
+        return c
     if not os.path.exists(p):
         return {}
     x = strip(read(p))
@@ -93,6 +114,8 @@ def parse_card(wid, kind):
         c["first_pub_on_card"] = m.group(1) if m else None
         m = re.search(r"底本： (.{0,80}?) 出版社： (.{0,40}?) 初版発行日： (.{0,60}?) ", x)
         c["teihon"] = " / ".join(m.groups()) if m else None
+        m = re.search(r"文字遣い種別： (\S+)", x)
+        c["moji_type"] = m.group(1) if m else None
         m = re.search(r"入力： (.{0,30}?) 校正： (.{0,30}?) ファイル", x)
         c["input_proof"] = list(m.groups()) if m else None
         c["aozora_published"] = bool(c["death_year_on_card"])
@@ -105,42 +128,42 @@ def parse_card(wid, kind):
 
 
 def screen_one(wid, w, rules, today):
-    man = json.load(open(os.path.join(SRC, wid, "fetch_manifest.json"), encoding="utf-8"))
+    sdir = w.get("source_dir", wid)  # 原語原作の取得先(L04はL04_ru=ロシア語原作)
+    man = json.load(open(os.path.join(SRC, sdir, "fetch_manifest.json"), encoding="utf-8"))
     files = man["files"]
     text = next((f for f in files if f["role"] == "text"), {})
     card = next((f for f in files if f["role"] == "card"), {})
     fetch_ok = bool(text.get("ok")) and bool(card.get("ok"))
-    cinfo = parse_card(wid, w["kind"])
+    kind = w["kind"]
+    cinfo = parse_card(wid, kind, sdir)
     blocking, informational, reasons, checks = [], [], [], {}
 
-    # --- 一次資料の取得可否(fail-closed)
+    # --- 一次資料(原語原作)の取得可否(fail-closed)
     if not text.get("ok"):
-        blocking.append("一次資料(本文)をHTTP取得できていない")
+        blocking.append("一次資料(原語原作本文)をHTTP取得できていない")
     if not card.get("ok"):
         blocking.append("図書カード/書誌ページをHTTP取得できていない")
-    if w["kind"] == "ja_original" and text.get("ok") and not text.get("main_text_div_found"):
+    if kind == "ja_original" and text.get("ok") and not text.get("main_text_div_found"):
         blocking.append("青空文庫XHTMLの本文領域を抽出できていない")
 
-    # --- 手入力データとカード照合
+    # --- 手入力データとカード照合(原著者の生没年)
     au = w["author"]
-    if w["kind"] == "ja_original":
+    if kind in ("ja_original", "original_ru"):
         checks["death_year_matches_card"] = cinfo.get("death_year_on_card") == au["death_year"]
         checks["birth_year_matches_card"] = cinfo.get("birth_year_on_card") == au["birth_year"]
     else:
         checks["author_death_year_listed_on_gutenberg_card"] = au["death_year"] in cinfo.get("death_years_listed", [])
-        for tr in w.get("translators", []):
-            checks["translator_%s_death_year_listed" % tr["name"]] = tr["death_year"] in cinfo.get("death_years_listed", [])
     if not all(v for v in checks.values()):
-        blocking.append("手入力の生没年が図書カード/Gutenbergメタデータと一致しない")
+        blocking.append("手入力の生没年が図書カード/書誌メタデータと一致しない")
 
     # --- 初出の照合(情報。判定には使わない)
     fp = w["first_publication"]
     corro = None
     for f in files:
         if f["role"] == "aux" and f.get("ok") and "Copyright_law_of_Japan" not in f["url"]:
-            t = strip(read(os.path.join(SRC, wid, f["saved_as"])))
+            t = strip(read(os.path.join(SRC, sdir, f["saved_as"])))
             corro = {"aux_url": f["url"], "regex": fp["corroborate_regex"], "found": bool(re.search(fp["corroborate_regex"], t))}
-    if corro is None and w["kind"] == "ja_original":
+    if corro is None and kind in ("ja_original", "original_ru"):
         corro = {"aux_url": card.get("url"), "regex": fp["corroborate_regex"],
                  "found": bool(re.search(fp["corroborate_regex"], cinfo.get("first_pub_on_card") or ""))}
     checks_extra = {"first_publication_corroborated": corro}
@@ -151,90 +174,104 @@ def screen_one(wid, w, rules, today):
     law = next((f for f in files if "Copyright_law_of_Japan" in f["url"]), None)
     phr = {}
     if law and law.get("ok"):
-        lt = strip(read(os.path.join(SRC, wid, law["saved_as"])))
+        lt = strip(read(os.path.join(SRC, sdir, law["saved_as"])))
         phr = {p: (p in lt) for p in rules["jp_term_rule_phrases"]}
     checks_extra["jp_term_rule_phrases_found_in_fetched_source"] = phr
     if not phr or not all(phr.values()):
         blocking.append("日本の保護期間ルールの根拠資料(二次資料)で必要フレーズを確認できない")
 
-    # --- 権利者別の日本国内状態
-    subjects = [judge_subject(au["name"], au["death_year"], au["group"], today)]
-    for tr in w.get("translators", []):
-        subjects.append(judge_subject(tr["name"], tr["death_year"], tr["group"], today))
-    author_status = subjects[0]["status"]
-    trans_status = [s["status"] for s in subjects[1:]]
+    # --- work_rights: 原著者(原語原作)の日本国内状態のみで判定する
+    au_subj = judge_subject(au["name"], au["death_year"], au["group"], today)
+    author_status = au_subj["status"]
+
+    # --- edition_rights: 利用した版/翻訳/参考翻訳の権利(参考情報。判定・記事化の前提条件にしない)
+    ed_subjects = [judge_subject(t["name"], t["death_year"], t["group"], today) for t in w.get("reference_translations", [])]
+    ed_status = [s["status"] for s in ed_subjects]
 
     # --- 米国status(記録のみ。判定に不使用)
-    if w["kind"] == "ja_original":
-        us_rec = "未確認(記録事項。Z-1により日本国内PD判定には使わない)"
-    else:
+    if kind == "original_en_foreign":
         us_rec = "Gutenberg表示: %s(記録事項のみ。日本国内の利用条件へは置換しない)" % cinfo.get("gutenberg_copyright_field")
+    else:
+        us_rec = "未確認(記録事項。Z-1により日本国内PD判定には使わない)"
 
-    # --- 総合判定
-    decision = None
+    # --- 総合判定(work_rightsのみ)
     if author_status == "PROTECTED":
         decision = "NG"
         reasons.append("原著者%s(没%s)は日本で保護期間中(満了%s)。米国PD等の他法域statusでは置換不可(Z-1)。"
-                       % (au["name"], au["death_year"], subjects[0]["calc"]["expiry_used"]))
-    elif "PROTECTED" in trans_status:
-        decision = "NG"
-        reasons.append("翻訳者の著作権が日本で存続(翻訳版は別著作物、Z-1(4))")
+                       % (au["name"], au["death_year"], au_subj["calc"]["expiry_used"]))
     else:
         if author_status == "REVIEW":
             blocking.append("原著者の保護期間が計算上REVIEW(戦時加算の境界)")
-        if "REVIEW" in trans_status:
-            days = min(s["calc"]["days_before_2018_boundary"] for s in subjects[1:] if s["status"] == "REVIEW")
-            blocking.append("翻訳者の保護期間が計算上REVIEW(戦時加算込みの没後50年満了が2018-12-30の%d日前で境界に近く、"
-                            "国籍・個別訳者・戦時加算の適用要否が未確認のため機械的にPDと確定できない)" % days)
         if blocking:
             decision = "REVIEW_REQUIRED"
             reasons.append("原著者%s(没%s)は日本でPD(計算上、満了%s)。ただし未確認/境界事項があり機械的にPASSできない: %s"
-                           % (au["name"], au["death_year"], subjects[0]["calc"]["expiry_used"], "; ".join(blocking)))
+                           % (au["name"], au["death_year"], au_subj["calc"]["expiry_used"], "; ".join(blocking)))
         else:
             decision = "PASS"
-            reasons.append("原著者%s(没%s)は日本でPD(満了%s。%s)。%s"
-                           % (au["name"], au["death_year"], subjects[0]["calc"]["expiry_used"], subjects[0]["calc"]["regime"],
-                              "翻訳者も日本でPD。" if w.get("translators") else "青空文庫が公開。翻訳・第三者著作物なし(日本語原作)。"))
+            reasons.append("原語原作の著者%s(没%s)は日本でPD(満了%s。%s)。一次資料は原語原作(%s)。"
+                           % (au["name"], au["death_year"], au_subj["calc"]["expiry_used"], au_subj["calc"]["regime"],
+                              w["work_source"]["text_url_label"]))
     if decision == "NG" and w.get("ja_translation_note"):
         informational.append(w["ja_translation_note"])
 
-    # --- 未確認一覧
+    # --- 未確認一覧(blockingは work_rights 由来のみ)
     unconfirmed = [{"item": b, "blocking": True} for b in blocking] + [{"item": i, "blocking": False} for i in informational]
     unconfirmed.append({"item": "法律原文・文化庁資料による確認は未実施(二次資料に基づく機械判定)。法的最終判断ではなく弁護士確認が望ましい。", "blocking": False})
     unconfirmed.append({"item": "米国等の他法域status: " + us_rec, "blocking": False})
-    if w["kind"] == "ja_original":
-        unconfirmed.append({"item": "底本(出版社版)の校訂・注記等の第三者権利は個別確認していない(青空文庫は著作権消滅作品のみ公開する運用。Family Zは本文を自前adaptation)", "blocking": False})
-    if wid == "L04":
-        unconfirmed.append({"item": "『賭け』個別の訳者(Koteliansky/Murry/共訳)が本文・メタデータから特定できていない", "blocking": True})
-        unconfirmed.append({"item": "Koteliansky/Murryの国籍(戦時加算の対象か)を一次確認できていない", "blocking": True})
-    if wid == "L06":
-        unconfirmed.append({"item": "日本語訳版の訳者・版・権利は本Trialで未特定(原著が日本で保護期間中のため判定がNGであることは変わらない)", "blocking": False})
-        unconfirmed.append({"item": "同梱のMacy/Sullivan分の権利は個別判定していない(原著者がNGのため結論に影響しない)", "blocking": False})
+    for note in w.get("edition_unconfirmed", []):
+        unconfirmed.append({"item": note, "blocking": False})
 
+    ed_cards = {k: cinfo.get(k) for k in ("teihon", "moji_type", "input_proof", "source_on_page", "license_tag_on_wikisource") if cinfo.get(k)}
+    work_rights = {
+        "role": "main_basis_of_decision",
+        "original_language": w["work_source"]["language"],
+        "work_title_original": w["work_source"]["title_original"],
+        "primary_source_is_original_language_text": True,
+        "primary_source_label": w["work_source"]["text_url_label"],
+        "original_author_status_jp": author_status,
+        "original_author_subject": au_subj,
+        "first_publication": {"year": fp["year"], "text": fp["text"], "source": fp["source"]},
+    }
+    edition_rights = {
+        "role": "reference_only_not_a_precondition_for_article",
+        "note": "利用した版・翻訳の権利は参考情報。原語原作がPDなら、版/翻訳の権利は作品のPASS/NGに影響させない(本Trialは原語原作を自前でadaptationする設計)。",
+        "edition_used": w["edition_note"],
+        "edition_card_fields": ed_cards,
+        "reference_translations": w.get("reference_translations", []),
+        "reference_translation_subjects": ed_subjects,
+        "reference_translation_status_jp": ed_status or ["n/a"],
+        "reference_translation_note": w.get("reference_translation_note"),
+    }
     return {
-        "work_id": wid, "title_ja": w["title_ja"], "title_en": w["title_en"], "genre": w["genre"], "kind": w["kind"],
+        "work_id": wid, "title_ja": w["title_ja"], "title_en": w["title_en"], "genre": w["genre"], "kind": kind,
         "screened_at": dt.datetime.now(dt.timezone.utc).isoformat(), "as_of_date": today.isoformat(),
+        "screening_version": "02_original_language",
         "author": {k: au[k] for k in ("name", "birth_year", "death_year", "source")},
         "first_publication": {"year": fp["year"], "text": fp["text"], "source": fp["source"]},
+        "work_rights": work_rights,
+        "edition_rights": edition_rights,
         "primary_source": {
+            "language": w["work_source"]["language"],
             "card_url": card.get("url"), "text_url": text.get("url"), "fetch_ok": fetch_ok,
             "text_http_status": text.get("http_status"), "text_bytes": text.get("bytes"),
             "text_plain_chars": text.get("plain_chars"), "text_sha256_raw": text.get("sha256"),
             "text_sha256_plain": text.get("plain_sha256"), "text_fetched_at": text.get("fetched_at"),
             "fetch_attempts": text.get("attempts"),
-            "saved_dir": "er054_output/family_z_story_pool_trial_01/sources/%s/" % wid,
+            "saved_dir": "er054_output/family_z_story_pool_trial_01/sources/%s/" % sdir,
             "card_parse": cinfo,
         },
         "edition_note": w["edition_note"],
         "work_vs_edition": {"original_work_status_jp": author_status,
-                            "translation_status_jp": trans_status or ["n/a(日本語原作)"],
-                            "translation_pub_year": w.get("translation_pub_year")},
-        "rights_subjects": subjects,
+                            "edition_translation_status_jp_reference_only": ed_status or ["n/a(原語版)"],
+                            "reference_translation_pub_year": w.get("translation_pub_year")},
+        "rights_subjects": [au_subj],
         "z1_checks": {"us_pd_used_as_jp_basis": False, "us_status_record_only": us_rec,
-                      "third_party_translation_treated_as_separate_work": w["kind"] != "ja_original",
+                      "primary_source_is_original_language": True,
+                      "edition_or_translation_rights_used_as_precondition": False,
                       "data_vs_card_checks": checks, "other_checks": checks_extra},
         "unconfirmed": unconfirmed,
         "decision": decision,
+        "decision_basis": "work_rights(原語原作の著者の日本国内保護期間)のみ。edition_rightsは参考。",
         "decision_reason": " ".join(reasons),
     }
 
