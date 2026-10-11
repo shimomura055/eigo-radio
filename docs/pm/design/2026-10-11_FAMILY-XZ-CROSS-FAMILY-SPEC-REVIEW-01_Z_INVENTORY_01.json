@@ -1,0 +1,49 @@
+{
+  "managementId": "FAMILY-XZ-CROSS-FAMILY-SPEC-REVIEW-01",
+  "delegation": "02",
+  "phase": "1-Z",
+  "date": "2026-10-11",
+  "apiCostJpy": 0,
+  "overallStatus": {
+    "spec": "APPROVED_FOR_PRODUCTION",
+    "wiring": "text stage only (commit 42b43772); stage_tts/stage_assemble raise NotImplementedError",
+    "productionWired": false,
+    "phaseADesign": "commit 55cb58ed, design only, no implementation commit"
+  },
+  "areas": {
+    "1_research_fact": "no research/fact ledger; external seed method; rights gate implemented",
+    "2_fact_storyline": "none; faithful-compression policy only",
+    "3_writer": "no production Writer; Preview/InOneLine Z-owned prompts; Comment1 via Family C",
+    "4_english_level": "A2 only; B1B absent",
+    "5_structure": "Preview/Comment1/InOneLine done; 3-split + Comment1-4 design only",
+    "6_keyphrase": "Strategy L; 4+1 evidence separate; DB Hybrid family_z NotImplementedError",
+    "7_voice_tts": "approved spec, plan only; J3/E2/FlashLite design only",
+    "8_asr_pron": "resolver shared (work_canon seed); TTS stage unimplemented",
+    "9_validator": "rights gate, name rule, word count, segment reconstruction; 19 tests",
+    "10_retry": "LLM attempts=2; TTS retry shared but unwired",
+    "11_assembly": "unimplemented",
+    "12_cost": "cap 200 JPY; phase1 about 26.28 JPY; phase A estimate 30-40 JPY"
+  },
+  "sharedModules": [
+    "er003_v1_n3_01_scaffold_generate",
+    "er003_key_words_*",
+    "er006_model_routing_contract_01",
+    "er020_tts_retry_local_rewrite_01",
+    "er025_entity_pronunciation_resolver_core_01",
+    "er003_audio_tts_asr_safety",
+    "er003_v1_iran01_a2_generate",
+    "er003_v1_en_direct_vfl_01_generate",
+    "er013_family_c_production_01 (legacy, read-only reuse)",
+    "er018_fiction_external_seed_selection_criteria_trial_02 (trial input)"
+  ],
+  "zOnlyModules": ["er026_family_z_fiction_production_runner_01.py", "er026_family_z_fiction_production_runner_01_test.py"],
+  "openItems": ["OPEN-185", "OPEN-202", "OPEN-211"],
+  "unconfirmed": [
+    "difficulty A2-only decision record",
+    "Risk Flagger / B3 annotation for Z",
+    "listening page path",
+    "Phase A approval status",
+    "runner resume mechanism",
+    "Z cost baseline"
+  ]
+}
