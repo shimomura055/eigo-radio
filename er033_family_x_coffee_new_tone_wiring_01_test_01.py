@@ -53,7 +53,10 @@ class VersionGuardTests(unittest.TestCase):
     OLDV = "v3_j3_kp_meaning_and_explanation_guard"
 
     def test_version_bumped(self):
-        self.assertEqual(runner.FAMILY_X_VARIABLE_ROLE_STYLE_VERSION, "v4_j2_e2upbeat_f15_tone_refresh")
+        # 委任_06(2026-10-11、意図的更新): fallback Style維持に伴いv4→v5へbump
+        # (旧fallback音声cacheのresume再利用防止)。
+        self.assertEqual(runner.FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
+                         "v5_j2_e2upbeat_f15_tone_refresh_fallback_style_retention")
         self.assertNotEqual(runner.FAMILY_X_VARIABLE_ROLE_STYLE_VERSION, self.OLDV)
 
     def test_old_cache_not_reused(self):

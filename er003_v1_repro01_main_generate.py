@@ -498,6 +498,28 @@ MINIMAL_INSTRUCTION_PREFIX = (
 )
 
 
+# FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01 委任_06(2026-10-11、Opus B6): fallback/標準経路が実際に
+# TTSへ渡したstyleが、承認済みrole styleか従来FALLBACK styleかをruntime evidenceへ残すための識別helper。
+# 新styleを合成しない(既存定数との先頭一致判定のみ)。置き場所はrepro01(styles moduleは
+# 「callableを持たない」定数専用module、Dangling Reference Check test準拠)。
+FALLBACK_STYLE_SOURCE_DEFAULT = "fallback_default"
+
+
+def describe_style_source(style: str | None) -> str:
+    """fallbackへ明示渡しされたstyle(既定None=従来FALLBACK style)の由来を返す。先頭一致で判定する
+    (A2英語は`承認style + 減速指示`の連結値、発音hintはTTS直前に別途追記されるため、呼び出し側は
+    hint付与前の値を渡すこと)。"""
+    if style is None:
+        return FALLBACK_STYLE_SOURCE_DEFAULT
+    import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+    for label, base in (("JA_J2_BRIGHT", fl_styles.JA_J2_BRIGHT),
+                        ("EN_COMMENT_E2_UPBEAT", fl_styles.EN_COMMENT_E2_UPBEAT),
+                        ("EN_FULLSTORY_F1_5", fl_styles.EN_FULLSTORY_F1_5)):
+        if style.startswith(base):
+            return f"approved_role_style:{label}"
+    return "caller_override:unrecognized"
+
+
 def generate_english_component_minimal_instruction(
     text: str, out_path: str,
     # ER-005-E2E-TTS-ANALYSIS-FIX-01: generate_narration_snippet_verified_
@@ -518,6 +540,12 @@ def generate_english_component_minimal_instruction(
     # 既定"structured_separation"で既存挙動とbyte-identical): Family X
     # runnerのみが明示的に"speech_metadata_flash_lite"を渡す。
     tts_backend: str = "structured_separation",
+    # FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01 委任_06(2026-10-11、ユーザー正式決定③・
+    # Opus B5): 既定None=従来のFALLBACK style(byte-identical)。Family X runnerが対象
+    # role(J2/E2_UPBEAT/F1_5)のfallbackにのみ「標準経路に実際に渡したstyle文字列」を
+    # 逐語で渡す(新文言は合成しない)。発音hint(enable_pronunciation_resolver)は従来
+    # どおりこのstyleへ付与する。
+    fallback_style_prefix: str | None = None,
 ) -> dict:
     # ER-005-AUDIO-INSTRUCTION-SEPARATION-01: fallback経路にもStructured
     # Separationを適用する。
@@ -538,8 +566,12 @@ def generate_english_component_minimal_instruction(
     # 短いfallback style(role別6-role styleとは独立、Trial attempt2相当の
     # "natural, clear, conversational")を使う。structured_separation
     # (既定)は無変更のまま(byte-identical)。
-    if tts_backend == "speech_metadata_flash_lite":
-        import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+    import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+    # 委任_06: style由来(approved_role_style:*/fallback_default)はhint付与前の値で判定。
+    style_source = describe_style_source(fallback_style_prefix)
+    if fallback_style_prefix is not None:
+        instruction_prefix = fallback_style_prefix
+    elif tts_backend == "speech_metadata_flash_lite":
         instruction_prefix = fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]
     else:
         instruction_prefix = MINIMAL_INSTRUCTION_PREFIX
@@ -563,13 +595,17 @@ def generate_english_component_minimal_instruction(
         call_fn, prompt, max_retry=p9a.MAX_TTS_TECHNICAL_RETRY, sleep_fn=None)
     if not ok:
         return {"status": "STOPPED", "reason": f"minimal instructionでもTTS失敗: {err}",
-                "en_pronunciation_resolver_info": en_pronunciation_resolver_info}
+                "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
+                "style_prefix": instruction_prefix[:200], "style_source": style_source,
+                "tts_model_id": actual_model_name, "tts_backend": tts_backend}
     samples_raw = common.pcm_bytes_to_float_mono(pcm)
     trimmed, trim_info = p3u.trim_english_keyword_silence(
         samples_raw, common.SAMPLE_RATE, safety_margin_seconds=safety_margin_seconds)
     if trimmed is None:
         return {"status": "STOPPED", "reason": "発話区間を検出できませんでした",
-                "en_pronunciation_resolver_info": en_pronunciation_resolver_info}
+                "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
+                "style_prefix": instruction_prefix[:200], "style_source": style_source,
+                "tts_model_id": actual_model_name, "tts_backend": tts_backend}
     # ER-005-AUDIO-WASTE-REDUCTION-01: hallucinationを疑わせる異常長音声を
     # ASR実行前に検知して破棄する。
     anomaly = safety.detect_duration_anomaly(trim_info["raw_duration_seconds"], text, "en")
@@ -585,6 +621,9 @@ def generate_english_component_minimal_instruction(
         "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"],
         "instruction": "minimal (not ENGLISH_STYLE_PREFIX)", "tts_backend": tts_backend,
         "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
+        # 委任_06(Opus B6): fallbackが実際にTTSへ渡した最終style(hint込み、先頭200字)・由来・実モデル。
+        "style_prefix": instruction_prefix[:200], "style_source": style_source,
+        "tts_model_id": actual_model_name,
     }
 
 
