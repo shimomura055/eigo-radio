@@ -207,7 +207,11 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
                                    # PRONUNCIATION-RESOLUTION-PHASE-4-A2-FALLBACK-WIRING-AND-
                                    # ASR-ENTITY-LIKE-01(A-2、OPEN-203可視化): resolver発火
                                    # 有無・hits/hints_appliedをattempt単位で記録する。
-                                   "en_pronunciation_resolver_info": r.get("en_pronunciation_resolver_info")})
+                                   "en_pronunciation_resolver_info": r.get("en_pronunciation_resolver_info"),
+                                   # 委任_04A(記録欠落是正、additive、OPEN-277)
+                                   "cascade_steps": outcome.get("cascade_steps"),
+                                   "style_prefix": r.get("style_prefix"),
+                                   "instruction_label": r.get("instruction_label")})
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
         _attempt_audio_path = review_lock.save_tts_attempt_audio(out_path, "minimal_fallback", {
@@ -335,12 +339,13 @@ def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
     # Part C: fallback(minimal instruction)経由の音声はforce_secondary=True
     # で、PrimaryがPASSしてもSecondary ASRの確認を必須にする(standard
     # path側は変更しない、追加コストはfallback発動時のみ)。
+    cascade_detail = {}  # 委任_04A(記録欠落是正): Primary/Secondary転写全文(steps)を保持する
     verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
         text, asr_text, classification_history, out_path, language="en-US",
         ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
         force_secondary=True,
         enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-        segment_id=segment_id)
+        segment_id=segment_id, detail_out=cascade_detail)
     verified = verified_content and length_ok
     gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
     verified = gate["verified"]
@@ -352,7 +357,8 @@ def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
     verified = rep_gate["verified"]
     return {"ok": True, "result": r, "verified": verified, "stop_retrying": stop_retrying,
             "asr_text": asr_text, "classification": cls, "length_ok": length_ok,
-            "disfluency_gate": gate, "repetition_gate": rep_gate}
+            "disfluency_gate": gate, "repetition_gate": rep_gate,
+            "cascade_steps": cascade_detail.get("steps")}
 
 
 def _local_rewrite_recovery_for_english_segment_with_fallback(

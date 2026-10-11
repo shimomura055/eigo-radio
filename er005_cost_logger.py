@@ -251,6 +251,30 @@ def _wrap_asr_function(module, func_name: str):
     setattr(module, func_name, wrapped)
 
 
+# OPEN-271/275(ASR-TTS-CROSS-LANGUAGE-RECONCILIATION-01 委任_04A、2026-10-12):
+# Azure STT(provider="azure")はtoken課金ではなく音声時間課金のため、旧集計
+# (provider in gemini/openai/openai_asr のtoken単価計算)では常に0円計上
+# だった(Budget Guardも盲目)。各runnerの費用集計関数は本関数を共通で呼ぶ。
+# 単価はpricing_snapshot.json(provider=azure, meter=audio_hour、USD/音声1時間)。
+# 契約tier(F0無料枠/S0)は未確認のため、これは登録単価(S0/S1標準)での試算であり
+# 実請求額ではない。
+AZURE_STT_PRICING_MODEL = "real-time transcription (S0/S1 standard tier)"
+
+
+def azure_stt_cost_usd(rec: dict, price) -> float:
+    """Azure STTレコード1件の推定費用(USD)=送信音声秒/3600 x 登録単価。
+    単価未登録は0円扱いにせずRuntimeErrorで停止する(fail-closed、Budget Guardを
+    盲目にしない)。音声秒が記録されていないレコードは0(送信されていない)。"""
+    seconds = rec.get("audio_duration_submitted_seconds") or 0.0
+    if not seconds:
+        return 0.0
+    try:
+        per_hour = price("azure", AZURE_STT_PRICING_MODEL, "audio_hour")
+    except StopIteration as e:
+        raise RuntimeError("[STOP] Azure STT単価未登録(pricing_snapshot.json)") from e
+    return float(seconds) / 3600.0 * per_hour
+
+
 def _patch_azure() -> None:
     import er003_b1_p3u_audio as p3u
     import er003_b1_p4_audio as p4

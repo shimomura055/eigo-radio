@@ -49,6 +49,7 @@ import er003_v1_sing01_news_tail_fix as news_tail_fix
 import er003_v1_sing01_point_headings_aoede as point_headings
 import er003_v1_sing01_voice01_generate as voice01
 import er005_cost_logger as cl
+import er011_human_review_lock_01 as review_lock
 import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er006_model_routing_contract_01 as routing
 import er019_family_x_audio_plan_01 as plan
@@ -686,6 +687,7 @@ def generate_family_x_b1_segments(
     # 追従する(a2側のkp_status["ja"]表記は無変更、別関数)。
     kp_status = {r: {"en": v["english"].get("status"), "explanation": v["explanation"].get("status")}
                  for r, v in kp_results.items()}
+    review_lock.archive_prior_tts_results(f"{out_dir}/audit/tts_generation_results.json")
     save_json(f"{out_dir}/audit/tts_generation_results.json",
               {"segments": results, "key_phrases": kp_results, "shared_narration": shared_narration_status,
                "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend,
@@ -992,6 +994,7 @@ def generate_family_x_a2_segments(
     all_status = {k: v.get("status") for k, v in results.items()}
     kp_status = {r: {"en": v["english"].get("status"), "ja": v["japanese_meaning"].get("status")}
                  for r, v in kp_results.items()}
+    review_lock.archive_prior_tts_results(f"{out_dir}/audit/tts_generation_results.json")
     save_json(f"{out_dir}/audit/tts_generation_results.json",
               {"segments": results, "key_phrases": kp_results, "shared_narration": shared_narration_status,
                "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend,
@@ -1567,7 +1570,9 @@ def compute_cost_jpy_so_far(cost_log_path: str) -> tuple:
             else:
                 # C3-2(G-4): 旧`except StopIteration: usd = 0.0`(fail-open)を撤去。単価未登録は
                 # price()がPricingNotFoundErrorを送出し、Budget Guardが盲目にならない。
-                if provider in ("gemini", "openai", "openai_asr") and model:
+                if provider == "azure":
+                    usd = cl.azure_stt_cost_usd(rec, price)
+                elif provider in ("gemini", "openai", "openai_asr") and model:
                     in_tok = rec.get("input_tokens") or 0
                     out_tok = rec.get("output_tokens") or 0
                     usd = in_tok * price(provider, model, "input_tokens") / 1e6 \

@@ -391,6 +391,12 @@ def generate_narration_snippet_verified_strict(
             "asr_prompt_applied": bool(asr_prompt) if language == "en" else False,
             "non_latin_cascade_enabled": bool(enable_non_latin_cascade) if language == "en" else False,
             "non_latin_cascade_invoked": cascade_detail.get("non_latin_cascade_invoked") if language == "en" else None,
+            # 委任_04A(記録欠落是正、additive): 実送信Style prefix(sha256+先頭200字)と
+            # Primary/Secondary転写全文を含むcascade steps。
+            "style_prefix": (review_lock.style_prefix_record(
+                style_prefix_override if style_prefix_override is not None else p9a.ENGLISH_STYLE_PREFIX)
+                if language == "en" else None),
+            "cascade_steps": cascade_detail.get("steps") if language == "en" else None,
         })
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する
@@ -541,14 +547,17 @@ def generate_english_component_minimal_instruction(
     if tts_backend == "speech_metadata_flash_lite":
         import er033_tts_flash_lite_family_x_styles_01 as fl_styles
         instruction_prefix = fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]
+        _instruction_source = "FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]"
     else:
         instruction_prefix = MINIMAL_INSTRUCTION_PREFIX
+        _instruction_source = "MINIMAL_INSTRUCTION_PREFIX"
     en_pronunciation_resolver_info = None
     if enable_pronunciation_resolver:
         augmented_prefix, en_pronunciation_resolver_info = pron_resolver_core.resolve_and_augment_en_style_prefix(
             instruction_prefix, text)
         if en_pronunciation_resolver_info.get("hints_applied"):
             instruction_prefix = augmented_prefix
+            _instruction_source += "+pronunciation_hints"
     # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線(声・モデルは
     # p9a._make_english_call_fn()と同一のENGLISH_MODEL_NAME/VOICE_NAMEを使う)。
     # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: 既定backend
@@ -583,7 +592,13 @@ def generate_english_component_minimal_instruction(
         "voice": p9a.VOICE_NAME, "call_count": 1 + retries, "retry_count": retries,
         "sha256": p8a.sha256_file(out_path), "duration_seconds": round(len(trimmed) / common.SAMPLE_RATE, 4),
         "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"],
-        "instruction": "minimal (not ENGLISH_STYLE_PREFIX)", "tts_backend": tts_backend,
+        # OPEN-277(委任_04A): 固定ラベル"minimal (not ENGLISH_STYLE_PREFIX)"は実Promptを
+        # 反映しなかったため、実際に使った指示の出所/長さ/hash(sha256+先頭200字)で置換。
+        # 既存の"instruction"キーは互換のため残し、値だけ実態に即した文字列にする。
+        "instruction": f"{_instruction_source} (len={len(instruction_prefix)})",
+        "instruction_label": _instruction_source,
+        "style_prefix": review_lock.style_prefix_record(instruction_prefix),
+        "tts_backend": tts_backend,
         "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
     }
 

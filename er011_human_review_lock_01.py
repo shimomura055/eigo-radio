@@ -196,6 +196,88 @@ def _append_attempt_history(record: dict) -> None:
         f.write(json.dumps(record, ensure_ascii=False, default=str) + "\n")
 
 
+# ASR-TTS-CROSS-LANGUAGE-RECONCILIATION-01 委任_04A(2026-10-12、記録欠落の是正):
+# 既存のappend-only attempt_history.jsonlへ、Primary/Secondary転写全文・判定
+# ラベル・実送信Style prefix(sha256+先頭200字)・attempt番号を残す共通helper。
+# 新しいファイル形式・管理ルールは作らない(既存のattempt_history.jsonlの
+# 追記型レコードへ`attempts_detail`等をadditiveに追加するのみ)。
+def style_prefix_record(prefix) -> dict | None:
+    """実送信Style prefixの記録形(切詰めなしの代わりにsha256+長さ+先頭200字)。"""
+    if prefix is None:
+        return None
+    return {"len": len(prefix), "sha256": hashlib.sha256(prefix.encode("utf-8")).hexdigest(),
+            "head200": prefix[:200]}
+
+
+def build_attempts_detail(result: dict) -> list:
+    """result(標準attempts_log/fallback_attempts_log)から、attempt単位の転写・
+    判定・Style・cascade steps(Primary/Secondary転写全文を含む)を抽出する。
+    resultは変更しない(読み取りのみ)。"""
+    detail = []
+    std_key = "standard_attempts_log" if result.get("standard_attempts_log") else "attempts_log"
+    for route, key in (("standard", std_key), ("fallback", "fallback_attempts_log")):
+        logs = result.get(key)
+        if not isinstance(logs, list):
+            continue
+        for a in logs:
+            if not isinstance(a, dict):
+                continue
+            detail.append({
+                "route": route, "attempt": a.get("attempt"), "status": a.get("status"),
+                "primary_asr_text": a.get("asr_text"),
+                "audio_classification": a.get("audio_classification"),
+                "verified": a.get("verified"),
+                "style_prefix": a.get("style_prefix"),
+                "instruction_label": a.get("instruction_label"),
+                "cascade_steps": a.get("cascade_steps"),
+            })
+    return detail
+
+
+def append_attempt_history_event(out_path: str, action: str, payload: dict) -> None:
+    """既存のappend-only attempt_history.jsonlへイベントを1行追記する(消さない・
+    上書きしない)。out_pathが標準narrationレイアウトでない場合もsegment情報を
+    Noneとして追記する(記録を落とさない)。"""
+    theme_id = level = segment_id = None
+    if _has_valid_narration_layout(out_path):
+        theme_id, level, segment_id = derive_segment_key(out_path)
+    _append_attempt_history({
+        "run_id": str(uuid.uuid4()), "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "theme_id": theme_id, "level": level, "segment_id": segment_id,
+        "wav_path": out_path, "action": action, **payload,
+    })
+
+
+def archive_prior_tts_results(results_path: str) -> None:
+    """tts_generation_results.jsonは再実行のたびに上書きされるため(segment単位の
+    正本、仕様は不変)、上書き直前に既存ファイルのattempt履歴(standard/fallback/
+    slowdownの各attempts_log)をattempt_history.jsonlへappend-onlyで退避する。
+    既存ファイルが無い/読めない場合は何もしない(書込みの妨げにしない)。"""
+    if not os.path.exists(results_path):
+        return
+    try:
+        with open(results_path, encoding="utf-8") as f:
+            prior = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        return
+    keys = ("attempts_log", "standard_attempts_log", "fallback_attempts_log", "slowdown_attempts_log",
+            "post_slowdown_asr_text", "status", "reason", "tts_generations_used")
+    snapshot = {}
+    for seg, v in (prior.get("segments") or {}).items():
+        if isinstance(v, dict):
+            snapshot[f"segments/{seg}"] = {k: v.get(k) for k in keys if k in v}
+    for seg, v in (prior.get("key_phrases") or {}).items():
+        if isinstance(v, dict):  # {"english": {...}, "japanese"/...: {...}}
+            for role, rv in v.items():
+                if isinstance(rv, dict):
+                    snapshot[f"key_phrases/{seg}/{role}"] = {k: rv.get(k) for k in keys if k in rv}
+    _append_attempt_history({
+        "run_id": str(uuid.uuid4()), "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+        "action": "TTS_RESULTS_PRIOR_ATTEMPTS_ARCHIVED_BEFORE_OVERWRITE",
+        "results_path": results_path, "prior_attempts": snapshot,
+    })
+
+
 def check_before_generation(out_path: str, text: str, language: str) -> dict:
     """TTS/ASR呼び出しの前に必ず呼ぶゲート判定。
 
@@ -363,6 +445,8 @@ def record_outcome(out_path: str, text: str, language: str, result: dict, run_id
         "budget_guard_triggered": budget_guard_triggered,
         "duration_seconds": duration_seconds,
         "semantic_equivalence": semantic_equivalence_summary,
+        # 委任_04A(記録欠落是正、additive): attempt単位の転写全文・Style・cascade steps。
+        "attempts_detail": build_attempts_detail(result),
     })
     return new_entry
 

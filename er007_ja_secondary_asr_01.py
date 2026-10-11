@@ -44,6 +44,11 @@ def _log_human_review(detail: dict) -> None:
     # ER-011-HUMAN-REVIEW-COST-GUARD-01 Part G: 同一segment・同一
     # canonical_textのqueue重複投入を防ぐ。
     if review_lock.is_duplicate_queue_entry(HUMAN_REVIEW_LOG_PATH_JA, detail["wav_path"], detail["canonical_text"]):
+        # 委任_04A(記録欠落是正): queue「表示」の重複だけを抑止し、記録(Primary/
+        # Secondary転写を含むsteps)は消さず、append-onlyのattempt_history.jsonlへ残す。
+        review_lock.append_attempt_history_event(detail["wav_path"], "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED", {
+            "canonical_text": detail["canonical_text"], "steps": detail.get("steps"),
+            "final_status": detail.get("final_status")})
         return
     os.makedirs(os.path.dirname(HUMAN_REVIEW_LOG_PATH_JA), exist_ok=True)
     record = {
