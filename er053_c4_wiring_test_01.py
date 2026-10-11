@@ -252,7 +252,7 @@ class NoFallbackAstTests(unittest.TestCase):
         for n in ast.walk(self.funcs["build_arg_parser"]):
             if isinstance(n, ast.Call) and getattr(n.func, "attr", "") == "add_argument":
                 opts.append(n.args[0].value)
-        self.assertEqual(sorted(opts), ["--budget-jpy", "--out-dir", "--regenerate-stage", "--run-label", "--slug", "--source-note",
+        self.assertEqual(sorted(opts), ["--approved-quality-master", "--budget-jpy", "--out-dir", "--regenerate-stage", "--run-label", "--slug", "--source-note",
                                         "--stage", "--stop-after", "--theme"])
         src = open(RUNNER_PY, encoding="utf-8").read()
         self.assertNotIn("os.environ", src)

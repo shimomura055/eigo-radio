@@ -1,7 +1,7 @@
 # U-1 限定受入(案b: 承認済み品質マスター受け入れ)設計書 01
 
 管理ID: FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01 委任_02 / 日付: 2026-10-11 / 課金0 / **設計のみ(コード実装なし)**
-Status: `DESIGN_DRAFT`(Opus独立レビュー待ち。実装・Production配線は未着手)。
+Status: `IMPLEMENTED_PENDING_USER_PRODUCTION_RUN`(委任_05で実装・test・乾式検証済み。Opus条件Aレビュー GO with required fixes を8節で反映。ユーザー決定①(案b)は`APPROVED_FOR_PRODUCTION`。実run=API課金は未実施)。2〜7節は設計時点の記述で、実装での変更点は8節に集約。
 ユーザー決定(2026-10-11): 案bを`APPROVED_FOR_PRODUCTION`。条件=HUMAN_APPROVED_QUALITY_MASTER確認/本文・メタ sha一致/許可対象・出所を厳密限定/`MAQ_TRIAL_W-1`来歴を改変しない/既存U-1の目的・保護範囲維持/Trial成果物を無条件にProductionへ流入させない。実装前にOpusレビュー(安全性・監査可能性・U-1整合)。
 worktree: `C:\Users\tensh\eigo-radio-tone`(feature/coffee-new-tone-01)。
 
@@ -96,3 +96,36 @@ worktree: `C:\Users\tensh\eigo-radio-tone`(feature/coffee-new-tone-01)。
 3. U-1整合: 既存の目的・保護範囲を弱めていないか。契約検証V1〜V10・annotated sha検査を受理後も必ず通す構造(c)になっているか。例外型の扱い(サブクラス/新型)。
 4. 迂回経路: (i)opt-inを環境変数/既定/設定で暗黙に有効化できる経路が無いか、(ii)path解決(realpath/symlink/大小/UNC)、(iii)`--stage`/`--regenerate-stage`/resume・再実行時にチェックが飛ばされる経路、(iv)acceptance.jsonを先に偽造して通す経路(「既存と一致確認」で防げるか。そもそも判定は毎回フル再検証でacceptance.jsonを信用しない設計か)、(v)TOCTOU(検証後にrevision2.mdが差し替えられる)の扱い(検証時に読んだバイトをそのまま返却する=同一バイト使用で足りるか)。
 5. 運用: W-1通常記事にopt-inを付けたときSTOPとする方針の妥当性。DECISION_LOGへの承認根拠名の記載方法。
+
+## 8. Opus条件Aレビュー(GO with required fixes)の反映と実装(委任_05、2026-10-11)
+実装: `er019_family_x_entertainment_production_runner_01.py`(`verify_approved_quality_master` / `precheck_approved_quality_master` / `resolve_approved_master_meta` / `append_approved_master_acceptance_record` / `write_ja_source_audit` / `APPROVED_QUALITY_MASTERS` / `ApprovedMasterAcceptanceStop`)、`er053_approved_master_rundir_builder_01.py`(run dir構成helper)、test `er053_u1_approved_master_acceptance_test_01.py`。
+
+| Opus指摘 | 対応 |
+|---|---|
+| A1-1 課金前の事前検証(必須) | `main()`で`parse_args`直後(`vfl01.get_client()`・Research・B3・`os.makedirs`より前)に`precheck_approved_quality_master(args)`。a〜g全件検証。`--stage`∈{research,ledger,storyline_b3,writer}・`--regenerate-stage`∈{writer,storyline_b3}・`revision2.md`欠落・`--stop-after storyline_b3`(追加の厳格化: opt-inが黙って無視される経路)はSTOP。通常W-1記事へのopt-inはd(allowlist外)でSTOP。 |
+| A1-2 pinned registry(必須) | コード内定数`APPROVED_QUALITY_MASTERS`。coffee_prices E案1件のみ。pin項目=`master_sha256_lf`/`chain_method`/`ledger_sha256`/`selected_brief_sha256_raw`/`runtime_evidence_sha256_raw`/`decision_ref`。run dirの生バイトと照合(g)。加えてmeta `fact_ledger.sha256`・`selected_fact_ids`とsidecar/ledgerを照合(g2)。 |
+| A1-4 acceptance冪等性バグ回避 | acceptanceは`ja_writer/approved_master_acceptance.jsonl`へ**追記のみ**(1実行1行、既存行不変)。受理記録は判定の入力にしない(毎回フル再検証)。opt-in無しの再実行は記録があっても従来U-1 STOP。 |
+| A1-5 TOCTOU | `revision2.md`・`runtime_evidence.json`は1回だけbytesで読み、そのbytesでsha/CR検査・decodeして返す(`load_text`再読込なし)。testで検証後差替えを注入し検証時bytesが返ることを固定。 |
+| A2 後段可視化 | `entry_point.json`に`approved_quality_master`(meta path/sha/slug/master sha/ja_source)、`cost.json`に`ja_source`、b1b/a2の`audit/ja_source.json`に`approved_quality_master:<slug>@<sha12>`を記録(記録専用)。 |
+| 例外型 | `ApprovedMasterAcceptanceStop(LegacyWriterProvenanceStop)`。メッセージ先頭に条件ID(`APPROVED_MASTER_REJECTED: <cond>=...`)。 |
+| 条件e | `os.path.realpath`+`normcase`+`commonpath`+期待パスとの厳密一致。UNC・`..`・symlink/junction(abspathとrealpathの不一致)・run dir内metaを拒否。path slug不一致は(f以前に)eで拒否。 |
+
+受理記録項目: meta path/sha、各sha(master LF/worktree生/evidence/revision2/annotated/ledger/brief/evidence生)、各条件結果、受理時刻(UTC)、decision_ref、runner version(runner file sha)・runner git HEAD、複製元原本dirと複製全ファイルの生sha表(builderの`approved_master_rundir_build.json`から転記+現在の生sha)、registryスナップショット、meta `user_eval_date`/`note`、CLI引数。
+
+### 8-1 registry値の算出手順(主ツリー原本から、2026-10-11)
+原本dir: 主ツリー `C:/Users/tensh/eigo-radio/er052_output/ja_article_quality_model_allocation_trial_01/runs_02/coffee_prices/E/`(コミット`2dde32e6`)。`sha256sum`(生バイト)で算出:
+- `master_sha256_lf` = `ja_writer/revision2.md`(=`export/r2.md`=`E_master_r2.md`のLF正規化)= `742e7b6a7fe43f1bd8e6106fc5892720124e0a174c6bb1e0b63e70a5b3eb248a`(`E_master_meta.json`の`source_sha256`=`saved_sha256`と一致)
+- `ledger_sha256` = `research_ledger/verified_fact_ledger.txt` = `e94a50c1d22686d52bd65beca4272650ecc8286de54629c3d8dfb42fa397ef7b`(**`E_master_meta.json` `fact_ledger.sha256`と一致を確認**)
+- `selected_brief_sha256_raw` = `storyline_b3/selected_brief.md` = `5acded774f71033ffba90ca7cb29577d3aca1094458e9f7be9adcd757c5d729b`(sidecar `brief_sha256`と一致)
+- `runtime_evidence_sha256_raw` = `ja_writer/runtime_evidence.json` = `241c0401a8c74a416e75c31c7f3ae3303ada607ffead8b0057a3ec4b9edabeae`
+- `chain_method` = `MAQ_TRIAL_W-1`(同evidence)。
+
+registry追加(他テーマ・別マスター)は、コードcommit+レビュー+人間ユーザー承認が必須(自動拡張なし)。
+
+### 8-2 run dir構成手順(git経由禁止)
+`python er053_approved_master_rundir_builder_01.py --origin-dir <主ツリー原本E dir> --out-dir er019_output/coffee_prices/run_e_tone_01`。`shutil.copyfile`のバイト完全コピー+コピー後sha照合。対象=research_ledger/verified_fact_ledger.txt・storyline_b3/直下全ファイル・ja_writer/配下全ファイル(計21ファイル)。コピーしない=raw_usage_log.jsonl・cost_ledger_maq_01.jsonl・usage.json・export/・原本トップruntime_evidence.json(新runのコスト集計を汚さない)。既存ファイルは生sha一致のみ許可、不一致はSTOP(上書きしない)。
+`er019_output/coffee_prices/run_e_tone_01/`はgit commitしない。理由: `core.autocrlf=true`で別checkout時にLF->CRLF変換され契約V3/ledger sha・revision2.mdのb4(CR検査)が壊れるため(master複製はgit経由禁止)。必要時はbuilderで主ツリー原本から再構成する。なお既存`run_l3_01`等のrun dirは過去commitでtrackedだが、通常Production生成物でありmaster複製ではない。
+
+### 8-3 実装中に判明した注意点
+- `run_annotation_producer`(`main`が既存B3再利用時にも毎回呼ぶ決定論producer)は注記artifactを削除して再生成する。scratch複製での乾式確認では`selected_brief_annotated.md`/`annotation.json`/`writer_constraints.txt`/`fact_selection_evidence.json`は生sha不変、`annotation_manifest.json`のみsha変化(再生成)、`annotated_md_sha256`=`249b0c08...`不変、契約V1〜V10 PASS・事前検証PASS。pinned registryの対象は不変のファイルのみ(manifestは含めない)。
+- 既存`er053_c4_wiring_test_01.py::test_no_switch_cli_or_env_for_annotation`は`build_arg_parser`のオプション許可リストを固定している。新CLI`--approved-quality-master`の追加に伴い、許可リストへ1要素追加した(同testの`os.environ`/`getenv`不在アサーションは無変更で維持)。

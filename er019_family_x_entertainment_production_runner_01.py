@@ -39,6 +39,8 @@ import argparse
 import hashlib
 import json
 import os
+import re
+import subprocess
 import time
 
 import er003_v1_en_direct_vfl_01_generate as vfl01
@@ -230,10 +232,260 @@ def run_ja_writer(client, out_dir: str, budget_jpy: float) -> dict:
     return {"ja_text": result["ja_text"], "title": result["title"], "runtime_evidence": result["runtime_evidence"]}
 
 
-def load_reused_ja_text(out_dir: str) -> str:
+# ------------------------------------------------------------
+# U-1 限定受入(案b): 承認済み品質マスター受入(FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01 委任_05、2026-10-11)
+# ユーザー正式決定①(案b、APPROVED_FOR_PRODUCTION)+Opus条件Aレビュー(GO with required fixes)に基づく。
+# 設計: er053_output/coffee_new_tone_e2e_01/U1_APPROVED_MASTER_ACCEPTANCE_DESIGN_01.md
+# 既定(未指定)=従来のU-1と完全同一。明示opt-in `--approved-quality-master <meta>` のときだけ、
+# chain_method=="MAQ_TRIAL_W-1" の「人間承認済み品質マスター」の無改変複製を、下記a〜g全件一致で受理する。
+# 環境変数・設定ファイル・既定ONでの有効化経路は無い。受理記録(acceptance.jsonl)は判定の入力にしない(毎回フル再検証)。
+# ------------------------------------------------------------
+REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
+APPROVED_MASTERS_REL = "docs/quality/ja_quality_masters"
+APPROVED_MASTER_STATUS = "HUMAN_APPROVED_QUALITY_MASTER"
+APPROVED_CHAIN_METHODS = frozenset({"MAQ_TRIAL_W-1"})      # 完全一致のみ(startswith/部分一致/正規表現/大小無視は禁止)
+APPROVED_MASTER_DECISION_REF = "FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01 ユーザー決定①(案b)2026-10-11"
+ACCEPTANCE_RECORD_REL = "ja_writer/approved_master_acceptance.jsonl"
+RUNDIR_BUILD_MANIFEST = "approved_master_rundir_build.json"
+# pinned registry(g、Opus A1-2): 登録の追加=コードcommit+レビュー+ユーザー承認が必要。値の算出手順は設計書「8節」。
+APPROVED_QUALITY_MASTERS = {
+    "coffee_prices": {
+        "master_sha256_lf": "742e7b6a7fe43f1bd8e6106fc5892720124e0a174c6bb1e0b63e70a5b3eb248a",
+        "chain_method": "MAQ_TRIAL_W-1",
+        "ledger_sha256": "e94a50c1d22686d52bd65beca4272650ecc8286de54629c3d8dfb42fa397ef7b",
+        "selected_brief_sha256_raw": "5acded774f71033ffba90ca7cb29577d3aca1094458e9f7be9adcd757c5d729b",
+        "runtime_evidence_sha256_raw": "241c0401a8c74a416e75c31c7f3ae3303ada607ffead8b0057a3ec4b9edabeae",
+        "decision_ref": APPROVED_MASTER_DECISION_REF,
+    },
+}
+
+
+class ApprovedMasterAcceptanceStop(LegacyWriterProvenanceStop):
+    """案b(承認済み品質マスター受入)の受理条件不一致。LegacyWriterProvenanceStopのサブクラス(既存assertRaisesと整合)。
+    メッセージ先頭に条件ID(a/b1/b2/b3/b4/c/d/e/f/g/g2/pre.*)を付ける。課金前・fail-closed。"""
+
+
+def _amq_stop(cond: str, detail: str):
+    raise ApprovedMasterAcceptanceStop(f"[STOP] U-1 APPROVED_MASTER_REJECTED: {cond}={detail}")
+
+
+def _raw_sha(b: bytes) -> str:
+    return hashlib.sha256(b).hexdigest()
+
+
+def _read_bytes_once(path: str, cond: str) -> bytes:
+    try:
+        with open(path, "rb") as f:
+            return f.read()
+    except OSError as exc:
+        _amq_stop(cond, f"unreadable {os.path.basename(path)} ({type(exc).__name__})")
+
+
+def resolve_approved_master_meta(meta_path, slug) -> str:
+    """e: metaパスを repo root 配下 docs/quality/ja_quality_masters/<slug>/E_master_meta.json のみに限定(厳密一致)。
+    UNC・`..`・symlink/junction(realpath前後で変化)・別repo・run dir内は拒否。戻り値=検証済み絶対パス。"""
+    if (not isinstance(meta_path, str) or not meta_path.strip()
+            or not isinstance(slug, str) or not re.fullmatch(r"[a-z0-9_]+", slug)):
+        _amq_stop("e", f"invalid meta path/slug ({meta_path!r}, {slug!r})")
+    if meta_path.startswith("\\\\") or meta_path.startswith("//"):
+        _amq_stop("e", f"UNC path rejected: {meta_path!r}")
+    if ".." in re.split(r"[\\/]", meta_path):
+        _amq_stop("e", f"'..' in path rejected: {meta_path!r}")
+    absp = os.path.abspath(meta_path)
+    real = os.path.realpath(absp)
+    if os.path.normcase(real) != os.path.normcase(absp) or os.path.islink(absp):
+        _amq_stop("e", f"symlink/junction/alias rejected (realpath differs): {meta_path!r}")
+    root_real = os.path.realpath(REPO_ROOT)
+    expected = os.path.join(root_real, *APPROVED_MASTERS_REL.split("/"), slug, "E_master_meta.json")
+    try:
+        inside = os.path.commonpath([os.path.normcase(real), os.path.normcase(root_real)]) == os.path.normcase(root_real)
+    except ValueError:
+        inside = False
+    if not inside or os.path.normcase(real) != os.path.normcase(expected):
+        _amq_stop("e", f"meta path must be exactly <repo>/{APPROVED_MASTERS_REL}/{slug}/E_master_meta.json (got {real!r})")
+    return real
+
+
+def verify_approved_quality_master(out_dir: str, meta_path, slug) -> dict:
+    """案bの受理条件a〜gを全件検証する(API呼出0・書込なし。contractが違反時にcontract_violation.jsonを書く従来挙動を除く)。
+    revision2.md / runtime_evidence.json は1回だけbytesで読み、そのbytesでsha/CR検査し、同じbytesをdecodeして返す(TOCTOU対策)。
+    不一致は ApprovedMasterAcceptanceStop(条件ID付き)。戻り値=受理記録用の判定結果(ja_textを含む)。"""
+    real_meta = resolve_approved_master_meta(meta_path, slug)                                    # e
+    meta_raw = _read_bytes_once(real_meta, "e")
+    try:
+        meta = json.loads(meta_raw.decode("utf-8"))
+        if not isinstance(meta, dict):
+            raise ValueError("not an object")
+    except ValueError as exc:
+        _amq_stop("e", f"meta unreadable/invalid json: {exc}")
+    if meta.get("status") != APPROVED_MASTER_STATUS or meta.get("family") != "X":                  # a
+        _amq_stop("a", f"status={meta.get('status')!r} family={meta.get('family')!r} "
+                       f"(need {APPROVED_MASTER_STATUS!r} / 'X')")
+    path_slug = os.path.basename(os.path.dirname(real_meta))
+    if meta.get("slug") != slug or path_slug != slug:                                              # f
+        _amq_stop("f", f"meta.slug={meta.get('slug')!r} path slug={path_slug!r} --slug={slug!r}")
+    master_sha = meta.get("saved_sha256")
+    if (not isinstance(master_sha, str) or meta.get("source_sha256") != master_sha
+            or meta.get("byte_identical_to_source") is not True):                                  # b1
+        _amq_stop("b1", f"source_sha256={meta.get('source_sha256')!r} saved_sha256={master_sha!r} "
+                        f"byte_identical_to_source={meta.get('byte_identical_to_source')!r}")
+    expected_saved = f"{APPROVED_MASTERS_REL}/{slug}/E_master_r2.md"
+    master_path = os.path.join(os.path.dirname(real_meta), "E_master_r2.md")
+    if meta.get("saved_file") != expected_saved:
+        _amq_stop("b2", f"meta.saved_file={meta.get('saved_file')!r} != {expected_saved!r}")
+    master_raw = _read_bytes_once(master_path, "b2")
+    master_lf_sha = _raw_sha(master_raw.replace(b"\r\n", b"\n"))
+    if master_lf_sha != master_sha:                                                                # b2(CRLF正規化後)
+        _amq_stop("b2", f"master body LF-normalized sha {master_lf_sha} != meta {master_sha}")
+    ev_raw = _read_bytes_once(f"{out_dir}/ja_writer/runtime_evidence.json", "b3")                  # 1回だけ読む
+    rev_raw = _read_bytes_once(f"{out_dir}/ja_writer/revision2.md", "b4")                          # 1回だけ読む
+    try:
+        ev = json.loads(ev_raw.decode("utf-8"))
+        if not isinstance(ev, dict):
+            raise ValueError("not an object")
+    except ValueError as exc:
+        _amq_stop("b3", f"runtime_evidence.json unreadable/invalid: {exc}")
+    if ev.get("ja_text_sha256") != master_sha:                                                     # b3
+        _amq_stop("b3", f"evidence.ja_text_sha256={ev.get('ja_text_sha256')!r} != {master_sha}")
+    if b"\r" in rev_raw:                                                                           # b4(CR混入=LF原本複製でない)
+        _amq_stop("b4", "revision2.md contains CR (CRLF-converted copy rejected)")
+    rev_sha = _raw_sha(rev_raw)
+    if rev_sha != master_sha:
+        _amq_stop("b4", f"revision2.md raw sha {rev_sha} != {master_sha}")
+    try:
+        ja_text = rev_raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        _amq_stop("b4", f"revision2.md not utf-8: {exc}")
+    chain = ev.get("chain_method")
+    if not isinstance(chain, str) or chain not in APPROVED_CHAIN_METHODS:                          # d(完全一致の集合照合)
+        _amq_stop("d", f"chain_method={chain!r} not in allowlist {sorted(APPROVED_CHAIN_METHODS)} (exact match only)")
+    pin = APPROVED_QUALITY_MASTERS.get(slug)                                                       # g(pinned registry)
+    if pin is None:
+        _amq_stop("g", f"slug {slug!r} is not registered in APPROVED_QUALITY_MASTERS")
+    ledger_raw = _read_bytes_once(f"{out_dir}/research_ledger/verified_fact_ledger.txt", "g")
+    brief_raw = _read_bytes_once(f"{out_dir}/storyline_b3/selected_brief.md", "g")
+    actual = {"master_sha256_lf": master_lf_sha, "chain_method": chain, "ledger_sha256": _raw_sha(ledger_raw),
+              "selected_brief_sha256_raw": _raw_sha(brief_raw), "runtime_evidence_sha256_raw": _raw_sha(ev_raw)}
+    for k, got in actual.items():
+        if pin.get(k) != got:
+            _amq_stop("g", f"registry.{k}={pin.get(k)!r} != actual {got!r}")
+    fl = meta.get("fact_ledger") if isinstance(meta.get("fact_ledger"), dict) else {}              # g2(meta<->sidecar<->ledger)
+    if fl.get("sha256") != actual["ledger_sha256"]:
+        _amq_stop("g2", f"meta.fact_ledger.sha256={fl.get('sha256')!r} != run dir ledger {actual['ledger_sha256']}")
+    sidecar_raw = _read_bytes_once(f"{out_dir}/storyline_b3/annotation.json", "g2")
+    try:
+        sc = json.loads(sidecar_raw.decode("utf-8"))
+        sidecar_ids = sorted({i for fct in sc["facts"] for i in fct["ledger_ids"]})
+    except (ValueError, KeyError, TypeError) as exc:
+        _amq_stop("g2", f"annotation.json sidecar unreadable: {type(exc).__name__}: {exc}")
+    if not isinstance(meta.get("selected_fact_ids"), list) or sorted(meta["selected_fact_ids"]) != sidecar_ids:
+        _amq_stop("g2", f"meta.selected_fact_ids={meta.get('selected_fact_ids')!r} != sidecar ledger_ids {sidecar_ids}")
+    annotated = contract.validate_annotated_b3(out_dir)                                            # c(従来どおり必ず実行: V1〜V10)
+    if ev.get("annotated_md_sha256") != annotated.annotated_md_sha256:
+        _amq_stop("c", f"PROVENANCE_MISMATCH evidence.annotated_md_sha256={ev.get('annotated_md_sha256')} "
+                       f"!= contract {annotated.annotated_md_sha256}")
+    return {"ja_text": ja_text, "slug": slug, "meta": meta, "meta_path_real": real_meta, "meta_sha256_raw": _raw_sha(meta_raw),
+            "master_sha256_lf": master_lf_sha, "master_body_raw_sha256_worktree": _raw_sha(master_raw),
+            "evidence_ja_text_sha256": ev.get("ja_text_sha256"), "revision2_raw_sha256": rev_sha,
+            "chain_method_observed": chain, "annotated_md_sha256": annotated.annotated_md_sha256,
+            "actual_pinned": actual, "registry_snapshot": dict(pin),
+            "checks": {k: "PASS" for k in ("a", "b1", "b2", "b3", "b4", "c", "d", "e", "f", "g", "g2")}}
+
+
+def precheck_approved_quality_master(args):
+    """課金前の事前検証(Opus A1-1): main の引数解析直後(get_client・Research・B3実行より前)に呼ぶ。
+    opt-in未指定(None)なら何もせずNone(従来動作)。併用NGの組合せ・revision2.md欠落・受理条件不一致はSTOP。"""
+    meta_path = getattr(args, "approved_quality_master", None)
+    if meta_path is None:
+        return None
+    if getattr(args, "stage", "all") in ("research", "ledger", "storyline_b3", "writer"):
+        _amq_stop("pre.stage", f"--approved-quality-master cannot be combined with --stage {args.stage} (JA writer reuse path only)")
+    if getattr(args, "regenerate_stage", None) in ("writer", "storyline_b3"):
+        _amq_stop("pre.regenerate", f"cannot be combined with --regenerate-stage {args.regenerate_stage}")
+    if getattr(args, "stop_after", "standard") == "storyline_b3":
+        _amq_stop("pre.stop_after", "cannot be combined with --stop-after storyline_b3 (opt-in would be silently ignored)")
+    if not os.path.isfile(f"{args.out_dir}/ja_writer/revision2.md"):
+        _amq_stop("pre.revision2", "ja_writer/revision2.md is missing in the run dir "
+                                   "(the Writer would regenerate; opt-in is reuse only)")
+    res = verify_approved_quality_master(args.out_dir, meta_path, args.slug)
+    print(f"[B3-RUNNER][U-1] APPROVED_QUALITY_MASTER precheck OK: slug={res['slug']} "
+          f"master_sha={res['master_sha256_lf'][:12]} chain_method={res['chain_method_observed']!r}"
+          "(課金前。受理記録は再利用時にacceptance.jsonlへ追記)")
+    return res
+
+
+def approved_ja_source_tag(res: dict) -> str:
+    return f"approved_quality_master:{res['slug']}@{res['master_sha256_lf'][:12]}"
+
+
+def write_ja_source_audit(out_dir: str, level: str, tag: str) -> None:
+    """b1b/a2 の audit に ja_source を1行(1ファイル)残す(新規ファイルのみ、既存audit構造は変更しない)。記録専用。"""
+    os.makedirs(f"{out_dir}/{level}/audit", exist_ok=True)
+    save_json(f"{out_dir}/{level}/audit/ja_source.json", {"ja_source": tag})
+
+
+def _runner_git_head():
+    try:
+        r = subprocess.run(["git", "rev-parse", "HEAD"], cwd=REPO_ROOT, capture_output=True, text=True, timeout=10)
+        return (r.stdout.strip() or None) if r.returncode == 0 else None
+    except (OSError, subprocess.SubprocessError):
+        return None
+
+
+def append_approved_master_acceptance_record(out_dir: str, res: dict, cli: dict) -> dict:
+    """受理記録を ja_writer/approved_master_acceptance.jsonl へ追記のみ(1実行1行、既存行・runtime_evidence.jsonは不変)。
+    判定の入力には使わない(記録専用)。複製元dir・複製ファイルshaは builder が書いた approved_master_rundir_build.json を
+    情報として転記し、現在の生shaも併記する(不一致でもここでは判定しない)。"""
+    build = None
+    bpath = f"{out_dir}/{RUNDIR_BUILD_MANIFEST}"
+    if os.path.isfile(bpath):
+        try:
+            with open(bpath, "rb") as f:
+                build = json.loads(f.read().decode("utf-8"))
+        except ValueError:
+            build = {"unreadable": True}
+    current = {}
+    if isinstance(build, dict) and isinstance(build.get("files"), dict):
+        for rel in build["files"]:
+            p = f"{out_dir}/{rel}"
+            current[rel] = _raw_sha(open(p, "rb").read()) if os.path.isfile(p) else None
+    meta = res["meta"]
+    try:
+        meta_rel = os.path.relpath(res["meta_path_real"], os.path.realpath(REPO_ROOT)).replace("\\", "/")
+    except ValueError:
+        meta_rel = res["meta_path_real"]
+    record = {
+        "schema_version": 1, "accepted_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "decision_ref": APPROVED_MASTER_DECISION_REF, "runner": "er019_family_x_entertainment_production_runner_01.py",
+        "runner_version": self_sha256(__file__), "runner_git_head": _runner_git_head(),
+        "meta_path": meta_rel, "meta_sha256_raw": res["meta_sha256_raw"], "slug": res["slug"],
+        "shas": {"master_sha256_lf": res["master_sha256_lf"],
+                 "master_body_raw_sha256_worktree": res["master_body_raw_sha256_worktree"],
+                 "evidence_ja_text_sha256": res["evidence_ja_text_sha256"], "revision2_raw_sha256": res["revision2_raw_sha256"],
+                 "annotated_md_sha256": res["annotated_md_sha256"], **res["actual_pinned"]},
+        "chain_method_observed": res["chain_method_observed"], "chain_method_allowlist": sorted(APPROVED_CHAIN_METHODS),
+        "checks": res["checks"], "registry_snapshot": res["registry_snapshot"],
+        "meta_user_eval_date": meta.get("user_eval_date"), "meta_note": meta.get("note"),
+        "cli": cli, "rundir_build": build, "rundir_current_raw_shas": current,
+    }
+    os.makedirs(f"{out_dir}/ja_writer", exist_ok=True)
+    with open(f"{out_dir}/{ACCEPTANCE_RECORD_REL}", "ab") as f:      # 追記のみ
+        f.write((json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n").encode("utf-8"))
+    return record
+
+
+def load_reused_ja_text(out_dir: str, approved_quality_master=None, slug=None, cli_args=None) -> str:
     """JA記事(ja_writer/revision2.md)の再利用(U-1/穴B): runtime_evidence.json の chain_method=="W-1" かつ
     annotated_md_sha256 が現在の注記済みB3契約(validate_annotated_b3)と一致する場合のみ再利用する。
-    来歴なし(旧Writer記事)・不一致(注記がstale/差し替え)はSTOP(旧記事の再生成は旧経路の worktree で行う)。"""
+    来歴なし(旧Writer記事)・不一致(注記がstale/差し替え)はSTOP(旧記事の再生成は旧経路の worktree で行う)。
+    案b(2026-10-11): approved_quality_master(metaパス)を明示したときだけ、承認済み品質マスターの無改変複製を
+    受理条件a〜g全件一致で受理(verify_approved_quality_master)し、受理記録をacceptance.jsonlへ追記する。既定None=従来動作。"""
+    if approved_quality_master is not None:
+        res = verify_approved_quality_master(out_dir, approved_quality_master, slug)   # 毎回フル再検証(記録は入力にしない)
+        append_approved_master_acceptance_record(out_dir, res, dict(cli_args or {}))
+        print(f"[B3-RUNNER][U-1] APPROVED_QUALITY_MASTER accepted: slug={res['slug']} master_sha={res['master_sha256_lf'][:12]} "
+              f"chain_method={res['chain_method_observed']!r} decision_ref={APPROVED_MASTER_DECISION_REF}")
+        return res["ja_text"]
     ev_path = f"{out_dir}/ja_writer/runtime_evidence.json"
     if not os.path.exists(ev_path):
         raise LegacyWriterProvenanceStop(
@@ -365,12 +617,20 @@ def build_arg_parser() -> argparse.ArgumentParser:
                          choices=("storyline_b3", "writer", "advanced", "standard"))
     parser.add_argument("--stop-after", default="standard",
                          choices=("storyline_b3", "writer", "advanced", "standard"))
+    parser.add_argument("--approved-quality-master", default=None,
+                         help="案b(U-1限定受入): 人間承認済み品質マスターのmetaパス(<repo>/docs/quality/ja_quality_masters/<slug>/E_master_meta.json)。"
+                              "指定時のみ、無改変複製のJA記事(chain_method=MAQ_TRIAL_W-1)を受理条件a〜g全件一致で再利用する。"
+                              "未指定=従来のU-1(既定)。--stage research/ledger/storyline_b3/writer・--regenerate-stage writer/storyline_b3と併用不可。")
     return parser
 
 
 def main() -> None:
     parser = build_arg_parser()
     args = parser.parse_args()
+
+    # 案b: 課金前の事前検証(get_client・Research・B3実行より前、受理条件a〜g全件+併用NG+revision2.md存在)。未指定ならNone。
+    approved_res = precheck_approved_quality_master(args)
+    ja_source_tag = approved_ja_source_tag(approved_res) if approved_res else None
 
     out_dir = args.out_dir
     os.makedirs(out_dir, exist_ok=True)
@@ -387,6 +647,9 @@ def main() -> None:
         "risk_flagger_module_sha256": self_sha256(rf.__file__),
         "review_queue_module_sha256": self_sha256(rq.__file__),
         "args": vars(args),
+        **({"approved_quality_master": {"meta_path": approved_res["meta_path_real"], "meta_sha256_raw": approved_res["meta_sha256_raw"],
+                                         "slug": approved_res["slug"], "master_sha256_lf": approved_res["master_sha256_lf"],
+                                         "ja_source": ja_source_tag}} if approved_res else {}),
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
     })
 
@@ -402,7 +665,7 @@ def main() -> None:
     efam.assert_budget_ok(out_dir, args.budget_jpy, "after research_ledger")
     if stage == "research_ledger":
         print("[B3-RUNNER] stage=research/ledger 完了。--stage storyline_b3以降は未実行。")
-        _write_cost_json(out_dir)
+        _write_cost_json(out_dir, ja_source=ja_source_tag)
         return
 
     storyline_dir = f"{out_dir}/storyline_b3"
@@ -420,7 +683,7 @@ def main() -> None:
         run_annotation_producer(out_dir)    # C4: 初回・regeneration・resume・再利用のすべてで storyline_b3 確定直後(Writer/契約検証の前)に呼ぶ
         if stage == "storyline_b3" or args.stop_after == "storyline_b3":
             print("[B3-RUNNER] stage=storyline_b3で停止(--stop-after storyline_b3)。")
-            _write_cost_json(out_dir)
+            _write_cost_json(out_dir, ja_source=ja_source_tag)
             return
     else:
         storyline_result = None
@@ -432,14 +695,15 @@ def main() -> None:
                 and args.regenerate_stage != "writer" and stage != "writer"):
             print(f"[B3-RUNNER][writer] 既存JA記事(R2)の再利用を検討: {ja_writer_dir}/revision2.md"
                   "(W-1来歴+注記契約sha一致を確認、U-1)")
-            ja_text = load_reused_ja_text(out_dir)
+            ja_text = load_reused_ja_text(out_dir, approved_quality_master=args.approved_quality_master,
+                                          slug=args.slug, cli_args=vars(args))
         else:
             writer_result = run_ja_writer(client, out_dir, args.budget_jpy)
             ja_text = writer_result["ja_text"]
             efam.assert_budget_ok(out_dir, args.budget_jpy, "after ja_writer")
         if stage == "writer" or args.stop_after == "writer":
             print("[B3-RUNNER] stage=writerで停止(--stop-after writer)。")
-            _write_cost_json(out_dir)
+            _write_cost_json(out_dir, ja_source=ja_source_tag)
             return
     else:
         ja_text = ""
@@ -450,11 +714,13 @@ def main() -> None:
         with cl.logging_context(RUNNER_TAG, "advanced"):
             efam.run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only="advanced")
         efam.assert_budget_ok(out_dir, args.budget_jpy, "after advanced")
+        if ja_source_tag:
+            write_ja_source_audit(out_dir, "b1b", ja_source_tag)
         run_post_en_risk_flag(out_dir, "b1b", args.budget_jpy, run_label=args.run_label or None)
         efam.assert_budget_ok(out_dir, args.budget_jpy, "after risk_flag b1b")
         if stage == "advanced" or args.stop_after == "advanced":
             print("[B3-RUNNER] stage=advancedで停止(--stop-after advanced、Mandatory STOP)。")
-            _write_cost_json(out_dir)
+            _write_cost_json(out_dir, ja_source=ja_source_tag)
             return
 
     # Standard Level調整(入力=Advanced英文) -> Standard RF(完成Standard英文 x 完全台帳、非Blocking)
@@ -462,20 +728,24 @@ def main() -> None:
         with cl.logging_context(RUNNER_TAG, "standard"):
             efam.run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only="standard")
         efam.assert_budget_ok(out_dir, args.budget_jpy, "after standard")
+        if ja_source_tag:
+            write_ja_source_audit(out_dir, "a2", ja_source_tag)
         run_post_en_risk_flag(out_dir, "a2", args.budget_jpy, run_label=args.run_label or None)
         efam.assert_budget_ok(out_dir, args.budget_jpy, "after risk_flag a2")
 
     print("[B3-RUNNER] Standardまで完了。Mandatory STOP(ユーザー確認前に後工程[scaffold/tts/"
           "assemble/player]へは進みません。本runnerにはそれらのstage自体が実装されていません)。")
-    _write_cost_json(out_dir)
+    _write_cost_json(out_dir, ja_source=ja_source_tag)
 
 
-def _write_cost_json(out_dir: str) -> None:
+def _write_cost_json(out_dir: str, ja_source=None) -> None:
     # C3-3: 非OpenAI(Gemini RF)対応のstage集計へ切替(er053_cost_aggregate_01)。式は旧関数と同じ
     # (openai+gemini、fail-closed)。旧`compute_stage_cost_breakdown`は他経路(Trial等)用に残置。
     # by_stage_jpy/total_jpyの形式は旧cost.jsonと互換、by_provider_jpyとRF Level別内訳を追加。
     breakdown = ca.compute_stage_cost_breakdown_multi(f"{out_dir}/raw_usage_log.jsonl")
     breakdown["risk_flag_by_level_model_condition_jpy"] = ca.rf_stage_summary(breakdown["by_stage_jpy"])
+    if ja_source:     # 案b: 記録のみ(分岐に使わない)
+        breakdown["ja_source"] = ja_source
     save_json(f"{out_dir}/cost.json", breakdown)
     print(f"[B3-RUNNER][cost] {breakdown}")
 
