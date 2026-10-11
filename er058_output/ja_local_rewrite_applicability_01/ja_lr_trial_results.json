@@ -1,0 +1,718 @@
+{
+ "cases": [
+  {
+   "id": "g8",
+   "role": "KEY_PHRASE(JA意味、LR対象外role)",
+   "type": "読み(熟->じく)+濁点(ガ->カ)",
+   "canonical": "熟すと出るガス",
+   "asr": "じくすと出るカス。",
+   "note": "Azure/whisperは正解転写。TTSは正しかった可能性が高い(Primary誤認)",
+   "ng_span_ja": {
+    "found": true,
+    "first": {
+     "tag": "replace",
+     "canon": "熟",
+     "asr": "じく",
+     "range": [
+      0,
+      1
+     ],
+     "ctx": "熟すと出"
+    },
+    "all": [
+     {
+      "tag": "replace",
+      "canon": "熟",
+      "asr": "じく",
+      "range": [
+       0,
+       1
+      ],
+      "ctx": "熟すと出"
+     },
+     {
+      "tag": "replace",
+      "canon": "ガ",
+      "asr": "カ",
+      "range": [
+       5,
+       6
+      ],
+      "ctx": "と出るガス"
+     }
+    ]
+   },
+   "existing_en_funcs_on_ja": {
+    "identify_ng_span_found": false,
+    "compute_unchanged_ratio_self": 0.0,
+    "compute_unchanged_ratio_near": 0.0
+   },
+   "model_returned": "gpt-6-luna",
+   "candidates": [
+    {
+     "id": "1",
+     "rewrite_type": "short_phrase_rewrite",
+     "rewritten_segment": "成熟すると出るガス",
+     "changed_span_before": "熟すと出る",
+     "changed_span_after": "成熟すると出る",
+     "rationale": "「成熟する」で「熟す」の意味を保ちつつ、問題の表現を避けています。",
+     "checks": {
+      "char_unchanged_ratio": 1.0,
+      "changed_chars": 2,
+      "length_ratio": 1.286,
+      "span_declaration_consistent": true,
+      "missing_content_runs_outside_span": [],
+      "numbers_outside_span_preserved": true,
+      "terminal_punct_same": true,
+      "identical_to_original": false,
+      "before_in_original": true
+     },
+     "reading_before": "じゅくすとでる",
+     "reading_after": "せいじゅくするとでる",
+     "en_full_segment_gate": {
+      "ok": false,
+      "reason": "SPAN_INCONSISTENT_UNDECLARED_CHANGE",
+      "length_ratio": 1.2857,
+      "orig_coverage": 1.0,
+      "span_check": "SPAN_INCONSISTENT_UNDECLARED_CHANGE"
+     },
+     "en_unchanged_ratio_gate7": 0.0
+    },
+    {
+     "id": "2",
+     "rewrite_type": "short_phrase_rewrite",
+     "rewritten_segment": "成熟が進むと発生するガス",
+     "changed_span_before": "熟すと出る",
+     "changed_span_after": "成熟が進むと発生する",
+     "rationale": "成熟が進むにつれてガスが出るという意味を保った自然な言い換えです。",
+     "checks": {
+      "char_unchanged_ratio": 0.714,
+      "changed_chars": 9,
+      "length_ratio": 1.714,
+      "span_declaration_consistent": true,
+      "missing_content_runs_outside_span": [],
+      "numbers_outside_span_preserved": true,
+      "terminal_punct_same": true,
+      "identical_to_original": false,
+      "before_in_original": true
+     },
+     "reading_before": "じゅくすとでる",
+     "reading_after": "せいじゅくがすすむとはっせいする",
+     "en_full_segment_gate": {
+      "ok": false,
+      "reason": "TOO_LONG_OVER_EXPANDED",
+      "length_ratio": 1.7143
+     },
+     "en_unchanged_ratio_gate7": 0.0
+    },
+    {
+     "id": "3",
+     "rewrite_type": "short_phrase_rewrite",
+     "rewritten_segment": "成熟に伴って生じるガス",
+     "changed_span_before": "熟すと出る",
+     "changed_span_after": "成熟に伴って生じる",
+     "rationale": "成熟に伴いガスが出るという意味を保ち、問題の表現を避けています。",
+     "checks": {
+      "char_unchanged_ratio": 0.571,
+      "changed_chars": 7,
+      "length_ratio": 1.571,
+      "span_declaration_consistent": true,
+      "missing_content_runs_outside_span": [],
+      "numbers_outside_span_preserved": true,
+      "terminal_punct_same": true,
+      "identical_to_original": false,
+      "before_in_original": true
+     },
+     "reading_before": "じゅくすとでる",
+     "reading_after": "せいじゅくにともなってしょうじる",
+     "en_full_segment_gate": {
+      "ok": false,
+      "reason": "TOO_LONG_OVER_EXPANDED",
+      "length_ratio": 1.5714
+     },
+     "en_unchanged_ratio_gate7": 0.0
+    }
+   ],
+   "usage": {
+    "in": 454,
+    "out": 2589
+   }
+  },
+  {
+   "id": "g5",
+   "role": "KEY_PHRASE(JA意味、LR対象外role)",
+   "type": "同形異音語/漢字誤認(所->勝、程->亭)",
+   "canonical": "名所を中心にした旅程",
+   "asr": "名勝を中心にした旅亭。",
+   "note": "SCGでC2(heterophone)除外された例",
+   "ng_span_ja": {
+    "found": true,
+    "first": {
+     "tag": "replace",
+     "canon": "所",
+     "asr": "勝",
+     "range": [
+      1,
+      2
+     ],
+     "ctx": "名所を中心"
+    },
+    "all": [
+     {
+      "tag": "replace",
+      "canon": "所",
+      "asr": "勝",
+      "range": [
+       1,
+       2
+      ],
+      "ctx": "名所を中心"
+     },
+     {
+      "tag": "replace",
+      "canon": "程",
+      "asr": "亭",
+      "range": [
+       9,
+       10
+      ],
+      "ctx": "した旅程"
+     }
+    ]
+   },
+   "existing_en_funcs_on_ja": {
+    "identify_ng_span_found": false,
+    "compute_unchanged_ratio_self": 0.0,
+    "compute_unchanged_ratio_near": 0.0
+   },
+   "model_returned": "gpt-6-luna",
+   "candidates": [
+    {
+     "id": "1",
+     "rewrite_type": "short_phrase_rewrite",
+     "rewritten_segment": "名所を軸にした旅程",
+     "changed_span_before": "名所を中心に",
+     "changed_span_after": "名所を軸に",
+     "rationale": "「中心に」を「軸に」に替え、名所を旅程の主軸にする意味を保ちます。",
+     "checks": {
+      "char_unchanged_ratio": 0.8,
+      "changed_chars": 2,
+      "length_ratio": 0.9,
+      "span_declaration_consistent": true,
+      "missing_content_runs_outside_span": [],
+      "numbers_outside_span_preserved": true,
+      "terminal_punct_same": true,
+      "identical_to_original": false,
+      "before_in_original": true
+     },
+     "reading_before": "めいしょをちゅうしんに",
+     "reading_after": "めいしょをじくに",
+     "en_full_segment_gate": {
+      "ok": false,
+      "reason": "SPAN_INCONSISTENT_UNDECLARED_CHANGE",
+      "length_ratio": 0.9,
+      "orig_coverage": 0.8,
+      "span_check": "SPAN_INCONSISTENT_UNDECLARED_CHANGE"
+     },
+     "en_unchanged_ratio_gate7": 0.0
+    },
+    {
+     "id": "2",
+     "rewrite_type": "short_phrase_rewrite",
+     "rewritten_segment": "名所をメインにした旅程",
+     "changed_span_before": "名所を中心にした",
+     "changed_span_after": "名所をメインにした",
+     "rationale": "自然な話し言葉にしつつ、名所を主に据える意味を保ちます。",
+     "checks": {
+      "char_unchanged_ratio": 0.8,
+      "changed_chars": 3,
+      "length_ratio": 1.1,
+      "span_declaration_consistent": true,
+      "missing_content_runs_outside_span": [],
+      "numbers_outside_span_preserved": true,
+      "terminal_punct_same": true,
+      "identical_to_original": false,
+      "before_in_original": true
+     },
+     "reading_before": "めいしょをちゅうしんにした",
+     "reading_after": "めいしょをめいんにした",
+     "en_full_segment_gate": {
+      "ok": false,
+      "reason": "SPAN_INCONSISTENT_UNDECLARED_CHANGE",
+      "length_ratio": 1.1,
+      "orig_coverage": 0.8,
+      "span_check": "SPAN_INCONSISTENT_UNDECLARED_CHANGE"
+     },
+     "en_unchanged_ratio_gate7": 0.0
+    },
+    {
+     "id": "3",
+     "rewrite_type": "short_phrase_rewrite",
+     "rewritten_segment": "名所を主軸にした旅程",
+     "changed_span_before": "名所を中心にした",
+     "changed_span_after": "名所を主軸にした",
+     "rationale": "「主軸にした」と言い換え、名所を旅程の中心に据える意味を保ちます。",
+     "checks": {
+      "char_unchanged_ratio": 0.8,
+      "changed_chars": 2,
+      "length_ratio": 1.0,
+      "span_declaration_consistent": true,
+      "missing_content_runs_outside_span": [],
+      "numbers_outside_span_preserved": true,
+      "terminal_punct_same": true,
+      "identical_to_original": false,
+      "before_in_original": true
+     },
+     "reading_before": "めいしょをちゅうしんにした",
+     "reading_after": "めいしょをしゅじくにした",
+     "en_full_segment_gate": {
+      "ok": false,
+      "reason": "SPAN_INCONSISTENT_UNDECLARED_CHANGE",
+      "length_ratio": 1.0,
+      "orig_coverage": 0.8,
+      "span_check": "SPAN_INCONSISTENT_UNDECLARED_CHANGE"
+     },
+     "en_unchanged_ratio_gate7": 0.0
+    }
+   ],
+   "usage": {
+    "in": 454,
+    "out": 1048
+   }
+  },
+  {
+   "id": "g6",
+   "role": "KEY_PHRASE(JA意味、LR対象外role)",
+   "type": "脱落(なり)",
+   "canonical": "形になり始める",
+   "asr": "形に始める。",
+   "note": "Primary/Azureとも「形に始める」(真の脱落の可能性)",
+   "ng_span_ja": {
+    "found": true,
+    "first": {
+     "tag": "delete",
+     "canon": "なり",
+     "asr": "",
+     "range": [
+      2,
+      4
+     ],
+     "ctx": "形になり始める"
+    },
+    "all": [
+     {
+      "tag": "delete",
+      "canon": "なり",
+      "asr": "",
+      "range": [
+       2,
+       4
+      ],
+      "ctx": "形になり始める"
+     }
+    ]
+   },
+   "existing_en_funcs_on_ja": {
+    "identify_ng_span_found": false,
+    "compute_unchanged_ratio_self": 0.0,
+    "compute_unchanged_ratio_near": 0.0
+   },
+   "model_returned": "gpt-6-luna",
+   "candidates": [
+    {
+     "id": "1",
+     "rewrite_type": "short_phrase_rewrite",
+     "rewritten_segment": "形を成し始める",
+     "changed_span_before": "形になり始める",
+     "changed_span_after": "形を成し始める",
+     "rationale": "「形になり始める」と同じく、形を取り始める意味を保ちつつ、「なり」を避けています。",
+     "checks": {
+      "char_unchanged_ratio": 0.571,
+      "changed_chars": 3,
+      "length_ratio": 1.0,
+      "span_declaration_consistent": true,
+      "missing_content_runs_outside_span": [],
+      "numbers_outside_span_preserved": true,
+      "terminal_punct_same": true,
+      "identical_to_original": false,
+      "before_in_original": true
+     },
+     "reading_before": "かたちになりはじめる",
+     "reading_after": "かたちをなしはじめる",
+     "en_full_segment_gate": {
+      "ok": false,
+      "reason": "LOW_ORIGINAL_COVERAGE_OVER_MODIFIED_OR_UNRELATED",
+      "length_ratio": 1.0,
+      "orig_coverage": 0.5714
+     },
+     "en_unchanged_ratio_gate7": 0.0
+    },
+    {
+     "id": "2",
+     "rewrite_type": "short_phrase_rewrite",
+     "rewritten_segment": "形を取り始める",
+     "changed_span_before": "形になり始める",
+     "changed_span_after": "形を取り始める",
+     "rationale": "自然な言い換えで、形を取り始めるという意味を保っています。",
+     "checks": {
+      "char_unchanged_ratio": 0.714,
+      "changed_chars": 2,
+      "length_ratio": 1.0,
+      "span_declaration_consistent": true,
+      "missing_content_runs_outside_span": [],
+      "numbers_outside_span_preserved": true,
+      "terminal_punct_same": true,
+      "identical_to_original": false,
+      "before_in_original": true
+     },
+     "reading_before": "かたちになりはじめる",
+     "reading_after": "かたちをとりはじめる",
+     "en_full_segment_gate": {
+      "ok": true,
+      "reason": "FULL_SEGMENT_OK",
+      "length_ratio": 1.0,
+      "orig_coverage": 0.7143,
+      "span_check": "SPAN_CONSISTENT"
+     },
+     "en_unchanged_ratio_gate7": 0.0
+    },
+    {
+     "id": "3",
+     "rewrite_type": "short_phrase_rewrite",
+     "rewritten_segment": "形を帯び始める",
+     "changed_span_before": "形になり始める",
+     "changed_span_after": "形を帯び始める",
+     "rationale": "「形になり始める」と同様に、形が現れ始める意味を表します。",
+     "checks": {
+      "char_unchanged_ratio": 0.571,
+      "changed_chars": 3,
+      "length_ratio": 1.0,
+      "span_declaration_consistent": true,
+      "missing_content_runs_outside_span": [],
+      "numbers_outside_span_preserved": true,
+      "terminal_punct_same": true,
+      "identical_to_original": false,
+      "before_in_original": true
+     },
+     "reading_before": "かたちになりはじめる",
+     "reading_after": "かたちをおびはじめる",
+     "en_full_segment_gate": {
+      "ok": false,
+      "reason": "LOW_ORIGINAL_COVERAGE_OVER_MODIFIED_OR_UNRELATED",
+      "length_ratio": 1.0,
+      "orig_coverage": 0.5714
+     },
+     "en_unchanged_ratio_gate7": 0.0
+    }
+   ],
+   "usage": {
+    "in": 453,
+    "out": 1110
+   }
+  },
+  {
+   "id": "g21",
+   "role": "COMMENT(LR対象role)",
+   "type": "数詞表記(二->2)+固有語誤認(続き->鈴木)",
+   "canonical": "世界市場の価格は下がりましたが、米国のコーヒー価格は前年同月より高いままでした。この二つは比べる期間が違い、豆の値下がりが店頭価格に表れるまでには時間がかかります。こうした違いをふまえて、続きに耳を傾けてみましょう。",
+   "asr": "世界市場の価格は下がりましたが、米国のコーヒー価格は前年同月より高いままでした。この2つは比べる期間が違い、豆の値下がりが店頭価格に表れるまでには時間がかかります。こうした違いを踏まえて、鈴木に耳を傾けてみましょう。",
+   "note": "Azureは「続き」を正しく転写。Production方式の「最初のdiff」は表記差(二->2)を選ぶ",
+   "ng_span_ja": {
+    "found": true,
+    "first": {
+     "tag": "replace",
+     "canon": "二",
+     "asr": "2",
+     "range": [
+      40,
+      41
+     ],
+     "ctx": "たこの二つは比"
+    },
+    "all": [
+     {
+      "tag": "replace",
+      "canon": "二",
+      "asr": "2",
+      "range": [
+       40,
+       41
+      ],
+      "ctx": "たこの二つは比"
+     },
+     {
+      "tag": "replace",
+      "canon": "ふ",
+      "asr": "踏",
+      "range": [
+       85,
+       86
+      ],
+      "ctx": "違いをふまえて"
+     },
+     {
+      "tag": "replace",
+      "canon": "続き",
+      "asr": "鈴木",
+      "range": [
+       89,
+       91
+      ],
+      "ctx": "まえて続きに耳を"
+     }
+    ]
+   },
+   "existing_en_funcs_on_ja": {
+    "identify_ng_span_found": true,
+    "compute_unchanged_ratio_self": 0.0,
+    "compute_unchanged_ratio_near": 0.0
+   },
+   "model_returned": "gpt-6-luna",
+   "candidates": [
+    {
+     "id": "1",
+     "rewrite_type": "short_phrase_rewrite",
+     "rewritten_segment": "世界市場の価格は下がりましたが、米国のコーヒー価格は前年同月より高いままでした。両者では比べる期間が違い、豆の値下がりが店頭価格に表れるまでには時間がかかります。こうした違いをふまえて、続きに耳を傾けてみましょう。",
+     "changed_span_before": "この二つは比べる期間が違い",
+     "changed_span_after": "両者では比べる期間が違い",
+     "rationale": "「両者」で二つの価格を指し、比較する期間が違うという意味を保っています。",
+     "checks": {
+      "char_unchanged_ratio": 0.963,
+      "changed_chars": 4,
+      "length_ratio": 0.991,
+      "span_declaration_consistent": true,
+      "missing_content_runs_outside_span": [],
+      "numbers_outside_span_preserved": true,
+      "terminal_punct_same": true,
+      "identical_to_original": false,
+      "before_in_original": true
+     },
+     "reading_before": "このふたつはくらべるきかんがちがい",
+     "reading_after": "りょうしゃではくらべるきかんがちがい",
+     "en_full_segment_gate": {
+      "ok": true,
+      "reason": "FULL_SEGMENT_OK",
+      "length_ratio": 0.9907,
+      "orig_coverage": 0.963,
+      "span_check": "SPAN_CONSISTENT"
+     },
+     "en_unchanged_ratio_gate7": 0.0
+    },
+    {
+     "id": "2",
+     "rewrite_type": "short_phrase_rewrite",
+     "rewritten_segment": "世界市場の価格は下がりましたが、米国のコーヒー価格は前年同月より高いままでした。比較する期間は両者で異なり、豆の値下がりが店頭価格に表れるまでには時間がかかります。こうした違いをふまえて、続きに耳を傾けてみましょう。",
+     "changed_span_before": "この二つは比べる期間が違い",
+     "changed_span_after": "比較する期間は両者で異なり",
+     "rationale": "比較する期間が二つの価格の間で異なることを、自然な語順で表しています。",
+     "checks": {
+      "char_unchanged_ratio": 0.917,
+      "changed_chars": 14,
+      "length_ratio": 1.0,
+      "span_declaration_consistent": true,
+      "missing_content_runs_outside_span": [],
+      "numbers_outside_span_preserved": true,
+      "terminal_punct_same": true,
+      "identical_to_original": false,
+      "before_in_original": true
+     },
+     "reading_before": "このふたつはくらべるきかんがちがい",
+     "reading_after": "ひかくするきかんはりょうしゃでことなり",
+     "en_full_segment_gate": {
+      "ok": true,
+      "reason": "FULL_SEGMENT_OK",
+      "length_ratio": 1.0,
+      "orig_coverage": 0.9167,
+      "span_check": "SPAN_CONSISTENT"
+     },
+     "en_unchanged_ratio_gate7": 0.0
+    },
+    {
+     "id": "3",
+     "rewrite_type": "short_phrase_rewrite",
+     "rewritten_segment": "世界市場の価格は下がりましたが、米国のコーヒー価格は前年同月より高いままでした。それぞれの比較期間が異なり、豆の値下がりが店頭価格に表れるまでには時間がかかります。こうした違いをふまえて、続きに耳を傾けてみましょう。",
+     "changed_span_before": "この二つは比べる期間が違い",
+     "changed_span_after": "それぞれの比較期間が異なり",
+     "rationale": "各価格について比較に用いる期間が異なるという、元の趣旨を保っています。",
+     "checks": {
+      "char_unchanged_ratio": 0.926,
+      "changed_chars": 12,
+      "length_ratio": 1.0,
+      "span_declaration_consistent": true,
+      "missing_content_runs_outside_span": [],
+      "numbers_outside_span_preserved": true,
+      "terminal_punct_same": true,
+      "identical_to_original": false,
+      "before_in_original": true
+     },
+     "reading_before": "このふたつはくらべるきかんがちがい",
+     "reading_after": "それぞれのひかくきかんがことなり",
+     "en_full_segment_gate": {
+      "ok": true,
+      "reason": "FULL_SEGMENT_OK",
+      "length_ratio": 1.0,
+      "orig_coverage": 0.9259,
+      "span_check": "SPAN_CONSISTENT"
+     },
+     "en_unchanged_ratio_gate7": 0.0
+    }
+   ],
+   "usage": {
+    "in": 517,
+    "out": 1912
+   }
+  },
+  {
+   "id": "g36",
+   "role": "COMMENT(LR対象role)",
+   "type": "記号読み(％->パーセント)",
+   "canonical": "まず、20％という計画が発表されたあと、支払い方法など何がまだ決まっていなかったのかに注目してください。",
+   "asr": "まず、20パーセントという計画が発表された後、支払い方法など何がまだ決まっていなかったのかに注目してください。",
+   "note": "表記差のみ(TTSは正しい)。Azure=20%",
+   "ng_span_ja": {
+    "found": true,
+    "first": {
+     "tag": "replace",
+     "canon": "％",
+     "asr": "パーセント",
+     "range": [
+      4,
+      5
+     ],
+     "ctx": "ず20％という"
+    },
+    "all": [
+     {
+      "tag": "replace",
+      "canon": "％",
+      "asr": "パーセント",
+      "range": [
+       4,
+       5
+      ],
+      "ctx": "ず20％という"
+     },
+     {
+      "tag": "replace",
+      "canon": "あと",
+      "asr": "後",
+      "range": [
+       16,
+       18
+      ],
+      "ctx": "されたあと支払い"
+     }
+    ]
+   },
+   "existing_en_funcs_on_ja": {
+    "identify_ng_span_found": true,
+    "compute_unchanged_ratio_self": 0.0,
+    "compute_unchanged_ratio_near": 0.0
+   },
+   "model_returned": "gpt-6-luna",
+   "candidates": [
+    {
+     "id": "1",
+     "rewrite_type": "single_word_swap",
+     "rewritten_segment": "まず、20パーセントという計画が発表されたあと、支払い方法など何がまだ決まっていなかったのかに注目してください。",
+     "changed_span_before": "20％",
+     "changed_span_after": "20パーセント",
+     "rationale": "「％」を読みの「パーセント」に置き換え、数値と意味はそのまま保ちます。",
+     "checks": {
+      "char_unchanged_ratio": 0.981,
+      "changed_chars": 5,
+      "length_ratio": 1.077,
+      "span_declaration_consistent": true,
+      "missing_content_runs_outside_span": [],
+      "numbers_outside_span_preserved": true,
+      "terminal_punct_same": true,
+      "identical_to_original": false,
+      "before_in_original": true
+     },
+     "reading_before": "20％",
+     "reading_after": "20ぱーせんと",
+     "en_full_segment_gate": {
+      "ok": false,
+      "reason": "SPAN_INCONSISTENT_UNDECLARED_CHANGE",
+      "length_ratio": 1.0769,
+      "orig_coverage": 0.9808,
+      "span_check": "SPAN_INCONSISTENT_UNDECLARED_CHANGE"
+     },
+     "en_unchanged_ratio_gate7": 0.0
+    },
+    {
+     "id": "2",
+     "rewrite_type": "short_phrase_rewrite",
+     "rewritten_segment": "まず、20パーセントの計画が発表されたあと、支払い方法など何がまだ決まっていなかったのかに注目してください。",
+     "changed_span_before": "20％という",
+     "changed_span_after": "20パーセントの",
+     "rationale": "「20パーセントの計画」と自然に言い換え、同じ計画を指す表現にします。",
+     "checks": {
+      "char_unchanged_ratio": 0.923,
+      "changed_chars": 6,
+      "length_ratio": 1.038,
+      "span_declaration_consistent": true,
+      "missing_content_runs_outside_span": [],
+      "numbers_outside_span_preserved": true,
+      "terminal_punct_same": true,
+      "identical_to_original": false,
+      "before_in_original": true
+     },
+     "reading_before": "20％という",
+     "reading_after": "20ぱーせんとの",
+     "en_full_segment_gate": {
+      "ok": false,
+      "reason": "SPAN_INCONSISTENT_UNDECLARED_CHANGE",
+      "length_ratio": 1.0385,
+      "orig_coverage": 0.9231,
+      "span_check": "SPAN_INCONSISTENT_UNDECLARED_CHANGE"
+     },
+     "en_unchanged_ratio_gate7": 0.0
+    },
+    {
+     "id": "3",
+     "rewrite_type": "short_phrase_rewrite",
+     "rewritten_segment": "まず、20パーセントとした計画が発表されたあと、支払い方法など何がまだ決まっていなかったのかに注目してください。",
+     "changed_span_before": "20％という",
+     "changed_span_after": "20パーセントとした",
+     "rationale": "計画の数値を20パーセントと定めた意味を保ちつつ、表現を言い換えます。",
+     "checks": {
+      "char_unchanged_ratio": 0.942,
+      "changed_chars": 7,
+      "length_ratio": 1.077,
+      "span_declaration_consistent": true,
+      "missing_content_runs_outside_span": [],
+      "numbers_outside_span_preserved": true,
+      "terminal_punct_same": true,
+      "identical_to_original": false,
+      "before_in_original": true
+     },
+     "reading_before": "20％という",
+     "reading_after": "20ぱーせんととした",
+     "en_full_segment_gate": {
+      "ok": false,
+      "reason": "SPAN_INCONSISTENT_UNDECLARED_CHANGE",
+      "length_ratio": 1.0769,
+      "orig_coverage": 0.9423,
+      "span_check": "SPAN_INCONSISTENT_UNDECLARED_CHANGE"
+     },
+     "en_unchanged_ratio_gate7": 0.0
+    }
+   ],
+   "usage": {
+    "in": 468,
+    "out": 1801
+   }
+  }
+ ],
+ "cost": {
+  "model_requested": "gpt-6-luna",
+  "reasoning_effort": "high",
+  "calls": 5,
+  "input_tokens": 2346,
+  "output_tokens": 8460,
+  "est_usd": 0.004465,
+  "est_jpy": 0.714,
+  "basis": "gpt-6-luna 単価 $0.10/$0.50 per 1M(routing/pricing_snapshot登録値)、USD_JPY=160。請求画面未確認"
+ }
+}
