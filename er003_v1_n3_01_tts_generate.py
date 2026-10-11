@@ -544,6 +544,8 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                                    "audio_classification": cls.classification,
                                    "reading_resolver_info": getattr(cls, "reading_resolver_info", None),
+                                   # OPEN-258 SCG証跡(fallback attemptでも標準経路と同様にSCGが動く)
+                                   "scg_info": getattr(cls, "scg_info", None),
                                    "verified": verified})
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
@@ -554,6 +556,7 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
             "asr_text": asr_text, "audio_classification": cls.classification,
             "length_ok": length_ok, "verified": verified,
             "reading_resolver_info": getattr(cls, "reading_resolver_info", None),
+            "scg_info": getattr(cls, "scg_info", None),
         })
         fallback_attempts[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
@@ -561,6 +564,7 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
             r["asr_text"] = asr_text
             r["audio_classification"] = cls.classification
             r["reading_resolver_info"] = getattr(cls, "reading_resolver_info", None)
+            r["scg_info"] = getattr(cls, "scg_info", None)
             r["fallback_used"] = True
             r["standard_attempts_log"] = standard.get("attempts_log")
             r["fallback_attempts_log"] = fallback_attempts

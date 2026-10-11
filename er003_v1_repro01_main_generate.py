@@ -373,6 +373,9 @@ def generate_narration_snippet_verified_strict(
             "phonetic_verdict": phonetic_verdict, "audio_classification": audio_classification,
             "connected_speech_info": getattr(cls, "connected_speech_info", None) if language == "en" else None,
             "reading_resolver_info": getattr(cls, "reading_resolver_info", None) if language == "ja" else None,
+            # OPEN-258-JA-SECONDARY-ASR-PRODUCTION-WIRING-01: SCG(Secondary Confirm Gate)の
+            # 証跡(日本語のみ、TRUE_CONTENT_MISMATCH時のみ非None、既存キー不変)。
+            "scg_info": getattr(cls, "scg_info", None) if language == "ja" else None,
             "verified": verified,
             "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
             "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
@@ -405,6 +408,7 @@ def generate_narration_snippet_verified_strict(
             "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
             "repetition_qa_checked": rep_gate["repetition_qa_checked"] if language == "en" else False,
             "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence") if language == "en" else None,
+            "scg_info": getattr(cls, "scg_info", None) if language == "ja" else None,
             # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01
             # (適用範囲: 英語Key Phrase Component経路のみ、asr_prompt/
             # enable_non_latin_cascadeが既定[None/False]の他呼び出し元は
@@ -426,6 +430,7 @@ def generate_narration_snippet_verified_strict(
                     "audio_classification": audio_classification,
                     "connected_speech_info": getattr(cls, "connected_speech_info", None) if language == "en" else None,
                     "reading_resolver_info": getattr(cls, "reading_resolver_info", None) if language == "ja" else None,
+                    "scg_info": getattr(cls, "scg_info", None) if language == "ja" else None,
                     "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
                     "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
                     "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
