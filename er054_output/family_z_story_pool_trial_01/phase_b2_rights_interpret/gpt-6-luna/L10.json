@@ -1,0 +1,70 @@
+{
+  "work_id": "L10",
+  "interp_version": "family_z_rights_interpret_v2_work_edition",
+  "requested_model": "gpt-6-luna",
+  "actual_model_id": "gpt-6-luna",
+  "routing_key": "FAMILY_Z_TRIAL_RIGHTS_INTERPRET",
+  "mock": false,
+  "reasoning_effort": "medium",
+  "interpreted_at": "2026-10-11T05:29:38.117288+00:00",
+  "usage": {
+    "input_tokens": 2665,
+    "output_tokens": 761
+  },
+  "prompt_sha256": "5d54e576697de34124c8e1f79dc2d87927136dda026e9a837cb029e22d501ed3",
+  "usage_full": {
+    "input_tokens": 2665,
+    "input_tokens_details": {
+      "cache_write_tokens": 2662,
+      "cached_tokens": 0
+    },
+    "output_tokens": 761,
+    "output_tokens_details": {
+      "reasoning_tokens": 162
+    },
+    "total_tokens": 3426
+  },
+  "elapsed_sec": 6.54,
+  "response_id": "resp_0a8032779ffdccfe006acb1ebbb96087d0ade4f58deba94bc9",
+  "developer_message": "あなたは英語学習マガジンのFiction編集部の権利確認補助者である。与えられた『Phase B決定論判定JSON』(Pythonが日本の著作権法ルールで計算した結果)と書誌メタ・未確認事項だけを根拠に、権利状態を整理・要約し、未確認情報を明確化し、REVIEW_REQUIREDの解消に必要な確認事項を挙げる。あなたは最終判定者ではない。PASS/NGを決める欄は無く、決定論判定を変更・上書きすることはできない。入力に無い事実(没年・出版事情・翻訳者・出典)を記憶から補ってはならない。入力に無い情報は『未確認』と明記する。米国のPD状態を日本の利用条件の根拠にしてはならない。原語原作の権利(work_rights)と、利用した版・翻訳の権利(edition_rights)は必ず分けて述べ、混同しない。判定の根拠は work_rights(原語原作の著者の日本国内保護期間と一次資料の取得状況)だけであり、edition_rights は参考情報で作品の権利判断・記事化の前提条件にしてはならない。既存翻訳に権利上の懸念があっても、原語原作に問題が無ければ作品を懸念扱いにしない(翻訳側の懸念は concerns に文章で書くだけにし、llm_concern_level には反映しない)。懸念(llm_concern_level)は、入力から読み取れる「原語原作(work_rights)」に関する権利上の疑義の度合いだけを答える(none=疑義なし / review=確認が必要 / ng_concern=権利NGの疑い)。",
+  "user_prompt_full": "[入力: Phase B決定論判定JSON(作品ID L10)]\n{\n \"work_id\": \"L10\",\n \"title_ja\": \"どんぐりと山猫\",\n \"title_en\": \"The Acorns and the Wildcat\",\n \"genre\": \"近代日本童話\",\n \"kind\": \"ja_original\",\n \"screened_at\": \"2026-10-11T05:26:53.566745+00:00\",\n \"as_of_date\": \"2026-10-11\",\n \"screening_version\": \"02_original_language\",\n \"author\": {\n  \"name\": \"宮沢賢治\",\n  \"birth_year\": 1896,\n  \"death_year\": 1933,\n  \"source\": \"青空文庫 図書カード No.1925 (card.html)\"\n },\n \"first_publication\": {\n  \"year\": 1924,\n  \"text\": \"『イーハトヴ童話 注文の多い料理店』1924(大正13)年12月1日\",\n  \"source\": \"青空文庫 図書カード No.1925 初出欄\"\n },\n \"work_rights\": {\n  \"role\": \"main_basis_of_decision\",\n  \"original_language\": \"ja\",\n  \"work_title_original\": \"どんぐりと山猫\",\n  \"primary_source_is_original_language_text\": true,\n  \"primary_source_label\": \"青空文庫(日本語原作)\",\n  \"original_author_status_jp\": \"PD\",\n  \"original_author_subject\": {\n   \"subject\": \"宮沢賢治\",\n   \"group\": \"JP\",\n   \"calc\": {\n    \"death_year\": 1933,\n    \"wartime_applied\": false,\n    \"expiry_50y_incl_wartime\": \"1983-12-31\",\n    \"expiry_used\": \"1983-12-31\",\n    \"regime\": \"没後50年(旧法)で2018-12-30前に満了済み。2018年の70年化は非遡及のためPD確定\",\n    \"pd_as_of_today\": true,\n    \"borderline_wartime_near_2018_boundary\": false,\n    \"days_before_2018_boundary\": 12783\n   },\n   \"status\": \"PD\"\n  },\n  \"first_publication\": {\n   \"year\": 1924,\n   \"text\": \"『イーハトヴ童話 注文の多い料理店』1924(大正13)年12月1日\",\n   \"source\": \"青空文庫 図書カード No.1925 初出欄\"\n  }\n },\n \"edition_rights\": {\n  \"role\": \"reference_only_not_a_precondition_for_article\",\n  \"note\": \"利用した版・翻訳の権利は参考情報。原語原作がPDなら、版/翻訳の権利は作品のPASS/NGに影響させない(本Trialは原語原作を自前でadaptationする設計)。\",\n  \"edition_used\": \"青空文庫 新字旧仮名 XHTML版(L03と同じ旧仮名系で統一)。\",\n  \"edition_card_fields\": {\n   \"teihon\": \"宮沢賢治全集8 / ちくま文庫、筑摩書房 / 1986（昭和61）年1月28日\",\n   \"moji_type\": \"新字旧仮名\",\n   \"input_proof\": [\n    \"土屋隆\",\n    \"noriko saito\"\n   ]\n  },\n  \"reference_translations\": [],\n  \"reference_translation_subjects\": [],\n  \"reference_translation_status_jp\": [\n   \"n/a\"\n  ],\n  \"reference_translation_note\": null\n },\n \"primary_source\": {\n  \"language\": \"ja\",\n  \"card_url\": \"https://www.aozora.gr.jp/cards/000081/card1925.html\",\n  \"text_url\": \"https://www.aozora.gr.jp/cards/000081/files/1925_17912.html\",\n  \"fetch_ok\": true,\n  \"text_http_status\": 200,\n  \"text_bytes\": 17708,\n  \"text_plain_chars\": 6558,\n  \"text_fetched_at\": \"2026-10-11T04:47:54.000485+00:00\",\n  \"fetch_attempts\": null\n },\n \"edition_note\": \"青空文庫 新字旧仮名 XHTML版(L03と同じ旧仮名系で統一)。\",\n \"work_vs_edition\": {\n  \"original_work_status_jp\": \"PD\",\n  \"edition_translation_status_jp_reference_only\": [\n   \"n/a(原語版)\"\n  ],\n  \"reference_translation_pub_year\": null\n },\n \"rights_subjects\": [\n  {\n   \"subject\": \"宮沢賢治\",\n   \"group\": \"JP\",\n   \"calc\": {\n    \"death_year\": 1933,\n    \"wartime_applied\": false,\n    \"expiry_50y_incl_wartime\": \"1983-12-31\",\n    \"expiry_used\": \"1983-12-31\",\n    \"regime\": \"没後50年(旧法)で2018-12-30前に満了済み。2018年の70年化は非遡及のためPD確定\",\n    \"pd_as_of_today\": true,\n    \"borderline_wartime_near_2018_boundary\": false,\n    \"days_before_2018_boundary\": 12783\n   },\n   \"status\": \"PD\"\n  }\n ],\n \"z1_checks\": {\n  \"us_pd_used_as_jp_basis\": false,\n  \"us_status_record_only\": \"未確認(記録事項。Z-1により日本国内PD判定には使わない)\",\n  \"primary_source_is_original_language\": true,\n  \"edition_or_translation_rights_used_as_precondition\": false,\n  \"data_vs_card_checks\": {\n   \"death_year_matches_card\": true,\n   \"birth_year_matches_card\": true\n  },\n  \"other_checks\": {\n   \"first_publication_corroborated\": {\n    \"aux_url\": \"https://www.aozora.gr.jp/cards/000081/card1925.html\",\n    \"regex\": \"1924\",\n    \"found\": true\n   },\n   \"jp_term_rule_phrases_found_in_fetched_source\": {\n    \"50 years\": true,\n    \"not applied retroactively\": true,\n    \"3,794 days\": true\n   }\n  }\n },\n \"unconfirmed\": [\n  {\n   \"item\": \"法律原文・文化庁資料による確認は未実施(二次資料に基づく機械判定)。法的最終判断ではなく弁護士確認が望ましい。\",\n   \"blocking\": false\n  },\n  {\n   \"item\": \"米国等の他法域status: 未確認(記録事項。Z-1により日本国内PD判定には使わない)\",\n   \"blocking\": false\n  }\n ],\n \"decision\": \"PASS\",\n \"decision_basis\": \"work_rights(原語原作の著者の日本国内保護期間)のみ。edition_rightsは参考。\",\n \"decision_reason\": \"原語原作の著者宮沢賢治(没1933)は日本でPD(満了1983-12-31。没後50年(旧法)で2018-12-30前に満了済み。2018年の70年化は非遡及のためPD確定)。一次資料は原語原作(青空文庫(日本語原作))。\"\n}\n\n[手順]\n1. rights_state_summary: 権利状態の整理(日本国内の原語原作の保護状態を先に、次に版・翻訳(edition_rights、参考情報)の扱いを分けて、2〜4文、日本語)。\n2. basis_summary: 判断根拠の要約(入力のどのフィールドに基づくか、決定論判定 decision=PASS をどう読んだか)。\n3. subjects: 権利者(rights_subjects)ごとの状態の読み取り(subject, status_as_given(入力のstatusをそのまま), note)。\n4. unconfirmed_clarified: 未確認事項(unconfirmed)ごとに、なぜ重要か(why_matters)と、最終PASSに対してブロッキングか(blocking_for_final_pass)。入力に無い未確認事項を足す場合はadded_by_llm=trueにする。\n5. confirmations_needed_to_resolve_review: REVIEW_REQUIRED/最終PASSに必要な追加確認事項(誰が/何を確認するか、日本語の短文の配列、0個可)。\n6. llm_concern_level(none/review/ng_concern)と concerns(懸念の具体、0個可)。pass_equivalent: あなたの印象で『PASS相当』か(記録用。判定には使われない)。\n7. confidence(high/medium/low)。\n8. 出力はJSONのみ。",
+  "llm_output": {
+    "rights_state_summary": "日本国内の原語原作『どんぐりと山猫』について、入力上の著者・宮沢賢治の状態はPDで、保護期間は1983年12月31日に満了したとされています。原語日本語の一次資料は取得済みです。利用版は青空文庫の新字旧仮名XHTML版で、版の権利は参考情報にとどまり、作品の権利判断の前提にはされていません。",
+    "basis_summary": "work_rights.original_author_status_jp と original_author_subject.calc に基づき、決定論判定 decision=PASS は原語原作の日本国内の保護期間が満了済みとの判定として読み取ります。primary_source_is_original_language_text=true、primary_source.fetch_ok=true から、原語の一次資料が取得されたことも確認できます。edition_rights は参考情報であり、判定根拠には含めません。",
+    "subjects": [
+      {
+        "subject": "宮沢賢治",
+        "status_as_given": "PD",
+        "note": "入力では没年1933年、没後50年の保護期間が1983年12月31日に満了し、2018年の70年化は非遡及のためPD確定とされています。"
+      }
+    ],
+    "unconfirmed_clarified": [
+      {
+        "item": "法律原文・文化庁資料による確認は未実施（二次資料に基づく機械判定）。法的最終判断ではなく弁護士確認が望ましい。",
+        "why_matters": "機械判定の法的根拠を一次資料や公的資料で追加確認する余地があります。ただし、入力ではblocking=falseであり、決定論判定はPASSです。",
+        "blocking_for_final_pass": false,
+        "added_by_llm": false
+      },
+      {
+        "item": "米国等の他法域statusは未確認（日本国内PD判定には使わない）。",
+        "why_matters": "他法域で利用する場合には別途確認が必要ですが、日本国内の原語原作の権利状態を判断する根拠にはなりません。入力ではblocking=falseです。",
+        "blocking_for_final_pass": false,
+        "added_by_llm": false
+      }
+    ],
+    "confirmations_needed_to_resolve_review": [],
+    "llm_concern_level": "none",
+    "concerns": [],
+    "pass_equivalent": true,
+    "confidence": "medium"
+  },
+  "reconcile": {
+    "deterministic_decision": "PASS",
+    "final_status_after_interpret": "PASS",
+    "demoted": false,
+    "pass_equivalent_llm_ignored": true,
+    "final_pass_confirmed": false,
+    "final_pass_note": "最終PASSはPython判定+ユーザー確定。本工程は確定しない。",
+    "notes": []
+  }
+}

@@ -33,7 +33,7 @@ SRC = os.path.join(BASE, "sources")
 SCREEN = os.path.join(BASE, "screening")
 PRICING_SNAPSHOT = os.path.join(ROOT, "er005_output", "cost_baseline_01", "pricing_snapshot.json")
 USD_JPY = 160.0  # 既存換算(er009 USD_TO_JPY)に合わせる
-EVAL_VERSION = "family_z_story_quality_eval_v1"
+EVAL_VERSION = "family_z_story_quality_eval_v2_original_language"  # 委任_03: L04はロシア語原作入力、従来/新基準の両判定
 
 # ---- 評価用モデル(委任_02: ユーザー指示でgpt-6-lunaに固定。PM_GOVERNANCE 25節の例外=ユーザー明示指定)
 ROUTING_KEY = common.KEY_QUALITY
@@ -44,12 +44,13 @@ REASONING_EFFORT = "medium"
 
 # ---- 評価単位(原作の全文を原文のまま渡す。長編は章単位に固定し、要約はしない)
 UNIT_RULES = {
-    "L04": {"kind": "gutenberg_story_slice", "start_heading": "THE BET", "end_heading": "A TEDIOUS STORY",
-            "note": "短編集Gutenberg #55283から『The Bet』の本文のみ(2回目の見出し出現位置〜次作見出し直前)。"},
+    # L04: 委任_03で原語原作(ロシア語、ru.wikisource Пари)全文を入力する。英訳(Gutenberg)は渡さない。UNIT_RULESには置かない(全文モード)。
     "L06": {"kind": "gutenberg_chapter_slice", "start_heading": "CHAPTER IV", "end_heading": "CHAPTER V",
             "note": "自伝全体(約74万字)は短編化評価の単位にならないため第IV章を評価単位に仮設定。これは設計仮定でありユーザー確認事項。"},
 }
-EN_WORKS = {"L04", "L06"}
+EN_WORKS = {"L06"}
+RU_WORKS = {"L04"}  # ロシア語原作(原語原作の品質評価。英訳は入力しない)
+SRC_DIR = {"L04": "L04_ru"}
 OVERHEAD_PROMPT_TOKENS = 1800  # developer + user template + JSON schema
 OUT_TOKENS_POINT = 5000        # JSON(約1,500) + reasoning(effort=medium)の点見積
 JA_TOKENS_PER_CHAR = 1.0       # 日本語: tokenizer未取得のため保守的な代理値(実測で要補正)
@@ -68,7 +69,7 @@ DEVELOPER_MESSAGE = (
     "その作品を『英語の短編(280〜420語、A2〜B1向け)へ再話するための素材』として評価する。"
     "作品の知名度・評判・過去の評価・あなたの記憶に頼らず、本文に書かれていることだけで判断すること。"
     "評価は4項目(A〜D)それぞれについてPASSまたはFAILのどちらかで答え、本文からの根拠引用と理由を必ず付ける。"
-    "引用(evidence_quotes)は本文中の連続した文字列をそのままコピーしたものに限る(言い換え・要約・結合・省略記号は禁止)。"
+    "引用(evidence_quotes)は本文中の連続した文字列をそのままコピーしたものに限る(言い換え・要約・結合・省略記号は禁止。ロシア語本文の引用はロシア語のままコピーし、日本語に訳さない)。"
     "1項目あたり1〜3個、各60文字(英語は25語)以内。迷った場合は無理にPASSにせず、理由欄に迷いの内容を書いてFAILまたはPASSを選ぶ。"
 )
 
@@ -156,7 +157,7 @@ def load_screening(wid: str) -> dict:
 
 
 def build_unit(wid: str) -> dict:
-    p = os.path.join(SRC, wid, "text_plain.txt")
+    p = os.path.join(SRC, SRC_DIR.get(wid, wid), "text_plain.txt")
     if not os.path.exists(p):
         raise RuntimeError(f"STOP: {wid} 一次資料(text_plain.txt)が未取得。評価に進まない。")
     with open(common.assert_not_sealed(p), encoding="utf-8") as f:
@@ -174,12 +175,14 @@ def build_unit(wid: str) -> dict:
         text = "\n".join(lines[s:e]).strip()
         note = rule["note"]
     else:
-        text, note = full.strip(), "作品の全文(青空文庫の本文領域)。"
+        text = full.strip()
+        note = "作品の全文(ru.wikisource、ロシア語原作『Пари』。英訳ではない)。" if wid in RU_WORKS else "作品の全文(青空文庫の本文領域、日本語原作)。"
     is_en = wid in EN_WORKS
+    is_ru = wid in RU_WORKS
     chars = len(re.sub(r"\s", "", text))
     words = len(text.split()) if is_en else None
-    tok = int(words * EN_TOKENS_PER_WORD) if is_en else int(chars * JA_TOKENS_PER_CHAR)
-    return {"work_id": wid, "text": text, "lang": "English" if is_en else "日本語", "unit_note": note,
+    tok = int(words * EN_TOKENS_PER_WORD) if is_en else (int(chars * 0.7) if is_ru else int(chars * JA_TOKENS_PER_CHAR))
+    return {"work_id": wid, "text": text, "lang": "English" if is_en else ("ロシア語(原語原作)" if is_ru else "日本語"), "unit_note": note,
             "chars_no_ws": chars, "words_en": words, "est_input_tokens_text": tok,
             "size_note": (f"約{words}語" if is_en else f"約{chars}文字")}
 
@@ -209,17 +212,23 @@ def verify_quotes(parsed: dict, source_text: str) -> dict:
 
 
 def aggregate(parsed: dict, qv: dict) -> dict:
-    """総合判定は決定論: 4項目中3項目以上PASS かつ D(短編化適性)PASS(Trial-02 §2: Gate3必須+4項目中原則3項目以上に準拠)。"""
+    """総合判定は決定論。委任_03: 従来基準(4項目中3項目以上PASS)と比較用新基準(3項目以上かつD PASS、D必須は仮説で正式仕様変更ではない)の両方を記録。
+    引用が原文と不一致ならPASS相当はREVIEW_REQUIREDへ降格(両基準とも)。"""
     passes = [c for c in CRITERIA if parsed[c]["verdict"] == "PASS"]
-    overall = "PASS" if (len(passes) >= 3 and parsed["D"]["verdict"] == "PASS") else "FAIL"
+    legacy = "PASS" if len(passes) >= 3 else "FAIL"
+    new = "PASS" if (len(passes) >= 3 and parsed["D"]["verdict"] == "PASS") else "FAIL"
     note = []
     if not qv["all_verified"]:
         note.append("引用の一部が原文と一致しない(根拠の信頼性要確認)")
-        overall_final = "REVIEW_REQUIRED" if overall == "PASS" else overall
+        legacy_f = "REVIEW_REQUIRED" if legacy == "PASS" else legacy
+        new_f = "REVIEW_REQUIRED" if new == "PASS" else new
     else:
-        overall_final = overall
-    return {"pass_count": len(passes), "passed": passes, "rule": "pass_count>=3 and D==PASS",
-            "overall": overall_final, "notes": note}
+        legacy_f, new_f = legacy, new
+    return {"pass_count": len(passes), "passed": passes,
+            "legacy_rule": "pass_count>=3", "legacy_overall": legacy_f,
+            "new_rule_hypothesis": "pass_count>=3 and D==PASS(比較用仮説。正式仕様変更ではない)", "new_overall": new_f,
+            "criteria_disagree": legacy_f != new_f,
+            "rule": "new(比較用仮説)", "overall": new_f, "notes": note}
 
 
 def validate_schema_min(parsed: dict) -> None:
@@ -268,7 +277,9 @@ def eval_one(wid: str, model: str, client, out_dir: str, title: str, mock: bool)
     unit = build_unit(wid)
     kwargs = dict(model=model, reasoning={"effort": REASONING_EFFORT}, input=build_messages(unit, title),
                   text={"format": {"type": "json_schema", **JSON_SCHEMA}})
+    _t0 = __import__("time").time()
     resp = client.responses.create(**kwargs)
+    elapsed = round(__import__("time").time() - _t0, 2)
     actual_model_id = getattr(resp, "model", None)
     if not mock and not (actual_model_id and str(actual_model_id).startswith(model)):
         raise RuntimeError(f"STOP: actual model_idが要求と異なる requested={model} actual={actual_model_id}")
@@ -280,8 +291,9 @@ def eval_one(wid: str, model: str, client, out_dir: str, title: str, mock: bool)
     rec = {"work_id": wid, "title": title, "eval_version": EVAL_VERSION, "model": model, "requested_model": model,
            "actual_model_id": actual_model_id, "routing_key": ROUTING_KEY, "mock": mock,
            "usage": ({"input_tokens": getattr(usage, "input_tokens", None), "output_tokens": getattr(usage, "output_tokens", None)} if usage else None),
+           "usage_full": (usage.model_dump() if usage is not None and hasattr(usage, "model_dump") else None), "elapsed_sec": elapsed, "response_id": getattr(resp, "id", None),
            "prompt_sha256": __import__("hashlib").sha256(json.dumps(kwargs["input"], ensure_ascii=False).encode("utf-8")).hexdigest(),
-           "developer_message": DEVELOPER_MESSAGE, "eval_unit_id": wid,
+           "developer_message": DEVELOPER_MESSAGE, "user_prompt_full": kwargs["input"][1]["content"], "eval_unit_id": wid,
            "reasoning_effort": REASONING_EFFORT, "evaluated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
            "unit": {k: unit[k] for k in ("lang", "unit_note", "chars_no_ws", "words_en", "est_input_tokens_text")},
            "result": parsed, "quote_verification": qv, "aggregate": agg}

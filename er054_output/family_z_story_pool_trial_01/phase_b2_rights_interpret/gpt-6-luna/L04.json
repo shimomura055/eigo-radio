@@ -1,0 +1,85 @@
+{
+  "work_id": "L04",
+  "interp_version": "family_z_rights_interpret_v2_work_edition",
+  "requested_model": "gpt-6-luna",
+  "actual_model_id": "gpt-6-luna",
+  "routing_key": "FAMILY_Z_TRIAL_RIGHTS_INTERPRET",
+  "mock": false,
+  "reasoning_effort": "medium",
+  "interpreted_at": "2026-10-11T05:29:23.451203+00:00",
+  "usage": {
+    "input_tokens": 4115,
+    "output_tokens": 1256
+  },
+  "prompt_sha256": "b2f460b940584a5f1ba6fe486ccf8510713fa82d74f0c4bec57f4108b4de329d",
+  "usage_full": {
+    "input_tokens": 4115,
+    "input_tokens_details": {
+      "cache_write_tokens": 4112,
+      "cached_tokens": 0
+    },
+    "output_tokens": 1256,
+    "output_tokens_details": {
+      "reasoning_tokens": 320
+    },
+    "total_tokens": 5371
+  },
+  "elapsed_sec": 9.49,
+  "response_id": "resp_0eaea5502f9e36a1006acb1eaa270c87d09b0cf766f6ffc4cb",
+  "developer_message": "あなたは英語学習マガジンのFiction編集部の権利確認補助者である。与えられた『Phase B決定論判定JSON』(Pythonが日本の著作権法ルールで計算した結果)と書誌メタ・未確認事項だけを根拠に、権利状態を整理・要約し、未確認情報を明確化し、REVIEW_REQUIREDの解消に必要な確認事項を挙げる。あなたは最終判定者ではない。PASS/NGを決める欄は無く、決定論判定を変更・上書きすることはできない。入力に無い事実(没年・出版事情・翻訳者・出典)を記憶から補ってはならない。入力に無い情報は『未確認』と明記する。米国のPD状態を日本の利用条件の根拠にしてはならない。原語原作の権利(work_rights)と、利用した版・翻訳の権利(edition_rights)は必ず分けて述べ、混同しない。判定の根拠は work_rights(原語原作の著者の日本国内保護期間と一次資料の取得状況)だけであり、edition_rights は参考情報で作品の権利判断・記事化の前提条件にしてはならない。既存翻訳に権利上の懸念があっても、原語原作に問題が無ければ作品を懸念扱いにしない(翻訳側の懸念は concerns に文章で書くだけにし、llm_concern_level には反映しない)。懸念(llm_concern_level)は、入力から読み取れる「原語原作(work_rights)」に関する権利上の疑義の度合いだけを答える(none=疑義なし / review=確認が必要 / ng_concern=権利NGの疑い)。",
+  "user_prompt_full": "[入力: Phase B決定論判定JSON(作品ID L04)]\n{\n \"work_id\": \"L04\",\n \"title_ja\": \"賭け\",\n \"title_en\": \"The Bet\",\n \"genre\": \"世界文学(短編・露)\",\n \"kind\": \"original_ru\",\n \"screened_at\": \"2026-10-11T05:26:53.532766+00:00\",\n \"as_of_date\": \"2026-10-11\",\n \"screening_version\": \"02_original_language\",\n \"author\": {\n  \"name\": \"Anton Chekhov (Антон Павлович Чехов)\",\n  \"birth_year\": 1860,\n  \"death_year\": 1904,\n  \"source\": \"ru.wikisource 作品ページ ヘッダ(АВТОР ... (1860—1904))\"\n },\n \"first_publication\": {\n  \"year\": 1889,\n  \"text\": \"『Новое время』1889年1月1日号 №4613 стр.1-2、初出題『Сказка』、署名『Ан. Чехов』(ru.wikisource脚注)。ロシア語原題『Пари』\",\n  \"source\": \"ru.wikisource Пари (Чехов) wikitext脚注 (script照合)\"\n },\n \"work_rights\": {\n  \"role\": \"main_basis_of_decision\",\n  \"original_language\": \"ru\",\n  \"work_title_original\": \"Пари\",\n  \"primary_source_is_original_language_text\": true,\n  \"primary_source_label\": \"ru.wikisource『Пари (Чехов)』(ロシア語原作、PSS Чехова т.7 1977由来)\",\n  \"original_author_status_jp\": \"PD\",\n  \"original_author_subject\": {\n   \"subject\": \"Anton Chekhov (Антон Павлович Чехов)\",\n   \"group\": \"other_not_wartime_extended\",\n   \"calc\": {\n    \"death_year\": 1904,\n    \"wartime_applied\": false,\n    \"expiry_50y_incl_wartime\": \"1954-12-31\",\n    \"expiry_used\": \"1954-12-31\",\n    \"regime\": \"没後50年(旧法)で2018-12-30前に満了済み。2018年の70年化は非遡及のためPD確定\",\n    \"pd_as_of_today\": true,\n    \"borderline_wartime_near_2018_boundary\": false,\n    \"days_before_2018_boundary\": 23375\n   },\n   \"calc_with_wartime_sensitivity\": {\n    \"death_year\": 1904,\n    \"wartime_applied\": true,\n    \"expiry_50y_incl_wartime\": \"1965-05-21\",\n    \"expiry_used\": \"1965-05-21\",\n    \"regime\": \"没後50年(旧法)で2018-12-30前に満了済み。2018年の70年化は非遡及のためPD確定\",\n    \"pd_as_of_today\": true,\n    \"borderline_wartime_near_2018_boundary\": false,\n    \"days_before_2018_boundary\": 19581\n   },\n   \"status\": \"PD\"\n  },\n  \"first_publication\": {\n   \"year\": 1889,\n   \"text\": \"『Новое время』1889年1月1日号 №4613 стр.1-2、初出題『Сказка』、署名『Ан. Чехов』(ru.wikisource脚注)。ロシア語原題『Пари』\",\n   \"source\": \"ru.wikisource Пари (Чехов) wikitext脚注 (script照合)\"\n  }\n },\n \"edition_rights\": {\n  \"role\": \"reference_only_not_a_precondition_for_article\",\n  \"note\": \"利用した版・翻訳の権利は参考情報。原語原作がPDなら、版/翻訳の権利は作品のPASS/NGに影響させない(本Trialは原語原作を自前でadaptationする設計)。\",\n  \"edition_used\": \"ru.wikisource『Пари (Чехов)』テキスト(ロシア語、PSS Чехова том7 стр.229-235(1977)由来とwikisource記載、feb-web.ru掲載、wikisourceライセンスタグPD-old-70)。初出1889『Новое время』。1977年PSS版の校注・編集著作は個別確認していない(原語原作の判定には影響させない参考事項)。\",\n  \"edition_card_fields\": {\n   \"source_on_page\": \"http://feb-web.ru/feb/chekhov/texts/sp0/sp7/sp7-229-.htm (приводится по: {{Полное собрание сочинений Чехова|том=7|страницы=229—235}})\",\n   \"license_tag_on_wikisource\": \"PD-old-70\"\n  },\n  \"reference_translations\": [\n   {\n    \"name\": \"S. S. Koteliansky\",\n    \"birth_year\": 1880,\n    \"death_year\": 1955,\n    \"group\": \"allied_3794\",\n    \"group_note\": \"国籍(英国籍か)は未確認。保守的に戦時加算(3,794日、英米等)を適用して計算する。\",\n    \"source\": \"Gutenberg #55283 メタデータ (card.html)\"\n   },\n   {\n    \"name\": \"J. M. Murry\",\n    \"birth_year\": 1889,\n    \"death_year\": 1957,\n    \"group\": \"allied_3794\",\n    \"group_note\": \"英国人(J. Middleton Murry)と推定されるが国籍は本Trialで一次確認していない。保守的に戦時加算を適用。\",\n    \"source\": \"Gutenberg #55283 メタデータ (card.html)\"\n   }\n  ],\n  \"reference_translation_subjects\": [\n   {\n    \"subject\": \"S. S. Koteliansky\",\n    \"group\": \"allied_3794\",\n    \"calc\": {\n     \"death_year\": 1955,\n     \"wartime_applied\": true,\n     \"expiry_50y_incl_wartime\": \"2016-05-21\",\n     \"expiry_used\": \"2016-05-21\",\n     \"regime\": \"没後50年(旧法)で2018-12-30前に満了済み。2018年の70年化は非遡及のためPD確定\",\n     \"pd_as_of_today\": true,\n     \"borderline_wartime_near_2018_boundary\": false,\n     \"days_before_2018_boundary\": 953\n    },\n    \"status\": \"PD\"\n   },\n   {\n    \"subject\": \"J. M. Murry\",\n    \"group\": \"allied_3794\",\n    \"calc\": {\n     \"death_year\": 1957,\n     \"wartime_applied\": true,\n     \"expiry_50y_incl_wartime\": \"2018-05-21\",\n     \"expiry_used\": \"2018-05-21\",\n     \"regime\": \"没後50年(旧法)で2018-12-30前に満了済み。2018年の70年化は非遡及のためPD確定\",\n     \"pd_as_of_today\": true,\n     \"borderline_wartime_near_2018_boundary\": true,\n     \"days_before_2018_boundary\": 223\n    },\n    \"status\": \"REVIEW\"\n   }\n  ],\n  \"reference_translation_status_jp\": [\n   \"PD\",\n   \"REVIEW\"\n  ],\n  \"reference_translation_note\": \"既存英訳(Koteliansky & Murry 1915、Gutenberg #55283)は参考情報であり、一次資料でも記事化の前提条件でもない。Family Zは原語原作(ロシア語)を一次資料としてSeed化/Story生成する設計。英訳の訳者権利(戦時加算込み50年満了が2018-12-30の223日前で境界)は作品判定に影響させない。\"\n },\n \"primary_source\": {\n  \"language\": \"ru\",\n  \"card_url\": \"https://ru.wikisource.org/w/api.php?action=parse&page=Пари_(Чехов)\",\n  \"text_url\": \"https://ru.wikisource.org/w/index.php?title=Пари_(Чехов)&action=raw\",\n  \"fetch_ok\": true,\n  \"text_http_status\": 200,\n  \"text_bytes\": 26227,\n  \"text_plain_chars\": 13574,\n  \"text_fetched_at\": \"2026-10-11T05:24:55.244577+00:00\",\n  \"fetch_attempts\": null\n },\n \"edition_note\": \"ru.wikisource『Пари (Чехов)』テキスト(ロシア語、PSS Чехова том7 стр.229-235(1977)由来とwikisource記載、feb-web.ru掲載、wikisourceライセンスタグPD-old-70)。初出1889『Новое время』。1977年PSS版の校注・編集著作は個別確認していない(原語原作の判定には影響させない参考事項)。\",\n \"work_vs_edition\": {\n  \"original_work_status_jp\": \"PD\",\n  \"edition_translation_status_jp_reference_only\": [\n   \"PD\",\n   \"REVIEW\"\n  ],\n  \"reference_translation_pub_year\": 1915\n },\n \"rights_subjects\": [\n  {\n   \"subject\": \"Anton Chekhov (Антон Павлович Чехов)\",\n   \"group\": \"other_not_wartime_extended\",\n   \"calc\": {\n    \"death_year\": 1904,\n    \"wartime_applied\": false,\n    \"expiry_50y_incl_wartime\": \"1954-12-31\",\n    \"expiry_used\": \"1954-12-31\",\n    \"regime\": \"没後50年(旧法)で2018-12-30前に満了済み。2018年の70年化は非遡及のためPD確定\",\n    \"pd_as_of_today\": true,\n    \"borderline_wartime_near_2018_boundary\": false,\n    \"days_before_2018_boundary\": 23375\n   },\n   \"calc_with_wartime_sensitivity\": {\n    \"death_year\": 1904,\n    \"wartime_applied\": true,\n    \"expiry_50y_incl_wartime\": \"1965-05-21\",\n    \"expiry_used\": \"1965-05-21\",\n    \"regime\": \"没後50年(旧法)で2018-12-30前に満了済み。2018年の70年化は非遡及のためPD確定\",\n    \"pd_as_of_today\": true,\n    \"borderline_wartime_near_2018_boundary\": false,\n    \"days_before_2018_boundary\": 19581\n   },\n   \"status\": \"PD\"\n  }\n ],\n \"z1_checks\": {\n  \"us_pd_used_as_jp_basis\": false,\n  \"us_status_record_only\": \"未確認(記録事項。Z-1により日本国内PD判定には使わない)\",\n  \"primary_source_is_original_language\": true,\n  \"edition_or_translation_rights_used_as_precondition\": false,\n  \"data_vs_card_checks\": {\n   \"death_year_matches_card\": true,\n   \"birth_year_matches_card\": true\n  },\n  \"other_checks\": {\n   \"first_publication_corroborated\": {\n    \"aux_url\": \"https://ru.wikisource.org/w/api.php?action=parse&page=Пари_(Чехов)\",\n    \"regex\": \"1889\",\n    \"found\": true\n   },\n   \"jp_term_rule_phrases_found_in_fetched_source\": {\n    \"50 years\": true,\n    \"not applied retroactively\": true,\n    \"3,794 days\": true\n   }\n  }\n },\n \"unconfirmed\": [\n  {\n   \"item\": \"法律原文・文化庁資料による確認は未実施(二次資料に基づく機械判定)。法的最終判断ではなく弁護士確認が望ましい。\",\n   \"blocking\": false\n  },\n  {\n   \"item\": \"米国等の他法域status: 未確認(記録事項。Z-1により日本国内PD判定には使わない)\",\n   \"blocking\": false\n  },\n  {\n   \"item\": \"ru.wikisourceテキストの底本はPSS 1977(ソ連版全集)由来。底本の校訂・注の権利は個別未確認(参考。1889年初出の原作本文の保護期間判定とは別)\",\n   \"blocking\": false\n  },\n  {\n   \"item\": \"原語(ロシア語)原作をAIが正確に理解してSeed化/Story化できるかは品質課題(権利問題ではない)。Trialでは原語入力の品質評価で確認する\",\n   \"blocking\": false\n  }\n ],\n \"decision\": \"PASS\",\n \"decision_basis\": \"work_rights(原語原作の著者の日本国内保護期間)のみ。edition_rightsは参考。\",\n \"decision_reason\": \"原語原作の著者Anton Chekhov (Антон Павлович Чехов)(没1904)は日本でPD(満了1954-12-31。没後50年(旧法)で2018-12-30前に満了済み。2018年の70年化は非遡及のためPD確定)。一次資料は原語原作(ru.wikisource『Пари (Чехов)』(ロシア語原作、PSS Чехова т.7 1977由来))。\"\n}\n\n[手順]\n1. rights_state_summary: 権利状態の整理(日本国内の原語原作の保護状態を先に、次に版・翻訳(edition_rights、参考情報)の扱いを分けて、2〜4文、日本語)。\n2. basis_summary: 判断根拠の要約(入力のどのフィールドに基づくか、決定論判定 decision=PASS をどう読んだか)。\n3. subjects: 権利者(rights_subjects)ごとの状態の読み取り(subject, status_as_given(入力のstatusをそのまま), note)。\n4. unconfirmed_clarified: 未確認事項(unconfirmed)ごとに、なぜ重要か(why_matters)と、最終PASSに対してブロッキングか(blocking_for_final_pass)。入力に無い未確認事項を足す場合はadded_by_llm=trueにする。\n5. confirmations_needed_to_resolve_review: REVIEW_REQUIRED/最終PASSに必要な追加確認事項(誰が/何を確認するか、日本語の短文の配列、0個可)。\n6. llm_concern_level(none/review/ng_concern)と concerns(懸念の具体、0個可)。pass_equivalent: あなたの印象で『PASS相当』か(記録用。判定には使われない)。\n7. confidence(high/medium/low)。\n8. 出力はJSONのみ。",
+  "llm_output": {
+    "rights_state_summary": "日本国内では、原語原作『Пари』（『賭け』）について、著者アントン・チェーホフの保護期間は1954年12月31日に満了済みとされ、work_rights はPDです。判定はロシア語原作の取得済みテキストを一次資料として扱っています。利用版の校訂・編集著作権は個別確認されていません。また、参考英訳ではKotelianskyはPD、MurryはREVIEWですが、いずれも参考情報であり、原語原作の権利状態とは別です。",
+    "basis_summary": "work_rights の original_author_status_jp、著者の没年・保護期間計算、および primary_source の原語テキスト取得情報に基づきます。決定論判定は decision=PASS で、その根拠は原語原作の日本国内保護期間のみです。edition_rights の未確認事項や英訳のREVIEWは、この判定の前提条件として扱いません。",
+    "subjects": [
+      {
+        "subject": "Anton Chekhov (Антон Павлович Чехов)",
+        "status_as_given": "PD",
+        "note": "入力上の没年は1904年。work_rights の計算では日本国内の保護期間が1954年12月31日に満了済みとされ、原語原作はPDです。"
+      }
+    ],
+    "unconfirmed_clarified": [
+      {
+        "item": "法律原文・文化庁資料による確認は未実施。二次資料に基づく機械判定であり、弁護士確認が望ましい。",
+        "why_matters": "日本国内の保護期間ルールに関する法的根拠を一次資料で照合するため。ただし入力では非ブロッキングとされ、決定論判定はPASSです。",
+        "blocking_for_final_pass": false,
+        "added_by_llm": false
+      },
+      {
+        "item": "米国等の他法域statusは未確認。",
+        "why_matters": "他法域での利用には関係し得ますが、日本国内の原語原作の権利判定には用いないと入力に明記されています。",
+        "blocking_for_final_pass": false,
+        "added_by_llm": false
+      },
+      {
+        "item": "ru.wikisourceテキストの底本はPSS 1977由来。底本の校訂・注の権利は個別未確認。",
+        "why_matters": "利用版の校訂・注に別個の権利があり得るかを確認する事項です。入力では参考事項とされ、1889年初出の原作本文の保護期間判定や記事化の前提条件ではありません。",
+        "blocking_for_final_pass": false,
+        "added_by_llm": false
+      },
+      {
+        "item": "原語ロシア語原作をAIが正確に理解してSeed化・Story化できるかは未確認。",
+        "why_matters": "原語からの内容理解・生成品質に関わる課題ですが、入力では権利問題ではなく、権利判定のブロッキング事項ではないとされています。",
+        "blocking_for_final_pass": false,
+        "added_by_llm": false
+      }
+    ],
+    "confirmations_needed_to_resolve_review": [],
+    "llm_concern_level": "none",
+    "concerns": [
+      "参考英訳のJ. M. Murryは入力上REVIEWです。これは英訳側の参考情報に限られ、PDとされた原語原作の権利状態には反映しません。",
+      "1977年PSS版の校訂・編集著作権は個別確認されていませんが、入力上は原語原作の権利判断の対象外です。"
+    ],
+    "pass_equivalent": true,
+    "confidence": "medium"
+  },
+  "reconcile": {
+    "deterministic_decision": "PASS",
+    "final_status_after_interpret": "PASS",
+    "demoted": false,
+    "pass_equivalent_llm_ignored": true,
+    "final_pass_confirmed": false,
+    "final_pass_note": "最終PASSはPython判定+ユーザー確定。本工程は確定しない。",
+    "notes": []
+  }
+}

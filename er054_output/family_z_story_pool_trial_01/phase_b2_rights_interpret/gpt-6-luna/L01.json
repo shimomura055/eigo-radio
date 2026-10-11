@@ -1,0 +1,70 @@
+{
+  "work_id": "L01",
+  "interp_version": "family_z_rights_interpret_v2_work_edition",
+  "requested_model": "gpt-6-luna",
+  "actual_model_id": "gpt-6-luna",
+  "routing_key": "FAMILY_Z_TRIAL_RIGHTS_INTERPRET",
+  "mock": false,
+  "reasoning_effort": "medium",
+  "interpreted_at": "2026-10-11T05:28:48.975405+00:00",
+  "usage": {
+    "input_tokens": 2651,
+    "output_tokens": 833
+  },
+  "prompt_sha256": "2808c6fa8647e2b68218db2a2cc771e4a9d2660f1fd9b40347bb6feaa21b681a",
+  "usage_full": {
+    "input_tokens": 2651,
+    "input_tokens_details": {
+      "cache_write_tokens": 2648,
+      "cached_tokens": 0
+    },
+    "output_tokens": 833,
+    "output_tokens_details": {
+      "reasoning_tokens": 197
+    },
+    "total_tokens": 3484
+  },
+  "elapsed_sec": 7.28,
+  "response_id": "resp_0fe39ec83b432f41006acb1e8a1ea087d0af45dfa2bd7b885f",
+  "developer_message": "あなたは英語学習マガジンのFiction編集部の権利確認補助者である。与えられた『Phase B決定論判定JSON』(Pythonが日本の著作権法ルールで計算した結果)と書誌メタ・未確認事項だけを根拠に、権利状態を整理・要約し、未確認情報を明確化し、REVIEW_REQUIREDの解消に必要な確認事項を挙げる。あなたは最終判定者ではない。PASS/NGを決める欄は無く、決定論判定を変更・上書きすることはできない。入力に無い事実(没年・出版事情・翻訳者・出典)を記憶から補ってはならない。入力に無い情報は『未確認』と明記する。米国のPD状態を日本の利用条件の根拠にしてはならない。原語原作の権利(work_rights)と、利用した版・翻訳の権利(edition_rights)は必ず分けて述べ、混同しない。判定の根拠は work_rights(原語原作の著者の日本国内保護期間と一次資料の取得状況)だけであり、edition_rights は参考情報で作品の権利判断・記事化の前提条件にしてはならない。既存翻訳に権利上の懸念があっても、原語原作に問題が無ければ作品を懸念扱いにしない(翻訳側の懸念は concerns に文章で書くだけにし、llm_concern_level には反映しない)。懸念(llm_concern_level)は、入力から読み取れる「原語原作(work_rights)」に関する権利上の疑義の度合いだけを答える(none=疑義なし / review=確認が必要 / ng_concern=権利NGの疑い)。",
+  "user_prompt_full": "[入力: Phase B決定論判定JSON(作品ID L01)]\n{\n \"work_id\": \"L01\",\n \"title_ja\": \"走れメロス\",\n \"title_en\": \"Run, Melos!\",\n \"genre\": \"近代日本文学(短編)\",\n \"kind\": \"ja_original\",\n \"screened_at\": \"2026-10-11T05:26:53.517839+00:00\",\n \"as_of_date\": \"2026-10-11\",\n \"screening_version\": \"02_original_language\",\n \"author\": {\n  \"name\": \"太宰治\",\n  \"birth_year\": 1909,\n  \"death_year\": 1948,\n  \"source\": \"青空文庫 図書カード No.1567 (card.html)\"\n },\n \"first_publication\": {\n  \"year\": 1940,\n  \"text\": \"『新潮』1940年5月号\",\n  \"source\": \"https://ja.wikipedia.org/wiki/走れメロス (aux、script照合)\"\n },\n \"work_rights\": {\n  \"role\": \"main_basis_of_decision\",\n  \"original_language\": \"ja\",\n  \"work_title_original\": \"走れメロス\",\n  \"primary_source_is_original_language_text\": true,\n  \"primary_source_label\": \"青空文庫(日本語原作)\",\n  \"original_author_status_jp\": \"PD\",\n  \"original_author_subject\": {\n   \"subject\": \"太宰治\",\n   \"group\": \"JP\",\n   \"calc\": {\n    \"death_year\": 1948,\n    \"wartime_applied\": false,\n    \"expiry_50y_incl_wartime\": \"1998-12-31\",\n    \"expiry_used\": \"1998-12-31\",\n    \"regime\": \"没後50年(旧法)で2018-12-30前に満了済み。2018年の70年化は非遡及のためPD確定\",\n    \"pd_as_of_today\": true,\n    \"borderline_wartime_near_2018_boundary\": false,\n    \"days_before_2018_boundary\": 7304\n   },\n   \"status\": \"PD\"\n  },\n  \"first_publication\": {\n   \"year\": 1940,\n   \"text\": \"『新潮』1940年5月号\",\n   \"source\": \"https://ja.wikipedia.org/wiki/走れメロス (aux、script照合)\"\n  }\n },\n \"edition_rights\": {\n  \"role\": \"reference_only_not_a_precondition_for_article\",\n  \"note\": \"利用した版・翻訳の権利は参考情報。原語原作がPDなら、版/翻訳の権利は作品のPASS/NGに影響させない(本Trialは原語原作を自前でadaptationする設計)。\",\n  \"edition_used\": \"青空文庫 新字新仮名 XHTML版。底本はちくま文庫版全集(card.html記載)。\",\n  \"edition_card_fields\": {\n   \"teihon\": \"太宰治全集3 / ちくま文庫、筑摩書房 / 1988（昭和63）年10月25日\",\n   \"moji_type\": \"新字新仮名\",\n   \"input_proof\": [\n    \"金川一之\",\n    \"高橋美奈子\"\n   ]\n  },\n  \"reference_translations\": [],\n  \"reference_translation_subjects\": [],\n  \"reference_translation_status_jp\": [\n   \"n/a\"\n  ],\n  \"reference_translation_note\": null\n },\n \"primary_source\": {\n  \"language\": \"ja\",\n  \"card_url\": \"https://www.aozora.gr.jp/cards/000035/card1567.html\",\n  \"text_url\": \"https://www.aozora.gr.jp/cards/000035/files/1567_14913.html\",\n  \"fetch_ok\": true,\n  \"text_http_status\": 200,\n  \"text_bytes\": 27570,\n  \"text_plain_chars\": 9987,\n  \"text_fetched_at\": \"2026-10-11T04:49:09.611995+00:00\",\n  \"fetch_attempts\": 1\n },\n \"edition_note\": \"青空文庫 新字新仮名 XHTML版。底本はちくま文庫版全集(card.html記載)。\",\n \"work_vs_edition\": {\n  \"original_work_status_jp\": \"PD\",\n  \"edition_translation_status_jp_reference_only\": [\n   \"n/a(原語版)\"\n  ],\n  \"reference_translation_pub_year\": null\n },\n \"rights_subjects\": [\n  {\n   \"subject\": \"太宰治\",\n   \"group\": \"JP\",\n   \"calc\": {\n    \"death_year\": 1948,\n    \"wartime_applied\": false,\n    \"expiry_50y_incl_wartime\": \"1998-12-31\",\n    \"expiry_used\": \"1998-12-31\",\n    \"regime\": \"没後50年(旧法)で2018-12-30前に満了済み。2018年の70年化は非遡及のためPD確定\",\n    \"pd_as_of_today\": true,\n    \"borderline_wartime_near_2018_boundary\": false,\n    \"days_before_2018_boundary\": 7304\n   },\n   \"status\": \"PD\"\n  }\n ],\n \"z1_checks\": {\n  \"us_pd_used_as_jp_basis\": false,\n  \"us_status_record_only\": \"未確認(記録事項。Z-1により日本国内PD判定には使わない)\",\n  \"primary_source_is_original_language\": true,\n  \"edition_or_translation_rights_used_as_precondition\": false,\n  \"data_vs_card_checks\": {\n   \"death_year_matches_card\": true,\n   \"birth_year_matches_card\": true\n  },\n  \"other_checks\": {\n   \"first_publication_corroborated\": {\n    \"aux_url\": \"https://ja.wikipedia.org/wiki/%E8%B5%B0%E3%82%8C%E3%83%A1%E3%83%AD%E3%82%B9\",\n    \"regex\": \"1940\",\n    \"found\": true\n   },\n   \"jp_term_rule_phrases_found_in_fetched_source\": {\n    \"50 years\": true,\n    \"not applied retroactively\": true,\n    \"3,794 days\": true\n   }\n  }\n },\n \"unconfirmed\": [\n  {\n   \"item\": \"法律原文・文化庁資料による確認は未実施(二次資料に基づく機械判定)。法的最終判断ではなく弁護士確認が望ましい。\",\n   \"blocking\": false\n  },\n  {\n   \"item\": \"米国等の他法域status: 未確認(記録事項。Z-1により日本国内PD判定には使わない)\",\n   \"blocking\": false\n  }\n ],\n \"decision\": \"PASS\",\n \"decision_basis\": \"work_rights(原語原作の著者の日本国内保護期間)のみ。edition_rightsは参考。\",\n \"decision_reason\": \"原語原作の著者太宰治(没1948)は日本でPD(満了1998-12-31。没後50年(旧法)で2018-12-30前に満了済み。2018年の70年化は非遡及のためPD確定)。一次資料は原語原作(青空文庫(日本語原作))。\"\n}\n\n[手順]\n1. rights_state_summary: 権利状態の整理(日本国内の原語原作の保護状態を先に、次に版・翻訳(edition_rights、参考情報)の扱いを分けて、2〜4文、日本語)。\n2. basis_summary: 判断根拠の要約(入力のどのフィールドに基づくか、決定論判定 decision=PASS をどう読んだか)。\n3. subjects: 権利者(rights_subjects)ごとの状態の読み取り(subject, status_as_given(入力のstatusをそのまま), note)。\n4. unconfirmed_clarified: 未確認事項(unconfirmed)ごとに、なぜ重要か(why_matters)と、最終PASSに対してブロッキングか(blocking_for_final_pass)。入力に無い未確認事項を足す場合はadded_by_llm=trueにする。\n5. confirmations_needed_to_resolve_review: REVIEW_REQUIRED/最終PASSに必要な追加確認事項(誰が/何を確認するか、日本語の短文の配列、0個可)。\n6. llm_concern_level(none/review/ng_concern)と concerns(懸念の具体、0個可)。pass_equivalent: あなたの印象で『PASS相当』か(記録用。判定には使われない)。\n7. confidence(high/medium/low)。\n8. 出力はJSONのみ。",
+  "llm_output": {
+    "rights_state_summary": "日本国内では、原語原作『走れメロス』の著者・太宰治について、work_rights の判定はPDです。入力では、没後50年の保護期間が1998年12月31日に満了し、2018年の保護期間延長は非遡及のため原作はPDとされています。一次資料として日本語原作の青空文庫テキストが取得されています。利用版は青空文庫の新字新仮名版（底本はちくま文庫版全集）ですが、edition_rights は参考情報であり、原作の権利判断の根拠や記事化の前提条件ではありません。",
+    "basis_summary": "work_rights.original_author_status_jp、original_author_subject.calc の保護期間情報、および primary_source の日本語原作テキスト取得状況に基づいて整理しています。decision=PASS は、入力上、原語原作の日本国内の保護期間を根拠とする決定論判定として読み取っています。版の情報は参考扱いで、判定根拠には含めていません。",
+    "subjects": [
+      {
+        "subject": "太宰治",
+        "status_as_given": "PD",
+        "note": "入力では没年1948年、保護期間満了日は1998年12月31日とされ、2018年の70年化は非遡及のため日本国内でPDと判定されています。"
+      }
+    ],
+    "unconfirmed_clarified": [
+      {
+        "item": "法律原文・文化庁資料による確認は未実施（二次資料に基づく機械判定）。法的最終判断ではなく弁護士確認が望ましい。",
+        "why_matters": "保護期間に関する法的根拠を一次的な公的資料で照合していないため、法的な最終確認には関係します。",
+        "blocking_for_final_pass": false,
+        "added_by_llm": false
+      },
+      {
+        "item": "米国等の他法域statusは未確認。入力では、日本国内PD判定には使用しない記録事項とされている。",
+        "why_matters": "他法域での利用条件を検討する場合には関係し得ますが、日本国内の原語原作の判定根拠ではありません。",
+        "blocking_for_final_pass": false,
+        "added_by_llm": false
+      }
+    ],
+    "confirmations_needed_to_resolve_review": [],
+    "llm_concern_level": "none",
+    "concerns": [],
+    "pass_equivalent": true,
+    "confidence": "medium"
+  },
+  "reconcile": {
+    "deterministic_decision": "PASS",
+    "final_status_after_interpret": "PASS",
+    "demoted": false,
+    "pass_equivalent_llm_ignored": true,
+    "final_pass_confirmed": false,
+    "final_pass_note": "最終PASSはPython判定+ユーザー確定。本工程は確定しない。",
+    "notes": []
+  }
+}

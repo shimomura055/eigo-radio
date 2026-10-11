@@ -30,7 +30,7 @@ BASE = os.path.join(ROOT, "er054_output", "family_z_story_pool_trial_01")
 SCREEN = os.path.join(BASE, "screening")
 PRICING_SNAPSHOT = os.path.join(ROOT, "er005_output", "cost_baseline_01", "pricing_snapshot.json")
 USD_JPY = 160.0
-INTERP_VERSION = "family_z_rights_interpret_v1"
+INTERP_VERSION = "family_z_rights_interpret_v2_work_edition"
 ROUTING_KEY = common.KEY_RIGHTS
 PRIMARY_MODEL = common.resolve_trial_model(ROUTING_KEY)  # gpt-6-luna
 ALLOWED_MODELS = (PRIMARY_MODEL,)
@@ -46,15 +46,17 @@ DEVELOPER_MESSAGE = (
     "書誌メタ・未確認事項だけを根拠に、権利状態を整理・要約し、未確認情報を明確化し、REVIEW_REQUIREDの解消に必要な確認事項を挙げる。"
     "あなたは最終判定者ではない。PASS/NGを決める欄は無く、決定論判定を変更・上書きすることはできない。"
     "入力に無い事実(没年・出版事情・翻訳者・出典)を記憶から補ってはならない。入力に無い情報は『未確認』と明記する。"
-    "米国のPD状態を日本の利用条件の根拠にしてはならない。第三者の翻訳・英訳は原作と別の著作物として扱う。"
-    "懸念(llm_concern_level)は、入力から読み取れる権利上の疑義の度合いだけを答える(none=疑義なし / review=確認が必要 / ng_concern=権利NGの疑い)。"
+    "米国のPD状態を日本の利用条件の根拠にしてはならない。原語原作の権利(work_rights)と、利用した版・翻訳の権利(edition_rights)は必ず分けて述べ、混同しない。"
+    "判定の根拠は work_rights(原語原作の著者の日本国内保護期間と一次資料の取得状況)だけであり、edition_rights は参考情報で作品の権利判断・記事化の前提条件にしてはならない。"
+    "既存翻訳に権利上の懸念があっても、原語原作に問題が無ければ作品を懸念扱いにしない(翻訳側の懸念は concerns に文章で書くだけにし、llm_concern_level には反映しない)。"
+    "懸念(llm_concern_level)は、入力から読み取れる「原語原作(work_rights)」に関する権利上の疑義の度合いだけを答える(none=疑義なし / review=確認が必要 / ng_concern=権利NGの疑い)。"
 )
 
 USER_TEMPLATE = """[入力: Phase B決定論判定JSON(作品ID {work_id})]
 {payload}
 
 [手順]
-1. rights_state_summary: 権利状態の整理(日本国内の原作の保護状態、版・翻訳の扱い、2〜4文、日本語)。
+1. rights_state_summary: 権利状態の整理(日本国内の原語原作の保護状態を先に、次に版・翻訳(edition_rights、参考情報)の扱いを分けて、2〜4文、日本語)。
 2. basis_summary: 判断根拠の要約(入力のどのフィールドに基づくか、決定論判定 decision={decision} をどう読んだか)。
 3. subjects: 権利者(rights_subjects)ごとの状態の読み取り(subject, status_as_given(入力のstatusをそのまま), note)。
 4. unconfirmed_clarified: 未確認事項(unconfirmed)ごとに、なぜ重要か(why_matters)と、最終PASSに対してブロッキングか(blocking_for_final_pass)。入力に無い未確認事項を足す場合はadded_by_llm=trueにする。
@@ -164,8 +166,10 @@ def interpret_one(wid: str, model: str, client, out_dir: str, mock: bool) -> dic
     model = common.check_model(ROUTING_KEY, model)
     scr = load_screening(wid)
     msgs = build_messages(scr)
+    _t0 = __import__("time").time()
     resp = client.responses.create(model=model, reasoning={"effort": REASONING_EFFORT}, input=msgs,
                                    text={"format": {"type": "json_schema", **JSON_SCHEMA}})
+    elapsed = round(__import__("time").time() - _t0, 2)
     actual = getattr(resp, "model", None)
     if not mock and not (actual and str(actual).startswith(model)):
         raise RuntimeError(f"STOP: actual model_idが要求と異なる requested={model} actual={actual}")
@@ -178,7 +182,8 @@ def interpret_one(wid: str, model: str, client, out_dir: str, mock: bool) -> dic
            "interpreted_at": dt.datetime.now(dt.timezone.utc).isoformat(),
            "usage": ({"input_tokens": getattr(usage, "input_tokens", None), "output_tokens": getattr(usage, "output_tokens", None)} if usage else None),
            "prompt_sha256": hashlib.sha256(json.dumps(msgs, ensure_ascii=False).encode("utf-8")).hexdigest(),
-           "developer_message": DEVELOPER_MESSAGE, "llm_output": parsed, "reconcile": rec_}
+           "usage_full": (usage.model_dump() if usage is not None and hasattr(usage, "model_dump") else None), "elapsed_sec": elapsed, "response_id": getattr(resp, "id", None),
+           "developer_message": DEVELOPER_MESSAGE, "user_prompt_full": msgs[1]["content"], "llm_output": parsed, "reconcile": rec_}
     d = os.path.join(out_dir, model)
     os.makedirs(d, exist_ok=True)
     with open(os.path.join(d, f"{wid}.json"), "w", encoding="utf-8") as f:

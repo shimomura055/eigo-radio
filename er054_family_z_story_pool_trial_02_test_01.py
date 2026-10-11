@@ -97,11 +97,22 @@ class T(unittest.TestCase):
     def test_no_override_upgrade(self):
         import tempfile
         with tempfile.TemporaryDirectory() as d:
-            for mode in ("neutral", "upgrade", "concern"):
-                for w in ("L04", "L06"):
-                    r = ri.interpret_one(w, "gpt-6-luna", ri.MockClient(mode), d, True)
-                    self.assertEqual(r["reconcile"]["final_status_after_interpret"], r["reconcile"]["deterministic_decision"])
-                    self.assertFalse(r["reconcile"]["final_pass_confirmed"])
+            # 委任_03: L04は原語原作ベースでPASSになったため、REVIEW_REQUIRED据え置きの検証は合成screeningで行う(L06=NGは実データ)
+            orig = ri.load_screening
+            def fake(wid):
+                x = orig(wid)
+                if wid == "L04":
+                    x["decision"] = "REVIEW_REQUIRED"
+                return x
+            ri.load_screening = fake
+            try:
+                for mode in ("neutral", "upgrade", "concern"):
+                    for w in ("L04", "L06"):
+                        r = ri.interpret_one(w, "gpt-6-luna", ri.MockClient(mode), d, True)
+                        self.assertEqual(r["reconcile"]["final_status_after_interpret"], r["reconcile"]["deterministic_decision"])
+                        self.assertFalse(r["reconcile"]["final_pass_confirmed"])
+            finally:
+                ri.load_screening = orig
             r = ri.interpret_one("L01", "gpt-6-luna", ri.MockClient("concern"), d, True)
             self.assertEqual(r["reconcile"]["final_status_after_interpret"], "REVIEW_REQUIRED")
             self.assertTrue(r["reconcile"]["demoted"])
