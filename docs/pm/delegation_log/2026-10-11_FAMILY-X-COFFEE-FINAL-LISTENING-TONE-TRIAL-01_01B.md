@@ -1,0 +1,17 @@
+# 委任ログ: FAMILY-X-COFFEE-FINAL-LISTENING-TONE-TRIAL-01 委任_01B (2026-10-11)
+- 範囲: B=KP英語Phrase、C=KP日本語意味(Standard)、D=Standard日本語Preview/Comment1-4。各5仕様(計75 call)。到達Status: VALIDATED/REJECTED/USER_DECISION_REQUIRED。Production変更禁止。
+- 使用モデル/Voice/backend(実測): gemini-3.8-flash-lite-tts(最新世代、現行Production同一固定)/ KP英語=Aoede(er006 ensure_key_phrase_english_component speaker_voice、現行Production)/ KP日本語意味・Preview・Comment=Aoede(既存tts_generation_results実測)/ speech_metadata_flash_lite、Standard同期(DEV、Production既定=Batch)。
+- 方式: Trial専用script er057_tone_trial_kp_ja_gen_01.py が flw.make_speech_metadata_call_fn と同一形のリクエストを直接API呼び出し。Production runner・Master Store・manifest・telemetry・human_review_queue・attempt_history・cost_loggerは使用/書込なし。trim=Production同一(KP英語margin0.30、日本語0.35)、duration anomaly検知のみ。内容ASRは実施せず(委任どおり)。
+- 仕様(Prompt全文は part_BCD/prompts/prompts_{B,C,D}.md)。いずれも速度数値のみの差ではない:
+  - B(英語、共通guard=1回のみ/語の追加省略禁止/末尾音発話): K1 短い語句の自然なアクセント(内容語に自然な強勢・機能語は弱く) / K2 意味のまとまり(1かたまりで滑らかに) / K3 文末の安定(語尾を上げず下降で言い切る) / K4 過剰強調の抑制(教師が淡々と読む) / K5 学習者向け明瞭なモデル発音(各音を明瞭、末尾をくっきり)。Baseline=KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX(長文instruction、逐語)。
+  - C(日本語意味、Bと対応付け・Prompt独立): M1 語尾を上げず言い切る / M2 ひとまとまり滑らかに / M3 落ち着いて穏やかに終える / M4 淡々とした辞書的説明 / M5 学習者向けの明瞭さ。Baseline=J2逐語。
+  - D(Preview/Comment、現行J2逐語を土台+追記): P1 文末・句末の音程安定 / P2 句読点を「間」として扱う(記号で音程を変えない) / P3 意味のまとまり(文節)ごとのリズム / P4 会話的自然さ / P5 文全体のなだらかな音程設計。
+- 費用: 概算約¥10.9(retry込み約¥13.1、上限¥50内) / 実費(usage実測tokens×Standard単価、請求画面未確認)約¥9.55、calls 80(技術失敗retry 5件: K1_kp1/3/4/5, K2_kp1、各1回目の失敗理由は未記録[成功時に上書き]、いずれも2回目で成功)。
+- 結果: 75/75 OK、duration anomaly 0件。KPコーナー通し(既存+5セット)・個別音声・D通し(既存+5セット)を連結(既存baselineの通し41.16秒が既存timeline合計と一致)。音量は現行assembleと同じ目標RMS(0.09932)へ全音声同一正規化(既存版含む)。
+- 試聴URL: https://shimomura055.github.io/eigo-radio/user_test/coffee_tone_trial_01/keyphrases_jacomments/index.html
+- Playwright: audio 102/102実再生PASS、HTTP全200、file:///・C:\なし、Gate 7(l)(m)(n)確認(PLAY_EVIDENCE_01B.md)。
+- Baseline由来: 既存run dir(worktree eigo-radio-tone、er019_output/.../coffee_prices__run_e_tone_01/a2、read-only)。各wav sha256は part_BCD/build_manifest_01B.json の baseline_sha256。
+- Production不変: Master Store manifest/reuse_telemetry/human_review_queue/attempt_history/各telemetry/pronunciation ledger の sha256が生成前後で一致(production_sha_before/after_01B.txt、SHA_UNCHANGED)。
+- 禁止遵守: git add -A/-f・amend・rebase・force push・stash・clean・reset・checkout -f 不使用、Production runner非経由、既存音声上書きなし、全話再生成なし、候補の選定・採用なし、CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS・ACTIVE_TASK.md・RESULT_PACKET.md未編集。
+- 注意/限界: (1)Primary経路の発音hint(resolver)付与はTrialでは省略。(2)D通しはpreview→comment_1→…を0.8秒pause連結(Production assembleとは異なる試聴用)。(3)Previewは既存Productionでは無加工(gain=1.0)だが、本ページは比較のため既存版も同一正規化。(4)K1〜5/M1〜5/P1〜5はBlindではなくアプローチ説明付き。
+- Status案: USER_DECISION_REQUIRED(ユーザー試聴待ち)。
