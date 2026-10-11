@@ -127,7 +127,7 @@ class F4F6W1(unittest.TestCase):
             order.append(os.path.basename(p))
             return real(p, text)
         with mock.patch.object(w1, "wt", spy):
-            w1.run_w1_writer(self.out, client=FakeClient([(R0, "gpt-6-luna"), ("# T\n本文です。", "gpt-6-astra"), ("# T2\n本文2です。", "gpt-6-astra")]))
+            w1.run_w1_writer(self.out, client=FakeClient([(R0, "gpt-6.1-sol"), ("# T\n本文です。", "gpt-6.1-sol"), ("# T2\n本文2です。", "gpt-6.1-sol")]))
         self.assertLess(order.index("runtime_evidence.json"), order.index("revision2.md"))
         self.assertEqual(order[-1], "revision2.md")
 

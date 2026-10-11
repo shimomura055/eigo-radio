@@ -426,8 +426,10 @@ class RoutingTests(unittest.TestCase):
         m = routing.PROCESS_MODEL_MAP
         self.assertEqual(m["FAMILY_X_RF_LUNA"], "gpt-6-luna")
         self.assertEqual(m["FAMILY_X_RF_GEMINI"], "gemini-3.5-flash-lite")
-        self.assertEqual(m["FAMILY_X_FACTLOCK_R0"], "gpt-6-luna")
-        self.assertEqual(m["FAMILY_X_FACTLOCK_REVISE"], "gpt-6-astra")
+        # SOL61 E案(2026-10-11ユーザー正式決定): B3/R0/R1/R2=gpt-6.1-sol(RFは不変)
+        self.assertEqual(m["FAMILY_X_FACTLOCK_R0"], "gpt-6.1-sol")
+        self.assertEqual(m["FAMILY_X_FACTLOCK_REVISE"], "gpt-6.1-sol")
+        self.assertEqual(m["FAMILY_X_STORYLINE_B3"], "gpt-6.1-sol")
 
     def test_existing_keys_unchanged(self):
         m = routing.PROCESS_MODEL_MAP

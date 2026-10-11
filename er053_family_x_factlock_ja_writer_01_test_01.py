@@ -165,11 +165,18 @@ class Identity(unittest.TestCase):
         self.assertEqual(w1.verbatim_shas()["R0_BLOCK"], PINNED["P5"])
 
     def test_model_literals_equal_current_jaw_settings(self):
-        self.assertEqual(w1.R0_MODEL, jaw.WRITER_MODEL)
+        # SOL61 E案(2026-10-11): R0/R1/R2はroutingから取得しgpt-6.1-sol。effortはjaw.WRITER_EFFORTと同一(high、不変)。
         self.assertEqual(w1.R0_EFFORT, jaw.WRITER_EFFORT)
         self.assertEqual(routing.PROCESS_MODEL_MAP["FAMILY_X_FACTLOCK_R0"], w1.R0_MODEL)
         self.assertEqual(routing.PROCESS_MODEL_MAP["FAMILY_X_FACTLOCK_REVISE"], w1.ASTRA_MODEL)
-        self.assertEqual(self.e2e.ASTRA_MODEL, w1.ASTRA_MODEL)
+        self.assertEqual(w1.R0_MODEL, "gpt-6.1-sol")
+        self.assertEqual(w1.ASTRA_MODEL, "gpt-6.1-sol")
+        # module側にmodel idの直書きが残っていない(Dangling相当0)
+        import inspect
+        src = inspect.getsource(w1)
+        self.assertNotIn('"gpt-6-luna"', src)
+        self.assertNotIn('"gpt-6-astra"', src)
+        self.assertNotIn('= "gpt-6.1-sol"', src)
 
 
 class GoldenPrompts(unittest.TestCase):
@@ -276,18 +283,18 @@ class FlowTests(unittest.TestCase):
         return c, w1.run_w1_writer(self.out, client=c, **kw)
 
     def test_happy_path_calls_shape_and_outputs(self):
-        c, r = self.run_w1([(R0_OK, "gpt-6-luna-2026"), (R1_RAW, "gpt-6-astra-2026"), (R2_RAW, "gpt-6-astra-2026")])
+        c, r = self.run_w1([(R0_OK, "gpt-6.1-sol-2026"), (R1_RAW, "gpt-6.1-sol-2026"), (R2_RAW, "gpt-6.1-sol-2026")])
         self.assertEqual(len(c.calls), 3)
         k0, k1, k2 = c.calls
         # R0: developer + user, effort high, 単発(previous_response_id無し)
-        self.assertEqual(k0["model"], "gpt-6-luna")
+        self.assertEqual(k0["model"], "gpt-6.1-sol")
         self.assertEqual(k0["reasoning"], {"effort": "high"})
         self.assertEqual([m["role"] for m in k0["input"]], ["developer", "user"])
         self.assertEqual(k0["input"][0]["content"], jaw.DEVELOPER_MESSAGE)
         self.assertNotIn("previous_response_id", k0)
         # R1/R2: Astra, effort high, userのみ、previous_response_id/service_tier/developerなし
         for k in (k1, k2):
-            self.assertEqual(k["model"], "gpt-6-astra")
+            self.assertEqual(k["model"], "gpt-6.1-sol")
             self.assertEqual(k["reasoning"], {"effort": "high"})
             self.assertEqual([m["role"] for m in k["input"]], ["user"])
             self.assertEqual(set(k), {"model", "reasoning", "input"})
@@ -315,8 +322,8 @@ class FlowTests(unittest.TestCase):
         self.assertTrue(ev["annotation_rules_sha256"])                       # C4: producerの規則sha・入力shaをevidenceへ
         self.assertEqual(set(ev["annotation_input_shas"]), {"selected_brief_md", "ledger", "fact_selection_evidence_json"})
         self.assertEqual(ev["title"], "新タイトル")
-        self.assertEqual(ev["r1"]["model"], "gpt-6-astra-2026")
-        self.assertEqual(ev["original"]["model"], "gpt-6-luna-2026")
+        self.assertEqual(ev["r1"]["model"], "gpt-6.1-sol-2026")
+        self.assertEqual(ev["original"]["model"], "gpt-6.1-sol-2026")
         self.assertEqual(ev["r2"]["response_id"], "resp_3")
         self.assertEqual(ev["verbatim_shas"]["R0_BLOCK"], PINNED["P5"])
         self.assertEqual(r["title"], "新タイトル")
@@ -324,7 +331,7 @@ class FlowTests(unittest.TestCase):
         self.assertTrue(ev["title"])
 
     def test_r0_prompt_is_built_from_parsed_annotated_md_only(self):
-        c, _ = self.run_w1([(R0_OK, "gpt-6-luna"), (R1_RAW, "gpt-6-astra"), (R2_RAW, "gpt-6-astra")])
+        c, _ = self.run_w1([(R0_OK, "gpt-6.1-sol"), (R1_RAW, "gpt-6.1-sol"), (R2_RAW, "gpt-6.1-sol")])
         ann = open(os.path.join(self.out, "storyline_b3", "selected_brief_annotated.md"), encoding="utf-8").read()
         storyline, facts = w1.parse_brief_md(ann)
         a3 = contract.validate_annotated_b3(self.out)
@@ -337,7 +344,7 @@ class FlowTests(unittest.TestCase):
 
     def test_budget_check_called_between_r1_and_r2_and_before_each(self):
         order = []
-        c = FakeClient([(R0_OK, "gpt-6-luna"), (R1_RAW, "gpt-6-astra"), (R2_RAW, "gpt-6-astra")])
+        c = FakeClient([(R0_OK, "gpt-6.1-sol"), (R1_RAW, "gpt-6.1-sol"), (R2_RAW, "gpt-6.1-sol")])
         orig = c.create
 
         def create(**kw):
@@ -357,7 +364,7 @@ class FlowTests(unittest.TestCase):
 
     def test_r0_symbol_qa_regenerates_once_with_note_and_before_tag_strip(self):
         bad = "メタ（括弧）の話\n人間が電話をしました。【事実1】\n"
-        c, r = self.run_w1([(bad, "gpt-6-luna"), (R0_OK, "gpt-6-luna"), (R1_RAW, "gpt-6-astra"), (R2_RAW, "gpt-6-astra")])
+        c, r = self.run_w1([(bad, "gpt-6.1-sol"), (R0_OK, "gpt-6.1-sol"), (R1_RAW, "gpt-6.1-sol"), (R2_RAW, "gpt-6.1-sol")])
         self.assertEqual(len(c.calls), 4)
         ann = open(os.path.join(self.out, "storyline_b3", "selected_brief_annotated.md"), encoding="utf-8").read()
         storyline, facts = w1.parse_brief_md(ann)
@@ -368,7 +375,7 @@ class FlowTests(unittest.TestCase):
 
     def test_r0_symbol_qa_stop_if_remains_and_no_astra_call(self):
         bad = "メタ（括弧）の話\n人間が電話。【事実1】\n"
-        c = FakeClient([(bad, "gpt-6-luna"), (bad, "gpt-6-luna")])
+        c = FakeClient([(bad, "gpt-6.1-sol"), (bad, "gpt-6.1-sol")])
         with self.assertRaises(w1.JASymbolCheckStopError) as cm:
             w1.run_w1_writer(self.out, client=c)
         self.assertEqual(cm.exception.stage, "r0_symbol")
@@ -376,7 +383,7 @@ class FlowTests(unittest.TestCase):
 
     def test_astra_symbol_qa_case_a_reruns_r2_only_same_input(self):
         r2_bad = "# 題\n\n本文（括弧つき）です。"
-        c, r = self.run_w1([(R0_OK, "gpt-6-luna"), (R1_RAW, "gpt-6-astra"), (r2_bad, "gpt-6-astra"), (R2_RAW, "gpt-6-astra")])
+        c, r = self.run_w1([(R0_OK, "gpt-6.1-sol"), (R1_RAW, "gpt-6.1-sol"), (r2_bad, "gpt-6.1-sol"), (R2_RAW, "gpt-6.1-sol")])
         self.assertEqual(len(c.calls), 4)
         self.assertEqual(c.calls[2]["input"], c.calls[3]["input"])             # 同一userでR2のみ再実行(Prompt変更なし)
         self.assertNotEqual(c.calls[1]["input"], c.calls[3]["input"])
@@ -388,7 +395,7 @@ class FlowTests(unittest.TestCase):
 
     def test_astra_symbol_qa_stop_if_remains(self):
         r2_bad = "# 題\n\n本文（括弧つき）です。"
-        c = FakeClient([(R0_OK, "gpt-6-luna"), (R1_RAW, "gpt-6-astra"), (r2_bad, "gpt-6-astra"), (r2_bad, "gpt-6-astra")])
+        c = FakeClient([(R0_OK, "gpt-6.1-sol"), (R1_RAW, "gpt-6.1-sol"), (r2_bad, "gpt-6.1-sol"), (r2_bad, "gpt-6.1-sol")])
         with self.assertRaises(w1.JASymbolCheckStopError) as cm:
             w1.run_w1_writer(self.out, client=c)
         self.assertEqual(cm.exception.stage, "r2_symbol")
@@ -397,20 +404,34 @@ class FlowTests(unittest.TestCase):
     def test_astra_rerun_budget_checks_before_and_after(self):
         r2_bad = "# 題\n\n本文（括弧つき）です。"
         order = []
-        c = FakeClient([(R0_OK, "gpt-6-luna"), (R1_RAW, "gpt-6-astra"), (r2_bad, "gpt-6-astra"), (R2_RAW, "gpt-6-astra")])
+        c = FakeClient([(R0_OK, "gpt-6.1-sol"), (R1_RAW, "gpt-6.1-sol"), (r2_bad, "gpt-6.1-sol"), (R2_RAW, "gpt-6.1-sol")])
         orig = c.create
         c.create = lambda **kw: (order.append("call"), orig(**kw))[1]
         w1.run_w1_writer(self.out, client=c, budget_check=lambda: order.append("budget"))
         self.assertEqual(order, ["budget", "call", "budget", "call", "budget", "call", "budget", "call", "budget"])
 
     def test_astra_model_mismatch_is_stop(self):
-        c = FakeClient([(R0_OK, "gpt-6-luna"), (R1_RAW, "gpt-6.1-sol")])
+        # SOL61: R1が旧Astra(gpt-6-astra)を返したらSTOP(旧model混入の検知)
+        c = FakeClient([(R0_OK, "gpt-6.1-sol"), (R1_RAW, "gpt-6-astra")])
         with self.assertRaises(w1.ProvenanceViolation):
             w1.run_w1_writer(self.out, client=c)
         self.assertEqual(len(c.calls), 2)
 
+    def test_r0_model_mismatch_is_stop_sol61(self):
+        c = FakeClient([(R0_OK, "gpt-6-luna")])
+        with self.assertRaises(w1.ProvenanceViolation):
+            w1.run_w1_writer(self.out, client=c)
+        self.assertEqual(len(c.calls), 1)
+
+    def test_all_stage_requested_model_is_sol_and_actual_recorded(self):
+        c, r = self.run_w1([(R0_OK, "gpt-6.1-sol-2026-10"), (R1_RAW, "gpt-6.1-sol-2026-10"), (R2_RAW, "gpt-6.1-sol-2026-10")])
+        self.assertEqual([k["model"] for k in c.calls], ["gpt-6.1-sol"] * 3)
+        ev = r["runtime_evidence"]
+        self.assertEqual(ev["original"]["model"], "gpt-6.1-sol-2026-10")
+        self.assertEqual(ev["r1"]["model"], "gpt-6.1-sol-2026-10")
+
     def test_call_astra_transient_retry_two_then_success_and_exhaust(self):
-        c = FakeClient([RuntimeError("a"), RuntimeError("b"), ("ok", "gpt-6-astra")])
+        c = FakeClient([RuntimeError("a"), RuntimeError("b"), ("ok", "gpt-6.1-sol")])
         self.assertEqual(w1.call_astra(c, "u", "s").output_text, "ok")
         c2 = FakeClient([RuntimeError("a"), RuntimeError("b"), RuntimeError("c")])
         with self.assertRaises(RuntimeError):
@@ -419,7 +440,7 @@ class FlowTests(unittest.TestCase):
 
     def test_tag_leak_stop(self):
         leaked = "題\n本文です。【 中核数値 】\n"
-        c = FakeClient([(leaked, "gpt-6-luna")])
+        c = FakeClient([(leaked, "gpt-6.1-sol")])
         with self.assertRaises(w1.TagLeak):
             w1.run_w1_writer(self.out, client=c)
 
@@ -436,7 +457,7 @@ class FlowTests(unittest.TestCase):
 
     def test_r0_echo_recorded_not_fixed(self):
         echo = "題\nこれ、ちょっと面白くない？と聞かれた話です。\n"
-        c, r = self.run_w1([(echo + "【事実1】\n", "gpt-6-luna"), (R1_RAW, "gpt-6-astra"), (R2_RAW, "gpt-6-astra")])
+        c, r = self.run_w1([(echo + "【事実1】\n", "gpt-6.1-sol"), (R1_RAW, "gpt-6.1-sol"), (R2_RAW, "gpt-6.1-sol")])
         meta = json.load(open(os.path.join(self.out, "ja_writer", "factlock", "r0_meta.json"), encoding="utf-8"))
         self.assertTrue(meta["r0_echo"]["echo_anywhere"])
         self.assertEqual(len(c.calls), 3)                    # 復唱は記録のみ。再生成しない

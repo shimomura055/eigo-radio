@@ -107,7 +107,9 @@ class PricingRoutingAdditionTests(unittest.TestCase):
     def test_astra_price_values(self):
         import er053_risk_flagger_production_01 as rf
         pr = rf.load_prices(routing.PROCESS_MODEL_MAP["FAMILY_X_FACTLOCK_REVISE"], "openai")
-        self.assertEqual((pr["input_tokens"], pr["output_tokens"]), (10.0, 50.0))
+        # SOL61 E案(2026-10-11): R1/R2はgpt-6.1-sol(2.00/10.00 USD/1M)。旧Astra(10/50)からの移行(単価値はsnapshot登録値、変更なし)
+        self.assertEqual(routing.PROCESS_MODEL_MAP["FAMILY_X_FACTLOCK_REVISE"], "gpt-6.1-sol")
+        self.assertEqual((pr["input_tokens"], pr["output_tokens"]), (2.0, 10.0))
 
 
 if __name__ == "__main__":
