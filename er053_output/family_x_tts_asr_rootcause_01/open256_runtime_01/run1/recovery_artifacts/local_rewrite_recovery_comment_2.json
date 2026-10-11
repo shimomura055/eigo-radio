@@ -1,0 +1,614 @@
+{
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "comment_2",
+  "segment_role_label": "Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)",
+  "canonical_text": "Some Muse calls were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+  "last_asr_text": "Some use calls were handed over to human workers, but not all of them. Were people told when a worker took over? And what did Meta change after the test?",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "some muse calls were handed",
+    "asr_span_with_context": "some use calls were handed",
+    "canonical_changed_words": [
+      "muse"
+    ],
+    "asr_changed_words": [
+      "use"
+    ],
+    "context_window_word_indices": [
+      0,
+      5
+    ]
+  },
+  "candidate_gen": {
+    "candidates": [
+      {
+        "id": "1",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "Some Muse calls were transferred over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+        "changed_span_before": "Some Muse calls were handed",
+        "changed_span_after": "Some Muse calls were transferred",
+        "rationale": "Changes only the transfer verb while preserving the meaning and sentence structure."
+      },
+      {
+        "id": "2",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Some calls from Muse went over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+        "changed_span_before": "Some Muse calls were handed",
+        "changed_span_after": "Some calls from Muse went",
+        "rationale": "Recasts the phrase so the subset of calls transferred to people is clear and natural."
+      },
+      {
+        "id": "3",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Some of Muse's calls were sent over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+        "changed_span_before": "Some Muse calls were handed",
+        "changed_span_after": "Some of Muse's calls were sent",
+        "rationale": "Uses a natural possessive construction and a different transfer verb without adding information."
+      },
+      {
+        "id": "4",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Some calls that Muse handled were routed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+        "changed_span_before": "Some Muse calls were handed",
+        "changed_span_after": "Some calls that Muse handled were routed",
+        "rationale": "Makes the relationship between Muse and the calls explicit while retaining the original transfer meaning."
+      },
+      {
+        "id": "5",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "A portion of Muse's calls was passed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+        "changed_span_before": "Some Muse calls were handed",
+        "changed_span_after": "A portion of Muse's calls was passed",
+        "rationale": "Offers a concise alternative phrasing for the same partial handoff."
+      }
+    ],
+    "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"Some Muse calls were transferred over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\",\"changed_span_before\":\"Some Muse calls were handed\",\"changed_span_after\":\"Some Muse calls were transferred\",\"rationale\":\"Changes only the transfer verb while preserving the meaning and sentence structure.\"},{\"id\":\"2\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Some calls from Muse went over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\",\"changed_span_before\":\"Some Muse calls were handed\",\"changed_span_after\":\"Some calls from Muse went\",\"rationale\":\"Recasts the phrase so the subset of calls transferred to people is clear and natural.\"},{\"id\":\"3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Some of Muse's calls were sent over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\",\"changed_span_before\":\"Some Muse calls were handed\",\"changed_span_after\":\"Some of Muse's calls were sent\",\"rationale\":\"Uses a natural possessive construction and a different transfer verb without adding information.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Some calls that Muse handled were routed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\",\"changed_span_before\":\"Some Muse calls were handed\",\"changed_span_after\":\"Some calls that Muse handled were routed\",\"rationale\":\"Makes the relationship between Muse and the calls explicit while retaining the original transfer meaning.\"},{\"id\":\"5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"A portion of Muse's calls was passed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\",\"changed_span_before\":\"Some Muse calls were handed\",\"changed_span_after\":\"A portion of Muse's calls was passed\",\"rationale\":\"Offers a concise alternative phrasing for the same partial handoff.\"}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_0c13e0b643d3c0a6006acad231b18087d0bca475bffbfa037d",
+    "_prompt": "Segment role: Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)\n\nFull segment (contains the problem span):\n\"Some Muse calls were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['use'] instead of ['muse']):\n\"some muse calls were handed\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+  },
+  "qa": {
+    "evaluations": [
+      {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Transferred over” preserves the claim that some, but not all, Muse calls were handed to human workers."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoff and leads into the same questions."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and following questions remain connected."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Transferred over to human workers” is natural in this spoken context."
+        }
+      },
+      {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Calls from Muse” can mean calls originating from Muse, rather than calls handled by or associated with Muse."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps a partial handoff and leads into the same questions."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not directly contradict the original, though it changes or obscures the relationship between Muse and the calls."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and following questions remain connected."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "“Calls from Muse went over to human workers” sounds awkward and leaves the relationship between Muse and the calls unclear."
+        }
+      },
+      {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Muse’s calls” preserves the reference to calls associated with Muse, and the partial handoff remains explicit."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoff and leads into the same questions."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and following questions remain connected."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Some of Muse’s calls were sent over to human workers” is natural spoken English."
+        }
+      },
+      {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Calls that Muse handled” makes explicit the relationship conveyed by “Muse calls,” while preserving the partial handoff."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoff and leads into the same questions."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and following questions remain connected."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Calls that Muse handled were routed over to human workers” is a natural way to describe call routing."
+        }
+      },
+      {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“A portion” preserves the idea that some, but not all, of Muse’s calls were handed to human workers."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoff and leads into the same questions."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and following questions remain connected."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "“A portion of Muse’s calls was passed over” sounds stilted; a speaker would more naturally say “some of Muse’s calls were handed over.”"
+        }
+      }
+    ],
+    "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"1\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Transferred over” preserves the claim that some, but not all, Muse calls were handed to human workers.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the handoff and leads into the same questions.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no claim that conflicts with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The recap and following questions remain connected.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Transferred over to human workers” is natural in this spoken context.\"}},{\"candidate_id\":\"2\",\"meaning_preserved\":{\"pass\":false,\"reason\":\"“Calls from Muse” can mean calls originating from Muse, rather than calls handled by or associated with Muse.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps a partial handoff and leads into the same questions.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not directly contradict the original, though it changes or obscures the relationship between Muse and the calls.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The recap and following questions remain connected.\"},\"natural_english\":{\"pass\":false,\"reason\":\"“Calls from Muse went over to human workers” sounds awkward and leaves the relationship between Muse and the calls unclear.\"}},{\"candidate_id\":\"3\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Muse’s calls” preserves the reference to calls associated with Muse, and the partial handoff remains explicit.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the handoff and leads into the same questions.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no claim that conflicts with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The recap and following questions remain connected.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Some of Muse’s calls were sent over to human workers” is natural spoken English.\"}},{\"candidate_id\":\"4\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Calls that Muse handled” makes explicit the relationship conveyed by “Muse calls,” while preserving the partial handoff.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the handoff and leads into the same questions.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no claim that conflicts with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The recap and following questions remain connected.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Calls that Muse handled were routed over to human workers” is a natural way to describe call routing.\"}},{\"candidate_id\":\"5\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“A portion” preserves the idea that some, but not all, of Muse’s calls were handed to human workers.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the handoff and leads into the same questions.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It introduces no claim that conflicts with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The recap and following questions remain connected.\"},\"natural_english\":{\"pass\":false,\"reason\":\"“A portion of Muse’s calls was passed over” sounds stilted; a speaker would more naturally say “some of Muse’s calls were handed over.”\"}}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_0d05dfde2d624476006acad24eb26c87d09e150e194a16e1d0",
+    "_prompt": "Segment role: Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)\n\nORIGINAL segment:\n\"Some Muse calls were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\"\n\nCandidates to evaluate:\n- candidate_id='1': \"Some Muse calls were transferred over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\"\n- candidate_id='2': \"Some calls from Muse went over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\"\n- candidate_id='3': \"Some of Muse's calls were sent over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\"\n- candidate_id='4': \"Some calls that Muse handled were routed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\"\n- candidate_id='5': \"A portion of Muse's calls was passed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+  },
+  "candidates": [
+    {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Some Muse calls were transferred over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+      "changed_span_before": "Some Muse calls were handed",
+      "changed_span_after": "Some Muse calls were transferred",
+      "rationale": "Changes only the transfer verb while preserving the meaning and sentence structure.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Transferred over” preserves the claim that some, but not all, Muse calls were handed to human workers."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoff and leads into the same questions."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and following questions remain connected."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Transferred over to human workers” is natural in this spoken context."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0325,
+        "orig_coverage": 0.9667,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          4,
+          5
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9667
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "2",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Some calls from Muse went over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+      "changed_span_before": "Some Muse calls were handed",
+      "changed_span_after": "Some calls from Muse went",
+      "rationale": "Recasts the phrase so the subset of calls transferred to people is clear and natural.",
+      "qa_llm": {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Calls from Muse” can mean calls originating from Muse, rather than calls handled by or associated with Muse."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps a partial handoff and leads into the same questions."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not directly contradict the original, though it changes or obscures the relationship between Muse and the calls."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and following questions remain connected."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "“Calls from Muse went over to human workers” sounds awkward and leaves the relationship between Muse and the calls unclear."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 0.987,
+        "orig_coverage": 0.9,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          1,
+          5
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9
+      },
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false
+    },
+    {
+      "id": "3",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Some of Muse's calls were sent over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+      "changed_span_before": "Some Muse calls were handed",
+      "changed_span_after": "Some of Muse's calls were sent",
+      "rationale": "Uses a natural possessive construction and a different transfer verb without adding information.",
+      "qa_llm": {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Muse’s calls” preserves the reference to calls associated with Muse, and the partial handoff remains explicit."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoff and leads into the same questions."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and following questions remain connected."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Some of Muse’s calls were sent over to human workers” is natural spoken English."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0195,
+        "orig_coverage": 0.9333,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          1,
+          5
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9333
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "4",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Some calls that Muse handled were routed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+      "changed_span_before": "Some Muse calls were handed",
+      "changed_span_after": "Some calls that Muse handled were routed",
+      "rationale": "Makes the relationship between Muse and the calls explicit while retaining the original transfer meaning.",
+      "qa_llm": {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Calls that Muse handled” makes explicit the relationship conveyed by “Muse calls,” while preserving the partial handoff."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoff and leads into the same questions."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and following questions remain connected."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Calls that Muse handled were routed over to human workers” is a natural way to describe call routing."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0844,
+        "orig_coverage": 0.9333,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          1,
+          5
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9333
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "5",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "A portion of Muse's calls was passed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+      "changed_span_before": "Some Muse calls were handed",
+      "changed_span_after": "A portion of Muse's calls was passed",
+      "rationale": "Offers a concise alternative phrasing for the same partial handoff.",
+      "qa_llm": {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“A portion” preserves the idea that some, but not all, of Muse’s calls were handed to human workers."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoff and leads into the same questions."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and following questions remain connected."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "“A portion of Muse’s calls was passed over” sounds stilted; a speaker would more naturally say “some of Muse’s calls were handed over.”"
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0584,
+        "orig_coverage": 0.8667,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          0,
+          5
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.8667
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false
+    }
+  ],
+  "selection": {
+    "selected": {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Some Muse calls were transferred over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+      "changed_span_before": "Some Muse calls were handed",
+      "changed_span_after": "Some Muse calls were transferred",
+      "rationale": "Changes only the transfer verb while preserving the meaning and sentence structure.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Transferred over” preserves the claim that some, but not all, Muse calls were handed to human workers."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoff and leads into the same questions."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It introduces no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and following questions remain connected."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Transferred over to human workers” is natural in this spoken context."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0325,
+        "orig_coverage": 0.9667,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          4,
+          5
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9667
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    "status": "SELECTED",
+    "selection_rationale": "全7 Gate PASSの候補は3件(['1', '3', '4'])。unchanged_ratio=0.9667(最小限の変更)が最大の'1'を採用。Natural English Gate理由: “Transferred over to human workers” is natural in this spoken context.",
+    "all_passing_candidate_ids": [
+      "1",
+      "3",
+      "4"
+    ]
+  },
+  "retts_result": {
+    "status": "OK",
+    "text": "Some Muse calls were transferred over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+    "path": "er053_output/family_x_tts_asr_rootcause_01/open256_runtime_01/run1/open256_runtime_run1/b1b/narration/comment_2.wav",
+    "model": "gemini-3.8-flash-lite-tts",
+    "voice": "Aoede",
+    "call_count": 1,
+    "retry_count": 0,
+    "sha256": "c301d8754974210ad0db58c9a8e27edb53f033101d8bec02e69a92a411316a0d",
+    "duration_seconds": 10.2,
+    "trim_info": {
+      "raw_duration_seconds": 10.2,
+      "raw_leading_silence_seconds": 0.16,
+      "raw_trailing_silence_seconds": 0.32,
+      "trimmed_duration_seconds": 10.2,
+      "leading_margin_retained_seconds": 0.16,
+      "trailing_margin_retained_seconds": 0.32
+    },
+    "clipping_detected": false,
+    "instruction": "minimal (not ENGLISH_STYLE_PREFIX)",
+    "tts_backend": "speech_metadata_flash_lite",
+    "en_pronunciation_resolver_info": {
+      "hints_applied": false,
+      "cache_hits": [],
+      "low_confidence_retry_attempted": false,
+      "low_confidence_retry_improved": false,
+      "research_meta": null
+    },
+    "asr_text": "Some US calls were transferred over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+    "audio_classification": "SECONDARY_ASR_CORROBORATED_MATCH",
+    "asr_verified": true,
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "repetition_qa_checked": false,
+    "repetition_qa_evidence": null
+  },
+  "status": "RESOLVED_BY_LOCAL_REWRITE"
+}

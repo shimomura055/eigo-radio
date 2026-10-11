@@ -35,3 +35,27 @@ Luna QA 1-5(意味保存/role保持/Fact非矛盾/文脈接続/自然さ) + Gate
 
 ## 6. 範囲外
 `er020_tts_local_rewrite_natural_english_qa_trial_02.py` にも同名旧関数があるがTrial専用でProduction経路から未使用のため不変更。
+
+---
+## 追記(委任_25、2026-10-11): Opus是正後の最終ルールと全Family影響表
+
+### 7. 是正後の全文性検証(`diagnose_candidate_full_segment`、Production経路では `check_span=True`)
+上記3節の6条件に加えて追加(順序は実装順):
+| 追加条件 | reason | 目的 |
+|---|---|---|
+| 先頭の引用符/ラベル付加(`^\s*["“‘'(]` / `^\w+\s*\d*:\s`、原文側が同じ形なら対象外)を拒否 | LEADING_QUOTE_OR_LABEL_ADDED | 前置き・ラベル混入(除去せず拒否) |
+| 原文の数字多重集合(ng span内の数字は除外)が候補に残る | NUMERIC_TOKEN_LOST | 窓内の数字脱落 |
+| 候補の申告span(before->after)を原文へ適用した結果が候補全文とトークン一致 | SPAN_INCONSISTENT_UNDECLARED_CHANGE / SPAN_BEFORE_NOT_DECLARED | 窓内の申告外の追加・削除 |
+英語TTS role専用。日本語経路は未対応(Gate7がASCII語のみ計数)。実記録90件replayで旧採択76件に誤拒否0(`OPEN256_REPLAY_01.md`)。
+
+### 8. 全Family影響表(是正後差分の追記)
+変更は共通primitive `er020_tts_retry_local_rewrite_01.build_full_candidate_records` 1箇所(呼出契約・戻り値の既存キー不変、recordに`full_segment_check`追加のみ)。
+| 呼出元(Local Rewrite回復) | 対象 | 影響 |
+|---|---|---|
+| `er003_v1_crosslevel_audio_02_common._local_rewrite_recovery_for_english_segment_with_fallback` | A2/Family X等の英語本文segment | 全文性判定のみ変更(runtime evidence取得: open256_runtime_01) |
+| `er003_v1_sing01_voice01_generate._local_rewrite_recovery_for_charon_english` | B1B charon英語 | 同上(同一primitive) |
+| `er003_v1_sing01_news_tail_fix._local_rewrite_recovery_for_news_narration` | B1B news英語 | 同上 |
+| `er003_v1_n3_01_tts_generate` | N3 | 同上 |
+| 日本語経路(er007等) | 日本語 | 呼出なし(未対応のまま、変更なし) |
+| `er020_tts_local_rewrite_natural_english_qa_trial_02.py` | Trial専用 | 未使用・不変更(同名旧関数は据え置き) |
+Dangling Reference Check: 旧定数 `FULL_SEGMENT_PREFIX_CHECK_CHARS` への参照は Trial_02 自身の定義以外に0件。`er053_dangling_reference_check_01.py`+test 4件PASS(本変更に起因する孤立参照0)。

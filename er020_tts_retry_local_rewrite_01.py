@@ -232,9 +232,76 @@ def _coverage_tokens(text: str) -> list:
     return [ch for ch in text if not ch.isspace()]
 
 
-def diagnose_candidate_full_segment(canonical_text: str, rewritten_segment: str) -> dict:
-    """位置非依存の全文性検証。reasonは判定理由コード(record用)。
-    ok=Trueでも他の7 Gateは別途必須(これは全文性のみ)。"""
+_SIMPLE_TOKEN_RE = re.compile(r"[\w']+")
+_NUMERIC_RE = re.compile(r"\d+(?:[.,]\d+)*")
+_LEADING_QUOTE_RE = re.compile(r"^\s*[\"“‘'(]")
+_LEADING_LABEL_RE = re.compile(r"^\s*\w+\s*\d*:\s")
+
+
+def _simple_tokens(text: str) -> list:
+    return _SIMPLE_TOKEN_RE.findall((text or "").lower().replace("’", "'"))
+
+
+def _numeric_keys(text: str) -> list:
+    """数字表記(9.59 / 1,000 / 85 等)をdigit列だけの文字列に正規化して返す。"""
+    return ["".join(re.findall(r"\d+", m)) for m in _NUMERIC_RE.findall(text or "")]
+
+
+def check_span_consistency(canonical_text: str, rewritten_segment: str,
+                           changed_span_before: str, changed_span_after: str) -> dict:
+    """OPEN-256 是正1: 候補の申告span(before->after)を原文のどこか1箇所に適用した
+    結果が、候補全文と(トークン列として)一致すること。窓内の追加・削除・前置き等、
+    申告外の変更を機械的に拒否する。"""
+    before = _simple_tokens(changed_span_before)
+    after = _simple_tokens(changed_span_after)
+    orig = _simple_tokens(canonical_text)
+    cand = _simple_tokens(rewritten_segment)
+    if not before:
+        return {"ok": False, "reason": "SPAN_BEFORE_NOT_DECLARED"}
+    for i in range(len(orig) - len(before) + 1):
+        if orig[i:i + len(before)] == before and orig[:i] + after + orig[i + len(before):] == cand:
+            return {"ok": True, "reason": "SPAN_CONSISTENT"}
+    return {"ok": False, "reason": "SPAN_INCONSISTENT_UNDECLARED_CHANGE"}
+
+
+def check_numeric_preservation(canonical_text: str, rewritten_segment: str,
+                               ng_changed_tokens: list | None = None) -> dict:
+    """OPEN-256 是正2: 原文の数字(ng span内の数字は除外)の多重集合が候補にも残ること。
+    ng_changed_tokensはidentify_ng_span/find_problem_span_token_rangeのtoken(例 '85xdollarx')。"""
+    excluded = []
+    for t in (ng_changed_tokens or []):
+        if re.search(r"\d", t):
+            excluded.append("".join(re.findall(r"\d+", t)))
+    need = []
+    for k in _numeric_keys(canonical_text):
+        if k in excluded:
+            excluded.remove(k)
+        else:
+            need.append(k)
+    have = _numeric_keys(rewritten_segment)
+    missing = []
+    for k in need:
+        if k in have:
+            have.remove(k)
+        else:
+            missing.append(k)
+    if missing:
+        return {"ok": False, "reason": "NUMERIC_TOKEN_LOST", "missing": missing}
+    return {"ok": True, "reason": "NUMERIC_PRESERVED"}
+
+
+def diagnose_candidate_full_segment(canonical_text: str, rewritten_segment: str, *,
+                                    changed_span_before: str | None = None,
+                                    changed_span_after: str | None = None,
+                                    check_span: bool = False,
+                                    ng_changed_tokens: list | None = None) -> dict:
+    """位置非依存の全文性検証(OPEN-256)。reasonは判定理由コード(record用)。
+    ok=Trueでも他の7 Gateは別途必須(これは全文性のみ)。
+
+    注意: 英語TTS role専用。日本語経路は未対応(Gate7がASCII語のみ計数するため、
+    純日本語候補は常にGate7不合格になる。日本語対応は別OPEN)。
+    Production経路(build_full_candidate_records)は check_span=True で呼び、候補の
+    申告spanとの整合・数値保持も強制する。check_span=Falseは構造検証のみ。"""
     orig = (canonical_text or "").strip()
     cand = (rewritten_segment or "").strip()
     if not orig or not cand:
@@ -247,6 +314,9 @@ def diagnose_candidate_full_segment(canonical_text: str, rewritten_segment: str)
         return {"ok": False, "reason": "TOO_SHORT_FRAGMENT", **info}
     if ratio > FULL_SEGMENT_MAX_LENGTH_RATIO:
         return {"ok": False, "reason": "TOO_LONG_OVER_EXPANDED", **info}
+    if ((_LEADING_QUOTE_RE.match(cand) and not _LEADING_QUOTE_RE.match(orig))
+            or (_LEADING_LABEL_RE.match(cand) and not _LEADING_LABEL_RE.match(orig))):
+        return {"ok": False, "reason": "LEADING_QUOTE_OR_LABEL_ADDED", **info}
     o_end = _strip_closers(orig)[-1:]
     c_end = _strip_closers(cand)[-1:]
     if (o_end in FULL_SEGMENT_TERMINAL_CHARS) != (c_end in FULL_SEGMENT_TERMINAL_CHARS):
@@ -258,11 +328,20 @@ def diagnose_candidate_full_segment(canonical_text: str, rewritten_segment: str)
     info["orig_coverage"] = round(coverage, 4)
     if coverage < FULL_SEGMENT_MIN_ORIG_COVERAGE:
         return {"ok": False, "reason": "LOW_ORIGINAL_COVERAGE_OVER_MODIFIED_OR_UNRELATED", **info}
+    num = check_numeric_preservation(orig, cand, ng_changed_tokens)
+    if not num["ok"]:
+        return {"ok": False, "reason": num["reason"], "missing_numbers": num["missing"], **info}
+    if check_span:
+        sp = check_span_consistency(orig, cand, changed_span_before or "", changed_span_after or "")
+        info["span_check"] = sp["reason"]
+        if not sp["ok"]:
+            return {"ok": False, "reason": sp["reason"], **info}
     return {"ok": True, "reason": "FULL_SEGMENT_OK", **info}
 
 
-def validate_candidate_is_full_segment(canonical_text: str, rewritten_segment: str) -> bool:
-    return diagnose_candidate_full_segment(canonical_text, rewritten_segment)["ok"]
+def validate_candidate_is_full_segment(canonical_text: str, rewritten_segment: str, **kw) -> bool:
+    """英語TTS role専用(日本語経路は未対応)。kwはdiagnose_candidate_full_segmentへ。"""
+    return diagnose_candidate_full_segment(canonical_text, rewritten_segment, **kw)["ok"]
 
 
 def _extract_json_object(raw_text: str) -> dict:
@@ -544,7 +623,13 @@ def build_full_candidate_records(canonical_text: str, candidates: list, qa_evalu
     records = []
     for c in candidates:
         qa = qa_by_id.get(c["id"])
-        is_full_segment = validate_candidate_is_full_segment(canonical_text, c["rewritten_segment"])
+        ng_tokens = (problem_span_range["canon_tokens"][problem_span_range["start"]:problem_span_range["end"]]
+                     if problem_span_range.get("found") else [])
+        fs_check = diagnose_candidate_full_segment(
+            canonical_text, c["rewritten_segment"],
+            changed_span_before=c.get("changed_span_before"), changed_span_after=c.get("changed_span_after"),
+            check_span=True, ng_changed_tokens=ng_tokens)
+        is_full_segment = fs_check["ok"]
         locality = check_locality(canonical_text, c["rewritten_segment"], problem_span_range)
         gates = {
             "1_meaning_preserved": qa["meaning_preserved"]["pass"] if qa else None,
@@ -559,7 +644,7 @@ def build_full_candidate_records(canonical_text: str, candidates: list, qa_evalu
         record = dict(c)
         record["qa_llm"] = qa
         record["is_full_segment_format_valid"] = is_full_segment
-        record["full_segment_check"] = diagnose_candidate_full_segment(canonical_text, c["rewritten_segment"])
+        record["full_segment_check"] = fs_check
         record["locality_check"] = locality
         record["seven_gates"] = gates
         record["all_seven_gates_pass"] = all_pass

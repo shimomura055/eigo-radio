@@ -21,6 +21,13 @@ META_CANDS = {
     4: "A number of Muse calls" + TAIL,
     5: "Some calls involving Muse" + TAIL,
 }
+META_SPANS = {
+    1: ("Some", "Certain"),
+    2: ("Some Muse calls were handed", "Some of the Muse calls were handed"),
+    3: ("Some Muse calls were handed", "Some of Muse's calls were handed"),
+    4: ("Some Muse calls were handed", "A number of Muse calls were handed"),
+    5: ("Some Muse calls", "Some calls involving Muse"),
+}
 
 
 class MetaComment2Test(unittest.TestCase):
@@ -38,8 +45,8 @@ class MetaComment2Test(unittest.TestCase):
                    "context_connection", "natural_english")
         recs = m.build_full_candidate_records(
             META,
-            [{"id": str(i), "rewritten_segment": c, "changed_span_before": "Some",
-              "changed_span_after": "x", "rewrite_type": "single_word_swap", "rationale": ""}
+            [{"id": str(i), "rewritten_segment": c, "changed_span_before": META_SPANS[i][0],
+              "changed_span_after": META_SPANS[i][1], "rewrite_type": "single_word_swap", "rationale": ""}
              for i, c in META_CANDS.items()],
             [{"candidate_id": str(i),
               **{k: {"pass": (i not in (3, 5) or k != "meaning_preserved"), "reason": ""}
@@ -163,7 +170,12 @@ class RegressionCorpusTest(unittest.TestCase):
             with open(f, encoding="utf-8") as fh:
                 d = json.load(fh)
             for c in d["candidates"]:
-                ok = m.validate_candidate_is_full_segment(d["canonical_text"], c["rewritten_segment"])
+                ng = d.get("ng_span") or {}
+                pr = (m.find_problem_span_token_range(d["canonical_text"], " ".join(ng.get("canonical_changed_words") or []))
+                      if ng.get("found") else {"found": False})
+                ngt = pr["canon_tokens"][pr["start"]:pr["end"]] if pr.get("found") else []
+                ok = m.validate_candidate_is_full_segment(d["canonical_text"], c["rewritten_segment"],
+                                                          ng_changed_tokens=ngt)
                 old = c.get("is_full_segment_format_valid")
                 if old is True:
                     n_old_true += 1
@@ -176,6 +188,129 @@ class RegressionCorpusTest(unittest.TestCase):
                     d["canonical_text"], c.get("changed_span_after") or "x"))
         self.assertGreaterEqual(n_old_true, 70)
         self.assertGreaterEqual(n_old_false, 14)
+
+
+# ---- OPEN-256 Opusレビュー是正(2026-10-11) ----
+def diag_span(orig, cand, before, after, ng=None):
+    return m.diagnose_candidate_full_segment(orig, cand, changed_span_before=before,
+                                             changed_span_after=after, check_span=True,
+                                             ng_changed_tokens=ng or [])
+
+
+class PrefixLabelRejectTest(unittest.TestCase):
+    """推奨3: 前置き・ラベル・先頭引用符は拒否(除去して通さない)。"""
+
+    def test_reject_preamble_label_quote(self):
+        for cand in (
+            "Here is the rewrite: " + META_CANDS[1],
+            "Rewrite 1: " + META_CANDS[1],
+            '"' + META_CANDS[1],
+            "“" + META_CANDS[1],
+            "(" + META_CANDS[1],
+        ):
+            d = diag_span(META, cand, "Some", "Certain")
+            self.assertFalse(d["ok"], cand)
+            self.assertIn(d["reason"], ("LEADING_QUOTE_OR_LABEL_ADDED", "TOO_LONG_OVER_EXPANDED",
+                                         "SPAN_INCONSISTENT_UNDECLARED_CHANGE"), cand)
+
+    def test_original_with_quote_is_not_penalized(self):
+        orig = '"Some Muse calls were handed over to human workers," the report said.'
+        cand = orig.replace("Some", "Certain")
+        self.assertTrue(m.validate_candidate_is_full_segment(orig, cand))
+
+    def test_label_reason_code_for_short_label(self):
+        d = diag_span(META, "Note: " + META_CANDS[1], "Some", "Certain")
+        self.assertEqual(d["reason"], "LEADING_QUOTE_OR_LABEL_ADDED")
+
+
+class WindowInternalEditTest(unittest.TestCase):
+    """必須是正1/2: Gate6窓内の事実句削除・数字脱落・申告外の追加を機械的に拒否。"""
+    ORIG = ("In 2024, Muse calls were handed over to human workers, but not all of them "
+            "were reviewed by staff before the test ended.")
+
+    def test_fact_phrase_deletion_in_window_rejected(self):
+        cand = "Muse calls were handed over to human workers, but not all of them were reviewed by staff before the test ended."
+        d = diag_span(self.ORIG, cand, "Muse", "Muse")  # 申告は無変更なのに句が消えている
+        self.assertFalse(d["ok"])
+        self.assertIn(d["reason"], ("NUMERIC_TOKEN_LOST", "SPAN_INCONSISTENT_UNDECLARED_CHANGE",
+                                         "FRAGMENT_SUBSTRING_OF_ORIGINAL"))
+
+    def test_number_loss_rejected_even_if_span_declared(self):
+        # ng spanは "muse"。数字2024はng span外なので脱落は拒否される。
+        cand = "Certain calls were handed over to human workers, but not all of them were reviewed by staff before the test ended."
+        d = diag_span(self.ORIG, cand, "In 2024, Muse calls", "Certain calls", ng=["muse"])
+        self.assertFalse(d["ok"])
+        self.assertEqual(d["reason"], "NUMERIC_TOKEN_LOST")
+
+    def test_undeclared_added_words_rejected(self):
+        cand = self.ORIG.replace("Muse calls", "Certain Muse calls") .replace("handed over", "quietly handed over")
+        d = diag_span(self.ORIG, cand, "Muse calls", "Certain Muse calls", ng=["muse"])
+        self.assertFalse(d["ok"])
+        self.assertEqual(d["reason"], "SPAN_INCONSISTENT_UNDECLARED_CHANGE")
+
+    def test_undeclared_fact_removal_rejected(self):
+        cand = self.ORIG.replace(", but not all of them", "").replace("Muse calls", "Certain Muse calls")
+        d = diag_span(self.ORIG, cand, "Muse calls", "Certain Muse calls", ng=["muse"])
+        self.assertFalse(d["ok"])
+
+    def test_missing_declared_span_rejected(self):
+        d = diag_span(self.ORIG, self.ORIG.replace("Muse", "Certain"), "", "")
+        self.assertEqual(d["reason"], "SPAN_BEFORE_NOT_DECLARED")
+
+    def test_legit_declared_change_passes(self):
+        cand = self.ORIG.replace("Muse calls", "Certain Muse calls")
+        d = diag_span(self.ORIG, cand, "Muse calls", "Certain Muse calls", ng=["muse"])
+        self.assertTrue(d["ok"], d)
+        self.assertEqual(d["reason"], "FULL_SEGMENT_OK")
+
+    def test_ng_span_number_excluded_from_preservation(self):
+        orig = "At the time of reporting, Brent was up about 2.6%, above $85 a barrel. It settled higher."
+        cand = orig.replace("$85", "eighty-five dollars")
+        ng = ["85xdollarx"]
+        self.assertTrue(m.check_numeric_preservation(orig, cand, ng)["ok"])
+        # ng spanでなければ脱落は拒否
+        self.assertFalse(m.check_numeric_preservation(orig, cand, [])["ok"])
+        # ng span外の数字(2.6)脱落は拒否
+        cand2 = cand.replace("2.6%", "a few percent")
+        r = m.check_numeric_preservation(orig, cand2, ng)
+        self.assertFalse(r["ok"])
+        self.assertEqual(r["reason"], "NUMERIC_TOKEN_LOST")
+
+    def test_numeric_preserved_multiset(self):
+        orig = "It rose 5% on Monday and 5% on Tuesday, then 12 on Friday."
+        self.assertTrue(m.check_numeric_preservation(orig, orig.replace("rose", "climbed"))["ok"])
+        self.assertFalse(m.check_numeric_preservation(orig, orig.replace("and 5%", "and"))["ok"])  # 重複数字の片方脱落
+
+
+class Fixture90Test(unittest.TestCase):
+    """実記録90件の固定fixture: 新ルール(全文性+span整合+数値保持+ラベル拒否)で
+    旧採択76件は全てPASS(誤拒否0)、救済対象14件のうち拒否は申告外変更の1件のみ
+    (それも既にGate6不合格で選択には影響しない)。"""
+    PATH = os.path.join("er053_output", "family_x_tts_asr_rootcause_01", "open256_fixture_90records_01.json")
+
+    def test_no_false_rejection(self):
+        if not os.path.exists(self.PATH):
+            self.skipTest("fixture not present")
+        rows = json.load(open(self.PATH, encoding="utf-8"))
+        self.assertEqual(len(rows), 90)
+        old_ok = [r for r in rows if r["old_prefix15_rule_pass"]]
+        self.assertEqual(len(old_ok), 76)
+        rejected = []
+        for r in rows:
+            d = diag_span(r["canonical_text"], r["rewritten_segment"], r["changed_span_before"],
+                          r["changed_span_after"], r["ng_changed_tokens"])
+            if not d["ok"]:
+                rejected.append((r["file"], r["id"], d["reason"], r["old_prefix15_rule_pass"]))
+        self.assertEqual([x for x in rejected if x[3]], [], "旧採択からの誤拒否")
+        self.assertEqual(len(rejected), 1, rejected)
+        self.assertEqual(rejected[0][2], "SPAN_INCONSISTENT_UNDECLARED_CHANGE")
+        self.assertTrue(rejected[0][0].endswith("tts_gemini_3_8_flash_lite_ab_trial_01/b/local_rewrite_recovery_full_story_part1.json")
+                        and rejected[0][1] == "5")
+
+
+class DocNoteTest(unittest.TestCase):
+    def test_english_only_noted(self):
+        self.assertIn("日本語経路は未対応", m.diagnose_candidate_full_segment.__doc__)
 
 
 if __name__ == "__main__":

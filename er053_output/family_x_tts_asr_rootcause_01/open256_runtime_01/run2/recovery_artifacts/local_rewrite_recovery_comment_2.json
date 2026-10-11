@@ -1,0 +1,613 @@
+{
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "comment_2",
+  "segment_role_label": "Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)",
+  "canonical_text": "Some Muse calls were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+  "last_asr_text": "Some use calls were handed over to human workers, but not all of them. Were people told when a worker took over? And what did Meta change after the test?",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "some muse calls were handed",
+    "asr_span_with_context": "some use calls were handed",
+    "canonical_changed_words": [
+      "muse"
+    ],
+    "asr_changed_words": [
+      "use"
+    ],
+    "context_window_word_indices": [
+      0,
+      5
+    ]
+  },
+  "candidate_gen": {
+    "candidates": [
+      {
+        "id": "1",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "Certain Muse calls were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+        "changed_span_before": "Some",
+        "changed_span_after": "Certain",
+        "rationale": "Keeps the subset meaning while avoiding the awkward sound transition in “Some Muse.”"
+      },
+      {
+        "id": "2",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Some calls made by Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+        "changed_span_before": "Some Muse calls",
+        "changed_span_after": "Some calls made by Muse",
+        "rationale": "Recasts the name as part of a natural spoken phrase while preserving the reference to Muse calls."
+      },
+      {
+        "id": "3",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Some calls handled by Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+        "changed_span_before": "Some Muse calls",
+        "changed_span_after": "Some calls handled by Muse",
+        "rationale": "Uses a clear, idiomatic phrase for calls associated with Muse that were transferred to people."
+      },
+      {
+        "id": "4",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Some calls involving Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+        "changed_span_before": "Some Muse calls",
+        "changed_span_after": "Some calls involving Muse",
+        "rationale": "Makes the connection to Muse explicit without the troublesome adjacent word sounds."
+      },
+      {
+        "id": "5",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Some calls through Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+        "changed_span_before": "Some Muse calls",
+        "changed_span_after": "Some calls through Muse",
+        "rationale": "Offers a concise, natural phrasing that retains the reference to calls through Muse."
+      }
+    ],
+    "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"Certain Muse calls were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\",\"changed_span_before\":\"Some\",\"changed_span_after\":\"Certain\",\"rationale\":\"Keeps the subset meaning while avoiding the awkward sound transition in “Some Muse.”\"},{\"id\":\"2\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Some calls made by Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\",\"changed_span_before\":\"Some Muse calls\",\"changed_span_after\":\"Some calls made by Muse\",\"rationale\":\"Recasts the name as part of a natural spoken phrase while preserving the reference to Muse calls.\"},{\"id\":\"3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Some calls handled by Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\",\"changed_span_before\":\"Some Muse calls\",\"changed_span_after\":\"Some calls handled by Muse\",\"rationale\":\"Uses a clear, idiomatic phrase for calls associated with Muse that were transferred to people.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Some calls involving Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\",\"changed_span_before\":\"Some Muse calls\",\"changed_span_after\":\"Some calls involving Muse\",\"rationale\":\"Makes the connection to Muse explicit without the troublesome adjacent word sounds.\"},{\"id\":\"5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Some calls through Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\",\"changed_span_before\":\"Some Muse calls\",\"changed_span_after\":\"Some calls through Muse\",\"rationale\":\"Offers a concise, natural phrasing that retains the reference to calls through Muse.\"}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_03729bb0ce32b258006acad326689087d0a9337e94b32a1587",
+    "_prompt": "Segment role: Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)\n\nFull segment (contains the problem span):\n\"Some Muse calls were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['use'] instead of ['muse']):\n\"some muse calls were handed\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+  },
+  "qa": {
+    "evaluations": [
+      {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Certain” preserves the original meaning of “some” here."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoffs and poses questions that lead into the closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It makes no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and follow-up questions still connect naturally within the segment."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Certain Muse calls” is idiomatic in spoken narration."
+        }
+      },
+      {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Calls made by Muse” is a natural clarification of “Muse calls” without changing the claim."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoffs and poses questions that lead into the closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It makes no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and follow-up questions still connect naturally within the segment."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Calls made by Muse” is idiomatic and clear in this narration context."
+        }
+      },
+      {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Calls handled by Muse” can mean calls received or serviced by Muse, rather than calls identified as Muse calls."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoffs and poses questions that lead into the closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "The changed description is not contradicted by anything stated in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and follow-up questions still connect naturally within the segment."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Calls handled by Muse” is a natural, idiomatic phrase."
+        }
+      },
+      {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Calls involving Muse” broadens the description and does not preserve the original identification of the calls as Muse calls."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoffs and poses questions that lead into the closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "The broader description does not directly contradict the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and follow-up questions still connect naturally within the segment."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Calls involving Muse” is a natural phrase in spoken narration."
+        }
+      },
+      {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Calls through Muse” implies calls routed or conducted via Muse, adding a channel relationship not stated in the original."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoffs and poses questions that lead into the closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "The added implication is not directly contradicted by the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and follow-up questions still connect naturally within the segment."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Calls through Muse” is idiomatic in this context."
+        }
+      }
+    ],
+    "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"1\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Certain” preserves the original meaning of “some” here.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the handoffs and poses questions that lead into the closing summary.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It makes no claim that conflicts with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The recap and follow-up questions still connect naturally within the segment.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Certain Muse calls” is idiomatic in spoken narration.\"}},{\"candidate_id\":\"2\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Calls made by Muse” is a natural clarification of “Muse calls” without changing the claim.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the handoffs and poses questions that lead into the closing summary.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It makes no claim that conflicts with the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The recap and follow-up questions still connect naturally within the segment.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Calls made by Muse” is idiomatic and clear in this narration context.\"}},{\"candidate_id\":\"3\",\"meaning_preserved\":{\"pass\":false,\"reason\":\"“Calls handled by Muse” can mean calls received or serviced by Muse, rather than calls identified as Muse calls.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the handoffs and poses questions that lead into the closing summary.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"The changed description is not contradicted by anything stated in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The recap and follow-up questions still connect naturally within the segment.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Calls handled by Muse” is a natural, idiomatic phrase.\"}},{\"candidate_id\":\"4\",\"meaning_preserved\":{\"pass\":false,\"reason\":\"“Calls involving Muse” broadens the description and does not preserve the original identification of the calls as Muse calls.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the handoffs and poses questions that lead into the closing summary.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"The broader description does not directly contradict the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The recap and follow-up questions still connect naturally within the segment.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Calls involving Muse” is a natural phrase in spoken narration.\"}},{\"candidate_id\":\"5\",\"meaning_preserved\":{\"pass\":false,\"reason\":\"“Calls through Muse” implies calls routed or conducted via Muse, adding a channel relationship not stated in the original.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It still recaps the handoffs and poses questions that lead into the closing summary.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"The added implication is not directly contradicted by the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"The recap and follow-up questions still connect naturally within the segment.\"},\"natural_english\":{\"pass\":true,\"reason\":\"“Calls through Muse” is idiomatic in this context.\"}}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_0ead67e803421c22006acad345c34087d0b373add5797b3aad",
+    "_prompt": "Segment role: Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)\n\nORIGINAL segment:\n\"Some Muse calls were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\"\n\nCandidates to evaluate:\n- candidate_id='1': \"Certain Muse calls were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\"\n- candidate_id='2': \"Some calls made by Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\"\n- candidate_id='3': \"Some calls handled by Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\"\n- candidate_id='4': \"Some calls involving Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\"\n- candidate_id='5': \"Some calls through Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+  },
+  "candidates": [
+    {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Certain Muse calls were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+      "changed_span_before": "Some",
+      "changed_span_after": "Certain",
+      "rationale": "Keeps the subset meaning while avoiding the awkward sound transition in “Some Muse.”",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Certain” preserves the original meaning of “some” here."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoffs and poses questions that lead into the closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It makes no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and follow-up questions still connect naturally within the segment."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Certain Muse calls” is idiomatic in spoken narration."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0195,
+        "orig_coverage": 0.9667,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          0,
+          1
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9667
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "2",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Some calls made by Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+      "changed_span_before": "Some Muse calls",
+      "changed_span_after": "Some calls made by Muse",
+      "rationale": "Recasts the name as part of a natural spoken phrase while preserving the reference to Muse calls.",
+      "qa_llm": {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Calls made by Muse” is a natural clarification of “Muse calls” without changing the claim."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoffs and poses questions that lead into the closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It makes no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and follow-up questions still connect naturally within the segment."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Calls made by Muse” is idiomatic and clear in this narration context."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0519,
+        "orig_coverage": 0.9667,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          1,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9667
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "3",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Some calls handled by Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+      "changed_span_before": "Some Muse calls",
+      "changed_span_after": "Some calls handled by Muse",
+      "rationale": "Uses a clear, idiomatic phrase for calls associated with Muse that were transferred to people.",
+      "qa_llm": {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Calls handled by Muse” can mean calls received or serviced by Muse, rather than calls identified as Muse calls."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoffs and poses questions that lead into the closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "The changed description is not contradicted by anything stated in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and follow-up questions still connect naturally within the segment."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Calls handled by Muse” is a natural, idiomatic phrase."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0714,
+        "orig_coverage": 0.9667,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          1,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9667
+      },
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false
+    },
+    {
+      "id": "4",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Some calls involving Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+      "changed_span_before": "Some Muse calls",
+      "changed_span_after": "Some calls involving Muse",
+      "rationale": "Makes the connection to Muse explicit without the troublesome adjacent word sounds.",
+      "qa_llm": {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Calls involving Muse” broadens the description and does not preserve the original identification of the calls as Muse calls."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoffs and poses questions that lead into the closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "The broader description does not directly contradict the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and follow-up questions still connect naturally within the segment."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Calls involving Muse” is a natural phrase in spoken narration."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0649,
+        "orig_coverage": 0.9667,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          1,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9667
+      },
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false
+    },
+    {
+      "id": "5",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Some calls through Muse were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+      "changed_span_before": "Some Muse calls",
+      "changed_span_after": "Some calls through Muse",
+      "rationale": "Offers a concise, natural phrasing that retains the reference to calls through Muse.",
+      "qa_llm": {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": false,
+          "reason": "“Calls through Muse” implies calls routed or conducted via Muse, adding a channel relationship not stated in the original."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoffs and poses questions that lead into the closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "The added implication is not directly contradicted by the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and follow-up questions still connect naturally within the segment."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Calls through Muse” is idiomatic in this context."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0519,
+        "orig_coverage": 0.9667,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          1,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9667
+      },
+      "seven_gates": {
+        "1_meaning_preserved": false,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false
+    }
+  ],
+  "selection": {
+    "selected": {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Certain Muse calls were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+      "changed_span_before": "Some",
+      "changed_span_after": "Certain",
+      "rationale": "Keeps the subset meaning while avoiding the awkward sound transition in “Some Muse.”",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Certain” preserves the original meaning of “some” here."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It still recaps the handoffs and poses questions that lead into the closing summary."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It makes no claim that conflicts with the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "The recap and follow-up questions still connect naturally within the segment."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "“Certain Muse calls” is idiomatic in spoken narration."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0195,
+        "orig_coverage": 0.9667,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          0,
+          1
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9667
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    "status": "SELECTED",
+    "selection_rationale": "全7 Gate PASSの候補は2件(['1', '2'])。unchanged_ratio=0.9667(最小限の変更)が最大の'1'を採用。Natural English Gate理由: “Certain Muse calls” is idiomatic in spoken narration.",
+    "all_passing_candidate_ids": [
+      "1",
+      "2"
+    ]
+  },
+  "retts_result": {
+    "status": "OK",
+    "text": "Certain Muse calls were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+    "path": "er053_output/family_x_tts_asr_rootcause_01/open256_runtime_01/run2/open256_runtime_run2/b1b/narration/comment_2.wav",
+    "model": "gemini-3.8-flash-lite-tts",
+    "voice": "Aoede",
+    "call_count": 1,
+    "retry_count": 0,
+    "sha256": "20e123cddcee28ba535074438f896b93a079bf66964b8b8ccd48146342372f88",
+    "duration_seconds": 9.32,
+    "trim_info": {
+      "raw_duration_seconds": 9.32,
+      "raw_leading_silence_seconds": 0.3,
+      "raw_trailing_silence_seconds": 0.32,
+      "trimmed_duration_seconds": 9.32,
+      "leading_margin_retained_seconds": 0.3,
+      "trailing_margin_retained_seconds": 0.32
+    },
+    "clipping_detected": false,
+    "instruction": "minimal (not ENGLISH_STYLE_PREFIX)",
+    "tts_backend": "speech_metadata_flash_lite",
+    "en_pronunciation_resolver_info": {
+      "hints_applied": false,
+      "cache_hits": [],
+      "low_confidence_retry_attempted": false,
+      "low_confidence_retry_improved": false,
+      "research_meta": null
+    },
+    "asr_text": "Certain Muse calls were handed over to human workers, but not all of them. Were people told when a worker took over, and what did Meta change after the test?",
+    "audio_classification": "EXACT_MATCH",
+    "asr_verified": true,
+    "disfluency_checked": false,
+    "disfluency_evidence": null,
+    "repetition_qa_checked": false,
+    "repetition_qa_evidence": null
+  },
+  "status": "RESOLVED_BY_LOCAL_REWRITE"
+}
