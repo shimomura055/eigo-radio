@@ -1,0 +1,114 @@
+{
+  "work_id": "L04",
+  "title": "賭け",
+  "eval_version": "family_z_story_quality_eval_v1",
+  "model": "gpt-6-luna",
+  "requested_model": "gpt-6-luna",
+  "actual_model_id": "gpt-6-luna",
+  "routing_key": "FAMILY_Z_TRIAL_STORY_QUALITY_EVAL",
+  "mock": true,
+  "usage": null,
+  "prompt_sha256": "ddbd003bc2ba939ac22e617abdd1088ff5e29c457c3360eaf9356e803c2f3873",
+  "developer_message": "あなたは英語学習マガジンのFiction編集部の評価者である。与えられた『原作本文』だけを根拠に、その作品を『英語の短編(280〜420語、A2〜B1向け)へ再話するための素材』として評価する。作品の知名度・評判・過去の評価・あなたの記憶に頼らず、本文に書かれていることだけで判断すること。評価は4項目(A〜D)それぞれについてPASSまたはFAILのどちらかで答え、本文からの根拠引用と理由を必ず付ける。引用(evidence_quotes)は本文中の連続した文字列をそのままコピーしたものに限る(言い換え・要約・結合・省略記号は禁止)。1項目あたり1〜3個、各60文字(英語は25語)以内。迷った場合は無理にPASSにせず、理由欄に迷いの内容を書いてFAILまたはPASSを選ぶ。",
+  "eval_unit_id": "L04",
+  "reasoning_effort": "medium",
+  "evaluated_at": "2026-10-11T05:00:56.668292+00:00",
+  "unit": {
+    "lang": "English",
+    "unit_note": "短編集Gutenberg #55283から『The Bet』の本文のみ(2回目の見出し出現位置〜次作見出し直前)。",
+    "chars_no_ws": 12205,
+    "words_en": 2691,
+    "est_input_tokens_text": 3767
+  },
+  "result": {
+    "key_facts": {
+      "central_event": "mock",
+      "main_characters": [
+        "mock"
+      ],
+      "turning_point": "mock",
+      "ending": "mock",
+      "notable_quotes": [
+        "er of his study, rec"
+      ]
+    },
+    "A": {
+      "verdict": "PASS",
+      "evidence_quotes": [
+        "THE BETIIt was a dar"
+      ],
+      "reason": "mock",
+      "confidence": "low"
+    },
+    "B": {
+      "verdict": "PASS",
+      "evidence_quotes": [
+        "er of his study, rec"
+      ],
+      "reason": "mock",
+      "confidence": "low"
+    },
+    "C": {
+      "verdict": "PASS",
+      "evidence_quotes": [
+        "ars ago. There were "
+      ],
+      "reason": "mock",
+      "confidence": "low"
+    },
+    "D": {
+      "verdict": "PASS",
+      "evidence_quotes": [
+        "tion. They talked am"
+      ],
+      "reason": "mock",
+      "confidence": "low"
+    },
+    "appeal": "mock",
+    "compression_risk": {
+      "level": "low",
+      "notes": "mock",
+      "cut_candidates": []
+    },
+    "diversity": {
+      "theme": "mock",
+      "mood": "mock",
+      "era": "mock",
+      "region": "mock",
+      "narrator": "mock"
+    }
+  },
+  "quote_verification": {
+    "per_item": {
+      "A": [
+        true
+      ],
+      "B": [
+        true
+      ],
+      "C": [
+        true
+      ],
+      "D": [
+        true
+      ],
+      "key_facts.notable_quotes": [
+        true
+      ]
+    },
+    "unverified_quote_count": 0,
+    "all_verified": true
+  },
+  "aggregate": {
+    "pass_count": 4,
+    "passed": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "rule": "pass_count>=3 and D==PASS",
+    "overall": "PASS",
+    "notes": []
+  }
+}

@@ -46,3 +46,14 @@ Status上限: `VALIDATED`。Production採用・Wiring禁止。
 2. L06の評価単位(第IV章仮設定の可否)と、L06を負例として品質評価するか(権利NGのため既定は評価しない)。
 3. L04(権利REVIEW_REQUIRED)を品質評価に含めるか。
 4. 総合判定を「3項目以上かつD」とするか「3項目以上のみ」とするか(両方を保存するので事後切替は可能)。
+
+## 付録(委任_02、2026-10-11): モデル固定の差し替え(上記1節を置換)
+**上記1節の「Astra主/Sol比較、Lunaは拒否」は撤回。** ユーザー指示(2026-10-11、前回の「既存Routing・仕様を調査して選択」を置換)により、Trial基本モデルを **`gpt-6-luna`(Luna 6.0)に固定**。
+- 差し替え理由: ユーザー明示指定。PM_GOVERNANCE 25節(最新モデル原則)の**例外=ユーザー明示指定**(旧/下位モデルの例外理由として事前明記)。Luna 6.0は現行Production Routingの基本モデル(WRITER等)で、評価工程にも同一モデルを使う。
+- 解決方法: 既存Routing(`er006_model_routing_contract_01.py` `PROCESS_MODEL_MAP`)に**Trial専用key** `FAMILY_Z_TRIAL_STORY_QUALITY_EVAL` / `FAMILY_Z_TRIAL_RIGHTS_INTERPRET`(値=gpt-6-luna、リテラル固定)を**追加のみ**(Production keyは不変、`er054_family_z_story_pool_trial_02_test_01.py`で固定)。driverは `routing.require_model(key, model)` を呼出前に通し、許可外モデル(Astra/Sol/gpt-5.6-luna/未指定)はAPI前にfail-closed。
+- 記録: 呼出ごとに `requested_model` / `actual_model_id`(応答のmodel、requestedで始まらなければSTOP) / `routing_key` / `usage` / `prompt_sha256` / `developer_message` / 評価理由(各項目reason)を `phase_c_eval/<model>/<ID>.json` に保存。費用は`raw_usage_log.jsonl`(er005 cost logger)。
+- 工程別モデル配置: 原作取得・書誌=Python/既存ツール / 権利情報の解釈・整理=gpt-6-luna(PHASE_B2設計書) / Story品質4項目=gpt-6-luna / 集計・過去評価照合=Python/Claude Code(過去評価は評価後にのみ照合、モデルへは提示しない) / 難問の独立レビュー=下記提案のみ。
+- 10作品は同一モデル・同一評価条件(Prompt・schema・effort=medium・評価単位)で比較。
+- **提案候補(driverでは選べない。ユーザー承認なしに別モデルで追加Trialしない)**: gpt-6-astra(最上位)/gpt-6.1-sol(推奨系)。Luna評価で「(i)根拠引用の不一致が多い (ii)Prompt/基準を直しても判定が不安定 (iii)難しい判断(L04等)の独立レビュー」が出た場合のみ、問題内容・具体例・Prompt/基準かモデル能力か・代替案・期待効果と追加費用(委任_01の見積: Astra約426円/Sol約85円・8作品点見積)を報告のうえユーザー承認を求める。
+- Blind: 両driverは `SEALED_PAST_RESULTS_L01_L06.json` を読まない(`er054_family_z_story_pool_trial_common_01.assert_not_sealed`のdeny list+testで固定)。
+- 今回のモデル配置はTrial限定でProduction採用を意味しない。有料実行の予算承認は別途必要。

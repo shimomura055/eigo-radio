@@ -136,6 +136,11 @@ PROCESS_MODEL_MAP = {
     "FAMILY_X_RF_GEMINI": "gemini-3.5-flash-lite",
     "FAMILY_X_FACTLOCK_R0": "gpt-6.1-sol",
     "FAMILY_X_FACTLOCK_REVISE": "gpt-6.1-sol",
+    # FAMILY-Z-STORY-POOL-SCREENING-TRIAL-01 委任_02(2026-10-11、ユーザー指示: Trial基本モデルをgpt-6-lunaへ固定)で
+    # 追加(追加のみ、既存Production keyは不変)。**Trial専用**(er054 family_z story pool trial driverのみが参照)。
+    # Production採用を意味しない。リテラル固定(他定数に連動しない)。Astra/Sol等は提案候補でありここへは入れない。
+    "FAMILY_Z_TRIAL_STORY_QUALITY_EVAL": "gpt-6-luna",
+    "FAMILY_Z_TRIAL_RIGHTS_INTERPRET": "gpt-6-luna",
 }
 PROCESS_PROVIDER_MAP = {
     "EXCEPTION_SEARCH": EXCEPTION_SEARCH_PROVIDER,

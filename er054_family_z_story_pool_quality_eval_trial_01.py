@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 """FAMILY-Z-STORY-POOL-SCREENING-TRIAL-01 Phase C(Story品質一次評価)Trial専用driver。
 
+【委任_02(2026-10-11ユーザー指示)】使用モデルを gpt-6-luna に固定。既存Routing経由のTrial専用key
+        `FAMILY_Z_TRIAL_STORY_QUALITY_EVAL`(er006 PROCESS_MODEL_MAP、値=gpt-6-luna)で解決し、
+        Astra/Sol等は選べない(driverで拒否。提案候補としてPHASE_C_EVAL_DESIGN_01.mdに記載のみ)。
+        呼出ごとに応答のmodelフィールド(actual model_id)を記録。Trial限定でProduction採用を意味しない。
 【状態】委任_01では乾式(--mode dry-run、モックclient、API呼出ゼロ)のみ実行。
         --mode real は有料API(LLM)を使うため、ユーザーの課金上限承認(--approved-budget-jpy)が
         無い限り起動しない(委任_01では未実行)。
@@ -21,6 +25,8 @@ import re
 import sys
 from concurrent.futures import ThreadPoolExecutor
 
+import er054_family_z_story_pool_trial_common_01 as common
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 BASE = os.path.join(ROOT, "er054_output", "family_z_story_pool_trial_01")
 SRC = os.path.join(BASE, "sources")
@@ -29,14 +35,11 @@ PRICING_SNAPSHOT = os.path.join(ROOT, "er005_output", "cost_baseline_01", "prici
 USD_JPY = 160.0  # 既存換算(er009 USD_TO_JPY)に合わせる
 EVAL_VERSION = "family_z_story_quality_eval_v1"
 
-# ---- 評価用モデル(PM_GOVERNANCE 25節: 開発・評価は最新世代の最上位/推奨系。2026-10-09公式棚卸し=dev_eval_model_inventory_01.md)
-PRIMARY_MODEL = "gpt-6-astra"     # 最上位(旗艦)
-COMPARISON_MODEL = "gpt-6.1-sol"  # 推奨(バランス)。比較用の次点
-ALLOWED_MODELS = (PRIMARY_MODEL, COMPARISON_MODEL)  # 旧世代/下位(gpt-6-luna等)は例外理由が無い限り不可
-MODEL_REASON = {
-    PRIMARY_MODEL: "評価用途の最新世代の最上位系(公式2026-10-09取得: 迷ったらAstra)。最新モデル原則(25節)に適合。",
-    COMPARISON_MODEL: "評価用途の最新世代の推奨系(公式2026-10-09取得: 知能とコストのバランス)。比較用の次点。",
-}
+# ---- 評価用モデル(委任_02: ユーザー指示でgpt-6-lunaに固定。PM_GOVERNANCE 25節の例外=ユーザー明示指定)
+ROUTING_KEY = common.KEY_QUALITY
+PRIMARY_MODEL = common.resolve_trial_model(ROUTING_KEY)  # = "gpt-6-luna"(既存Routing経由)
+ALLOWED_MODELS = (PRIMARY_MODEL,)  # これ以外(Astra/Sol等)は起動拒否。変更はユーザー承認が必要
+MODEL_REASON = {PRIMARY_MODEL: "ユーザー指示(2026-10-11)によるTrial基本モデル固定。25節最新モデル原則の例外(ユーザー明示指定)。"}
 REASONING_EFFORT = "medium"
 
 # ---- 評価単位(原作の全文を原文のまま渡す。長編は章単位に固定し、要約はしない)
@@ -148,7 +151,7 @@ JSON_SCHEMA = {
 
 # ------------------------------------------------------------ 評価単位の構築(決定論)
 def load_screening(wid: str) -> dict:
-    with open(os.path.join(SCREEN, f"{wid}.json"), encoding="utf-8") as f:
+    with open(common.assert_not_sealed(os.path.join(SCREEN, f"{wid}.json")), encoding="utf-8") as f:
         return json.load(f)
 
 
@@ -156,7 +159,7 @@ def build_unit(wid: str) -> dict:
     p = os.path.join(SRC, wid, "text_plain.txt")
     if not os.path.exists(p):
         raise RuntimeError(f"STOP: {wid} 一次資料(text_plain.txt)が未取得。評価に進まない。")
-    with open(p, encoding="utf-8") as f:
+    with open(common.assert_not_sealed(p), encoding="utf-8") as f:
         full = f.read()
     rule = UNIT_RULES.get(wid)
     if rule:
@@ -261,17 +264,24 @@ class MockClient:
 
 # ------------------------------------------------------------ 1作品の評価(作品別ファイルへ書く)
 def eval_one(wid: str, model: str, client, out_dir: str, title: str, mock: bool) -> dict:
+    model = common.check_model(ROUTING_KEY, model)  # 許可外モデルはAPI前にfail-closed
     unit = build_unit(wid)
     kwargs = dict(model=model, reasoning={"effort": REASONING_EFFORT}, input=build_messages(unit, title),
                   text={"format": {"type": "json_schema", **JSON_SCHEMA}})
     resp = client.responses.create(**kwargs)
-    if resp.model != model and not mock:
-        raise RuntimeError(f"STOP: actual model_idが要求と異なる requested={model} actual={resp.model}")
+    actual_model_id = getattr(resp, "model", None)
+    if not mock and not (actual_model_id and str(actual_model_id).startswith(model)):
+        raise RuntimeError(f"STOP: actual model_idが要求と異なる requested={model} actual={actual_model_id}")
+    usage = getattr(resp, "usage", None)
     parsed = json.loads(resp.output_text)
     validate_schema_min(parsed)
     qv = verify_quotes(parsed, unit["text"])
     agg = aggregate(parsed, qv)
-    rec = {"work_id": wid, "title": title, "eval_version": EVAL_VERSION, "model": model, "mock": mock,
+    rec = {"work_id": wid, "title": title, "eval_version": EVAL_VERSION, "model": model, "requested_model": model,
+           "actual_model_id": actual_model_id, "routing_key": ROUTING_KEY, "mock": mock,
+           "usage": ({"input_tokens": getattr(usage, "input_tokens", None), "output_tokens": getattr(usage, "output_tokens", None)} if usage else None),
+           "prompt_sha256": __import__("hashlib").sha256(json.dumps(kwargs["input"], ensure_ascii=False).encode("utf-8")).hexdigest(),
+           "developer_message": DEVELOPER_MESSAGE, "eval_unit_id": wid,
            "reasoning_effort": REASONING_EFFORT, "evaluated_at": dt.datetime.now(dt.timezone.utc).isoformat(),
            "unit": {k: unit[k] for k in ("lang", "unit_note", "chars_no_ws", "words_en", "est_input_tokens_text")},
            "result": parsed, "quote_verification": qv, "aggregate": agg}
@@ -295,7 +305,7 @@ def load_prices(model: str) -> dict:
     return pr
 
 
-def estimate_cost(works: list, models: list) -> dict:
+def estimate_cost(works: list, models: list, out_tokens: int = OUT_TOKENS_POINT) -> dict:
     units = {w: build_unit(w) for w in works}
     table = {}
     for m in models:
@@ -303,8 +313,8 @@ def estimate_cost(works: list, models: list) -> dict:
         rows, tot_pt = {}, 0.0
         for w in works:
             tin = units[w]["est_input_tokens_text"] + OVERHEAD_PROMPT_TOKENS
-            usd = tin / 1e6 * pr["input_tokens"] + OUT_TOKENS_POINT / 1e6 * pr["output_tokens"]
-            rows[w] = {"input_tokens": tin, "output_tokens": OUT_TOKENS_POINT, "usd": round(usd, 5), "jpy_point": round(usd * USD_JPY, 2)}
+            usd = tin / 1e6 * pr["input_tokens"] + out_tokens / 1e6 * pr["output_tokens"]
+            rows[w] = {"input_tokens": tin, "output_tokens": out_tokens, "usd": round(usd, 5), "jpy_point": round(usd * USD_JPY, 2)}
             tot_pt += usd * USD_JPY
         table[m] = {"prices_usd_per_1m": pr, "per_work": rows, "total_jpy_point": round(tot_pt, 2), "total_jpy_cap_x1_5": round(tot_pt * 1.5, 2)}
     return {"usd_jpy": USD_JPY, "assumptions": {"ja_tokens_per_char": JA_TOKENS_PER_CHAR, "en_tokens_per_word": EN_TOKENS_PER_WORD,
@@ -331,7 +341,7 @@ def select_works(args) -> list:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--mode", choices=["dry-run", "real", "estimate"], default="dry-run")
-    ap.add_argument("--models", nargs="+", default=[PRIMARY_MODEL])
+    ap.add_argument("--models", nargs="+", default=[PRIMARY_MODEL])  # 許可はgpt-6-lunaのみ
     ap.add_argument("--works", nargs="*")
     ap.add_argument("--include-review", action="store_true")
     ap.add_argument("--include-control", action="store_true", help="権利NG(L06)を意図的負例として品質評価する")
@@ -341,14 +351,14 @@ def main():
     args = ap.parse_args()
     for m in args.models:
         if m not in ALLOWED_MODELS:
-            sys.exit(f"STOP: {m} は評価用許可モデル外(旧世代/下位は例外理由の事前登録が必要)。許可: {ALLOWED_MODELS}")
+            sys.exit(f"STOP: {m} は許可モデル外(Trial固定=gpt-6-luna。変更はユーザー承認が必要)。許可: {ALLOWED_MODELS}")
     works = select_works(args)
     T = titles()
 
     if args.mode == "estimate":
-        est = estimate_cost([f"L{i:02d}" for i in range(1, 11)], list(ALLOWED_MODELS))
+        est = estimate_cost([f"L{i:02d}" for i in range(1, 11)], list(ALLOWED_MODELS))  # 10作品分の単価表(ケース別集計はPHASE_C_COST_ESTIMATE_02_luna.md)
         os.makedirs(BASE, exist_ok=True)
-        with open(os.path.join(BASE, "PHASE_C_COST_ESTIMATE_01.json"), "w", encoding="utf-8") as f:
+        with open(os.path.join(BASE, "PHASE_C_COST_ESTIMATE_02_luna.json"), "w", encoding="utf-8") as f:
             json.dump(est, f, ensure_ascii=False, indent=2)
         print(json.dumps({m: (v["total_jpy_point"], v["total_jpy_cap_x1_5"]) for m, v in est["models"].items()}, ensure_ascii=False))
         return
