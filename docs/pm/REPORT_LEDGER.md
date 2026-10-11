@@ -254,3 +254,5 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-11 | ASR-TTS-CROSS-LANGUAGE-RECONCILIATION-01 委任_03(Opus必須指摘M1〜M7反映、RECONCILIATION_REPORT_02、DECISION_LOG/OPEN-270〜275/REPORT_LEDGER記録、API課金0、Production/CURRENT_SPEC無変更) | 初回報告日未報告(Fable判断)|費用JPY0(本委任。Coffee Phase 2のAzure未計上補正は約+10.30円=累計約31.03円/50円、OPEN-275)|Status=USER_DECISION_REQUIRED(目標フロー未採用・Trial級設計案、U-0〜U-19)
 
 - 2026-10-11 | FAMILY-X-COFFEE-FINAL-LISTENING-TONE-TRIAL-01 委任_02(Trial記録[01A/01B/01C]のDECISION_LOG/OPEN-276〜279/OPEN-270・274追記/REPORT_LEDGER記録、委任_09採用記録の差分帰属訂正メモ、API課金0、Production/CURRENT_SPEC無変更) | 初回報告日未報告(Fable判断)|費用JPY0(本委任。Trial実費合計約14.71円=01A 5.16+01B約9.55+01C 0)|Status=USER_DECISION_REQUIRED(ユーザー試聴待ち・候補未選定・Production採用なし)
+
+- 2026-10-12 | FAMILY-X-COFFEE-FINAL-LISTENING-TONE-TRIAL-01 委任_03(ユーザー選択Style反映のCoffee Standard/Advanced最終試聴版[F5再生成6+topic再生成1、Std 6%減速、Trial assembler、異音再検知]、DECISION_LOG/OPEN-276・278[DEFERRED]・279追記/OPEN-280・281起票/REPORT_LEDGER記録、Production/CURRENT_SPEC無変更) | 初回報告日未報告(Fable判断)|費用約JPY8.6(新規TTS 7 call約6.50+Primary ASR推定約2.1。Trial累計約23.3円)|Status=USER_DECISION_REQUIRED(最終試聴待ち・共通Style未承認・Production採用なし)
