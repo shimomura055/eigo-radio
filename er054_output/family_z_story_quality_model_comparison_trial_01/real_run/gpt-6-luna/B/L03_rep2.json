@@ -1,0 +1,108 @@
+{
+  "method": "B",
+  "work_id": "L03",
+  "rep": 2,
+  "eval_version": "family_z_story_quality_model_comparison_v1",
+  "mock": false,
+  "requested_model": "gpt-6-luna",
+  "actual_model_id": "gpt-6-luna",
+  "routing_key": "FAMILY_Z_TRIAL_STORY_QUALITY_EVAL",
+  "reasoning_effort": "medium",
+  "usage": {
+    "input_tokens": 5965,
+    "output_tokens": 1876
+  },
+  "elapsed_sec": 18.18,
+  "response_id": "resp_05143f083e697fda006acb2729ac7887d0bcc63ff518d3718a",
+  "prompt_sha256": "d6804168682e26af2a8d38d63a4301dbbddf7eef3227203a9f41b1969a29cb01",
+  "developer_message": "あなたは英語学習マガジンのFiction編集部の評価者である。与えられた『原作本文』だけを根拠に、その作品を『英語の短編(280〜420語、A2〜B1向け)へ再話するための素材』として評価する。作品の知名度・評判・過去の評価・あなたの記憶に頼らず、本文に書かれていることだけで判断すること。引用(evidence_quotes)は本文中の連続した文字列をそのままコピーしたものに限る(言い換え・要約・結合・省略記号は禁止。ロシア語本文の引用はロシア語のままコピーし、日本語に訳さない)。1個あたり60文字(英語・ロシア語は25語)以内。出力は指定のJSONのみ。\n評価は4項目(A〜D)それぞれPASS/WEAK/FAILの3段階で行う。PASS=基準を十分に満たす、WEAK=満たすが弱点が目立つ、FAIL=基準を満たさない。\n全項目に差を付ける必要はなく、全項目PASSも全項目FAILも本文が示すなら付けてよい。\n各項目に本文からの根拠引用(1〜2個)、日本語の理由(2〜3文)、weakness(その項目の弱点を1文。弱点が見当たらなければ「なし」)を付ける。\n全項目の判定後に必ず根拠整合チェックを行う: (1)各項目のweaknessと理由から自己申告した弱点を列挙し、(2)その弱点の重さと判定(PASS/WEAK/FAIL)が矛盾していないか点検して矛盾を contradictions_found に書き、(3)矛盾があれば判定を修正して verdicts_revised=true にする(修正後の判定を最終値として出力)。矛盾がなければ空配列とfalse。",
+  "evaluated_at": "2026-10-11T06:05:47.651904+00:00",
+  "cost_jpy": 0.24552,
+  "unit": {
+    "chars_no_ws": 5390,
+    "lang": "日本語"
+  },
+  "result": {
+    "key_facts": {
+      "central_event": "山で道に迷った二人の紳士が、客を料理にしようとする山猫軒に誘い込まれ、危機から逃れる。",
+      "main_characters": [
+        "二人の若い紳士",
+        "二疋の猟犬",
+        "山猫軒の主人と声の主たち",
+        "専門の猟師"
+      ],
+      "turning_point": "二人は、料理店からの注文が自分たちを料理にするための準備だと気づく。",
+      "ending": "猟犬が二人を救い、猟師とともに山を下りるが、二人の顔は元に戻らない。"
+    },
+    "A": {
+      "verdict": "PASS",
+      "evidence_quotes": [
+        "来た人を西洋料理にして、食べてやる家とかういふことなんだ。",
+        "そこで二人はやつと安心しました。"
+      ],
+      "reason": "二人が山で迷い、怪しい店に入り、食べられそうになって救出されるという中心事件を追えます。店の意図に気づくことが明確な転換点で、最後には顔に変化が残ります。",
+      "weakness": "なし"
+    },
+    "B": {
+      "verdict": "PASS",
+      "evidence_quotes": [
+        "ことに肥つたお方や若いお方は、大歓迎いたします",
+        "鍵穴からはきよろきよろ二つの青い眼玉がこつちをのぞいてゐます。"
+      ],
+      "reason": "親切そうな案内が少しずつ不気味な要求に変わり、読者に店の目的を推測させます。二人が気づいた後も、扉の向こうの目や声が危険を高め、緊張と皮肉のある展開になっています。",
+      "weakness": "なし"
+    },
+    "C": {
+      "verdict": "PASS",
+      "evidence_quotes": [
+        "室はけむりのやうに消え、二人は寒さにぶるぶるふるへて、草の中に立つてゐました。",
+        "もうもとのとほりになほりません。"
+      ],
+      "reason": "店の注文が段階的に危険な意味を帯び、犬の登場で危機が解決する展開があります。救出後も顔が元に戻らないという結末が、物語に余韻を残します。",
+      "weakness": "なし"
+    },
+    "D": {
+      "verdict": "PASS",
+      "evidence_quotes": [
+        "どうかそこはご承知ください",
+        "もうもとのとほりになほりません。"
+      ],
+      "reason": "山で迷う、店の指示に従う、正体に気づく、救出されるという筋は短い英語でも明瞭に保てます。注文の一部を選んで段階的な不気味さを示せば、物語の魅力と結末の変化も残せます。",
+      "weakness": "扉ごとの注文をすべて描くと280〜420語に収めにくいため、選択して圧縮する必要があります。"
+    },
+    "consistency_check": {
+      "self_reported_weaknesses": [
+        "D: 扉ごとの注文をすべて描くと語数制限に収めにくく、選択して圧縮する必要がある。"
+      ],
+      "contradictions_found": [],
+      "verdicts_revised": false
+    },
+    "overall": {
+      "verdict": "PASS",
+      "comment": "筋が明快で、段階的な緊張と印象的な結末があります。注文を選んで圧縮すれば、指定語数・レベルの短編再話に適しています。"
+    }
+  },
+  "quote_verification": {
+    "per_axis": {
+      "A": [
+        true,
+        true
+      ],
+      "B": [
+        true,
+        false
+      ],
+      "C": [
+        true,
+        false
+      ],
+      "D": [
+        true,
+        false
+      ]
+    },
+    "quote_total": 8,
+    "unverified_quote_count": 3,
+    "all_verified": false
+  }
+}

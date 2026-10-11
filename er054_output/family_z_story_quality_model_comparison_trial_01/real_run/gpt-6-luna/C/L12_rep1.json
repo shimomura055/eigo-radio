@@ -1,0 +1,96 @@
+{
+  "method": "C",
+  "work_id": "L12",
+  "rep": 1,
+  "eval_version": "family_z_story_quality_model_comparison_v1",
+  "mock": false,
+  "requested_model": "gpt-6-luna",
+  "actual_model_id": "gpt-6-luna",
+  "routing_key": "FAMILY_Z_TRIAL_STORY_QUALITY_EVAL",
+  "reasoning_effort": "medium",
+  "usage": {
+    "input_tokens": 2680,
+    "output_tokens": 935
+  },
+  "elapsed_sec": 10.31,
+  "response_id": "resp_0ce333ed3fea861e006acb26d44d8c87d09bf9885607a24add",
+  "prompt_sha256": "dd7fdee94ed937f17b221b9c9e93bf6af288a53d5456808bda6fbd7177356af8",
+  "developer_message": "あなたは英語学習マガジンのFiction編集部の評価者である。与えられた『原作本文』だけを根拠に、その作品を『英語の短編(280〜420語、A2〜B1向け)へ再話するための素材』として評価する。作品の知名度・評判・過去の評価・あなたの記憶に頼らず、本文に書かれていることだけで判断すること。引用(evidence_quotes)は本文中の連続した文字列をそのままコピーしたものに限る(言い換え・要約・結合・省略記号は禁止。ロシア語本文の引用はロシア語のままコピーし、日本語に訳さない)。1個あたり60文字(英語・ロシア語は25語)以内。出力は指定のJSONのみ。\n評価は4項目(hook, development, aftertaste, originality)それぞれ1〜5の整数で採点する。5=非常に優れる、4=優れる、3=標準的、2=弱い、1=ほぼ満たさない。\n本文が示す通りに採点し、差を付ける必要も、高得点・低得点を避ける必要もない。英語短編への再話しやすさは考慮せず、原作そのものの物語としての魅力だけを評価する。\n各項目に本文からの根拠引用(1〜2個)と日本語の理由(2〜3文)を付ける。overallは総合1〜5点(平均の機械的な丸めでなくてよい)。",
+  "evaluated_at": "2026-10-11T06:04:14.473856+00:00",
+  "cost_jpy": 0.11768,
+  "unit": {
+    "chars_no_ws": 1755,
+    "lang": "日本語"
+  },
+  "result": {
+    "key_facts": {
+      "central_event": "死を告げた女を埋葬した男が、百年後に再会する約束を信じて墓のそばで待ち続ける。",
+      "main_characters": [
+        "語り手の男",
+        "死を告げ、百年後の再会を約束する女"
+      ],
+      "turning_point": "長い待ち時間の末、墓の下から百合が咲き、男は百年が過ぎたと気づく。",
+      "ending": "男は百合に接吻し、暁の星を見て「百年はもう来ていた」と悟る。"
+    },
+    "hook": {
+      "score": 5,
+      "evidence_quotes": [
+        "こんな夢を見た。",
+        "仰向に寝た女が、静かな声でもう死にますと云う。"
+      ],
+      "reason": "夢の始まりに続いて、死にそうに見えない女が静かに死を告げるため、すぐに謎と不穏さが生まれる。女の言葉と語り手の反応から、何が起きるのか読み進めたくなる。"
+    },
+    "development": {
+      "score": 5,
+      "evidence_quotes": [
+        "「百年待っていて下さい」と思い切った声で云った。",
+        "すると石の下から斜に自分の方へ向いて青い茎が伸びて来た。"
+      ],
+      "reason": "女の死と埋葬から、男が日を数えて待つ時間へと物語が移り、待つこと自体が展開の軸になる。百合が墓から現れることで、停滞していた時間に変化が起こり、約束の成就を予感させる。"
+    },
+    "aftertaste": {
+      "score": 5,
+      "evidence_quotes": [
+        "百年がまだ来ない。",
+        "「百年はもう来ていたんだな」とこの時始めて気がついた。"
+      ],
+      "reason": "長い時間を数え続けても百年が来ないという焦りが、最後の気づきによって静かに反転する。花と暁の星が約束の成就を示す一方、百年の時間の不思議さが読後にも残る。"
+    },
+    "originality": {
+      "score": 5,
+      "evidence_quotes": [
+        "大きな真珠貝で穴を掘って。",
+        "星の破片を墓標に置いて下さい。"
+      ],
+      "reason": "真珠貝で墓穴を掘り、星の破片を墓標にするという夢らしい葬送の光景が印象的である。百年の待機を、沈む赤い日を数える行為と百合の開花で描く発想にも独自の魅力がある。"
+    },
+    "memorable_point": "百年を待つ男の前で墓から百合が咲き、約束の時間の到来を告げる場面。",
+    "overall": {
+      "score": 5,
+      "comment": "夢のような鮮明な情景と、死・待機・再会を結ぶ簡潔な展開が強く印象に残る。最後の気づきが物語全体を静かに結び直している。"
+    }
+  },
+  "quote_verification": {
+    "per_axis": {
+      "hook": [
+        true,
+        true
+      ],
+      "development": [
+        true,
+        true
+      ],
+      "aftertaste": [
+        true,
+        true
+      ],
+      "originality": [
+        true,
+        true
+      ]
+    },
+    "quote_total": 8,
+    "unverified_quote_count": 0,
+    "all_verified": true
+  }
+}
