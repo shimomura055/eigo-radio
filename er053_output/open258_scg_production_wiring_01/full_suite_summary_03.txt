@@ -1,0 +1,6 @@
+委任_03(C2/推奨4実装、commit前の作業ツリー): pytest -q --continue-on-collection-errors er*test*.py(worktree)
+119 failed, 5813 passed, 48 skipped, 7 warnings, 15 errors, 354 subtests passed in 769.32s
+委任_02(full_suite_fail_set_scg_branch_02.txt)との差分:
+ - er020 2件(ProductionModuleUnchangedTest「uncommitted diff」): commit前の実行のため。commit後に再実行しPASS確認済み。
+ - er003_test_p2j_investigate(Reconciliation系)6件がERROR化/2件FAILEDが同集合から移動、er012_e_..._runner_test_01 subprocess 2件FAILED: 本変更前のコード(5ed0dc7eのer007_ja_secondary_asr_01.py)に戻しても同じ失敗(4 failed/6 errors)を再現=本変更と無関係(既存のer015 import RuntimeError・subprocess環境起因)。
+ - SCG関連(er007_ja_scg_test_01/er007_ja_scg_phase0_regression_test_01/er007_ja_scg_c2_neg_test_01)は全PASS。

@@ -156,6 +156,11 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
                 "disfluency_evidence": r.get("disfluency_evidence"),
             },
         }
+        # OPEN-258 SCG(Opus推奨7): 追加のみ(既存キー不変)。SCG PASS(Primary不一致をSecondaryで
+        # 救済)したmasterを後から識別できるようにする。SCG非関与(英語等)はNone。
+        manifest[master_id]["audio_classification"] = r.get("audio_classification")
+        _scg = r.get("scg_info")
+        manifest[master_id]["scg_result"] = _scg.get("scg_result") if isinstance(_scg, dict) else None
         _save_manifest(manifest)
         _log_telemetry({
             "event": "generated", "master_audio_id": master_id, "out_path": out_path,

@@ -1,0 +1,5 @@
+委任_02(是正後 commit 6b054b52): pytest -q --continue-on-collection-errors er*test*.py(worktree)
+117 failed, 5804 passed, 48 skipped, 2 warnings, 9 errors, 354 subtests passed in 498.05s
+委任_01 baseline(main 0ebf35cc)の失敗集合(125行)との差分: er015_standard_a2_6000_generation_first_trial_01_test_01.py の収集時ERROR 1件のみ。
+これはモジュールimport時の`STANDARD_A2_PROMPT_V5`語彙段落チェックによる既存のRuntimeError(当該2ファイルのmain 0ebf35cc との差分0行=本変更と無関係)。委任_01の255ファイル全suiteでは対象外だったファイル。failed 117は不変。
+(途中runで出た `test_shared_p4_function_signature_unchanged`(他testのmock漏れでinspectが誤判定)はAST照合へ修正済み、er020の2件「uncommitted diff」testはcommit後PASS)。

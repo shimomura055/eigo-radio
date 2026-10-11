@@ -514,10 +514,12 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
         # Secondary Azure#1->#2)で同じ音声のASRだけをやり直す。
         verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
             text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
-            expected_readings=expected_readings)
+            expected_readings=expected_readings, length_ok=length_ok)
         verified = verified_content and length_ok
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                               "length_ok": length_ok, "audio_classification": cls.classification,
+                              # OPEN-258 SCG証跡(TRUE_CONTENT_MISMATCH時のみ非None)
+                              "scg_info": getattr(cls, "scg_info", None),
                               "verified": verified, "trim_info": trim_info})
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
@@ -527,6 +529,7 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(), "tts_backend": tts_backend,
             "asr_text": asr_text, "audio_classification": cls.classification,
             "length_ok": length_ok, "verified": verified,
+            "scg_info": getattr(cls, "scg_info", None),
         })
         attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
@@ -559,10 +562,11 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
         length_ok = asr_text is not None and len(asr_text) <= max_len
         verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
             text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
-            expected_readings=expected_readings)
+            expected_readings=expected_readings, length_ok=length_ok)
         verified = verified_content and length_ok
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                                    "length_ok": length_ok, "audio_classification": cls.classification,
+                                   "scg_info": getattr(cls, "scg_info", None),
                                    "verified": verified})
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する。
@@ -572,6 +576,7 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(), "tts_backend": tts_backend,
             "asr_text": asr_text, "audio_classification": cls.classification,
             "length_ok": length_ok, "verified": verified,
+            "scg_info": getattr(cls, "scg_info", None),
         })
         fallback_attempts[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
