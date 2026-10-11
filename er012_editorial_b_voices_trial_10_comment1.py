@@ -99,7 +99,9 @@ def compute_cost_jpy_so_far() -> tuple:
             model = rec.get("model_id") or rec.get("model")
             usd = 0.0
             try:
-                if provider in ("gemini", "openai", "openai_asr") and model:
+                if provider == "azure":
+                    usd = cl.azure_stt_cost_usd(rec, price)
+                elif provider in ("gemini", "openai", "openai_asr") and model:
                     in_tok = rec.get("input_tokens") or 0
                     out_tok = rec.get("output_tokens") or 0
                     usd = in_tok * price(provider, model, "input_tokens") / 1e6 \

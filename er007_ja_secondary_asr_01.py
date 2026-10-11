@@ -44,6 +44,11 @@ def _log_human_review(detail: dict) -> None:
     # ER-011-HUMAN-REVIEW-COST-GUARD-01 Part G: 同一segment・同一
     # canonical_textのqueue重複投入を防ぐ。
     if review_lock.is_duplicate_queue_entry(HUMAN_REVIEW_LOG_PATH_JA, detail["wav_path"], detail["canonical_text"]):
+        # 委任_04A(記録欠落是正): queue「表示」の重複だけを抑止し、記録(Primary/
+        # Secondary転写を含むsteps)は消さず、append-onlyのattempt_history.jsonlへ残す。
+        review_lock.append_attempt_history_event(detail["wav_path"], "HUMAN_REVIEW_QUEUE_DUPLICATE_SUPPRESSED", {
+            "canonical_text": detail["canonical_text"], "steps": detail.get("steps"),
+            "final_status": detail.get("final_status")})
         return
     os.makedirs(os.path.dirname(HUMAN_REVIEW_LOG_PATH_JA), exist_ok=True)
     record = {
@@ -258,6 +263,14 @@ def _azure_stt_strict(wav_path: str, language: str = "ja-JP", timeout_seconds: f
     while not state["done"] and (time.time() - start) < timeout_seconds:
         time.sleep(0.5)
     recognizer.stop_continuous_recognition()
+    # 委任_05A(Opus必須M2、OPEN-271): SCG用Azure STTもer006と同形でAzure費用を計上する
+    # (旧実装は未計上=0円)。成功/失敗にかかわらず送信した音声秒数を記録する。
+    cl.record({
+        "provider": "azure", "api": "azure_stt_strict_scg", "model_id": "azure-speech-stt",
+        "locale": language, "attempt_number": 1, "success": bool(state["done"] and not state["cancel_error"]),
+        "elapsed_seconds": round(time.time() - start, 3), "usage_source": "LOCAL_WAV_HEADER_EXACT",
+        "audio_duration_submitted_seconds": _wav_duration_seconds(wav_path),
+    })
     if state["cancel_error"]:
         return None, state["cancel_error"]
     if not state["done"]:

@@ -254,7 +254,10 @@ class NarratorHeadingRetryPolicyAlignmentTests(unittest.TestCase):
                            segment_id=None,
                            # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27)で
                            # 追加された新規opt-in引数(既定値付き)。このFakeは受理して無視するだけでよい。
-                           tts_backend="structured_separation"):
+                           tts_backend="structured_separation",
+                           # 委任_05A(OPEN-270 M3): 外側ループ通算cool-down判定用の新規opt-in引数
+                           # (既定値付き)。このFakeは受理して無視するだけでよい。
+                           prior_generations=0, cooldown_total_budget=None):
             # standard側がstop_retryingにより1回のみでASR_VALIDATION_UNCERTAIN
             # を返した状態を模擬する(fallbackへの到達可否だけを検証したいため、
             # 実際のTTS/ASR APIは呼ばない)。

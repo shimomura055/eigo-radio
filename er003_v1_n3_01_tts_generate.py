@@ -194,6 +194,17 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
     return result
 
 
+def count_tts_generations_in_result(result: dict) -> int:
+    """generate_english_segment_with_fallback()の結果が実際に消費したTTS生成回数
+    (標準経路attempts_log+fallback_attempts_log)。どちらのログも無い場合は
+    最低1回(結果が返った=少なくとも1回は生成/試行した)として扱う(安全側)。"""
+    std = result.get("standard_attempts_log")
+    if std is None:
+        std = result.get("attempts_log")
+    n = len(std or []) + len(result.get("fallback_attempts_log") or [])
+    return max(n, 1)
+
+
 def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_substring: str,
                                         max_extra_chars: int = 60, max_slowdown_attempts: int = 3,
                                         style_prefix_override: str = None,
@@ -245,21 +256,44 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
     name = out_path.rsplit("/", 1)[1].removesuffix(".wav")
     slowdown_attempts_log = []
     result = None
+    # OPEN-270(ASR-TTS-CROSS-LANGUAGE-RECONCILIATION-01 委任_04A、2026-10-12):
+    # 同一segmentのTTS生成総回数上限(PRODUCTION_MAX_TTS_ATTEMPTS=3、CURRENT_SPEC
+    # 「4回目以降は絶対にTTS生成しない」)を外側ループにも共有する。旧実装は外側
+    # ループ周回ごとに内側関数へ満額の予算(標準2+minimal1)を再付与し、減速後
+    # 再検証NGで最大9回生成し得た(Coffee part2で5回生成)。内側関数が消費した
+    # 生成回数を累計し、残予算を内側へmax_attemptsとして渡す。残予算0なら
+    # 取り直さず、減速後NGのSTOPPED結果をそのまま返す(既存STOPPED/Human Review経路)。
+    total_budget = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS
+    generations_used = 0
     for attempt in range(1, max_slowdown_attempts + 1):
+        remaining = total_budget - generations_used
+        if remaining <= 0:
+            break
         result = c.generate_english_segment_with_fallback(
             tts_input, out_path, expected_substring, max_extra_chars=max_extra_chars,
+            max_attempts=remaining,
+            standard_attempts=min(review_lock.PRODUCTION_STANDARD_TTS_ATTEMPTS, remaining),
             style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-            enable_repetition_qa=enable_repetition_qa, tts_backend=tts_backend)
+            enable_repetition_qa=enable_repetition_qa, tts_backend=tts_backend,
+            prior_generations=generations_used, cooldown_total_budget=total_budget)
+        generations_used += count_tts_generations_in_result(result)
         if result.get("status") != "OK":
             break  # 通常ペース自体が失敗(既存のstandard/fallback両方exhausted)
         result = apply_a2_slowdown_postprocess(name, narration_dir, tts_input, result)
         slowdown_attempts_log.append({
             "attempt": attempt, "status": result.get("status"),
             "post_slowdown_classification": result.get("post_slowdown_classification"),
+            # 記録欠落是正(委任_04A): 減速後再検証の転写全文を上書きせず各周回へ残す。
+            "post_slowdown_asr_text": result.get("post_slowdown_asr_text"),
+            "tts_generations_used_cumulative": generations_used,
         })
+        review_lock.append_attempt_history_event(out_path, "A2_SLOWDOWN_REVERIFY", slowdown_attempts_log[-1])
         if result.get("status") == "OK":
             break
+    if result is not None and result.get("status") != "OK" and generations_used >= total_budget:
+        result["tts_generation_cap_reached"] = True
+    result["tts_generations_used"] = generations_used
     result["slowdown_attempts_log"] = slowdown_attempts_log
     return result
 
@@ -969,6 +1003,7 @@ def generate_b1_segments(theme: dict) -> dict:
     all_status = {k: v.get("status") for k, v in results.items()}
     kp_status = {r: {"en": v["english"].get("status"), "ja": v["japanese"].get("status")}
                  for r, v in kp_results.items()}
+    review_lock.archive_prior_tts_results(f"{out_dir}/audit/tts_generation_results.json")
     with open(f"{out_dir}/audit/tts_generation_results.json", "w", encoding="utf-8") as f:
         json.dump({"segments": results, "key_phrases": kp_results}, f, ensure_ascii=False, indent=2, default=str)
     with open(f"{out_dir}/run_summary_tts.json", "w", encoding="utf-8") as f:
@@ -1114,6 +1149,7 @@ def generate_a2_segments(theme: dict) -> dict:
     all_status = {k: v.get("status") for k, v in results.items()}
     kp_status = {r: {"en": v["english"].get("status"), "ja": v["japanese_meaning"].get("status")}
                  for r, v in kp_results.items()}
+    review_lock.archive_prior_tts_results(f"{out_dir}/audit/tts_generation_results.json")
     with open(f"{out_dir}/audit/tts_generation_results.json", "w", encoding="utf-8") as f:
         json.dump({"segments": results, "key_phrases": kp_results}, f, ensure_ascii=False, indent=2, default=str)
     with open(f"{out_dir}/run_summary_tts.json", "w", encoding="utf-8") as f:
