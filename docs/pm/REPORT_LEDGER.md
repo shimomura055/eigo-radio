@@ -256,3 +256,5 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-11 | FAMILY-X-COFFEE-FINAL-LISTENING-TONE-TRIAL-01 委任_02(Trial記録[01A/01B/01C]のDECISION_LOG/OPEN-276〜279/OPEN-270・274追記/REPORT_LEDGER記録、委任_09採用記録の差分帰属訂正メモ、API課金0、Production/CURRENT_SPEC無変更) | 初回報告日未報告(Fable判断)|費用JPY0(本委任。Trial実費合計約14.71円=01A 5.16+01B約9.55+01C 0)|Status=USER_DECISION_REQUIRED(ユーザー試聴待ち・候補未選定・Production採用なし)
 
 - 2026-10-12 | FAMILY-X-COFFEE-FINAL-LISTENING-TONE-TRIAL-01 委任_03(ユーザー選択Style反映のCoffee Standard/Advanced最終試聴版[F5再生成6+topic再生成1、Std 6%減速、Trial assembler、異音再検知]、DECISION_LOG/OPEN-276・278[DEFERRED]・279追記/OPEN-280・281起票/REPORT_LEDGER記録、Production/CURRENT_SPEC無変更) | 初回報告日未報告(Fable判断)|費用約JPY8.6(新規TTS 7 call約6.50+Primary ASR推定約2.1。Trial累計約23.3円)|Status=USER_DECISION_REQUIRED(最終試聴待ち・共通Style未承認・Production採用なし)
+
+- 2026-10-12 | FAMILY-X-COFFEE-FINAL-LISTENING-TONE-TRIAL-01 委任_04(Advanced KP英語5件へK2適用[新規TTS 5 call]、Advanced最終試聴版再組立・ページ更新、OPEN-280 CLOSE、DECISION_LOG追記、Production/CURRENT_SPEC無変更) | 初回報告日未報告(Fable判断)|費用約JPY0.15(Trial累計約23.45円)|Status=USER_DECISION_REQUIRED(最終試聴待ち継続)|成果物 `docs/pm/delegation_log/2026-10-12_FAMILY-X-COFFEE-FINAL-LISTENING-TONE-TRIAL-01_04.md`
