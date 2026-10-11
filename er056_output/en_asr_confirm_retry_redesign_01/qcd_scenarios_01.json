@@ -1,0 +1,81 @@
+{
+ "params": {
+  "p_pass_attempt1": 0.8375,
+  "p_pass_attempt1_wilson95": [
+   0.773,
+   0.887
+  ],
+  "p_pass_attempt2_given_reached": 0.5909,
+  "p2_wilson95": [
+   0.387,
+   0.767
+  ],
+  "p_pass_attempt3_given_reached": 0.25,
+  "p3_wilson95": [
+   0.071,
+   0.591
+  ],
+  "eligible_ng_fraction": 0.886,
+  "tts_jpy": 0.135,
+  "openai_asr_jpy": 0.0679,
+  "azure_jpy_per_call(assumed_audio_s=40)": 1.778,
+  "n_calls": 160
+ },
+ "old_flow_observed": {
+  "E_TTS_per_call": 1.188,
+  "calls": 160,
+  "no_pass_within_call": 11,
+  "no_pass_rate": 0.0688,
+  "no_pass_wilson95": [
+   0.039,
+   0.119
+  ]
+ },
+ "new_flow_scenarios": [
+  {
+   "secondary_rescue_rate_r": 0.0,
+   "E_TTS": 1.229,
+   "E_primary_ASR": 1.229,
+   "E_secondary_calls": 0.247,
+   "P_human_review": 0.0499,
+   "E_cost_jpy_per_segment_azure": 0.689,
+   "E_cost_jpy_per_segment_if_secondary_is_local_whisper": 0.249
+  },
+  {
+   "secondary_rescue_rate_r": 0.2,
+   "E_TTS": 1.179,
+   "E_primary_ASR": 1.179,
+   "E_secondary_calls": 0.222,
+   "P_human_review": 0.0278,
+   "E_cost_jpy_per_segment_azure": 0.634,
+   "E_cost_jpy_per_segment_if_secondary_is_local_whisper": 0.239
+  },
+  {
+   "secondary_rescue_rate_r": 0.4,
+   "E_TTS": 1.133,
+   "E_primary_ASR": 1.133,
+   "E_secondary_calls": 0.2,
+   "P_human_review": 0.0134,
+   "E_cost_jpy_per_segment_azure": 0.586,
+   "E_cost_jpy_per_segment_if_secondary_is_local_whisper": 0.23
+  },
+  {
+   "secondary_rescue_rate_r": 0.6,
+   "E_TTS": 1.091,
+   "E_primary_ASR": 1.091,
+   "E_secondary_calls": 0.181,
+   "P_human_review": 0.0051,
+   "E_cost_jpy_per_segment_azure": 0.544,
+   "E_cost_jpy_per_segment_if_secondary_is_local_whisper": 0.221
+  },
+  {
+   "secondary_rescue_rate_r": 0.8,
+   "E_TTS": 1.053,
+   "E_primary_ASR": 1.053,
+   "E_secondary_calls": 0.165,
+   "P_human_review": 0.0012,
+   "E_cost_jpy_per_segment_azure": 0.507,
+   "E_cost_jpy_per_segment_if_secondary_is_local_whisper": 0.214
+  }
+ ]
+}

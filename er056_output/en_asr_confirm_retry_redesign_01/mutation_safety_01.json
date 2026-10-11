@@ -1,0 +1,297 @@
+{
+ "summary": {
+  "must_reject_total": 16,
+  "must_reject_falsely_accepted": [],
+  "may_accept_total": 7,
+  "may_accept_accepted": [
+   "benign_US->U.S.",
+   "benign_contraction_Don't->Do not",
+   "benign_nine_vs_9",
+   "benign_two_vs_2",
+   "benign_punct_dash"
+  ],
+  "may_accept_rejected": [
+   "benign_plural_cost->costs",
+   "compound_US_U.S.+cost->costs (Coffee attempt3 pattern)"
+  ]
+ },
+ "rows": [
+  {
+   "name": "number_6.1->6.7",
+   "kind": "MUST_REJECT",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": false,
+   "diffs": [
+    [
+     "6xdecimalpointx1xpercentx",
+     "6xdecimalpointx7xpercentx"
+    ]
+   ]
+  },
+  {
+   "name": "number_nine->ten months",
+   "kind": "MUST_REJECT",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": true,
+   "diffs": []
+  },
+  {
+   "name": "number_2->3 numbers",
+   "kind": "MUST_REJECT",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": true,
+   "diffs": []
+  },
+  {
+   "name": "negation_does_not->does",
+   "kind": "MUST_REJECT",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": true,
+   "diffs": []
+  },
+  {
+   "name": "negation_does_not->did_not",
+   "kind": "MUST_REJECT",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": false,
+   "diffs": [
+    [
+     "does",
+     "did"
+    ]
+   ]
+  },
+  {
+   "name": "tense_showed->show",
+   "kind": "MUST_REJECT",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": false,
+   "diffs": [
+    [
+     "showed",
+     "show"
+    ]
+   ]
+  },
+  {
+   "name": "tense_spoke->speak",
+   "kind": "MUST_REJECT",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": false,
+   "diffs": [
+    [
+     "spoke",
+     "speak"
+    ]
+   ]
+  },
+  {
+   "name": "key_word_omitted_raw",
+   "kind": "MUST_REJECT",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": false,
+   "diffs": [
+    [
+     "raw",
+     ""
+    ]
+   ]
+  },
+  {
+   "name": "key_word_substituted_raw_beans->Robbins",
+   "kind": "MUST_REJECT",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": false,
+   "diffs": [
+    [
+     "raw beans",
+     "robbins"
+    ]
+   ]
+  },
+  {
+   "name": "key_word_fall->rise",
+   "kind": "MUST_REJECT",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": false,
+   "diffs": [
+    [
+     "fall",
+     "rise"
+    ]
+   ]
+  },
+  {
+   "name": "word_at_least->at_most",
+   "kind": "MUST_REJECT",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": false,
+   "diffs": [
+    [
+     "least",
+     "most"
+    ]
+   ]
+  },
+  {
+   "name": "entity_Reuters->Router",
+   "kind": "MUST_REJECT",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": false,
+   "diffs": [
+    [
+     "reuters",
+     "router"
+    ]
+   ]
+  },
+  {
+   "name": "benign_plural_cost->costs",
+   "kind": "MAY_ACCEPT",
+   "classification": "HIGH_SIMILARITY_SAFE",
+   "should_pass": true,
+   "strict_accept": false,
+   "num_neg_mismatch": false,
+   "diffs": []
+  },
+  {
+   "name": "benign_US->U.S.",
+   "kind": "MAY_ACCEPT",
+   "classification": "NUMERIC_EQUIVALENCE_MATCH",
+   "should_pass": true,
+   "strict_accept": true,
+   "num_neg_mismatch": false,
+   "diffs": []
+  },
+  {
+   "name": "benign_contraction_Don't->Do not",
+   "kind": "MAY_ACCEPT",
+   "classification": "TRANSCRIPT_STYLE_NORMALIZED_MATCH",
+   "should_pass": true,
+   "strict_accept": true,
+   "num_neg_mismatch": false,
+   "diffs": []
+  },
+  {
+   "name": "benign_nine_vs_9",
+   "kind": "MAY_ACCEPT",
+   "classification": "NUMERIC_EQUIVALENCE_MATCH",
+   "should_pass": true,
+   "strict_accept": true,
+   "num_neg_mismatch": false,
+   "diffs": []
+  },
+  {
+   "name": "benign_two_vs_2",
+   "kind": "MAY_ACCEPT",
+   "classification": "NUMERIC_EQUIVALENCE_MATCH",
+   "should_pass": true,
+   "strict_accept": true,
+   "num_neg_mismatch": false,
+   "diffs": []
+  },
+  {
+   "name": "benign_punct_dash",
+   "kind": "MAY_ACCEPT",
+   "classification": "NUMERIC_EQUIVALENCE_MATCH",
+   "should_pass": true,
+   "strict_accept": true,
+   "num_neg_mismatch": false,
+   "diffs": []
+  },
+  {
+   "name": "compound_US_U.S.+cost->costs (Coffee attempt3 pattern)",
+   "kind": "MAY_ACCEPT",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": false,
+   "diffs": [
+    [
+     "us",
+     "u s"
+    ]
+   ]
+  },
+  {
+   "name": "tail_truncated_last_sentence",
+   "kind": "MUST_REJECT",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": true,
+   "diffs": [
+    [
+     "shop s price tag does change moment market moves",
+     ""
+    ]
+   ]
+  },
+  {
+   "name": "extra_hallucinated_sentence",
+   "kind": "MUST_REJECT",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": false,
+   "diffs": [
+    [
+     "",
+     "brand new claim about tea prices"
+    ]
+   ]
+  },
+  {
+   "name": "repeated_sentence",
+   "kind": "MUST_REJECT",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": false,
+   "diffs": [
+    [
+     "",
+     "data different month bean price measure"
+    ]
+   ]
+  },
+  {
+   "name": "middle_sentence_missing",
+   "kind": "MUST_REJECT",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "strict_accept": false,
+   "num_neg_mismatch": true,
+   "diffs": [
+    [
+     "don t put numbers ring just yet",
+     ""
+    ]
+   ]
+  }
+ ]
+}
