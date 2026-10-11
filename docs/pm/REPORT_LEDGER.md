@@ -250,3 +250,5 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-11 | FAMILY-Z-STORY-POOL-SCREENING-TRIAL-01 Trial記録(委任_03、DECISION_LOG/OPEN-266〜267、gpt-6-luna Trial限定、権利PASS 9/NG 1、品質評価USER_DECISION_REQUIRED、Production採用なし) | 初回報告日未報告(Fable判断)|費用JPY3.67(Trial実費、既報)|Status=Trial記録済 / 権利フローVALIDATED相当・品質USER_DECISION_REQUIRED
 
 - 2026-10-11 | FAMILY-Z-STORY-QUALITY-MODEL-COMPARISON-TRIAL-01 委任_03(RESULT_01章順整理[10章構成]、DECISION_LOG/OPEN-264〜269/REPORT_LEDGER記録、API課金0、Production採用なし・AI評価のみ) | 初回報告日未報告(Fable判断)|費用JPY0(本委任。Trial実費21.954円は委任_02)|Status=Trial記録済 / D・A=VALIDATED(Trial)・B・C=REJECTED(ゲート用途)・閾値等USER_DECISION_REQUIRED
+
+- 2026-10-11 | ASR-TTS-CROSS-LANGUAGE-RECONCILIATION-01 委任_03(Opus必須指摘M1〜M7反映、RECONCILIATION_REPORT_02、DECISION_LOG/OPEN-270〜275/REPORT_LEDGER記録、API課金0、Production/CURRENT_SPEC無変更) | 初回報告日未報告(Fable判断)|費用JPY0(本委任。Coffee Phase 2のAzure未計上補正は約+10.30円=累計約31.03円/50円、OPEN-275)|Status=USER_DECISION_REQUIRED(目標フロー未採用・Trial級設計案、U-0〜U-19)
