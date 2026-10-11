@@ -252,3 +252,5 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-11 | FAMILY-Z-STORY-QUALITY-MODEL-COMPARISON-TRIAL-01 委任_03(RESULT_01章順整理[10章構成]、DECISION_LOG/OPEN-264〜269/REPORT_LEDGER記録、API課金0、Production採用なし・AI評価のみ) | 初回報告日未報告(Fable判断)|費用JPY0(本委任。Trial実費21.954円は委任_02)|Status=Trial記録済 / D・A=VALIDATED(Trial)・B・C=REJECTED(ゲート用途)・閾値等USER_DECISION_REQUIRED
 
 - 2026-10-11 | ASR-TTS-CROSS-LANGUAGE-RECONCILIATION-01 委任_03(Opus必須指摘M1〜M7反映、RECONCILIATION_REPORT_02、DECISION_LOG/OPEN-270〜275/REPORT_LEDGER記録、API課金0、Production/CURRENT_SPEC無変更) | 初回報告日未報告(Fable判断)|費用JPY0(本委任。Coffee Phase 2のAzure未計上補正は約+10.30円=累計約31.03円/50円、OPEN-275)|Status=USER_DECISION_REQUIRED(目標フロー未採用・Trial級設計案、U-0〜U-19)
+
+- 2026-10-11 | FAMILY-X-COFFEE-FINAL-LISTENING-TONE-TRIAL-01 委任_02(Trial記録[01A/01B/01C]のDECISION_LOG/OPEN-276〜279/OPEN-270・274追記/REPORT_LEDGER記録、委任_09採用記録の差分帰属訂正メモ、API課金0、Production/CURRENT_SPEC無変更) | 初回報告日未報告(Fable判断)|費用JPY0(本委任。Trial実費合計約14.71円=01A 5.16+01B約9.55+01C 0)|Status=USER_DECISION_REQUIRED(ユーザー試聴待ち・候補未選定・Production採用なし)
