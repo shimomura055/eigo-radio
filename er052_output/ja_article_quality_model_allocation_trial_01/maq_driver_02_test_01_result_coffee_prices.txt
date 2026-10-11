@@ -1,0 +1,127 @@
+== 1. A構成 stub等価(Production run_w1_writer vs driver) ==
+PASS [normal] request列 完全一致(3件)
+PASS [normal] 例外型・findings一致
+PASS [normal] file一致 ja_writer/factlock/r0.md
+PASS [normal] file一致 ja_writer/factlock/r0_with_tags.md
+PASS [normal] file一致 ja_writer/factlock/r1.raw.md
+PASS [normal] file一致 ja_writer/factlock/r1.p1.md
+PASS [normal] file一致 ja_writer/factlock/r2.raw.md
+PASS [normal] file一致 ja_writer/original.md
+PASS [normal] file一致 ja_writer/revision1.md
+PASS [normal] file一致 ja_writer/revision2.md
+PASS [normal] 分岐file有無一致 ja_writer/factlock/r2.rerun.raw.md
+PASS [normal] 分岐file有無一致 ja_writer/audit/rejected_w1_r0_symbol.md
+PASS [normal] 分岐file有無一致 ja_writer/audit/rejected_w1_r2_symbol.md
+PASS [normal] kwarg集合=model/reasoning/inputのみ
+PASS [normal] developerはR0(+R0再生成)のみ
+[W1][r0] 音声化禁止記号を検出。1回だけ再生成します(count=2)...
+PASS [R0再生成] request列 完全一致(4件)
+PASS [R0再生成] 例外型・findings一致
+PASS [R0再生成] file一致 ja_writer/factlock/r0.md
+PASS [R0再生成] file一致 ja_writer/factlock/r0_with_tags.md
+PASS [R0再生成] file一致 ja_writer/factlock/r1.raw.md
+PASS [R0再生成] file一致 ja_writer/factlock/r1.p1.md
+PASS [R0再生成] file一致 ja_writer/factlock/r2.raw.md
+PASS [R0再生成] file一致 ja_writer/original.md
+PASS [R0再生成] file一致 ja_writer/revision1.md
+PASS [R0再生成] file一致 ja_writer/revision2.md
+PASS [R0再生成] 分岐file有無一致 ja_writer/factlock/r2.rerun.raw.md
+PASS [R0再生成] 分岐file有無一致 ja_writer/audit/rejected_w1_r0_symbol.md
+PASS [R0再生成] 分岐file有無一致 ja_writer/audit/rejected_w1_r2_symbol.md
+PASS [R0再生成] kwarg集合=model/reasoning/inputのみ
+PASS [R0再生成] developerはR0(+R0再生成)のみ
+PASS R0再生成が実際に発火(calls=R0,R0b,R1,R2=4)
+[W1][r2] 音声化禁止記号を検出。R2のみ同一R1生出力で1回だけ再実行します(count=1)...
+PASS [R2再実行] request列 完全一致(4件)
+PASS [R2再実行] 例外型・findings一致
+PASS [R2再実行] file一致 ja_writer/factlock/r0.md
+PASS [R2再実行] file一致 ja_writer/factlock/r0_with_tags.md
+PASS [R2再実行] file一致 ja_writer/factlock/r1.raw.md
+PASS [R2再実行] file一致 ja_writer/factlock/r1.p1.md
+PASS [R2再実行] file一致 ja_writer/factlock/r2.raw.md
+PASS [R2再実行] file一致 ja_writer/original.md
+PASS [R2再実行] file一致 ja_writer/revision1.md
+PASS [R2再実行] file一致 ja_writer/revision2.md
+PASS [R2再実行] 分岐file有無一致 ja_writer/factlock/r2.rerun.raw.md
+PASS [R2再実行] 分岐file有無一致 ja_writer/audit/rejected_w1_r0_symbol.md
+PASS [R2再実行] 分岐file有無一致 ja_writer/audit/rejected_w1_r2_symbol.md
+PASS [R2再実行] kwarg集合=model/reasoning/inputのみ
+PASS [R2再実行] developerはR0(+R0再生成)のみ
+PASS R2再実行が実際に発火(calls=R0,R1,R2,R2b=4)
+[W1][r0] 音声化禁止記号を検出。1回だけ再生成します(count=2)...
+PASS [R0再生成後も残存STOP] request列 完全一致(2件)
+PASS [R0再生成後も残存STOP] 例外型・findings一致
+PASS [R0再生成後も残存STOP] file一致 ja_writer/factlock/r0.md
+PASS [R0再生成後も残存STOP] file一致 ja_writer/factlock/r0_with_tags.md
+PASS [R0再生成後も残存STOP] file一致 ja_writer/factlock/r1.raw.md
+PASS [R0再生成後も残存STOP] file一致 ja_writer/factlock/r1.p1.md
+PASS [R0再生成後も残存STOP] file一致 ja_writer/factlock/r2.raw.md
+PASS [R0再生成後も残存STOP] file一致 ja_writer/original.md
+PASS [R0再生成後も残存STOP] file一致 ja_writer/revision1.md
+PASS [R0再生成後も残存STOP] file一致 ja_writer/revision2.md
+PASS [R0再生成後も残存STOP] 分岐file有無一致 ja_writer/factlock/r2.rerun.raw.md
+PASS [R0再生成後も残存STOP] 分岐file有無一致 ja_writer/audit/rejected_w1_r0_symbol.md
+PASS [R0再生成後も残存STOP] 分岐file有無一致 ja_writer/audit/rejected_w1_r2_symbol.md
+PASS [R0再生成後も残存STOP] kwarg集合=model/reasoning/inputのみ
+PASS [R0再生成後も残存STOP] developerはR0(+R0再生成)のみ
+PASS R0 STOP例外
+[W1][r2] 音声化禁止記号を検出。R2のみ同一R1生出力で1回だけ再実行します(count=1)...
+PASS [R2再実行後も残存STOP] request列 完全一致(4件)
+PASS [R2再実行後も残存STOP] 例外型・findings一致
+PASS [R2再実行後も残存STOP] file一致 ja_writer/factlock/r0.md
+PASS [R2再実行後も残存STOP] file一致 ja_writer/factlock/r0_with_tags.md
+PASS [R2再実行後も残存STOP] file一致 ja_writer/factlock/r1.raw.md
+PASS [R2再実行後も残存STOP] file一致 ja_writer/factlock/r1.p1.md
+PASS [R2再実行後も残存STOP] file一致 ja_writer/factlock/r2.raw.md
+PASS [R2再実行後も残存STOP] file一致 ja_writer/original.md
+PASS [R2再実行後も残存STOP] file一致 ja_writer/revision1.md
+PASS [R2再実行後も残存STOP] file一致 ja_writer/revision2.md
+PASS [R2再実行後も残存STOP] 分岐file有無一致 ja_writer/factlock/r2.rerun.raw.md
+PASS [R2再実行後も残存STOP] 分岐file有無一致 ja_writer/audit/rejected_w1_r0_symbol.md
+PASS [R2再実行後も残存STOP] 分岐file有無一致 ja_writer/audit/rejected_w1_r2_symbol.md
+PASS [R2再実行後も残存STOP] kwarg集合=model/reasoning/inputのみ
+PASS [R2再実行後も残存STOP] developerはR0(+R0再生成)のみ
+PASS R2 STOP例外
+== 2. B3呼出: driver(guard経由) vs Production呼出 ==
+PASS B3 topic = 記事設定のtopic
+PASS B3 request完全一致(Production呼出と)
+PASS B3 modelはLuna指定時Productionと一致
+PASS B3 成果物(selected_brief/evidence/runtime_evidence/full_ledger)生成
+PASS B3 model差替(gpt-6-astra)のみ差分(Prompt/schema/effort同一)
+PASS B3 model差替(gpt-6.1-sol)のみ差分(Prompt/schema/effort同一)
+== 3. Prompt sha / module sha ==
+PASS sha USER_TMPL
+PASS sha R0_PROMPT
+PASS sha DEVELOPER_MESSAGE
+PASS sha SYMBOL_PREVENTION_BLOCK_JA
+PASS sha CONCRETENESS_CONTROL_AN3_BLOCK
+PASS sha R0_BLOCK
+PASS sha B3 developer
+PASS sha B3 user template
+PASS sha B3 fact test
+PASS sha B3 json schema(参考)
+PASS module sha er053_family_x_factlock_ja_writer_01.py
+PASS module sha er019_family_x_storyline_b3_fact_selection_01.py
+PASS module sha er053_b3_deterministic_producer_01.py
+PASS module sha er053_b3_annotation_contract_01.py
+PASS module sha er019_family_x_ja_writer_o_r1_r2_01.py
+PASS module sha er006_model_routing_contract_01.py
+== 4. A既存の単価再計算(coffeeのみ。実測39.065円) ==
+PASS A usage合計 39.065円(±0.01)
+PASS A stage 4件(B3,R0,R1,R2)
+PASS A R2 = 既存revision2とバイト一致
+== 5. 予算guard ==
+PASS cap超過見込みでBudgetStop(Astra R0 est>1円)
+PASS BudgetStop時にAPI(stub)未呼出
+   保守見積(x1.5, JPY): {"gpt-6-luna": {"storyline_b3": 1.04, "w1_r0": 0.81, "w1_astra_r1": 0.13, "w1_astra_r2": 0.28}, "gpt-6-astra": {"storyline_b3": 127.89, "w1_r0": 96.66, "w1_astra_r1": 27.24, "w1_astra_r2": 29.5}, "gpt-6.1-sol": {"storyline_b3": 18.24, "w1_r0": 21.7, "w1_astra_r1": 3.14, "w1_astra_r2": 7.01}}
+PASS 事前ゲート: C案 保守見積合計97.07 <= cap97.0(+0.3丸め許容)
+PASS 事前ゲート: D案 保守見積合計129.12 <= cap129.0(+0.3丸め許容)
+PASS 事前ゲート: E案 保守見積合計50.09 <= cap50.0(+0.3丸め許容)
+PASS 全体ゲート: 確定額を累計へ(既消費+9.0)
+PASS 全体ゲート: 累計>550見込みでBudgetStop
+PASS 全体ゲート: GuardedClient経由でreserve→settleが対で記録
+PASS 全体ゲート: lockファイルが残らない
+== 6. 互換エラー(400)でCompatStop・以後API不呼出 ==
+PASS 400後は2回目でAPIを呼ばない(CompatStop)
+
+RESULT: ALL_PASS

@@ -1,0 +1,17 @@
+[MAQ][D][pre-call] stage=storyline_b3 model=gpt-6-astra effort=high user_prompt_sha=4dced17ac0f7 input_sha=2e682c2efebb json_schema=True spent=0.00 est=127.89 remaining=129.00 trial_cum_before=109.11 trial_remaining=440.89
+[MAQ][D][post-call] stage=storyline_b3 model_returned=gpt-6-astra in=6241 out=8191 reasoning=4894 jpy=75.514 cum=75.51 sec=137.3
+[ModelRoutingContract][OVERRIDE] process 'FAMILY_X_FACTLOCK_REVISE': Approved Model 'gpt-6-astra' の代わりに 'gpt-6-luna' を明示override(理由: JA-ARTICLE-QUALITY-MODEL-ALLOCATION-TRIAL-01 DEV/Trial(ユーザー指定の工程別モデル配置)。Production不変)で使用します。
+[ModelRoutingContract][OVERRIDE] process 'FAMILY_X_FACTLOCK_REVISE': Approved Model 'gpt-6-astra' の代わりに 'gpt-6-luna' を明示override(理由: JA-ARTICLE-QUALITY-MODEL-ALLOCATION-TRIAL-01 DEV/Trial(ユーザー指定の工程別モデル配置)。Production不変)で使用します。
+[MAQ][D][pre-call] stage=w1_r0 model=gpt-6-luna effort=high user_prompt_sha=5a317983ae6b input_sha=1d5665434d38 json_schema=False spent=75.51 est=0.81 remaining=53.49 trial_cum_before=335.5293 trial_remaining=214.47
+[MAQ][D][post-call] stage=w1_r0 model_returned=gpt-6-luna in=2462 out=8024 reasoning=7287 jpy=0.681 cum=76.19 sec=61.8
+[ModelRoutingContract][OVERRIDE] process 'FAMILY_X_FACTLOCK_REVISE': Approved Model 'gpt-6-astra' の代わりに 'gpt-6-luna' を明示override(理由: JA-ARTICLE-QUALITY-MODEL-ALLOCATION-TRIAL-01 DEV/Trial(ユーザー指定の工程別モデル配置)。Production不変)で使用します。
+[MAQ][D][pre-call] stage=w1_astra_r1 model=gpt-6-luna effort=high user_prompt_sha=ef66bc7c8c86 input_sha=28441740ad54 json_schema=False spent=76.19 est=0.13 remaining=52.81 trial_cum_before=352.18449999999996 trial_remaining=197.82
+[MAQ][D][post-call] stage=w1_astra_r1 model_returned=gpt-6-luna in=723 out=1116 reasoning=398 jpy=0.101 cum=76.30 sec=9.0
+[ModelRoutingContract][OVERRIDE] process 'FAMILY_X_FACTLOCK_REVISE': Approved Model 'gpt-6-astra' の代わりに 'gpt-6-luna' を明示override(理由: JA-ARTICLE-QUALITY-MODEL-ALLOCATION-TRIAL-01 DEV/Trial(ユーザー指定の工程別モデル配置)。Production不変)で使用します。
+[MAQ][D][pre-call] stage=w1_astra_r2 model=gpt-6-luna effort=high user_prompt_sha=1e5f04e43bfb input_sha=f5a8770342a8 json_schema=False spent=76.30 est=0.28 remaining=52.70 trial_cum_before=352.28529999999995 trial_remaining=197.71
+[MAQ][D][post-call] stage=w1_astra_r2 model_returned=gpt-6-luna in=757 out=1172 reasoning=448 jpy=0.106 cum=76.40 sec=10.5
+[ModelRoutingContract][OVERRIDE] process 'FAMILY_X_FACTLOCK_REVISE': Approved Model 'gpt-6-astra' の代わりに 'gpt-6-luna' を明示override(理由: JA-ARTICLE-QUALITY-MODEL-ALLOCATION-TRIAL-01 DEV/Trial(ユーザー指定の工程別モデル配置)。Production不変)で使用します。
+[MAQ][D][pre-call] stage=w1_astra_r2_symbol_rerun model=gpt-6-luna effort=high user_prompt_sha=1e5f04e43bfb input_sha=f5a8770342a8 json_schema=False spent=76.40 est=0.28 remaining=52.60 trial_cum_before=352.3911999999999 trial_remaining=197.61
+[MAQ][D][post-call] stage=w1_astra_r2_symbol_rerun model_returned=gpt-6-luna in=757 out=1178 reasoning=460 jpy=0.106 cum=76.51 sec=9.7
+[MAQ][D] STOP: JASymbolCheckStopError: [STOP] R2記号QA: 再実行後も残存(findings=[{'token': '（', 'category': 'BRACKET', 'reason': "括弧が本文に残っています: '（'。補足情報は通常の文として本文に統合してください。"}, {'token': '）', 'category': 'BRACKET', 'reason': "括弧が本文に残っています: '）'。補足情報は通常の文として本文に統合してください。"}, {'token': '〜', 'category': 'RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL', 'reason': "未変換のplaceholder/ポーズ記号が残っています: '〜'。波ダッシュ・三点リーダー・コロン・セミコロンは使わないでください。"}, {'token': '〜', 'category': 'RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL', 'reason': "未変換のplaceholder/ポーズ記号が残っています: '〜'。波ダッシュ・三点リーダー・コロン・セミコロンは使わないでください。"}])
+[MAQ][D] result=STOP spent_jpy=76.508
