@@ -6,3 +6,4 @@
 mp3化: imageio_ffmpeg同梱ffmpeg(libmp3lame 96k)。原稿は確定canonical(results_01.jsonl)。
 Git: 他agentのstage残骸があるため一時index(GIT_INDEX_FILE)で自分のファイルのみcommit。
 STOP: なし。誤PASS判定は試聴待ち(ユーザー)。
+Play evidence: 12/12 PASS (HTTP 200全件、currentTime約1.16s、paused=false、readyState=4、error=null)。
