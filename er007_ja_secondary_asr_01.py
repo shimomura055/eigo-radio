@@ -99,7 +99,89 @@ def _has_latin(text: str) -> bool:
     return any(("a" <= ch.lower() <= "z") or ("ａ" <= ch.lower() <= "ｚ") for ch in (text or ""))
 
 
-def _scg_exclusion_reason(cls: "javal.ClassificationResultJA") -> Optional[str]:
+# OPEN-258 SCG 推奨4(2026-10-11ユーザー正式採用 APPROVED_FOR_PRODUCTION): 否定マーカー
+# 「ず/ません/ぬ/ざる/まい」による否定差分をSCG重大差分除外へ追加する。SCG内部に限定し、
+# 共通ASR判定(protected_check_ja / safety._has_negation_ja)は変更しない。
+# 単純な部分文字列判定はしない(「ずっと」「いぬ」「まいにち」等を誤検出するため)。
+# 形態素解析(fugashi/unidic)で「否定の助動詞」と解析されたtokenだけを否定表現とみなし、
+# 原稿とPrimary転写の文字差分(opcode)の範囲に重なる否定tokenが片側にのみある場合に限り除外する。
+# 「ませんか」(疑問・勧誘)の「ん」は否定とみなさない。解析不能(fugashi無し/offset不整合)なら
+# この規則では除外しない(従来どおりの挙動、SCG PASSはEXACT/NORMALIZEDのみという別の安全弁がある)。
+_SCG_NEG_SURFACES = ("ず", "ぬ", "ん", "ざる", "ざら", "ざれ", "ざり", "まい")
+_SCG_NEG_CTYPES = ("助動詞-ヌ", "助動詞-マイ")
+_scg_tagger = None
+
+
+def _scg_negation_ranges(text: str) -> Optional[list]:
+    """textの中で否定の助動詞と解析された(start, end)範囲のリスト。解析不能ならNone。"""
+    global _scg_tagger
+    try:
+        if _scg_tagger is None:
+            import fugashi
+            _scg_tagger = fugashi.Tagger()
+        words = list(_scg_tagger(text))
+    except Exception:
+        return None
+    if sum(len(w.surface) for w in words) != len(text):
+        return None  # offsetが合わない(空白等)場合は判定しない
+    ranges, pos = [], 0
+    for i, w in enumerate(words):
+        start, end = pos, pos + len(w.surface)
+        pos = end
+        try:
+            pos1 = w.feature.pos1
+            ctype = w.feature.cType
+        except Exception:
+            continue
+        if pos1 != "助動詞" or w.surface not in _SCG_NEG_SURFACES or ctype not in _SCG_NEG_CTYPES:
+            continue
+        if w.surface == "ん" and i + 1 < len(words) and words[i + 1].surface == "か":
+            continue  # 「ませんか」=疑問・勧誘用法は否定差分としない
+        ranges.append((start, end))
+    return ranges
+
+
+def _scg_negation_marker_diff(canonical_text: str, asr_text: str) -> Optional[str]:
+    """原稿とPrimary転写の文字差分(opcode)のうち、否定の助動詞が片側にのみ含まれる差分があれば
+    その説明を返す。無ければNone。差分範囲外の否定語、両側に否定がある差分は対象外。"""
+    if not canonical_text or not asr_text:
+        return None
+    import difflib
+    c_norm, a_norm = javal.normalize_ja(canonical_text), javal.normalize_ja(asr_text)
+    c_rng, a_rng = _scg_negation_ranges(c_norm), _scg_negation_ranges(a_norm)
+    if c_rng is None or a_rng is None:
+        return None
+    sm = difflib.SequenceMatcher(None, c_norm, a_norm, autojunk=False)
+
+    def hit(rngs, i1, i2):
+        return any(s < i2 and e > i1 for s, e in rngs) if i2 > i1 else False
+
+    for tag, i1, i2, j1, j2 in sm.get_opcodes():
+        if tag == "equal":
+            continue
+        c_hit, a_hit = hit(c_rng, i1, i2), hit(a_rng, j1, j2)
+        if c_hit != a_hit:
+            return f"{c_norm[i1:i2]!r}->{a_norm[j1:j2]!r}"
+    return None
+
+
+def _scg_heterophone_candidate(diff: dict) -> bool:
+    """C2(同形異音語ガード、2026-10-11ユーザー正式採用 APPROVED_FOR_PRODUCTION):
+    差分のPrimary転写側spanの読みが、原稿側漢字spanの辞書上の正当な読み候補に含まれる
+    (=TTSが別の正当読みで読んだ可能性がある)場合True。候補が辞書に無い/判定不能はFalse
+    (Primary ASRの単なる誤認識を過剰に除外しないため、候補に含まれると確認できた場合のみTrue)。"""
+    c, a = diff.get("canonical", ""), diff.get("asr", "")
+    if not c or not a:
+        return False
+    try:
+        a_reading = javal._hira_reading(a)
+        return ja_kanji_readings.reading_is_candidate(c, a_reading) is True
+    except Exception:
+        return False
+
+
+def _scg_exclusion_reason(cls: "javal.ClassificationResultJA", canonical_text: Optional[str] = None,
+                          primary_text: Optional[str] = None) -> Optional[str]:
     """SCGを実行しない理由を返す。実行してよければNone。
     既存の重大差分除外(数字/否定/類似度0.4未満)に加え、Opus独立レビュー必須1(C1)として
     固有名詞・略語系の差分(entity_like、辞書読み不一致、原稿側のラテン文字差分)が1件でも
@@ -119,6 +201,12 @@ def _scg_exclusion_reason(cls: "javal.ClassificationResultJA") -> Optional[str]:
             return f"entity_like_diff:{d.get('canonical')}->{d.get('asr')}"
         if _has_latin(d.get("canonical", "")):
             return f"latin_in_canonical_diff:{d.get('canonical')}"
+        if _scg_heterophone_candidate(d):
+            return f"heterophone_reading_candidate:{d.get('canonical')}->{d.get('asr')}"
+    if canonical_text is not None and primary_text is not None:
+        neg = _scg_negation_marker_diff(canonical_text, primary_text)
+        if neg:
+            return f"negation_marker_diff:{neg}"
     return None
 
 
@@ -309,7 +397,7 @@ def evaluate_attempt_ja_with_cascade_detail(
     # --- OPEN-258 SCG(Secondary Confirm Gate)。既存の早期returnより前、Primaryが
     # TRUE_CONTENT_MISMATCHの場合だけ評価する(ASR_VALIDATION_UNCERTAIN経路は無変更) ---
     if cascade_enabled and not cls.should_pass and cls.classification == "TRUE_CONTENT_MISMATCH":
-        exclusion = _scg_exclusion_reason(cls)
+        exclusion = _scg_exclusion_reason(cls, canonical_text, primary_asr_text)
         if exclusion is None and not length_ok:
             exclusion = "length_not_ok(呼出元の長さ判定が不合格、SCG PASSでも不合格になるため不実行)"
         if not _scg_enabled():

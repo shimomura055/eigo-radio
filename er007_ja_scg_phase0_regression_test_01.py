@@ -45,6 +45,9 @@ FALSE_PASS_C_5 = ["g12_kp1_ja_aoede_a2", "g3_kp4_ja_charon_a1", "g4_kp2_ja_charo
 PHONETIC_3_GROUPS = ["g2_kp2_ja_charon_a1", "g21_comment_3_a1", "g36_comment_1_a1"]
 G7_SHORT_EXCLUDED = "g7_meaning_4_a1"
 G8_C1_EXCLUDED = "g8_kp4_ja_charon_a1"
+# 委任_03(2026-10-11ユーザー正式採用): 推奨4(否定マーカー)でg12、C2(同形異音語ガード)でg5が
+# SCG対象外(NOT_APPLIED=従来の再生成、Azure不呼出)になる。いずれもC群NG(誤PASSなし)の維持。
+C_GROUP_EXCLUDED_BY_03 = {"g12_kp1_ja_aoede_a2": "negation_marker_diff", "g5_kp4_ja_charon_a1": "heterophone_reading_candidate"}
 
 
 def _run(key):
@@ -109,8 +112,13 @@ class Phase0Regression(unittest.TestCase):
         for k in FALSE_PASS_C_5:
             detail, n = _run(k)
             self.assertFalse(detail["verified"], f"誤PASS検出: {k}")
-            self.assertEqual(detail["scg_result"], "NG", k)
-            self.assertEqual(n, 1)
+            if k in C_GROUP_EXCLUDED_BY_03:
+                self.assertEqual(detail["scg_result"], "NOT_APPLIED", k)
+                self.assertTrue(detail["scg_info"]["exclusion_reason"].startswith(C_GROUP_EXCLUDED_BY_03[k]), k)
+                self.assertEqual(n, 0)
+            else:
+                self.assertEqual(detail["scg_result"], "NG", k)
+                self.assertEqual(n, 1)
             # 従来の再生成へ戻る(STOPにも新規HumanReviewにもならない)
             self.assertFalse(detail["stop_retrying"], k)
             self.assertFalse(detail["human_review_required"], k)
@@ -144,7 +152,7 @@ class Phase0Regression(unittest.TestCase):
             if rec["existing_exclusions"]:
                 self.assertEqual(n, 0, k)
                 continue
-            if k == G8_C1_EXCLUDED:
+            if k == G8_C1_EXCLUDED or k in C_GROUP_EXCLUDED_BY_03:
                 self.assertEqual(n, 0, k)
                 self.assertFalse(detail["verified"], k)
                 continue
@@ -152,7 +160,7 @@ class Phase0Regression(unittest.TestCase):
             executed += 1
             self.assertEqual(detail["verified"], bool(rec["sec_pass"]), k)
             passed += int(detail["verified"])
-        self.assertEqual(executed, 23)  # 24 - g8(C1除外)
+        self.assertEqual(executed, 21)  # 24 - g8(C1除外) - g12(推奨4) - g5(C2)
         self.assertEqual(passed, 13)  # 14 - g8(C1除外)。以下は旧コメント  # META 3 + 救済7群8音声(META重複なし: g11/g8/g17/g20/g27/g31/g33x2) + g18 2 + g1 1(g7はprobeで不実行)
 
     def test_scg_evidence_fields_saved(self):
