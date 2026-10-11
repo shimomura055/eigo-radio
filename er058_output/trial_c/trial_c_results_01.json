@@ -1,0 +1,4667 @@
+{
+ "mock": false,
+ "n_items": 32,
+ "group_aggregate": {
+  "PRIMARY_NG": {
+   "n": 18,
+   "label_AMBIGUOUS": 6,
+   "unified_safe:NG_REGEN": 17,
+   "unified_simple_or:NG_REGEN": 15,
+   "current:NG_REGEN_OR_CASCADE_NG": 18,
+   "unified_simple_or:PASS": 3,
+   "label_FALSE_NG_LIKELY": 2,
+   "label_TRUE_ERROR_SUSPECT": 10,
+   "unified_safe:PASS": 1
+  },
+  "HR_QUEUE": {
+   "n": 6,
+   "label_FALSE_NG_LIKELY": 2,
+   "unified_safe:PASS": 2,
+   "unified_simple_or:PASS": 3,
+   "current:HUMAN_REVIEW": 6,
+   "label_EXCLUDED_AUDIO_CHANGED": 2,
+   "unified_safe:NG_REGEN": 3,
+   "unified_simple_or:NG_REGEN": 3,
+   "label_AMBIGUOUS": 1,
+   "unified_safe:PASS_WITH_WARNING": 1,
+   "label_TRUE_ERROR_SUSPECT": 1
+  },
+  "CONTROL_PRIMARY_PASS": {
+   "n": 8,
+   "label_PRIMARY_PASS_CONFIRMED": 6,
+   "unified_safe:PASS": 8,
+   "unified_simple_or:PASS": 8,
+   "current:PASS": 8,
+   "label_EXCLUDED_CANONICAL_MISMATCH": 2
+  }
+ },
+ "metrics": {
+  "unified_safe": {
+   "n_primary_ng_items": 22,
+   "false_pass_on_TRUE_ERROR_SUSPECT": 0,
+   "pass_on_AMBIGUOUS(要試聴)": 2,
+   "rescued_FALSE_NG_LIKELY": 2,
+   "unnecessary_NG_FALSE_NG_LIKELY": 2,
+   "pass_with_warning": 1,
+   "secondary_not_called_gate": 7
+  },
+  "unified_simple_or": {
+   "n_primary_ng_items": 22,
+   "false_pass_on_TRUE_ERROR_SUSPECT": 0,
+   "pass_on_AMBIGUOUS(要試聴)": 3,
+   "rescued_FALSE_NG_LIKELY": 3,
+   "unnecessary_NG_FALSE_NG_LIKELY": 1,
+   "pass_with_warning": 0,
+   "secondary_not_called_gate": 0
+  },
+  "current_flow": {
+   "n_primary_ng_items": 22,
+   "unnecessary_NG_FALSE_NG_LIKELY": 4,
+   "false_pass": 0,
+   "rescued": 0,
+   "note": "標本はPrimary NG(現行で不合格/HR)に限定して選定しているため、現行の救済は定義上0"
+  },
+  "forced_secondary_items": {
+   "n": 0,
+   "azure_noPL_strict_pass": 0,
+   "labels": {}
+  },
+  "control_primary_pass": {
+   "n": 6,
+   "azure_noPL_strict_pass": 6,
+   "azure_noPL_ng(Secondary単独なら偽NG)": 0,
+   "labels": {
+    "PRIMARY_PASS_CONFIRMED": 6
+   }
+  },
+  "phrase_list_effect": {
+   "n_compared": 5,
+   "identical_texts": 1,
+   "pl_strict_pass": 0,
+   "nopl_strict_pass": 3,
+   "detail": [
+    {
+     "id": "S15",
+     "pl_class": "ASR_VALIDATION_UNCERTAIN",
+     "nopl_class": "ASR_VALIDATION_UNCERTAIN",
+     "pl_strict": false,
+     "nopl_strict": false,
+     "texts_identical": true
+    },
+    {
+     "id": "S19",
+     "pl_class": "ASR_VALIDATION_UNCERTAIN",
+     "nopl_class": "NORMALIZED_MATCH",
+     "pl_strict": false,
+     "nopl_strict": true,
+     "texts_identical": false
+    },
+    {
+     "id": "S20",
+     "pl_class": "ASR_VALIDATION_UNCERTAIN",
+     "nopl_class": "NORMALIZED_MATCH",
+     "pl_strict": false,
+     "nopl_strict": true,
+     "texts_identical": false
+    },
+    {
+     "id": "S23",
+     "pl_class": "ASR_VALIDATION_UNCERTAIN",
+     "nopl_class": "EXACT_MATCH",
+     "pl_strict": false,
+     "nopl_strict": true,
+     "texts_identical": false
+    },
+    {
+     "id": "S24",
+     "pl_class": "ASR_VALIDATION_UNCERTAIN",
+     "nopl_class": "TRUE_CONTENT_MISMATCH",
+     "pl_strict": false,
+     "nopl_strict": false,
+     "texts_identical": false
+    }
+   ]
+  }
+ },
+ "mutation_aggregate": {
+  "negation_drop": {
+   "n": 12,
+   "primary_NG": 12,
+   "or_false_pass_via_autocorrected_secondary": 12,
+   "safe_blocked": 12
+  },
+  "plural_drop": {
+   "n": 25,
+   "primary_false_pass_both_flows": 13,
+   "primary_NG": 12,
+   "or_false_pass_via_autocorrected_secondary": 12,
+   "safe_warning_to_final_listening": 4,
+   "safe_residual_false_pass": 8
+  },
+  "tense_ed_drop": {
+   "n": 21,
+   "primary_NG": 16,
+   "or_false_pass_via_autocorrected_secondary": 16,
+   "safe_warning_to_final_listening": 16,
+   "primary_false_pass_both_flows": 5
+  },
+  "article_drop": {
+   "n": 26,
+   "primary_false_pass_both_flows": 26
+  },
+  "content_sub_unrelated": {
+   "n": 24,
+   "primary_NG": 24,
+   "or_false_pass_via_autocorrected_secondary": 24,
+   "safe_residual_false_pass": 24
+  },
+  "content_omit": {
+   "n": 24,
+   "primary_NG": 24,
+   "or_false_pass_via_autocorrected_secondary": 24,
+   "safe_residual_false_pass": 24
+  },
+  "entity_sub": {
+   "n": 27,
+   "primary_NG": 27,
+   "or_false_pass_via_autocorrected_secondary": 27,
+   "safe_residual_false_pass": 27
+  },
+  "number": {
+   "n": 15,
+   "primary_NG": 15,
+   "or_false_pass_via_autocorrected_secondary": 15,
+   "safe_blocked": 11,
+   "safe_warning_to_final_listening": 4
+  },
+  "negation_add": {
+   "n": 14,
+   "primary_NG": 14,
+   "or_false_pass_via_autocorrected_secondary": 14,
+   "safe_blocked": 14
+  }
+ },
+ "hr_queue_offline_67rows": {
+  "cascade rows(Primary NG, 4段とも不救済でHR)": 62,
+  "  unified: Secondary NG(再生成へ)": 62,
+  "forced_secondary rows(Primary PASS, Azure PL NG)": 5,
+  "  -> unified: Primary PASSで完了(Secondaryを呼ばない)": 5
+ },
+ "hr_queue_offline_examples": [],
+ "qcd_projection": {
+  "category_rescue_measured": {
+   "CONTENT_WORD_NONENTITY": {
+    "rescued": 1,
+    "n": 5
+   },
+   "PASS": {
+    "rescued": 0,
+    "n": 3
+   },
+   "NUM_OR_NEGATION": {
+    "rescued": 0,
+    "n": 4
+   },
+   "ENTITY_ONLY": {
+    "rescued": 0,
+    "n": 5
+   },
+   "OTHER_LOW_SIMILARITY": {
+    "rescued": 0,
+    "n": 1
+   }
+  },
+  "pooled_rescue": 0.056,
+  "old_flow_observed": {
+   "n_calls": 160,
+   "mean_tts_per_call(fallback含む)": 1.188,
+   "complete_within_call(LR前、fallback含む)": 0.9313,
+   "cascade_invoked_attempts": 3,
+   "est_cascade_asr_jpy_per_call": 0.068
+  },
+  "new_flow_expected": {
+   "low": {
+    "mean_tts_per_call": 1.222,
+    "complete_within_3tts": 0.9525,
+    "to_local_rewrite_or_HR_rate": 0.0475,
+    "extrapolated_attempt_share_of_calls": 0.08,
+    "azure_secondary_calls_per_call": 0.168,
+    "est_secondary_jpy_per_call": 0.299,
+    "est_tts_jpy_per_call": 0.165
+   },
+   "mid": {
+    "mean_tts_per_call": 1.205,
+    "complete_within_3tts": 0.9572,
+    "to_local_rewrite_or_HR_rate": 0.0428,
+    "extrapolated_attempt_share_of_calls": 0.074,
+    "azure_secondary_calls_per_call": 0.165,
+    "est_secondary_jpy_per_call": 0.293,
+    "est_tts_jpy_per_call": 0.163
+   },
+   "high": {
+    "mean_tts_per_call": 1.146,
+    "complete_within_3tts": 0.9742,
+    "to_local_rewrite_or_HR_rate": 0.0258,
+    "extrapolated_attempt_share_of_calls": 0.047,
+    "azure_secondary_calls_per_call": 0.153,
+    "est_secondary_jpy_per_call": 0.272,
+    "est_tts_jpy_per_call": 0.155
+   }
+  },
+  "assumptions": [
+   "Secondary救済率=本Trial実測(カテゴリ別、n<3は全体平均)の下限/中央/上限(Wilson 95%)",
+   "旧フローが打切った後の再生成通過率は実測(narrative5: 2回目13/22, 3回目2/8)で外挿",
+   "Azure音声長は平均40秒と仮定(単価0.0444円/秒)",
+   "tts単価0.135円/call(qcd_model_01)",
+   "Local Rewrite以降は未モデル化"
+  ]
+ },
+ "azure_elapsed_mean_sec": 10.4,
+ "excluded_items": [
+  {
+   "id": "S21",
+   "reason": "保存PL転写とnoPL転写が大きく異なる(ratio=0.29): wavが後から上書きされた疑い"
+  },
+  {
+   "id": "S22",
+   "reason": "保存PL転写とnoPL転写が大きく異なる(ratio=0.26): wavが後から上書きされた疑い"
+  },
+  {
+   "id": "S26",
+   "reason": "Primary再判定 TTS_FAILURE != 記録 EXACT_MATCH"
+  },
+  {
+   "id": "S27",
+   "reason": "Primary再判定 TRUE_CONTENT_MISMATCH != 記録 NORMALIZED_MATCH"
+  }
+ ],
+ "rows": [
+  {
+   "id": "S01",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\coffee_prices__run_l3_01\\a2\\narration\\attempts\\full_story_part1_attempt1_custom53fd514d.wav",
+   "segment_id": "full_story_part1",
+   "dur_sec": 48.8,
+   "primary_category": "CONTENT_WORD_NONENTITY",
+   "systems": {
+    "openai_primary": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "s future",
+       "futures"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "pay less",
+       "payless"
+      ],
+      [
+       "s",
+       ""
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "hurt",
+       "heard"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    }
+   },
+   "proxy_label": "AMBIGUOUS",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "azure_elapsed_sec": 22.24
+  },
+  {
+   "id": "S02",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\coffee_prices__run_l3_01\\a2\\narration\\attempts\\full_story_part3_attempt1_custom53fd514d.wav",
+   "segment_id": "full_story_part3",
+   "dur_sec": 46.44,
+   "primary_category": "CONTENT_WORD_NONENTITY",
+   "systems": {
+    "openai_primary": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "us",
+       "u s"
+      ],
+      [
+       "shelf",
+       "shelves"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "HIGH_SIMILARITY_SAFE",
+     "should_pass": true,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "NUMERIC_EQUIVALENCE_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "local_medium": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "us",
+       "u s"
+      ],
+      [
+       "say",
+       ""
+      ]
+     ]
+    }
+   },
+   "proxy_label": "AMBIGUOUS",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "HIGH_SIMILARITY_SAFE"
+   },
+   "unified_simple_or": {
+    "outcome": "PASS",
+    "secondary_called": true,
+    "secondary_class": "HIGH_SIMILARITY_SAFE"
+   },
+   "azure_elapsed_sec": 21.03
+  },
+  {
+   "id": "S03",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\coffee_prices__run_l3_01\\b1b\\narration\\attempts\\full_story_part2_attempt1_englishstyleprefixwidemargin.wav",
+   "segment_id": "full_story_part2",
+   "dur_sec": 56.55,
+   "primary_category": "PASS",
+   "systems": {
+    "openai_primary": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_noPL": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "over",
+       ""
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "local_medium": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    }
+   },
+   "proxy_label": "FALSE_NG_LIKELY",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": false,
+    "gate": "length_not_ok"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "azure_elapsed_sec": 25.86
+  },
+  {
+   "id": "S04",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\hormuz__run_02\\a2\\narration\\attempts\\full_story_part2_attempt3_minimalfallback.wav",
+   "segment_id": "full_story_part2",
+   "dur_sec": 53.81,
+   "primary_category": "CONTENT_WORD_NONENTITY",
+   "systems": {
+    "openai_primary": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "",
+       "20xpercentx plan changes overnight"
+      ],
+      [
+       "us",
+       "u s"
+      ],
+      [
+       "us",
+       "u s"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "",
+       "20xpercentx plan changes overnight"
+      ],
+      [
+       "m",
+       "am"
+      ],
+      [
+       "dates",
+       "states"
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "",
+       "20xpercentx plan changes overnight"
+      ],
+      [
+       "",
+       "11xdecimalpointx04"
+      ],
+      [
+       "us",
+       "u s"
+      ],
+      [
+       "us sea",
+       "usc"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "",
+       "20xpercentx plan changes overnight"
+      ],
+      [
+       "",
+       "11xdecimalpointx04"
+      ],
+      [
+       "us",
+       "u s"
+      ],
+      [
+       "us",
+       "u s"
+      ],
+      [
+       "reuters",
+       ""
+      ]
+     ]
+    }
+   },
+   "proxy_label": "TRUE_ERROR_SUSPECT",
+   "proxy_label_agreed_error_signature": [
+    [
+     "d",
+     "",
+     "20xpercentx plan changes overnight"
+    ]
+   ],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "azure_elapsed_sec": 24.63
+  },
+  {
+   "id": "S05",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\hormuz__run_04_parallel_a\\b1b\\narration\\attempts\\full_story_part1_attempt1_englishstyleprefixwidemargin.wav",
+   "segment_id": "full_story_part1",
+   "dur_sec": 44.08,
+   "primary_category": "NUM_OR_NEGATION",
+   "systems": {
+    "openai_primary": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "first",
+       ""
+      ],
+      [
+       "us",
+       "u s"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "first",
+       ""
+      ],
+      [
+       "",
+       "one"
+      ],
+      [
+       "m",
+       "am"
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "first",
+       ""
+      ],
+      [
+       "",
+       "one"
+      ],
+      [
+       "",
+       "10xdecimalpointx16"
+      ],
+      [
+       "us",
+       "u s"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "first",
+       ""
+      ],
+      [
+       "",
+       "10xdecimalpointx16"
+      ],
+      [
+       "us",
+       "u s"
+      ]
+     ]
+    }
+   },
+   "proxy_label": "TRUE_ERROR_SUSPECT",
+   "proxy_label_agreed_error_signature": [
+    [
+     "numneg"
+    ],
+    [
+     "d",
+     "first",
+     ""
+    ]
+   ],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": false,
+    "gate": "numeric_or_negation_diff"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "azure_elapsed_sec": 19.54
+  },
+  {
+   "id": "S06",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\hormuz__run_04_parallel_a\\b1b\\narration\\attempts\\full_story_part1_attempt2_englishstyleprefixwidemargin.wav",
+   "segment_id": "full_story_part1",
+   "dur_sec": 44.41,
+   "primary_category": "NUM_OR_NEGATION",
+   "systems": {
+    "openai_primary": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "first",
+       ""
+      ],
+      [
+       "us",
+       "u s"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "first",
+       ""
+      ],
+      [
+       "",
+       "one"
+      ],
+      [
+       "m",
+       "am"
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "first",
+       ""
+      ],
+      [
+       "",
+       "10xdecimalpointx16"
+      ],
+      [
+       "us",
+       "u s"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "first",
+       ""
+      ],
+      [
+       "",
+       "10xdecimalpointx16"
+      ],
+      [
+       "us",
+       "u s"
+      ]
+     ]
+    }
+   },
+   "proxy_label": "TRUE_ERROR_SUSPECT",
+   "proxy_label_agreed_error_signature": [
+    [
+     "numneg"
+    ],
+    [
+     "d",
+     "first",
+     ""
+    ]
+   ],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": false,
+    "gate": "numeric_or_negation_diff"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "azure_elapsed_sec": 19.83
+  },
+  {
+   "id": "S07",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\hormuz__run_04_parallel_a\\b1b\\narration\\attempts\\full_story_part1_attempt3_englishstyleprefixwidemargin.wav",
+   "segment_id": "full_story_part1",
+   "dur_sec": 46.24,
+   "primary_category": "NUM_OR_NEGATION",
+   "systems": {
+    "openai_primary": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "first",
+       ""
+      ],
+      [
+       "us",
+       "u s"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "first",
+       ""
+      ],
+      [
+       "",
+       "one"
+      ],
+      [
+       "m",
+       "am"
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "first",
+       ""
+      ],
+      [
+       "m",
+       "10xdecimalpointx16 am"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "first",
+       ""
+      ],
+      [
+       "",
+       "10xdecimalpointx16"
+      ],
+      [
+       "us",
+       "u s"
+      ]
+     ]
+    }
+   },
+   "proxy_label": "TRUE_ERROR_SUSPECT",
+   "proxy_label_agreed_error_signature": [
+    [
+     "numneg"
+    ],
+    [
+     "d",
+     "first",
+     ""
+    ]
+   ],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": false,
+    "gate": "numeric_or_negation_diff"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "azure_elapsed_sec": 20.74
+  },
+  {
+   "id": "S08",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\hormuz__run_06_flashlite_full_kp\\b1b\\narration\\attempts\\full_story_part1_attempt1_englishstyleprefixwidemargin.wav",
+   "segment_id": "full_story_part1",
+   "dur_sec": 52.12,
+   "primary_category": "NUM_OR_NEGATION",
+   "systems": {
+    "openai_primary": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "one",
+       ""
+      ],
+      [
+       "us",
+       "u s"
+      ],
+      [
+       "",
+       "number stayed center stage about day story took sharp turn"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "m",
+       "am"
+      ],
+      [
+       "",
+       "number stayed center stage about day story took sharp turn"
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "one",
+       ""
+      ],
+      [
+       "",
+       "10xdecimalpointx16"
+      ],
+      [
+       "us",
+       "u s"
+      ],
+      [
+       "",
+       "number stayed center stage about day story took sharp turn"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "one",
+       ""
+      ],
+      [
+       "",
+       "10xdecimalpointx16"
+      ],
+      [
+       "us",
+       "u s"
+      ],
+      [
+       "",
+       "number stayed center stage about day story took sharp turn"
+      ]
+     ]
+    }
+   },
+   "proxy_label": "TRUE_ERROR_SUSPECT",
+   "proxy_label_agreed_error_signature": [
+    [
+     "numneg"
+    ],
+    [
+     "d",
+     "one",
+     ""
+    ],
+    [
+     "d",
+     "",
+     "number stayed center stage about day story took sharp turn"
+    ]
+   ],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": false,
+    "gate": "numeric_or_negation_diff"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "azure_elapsed_sec": 23.78
+  },
+  {
+   "id": "S09",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\small_bag__run_02\\a2\\narration\\attempts\\full_story_part2_attempt3_minimalfallback.wav",
+   "segment_id": "full_story_part2",
+   "dur_sec": 31.05,
+   "primary_category": "ENTITY_ONLY",
+   "systems": {
+    "openai_primary": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "khaite",
+       "kite"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "elle",
+       "l"
+      ],
+      [
+       "khaite s",
+       "kites"
+      ],
+      [
+       "minaudiere",
+       "minotier"
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "khaite s",
+       "kites"
+      ],
+      [
+       "minaudiere",
+       "minodierre"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "khaite",
+       "kite"
+      ],
+      [
+       "minaudiere",
+       "minodiere"
+      ]
+     ]
+    }
+   },
+   "proxy_label": "TRUE_ERROR_SUSPECT",
+   "proxy_label_agreed_error_signature": [
+    [
+     "d",
+     "khaite",
+     "kite"
+    ]
+   ],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "azure_elapsed_sec": 13.28
+  },
+  {
+   "id": "S10",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\small_bag__run_02\\a2\\narration\\attempts\\full_story_part3_attempt3_minimalfallback.wav",
+   "segment_id": "full_story_part3",
+   "dur_sec": 49.86,
+   "primary_category": "ENTITY_ONLY",
+   "systems": {
+    "openai_primary": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "toteme",
+       "totem"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "altuzarra",
+       "alta zara"
+      ],
+      [
+       "toteme",
+       "totem"
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "loewe",
+       "lowe"
+      ],
+      [
+       "altuzarra",
+       "alta zara"
+      ],
+      [
+       "toteme",
+       "totem"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "altuzarra",
+       "altazara"
+      ],
+      [
+       "toteme",
+       "totem"
+      ]
+     ]
+    }
+   },
+   "proxy_label": "TRUE_ERROR_SUSPECT",
+   "proxy_label_agreed_error_signature": [
+    [
+     "d",
+     "toteme",
+     "totem"
+    ]
+   ],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "ASR_VALIDATION_UNCERTAIN"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "ASR_VALIDATION_UNCERTAIN"
+   },
+   "azure_elapsed_sec": 22.55
+  },
+  {
+   "id": "S11",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\small_bag__run_02\\a2\\narration\\attempts\\full_story_part3_attempt6_minimalfallback.wav",
+   "segment_id": "full_story_part3",
+   "dur_sec": 52.76,
+   "primary_category": "ENTITY_ONLY",
+   "systems": {
+    "openai_primary": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "toteme",
+       "totem"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "loewe",
+       "lowy"
+      ],
+      [
+       "altuzarra",
+       "altuzerra"
+      ],
+      [
+       "toteme",
+       "totem"
+      ],
+      [
+       "reports",
+       ""
+      ],
+      [
+       "mini",
+       "many"
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "loewe",
+       "lowy"
+      ],
+      [
+       "altuzarra",
+       "althussera"
+      ],
+      [
+       "toteme",
+       "totem"
+      ],
+      [
+       "mini",
+       "many"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "loewe",
+       "loey"
+      ],
+      [
+       "altuzarra",
+       "althusserah"
+      ],
+      [
+       "toteme",
+       "totem"
+      ],
+      [
+       "mini",
+       "many"
+      ]
+     ]
+    }
+   },
+   "proxy_label": "TRUE_ERROR_SUSPECT",
+   "proxy_label_agreed_error_signature": [
+    [
+     "d",
+     "toteme",
+     "totem"
+    ],
+    [
+     "d",
+     "mini",
+     "many"
+    ]
+   ],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "azure_elapsed_sec": 24.03
+  },
+  {
+   "id": "S12",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\meta__run_03\\b1b\\narration\\attempts\\preview_attempt1_englishstyleprefix.wav",
+   "segment_id": "preview",
+   "dur_sec": 14.68,
+   "primary_category": "OTHER_LOW_SIMILARITY",
+   "systems": {
+    "openai_primary": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_noPL": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "ai",
+       ""
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "EXACT_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "local_medium": {
+     "class": "EXACT_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    }
+   },
+   "proxy_label": "AMBIGUOUS",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "ASR_VALIDATION_UNCERTAIN"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "ASR_VALIDATION_UNCERTAIN"
+   },
+   "azure_elapsed_sec": 5.11
+  },
+  {
+   "id": "S13",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\meta__run_regen_01\\a2\\narration\\attempts\\full_story_part3_attempt1_custom53fd514d.wav",
+   "segment_id": "full_story_part3",
+   "dur_sec": 35.24,
+   "primary_category": "PASS",
+   "systems": {
+    "openai_primary": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_noPL": {
+     "class": "HIGH_SIMILARITY_SAFE",
+     "should_pass": true,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "TRANSCRIPT_STYLE_NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "local_medium": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "too",
+       ""
+      ]
+     ]
+    }
+   },
+   "proxy_label": "FALSE_NG_LIKELY",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": false,
+    "gate": "repetition_or_disfluency_QA"
+   },
+   "unified_simple_or": {
+    "outcome": "PASS",
+    "secondary_called": true,
+    "secondary_class": "HIGH_SIMILARITY_SAFE"
+   },
+   "azure_elapsed_sec": 15.37
+  },
+  {
+   "id": "S14",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\meta__run_regen_01\\a2\\narration\\attempts\\full_story_part3_attempt2_custom53fd514d.wav",
+   "segment_id": "full_story_part3",
+   "dur_sec": 35.2,
+   "primary_category": "CONTENT_WORD_NONENTITY",
+   "systems": {
+    "openai_primary": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "missing",
+       "messy"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "local_medium": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "meta",
+       "metta"
+      ]
+     ]
+    }
+   },
+   "proxy_label": "AMBIGUOUS",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "PASS",
+    "secondary_called": true,
+    "secondary_class": "NORMALIZED_MATCH"
+   },
+   "unified_simple_or": {
+    "outcome": "PASS",
+    "secondary_called": true,
+    "secondary_class": "NORMALIZED_MATCH"
+   },
+   "azure_elapsed_sec": 15.32
+  },
+  {
+   "id": "S15",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\meta__run_regen_01\\a2\\narration\\attempts\\in_one_line_attempt1_custom78daa961.wav",
+   "segment_id": "in_one_line",
+   "dur_sec": 6.6,
+   "primary_category": "ENTITY_ONLY",
+   "systems": {
+    "openai_primary": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "muse",
+       "used"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "muse",
+       "use"
+      ]
+     ]
+    },
+    "azure_PL_stored": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "muse",
+       "use"
+      ]
+     ]
+    },
+    "local_small": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "muse",
+       "use"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "muse",
+       "use"
+      ]
+     ]
+    }
+   },
+   "proxy_label": "TRUE_ERROR_SUSPECT",
+   "proxy_label_agreed_error_signature": [
+    [
+     "d",
+     "muse",
+     "use"
+    ]
+   ],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": true
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "ASR_VALIDATION_UNCERTAIN"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "ASR_VALIDATION_UNCERTAIN"
+   },
+   "pl_vs_nopl": {
+    "id": "S15",
+    "pl_class": "ASR_VALIDATION_UNCERTAIN",
+    "nopl_class": "ASR_VALIDATION_UNCERTAIN",
+    "pl_strict": false,
+    "nopl_strict": false,
+    "texts_identical": true
+   },
+   "azure_elapsed_sec": 2.4
+  },
+  {
+   "id": "S16",
+   "group": "PRIMARY_NG",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\meta__run_regen_01\\b1b\\narration\\attempts\\comment_2_attempt2_englishstyleprefix.wav",
+   "segment_id": "comment_2",
+   "dur_sec": 9.09,
+   "primary_category": "ENTITY_ONLY",
+   "systems": {
+    "openai_primary": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "muse",
+       "use"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "muse",
+       "use"
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "muse",
+       "use"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "muse",
+       "use"
+      ]
+     ]
+    }
+   },
+   "proxy_label": "TRUE_ERROR_SUSPECT",
+   "proxy_label_agreed_error_signature": [
+    [
+     "d",
+     "muse",
+     "use"
+    ]
+   ],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "ASR_VALIDATION_UNCERTAIN"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "ASR_VALIDATION_UNCERTAIN"
+   },
+   "azure_elapsed_sec": 2.4
+  },
+  {
+   "id": "S17",
+   "group": "PRIMARY_NG",
+   "wav": "er038_output\\tts_all_spoken_role_style_trial_01\\hormuz\\b1b\\narration\\attempts\\comment_3_attempt1_englishstyleprefix.wav",
+   "segment_id": "comment_3",
+   "dur_sec": 21.12,
+   "primary_category": "CONTENT_WORD_NONENTITY",
+   "systems": {
+    "openai_primary": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "us sea",
+       "u s"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "us sea",
+       "usc"
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "us sea",
+       "usc"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "CONNECTED_SPEECH_ACCEPT",
+     "should_pass": true,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "us sea",
+       "u s c"
+      ]
+     ]
+    }
+   },
+   "proxy_label": "AMBIGUOUS",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "azure_elapsed_sec": 8.41
+  },
+  {
+   "id": "S18",
+   "group": "PRIMARY_NG",
+   "wav": "er038_output\\tts_all_spoken_role_style_trial_01\\hormuz\\b1b\\narration\\attempts\\full_story_part1_attempt2_englishstyleprefixwidemargin.wav",
+   "segment_id": "full_story_part1",
+   "dur_sec": 47.99,
+   "primary_category": "PASS",
+   "systems": {
+    "openai_primary": {
+     "class": "NUMERIC_EQUIVALENCE_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_noPL": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "m",
+       "am"
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "",
+       "10xdecimalpointx16"
+      ],
+      [
+       "us",
+       "u s"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "one",
+       ""
+      ],
+      [
+       "",
+       "10xdecimalpointx16"
+      ]
+     ]
+    }
+   },
+   "proxy_label": "AMBIGUOUS",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "NG_REGEN_OR_CASCADE_NG",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": false,
+    "gate": "length_not_ok"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "azure_elapsed_sec": 21.63
+  },
+  {
+   "id": "S19",
+   "group": "HR_QUEUE",
+   "wav": "er012_output\\editorial_b_voices_a2_free_address_02\\a2\\narration\\point_one_heading.wav",
+   "segment_id": "point_one_heading",
+   "dur_sec": 3.73,
+   "primary_category": "HR_QUEUE_UNCERTAIN",
+   "systems": {
+    "openai_primary": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "one voice",
+       ""
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_PL_stored": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "one voice",
+       ""
+      ]
+     ]
+    },
+    "local_small": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "local_medium": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    }
+   },
+   "pl_vs_nopl_text_ratio": 0.844,
+   "proxy_label": "FALSE_NG_LIKELY",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "HUMAN_REVIEW",
+    "cascade_invoked": true
+   },
+   "unified_safe": {
+    "outcome": "PASS",
+    "secondary_called": true,
+    "secondary_class": "NORMALIZED_MATCH"
+   },
+   "unified_simple_or": {
+    "outcome": "PASS",
+    "secondary_called": true,
+    "secondary_class": "NORMALIZED_MATCH"
+   },
+   "pl_vs_nopl": {
+    "id": "S19",
+    "pl_class": "ASR_VALIDATION_UNCERTAIN",
+    "nopl_class": "NORMALIZED_MATCH",
+    "pl_strict": false,
+    "nopl_strict": true,
+    "texts_identical": false
+   },
+   "azure_elapsed_sec": 1.81
+  },
+  {
+   "id": "S20",
+   "group": "HR_QUEUE",
+   "wav": "er012_output\\editorial_b_voices_trial_09_audio\\b1b\\narration\\point_two_heading.wav",
+   "segment_id": "point_two_heading",
+   "dur_sec": 3.74,
+   "primary_category": "HR_QUEUE_UNCERTAIN",
+   "systems": {
+    "openai_primary": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "another voice",
+       ""
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_PL_stored": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "another voice",
+       ""
+      ]
+     ]
+    },
+    "local_small": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "local_medium": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    }
+   },
+   "pl_vs_nopl_text_ratio": 0.741,
+   "proxy_label": "FALSE_NG_LIKELY",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "HUMAN_REVIEW",
+    "cascade_invoked": true
+   },
+   "unified_safe": {
+    "outcome": "PASS",
+    "secondary_called": true,
+    "secondary_class": "NORMALIZED_MATCH"
+   },
+   "unified_simple_or": {
+    "outcome": "PASS",
+    "secondary_called": true,
+    "secondary_class": "NORMALIZED_MATCH"
+   },
+   "pl_vs_nopl": {
+    "id": "S20",
+    "pl_class": "ASR_VALIDATION_UNCERTAIN",
+    "nopl_class": "NORMALIZED_MATCH",
+    "pl_strict": false,
+    "nopl_strict": true,
+    "texts_identical": false
+   },
+   "azure_elapsed_sec": 0.9
+  },
+  {
+   "id": "S21",
+   "group": "HR_QUEUE",
+   "wav": "er012_output\\b_family_a2_new_topic_production_01\\personalized_news_2v_a2\\narration\\point_one_heading.wav",
+   "segment_id": "point_one_heading",
+   "dur_sec": 5.05,
+   "primary_category": "HR_QUEUE_UNCERTAIN",
+   "systems": {
+    "openai_primary": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "one voice",
+       ""
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "my",
+       "commuter who needs fast"
+      ],
+      [
+       "news route",
+       ""
+      ]
+     ]
+    },
+    "azure_PL_stored": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "one voice",
+       ""
+      ]
+     ]
+    },
+    "local_small": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "my",
+       "commuter who needs fast"
+      ],
+      [
+       "news route",
+       ""
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "my",
+       "commuter who needs fast"
+      ],
+      [
+       "news route",
+       ""
+      ]
+     ]
+    }
+   },
+   "pl_vs_nopl_text_ratio": 0.286,
+   "excluded_reason": "保存PL転写とnoPL転写が大きく異なる(ratio=0.29): wavが後から上書きされた疑い",
+   "proxy_label": "EXCLUDED_AUDIO_CHANGED",
+   "proxy_label_agreed_error_signature": [
+    [
+     "d",
+     "news route",
+     ""
+    ],
+    [
+     "d",
+     "my",
+     "commuter who needs fast"
+    ]
+   ],
+   "current_flow": {
+    "outcome": "HUMAN_REVIEW",
+    "cascade_invoked": true
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "pl_vs_nopl": {
+    "id": "S21",
+    "pl_class": "ASR_VALIDATION_UNCERTAIN",
+    "nopl_class": "TRUE_CONTENT_MISMATCH",
+    "pl_strict": false,
+    "nopl_strict": false,
+    "texts_identical": false
+   },
+   "azure_elapsed_sec": 0.9
+  },
+  {
+   "id": "S22",
+   "group": "HR_QUEUE",
+   "wav": "er012_output\\b_family_a2_new_topic_production_01\\personalized_news_2v_a2\\narration\\point_two_heading.wav",
+   "segment_id": "point_two_heading",
+   "dur_sec": 5.17,
+   "primary_category": "HR_QUEUE_UNCERTAIN",
+   "systems": {
+    "openai_primary": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "another voice",
+       ""
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "TTS_FAILURE",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "what missing",
+       "reader who sees feed narrowing"
+      ]
+     ]
+    },
+    "azure_PL_stored": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "another voice",
+       ""
+      ]
+     ]
+    },
+    "local_small": {
+     "class": "TTS_FAILURE",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "what missing",
+       "reader who sees feed narrowing"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "TTS_FAILURE",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "what missing",
+       "reader who sees feed narrowing"
+      ]
+     ]
+    }
+   },
+   "pl_vs_nopl_text_ratio": 0.261,
+   "excluded_reason": "保存PL転写とnoPL転写が大きく異なる(ratio=0.26): wavが後から上書きされた疑い",
+   "proxy_label": "EXCLUDED_AUDIO_CHANGED",
+   "proxy_label_agreed_error_signature": [
+    [
+     "d",
+     "what missing",
+     "reader who sees feed narrowing"
+    ]
+   ],
+   "current_flow": {
+    "outcome": "HUMAN_REVIEW",
+    "cascade_invoked": true
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TTS_FAILURE"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TTS_FAILURE"
+   },
+   "pl_vs_nopl": {
+    "id": "S22",
+    "pl_class": "ASR_VALIDATION_UNCERTAIN",
+    "nopl_class": "TTS_FAILURE",
+    "pl_strict": false,
+    "nopl_strict": false,
+    "texts_identical": false
+   },
+   "azure_elapsed_sec": 0.9
+  },
+  {
+   "id": "S23",
+   "group": "HR_QUEUE",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\meta__run_regen_01\\a2\\narration\\in_one_line.wav",
+   "segment_id": "in_one_line",
+   "dur_sec": 6.42,
+   "primary_category": "HR_QUEUE_UNCERTAIN",
+   "systems": {
+    "openai_primary": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "muse",
+       "used"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "EXACT_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_PL_stored": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "muse",
+       "use"
+      ]
+     ]
+    },
+    "local_small": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "meta",
+       "metta"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "muse",
+       "use"
+      ]
+     ]
+    }
+   },
+   "pl_vs_nopl_text_ratio": 0.996,
+   "proxy_label": "AMBIGUOUS",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "HUMAN_REVIEW",
+    "cascade_invoked": true
+   },
+   "unified_safe": {
+    "outcome": "PASS_WITH_WARNING",
+    "secondary_called": true,
+    "secondary_class": "EXACT_MATCH"
+   },
+   "unified_simple_or": {
+    "outcome": "PASS",
+    "secondary_called": true,
+    "secondary_class": "EXACT_MATCH"
+   },
+   "pl_vs_nopl": {
+    "id": "S23",
+    "pl_class": "ASR_VALIDATION_UNCERTAIN",
+    "nopl_class": "EXACT_MATCH",
+    "pl_strict": false,
+    "nopl_strict": true,
+    "texts_identical": false
+   },
+   "azure_elapsed_sec": 1.2
+  },
+  {
+   "id": "S24",
+   "group": "HR_QUEUE",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\meta__run_regen_01\\b1b\\narration\\in_one_line.wav",
+   "segment_id": "in_one_line",
+   "dur_sec": 6.75,
+   "primary_category": "HR_QUEUE_UNCERTAIN",
+   "systems": {
+    "openai_primary": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "muse",
+       "user"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "handle",
+       "manage"
+      ],
+      [
+       "",
+       "calls"
+      ],
+      [
+       "calls",
+       ""
+      ]
+     ]
+    },
+    "azure_PL_stored": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "meta",
+       "matta"
+      ],
+      [
+       "muse",
+       "use"
+      ]
+     ]
+    },
+    "local_small": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "handle",
+       "manage"
+      ],
+      [
+       "",
+       "calls"
+      ],
+      [
+       "calls",
+       ""
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "meta",
+       "metta"
+      ],
+      [
+       "handle",
+       "manage"
+      ],
+      [
+       "muse",
+       ""
+      ],
+      [
+       "",
+       "mews"
+      ]
+     ]
+    }
+   },
+   "pl_vs_nopl_text_ratio": 0.904,
+   "proxy_label": "TRUE_ERROR_SUSPECT",
+   "proxy_label_agreed_error_signature": [
+    [
+     "d",
+     "handle",
+     "manage"
+    ]
+   ],
+   "current_flow": {
+    "outcome": "HUMAN_REVIEW",
+    "cascade_invoked": true
+   },
+   "unified_safe": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "unified_simple_or": {
+    "outcome": "NG_REGEN",
+    "secondary_called": true,
+    "secondary_class": "TRUE_CONTENT_MISMATCH"
+   },
+   "pl_vs_nopl": {
+    "id": "S24",
+    "pl_class": "ASR_VALIDATION_UNCERTAIN",
+    "nopl_class": "TRUE_CONTENT_MISMATCH",
+    "pl_strict": false,
+    "nopl_strict": false,
+    "texts_identical": false
+   },
+   "azure_elapsed_sec": 1.2
+  },
+  {
+   "id": "S25",
+   "group": "CONTROL_PRIMARY_PASS",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\hormuz__run_03_flashlite\\b1b\\narration\\attempts\\topic_intro_attempt1_englishstyleprefix.wav",
+   "segment_id": "topic_intro",
+   "dur_sec": 5.81,
+   "primary_category": "PASS",
+   "systems": {
+    "openai_primary": {
+     "class": "NUMERIC_EQUIVALENCE_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_noPL": {
+     "class": "NUMERIC_EQUIVALENCE_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "NUMERIC_EQUIVALENCE_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "local_medium": {
+     "class": "NUMERIC_EQUIVALENCE_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    }
+   },
+   "proxy_label": "PRIMARY_PASS_CONFIRMED",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "PASS",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "PASS",
+    "secondary_called": false,
+    "reason": "primary_pass(Secondaryは呼ばない)"
+   },
+   "unified_simple_or": {
+    "outcome": "PASS",
+    "secondary_called": false
+   },
+   "azure_elapsed_sec": 1.2
+  },
+  {
+   "id": "S26",
+   "group": "CONTROL_PRIMARY_PASS",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\meta__run_regen_01\\b1b\\narration\\attempts\\comment_1_attempt1_englishstyleprefix.wav",
+   "segment_id": "comment_1",
+   "dur_sec": 4.68,
+   "primary_category": "PASS",
+   "systems": {
+    "openai_primary": {
+     "class": "TTS_FAILURE",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "",
+       "how some"
+      ],
+      [
+       "",
+       "calls handled what"
+      ],
+      [
+       "story",
+       ""
+      ],
+      [
+       "about whether people know who other end calls",
+       ""
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "TTS_FAILURE",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "",
+       "how some"
+      ],
+      [
+       "",
+       "calls handled what"
+      ],
+      [
+       "story",
+       ""
+      ],
+      [
+       "about whether people know who other end calls",
+       ""
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "TTS_FAILURE",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "",
+       "how some"
+      ],
+      [
+       "",
+       "calls handled what"
+      ],
+      [
+       "story",
+       ""
+      ],
+      [
+       "about whether people know who other end calls",
+       ""
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "TTS_FAILURE",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "",
+       "how some"
+      ],
+      [
+       "",
+       "calls handled what"
+      ],
+      [
+       "story",
+       ""
+      ],
+      [
+       "about whether people know who other end calls",
+       ""
+      ]
+     ]
+    }
+   },
+   "excluded_reason": "Primary再判定 TTS_FAILURE != 記録 EXACT_MATCH",
+   "proxy_label": "EXCLUDED_CANONICAL_MISMATCH",
+   "proxy_label_agreed_error_signature": [
+    [
+     "d",
+     "about whether people know who other end calls",
+     ""
+    ],
+    [
+     "d",
+     "story",
+     ""
+    ],
+    [
+     "d",
+     "",
+     "calls handled what"
+    ],
+    [
+     "d",
+     "",
+     "how some"
+    ]
+   ],
+   "current_flow": {
+    "outcome": "PASS",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "PASS",
+    "secondary_called": false,
+    "reason": "primary_pass(Secondaryは呼ばない)"
+   },
+   "unified_simple_or": {
+    "outcome": "PASS",
+    "secondary_called": false
+   },
+   "azure_elapsed_sec": 2.1
+  },
+  {
+   "id": "S27",
+   "group": "CONTROL_PRIMARY_PASS",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\meta__run_regen_01\\b1b\\narration\\attempts\\comment_2_attempt1_englishstyleprefix.wav",
+   "segment_id": "comment_2",
+   "dur_sec": 9.44,
+   "primary_category": "PASS",
+   "systems": {
+    "openai_primary": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "some muse calls handed over",
+       "far we know"
+      ],
+      [
+       "all them",
+       "handled some calls through muse"
+      ],
+      [
+       "change after test",
+       "do about feature"
+      ]
+     ]
+    },
+    "azure_noPL": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "some muse calls handed over",
+       "far we know"
+      ],
+      [
+       "all them",
+       "handled some calls through muse"
+      ],
+      [
+       "change after test",
+       "do about feature"
+      ]
+     ]
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "some muse calls handed over",
+       "far we know"
+      ],
+      [
+       "all them",
+       "handled some calls through muse"
+      ],
+      [
+       "did meta change after test",
+       "meant do about feature"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": true,
+     "diffs": [
+      [
+       "some muse calls handed over",
+       "far we know"
+      ],
+      [
+       "all them",
+       "handled some calls through mews"
+      ],
+      [
+       "change after test",
+       "do about feature"
+      ]
+     ]
+    }
+   },
+   "excluded_reason": "Primary再判定 TRUE_CONTENT_MISMATCH != 記録 NORMALIZED_MATCH",
+   "proxy_label": "EXCLUDED_CANONICAL_MISMATCH",
+   "proxy_label_agreed_error_signature": [
+    [
+     "numneg"
+    ],
+    [
+     "d",
+     "all them",
+     "handled some calls through muse"
+    ],
+    [
+     "d",
+     "some muse calls handed over",
+     "far we know"
+    ],
+    [
+     "d",
+     "change after test",
+     "do about feature"
+    ]
+   ],
+   "current_flow": {
+    "outcome": "PASS",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "PASS",
+    "secondary_called": false,
+    "reason": "primary_pass(Secondaryは呼ばない)"
+   },
+   "unified_simple_or": {
+    "outcome": "PASS",
+    "secondary_called": false
+   },
+   "azure_elapsed_sec": 2.7
+  },
+  {
+   "id": "S28",
+   "group": "CONTROL_PRIMARY_PASS",
+   "wav": "er038_output\\tts_all_spoken_role_style_trial_01\\hormuz\\b1b\\narration\\attempts\\full_story_part3_heading_attempt1_englishstyleprefix.wav",
+   "segment_id": "full_story_part3_heading",
+   "dur_sec": 2.52,
+   "primary_category": "PASS",
+   "systems": {
+    "openai_primary": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_noPL": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "local_medium": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    }
+   },
+   "proxy_label": "PRIMARY_PASS_CONFIRMED",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "PASS",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "PASS",
+    "secondary_called": false,
+    "reason": "primary_pass(Secondaryは呼ばない)"
+   },
+   "unified_simple_or": {
+    "outcome": "PASS",
+    "secondary_called": false
+   },
+   "azure_elapsed_sec": 0.6
+  },
+  {
+   "id": "S29",
+   "group": "CONTROL_PRIMARY_PASS",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\hormuz__run_06_flashlite_full_kp\\b1b\\narration\\attempts\\preview_attempt1_englishstyleprefix.wav",
+   "segment_id": "preview",
+   "dur_sec": 12.75,
+   "primary_category": "PASS",
+   "systems": {
+    "openai_primary": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_noPL": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "local_medium": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    }
+   },
+   "proxy_label": "PRIMARY_PASS_CONFIRMED",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "PASS",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "PASS",
+    "secondary_called": false,
+    "reason": "primary_pass(Secondaryは呼ばない)"
+   },
+   "unified_simple_or": {
+    "outcome": "PASS",
+    "secondary_called": false
+   },
+   "azure_elapsed_sec": 4.21
+  },
+  {
+   "id": "S30",
+   "group": "CONTROL_PRIMARY_PASS",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\hormuz__run_03_flashlite\\b1b\\narration\\attempts\\comment_1_attempt1_englishstyleprefix.wav",
+   "segment_id": "comment_1",
+   "dur_sec": 4.85,
+   "primary_category": "PASS",
+   "systems": {
+    "openai_primary": {
+     "class": "NUMERIC_EQUIVALENCE_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_noPL": {
+     "class": "NUMERIC_EQUIVALENCE_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "NUMERIC_EQUIVALENCE_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "local_medium": {
+     "class": "NUMERIC_EQUIVALENCE_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    }
+   },
+   "proxy_label": "PRIMARY_PASS_CONFIRMED",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "PASS",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "PASS",
+    "secondary_called": false,
+    "reason": "primary_pass(Secondaryは呼ばない)"
+   },
+   "unified_simple_or": {
+    "outcome": "PASS",
+    "secondary_called": false
+   },
+   "azure_elapsed_sec": 0.9
+  },
+  {
+   "id": "S31",
+   "group": "CONTROL_PRIMARY_PASS",
+   "wav": "er038_output\\tts_all_spoken_role_style_trial_01\\hormuz\\b1b\\narration\\attempts\\in_one_line_attempt1_englishstyleprefixwidemargin.wav",
+   "segment_id": "in_one_line",
+   "dur_sec": 16.69,
+   "primary_category": "PASS",
+   "systems": {
+    "openai_primary": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_noPL": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "us",
+       "u s"
+      ],
+      [
+       "oil chart s",
+       "oiled charts"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "TRUE_CONTENT_MISMATCH",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "oil",
+       "oiled"
+      ]
+     ]
+    }
+   },
+   "proxy_label": "PRIMARY_PASS_CONFIRMED",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "PASS",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "PASS",
+    "secondary_called": false,
+    "reason": "primary_pass(Secondaryは呼ばない)"
+   },
+   "unified_simple_or": {
+    "outcome": "PASS",
+    "secondary_called": false
+   },
+   "azure_elapsed_sec": 6.31
+  },
+  {
+   "id": "S32",
+   "group": "CONTROL_PRIMARY_PASS",
+   "wav": "er019_output\\family_x_audio_production_wiring_01\\meta__run_03\\a2\\narration\\attempts\\topic_intro_attempt1_custom60a24f1e.wav",
+   "segment_id": "topic_intro",
+   "dur_sec": 4.96,
+   "primary_category": "PASS",
+   "systems": {
+    "openai_primary": {
+     "class": "EXACT_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_noPL": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    },
+    "azure_PL_stored": null,
+    "local_small": {
+     "class": "ASR_VALIDATION_UNCERTAIN",
+     "should_pass": false,
+     "strict_pass": false,
+     "numneg": false,
+     "diffs": [
+      [
+       "ai phone",
+       "iphone"
+      ]
+     ]
+    },
+    "local_medium": {
+     "class": "NORMALIZED_MATCH",
+     "should_pass": true,
+     "strict_pass": true,
+     "numneg": false,
+     "diffs": []
+    }
+   },
+   "proxy_label": "PRIMARY_PASS_CONFIRMED",
+   "proxy_label_agreed_error_signature": [],
+   "current_flow": {
+    "outcome": "PASS",
+    "cascade_invoked": false
+   },
+   "unified_safe": {
+    "outcome": "PASS",
+    "secondary_called": false,
+    "reason": "primary_pass(Secondaryは呼ばない)"
+   },
+   "unified_simple_or": {
+    "outcome": "PASS",
+    "secondary_called": false
+   },
+   "azure_elapsed_sec": 0.91
+  }
+ ],
+ "mutation_rows": [
+  {
+   "id": "S01",
+   "mutation": "negation_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S01",
+   "mutation": "plural_drop",
+   "primary_class": "HIGH_SIMILARITY_SAFE",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S01",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S01",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S01",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S01",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S01",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S02",
+   "mutation": "number",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S02",
+   "mutation": "negation_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S02",
+   "mutation": "plural_drop",
+   "primary_class": "HIGH_SIMILARITY_SAFE",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S02",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S02",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S02",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S03",
+   "mutation": "number",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S03",
+   "mutation": "negation_add",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S03",
+   "mutation": "plural_drop",
+   "primary_class": "HIGH_SIMILARITY_SAFE",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S03",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S03",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S03",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S03",
+   "mutation": "content_omit",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S03",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S04",
+   "mutation": "number",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S04",
+   "mutation": "negation_add",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S04",
+   "mutation": "plural_drop",
+   "primary_class": "HIGH_SIMILARITY_SAFE",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S04",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S04",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S04",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S04",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S04",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S05",
+   "mutation": "number",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S05",
+   "mutation": "negation_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S05",
+   "mutation": "plural_drop",
+   "primary_class": "HIGH_SIMILARITY_SAFE",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S05",
+   "mutation": "tense_ed_drop",
+   "primary_class": "CONNECTED_SPEECH_ACCEPT",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S05",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S05",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S05",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S05",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S06",
+   "mutation": "number",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S06",
+   "mutation": "negation_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S06",
+   "mutation": "plural_drop",
+   "primary_class": "HIGH_SIMILARITY_SAFE",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S06",
+   "mutation": "tense_ed_drop",
+   "primary_class": "CONNECTED_SPEECH_ACCEPT",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S06",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S06",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S06",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S06",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S07",
+   "mutation": "number",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S07",
+   "mutation": "negation_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S07",
+   "mutation": "plural_drop",
+   "primary_class": "HIGH_SIMILARITY_SAFE",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S07",
+   "mutation": "tense_ed_drop",
+   "primary_class": "CONNECTED_SPEECH_ACCEPT",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S07",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S07",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S07",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S07",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S08",
+   "mutation": "number",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S08",
+   "mutation": "negation_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S08",
+   "mutation": "plural_drop",
+   "primary_class": "HIGH_SIMILARITY_SAFE",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S08",
+   "mutation": "tense_ed_drop",
+   "primary_class": "CONNECTED_SPEECH_ACCEPT",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S08",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S08",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S08",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S08",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S09",
+   "mutation": "number",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S09",
+   "mutation": "negation_add",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S09",
+   "mutation": "plural_drop",
+   "primary_class": "HIGH_SIMILARITY_SAFE",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S09",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S09",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S09",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S09",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S09",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S10",
+   "mutation": "number",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S10",
+   "mutation": "negation_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S10",
+   "mutation": "plural_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S10",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S10",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S10",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S10",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S10",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S11",
+   "mutation": "number",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S11",
+   "mutation": "negation_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S11",
+   "mutation": "plural_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S11",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S11",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S11",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S11",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S11",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S12",
+   "mutation": "negation_add",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S12",
+   "mutation": "plural_drop",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S12",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S12",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S13",
+   "mutation": "negation_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S13",
+   "mutation": "plural_drop",
+   "primary_class": "HIGH_SIMILARITY_SAFE",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S13",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S13",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S13",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S13",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S13",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S14",
+   "mutation": "negation_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S14",
+   "mutation": "plural_drop",
+   "primary_class": "HIGH_SIMILARITY_SAFE",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S14",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S14",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S14",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S14",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S14",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S15",
+   "mutation": "negation_add",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S15",
+   "mutation": "plural_drop",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S15",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S15",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S15",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S15",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S15",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S16",
+   "mutation": "negation_add",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S16",
+   "mutation": "plural_drop",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S16",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S16",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S16",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S16",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S16",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S17",
+   "mutation": "number",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S17",
+   "mutation": "negation_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S17",
+   "mutation": "plural_drop",
+   "primary_class": "HIGH_SIMILARITY_SAFE",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S17",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S17",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S17",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S17",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S17",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S18",
+   "mutation": "number",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S18",
+   "mutation": "negation_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S18",
+   "mutation": "plural_drop",
+   "primary_class": "HIGH_SIMILARITY_SAFE",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S18",
+   "mutation": "tense_ed_drop",
+   "primary_class": "CONNECTED_SPEECH_ACCEPT",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S18",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S18",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S18",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S18",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S19",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S20",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S21",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S22",
+   "mutation": "negation_add",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S22",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S23",
+   "mutation": "negation_add",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S23",
+   "mutation": "plural_drop",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S23",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S23",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S23",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S23",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S23",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S24",
+   "mutation": "negation_add",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S24",
+   "mutation": "plural_drop",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S24",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S24",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S24",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S24",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S24",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S25",
+   "mutation": "number",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S25",
+   "mutation": "negation_add",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S25",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S25",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S26",
+   "mutation": "negation_add",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S26",
+   "mutation": "plural_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S26",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S26",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S26",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S27",
+   "mutation": "negation_add",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S27",
+   "mutation": "plural_drop",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S27",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S27",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S27",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S27",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S27",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S28",
+   "mutation": "plural_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S29",
+   "mutation": "plural_drop",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S29",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S29",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S29",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S29",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S29",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S30",
+   "mutation": "number",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S30",
+   "mutation": "negation_add",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S30",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S31",
+   "mutation": "number",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S31",
+   "mutation": "plural_drop",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S31",
+   "mutation": "tense_ed_drop",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS_WITH_WARNING"
+  },
+  {
+   "id": "S31",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S31",
+   "mutation": "content_sub_unrelated",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S31",
+   "mutation": "content_omit",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S31",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  },
+  {
+   "id": "S32",
+   "mutation": "negation_add",
+   "primary_class": "TRUE_CONTENT_MISMATCH",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "BLOCKED(numeric_or_negation_diff)"
+  },
+  {
+   "id": "S32",
+   "mutation": "article_drop",
+   "primary_class": "NORMALIZED_MATCH",
+   "primary": "PASS(両フロー共通の誤PASS)",
+   "or": "PASS",
+   "safe": "PASS"
+  },
+  {
+   "id": "S32",
+   "mutation": "entity_sub",
+   "primary_class": "ASR_VALIDATION_UNCERTAIN",
+   "primary": "NG",
+   "or": "PASS(誤PASS)",
+   "safe": "PASS(誤PASS)"
+  }
+ ]
+}
