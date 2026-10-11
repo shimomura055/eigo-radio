@@ -19,7 +19,8 @@ p.meta { font-size:0.85em; color:#444; }
 <div class="note">
 管理ID: <b>FAMILY-X-COFFEE-NEW-TONE-PRODUCTION-E2E-01</b>(委任_07、2026-10-11)。日本語タイトル: コーヒー豆は値下がり。値札は、まだ旅の途中？。
 日本語記事は承認済み品質マスター(E案)を再生成せず受理(U-1案b)。EN→RF→Queue→支援文→TTS(<code>--tts-backend speech_metadata_flash_lite</code>)→ASR→Assembly。
-Advancedは完成、StandardはHuman Review待ち。<code>PRODUCTION_WIRED</code>等の最終判定は人間ユーザー承認であり、本ページはevidence配布のみです。
+Advanced・Standardとも完成(Standardのfull_story_part2のみユーザー試聴PASSの個別Human Approval)。<code>PRODUCTION_WIRED</code>等の最終判定は人間ユーザー承認であり、本ページはevidence配布のみです。<br>
+<b>全スクリプト(各segment原稿)とKey Phrases(EN/JA)の確認ページ</b>: <a href="a2/player.html">Standard player(通し再生+全スクリプト+Key Phrases EN/JA)</a> / <a href="b1b/player.html">Advanced player(通し再生+全スクリプト+Key Phrases EN/解説)</a>
 </div>
 <h2>Coffee Prices: Advanced(完成: 通し再生)</h2>
 <audio controls preload="none" src="b1b/web/episode.mp3"></audio>
@@ -58,10 +59,10 @@ Advancedは完成、StandardはHuman Review待ち。<code>PRODUCTION_WIRED</code
 <tr><td>num_five</td><td>OK</td><td>True</td><td>b5c0f38798d0c1739645a771</td></tr>
 </tbody></table>
 
-<h2>Coffee Prices: Standard(未完成: HUMAN_REVIEW停止)</h2>
-<div class="note">Standardはfull_story_part2が標準2回+fallback1回+Local Rewriteとも不合格(ASR TRUE_CONTENT_MISMATCH)でHuman Review待ちのため、完成音声(通し)は<b>未取得</b>です。合格済みsegmentのみ下表で試聴できます(推測補完なし)。</div>
-<div class="note"><b>Standard full_story_part2 のHuman Review用ページ</b>: <a href="part2_review/index.html">part2_review/index.html</a>(4 attemptの音声・ASR転写・差分・判定理由を並べて試聴できます。承認は人間ユーザーのみ)</div>
-<p class="meta">segment数: 11 / tts_backend: speech_metadata_flash_lite / style_version: v5_j2_e2upbeat_f15_tone_refresh_fallback_style_retention</p>
+<h2>Coffee Prices: Standard(完成: 通し再生)</h2>
+<audio controls preload="none" src="a2/web/episode.mp3"></audio>
+<div class="note">Standardの<code>full_story_part2</code>は自動ASRが全attemptで不合格でしたが、<b>Attempt 4(Local Rewrite後の再TTS)をユーザーが試聴しPASS・採用承認(2026-10-11)</b>しました(既存の個別Human Approval機構 record_human_approval)。これはfull_story_part2のみの部分承認で、<b>記事全体の音声品質の承認ではありません</b>(Standard/Advanced完成版の最終試聴で判断)。採用音声は実際には一部書き換えた文面(「data from the United States」「2 numbers」「9 months」)を読んでいます。試聴用: <a href="part2_review/index.html">part2_review</a>(採用済み)。</div>
+<p class="meta">duration: 298.655s / segment数: 11 / tts_backend: speech_metadata_flash_lite / style_version: v5_j2_e2upbeat_f15_tone_refresh_fallback_style_retention</p>
 <h3>可変segment一覧(Standard)</h3>
 <table class="seg"><thead><tr><th>segment</th><th>status</th><th>voice</th><th>duration(sec)</th><th>試行数</th><th>fallback</th><th>ASR verified</th><th>style_source</th><th>style_prefix(全文)</th><th>再生</th></tr></thead><tbody>
 <tr><td>topic_intro</td><td>OK</td><td>Aoede</td><td>5.4</td><td>1</td><td>False</td><td>True</td><td>(従来値: 本件対象外role)</td><td class="style">brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.</td><td><audio controls preload="none" src="a2/web/segments/topic_intro.mp3"></audio></td></tr>
@@ -72,22 +73,22 @@ Advancedは完成、StandardはHuman Review待ち。<code>PRODUCTION_WIRED</code
 <tr><td>comment_3</td><td>OK</td><td>Aoede</td><td>13.5</td><td>1</td><td>False</td><td>True</td><td>(従来値: 本件対象外role)</td><td class="style">明るく、温かみのある親しみやすい話し方で。聞き手に楽しく語りかけるように、自然な抑揚と軽やかなリズムをつけてください。ニュース番組としての明瞭さを保ち、演技がかった話し方は避けてください。</td><td><audio controls preload="none" src="a2/web/segments/comment_3.mp3"></audio></td></tr>
 <tr><td>comment_4</td><td>OK</td><td>Aoede</td><td>13.48</td><td>1</td><td>False</td><td>True</td><td>(従来値: 本件対象外role)</td><td class="style">明るく、温かみのある親しみやすい話し方で。聞き手に楽しく語りかけるように、自然な抑揚と軽やかなリズムをつけてください。ニュース番組としての明瞭さを保ち、演技がかった話し方は避けてください。</td><td><audio controls preload="none" src="a2/web/segments/comment_4.mp3"></audio></td></tr>
 <tr><td>full_story_part1</td><td>OK</td><td>Aoede</td><td>40.793</td><td>1</td><td>False</td><td>True</td><td>(従来値: 本件対象外role)</td><td class="style">warm, gently upbeat and engaging; natural, friendly delivery with a light sense of energy, while maintaining clear and credible news narration.<br>Speak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.</td><td><audio controls preload="none" src="a2/web/segments/full_story_part1.mp3"></audio></td></tr>
-<tr><td>full_story_part2</td><td>STOPPED</td><td>None</td><td>None</td><td>3</td><td>None</td><td>None</td><td>approved_role_style:EN_FULLSTORY_F1_5</td><td class="style">(未取得: HUMAN_REVIEW停止のため音声なし)</td><td>未取得(通し)。<a href="part2_review/index.html">4 attempt試聴ページ</a></td></tr>
+<tr><td>full_story_part2</td><td>HUMAN_APPROVED(ユーザー試聴PASS 2026-10-11、Attempt 4)</td><td>None</td><td>52.6</td><td>4(標準2+fallback1+LR再TTS1)</td><td>True</td><td>False</td><td>approved_role_style:EN_FULLSTORY_F1_5</td><td class="style">F1_5+減速(承認逐語)。Attempt4=Local Rewrite再TTSの実送信値(先頭200字がログ保存)。STYLE_CHECK_09.md参照</td><td><audio controls preload="none" src="a2/web/segments/full_story_part2.mp3"></audio></td></tr>
 <tr><td>full_story_part3</td><td>OK</td><td>Aoede</td><td>48.356</td><td>1</td><td>False</td><td>True</td><td>(従来値: 本件対象外role)</td><td class="style">warm, gently upbeat and engaging; natural, friendly delivery with a light sense of energy, while maintaining clear and credible news narration.<br>Speak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.</td><td><audio controls preload="none" src="a2/web/segments/full_story_part3.mp3"></audio></td></tr>
 <tr><td>in_one_line</td><td>OK</td><td>Aoede</td><td>6.225</td><td>1</td><td>False</td><td>True</td><td>(従来値: 本件対象外role)</td><td class="style">concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.<br>Speak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.</td><td><audio controls preload="none" src="a2/web/segments/in_one_line.mp3"></audio></td></tr>
 </tbody></table>
-<h3>固定shell(Standard側、本run内で再生成した非Champion版・num_threeはSTOPPED。Master Store欠落[worktreeのwav未配置]による再生成で、Advancedは復元後のChampion再利用)</h3>
+<h3>固定shell(Standard側、Production Master Storeから再利用[Champion]。Advancedと同一sha256)</h3>
 <table class="seg"><thead><tr><th>shell</th><th>status</th><th>reused</th><th>master_audio_id</th></tr></thead><tbody>
-<tr><td>welcome</td><td>OK</td><td>False</td><td>aa130472d437ac80b7cdd474</td></tr>
-<tr><td>preview_intro</td><td>OK</td><td>False</td><td>b81f7fe5eb7a223fdeba29c9</td></tr>
-<tr><td>key_phrases_intro</td><td>OK</td><td>False</td><td>65a088023aff7bfdcfa3fafc</td></tr>
-<tr><td>full_story_intro</td><td>OK</td><td>False</td><td>b64fcd4ccaccae84fdf29930</td></tr>
-<tr><td>num_one</td><td>OK</td><td>False</td><td>e8fd9762bb314d5d19d0943f</td></tr>
-<tr><td>num_two</td><td>OK</td><td>False</td><td>2c500e101c40aee9a89c4a1d</td></tr>
-<tr><td>num_three</td><td>STOPPED</td><td>False</td><td>52a4759afa0c76dc747e8743</td></tr>
-<tr><td>num_four</td><td>OK</td><td>False</td><td>8f755bf41f9a1bd145bc6eed</td></tr>
-<tr><td>num_five</td><td>OK</td><td>False</td><td>b5c0f38798d0c1739645a771</td></tr>
-<tr><td>point_explanation</td><td>OK</td><td>False</td><td>90c38d7c67f98b9d6e5cb601</td></tr>
+<tr><td>welcome</td><td>OK</td><td>True</td><td>aa130472d437ac80b7cdd474</td></tr>
+<tr><td>preview_intro</td><td>OK</td><td>True</td><td>b81f7fe5eb7a223fdeba29c9</td></tr>
+<tr><td>key_phrases_intro</td><td>OK</td><td>True</td><td>65a088023aff7bfdcfa3fafc</td></tr>
+<tr><td>full_story_intro</td><td>OK</td><td>True</td><td>b64fcd4ccaccae84fdf29930</td></tr>
+<tr><td>num_one</td><td>OK</td><td>True</td><td>e8fd9762bb314d5d19d0943f</td></tr>
+<tr><td>num_two</td><td>OK</td><td>True</td><td>2c500e101c40aee9a89c4a1d</td></tr>
+<tr><td>num_three</td><td>OK</td><td>True</td><td>52a4759afa0c76dc747e8743</td></tr>
+<tr><td>num_four</td><td>OK</td><td>True</td><td>8f755bf41f9a1bd145bc6eed</td></tr>
+<tr><td>num_five</td><td>OK</td><td>True</td><td>b5c0f38798d0c1739645a771</td></tr>
+<tr><td>point_explanation</td><td>OK</td><td>True</td><td>90c38d7c67f98b9d6e5cb601</td></tr>
 </tbody></table>
 
 </body></html>
