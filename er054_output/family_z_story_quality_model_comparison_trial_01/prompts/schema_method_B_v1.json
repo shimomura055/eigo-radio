@@ -1,0 +1,235 @@
+{
+  "name": "fz_quality_method_B",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "key_facts": {
+        "type": "object",
+        "properties": {
+          "central_event": {
+            "type": "string"
+          },
+          "main_characters": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 6
+          },
+          "turning_point": {
+            "type": "string"
+          },
+          "ending": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "central_event",
+          "main_characters",
+          "turning_point",
+          "ending"
+        ],
+        "additionalProperties": false
+      },
+      "A": {
+        "type": "object",
+        "properties": {
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "PASS",
+              "WEAK",
+              "FAIL"
+            ]
+          },
+          "evidence_quotes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 2
+          },
+          "reason": {
+            "type": "string"
+          },
+          "weakness": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "verdict",
+          "evidence_quotes",
+          "reason",
+          "weakness"
+        ],
+        "additionalProperties": false
+      },
+      "B": {
+        "type": "object",
+        "properties": {
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "PASS",
+              "WEAK",
+              "FAIL"
+            ]
+          },
+          "evidence_quotes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 2
+          },
+          "reason": {
+            "type": "string"
+          },
+          "weakness": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "verdict",
+          "evidence_quotes",
+          "reason",
+          "weakness"
+        ],
+        "additionalProperties": false
+      },
+      "C": {
+        "type": "object",
+        "properties": {
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "PASS",
+              "WEAK",
+              "FAIL"
+            ]
+          },
+          "evidence_quotes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 2
+          },
+          "reason": {
+            "type": "string"
+          },
+          "weakness": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "verdict",
+          "evidence_quotes",
+          "reason",
+          "weakness"
+        ],
+        "additionalProperties": false
+      },
+      "D": {
+        "type": "object",
+        "properties": {
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "PASS",
+              "WEAK",
+              "FAIL"
+            ]
+          },
+          "evidence_quotes": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 2
+          },
+          "reason": {
+            "type": "string"
+          },
+          "weakness": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "verdict",
+          "evidence_quotes",
+          "reason",
+          "weakness"
+        ],
+        "additionalProperties": false
+      },
+      "consistency_check": {
+        "type": "object",
+        "properties": {
+          "self_reported_weaknesses": {
+            "type": "array",
+            "minItems": 0,
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 8
+          },
+          "contradictions_found": {
+            "type": "array",
+            "minItems": 0,
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 6
+          },
+          "verdicts_revised": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "self_reported_weaknesses",
+          "contradictions_found",
+          "verdicts_revised"
+        ],
+        "additionalProperties": false
+      },
+      "overall": {
+        "type": "object",
+        "properties": {
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "PASS",
+              "WEAK",
+              "FAIL"
+            ]
+          },
+          "comment": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "verdict",
+          "comment"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "key_facts",
+      "A",
+      "B",
+      "C",
+      "D",
+      "consistency_check",
+      "overall"
+    ],
+    "additionalProperties": false
+  },
+  "strict": true
+}

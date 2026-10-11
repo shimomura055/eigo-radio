@@ -1,0 +1,95 @@
+{
+  "method": "B",
+  "work_id": "L08",
+  "rep": 2,
+  "eval_version": "family_z_story_quality_model_comparison_v1",
+  "mock": true,
+  "requested_model": "gpt-6-luna",
+  "actual_model_id": "gpt-6-luna",
+  "routing_key": "FAMILY_Z_TRIAL_STORY_QUALITY_EVAL",
+  "reasoning_effort": "medium",
+  "usage": {
+    "input_tokens": 5000,
+    "output_tokens": 2000
+  },
+  "elapsed_sec": 0.0,
+  "response_id": "mock-response",
+  "prompt_sha256": "9402dc62d11c59a1a41ec62097785dbdfd6266e80fa1d690d83e183fe5fe8634",
+  "developer_message": "あなたは英語学習マガジンのFiction編集部の評価者である。与えられた『原作本文』だけを根拠に、その作品を『英語の短編(280〜420語、A2〜B1向け)へ再話するための素材』として評価する。作品の知名度・評判・過去の評価・あなたの記憶に頼らず、本文に書かれていることだけで判断すること。引用(evidence_quotes)は本文中の連続した文字列をそのままコピーしたものに限る(言い換え・要約・結合・省略記号は禁止。ロシア語本文の引用はロシア語のままコピーし、日本語に訳さない)。1個あたり60文字(英語・ロシア語は25語)以内。出力は指定のJSONのみ。\n評価は4項目(A〜D)それぞれPASS/WEAK/FAILの3段階で行う。PASS=基準を十分に満たす、WEAK=満たすが弱点が目立つ、FAIL=基準を満たさない。\n全項目に差を付ける必要はなく、全項目PASSも全項目FAILも本文が示すなら付けてよい。\n各項目に本文からの根拠引用(1〜2個)、日本語の理由(2〜3文)、weakness(その項目の弱点を1文。弱点が見当たらなければ「なし」)を付ける。\n全項目の判定後に必ず根拠整合チェックを行う: (1)各項目のweaknessと理由から自己申告した弱点を列挙し、(2)その弱点の重さと判定(PASS/WEAK/FAIL)が矛盾していないか点検して矛盾を contradictions_found に書き、(3)矛盾があれば判定を修正して verdicts_revised=true にする(修正後の判定を最終値として出力)。矛盾がなければ空配列とfalse。",
+  "evaluated_at": "2026-10-11T05:46:45.635361+00:00",
+  "cost_jpy": 0.24,
+  "unit": {
+    "chars_no_ws": 8723,
+    "lang": "日本語"
+  },
+  "result": {
+    "key_facts": {
+      "central_event": "mock central event of L08",
+      "main_characters": [
+        "mock"
+      ],
+      "turning_point": "mock",
+      "ending": "mock"
+    },
+    "A": {
+      "verdict": "WEAK",
+      "evidence_quotes": [
+        "高瀬舟は京都の高瀬川を上下する小舟である"
+      ],
+      "reason": "mock",
+      "weakness": "なし"
+    },
+    "B": {
+      "verdict": "PASS",
+      "evidence_quotes": [
+        "ら罪人は高瀬舟に載せられて、大阪へ回され"
+      ],
+      "reason": "mock",
+      "weakness": "なし"
+    },
+    "C": {
+      "verdict": "WEAK",
+      "evidence_quotes": [
+        "船させることを許す慣例であった。これは上"
+      ],
+      "reason": "mock",
+      "weakness": "なし"
+    },
+    "D": {
+      "verdict": "PASS",
+      "evidence_quotes": [
+        "ものと認められた人ではあるが、決して盗み"
+      ],
+      "reason": "mock",
+      "weakness": "なし"
+    },
+    "consistency_check": {
+      "self_reported_weaknesses": [],
+      "contradictions_found": [],
+      "verdicts_revised": false
+    },
+    "overall": {
+      "verdict": "PASS",
+      "comment": "mock"
+    }
+  },
+  "quote_verification": {
+    "per_axis": {
+      "A": [
+        true
+      ],
+      "B": [
+        true
+      ],
+      "C": [
+        true
+      ],
+      "D": [
+        true
+      ]
+    },
+    "quote_total": 4,
+    "unverified_quote_count": 0,
+    "all_verified": true
+  }
+}
