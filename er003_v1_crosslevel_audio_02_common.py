@@ -102,7 +102,11 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
                                             # Local Rewrite回復経路のいずれにも転送する
                                             # (retry/fallback/regenerationとも同一backend経由、
                                             # 設計書§(b))。
-                                            tts_backend: str = "structured_separation") -> dict:
+                                            tts_backend: str = "structured_separation",
+                                            # OPEN-270 M3(委任_05A): 外側ループ2周目以降で通算試行番号を
+                                            # cool-down判定へ渡す(既定0/None=従来動作)。
+                                            prior_generations: int = 0,
+                                            cooldown_total_budget: int = None) -> dict:
     """style_prefix_override(既定None、ER-008-EVIDENCE-COMPRESSION-PROD-
     AND-N7-AUDIO-06 Part Gで追加): standard経路にのみ適用する(A2の
     「わずかに遅く」指示のため)。fallback(minimal instruction)経路には
@@ -143,7 +147,8 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
         text, "en", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars,
         style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
         enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-        enable_repetition_qa=enable_repetition_qa, segment_id=segment_id, tts_backend=tts_backend)
+        enable_repetition_qa=enable_repetition_qa, segment_id=segment_id, tts_backend=tts_backend,
+        prior_generations=prior_generations, cooldown_total_budget=cooldown_total_budget)
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard
@@ -173,9 +178,9 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
         # attempt()を呼ぶ(複製実装ではなく同一module関数)。
         # enable_connected_speech_equivalence_layer=False(既定)の既存
         # 呼び出し元は即座にNoneを返すだけで、挙動は無変更。
-        overall_attempt = len(standard.get("attempts_log") or []) + attempt
+        overall_attempt = prior_generations + len(standard.get("attempts_log") or []) + attempt
         cooldown_record = retry_primitive.maybe_cooldown_before_attempt(
-            overall_attempt, max_attempts, enable_connected_speech_equivalence_layer)
+            overall_attempt, cooldown_total_budget or max_attempts, enable_connected_speech_equivalence_layer)
         if cooldown_record:
             cooldown_events.append(cooldown_record)
         outcome = _run_a2_minimal_fallback_attempt(

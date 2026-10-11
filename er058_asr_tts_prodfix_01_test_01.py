@@ -238,5 +238,218 @@ class RecordAppendOnlyTest(unittest.TestCase):
         self.assertIn('"instruction_label": _instruction_source', src)
 
 
+
+# ---- 委任_05A(Opus必須M1〜M3 + 推奨R2) ----
+import sys
+import types
+import wave
+
+import er003_v1_crosslevel_audio_02_common as cc
+import er003_b1_p9a_audio as p9a_mod
+import er020_tts_retry_local_rewrite_01 as er020
+
+
+class ArchiveFailureIsolationTest(unittest.TestCase):
+    """M1: archive_prior_tts_results自身の例外は呼び出し元(課金済み結果JSONの保存)へ伝播しない。"""
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+        self._old = review_lock.ATTEMPT_HISTORY_PATH
+        review_lock.ATTEMPT_HISTORY_PATH = os.path.join(self.tmp, "attempt_history.jsonl")
+
+    def tearDown(self):
+        review_lock.ATTEMPT_HISTORY_PATH = self._old
+
+    def _history(self):
+        with open(review_lock.ATTEMPT_HISTORY_PATH, encoding="utf-8") as f:
+            return [json.loads(x) for x in f if x.strip()]
+
+    def test_exception_inside_impl_does_not_propagate_and_leaves_failure_event(self):
+        p = os.path.join(self.tmp, "r.json")
+        with open(p, "w", encoding="utf-8") as f:
+            json.dump({"segments": {}}, f)
+        with mock.patch.object(review_lock, "_archive_prior_tts_results_impl", side_effect=RuntimeError("boom")):
+            review_lock.archive_prior_tts_results(p)  # raiseしない
+        h = self._history()
+        self.assertEqual(len(h), 1)
+        self.assertEqual(h[0]["action"], "TTS_RESULTS_PRIOR_ATTEMPTS_ARCHIVE_FAILED")
+        self.assertIn("RuntimeError", h[0]["error"])
+
+    def test_malformed_structure_does_not_raise(self):
+        p = os.path.join(self.tmp, "r.json")
+        with open(p, "w", encoding="utf-8") as f:
+            json.dump({"segments": [1, 2], "key_phrases": "x"}, f)
+        review_lock.archive_prior_tts_results(p)  # AttributeError等でも伝播しない
+        self.assertEqual(self._history()[0]["action"], "TTS_RESULTS_PRIOR_ATTEMPTS_ARCHIVE_FAILED")
+
+    def test_even_failure_recording_failure_is_swallowed(self):
+        p = os.path.join(self.tmp, "r.json")
+        with open(p, "w", encoding="utf-8") as f:
+            json.dump({"segments": {}}, f)
+        with mock.patch.object(review_lock, "_append_attempt_history", side_effect=OSError("disk")):
+            review_lock.archive_prior_tts_results(p)
+
+    def test_real_production_results_copies_archive_without_exception(self):
+        """実在tts_generation_results.json(n3 b1b/a2、er019 b1/a2)の写しでの実行(課金0)。"""
+        srcs = [
+            "er003_output/n3_01/hanshin/b1b/audit/tts_generation_results.json",
+            "er003_output/n3_01/hanshin/a2/audit/tts_generation_results.json",
+            "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_l3_01/b1b/audit/tts_generation_results.json",
+            "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_l3_01/a2/audit/tts_generation_results.json",
+        ]
+        sizes = []
+        for i, s in enumerate(srcs):
+            sp = os.path.join(REPO, s)
+            if not os.path.exists(sp):
+                self.skipTest(f"missing {s}")
+            dst = os.path.join(self.tmp, f"copy{i}.json")
+            with open(sp, "rb") as a, open(dst, "wb") as b2:
+                b2.write(a.read())
+            review_lock.archive_prior_tts_results(dst)
+        h = self._history()
+        self.assertEqual(len(h), len(srcs))
+        for e in h:
+            self.assertEqual(e["action"], "TTS_RESULTS_PRIOR_ATTEMPTS_ARCHIVED_BEFORE_OVERWRITE")
+            sizes.append(len(json.dumps(e, ensure_ascii=False).encode("utf-8")))
+        print("archive_line_bytes", sizes)
+
+
+class ScgAzureCostRecordTest(unittest.TestCase):
+    """M2: 日本語SCG用_azure_stt_strictがAzure費用(音声秒数)をcl.recordへ計上する。"""
+    def test_azure_stt_strict_records_cost(self):
+        import er007_ja_secondary_asr_01 as ja
+        tmp = tempfile.mkdtemp()
+        wav = os.path.join(tmp, "a.wav")
+        with wave.open(wav, "wb") as w:
+            w.setnchannels(1)
+            w.setsampwidth(2)
+            w.setframerate(16000)
+            w.writeframes(b"\x00\x00" * 16000 * 3)
+
+        handlers = {}
+
+        class Sig:
+            def __init__(self, k):
+                self.k = k
+
+            def connect(self, fn):
+                handlers[self.k] = fn
+
+        class Rec:
+            def __init__(self, **kw):
+                self.recognized = Sig("rec")
+                self.session_stopped = Sig("stop")
+                self.canceled = Sig("cancel")
+
+            def start_continuous_recognition(self):
+                ev = types.SimpleNamespace(result=types.SimpleNamespace(reason="R", text="こんにちは"))
+                handlers["rec"](ev)
+                handlers["stop"](None)
+
+            def stop_continuous_recognition(self):
+                pass
+
+        sdk = types.SimpleNamespace(
+            SpeechConfig=lambda **kw: types.SimpleNamespace(),
+            audio=types.SimpleNamespace(AudioConfig=lambda **kw: None),
+            SpeechRecognizer=Rec,
+            ResultReason=types.SimpleNamespace(RecognizedSpeech="R"),
+            CancellationReason=types.SimpleNamespace(Error="E"))
+        mods = {"azure": types.ModuleType("azure"),
+                "azure.cognitiveservices": types.ModuleType("azure.cognitiveservices"),
+                "azure.cognitiveservices.speech": sdk,
+                "dotenv": types.SimpleNamespace(load_dotenv=lambda *a, **k: None)}
+        recs = []
+        with mock.patch.dict(sys.modules, mods), \
+             mock.patch.dict(os.environ, {"SPEECH_KEY": "k", "SPEECH_REGION": "r"}), \
+             mock.patch.object(ja.cl, "record", side_effect=lambda r: recs.append(r)):
+            text, err = ja._azure_stt_strict(wav)
+        self.assertEqual((text, err), ("こんにちは", None))
+        self.assertEqual(len(recs), 1)
+        self.assertEqual(recs[0]["provider"], "azure")
+        self.assertAlmostEqual(recs[0]["audio_duration_submitted_seconds"], 3.0, places=2)
+        self.assertTrue(recs[0]["success"])
+
+
+class CooldownOverallAttemptTest(unittest.TestCase):
+    """M3: 2周目以降でも固定600秒cool-downはsegment通算3回目直前に発火する(CURRENT_SPEC準拠)。"""
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+        self._old = review_lock.ATTEMPT_HISTORY_PATH
+        review_lock.ATTEMPT_HISTORY_PATH = os.path.join(self.tmp, "attempt_history.jsonl")
+        self.out = os.path.join(self.tmp, "x.wav")  # 標準layout外=Review Lock bypass
+        self.cool = []
+        self._orig = er020.maybe_cooldown_before_attempt
+
+        def spy(attempt, max_attempts, gate, **kw):
+            res = self._orig(attempt, max_attempts, gate, sleep_fn=lambda s: None)
+            self.cool.append((attempt, max_attempts, gate, bool(res)))
+            return res
+        self.spy = spy
+
+    def tearDown(self):
+        review_lock.ATTEMPT_HISTORY_PATH = self._old
+
+    def _run(self, **kw):
+        fail = lambda *a, **k: {"status": "ERROR", "reason": "mock tts failure"}
+        fb = mock.Mock(return_value={"ok": False, "result": {"status": "ERROR", "reason": "mock"}})
+        import er006_batch_tts_wiring_01 as bw
+        with mock.patch.object(bw, "make_batch_tts_call_fn", return_value=None), \
+             mock.patch.object(er020, "maybe_cooldown_before_attempt", self.spy), \
+             mock.patch.object(p9a_mod, "generate_narration_snippet", fail), \
+             mock.patch.object(cc, "_run_a2_minimal_fallback_attempt", fb), \
+             mock.patch.object(cc, "_local_rewrite_recovery_for_english_segment_with_fallback", return_value=None):
+            cc.generate_english_segment_with_fallback(
+                "text", self.out, "text", enable_connected_speech_equivalence_layer=True, **kw)
+        return fb
+
+    def test_lap2_standard_second_attempt_is_overall_third_and_cools_down(self):
+        # 1周目で1回消費 -> 2周目: 残り2回(標準2、fallback 0)。2周目の標準2回目=通算3回目。
+        fb = self._run(max_attempts=2, standard_attempts=2, prior_generations=1, cooldown_total_budget=3)
+        fired = [c for c in self.cool if c[3]]
+        self.assertEqual([(c[0], c[1]) for c in fired], [(3, 3)])
+        self.assertEqual(fb.call_count, 0)
+
+    def test_lap1_unchanged_cooldown_only_before_fallback_third(self):
+        fb = self._run(max_attempts=3, standard_attempts=2, prior_generations=0, cooldown_total_budget=3)
+        self.assertEqual([(c[0], c[1]) for c in self.cool if c[3]], [(3, 3)])
+        self.assertEqual(fb.call_count, 1)
+
+    def test_default_args_standard_path_has_no_cooldown_call(self):
+        self._run(max_attempts=3, standard_attempts=2)
+        # 既定(通算引数なし)では標準経路からcool-downを呼ばない(従来どおり)。fallbackの1回だけ。
+        self.assertEqual(len(self.cool), 1)
+
+    def test_remaining_one_runs_no_fallback_for_real_inner(self):
+        # R2(b): 残り1回で本物の内側関数が呼ばれても、fallbackは0回(標準1回のみ)。
+        fb = self._run(max_attempts=1, standard_attempts=1, prior_generations=2, cooldown_total_budget=3)
+        self.assertEqual(fb.call_count, 0)
+        self.assertEqual([(c[0], c[1]) for c in self.cool if c[3]], [(3, 3)])
+
+
+class OuterLoopLocalRewriteTest(unittest.TestCase):
+    def test_lr_rescued_result_consumes_budget_and_no_extra_lap(self):
+        # R2(a): LR救済結果(標準2+fallback1の通算3回)を受け取った外側ループは、減速後再検証NGでも周回しない。
+        tmp = tempfile.mkdtemp()
+        old = review_lock.ATTEMPT_HISTORY_PATH
+        review_lock.ATTEMPT_HISTORY_PATH = os.path.join(tmp, "h.jsonl")
+        calls = []
+
+        def fake(text, out_path, expected, **kw):
+            calls.append(kw)
+            return {"status": "OK", "local_rewrite_recovered": True,
+                    "standard_attempts_log": [{"attempt": 1}, {"attempt": 2}],
+                    "fallback_attempts_log": [{"attempt": 1}]}
+        try:
+            with mock.patch.object(tg.c, "generate_english_segment_with_fallback", fake), \
+                 mock.patch.object(tg, "apply_a2_slowdown_postprocess", _stopped_slowdown):
+                r = tg.generate_a2_segment_with_slowdown("t", f"{tmp}/th/a2/narration/full_story_part2.wav", "t")
+        finally:
+            review_lock.ATTEMPT_HISTORY_PATH = old
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(r["tts_generations_used"], 3)
+        self.assertEqual(calls[0]["prior_generations"], 0)
+        self.assertEqual(calls[0]["cooldown_total_budget"], 3)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -252,6 +252,11 @@ def generate_narration_snippet_verified_strict(
     # 出し元は無変更のまま)。p9a.generate_narration_snippet()自身のopt-in
     # 分岐へそのまま転送する。
     tts_backend: str = "structured_separation",
+    # OPEN-270 M3(委任_05A、2026-10-12): 外側ループ(A2減速後再検証)の2周目以降で
+    # segment通算の試行番号を基準に固定600秒cool-downを判定するための引数
+    # (既定0/None=従来どおりcool-downなし、他の全呼び出し元は無変更)。
+    prior_generations: int = 0,
+    cooldown_total_budget: int | None = None,
 ) -> dict:
     # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: 英語(language=="en")は、
     # 単純substring一致に代えて正規化+6分類のvalidatorを使う(数字・否定・
@@ -315,6 +320,12 @@ def generate_narration_snippet_verified_strict(
     import er033_tts_flash_lite_backend_wiring_01 as flw
     actual_model_name = flw.resolve_actual_model_name(batch_model_name, tts_backend)
     for attempt in range(1, max_attempts + 1):
+        if cooldown_total_budget:  # 通算3回目直前のみ固定cool-down(CURRENT_SPEC、同一module関数)
+            import er020_tts_retry_local_rewrite_01 as _retry_primitive
+            _cd = _retry_primitive.maybe_cooldown_before_attempt(
+                prior_generations + attempt, cooldown_total_budget, enable_connected_speech_equivalence_layer)
+            if _cd:
+                review_lock.append_attempt_history_event(out_path, "COOLDOWN_BEFORE_OVERALL_ATTEMPT", _cd)
         r = p9a.generate_narration_snippet(text, language, out_path, tts_call_fn=batch_call_fn,
                                             safety_margin_seconds=safety_margin_seconds,
                                             style_prefix_override=style_prefix_override,

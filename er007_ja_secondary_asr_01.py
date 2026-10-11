@@ -263,6 +263,14 @@ def _azure_stt_strict(wav_path: str, language: str = "ja-JP", timeout_seconds: f
     while not state["done"] and (time.time() - start) < timeout_seconds:
         time.sleep(0.5)
     recognizer.stop_continuous_recognition()
+    # 委任_05A(Opus必須M2、OPEN-271): SCG用Azure STTもer006と同形でAzure費用を計上する
+    # (旧実装は未計上=0円)。成功/失敗にかかわらず送信した音声秒数を記録する。
+    cl.record({
+        "provider": "azure", "api": "azure_stt_strict_scg", "model_id": "azure-speech-stt",
+        "locale": language, "attempt_number": 1, "success": bool(state["done"] and not state["cancel_error"]),
+        "elapsed_seconds": round(time.time() - start, 3), "usage_source": "LOCAL_WAV_HEADER_EXACT",
+        "audio_duration_submitted_seconds": _wav_duration_seconds(wav_path),
+    })
     if state["cancel_error"]:
         return None, state["cancel_error"]
     if not state["done"]:

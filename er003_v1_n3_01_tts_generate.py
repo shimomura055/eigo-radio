@@ -275,7 +275,8 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
             standard_attempts=min(review_lock.PRODUCTION_STANDARD_TTS_ATTEMPTS, remaining),
             style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-            enable_repetition_qa=enable_repetition_qa, tts_backend=tts_backend)
+            enable_repetition_qa=enable_repetition_qa, tts_backend=tts_backend,
+            prior_generations=generations_used, cooldown_total_budget=total_budget)
         generations_used += count_tts_generations_in_result(result)
         if result.get("status") != "OK":
             break  # 通常ペース自体が失敗(既存のstandard/fallback両方exhausted)

@@ -252,7 +252,23 @@ def archive_prior_tts_results(results_path: str) -> None:
     """tts_generation_results.jsonは再実行のたびに上書きされるため(segment単位の
     正本、仕様は不変)、上書き直前に既存ファイルのattempt履歴(standard/fallback/
     slowdownの各attempts_log)をattempt_history.jsonlへappend-onlyで退避する。
-    既存ファイルが無い/読めない場合は何もしない(書込みの妨げにしない)。"""
+    既存ファイルが無い/読めない場合は何もしない(書込みの妨げにしない)。
+    委任_05A(Opus必須M1): 退避処理自体のどんな例外も呼び出し元へ伝播させない
+    (課金済みの新しい結果JSONの保存を絶対に妨げない)。失敗時は失敗イベント1行のみ残す。"""
+    try:
+        _archive_prior_tts_results_impl(results_path)
+    except Exception as exc:  # noqa: BLE001
+        try:
+            _append_attempt_history({
+                "run_id": str(uuid.uuid4()), "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+                "action": "TTS_RESULTS_PRIOR_ATTEMPTS_ARCHIVE_FAILED",
+                "results_path": results_path, "error": f"{type(exc).__name__}: {exc}"[:300],
+            })
+        except Exception:  # noqa: BLE001  失敗記録さえ書けなくても結果保存は続行する
+            pass
+
+
+def _archive_prior_tts_results_impl(results_path: str) -> None:
     if not os.path.exists(results_path):
         return
     try:
@@ -328,6 +344,8 @@ def check_before_generation(out_path: str, text: str, language: str) -> dict:
     # ASR再検証が別途不一致となり、同じ内側関数を最大3回まで正当に取り
     # 直す既存の設計を持つ。ここでRESOLVEDをブロック対象にすると、この
     # 既存の正当なretryまで機械的に止めてしまう(実害のある誤検知)。
+    # 委任_05A(R1、2026-10-12): ただし正当な再取り直しも「総予算(3回)の残りの範囲で」
+    # のみ許可される(外側ループはsegment通算で上限3回を共有、OPEN-270是正)。
     # 本Guardが実際に防ぐべきなのは「Human Review/繰り返し失敗への機械的
     # 再挑戦」であり、「一度成功したsegmentへの正当な再挑戦」ではない。
     # AUTO_PROCESSING等、その他の状態も安全側でproceedを許可する。
