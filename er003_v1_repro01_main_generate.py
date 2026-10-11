@@ -362,7 +362,7 @@ def generate_narration_snippet_verified_strict(
             # 固有名詞らしさ・読みをopcode単位で個別に判定する)。
             verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
                 text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
-                expected_readings=expected_readings)
+                expected_readings=expected_readings, length_ok=length_ok)
             verified = verified_content and length_ok
             audio_classification = cls.classification
             substring_ok = None  # 旧フィールド、新方式では使わない(下の記録用に残すだけ)

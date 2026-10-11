@@ -539,7 +539,7 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
         # (substring)+phonetic方式から全文Validator+Cascade方式へ置き換える。
         verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
             text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
-            expected_readings=expected_readings)
+            expected_readings=expected_readings, length_ok=length_ok)
         verified = verified_content and length_ok
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                                    "audio_classification": cls.classification,

@@ -42,7 +42,7 @@ class _Base(unittest.TestCase):
         p = mock.patch.object(javal, "FEATURE_FLAG_A2_READING_RESOLVER_ENABLED", False)
         p.start()
         self.addCleanup(p.stop)
-        self.azure = mock.patch.object(p4, "get_full_text_via_azure_stt_continuous")
+        self.azure = mock.patch.object(ja_secondary, "_azure_stt_strict")
         self.mock_azure = self.azure.start()
         self.addCleanup(self.azure.stop)
 
@@ -214,7 +214,7 @@ def _run_voice01(primary_texts, azure_texts):
          mock.patch.object(voice01.common, "write_wav_float", return_value=None), \
          mock.patch.object(voice01.common, "measure_metrics", return_value={"clipping_detected": False}), \
          mock.patch.object(voice01.routing, "transcribe", side_effect=[(t, None) for t in primary_texts]), \
-         mock.patch.object(p4, "get_full_text_via_azure_stt_continuous",
+         mock.patch.object(ja_secondary, "_azure_stt_strict",
                             side_effect=[(t, None) for t in azure_texts]) as mock_azure, \
          mock.patch.object(javal, "FEATURE_FLAG_A2_READING_RESOLVER_ENABLED", False), \
          mock.patch.object(review_lock, "save_tts_attempt_audio", return_value="saved.wav"):
@@ -267,7 +267,7 @@ class N3FallbackScgTests(unittest.TestCase):
              mock.patch.object(n3, "_generate_a2_japanese_minimal_instruction",
                                 return_value={"status": "OK", "text": CANON, "path": "dummy.wav"}) as mock_min, \
              mock.patch.object(n3.routing, "transcribe", return_value=(PRIMARY_NG, None)), \
-             mock.patch.object(p4, "get_full_text_via_azure_stt_continuous", return_value=azure_ret) as mock_azure, \
+             mock.patch.object(ja_secondary, "_azure_stt_strict", return_value=azure_ret) as mock_azure, \
              mock.patch.object(javal, "FEATURE_FLAG_A2_READING_RESOLVER_ENABLED", False), \
              mock.patch.object(review_lock, "save_tts_attempt_audio", return_value="saved.wav"):
             result = n3.generate_a2_japanese_with_fallback(CANON, "dummy.wav", "出演")
@@ -297,7 +297,7 @@ class Repro01ScgTests(unittest.TestCase):
         with mock.patch.object(repro01.p9a, "generate_narration_snippet", gen), \
              mock.patch.object(repro01.batch_wiring, "make_batch_tts_call_fn", return_value=lambda *a, **k: None), \
              mock.patch.object(repro01.routing, "transcribe", side_effect=[(t, None) for t in primary_texts]), \
-             mock.patch.object(p4, "get_full_text_via_azure_stt_continuous",
+             mock.patch.object(ja_secondary, "_azure_stt_strict",
                                 side_effect=[(t, None) for t in azure_texts]) as mock_azure, \
              mock.patch.object(javal, "FEATURE_FLAG_A2_READING_RESOLVER_ENABLED", False), \
              mock.patch.object(review_lock, "save_tts_attempt_audio", return_value="saved.wav"):
@@ -342,7 +342,7 @@ class Repro01ScgTests(unittest.TestCase):
              mock.patch.object(repro01.batch_wiring, "make_batch_tts_call_fn", return_value=lambda *a, **k: None), \
              mock.patch.object(repro01.routing, "transcribe", return_value=(en_text, None)), \
              mock.patch.object(repro01.ja_secondary, "evaluate_attempt_ja_with_cascade") as mock_ja, \
-             mock.patch.object(p4, "get_full_text_via_azure_stt_continuous") as mock_azure, \
+             mock.patch.object(ja_secondary, "_azure_stt_strict") as mock_azure, \
              mock.patch.object(review_lock, "save_tts_attempt_audio", return_value="saved.wav"):
             result = repro01.generate_narration_snippet_verified_strict(en_text, "en", "dummy_out.wav", "quick")
         self.assertEqual(mock_ja.call_count, 0)
@@ -383,8 +383,227 @@ class ScgSafetyConstantsTests(unittest.TestCase):
         fn = [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef) and n.name == "_run_scg_secondary_confirm"][0]
         seg = ast.get_source_segment(src, fn)
         self.assertNotIn("phrase_list", seg.replace('"phrase_list": False', "").replace("phrase_list=False", ""))
-        self.assertIn("get_full_text_via_azure_stt_continuous", seg)
+        self.assertIn("_azure_stt_strict", seg)
         self.assertNotIn("with_phrase_list", seg)
+
+
+# ============================================================
+# Opus独立レビュー是正(必須1/2、推奨5/6/7)
+# ============================================================
+class OpusReviewFixTests(_Base):
+    def test_c1_entity_like_diff_in_mixed_diffs_not_executed(self):
+        # 「ガス」->「カス」(カタカナ同士=entity_like)を含む混在差分(漢字差も同時にある)
+        canon, primary = "熟すと出るガス", "じくすと出るカス。"
+        self.mock_azure.return_value = (canon, None)
+        d = self.detail(canon, primary)
+        self.assertEqual(self.mock_azure.call_count, 0)
+        self.assertEqual(d["scg_result"], "NOT_APPLIED")
+        self.assertIn("entity_like_diff", d["scg_info"]["exclusion_reason"])
+        self.assertFalse(d["verified"])
+        self.assertFalse(d["stop_retrying"])
+
+    def test_c1_dictionary_reading_mismatch_not_executed(self):
+        # 原稿「Meta」、Primary「メタン」、expected_readings(meta=メタ)。Azureが「Meta」と返しても不実行
+        canon, primary = "Metaが新しい発表をしました", "メタンが新しい発表をしました"
+        self.mock_azure.return_value = (canon, None)
+        d = self.detail(canon, primary, expected_readings={"meta": "メタ"})
+        self.assertEqual(self.mock_azure.call_count, 0)
+        self.assertEqual(d["scg_result"], "NOT_APPLIED")
+        reason = d["scg_info"]["exclusion_reason"]
+        self.assertTrue(reason.startswith(("reading_dictionary_mismatch", "entity_like_diff", "latin_in_canonical_diff")), reason)
+
+    def test_c1_latin_in_canonical_diff_excluded_unit(self):
+        # 実入力ではentity_like経路(UNCERTAIN)に入ることが多いため、除外関数を直接検証する
+        def fake_cls(diffs):
+            prot = types.SimpleNamespace(number_mismatches=[], negation_mismatches=[], content_diffs=diffs)
+            return types.SimpleNamespace(classification="TRUE_CONTENT_MISMATCH", protected=prot, similarity_ratio=0.9)
+        r = ja_secondary._scg_exclusion_reason(fake_cls([
+            {"canonical": "出演", "asr": "出現", "entity_like": False},
+            {"canonical": "Meta", "asr": "メタン", "entity_like": False}]))
+        self.assertTrue(r.startswith("latin_in_canonical_diff"), r)
+        r = ja_secondary._scg_exclusion_reason(fake_cls([{"canonical": "出演", "asr": "出現", "entity_like": False}]))
+        self.assertIsNone(r)
+        r = ja_secondary._scg_exclusion_reason(fake_cls([
+            {"canonical": "x", "asr": "y", "entity_like": False, "reading_dictionary_mismatch": True,
+             "reading_dictionary_token": "meta"}]))
+        self.assertTrue(r.startswith("reading_dictionary_mismatch"), r)
+
+    def test_c1_pure_kanji_diff_still_executes(self):
+        self.mock_azure.return_value = (CANON, None)
+        d = self.detail(CANON, PRIMARY_NG)
+        self.assertEqual(self.mock_azure.call_count, 1)
+        self.assertEqual(d["scg_result"], "PASS")
+
+    def test_rec6_length_not_ok_skips_scg(self):
+        self.mock_azure.return_value = (CANON, None)
+        d = self.detail(CANON, PRIMARY_NG, length_ok=False)
+        self.assertEqual(self.mock_azure.call_count, 0)
+        self.assertEqual(d["scg_result"], "NOT_APPLIED")
+        self.assertIn("length_not_ok", d["scg_info"]["exclusion_reason"])
+        self.assertFalse(d["verified"])
+        # wrapper(drop-in)にもlength_okが通る
+        v, stop, cls = ja_secondary.evaluate_attempt_ja_with_cascade(CANON, PRIMARY_NG, "dummy.wav", length_ok=False)
+        self.assertFalse(v)
+        self.assertEqual(self.mock_azure.call_count, 0)
+
+    def test_rec6_callers_pass_length_ok(self):
+        for mod in (n3, repro01, voice01):
+            src = open(mod.__file__, encoding="utf-8").read()
+            self.assertEqual(src.count("cls = ja_secondary.evaluate_attempt_ja_with_cascade("),
+                             src.count("expected_readings=expected_readings, length_ok=length_ok)"), mod.__name__)
+
+    def test_rec5_secondary_does_not_call_reading_resolver(self):
+        import er011_a2_reading_resolver_01 as rr
+        calls = {"n": 0}
+
+        def fake_resolve(c, a):
+            calls["n"] += 1
+            return {"resolved_match": False, "resolver_calls": 0}
+
+        self.mock_azure.return_value = (AZURE_STILL_NG, None)
+        with mock.patch.object(javal, "FEATURE_FLAG_A2_READING_RESOLVER_ENABLED", True), \
+             mock.patch.object(rr, "resolve_reading_diff", side_effect=fake_resolve):
+            d = self.detail(CANON, PRIMARY_NG)
+            n_with_scg = calls["n"]
+            calls["n"] = 0
+            javal.classify_ja_asr_match(CANON, PRIMARY_NG)
+            n_primary_only = calls["n"]
+        self.assertEqual(d["scg_result"], "NG")
+        self.assertEqual(n_with_scg, n_primary_only, "SCG(Secondary)判定はResolverを追加で呼ばない")
+
+    def test_rec5_allow_reading_resolver_default_true_is_backward_compatible(self):
+        import inspect
+        sig = inspect.signature(javal.classify_ja_asr_match)
+        self.assertIs(sig.parameters["allow_reading_resolver"].default, True)
+
+
+class _FakeEvent:
+    def __init__(self):
+        self.cbs = []
+
+    def connect(self, cb):
+        self.cbs.append(cb)
+
+    def fire(self, evt):
+        for cb in self.cbs:
+            cb(evt)
+
+
+def _make_fake_speechsdk(script):
+    """script(recognizer, sdk)がstart時に呼ばれ、イベントをfireする。"""
+    sdk = types.SimpleNamespace()
+    sdk.ResultReason = types.SimpleNamespace(RecognizedSpeech="RS")
+    sdk.CancellationReason = types.SimpleNamespace(Error="ERR", EndOfStream="EOS")
+    sdk.SpeechConfig = lambda **k: types.SimpleNamespace()
+    sdk.audio = types.SimpleNamespace(AudioConfig=lambda **k: None)
+
+    class Rec:
+        def __init__(self, **k):
+            self.recognized, self.session_stopped, self.canceled = _FakeEvent(), _FakeEvent(), _FakeEvent()
+
+        def start_continuous_recognition(self):
+            script(self, sdk)
+
+        def stop_continuous_recognition(self):
+            pass
+
+    sdk.SpeechRecognizer = Rec
+    return sdk
+
+
+class AzureStrictCancelTests(unittest.TestCase):
+    def _run(self, script):
+        import sys
+        import tempfile
+        sdk = _make_fake_speechsdk(script)
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as f:
+            wav = f.name
+        try:
+            fake_pkg = types.ModuleType("azure.cognitiveservices.speech")
+            fake_pkg.__dict__.update(sdk.__dict__)
+            import azure.cognitiveservices as _acs
+            with mock.patch.dict(sys.modules, {"azure.cognitiveservices.speech": fake_pkg}), \
+                 mock.patch.object(_acs, "speech", fake_pkg), \
+                 mock.patch.dict(os.environ, {"SPEECH_KEY": "k", "SPEECH_REGION": "r"}):
+                return ja_secondary._azure_stt_strict(wav, timeout_seconds=3)
+        finally:
+            os.unlink(wav)
+
+    @staticmethod
+    def _rec_evt(text):
+        return types.SimpleNamespace(result=types.SimpleNamespace(reason="RS", text=text))
+
+    def test_error_cancel_after_partial_transcript_is_unavailable(self):
+        def script(rec, sdk):
+            rec.recognized.fire(self._rec_evt("AIの電話に人間が"))
+            rec.canceled.fire(types.SimpleNamespace(cancellation_details=types.SimpleNamespace(
+                reason="ERR", error_details="network down")))
+        text, err = self._run(script)
+        self.assertIsNone(text)
+        self.assertIn("network down", err)
+
+    def test_end_of_stream_cancel_is_normal(self):
+        def script(rec, sdk):
+            rec.recognized.fire(self._rec_evt("全文"))
+            rec.canceled.fire(types.SimpleNamespace(cancellation_details=types.SimpleNamespace(
+                reason="EOS", error_details=None)))
+        text, err = self._run(script)
+        self.assertEqual(text, "全文")
+        self.assertIsNone(err)
+
+    def test_cancel_details_unreadable_is_conservative_error(self):
+        def script(rec, sdk):
+            rec.recognized.fire(self._rec_evt("途中"))
+            rec.canceled.fire(types.SimpleNamespace())  # cancellation_detailsなし
+        text, err = self._run(script)
+        self.assertIsNone(text)
+        self.assertIsNotNone(err)
+
+    def test_session_stopped_normal_returns_text(self):
+        def script(rec, sdk):
+            rec.recognized.fire(self._rec_evt("あ"))
+            rec.recognized.fire(self._rec_evt("い"))
+            rec.session_stopped.fire(types.SimpleNamespace())
+        self.assertEqual(self._run(script), ("あい", None))
+
+    def test_scg_treats_strict_error_as_unavailable_via_production_path(self):
+        with mock.patch.object(ja_secondary, "_azure_stt_strict", return_value=(None, "CancellationReason.Error: x")), \
+             mock.patch.object(javal, "FEATURE_FLAG_A2_READING_RESOLVER_ENABLED", False):
+            d = ja_secondary.evaluate_attempt_ja_with_cascade_detail(CANON, PRIMARY_NG, "dummy.wav", cascade_enabled=True)
+        self.assertEqual(d["scg_result"], "UNAVAILABLE")
+        self.assertFalse(d["verified"])
+        self.assertFalse(d["stop_retrying"])
+
+    def test_shared_p4_function_signature_unchanged(self):
+        # 他testのmock漏れの影響を受けないよう、実体ではなくソースのASTで署名を確認する
+        src = open(p4.__file__, encoding="utf-8").read()
+        fn = [n for n in ast.walk(ast.parse(src))
+              if isinstance(n, ast.FunctionDef) and n.name == "get_full_text_via_azure_stt_continuous"][0]
+        self.assertEqual([a.arg for a in fn.args.args], ["wav_path", "language", "timeout_seconds"])
+
+
+class MasterStoreScgFieldsTests(unittest.TestCase):
+    def test_manifest_records_audio_classification_and_scg_result(self):
+        import json
+        import tempfile
+        import er006_master_audio_store_01 as store
+        with tempfile.TemporaryDirectory() as tmp:
+            with mock.patch.object(store, "STORE_DIR", tmp), mock.patch.object(store, "AUDIO_DIR", f"{tmp}/audio"), \
+                 mock.patch.object(store, "MANIFEST_PATH", f"{tmp}/manifest.json"), \
+                 mock.patch.object(store, "TELEMETRY_PATH", f"{tmp}/t.jsonl"):
+                key = store.MasterAudioKey(language="ja", speaker_voice="Charon", tts_model_id="m", canonical_text=CANON)
+
+                def gen(out):
+                    with open(out, "wb") as f:
+                        f.write(b"x")
+                    return {"status": "OK", "audio_classification": "SECONDARY_CONFIRMED_PRIMARY_FALSE_NG",
+                            "scg_info": {"scg_result": "PASS"}}
+                store.get_or_generate(key, f"{tmp}/o.wav", gen)
+                ent = json.load(open(f"{tmp}/manifest.json", encoding="utf-8"))[key.master_audio_id()]
+        self.assertEqual(ent["audio_classification"], "SECONDARY_CONFIRMED_PRIMARY_FALSE_NG")
+        self.assertEqual(ent["scg_result"], "PASS")
+        for k in ("audio_path", "key", "created_at", "qa_evidence"):
+            self.assertIn(k, ent)
 
 
 if __name__ == "__main__":

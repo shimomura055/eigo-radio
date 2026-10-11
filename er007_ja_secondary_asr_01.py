@@ -95,9 +95,15 @@ def _scg_enabled() -> bool:
     return True
 
 
+def _has_latin(text: str) -> bool:
+    return any(("a" <= ch.lower() <= "z") or ("ａ" <= ch.lower() <= "ｚ") for ch in (text or ""))
+
+
 def _scg_exclusion_reason(cls: "javal.ClassificationResultJA") -> Optional[str]:
-    """SCGを実行しない理由(既存の重大差分除外条件)を返す。実行してよければNone。
-    新しい除外・緩和は導入しない(数字/否定/類似度0.4未満のみ、既存設計どおり)。"""
+    """SCGを実行しない理由を返す。実行してよければNone。
+    既存の重大差分除外(数字/否定/類似度0.4未満)に加え、Opus独立レビュー必須1(C1)として
+    固有名詞・略語系の差分(entity_like、辞書読み不一致、原稿側のラテン文字差分)が1件でも
+    あれば除外する(Azureが正しい固有名詞読みと偶然一致して誤PASSするのを防ぐ)。"""
     if cls.classification != "TRUE_CONTENT_MISMATCH":
         return "not_true_content_mismatch"
     if cls.protected.number_mismatches:
@@ -106,7 +112,69 @@ def _scg_exclusion_reason(cls: "javal.ClassificationResultJA") -> Optional[str]:
         return f"negation_mismatch:{cls.protected.negation_mismatches}"
     if cls.similarity_ratio < SCG_MIN_SIMILARITY:
         return f"similarity_lt_{SCG_MIN_SIMILARITY}:{round(cls.similarity_ratio, 3)}"
+    for d in (cls.protected.content_diffs or []):
+        if d.get("reading_dictionary_mismatch"):
+            return f"reading_dictionary_mismatch:{d.get('reading_dictionary_token')}"
+        if d.get("entity_like"):
+            return f"entity_like_diff:{d.get('canonical')}->{d.get('asr')}"
+        if _has_latin(d.get("canonical", "")):
+            return f"latin_in_canonical_diff:{d.get('canonical')}"
     return None
+
+
+def _azure_stt_strict(wav_path: str, language: str = "ja-JP", timeout_seconds: float = 90.0):
+    """SCG専用のAzure連続認識ラッパー(Opus必須2)。Production共通関数
+    p4.get_full_text_via_azure_stt_continuousは変えない。共通関数はcanceledもsession_stoppedと
+    同じ扱いで、途中のError cancelでも部分転写をerror=Noneで返す。このラッパーは
+    CancellationReason.Error(認証/ネットワーク/サービスエラー等)を検出したらtext=None+errorを返し、
+    呼び出し側でUNAVAILABLE扱い(従来動作へ戻す)にする。EndOfStream(ファイル正常終了)は正常。"""
+    if not os.path.exists(wav_path):
+        return None, f"音声ファイルが見つかりません: {wav_path}"
+    try:
+        from dotenv import load_dotenv
+        import azure.cognitiveservices.speech as speechsdk
+    except ImportError as exc:
+        return None, f"Azure Speech SDKの読み込みに失敗しました: {exc}"
+    load_dotenv()
+    key, region = os.getenv("SPEECH_KEY"), os.getenv("SPEECH_REGION")
+    if not key or not region:
+        return None, "SPEECH_KEY/SPEECH_REGIONが.envに設定されていません"
+    speech_config = speechsdk.SpeechConfig(subscription=key, region=region)
+    speech_config.speech_recognition_language = language
+    audio_config = speechsdk.audio.AudioConfig(filename=wav_path)
+    recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
+    segments: list = []
+    state = {"done": False, "cancel_error": None}
+
+    def on_recognized(evt):
+        if evt.result.reason == speechsdk.ResultReason.RecognizedSpeech:
+            segments.append(evt.result.text)
+
+    def on_stopped(evt):
+        state["done"] = True
+
+    def on_canceled(evt):
+        try:
+            details = evt.cancellation_details
+            if details.reason == speechsdk.CancellationReason.Error:
+                state["cancel_error"] = f"CancellationReason.Error: {getattr(details, 'error_details', None)}"
+        except Exception as exc:  # noqa: BLE001  詳細取得不能=保守側でError扱い
+            state["cancel_error"] = f"canceled(詳細取得不能): {exc}"
+        state["done"] = True
+
+    recognizer.recognized.connect(on_recognized)
+    recognizer.session_stopped.connect(on_stopped)
+    recognizer.canceled.connect(on_canceled)
+    recognizer.start_continuous_recognition()
+    start = time.time()
+    while not state["done"] and (time.time() - start) < timeout_seconds:
+        time.sleep(0.5)
+    recognizer.stop_continuous_recognition()
+    if state["cancel_error"]:
+        return None, state["cancel_error"]
+    if not state["done"]:
+        return None, f"連続認識がtimeout({timeout_seconds}秒)内に完了しませんでした"
+    return "".join(segments), None
 
 
 def _wav_duration_seconds(wav_path: str) -> Optional[float]:
@@ -145,7 +213,7 @@ def _run_scg_secondary_confirm(canonical_text: str, wav_path: str,
     t0 = time.time()
     text, err = None, None
     try:
-        text, err = p4.get_full_text_via_azure_stt_continuous(
+        text, err = _azure_stt_strict(
             wav_path, language="ja-JP", timeout_seconds=SCG_AZURE_TIMEOUT_SECONDS)
     except Exception as e:  # noqa: BLE001  安全側: 例外は従来動作へ戻す
         err = f"{type(e).__name__}: {e}"
@@ -157,7 +225,9 @@ def _run_scg_secondary_confirm(canonical_text: str, wav_path: str,
         info.update(scg_result="UNAVAILABLE", secondary_classification=None,
                     judgement_reason="Secondary取得不能または空(従来どおり再生成/fallback/STOPへ戻す)")
         return info
-    cls_sec = javal.classify_ja_asr_match(canonical_text, text, expected_readings=expected_readings)
+    # 推奨5: PASSはEXACT/NORMALIZEDのみ=Resolver(LLM)で判定が変わらないため呼ばない
+    cls_sec = javal.classify_ja_asr_match(canonical_text, text, expected_readings=expected_readings,
+                                          allow_reading_resolver=False)
     info["secondary_classification"] = cls_sec.classification
     if cls_sec.classification in SCG_PASS_CLASSIFICATIONS:
         info.update(scg_result="PASS",
@@ -217,6 +287,9 @@ def evaluate_attempt_ja_with_cascade_detail(
     # Primary#2・Secondary#1・Secondary#2の全ステップのclassify_ja_asr_
     # match呼び出しへ同じ値をそのまま転送する。
     expected_readings: dict | None = None,
+    # OPEN-258 SCG 推奨6: 呼出元で長さ超過(length_ok=False)なら、SCG PASSしても結局不合格のため
+    # Azureを無駄に呼ばない。既定True=後方互換。
+    length_ok: bool = True,
 ) -> dict:
     """Primary(OpenAI)#1の判定結果を受け取り、entity-likeなASR_VALIDATION_
     UNCERTAINであれば、TTSを再生成せず同じ音声に対してCascade(Primary#2->
@@ -237,6 +310,8 @@ def evaluate_attempt_ja_with_cascade_detail(
     # TRUE_CONTENT_MISMATCHの場合だけ評価する(ASR_VALIDATION_UNCERTAIN経路は無変更) ---
     if cascade_enabled and not cls.should_pass and cls.classification == "TRUE_CONTENT_MISMATCH":
         exclusion = _scg_exclusion_reason(cls)
+        if exclusion is None and not length_ok:
+            exclusion = "length_not_ok(呼出元の長さ判定が不合格、SCG PASSでも不合格になるため不実行)"
         if not _scg_enabled():
             scg_info = {"scg_applied": False, "scg_result": "DISABLED_BY_FLAG", "exclusion_reason": "flag_off"}
         elif exclusion is not None:
@@ -342,12 +417,13 @@ def evaluate_attempt_ja_with_cascade(
     cascade_enabled: bool = FEATURE_FLAG_JA_PRIMARY_OPENAI,
     # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: 既定None(後方互換)。
     expected_readings: dict | None = None,
+    length_ok: bool = True,
 ) -> tuple[bool, bool, "javal.ClassificationResultJA"]:
     """Production retry loop向けのdrop-in互換ラッパー(English版
     evaluate_attempt_with_cascade()と同じ形の戻り値)。"""
     detail = evaluate_attempt_ja_with_cascade_detail(
         canonical_text, primary_asr_text, wav_path, cascade_enabled=cascade_enabled,
-        expected_readings=expected_readings)
+        expected_readings=expected_readings, length_ok=length_ok)
     if detail["human_review_required"]:
         _log_human_review(detail)
     return detail["verified"], detail["stop_retrying"], detail["classification"]

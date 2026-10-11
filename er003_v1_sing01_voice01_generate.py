@@ -514,7 +514,7 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
         # Secondary Azure#1->#2)で同じ音声のASRだけをやり直す。
         verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
             text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
-            expected_readings=expected_readings)
+            expected_readings=expected_readings, length_ok=length_ok)
         verified = verified_content and length_ok
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                               "length_ok": length_ok, "audio_classification": cls.classification,
@@ -562,7 +562,7 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
         length_ok = asr_text is not None and len(asr_text) <= max_len
         verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
             text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
-            expected_readings=expected_readings)
+            expected_readings=expected_readings, length_ok=length_ok)
         verified = verified_content and length_ok
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                                    "length_ok": length_ok, "audio_classification": cls.classification,
