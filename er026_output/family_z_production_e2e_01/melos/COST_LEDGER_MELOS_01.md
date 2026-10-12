@@ -97,3 +97,7 @@ KP外側retry(最大3)・TTS clip checkpoint(中断時の再課金防止)は維�
 
 ## 6. CS監査 委任_02(2026-10-12): Std a2 part1_c5 正規再生成(起動1回、TTS 3回)
 - run_e2e_02 実費 62.00 -> **62.60**(+JPY0.60)。累計(Melos E2E) 108.11 + 62.60 + 再評価(約11 + 3.71) = **約185.4 / 300**。残枠約114.6。結果STOPPED継続(HR到達)。
+
+
+## 7. FINAL-ASSEMBLY 委任_01(2026-10-13)
+- provision_shell・gate各1回: API呼出なし、**JPY0**。run_e2e_02実費 62.60のまま(runner出力 spent_jpy 62.5957)。累計(Melos E2E)**約185.4 / 300**、残枠約114.6。gateはrc=2(FamilyZSlowdownGateStop、OPEN-331)でSTOP、assemble/pages/page_verify未実行。

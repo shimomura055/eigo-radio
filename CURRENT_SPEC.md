@@ -2662,3 +2662,5 @@ ER-006-VALIDATOR-NUMERIC-COST-RECONCILE-01完了報告(Validator一般化・Cost
 ER-006-AUDIO-COST-SPEC-FIX-01完了報告(本節・Model Routing Contract更新のSSOT統合)、
 ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01完了報告(Gemini TTS Batch API実配線・ASR旧記述整合化)、
 [DECISION_LOG.md](DECISION_LOG.md)
+
+- **追記(2026-10-13、`FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01`委任_01、仕様変更なし・Status更新のみ)**: Melos run_e2e_02のHR3件(Std part1_c5 attempt4/Adv part1_c5/Std comment_1)をユーザーが個別承認し`record_human_approval`+Review Lock RESOLVED/HUMAN_APPROVEDへ反映済み。**Z E2E状態=gate stageでSTOP**(Std part1_c5の採用attempt4が6%減速前のため`verify_std_english_slowdown`不合格、OPEN-331)。assemble/pages/page_verify未実行、完成版試聴ページ未作成。`PRODUCTION_WIRED`は未達(Wiring Checklist未達: gate PASS・assemble・pages・page_verify・Playwright実再生・OPEN-320/331の判断)。

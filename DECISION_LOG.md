@@ -20698,3 +20698,11 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - OPEN-327に作品単位の人間承認済みASR表記ゆれ許容リスト案(`PASS_WITH_WARNING`)とC-1(A')最低優先、Adv標本1 takeの不確実性を追記。OPEN-318/320/328更新。
 - HR試聴ページ v2(`tools/build_family_z_hr_review_page.py`で`user_test/family_z_melos_01/hr_review_01.html`再生成、API 0): 要確認=Std a2 part1_c5新take(attempt4、標準TTS、OpenAI『Mellis said』/Azure『Mallow said.』)・Adv b1b part1_c5・JA comment_1、採用確定=b1b part3_c1(He drank)、解決済み=Std a2 part1_c1/part3_c3。各clipに原文/全ASR転写/期待発音(MEL-os系 vs Ledger MEE-lahs、OPEN-308)/既存機構で判断できない理由を記載、語末sの有無と母音の読みを同時確認する観点を注記。ディスク上の現行wav(attempt6、最小fallback、TTS_FAILURE)は採択対象外として参考掲載。HR Lock・承認記録・run_e2e_02 stateは未変更(`record_human_approval`未使用)。
 - 費用JPY0(API呼出・TTS・runner起動なし)。証跡 `er026_output/family_z_production_e2e_01/melos/cs_audit_01/`(CS_AUDIT_01.md 13節、telemetry_probe_rows_manifest_01.json)、委任ログ `docs/pm/delegation_log/2026-10-12_FAMILY-Z-MELOS-CONNECTED-SPEECH-ROOT-CAUSE-AUDIT-01_03.md`。
+
+### 2026-10-13 FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01 委任_01(Melos完成版制作パート)
+- **ユーザー決定(2026-10-13、HR試聴ページv2で3件とも試聴し問題なし)**: (1)Std a2 full_story_part1_c5『Melos said.』=attempt4(sha256 6b6fb56e...)を採用(ディスク上attempt6は不採用)、(2)Adv b1b part1_c5=HRページ掲載音声(sha ba7b38f7...)を採用、(3)Std a2 comment_1(日本語)=HRページ掲載音声(sha f8231885...)を採用・再生成禁止。いずれもこの1clip・1takeに対する個別承認で、ASR許容規則の一般化ではない。既承認(Adv part3_c1 He drank、Std part1_c1/part3_c3正規再生成、Comment3ネタバレ回避規則)は再判断不要。
+- 反映: `er003_v1_n3_01_assemble.record_human_approval`(3件)+`review_lock_state.json`をRESOLVED/HUMAN_APPROVEDへ更新、tts_generation_resultsのstatusはSTOPPED/ASR_VALIDATION_UNCERTAINのまま注記追記(正直な記録維持)。part1_c5のwavはattempt4へ置換(旧attempt6は`evidence_13/pre_adopt_backup/`へ退避、sha256一致確認)。正式な「採択take配置機構」は存在せず最小運用手順で実施(OPEN-331)。
+- **gate stageがSTOP(rc=2)**: 採用attempt4は6%減速前の音声で、`FamilyZSlowdownGateStop`(ratio=1.2683)。Gate回避なし、assemble/pages/page_verifyは未実行(完成版試聴ページ未作成)。`PRODUCTION_WIRED`ではない。対処はFable/ユーザー判断(OPEN-331)。
+- JA『三日間』↔ASR『3日間』はVALIDATORの助数詞閉じたリストに『日』が無いため数字集合不一致でTRUE_CONTENT_MISMATCH(OPEN-319更新、音声品質と独立)。OPEN-330/323/324/328は現行ルール無変更。改善順序①〜⑤は未採用・ユーザー未判断。
+- 費用JPY0(provision_shell/gateともAPIなし)。QA/Regression: er063 47 / er026統合 42 / er026 runner 21 / er062 64 / CS audit regression 12 / post-slowdown rescue 16 全OK、stop_sentinel test結果は`evidence_13/qa_regression_summary.txt`。委任ログ `docs/pm/delegation_log/2026-10-13_FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01_01.md`。
+
