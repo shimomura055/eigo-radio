@@ -54,6 +54,7 @@ import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er006_model_routing_contract_01 as routing
 import er019_family_x_audio_plan_01 as plan
 import er019_family_x_kp_explanation_01 as kp_explanation_gen
+import er019_family_x_style_profile_01 as style_profile_mod
 import er020_tts_retry_local_rewrite_01 as retry_primitive
 import er053_review_queue_01 as rq
 import er053_risk_flagger_production_01 as rf
@@ -201,7 +202,7 @@ def build_segment_plan(level: str, parts: dict, support: dict | None = None) -> 
     }
 
 
-def run_plan_stage(source_dir: str, out_dir: str, levels: list[str]) -> dict:
+def run_plan_stage(source_dir: str, out_dir: str, levels: list[str], style_profile: str = "default") -> dict:
     result = {}
     for level in levels:
         article_path = f"{source_dir}/{level}/article.md"
@@ -229,6 +230,20 @@ def run_plan_stage(source_dir: str, out_dir: str, levels: list[str]) -> dict:
         save_json(f"{out_dir}/{level}/segment_plan.json", segment_plan)
         result[level] = {"status": "OK", "article_path": article_path,
                           "article_sha256": sha256_text(article_text), "segment_plan": segment_plan}
+        if style_profile != style_profile_mod.PROFILE_DEFAULT:
+            # OPEN-300 S2: 非defaultのときだけ、Full StoryのStyle(P8)と現行Pronunciation Ledger hit
+            # (hint追記有無)をplan段階で記録する(読み取りのみ、web lookup無効、課金0)。
+            # defaultではkeyを追加しない(バイト同一)。
+            import er025_entity_pronunciation_resolver_core_01 as pron_core
+            with pron_core.disable_web_lookup_for_test():
+                hits = style_profile_mod.compute_ledger_hits(parts, tts_safe_fn=n3_tts.tts_safe_news_en)
+            result[level]["style_profile_plan"] = {
+                "profile_id": style_profile,
+                "overridden_roles": style_profile_mod.overridden_roles(style_profile),
+                "full_story_style_sha256": style_profile_mod.P8_SHA256,
+                "full_story_style_length": style_profile_mod.P8_LENGTH,
+                "ledger_hits_web_lookup_disabled": hits,
+            }
     return result
 
 
@@ -573,20 +588,31 @@ def generate_family_x_b1_segments(
         # Audio Keyは`tts_model_id`を含むため、Flash-Lite分は既存
         # Structured Separation資産と衝突せず別キーで保存される、
         # 設計はer006_audio_cost_pilot_02_shared_narration.py参照)。
-        tts_backend: str = "structured_separation") -> dict:
+        tts_backend: str = "structured_separation",
+        # FAMILY-X-COFFEE-P8-FINAL-AUDIO-AND-PRODUCTION-WIRING-01 委任_02
+        # (OPEN-300): "default"は現行とバイト同一。"coffee_p8"はCoffee Full Story限定の
+        # Style置換(runnerはresolve_run_profile経由の値だけを渡す)。
+        style_profile: str = "default") -> dict:
     """既存Production低レベル関数(voice01.generate_charon_english/
     news_tail_fix.generate_news_narration_wide_margin)をそのまま呼ぶ。
     Comment/Preview=Charon英語、本文/In One Line=Aoede(News本文)、
     Key Phrase=既存Master Audio Store経由(shared_narration)。"""
     import er033_tts_flash_lite_family_x_styles_01 as fl_styles
 
-    def _role_style(role: str) -> str | None:
+    # M5: profile != defaultでlegacy backendなら課金前にSTOP(P8が黙って落ちるのを防ぐ)。
+    style_profile_mod.assert_profile_backend(style_profile, tts_backend)
+
+    def _base_role_style(role: str) -> str | None:
         # Family Xランナーのみがrole別style定数を参照する(Dangling
         # Reference Check、設計書§(d))。既定backendではNoneを返し、
         # 各下位関数のstyle_prefix_override=Noneと同じ(既存挙動)。
         if tts_backend != "speech_metadata_flash_lite":
             return None
         return fl_styles.FAMILY_X_ROLE_STYLE_EN.get(role)
+
+    def _role_style(role: str) -> str | None:
+        # 単一解決関数経由(defaultはbase_getter素通し=バイト同一)。
+        return style_profile_mod.resolve_role_style(style_profile, role, "b1b", _base_role_style)
 
     out_dir = f"{theme_out_dir}/b1b"
     narration_dir = f"{out_dir}/narration"
@@ -672,6 +698,11 @@ def generate_family_x_b1_segments(
                     style_prefix_override=_role_style("IN_ONE_LINE" if name == "in_one_line" else "FULL_STORY"),
                     tts_backend=tts_backend), expected_text=text)
         results[name]["canonical_text"] = text
+        # M4/S3: 上書き対象roleのsegmentにだけ、hint追記前のStyle sha(style_base_sha256)を記録する。
+        # 非対象(default/IN_ONE_LINE)は何も書かない(新keyなし)。
+        _seg_role = "IN_ONE_LINE" if name == "in_one_line" else "FULL_STORY"
+        style_profile_mod.attach_segment_profile_record(results[name], style_profile, _seg_role,
+                                                         _role_style(_seg_role))
 
     if kp is not None:
         kp_results, kp_explanation_text_bundle = _generate_key_phrase_segments_b1(
@@ -835,7 +866,10 @@ def generate_family_x_a2_segments(
         # 参照)、既存の承認済み速度仕様は失わせない。Key Phraseは
         # tts_backend引数をそのまま`_generate_key_phrase_segments_a2`へ
         # 転送する(FAMILY-X-02 C: Key Phrase含めFlash-Lite統一)。
-        tts_backend: str = "structured_separation") -> dict:
+        tts_backend: str = "structured_separation",
+        # OPEN-300: B1と同じ(既定"default"=バイト同一)。Std例外はS1参照
+        # (COFFEE-P8-STD-VERBATIM-EXCEPTION-01、er019_family_x_style_profile_01.py)。
+        style_profile: str = "default") -> dict:
     """既存Production低レベル関数(crosslevel_common.generate_english_
     segment_with_fallback経由のn3_tts.generate_a2_segment_with_slowdown、
     n3_tts.generate_a2_japanese_with_reading_safety)をそのまま呼ぶ。
@@ -869,17 +903,24 @@ def generate_family_x_a2_segments(
     既存挙動(JAPANESE_STYLE_PREFIXのまま)に影響はない。"""
     import er033_tts_flash_lite_family_x_styles_01 as fl_styles
 
-    def _role_style(role: str) -> str | None:
+    # M5: profile != defaultでlegacy backendなら課金前にSTOP。
+    style_profile_mod.assert_profile_backend(style_profile, tts_backend)
+
+    def _base_role_style(role: str) -> str | None:
         if tts_backend != "speech_metadata_flash_lite":
             return None
         return fl_styles.FAMILY_X_ROLE_STYLE_EN.get(role)
 
-    def _role_style_slower(role: str) -> str | None:
+    def _role_style(role: str) -> str | None:
+        # 単一解決関数経由(defaultはbase_getter素通し=バイト同一)。
+        return style_profile_mod.resolve_role_style(style_profile, role, "a2", _base_role_style)
+
+    def _base_role_style_slower(role: str) -> str | None:
         # Standard固有: 6-role短styleと既承認の減速instruction(逐語、
         # ER-008-A2-TIMESTRETCH-ABC-10でユーザーが試聴・承認した文言)を
         # 連結する。base(6-role)がNone(既定backend)の場合はNoneのまま
         # (既存呼び出し元の挙動を一切変えない)。
-        base = _role_style(role)
+        base = _base_role_style(role)
         if base is None:
             return None
         # N-7是正(修正3回目、2026-09-28、Opus L2所見): legacy
@@ -891,6 +932,11 @@ def generate_family_x_a2_segments(
         import er002_common as common
         common.assert_no_wpm_specification(combined)
         return combined
+
+    def _role_style_slower(role: str) -> str | None:
+        # S1(COFFEE-P8-STD-VERBATIM-EXCEPTION-01): coffee_p8のFULL_STORYはP8逐語
+        # (A2_SLOWER_PACE_INSTRUCTIONを連結しない)+生成後6%減速。defaultは従来の連結のまま。
+        return style_profile_mod.resolve_role_style(style_profile, role, "a2", _base_role_style_slower)
 
     # TTS-VARIABLE-ROLE-STYLE-PRODUCTION-WIRING-01(Phase B、2026-09-28):
     # ユーザー正式決定(J3、APPROVED_FOR_PRODUCTION、TTS-VARIABLE-SPOKEN-
@@ -986,6 +1032,10 @@ def generate_family_x_a2_segments(
                     enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
                     enable_repetition_qa=(name in _BODY_SEGMENT_NAMES), tts_backend=tts_backend), expected_text=text)
         results[name]["canonical_text"] = text
+        # M4/S3: 上書き対象roleのsegmentにだけ記録(非対象は新keyを書かない)。
+        _seg_role = "IN_ONE_LINE" if name == "in_one_line" else "FULL_STORY"
+        style_profile_mod.attach_segment_profile_record(results[name], style_profile, _seg_role,
+                                                         _role_style_slower(_seg_role))
 
     kp_results = _generate_key_phrase_segments_a2(kp, narration_dir, _cached,
                                                    tts_backend=tts_backend) if kp is not None else {}
@@ -1267,6 +1317,31 @@ def build_family_x_b1_timeline(parts: dict) -> list:
     return seq
 
 
+def _style_profile_gate_blocked_summary(theme_out_dir: str, out_dir: str, level: str) -> dict | None:
+    """OPEN-300 M3(Opus条件Aレビュー反映): Assembly前のStyle profile Gate。Family X runnerの
+    stage_assemble内でのみ呼ぶ(共有assembleは不変)。固定記録(audit/style_profile.json)が
+    無い/defaultなら何もしない(Noneを返す=既存挙動とバイト同一)。非defaultのとき、P8対象
+    segmentがP8で生成されていない(minimal_fallback/Local Rewrite回復/Std fallback等)場合は、
+    record_human_approvalによる人間承認が無い限りBLOCKする。"""
+    record = style_profile_mod.read_record(theme_out_dir)
+    if record is None:
+        return None
+    profile_id = style_profile_mod.verify_record(record)
+    if profile_id == style_profile_mod.PROFILE_DEFAULT:
+        return None
+    results_path = f"{out_dir}/audit/tts_generation_results.json"
+    results = load_json(results_path) if os.path.exists(results_path) else {}
+    approvals_path = asm.human_approval_path(out_dir)
+    approvals = load_json(approvals_path) if os.path.exists(approvals_path) else {}
+    gate = style_profile_mod.m3_assembly_gate(profile_id, level, results, approvals)
+    save_json(f"{out_dir}/audit/style_profile_gate.json", gate)
+    if gate["status"] == "PASS":
+        return None
+    return {"status": "BLOCKED_STYLE_PROFILE_GATE", "profile_id": profile_id, "blocked": gate["blocked"],
+            "reason": "P8対象segmentがP8で生成されていません(M3 Gate)。人間承認(record_human_approval)が"
+                      "無い限りAssemblyを拒否します。本runnerはこのGateを回避しません。"}
+
+
 def stage_assemble_family_x_b1(theme_out_dir: str, theme_id: str, source_dir: str | None = None) -> dict:
     out_dir = f"{theme_out_dir}/b1b"
     os.makedirs(f"{out_dir}/assembled", exist_ok=True)
@@ -1291,6 +1366,10 @@ def stage_assemble_family_x_b1(theme_out_dir: str, theme_id: str, source_dir: st
     if shared_blocked is not None:
         save_json(f"{out_dir}/run_summary_assemble.json", shared_blocked)
         return shared_blocked
+    style_blocked = _style_profile_gate_blocked_summary(theme_out_dir, out_dir, "b1b")
+    if style_blocked is not None:
+        save_json(f"{out_dir}/run_summary_assemble.json", style_blocked)
+        return style_blocked
     sources = load_family_x_b1_sources(theme_out_dir, source_dir=source_dir)
     parts = apply_family_x_b1_gain(sources)
     seq = build_family_x_b1_timeline(parts)
@@ -1491,6 +1570,10 @@ def stage_assemble_family_x_a2(theme_out_dir: str, theme_id: str, source_dir: st
     if shared_blocked is not None:
         save_json(f"{out_dir}/run_summary_assemble.json", shared_blocked)
         return shared_blocked
+    style_blocked = _style_profile_gate_blocked_summary(theme_out_dir, out_dir, "a2")
+    if style_blocked is not None:
+        save_json(f"{out_dir}/run_summary_assemble.json", style_blocked)
+        return style_blocked
     sources = load_family_x_a2_sources(theme_out_dir, source_dir=source_dir)
     parts = apply_family_x_a2_gain(sources)
     seq = build_family_x_a2_timeline(parts)
@@ -1828,6 +1911,13 @@ def build_arg_parser() -> argparse.ArgumentParser:
                          help="tts_backend=structured_separation(承認済み正式backend以外)での"
                               "tts stage実行を明示的に許可する(Trial/regression用途のみ、"
                               "Production E2Eでは使用しないこと)。")
+    # OPEN-300(FAMILY-X-COFFEE-P8-FINAL-AUDIO-AND-PRODUCTION-WIRING-01 委任_02): 既定None
+    # (未指定)。未指定で固定記録(audit/style_profile.json)が無ければ"default"(現行とバイト同一、
+    # 新key/fileを書かない)、記録があれば記録を採用(resume)。coffee_p8は新しいout_dirでのみ実行可
+    # (M2)、speech_metadata_flash_lite backend必須(M5)。
+    parser.add_argument("--style-profile", default=None, choices=tuple(style_profile_mod.STYLE_PROFILES),
+                         help="Style profile(既定: 未指定=default)。coffee_p8=Coffee Full Story限定のP8置換"
+                              "(APPROVED_FOR_PRODUCTION[Coffee限定]・Production未配線)。")
     return parser
 
 
@@ -2004,6 +2094,11 @@ def main() -> None:
 
     source_dir = f"er019_output/{args.slug}/{args.run}"
     out_dir = derive_out_dir(args.slug, args.run, args.out_dir)
+    # OPEN-300: style profileは課金・ファイル作成前に決定する。M5(backend)→M2/固定記録の順で、
+    # いずれかでSTOPした場合はout_dir/記録を作らない。
+    _profile_id, _profile_source = style_profile_mod.resolve_run_profile(out_dir, args.style_profile, write=False)
+    style_profile_mod.assert_profile_backend(_profile_id, args.tts_backend)
+    _profile_id, _profile_source = style_profile_mod.resolve_run_profile(out_dir, args.style_profile, write=True)
     os.makedirs(out_dir, exist_ok=True)
 
     levels = ["a2", "b1b"] if args.level == "both" else [args.level]
@@ -2030,10 +2125,13 @@ def main() -> None:
         "tts_backend": args.tts_backend,
         # W5(MAJOR-3是正): legacy backend実行を明示許可したかどうかの記録。
         "allow_legacy_backend": args.allow_legacy_backend,
+        # S3: defaultでは新keyを書かない(entry_point.jsonもバイト同一の構造)。
+        **({"style_profile": _profile_id, "style_profile_source": _profile_source}
+           if _profile_id != style_profile_mod.PROFILE_DEFAULT else {}),
     })
 
     if args.dry_run or args.stage == "plan":
-        result = run_plan_stage(source_dir, out_dir, levels)
+        result = run_plan_stage(source_dir, out_dir, levels, style_profile=_profile_id)
         save_json(f"{out_dir}/plan_run_result.json", result)
         print(f"[FAMILY-X-AUDIO-RUNNER] plan完了(API呼び出しゼロ円)。out_dir={out_dir}")
         for level, r in result.items():
@@ -2076,14 +2174,14 @@ def main() -> None:
         with cl.logging_context(args.slug, "tts"):
             for level in levels:
                 if level == "b1b":
-                    generate_family_x_b1_segments(out_dir, tts_backend=args.tts_backend)
+                    generate_family_x_b1_segments(out_dir, tts_backend=args.tts_backend, style_profile=_profile_id)
                 else:
                     # 日本語titleは実行時に決定したja_title_info(ja_writer正式path
                     # 由来)を使う(以前はa2/article.mdの英語titleをそのまま渡す
                     # placeholderだった、Stage 3aで判明したbugの最小修正)。
                     generate_family_x_a2_segments(
                         out_dir, japanese_title=japanese_title or "(japanese title unavailable)",
-                        tts_backend=args.tts_backend)
+                        tts_backend=args.tts_backend, style_profile=_profile_id)
         assert_budget_ok(out_dir, args.budget_jpy, "after tts")
 
     if args.stage in ("assemble", "all"):
