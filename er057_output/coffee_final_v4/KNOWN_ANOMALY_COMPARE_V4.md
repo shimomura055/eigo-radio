@@ -5,4 +5,4 @@ v4は全編再生成のため音声が別物(TTSは確率的)。v3の該当箇�
 | Adv Part1 13.3s "When you see a price tag that makes you..." | click low(13.318) | 14.08s(price tag) | 検知なし。Part1の候補は level_step low 3件のみ(8.7/25.9/34.5s、別位置) |
 | Adv Part3 39.85s "...do beans cost now, but also when does..." | click low(39.852、"now, but"間) | 41.4s(but) | 検知なし。Part3の候補は click low 2件(37.3/49.5s、別位置) |
 | Std Part2 32.07s "at least about nine months to appear" | click low(32.07) | 34.4s(nine) | spec_jump low 1件(33.618s、at直前付近。click ではなく低confidence) |
-新規異音: medium/high候補(非固定音源)は両Levelとも0件。low候補は Std 13件/Adv 12件(v3はそれぞれ非固定low中心)。"wanna"は v4 Adv Part1 の ASR(Primary)で原稿どおり "want to" 側として NORMALIZED_MATCH。再生成は明確な異常がないため実施せず。
+新規異音: medium/high候補(非固定音源)は両Levelとも0件。low候補は Std 13件/Adv 12件(v3はそれぞれ非固定low中心)。v4の生成ログ(Primary ASR文)に "wanna" は0件。再生成は明確な異常がないため実施せず。
