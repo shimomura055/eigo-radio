@@ -32,3 +32,8 @@ SSOT(DECISION_LOG/OPEN_ITEMS)をgrep: Coffee全体枠の上限記載は見つか
 - 生成前見積: 約JPY3〜11、上限見込み約JPY15(PRECHECK_V5_01.md 7節)。委任上限JPY100(承認予算不明時の既定)、runner `--budget-jpy 30`。
 - 実費(`raw_usage_log.jsonl`実測、compute_cost_jpy_so_far): **JPY3.91**(openai[Comment4文章1 call+Risk Flagger] 1.02 / gemini[RF guard gemini-3.5-flash-lite] 1.45 / gemini_batch[TTS gemini-3.8-flash-lite-tts 9 call: Std 6 + Adv 3] 0.96 / openai_asr 0.48)。段別: Comment4文章 約JPY0.05、Std tts(RF guard含む)約JPY2.4、Adv tts(RF guard+kp1〜3)約JPY1.4。Adv kp4のBatch submitが中断前に発生した可能性があり、その分は未計上(数円未満)。
 - Coffee累計(上記小計124.43 + P8 v4 9.48[以前の記載]+ P8 wiring 13.19 + 本委任 3.91) = 約JPY151.0(未集計項目除く)。本委任上限JPY100に対しては3.91。
+
+## 追記 FAMILY-X-COFFEE-FINAL-V5-PRODUCTION-WIRING-01 委任_02 (2026-10-12)
+- 生成前見積: 約JPY1.5(Fable承認、新規起動1回)。
+- 実費(`raw_usage_log.jsonl`、再実行分のみ): **約JPY0.37**(gemini_batch TTS 5 call=約0.25 / openai_asr 5 call=約0.12。runner cost表示 so far 3.91→4.28)。RF guardは再実行されず(sha一致)。中断前に提出されたkp4 Batchの重複分は未計上(数円未満、Gemini側のみ)。
+- v5累計(委任_01+_02) = 約JPY4.28。Coffee累計 = 151.0 + 0.37 = 約JPY151.4(未集計項目除く)。請求画面は未確認。

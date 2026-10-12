@@ -31,7 +31,7 @@ In One Line関連仕様が確定した後、Coffee最終版を再Assemblyする�
 | 対象 | 方針 | 理由 |
 |---|---|---|
 | Std Comment 4 | **再生成** | Trial-03採否の結果(採用ならPrompt反映後のComment4、不採用でもR2 Styleで再生成) |
-| Adv KP英英解説(4 KP分) | **P3 Styleで再生成** | 現行v4はP0(`KEY_PHRASE_EXPLANATION_EN`)。必須反映2 |
+| Adv KP英英解説(5 KP分、2026-10-12訂正: 4件→5件) | **P3 Styleで再生成** | 現行v4はP0(`KEY_PHRASE_EXPLANATION_EN`)。必須反映2 |
 | Std Preview / Comment 1〜3 | **R2 Styleで再生成** | v4 Std Comment 1〜4音声は provenance 上 P2、R2未反映(OPEN-316付随) |
 | Std/Adv In One Line | 確定仕様に従い再生成 | 必須反映1。仕様確定(OPEN-316/299)次第で必要範囲が決まる |
 | Full Story Part1〜3(Std/Adv) | **既存v4音声を流用可** | P8は反映済み(Stdのみ6%減速、Advは減速なし)。sha一致を確認して流用 |
@@ -53,7 +53,7 @@ In One Line関連仕様が確定した後、Coffee最終版を再Assemblyする�
 
 | 項目 | 概算 |
 |---|---|
-| Adv KP解説P3 4 KP(retry込み最大3回) | 約JPY0.7〜2.2 |
+| Adv KP解説P3 5 KP(訂正: 4→5、retry込み最大3回) | 約JPY0.7〜2.2 |
 | Std Preview/Comment1〜4 R2(5clip+retry、ASR込み) | 約JPY1〜4 |
 | Std/Adv IOL再生成(文章+TTS+ASR) | 約JPY0.5〜2 |
 | Std 6%減速後の再検証・Secondary ASR | 約JPY1〜3 |
