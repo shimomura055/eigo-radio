@@ -2634,6 +2634,10 @@ Fable/Claude側でテーマを勝手に決めない。
 Safety・Gate上の問題が判明した場合はこの限りではなく、従来どおり
 `USER_DECISION_REQUIRED`・STOP条件が優先する。
 
+### 13-6. 記事構成・Family X選定方式への参照(2026-10-12追記)
+
+2026-10-12ユーザー正式決定(`TOPIC-SELECTION-FORM-AND-FAMILY-MIX-20261012-01`)は、候補数24・6ジャンル・型付与・履歴管理を具体化するもので13節と矛盾しない。詳細は`CURRENT_SPEC.md`「記事構成・Family X選定方式」節を参照(全文複製しない)。
+
 ## 14. 問題発生時のPM処理原則(Human Reviewは最後の手段)
 
 **管理ID: PM-CLOSEOUT-CONSOLIDATION-77-PM-OPERATION-CORRECTION-2026-09-12

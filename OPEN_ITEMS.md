@@ -801,6 +801,7 @@ n=2ともLEDGER_COMPLIANT[deviation非検出]となり「社内テスト誤読�
 | OPEN-298 | **ALL-ARTICLE-COMMON-STYLE-ROLLOUT-DECISION-AFTER-COFFEE-ONLY-01 [OPEN候補・ユーザー判断待ち・未実装・未承認]**(2026-10-12起票、FAMILY-X-COFFEE-FINAL-AUDIO-ASSEMBLY-01 委任_02)Coffee限定でStyle選択(PD8/K2/M2/P2/E1/A5/B5)がAPPROVED_FOR_PRODUCTIONとなったが、全記事共通Style展開は未承認。他記事での再現確認(複数テーマ・Family別)と全記事共通化の判断が必要。Trial結果はVALIDATEDではなく試聴待ち。 |
 | OPEN-299 | **IN-ONE-LINE-TWO-SENTENCE-POLICY-SPECIFICATION-01 [OPEN候補・未仕様化・未承認]**(2026-10-12起票)既存仕様『中心1文+補足2文程度』の履行不足の是正と、新2文方針(中心1文+補足1文)は別物。Coffee v3は新2文方針をTrialで適用(Std/Adv原稿は`IN_ONE_LINE_REWRITE_01.md`)。仕様化(Writer/Checker/難易度/Comment4接続の扱い)は未、承認要。 |
 | OPEN-300 | **COFFEE-ONLY-PRODUCTION-WIRING-METHOD-01 [OPEN候補・未設計・Opus独立レビュー条件A対象]**(2026-10-12起票)Productionはrole->Styleを全記事共通定数`FAMILY_X_ROLE_STYLE_EN`で解決し、記事別override機構は無い。Coffee限定で共通Prompt/routingを変えず反映するには記事別Style override層の新設が必要(`PRODUCTION_DIFF_V3_01.md`)。PRODUCTION_WIRED判定に不足するevidence一覧も同ファイル。 |
+| OPEN-301 | **次回Family X候補提示時に含める繰越候補3件(TOPIC-SELECTION-FORM-AND-FAMILY-MIX-20261012-01、2026-10-12ユーザー決定)** 「退屈と攻撃性」「家の操作を変える壁の画面」「小さなEVの試乗評価」を、次回Family X候補提示(24候補・6ジャンル・時事型/準Pool型/Evergreen型付与)に繰越候補として含める。選択・非選択・繰越の履歴は区別して管理。関連: `CURRENT_SPEC.md`「記事構成・Family X選定方式」節、`docs/pm/PM_GOVERNANCE.md` 13節(既存テーマ選定OPENは OPEN-137等の個別Phase 2新規テーマ選定とは別)。Status=OPEN(次回候補提示待ち) |
 
 ## 参照元
 

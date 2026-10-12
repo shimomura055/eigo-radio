@@ -2598,6 +2598,18 @@ OPEN-178/179・既存Topic Discovery Trial結果を上書きしない。
 
 共通仕様は不変。Coffee記事に限りStyle選択を`APPROVED_FOR_PRODUCTION`(Style選択のみ)とするユーザー決定の記録(Intro A5/B5、Advanced Preview E1、Standard日本語Preview/Comment P2、KP英語K2、KP日本語意味M2、Full Story PD8[Standardは生成後に既存6%減速]、In One Lineは既存承認Style)。**Production配線(PRODUCTION_WIRED)は未達**で、Final v3はTrial隔離の完成版(`er057_output/coffee_final_audio_assembly_01/`)。全記事共通Styleは未承認(OPEN-298)。In One Line新2文方針は未仕様化(OPEN-299)。Coffee限定の配線方法は未設計(OPEN-300)。
 
+## 記事構成・Family X選定方式(2026-10-12ユーザー正式決定、`TOPIC-SELECTION-FORM-AND-FAMILY-MIX-20261012-01`、運用方針の記録のみ・Production/Prompt/Routing変更なし)
+
+2026-10-12ユーザー正式決定(`TOPIC-SELECTION-FORM-AND-FAMILY-MIX-20261012-01`):
+
+1. 記事構成: 合計17記事 = Family X 8記事 / Family Y(Voices) 3記事 / Family Z 4記事(古典2、Real Story 1、True Crime 1) / 別枠: 日本TOPニュース1記事+世界TOPニュース1記事。
+2. 重複排除: 日本・世界TOPニュースを先に選定し、15記事側からTOPニュースと実質的に重複する題材を除外する。タイトルだけでなく、同一の出来事・内容による重複も対象。
+3. Family Xの選定方式: 8記事を選ぶため24候補を提示する。6ジャンルに分類しユーザーが偏りを確認できるようにする。各候補に 時事型/準Pool型/Evergreen型 を付与する。面白さを優先しジャンル別件数は固定しない。8記事に満たなければ無理に選ばず追加候補を提示する。選択・非選択・繰越の履歴を区別して管理する。
+4. 次回繰越候補: 「退屈と攻撃性」「家の操作を変える壁の画面」「小さなEVの試乗評価」。
+5. フォーム管理: 承認済みフォームはChatGPTライブラリに保存済み。Claude側でフォームHTML・テンプレート・デザインファイルを保存/実装する必要はなく、Repoには運用上の決定事項のみ記録する。
+
+既存の`docs/pm/PM_GOVERNANCE.md` 13節(新規記事テーマはClaude単独で決めず、複数候補提示→ユーザー選択)との関係: 本決定は候補数24・6ジャンル・型付与・履歴管理を具体化するもので、13節と矛盾しない。
+
 ## 参照元
 
 [ER-003-A2-00_SPEC_AUDIT.md](ER-003-A2-00_SPEC_AUDIT.md)、
