@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01 委任_05: er026 E2E統合のtest(課金0・実API呼出なし)。
 
-- stage順 / --stage all / STOP条件(validator FAIL・NEEDS_REVIEW、話者不一致、other、Std段落不一致2回、budget)
+- stage順 / --stage all / STOP条件(話者不一致、other、budget、STOPセンチネル)。2026-10-12ユーザー決定により原作保持Validator(er061)は経路から撤廃(validate stageなし)、Std段落不一致はWARN+独自分割
 - resume(provenance sha)・dry-run副作用ゼロ・mock全stage通し(writer->...->assemble->pages->page_verify --local)
 - mock時は全LLM/TTS/ASR/KP fnを内蔵ダミーに固定し、実client生成/ログ初期化が呼ばれたら即AssertionError
 実行: .venv/Scripts/python.exe -m unittest er026_family_z_e2e_integration_test_01 -v
@@ -36,7 +36,7 @@ MONITORED_FILES = [
 ]
 MONITORED_DIRS = ["er026_output/family_z_production_e2e_01", "er011_output/local_rewrite_recovery",
                   "user_test/family_z_melos_01"]
-PRE_STAGES = ["seed_check", "writer", "validate_b1b", "std_adjust", "validate_a2", "plan", "support", "kp"]
+PRE_STAGES = ["seed_check", "writer", "std_adjust", "plan", "support", "kp"]
 
 
 def _file_sha(p):
@@ -63,7 +63,6 @@ def forbid_real_apis() -> contextlib.ExitStack:
     """mock時に実client生成・ログ初期化・実Support/KP/TTS入口が呼ばれたら即AssertionError(04B事故再発防止)。"""
     stack = contextlib.ExitStack()
     for target in ("er003_v1_en_direct_vfl_01_generate.get_client",
-                   "er061_family_z_semantic_validator_01.get_openai_client",
                    "er003_v1_b1_scaffold_01_generate.get_client",
                    "er003_v1_b1_scaffold_01_generate.run_support_text",
                    "er003_v1_iran01_a2_generate.run_support_text",
@@ -111,7 +110,7 @@ class MockFullPipelineTest(unittest.TestCase):
             return json.load(f)
 
     def test_stage_order_is_fixed_and_all_ran(self):
-        self.assertEqual(list(r.E2E_STAGES), ["seed_check", "writer", "validate_b1b", "std_adjust", "validate_a2", "plan",
+        self.assertEqual(list(r.E2E_STAGES), ["seed_check", "writer", "std_adjust", "plan",
                                               "support", "kp", "tts_b1b", "tts_a2", "provision_shell", "gate",
                                               "assemble", "pages", "page_verify"])
         self.assertEqual(list(self.results), self.stages)
@@ -122,12 +121,13 @@ class MockFullPipelineTest(unittest.TestCase):
         self.assertEqual([x["stage"] for x in rows][: len(self.stages)], self.stages)
         self.assertTrue(all(x["mode"] == "mock" for x in rows))
 
-    def test_word_count_guardrail_is_warn_only_and_never_regenerates(self):
-        # OPEN-302(未承認Guardrail): mock Advは364語(<400)、Stdはratio 1.18(>1.10)。WARNのみで全stageが完走し、自動再生成しない。
+    def test_word_count_and_ratio_guardrails_are_warn_only_and_never_regenerate(self):
+        # 2026-10-12ユーザー決定: Adv/Stdとも280-420語(WARNのみ)。Adv/Std語数比Guardrailは撤回。自動再生成しない。
         g_adv = self.results["writer"]["stages"]["r2"]["guardrails"]
-        self.assertTrue(any(w.startswith("ADV_WORDS_OUT_OF_RANGE") for w in g_adv["warnings"]))
+        self.assertEqual(g_adv["failures"], [])
+        self.assertFalse(any("RATIO" in w for w in g_adv["warnings"]))
         g_std = self.results["std_adjust"]["guardrails"]
-        self.assertTrue(any(w.startswith("STD_ADV_RATIO_OUT_OF_RANGE") for w in g_std["warnings"]))
+        self.assertFalse(any("RATIO" in w for w in g_std["warnings"]))
         self.assertFalse(self.results["std_adjust"]["auto_regenerated"])
         self.assertEqual(g_std["failures"], [])
 
@@ -139,15 +139,13 @@ class MockFullPipelineTest(unittest.TestCase):
         self.assertEqual(res["dialogue_voices"]["dionysius"], "Charon")
         self.assertTrue(res["er020_full_story_clip_pattern"])
 
-    def test_validators_ran_and_std_checks_present(self):
-        b = self._j("validator/b1b/validator_result.json")
-        a = self._j("validator/a2/validator_result.json")
-        self.assertIn(b["verdict"], ("PASS", "WARN"))
-        self.assertIn(a["verdict"], ("PASS", "WARN"))
-        self.assertIsNone(b["std_checks"])
-        self.assertIsNotNone(a["std_checks"])          # Stdはadv_text付きで検証
-        self.assertTrue(a["std_checks"]["paragraph_count_match"] if "paragraph_count_match" in a["std_checks"] else True)
-        self.assertGreaterEqual(len(self.ctx.judge_client.calls), 2)
+    def test_no_validator_stage_and_er061_not_loaded_by_runner(self):
+        # 2026-10-12ユーザー決定: 原作保持Validator(er061)は撤廃。経路にstage・成果物・importがない
+        self.assertFalse(os.path.exists(f"{self.out}/validator"))
+        self.assertNotIn("validate_b1b", self.results)
+        self.assertNotIn("validate_a2", self.results)
+        self.assertFalse(hasattr(r._m(), "v61"))
+        self.assertFalse(hasattr(self.ctx, "judge_client"))
 
     def test_provenance_chain_and_no_stale(self):
         prov = self._j("writer/provenance.json")
@@ -223,12 +221,9 @@ class MockFullPipelineTest(unittest.TestCase):
 
     def test_resume_reuses_without_new_api_calls(self):
         llm_before = len(self.ctx.llm_client.responses.calls)
-        judge_before = len(self.ctx.judge_client.calls)
-        res = run_stages_quiet(self.ctx, ["writer", "validate_b1b", "std_adjust", "validate_a2", "plan", "support", "kp", "tts_b1b"])
+        res = run_stages_quiet(self.ctx, ["writer", "std_adjust", "plan", "support", "kp", "tts_b1b"])
         self.assertEqual(len(self.ctx.llm_client.responses.calls), llm_before)
-        self.assertEqual(len(self.ctx.judge_client.calls), judge_before)
         self.assertTrue(all(v["status"] == "reused" for v in res["writer"]["stages"].values()))
-        self.assertTrue(res["validate_b1b"]["reused"] and res["validate_a2"]["reused"])
         adv = self._j("b1b/audit/tts_generation_results.json")["segments"]
         self.assertTrue(all(e.get("reused_from_previous_run") for k, e in adv.items()
                             if re.fullmatch(r"full_story_part[1-3]_c[0-9]+", k)))
@@ -282,6 +277,8 @@ class DryRunAndCliTest(unittest.TestCase):
         self.assertEqual([s["stage"] for s in plan["stages"]], list(r.E2E_STAGES))
         self.assertTrue(plan["dry_run"])
         self.assertEqual(plan["preflight"]["melos_voice_status"], "PROVISIONAL_UNAPPROVED")
+        self.assertNotIn("validate_b1b", [s["stage"] for s in plan["stages"]])
+        self.assertEqual(plan["stop_sentinel"]["exit_code_on_hit"], 3)
         self.assertFalse(os.path.exists(out_dir))
         self.assertEqual(snapshot(), before)               # Master Store/telemetry/queue/attempt_history/ledger 不変
 
@@ -361,60 +358,76 @@ class StopConditionsTest(TmpMixin, unittest.TestCase):
     def _std_extra_paragraph(self, n, adv):
         return r._mock_std_text(adv, n) + "\nExtra paragraph really.\n"
 
-    # --- validator ---
-    def test_validator_fail_stops_and_blocks_downstream(self):
-        judge = r.MockJudgeClient(overrides={"N1": {"status": "altered", "severity": "major",
-                                                    "evidence_quote": "Melos stood before the ruler"}})
-        ctx = r.build_mock_context(self.new_tmp(), judge_client=judge)
-        with self.assertRaises(r.FamilyZValidatorStop) as cm:
-            run_stages_quiet(ctx, ["seed_check", "writer", "validate_b1b", "std_adjust"])
-        self.assertIn("FAIL", str(cm.exception))
-        self.assertFalse(os.path.exists(f"{ctx.out_dir}/writer/std.md"))      # 下流へ進まない
-        self.assertTrue(os.path.exists(f"{ctx.out_dir}/validator/b1b/validator_summary.md"))
-        self.assertEqual(len(judge.calls), 2)                                  # FAIL時は再判定1回(設計どおり)
-
-    def test_validator_needs_review_stops(self):
-        class BadJudge(r.MockJudgeClient):
-            def _create(self, **kw):
-                resp = super()._create(**kw)
-                resp.output_text = "not json at all"
-                return resp
-        ctx = r.build_mock_context(self.new_tmp(), judge_client=BadJudge())
-        with self.assertRaises(r.FamilyZValidatorStop) as cm:
-            run_stages_quiet(ctx, ["seed_check", "writer", "validate_b1b"])
-        self.assertIn("NEEDS_REVIEW", str(cm.exception))
-
     def test_std_identical_to_adv_stops_in_std_adjust(self):
         ctx = r.build_mock_context(self.new_tmp(), writer_hook=r.mock_writer_hook(std_override=lambda n, adv: adv))
         with self.assertRaises(st62.FamilyZStop):
-            run_stages_quiet(ctx, ["seed_check", "writer", "validate_b1b", "std_adjust"])
+            run_stages_quiet(ctx, ["seed_check", "writer", "std_adjust"])
 
     # --- Std段落数 ---
     def _std_calls(self, ctx):
         return sum(1 for c in ctx.llm_client.responses.calls if "Rewrite this entire story for CEFR A2" in c["input"][-1]["content"])
 
-    def test_std_paragraph_mismatch_auto_regenerates_once_then_stops(self):
+    def test_std_paragraph_mismatch_warns_and_falls_back_without_regeneration_or_stop(self):
+        # 2026-10-12ユーザー決定: 段落不一致はWARN+04B独自分割。再生成・STOPしない。
         ctx = r.build_mock_context(self.new_tmp(), writer_hook=r.mock_writer_hook(std_override=self._std_extra_paragraph))
-        with self.assertRaises(r.FamilyZStdParagraphStop) as cm:
-            run_stages_quiet(ctx, ["seed_check", "writer", "validate_b1b", "std_adjust"])
-        self.assertIn("再生成後も不一致", str(cm.exception))
-        self.assertEqual(self._std_calls(ctx), 2)                              # 初回 + 自動再生成1回のみ
-        # 再実行しても追加LLM callなしで再度STOP(自動再生成は1回限り)
-        with self.assertRaises(r.FamilyZStdParagraphStop):
-            run_stages_quiet(ctx, ["std_adjust"])
-        self.assertEqual(self._std_calls(ctx), 2)
+        res = run_stages_quiet(ctx, ["seed_check", "writer", "std_adjust", "plan"])
+        self.assertEqual(self._std_calls(ctx), 1)                              # 再生成なし(1回のみ)
+        self.assertFalse(res["std_adjust"]["auto_regenerated"])
+        self.assertIsNotNone(res["std_adjust"]["paragraph_mismatch_warn"])
+        self.assertTrue(os.path.exists(f"{ctx.out_dir}/writer/std_paragraph_mismatch_warn.json"))
+        self.assertFalse(os.path.exists(f"{ctx.out_dir}/writer/std_auto_realign.json"))
+        self.assertNotEqual(res["plan"]["a2"]["split_origin"], "mapped_from_advanced")   # 独自分割にフォールバック
+        run_stages_quiet(ctx, ["std_adjust"])                                  # 再実行も追加callなし
+        self.assertEqual(self._std_calls(ctx), 1)
 
-    def test_std_paragraph_mismatch_then_match_on_regeneration_passes(self):
-        n_calls = {"n": 0}
+    def test_word_count_out_of_range_is_warn_only(self):
+        nl = chr(10) * 2
+        ctx = r.build_mock_context(
+            self.new_tmp(), writer_hook=r.mock_writer_hook(std_override=lambda n, adv: "# T" + nl + nl.join(["Short here."] * n)))
+        res = run_stages_quiet(ctx, ["seed_check", "writer", "std_adjust"])
+        g = res["std_adjust"]["guardrails"]
+        self.assertTrue(any(w.startswith("STD_WORDS_OUT_OF_RANGE") for w in g["warnings"]))
+        self.assertEqual(g["failures"], [])
+        self.assertFalse(res["std_adjust"]["auto_regenerated"])
 
-        def override(n, adv):
-            n_calls["n"] += 1
-            return self._std_extra_paragraph(n, adv) if n_calls["n"] == 1 else r._mock_std_text(adv, n)
-        ctx = r.build_mock_context(self.new_tmp(), writer_hook=r.mock_writer_hook(std_override=override))
-        res = run_stages_quiet(ctx, ["seed_check", "writer", "validate_b1b", "std_adjust"])
-        self.assertTrue(res["std_adjust"]["auto_regenerated"])
-        self.assertTrue(os.path.exists(f"{ctx.out_dir}/writer/std_auto_realign.json"))
-        self.assertEqual(self._std_calls(ctx), 2)
+    # --- STOPセンチネル(委任_11) ---
+    def test_stop_sentinel_run_stops_before_any_api_call_and_records_audit(self):
+        ctx = r.build_mock_context(self.new_tmp())
+        os.makedirs(ctx.out_dir, exist_ok=True)
+        with open(f"{ctx.out_dir}/STOP", "w", encoding="utf-8") as f:
+            f.write("stop")
+        with self.assertRaises(st62.FamilyZStopSentinel):
+            run_stages_quiet(ctx, ["seed_check", "writer"])
+        self.assertEqual(len(ctx.llm_client.responses.calls), 0)               # 新規API呼出なし
+        self.assertTrue(os.path.exists(f"{ctx.out_dir}/audit_stop_sentinel.jsonl"))
+        st62.set_stop_run_dir(None)
+
+    def test_stop_sentinel_stop_all_stops_and_main_returns_rc3(self):
+        ctx = r.build_mock_context(self.new_tmp())
+        stop_all = os.path.join(self.new_tmp(), "STOP_ALL")
+        with open(stop_all, "w", encoding="utf-8") as f:
+            f.write("stop")
+        with mock.patch.object(st62, "STOP_ALL_PATH", stop_all):
+            with self.assertRaises(st62.FamilyZStopSentinel):
+                run_stages_quiet(ctx, ["writer"])
+            self.assertEqual(len(ctx.llm_client.responses.calls), 0)
+            with mock.patch.object(r, "build_mock_context", return_value=ctx):
+                with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                    code = r.main(["--mode", "mock", "--stage", "writer", "--run", "t_sentinel"])
+        self.assertEqual(code, 3)
+        st62.set_stop_run_dir(None)
+
+    def test_stop_sentinel_blocks_each_tts_clip_call(self):
+        calls = []
+        gens = {"narrator": lambda spec, out: calls.append(spec.clip_id) or {"status": "OK"}}
+        d = self.new_tmp()
+        with open(f"{d}/STOP", "w", encoding="utf-8") as f:
+            f.write("stop")
+        wrapped = r.wrap_generators_with_budget(gens, None, sentinel_dir=d)
+        spec = type("S", (), {"clip_id": "full_story_part1_c1"})()
+        with self.assertRaises(st62.FamilyZStopSentinel):
+            wrapped["narrator"](spec, "x.wav")
+        self.assertEqual(calls, [])
 
     # --- 話者 ---
     def _flip_attribution(self, quote_id, speaker):
@@ -435,7 +448,7 @@ class StopConditionsTest(TmpMixin, unittest.TestCase):
         # q9_1 は決定論=friend。LLMがkingと食い違うとSTOP(自動採用しない)
         ctx = r.build_mock_context(self.new_tmp(), writer_hook=self._flip_attribution("q9_1", "king"))
         with self.assertRaises(st62.FamilyZDialogueMismatchStop):
-            run_stages_quiet(ctx, PRE_STAGES[:6])
+            run_stages_quiet(ctx, PRE_STAGES[:4])
         self.assertTrue(os.path.exists(f"{ctx.out_dir}/dialogue_override.json"))
         self.assertFalse(os.path.exists(f"{ctx.out_dir}/segment_plan_b1b.json"))
 
@@ -443,12 +456,12 @@ class StopConditionsTest(TmpMixin, unittest.TestCase):
         # q1_1 は決定論=判定不能(llm_only)。LLMが other を返すと採用はされるがSTOP(04C)
         ctx = r.build_mock_context(self.new_tmp(), writer_hook=self._flip_attribution("q1_1", "other"))
         with self.assertRaises(r.FamilyZDialogueOtherStop) as cm:
-            run_stages_quiet(ctx, PRE_STAGES[:6])
+            run_stages_quiet(ctx, PRE_STAGES[:4])
         self.assertIn("other", str(cm.exception))
 
     def test_llm_only_speaker_is_adopted_without_stop(self):
         ctx = r.build_mock_context(self.new_tmp())
-        res = run_stages_quiet(ctx, PRE_STAGES[:6])
+        res = run_stages_quiet(ctx, PRE_STAGES[:4])
         self.assertGreater(res["plan"]["b1b"]["dialogue_summary"]["llm_only"], 0)
 
     # --- provenance ---
@@ -525,18 +538,6 @@ class StopConditionsTest(TmpMixin, unittest.TestCase):
 # ============================================================
 # 4. 個別helper
 # ============================================================
-class RevalidateWrapperTest(unittest.TestCase):
-    def test_benign_change_passes_and_forbidden_ending_fails(self):
-        ctx = r.E2EContext(mode="mock")
-        fn = r.make_revalidate_fn(ctx)
-        with open(r.MOCK_ADV_SOURCE, encoding="utf-8") as f:
-            article = r.canonical_article_text(f.read())
-        ok = fn(text_before=article, text_after=article.replace("He could not wait", "He could not stop"))
-        self.assertEqual(ok["verdict"], "PASS")
-        bad = fn(text_before=article, text_after=article + "\n\nIn the end, trust is for fools.")
-        self.assertEqual(bad["verdict"], "FAIL")
-
-
 class KpInstallTest(TmpMixin, unittest.TestCase):
     def test_install_kp_assets_copies_to_level_dir_and_fails_closed_when_missing(self):
         ctx = r.E2EContext(mode="mock", run_root=self.new_tmp(), run="t_kp")

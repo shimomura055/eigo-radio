@@ -176,16 +176,29 @@ class TtsAssembleStagesImplementedTest(unittest.TestCase):
         self.assertIn("SUPERSEDED", runner.check_character_name_rule.__doc__)
         self.assertIn("SUPERSEDED", runner.restore_character_names.__doc__)
 
-    def test_run_text_stage_uses_er061_not_old_name_rule(self):
+    def test_run_text_stage_uses_neither_er061_nor_old_name_rule(self):
+        # 2026-10-12ユーザー決定: 原作保持Validator(er061)も旧人物名ルールも経路に使わない
         import inspect
         src = inspect.getsource(runner.run_text_stage)
         self.assertNotIn("check_character_name_rule", src)
         self.assertNotIn("restore_character_names", src)
-        self.assertIn("resolve_canonical_text_v2", src)
-        v2 = runner.resolve_canonical_text_v2("melos")
-        self.assertIn(v2["layer1_verdict"], ("PASS", "WARN"))
-        self.assertEqual(v2["edits"], [])
-        self.assertEqual(v2["trial_sha256"], v2["final_sha256"])  # Trial本文は改変しない
+        self.assertNotIn("resolve_canonical_text_v2", src)
+        self.assertNotIn("er061", src.replace("er061)", ""))      # コメント中の撤廃注記以外に参照がない
+        self.assertFalse(hasattr(runner, "resolve_canonical_text_v2"))
+        plain = runner.resolve_canonical_text_plain("melos")
+        self.assertEqual(plain["edits"], [])
+        self.assertEqual(plain["trial_sha256"], plain["final_sha256"])  # Trial本文は改変しない
+        self.assertNotIn("layer1_verdict", plain)
+
+    def test_er061_not_imported_anywhere_in_production_path(self):
+        import re
+        base = os.path.dirname(runner.__file__)
+        for fn in ("er026_family_z_fiction_production_runner_01.py", "er062_family_z_writer_01.py",
+                   "er062_family_z_structure_01.py", "er063_family_z_audio_01.py"):
+            with open(os.path.join(base, fn), encoding="utf-8") as f:
+                src = f.read()
+            self.assertIsNone(re.search(r"^\s*(import|from)\s+er061", src, re.M), fn)
+
 
 
 if __name__ == "__main__":

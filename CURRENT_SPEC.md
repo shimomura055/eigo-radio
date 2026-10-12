@@ -1529,6 +1529,16 @@ Story"専用設計であり、In One Line相当のsegmentがFamily Cに存在し
 - **その他方針**: Family C本体は原則変更しない・Family X影響最小化・既存正式機構を再利用し重複機構を作らない。DEV/Trial scriptだけで動く状態を完了としない。初回/retry/fallback/regeneration/resumeの仕様整合を取る。
 - **Z E2E実行状態(2026-10-12時点、委任_08)**: Sol R0->R2を採用(B3Zは不採用)。writer/validate/std_adjust/plan/supportまで実行済み。**a2 KP canonicalizationがRule7違反でCANONICALIZATION_INVALID(--regenerate-stage kp_a2 1回再試行後も同一)のためkp段でSTOP**、TTS・試聴ページは未実行。Melos Voice=Algieba暫定(未承認)。Z E2E状態=**未完了(STOP中)**、PRODUCTION_WIRED判定とProduction採用はユーザー承認待ち(本節時点で`APPROVED_FOR_PRODUCTION`はユーザー決定の方針部分のみ)。
 
+- **追記(2026-10-12、ユーザー正式決定=仕様修正、`FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01`委任_11、`APPROVED_FOR_PRODUCTION`[仕様]、`PRODUCTION_WIRED`は未達=正式経路反映・Regression・runtime evidence・Git確認まで不可)「Family Z仕様修正(原稿長・原作保持Validator撤廃・編集方針)」**: 以下はFamily Z一般仕様(走れメロス個別例外ではない)。上記「2026-10-12決定による整理」の該当箇所と衝突する場合は本追記が優先する(旧記述は削除せず履歴として残す)。
+  - **① 原稿長**: Advanced/Standardとも**280〜420英語語**(Family X共通目標)。レベルで目標を変えない。語数合わせのための不自然な加筆削除・追加Hard Gateは設けない(範囲外は**WARNのみ**・再生成/STOPしない)。**撤回(superseded)**: Adv 400〜560語 / Std 300〜500語 / Adv-Std比85〜110%(旧OPEN-302暫定値、Opus対案)。Story 3分割の各Part 20〜45%は構造条件として維持。
+  - **② Standard日本語Preview/CommentのTTS Style**はR2のまま(変更なし)。
+  - **③ 原作保持LLM Validator(er061)は不要・中止**。固有名詞必須チェックも撤廃。人物関係・出来事・因果・結末の厳密一致を新Checkerで強制しない。er061をProduction経路へ組み込まない(importしない)。関連API呼出・retry・検査費用を発生させない。別名の意味チェック/独立QAも新設しない。er061本体・fixtures・calibration成果物は履歴として削除せず「NOT_WIRED / 撤廃」注記のみ付す。
+  - **④ Family Z編集方針**: 原作のエッセンスを活かし、**面白さ・自然なStorytellingを優先**。原作と異なる展開も作品として成立すれば許容。品質問題は**Writer側Prompt改善**で対応し、Checker/Validatorを安易に増設しない(Family Z全体方針)。旧「原作保持条件(中心Story・人物関係・結末を保持)」はWriter Promptの「編集方針(エッセンス重視・自然なStorytelling優先)」へ置換。Std調整Promptも同趣旨(段落数・順序一致の指示は構造契約として維持。ただし不一致はWARN+04B独自分割へフォールバックし、再生成・STOPしない=旧「自動再生成1回後STOP」方針を撤回)。
+  - **旧人物名ルール・外国人名ルールの扱い**: 旧`check_character_name_rule`/`restore_character_names`(項目2の名前検査)は経路から外した。項目4「外国人名ルール(First/Last一方のみ)」は**編集スタイル規定であり権利/法務要件ではない**(権利要件は項目3の権利Gate[Z-1]のみ)ため、Checker/Gateとしては保持しない(Writer Prompt側の人物名方針[主人公のみ固有名]で対応。Writer guardrailの禁止名検出は`NAME_RULE_NOTE`のWARNのみに降格)。権利Gate(Z-1)・必須ファイル/構造検査・音声ASR/TTS品質・6%減速確認・Voice/Assembly整合・技術的安全確認は維持。
+  - **維持**: Sol R0->R1->R2(Adv新規)、Adv->Std難易度調整、Family Cベース3分割+Comment3、In One Line/Comment4なし、Narrator PD8、Dialogue既存別Voice/Style、Std JA R2、費用上限JPY300/警告JPY200。**Coffee P8はFamily Zへ適用しない。**
+  - **運用安全(事故再発防止、`docs/pm/PM_GOVERNANCE.md`26節)**: Z runner(er026/er062/er063)は各API呼出の前・各clipの前に STOPセンチネル(`<run>/STOP` または `er026_output/family_z_production_e2e_01/STOP_ALL`)を確認し、存在すれば新規API呼出をせず監査記録を書いてrc=3で終了する。
+  - **Z E2E状態(2026-10-12 委任_11時点)**: **仕様修正反映済み・再生成待ち(予算判断)**。run_e2e_01(旧仕様、累計JPY108.1)は全額無効(再利用しない)。再生成は新規run(run_e2e_02想定)で、ユーザーの予算判断後に委任_12で実施。`PRODUCTION_WIRED`ではない(runtime evidence未取得)。Melos Voice=Algieba暫定(未承認、OPEN-306)。費用台帳・再生成見積: `er026_output/family_z_production_e2e_01/melos/COST_LEDGER_MELOS_01.md`。
+
 ## Family体系(2026-09-27ユーザー決定、`PM-FAMILY-SYSTEM-MIGRATION-ABC-TO-XYZ-2026-09-27`)
 
 **Status**: ユーザー決定のSSOT反映(2026-09-27)。コード変更・Production挙動変更は伴わない。

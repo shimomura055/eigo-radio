@@ -6,12 +6,16 @@ Dialogue話者判定・Preview/Comment/KP・来歴(provenance)。
 (er026 runnerへの統合は後続)。本moduleはTrial(er059)をimportしない。
 【構成】構造処理(純粋関数・課金0)は er062_family_z_structure_01.py。本fileはLLM呼出・stage管理・CLI。
 【Prompt】R0/R1/R2/Std調整はTrial②(er059 Sol only)のPrompt/effort/developer文を正式化(B3Zなし)。
-  Advanced化のための差分(最小): Length and levelをA2→Advanced(B1-B2相当・400-560語)、Seed変換計画の
-  A2/語数文言の置換、原作保持条件・Story Type metadata・タイトル行の追加。
+  Advanced化のための差分(最小): Length and levelをA2→Advanced(B1-B2相当・280-420語)、Seed変換計画の
+  A2/語数文言の置換、編集方針(原作のエッセンス重視)・Story Type metadata・タイトル行の追加。
+  【仕様修正 2026-10-12(委任_11、ユーザー正式決定)】原稿長はAdv/Stdとも280-420英語語(Family X共通目標、レベルで変えない)。
+  Adv/Std語数比Guardrail・原作保持条件(中心Story・人物関係・結末の厳密保持)は撤回。原作のエッセンスを活かし
+  面白さ・自然なStorytelling優先、原作と異なる展開も作品として成立すれば許容。品質問題はWriter Prompt側で対応し、
+  Checker/Validatorは増設しない(語数はWARNのみ・再生成/STOPしない)。
 【Model】routing key経由(FAMILY_Z_WRITER_ADV_R0/R1/R2, FAMILY_Z_STD_ADJUST=gpt-6.1-sol、
   FAMILY_Z_STORY_SPLIT, FAMILY_Z_DIALOGUE_ATTRIBUTION=gpt-6-luna)。返却model不一致はSTOP。
 【R2固定】retry/regenerationは明示 --regenerate-stage のみ。親sha不一致はSTOP(FamilyZProvenanceMismatchStop)。
-【語数Guardrail(OPEN-302、未承認)】Adv 400-560 / Std 300-500かつAdv比85-110% は WARN。再生成は明示指定時のみ。
+【語数Guardrail】Adv/Std とも 280-420 語(範囲外はWARNのみ)。再生成は明示指定時のみ。(旧OPEN-302暫定 Adv400-560/Std300-500/比85-110%は撤回)
 """
 from __future__ import annotations
 
@@ -43,9 +47,9 @@ WRITER_EFFORT = "high"                            # Trial②と同じ(温度は�
 SPLIT_EFFORT = "medium"
 ATTRIBUTION_EFFORT = "medium"
 
-ADV_WORD_RANGE = (400, 560)                       # OPEN-302(未承認Guardrail)
-STD_WORD_RANGE = (300, 500)
-STD_ADV_RATIO_RANGE = (0.85, 1.10)
+ADV_WORD_RANGE = (280, 420)                       # 2026-10-12ユーザー決定: Family X共通目標(WARNのみ)
+STD_WORD_RANGE = (280, 420)                       # レベルで目標を変えない
+TARGET_WORDS = 350                                # 範囲中央(Writer/Std調整Promptの目標語数)
 STD_AVG_SENT_FACTOR = 0.85                        # soft gate(WARN)
 STD_IDENTICAL_FAIL = 0.50                         # M8: 一致文率>=50%でFAIL
 
@@ -92,13 +96,14 @@ This article will also be listened to as audio. Try to keep it easy for a listen
 # Advanced化の差分ブロック(Trialは「A2・約350語(280-420)」だった)
 R0_BLOCK_LENGTH_ADV = """[Length and level]
 - Write natural, fluent English for an upper-intermediate learner (around CEFR B1-B2): varied sentence structures, richer but common vocabulary, natural rhythm. It must still be easy to follow by ear.
-- Target length for the reader-facing text is about 480 words (roughly 400-560 words is fine)."""
+- Target length for the reader-facing text is about 350 words (roughly 280-420 words is fine)."""
 
-# 追加ブロック(Trialに無い。原作保持条件・Story Type metadata)
-R0_BLOCK_PRESERVATION = """[Preservation conditions -- the original's identity]
-- Keep every Story Seed element above, in the same order of events.
-- Keep the central story, the relationships between the characters (who threatens, who trusts, who waits for whom), and the ending's outcome (what finally happens to each main character) as stated in the Seed. Do not invent a different ending.
-- Do not add new named people, new places, or new events that change the cause-and-effect of the story."""
+# 追加ブロック(Trialに無い。編集方針・Story Type metadata)
+# 2026-10-12ユーザー決定: 原作保持条件(中心Story・人物関係・結末の厳密保持)を撤回し、エッセンス重視・自然なStorytelling優先へ置換。
+R0_BLOCK_PRESERVATION = """[Editorial policy -- keep the essence, tell it as a story]
+- Keep the essence of the original work (the core idea or feeling that makes it memorable) and use the Story Seed above as raw material.
+- Give priority to making it interesting and natural as storytelling. The story may develop differently from the original, as long as it stands on its own as a satisfying story.
+- Keep the cast small and do not add named people other than the main character."""
 
 R0_BLOCK_STORY_TYPE = """[Story Type]
 {story_type} (a Public Domain literature adaptation; do not describe it as news or as a true story)."""
@@ -120,17 +125,17 @@ R0_TEMPLATE = (
 
 # Seed変換計画のAdvanced化置換(A2・語数文言のみ。見つからなければ末尾に上書き指示を追加)
 _CONVERSION_SUBSTITUTIONS = (
-    (re.compile(r"simple third-person English at about 300[–-]350 words"), "natural third-person English at about 480 words"),
+    (re.compile(r"simple third-person English at about 300[–-]350 words"), "natural third-person English at about 350 words"),
     (re.compile(r"while simplifying the language and minor details for A2 learners"),
      "while keeping minor details light, for upper-intermediate (B1-B2) learners"),
 )
-_CONVERSION_OVERRIDE = ("\nLevel and length override: write natural upper-intermediate (B1-B2) English, about 480 words "
-                        "(roughly 400-560); ignore any earlier A2 / word-count instruction.")
+_CONVERSION_OVERRIDE = ("\nLevel and length override: write natural upper-intermediate (B1-B2) English, about 350 words "
+                        "(roughly 280-420); ignore any earlier A2 / word-count instruction.")
 
-# R1/R2(Trial②のREVISE_USER_TMPLのAdvanced化: A2・280-420語 -> B1-B2相当・400-560語)
+# R1/R2(Trial②のREVISE_USER_TMPLのAdvanced化: A2 -> B1-B2相当。語数は280-420語でA2時と同じ)
 REVISE_USER_TMPL = ("Here is a short story:\n\n{body}\n\n"
                     "Without changing the events, the characters, or the cause-and-effect, please revise it into a more engaging story. "
-                    "Keep it at a natural upper-intermediate level (CEFR B1-B2), about 400-560 words, in third person, "
+                    "Keep it at a natural upper-intermediate level (CEFR B1-B2), about 280-420 words, in third person, "
                     "and only Melos may have a personal name. Output the title and the story only.")
 
 # Std調整(Z専用): X共有ブロックはimport(STANDARD_A2_NEW_VOCAB_BLOCK/STANDARD_A2_DEVELOPER)。
@@ -144,16 +149,16 @@ Use mostly one main idea per sentence. Split long clauses. Do not pack a cause, 
 """
 STD_PROMPT_TAIL = """
 
-Preserve the same story, the same order of events, the same surprise in the same place, the important metaphor or storytelling device, and the same ending.
+Keep the essence of the source story and its natural, engaging storytelling: the same flow of events, the important metaphor or storytelling device, and what makes it interesting.
 Do not turn the story into a summary.
 Do not remove an entertaining detail only because it is harder to express. Say it in simpler English instead.
-Do not add new facts, new explanations, new characters, or new general observations.
-Keep every fact exactly as it is: who did what, cause and effect, the order of events, negations, and limitations.
+Do not add new explanations, new characters, or new general observations.
+You may adjust small details when that makes the simpler English more natural; what matters is that it still works as the same engaging story.
 
 The result must still sound natural when read aloud. Do not write like a children's book, and do not write a flat list of short sentences.
 
 Paragraph alignment (required): the source story below has exactly {n_paragraphs} paragraphs. Your output must have exactly {n_paragraphs} paragraphs, in the same order, one for each source paragraph. Do not merge, split, add, remove, or reorder paragraphs. A paragraph that is dialogue stays dialogue.
-Length: about {target_words} words in the body (between {lo_words} and {hi_words}).
+Length: about {target_words} words in the body (between {lo_words} and {hi_words}); the target is the same for every level.
 Keep the title as a single "# " line first. Do not add section headings, subheadings, a closing summary, or any "In one line" section.
 
 Output only the English title and the English body.
@@ -309,6 +314,7 @@ class LLM:
             kw["text"] = {"format": {"type": "json_schema", **schema}}
         last = None
         for attempt in (1, 2):
+            st.check_stop_sentinel(f"llm:{label}#{attempt}")        # 委任_11: 各API呼出の直前
             self.budget.before(key, f"{label}#{attempt}")
             t0 = time.time()
             try:
@@ -366,11 +372,9 @@ def build_std_prompt(adv_text: str) -> str:
     import er003_v1_n3_01_standard_a2_generate as sa2     # X共有ブロック(import only)
     title, body = st.split_title_body(adv_text)
     paras = st.clean_body_paragraphs(body)
-    n_words = sum(st.para_word_counts(paras))
-    target = int(round(n_words * 0.95))
-    lo = max(STD_WORD_RANGE[0], int(n_words * STD_ADV_RATIO_RANGE[0]))
-    hi = min(STD_WORD_RANGE[1], int(n_words * STD_ADV_RATIO_RANGE[1]))
-    tail = STD_PROMPT_TAIL.format(n_paragraphs=len(paras), target_words=target, lo_words=lo, hi_words=hi,
+    # 2026-10-12ユーザー決定: 語数目標はAdvと同じ280-420(Advの語数に連動させない)。
+    tail = STD_PROMPT_TAIL.format(n_paragraphs=len(paras), target_words=TARGET_WORDS,
+                                  lo_words=STD_WORD_RANGE[0], hi_words=STD_WORD_RANGE[1],
                                   advanced_story=adv_text.strip())
     return STD_PROMPT_HEAD + sa2.STANDARD_A2_NEW_VOCAB_BLOCK + tail
 
@@ -384,13 +388,13 @@ def check_adv_guardrails(text: str, forbidden_names=None) -> dict:
     title, body = st.split_title_body(text)
     warns, fails = [], []
     if not (ADV_WORD_RANGE[0] <= wc <= ADV_WORD_RANGE[1]):
-        warns.append(f"ADV_WORDS_OUT_OF_RANGE:{wc} (Guardrail {ADV_WORD_RANGE}, OPEN-302未承認)")
+        warns.append(f"ADV_WORDS_OUT_OF_RANGE:{wc} (目標 {ADV_WORD_RANGE}、WARNのみ・再生成/STOPしない)")
     if title is None:
         warns.append("ADV_NO_TITLE_LINE")
     low = text.lower()
     for nm in forbidden:
         if nm.lower() in low:
-            fails.append(f"NAME_RULE_VIOLATION:{nm}")
+            warns.append(f"NAME_RULE_NOTE:{nm}")   # 2026-10-12: 固有名詞チェックはブロックしない(WARNのみ・Writer Prompt側で対応)
     return {"word_count": wc, "warnings": warns, "failures": fails}
 
 
@@ -404,14 +408,12 @@ def check_std_guardrails(std_text: str, adv_text: str) -> dict:
     s_len, a_len = st.avg_sentence_len(sp), st.avg_sentence_len(ap)
     warns, fails = [], []
     if not (STD_WORD_RANGE[0] <= swc <= STD_WORD_RANGE[1]):
-        warns.append(f"STD_WORDS_OUT_OF_RANGE:{swc} (Guardrail {STD_WORD_RANGE}, OPEN-302未承認)")
-    if not (STD_ADV_RATIO_RANGE[0] <= ratio <= STD_ADV_RATIO_RANGE[1]):
-        warns.append(f"STD_ADV_RATIO_OUT_OF_RANGE:{ratio:.3f} (Guardrail {STD_ADV_RATIO_RANGE})")
+        warns.append(f"STD_WORDS_OUT_OF_RANGE:{swc} (目標 {STD_WORD_RANGE}、WARNのみ・再生成/STOPしない)")
     if a_len and s_len > a_len * STD_AVG_SENT_FACTOR:
         warns.append(f"STD_AVG_SENT_LEN_NOT_SHORTER:{s_len:.2f} vs adv {a_len:.2f}x{STD_AVG_SENT_FACTOR} (soft gate)")
     match = len(sp) == len(ap)
     if not match:
-        warns.append(f"STD_ADV_PARAGRAPH_COUNT_MISMATCH:{len(sp)} vs {len(ap)} (独自分割に回る)")
+        warns.append(f"STD_ADV_PARAGRAPH_COUNT_MISMATCH:{len(sp)} vs {len(ap)} (WARNのみ。04B独自分割へフォールバック、再生成/STOPしない)")
     if ident >= STD_IDENTICAL_FAIL:
         fails.append(f"STD_SAME_AS_ADV:identical_sentence_ratio={ident:.3f}>={STD_IDENTICAL_FAIL}")
     if _t is None:

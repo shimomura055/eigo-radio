@@ -789,6 +789,11 @@ def load_results(level_dir: str) -> dict | None:
         return None
 
 
+def _check_stop_sentinel(run_dir: str, where: str) -> None:
+    import er062_family_z_structure_01 as _zst
+    _zst.check_stop_sentinel(where, run_dir)
+
+
 def _checkpoint_path(level_dir: str) -> str:
     return f"{level_dir}/audit/tts_checkpoint.json"
 
@@ -841,7 +846,9 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
                   story_key: str = DEFAULT_SLUG) -> dict:
     """plan(ClipSpec列)をTTS生成し audit/tts_generation_results.json(+Z拡張)を書く。
     dry_run=Trueはファイル・Master Store・telemetry・queueへ一切書かず、計画のみ返す。
-    Local Rewrite発火clipは audio_text_deviation を記録し revalidate_after_local_rewrite を呼ぶ(FAIL/不可でSTOP)。"""
+    Local Rewrite発火clipは audio_text_deviation をprovenanceへ監査記録する(2026-10-12ユーザー決定: er061再検証フックは撤去。
+    revalidate_fn引数は互換のため残すが呼ばない)。
+    STOPセンチネル(<run>/STOP または STOP_ALL)が存在すれば、各clipの新規API呼出の前に停止する(委任_11)."""
     assert_style_table_integrity()
     level_dir = f"{run_dir}/{level}"
     narr = narration_dir_for(run_dir, level)
@@ -869,6 +876,7 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
             continue
         cb = _cached_entry(cached, spec)
         gen_fn = gens[spec.kind]
+        _check_stop_sentinel(run_dir, f"tts:{spec.clip_id}")       # 委任_11: 各clip(新規API呼出になりうる)の直前
         with cl.segment_context(spec.clip_id):
             entry = generate_or_reuse_z(
                 cb, spec, out_path,
@@ -939,39 +947,14 @@ def apply_deviation_to_article(article_text: str, before: str, after: str) -> st
     return article_text + "\n\n" + (after or "")
 
 
-def _resolve_revalidate_fn(revalidate_fn):
-    if revalidate_fn is not None:
-        return revalidate_fn
-    try:
-        import er061_family_z_semantic_validator_01 as v  # 遅延import(04A成果物)
-        fn = getattr(v, "revalidate_after_local_rewrite", None)
-    except ImportError:
-        fn = None
-    if fn is None:
-        raise FamilyZLocalRewriteStop(
-            "Local Rewriteが発火しましたが er061.revalidate_after_local_rewrite が利用できません(fail-closed)")
-    return fn
-
-
 def _handle_local_rewrite(entry: dict, spec: ClipSpec, article_text, revalidate_fn, story_key: str, level: str,
                           run_dir: str) -> None:
-    """Local Rewrite採択clip: 書換後全文でValidator第1層を再実行(er061.revalidate_after_local_rewrite(
-    text_before, text_after))。PASS以外/利用不可/原稿未指定はSTOP(fail-closed)。entryへ結果を残す。"""
+    """Local Rewrite採択clip: audio_text_deviation(原稿とのずれ)を監査記録するのみ。
+    2026-10-12ユーザー決定により、er061による再検証(revalidate_after_local_rewrite)は撤去した
+    (revalidate_fn は互換のため受けるが呼ばない。STOPもしない)。"""
     dev = entry["audio_text_deviation"]
-    entry["local_rewrite_revalidation"] = {"verdict": "NOT_RUN"}
-    if not article_text:
-        entry["z_adoption"] = "blocked_local_rewrite_revalidation"
-        raise FamilyZLocalRewriteStop("Local Rewrite発火clipですが、再検証用の原稿全文(article_text)が渡されていません(fail-closed)")
-    after_article = apply_deviation_to_article(article_text, dev["canonical_text_before_local_rewrite"],
-                                               dev["audio_text_after"] or "")
-    try:
-        fn = _resolve_revalidate_fn(revalidate_fn)
-    except FamilyZLocalRewriteStop:
-        entry["z_adoption"] = "blocked_local_rewrite_revalidation"
-        raise
-    verdict = fn(text_before=article_text, text_after=after_article)
-    v = verdict.get("verdict") if isinstance(verdict, dict) else verdict
-    entry["local_rewrite_revalidation"] = {"verdict": v, "raw": verdict if isinstance(verdict, dict) else None}
+    entry["local_rewrite_revalidation"] = {"verdict": "NOT_REQUIRED",
+                                           "reason": "2026-10-12ユーザー決定: er061再検証フック撤去(audio_text_deviationの監査記録のみ)"}
     # provenance.audio_text_deviations へ追記(canonicalはそのまま。KP gateへは原稿のまま渡す)
     prov_path = f"{run_dir}/writer/provenance.json"
     if os.path.exists(prov_path):
@@ -980,9 +963,6 @@ def _handle_local_rewrite(entry: dict, spec: ClipSpec, article_text, revalidate_
             {"clip_id": spec.clip_id, "canonical_text_before_local_rewrite": dev["canonical_text_before_local_rewrite"],
              "audio_text_after": dev["audio_text_after"], "diff_summary": dev["diff_summary"]})
         _write_json(prov_path, prov)
-    if v != "PASS":
-        entry["z_adoption"] = "blocked_local_rewrite_revalidation"
-        raise FamilyZLocalRewriteStop(f"Local Rewrite後の再検証が {v!r} (clip={spec.clip_id})。STOP")
 
 
 # ============================================================

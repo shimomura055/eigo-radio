@@ -87,6 +87,8 @@ Trial終了前に各指示の実測確認+KPI全測定+未達時の継続判断�
 `docs/pm/design_open233_self_recovery_flow_01.md`§0、要約は
 `docs/pm/PM_GOVERNANCE.md`23節参照。
 
+**有料runの停止・再起動・STOP通知(2026-10-12新設)**: 実行層の再起動禁止ルール・STOPセンチネル(`STOP`/`STOP_ALL`)・Fable側STOP_ALL先置き手順は`docs/pm/PM_GOVERNANCE.md`26節参照。
+
 ## Fableの読み方(コスト抑制)
 
 - Fableは巨大SSOT(`CURRENT_SPEC.md`・`DECISION_LOG.md`)を全文読まない。

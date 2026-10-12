@@ -72,12 +72,15 @@ class PromptAssemblyTest(unittest.TestCase):
     def test_r0_prompt_advanced_and_requirements(self):
         p, applied = w.build_r0_prompt(_seed())
         self.assertEqual(len(applied), 2)                        # Seed変換計画のA2/語数文言を置換
-        self.assertIn("about 480 words (roughly 400-560", p)
+        self.assertIn("about 350 words (roughly 280-420", p)   # 2026-10-12決定: Adv/Std共通280-420
         self.assertIn("B1-B2", p)
         self.assertNotIn("A2", p)                                # Advanced Promptにレベル指定A2が残らない
         self.assertNotIn("300–350", p)
-        self.assertIn("Preservation conditions", p)              # 原作保持(中心Story・人物関係・結末)
-        self.assertIn("ending's outcome", p)
+        self.assertIn("Editorial policy", p)                     # 2026-10-12決定: エッセンス重視・自然なStorytelling優先
+        self.assertIn("develop differently from the original", p)
+        self.assertNotIn("Preservation conditions", p)           # 旧・原作保持条件(撤回)
+        self.assertNotIn("ending's outcome", p)
+        self.assertNotIn("in the same order of events", p)
         self.assertIn("Only the main character", p)              # 外国人名ルール(Melosのみ固有名)
         self.assertIn("literature", p)                           # Story Type metadata
         for e in _seed()["seed_elements"]:
@@ -93,7 +96,8 @@ class PromptAssemblyTest(unittest.TestCase):
     def test_revise_prompt(self):
         p = w.build_revise_prompt("BODY")
         self.assertIn("BODY", p)
-        self.assertIn("400-560", p)
+        self.assertIn("280-420", p)
+        self.assertNotIn("400-560", p)
         self.assertNotIn("A2", p)
 
     def test_std_prompt_z_specific(self):
@@ -103,7 +107,10 @@ class PromptAssemblyTest(unittest.TestCase):
         self.assertIn(sa2.STANDARD_A2_NEW_VOCAB_BLOCK, p)          # X共有ブロックを逐語import
         self.assertNotIn("## In one line", p)                      # In one line要求は含めない
         self.assertNotIn("Keep the same Markdown structure", p)
-        self.assertIn("exactly 8 paragraphs", p)                   # 段落整列契約
+        self.assertIn("exactly 8 paragraphs", p)                   # 段落整列契約(構造契約、指示は維持)
+        self.assertIn("about 350 words", p)                        # 語数目標はAdvと同じ(Adv語数に連動しない)
+        self.assertIn("between 280 and 420", p)
+        self.assertNotIn("Keep every fact exactly", p)             # 過度な忠実性要求の撤回
         self.assertIn("must not be the same text as the source", p)
         self.assertIn(adv.strip(), p)
 
@@ -140,12 +147,14 @@ class GuardrailTest(unittest.TestCase):
         g = w.check_adv_guardrails(_story_text(8, 30))
         self.assertTrue(any("ADV_WORDS_OUT_OF_RANGE" in x for x in g["warnings"]))
         self.assertEqual(g["failures"], [])
-        g = w.check_adv_guardrails(_story_text(8, 60))
+        g = w.check_adv_guardrails(_story_text(8, 40))        # 320語(280-420内)
         self.assertEqual(g["warnings"], [])
 
-    def test_adv_name_rule_fail(self):
+    def test_adv_name_rule_is_warn_only(self):
+        # 2026-10-12決定: 固有名詞関連はブロックしない(WARNのみ)
         g = w.check_adv_guardrails("# T\n\nDionysius spoke.\n")
-        self.assertTrue(g["failures"])
+        self.assertEqual(g["failures"], [])
+        self.assertTrue(any("NAME_RULE_NOTE" in x for x in g["warnings"]))
 
     def test_std_checks(self):
         adv = _story_text(8, 60)
@@ -153,7 +162,8 @@ class GuardrailTest(unittest.TestCase):
         g = w.check_std_guardrails(std, adv)
         self.assertTrue(g["std_adv_paragraph_count_match"])
         self.assertEqual(g["failures"], [])
-        self.assertAlmostEqual(g["ratio"], 440 / 480, places=2)
+        self.assertAlmostEqual(g["ratio"], 440 / 480, places=2)   # 参考値(判定には使わない)
+        self.assertFalse(hasattr(w, "STD_ADV_RATIO_RANGE"))       # Adv/Std語数比Guardrailは撤回
         g2 = w.check_std_guardrails(adv, adv)                       # 同一本文
         self.assertTrue(any("STD_SAME_AS_ADV" in f for f in g2["failures"]))
         g3 = w.check_std_guardrails(_story_text(6, 55, "easy"), adv)  # 段落数不一致はWARN(独自分割)
@@ -161,7 +171,7 @@ class GuardrailTest(unittest.TestCase):
         self.assertTrue(any("PARAGRAPH_COUNT_MISMATCH" in x for x in g3["warnings"]))
         g4 = w.check_std_guardrails(_story_text(8, 20, "easy"), adv)
         self.assertTrue(any("STD_WORDS_OUT_OF_RANGE" in x for x in g4["warnings"]))
-        self.assertTrue(any("STD_ADV_RATIO" in x for x in g4["warnings"]))
+        self.assertFalse(any("RATIO" in x for x in g4["warnings"]))
 
     def test_identical_ratio_formula(self):
         a = ["He ran home. She stayed there."]
@@ -652,13 +662,14 @@ class ProvenanceChainTest(unittest.TestCase):
             with self.assertRaises(st.FamilyZStop):
                 self._run(d, hook, stages=("std_adjust",))
 
-    def test_r2_name_violation_stops(self):
+    def test_r2_name_note_does_not_stop(self):
+        # 2026-10-12決定: 固有名詞はブロックしない(WARNのみ)。旧: NAME_RULE_VIOLATIONでSTOP
         with tempfile.TemporaryDirectory() as d:
             def hook(kw):
                 if kw["input"][-1]["content"].startswith("Here is a short story"):
                     return "# T\n\n" + " ".join(["Dionysius"] * 450)
-            with self.assertRaises(st.FamilyZStop):
-                self._run(d, hook, stages=("r0", "r1", "r2"))
+            res = self._run(d, hook, stages=("r0", "r1", "r2"))
+            self.assertTrue(any("NAME_RULE_NOTE" in x for x in res["stages"]["r2"]["guardrails"]["warnings"]))
 
     def test_ensure_stage_downstream_input_mismatch_stops(self):
         with tempfile.TemporaryDirectory() as d:

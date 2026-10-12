@@ -1,5 +1,11 @@
 """FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01 委任_04A: Family Z 意味保持Validator。
 
+【NOT_WIRED / 撤廃(ユーザー決定 2026-10-12、委任_11)】本moduleはProduction経路に接続しない。
+原作保持LLM Validatorは不要としてユーザーが中止を決定した(固有名詞必須チェック・人物関係/出来事/因果/結末の
+厳密一致の強制も撤廃)。er026/er062/er063はimportせず、API呼出・retry・検査費用を発生させない。
+Family Zは原作のエッセンスを活かし面白さ・自然なStorytelling優先(原作と異なる展開も許容)、品質問題は
+Writer Prompt側で対応する。本module・fixtures・calibration成果物は履歴として削除せず保持する(testもそのまま)。
+
 旧「人物名検査」(er026 check_character_name_rule / restore_character_names)を
 superseded とし、名前の有無ではなく「人物の役割・関係 / 重要出来事 / 因果 / 順序 /
 結末 / 魅力」の保持で検証する(DECISION_LOG 2026-10-12決定)。Family Z一般仕様

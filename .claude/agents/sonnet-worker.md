@@ -42,3 +42,13 @@ model: sonnet
 ## 禁止事項
 
 - Agent/Subagentを起動しない(自分でさらに別のAgentへ委任しない)。
+
+## 有料run・停止・再起動(必須。詳細`docs/pm/PM_GOVERNANCE.md`26節、2026-10-12事故再発防止)
+
+- 作業開始時と有料run開始前に、`docs/pm/delegation_log/*STOP_NOTICE*`と`<run>/STOP`・
+  `er026_output/family_z_production_e2e_01/STOP_ALL`の存在を確認する。存在すれば新規API呼出をせず報告する。
+- 自分が起動したprocessが外部から停止された、または原因不明のrc≠0が2回続いた場合は、
+  再起動せず即STOPして報告する。
+- 監督ループ・自動再試行ラッパ・別名ラッパ(command lineを変えて同じ処理を起動するもの)を作らない。
+- 有料runの再起動は、委任文が明示許可した回数のみ。
+- STOPセンチネル(`STOP`/`STOP_ALL`)を削除・回避しない(解除はFable/ユーザーのみ)。

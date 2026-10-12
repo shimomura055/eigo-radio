@@ -6,6 +6,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import shutil
 import tempfile
 import unittest
@@ -14,6 +15,7 @@ from unittest import mock
 import numpy as np
 
 import er002_common as common
+import er062_family_z_structure_01 as zst
 import er063_family_z_audio_01 as z
 
 SR = common.SAMPLE_RATE
@@ -433,12 +435,13 @@ class StageGateTest(unittest.TestCase):
                 z.run_audio_gate(self.run, "a2", plan, shell, article_text="a")
             shared.assert_not_called()
 
-    def test_local_rewrite_records_deviation_and_revalidates(self):
+    def test_local_rewrite_records_deviation_without_revalidation(self):
+        # 2026-10-12ユーザー決定: er061再検証フックは撤去。audio_text_deviationの監査記録のみ(STOPしない)。
         calls = []
 
         def reval(text_before, text_after):
-            calls.append({"text_before": text_before, "article_text_after": text_after})
-            return {"verdict": "PASS"}
+            calls.append(1)
+            return {"verdict": "FAIL"}
 
         os.makedirs(f"{self.run}/writer")
         json.dump({"story_key": "melos", "chain": []}, open(f"{self.run}/writer/provenance.json", "w"))
@@ -450,10 +453,9 @@ class StageGateTest(unittest.TestCase):
         self.assertEqual(e["audio_text_deviation"]["canonical_text_before_local_rewrite"], "He ran through the night.")
         self.assertIn("indeed", e["audio_text_deviation"]["audio_text_after"])
         self.assertTrue(e["cooldown_occurred"])
-        self.assertEqual(len(calls), 1)
-        self.assertIn("indeed", calls[0]["article_text_after"])
-        self.assertEqual(calls[0]["text_before"], "He ran through the night. The end.")  # 原稿のまま
-        self.assertEqual(e["local_rewrite_revalidation"]["verdict"], "PASS")
+        self.assertEqual(calls, [])                                   # 再検証は呼ばれない
+        self.assertEqual(e["local_rewrite_revalidation"]["verdict"], "NOT_REQUIRED")
+        self.assertNotEqual(e.get("z_adoption"), "blocked_local_rewrite_revalidation")
         prov = json.load(open(f"{self.run}/writer/provenance.json", encoding="utf-8"))
         self.assertEqual(prov["audio_text_deviations"][0]["clip_id"], "full_story_part2_c1")
         ev = json.load(open(out["evidence_path"], encoding="utf-8"))
@@ -461,41 +463,46 @@ class StageGateTest(unittest.TestCase):
         self.assertIsNotNone(row["local_rewrite_diff"])
         self.assertTrue(row["cooldown_occurred"])
 
-    def test_local_rewrite_revalidation_fail_stops(self):
+    def test_lr_without_article_text_does_not_stop(self):
         plan, _, _ = make_plan("b1b")
-        with self.assertRaises(z.FamilyZLocalRewriteStop):
-            z.run_tts_stage(self.run, "b1b", plan, generators=fake_generators(lr_clips={"full_story_part2_c1"}),
-                            revalidate_fn=lambda text_before, text_after: {"verdict": "FAIL"}, article_text="x")
+        out = z.run_tts_stage(self.run, "b1b", plan, generators=fake_generators(lr_clips={"full_story_part2_c1"}))
+        data = json.load(open(out["results_path"], encoding="utf-8"))
+        self.assertIn("audio_text_deviation", data["segments"]["full_story_part2_c1"])
 
-    def test_lr_fail_writes_audit_then_stops_and_m2_rejects(self):
+    def test_er063_does_not_depend_on_er061(self):
+        src = open(os.path.join(os.path.dirname(z.__file__), "er063_family_z_audio_01.py"), encoding="utf-8").read()
+        self.assertIsNone(re.search(r"^\s*(import|from)\s+er061", src, re.M))
+        self.assertNotIn("revalidate_after_local_rewrite(", src)
+
+    def test_stop_sentinel_run_stops_before_any_generation(self):
         plan, _, _ = make_plan("b1b")
-        with self.assertRaises(z.FamilyZLocalRewriteStop):
-            z.run_tts_stage(self.run, "b1b", plan, generators=fake_generators(lr_clips={"full_story_part2_c1"}),
-                            revalidate_fn=lambda text_before, text_after: {"verdict": "FAIL"}, article_text="He ran through the night.")
-        data = json.load(open(f"{self.run}/b1b/audit/tts_generation_results.json", encoding="utf-8"))
-        e = data["segments"]["full_story_part2_c1"]
-        self.assertEqual(e["z_adoption"], "blocked_local_rewrite_revalidation")
-        with self.assertRaises(z.FamilyZTtsResultsIncompleteStop):
-            z.assert_tts_results_complete(f"{self.run}/b1b", ["full_story_part2_c1"])
+        calls = []
+        gens = fake_generators()
+        orig = gens["narrator"]
+        gens["narrator"] = lambda s, p: (calls.append(s.clip_id), orig(s, p))[1]
+        os.makedirs(self.run)
+        open(f"{self.run}/STOP", "w").write("stop")
+        with self.assertRaises(zst.FamilyZStopSentinel):
+            z.run_tts_stage(self.run, "b1b", plan, generators=gens)
+        self.assertEqual(calls, [])                                   # 新規API呼出なし
+        self.assertTrue(os.path.exists(f"{self.run}/audit_stop_sentinel.jsonl"))   # 監査記録
 
-    def test_lr_without_article_text_stops(self):
+    def test_stop_sentinel_stop_all_stops_mid_run_and_checkpoint_kept(self):
         plan, _, _ = make_plan("b1b")
-        with self.assertRaises(z.FamilyZLocalRewriteStop):
-            z.run_tts_stage(self.run, "b1b", plan, generators=fake_generators(lr_clips={"full_story_part2_c1"}),
-                            revalidate_fn=lambda text_before, text_after: {"verdict": "PASS"})
+        stop_all = os.path.join(self.tmp, "STOP_ALL")
+        gens = fake_generators()
+        orig = gens["narrator"]
 
-    def test_real_er061_signature_compatible(self):
-        import inspect
-        import er061_family_z_semantic_validator_01 as v
-        params = list(inspect.signature(v.revalidate_after_local_rewrite).parameters)
-        self.assertEqual(params[:2], ["text_before", "text_after"])
-
-    def test_local_rewrite_without_er061_is_fail_closed(self):
-        plan, _, _ = make_plan("b1b")
-        with mock.patch.dict("sys.modules", {"er061_family_z_semantic_validator_01": None}):
-            with self.assertRaises(z.FamilyZLocalRewriteStop):
-                z.run_tts_stage(self.run, "b1b", plan, generators=fake_generators(lr_clips={"full_story_part2_c1"}),
-                                article_text="x")
+        def gen(s, p):
+            r = orig(s, p)
+            open(stop_all, "w").write("stop")                          # 1clip生成後にSTOP_ALLが置かれる
+            return r
+        gens["narrator"] = gen
+        with mock.patch.object(zst, "STOP_ALL_PATH", stop_all):
+            with self.assertRaises(zst.FamilyZStopSentinel):
+                z.run_tts_stage(self.run, "b1b", plan, generators=gens)
+        ck = z.load_checkpoint(f"{self.run}/b1b")
+        self.assertTrue(ck and ck["segments"])                         # 完了済みclipはcheckpointに残る(再課金防止)
 
     def test_only_clips_keeps_other_entries(self):
         plan, _, _, _ = self._run_stage("b1b")

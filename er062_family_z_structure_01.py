@@ -52,6 +52,50 @@ class FamilyZPlanStop(FamilyZStop):
     pass
 
 
+# ------------------------------------------------------------
+# STOPセンチネル(委任_11 再発防止。Fable/ユーザーが仕様変更等で実行を止めたいときの合図ファイル)
+# 各API呼出の直前・各clipの直前に確認し、存在すれば新規API呼出をせず監査記録を書いて停止(runnerはrc=3)。
+# ------------------------------------------------------------
+STOP_ALL_PATH = "er026_output/family_z_production_e2e_01/STOP_ALL"
+STOP_EXIT_CODE = 3
+_STOP_RUN_DIR = None
+
+
+class FamilyZStopSentinel(FamilyZStop):
+    """STOPセンチネル検出。自動再開・再試行しない。"""
+
+
+def set_stop_run_dir(run_dir) -> None:
+    global _STOP_RUN_DIR
+    _STOP_RUN_DIR = run_dir
+
+
+def stop_sentinel_hit(run_dir=None):
+    """存在するセンチネルのpathを返す(なければNone)。API 0・書込 0。"""
+    import os
+    rd = run_dir or _STOP_RUN_DIR
+    for pth in ([f"{rd}/STOP"] if rd else []) + [STOP_ALL_PATH]:
+        if os.path.exists(pth):
+            return pth
+    return None
+
+
+def check_stop_sentinel(where: str, run_dir=None) -> None:
+    """センチネルがあれば監査記録(<run>/audit_stop_sentinel.jsonl)を書いて FamilyZStopSentinel を送出する。"""
+    import datetime
+    import os
+    hit = stop_sentinel_hit(run_dir)
+    if hit is None:
+        return
+    rd = run_dir or _STOP_RUN_DIR
+    if rd and os.path.isdir(rd):
+        with open(f"{rd}/audit_stop_sentinel.jsonl", "a", encoding="utf-8") as f:
+            f.write(json.dumps({"at": datetime.datetime.now().isoformat(), "where": where, "sentinel": hit},
+                               ensure_ascii=False) + "\n")
+    raise FamilyZStopSentinel(f"FAMILY_Z_STOP_SENTINEL: {hit} が存在するため {where} の前で停止(新規API呼出なし)。"
+                              "自動再開/再試行はしない。Fable/ユーザーの指示を待つこと。")
+
+
 def sha(s) -> str:
     if isinstance(s, str):
         s = s.encode("utf-8")

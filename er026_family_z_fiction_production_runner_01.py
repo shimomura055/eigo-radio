@@ -242,10 +242,10 @@ def check_word_count(body_text: str) -> tuple:
 
 
 def check_character_name_rule(body_text: str) -> tuple:
-    """[SUPERSEDED 2026-10-12 / 委任_05] 新経路(E2E stage)・run_text_stage は
-    er061_family_z_semantic_validator_01.validate_semantic_preservation へ置換済み
-    (DECISION_LOG 2026-10-12: 名前の登場有無は判定せず意味保持で判定)。本関数は
-    Phase 1 のtest互換のためだけに残置する(新規呼出禁止)。
+    """[SUPERSEDED 2026-10-12 / 委任_05, 委任_11で撤廃] 名前の登場有無は判定しない(固有名詞必須チェック撤廃、
+    ユーザー決定2026-10-12)。原作保持Validator(er061)も中止・非接続。新経路(E2E stage)・run_text_stageは
+    本関数を呼ばない。Phase 1 のtest互換のためだけに残置する(新規呼出禁止)。
+    (外国人名ルール[CURRENT_SPEC項目4]は編集スタイル規定で権利/法務要件ではないため、Checkerとしては持たない)。
     CURRENT_SPEC.md「Family Z(Fiction)」節 項目2(人物名変更・不要な
     設定変更をしない)の照合。走れメロス原文の主要人物3名(Melos/
     Selinuntius/Dionysius)のうち、Melos以外の名前が本文から失われている
@@ -338,20 +338,16 @@ def resolve_canonical_text(story_key: str) -> dict:
     }
 
 
-def resolve_canonical_text_v2(story_key: str) -> dict:
-    """委任_05: run_text_stage 用の新canonical解決。旧人物名ルール(restore_character_names)は
-    使わず、er061 第1層(決定論, API 0)で意味保持を検査する(Trial本文は改変しない)。
-    第1層FAILはSTOP(自動で通さない)。"""
-    import er061_family_z_semantic_validator_01 as v61
+def resolve_canonical_text_plain(story_key: str) -> dict:
+    """run_text_stage(Phase 1互換)用のcanonical解決。2026-10-12ユーザー決定により、原作保持Validator(er061)も
+    旧人物名ルール(check_character_name_rule/restore_character_names)も使わない。Trial本文は改変せず、
+    語数目標(280-420)だけをWARN相当で記録する。権利Gateはrun_text_stage側で維持。"""
     loaded = load_trial_seed_and_story(story_key)
     title, body = strip_markdown_title(loaded["raw_trial_text"])
     word_ok, word_count = check_word_count(body)
-    anchors = v61.load_anchors()
-    layer1 = v61.layer1_check(body, anchors)
     sha = hashlib.sha256(body.encode("utf-8")).hexdigest()
     return {
-        "title": title, "body": body, "word_count": word_count, "word_count_ok": word_ok,
-        "layer1_verdict": layer1["verdict"], "layer1": layer1, "edits": [],
+        "title": title, "body": body, "word_count": word_count, "word_count_ok": word_ok, "edits": [],
         "trial_source_path": f"{STORY_REGISTRY[story_key]['trial_seed_dir']}/story.md",
         "seed_title": loaded["seed"]["title"], "trial_sha256": sha, "final_sha256": sha,
         "seed": loaded["seed"],
@@ -624,15 +620,11 @@ def run_text_stage(story_key: str, slug: str, run: str, dry_run: bool = False) -
     cfg = STORY_REGISTRY[story_key]
     check_rights_gate(cfg["rights_block"])
 
-    # 委任_05: 旧人物名検査(旧名前ルール関数。superseded)をer061へ置換。
-    canonical = resolve_canonical_text_v2(story_key)
+    # 委任_11(2026-10-12ユーザー決定): 原作保持Validator(er061)・旧人物名検査は使わない。権利Gateは上で維持。
+    canonical = resolve_canonical_text_plain(story_key)
     if not canonical["word_count_ok"]:
-        raise RuntimeError(
-            f"FAMILY_Z_WORD_COUNT_OUT_OF_RANGE: word_count={canonical['word_count']} "
-            f"accept_range={ACCEPT_WORD_RANGE}")
-    if canonical["layer1_verdict"] == "FAIL":
-        raise RuntimeError(
-            f"FAMILY_Z_SEMANTIC_LAYER1_FAIL: {[h['id'] for h in canonical['layer1']['hard_fails']]}")
+        print(f"[WARN] FAMILY_Z_WORD_COUNT_OUT_OF_RANGE(WARNのみ): word_count={canonical['word_count']} "
+              f"target_range={ACCEPT_WORD_RANGE}", file=sys.stderr)
 
     segment_plan = build_segment_plan(canonical["body"], cfg["voice_keywords"])
     if not segment_plan["reconstruction_matches_canonical_text"]:
@@ -651,7 +643,7 @@ def run_text_stage(story_key: str, slug: str, run: str, dry_run: bool = False) -
             "trial_sha256": canonical["trial_sha256"],
             "final_sha256": canonical["final_sha256"],
             "edits": canonical["edits"],
-            "semantic_layer1_verdict": canonical["layer1_verdict"],
+            "word_count_in_target_range": canonical["word_count_ok"],
         },
         "story_type_metadata": story_type_meta,
         "rights_block": cfg["rights_block"],
@@ -811,9 +803,9 @@ def run_keyphrase_stage(story_key: str, slug: str, run: str, dry_run: bool = Fal
 # ============================================================
 # Fable確定方針(委任_05)の実装。実呼出は--mode realのみ(委任_06で実行)。--mode dry-runは副作用ゼロ、
 # --mode mockは全LLM/TTS/ASR/KPを内蔵ダミーに固定する(実API混入防止。04Bの事故再発防止)。
-# stage順: seed_check -> writer(r0->r1->r2) -> validate_b1b -> std_adjust -> validate_a2 -> plan ->
+# stage順: seed_check -> writer(r0->r1->r2) -> std_adjust -> plan ->
 #   support -> kp -> tts_b1b/tts_a2 -> provision_shell -> gate -> assemble -> pages -> page_verify
-# 04A/04B/04C module(er061/er062/er063)の内部は変更しない(er063のみ、KP第3segment英語解説のため最小拡張)。
+# 04B/04C module(er062/er063。er061は撤廃)の内部は変更しない(er063のみ、KP第3segment英語解説のため最小拡張)。
 import contextlib
 import dataclasses
 import types
@@ -826,9 +818,10 @@ E2E_APPROVED_BUDGET_MAX_JPY = 300.0     # 方針8: --approved-budget-jpy 300
 E2E_WARN_THRESHOLD_JPY = 200.0          # 方針8: 警告閾値(超過見込みで新規API呼出前にSTOP)
 E2E_DEFAULT_RUN = "run_e2e_01"
 LEVELS = ("b1b", "a2")                  # b1b=Advanced, a2=Standard(出力dir名のみ。ページにはラベルを出さない)
-E2E_STAGES = ("seed_check", "writer", "validate_b1b", "std_adjust", "validate_a2", "plan", "support", "kp",
+# 委任_11(2026-10-12ユーザー決定): 原作保持Validator(validate_b1b/validate_a2、er061)は撤廃。経路に含めない。
+E2E_STAGES = ("seed_check", "writer", "std_adjust", "plan", "support", "kp",
               "tts_b1b", "tts_a2", "provision_shell", "gate", "assemble", "pages", "page_verify")
-E2E_STAGE_EST_JPY = {"writer": 22.0, "validate_b1b": 2.5, "std_adjust": 8.0, "validate_a2": 2.5, "plan": 2.0,
+E2E_STAGE_EST_JPY = {"writer": 22.0, "std_adjust": 8.0, "plan": 2.0,
                      "support": 8.0, "kp": 10.0, "tts_b1b": 40.0, "tts_a2": 40.0}
 E2E_TTS_CLIP_EST_JPY = 1.0              # clip単位guard(LRが走ると+約1円。事後は次clipのguardで検知)
 E2E_KP_EXTRA_REGEN_NAMES = ("kp_expl_b1b",)
@@ -840,14 +833,6 @@ class FamilyZE2EStop(RuntimeError):
 
 
 class FamilyZBudgetStop(FamilyZE2EStop):
-    pass
-
-
-class FamilyZValidatorStop(FamilyZE2EStop):
-    pass
-
-
-class FamilyZStdParagraphStop(FamilyZE2EStop):
     pass
 
 
@@ -863,14 +848,13 @@ _MODS = None
 
 
 def _m():
-    """er061/er062/er063の遅延import(Phase 1 testの軽量importを保つ)。"""
+    """er062/er063の遅延import(Phase 1 testの軽量importを保つ)。er061(原作保持Validator)は撤廃済みでimportしない。"""
     global _MODS
     if _MODS is None:
-        import er061_family_z_semantic_validator_01 as v61
         import er062_family_z_structure_01 as st
         import er062_family_z_writer_01 as w62
         import er063_family_z_audio_01 as a63
-        _MODS = types.SimpleNamespace(v61=v61, st=st, w62=w62, a63=a63)
+        _MODS = types.SimpleNamespace(st=st, w62=w62, a63=a63)
     return _MODS
 
 
@@ -935,7 +919,6 @@ class E2EContext:
     pages_dir: str = E2E_PAGES_DIR
     budget: object = None
     llm_client: object = None
-    judge_client: object = None
     hooks: dict = dataclasses.field(default_factory=dict)
     only_clips: object = None
     regenerate_stage: object = None
@@ -948,10 +931,6 @@ class E2EContext:
     def seed_dir(self) -> str:
         return f"{E2E_RUN_ROOT}/{self.slug}/seed"          # Seed/anchorsは不変・固定置き場
 
-    @property
-    def anchors_path(self) -> str:
-        return f"{E2E_RUN_ROOT}/{self.slug}/validator/anchors.json"
-
     def stage_context(self, name: str):
         if self.mode != "real":
             return contextlib.nullcontext()
@@ -959,7 +938,13 @@ class E2EContext:
         return cl.logging_context(E2E_THEME_TAG, name)
 
 
+def _stop_sentinel(ctx, where):
+    """STOPセンチネル(<run>/STOP または STOP_ALL)があれば新規API呼出の前に停止(rc=3)。委任_11再発防止。"""
+    _m().st.check_stop_sentinel(where, ctx.out_dir)
+
+
 def _guard(ctx, label, est):
+    _stop_sentinel(ctx, label)
     if ctx.budget is not None:
         ctx.budget.guard(label, est)
 
@@ -999,7 +984,7 @@ def _prov(ctx):
 # stage実装
 # ------------------------------------------------------------
 def stage_seed_check(ctx) -> dict:
-    """読み取り専用の事前確認(API 0・書込 0)。Seed凍結sha・anchors完全性・routing key・Style表sha・
+    """読み取り専用の事前確認(API 0・書込 0)。Seed凍結sha・routing key・Style表sha・
     Melos Voice機構・er020 role解決・権利Gateを確認する。"""
     m = _m()
     check_rights_gate(STORY_REGISTRY[ctx.story_key]["rights_block"])
@@ -1011,9 +996,8 @@ def stage_seed_check(ctx) -> dict:
         if actual != meta["sha256"]:
             raise FamilyZE2EStop(f"FAMILY_Z_SEED_SHA_MISMATCH: {name} {actual[:12]} != {meta['sha256'][:12]}")
         seed_files[name] = actual[:12]
-    anchors = m.v61.load_anchors(ctx.anchors_path, ctx.seed_dir)
     keys = ("FAMILY_Z_WRITER_ADV_R0", "FAMILY_Z_WRITER_ADV_R1", "FAMILY_Z_WRITER_ADV_R2", "FAMILY_Z_STD_ADJUST",
-            "FAMILY_Z_SEMANTIC_JUDGE", "FAMILY_Z_STORY_SPLIT", "FAMILY_Z_DIALOGUE_ATTRIBUTION")
+            "FAMILY_Z_STORY_SPLIT", "FAMILY_Z_DIALOGUE_ATTRIBUTION")
     models = {k: routing.PROCESS_MODEL_MAP[k] for k in keys}
     style = m.a63.assert_style_table_integrity()
     melos_voice = m.a63.check_melos_voice_mechanism()
@@ -1021,7 +1005,7 @@ def stage_seed_check(ctx) -> dict:
                   for i in ("full_story_part1_c1", "full_story_part2_c3", "full_story_part3_c20"))
     if not role_ok:
         raise FamilyZE2EStop("FAMILY_Z_ER020_ROLE_PATTERN_NOT_RESOLVING")
-    return {"seed_files": seed_files, "anchors_sha256": anchors["sha256_self"][:12], "routing_models": models,
+    return {"seed_files": seed_files, "routing_models": models,
             "style_table_keys": sorted(style), "melos_voice": melos_voice["melos_voice"],
             "melos_voice_status": melos_voice["status"], "er020_full_story_clip_pattern": role_ok,
             "dialogue_voices": m.a63.FAMILY_Z_DIALOGUE_VOICE_TTS_NAMES}
@@ -1038,64 +1022,25 @@ def stage_writer(ctx) -> dict:
             "llm_spent_jpy": round(llm.budget.spent, 4)}
 
 
-def stage_validate(ctx, level: str) -> dict:
-    """er061 Validator(Adv=level b1b / Std=level a2+adv_text)。FAIL/NEEDS_REVIEWは自動で通さずSTOP。"""
-    m = _m()
-    out = ctx.out_dir
-    cand = canonical_article_text(m.w62.rd(_level_text_path(ctx, level)))
-    adv = canonical_article_text(m.w62.rd(_level_text_path(ctx, "b1b"))) if level == "a2" else None
-    anchors = m.v61.load_anchors(ctx.anchors_path, ctx.seed_dir)
-    vdir = f"{out}/validator/{level}"
-    inputs = {"candidate_sha256": _sha(cand), "anchors_sha256": anchors["sha256_self"],
-              "adv_sha256": _sha(adv) if adv is not None else None}
-    rp, ip = f"{vdir}/validator_result.json", f"{vdir}/inputs.json"
-    reused = False
-    if os.path.exists(rp) and os.path.exists(ip) and m.w62.rj(ip) == inputs:
-        result, reused = m.w62.rj(rp), True
-    else:
-        _guard(ctx, f"validate_{level}", E2E_STAGE_EST_JPY[f"validate_{level}"])
-        tracker = m.v61.CostTracker(cap_jpy=ctx.budget.remaining() if ctx.budget is not None else 1e9)
-        result = m.v61.validate_semantic_preservation(
-            cand, level, client=ctx.judge_client, anchors=anchors, adv_text=adv, tracker=tracker,
-            source_info=m.v61.load_source_info(ctx.seed_dir), out_dir=vdir)
-        m.w62.wj(ip, inputs)
-    if result["stop_required"]:
-        raise FamilyZValidatorStop(
-            f"FAMILY_Z_VALIDATOR_{result['verdict']}({level}): reasons={result['reasons']} "
-            f"詳細={vdir}/validator_summary.md(自動で通さない。人間判断/明示的な再生成が必要)")
-    return {"level": level, "verdict": result["verdict"], "reused": reused, "cost_jpy": result.get("cost_jpy"),
-            "reasons": result["reasons"]}
-
-
 def stage_std_adjust(ctx) -> dict:
-    """Std調整。段落数がAdvと不一致なら自動で1回だけ再生成(方針2)、なお不一致ならSTOP。"""
+    """Std調整。段落数がAdvと不一致でも再生成・STOPしない(2026-10-12決定): WARNを記録し、planで04B独自分割にフォールバックする。
+    再生成は明示指定(--regenerate-stage std_adjust)のみ。"""
     m = _m()
     _guard(ctx, "std_adjust", E2E_STAGE_EST_JPY["std_adjust"])
     llm = _w62_llm(ctx)
     res = m.w62.run_writer_chain(llm, ctx.out_dir, ctx.seed_dir, stages=("std_adjust",),
                                  regenerate_stage=_regen_for(ctx, "std_adjust"), story_key=ctx.story_key)
     g = res["stages"]["std_adjust"]["guardrails"]
-    auto_regen = False
+    warn = None
     if not g["std_adv_paragraph_count_match"]:
-        prior = [r for r in _prov(ctx).data.get("regenerations", []) if r.get("stage") == "std_adjust"]
-        if prior:
-            raise FamilyZStdParagraphStop(
-                f"FAMILY_Z_STD_PARAGRAPH_MISMATCH(再生成済み): std={g['paragraph_count_std']} "
-                f"adv={g['paragraph_count_adv']}。自動再生成は1回のみ。STOP(明示的な --regenerate-stage std_adjust のみ)")
-        _guard(ctx, "std_adjust_auto_regen", E2E_STAGE_EST_JPY["std_adjust"])
-        llm = _w62_llm(ctx)
-        res = m.w62.run_writer_chain(llm, ctx.out_dir, ctx.seed_dir, stages=("std_adjust",),
-                                     regenerate_stage="std_adjust", story_key=ctx.story_key)
-        auto_regen = True
-        g = res["stages"]["std_adjust"]["guardrails"]
-        m.w62.wj(f"{ctx.out_dir}/writer/std_auto_realign.json",
-                 {"reason": "STD_ADV_PARAGRAPH_COUNT_MISMATCH", "after": {k: g[k] for k in (
-                     "paragraph_count_std", "paragraph_count_adv", "std_adv_paragraph_count_match")}})
-        if not g["std_adv_paragraph_count_match"]:
-            raise FamilyZStdParagraphStop(
-                f"FAMILY_Z_STD_PARAGRAPH_MISMATCH(再生成後も不一致): std={g['paragraph_count_std']} "
-                f"adv={g['paragraph_count_adv']}。STOP(04Bの独自分割経路は使わない)")
-    return {"status": res["stages"]["std_adjust"]["status"], "auto_regenerated": auto_regen, "guardrails": g}
+        warn = (f"STD_ADV_PARAGRAPH_COUNT_MISMATCH(WARNのみ・再生成/STOPしない): std={g['paragraph_count_std']} "
+                f"adv={g['paragraph_count_adv']}。planでStd独自分割にフォールバックする")
+        print(f"[WARN] {warn}", file=sys.stderr)
+        m.w62.wj(f"{ctx.out_dir}/writer/std_paragraph_mismatch_warn.json",
+                 {"reason": "STD_ADV_PARAGRAPH_COUNT_MISMATCH", "warn": warn, "action": "fallback_to_own_split_in_plan",
+                  "counts": {k: g[k] for k in ("paragraph_count_std", "paragraph_count_adv", "std_adv_paragraph_count_match")}})
+    return {"status": res["stages"]["std_adjust"]["status"], "auto_regenerated": False, "paragraph_mismatch_warn": warn,
+            "guardrails": g}
 
 
 def write_speaker_table(ctx) -> str:
@@ -1136,8 +1081,9 @@ def _check_plan_after(ctx, level: str) -> dict:
         raise FamilyZDialogueOtherStop(
             f"FAMILY_Z_DIALOGUE_SPEAKER_OTHER({level}): {others}。speaker=otherはSTOP(Melos・王・友以外の話者。人間判断)")
     if level == "a2" and plan.get("split_origin") != "mapped_from_advanced":
-        raise FamilyZStdParagraphStop(
-            f"FAMILY_Z_STD_PLAN_NOT_ALIGNED: split_origin={plan.get('split_origin')!r}(Advの境界写像のみ許可)")
+        # 2026-10-12決定: Std段落不一致/境界写像不可はWARNのみ(04B独自分割にフォールバック済み)。STOPしない。
+        print(f"[WARN] STD_PLAN_NOT_ALIGNED: split_origin={plan.get('split_origin')!r} note={plan.get('split_note')!r}"
+              "(WARNのみ。Std独自分割)", file=sys.stderr)
     return plan
 
 
@@ -1150,15 +1096,9 @@ def stage_plan(ctx) -> dict:
     summary = {}
     for lv in ("b1b", "a2"):
         if lv == "a2":
-            # 方針2: Std境界はAdvの段落indexをそのまま写像。写像できなければ独自分割に回らずSTOP。
-            adv_plan = w62.rj(f"{ctx.out_dir}/segment_plan_b1b.json")
-            _t, body = st.split_title_body(w62.rd(_level_text_path(ctx, "a2")))
-            paras = st.clean_body_paragraphs(body)
-            cands = {tuple(c) for c in st.enumerate_split_candidates(st.para_word_counts(paras))}
-            if len(paras) != adv_plan["paragraph_count"] or tuple(adv_plan["boundaries"]) not in cands:
-                raise FamilyZStdParagraphStop(
-                    f"FAMILY_Z_STD_BOUNDARY_NOT_MAPPABLE: std段落={len(paras)} adv段落={adv_plan['paragraph_count']} "
-                    f"adv境界={adv_plan['boundaries']}がStdのPart比20-45%を満たさない。独自分割は使わずSTOP")
+            # 2026-10-12決定: Adv境界を写像できる場合のみ写像し、できなければ04B独自分割へフォールバック
+            # (w62.stage_plan/run_planの既存動作。STOP・再生成しない。WARNは_check_plan_afterで出力)。
+            pass
         r = w62.stage_plan(llm, ctx.out_dir, ctx.slug, ctx.run, lv, prov, ctx.regenerate_stage == f"plan_{lv}")
         plan = _check_plan_after(ctx, lv)
         summary[lv] = {"status": r["status"], "boundaries": plan["boundaries"], "clips": len(plan["clips"]),
@@ -1290,27 +1230,16 @@ def load_level_inputs(ctx, level: str) -> dict:
             "shell_names": list(a63.SHELL_ASSET_SOURCES) + [f"kp{it['rank']}_number" for it in kp_items]}
 
 
-def make_revalidate_fn(ctx):
-    """Local Rewrite採択後の再検証(M6)。er061第1層(決定論)を再実行。FAIL(第1層FAIL/PASS→FAILへの悪化)のみSTOP、
-    WARN(個別anchor欠落)は非ブロック(原稿自体がWARNでもLRで全clipがSTOPしないため)。"""
-    m = _m()
-    anchors = m.v61.load_anchors(ctx.anchors_path, ctx.seed_dir)
-
-    def fn(text_before, text_after):
-        r = m.v61.revalidate_after_local_rewrite(text_before, text_after, anchors)
-        bad = r["stop_required"] or r["regressed_to_fail"]
-        return {"verdict": "FAIL" if bad else "PASS", "layer1_verdict": r["verdict"],
-                "regressed_to_fail": r["regressed_to_fail"], "diff": r["diff"]}
-    return fn
-
-
-def wrap_generators_with_budget(gens: dict, budget, est_clip_jpy: float = E2E_TTS_CLIP_EST_JPY, state: dict | None = None):
+def wrap_generators_with_budget(gens: dict, budget, est_clip_jpy: float = E2E_TTS_CLIP_EST_JPY, state: dict | None = None,
+                                sentinel_dir: str | None = None):
     """clip単位で新規API呼出前にguard。STOP時は例外を投げず『STOPPED結果』を返し(監査記録を失わない)、
     以降のclipも即STOPPED。呼出元がrun_tts_stage完了後に FamilyZBudgetStop を送出する。"""
     state = state if state is not None else {}
 
     def mk(fn):
         def w(spec, out_path):
+            if sentinel_dir is not None:
+                _m().st.check_stop_sentinel(f"tts_gen:{spec.clip_id}", sentinel_dir)   # 各clip・各API呼出の直前
             if state.get("stopped") is not None:
                 return {"status": "STOPPED", "reason": f"BUDGET_STOP(前clipで停止): {state['stopped']}"}
             if budget is not None:
@@ -1330,10 +1259,9 @@ def stage_tts(ctx, level: str) -> dict:
     _guard(ctx, f"tts_{level}", E2E_TTS_CLIP_EST_JPY)
     gens = ctx.hooks.get("tts_generators") or m.a63.real_generators()
     state = {}
-    gens = wrap_generators_with_budget(gens, ctx.budget, state=state)
+    gens = wrap_generators_with_budget(gens, ctx.budget, state=state, sentinel_dir=ctx.out_dir)
     out = m.a63.run_tts_stage(ctx.out_dir, level, inp["plan"], generators=gens, only_clips=ctx.only_clips,
-                              revalidate_fn=make_revalidate_fn(ctx), article_text=inp["article_text"],
-                              story_key=ctx.slug)
+                              article_text=inp["article_text"], story_key=ctx.slug)
     if state.get("stopped"):
         raise FamilyZBudgetStop(state["stopped"])
     failed = {k: v for k, v in out["statuses"].items() if v != "OK"}
@@ -1450,8 +1378,6 @@ def run_stage(ctx, name: str) -> dict:
         "assemble": stage_assemble, "pages": stage_pages, "page_verify": stage_page_verify,
     }
     with ctx.stage_context(name), _mock_isolation(ctx):
-        if name in ("validate_b1b", "validate_a2"):
-            return stage_validate(ctx, name.split("_", 1)[1])
         if name in ("tts_b1b", "tts_a2"):
             return stage_tts(ctx, name.split("_", 1)[1])
         return fns[name](ctx)
@@ -1470,6 +1396,9 @@ def run_stages(ctx, stages) -> dict:
     results = {}
     for name in stages:
         t0 = time.time()
+        if ctx.mode != "dry-run":
+            _m().st.set_stop_run_dir(ctx.out_dir)
+            _stop_sentinel(ctx, f"stage:{name}")
         print(f"[E2E] stage={name} mode={ctx.mode} ...", flush=True)
         results[name] = run_stage(ctx, name)
         _log_stage(ctx, name, results[name], t0)
@@ -1482,9 +1411,7 @@ def run_stages(ctx, stages) -> dict:
 _STAGE_PLAN_INFO = {
     "seed_check": ("読み取りのみ", [], "-"),
     "writer": ("Sol R0->R1->R2 (FAMILY_Z_WRITER_ADV_R0/R1/R2)", ["writer/r0.md", "r1.md", "r2.md", "provenance.json"], "writer/r2.md"),
-    "validate_b1b": ("Validator第2層 (FAMILY_Z_SEMANTIC_JUDGE)", ["validator/b1b/"], "validator/b1b/validator_result.json"),
-    "std_adjust": ("Std調整 (FAMILY_Z_STD_ADJUST、段落不一致時のみ自動再生成1回)", ["writer/std.md"], "writer/std.md"),
-    "validate_a2": ("Validator第2層 + Std追加検査", ["validator/a2/"], "validator/a2/validator_result.json"),
+    "std_adjust": ("Std調整 (FAMILY_Z_STD_ADJUST、段落不一致はWARNのみ・再生成/STOPしない)", ["writer/std.md"], "writer/std.md"),
     "plan": ("分割選択+話者判定 (FAMILY_Z_STORY_SPLIT / FAMILY_Z_DIALOGUE_ATTRIBUTION)", ["segment_plan_{b1b,a2}.json", "speaker_table.md"], "segment_plan_a2.json"),
     "support": ("Preview/Comment (gpt-6-luna support)", ["support/{b1b,a2}_support.json"], "support/a2_support.json"),
     "kp": ("Key Phrase選定+Adv英語解説 (support model)", ["key_phrases/", "{b1b,a2}/key_phrases/keywords_canonicalized.json"], "key_phrases/b1b/kp_explanations.json"),
@@ -1510,6 +1437,9 @@ def describe_plan(ctx, stages=E2E_STAGES) -> dict:
                      "resume": ("provenance sha一致で再利用/不一致STOP" if exists else "新規実行")})
     return {"dry_run": True, "management_id": E2E_MANAGEMENT_ID, "story": ctx.story_key, "out_dir": ctx.out_dir,
             "pages_dir": ctx.pages_dir, "stages": rows,
+            "stop_sentinel": {"stop_all_path": _m().st.STOP_ALL_PATH, "run_stop_path": f"{ctx.out_dir}/STOP",
+                              "present_now": _m().st.stop_sentinel_hit(ctx.out_dir), "exit_code_on_hit": _m().st.STOP_EXIT_CODE},
+            "removed_from_path": ["validate_b1b", "validate_a2", "er061(原作保持Validator)"],
             "budget": {"approved_max_jpy": E2E_APPROVED_BUDGET_MAX_JPY, "warn_jpy": E2E_WARN_THRESHOLD_JPY},
             "note": "副作用なし(ファイル作成・API呼出・Master Store/telemetry/queue/attempt_history更新なし)"}
 
@@ -1565,31 +1495,6 @@ def mock_writer_hook(std_override=None):
             return _mock_std_text(adv, n)
         return adv
     return hook
-
-
-class MockJudgeClient:
-    """er061 judge用。全anchorを『preserved』として返す(evidence_quoteは両levelの文に逐語存在する語句)。"""
-
-    def __init__(self, overrides: dict | None = None):
-        self.calls = []
-        self.overrides = overrides or {}
-        self.responses = types.SimpleNamespace(create=self._create)
-
-    def _create(self, **kw):
-        m = _m()
-        self.calls.append(kw)
-        anchors = m.v61.load_anchors()
-        items = []
-        for a in anchors["anchors"]:
-            it = {"anchor_id": a["id"], "category": a["category"], "status": "preserved", "severity": "none",
-                  "evidence_quote": "Melos stood before the ruler", "note": "mock"}
-            it.update(self.overrides.get(a["id"], {}))
-            items.append(it)
-        return types.SimpleNamespace(
-            output_text=json.dumps({"items": items}, ensure_ascii=False), model=kw["model"],
-            id=f"mock_judge_{len(self.calls)}",
-            usage=types.SimpleNamespace(input_tokens=3000, output_tokens=1500,
-                                        input_tokens_details=types.SimpleNamespace(cached_tokens=0)))
 
 
 def mock_ja_support_fn(client, role, context, model=None):
@@ -1661,12 +1566,11 @@ def mock_tts_generators() -> dict:
 
 
 def build_mock_context(run_root: str, run: str = "run_mock", pages_dir: str | None = None,
-                       writer_hook=None, judge_client=None, tts_generators=None) -> E2EContext:
+                       writer_hook=None, tts_generators=None) -> E2EContext:
     m = _m()
     ctx = E2EContext(mode="mock", run=run, run_root=run_root,
                      pages_dir=pages_dir or f"{run_root}/melos/{run}/pages_mock")
     ctx.llm_client = m.w62.MockClient(writer_hook or mock_writer_hook())
-    ctx.judge_client = judge_client or MockJudgeClient()
     ctx.hooks = {"ja_support_fn": mock_ja_support_fn, "en_support_fn": mock_en_support_fn, "kp_fn": mock_kp_fn,
                  "expl_call_fn": mock_expl_call_fn, "tts_generators": tts_generators or mock_tts_generators()}
     ctx.budget = E2EBudget(E2E_APPROVED_BUDGET_MAX_JPY, E2E_WARN_THRESHOLD_JPY, spent_fn=lambda: 0.0)
@@ -1692,7 +1596,6 @@ def build_real_context(args) -> E2EContext:
     cl.install(cost_log)
     m = _m()
     ctx.llm_client = vfl01.get_client()
-    ctx.judge_client = m.v61.get_openai_client()
     return ctx
 
 
@@ -1754,6 +1657,8 @@ def main(argv=None):
         print(json.dumps(plan, ensure_ascii=False, indent=1, default=str))
         return 0
     try:
+        # 委任_11: 起動直後(cost_logger install・client構築の前)にSTOPセンチネルを確認する
+        _m().st.check_stop_sentinel("startup", f"{E2E_RUN_ROOT}/{slug}/{args.run}")
         if args.mode == "mock":
             ctx = build_mock_context(E2E_RUN_ROOT, run=f"{args.run}_mock",
                                      pages_dir=f"{E2E_RUN_ROOT}/{slug}/{args.run}_mock/pages_mock")
@@ -1765,6 +1670,9 @@ def main(argv=None):
                    "spent_jpy": round(ctx.budget.spent(), 4) if ctx.budget is not None else None}
         print(json.dumps(summary, ensure_ascii=False))
         return 0
+    except _m().st.FamilyZStopSentinel as e:   # 委任_11: STOPセンチネル。監査記録済み。rc=3で終了(自動再開しない)
+        print(f"[STOP_SENTINEL] {e}", file=sys.stderr)
+        return _m().st.STOP_EXIT_CODE
     except Exception as e:  # noqa: BLE001  (STOP: 自動retry/再生成/迂回はしない)
         print(f"[STOP] {e.__class__.__name__}: {e}", file=sys.stderr)
         return 2

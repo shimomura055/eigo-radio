@@ -3187,7 +3187,30 @@ STOPして報告する(広いTrialへは進まない。委任_16実例: Hook-awa
 | (例) gpt-6.1-sol | はい(推奨系、公式2026-10-09取得) | - |
 本番ラインのモデルを評価対象にする場合は、対象モデル(例外2: ライン組み込み候補の性能確認)と、付随する評価者・ラベラー(最新原則の対象)を分けて記載する。
 
+## 26. 有料runの停止・再起動・STOP通知の運用(2026-10-12新設、FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01 委任_11、事故再発防止)
+
+### 26-1. 背景(事故)
+委任_10のSonnet実行層が、STOP NOTICE(ユーザー仕様変更による停止指示、`docs/pm/delegation_log/2026-10-12_FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01_STOP_NOTICE.md`)を知らないまま、
+外部からの停止(監視killによるrc=1)を障害と誤認し、監督ループ(sup.sh)・別名ラッパ(runner_dbg/dbg3/dbg4)で旧仕様runを再起動し続けた。
+結果、旧仕様TTSに約JPY71を支出(累計約JPY108/300)。停止側の監視パターンも別名ラッパに合致せず、停止が遅れた。
+
+### 26-2. 実行層(Sonnet等)の必須ルール
+(a) 自分が起動したprocessが外部から停止された、または原因不明のrc≠0が2回続いた場合は、再起動せず即STOPして報告する(自己判断で原因調査のための再実行を続けない)。
+(b) 監督ループ・自動再試行ラッパ・別名ラッパ(スクリプト名やcommand lineを変えて同じ処理を起動するもの)の作成を禁止する。
+(c) 有料runの再起動は、委任文が明示許可した回数のみ。許可回数を超える再起動、委任文にない再起動はしない。
+(d) 作業開始時と有料run開始前に、`docs/pm/delegation_log/*STOP_NOTICE*` と `<run>/STOP`・`er026_output/family_z_production_e2e_01/STOP_ALL` の存在を確認する。該当管理IDのSTOP NOTICEまたはSTOPセンチネルが存在すれば、新規API呼出をせず報告する。
+
+### 26-3. Fable側手順(仕様変更・停止判断時)
+(e) 仕様変更等で実行中・予定の有料runを止める場合、Fableは**停止作業(process kill等)の前に** `er026_output/family_z_production_e2e_01/STOP_ALL`(Family Z。他Familyは各runner対応のSTOP_ALL)を置く。続いてSTOP NOTICEを `docs/pm/delegation_log/` に置く。これにより、実行層が別名ラッパ等で再起動しても新規API呼出が起きない(コード側: Z runner [er026/er062/er063] は各API呼出の前・各clipの前にSTOPセンチネルを確認し、あれば新規API呼出をせず監査記録を書いてrc=3で終了する)。
+(f) STOPセンチネルの解除(ファイル削除)はFableまたはユーザーのみ。実行層は解除しない。
+
+### 26-4. 注記
+本節は運用ルールであり新しいChecker/Validatorではない。STOPセンチネルはFamily Z runnerに実装済み(2026-10-12)。他Familyのrunnerへの展開は必要時に別途判断する。
+
 ## 変更履歴
+
+- 2026-10-12(`FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01`委任_11、ユーザー仕様修正に伴う事故再発防止): 26節(有料runの停止・再起動・STOP通知の運用)を新設。実行層の再起動禁止ルール(a)〜(d)、Fable側STOP_ALL先置き手順(e)(f)。
+
 
 - 2026-10-11(`PM-GOVERNANCE-GIT-AUTONOMY-RULE-01`、ユーザー決定): 10-X節(同種Git作業の自律処理方針)を新設。ユーザー指示逐語。既存の禁止事項は不変。Production変更なし、API支出0円。
 
