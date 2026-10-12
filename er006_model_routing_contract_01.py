@@ -141,6 +141,22 @@ PROCESS_MODEL_MAP = {
     # Production採用を意味しない。リテラル固定(他定数に連動しない)。Astra/Sol等は提案候補でありここへは入れない。
     "FAMILY_Z_TRIAL_STORY_QUALITY_EVAL": "gpt-6-luna",
     "FAMILY_Z_TRIAL_RIGHTS_INTERPRET": "gpt-6-luna",
+    # FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01 委任_03(2026-10-12、ユーザー正式決定①〜⑤
+    # [APPROVED_FOR_PRODUCTION]+Opus独立レビューM7): Family Z Production用routing key追加
+    # (追加のみ、既存keyは不変、リテラル固定、環境変数上書きなし)。
+    #   FAMILY_Z_WRITER_ADV_R0/R1/R2 : Advanced英語Writer(R0/R1/R2各段、gpt-6.1-sol)
+    #   FAMILY_Z_STD_ADJUST          : Advanced最終稿からStandardへのレベル調整(gpt-6.1-sol)
+    #   FAMILY_Z_SEMANTIC_JUDGE      : 意味保持Validator第2層(gpt-6-luna、執筆Solと別系統)
+    #   FAMILY_Z_STORY_SPLIT         : Story 3分割境界の選択(gpt-6-luna)
+    #   FAMILY_Z_DIALOGUE_ATTRIBUTION: 全引用の話者判定(gpt-6-luna)
+    # M7: 判定用keyと共用しない(用途別にkeyを分離し、後からモデルを個別に変更できるようにする)。
+    "FAMILY_Z_WRITER_ADV_R0": "gpt-6.1-sol",
+    "FAMILY_Z_WRITER_ADV_R1": "gpt-6.1-sol",
+    "FAMILY_Z_WRITER_ADV_R2": "gpt-6.1-sol",
+    "FAMILY_Z_STD_ADJUST": "gpt-6.1-sol",
+    "FAMILY_Z_SEMANTIC_JUDGE": "gpt-6-luna",
+    "FAMILY_Z_STORY_SPLIT": "gpt-6-luna",
+    "FAMILY_Z_DIALOGUE_ATTRIBUTION": "gpt-6-luna",
 }
 PROCESS_PROVIDER_MAP = {
     "EXCEPTION_SEARCH": EXCEPTION_SEARCH_PROVIDER,

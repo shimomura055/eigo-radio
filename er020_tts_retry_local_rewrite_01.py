@@ -92,6 +92,9 @@ def maybe_cooldown_before_attempt(attempt: int, max_attempts: int, cooldown_gate
 # 一箇所に集約)
 # ============================================================
 # ユーザー承認済み範囲(2026-09-26): 適用する5 role。
+# 注記(FAMILY-Z-MELOS 委任_03): この frozenset は現時点で未参照(Connected Speech適用判定は
+# resolve_narrative_role()経由)。Family Zの `full_story_part{n}_c{k}` は意図的にここへ列挙せず、
+# resolve_narrative_role の正規表現で FULL_STORY と認識する。直接参照するコードを追加する場合は注意。
 CONNECTED_SPEECH_SEGMENT_IDS = frozenset({
     # Full Story(本文、3分割対応。point_one/two本文は既存OPEN-121/122
     # Production wiringで既にFull Story本文と同じ関数[news_tail_fix.
@@ -115,6 +118,7 @@ NON_APPLICABLE_SEGMENT_IDS = frozenset({
     "point_one_heading", "point_two_heading",
 })
 _KEY_PHRASE_PATTERN = re.compile(r"^kp\d+_(en|ja)")
+_FAMILY_Z_STORY_CLIP_PATTERN = re.compile(r"full_story_part[1-3]_c[0-9]+")
 
 
 def resolve_narrative_role(segment_id: str | None) -> str | None:
@@ -124,6 +128,11 @@ def resolve_narrative_role(segment_id: str | None) -> str | None:
         return None
     if segment_id in ("full_story_part1", "full_story_part2", "full_story_part3",
                        "point_one", "point_two"):
+        return "FULL_STORY"
+    # FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01 委任_03(Opus M6/推奨): Family ZのPart内
+    # Dialogue clip(full_story_part{n}_c{k})をFULL_STORYと認識する後方互換追加(既存IDは不変、
+    # Xは_cN付きIDを生成しない)。fullmatchのため `_original`/`_heading` 等の接尾辞は不一致。
+    if _FAMILY_Z_STORY_CLIP_PATTERN.fullmatch(segment_id):
         return "FULL_STORY"
     if segment_id in ("comment_1", "comment_2", "comment_3", "comment_4"):
         return "COMMENT"

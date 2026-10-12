@@ -34,7 +34,15 @@ class RoutingConstantsTest(unittest.TestCase):
         allowed_non_luna = {"FAMILY_X_FACTLOCK_R0": "gpt-6.1-sol",
                             "FAMILY_X_FACTLOCK_REVISE": "gpt-6.1-sol",
                             "FAMILY_X_STORYLINE_B3": "gpt-6.1-sol",
-                            "FAMILY_X_RF_GEMINI": "gemini-3.5-flash-lite"}
+                            "FAMILY_X_RF_GEMINI": "gemini-3.5-flash-lite",
+                            # FAMILY-Z-MELOS 委任_03(2026-10-12、ユーザー正式決定③+Opus M7): Family Z
+                            # Writer Adv R0/R1/R2・Std調整=gpt-6.1-sol(4キーのみ許可)。判定系
+                            # (SEMANTIC_JUDGE/STORY_SPLIT/DIALOGUE_ATTRIBUTION)はgpt-6-lunaのため
+                            # 許可リスト不要(luna固定判定が適用される)。
+                            "FAMILY_Z_WRITER_ADV_R0": "gpt-6.1-sol",
+                            "FAMILY_Z_WRITER_ADV_R1": "gpt-6.1-sol",
+                            "FAMILY_Z_WRITER_ADV_R2": "gpt-6.1-sol",
+                            "FAMILY_Z_STD_ADJUST": "gpt-6.1-sol"}
         for k, v in routing.PROCESS_MODEL_MAP.items():
             if k in allowed_non_luna:
                 self.assertEqual(v, allowed_non_luna[k], k)
