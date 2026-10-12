@@ -36,3 +36,6 @@ Status: tts_a2はclip失敗STOP(rc=2、起動1回、再起動なし)。HR試聴�
 
 ## 証跡
 er026_output/family_z_production_e2e_01/melos/run_e2e_02/、同evidence_12D/(support_regen_stdout.log、tts_a2_stdout.log)、user_test/family_z_melos_01/
+
+## 公開後検証(Playwright)
+HR試聴ページHTTP 200、6 mp3すべてHTTP 200、Playwright(chromium)で6件すべて再生進行(currentTime約0.75s、error無し、duration 1.29-23.81s)。commit 1bf6ecb1 を push済み。
