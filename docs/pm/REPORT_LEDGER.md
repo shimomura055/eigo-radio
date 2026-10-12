@@ -274,3 +274,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-12 | FAMILY-X-COFFEE-FINAL-AUDIO-ASSEMBLY-01 委任_01+02(Coffee最終完成版v3 Std/Adv、Std Part2 Secondary cascade採択、OPEN-298/299/300) | 初回報告日未報告(Fable判断)|費用累計JPY約14.3|Status=USER_DECISION_REQUIRED(ユーザー試聴待ち)|試聴 https://shimomura055.github.io/eigo-radio/user_test/coffee_final_v3/index.html|詳細 `docs/pm/delegation_log/2026-10-12_FAMILY-X-COFFEE-FINAL-AUDIO-ASSEMBLY-01_02.md`
 
 - 2026-10-12 | TOPIC-SELECTION-FORM-AND-FAMILY-MIX-20261012-01 委任_01(ユーザー正式決定のSSOT記録のみ、課金0、Trial/Production実装なし) | 初回報告日未報告(Fable判断)|費用JPY0|Status=記録済|詳細 `docs/pm/delegation_log/2026-10-12_TOPIC-SELECTION-FORM-AND-FAMILY-MIX-20261012-01_01.md`
+- 2026-10-12 | FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01 委任_02(ユーザー正式決定5項目のSSOT記録・衝突整理・実装設計書、コード実装なし、Opus条件Aレビュー前) | 初回報告日未報告(Fable判断)|費用JPY0|Status=記録済・設計完了(USER_DECISION_REQUIRED=Fable確認事項あり)|詳細 `docs/pm/delegation_log/2026-10-12_FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01_02.md`
