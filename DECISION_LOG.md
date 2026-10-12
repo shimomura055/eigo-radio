@@ -20609,3 +20609,9 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 委任_12D(2)Comment3規則: Fable判断で`limit_comment3_part`を先頭約25%(最低2段落)+到着・結末段落(city gate/sword/square/arrive等のマーカー該当段落以降)を含めない、へ変更(Z所有、Adv/Std共通)。Std Comment3のみ`--regenerate-stage support_a2`で再生成(Preview/Comment1/2再利用)。再生成Comment3は到着・再会・王の改心に触れない。B1 Comment3は規則施行前生成として現行維持。
 - 委任_12D(3)tts_a2(起動1回、rc=2): 39 clip中OK35/非OK4(a2 comment_1[JA]、full_story_part1_c1、part1_c5、part3_c3)。固有名詞のみ差のHR到達はEN3件。Std cooldown(10分)発火1回。HR採択・override・regenerateは未実施(ユーザー試聴後)。試聴ページ `user_test/family_z_melos_01/hr_review_01.html`(b1b 2件+a2 4件)。
 - 状態: Trial実走・未完(gate/assemble/pages/page_verify未実行)。Production採用判断なし。
+
+## FAMILY-X-COFFEE-COMMENT4-SHORT-BRIDGE-RETRIAL-02(2026-10-12、Trial、VALIDATED止まり、Production変更0)
+- 前提: 前回Trial-01(C0〜C4)は全候補REJECTED(ユーザー判断、C1/C2は長すぎる)。今回C1/C2は不採用扱い。最優先条件=Comment 4を現行(67字)以下にしつつIn One Lineへ自然に導入。
+- 内容: 文章のみ(TTS不要)。構成の異なる10設計を各3Run(Round1)、失敗原因(続いて/では等の事務的つなぎ、67字超過、1文の長さ、結論の先取り)を分析して改良10設計を各3Run(Round2)。計60 call、実費JPY3.24(gpt-6-luna、Trial-01と同一経路)。文字数は改行・空白除去後のlen、基準1〜6で全Runを読解採点。
+- 結果: 67字以下で安定かつ良好=D4,D6,E1,E7,E9。推薦順 E1(問いかけ型、51〜55字)>D4(着地点提示型、54〜59字)>E9(気づき共有型、47〜54字)。弱点: E1=クイズ風、D4=In One Lineと内容重複、E9=run1「見てきたのですね」不自然。
+- 状態: VALIDATED(Trial)。採否はUSER_DECISION_REQUIRED(OPEN-316)。CURRENT_SPEC・Production Prompt/定数/音声・他Role/Family不変。証跡: `er057_output/coffee_comment4_trial_02/REPORT_02.md`、`EVAL_02.md`、`user_test/coffee_comment4_trial_02/`、報告 `docs/pm/delegation_log/2026-10-12_FAMILY-X-COFFEE-COMMENT4-SHORT-BRIDGE-RETRIAL-02_01.md`。

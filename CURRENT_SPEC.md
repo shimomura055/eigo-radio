@@ -577,7 +577,7 @@ ER-003-A2-01〜03・ER-003-A2-STRUCT-02〜05・ER-003-A2-SPEC-FREEZE-01(2026-08-
 | Comment 1の役割 | Listening Focus(次に何を聞くかを示す、答えは言わない)。長さ目安: 原則1文 | `DECIDED` | 同上 | 2026-08-12 |
 | Comment 2の役割 | Mid-story Recovery + Next Question(Part1の要点を1点回収し、Part2への問いを提示)。長さ目安: 1〜2文 | `DECIDED` | 同上 | 2026-08-12 |
 | Comment 3の役割 | Story Meaning + Bridge to Points(Full Story全体の論点整理、Pointsへの橋渡し)。長さ目安: 2〜3文 | `DECIDED` | 同上 | 2026-08-12 |
-| Comment 4の役割 | Point Recovery + Bridge to In One Line(Pointsの意味を回収しIn One Lineへつなぐ)。長さ目安: 2〜3文。「英語一文でまとめます」とは言わず、実際の3文構成と整合する自然な文言を使う | `DECIDED` | ER-003-CROSSLEVEL-AUDIO-01、ER-003-A2-SPEC-FREEZE-01 | 2026-08-12 |
+| Comment 4の役割 | Point Recovery + Bridge to In One Line(Pointsの意味を回収しIn One Lineへつなぐ)。長さ目安: 2〜3文。「英語一文でまとめます」とは言わず、実際の3文構成と整合する自然な文言を使う | `DECIDED` | ER-003-CROSSLEVEL-AUDIO-01、ER-003-A2-SPEC-FREEZE-01 | 2026-08-12 【Comment 4 Prompt改善はTrial中・未採用(Production Promptは本記載のまま不変、OPEN-316)】 |
 | Comment文言の一般化範囲 | 役割・判断基準のみを一般化し、具体的な文言は記事ごとに新規作成する(A02の文言をA01/ADD03へ機械的に流用しない、3記事で重複文言ゼロを確認済み) | `DECIDED` | ER-003-A2-STRUCT-04 | 2026-08-09 |
 | Full Story分割 | 機械的な50:50分割は禁止。原則2ブロック。分割位置の優先順位: ①意味上の転換点 ②時系列上の転換点 ③問題→例外 ④発表→反応 ⑤What happened→What happened next / Why it matters | `DECIDED` | ER-003-A2-STRUCT-02〜04 | 2026-08-09 |
 | In One Lineの構成 | 中心1文(要約)+英語の短い補足2文程度(B1相当のセクション密度)。「In One Line」は中心1文を指す語で、セクション全体を1文に限定しない。補足文はFull Story/Points既出情報のみを使い、新規factを追加しない | `DECIDED` | ER-003-A2-STRUCT-05 | 2026-08-09 |
