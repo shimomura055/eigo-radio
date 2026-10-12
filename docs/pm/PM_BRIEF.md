@@ -25,6 +25,7 @@
      PRE_USER_VALIDATION(境界日より前、棚卸しで`still relevant`確認まで
      機械的に再実装しない)へ区分済み(`docs/pm/PM_GOVERNANCE.md`20節、
      PM-OPEN-ITEMS-RECLASSIFICATION-01、2026-09-27)。
+   - `docs/pm/USER_DECISION_REGISTER_01.md` — ユーザー判断レジスタ(判断済み/調査中/UDR/Deferredの4区分索引、SSOTではない。報告前に照合、PM_GOVERNANCE 12-13、2026-10-12)
    - `HISTORY_INDEX.md` — 履歴索引
    - `ER-*_REPORT.md` — 個別タスクの正式な詳細報告・証跡
 5. `docs/pm/MODEL_ROUTING_TRIAL_LOG.md` — モデル選定(Haiku/Sonnet/Opus)運用
