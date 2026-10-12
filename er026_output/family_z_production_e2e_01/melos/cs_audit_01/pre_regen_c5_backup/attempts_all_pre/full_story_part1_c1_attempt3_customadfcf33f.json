@@ -1,0 +1,129 @@
+{
+  "attempt_number": 3,
+  "route": "custom_adfcf33f",
+  "segment_id": "full_story_part1_c1",
+  "theme_id": "run_e2e_02",
+  "level": "a2",
+  "source_out_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c1.wav",
+  "saved_at": "2026-10-12T18:34:51",
+  "sha256": "2ff9ad0e010cce9aa24cc981a1853c252f25b5fe363568fe7388eb4dea7fbb63",
+  "loop_attempt_index": 1,
+  "max_attempts": 1,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "Warm, bright, cozy storytelling in the manner of a well-loved radio feature: unhurried, richly expressive, with full vowels and gentle emphasis, never flat or sleepy.\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.",
+  "asr_text": "Mello's called across the hall.",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 2.36,
+    "method_a_ngram": {
+      "matches": [],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 5,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.959,
+          "time_a_seconds": 0.12,
+          "time_b_seconds": 2.32,
+          "lag_seconds": 2.2,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9043,
+          "time_a_seconds": 0.33,
+          "time_b_seconds": 2.05,
+          "lag_seconds": 1.72,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.8955,
+          "time_a_seconds": 0.93,
+          "time_b_seconds": 1.93,
+          "lag_seconds": 1.0,
+          "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+          "similarity": 0.8883,
+          "time_a_seconds": 0.33,
+          "time_b_seconds": 1.33,
+          "lag_seconds": 1.0
+        },
+        {
+          "similarity": 0.8867,
+          "time_a_seconds": 0.33,
+          "time_b_seconds": 1.64,
+          "lag_seconds": 1.31
+        }
+      ],
+      "best_run_length_seconds": 0.02,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.25,
+      "time_a": 0.84,
+      "lag": 0.97,
+      "similarity_at_start": 0.7324,
+      "best_run_length_seconds": 0.25,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Mello's called across the hall.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "entity_like_source": [
+        "capitalized"
+      ]
+    },
+    {
+      "step": "primary_2",
+      "provider": "openai_asr",
+      "text": "Mellos called across the hall.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "entity_like_source": [
+        "capitalized"
+      ]
+    },
+    {
+      "step": "secondary_1",
+      "provider": "azure",
+      "text": "Melos called across the hall.",
+      "classification": "NORMALIZED_MATCH",
+      "phrase_list_used": true,
+      "entity_like_source": []
+    }
+  ]
+}

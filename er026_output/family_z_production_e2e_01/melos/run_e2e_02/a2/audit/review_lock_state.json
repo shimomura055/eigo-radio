@@ -906,25 +906,25 @@
     "theme_id": "run_e2e_02",
     "level": "a2",
     "segment_id": "full_story_part1_c1",
-    "updated_at": "2026-10-12T18:34:51",
+    "updated_at": "2026-10-12T21:29:36",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c1.wav",
-    "cumulative_tts_attempts": 3,
-    "cumulative_asr_calls": 3,
+    "cumulative_tts_attempts": 4,
+    "cumulative_asr_calls": 4,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
         "status": "OK",
-        "duration_seconds": 2.36,
-        "asr_text": "Mello's called across the hall.",
-        "asr_text_length": 31,
+        "duration_seconds": 2.67,
+        "asr_text": "Mellus called across the hall.",
+        "asr_text_length": 30,
         "max_len": 89,
         "substring_ok": null,
         "length_ok": true,
         "phonetic_verdict": null,
-        "audio_classification": "NORMALIZED_MATCH",
+        "audio_classification": "SECONDARY_ASR_CORROBORATED_MATCH",
         "connected_speech_info": null,
         "reading_resolver_info": null,
         "scg_info": null,
@@ -934,7 +934,7 @@
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": false,
-          "duration_seconds": 2.36,
+          "duration_seconds": 2.67,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
@@ -946,37 +946,37 @@
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.959,
-                "time_a_seconds": 0.12,
-                "time_b_seconds": 2.32,
+                "similarity": 0.9906,
+                "time_a_seconds": 0.2,
+                "time_b_seconds": 2.4,
                 "lag_seconds": 2.2,
-                "run_length_seconds_at_thresh_0.85": 0.01
-              },
-              {
-                "similarity": 0.9043,
-                "time_a_seconds": 0.33,
-                "time_b_seconds": 2.05,
-                "lag_seconds": 1.72,
-                "run_length_seconds_at_thresh_0.85": 0.01
-              },
-              {
-                "similarity": 0.8955,
-                "time_a_seconds": 0.93,
-                "time_b_seconds": 1.93,
-                "lag_seconds": 1.0,
                 "run_length_seconds_at_thresh_0.85": 0.02
               },
               {
-                "similarity": 0.8883,
-                "time_a_seconds": 0.33,
-                "time_b_seconds": 1.33,
-                "lag_seconds": 1.0
+                "similarity": 0.9881,
+                "time_a_seconds": 0.1,
+                "time_b_seconds": 2.59,
+                "lag_seconds": 2.49,
+                "run_length_seconds_at_thresh_0.85": 0.01
               },
               {
-                "similarity": 0.8867,
-                "time_a_seconds": 0.33,
-                "time_b_seconds": 1.64,
-                "lag_seconds": 1.31
+                "similarity": 0.9845,
+                "time_a_seconds": 0.1,
+                "time_b_seconds": 2.64,
+                "lag_seconds": 2.54,
+                "run_length_seconds_at_thresh_0.85": 0.01
+              },
+              {
+                "similarity": 0.9678,
+                "time_a_seconds": 0.21,
+                "time_b_seconds": 2.62,
+                "lag_seconds": 2.41
+              },
+              {
+                "similarity": 0.9631,
+                "time_a_seconds": 0.07,
+                "time_b_seconds": 2.38,
+                "lag_seconds": 2.31
               }
             ],
             "best_run_length_seconds": 0.02,
@@ -988,11 +988,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.25,
-            "time_a": 0.84,
-            "lag": 0.97,
-            "similarity_at_start": 0.7324,
-            "best_run_length_seconds": 0.25,
+            "run_length_seconds": 0.3,
+            "time_a": 0.97,
+            "lag": 0.9,
+            "similarity_at_start": 0.7018,
+            "best_run_length_seconds": 0.3,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -1015,31 +1015,23 @@
           {
             "step": "primary_1",
             "provider": "openai_asr",
-            "text": "Mello's called across the hall.",
+            "text": "Mellus called across the hall.",
             "classification": "ASR_VALIDATION_UNCERTAIN",
             "entity_like_source": [
               "capitalized"
             ]
           },
           {
-            "step": "primary_2",
-            "provider": "openai_asr",
-            "text": "Mellos called across the hall.",
-            "classification": "ASR_VALIDATION_UNCERTAIN",
-            "entity_like_source": [
-              "capitalized"
-            ]
-          },
-          {
-            "step": "secondary_1",
+            "step": "tier3_corroboration_secondary",
             "provider": "azure",
             "text": "Melos called across the hall.",
-            "classification": "NORMALIZED_MATCH",
-            "phrase_list_used": true,
-            "entity_like_source": []
+            "sub_reason": "entity_only",
+            "entity_like_source": [
+              "capitalized"
+            ]
           }
         ],
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/attempts/full_story_part1_c1_attempt3_customadfcf33f.wav"
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/attempts/full_story_part1_c1_attempt4_customadfcf33f.wav"
       }
     ]
   },
@@ -1389,25 +1381,25 @@
     ]
   },
   "full_story_part1_c5": {
-    "state": "RESOLVED",
+    "state": "HUMAN_REVIEW_REQUIRED",
     "canonical_text_sha256": "70572ff242a34ec1bb7665d2a0ad851621245a4728fd369f2955027e7ef1edaf",
     "language": "en",
     "theme_id": "run_e2e_02",
     "level": "a2",
     "segment_id": "full_story_part1_c5",
-    "updated_at": "2026-10-12T18:45:37",
-    "reason": "status=OKで確定しました。",
-    "final_status": "OK",
+    "updated_at": "2026-10-12T22:14:24",
+    "reason": "最終status=STOPPED。標準経路1回+fallback経路2回(合計上限3回)とも不合格",
+    "final_status": "STOPPED",
     "wav_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c5.wav",
-    "cumulative_tts_attempts": 3,
-    "cumulative_asr_calls": 3,
+    "cumulative_tts_attempts": 6,
+    "cumulative_asr_calls": 6,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
         "status": "OK",
-        "duration_seconds": 1.63,
-        "asr_text": "Mello said.",
+        "duration_seconds": 1.56,
+        "asr_text": "Mellis said",
         "asr_text_length": 11,
         "max_len": 71,
         "substring_ok": null,
@@ -1434,7 +1426,7 @@
           {
             "step": "primary_1",
             "provider": "openai_asr",
-            "text": "Mello said.",
+            "text": "Mellis said",
             "classification": "ASR_VALIDATION_UNCERTAIN",
             "entity_like_source": [
               "capitalized"
@@ -1443,7 +1435,7 @@
           {
             "step": "tier3_corroboration_secondary",
             "provider": "azure",
-            "text": "Mellow said.",
+            "text": "Mallow said.",
             "sub_reason": "entity_only",
             "entity_like_source": [
               "capitalized"
@@ -1452,7 +1444,7 @@
           {
             "step": "primary_2",
             "provider": "openai_asr",
-            "text": "Mello said.",
+            "text": "Mellis said.",
             "classification": "ASR_VALIDATION_UNCERTAIN",
             "entity_like_source": [
               "capitalized"
@@ -1461,7 +1453,7 @@
           {
             "step": "secondary_1",
             "provider": "azure",
-            "text": "Mellow said.",
+            "text": "Mallow said.",
             "classification": "ASR_VALIDATION_UNCERTAIN",
             "phrase_list_used": true,
             "entity_like_source": [
@@ -1471,7 +1463,7 @@
           {
             "step": "secondary_2",
             "provider": "azure",
-            "text": "Mellow said.",
+            "text": "Mallow said.",
             "classification": "ASR_VALIDATION_UNCERTAIN",
             "phrase_list_used": true,
             "entity_like_source": [
@@ -1479,7 +1471,7 @@
             ]
           }
         ],
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/attempts/full_story_part1_c5_attempt2_customadfcf33f.wav"
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/attempts/full_story_part1_c5_attempt4_customadfcf33f.wav"
       }
     ]
   },
@@ -2586,19 +2578,19 @@
     "theme_id": "run_e2e_02",
     "level": "a2",
     "segment_id": "full_story_part3_c3",
-    "updated_at": "2026-10-12T19:09:33",
+    "updated_at": "2026-10-12T21:29:45",
     "reason": "status=OKで確定しました。",
     "final_status": "OK",
     "wav_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part3_c3.wav",
-    "cumulative_tts_attempts": 3,
-    "cumulative_asr_calls": 3,
+    "cumulative_tts_attempts": 4,
+    "cumulative_asr_calls": 4,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
         "status": "OK",
-        "duration_seconds": 4.68,
-        "asr_text": "His friend turned around and mellows fell against him.",
+        "duration_seconds": 4.64,
+        "asr_text": "His friend turned around, and Mellis fell against him.",
         "asr_text_length": 54,
         "max_len": 113,
         "substring_ok": null,
@@ -2614,7 +2606,7 @@
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": false,
-          "duration_seconds": 4.68,
+          "duration_seconds": 4.64,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
@@ -2626,40 +2618,40 @@
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9875,
-                "time_a_seconds": 1.83,
-                "time_b_seconds": 4.26,
-                "lag_seconds": 2.43,
-                "run_length_seconds_at_thresh_0.85": 0.05
+                "similarity": 0.9955,
+                "time_a_seconds": 0.05,
+                "time_b_seconds": 2.29,
+                "lag_seconds": 2.24,
+                "run_length_seconds_at_thresh_0.85": 0.1
               },
               {
-                "similarity": 0.9813,
-                "time_a_seconds": 1.85,
-                "time_b_seconds": 3.85,
-                "lag_seconds": 2.0,
-                "run_length_seconds_at_thresh_0.85": 0.03
-              },
-              {
-                "similarity": 0.9801,
-                "time_a_seconds": 2.59,
-                "time_b_seconds": 4.22,
-                "lag_seconds": 1.63,
+                "similarity": 0.9928,
+                "time_a_seconds": 0.97,
+                "time_b_seconds": 4.49,
+                "lag_seconds": 3.52,
                 "run_length_seconds_at_thresh_0.85": 0.02
               },
               {
-                "similarity": 0.9787,
-                "time_a_seconds": 2.32,
-                "time_b_seconds": 4.39,
-                "lag_seconds": 2.07
+                "similarity": 0.9926,
+                "time_a_seconds": 0.05,
+                "time_b_seconds": 4.54,
+                "lag_seconds": 4.49,
+                "run_length_seconds_at_thresh_0.85": 0.06
               },
               {
-                "similarity": 0.975,
-                "time_a_seconds": 0.93,
-                "time_b_seconds": 2.48,
-                "lag_seconds": 1.55
+                "similarity": 0.9924,
+                "time_a_seconds": 2.29,
+                "time_b_seconds": 4.52,
+                "lag_seconds": 2.23
+              },
+              {
+                "similarity": 0.9864,
+                "time_a_seconds": 1.02,
+                "time_b_seconds": 4.49,
+                "lag_seconds": 3.47
               }
             ],
-            "best_run_length_seconds": 0.05,
+            "best_run_length_seconds": 0.1,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -2668,11 +2660,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.38,
-            "time_a": 1.43,
-            "lag": 0.98,
-            "similarity_at_start": 0.785,
-            "best_run_length_seconds": 0.38,
+            "run_length_seconds": 0.29,
+            "time_a": 2.6,
+            "lag": 0.68,
+            "similarity_at_start": 0.7633,
+            "best_run_length_seconds": 0.29,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -2695,7 +2687,7 @@
           {
             "step": "primary_1",
             "provider": "openai_asr",
-            "text": "His friend turned around and mellows fell against him.",
+            "text": "His friend turned around, and Mellis fell against him.",
             "classification": "ASR_VALIDATION_UNCERTAIN",
             "entity_like_source": [
               "capitalized"
@@ -2711,7 +2703,7 @@
             ]
           }
         ],
-        "attempt_audio_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/attempts/full_story_part3_c3_attempt3_customadfcf33f.wav"
+        "attempt_audio_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/attempts/full_story_part3_c3_attempt4_customadfcf33f.wav"
       }
     ]
   },

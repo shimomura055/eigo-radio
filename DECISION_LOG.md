@@ -20683,3 +20683,11 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 試聴ページ `user_test/coffee_final_v5/{index,standard,advanced}.html` 公開(HTTP 200)、Playwright実再生 51/51・26/26・25/25、console error 0。`PLAY_EVIDENCE_V5_01.md`。費用 本委任約JPY0.37、v5累計約JPY4.28、Coffee累計約JPY151.4。
 - 状態: 試聴版完成。`PRODUCTION_WIRED`は未判定(resume経路・Master Store reuse・OPEN-312未検証、Opus独立レビュー未実施)。ユーザー試聴待ち。
 - 証跡: `er057_output/coffee_final_v5/`(WIRING_CHECKLIST_V5_01.md、PRODUCTION_DIFF_V5.md、PLAY_EVIDENCE_V5_01.md、style_application_evidence_v5.json 他)、`docs/pm/delegation_log/2026-10-12_FAMILY-X-COFFEE-FINAL-V5-PRODUCTION-WIRING-01_02.md`。
+
+## FAMILY-Z-MELOS-CONNECTED-SPEECH-ROOT-CAUSE-AUDIT-01 委任_02(2026-10-12、Std a2 part1_c5 正規再生成1回: STOPPED継続、HR到達)
+- 既存承認仕様(是正済み減速後救済経路)で `--only-clips full_story_part1_c5` を1回起動(rc=2、再起動なし)。TTS通算3回(標準gemini-3.8-flash-lite-tts 1回+fallback gemini-2.5-pro-preview-tts 2回、Std cooldown 600s実待機)。
+- take1(標準): OpenAI「Mellis said」/Azure「Mallow said.」、全cascade(Primary#2/Secondary x2/Tier3)で ASR_VALIDATION_UNCERTAIN(entity_only)。Pattern A/CS Validator発火なし(connected_speech_info=null、stem同音の別綴りMellis/Mallowは対象外)。take2/take3(fallback): 「melloset」「Mellowset」でTTS_FAILURE(長さ逸脱、モデルが'Melos said'を読まず一語化)。減速段階には到達せず(post_slowdown_cascade非発火)。
+- 最終 STOPPED。review_lockは RESOLVED→HUMAN_REVIEW_REQUIRED に遷移(減速前の全take不合格経路ではHRに到達する。OPEN-320のHR不達は減速後STOPPEDのみ)。b1b part1_c5/JA comment_1/Productionコードは無変更。
+- 同一clipの新規takeでも安定してPASSしない=OPEN-327(stem同音別綴り)の実測追加例。次はHR承認(人間)またはC案(OPEN-327、Trial+Opus必須)待ち。
+- Regression: er021 wiring 62、er063 47、er026統合42(2回目)、stop_sentinel 16、runner 21、cs_audit 12、cascade rescue 16 全OK(統合の初回2件失敗は実run並走によるshared-state差分、実run終了後の再実行でOK)。
+- 費用: run_e2e_02 62.00->62.60(+JPY0.60)。Melos累計約185.4/300。証跡 `er026_output/family_z_production_e2e_01/melos/cs_audit_01/`(regen_c5_stdout.txt、pre_regen_c5_backup/)、`docs/pm/delegation_log/2026-10-12_FAMILY-Z-MELOS-CONNECTED-SPEECH-ROOT-CAUSE-AUDIT-01_02.md`。

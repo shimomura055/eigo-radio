@@ -1,0 +1,120 @@
+{
+  "attempt_number": 1,
+  "route": "custom_adfcf33f",
+  "segment_id": "full_story_part2_c1",
+  "theme_id": "run_e2e_02",
+  "level": "a2",
+  "source_out_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part2_c1.wav",
+  "saved_at": "2026-10-12T18:47:30",
+  "sha256": "047cc1aabd3080a83ba3ec65fffd81b71b3935ef4ead032fdaf20f7f3e6311f7",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "Warm, bright, cozy storytelling in the manner of a well-loved radio feature: unhurried, richly expressive, with full vowels and gentle emphasis, never flat or sleepy.\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.",
+  "asr_text": "The river stopped him. Its bridge was gone. Rain made the water brown and dangerously fast. He stepped back, ran, and jumped into the flood. The water pulled him under, but he fought toward the light. He grabbed a branch and pulled himself onto the far bank. Later, three men blocked his way, and a knife flashed. He hit the man holding it with his walking stick. He ran uphill as their shouts followed behind him. By afternoon, each step hurt, and his feet were bloody. He fell beside a rock and tried to stand, but his legs would not lift him. He could wait here, and someone might find him, or he could return home, but his friend would lose his life instead. For one awful moment, that felt easier than standing up.",
+  "audio_classification": "NUMERIC_EQUIVALENCE_MATCH",
+  "length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 51.97,
+    "method_a_ngram": {
+      "matches": [],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 134,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9975,
+          "time_a_seconds": 9.68,
+          "time_b_seconds": 16.67,
+          "lag_seconds": 6.99,
+          "run_length_seconds_at_thresh_0.85": 0.06
+        },
+        {
+          "similarity": 0.9973,
+          "time_a_seconds": 1.67,
+          "time_b_seconds": 11.43,
+          "lag_seconds": 9.76,
+          "run_length_seconds_at_thresh_0.85": 0.13
+        },
+        {
+          "similarity": 0.9968,
+          "time_a_seconds": 11.47,
+          "time_b_seconds": 19.06,
+          "lag_seconds": 7.59,
+          "run_length_seconds_at_thresh_0.85": 0.09
+        },
+        {
+          "similarity": 0.9966,
+          "time_a_seconds": 1.15,
+          "time_b_seconds": 13.45,
+          "lag_seconds": 12.3
+        },
+        {
+          "similarity": 0.9964,
+          "time_a_seconds": 7.89,
+          "time_b_seconds": 39.39,
+          "lag_seconds": 31.5
+        }
+      ],
+      "best_run_length_seconds": 0.13,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": true,
+      "local_asr_confirmation": {
+        "confirmed": false,
+        "overlap_ratio": 0.25,
+        "lcs_words": 1,
+        "window_half_seconds_a": 1.5,
+        "window_half_seconds_b": 1.5,
+        "fragment_a": "ran, and jumped into the flood.",
+        "fragment_b": "He grabbed a branch and pulled himself onto the far",
+        "overlap_ratio_threshold": 0.5,
+        "lcs_words_threshold": 3
+      },
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.35,
+      "time_a": 20.17,
+      "lag": 1.68,
+      "similarity_at_start": 0.7187,
+      "best_run_length_seconds": 0.35,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": false,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "The river stopped him. Its bridge was gone. Rain made the water brown and dangerously fast. He stepped back, ran, and jumped into the flood. The water pulled him under, but he fought toward the light. He grabbed a branch and pulled himself onto the far bank. Later, three men blocked his way, and a knife flashed. He hit the man holding it with his walking stick. He ran uphill as their shouts followed behind him. By afternoon, each step hurt, and his feet were bloody. He fell beside a rock and tried to stand, but his legs would not lift him. He could wait here, and someone might find him, or he could return home, but his friend would lose his life instead. For one awful moment, that felt easier than standing up.",
+      "classification": "NUMERIC_EQUIVALENCE_MATCH",
+      "entity_like_source": []
+    }
+  ]
+}

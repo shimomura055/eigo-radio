@@ -1,0 +1,121 @@
+{
+  "attempt_number": 4,
+  "route": "custom_adfcf33f",
+  "segment_id": "full_story_part3_c3",
+  "theme_id": "run_e2e_02",
+  "level": "a2",
+  "source_out_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part3_c3.wav",
+  "saved_at": "2026-10-12T21:29:45",
+  "sha256": "d34d48df15a4644d9a96f6429dc499b671837c4e49a570975674c51e5fa9d47f",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "Warm, bright, cozy storytelling in the manner of a well-loved radio feature: unhurried, richly expressive, with full vowels and gentle emphasis, never flat or sleepy.\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.",
+  "asr_text": "His friend turned around, and Mellis fell against him.",
+  "audio_classification": "SECONDARY_ASR_CORROBORATED_MATCH",
+  "length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 4.64,
+    "method_a_ngram": {
+      "matches": [],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 9,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9955,
+          "time_a_seconds": 0.05,
+          "time_b_seconds": 2.29,
+          "lag_seconds": 2.24,
+          "run_length_seconds_at_thresh_0.85": 0.1
+        },
+        {
+          "similarity": 0.9928,
+          "time_a_seconds": 0.97,
+          "time_b_seconds": 4.49,
+          "lag_seconds": 3.52,
+          "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+          "similarity": 0.9926,
+          "time_a_seconds": 0.05,
+          "time_b_seconds": 4.54,
+          "lag_seconds": 4.49,
+          "run_length_seconds_at_thresh_0.85": 0.06
+        },
+        {
+          "similarity": 0.9924,
+          "time_a_seconds": 2.29,
+          "time_b_seconds": 4.52,
+          "lag_seconds": 2.23
+        },
+        {
+          "similarity": 0.9864,
+          "time_a_seconds": 1.02,
+          "time_b_seconds": 4.49,
+          "lag_seconds": 3.47
+        }
+      ],
+      "best_run_length_seconds": 0.1,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.29,
+      "time_a": 2.6,
+      "lag": 0.68,
+      "similarity_at_start": 0.7633,
+      "best_run_length_seconds": 0.29,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "His friend turned around, and Mellis fell against him.",
+      "classification": "ASR_VALIDATION_UNCERTAIN",
+      "entity_like_source": [
+        "capitalized"
+      ]
+    },
+    {
+      "step": "tier3_corroboration_secondary",
+      "provider": "azure",
+      "text": "His friend turned around and Melos fell against him.",
+      "sub_reason": "entity_only",
+      "entity_like_source": [
+        "capitalized"
+      ]
+    }
+  ]
+}
