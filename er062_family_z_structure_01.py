@@ -9,9 +9,12 @@ Family C(er013)は import のみ(編集しない)。Production正式path(Z)用�
 """
 from __future__ import annotations
 
+import functools
 import hashlib
 import json
+import os
 import re
+import time
 
 import er013_family_c_production_01 as fam_c
 
@@ -53,11 +56,25 @@ class FamilyZPlanStop(FamilyZStop):
 
 
 # ------------------------------------------------------------
-# STOPセンチネル(委任_11 再発防止。Fable/ユーザーが仕様変更等で実行を止めたいときの合図ファイル)
-# 各API呼出の直前・各clipの直前に確認し、存在すれば新規API呼出をせず監査記録を書いて停止(runnerはrc=3)。
+# STOPセンチネル(委任_11 再発防止 / 委任_12A 機械的阻止の追加)
+# Fable/ユーザーが仕様変更等で実行を止めたいときの合図ファイル。
+#  - <run>/STOP, <run>/RESTART_STORM_LOCK.json, STOP_ALL(絶対path。cwdに依存しない)
+#  - 各API呼出の直前・各stage前・各clip前・起動時・client生成時に確認し、存在すれば新規API呼出をせず
+#    監査記録(<run>/audit_stop_sentinel.jsonl)を書いて停止(runnerはrc=3)。
+#  - 共有moduleのretry/fallback/cool-down内部の呼出も、SDK入口(install_api_stop_guard)で止める。
+#  - 二重起動(RUN_LOCK.json)・監視ループ的再起動(RESTART_STORM)も機械的に阻止する。
 # ------------------------------------------------------------
-STOP_ALL_PATH = "er026_output/family_z_production_e2e_01/STOP_ALL"
+_REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
+STOP_ALL_PATH = os.path.join(_REPO_ROOT, "er026_output", "family_z_production_e2e_01", "STOP_ALL")
 STOP_EXIT_CODE = 3
+LOCK_EXIT_CODE = 4
+CLEAR_REFUSED_EXIT_CODE = 5
+RESTART_STORM_MARKER = "RESTART_STORM_LOCK.json"
+RUN_LOCK_NAME = "RUN_LOCK.json"
+LAUNCH_LOG_NAME = "run_launch_log.jsonl"
+AUDIT_NAME = "audit_stop_sentinel.jsonl"
+STORM_WINDOW_SEC = 300.0
+STORM_THRESHOLD = 3
 _STOP_RUN_DIR = None
 
 
@@ -65,35 +82,269 @@ class FamilyZStopSentinel(FamilyZStop):
     """STOPセンチネル検出。自動再開・再試行しない。"""
 
 
+class FamilyZRunLockHeld(FamilyZStop):
+    """同一runで別processが稼働中(RUN_LOCK.json有効)。二重起動拒否。"""
+
+
+class FamilyZStopSentinelAbort(BaseException):
+    """API入口(SDK class method / mock API)で送出するSTOP。BaseExceptionなので、共有moduleの
+    `except Exception:` によるretry/fallbackで握り潰されない(握り潰されても次のAPI入口で再度止まる)。"""
+
+
 def set_stop_run_dir(run_dir) -> None:
     global _STOP_RUN_DIR
     _STOP_RUN_DIR = run_dir
 
 
+def _sentinel_candidates(run_dir):
+    rd = run_dir or _STOP_RUN_DIR
+    cands = []
+    if rd:
+        rd = str(rd).replace("\\", "/")
+        dirs = [rd]
+        if rd.endswith("_mock"):
+            dirs.append(rd[: -len("_mock")])           # mockは `<run>_mock` で動くが `<run>/STOP` でも止める
+        for d in dirs:
+            cands += [f"{d}/STOP", f"{d}/{RESTART_STORM_MARKER}"]
+    cands.append(STOP_ALL_PATH)
+    return cands
+
+
 def stop_sentinel_hit(run_dir=None):
     """存在するセンチネルのpathを返す(なければNone)。API 0・書込 0。"""
-    import os
-    rd = run_dir or _STOP_RUN_DIR
-    for pth in ([f"{rd}/STOP"] if rd else []) + [STOP_ALL_PATH]:
+    for pth in _sentinel_candidates(run_dir):
         if os.path.exists(pth):
             return pth
     return None
 
 
+def _audit(run_dir, rec: dict) -> None:
+    import datetime
+    if run_dir and os.path.isdir(run_dir):
+        rec = {"at": datetime.datetime.now().isoformat(), "pid": os.getpid(), **rec}
+        with open(f"{run_dir}/{AUDIT_NAME}", "a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+
+
 def check_stop_sentinel(where: str, run_dir=None) -> None:
     """センチネルがあれば監査記録(<run>/audit_stop_sentinel.jsonl)を書いて FamilyZStopSentinel を送出する。"""
-    import datetime
-    import os
     hit = stop_sentinel_hit(run_dir)
     if hit is None:
         return
     rd = run_dir or _STOP_RUN_DIR
-    if rd and os.path.isdir(rd):
-        with open(f"{rd}/audit_stop_sentinel.jsonl", "a", encoding="utf-8") as f:
-            f.write(json.dumps({"at": datetime.datetime.now().isoformat(), "where": where, "sentinel": hit},
-                               ensure_ascii=False) + "\n")
+    _audit(rd, {"where": where, "sentinel": hit})
     raise FamilyZStopSentinel(f"FAMILY_Z_STOP_SENTINEL: {hit} が存在するため {where} の前で停止(新規API呼出なし)。"
                               "自動再開/再試行はしない。Fable/ユーザーの指示を待つこと。")
+
+
+def api_guard(where: str, run_dir=None) -> None:
+    """全API入口で呼ぶ。センチネルがあれば BaseException系 FamilyZStopSentinelAbort を送出する。"""
+    try:
+        check_stop_sentinel(where, run_dir)
+    except FamilyZStopSentinel as e:
+        raise FamilyZStopSentinelAbort(str(e)) from e
+
+
+# ---- SDK入口へのguard(real時のみinstall。共有moduleは不変、classレベルのruntime wrap) ----
+_GUARD_TARGETS = (
+    ("openai.resources.responses.responses", "Responses", "create", "openai.responses.create"),
+    ("openai.resources.audio.transcriptions", "Transcriptions", "create", "openai.audio.transcriptions.create"),
+    ("google.genai.models", "Models", "generate_content", "gemini.models.generate_content"),
+    ("google.genai.batches", "Batches", "create", "gemini.batches.create"),
+)
+_GUARD_AZURE = (("er003_b1_p3u_audio", "get_word_timestamps_via_azure_stt"),
+                ("er003_b1_p4_audio", "get_full_text_via_azure_stt_continuous"))
+_WRAPPED = []   # [(owner, name, original)]
+
+
+def _wrap_attr(owner, name: str, where: str) -> bool:
+    orig = getattr(owner, name, None)
+    if orig is None or getattr(orig, "_family_z_stop_guard", False):
+        return False
+
+    @functools.wraps(orig)
+    def guarded(*a, **k):
+        api_guard(where)                     # 新規API(課金)の直前。retry/fallback/cool-down後でも必ず通る
+        return orig(*a, **k)
+
+    guarded._family_z_stop_guard = True
+    setattr(owner, name, guarded)
+    _WRAPPED.append((owner, name, orig))
+    return True
+
+
+def install_api_stop_guard() -> list:
+    """OpenAI Responses/Transcriptions・Gemini generate_content/batches・Azure STTの入口にSTOP確認を差し込む。
+    er005_cost_logger.install の後に呼ぶ(guardが最外殻になり、STOP時はcost logにも記録されない)。"""
+    import importlib
+    done = []
+    for mod, cls, meth, where in _GUARD_TARGETS:
+        try:
+            owner = getattr(importlib.import_module(mod), cls)
+        except Exception:  # noqa: BLE001  (SDK未導入等。guardできない入口は報告に残す)
+            continue
+        if _wrap_attr(owner, meth, where):
+            done.append(where)
+    for mod, fn in _GUARD_AZURE:
+        try:
+            m = importlib.import_module(mod)
+        except Exception:  # noqa: BLE001
+            continue
+        if _wrap_attr(m, fn, f"azure.{fn}"):
+            done.append(f"azure.{fn}")
+    return done
+
+
+def uninstall_api_stop_guard() -> None:
+    while _WRAPPED:
+        owner, name, orig = _WRAPPED.pop()
+        setattr(owner, name, orig)
+
+
+# ---- 二重起動阻止(RUN_LOCK.json) ----
+def pid_alive(pid) -> bool:
+    try:
+        pid = int(pid)
+    except (TypeError, ValueError):
+        return False
+    if pid <= 0:
+        return False
+    if os.name == "nt":
+        import ctypes
+        k32 = ctypes.windll.kernel32
+        h = k32.OpenProcess(0x1000, False, pid)         # PROCESS_QUERY_LIMITED_INFORMATION
+        if not h:
+            return False
+        try:
+            code = ctypes.c_ulong()
+            if not k32.GetExitCodeProcess(h, ctypes.byref(code)):
+                return True
+            return code.value == 259                    # STILL_ACTIVE
+        finally:
+            k32.CloseHandle(h)
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
+def _read_json_safe(path):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def acquire_run_lock(run_dir: str, argv=None) -> dict:
+    """<run>/RUN_LOCK.json を排他作成する。有効(PID生存)なlockが既にあれば FamilyZRunLockHeld。stale(PID死亡)は置換。"""
+    import datetime
+    os.makedirs(run_dir, exist_ok=True)
+    path = f"{run_dir}/{RUN_LOCK_NAME}"
+    rec = {"pid": os.getpid(), "parent_pid": os.getppid(), "started_at": datetime.datetime.now().isoformat(),
+           "started_ts": time.time(), "argv": list(argv) if argv is not None else None}
+    for _ in range(3):
+        try:
+            fd = os.open(path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            cur = _read_json_safe(path)
+            if cur is None:
+                time.sleep(0.3)                           # 作成途中の可能性
+                cur = _read_json_safe(path)
+            if cur is not None and cur.get("pid") != os.getpid() and pid_alive(cur.get("pid")):
+                _audit(run_dir, {"event": "RUN_LOCK_REFUSED", "held_by": cur})
+                raise FamilyZRunLockHeld(
+                    f"FAMILY_Z_RUN_LOCK_HELD: {path} が有効(PID {cur.get('pid')} 稼働中)。二重起動を拒否。"
+                    "既存processの終了を待つこと(自動再試行しない)。")
+            _audit(run_dir, {"event": "RUN_LOCK_STALE_REPLACED", "stale": cur})
+            try:
+                os.remove(path)
+            except FileNotFoundError:
+                pass
+            continue
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(rec, f, ensure_ascii=False)
+        return rec
+    raise FamilyZRunLockHeld(f"FAMILY_Z_RUN_LOCK_HELD: {path} を確保できない(競合)。")
+
+
+def release_run_lock(run_dir: str) -> bool:
+    path = f"{run_dir}/{RUN_LOCK_NAME}"
+    cur = _read_json_safe(path)
+    if cur is not None and cur.get("pid") == os.getpid():
+        try:
+            os.remove(path)
+            return True
+        except FileNotFoundError:
+            pass
+    return False
+
+
+# ---- 監視ループ的再起動の検出(RESTART_STORM) ----
+def _last_clear_ts(rows) -> float:
+    return max([r.get("ts", 0) for r in rows if r.get("event") == "CLEARED"] or [0.0])
+
+
+def record_launch_and_check_storm(run_dir: str, argv=None, *, now: float | None = None) -> dict:
+    """起動1回を run_launch_log.jsonl に記録し、5分間に3回以上なら <run>/STOP と RESTART_STORM_LOCK.json を作って停止する。"""
+    import datetime
+    os.makedirs(run_dir, exist_ok=True)
+    now = time.time() if now is None else now
+    path = f"{run_dir}/{LAUNCH_LOG_NAME}"
+    rec = {"event": "LAUNCH", "ts": now, "at": datetime.datetime.fromtimestamp(now).isoformat(), "pid": os.getpid(),
+           "parent_pid": os.getppid(), "argv": list(argv) if argv is not None else None}
+    with open(path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    rows = []
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            try:
+                rows.append(json.loads(line))
+            except Exception:  # noqa: BLE001
+                pass
+    since = max(_last_clear_ts(rows), now - STORM_WINDOW_SEC)
+    n = sum(1 for r in rows if r.get("event") == "LAUNCH" and r.get("ts", 0) > since)
+    if n >= STORM_THRESHOLD:
+        body = {"reason": "RESTART_STORM", "created_at": rec["at"], "launches_in_window": n,
+                "window_sec": STORM_WINDOW_SEC, "note": "監視ループ/自動再起動の疑い。--clear-stop --reason でのみ解除可。"}
+        for name in ("STOP", RESTART_STORM_MARKER):
+            with open(f"{run_dir}/{name}", "w", encoding="utf-8") as f:
+                json.dump(body, f, ensure_ascii=False)
+        _audit(run_dir, {"event": "RESTART_STORM", **body})
+        raise FamilyZStopSentinel(
+            f"FAMILY_Z_RESTART_STORM: 同一runが{STORM_WINDOW_SEC:.0f}秒間に{n}回起動された。{run_dir}/STOP を自動作成して停止。"
+            "解除は `--clear-stop --reason \"...\"` のみ(手動削除では解除されない)。")
+    return {"launches_in_window": n}
+
+
+# ---- 明示的な解除(正規操作) ----
+def clear_stop(run_dir: str, reason: str) -> dict:
+    """<run>/STOP(と RESTART_STORM_LOCK.json)を解除し、理由を audit_stop_sentinel.jsonl に記録する。
+    STOP_ALL は解除しない(Fable/ユーザー専用: tools/stop_all_family_z.py --release)。
+    RUN_CLOSED(run閉鎖)は解除不可。"""
+    import datetime
+    if not (reason or "").strip():
+        raise ValueError("--clear-stop には --reason が必須")
+    stop_p, storm_p = f"{run_dir}/STOP", f"{run_dir}/{RESTART_STORM_MARKER}"
+    cur = _read_json_safe(stop_p) or {}
+    if cur.get("reason") == "RUN_CLOSED":
+        raise FamilyZStop(f"FAMILY_Z_RUN_CLOSED: {run_dir} は閉鎖済みで解除できない(新しいrun名を使うこと)")
+    removed = []
+    for p in (stop_p, storm_p):
+        if os.path.exists(p):
+            os.remove(p)
+            removed.append(p)
+    now = time.time()
+    if os.path.isdir(run_dir):
+        with open(f"{run_dir}/{LAUNCH_LOG_NAME}", "a", encoding="utf-8") as f:     # storm カウントをここで区切る
+            f.write(json.dumps({"event": "CLEARED", "ts": now, "at": datetime.datetime.fromtimestamp(now).isoformat(),
+                                "reason": reason}, ensure_ascii=False) + "\n")
+    _audit(run_dir, {"event": "CLEARED", "reason": reason, "removed": removed, "previous": cur or None,
+                     "stop_all_still_present": os.path.exists(STOP_ALL_PATH)})
+    return {"removed": removed, "stop_all_still_present": os.path.exists(STOP_ALL_PATH)}
 
 
 def sha(s) -> str:

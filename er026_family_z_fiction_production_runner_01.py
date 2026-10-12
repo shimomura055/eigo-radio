@@ -670,6 +670,7 @@ def run_text_stage(story_key: str, slug: str, run: str, dry_run: bool = False) -
         return plan_summary
 
     budget = BudgetGuard()
+    _m().st.check_stop_sentinel("client:legacy_text_stage", out_dir_for(slug, run))   # 委任_12A
     client = vfl01.get_client()
     log_path = f"{out_dir_for(slug, run)}/raw_usage_log.jsonl"
     os.makedirs(out_dir_for(slug, run), exist_ok=True)
@@ -922,6 +923,7 @@ class E2EContext:
     hooks: dict = dataclasses.field(default_factory=dict)
     only_clips: object = None
     regenerate_stage: object = None
+    mock_api: object = None                     # mock時のみ: API境界(guard+呼出カウンタ)
 
     @property
     def out_dir(self) -> str:
@@ -1565,14 +1567,52 @@ def mock_tts_generators() -> dict:
                                  "kp_en", "kp_ja", "kp_expl_en")}
 
 
+class MockApi:
+    """mock時の『API境界』。real時のSDK入口guard(install_api_stop_guard)と同じ位置づけで、
+    呼出ごとに (1) STOPセンチネル確認(BaseException系で停止) (2) 呼出カウンタ追記 (3) 任意の遅延(試験用) を行う。
+    カウンタは <run>/mock_api_calls.jsonl(1行=1呼出)。遅延は環境変数 FAMILY_Z_MOCK_API_DELAY_SEC(mock専用・STOP試験用)。"""
+
+    def __init__(self, out_dir: str):
+        self.out_dir = out_dir
+        self.path = f"{out_dir}/mock_api_calls.jsonl"
+        self.n = 0
+
+    def call(self, kind: str, label: str = "") -> int:
+        _m().st.api_guard(f"mock_api:{kind}:{label}", self.out_dir)
+        self.n += 1
+        os.makedirs(self.out_dir, exist_ok=True)
+        with open(self.path, "a", encoding="utf-8") as f:
+            f.write(json.dumps({"n": self.n, "kind": kind, "label": label, "ts": time.time(), "pid": os.getpid()},
+                               ensure_ascii=False) + "\n")
+        try:
+            delay = float(os.environ.get("FAMILY_Z_MOCK_API_DELAY_SEC", "0") or 0)
+        except ValueError:
+            delay = 0.0
+        if delay > 0:
+            time.sleep(delay)
+        return self.n
+
+    def wrap(self, kind: str, fn):
+        def w(*a, **k):
+            first = a[0] if a else ""
+            label = getattr(first, "clip_id", None) or (first if isinstance(first, str) else "")
+            self.call(kind, str(label)[:60])
+            return fn(*a, **k)
+        return w
+
+
 def build_mock_context(run_root: str, run: str = "run_mock", pages_dir: str | None = None,
                        writer_hook=None, tts_generators=None) -> E2EContext:
     m = _m()
     ctx = E2EContext(mode="mock", run=run, run_root=run_root,
                      pages_dir=pages_dir or f"{run_root}/melos/{run}/pages_mock")
-    ctx.llm_client = m.w62.MockClient(writer_hook or mock_writer_hook())
-    ctx.hooks = {"ja_support_fn": mock_ja_support_fn, "en_support_fn": mock_en_support_fn, "kp_fn": mock_kp_fn,
-                 "expl_call_fn": mock_expl_call_fn, "tts_generators": tts_generators or mock_tts_generators()}
+    ctx.mock_api = api = MockApi(ctx.out_dir)
+    ctx.llm_client = m.w62.MockClient(api.wrap("llm", writer_hook or mock_writer_hook()))
+    gens = tts_generators or mock_tts_generators()
+    ctx.hooks = {"ja_support_fn": api.wrap("support_ja", mock_ja_support_fn),
+                 "en_support_fn": api.wrap("support_en", mock_en_support_fn), "kp_fn": api.wrap("kp", mock_kp_fn),
+                 "expl_call_fn": api.wrap("kp_expl", mock_expl_call_fn),
+                 "tts_generators": {k: api.wrap(f"tts:{k}", f) for k, f in gens.items()}}
     ctx.budget = E2EBudget(E2E_APPROVED_BUDGET_MAX_JPY, E2E_WARN_THRESHOLD_JPY, spent_fn=lambda: 0.0)
     return ctx
 
@@ -1587,6 +1627,9 @@ def build_real_context(args) -> E2EContext:
     cost_log = f"{ctx.out_dir}/cost_log.jsonl"
     ctx.budget = E2EBudget(args.approved_budget_jpy, args.warn_threshold_jpy, spent_fn=make_real_spent_fn(cost_log),
                            ack_warn=args.ack_warn_threshold)       # 未承認/上限超過ならここでSTOP(副作用なし)
+    m = _m()
+    m.st.check_stop_sentinel("client:build_real_context", ctx.out_dir)   # 委任_12A: client生成前のSTOP確認(STOP_ALL中はreal起動拒否)
+    _launch_guard(ctx.out_dir)             # 委任_12A: client生成前に 起動履歴(RESTART_STORM)・RUN_LOCK(二重起動)を確認
     from dotenv import load_dotenv
     load_dotenv()
     if args.tts_execution_mode:
@@ -1594,9 +1637,28 @@ def build_real_context(args) -> E2EContext:
     os.makedirs(ctx.out_dir, exist_ok=True)
     import er005_cost_logger as cl
     cl.install(cost_log)
-    m = _m()
+    m.st.install_api_stop_guard()          # 委任_12A: SDK入口(共有moduleのretry/fallback/cool-down内部も含む)でSTOP確認
     ctx.llm_client = vfl01.get_client()
     return ctx
+
+
+_RUN_LOCK_DIR = None
+
+
+def _launch_guard(out_dir: str) -> None:
+    """起動履歴を記録しRESTART_STORMを判定、続いてRUN_LOCKを取得する(mock/real共通)。"""
+    global _RUN_LOCK_DIR
+    st = _m().st
+    st.record_launch_and_check_storm(out_dir, sys.argv)
+    st.acquire_run_lock(out_dir, sys.argv)
+    _RUN_LOCK_DIR = out_dir
+
+
+def _release_launch_lock() -> None:
+    global _RUN_LOCK_DIR
+    if _RUN_LOCK_DIR:
+        _m().st.release_run_lock(_RUN_LOCK_DIR)
+        _RUN_LOCK_DIR = None
 
 
 # ============================================================
@@ -1629,6 +1691,9 @@ def build_parser():
     parser.add_argument("--ack-warn-threshold", action="store_true", help="警告閾値超過後の続行を承認(approvedまで)")
     parser.add_argument("--tts-execution-mode", default="STANDARD", choices=("STANDARD", "BATCH"))
     parser.add_argument("--stop-after", default=None, choices=list(E2E_STAGES))
+    parser.add_argument("--clear-stop", action="store_true",
+                        help="<run>/STOP(RESTART_STORM含む)を明示解除し監査記録する(--reason必須。STOP_ALL/RUN_CLOSEDは解除しない)")
+    parser.add_argument("--reason", default=None, help="--clear-stop の理由(必須)")
     return parser
 
 
@@ -1639,6 +1704,8 @@ def main(argv=None):
     args.slug = slug
     if args.dry_run:
         args.mode = "dry-run"
+    if args.clear_stop:
+        return _clear_stop_main(args, slug)
     if args.stage in LEGACY_STAGES:
         _legacy_main(args, slug)
         return 0
@@ -1659,10 +1726,12 @@ def main(argv=None):
         return 0
     try:
         # 委任_11: 起動直後(cost_logger install・client構築の前)にSTOPセンチネルを確認する
-        _m().st.check_stop_sentinel("startup", f"{E2E_RUN_ROOT}/{slug}/{args.run}")
+        startup_dir = f"{E2E_RUN_ROOT}/{slug}/{args.run}" + ("_mock" if args.mode == "mock" else "")
+        _m().st.check_stop_sentinel("startup", startup_dir)
         if args.mode == "mock":
             ctx = build_mock_context(E2E_RUN_ROOT, run=f"{args.run}_mock",
                                      pages_dir=f"{E2E_RUN_ROOT}/{slug}/{args.run}_mock/pages_mock")
+            _launch_guard(ctx.out_dir)
         else:
             ctx = build_real_context(args)
         ctx.only_clips, ctx.regenerate_stage = only, args.regenerate_stage
@@ -1671,12 +1740,36 @@ def main(argv=None):
                    "spent_jpy": round(ctx.budget.spent(), 4) if ctx.budget is not None else None}
         print(json.dumps(summary, ensure_ascii=False))
         return 0
-    except _m().st.FamilyZStopSentinel as e:   # 委任_11: STOPセンチネル。監査記録済み。rc=3で終了(自動再開しない)
+    except (_m().st.FamilyZStopSentinel, _m().st.FamilyZStopSentinelAbort) as e:   # STOPセンチネル。監査記録済み。rc=3(自動再開しない)
         print(f"[STOP_SENTINEL] {e}", file=sys.stderr)
         return _m().st.STOP_EXIT_CODE
+    except _m().st.FamilyZRunLockHeld as e:    # 委任_12A: 二重起動拒否(rc=4)
+        print(f"[RUN_LOCK] {e}", file=sys.stderr)
+        return _m().st.LOCK_EXIT_CODE
     except Exception as e:  # noqa: BLE001  (STOP: 自動retry/再生成/迂回はしない)
         print(f"[STOP] {e.__class__.__name__}: {e}", file=sys.stderr)
         return 2
+    finally:
+        _release_launch_lock()
+
+
+def _clear_stop_main(args, slug) -> int:
+    """--clear-stop --reason: 明示的な正規解除(<run>/STOP と <run>_mock/STOP。STOP_ALLは対象外)。"""
+    st = _m().st
+    if not (args.reason or "").strip():
+        print("[CLEAR_STOP] --reason が必須", file=sys.stderr)
+        return 2
+    out = {}
+    try:
+        for d in (f"{E2E_RUN_ROOT}/{slug}/{args.run}", f"{E2E_RUN_ROOT}/{slug}/{args.run}_mock"):
+            if os.path.isdir(d):
+                out[d] = st.clear_stop(d, args.reason)
+    except st.FamilyZStop as e:
+        print(f"[CLEAR_STOP_REFUSED] {e}", file=sys.stderr)
+        return st.CLEAR_REFUSED_EXIT_CODE
+    print(json.dumps({"clear_stop": out, "stop_all_path": st.STOP_ALL_PATH,
+                      "stop_all_present": os.path.exists(st.STOP_ALL_PATH)}, ensure_ascii=False))
+    return 0
 
 
 if __name__ == "__main__":

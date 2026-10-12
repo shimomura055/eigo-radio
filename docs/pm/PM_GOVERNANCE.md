@@ -3207,6 +3207,14 @@ STOPして報告する(広いTrialへは進まない。委任_16実例: Hook-awa
 ### 26-4. 注記
 本節は運用ルールであり新しいChecker/Validatorではない。STOPセンチネルはFamily Z runnerに実装済み(2026-10-12)。他Familyのrunnerへの展開は必要時に別途判断する。
 
+### 26-5. 機械的阻止の追加(2026-10-12、委任_12A。文書規則だけに頼らない)
+Family Z runner(er026/er062/er063)に次を実装済み(課金0のmock/dry-runで実効検証済み。証跡 `er026_output/family_z_production_e2e_01/melos/evidence_12A/`)。
+- STOP確認点: 起動時(mockは`<run>_mock`と`<run>`の両方)・各stage前・各clip前・各API呼出前・client生成前。real時は共有moduleのretry/fallback/cool-down内部の呼出も、SDK入口(OpenAI Responses/Transcriptions、Gemini generate_content/batches、Azure STT)へのruntime wrap(`install_api_stop_guard`、BaseException系で停止)で止める。STOP_ALLは絶対pathで、cwdに依存しない。STOP_ALL存在中はどの`--mode real`もAPI client生成前に拒否(rc=3)。
+- 二重起動拒否: `<run>/RUN_LOCK.json`(PID・親PID・起動時刻)。PID生存中は拒否(rc=4)、PID死亡のstaleは置換。
+- RESTART_STORM: 同一runの起動が5分間に3回以上で、`<run>/STOP`と`<run>/RESTART_STORM_LOCK.json`を自動作成して停止(起動履歴`run_launch_log.jsonl`)。STOPだけ手動削除しても解除されない。
+- 解除: `--clear-stop --reason "<text>"`(`audit_stop_sentinel.jsonl`へ記録)。RESTART_STORM由来は必須。run閉鎖(STOP内`reason=RUN_CLOSED`)は解除不可。STOP_ALLは`tools/stop_all_family_z.py --release --reason`(Fable/ユーザー専用)。
+- Fable用: `tools/stop_all_family_z.py`(既定dry-run。`--execute --reason`でSTOP_ALL作成+該当プロセス停止)。停止済みの実行層が新しい実行手段(別名ラッパ・監視ループ・別script)を作ることは禁止のまま。作っても上記で止まる。
+
 ### 26-X. commit前secret scan必須・デバッグログはcommit対象外(2026-10-12、GIT-SECRET-REPAIR-01、事故再発防止)
 
 - 背景: er026 Melos evidence_10のデバッグログへAzure Speech Keyが平文混入し、GitHub push protectionがpushを拒否した(未push局所commitのみ再作成して解消。remote履歴は無変更、Keyローテーションは別判断)。

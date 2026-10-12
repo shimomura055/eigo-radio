@@ -1191,11 +1191,13 @@ def stage_plan(llm, out_dir, slug, run, level, prov, regenerate):
 
 
 def _setup_real(out_dir):
+    st.check_stop_sentinel("client:er062_setup_real", out_dir)          # 委任_12A: client生成前にSTOP確認(STOP_ALL中はreal起動拒否)
     from dotenv import load_dotenv
     load_dotenv()
     import er005_cost_logger as cl
     import er003_v1_en_direct_vfl_01_generate as vfl01
     cl.install(os.path.join(out_dir, "raw_usage_log.jsonl"))
+    st.install_api_stop_guard()                                         # 委任_12A: SDK入口でもSTOP確認(最外殻)
     return vfl01.get_client(), cl
 
 
@@ -1225,6 +1227,7 @@ def main(argv=None):
         client, ctx = MockClient(), contextlib.nullcontext()
         budget = Budget(1e9)
     else:
+        st.check_stop_sentinel("startup:er062_writer_cli_real", out_dir)    # 委任_12A: dir作成・client生成の前にSTOP確認
         os.makedirs(out_dir, exist_ok=True)
         client, cl = _setup_real(out_dir)
         ctx = cl.logging_context(THEME_TAG, a.stage)
@@ -1275,4 +1278,8 @@ def main(argv=None):
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == "smoke":
         sys.exit(smoke_main(sys.argv[2:]))
-    sys.exit(main())
+    try:
+        sys.exit(main())
+    except (st.FamilyZStopSentinel, st.FamilyZStopSentinelAbort) as _e:     # 委任_12A: STOPセンチネルはrc=3
+        print(f"[STOP_SENTINEL] {_e}", file=sys.stderr)
+        sys.exit(st.STOP_EXIT_CODE)

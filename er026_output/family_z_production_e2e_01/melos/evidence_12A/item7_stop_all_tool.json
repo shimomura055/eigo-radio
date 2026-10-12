@@ -1,0 +1,73 @@
+{
+ "item": 7,
+ "dry_run": {
+  "mode": "dry-run",
+  "would_create": "C:\\Users\\tensh\\AppData\\Local\\Temp\\tmprr7l5u67\\STOP_ALL",
+  "would_stop": [
+   {
+    "pid": 12216,
+    "ppid": 13732,
+    "name": "python.exe",
+    "cmd": "C:\\Users\\tensh\\eigo-radio\\.venv\\Scripts\\python.exe -c \"import time; time.sleep(120)  # FAMZ_DUMMY_MARKER_7f3a12a\""
+   },
+   {
+    "pid": 40240,
+    "ppid": 12216,
+    "name": "python.exe",
+    "cmd": "C:\\Users\\tensh\\eigo-radio\\.venv\\Scripts\\python.exe -c \"import time; time.sleep(120)  # FAMZ_DUMMY_MARKER_7f3a12a\""
+   }
+  ],
+  "note": "--execute --reason �Ŏ��s"
+ },
+ "execute": {
+  "mode": "execute",
+  "stop_all": "C:\\Users\\tensh\\AppData\\Local\\Temp\\tmprr7l5u67\\STOP_ALL",
+  "stopped": [
+   {
+    "pid": 40240,
+    "ppid": 12216,
+    "name": "python.exe",
+    "cmd": "C:\\Users\\tensh\\eigo-radio\\.venv\\Scripts\\python.exe -c \"import time; time.sleep(120)  # FAMZ_DUMMY_MARKER_7f3a12a\"",
+    "taskkill_rc": 0
+   },
+   {
+    "pid": 12216,
+    "ppid": 13732,
+    "name": "python.exe",
+    "cmd": "C:\\Users\\tensh\\eigo-radio\\.venv\\Scripts\\python.exe -c \"import time; time.sleep(120)  # FAMZ_DUMMY_MARKER_7f3a12a\"",
+    "taskkill_rc": 128
+   }
+  ]
+ },
+ "audit": [
+  {
+   "at": "2026-10-12T17:26:32.283944",
+   "event": "STOP_ALL_CREATED",
+   "reason": "item7 test",
+   "path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\tmprr7l5u67\\STOP_ALL",
+   "stopped": [
+    {
+     "pid": 40240,
+     "ppid": 12216,
+     "name": "python.exe",
+     "cmd": "C:\\Users\\tensh\\eigo-radio\\.venv\\Scripts\\python.exe -c \"import time; time.sleep(120)  # FAMZ_DUMMY_MARKER_7f3a12a\"",
+     "taskkill_rc": 0
+    },
+    {
+     "pid": 12216,
+     "ppid": 13732,
+     "name": "python.exe",
+     "cmd": "C:\\Users\\tensh\\eigo-radio\\.venv\\Scripts\\python.exe -c \"import time; time.sleep(120)  # FAMZ_DUMMY_MARKER_7f3a12a\"",
+     "taskkill_rc": 128
+    }
+   ]
+  },
+  {
+   "at": "2026-10-12T17:26:32.384757",
+   "event": "STOP_ALL_RELEASED",
+   "reason": "item7 done",
+   "existed": true,
+   "path": "C:\\Users\\tensh\\AppData\\Local\\Temp\\tmprr7l5u67\\STOP_ALL"
+  }
+ ]
+}

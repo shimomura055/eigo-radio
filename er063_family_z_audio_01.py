@@ -363,6 +363,7 @@ def default_llm_attribution_fn(client=None):
     def _fn(quotes: list) -> dict:
         import er003_v1_b1_scaffold_01_generate as b1s
         import er006_model_routing_contract_01 as routing
+        _check_stop_sentinel(None, "client:er063_attribution")      # 委任_12A: client生成前にSTOP確認
         c = client or b1s.get_client()
         model = routing.require_model("FAMILY_Z_DIALOGUE_ATTRIBUTION", "gpt-6-luna")
         speakers = list(FAMILY_Z_DIALOGUE_VOICE_KEYWORDS) + ["narrator"]
@@ -535,6 +536,7 @@ def _norm_for_tts(spec: ClipSpec) -> str:
 
 def real_generators() -> dict:
     """kind -> fn(spec, out_path) -> result dict(共有関数の結果dictをそのまま返す)。"""
+    _check_stop_sentinel(None, "client:er063_real_generators")      # 委任_12A: TTS client経路の生成前にSTOP確認
     import er003_v1_n3_01_tts_generate as n3_tts
     import er003_v1_sing01_news_tail_fix as news_tail_fix
     import er003_v1_sing01_voice01_generate as voice01
