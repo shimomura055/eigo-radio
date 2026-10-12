@@ -20706,3 +20706,9 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - JA『三日間』↔ASR『3日間』はVALIDATORの助数詞閉じたリストに『日』が無いため数字集合不一致でTRUE_CONTENT_MISMATCH(OPEN-319更新、音声品質と独立)。OPEN-330/323/324/328は現行ルール無変更。改善順序①〜⑤は未採用・ユーザー未判断。
 - 費用JPY0(provision_shell/gateともAPIなし)。QA/Regression: er063 47 / er026統合 42 / er026 runner 21 / er062 64 / CS audit regression 12 / post-slowdown rescue 16 全OK、stop_sentinel test結果は`evidence_13/qa_regression_summary.txt`。委任ログ `docs/pm/delegation_log/2026-10-13_FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01_01.md`。
 
+
+## FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01 委任_01(2026-10-13、Trial実施記録。採用判断は書かない。Status案VALIDATED、方式採否はUSER_DECISION_REQUIRED)
+- 目的: 2語短尺clip(Melos said.)のASRが文脈なしで不安定な問題を、Melos固有でなくFamily Z全体へ汎用化できる方式を比較(方式を先に固定しない)。既存音声のみ(TTS生成0)、Production無変更・新仕様の実装/配線なし。
+- 実測(OpenAI gpt-4o-mini-transcribe[Production同一]/Azure STT+PhraseList/local whisper[参照]): 単独2語clipで`melos said`はOpenAI 0/13。前後clip結合(同一/異voice、3〜28秒)で改善は一貫せず(0〜31%、文脈にMelos語を含む場合のみ上昇=語彙プライミング)。OpenAIは同一音声2回で領域転写が72%一致、Azureは100%(決定的)。語欠落/誤語の既知欠陥は文脈付きでも0/12 false accept、語末子音切詰(最終語末尾70〜460ms)はASRが補完して単独/文脈付きとも100%受理(ASRでは検出不能)。本番NG由来の反例は単独NG→文脈PASS反転13/41(proxy)、Melos a2_att6は17/45(真値は試聴要)。
+- 結論(Trial): ASR文脈結合(OPEN-318 C-c)はauto-accept条件として非推奨。推奨候補=原稿側attribution最小語数ルール+作品単位の人間承認allow-list+Azure PhraseList+HR維持(いずれも新仕様、Trial+Opus独立レビュー+人間承認前提)。OPEN-330/327/318へ追記、現行ルール無変更。
+- 費用JPY39.61(Trial上限40)、Melos累計約225.0/300。Production state不変(telemetry等10ファイルの行数/sha256一致、write guard遮断はHFキャッシュのみ)。成果物`er065_output/short_clip_asr_context_trial_01/`(TRIAL_REPORT_01.md、results_01.jsonl、cost_01.json、telemetry_guard_01.json、conditions_manifest_01.json)。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01_01.md`。

@@ -1,0 +1,183 @@
+{
+ "purpose": "Production state(telemetry/queue/ledger/attempt_history/master store/cost_baseline/run_e2e_02 cost_log)がTrial実行で不変であることの証拠",
+ "method": "(1)各runner process実行前後で対象ファイルの行数+sha256を記録(telemetry_guard_before/after_<tag>.json) (2)sys.addaudithookのwrite guardでtrial dir(+OS temp)外への書込を例外で遮断し記録 (3)Production ASR helper(telemetry/queue/ledger追記経路を持つもの)は呼ばず、lib内の読取専用ASR実装を使用 (4)Production判定関数classify_asr_matchは読取呼出しのみ、semantic_equivalence.append_telemetry_logをno-op化",
+ "guarded_files": [
+  "er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl",
+  "er025_output/pronunciation_resolution_core_telemetry_01/telemetry.jsonl",
+  "er011_output/attempt_history.jsonl",
+  "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl",
+  "er006_output/master_audio_store_01/manifest.json",
+  "er006_output/master_audio_store_01/reuse_telemetry.jsonl",
+  "er006_output/pronunciation_ledger_01/ledger.json",
+  "er005_output/cost_baseline_01/cost_summary.json",
+  "er026_output/family_z_production_e2e_01/melos/run_e2e_02/cost_log.jsonl",
+  "er026_output/family_z_production_e2e_01/melos/COST_LEDGER_MELOS_01.md"
+ ],
+ "files_at_first_process_start": {
+  "er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl": {
+   "exists": true,
+   "bytes": 5859818,
+   "lines": 9168,
+   "sha256": "2493ce8b34110200"
+  },
+  "er025_output/pronunciation_resolution_core_telemetry_01/telemetry.jsonl": {
+   "exists": true,
+   "bytes": 30495,
+   "lines": 185,
+   "sha256": "f61a065cf55226d9"
+  },
+  "er011_output/attempt_history.jsonl": {
+   "exists": true,
+   "bytes": 7090723,
+   "lines": 12767,
+   "sha256": "6ebe71466bc567f7"
+  },
+  "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl": {
+   "exists": true,
+   "bytes": 355489,
+   "lines": 75,
+   "sha256": "1fd5c357fda981c0"
+  },
+  "er006_output/master_audio_store_01/manifest.json": {
+   "exists": true,
+   "bytes": 365737,
+   "lines": 10297,
+   "sha256": "4f2954c7ed08079c"
+  },
+  "er006_output/master_audio_store_01/reuse_telemetry.jsonl": {
+   "exists": true,
+   "bytes": 1052575,
+   "lines": 1844,
+   "sha256": "1d037c43844298d0"
+  },
+  "er006_output/pronunciation_ledger_01/ledger.json": {
+   "exists": true,
+   "bytes": 67683,
+   "lines": 1200,
+   "sha256": "36122420c50cfb78"
+  },
+  "er005_output/cost_baseline_01/cost_summary.json": {
+   "exists": true,
+   "bytes": 3345,
+   "lines": 135,
+   "sha256": "f9dfa6798ae2b227"
+  },
+  "er026_output/family_z_production_e2e_01/melos/run_e2e_02/cost_log.jsonl": {
+   "exists": true,
+   "bytes": 147481,
+   "lines": 313,
+   "sha256": "3859e9e5dd4250c3"
+  },
+  "er026_output/family_z_production_e2e_01/melos/COST_LEDGER_MELOS_01.md": {
+   "exists": true,
+   "bytes": 9099,
+   "lines": 103,
+   "sha256": "343c9424a39d0687"
+  }
+ },
+ "files_at_finalize": {
+  "er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl": {
+   "exists": true,
+   "bytes": 5859818,
+   "lines": 9168,
+   "sha256": "2493ce8b34110200"
+  },
+  "er025_output/pronunciation_resolution_core_telemetry_01/telemetry.jsonl": {
+   "exists": true,
+   "bytes": 30495,
+   "lines": 185,
+   "sha256": "f61a065cf55226d9"
+  },
+  "er011_output/attempt_history.jsonl": {
+   "exists": true,
+   "bytes": 7090723,
+   "lines": 12767,
+   "sha256": "6ebe71466bc567f7"
+  },
+  "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl": {
+   "exists": true,
+   "bytes": 355489,
+   "lines": 75,
+   "sha256": "1fd5c357fda981c0"
+  },
+  "er006_output/master_audio_store_01/manifest.json": {
+   "exists": true,
+   "bytes": 365737,
+   "lines": 10297,
+   "sha256": "4f2954c7ed08079c"
+  },
+  "er006_output/master_audio_store_01/reuse_telemetry.jsonl": {
+   "exists": true,
+   "bytes": 1052575,
+   "lines": 1844,
+   "sha256": "1d037c43844298d0"
+  },
+  "er006_output/pronunciation_ledger_01/ledger.json": {
+   "exists": true,
+   "bytes": 67683,
+   "lines": 1200,
+   "sha256": "36122420c50cfb78"
+  },
+  "er005_output/cost_baseline_01/cost_summary.json": {
+   "exists": true,
+   "bytes": 3345,
+   "lines": 135,
+   "sha256": "f9dfa6798ae2b227"
+  },
+  "er026_output/family_z_production_e2e_01/melos/run_e2e_02/cost_log.jsonl": {
+   "exists": true,
+   "bytes": 147481,
+   "lines": 313,
+   "sha256": "3859e9e5dd4250c3"
+  },
+  "er026_output/family_z_production_e2e_01/melos/COST_LEDGER_MELOS_01.md": {
+   "exists": true,
+   "bytes": 9099,
+   "lines": 103,
+   "sha256": "343c9424a39d0687"
+  }
+ },
+ "changed_between_first_start_and_finalize": {},
+ "changed_during_each_process_run": {
+  "telemetry_guard_after_azure_counter.json": [],
+  "telemetry_guard_after_azure_melos.json": [],
+  "telemetry_guard_after_openai_counter.json": [],
+  "telemetry_guard_after_openai_ctl.json": [],
+  "telemetry_guard_after_openai_melos.json": [],
+  "telemetry_guard_after_openai_name.json": [],
+  "telemetry_guard_after_openai_prompt.json": [],
+  "telemetry_guard_after_openai_sweep.json": [],
+  "telemetry_guard_after_whisper_counter.json": [],
+  "telemetry_guard_after_whisper_ctl.json": [],
+  "telemetry_guard_after_whisper_melos.json": [],
+  "telemetry_guard_after_whisper_name.json": [],
+  "telemetry_guard_after_whisper_sweep.json": []
+ },
+ "blocked_write_attempts_by_process": {
+  "telemetry_guard_after_azure_counter.json": [],
+  "telemetry_guard_after_azure_melos.json": [],
+  "telemetry_guard_after_openai_counter.json": [],
+  "telemetry_guard_after_openai_ctl.json": [],
+  "telemetry_guard_after_openai_melos.json": [],
+  "telemetry_guard_after_openai_name.json": [],
+  "telemetry_guard_after_openai_prompt.json": [],
+  "telemetry_guard_after_openai_sweep.json": [],
+  "telemetry_guard_after_whisper_counter.json": [
+   "c:\\users\\tensh\\.cache\\huggingface\\hub\\models--systran--faster-whisper-small\\refs\\main"
+  ],
+  "telemetry_guard_after_whisper_ctl.json": [
+   "c:\\users\\tensh\\.cache\\huggingface\\hub\\models--systran--faster-whisper-small\\refs\\main"
+  ],
+  "telemetry_guard_after_whisper_melos.json": [
+   "c:\\users\\tensh\\.cache\\huggingface\\hub\\models--systran--faster-whisper-small\\refs\\main",
+   "c:\\users\\tensh\\.cache\\huggingface\\hub\\models--systran--faster-whisper-medium\\refs\\main"
+  ],
+  "telemetry_guard_after_whisper_name.json": [
+   "c:\\users\\tensh\\.cache\\huggingface\\hub\\models--systran--faster-whisper-small\\refs\\main"
+  ],
+  "telemetry_guard_after_whisper_sweep.json": [
+   "c:\\users\\tensh\\.cache\\huggingface\\hub\\models--systran--faster-whisper-small\\refs\\main"
+  ]
+ },
+ "concurrent_agent_note": "並行agent(FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01)がrun_e2e_02/COST_LEDGERへ書込む可能性がある。差分が出た場合は本Trialの書込ではない(本processのwrite guardはtrial dir外への書込を0件記録)ことをblocked/各process changed_during_runと併せて判断する"
+}

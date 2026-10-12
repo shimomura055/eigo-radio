@@ -1,0 +1,567 @@
+{
+ "work_id": "synthetic_truncation_sweep",
+ "focus_word": "said",
+ "target_canonical": "The ruler smiled and said,",
+ "gap_ms": 300,
+ "n_conditions": 9,
+ "conditions": [
+  {
+   "cond_id": "sweep_B2_trunc300__R00_alone",
+   "target_id": "sweep_B2_trunc300",
+   "recipe_id": "R00_alone",
+   "kind": "alone",
+   "group": "synthetic",
+   "work_id": "synthetic_truncation_sweep",
+   "pool": "p_sweep",
+   "target_note": "known defect (offline edit)",
+   "label_hint": "known_defect",
+   "parts": [
+    {
+     "clip_id": "sweep_B2_trunc300",
+     "path": "er065_output/short_clip_asr_context_trial_01/synthetic_audio/sweep_B2_trunc300.wav",
+     "text": "The ruler smiled and said,",
+     "voice": "Aoede",
+     "model": null,
+     "role": "target",
+     "dur": 2.27,
+     "sha256": "e8b5e2b9de4c520baf5cb43eced5b33d4d4066589aaf97a55a9f18d68fc1974e",
+     "same_voice_as_target": null,
+     "contains_focus_word": true,
+     "span": {
+      "start": 4.681,
+      "end": 6.951
+     }
+    }
+   ],
+   "target_index": 0,
+   "expected_parts": [
+    "The ruler smiled and said,"
+   ],
+   "canonical_target": "The ruler smiled and said,",
+   "focus_word": "said",
+   "category": "synthetic_final_consonant_loss",
+   "defect": "last 300 ms of speech removed (speech_end=2.57s), fade 8ms",
+   "gap_ms": 300,
+   "wav": "er065_output/short_clip_asr_context_trial_01/concat_audio/conditions_manifest_truncsweep_01/sweep_B2_trunc300__R00_alone.wav",
+   "wav_sha256": "e8b5e2b9de4c520baf5cb43eced5b33d4d4066589aaf97a55a9f18d68fc1974e",
+   "total_sec": 2.27,
+   "pre_ctx_sec": 0,
+   "post_ctx_sec": 0,
+   "n_ctx_clips": 0,
+   "target_span": {
+    "start": 0.0,
+    "end": 2.27
+   },
+   "ctx_all_same_voice": null,
+   "ctx_has_focus_word": false
+  },
+  {
+   "cond_id": "sweep_B2_trunc300__SSpre",
+   "target_id": "sweep_B2_trunc300",
+   "recipe_id": "SSpre",
+   "kind": "same_voice",
+   "group": "synthetic",
+   "work_id": "synthetic_truncation_sweep",
+   "pool": "p_sweep",
+   "target_note": "known defect (offline edit)",
+   "label_hint": "known_defect",
+   "parts": [
+    {
+     "clip_id": "n_c1",
+     "path": "er065_output/short_clip_asr_context_trial_01/audio_src/a2_narration/full_story_part1_c1_original.wav",
+     "text": "Melos called across the hall,",
+     "voice": "Aoede",
+     "model": "gemini-3.8-flash-lite-tts",
+     "role": "ctx",
+     "slot": "SS",
+     "dur": 2.67,
+     "sha256": "0af6be966c8787d2549b5bd9657b92676c09b034b7714aab966972ef3154884b",
+     "same_voice_as_target": true,
+     "contains_focus_word": false,
+     "span": {
+      "start": 0.0,
+      "end": 2.67
+     }
+    },
+    {
+     "clip_id": "sweep_B2_trunc300",
+     "path": "er065_output/short_clip_asr_context_trial_01/synthetic_audio/sweep_B2_trunc300.wav",
+     "text": "The ruler smiled and said,",
+     "voice": "Aoede",
+     "model": null,
+     "role": "target",
+     "dur": 2.27,
+     "sha256": "e8b5e2b9de4c520baf5cb43eced5b33d4d4066589aaf97a55a9f18d68fc1974e",
+     "same_voice_as_target": null,
+     "contains_focus_word": true,
+     "span": {
+      "start": 4.681,
+      "end": 6.951
+     }
+    }
+   ],
+   "target_index": 1,
+   "expected_parts": [
+    "Melos called across the hall,",
+    "The ruler smiled and said,"
+   ],
+   "canonical_target": "The ruler smiled and said,",
+   "focus_word": "said",
+   "category": "synthetic_final_consonant_loss",
+   "defect": "last 300 ms of speech removed (speech_end=2.57s), fade 8ms",
+   "gap_ms": 300,
+   "wav": "er065_output/short_clip_asr_context_trial_01/concat_audio/conditions_manifest_truncsweep_01/sweep_B2_trunc300__SSpre.wav",
+   "wav_sha256": "1b3e1c6a1b3d6e44e071632231f9da6ecd72b0dbab20d316dbc22f8132826753",
+   "total_sec": 5.24,
+   "pre_ctx_sec": 2.67,
+   "post_ctx_sec": 0,
+   "n_ctx_clips": 1,
+   "target_span": {
+    "start": 2.97,
+    "end": 5.24
+   },
+   "ctx_all_same_voice": true,
+   "ctx_has_focus_word": false
+  },
+  {
+   "cond_id": "sweep_B2_trunc300__SDpre",
+   "target_id": "sweep_B2_trunc300",
+   "recipe_id": "SDpre",
+   "kind": "diff_voice",
+   "group": "synthetic",
+   "work_id": "synthetic_truncation_sweep",
+   "pool": "p_sweep",
+   "target_note": "known defect (offline edit)",
+   "label_hint": "known_defect",
+   "parts": [
+    {
+     "clip_id": "m_c4",
+     "path": "er065_output/short_clip_asr_context_trial_01/audio_src/a2_narration/full_story_part1_c4_original.wav",
+     "text": "Give me three days to see my sister's wedding,",
+     "voice": "Algieba",
+     "model": "gemini-2.5-pro-preview-tts",
+     "role": "ctx",
+     "slot": "SD",
+     "dur": 4.381,
+     "sha256": "53712b46c3056e177e936c25d3aed1bfd8fd274d3a3f4f5f4107d7257e7e2e13",
+     "same_voice_as_target": false,
+     "contains_focus_word": false,
+     "span": {
+      "start": 0.0,
+      "end": 4.381
+     }
+    },
+    {
+     "clip_id": "sweep_B2_trunc300",
+     "path": "er065_output/short_clip_asr_context_trial_01/synthetic_audio/sweep_B2_trunc300.wav",
+     "text": "The ruler smiled and said,",
+     "voice": "Aoede",
+     "model": null,
+     "role": "target",
+     "dur": 2.27,
+     "sha256": "e8b5e2b9de4c520baf5cb43eced5b33d4d4066589aaf97a55a9f18d68fc1974e",
+     "same_voice_as_target": null,
+     "contains_focus_word": true,
+     "span": {
+      "start": 4.681,
+      "end": 6.951
+     }
+    }
+   ],
+   "target_index": 1,
+   "expected_parts": [
+    "Give me three days to see my sister's wedding,",
+    "The ruler smiled and said,"
+   ],
+   "canonical_target": "The ruler smiled and said,",
+   "focus_word": "said",
+   "category": "synthetic_final_consonant_loss",
+   "defect": "last 300 ms of speech removed (speech_end=2.57s), fade 8ms",
+   "gap_ms": 300,
+   "wav": "er065_output/short_clip_asr_context_trial_01/concat_audio/conditions_manifest_truncsweep_01/sweep_B2_trunc300__SDpre.wav",
+   "wav_sha256": "a86867dd71e9a9a78275be8098a8e886ba3f22aee2e515954a7d4683fdc922a0",
+   "total_sec": 6.951,
+   "pre_ctx_sec": 4.38,
+   "post_ctx_sec": 0,
+   "n_ctx_clips": 1,
+   "target_span": {
+    "start": 4.681,
+    "end": 6.951
+   },
+   "ctx_all_same_voice": false,
+   "ctx_has_focus_word": false
+  },
+  {
+   "cond_id": "sweep_B2_trunc380__R00_alone",
+   "target_id": "sweep_B2_trunc380",
+   "recipe_id": "R00_alone",
+   "kind": "alone",
+   "group": "synthetic",
+   "work_id": "synthetic_truncation_sweep",
+   "pool": "p_sweep",
+   "target_note": "known defect (offline edit)",
+   "label_hint": "known_defect",
+   "parts": [
+    {
+     "clip_id": "sweep_B2_trunc380",
+     "path": "er065_output/short_clip_asr_context_trial_01/synthetic_audio/sweep_B2_trunc380.wav",
+     "text": "The ruler smiled and said,",
+     "voice": "Aoede",
+     "model": null,
+     "role": "target",
+     "dur": 2.19,
+     "sha256": "86aeba7f8086072d7d00021d330146cab60af04e58d6788a14f9b18f8affbfab",
+     "same_voice_as_target": null,
+     "contains_focus_word": true,
+     "span": {
+      "start": 4.681,
+      "end": 6.871
+     }
+    }
+   ],
+   "target_index": 0,
+   "expected_parts": [
+    "The ruler smiled and said,"
+   ],
+   "canonical_target": "The ruler smiled and said,",
+   "focus_word": "said",
+   "category": "synthetic_final_consonant_loss",
+   "defect": "last 380 ms of speech removed (speech_end=2.57s), fade 8ms",
+   "gap_ms": 300,
+   "wav": "er065_output/short_clip_asr_context_trial_01/concat_audio/conditions_manifest_truncsweep_01/sweep_B2_trunc380__R00_alone.wav",
+   "wav_sha256": "86aeba7f8086072d7d00021d330146cab60af04e58d6788a14f9b18f8affbfab",
+   "total_sec": 2.19,
+   "pre_ctx_sec": 0,
+   "post_ctx_sec": 0,
+   "n_ctx_clips": 0,
+   "target_span": {
+    "start": 0.0,
+    "end": 2.19
+   },
+   "ctx_all_same_voice": null,
+   "ctx_has_focus_word": false
+  },
+  {
+   "cond_id": "sweep_B2_trunc380__SSpre",
+   "target_id": "sweep_B2_trunc380",
+   "recipe_id": "SSpre",
+   "kind": "same_voice",
+   "group": "synthetic",
+   "work_id": "synthetic_truncation_sweep",
+   "pool": "p_sweep",
+   "target_note": "known defect (offline edit)",
+   "label_hint": "known_defect",
+   "parts": [
+    {
+     "clip_id": "n_c1",
+     "path": "er065_output/short_clip_asr_context_trial_01/audio_src/a2_narration/full_story_part1_c1_original.wav",
+     "text": "Melos called across the hall,",
+     "voice": "Aoede",
+     "model": "gemini-3.8-flash-lite-tts",
+     "role": "ctx",
+     "slot": "SS",
+     "dur": 2.67,
+     "sha256": "0af6be966c8787d2549b5bd9657b92676c09b034b7714aab966972ef3154884b",
+     "same_voice_as_target": true,
+     "contains_focus_word": false,
+     "span": {
+      "start": 0.0,
+      "end": 2.67
+     }
+    },
+    {
+     "clip_id": "sweep_B2_trunc380",
+     "path": "er065_output/short_clip_asr_context_trial_01/synthetic_audio/sweep_B2_trunc380.wav",
+     "text": "The ruler smiled and said,",
+     "voice": "Aoede",
+     "model": null,
+     "role": "target",
+     "dur": 2.19,
+     "sha256": "86aeba7f8086072d7d00021d330146cab60af04e58d6788a14f9b18f8affbfab",
+     "same_voice_as_target": null,
+     "contains_focus_word": true,
+     "span": {
+      "start": 4.681,
+      "end": 6.871
+     }
+    }
+   ],
+   "target_index": 1,
+   "expected_parts": [
+    "Melos called across the hall,",
+    "The ruler smiled and said,"
+   ],
+   "canonical_target": "The ruler smiled and said,",
+   "focus_word": "said",
+   "category": "synthetic_final_consonant_loss",
+   "defect": "last 380 ms of speech removed (speech_end=2.57s), fade 8ms",
+   "gap_ms": 300,
+   "wav": "er065_output/short_clip_asr_context_trial_01/concat_audio/conditions_manifest_truncsweep_01/sweep_B2_trunc380__SSpre.wav",
+   "wav_sha256": "734bfbda46e711f3f77e2c5a4f436bb8b3b341df8328c30c346370949e3e12b4",
+   "total_sec": 5.16,
+   "pre_ctx_sec": 2.67,
+   "post_ctx_sec": 0,
+   "n_ctx_clips": 1,
+   "target_span": {
+    "start": 2.97,
+    "end": 5.16
+   },
+   "ctx_all_same_voice": true,
+   "ctx_has_focus_word": false
+  },
+  {
+   "cond_id": "sweep_B2_trunc380__SDpre",
+   "target_id": "sweep_B2_trunc380",
+   "recipe_id": "SDpre",
+   "kind": "diff_voice",
+   "group": "synthetic",
+   "work_id": "synthetic_truncation_sweep",
+   "pool": "p_sweep",
+   "target_note": "known defect (offline edit)",
+   "label_hint": "known_defect",
+   "parts": [
+    {
+     "clip_id": "m_c4",
+     "path": "er065_output/short_clip_asr_context_trial_01/audio_src/a2_narration/full_story_part1_c4_original.wav",
+     "text": "Give me three days to see my sister's wedding,",
+     "voice": "Algieba",
+     "model": "gemini-2.5-pro-preview-tts",
+     "role": "ctx",
+     "slot": "SD",
+     "dur": 4.381,
+     "sha256": "53712b46c3056e177e936c25d3aed1bfd8fd274d3a3f4f5f4107d7257e7e2e13",
+     "same_voice_as_target": false,
+     "contains_focus_word": false,
+     "span": {
+      "start": 0.0,
+      "end": 4.381
+     }
+    },
+    {
+     "clip_id": "sweep_B2_trunc380",
+     "path": "er065_output/short_clip_asr_context_trial_01/synthetic_audio/sweep_B2_trunc380.wav",
+     "text": "The ruler smiled and said,",
+     "voice": "Aoede",
+     "model": null,
+     "role": "target",
+     "dur": 2.19,
+     "sha256": "86aeba7f8086072d7d00021d330146cab60af04e58d6788a14f9b18f8affbfab",
+     "same_voice_as_target": null,
+     "contains_focus_word": true,
+     "span": {
+      "start": 4.681,
+      "end": 6.871
+     }
+    }
+   ],
+   "target_index": 1,
+   "expected_parts": [
+    "Give me three days to see my sister's wedding,",
+    "The ruler smiled and said,"
+   ],
+   "canonical_target": "The ruler smiled and said,",
+   "focus_word": "said",
+   "category": "synthetic_final_consonant_loss",
+   "defect": "last 380 ms of speech removed (speech_end=2.57s), fade 8ms",
+   "gap_ms": 300,
+   "wav": "er065_output/short_clip_asr_context_trial_01/concat_audio/conditions_manifest_truncsweep_01/sweep_B2_trunc380__SDpre.wav",
+   "wav_sha256": "601fa939a6eed5683e82e39af0a7d5bd5cbb159b1bb8dc880a525feab1ec1653",
+   "total_sec": 6.871,
+   "pre_ctx_sec": 4.38,
+   "post_ctx_sec": 0,
+   "n_ctx_clips": 1,
+   "target_span": {
+    "start": 4.681,
+    "end": 6.871
+   },
+   "ctx_all_same_voice": false,
+   "ctx_has_focus_word": false
+  },
+  {
+   "cond_id": "sweep_B2_trunc460__R00_alone",
+   "target_id": "sweep_B2_trunc460",
+   "recipe_id": "R00_alone",
+   "kind": "alone",
+   "group": "synthetic",
+   "work_id": "synthetic_truncation_sweep",
+   "pool": "p_sweep",
+   "target_note": "known defect (offline edit)",
+   "label_hint": "known_defect",
+   "parts": [
+    {
+     "clip_id": "sweep_B2_trunc460",
+     "path": "er065_output/short_clip_asr_context_trial_01/synthetic_audio/sweep_B2_trunc460.wav",
+     "text": "The ruler smiled and said,",
+     "voice": "Aoede",
+     "model": null,
+     "role": "target",
+     "dur": 2.11,
+     "sha256": "85909b80410a453f619d8367876601787d484f561d9d74cf176288dfb13889f8",
+     "same_voice_as_target": null,
+     "contains_focus_word": true,
+     "span": {
+      "start": 4.681,
+      "end": 6.791
+     }
+    }
+   ],
+   "target_index": 0,
+   "expected_parts": [
+    "The ruler smiled and said,"
+   ],
+   "canonical_target": "The ruler smiled and said,",
+   "focus_word": "said",
+   "category": "synthetic_final_consonant_loss",
+   "defect": "last 460 ms of speech removed (speech_end=2.57s), fade 8ms",
+   "gap_ms": 300,
+   "wav": "er065_output/short_clip_asr_context_trial_01/concat_audio/conditions_manifest_truncsweep_01/sweep_B2_trunc460__R00_alone.wav",
+   "wav_sha256": "85909b80410a453f619d8367876601787d484f561d9d74cf176288dfb13889f8",
+   "total_sec": 2.11,
+   "pre_ctx_sec": 0,
+   "post_ctx_sec": 0,
+   "n_ctx_clips": 0,
+   "target_span": {
+    "start": 0.0,
+    "end": 2.11
+   },
+   "ctx_all_same_voice": null,
+   "ctx_has_focus_word": false
+  },
+  {
+   "cond_id": "sweep_B2_trunc460__SSpre",
+   "target_id": "sweep_B2_trunc460",
+   "recipe_id": "SSpre",
+   "kind": "same_voice",
+   "group": "synthetic",
+   "work_id": "synthetic_truncation_sweep",
+   "pool": "p_sweep",
+   "target_note": "known defect (offline edit)",
+   "label_hint": "known_defect",
+   "parts": [
+    {
+     "clip_id": "n_c1",
+     "path": "er065_output/short_clip_asr_context_trial_01/audio_src/a2_narration/full_story_part1_c1_original.wav",
+     "text": "Melos called across the hall,",
+     "voice": "Aoede",
+     "model": "gemini-3.8-flash-lite-tts",
+     "role": "ctx",
+     "slot": "SS",
+     "dur": 2.67,
+     "sha256": "0af6be966c8787d2549b5bd9657b92676c09b034b7714aab966972ef3154884b",
+     "same_voice_as_target": true,
+     "contains_focus_word": false,
+     "span": {
+      "start": 0.0,
+      "end": 2.67
+     }
+    },
+    {
+     "clip_id": "sweep_B2_trunc460",
+     "path": "er065_output/short_clip_asr_context_trial_01/synthetic_audio/sweep_B2_trunc460.wav",
+     "text": "The ruler smiled and said,",
+     "voice": "Aoede",
+     "model": null,
+     "role": "target",
+     "dur": 2.11,
+     "sha256": "85909b80410a453f619d8367876601787d484f561d9d74cf176288dfb13889f8",
+     "same_voice_as_target": null,
+     "contains_focus_word": true,
+     "span": {
+      "start": 4.681,
+      "end": 6.791
+     }
+    }
+   ],
+   "target_index": 1,
+   "expected_parts": [
+    "Melos called across the hall,",
+    "The ruler smiled and said,"
+   ],
+   "canonical_target": "The ruler smiled and said,",
+   "focus_word": "said",
+   "category": "synthetic_final_consonant_loss",
+   "defect": "last 460 ms of speech removed (speech_end=2.57s), fade 8ms",
+   "gap_ms": 300,
+   "wav": "er065_output/short_clip_asr_context_trial_01/concat_audio/conditions_manifest_truncsweep_01/sweep_B2_trunc460__SSpre.wav",
+   "wav_sha256": "e9a7e800c6d49a4b6fbe46b8e03b1f7b37268a3ca4e465f1ba8b15111c8b551a",
+   "total_sec": 5.08,
+   "pre_ctx_sec": 2.67,
+   "post_ctx_sec": 0,
+   "n_ctx_clips": 1,
+   "target_span": {
+    "start": 2.97,
+    "end": 5.08
+   },
+   "ctx_all_same_voice": true,
+   "ctx_has_focus_word": false
+  },
+  {
+   "cond_id": "sweep_B2_trunc460__SDpre",
+   "target_id": "sweep_B2_trunc460",
+   "recipe_id": "SDpre",
+   "kind": "diff_voice",
+   "group": "synthetic",
+   "work_id": "synthetic_truncation_sweep",
+   "pool": "p_sweep",
+   "target_note": "known defect (offline edit)",
+   "label_hint": "known_defect",
+   "parts": [
+    {
+     "clip_id": "m_c4",
+     "path": "er065_output/short_clip_asr_context_trial_01/audio_src/a2_narration/full_story_part1_c4_original.wav",
+     "text": "Give me three days to see my sister's wedding,",
+     "voice": "Algieba",
+     "model": "gemini-2.5-pro-preview-tts",
+     "role": "ctx",
+     "slot": "SD",
+     "dur": 4.381,
+     "sha256": "53712b46c3056e177e936c25d3aed1bfd8fd274d3a3f4f5f4107d7257e7e2e13",
+     "same_voice_as_target": false,
+     "contains_focus_word": false,
+     "span": {
+      "start": 0.0,
+      "end": 4.381
+     }
+    },
+    {
+     "clip_id": "sweep_B2_trunc460",
+     "path": "er065_output/short_clip_asr_context_trial_01/synthetic_audio/sweep_B2_trunc460.wav",
+     "text": "The ruler smiled and said,",
+     "voice": "Aoede",
+     "model": null,
+     "role": "target",
+     "dur": 2.11,
+     "sha256": "85909b80410a453f619d8367876601787d484f561d9d74cf176288dfb13889f8",
+     "same_voice_as_target": null,
+     "contains_focus_word": true,
+     "span": {
+      "start": 4.681,
+      "end": 6.791
+     }
+    }
+   ],
+   "target_index": 1,
+   "expected_parts": [
+    "Give me three days to see my sister's wedding,",
+    "The ruler smiled and said,"
+   ],
+   "canonical_target": "The ruler smiled and said,",
+   "focus_word": "said",
+   "category": "synthetic_final_consonant_loss",
+   "defect": "last 460 ms of speech removed (speech_end=2.57s), fade 8ms",
+   "gap_ms": 300,
+   "wav": "er065_output/short_clip_asr_context_trial_01/concat_audio/conditions_manifest_truncsweep_01/sweep_B2_trunc460__SDpre.wav",
+   "wav_sha256": "5f60a81a730f9e104e81c2094d6bee8bd8930f8439c007b9ba650eb84eee84a7",
+   "total_sec": 6.791,
+   "pre_ctx_sec": 4.38,
+   "post_ctx_sec": 0,
+   "n_ctx_clips": 1,
+   "target_span": {
+    "start": 4.681,
+    "end": 6.791
+   },
+   "ctx_all_same_voice": false,
+   "ctx_has_focus_word": false
+  }
+ ]
+}
