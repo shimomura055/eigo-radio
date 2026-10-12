@@ -20615,3 +20615,9 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 内容: 文章のみ(TTS不要)。構成の異なる10設計を各3Run(Round1)、失敗原因(続いて/では等の事務的つなぎ、67字超過、1文の長さ、結論の先取り)を分析して改良10設計を各3Run(Round2)。計60 call、実費JPY3.24(gpt-6-luna、Trial-01と同一経路)。文字数は改行・空白除去後のlen、基準1〜6で全Runを読解採点。
 - 結果: 67字以下で安定かつ良好=D4,D6,E1,E7,E9。推薦順 E1(問いかけ型、51〜55字)>D4(着地点提示型、54〜59字)>E9(気づき共有型、47〜54字)。弱点: E1=クイズ風、D4=In One Lineと内容重複、E9=run1「見てきたのですね」不自然。
 - 状態: VALIDATED(Trial)。採否はUSER_DECISION_REQUIRED(OPEN-316)。CURRENT_SPEC・Production Prompt/定数/音声・他Role/Family不変。証跡: `er057_output/coffee_comment4_trial_02/REPORT_02.md`、`EVAL_02.md`、`user_test/coffee_comment4_trial_02/`、報告 `docs/pm/delegation_log/2026-10-12_FAMILY-X-COFFEE-COMMENT4-SHORT-BRIDGE-RETRIAL-02_01.md`。
+
+## FAMILY-X-COFFEE-COMMENT4-MINIMAL-PROMPT-TRIAL-03(2026-10-12、Trial、VALIDATED止まり、Production変更0)
+- 前提: ユーザー判断でTrial-01/02の大幅変更案は不自然とし原点回帰。**Trial-02の推薦(E1>D4>E9)は本Trialで置き換え(保留)**。
+- 内容: 現行Comment 4 Promptへ「In One Lineは番組最後の英語による要点整理」「橋渡しは『続いて』より『最後に』」の2点のみ追加(他は逐語)。同一入力・同経路(gpt-6-luna、文章のみ)で3回生成。3 call、実費約JPY0.17。
+- 結果: 3/3で末尾「最後に、…要点を英語で…」。字数74/71/84(現行81)、2〜3文、軽い回収維持、進行語に戻らず、In One Line1文誤認なし。軽微=Run2は2文で回収がやや直接的、結びが「振り返ります/お伝えします」。
+- 状態: VALIDATED(Trial)。採否はUSER_DECISION_REQUIRED(OPEN-316)。CURRENT_SPEC・Production Prompt/定数/音声不変。証跡: `er057_output/coffee_comment4_trial_03/REPORT_03.md`、`EVAL_03.md`、`prompt_diff_03.md`。
