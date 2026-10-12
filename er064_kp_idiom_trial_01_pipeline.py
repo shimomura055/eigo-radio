@@ -21,8 +21,8 @@ import er030_key_phrase_db_hybrid_core_01 as core
 import er064_kp_idiom_trial_01_matcher as matcher
 
 OUT_ROOT = "er064_output/kp_idiom_trial_01"
-RESERVED_SLOT_CAP = 5          # 予約枠上限(cap15の外側)
-LLM_EXTRACTION_CAP = 5         # (b1)の抽出件数上限
+RESERVED_SLOT_CAP = 3          # 予約枠上限(cap15の外側)。M1: 5->3
+LLM_EXTRACTION_CAP = 3         # (b1)の抽出件数上限(M1: 5->3)
 _CLOSED = ext._CLOSED_CLASS_FUNCTION_WORDS
 
 

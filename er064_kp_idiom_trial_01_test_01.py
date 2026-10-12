@@ -317,5 +317,105 @@ class D5GuidanceAndNoHardcode(unittest.TestCase):
         self.assertIn("items を空配列", t)  # 0件出力の明示許可
 
 
+class M1toM4ExtractorV2(unittest.TestCase):
+    """委任_03 M1-M4: extractor v2(cap3/transparency/core_span)、表示phrase、包含重複、Adv句動詞文言。"""
+    TEXT = ("# Title\n\nThe new rules show up in many reports. A small shop owner said the tide turns slowly. "
+            "Her budget quietly eats away at her savings, and Tom said it was a long shot.\n")
+
+    def setUp(self):
+        self.units = _units(self.TEXT)
+
+    def test_caps_are_three(self):
+        self.assertEqual(X.ITEM_CAP, 3)
+        self.assertEqual(P.RESERVED_SLOT_CAP, 3)
+        self.assertEqual(P.LLM_EXTRACTION_CAP, 3)
+
+    def test_schema_has_core_span_and_transparency_no_confidence(self):
+        props = X.SCHEMA["schema"]["properties"]["items"]["items"]["properties"]
+        self.assertIn("core_span", props)
+        self.assertEqual(props["transparency"]["enum"], ["opaque", "semi", "transparent"])
+        self.assertNotIn("confidence", props)
+        self.assertIn("通常は0〜2件", X.prompt_template())
+
+    def test_transparent_self_declared_is_excluded(self):
+        it = {"span": "a long shot", "core_span": "a long shot", "transparency": "transparent", "kind": X.KINDS[0], "reason_en": "x"}
+        r = X.build_llm_candidates({"items": [it]}, self.units, set())
+        self.assertEqual(r["accepted"], [])
+        self.assertEqual(r["rejected"][0]["reason"], "self_declared_transparent")
+        it["transparency"] = "opaque"
+        self.assertEqual(len(X.build_llm_candidates({"items": [it]}, self.units, set())["accepted"]), 1)
+
+    def test_core_span_narrows_only_within_llm_span(self):
+        it = {"span": "the tide turns slowly", "core_span": "tide turns", "transparency": "semi", "kind": X.KINDS[1], "reason_en": "x"}
+        r = X.build_llm_candidates({"items": [it]}, self.units, set())
+        self.assertEqual(r["accepted"][0]["surface_form"], "tide turns")
+        self.assertTrue(r["accepted"][0]["core_span_narrowed"])
+        # spanの外の語/非連続は縮約せずspanのまま
+        for core_span in ("tide changes", "the turns", "slowly turns", "tide"):
+            self.assertEqual(X.narrow_to_core_span("the tide turns slowly", core_span)["span"], "the tide turns slowly", core_span)
+        # core_spanがspanと同じ/長い場合も無変更
+        self.assertFalse(X.narrow_to_core_span("tide turns", "tide turns")["narrowed"])
+
+    def test_containment_duplicate_with_closed_diff_excluded(self):
+        it = {"span": "show up in", "core_span": "show up in", "transparency": "opaque", "kind": X.KINDS[2], "reason_en": "x"}
+        r = X.build_llm_candidates({"items": [it]}, self.units, {"show up"})
+        self.assertEqual(r["accepted"], [])
+        self.assertEqual(r["duplicate_of_existing"][0]["contains_existing"], "show up")
+
+    def test_containment_not_excluded_when_diff_has_content_word_or_existing_is_single_word(self):
+        it = {"span": "eats away at", "core_span": "eats away at", "transparency": "opaque", "kind": X.KINDS[2], "reason_en": "x"}
+        # 既存が1語(away)の場合は対象外
+        self.assertEqual(len(X.build_llm_candidates({"items": [it]}, self.units, {"away"})["accepted"]), 1)
+        # 差分が内容語(savings等)なら除外しない
+        self.assertEqual(X.contains_existing_with_closed_diff("eats away savings", {"eats away"}), "")
+        self.assertEqual(X.contains_existing_with_closed_diff("eats away at", {"eats away"}), "eats away")
+
+    def test_display_type_is_neutral_phrase_for_llm_candidates(self):
+        c = X.verify_span("a long shot", self.units)["candidate"]
+        self.assertEqual(c["unit_type"], "phrase")
+        self.assertEqual(S.trial_display_type(c), "phrase")
+        self.assertNotIn("idiom", S.trial_display_type(c))
+        # DB由来の表示は従来どおり
+        db = dict(c, evidence=None, unit_type="idiom")
+        self.assertEqual(S.trial_display_type(db), "idiom")
+
+    def test_adv_guidance_phrasal_verb_wording_and_no_label_priority(self):
+        g = S.trial_guidance("adv")
+        self.assertIn("句動詞でも、本文中で基本義と異なる意味", g)
+        self.assertIn("同列に評価", g)
+        self.assertNotIn("基本的な句動詞や高頻度コロケーションは既知とみなしてよい一方", g)
+        for lv in ("std", "adv"):
+            gg = S.trial_guidance(lv)
+            self.assertNotIn("区分を優先", gg)
+            self.assertIn("区分名(idiom等)やevidenceラベルがあるだけでは選ばないでください", gg)
+
+
+class PhaseDRunnerHelpers(unittest.TestCase):
+    """Phase Dランナーの¥0部品(正解判定・主語込み近似・V2 shortlist構築)。API不使用。"""
+
+    def test_eval_targets_exact_and_partial_separated(self):
+        import er064_kp_idiom_trial_01_phase_d_run as R
+        tg = [{"id": "t", "exact": ["whisper a different story"], "partial_all": ["whisper"]}]
+        self.assertEqual(R.eval_targets(tg, ["whisper a different story"], ["x"])["t"], {"exact": True, "partial": False})
+        r = R.eval_targets(tg, ["the numbers whisper a different story"], ["the numbers whisper a different story"])["t"]
+        self.assertEqual(r, {"exact": False, "partial": True})
+
+    def test_subject_included_heuristic(self):
+        import er064_kp_idiom_trial_01_phase_d_run as R
+        self.assertTrue(R.subject_included("your wallet pumps its fist"))
+        self.assertFalse(R.subject_included("pumps its fist"))
+        self.assertFalse(R.subject_included("its own hidden clock"))
+        self.assertTrue(R.subject_included("pumps its fist", narrowed_from="your wallet pumps its fist"))
+
+    def test_budget_reserve_blocks_over_limit(self):
+        import er064_kp_idiom_trial_01_phase_d_run as R
+        b = R.Budget.__new__(R.Budget)
+        import threading
+        b.lock = threading.Lock(); b.reserved = 0.0
+        b.cost = {"calls": [{"cost_jpy": R.BUDGET_LIMIT - 1.0}]}
+        self.assertTrue(b.reserve(0.9))
+        self.assertFalse(b.reserve(0.5))
+
+
 if __name__ == "__main__":
     unittest.main()

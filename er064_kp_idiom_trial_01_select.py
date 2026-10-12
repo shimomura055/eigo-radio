@@ -43,7 +43,7 @@ _NEW_LINES_TMPL = """- 残りの枠は、[phrase / idiom / phrasal verb候補]�
 
 LEVEL_LINE = {
     "std": "対象はA2相当の学習者です。日常で頻出する基本的な句は既知として扱い、優先度を下げてください。",
-    "adv": "対象はB1相当の学習者です。基本的な句動詞や高頻度コロケーションは既知とみなしてよい一方、慣用句・比喩・文脈で意味が変わるコロケーションは初見で難しい可能性が高いものとして扱ってください。",
+    "adv": "対象はB1相当の学習者です。慣用句・比喩・文脈で意味が変わるコロケーションは初見で難しい可能性が高いものとして扱ってください。句動詞でも、本文中で基本義と異なる意味(抽象的な主語や数値が主語など)で使われ、構成語から意味を推測しにくいものは、非字義的表現として同列に評価してください。構成語どおりの意味で使われている基本的な句動詞や高頻度コロケーションは既知とみなして構いません。",
 }
 
 
@@ -84,6 +84,7 @@ class UsageClient:
         class _Resp:
             def create(self, **kw):
                 t0 = time.time()
+                started_at = time.strftime("%Y-%m-%dT%H:%M:%S%z")
                 r = outer._real.responses.create(**kw)
                 u = getattr(r, "usage", None)
                 usage = {}
@@ -92,7 +93,7 @@ class UsageClient:
                              "output_tokens": getattr(u, "output_tokens", None),
                              "cached_input_tokens": getattr(getattr(u, "input_tokens_details", None),
                                                             "cached_tokens", 0) or 0}
-                outer.log.append({"label": outer.label, "model": r.model, "response_id": r.id, "usage": usage,
+                outer.log.append({"label": outer.label, "started_at": started_at, "model": r.model, "response_id": r.id, "usage": usage,
                                   "elapsed_sec": round(time.time() - t0, 3),
                                   "cost_jpy": pricing.cost_jpy_for_call(
                                       "openai", r.model, usage.get("input_tokens"),
@@ -106,6 +107,9 @@ class UsageClient:
 
 # --- メッセージ構築(Trial用) ------------------------------------------------------------------
 def trial_display_type(c: dict) -> str:
+    # M2: LLM由来候補はidiom固定にせず中立のphraseで表示する(区分名による誘導を避ける)
+    if c.get("evidence") == "llm_noncompositional":
+        return "phrase"
     return selector01._display_type(c)
 
 
