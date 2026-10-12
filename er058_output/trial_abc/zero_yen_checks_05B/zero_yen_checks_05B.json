@@ -1,0 +1,267 @@
+{
+ "s1_en_number_mutations": {
+  "n": 15,
+  "blocked": 11,
+  "not_blocked": [
+   {
+    "id": "S03",
+    "gate": null,
+    "class": "TRUE_CONTENT_MISMATCH",
+    "numneg": false,
+    "content_diffs": [
+     [
+      "25xpercentx",
+      "26xpercentx"
+     ]
+    ]
+   },
+   {
+    "id": "S17",
+    "gate": null,
+    "class": "TRUE_CONTENT_MISMATCH",
+    "numneg": false,
+    "content_diffs": [
+     [
+      "20xpercentx",
+      "21xpercentx"
+     ]
+    ]
+   },
+   {
+    "id": "S25",
+    "gate": null,
+    "class": "TRUE_CONTENT_MISMATCH",
+    "numneg": false,
+    "content_diffs": [
+     [
+      "20xpercentx",
+      "21xpercentx"
+     ]
+    ]
+   },
+   {
+    "id": "S30",
+    "gate": null,
+    "class": "TRUE_CONTENT_MISMATCH",
+    "numneg": false,
+    "content_diffs": [
+     [
+      "20xpercentx",
+      "21xpercentx"
+     ]
+    ]
+   }
+  ]
+ },
+ "s1_ja_pairs": [
+  {
+   "canonical": "二人で行きました。",
+   "asr": "2人で行きました。",
+   "class": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "number_mismatches": [
+    [
+     "",
+     "2"
+    ]
+   ],
+   "scg_exclusion": "number_mismatch:[('', '2')]"
+  },
+  {
+   "canonical": "20％の人が来ました。",
+   "asr": "20パーセントの人が来ました。",
+   "class": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "number_mismatches": [],
+   "scg_exclusion": null
+  },
+  {
+   "canonical": "三十人が来ました。",
+   "asr": "30人が来ました。",
+   "class": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "number_mismatches": [
+    [
+     "",
+     "30"
+    ]
+   ],
+   "scg_exclusion": "number_mismatch:[('', '30')]"
+  },
+  {
+   "canonical": "2026年に始まります。",
+   "asr": "二千二十六年に始まります。",
+   "class": "NORMALIZED_MATCH",
+   "should_pass": true,
+   "number_mismatches": [
+    [
+     "202",
+     ""
+    ]
+   ],
+   "scg_exclusion": "not_true_content_mismatch"
+  },
+  {
+   "canonical": "十分待ちました。",
+   "asr": "10分待ちました。",
+   "class": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "number_mismatches": [
+    [
+     "",
+     "10"
+    ]
+   ],
+   "scg_exclusion": "number_mismatch:[('', '10')]"
+  },
+  {
+   "canonical": "100円でした。",
+   "asr": "百円でした。",
+   "class": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "number_mismatches": [
+    [
+     "100",
+     ""
+    ]
+   ],
+   "scg_exclusion": "number_mismatch:[('100', '')]"
+  },
+  {
+   "canonical": "三人で行きました。",
+   "asr": "四人で行きました。",
+   "class": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "number_mismatches": [],
+   "scg_exclusion": null
+  },
+  {
+   "canonical": "30人が来ました。",
+   "asr": "40人が来ました。",
+   "class": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "number_mismatches": [
+    [
+     "3",
+     "4"
+    ]
+   ],
+   "scg_exclusion": "number_mismatch:[('3', '4')]"
+  },
+  {
+   "canonical": "三十人が来ました。",
+   "asr": "四十人が来ました。",
+   "class": "TRUE_CONTENT_MISMATCH",
+   "should_pass": false,
+   "number_mismatches": [],
+   "scg_exclusion": null
+  }
+ ],
+ "kp_attempt_history_since_20260901": {
+  "rows_raw": 301,
+  "calls_dedup": 294,
+  "by_attempts_status": {
+   "1|OK": 272,
+   "3|STOPPED": 1,
+   "0|None": 3,
+   "2|OK": 12,
+   "3|OK": 3,
+   "4|STOPPED": 2,
+   "4|OK": 1
+  }
+ },
+ "kp_saved_attempt_groups": {
+  "n_groups": 244,
+  "sequences": {
+   "(1, (True,))": 212,
+   "(2, (False, True))": 11,
+   "(2, (True, True))": 18,
+   "(3, (False, False, True))": 2,
+   "(4, (False, False, False, True))": 1
+  },
+  "english_lock_stage_reached": [
+   {
+    "group": "er012_output\\personalized_news_b1_rebuild_01\\audio\\b1_2v\\b1b\\narration|kp5_en",
+    "routes": [
+     "custom_bd5c8f46",
+     "custom_bd5c8f46",
+     "custom_31eb2f72",
+     "custom_31eb2f72"
+    ],
+    "verified": [
+     false,
+     false,
+     false,
+     true
+    ],
+    "classes": [
+     "TTS_FAILURE",
+     "TRUE_CONTENT_MISMATCH",
+     "TTS_FAILURE",
+     "NORMALIZED_MATCH"
+    ],
+    "saved": "2026-09-17",
+    "model": "gemini-2.5-pro-preview-tts"
+   },
+   {
+    "group": "er012_output\\e_family_two_level_wiring_01\\meta\\a2\\narration|kp4_en",
+    "routes": [
+     "custom_bd5c8f46",
+     "custom_bd5c8f46",
+     "custom_31eb2f72"
+    ],
+    "verified": [
+     false,
+     false,
+     true
+    ],
+    "classes": [
+     "TRUE_CONTENT_MISMATCH",
+     "TRUE_CONTENT_MISMATCH",
+     "NORMALIZED_MATCH"
+    ],
+    "saved": "2026-09-25",
+    "model": "gemini-2.5-pro-preview-tts"
+   },
+   {
+    "group": "er019_output\\family_x_audio_production_wiring_01\\family_x_b3_diversity_trial_01\\hormuz__run_06_flashlite_full_kp\\a2\\narration|kp5_en",
+    "routes": [
+     "custom_bd5c8f46",
+     "custom_bd5c8f46",
+     "custom_31eb2f72"
+    ],
+    "verified": [
+     false,
+     false,
+     true
+    ],
+    "classes": [
+     "TTS_FAILURE",
+     "TRUE_CONTENT_MISMATCH",
+     "NORMALIZED_MATCH"
+    ],
+    "saved": "2026-09-28",
+    "model": "gemini-3.8-flash-lite-tts"
+   }
+  ]
+ },
+ "ja_flash_lite_leakage": {
+  "production_speech_metadata|standard|n": 86,
+  "production_speech_metadata|minimal|n": 1,
+  "ab_trial(指示文同居の旧方式)|standard|n": 8,
+  "ab_trial(指示文同居の旧方式)|standard|LEAK": 7,
+  "ab_trial(指示文同居の旧方式)|standard|length_not_ok": 7,
+  "ab_trial(指示文同居の旧方式)|minimal|n": 5,
+  "ab_trial(指示文同居の旧方式)|minimal|LEAK": 3,
+  "ab_trial(指示文同居の旧方式)|minimal|length_not_ok": 3
+ },
+ "http400_same_prompt_retry": {
+  "files": 59,
+  "400_events": 138,
+  "next=generated_and_verified": 39,
+  "no_later_same_prompt_attempt": 47,
+  "next=400_again": 37,
+  "next=generated_but_ASR_NG": 12,
+  "next=other_fail": 3
+ }
+}
