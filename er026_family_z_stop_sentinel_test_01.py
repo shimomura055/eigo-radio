@@ -24,6 +24,10 @@ import er062_family_z_structure_01 as st
 import er062_family_z_writer_01 as w62
 import er063_family_z_audio_01 as a63
 
+# 子processの入出力をUTF-8に固定する(Windows既定のcp932でのdecode不一致を防ぐ。REMAINING-ISSUES-01 項目4)
+os.environ["PYTHONIOENCODING"] = "utf-8"
+os.environ["PYTHONUTF8"] = "1"
+
 REPO = os.path.dirname(os.path.abspath(__file__))
 PY = sys.executable
 RUNNER = "er026_family_z_fiction_production_runner_01.py"
@@ -31,6 +35,63 @@ MELOS = os.path.join(REPO, "er026_output", "family_z_production_e2e_01", "melos"
 EVID = os.path.join(MELOS, "evidence_12A")
 REAL_RUN_COST_LOG = os.path.join(MELOS, "run_e2e_01", "cost_log.jsonl")
 REAL_RUN_STAGE_LOG = os.path.join(MELOS, "run_e2e_01", "e2e_stage_log.jsonl")
+
+
+_LOCK_PATH = os.path.join(MELOS, ".stoptest_exclusive.lock")
+_LOCK_HELD = False
+
+
+def _acquire_exclusive(wait_s: int = 900) -> None:
+    """test全体のprocess間排他lock。本testは共有の固定dir(run_stoptest_*/evidence_12A)と実パスSTOP_ALLを
+    使うため、同時に2プロセス走ると互いのdir削除/STOP_ALLで失敗する(2026-10-12 REMAINING-ISSUES-01で再現)。
+    lock保持processが死んでいれば(PID不在)奪取する。"""
+    global _LOCK_HELD
+    os.makedirs(MELOS, exist_ok=True)
+    deadline = time.time() + wait_s
+    while True:
+        try:
+            fd = os.open(_LOCK_PATH, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            os.write(fd, json.dumps({"pid": os.getpid(), "at": time.time()}).encode())
+            os.close(fd)
+            _LOCK_HELD = True
+            return
+        except FileExistsError:
+            try:
+                with open(_LOCK_PATH, encoding="utf-8") as fh:
+                    holder = json.load(fh).get("pid")
+            except Exception:
+                holder = None
+            if holder is not None and not st.pid_alive(holder):
+                try:
+                    os.remove(_LOCK_PATH)
+                except OSError:
+                    pass
+                continue
+            if time.time() > deadline:
+                raise RuntimeError("他のSTOP sentinel testが実行中でlockを取得できない(900秒待機)")
+            time.sleep(2)
+
+
+def _release_exclusive() -> None:
+    global _LOCK_HELD
+    if _LOCK_HELD:
+        try:
+            os.remove(_LOCK_PATH)
+        except OSError:
+            pass
+        _LOCK_HELD = False
+
+
+def setUpModule():
+    _acquire_exclusive()
+
+
+def tearDownModule():
+    _release_exclusive()
+
+
+import atexit  # noqa: E402
+atexit.register(_release_exclusive)
 
 
 def ev(name: str, obj) -> None:
@@ -349,25 +410,29 @@ class Item4aWrappersBlockedByStopAll(Base):
             # (2) runpy wrapper
             code = ("import runpy,sys; sys.argv=['%s','--mode','real','--stage','tts_a2','--run','run_stoptest_4a3',"
                     "'--approved-budget-jpy','100']; runpy.run_path('%s', run_name='__main__')" % (RUNNER, RUNNER))
-            p = subprocess.run([PY, "-c", code], cwd=REPO, capture_output=True, text=True)
+            p = subprocess.run([PY, "-c", code], cwd=REPO, capture_output=True, text=True,
+                   encoding="utf-8", errors="replace")
             self._check("runpy_wrapper", p.returncode, "run_stoptest_4a3", results)
             # (3) 別名コピー(ファイル名にer026_family_zを含まない)
             alias = os.path.join(REPO, "zz_alias_runner_tmp_12a.py")
             shutil.copy(os.path.join(REPO, RUNNER), alias)
             try:
                 p = subprocess.run([PY, alias, "--mode", "real", "--stage", "tts_b1b", "--run", "run_stoptest_4a4",
-                                    "--approved-budget-jpy", "100"], cwd=REPO, capture_output=True, text=True)
+                                    "--approved-budget-jpy", "100"], cwd=REPO, capture_output=True, text=True,
+                   encoding="utf-8", errors="replace")
             finally:
                 os.remove(alias)
             self._check("alias_copy", p.returncode, "run_stoptest_4a4", results)
             # (4) subprocess経由の親wrapper
             code = ("import subprocess,sys; sys.exit(subprocess.run([sys.executable,'%s','--mode','real','--stage','all',"
                     "'--run','run_stoptest_4a5','--approved-budget-jpy','100']).returncode)" % RUNNER)
-            p = subprocess.run([PY, "-c", code], cwd=REPO, capture_output=True, text=True)
+            p = subprocess.run([PY, "-c", code], cwd=REPO, capture_output=True, text=True,
+                   encoding="utf-8", errors="replace")
             self._check("subprocess_wrapper", p.returncode, "run_stoptest_4a5", results)
             # (5) 別cwdから絶対pathで起動(STOP_ALLは絶対path)
             p = subprocess.run([PY, os.path.join(REPO, RUNNER), "--mode", "real", "--stage", "all", "--run", "run_stoptest_4a6",
-                                "--approved-budget-jpy", "100"], cwd=self.tmp(), capture_output=True, text=True)
+                                "--approved-budget-jpy", "100"], cwd=self.tmp(), capture_output=True, text=True,
+                   encoding="utf-8", errors="replace")
             # 別cwdでは共有module(er002_ja_article_generation)のimport時に相対path依存で失敗し、そもそもAPIに到達しない(既存仕様)。
             # STOP_ALL自体はcwd非依存(絶対path)であることを、cwdを変えた同一processで確認する。
             cwd0 = os.getcwd()
@@ -383,7 +448,8 @@ class Item4aWrappersBlockedByStopAll(Base):
             self.assertFalse(os.path.exists(run_dir("run_stoptest_4a6", mock=False)))
             # (6) Writer単体CLI(er062)のreal
             p = subprocess.run([PY, "er062_family_z_writer_01.py", "--run", "run_stoptest_4a7", "--stage", "writer",
-                                "--mode", "real", "--approved-budget-jpy", "50"], cwd=REPO, capture_output=True, text=True)
+                                "--mode", "real", "--approved-budget-jpy", "50"], cwd=REPO, capture_output=True, text=True,
+                   encoding="utf-8", errors="replace")
             results["writer_cli_real"] = {"rc": p.returncode, "stderr_tail": p.stderr[-200:]}
             self.assertEqual(p.returncode, 3)
             self.assertFalse(os.path.exists(w62.out_dir_for("melos", "run_stoptest_4a7")))
@@ -623,7 +689,8 @@ class Item7StopAllTool(Base):
             self.assertFalse(os.path.exists(stop_all))
             self.assertIsNone(dummy.poll())
             # execute(--reason必須)
-            p = subprocess.run([PY, "tools/stop_all_family_z.py", "--execute"] + tool_args, cwd=REPO, capture_output=True, text=True)
+            p = subprocess.run([PY, "tools/stop_all_family_z.py", "--execute"] + tool_args, cwd=REPO, capture_output=True, text=True,
+                   encoding="utf-8", errors="replace")
             self.assertEqual(p.returncode, 2)
             self.assertIsNone(dummy.poll())
             p = subprocess.run([PY, "tools/stop_all_family_z.py", "--execute", "--reason", "item7 test"] + tool_args, cwd=REPO,
@@ -636,7 +703,8 @@ class Item7StopAllTool(Base):
             self.assertIsNotNone(dummy.poll())
             # release
             p = subprocess.run([PY, "tools/stop_all_family_z.py", "--release", "--reason", "item7 done"] + tool_args, cwd=REPO,
-                               capture_output=True, text=True)
+                               capture_output=True, text=True,
+                   encoding="utf-8", errors="replace")
             self.assertEqual(p.returncode, 0)
             self.assertFalse(os.path.exists(stop_all))
             results["audit"] = read_jsonl(audit)

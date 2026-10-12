@@ -1,0 +1,35 @@
+EC:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\subprocess.py:1139: ResourceWarning: subprocess 22672 is still running
+  _warn("subprocess %s is still running" % self.pid,
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\unittest\case.py:668: ResourceWarning: unclosed file <_io.TextIOWrapper name=4 encoding='utf-8'>
+  with outcome.testPartExecutor(self):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\unittest\case.py:668: ResourceWarning: unclosed file <_io.TextIOWrapper name=3 encoding='utf-8'>
+  with outcome.testPartExecutor(self):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+...C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\google\genai\types.py:42: DeprecationWarning: '_UnionGenericAlias' is deprecated and slated for removal in Python 3.17
+  VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]
+..Fsssss
+======================================================================
+ERROR: test_item1_stop_midrun_stops_at_next_api_boundary (__main__.Item1InitialRunStop.test_item1_stop_midrun_stops_at_next_api_boundary)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er026_family_z_stop_sentinel_test_01.py", line 147, in test_item1_stop_midrun_stops_at_next_api_boundary
+    with open(os.path.join(run_dir(run, mock=False), "STOP"), "w", encoding="utf-8") as f:
+         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\tensh\\eigo-radio\\er026_output\\family_z_production_e2e_01\\melos\\run_stoptest_01\\STOP'
+
+======================================================================
+FAIL: test_item3_regenerate_and_resume_blocked_then_cleared_resume_works (__main__.Item3RegenerateResume.test_item3_regenerate_and_resume_blocked_then_cleared_resume_works)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er026_family_z_stop_sentinel_test_01.py", line 299, in test_item3_regenerate_and_resume_blocked_then_cleared_resume_works
+    self.assertEqual(rc, 0, err)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: 3 != 0 : [STOP_SENTINEL] FAMILY_Z_STOP_SENTINEL: C:\Users\tensh\eigo-radio\er026_output\family_z_production_e2e_01\STOP_ALL \ufffd\ufffd\ufffd\ufffd\ufffd\u0742\ufffd\ufffd\u90bd\ufffd\ufffd startup \ufffd\u0311O\ufffd\u0152\ufffd~(\ufffdV\ufffdKAPI\ufffd\u010fo\ufffd\u0202\ufffd)\ufffdB\ufffd\ufffd\ufffd\ufffd\ufffd\u010aJ/\ufffd\u010e\ufffd\ufffds\ufffd\u0342\ufffd\ufffd\u0202\ufffd\ufffdBFable/\ufffd\ufffd\ufffd[\ufffdU\ufffd[\ufffd\u030ew\ufffd\ufffd\ufffd\ufffd\u0482\x82\ufffd\ufffd\u0181B
+
+
+----------------------------------------------------------------------
+Ran 7 tests in 7.906s
+
+FAILED (failures=1, errors=1, skipped=5)

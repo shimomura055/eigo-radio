@@ -27,9 +27,13 @@ AUDIT = os.path.join(REPO, "er026_output", "family_z_production_e2e_01", "stop_a
 
 def list_processes(pattern: str) -> list:
     """(pid, name, commandline)。このツール自身(と親chain)は除く。"""
-    ps = ("Get-CimInstance Win32_Process | Where-Object { $_.Name -match 'python|powershell|pwsh|bash|cmd' } | "
+    ps = ("[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; "
+          "Get-CimInstance Win32_Process | Where-Object { $_.Name -match 'python|powershell|pwsh|bash|cmd' } | "
           "Select-Object ProcessId,ParentProcessId,Name,CommandLine | ConvertTo-Json -Compress")
-    out = subprocess.run(["powershell", "-NoProfile", "-Command", ps], capture_output=True, text=True, timeout=60).stdout
+    # PowerShell出力をUTF-8に固定して明示decodeする(locale依存のcp932/UTF-8不一致でstdoutがNoneになり
+    # 緊急停止ツールが落ちるのを防ぐ。REMAINING-ISSUES-01 項目4)
+    out = subprocess.run(["powershell", "-NoProfile", "-Command", ps], capture_output=True, timeout=60).stdout or b""
+    out = out.decode("utf-8", errors="replace").lstrip("﻿")
     if not out.strip():
         return []
     rows = json.loads(out)
