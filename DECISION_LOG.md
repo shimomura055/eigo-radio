@@ -20676,3 +20676,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 費用: 実費JPY3.91(上限JPY100、runner budget 30)。Coffee累計約JPY151.0。
 - 状態: Std側のみ実測済み。Adv組立・試聴ページ(`user_test/coffee_final_v5/`)・Playwright evidenceは未実施。`PRODUCTION_WIRED`未達(Gate 3全条件未充足、判定はFable/ユーザー)。Production採用(Comment 4 Prompt)はユーザー承認済み。
 - 証跡: `er057_output/coffee_final_v5/`(PRECHECK_V5_01.md、STYLE_APPLICATION_EVIDENCE_V5.md、PRODUCTION_DIFF_V5.md、WIRING_CHECKLIST_V5_01.md、regression/)、`er019_output/family_x_audio_production_wiring_01/coffee_prices__run_v5_ms_01/`、`docs/pm/delegation_log/2026-10-12_FAMILY-X-COFFEE-FINAL-V5-PRODUCTION-WIRING-01_01.md`。
+
+## FAMILY-X-COFFEE-FINAL-V5-PRODUCTION-WIRING-01 委任_02(2026-10-12、Adv P3 TTS再実行・Adv v5組立・試聴版完成。PRODUCTION_WIRED未判定・Opusレビュー待ち)
+- Fable承認の新規起動1回でAdv KP解説5件をProduction runner(`--style-profile coffee_final_v5`、timeoutなし)で再実行、rc=0。5件すべてinstruction sha=P3(`a8aaec59…`)、gemini-3.8-flash-lite-tts/Aoede/BATCH、ASR gpt-4o-mini-transcribe全NORMALIZED_MATCH、attempt=1、fallback/Local Rewrite 0、results recordあり。M3 Gate: KP解説5件BLOCKなし(full_story_part1〜3のみNO_SEGMENT_RECORD=v4音声流用の意図通り)。
+- Adv v5組立: 315.71s(v4 317.07s)、peak 0.97995、clipping 0、変更5 role(KP英語解説)/不変24 role、medium/high異音(非固定)0(候補23、v4 21、全てlow)。headroom valve発動(Key Phrase 5のP3新clipがpeak 1.052、scalar 0.931で全体約-0.6dB。v4は0.995)。Full Story WPMはv4音声流用のためv4同一(Adv 全体180.7/発話190.0、Std 162.2/177.0)。IOLはv4流用。
+- 試聴ページ `user_test/coffee_final_v5/{index,standard,advanced}.html` 公開(HTTP 200)、Playwright実再生 51/51・26/26・25/25、console error 0。`PLAY_EVIDENCE_V5_01.md`。費用 本委任約JPY0.37、v5累計約JPY4.28、Coffee累計約JPY151.4。
+- 状態: 試聴版完成。`PRODUCTION_WIRED`は未判定(resume経路・Master Store reuse・OPEN-312未検証、Opus独立レビュー未実施)。ユーザー試聴待ち。
+- 証跡: `er057_output/coffee_final_v5/`(WIRING_CHECKLIST_V5_01.md、PRODUCTION_DIFF_V5.md、PLAY_EVIDENCE_V5_01.md、style_application_evidence_v5.json 他)、`docs/pm/delegation_log/2026-10-12_FAMILY-X-COFFEE-FINAL-V5-PRODUCTION-WIRING-01_02.md`。
