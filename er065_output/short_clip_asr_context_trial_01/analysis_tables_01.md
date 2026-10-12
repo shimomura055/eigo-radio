@@ -253,11 +253,29 @@
 | natural_ng_proxy | azure | 4 | 0 | 0 |  |
 | natural_ng_proxy | whisper-small | 5 | 18 | 0 |  |
 
+### D-4b. (委任_02追加) natural_ng_proxy(OpenAI)のPASS反転観測をtarget別に集計(D-4の単位=全rep観測。D-5のG0=target x recipe単位[rep1のみ]で母集団が異なる)
+
+| target | 単独 | 文脈付き観測数 | 反転(PASS)観測数 |
+|---|---|---|---|
+| nat_bements | NG | 3 | 3 |
+| nat_counts | NG | 4 | 0 |
+| nat_design | NG | 4 | 4 |
+| nat_feet | NG | 4 | 4 |
+| nat_forced | PASS | 5 | 4 |
+| nat_melus_hand | NG | 5 | 0 |
+| nat_milo | NG | 5 | 0 |
+| nat_milos_hand | NG | 5 | 0 |
+| nat_paused | NG | 4 | 2 |
+| nat_reduce | NG | 5 | 0 |
+| nat_turnout | NG | 2 | 0 |
+
+単独NG target合計: 文脈付き観測 41件、反転 13件(D-4と同一母集団)。
+
 ### D-5. false accept防止条件の評価(OpenAI文脈付きASRを一次、条件を重ねたときの受理数)
 
 | 条件 | known_defect_word(語欠落/誤語) 受理=false accept | known_defect_trunc(語末切詰) 受理=false accept | good_control 受理=true accept | natural_ng_proxy 受理 |
 |---|---|---|---|---|
-| G0 文脈付きOpenAI領域がProd判定PASS(無対策) | 0/12 (0%) | 42/42 (100%) | 12/12 (100%) | 13/36 (36%) |
+| G0 文脈付きOpenAI領域が受理(無対策。受理=切詰/対照synthetic[category]は最終語の綴り一致[focus_exact]、それ以外はProduction classify_asr_match PASS) | 0/12 (0%) | 42/42 (100%) | 12/12 (100%) | 13/36 (36%) |
 | G1 +単独clipもPASS(単独整合) | 0/12 (0%) | 42/42 (100%) | 12/12 (100%) | 3/36 (8%) |
 | G2 +2回呼出し両方PASS | 0/8 (0%) | 18/18 (100%) | - | 4/10 (40%) |
 | G3a +領域token min logprob >= -0.5 | 0/12 (0%) | 35/42 (83%) | 11/12 (92%) | 11/36 (31%) |
@@ -439,3 +457,29 @@
 | a2_att5 | Std NG take(Prod ASR: 'melloset' T | melloset; mellowset | 46 | 3 | 7 | Dpre25, Rwin7 |
 | a2_att6 | Std NG take(Prod ASR: 'Mellowset'  | meloset | 45 | 17 | 20 | Dboth, Dpre11, Dpre14, Dpre25, Dpre5, Dpre6, Npost8, Npre27, Rboth, Rpre, Rwin5 |
 | b1b_att1 | Adv take(Prod: UNCERTAIN 'Mello sa | mello said | 23 | 0 | 3 |  |
+
+### C-2b. (委任_02追加) C-2をa2_att6除外で再集計(Melos main, base, 文脈あり条件のみ。att6は文脈付き『melos said』の真値が未確定のため分離)
+
+| engine | 文脈にMelos語を含む | n(att6除外) | focus(Melos)一致 | exact_tokens | Prod PASS |
+|---|---|---|---|---|---|
+| openai | 含まない | 198 | 3/198 (2%) | 3/198 (2%) | 34/198 (17%) |
+| openai | 含む | 55 | 13/55 (24%) | 13/55 (24%) | 21/55 (38%) |
+| azure | 含まない | 39 | 10/39 (26%) | 10/39 (26%) | 25/39 (64%) |
+| whisper-small | 含まない | 108 | 0/108 (0%) | 0/108 (0%) | 25/108 (23%) |
+| whisper-small | 含む | 30 | 22/30 (73%) | 15/30 (50%) | 15/30 (50%) |
+
+### C-2c. (委任_02追加) a2_att6のOpenAI文脈付き『melos said』(exact_tokens)観測の内訳: 文脈clipに『Melos』語を含むか / recipe別
+
+- att6 文脈付き観測 45件、うち『melos said』 17件。このうち ctx_has_focus_word=true は 2件、false は 15件。
+- 『melos said』になったdistinct recipe 11件: Dboth(ctx_has_focus=F, x2), Dpre11(ctx_has_focus=F, x2), Dpre14(ctx_has_focus=F, x1), Dpre25(ctx_has_focus=F, x2), Dpre5(ctx_has_focus=F, x1), Dpre6(ctx_has_focus=F, x1), Npost8(ctx_has_focus=T, x1), Npre27(ctx_has_focus=T, x1), Rboth(ctx_has_focus=F, x2), Rpre(ctx_has_focus=F, x2), Rwin5(ctx_has_focus=F, x2)
+- distinct recipeのうち ctx_has_focus_word=false は 9/11
+
+### C-2d. (委任_02追加) Dpre25(異voice前置25秒)の各take(OpenAI, base)
+
+- a2_att1: n=2, ctx_has_focus=False, 転写=['mello said', 'melo said'], melos said=0
+- a2_att2: n=2, ctx_has_focus=False, 転写=['melo said'], melos said=0
+- a2_att3: n=2, ctx_has_focus=False, 転写=['melo said', 'melos said'], melos said=1
+- a2_att4: n=2, ctx_has_focus=False, 転写=['malice said'], melos said=0
+- a2_att5: n=2, ctx_has_focus=False, 転写=['melo said', 'melos said'], melos said=1
+- a2_att6: n=2, ctx_has_focus=False, 転写=['melos said'], melos said=2
+- b1b_att1: n=1, ctx_has_focus=False, 転写=['mello said'], melos said=0

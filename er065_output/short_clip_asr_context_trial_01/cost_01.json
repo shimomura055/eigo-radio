@@ -9884,5 +9884,18 @@
    "jpy": 0.076,
    "what": "smoke"
   }
- ]
+ ],
+ "recalc": {
+  "added_in": "委任_02 (2026-10-13)。元の値(total_jpy等)は変更せず保持。API呼出なし",
+  "status": "UNVERIFIED_AUDIO_INPUT_UNIT_PRICE",
+  "pricing_snapshot_check": "er005_output/cost_baseline_01/pricing_snapshot.json の gpt-4o-mini-transcribe は input_tokens $1.25/M と output_tokens $5.0/M の2行のみ(L300-323付近)。音声入力tokenの別掲単価は無い。",
+  "note": "音声入力単価は未確認。text単価$1.25/Mで計算したため過小評価の可能性あり。OpenAI usage画面との照合が必要。推定値は出さない(捏造禁止)。",
+  "openai_calls_logged": 549,
+  "openai_tokens_in_total": 48030,
+  "openai_tokens_out_total": 12818,
+  "openai_jpy_as_computed": 19.8678,
+  "api_failure_jpy_zero_note": "lib(er065_..._lib.py L299)はOpenAI例外時に jpy=0.0 を返す設計(課金されたが失敗扱いのcallは0円計上になりうる)。ただし本Trialのresults_01_*.jsonlでok=falseは0件、cost_01.jsonのopenai/azureでjpy=0の呼出も0件。",
+  "proposal_not_implemented": "lib側に usage.input_token_details(audio/text内訳)の記録を追加する改修は提案のみ。今回は行わない。",
+  "azure_unit_note": "Azure $1.0/音声時間は Retail Prices API 由来(confidence済み)。変更なし。"
+ }
 }

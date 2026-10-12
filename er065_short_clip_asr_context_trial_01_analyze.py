@@ -332,6 +332,23 @@ for lab in ("known_defect_word", "known_defect_trunc", "natural_ng_proxy", "good
             add(f"| {lab} | {eng} | {ntg} | {tot} | {fl} | {', '.join(sorted(set(ex)))[:140]} |")
 add("")
 
+# --- 委任_02追加: D-4反転13件のtarget別内訳(実効標本)
+add("### D-4b. (委任_02追加) natural_ng_proxy(OpenAI)のPASS反転観測をtarget別に集計(D-4の単位=全rep観測。D-5のG0=target x recipe単位[rep1のみ]で母集団が異なる)\n")
+add("| target | 単独 | 文脈付き観測数 | 反転(PASS)観測数 |")
+add("|---|---|---|---|")
+_tot = _fl = 0
+for tid in sorted({a["target_id"] for a in A if label_of(a["target_id"]) == "natural_ng_proxy"}):
+    al_ = idx.get((tid, "openai", "base", "R00_alone"), [])
+    if not al_:
+        continue
+    alone_pass = majority_pass(al_)
+    obs_t = [r for (t2, e2, v2, rid), rs in idx.items() if t2 == tid and e2 == "openai" and v2 == "base" and rid != "R00_alone" for r in rs]
+    add(f"| {tid} | {'PASS' if alone_pass else 'NG'} | {len(obs_t)} | {sum(1 for r in obs_t if r['accept'])} |")
+    if not alone_pass:
+        _tot += len(obs_t)
+        _fl += sum(1 for r in obs_t if r["accept"])
+add(f"\n単独NG target合計: 文脈付き観測 {_tot}件、反転 {_fl}件(D-4と同一母集団)。\n")
+
 add("### D-5. false accept防止条件の評価(OpenAI文脈付きASRを一次、条件を重ねたときの受理数)\n")
 obs = []
 for (tid, eng, var, rid), rs in idx.items():
@@ -347,7 +364,7 @@ for (tid, eng, var, rid), rs in idx.items():
                 "has2": len(rs) >= 2, "alone": majority_pass(alone_), "lp": min(lps) if lps else None,
                 "wh": (wh[0]["accept"] if wh else None)})
 rules = [
-    ("G0 文脈付きOpenAI領域がProd判定PASS(無対策)", lambda o: o["p1"]),
+    ("G0 文脈付きOpenAI領域が受理(無対策。受理=切詰/対照synthetic[category]は最終語の綴り一致[focus_exact]、それ以外はProduction classify_asr_match PASS)", lambda o: o["p1"]),
     ("G1 +単独clipもPASS(単独整合)", lambda o: o["p1"] and o["alone"]),
     ("G2 +2回呼出し両方PASS", lambda o: o["pall"]),
     ("G3a +領域token min logprob >= -0.5", lambda o: o["p1"] and o["lp"] is not None and o["lp"] >= -0.5),
@@ -476,6 +493,33 @@ for tid in sorted({a["target_id"] for a in M}):
     cx = [a for a in M if a["target_id"] == tid and a["engine"] == "openai" and a["variant"] == "base" and a["recipe_id"] != "R00_alone"]
     rids = sorted({a["recipe_id"] for a in cx if a["exact_tokens"]})
     add(f"| {tid} | {tn.get(tid,'')[:34]} | {'; '.join(sorted(set(al_)))} | {len(cx)} | {sum(1 for a in cx if a['exact_tokens'])} | {sum(1 for a in cx if a['region_pass'])} | {', '.join(rids)[:120]} |")
+add("")
+
+# --- 委任_02追加(API不要の再集計)
+add("### C-2b. (委任_02追加) C-2をa2_att6除外で再集計(Melos main, base, 文脈あり条件のみ。att6は文脈付き『melos said』の真値が未確定のため分離)\n")
+add("| engine | 文脈にMelos語を含む | n(att6除外) | focus(Melos)一致 | exact_tokens | Prod PASS |")
+add("|---|---|---|---|---|---|")
+for eng in ("openai", "azure", "whisper-small"):
+    for hf in (False, True):
+        xs = [a for a in M if a["engine"] == eng and a["variant"] == "base" and a["kind"] != "alone" and bool(a["ctx_has_focus"]) == hf and a["target_id"] != "a2_att6"]
+        if xs:
+            add(f"| {eng} | {'含む' if hf else '含まない'} | {len(xs)} | {fmt(rate(xs, lambda x: x['focus_exact']))} | {fmt(rate(xs, lambda x: x['exact_tokens']))} | {fmt(rate(xs, lambda x: x['region_pass']))} |")
+add("")
+add("### C-2c. (委任_02追加) a2_att6のOpenAI文脈付き『melos said』(exact_tokens)観測の内訳: 文脈clipに『Melos』語を含むか / recipe別\n")
+a6 = [a for a in M if a["target_id"] == "a2_att6" and a["engine"] == "openai" and a["variant"] == "base" and a["recipe_id"] != "R00_alone"]
+hit = [a for a in a6 if a["exact_tokens"]]
+add(f"- att6 文脈付き観測 {len(a6)}件、うち『melos said』 {len(hit)}件。このうち ctx_has_focus_word=true は {sum(1 for a in hit if a['ctx_has_focus'])}件、false は {sum(1 for a in hit if not a['ctx_has_focus'])}件。")
+hit_r = collections.Counter(a["recipe_id"] for a in hit)
+rid_all = sorted({a["recipe_id"] for a in hit})
+add(f"- 『melos said』になったdistinct recipe {len(rid_all)}件: " + ", ".join(f"{r}(ctx_has_focus={'T' if any(a['ctx_has_focus'] for a in hit if a['recipe_id']==r) else 'F'}, x{hit_r[r]})" for r in rid_all))
+n_f = sum(1 for r in rid_all if not any(a["ctx_has_focus"] for a in hit if a["recipe_id"] == r))
+add(f"- distinct recipeのうち ctx_has_focus_word=false は {n_f}/{len(rid_all)}")
+add("")
+add("### C-2d. (委任_02追加) Dpre25(異voice前置25秒)の各take(OpenAI, base)\n")
+for tid in sorted({a["target_id"] for a in M}):
+    xs = [a for a in M if a["target_id"] == tid and a["engine"] == "openai" and a["variant"] == "base" and a["recipe_id"] == "Dpre25"]
+    if xs:
+        add(f"- {tid}: n={len(xs)}, ctx_has_focus={xs[0]['ctx_has_focus']}, 転写={sorted({a['region'] for a in xs})}, melos said={sum(1 for a in xs if a['exact_tokens'])}")
 add("")
 
 json.dump({"n_records": len(A)}, open(OUT + "/analysis_meta_01.json", "w"), indent=1)

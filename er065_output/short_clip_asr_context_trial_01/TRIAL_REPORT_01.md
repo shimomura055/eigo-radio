@@ -1,17 +1,21 @@
 # TRIAL_REPORT_01: FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01 委任_01
 
-日付 2026-10-13 / Status案: **VALIDATED(Trial。方式の採否はUSER_DECISION_REQUIRED)** / Production無変更・TTS生成0・Production state書込0
+日付 2026-10-13 / Status(委任_02で訂正): **C-c(ASR時のみ文脈結合)のauto-accept化: REJECTED(Trial実測) / 推奨(2)(4)+音響証拠: 未実装・未検証、USER_DECISION_REQUIRED / 計測: Trial完了**(「VALIDATED」は使わない。旧表記を廃止) / Production無変更・TTS生成0・Production state書込0
+委任_02(2026-10-13、Opus独立レビュー必須修正反映): 記述訂正と既存`results_01.jsonl`からの再集計のみ(費用JPY0、API呼出・TTS・ASR無し)。訂正箇所は本文中に「[委任_02訂正]」で明記。再集計表は付録の C-2b/C-2c/C-2d/D-4b。
 出力dir: `er065_output/short_clip_asr_context_trial_01/`(er065は空き番号だったため使用)
 コード: `er065_short_clip_asr_context_trial_01_{lib,build,make_config_melos,make_config_counter,runner,analyze,finalize}.py`(作品固有語は`config_*_01.json`に閉じ、コードはMelosハードコード無し)
 
 ## 0. 結論(先に要点)
 
-1. **「Melos said.」が不安定な主因は clip の短さではなく、OOV固有名詞の綴り揺れ(Melos→Mello/Mellow/Mellis/Melo)**。OpenAI(gpt-4o-mini-transcribe)は単独2語clipで`melos said`を**0/13**。前後clipを結合して文脈を 3〜28秒まで増やしても、同一ナレーター/異ナレーターとも一貫した改善はなく(`melos said`一致 0〜31%、Rwin7[28.6秒]のみ67%)、改善して見える条件は**文脈clipに「Melos」という語自体が含まれる場合**(OpenAI 25% vs 含まない8%、whisper-small 78% vs 0%)=ASRが前出の綴りへ引きずられる語彙プライミングであって、当該clipの発音確認ではない。
-2. **文脈結合は正認識率をほとんど上げず、誤PASS(masking)のリスクだけを増やす**: 現行の本番NG take a2_att6(現行final wav、単独は`meloset`×2で一貫)が、文脈付きだと`melos said`と書かれる回数が**17/45**。単独NG→文脈付きPASSに反転した観測は、本番NG由来の反例(proxy)で**13/41**。ただし真の発音は人手試聴でしか確定できず、これらは「false accept候補」であって確定false acceptではない(proxy ground truthの限界)。
-3. **既知欠陥の反例(オフライン編集、真値既知)**: 語の欠落/誤語(Melos→ruler、Melos削除、said削除)は文脈付きでも**0/12**でPASSにならない(文脈にMelosが有っても幻覚補完せず)。一方、**語末子音の切り詰め(最終語の末尾70〜460msをカット)は、単独でも文脈付きでもOpenAI/whisperとも最終語を正しく書いてしまい、100%受理**される(ASRは節内の言語モデルで補完)。→ 語末子音欠落は**ASR文字列ベースの判定(文脈付きでも単独でも)では原理的に検出できない**。文脈結合はこの点を悪化も改善もしない。
-4. **Azure STT+Phrase Listはtake差を敏感に反映し決定的**(同一音声2回で15/15一致、文脈の有無でtakeごとの結果がほぼ不変: att1=Melos、att3=Melo、他=Mellow/Mallow)。文脈結合が追加情報を与えず、単独Azureがすでに音響的な差を拾っている。OpenAIは同一音声でも領域転写が2回で一致するのは**72%**にとどまる(非決定的)。
-5. **推奨案(採用はユーザー判断)**: ASR文脈結合をauto-accept条件にする案は**非推奨**。最も合理的なのは、(a)**発生源を断つ**: 固有名詞のみの超短attribution clipを作らない(原稿/分割ルール。OPEN-318代替③)、(b)**作品単位で人間が1度承認した綴り・読みのallow-list**を既存Phrase List/work canonへ載せる(OPEN-327追記案・OPEN-318 C-a。OPEN-330(c)と一体)、(c)Azure+Phrase List+HR fallbackは維持、(d)語末子音欠落は別途**音響的な独立証拠**(語末エネルギー/継続長)を設計する(本Trialでは未検証)。いずれも新仕様でありTrial+Opus独立レビュー(条件A/C)+人間承認が必要。
-6. 費用 **JPY39.61 / 40**(OpenAI 19.87、Azure 19.74、local whisper 0)。Melos累計 約JPY225.0 / 300(185.4+39.6)。TTS再生成0。Production state不変(sha256一致、write guard遮断0件[Production側])。
+1. **[委任_02訂正] 単独2語clipで`Melos said.`が不安定な原因は、本Trialでは1つに確定できない**。OpenAI(gpt-4o-mini-transcribe)は単独2語clipで`melos said`を**0/13**(綴り変種Mello/Mellow/Mellis/Melo等)。前後clipを結合して文脈を3〜28秒まで増やしても、同一/異ナレーターとも一貫した改善はなく(`melos said`一致 0〜31%、Rwin7[28.6秒]のみ67%)、安定閾値は**試した範囲では見つからなかった**。原因として併記すべき3点:
+   - (a) **att6以外のtakeではプライミングが優勢**: 改善して見える条件は文脈clipに「Melos」という語自体が含まれる場合に偏る。a2_att6を除いて再集計すると、文脈にMelos語を**含まない 3/198 (2%)** vs **含む 13/55 (24%)**(付録C-2b。att6を含む旧集計は 18/234 (8%) vs 16/64 (25%))。この場合の`melos said`は、ASRが前出の綴りへ引きずられた結果であり、当該clipの発音確認ではない。
+   - (b) **a2_att6では音響に基づく効果の可能性があり、真値は試聴待ち**: att6の文脈付き`melos said`は17/45のうち15件が文脈にMelosを含まない条件。文脈付きで`melos said`化したdistinct recipe 11件のうち**9件は`ctx_has_focus_word=false`**(付録C-2c)。さらにDpre25(異voice前置25秒・Melos語なし)でatt3/att5/att6が`melos said`(att6は2/2、att3/att5は1/2。付録C-2d)。これはプライミング(文脈のMelos語)では説明できず、文脈で綴りが安定する音響上の効果、または実際の発音差を拾った結果の可能性がある。ただし真値(耳で確認)が無く、「maskingの証拠」とも「正しく拾った証拠」とも確定できない。→ att6の17/45は「masking主証拠」ではなく**真値未確定の候補**に弱める。
+   - (c) **「clipの長さ」と「`Melos said`のs+s融合(`Melos`語末sと`said`語頭sの連続)の有無」が交絡して未分離**: 長いclipでAzure/OpenAIが`Melos`と書けた例は、Melosの後ろがs始まりの語ではない(Opus指摘。個別に全例は再検証していない)。したがって「主因はclipの短さではない」とも「短さが主因」とも断定できない。本Trialは2語clipでの長さとs+s融合の効果を分離する実験をしていない。
+2. **文脈結合は正認識率を明確には上げず、誤PASS(masking)の候補を増やす可能性がある**(ただし真値未確定): 本番NG take由来のproxy反例で、単独NG→文脈付きPASSに反転した観測は**13/41**(単独NGの10 targetの全rep観測。D-4。母集団はD-5のG0[13/36=target x recipeのrep1単位、単独PASSのtargetも含む]と異なる)。13件の内訳は nat_feet 4・nat_design 4・nat_bements 3(同音語・文脈で語が推測できるタイプ、**実効標本は3 target**)と nat_paused 2(語末子音付加のASR揺れ)(付録D-4b)。Melos a2_att6の17/45は上記(1)(b)のとおり真値未確定の候補。proxyの限界(正解は検証済みtake等であり真の発音は未確定)があるため、これらは確定false acceptではない。
+3. **既知欠陥の反例(オフライン編集、真値既知)と、語末子音脱落の一般化範囲の限定**: 語の欠落/誤語(Melos→ruler、Melos削除、said削除)は文脈付きでも**0/12**でPASSにならない(文脈にMelosが有っても幻覚補完せず)。clip末の予測しやすい語(`said`/`death`、基音声3本)の末尾70〜460msを切り詰めた音声は、単独でも文脈付きでもOpenAI/whisperとも最終語を**綴りとしては**正しく書き、検出されなかった(42/42。ただし12音声x recipeの非独立観測であり、例えばsyn_B1_trunc*は`mello said`等でProduction判定ならほぼNG[18観測中PASSは3]になるため、42/42は「最終語の綴り一致」の基準での数字)。→ 結論は「**clip末の予測しやすい語(said/death、基音声3本)の切詰めは、単独・文脈付きともASRの綴りでは検出されなかった**」に限定する。**語中の語末子音(`Melos`の語末s、OPEN-330の対象)は未検証**(切詰は`said`等のclip末語に対してのみ。語中の語末s脱落・s+s接続への切詰反例は無い)。70ms切詰が知覚上の欠陥かは真値未確認、300〜460msは語末子音だけでなく母音まで削っている。
+4. **Azure STT+Phrase Listは決定的**(同一音声2回で15/15一致)で、文脈の有無でtakeごとの結果がほぼ不変(att1=Melos、att3=Melo、他=Mellow/Mallow)。ただし**決定的であることは忠実であることを意味しない**(Phrase Listも綴りを誘導する)。take別の結果が先行調査の摩擦区間長と矛盾しない程度の観測であり、「Azureは音響差を拾う」とは言い切らない。OpenAIは同一音声でも領域転写が2回で一致するのは**72%**にとどまる(非決定的)。
+5. **推奨案(採用はユーザー判断。いずれも未実装・未検証)**: ASR文脈結合をauto-acceptの根拠にする案は**非推奨**(REJECTED)。合理的な候補は、(a)**発生源を断つ**: 固有名詞語末の歯擦音+歯擦音始まり語の連続を避け、引用間narrator chunkに最小語数を持たせる原稿/構造ルール(OPEN-318代替③。ただし長clip化の効果自体は(1)(c)の交絡のため**未検証**)、(b)**作品単位のallow-list**(ただし後述E-(4)のとおり「その名前の語末s脱落リスクを作品内で許容する方針決定」と等価であり、1 takeの人間承認は別takeを守らない。選択肢i/ii/iiiはユーザー判断)、(c)Azure+Phrase List+HR fallbackは維持、(d)語末子音脱落には**音響的な独立証拠**(語末エネルギー/継続長、参照テキスト付き音素評価)を設計する(本Trial未検証)。いずれも新仕様でありTrial+Opus独立レビュー(条件A/C)+人間承認が必要。OPEN-331(HR承認take→6%減速後再検証Gate STOP)と一体で検討する必要がある。
+6. 費用 **JPY39.61 / 40**(OpenAI 19.87、Azure 19.74、local whisper 0)。ただし**OpenAIの音声入力token単価は未確認**(`pricing_snapshot.json`にtext単価$1.25/Mしか無く、音声入力の別掲が無い。過小評価の可能性あり。OpenAI usage画面との照合が必要。詳細は費用節の[委任_02追記])。Melos累計は 185.4+39.61 = **約JPY225.0 / 300**(旧記述の「+39.5」混在を39.61に統一、[委任_02訂正])。TTS再生成0。Production state不変(sha256一致、write guard遮断0件[Production側])。
 
 注: 本Trialの評価モデルは**Production同一モデル(gpt-4o-mini-transcribe、Azure Speech STT+PhraseList)**。最新モデル原則(PM_GOVERNANCE 25節)の例外理由=「比較可能性」(Productionと同じASRで、文脈結合の効果だけを測るため)。local faster-whisper(small/medium)は無料の第三者参照engine(Production対象外)。
 
@@ -28,7 +32,7 @@
 | 3 | ASR Semantic Equivalence Layer (er021) | `er021_en_asr_semantic_equivalence_production_01.py`(telemetry書込 L779 `append_telemetry_log`)。`classify_asr_match`が内部で利用 | EN英語ASR照合全般 | 全clipでtelemetry発火(entity_only等) | 数字/契約形/複数形など | 固有名詞の綴り揺れ |
 | 4 | 固有名詞Pronunciation Resolver・Ledger (er025系) | `er006_output/pronunciation_ledger_01/ledger.json`。melos(EN)=`cascade_unresolved_entity`/low/IPA `/ˈmiː.lɑːs/`(辞書推定)。Phrase Listとしてcascade Azureへ供給。CMU Case A(`_step_alternate_pass` `er006_secondary_asr_01.py` L423) | Ledger登録語 | 発火(Phrase List使用。TTS注入は対象外) | Ledgerに高信頼の読みがある語(JA melos=メロス) | EN melosは期待MEE-lahsと実際のTTS読み(MEL-os系)が不一致(OPEN-308)。CMU未収録でCase Aが構造的に常に未解決 |
 | 5 | Primary→Secondary ASR Cascade (Tier3 Azure corroboration) | `er006_secondary_asr_01.py` `evaluate_attempt_with_cascade` L347 / detail L464。Tier3 L601-660(Azureがdiff位置でcanonical語を支持→`SECONDARY_ASR_CORROBORATED_MATCH`)、その後Primary#2/Azure#1/#2 | 英語本文clip(`segment_id`伝播が前提) | **発火あり**: 長clip(b1b part3_c3等)で多数PASS。2語clipでは`tier3_attempted_no_corroboration`(Azure=`Mellow`) | 長clipでAzureが`Melos`と綴る場合(10試行中8回) | Azureが綴りを再現しない2語clip |
-| 6 | 6%減速後再検証 | `er003_v1_n3_01_tts_generate.py` `apply_a2_slowdown_postprocess` L169、`_post_slowdown_cascade_rescue` L117(是正済み: eb4c6479) | Std(a2)のみ | 是正前は救済なし→STOPPED x3(分類A)。是正後はTier3/cascadeを共有。part1_c5は再実行未実施 | 減速前PASSの音声が減速後に落ちる問題 | 減速前から綴りが再現しない音声 |
+| 6 | 6%減速後再検証 | `er003_v1_n3_01_tts_generate.py` `apply_a2_slowdown_postprocess` L169、`_post_slowdown_cascade_rescue` L117(是正済み: eb4c6479) | Std(a2)のみ | 是正前は救済なし→STOPPED x3(分類A)。是正後はTier3/cascadeを共有。**[委任_02更新]** part1_c5は、HR承認(ユーザー試聴OK)→attempt4採択→6%減速前の音声のためSlowdown Gate STOP(rc=2、ratio=1.2683、OPEN-331)が現状(Gate回避なし、assemble/pages未実行) | 減速前PASSの音声が減速後に落ちる問題 | 減速前から綴りが再現しない音声 |
 | 7 | retry・fallback・Local Rewrite 7 Gates | `er020_tts_retry_local_rewrite_01.py`(role判定 L124-149)、`news_tail_fix.py` L283-296 / `crosslevel` L255-300。TTS上限3、Adv(b1b)はUNCERTAINで即cascade→LR→HR | 全role | Adv part1_c5: LR候補5件が全てGate7(全面書換でない)で不通過→HR。Std: fallback経由でPattern A受理 | 一般的な再生成・短い文言差し替え | 2語clip(LRは全面書換になりGate7不通過)=構造的に救済困難 |
 
 ### A-2. 結論(既存対策の限界)
@@ -56,39 +60,40 @@
 | ASR費用/音声秒 | JPY0.0041 | JPY0.0444 | 0 |
 | 処理時間(中央値) | 0.4秒(0-3秒音声)〜0.96秒(16-40秒) | 0.6秒〜7.6秒 | 2.9〜5秒(CPU) |
 - 正認識(`melos said`)を文脈量で見ると、OpenAIは Npre3/Npre8/Npre14/Npost3/Npost14/Dpre3/Dpost*=**0%**、Dpre25=31%、Npre27=15%、Rwin7(c1〜c7,28.6秒)=67%。**単調な「何秒以上なら安定」という閾値は存在しない**(文脈量を増やしても綴りは固定されず、文脈clipの内容[Melosという語を含むか]に支配される)。
-- OpenAIの文脈付き出力の内訳(base,298観測): `mello said` 148、`melo said`(Pattern A受理)42、`melos said` 33、空(整列不能)13、その他(Mellow/Mellos/malice/mally等)。
-- 文脈にMelosを含む条件の方が`melos`一致が高い(OpenAI 25% vs 8%、whisper-small 78% vs 0%) → **綴りのプライミング**。当該clipが本当に`Melos`と発音されているかの確認ではない。
+- OpenAIの文脈付き出力の内訳(base,298観測): `mello said` 148、`melo said`(Pattern A受理)42、`melos said` 33、空(整列不能)13、その他(Mellow/Mellos/malice/mally等)。**[委任_02訂正]** 本文の`melos said` 33件は「領域転写が`melos said`と完全一致(exact_tokens)」、B-5表の34件は「focus語(Melos)の綴り一致(focus_exact)」の定義差(差の1件は a2_att6 Npost8 の領域転写`melos set`[Melos語は一致、sayが`set`])。同一定義ではない。
+- 文脈にMelosを含む条件の方が`melos`一致が高い(**[委任_02訂正・数値統一]** OpenAI 25% vs 8%[att6含む旧集計。att6除外では24% (13/55) vs 2% (3/198)]、whisper-small **74% (26/35)** vs 0% (0/126)。旧記述の「78%」は誤記で表の74%に統一) → **att6以外では綴りのプライミングが優勢**。当該clipが本当に`Melos`と発音されているかの確認ではない。ただしatt6は文脈にMelosが無い条件でも`melos said`化しており、プライミングだけでは説明できない(結論(1)(b)、真値は試聴待ち)。
 
 ### C. 複数ナレーターの影響(付録 C-2〜C-4)
 - 同一ナレーター文脈 vs 異ナレーター(台詞voice)文脈(同秒数、前置): OpenAIの Prod PASS = 3秒 15%/0%、7-8秒 23%/8%、13秒 46%/38%、23-26秒 38%/69%(同一/異)。差は一貫せず、7take(相関あり)x2回のため**ナレーター差は検出できない(文脈内容の差に埋もれる)**。ナレーターの影響を分離するには同一内容・別voiceのTTSが要るが、本Trialでは禁止のため**未分離**。
 - Std(6take) vs Adv(1take): 結論は同じ(Advも単独OpenAI 0/1、Azure `mellow`が3/3で固定、文脈で変化なし)。Advはn=1のため統計的差は言えない。
 
 ### D. 汎化と安全性(付録 D-3〜D-10)
-- **false accept(確定: 真値既知のsynthetic)**: 語欠落/誤語 **0/12**(文脈付きOpenAI)、語末子音切り詰め **42/42が受理**(文脈付きでも単独でも同じ。= 文脈が誤PASSを増やしたのではなく、ASR自体が検出できない)。
-- **false accept候補(proxy: 本番NG take)**: 単独NGのtarget 10件のうち、文脈付きOpenAIでPASSに反転したのは **13/41観測**(nat_bements/nat_design/nat_feet[同音語・文脈推測]が中心)。固有名詞誤発音3件(Milo/Milos'/Melus')は反転 0。語末子音付加(nat_counts/nat_paused/nat_forced)は ASR自身の揺れ(単独でも100%PASSの回あり)。Melos a2_att6は**17/45**。→ 「長い音声のASRが正しい表記を返しただけで自動PASS」は**実際に起き得る**(特に同音語/文脈で一意に決まる語、および名前が文脈に既出の場合)。
-- **防止条件の評価(OpenAI文脈付き一次)**: 単独整合(G1)は natural proxy の反転を 13/36→3/36 に抑えるが、**Melosのように単独が常にNGの問題は救えなくなる**(目的矛盾)。2回呼出一致(G2)・logprob閾値(G3)・独立engine(G4)は反転抑止が弱い/部分的(語末切詰には全て無効)。OpenAI領域tokenのmin logprobは good_control(5%点-2.48)と欠陥(-1.0)で分離せず、**確信度は防止条件にならない**。Secondary corroboration必須+HR fallback維持が最低限の安全弁。
-- Azure(deterministic)は文脈有無で結果がほぼ不変 → 文脈結合の追加ASR費(Azure 8秒文脈で約JPY0.36/回)に見合う情報増加が無い。
+- **false accept(確定: 真値既知のsynthetic)**: 語欠落/誤語 **0/12**(文脈付きOpenAI)。clip末語の語末子音切り詰め(`said`/`death`、基音声3本から作った12音声)は **42/42が受理**(最終語の綴り一致[`analyze.py`のfocus_exact]基準。Production `classify_asr_match`の判定ではない)。**[委任_02訂正]** 42/42は12音声 x recipeの**非独立観測**(独立な音声は12)。同じ受理基準でProduction判定を使うと、syn_B1_trunc*は`mello said`等になり18観測中PASSは3のみで、42/42とは異なる。70ms切詰が知覚上の欠陥かは真値未確認で、300〜460msは語末子音だけでなく母音まで削っている。→ 結論は「clip末の予測しやすい語の切詰めは単独・文脈付きともASRの綴りでは検出されなかった。語中の語末子音(`Melos`のs、OPEN-330対象)は未検証」に限定する(文脈が誤PASSを増やしたのではなく、ASR自体がこの種の切詰めに対して綴りを補完する)。
+- **false accept候補(proxy: 本番NG take)**: 単独NGのtarget 10件のうち、文脈付きOpenAIでPASSに反転したのは **13/41観測**(D-4。**[委任_02追記]** 内訳は nat_feet 4・nat_design 4・nat_bements 3[同音語・文脈推測]=実効標本3 target、+ nat_paused 2[語末子音付加のASR揺れ]。付録D-4b)。固有名詞誤発音3件(Milo/Milos'/Melus')は反転 0。語末子音付加(nat_counts/nat_paused/nat_forced)は ASR自身の揺れ(単独でも100%PASSの回あり)。Melos a2_att6は文脈付き`melos said` **17/45**だが、**[委任_02訂正]** これは「masking主証拠」ではなく真値未確定の候補(15件は文脈にMelosが無い条件で、プライミングでは説明できず、音響に基づく効果の可能性もある。試聴で確定)。→ 「長い音声のASRが正しい表記を返しただけで自動PASS」は、同音語/文脈で一意に決まる語、および名前が文脈に既出の場合には**実際に起き得る**。
+- **防止条件の評価(OpenAI文脈付き一次)**: 単独整合(G1)は natural proxy の反転を **13/36→3/36** に抑える(**[委任_02追記]** D-5の36はtarget x recipeのrep1単位で、単独PASSのtargetも含む母集団。D-4の13/41[全rep観測、単独NG targetのみ]とは母集団が異なる)が、**Melosのように単独が常にNGの問題は救えなくなる**(目的矛盾)。2回呼出一致(G2)・logprob閾値(G3)・独立engine(G4)は反転抑止が弱い/部分的(語末切詰には全て無効)。OpenAI領域tokenのmin logprobは good_control(5%点-2.48)と欠陥(-1.0)で分離せず、**確信度は防止条件にならない**。Secondary corroboration必須+HR fallback維持が最低限の安全弁。D-5表頭G0は**[委任_02訂正]**「Prod判定PASS」ではなく実際の受理基準(切詰/対照syntheticは最終語の綴り一致、それ以外はProduction `classify_asr_match` PASS)に修正(`analyze.py`ラベルのみ変更、数値は不変)。
+- Azure(deterministic)は文脈有無で結果がほぼ不変 → 文脈結合の追加ASR費(Azure 8秒文脈で約JPY0.36/回)に見合う情報増加が無い(決定的=忠実ではない点は結論(4)のとおり)。
 
 ## E. 改善方式の比較(机上+B〜D実測)
 
 | 方式 | 品質(正認識率 / false accept) | コスト(1記事あたり追加) | 開発負担 | 既存Production仕様との整合 | 量産適用性 | A/B/C分類 |
 |---|---|---|---|---|---|---|
-| **(1) clip分割維持+ASR時のみ前後文脈結合** | Melos綴り改善: **ほぼ無し**(0〜15%、名前が文脈にある時のみ上がる=プライミング)。false accept: 反転13/41(proxy)、att6 17/45。語末子音欠落は検出不能(単独と同じ) | OpenAI 8秒文脈で約JPY0.03/回、Azure 約JPY0.36/回。短clip(固有名詞のみ)数x cascade最大4step。記事あたり数JPY(Azure使用時) | 中(結合音声生成+target区間抽出+region整列+per-clip判定への写像+retryとの対応) | ASR側のみの変更でclip単位retry/fallback/LR/Master Store再利用/HR Lockは不変。ただし**判定根拠が結合音声になり、ASRが他clipの綴りに引きずられる**=安全≠成功原則に抵触しやすい | 技術的には可。auto-acceptには**非推奨** | **B**(OPEN-318 C-c として提案済み・未実測。本Trialが初の実測) |
-| **(2) TTS clip自体を長くする(原稿/分割ルール)** | 長clipではAzure+PhraseListが`Melos`を8/10(2語clipは0/8)、OpenAIは10語超で10/22(3語以下0/6)=改善するが100%ではない。false acceptは既存Tier3(Azure corroboration)の範囲で追加リスク無し | TTS再生成不要(新規記事の原稿/分割で回避)。既存記事は再生成が要りJPY発生 | 低〜中(writer promptのattribution最小語数ルール/分割ルール) | Std/Adv段落対応・分割(`segment_plan`)・clip単位retry/HR Lock/Master Storeと整合(ルールを足すだけ)。台詞voiceとnarrator voiceの境界は維持(attributionを台詞clipへ併合はしない) | **高**(発生源を断つ) | **B**(OPEN-318 代替案③「said Melosの語順、前後clipと結合」として提案済み・未採用) |
-| **(3) ASRへ文脈情報を与える(prompt / Phrase List / 前文テキスト)** | OpenAI promptに作品名を与えると単独 36%・3秒文脈付き 75% が`melos said`(base 0%)。**ただしMellis takeも`melos said`化(att4 2/2)、att6も3秒文脈+promptで`melos said` 2/2=masking**。前文テキストpromptは効果弱い(21%)。AzureのPhraseListは効果あり(nophrase 0/7→2/14)だが再現性はtake依存 | ほぼ0(同一ASR呼出) | 低(OpenAI prompt引数。既にKey Phrase経路で`prompt`機構あり) | Azure PhraseListは**既存仕様**。OpenAI body segmentへのprompt拡張は新仕様 | 単独ではmasking、**独立証拠[Azure/音響]と必ず併用**が条件 | Azure PhraseList=**A**(配線済み)、OpenAI promptのbody拡張=**C**(新規) |
-| **(4) 既存Connected Speech/Resolver/Secondary ASRの再判定改善** | Pattern A'(stem同音)は効果が限定的(CS_AUDIT 5-2)。作品単位allow-list(人間承認済み綴り群のみ`PASS_WITH_WARNING`)はMelosの全揺れを救えるが**人間が1度聴く前提**。Equivalence LayerはOOVに届かない | 0〜小(人間の初回承認1回/作品) | 中(allow-list保存場所・参照順・telemetry) | 既存Ledger/work canon(`seed_work_canon_reading`)・Phrase List・HR Lockと整合しやすい。Pattern A範囲(OPEN-330)の確定が前提 | 中〜高(作品ごとに1回の承認作業) | A'拡張=**B**(OPEN-327)、作品単位allow-list=**B**(OPEN-327追記案・OPEN-318 C-a)、OPEN-330範囲確定=**A**(既存仕様の範囲明確化) |
+| **(1) clip分割維持+ASR時のみ前後文脈結合** | Melos綴り改善: **att6以外では名前が文脈にある時のみ上がる**(att6除外: 含まない2%/含む24%=プライミング)。att6は文脈にMelosが無くても`melos said`化(17/45中15件)するが、プライミングか音響効果かは真値(試聴)未確定。false accept候補: 反転13/41(proxy。実効標本は3 target[feet/design/bements]+paused 2)。clip末語の語末子音切詰は単独と同じく綴りでは検出されない(語中は未検証) | OpenAI 8秒文脈で約JPY0.03/回、Azure 約JPY0.36/回(単価は費用節の注記参照、OpenAI音声入力単価は未確認)。短clip(固有名詞のみ)数x cascade最大4step。記事あたり数JPY(Azure使用時) | 中(結合音声生成+target区間抽出+region整列+per-clip判定への写像+retryとの対応) | ASR側のみの変更でclip単位retry/fallback/LR/Master Store再利用/HR Lockは不変。ただし**判定根拠が結合音声になり、ASRが他clipの綴りに引きずられる**=安全≠成功原則に抵触しやすい | 技術的には可。auto-acceptには**非推奨(REJECTED)** | **B**(OPEN-318 C-c として提案済み・未実測。本Trialが初の実測) |
+| **(2) TTS clip自体を長くする(原稿/分割ルール)** | **[委任_02訂正]** 既存証跡では、長clipでAzure+PhraseListが`Melos`を8/10(2語clipは0/8)、OpenAIは10語超で10/22(3語以下0/6)。ただし**長さと「s+s融合(`Melos said`)の有無」が交絡**しており(長clip成功例はMelosの後ろがs始まりでない)、**clipを長くすることの効果自体は未検証**。「長clipでは改善」とは言い切れない。false acceptは既存Tier3(Azure corroboration)の範囲 | TTS再生成不要(新規記事の原稿/分割で回避)。既存記事は再生成が要りJPY発生 | 低〜中(規模小〜中。下記「(2)の影響範囲」) | Std/Adv段落対応・分割(`segment_plan`)・clip単位retry/HR Lock/Master Storeと整合(ルールを足すだけ)。台詞voiceとnarrator voiceの境界は維持(attributionを台詞clipへ併合はしない) | 発生源に対処する案としては高いが、効果は交絡のため**未検証**(次Trial候補) | **B**(OPEN-318 代替案③「said Melosの語順、前後clipと結合」として提案済み・未採用) |
+| **(3) ASRへ文脈情報を与える(prompt / Phrase List / 前文テキスト)** | OpenAI promptに作品名を与えると単独 36%・3秒文脈付き 75% が`melos said`(base 0%)。**ただしMellis takeも`melos said`化(att4 2/2)、att6も3秒文脈+promptで`melos said` 2/2**(att6は真値未確定のため「masking」とは確定せず。att4[Mellis]は`melos`化で誤認の疑いが強い)。前文テキストpromptは効果弱い(21%)。AzureのPhraseListは効果あり(nophrase 0/7→2/14)だが再現性はtake依存 | ほぼ0(同一ASR呼出) | 低(OpenAI prompt引数。既にKey Phrase経路で`prompt`機構あり) | Azure PhraseListは**既存仕様**。OpenAI body segmentへのprompt拡張は新仕様 | 単独ではmasking懸念、**独立証拠[Azure/音響]と必ず併用**が条件 | Azure PhraseList=**A**(配線済み)、OpenAI promptのbody拡張=**C**(新規) |
+| **(4) 既存Connected Speech/Resolver/Secondary ASRの再判定改善** | Pattern A'(stem同音)は効果が限定的(CS_AUDIT 5-2)。作品単位allow-list(人間承認済み綴り群のみ`PASS_WITH_WARNING`)はMelosの綴り揺れを救えるが、**「その名前の語末s脱落リスクを作品内で許容する方針決定」と等価**で、1 takeの人間承認は別takeのs脱落を防がない(下記「(4)の判断3択」)。Equivalence LayerはOOVに届かない | 0〜小(人間の初回承認1回/作品) | 中(allow-list保存場所・参照順・telemetry) | 既存Ledger/work canon(`seed_work_canon_reading`)・Phrase List・HR Lockと整合しやすい。Pattern A範囲(OPEN-330)の確定が前提。OPEN-331(HR承認take→減速後再検証Gate)と一体検討 | 方針決定(下記3択)が前提 | A'拡張=**B**(OPEN-327)、作品単位allow-list=**B**(OPEN-327追記案・OPEN-318 C-a)、OPEN-330範囲確定=**A**(既存仕様の範囲明確化) |
 
-### 推奨候補と誤PASS対策(採用はユーザー判断)
-**推奨: (2)+(4)作品単位allow-list+既存(3)Azure PhraseList+HR維持の組合せ。(1)は採用しない(診断用途のみ可)。**
-1. **発生源を断つ**(2): 台詞のattribution clipを固有名詞のみの超短文にしない(例: 最小語数を決める、`Melos said softly to the ruler.`のように情報を足す)。新規記事の原稿ルールで、TTS/ASR構造は不変。
-2. **作品単位の人間承認allow-list**(4): 初回HRで人が読み・綴りを聴いて承認した綴り群のみ以後自動受理(PASS_WITH_WARNING)。ASRの綴りゆれ(Mello/Mellow/Mellis/Melo)を「作品の既知揺れ」として扱い、承認外の綴り(Milo/Melus'/Mallow等)や語末`set`化は引き続きHR。誤PASS対策=承認は**聴感**で行い、allow-listは当該作品内に限定。
-3. **誤PASS対策(共通)**: (i) Azure(決定的)+PhraseListを一次の音響感度指標として維持、(ii) 結合ASRや単独OpenAIのPASSは**Secondary corroboration必須**、(iii) HR fallback維持(Gate無効化なし)、(iv) 語末子音欠落には**音響的な独立証拠(語末エネルギー・継続長)**が要る(本Trial未検証。OPEN-327 C-2と同種の無料オフライン校正から)。
+### 推奨候補と誤PASS対策(採用はユーザー判断。以下は全て未実装・未検証)
+**[委任_02訂正] 候補: (2)の作品非依存ルール+(4)の方針決定(3択)+既存(3)Azure PhraseList+HR維持+音響証拠の併用。(1)は採用しない(診断用途のみ可)。**
+1. **発生源を断つ**(2): 例文`Melos said softly to the ruler.`は`Melos`の直後に`said`ではなく`softly`が来るためs+s融合は避けられるが、旧例の提示は不適切だった(`Melos said ...`と書けばs+s融合を残す)。ルールは**作品非依存の音声的条件**として書く: (i) 固有名詞の語末が歯擦音(s/z/sh等)のとき、直後に歯擦音始まりの語(said/says/saw/softly等s始まり)を連続させない、(ii) 引用間narrator chunk(attribution clip)に最小語数を置く。**長clip化の効果は交絡(結論(1)(c))のため未検証**。OPEN-318旧Opus指摘の代替案「said Melosの語順」(Melosを文末側でなくsaidの後ろへ)は、(i)の「語末歯擦音+s始まり語の連続を避ける」を満たす方法の一つであり整合する(`said Melos.`は`said`語末dと`Melos`語頭mで融合しない。ただし`Melos`語末sがその後ろの語頭と接続するかは文次第)。
+   - **(2)の影響範囲(読取確認のみ、コード変更なし)**: `er062_family_z_structure_01.py` `build_flat_chunks`(L535付近)は引用とそれ以外のnarrator chunkを(段落index, voice, 生テキスト)の列にし、引用間の空白のみchunkだけ捨てる。`plan_clips`(L552付近)は`fam_c.plan_story_segments`(`er013_family_c_production_01.py` L306付近、`_build_base_segments` L202付近)をそのまま使い、voice変化は`voice_boundary(分割不可避)`で必ず別clipになる=**narrator chunkの最小語数制約は構造上存在しない**。変更候補は2つ: (a) Z writerの記事生成promptへのattributionルール追加(`er062_family_z_writer_01.py`。記事生成promptの位置は本委任では未特定、attribution LLM判定promptはL208付近で別物)、(b) structure段(`plan_clips`後)の決定論的lint(違反時WARN/retry)。TTS/ASR/retry/Local Rewrite/Master Store/HR Lockは変更不要、既存記事の遡及は不要(新規記事のみ)。規模は小〜中。
+2. **作品単位の人間承認allow-list**(4): 初回HRで人が読み・綴りを聴いて承認した綴り群(Mello/Mellow/Melo等)のみ以後自動受理(PASS_WITH_WARNING)する案は、**「その作品内でこの名前の語末s脱落リスクを許容する方針決定」と等価**。1 takeの人間承認は、別takeのs脱落を防げない(承認は音声ではなく綴りに紐付くため)。ユーザー判断3択: **(i) 方針として許容**(OPEN-330(a)の名前単位版)、**(ii) 承認をaudio sha256に紐付ける**(既存のHR Lock/Master Store再利用の範囲=承認した音声そのものだけ自動受理、別takeはHR)、**(iii) 音響的独立証拠の併用を採用条件にする**(語末エネルギー/継続長/音素評価が通った場合のみallow-list適用)。OPEN-331(HR承認take→6%減速後に再検証するGate STOP)は「承認音声が後処理で変わる」問題で(ii)の範囲と直結するため、**一体検討が必要**。
+3. **誤PASS対策(共通)**: (i) Azure(決定的)+PhraseListを一次の指標として維持(ただし決定的=忠実ではない)、(ii) 結合ASRや単独OpenAIのPASSは**Secondary corroboration必須**、(iii) HR fallback維持(Gate無効化なし)、(iv) 語末子音欠落には**音響的な独立証拠**(語末エネルギー・継続長、または参照テキスト付き音素評価)が要る(本Trial未検証。OPEN-327 C-2と同種の無料オフライン校正から)。
 4. Production採用提案前に**Opus独立技術レビュー(条件A: 新しい構造/条件C: 重要変更)**と、人間の`APPROVED_FOR_PRODUCTION`が必要(本Trialは採用判断をしない)。
 
 ## OPEN-330(語末s自動許容範囲)の評価(現行ルールは変更しない)
-- 本Trialの観測: Pattern A受理(`melo said`)はOpenAI文脈付きで42回、Azureはtake固定(att3は単独でも文脈付きでも`melo said`)。Azureのtake別結果は、先行調査の摩擦区間長(att1 190ms=`Melos`、att3 120ms=`Melo`)と矛盾しない=**ASRの`Melo`は語末sの実際の短縮と関連している可能性がある**が、真値(耳で確認)は無い。
-- 一方で語末子音脱落一般は ASRでは検出不能(切り詰めsynthetic 100%受理)。したがって Pattern A(語幹末sも綴り水準で受理)は、**固有名詞の語幹末sについては、ASR証拠だけでは安全を保証できない**という CS監査(安全≠成功)の指摘が本Trialでも支持された。
-- 選択肢への示唆(判断はユーザー): (b)接尾辞限定はHR増(Melos→Meloが受理されなくなる)だが最も保守的。(c)作品単位の人間承認許容語幹リストは本Trialの推奨(上記4(2))と一体で、受理範囲を「聴いて確認済みの綴り」に限定できる。(a)現状承認は、語幹末s脱落の誤PASSを許容する仕様確認になる。
+- 本Trialの観測: Pattern A受理(`melo said`)はOpenAI文脈付きで42回、Azureはtake固定(att3は単独でも文脈付きでも`melo said`)。Azureのtake別結果は、先行調査の摩擦区間長(att1 190ms=`Melos`、att3 120ms=`Melo`)と矛盾しない程度の観測であり、ASRの`Melo`が語末sの実際の短縮と関連している可能性は**否定できないが確定ではない**(真値[耳で確認]は無い。決定的=忠実ではない)。
+- **[委任_02訂正]** 一方、clip末の予測しやすい語(said/death、基音声3本)の切詰め(末尾70〜460ms)は、単独・文脈付きとも**ASRの綴りでは検出されなかった**(42/42は12音声x recipeの非独立観測)。これは「語末子音脱落一般はASRで検出不能」の**実証ではない**: 語中の語末子音(`Melos`の語末s、s+s接続含む)の切詰めは本Trialで**未検証**。したがってPattern A(語幹末sも綴り水準で受理)について本Trialが支持するのは、「ASRの綴りだけでは語の切詰めを検出しにくい場面があり、固有名詞の語幹末sについてASR証拠が安全を保証するかは未確認」という限定的な点にとどまる(CS監査の安全≠成功の指摘と矛盾しないが、本Trial単独で実証したとは言わない)。
+- 選択肢への示唆(判断はユーザー。**[委任_02追記]**注意): (b)接尾辞限定はHR増(Melos→Meloが受理されなくなる)だが最も保守的。(c)作品単位の人間承認許容語幹リストは、**「その名前の語末s脱落リスクを作品内で許容する方針決定」と等価**で、1 takeの人間承認は別takeのs脱落を防がない(承認が綴りに紐付き、音声に紐付かないため)。(c)を採るなら推奨節の3択((i)方針許容 (ii)audio sha256紐付け (iii)音響的独立証拠併用)から選ぶ必要がある。(a)現状承認は、語幹末s脱落の誤PASSを許容する仕様確認になる。OPEN-331(HR承認take→減速後再検証Gate)と一体検討。
 
 ## 既存資産照合(PM_GOVERNANCE 21節 A/B/C)
 本Trial自体=**B**(OPEN-318 C-c「前後に既知安全音声を結合してASR(Trial要)」の初の実測。新規Trialではなく既提案の検証)。方式別の分類は上表の最右列。新規OPENは起票しない(既存OPEN-318/327/330へ追記)。
@@ -99,12 +104,29 @@
 3. 反例の文脈clipはproxy(検証済みASRテキスト)で、ストーリー上は不連続。実ストーリー順の隣接条件(Rpre/Rpost/Rboth/Rwin5/7)は別に測定済み。
 4. 費用制約により Azure は選抜条件のみ(主実験70呼出、反例 R00のみ)、Azureの2回呼出はR00全take+選抜2条件。OpenAIはMelos主実験の最後の一部のrep2が上限JPY14でカットされた(実績311/336呼出)。非決定性の統計はOpenAI中心。
 5. 並行agentのMelos run_e2e_02等には一切書き込んでいない(read-only)。`delegation check`は本委任文の抄録で実行(固定ブロックE-1/D-1/G-1/F-1ラベルがFAIL、TTS関連警告はTTS禁止のため非該当)。
+6. **[委任_02追記] 一般化の範囲**: Melos側は**1フレーズ(`Melos said.`)・1ナレーター(Aoede)・7 take**のみ。Family Z全体・複数ナレーターへの一般化は未検証。
+7. **[委任_02追記] 統計の限界**: 各recipeはn=13程度(7takeのOpenAI 2回呼出)で、take相関があり95%信頼区間は広い(0/13でも真の率の上限は約25%)。「安定閾値は存在しない」ではなく「**試した範囲では見つからなかった**」。
+8. **[委任_02追記] Azureの解釈**: 「Azureは音響差を拾う」とは言い切らない。決定的(同一音声で結果が一致)であることは音声に忠実であることを意味せず、Phrase Listも綴りを誘導する。
+9. **[委任_02追記] 領域抽出の限界**: OpenAI領域抽出は期待テキストとの文字列整列のみでtimestamp照合は無い(Azure/whisperはtimestamp領域も併用)。`meloset`型の融合出力(`melos`+`said`が1語に融合)は整列で不利になる(領域が空/ずれる可能性)。
+10. **[委任_02追記] 費用計算**: OpenAIの音声入力token単価が`pricing_snapshot.json`に別掲されておらず、text単価$1.25/Mで計算した(費用節参照)。
 
 ## 費用・処理時間・Production state不変(詳細は`cost_01.json`、`telemetry_guard_01.json`)
-- 費用: **JPY39.61 / 40**(OpenAI 19.87[4,816音声秒]、Azure 19.74[443音声秒]、local whisper 0)。単価出典 `er005_output/cost_baseline_01/pricing_snapshot.json`(gpt-4o-mini-transcribe 入力$1.25/M・出力$5.0/M token[OFFICIAL_SOURCE]、Azure STT $1.0/音声時間[Retail Prices API])、USD/JPY=160。呼出984件(smoke test 2件を含む)(うち有料はOpenAI/Azure)。TTS再生成0。Melos累計 約JPY225.0 / 300(185.4[CS監査 委任_02時点、COST_LEDGER最終値]+39.5)。ledgerは並行agentの管理領域のため本Trialから追記しない。
-- 当初見積(Azure選抜+OpenAI全条件)よりOpenAI音声token単価が高く、主実験で上限JPY14に達し一部rep2が未実施(上記限界4)。以降の反例/感度実験(truncation sweep等)は残額の範囲で小規模実施。
+- 費用: **JPY39.61 / 40**(OpenAI 19.87[4,816音声秒]、Azure 19.74[443音声秒]、local whisper 0)。単価出典 `er005_output/cost_baseline_01/pricing_snapshot.json`(gpt-4o-mini-transcribe 入力$1.25/M・出力$5.0/M token[OFFICIAL_SOURCE]、Azure STT $1.0/音声時間[Retail Prices API])、USD/JPY=160。呼出984件(smoke test 2件を含む)(うち有料はOpenAI/Azure)。TTS再生成0。Melos累計 約JPY225.0 / 300(185.4[CS監査 委任_02時点、COST_LEDGER最終値]+39.61=225.01)。**[委任_02訂正]** 旧記述の「+39.5」は39.61に統一(累計の最新値はledger確認が必要)。ledgerは並行agentの管理領域のため本Trialから追記しない。
+- 当初見積(Azure選抜+OpenAI全条件)よりOpenAI実績が高く(音声入力単価の扱いは未確認、下記)、主実験で上限JPY14に達し一部rep2が未実施(上記限界4)。以降の反例/感度実験(truncation sweep等)は残額の範囲で小規模実施。
+- **[委任_02追記・単価確認]** `er005_output/cost_baseline_01/pricing_snapshot.json`(L300-323付近)を確認: gpt-4o-mini-transcribeは`input_tokens` $1.25/M と`output_tokens` $5.0/M の2行のみで、**音声入力tokenの別掲単価は無い**。したがって**音声入力単価は未確認**。text単価$1.25/Mで計算したため**過小評価の可能性あり、OpenAI usage画面との照合が必要**(推定値は出さない)。`cost_01.json`の`recalc`欄に注記(元の値は保持)。OpenAI 549呼出の合計は入力48,030 tokens/出力12,818 tokens(`usage`値)。lib(`er065_..._lib.py` L299)はOpenAI例外時にjpy=0を返す設計だが、本Trialではok=falseの結果は0件・jpy=0の有料呼出も0件。lib側に`input_token_details`(audio/text内訳)の記録を追加する改修は提案のみ(今回は未実施)。
 - Production state不変: 全Trial processで実行前後にtelemetry/attempt_history/HR queue/Master Store/ledger/cost_baseline/run_e2e_02 cost_log/COST_LEDGERの行数とsha256を記録。**最初のprocess開始時と最終確認時で全10ファイルが完全一致**(telemetry.jsonl[er021]=9168行、[er025]=185行、attempt_history=12767行、HR queue=75行、Master Store manifest=10297行・reuse_telemetry=1844行、ledger=1200行、cost_summary=135行、run_e2e_02 cost_log=313行、COST_LEDGER=103行)。各process実行中の変化も0。`sys.addaudithook`のwrite guardはtrial dir(+OS temp)外への書込を例外で遮断し、遮断記録は faster-whisperのHugging Faceキャッシュ`refs/main`書込(無害、モデルは既存キャッシュ使用)のみ。Production ASR helper(`er006_secondary_asr_01.get_full_text_via_azure_stt_with_phrase_list`等)は呼ばず、lib内の読取専用実装を使用。`classify_asr_match`は読取呼出しのみ・`semantic_equivalence.append_telemetry_log`はno-op化。
 - 外部STOP: `docs/pm/delegation_log/*STOP_NOTICE*`は2026-10-12の別管理ID(run_e2e_01)の通知で本委任(別run・別管理ID・明示許可あり)には非適用と解釈。`<trial dir>/STOP`・`STOP_ALL`は不在(各runnerが呼出ごとに確認)。自分のprocessが外部停止された事象なし、rc≠0の連続なし、再起動はwhisper(無料)の1回のみ[自分のglobal cap判定で停止+write guardのOS temp許可不足を是正して再実行。有料runの再起動0]。
+
+## [委任_02追記] 次Trial候補(未実施・提案のみ)
+- **参照テキスト付き音素評価**: Azure Pronunciation Assessment、またはlocal forced alignment/wav2vec2音素CTC(**プロジェクト未使用**)。ASRの綴り出力ではなく、期待テキストの各音素の達成度を見ることで、語末子音・語中語末sの脱落をASRの言語モデル補完に依存せず評価する。
+- 条件: 既存wavのみ(TTS生成0)、**ユーザー試聴ラベルを真値に校正**、**語中の語末s(s+s接続含む)の切詰め反例を追加**、実施前に費用見積+Opus条件A(新しい構造/評価方式)。
+
+## [委任_02追記] 残るユーザー判断事項案(推奨付き。採否はユーザー)
+- U1: ASR文脈結合(C-c)をauto-accept条件にしない(REJECTED)の確認。推奨=確認(診断用途のみ可)。
+- U2: allow-list(4)の方針3択 (i)方針許容 (ii)audio sha256紐付け (iii)音響的独立証拠併用。推奨=(ii)を基本に、(iii)の校正結果が出れば併用。OPEN-331(減速後再検証Gate)と一体で判断。
+- U3: 原稿/構造ルール(2)(作品非依存の音声的条件)を新仕様候補としてTrial化するか。推奨=Trial化(効果は未検証のため、長さとs+s融合を分離する実験設計とセット)。
+- U4: 音響的独立証拠(音素評価)の次Trial(無料オフライン校正から)を許可するか。推奨=許可(実施前に費用見積+Opus条件A)。
+- 任意: a2_att6/att1/att3の人手試聴でattempt6の文脈付き`melos said`が真に`said`か`set`かを確定する(真値、(1)(b)の解消)。推奨=実施(無料)。
 
 ## 人手試聴を推奨する音声(Production判定は変更しない。HR queue/HR Lockには触れない)
 | 音声(パスはTrial dirへの複製) | 理由 |
@@ -370,11 +392,29 @@
 | natural_ng_proxy | azure | 4 | 0 | 0 |  |
 | natural_ng_proxy | whisper-small | 5 | 18 | 0 |  |
 
+### D-4b. (委任_02追加) natural_ng_proxy(OpenAI)のPASS反転観測をtarget別に集計(D-4の単位=全rep観測。D-5のG0=target x recipe単位[rep1のみ]で母集団が異なる)
+
+| target | 単独 | 文脈付き観測数 | 反転(PASS)観測数 |
+|---|---|---|---|
+| nat_bements | NG | 3 | 3 |
+| nat_counts | NG | 4 | 0 |
+| nat_design | NG | 4 | 4 |
+| nat_feet | NG | 4 | 4 |
+| nat_forced | PASS | 5 | 4 |
+| nat_melus_hand | NG | 5 | 0 |
+| nat_milo | NG | 5 | 0 |
+| nat_milos_hand | NG | 5 | 0 |
+| nat_paused | NG | 4 | 2 |
+| nat_reduce | NG | 5 | 0 |
+| nat_turnout | NG | 2 | 0 |
+
+単独NG target合計: 文脈付き観測 41件、反転 13件(D-4と同一母集団)。
+
 ### D-5. false accept防止条件の評価(OpenAI文脈付きASRを一次、条件を重ねたときの受理数)
 
 | 条件 | known_defect_word(語欠落/誤語) 受理=false accept | known_defect_trunc(語末切詰) 受理=false accept | good_control 受理=true accept | natural_ng_proxy 受理 |
 |---|---|---|---|---|
-| G0 文脈付きOpenAI領域がProd判定PASS(無対策) | 0/12 (0%) | 42/42 (100%) | 12/12 (100%) | 13/36 (36%) |
+| G0 文脈付きOpenAI領域が受理(無対策。受理=切詰/対照synthetic[category]は最終語の綴り一致[focus_exact]、それ以外はProduction classify_asr_match PASS) | 0/12 (0%) | 42/42 (100%) | 12/12 (100%) | 13/36 (36%) |
 | G1 +単独clipもPASS(単独整合) | 0/12 (0%) | 42/42 (100%) | 12/12 (100%) | 3/36 (8%) |
 | G2 +2回呼出し両方PASS | 0/8 (0%) | 18/18 (100%) | - | 4/10 (40%) |
 | G3a +領域token min logprob >= -0.5 | 0/12 (0%) | 35/42 (83%) | 11/12 (92%) | 11/36 (31%) |
@@ -556,3 +596,29 @@
 | a2_att5 | Std NG take(Prod ASR: 'melloset' T | melloset; mellowset | 46 | 3 | 7 | Dpre25, Rwin7 |
 | a2_att6 | Std NG take(Prod ASR: 'Mellowset'  | meloset | 45 | 17 | 20 | Dboth, Dpre11, Dpre14, Dpre25, Dpre5, Dpre6, Npost8, Npre27, Rboth, Rpre, Rwin5 |
 | b1b_att1 | Adv take(Prod: UNCERTAIN 'Mello sa | mello said | 23 | 0 | 3 |  |
+
+### C-2b. (委任_02追加) C-2をa2_att6除外で再集計(Melos main, base, 文脈あり条件のみ。att6は文脈付き『melos said』の真値が未確定のため分離)
+
+| engine | 文脈にMelos語を含む | n(att6除外) | focus(Melos)一致 | exact_tokens | Prod PASS |
+|---|---|---|---|---|---|
+| openai | 含まない | 198 | 3/198 (2%) | 3/198 (2%) | 34/198 (17%) |
+| openai | 含む | 55 | 13/55 (24%) | 13/55 (24%) | 21/55 (38%) |
+| azure | 含まない | 39 | 10/39 (26%) | 10/39 (26%) | 25/39 (64%) |
+| whisper-small | 含まない | 108 | 0/108 (0%) | 0/108 (0%) | 25/108 (23%) |
+| whisper-small | 含む | 30 | 22/30 (73%) | 15/30 (50%) | 15/30 (50%) |
+
+### C-2c. (委任_02追加) a2_att6のOpenAI文脈付き『melos said』(exact_tokens)観測の内訳: 文脈clipに『Melos』語を含むか / recipe別
+
+- att6 文脈付き観測 45件、うち『melos said』 17件。このうち ctx_has_focus_word=true は 2件、false は 15件。
+- 『melos said』になったdistinct recipe 11件: Dboth(ctx_has_focus=F, x2), Dpre11(ctx_has_focus=F, x2), Dpre14(ctx_has_focus=F, x1), Dpre25(ctx_has_focus=F, x2), Dpre5(ctx_has_focus=F, x1), Dpre6(ctx_has_focus=F, x1), Npost8(ctx_has_focus=T, x1), Npre27(ctx_has_focus=T, x1), Rboth(ctx_has_focus=F, x2), Rpre(ctx_has_focus=F, x2), Rwin5(ctx_has_focus=F, x2)
+- distinct recipeのうち ctx_has_focus_word=false は 9/11
+
+### C-2d. (委任_02追加) Dpre25(異voice前置25秒)の各take(OpenAI, base)
+
+- a2_att1: n=2, ctx_has_focus=False, 転写=['mello said', 'melo said'], melos said=0
+- a2_att2: n=2, ctx_has_focus=False, 転写=['melo said'], melos said=0
+- a2_att3: n=2, ctx_has_focus=False, 転写=['melo said', 'melos said'], melos said=1
+- a2_att4: n=2, ctx_has_focus=False, 転写=['malice said'], melos said=0
+- a2_att5: n=2, ctx_has_focus=False, 転写=['melo said', 'melos said'], melos said=1
+- a2_att6: n=2, ctx_has_focus=False, 転写=['melos said'], melos said=2
+- b1b_att1: n=1, ctx_has_focus=False, 転写=['mello said'], melos said=0

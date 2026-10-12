@@ -20707,8 +20707,14 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 費用JPY0(provision_shell/gateともAPIなし)。QA/Regression: er063 47 / er026統合 42 / er026 runner 21 / er062 64 / CS audit regression 12 / post-slowdown rescue 16 全OK、stop_sentinel test結果は`evidence_13/qa_regression_summary.txt`。委任ログ `docs/pm/delegation_log/2026-10-13_FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01_01.md`。
 
 
-## FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01 委任_01(2026-10-13、Trial実施記録。採用判断は書かない。Status案VALIDATED、方式採否はUSER_DECISION_REQUIRED)
+## FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01 委任_01(2026-10-13、Trial実施記録。採用判断は書かない。Status[委任_02訂正]: C-c(ASR時のみ文脈結合)のauto-accept化=REJECTED(Trial実測)/推奨(2)(4)+音響証拠=未実装・未検証、USER_DECISION_REQUIRED/計測=Trial完了。『VALIDATED』は使わない)
 - 目的: 2語短尺clip(Melos said.)のASRが文脈なしで不安定な問題を、Melos固有でなくFamily Z全体へ汎用化できる方式を比較(方式を先に固定しない)。既存音声のみ(TTS生成0)、Production無変更・新仕様の実装/配線なし。
 - 実測(OpenAI gpt-4o-mini-transcribe[Production同一]/Azure STT+PhraseList/local whisper[参照]): 単独2語clipで`melos said`はOpenAI 0/13。前後clip結合(同一/異voice、3〜28秒)で改善は一貫せず(0〜31%、文脈にMelos語を含む場合のみ上昇=語彙プライミング)。OpenAIは同一音声2回で領域転写が72%一致、Azureは100%(決定的)。語欠落/誤語の既知欠陥は文脈付きでも0/12 false accept、語末子音切詰(最終語末尾70〜460ms)はASRが補完して単独/文脈付きとも100%受理(ASRでは検出不能)。本番NG由来の反例は単独NG→文脈PASS反転13/41(proxy)、Melos a2_att6は17/45(真値は試聴要)。
 - 結論(Trial): ASR文脈結合(OPEN-318 C-c)はauto-accept条件として非推奨。推奨候補=原稿側attribution最小語数ルール+作品単位の人間承認allow-list+Azure PhraseList+HR維持(いずれも新仕様、Trial+Opus独立レビュー+人間承認前提)。OPEN-330/327/318へ追記、現行ルール無変更。
 - 費用JPY39.61(Trial上限40)、Melos累計約225.0/300。Production state不変(telemetry等10ファイルの行数/sha256一致、write guard遮断はHFキャッシュのみ)。成果物`er065_output/short_clip_asr_context_trial_01/`(TRIAL_REPORT_01.md、results_01.jsonl、cost_01.json、telemetry_guard_01.json、conditions_manifest_01.json)。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01_01.md`。
+
+### 2026-10-13 FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01 委任_02(Opus必須修正4点の反映、記述訂正と既存results_01.jsonlの再集計のみ、費用JPY0)
+- 原因説明の訂正: プライミングはatt6以外で優勢(att6除外: 文脈にMelos語を含まない3/198=2% vs 含む13/55=24%)。a2_att6の文脈付き`melos said` 17/45は15件が文脈にMelosの無い条件(distinct recipe 11件中9件がctx_has_focus_word=false、Dpre25でもatt3/att5/att6)で、音響効果の可能性・真値は試聴待ち(masking主証拠ではなく真値未確定の候補)。clipの長さとs+s融合の有無は交絡し未分離。
+- 語末子音脱落の一般化範囲を限定: clip末の予測しやすい語(said/death、基音声3本)の切詰めは単独・文脈付きともASRの綴りでは検出されなかったに限定。語中の語末子音(`Melos`のs)は未検証。D-5 G0表頭を実際の受理基準(最終語の綴り一致/Production判定)へ訂正。42/42は12音声x recipeの非独立観測。
+- 推奨(2)(4)の記述訂正: (2)は作品非依存の音声的条件(語末歯擦音+s始まり語の連続回避、引用間narrator chunk最小語数)で、長clip化の効果は未検証。(4)allow-listは『その名前の語末s脱落リスクを作品内で許容する方針決定』と等価で、(i)方針許容/(ii)audio sha256紐付け/(iii)音響的独立証拠併用の3択をユーザー判断として提示。OPEN-331と一体検討。
+- Status表記訂正(上記見出し)。費用単価: pricing_snapshotに音声入力tokenの別掲単価なし(text単価$1.25/Mで計算)=過小評価の可能性、OpenAI usage画面との照合が必要。Production無変更・未実装。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01_02.md`。
