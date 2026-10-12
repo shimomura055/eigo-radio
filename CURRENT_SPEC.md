@@ -2594,6 +2594,10 @@ OPEN-178/179・既存Topic Discovery Trial結果を上書きしない。
     24時間条件の厳密性/人気ランキング取得方式/保存schema/自動学習・
     rerank実装方式。
 
+## Coffee記事限定の採用Style(記事別・Trial記録のみ、2026-10-12ユーザー決定、全記事共通は未承認)
+
+共通仕様は不変。Coffee記事に限りStyle選択を`APPROVED_FOR_PRODUCTION`(Style選択のみ)とするユーザー決定の記録(Intro A5/B5、Advanced Preview E1、Standard日本語Preview/Comment P2、KP英語K2、KP日本語意味M2、Full Story PD8[Standardは生成後に既存6%減速]、In One Lineは既存承認Style)。**Production配線(PRODUCTION_WIRED)は未達**で、Final v3はTrial隔離の完成版(`er057_output/coffee_final_audio_assembly_01/`)。全記事共通Styleは未承認(OPEN-298)。In One Line新2文方針は未仕様化(OPEN-299)。Coffee限定の配線方法は未設計(OPEN-300)。
+
 ## 参照元
 
 [ER-003-A2-00_SPEC_AUDIT.md](ER-003-A2-00_SPEC_AUDIT.md)、
