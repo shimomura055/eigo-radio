@@ -42,6 +42,6 @@ PD8 183.2(最優先175〜185)、PD1 186.8(185超〜190)。他6件は190超(196.2
 ## (7) 実費・時間・判断事項
 - 実費JPY33.66(上限40、TTS 27.52+ASR 6.14、推定)。24 call、生成66.1秒、技術失敗0、regen 0。全体所要は主にlocal whisper測定(8並列で約15分)。
 - 残るユーザー判断(USER_DECISION_REQUIRED): PD8/PD1の試聴(明るさ・自然さ・エンタメ性)、採用要否、採用時はF5共通Style置換の再承認、PD8の「wanna」許容可否、OPEN-296(ASR NG妥当性)との関係。
-- APPROVED未配線: なし(Trial限定、Production未採用、CURRENT_SPEC無変更)。Status: **USER_DECISION_REQUIRED**(結果自体は候補止まり、REJECTEDなし)。
+- APPROVED未配線: なし(Trial限定、Production未採用、CURRENT_SPEC無変更)。Status: **USER_DECISION_REQUIRED**(結果自体はVALIDATED候補止まり、REJECTEDなし)。
 - Production不変: production_sha前後8件一致、新規scriptへのProduction側参照なし。
 - raw URL: https://raw.githubusercontent.com/shimomura055/eigo-radio/main/user_test/coffee_pace_trial_02/index.html / https://raw.githubusercontent.com/shimomura055/eigo-radio/main/er057_output/pace_trial_02/REPORT_02.md / https://raw.githubusercontent.com/shimomura055/eigo-radio/main/docs/pm/delegation_log/2026-10-12_FAMILY-X-COFFEE-ADVANCED-FULLSTORY-PACE-TRIAL-02_01.md
