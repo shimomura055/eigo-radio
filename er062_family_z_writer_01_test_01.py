@@ -328,6 +328,26 @@ class PlanRunTest(unittest.TestCase):
             self.assertEqual([m["quote_id"] for m in ov["mismatches"]], ["q2_1"])
             self.assertFalse(os.path.exists(f"{d}/segment_plan_b1b.json"))
 
+    def test_human_confirmed_override_resolves_only_matching_mismatch(self):
+        with tempfile.TemporaryDirectory() as d:
+            llm = _llm(_attr_hook(R2_TRUTH, bad={"q2_1": "melos"}))
+            with self.assertRaises(st.FamilyZDialogueMismatchStop):
+                w.run_plan(llm, "b1b", _r2(), d, "melos", "t1")
+            ov = json.load(open(f"{d}/dialogue_override.json", encoding="utf-8"))
+            row = ov["mismatches"][0]
+            ov["human_confirmed"] = {"b1b": {"q2_1": {"speaker": "king", "text": "WRONG"}}}
+            json.dump(ov, open(f"{d}/dialogue_override.json", "w", encoding="utf-8"))
+            with self.assertRaises(st.FamilyZDialogueMismatchStop):
+                w.run_plan(llm, "b1b", _r2(), d, "melos", "t1")
+            self.assertIn("human_confirmed", json.load(open(f"{d}/dialogue_override.json", encoding="utf-8")))
+            ov["human_confirmed"] = {"b1b": {"q2_1": {"speaker": "king", "text": row["text"]}}}
+            json.dump(ov, open(f"{d}/dialogue_override.json", "w", encoding="utf-8"))
+            plan = w.run_plan(llm, "b1b", _r2(), d, "melos", "t1")
+            att = json.load(open(f"{d}/dialogue_attribution_b1b.json", encoding="utf-8"))
+            self.assertEqual(att["human_overrides_applied"], ["q2_1"])
+            self.assertEqual(att["final"]["q2_1"], "king")
+            self.assertTrue(plan["clips"])
+
 
 class DialogueFixtureTest(unittest.TestCase):
     def _run(self, text, kw=None, llm_map=None):

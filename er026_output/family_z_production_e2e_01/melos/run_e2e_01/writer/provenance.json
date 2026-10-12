@@ -1,0 +1,158 @@
+{
+  "story_key": "melos",
+  "seed_sha256": "f4a85f5ceb9a1d7cd511872644391dddd8e2f61516e2f09e08da9ddeeb42c761",
+  "chain": [
+    {
+      "stage": "r0",
+      "input_sha256": "f4a85f5ceb9a1d7cd511872644391dddd8e2f61516e2f09e08da9ddeeb42c761",
+      "output_sha256": "551bcea3ed9c28c491a3ec77238f3540ae8770fa36df7330fe143a81430116b0",
+      "generated_at": "2026-10-12T05:01:11+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R0",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_001e0bd99e1837a4006acc696fece087d09c3fcf7781ffa86d",
+      "attempts": 1,
+      "cost_jpy": 2.8474,
+      "prompt_sha256": "be0c1a92a52567655cbf458be218bc51fe9026a035cb33ca30053c9a03f4fc52",
+      "input_tokens": 988,
+      "output_tokens": 1582,
+      "reasoning_tokens": 949,
+      "conversion_substitutions": [
+        "simple third-person English at about 300[–-]350 words",
+        "while simplifying the language and minor details for A2 learners"
+      ],
+      "guardrails": {
+        "word_count": 492
+      }
+    },
+    {
+      "stage": "r1",
+      "input_sha256": "551bcea3ed9c28c491a3ec77238f3540ae8770fa36df7330fe143a81430116b0",
+      "output_sha256": "e89b874f4e8b1531f50b0031a6d2a34cb43116735b5ea8d85d6f129549540664",
+      "generated_at": "2026-10-12T05:01:38+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R1",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0146b92d5283b67c006acc6997931c87d08ec198938ba8ed19",
+      "attempts": 1,
+      "cost_jpy": 2.5018,
+      "prompt_sha256": "876e49438989b0ad4e231b924ce0e8a714bdfde7edd660f31b17fc876d9f510a",
+      "input_tokens": 708,
+      "output_tokens": 1422,
+      "reasoning_tokens": 756,
+      "guardrails": {
+        "word_count": 513
+      }
+    },
+    {
+      "stage": "r2",
+      "input_sha256": "e89b874f4e8b1531f50b0031a6d2a34cb43116735b5ea8d85d6f129549540664",
+      "output_sha256": "cd450ea55aea912cff22a73ed0ef5db2306a4a64c3c4095efc8683707e23aef1",
+      "generated_at": "2026-10-12T05:02:02+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R2",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0751834bfb39d902006acc69b34bb487d094848f68fcc33aac",
+      "attempts": 1,
+      "cost_jpy": 1.9555,
+      "prompt_sha256": "2d068786edf4489cd049774639a7d413c0d22244fb727fd7efc606bd5990aeef",
+      "input_tokens": 741,
+      "output_tokens": 1074,
+      "reasoning_tokens": 397,
+      "guardrails": {
+        "word_count": 524,
+        "warnings": [],
+        "failures": []
+      }
+    },
+    {
+      "stage": "std_adjust",
+      "input_sha256": "cd450ea55aea912cff22a73ed0ef5db2306a4a64c3c4095efc8683707e23aef1",
+      "output_sha256": "30159605a45e5bc6b9d85f3f73eeafe55db3cb9a307a4a45509755081fedaef2",
+      "generated_at": "2026-10-12T05:06:48+00:00",
+      "routing_key": "FAMILY_Z_STD_ADJUST",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_09697f26a35ea1d5006acc69de95b087d0a486427b92f92061",
+      "attempts": 1,
+      "cost_jpy": 23.0365,
+      "prompt_sha256": "6abbf7e497a3340907e3c692113a29a9ff869113bd3dcda80e702989fbdaa411",
+      "input_tokens": 1419,
+      "output_tokens": 14114,
+      "reasoning_tokens": 13466,
+      "guardrails": {
+        "std_words": 498,
+        "adv_words": 524,
+        "ratio": 0.9504,
+        "identical_sentence_ratio": 0.0,
+        "avg_sentence_len_std": 7.22,
+        "avg_sentence_len_adv": 6.63,
+        "paragraph_count_std": 47,
+        "paragraph_count_adv": 47,
+        "std_adv_paragraph_count_match": true,
+        "warnings": [
+          "STD_AVG_SENT_LEN_NOT_SHORTER:7.22 vs adv 6.63x0.85 (soft gate)"
+        ],
+        "failures": []
+      }
+    }
+  ],
+  "downstream_stale": [],
+  "downstream_stages": {
+    "plan_b1b": {
+      "stage": "plan_b1b",
+      "input_sha256": "518fcdda97fcddcff7b1bcb122a1e7710dc9e306ec97fff9e38341cf85e9de07",
+      "output_sha256": "149a709a9da1f77accb1f582733572f7afb01759dabdfc60fdb7e2779554e423",
+      "generated_at": "2026-10-12T05:13:39+00:00",
+      "routing_keys": [
+        "FAMILY_Z_STORY_SPLIT",
+        "FAMILY_Z_DIALOGUE_ATTRIBUTION"
+      ],
+      "cost_jpy": 0.1239
+    },
+    "plan_a2": {
+      "stage": "plan_a2",
+      "input_sha256": "11dddf1ea83ef8a9253157de73e43b2ec57928ff07f7df30190a72ffc0c228f6",
+      "output_sha256": "b886d8bcbb4bd4158f08ced2f8ce056dd5bc1e0a0d5a0e2268be140885741e0b",
+      "generated_at": "2026-10-12T05:14:10+00:00",
+      "routing_keys": [
+        "FAMILY_Z_STORY_SPLIT",
+        "FAMILY_Z_DIALOGUE_ATTRIBUTION"
+      ],
+      "cost_jpy": 0.0475
+    },
+    "support_b1b": {
+      "stage": "support_b1b",
+      "input_sha256": "c132906e97a88fd9b7e2302885b4932051dd95f9f74f24841a649e0a3b65633f",
+      "output_sha256": "13e7b747e5ca2e5fb7b4e58acfaa82c409a5c8359696ab76a09501bb1b32f962",
+      "generated_at": "2026-10-12T05:14:27+00:00"
+    },
+    "support_a2": {
+      "stage": "support_a2",
+      "input_sha256": "39354be2bcf238fc46c4e13d72adfcd8c9cd4ed3d0683c7ce561db6679ca1ca7",
+      "output_sha256": "9e2ca1c4a9faef77868881c14759fd53f2e71346076376102381e3fbd46bd437",
+      "generated_at": "2026-10-12T05:15:10+00:00"
+    },
+    "kp_b1b": {
+      "stage": "kp_b1b",
+      "input_sha256": "e0c065be830d020b1f75a328e6ad77d4556962d6aae0233aa21843b35ef98e54",
+      "output_sha256": "633fd35ebf34dc4817618e3d14b8b86c23f4ef9ad5900655d02790fd91a2650d",
+      "generated_at": "2026-10-12T05:17:17+00:00"
+    },
+    "kp_a2": {
+      "stage": "kp_a2",
+      "input_sha256": "07ae31f0e88b5f1707c04c258768cbfafcca8bcdc3a726e1e5cf54639d0d404b",
+      "output_sha256": "d467c5344893f411b5dd9c21ff85d2369a7abdad4d2a953fafa1e5f351a2c491",
+      "generated_at": "2026-10-12T05:19:10+00:00"
+    }
+  },
+  "regenerations": [],
+  "audio_text_deviations": [],
+  "reference_only": {},
+  "adv_final_sha256": "cd450ea55aea912cff22a73ed0ef5db2306a4a64c3c4095efc8683707e23aef1",
+  "std_sha256": "30159605a45e5bc6b9d85f3f73eeafe55db3cb9a307a4a45509755081fedaef2"
+}

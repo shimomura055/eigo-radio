@@ -705,6 +705,33 @@ def attribute_dialogue(llm: LLM, paragraphs, *, voice_keywords=None, label="z_di
 # ------------------------------------------------------------
 # plan(分割+話者+clip計画)
 # ------------------------------------------------------------
+def apply_human_confirmed_override(att: dict, out_dir: str, level: str) -> dict:
+    """人間(PM)が確定したmismatch解決を適用する(委任_07)。決定論/LLM判定ロジックは変更しない。
+    {out_dir}/dialogue_override.json の "human_confirmed"[level][quote_id] = {"speaker","text",...} を読み、
+    status==mismatch かつ quote_id・引用textが完全一致する行だけ final に採用する(status=human_override)。
+    problems(欠落/不正speaker)は解消しない。適用外のmismatchが残れば ok=False のまま(STOP)。"""
+    path = f"{out_dir}/dialogue_override.json"
+    if att.get("ok") or not os.path.exists(path):
+        return att
+    conf = (rj(path).get("human_confirmed") or {}).get(level) or {}
+    if not conf or att.get("problems"):
+        return att
+    remaining, applied = [], []
+    for row in att["rows"]:
+        c = conf.get(row["quote_id"])
+        if row["status"] == "mismatch" and c and c.get("text") == row["text"] and c.get("speaker") in st.SPEAKERS:
+            row["status"] = "human_override"
+            row["human_speaker"] = c["speaker"]
+            att["final"][row["quote_id"]] = c["speaker"]
+            applied.append(row["quote_id"])
+        elif row["status"] == "mismatch":
+            remaining.append(row)
+    att["mismatches"] = remaining
+    att["human_overrides_applied"] = applied
+    att["ok"] = not remaining and not att["problems"] and len(att["final"]) == len(att["rows"])
+    return att
+
+
 def run_plan(llm: LLM, level: str, text: str, out_dir: str, slug: str, run: str, *, adv_plan: dict | None = None,
              story_key: str = "melos") -> dict:
     """segment_plan_{level}.json 相当dictを返す(書き込みは呼出側)。
@@ -731,10 +758,16 @@ def run_plan(llm: LLM, level: str, text: str, out_dir: str, slug: str, run: str,
         split_info = select_split(llm, paras, label=f"z_split_{level}")
     b1, b2 = split_info["boundaries"]
     att = attribute_dialogue(llm, paras, label=f"z_dialogue_attr_{level}", raise_on_mismatch=False)
+    att = apply_human_confirmed_override(att, out_dir, level)
     wj(f"{out_dir}/dialogue_attribution_{level}.json", {k: v for k, v in att.items() if k != "quotes"})
     if not att["ok"]:
-        wj(f"{out_dir}/dialogue_override.json", {"level": level, "mismatches": att["mismatches"],
-                                                 "problems": att["problems"], "note": "人間判断が必要。自動採用しない"})
+        _ovp = f"{out_dir}/dialogue_override.json"
+        _prev_conf = (rj(_ovp).get("human_confirmed") if os.path.exists(_ovp) else None)
+        _rec = {"level": level, "mismatches": att["mismatches"], "problems": att["problems"],
+                "note": "人間判断が必要。自動採用しない"}
+        if _prev_conf:
+            _rec["human_confirmed"] = _prev_conf   # 既存の人間確定を消さない
+        wj(_ovp, _rec)
         raise FamilyZDialogueMismatchStop(
             f"DIALOGUE_ATTRIBUTION_MISMATCH({level}): {[r['quote_id'] for r in att['mismatches']]} "
             f"problems={att['problems']}(dialogue_override.json)")

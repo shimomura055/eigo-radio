@@ -1,0 +1,115 @@
+{
+  "level": "a2",
+  "mismatches": [
+    {
+      "quote_id": "q1_1",
+      "paragraph_index": 1,
+      "text": "“You give people no fair trial before killing them,”",
+      "context": "“You give people no fair trial before killing them,” he told the ruler. “If someone scares you, you order his de",
+      "deterministic": "king",
+      "llm": "melos",
+      "status": "mismatch",
+      "basis": "Melos tells the ruler that his killings are unjust."
+    },
+    {
+      "quote_id": "q1_2",
+      "paragraph_index": 1,
+      "text": "“If someone scares you, you order his death.”",
+      "context": "ople no fair trial before killing them,” he told the ruler. “If someone scares you, you order his death.”",
+      "deterministic": "king",
+      "llm": "melos",
+      "status": "mismatch",
+      "basis": "It continues Melos’s accusation to the ruler."
+    },
+    {
+      "quote_id": "q9_1",
+      "paragraph_index": 9,
+      "text": "“Return before sunset on day three,”",
+      "context": "“Return before sunset on day three,” he finally said. “Your friend dies if you're late.”",
+      "deterministic": "friend",
+      "llm": "king",
+      "status": "mismatch",
+      "basis": "The ruler sets the deadline."
+    }
+  ],
+  "problems": [],
+  "note": "人間判断が必要。自動採用しない",
+  "human_confirmed": {
+    "b1b": {
+      "q1_1": {
+        "speaker": "melos",
+        "text": "“You kill people without a fair trial,”",
+        "evidence_context": "“You kill people without a fair trial,” he told the ruler. “A man only has to frighten you, and you",
+        "evidence_quote": "he told the ruler",
+        "deterministic_error_kind": "addressee_keyword",
+        "deterministic_was": "king",
+        "llm_was": "melos",
+        "rationale": "Reply names the addressee 'the ruler'; deterministic keyword picked 'ruler'(king) as speaker. Speaker is Melos.",
+        "decided_by": "Fable PM (human-delegated confirmation)",
+        "decided_at": "2026-10-12"
+      },
+      "q1_2": {
+        "speaker": "melos",
+        "text": "“A man only has to frighten you, and you order his death.”",
+        "evidence_context": "“You kill people without a fair trial,” he told the ruler. “A man only has to frighten you, and you order his death.”",
+        "evidence_quote": "he told the ruler",
+        "deterministic_error_kind": "addressee_keyword",
+        "deterministic_was": "king",
+        "llm_was": "melos",
+        "rationale": "Continuation of the same Melos accusation addressed to the ruler.",
+        "decided_by": "Fable PM (human-delegated confirmation)",
+        "decided_at": "2026-10-12"
+      },
+      "q9_1": {
+        "speaker": "king",
+        "text": "“Before sunset on the third day,”",
+        "evidence_context": "“Before sunset on the third day,” he said at last. “If you are late, your friend dies.”",
+        "evidence_quote": "The ruler studied them both.",
+        "deterministic_error_kind": "in_quote_keyword",
+        "deterministic_was": "friend",
+        "llm_was": "king",
+        "rationale": "Keyword 'friend' sits inside the following quoted line 'your friend dies'; the previous sentence names the ruler as the actor, so the speaker is the king.",
+        "decided_by": "Fable PM (human-delegated confirmation)",
+        "decided_at": "2026-10-12"
+      }
+    },
+    "a2": {
+      "q1_1": {
+        "speaker": "melos",
+        "text": "“You give people no fair trial before killing them,”",
+        "evidence_context": "“You give people no fair trial before killing them,” he told the ruler. “If someone scares you, you order his de",
+        "evidence_quote": "he told the ruler",
+        "deterministic_error_kind": "addressee_keyword",
+        "deterministic_was": "king",
+        "llm_was": "melos",
+        "rationale": "Std(a2)側の同一3引用の対応文。b1bと同一根拠(Fable委任_07許可範囲)",
+        "decided_by": "Fable PM (human-delegated confirmation)",
+        "decided_at": "2026-10-12"
+      },
+      "q1_2": {
+        "speaker": "melos",
+        "text": "“If someone scares you, you order his death.”",
+        "evidence_context": "ople no fair trial before killing them,” he told the ruler. “If someone scares you, you order his death.”",
+        "evidence_quote": "he told the ruler",
+        "deterministic_error_kind": "addressee_keyword",
+        "deterministic_was": "king",
+        "llm_was": "melos",
+        "rationale": "Std(a2)側の同一3引用の対応文。b1bと同一根拠(Fable委任_07許可範囲)",
+        "decided_by": "Fable PM (human-delegated confirmation)",
+        "decided_at": "2026-10-12"
+      },
+      "q9_1": {
+        "speaker": "king",
+        "text": "“Return before sunset on day three,”",
+        "evidence_context": "“Return before sunset on day three,” he finally said. “Your friend dies if you're late.”",
+        "evidence_quote": "The ruler watched both as if looking for a trick.",
+        "deterministic_error_kind": "in_quote_keyword",
+        "deterministic_was": "friend",
+        "llm_was": "king",
+        "rationale": "Std(a2)側の同一3引用の対応文。b1bと同一根拠(Fable委任_07許可範囲)",
+        "decided_by": "Fable PM (human-delegated confirmation)",
+        "decided_at": "2026-10-12"
+      }
+    }
+  }
+}
