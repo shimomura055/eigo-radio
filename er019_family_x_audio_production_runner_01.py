@@ -426,6 +426,29 @@ def _load_cached_tts_results(out_dir: str) -> dict | None:
 _ONLY_SEGMENTS: set | None = None
 
 
+import re as _re_only_segments
+_VALID_ONLY_SEGMENT_RE = _re_only_segments.compile(
+    r"^(topic_intro|japanese_title|preview|in_one_line|comment_[1-9]\d*|full_story_part[1-9]\d*"
+    r"|kp[1-5]_(english|explanation|japanese_meaning))$")
+
+
+def validate_only_segments_args(stage: str, dry_run: bool, level: str, raw: str):
+    """--only-segmentsの入力検証(委任_03、OPEN-329)。戻り値=(選択set, エラー文字列|None)。
+    tts stage(--dry-runなし)専用 / 空指定禁止 / 未知segment名を拒否 /
+    --level both併用禁止(同一指定が両levelへ及ぶハザード。a2またはb1bを明示すること)。"""
+    if stage != "tts" or dry_run:
+        return None, "--only-segmentsは--stage tts(--dry-runなし)でのみ使えます。"
+    sel = {x.strip() for x in raw.split(",") if x.strip()}
+    if not sel:
+        return None, "--only-segmentsが空です。"
+    if level == "both":
+        return None, "--only-segmentsは--level both併用禁止です(--level a2または--level b1bを明示してください)。"
+    unknown = sorted(x for x in sel if not _VALID_ONLY_SEGMENT_RE.match(x))
+    if unknown:
+        return None, f"--only-segmentsに未知のsegment名があります: {unknown}"
+    return sel, None
+
+
 def _only_segments_skip(label: str):
     if _ONLY_SEGMENTS is not None and label not in _ONLY_SEGMENTS:
         return {"status": "SKIPPED_NOT_SELECTED", "reason": "--only-segmentsに含まれないため生成しません"}
@@ -2148,11 +2171,10 @@ def main() -> None:
 
     global _ONLY_SEGMENTS
     if args.only_segments is not None:
-        if args.stage != "tts" or args.dry_run:
-            parser.error("--only-segmentsは--stage tts(--dry-runなし)でのみ使えます。")
-        _ONLY_SEGMENTS = {x.strip() for x in args.only_segments.split(",") if x.strip()}
-        if not _ONLY_SEGMENTS:
-            parser.error("--only-segmentsが空です。")
+        _sel, _err = validate_only_segments_args(args.stage, args.dry_run, args.level, args.only_segments)
+        if _err:
+            parser.error(_err)
+        _ONLY_SEGMENTS = _sel
 
     source_dir = f"er019_output/{args.slug}/{args.run}"
     out_dir = derive_out_dir(args.slug, args.run, args.out_dir)

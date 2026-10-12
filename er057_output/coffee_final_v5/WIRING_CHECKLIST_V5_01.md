@@ -17,3 +17,11 @@
 ## 実行層が出す所見(判定ではない)
 - 試聴版(Std/Adv)は完成。Adv: 組立315.71s、peak 0.97995、clipping 0、medium/high異音(非固定)0、Playwright実再生は`PLAY_EVIDENCE_V5_01.md`。
 - Gate 3の残り: 初回経路は両levelで実測済みだが、**resume(再開)経路・Master Store reuse判定・Full StoryのLocal Rewrite経路(OPEN-312)は本件で未検証**。Full Storyはv4音声流用でv5 runner経由ではない。`PRODUCTION_WIRED`判定はFable/ユーザー(Opus独立レビュー=項目11も未実施)。
+
+## 開示(Opus条件Cレビュー必須修正M-2、委任_03追記)
+- (a) v5の組立はTrial用assembler(`er057_coffee_final_v5_build_01.py`)によるもので、runner `--stage assemble` のM3 Gate / Audio Validation Gateは**通していない**。代替としてオフライン実行: M3 Gate=`gate_evidence/`(対象role[Std JA 5件・Adv KP解説5件]PASS、Full Storyはrunner未生成[v4流用、SKIPPED_NOT_SELECTED]のため全体判定はBLOCK)、Audio Validation相当=`AUDIO_VALIDATION_V5_01.md`(Std30/Adv29 role、sha256再計算一致)。
+- (b) Adv KP英英解説の本文はv4から非正規手順(結果ファイルへのtext bundle事前配置)で注入した。正規CLI案はOPEN-329に記録。
+- (c) 原稿はv4(Tone由来)を別source_dirにコピーしたもので、Production正本(run_l3_01)での通しrunではない。
+- (d) In One Lineはv4の2文版(仕様文言「中心1文+補足2文程度」との整合はOPEN-299で未決)。
+- (e) Comment4新Promptは共通定数`FAMILY_X_A2_COMMENT_4_ROLE`のため全Std記事に適用される。適用範囲はユーザー確認中(OPEN-316)。回答まで他Std記事の生成は行わない。
+- (f) PRODUCTION_WIREDは未判定。適用範囲の表記: 「Coffee限定: FULL_STORY/SUPPORT_JA(Std)/KP_EXPLANATION_EN(Adv)のStyle解決のみ」。

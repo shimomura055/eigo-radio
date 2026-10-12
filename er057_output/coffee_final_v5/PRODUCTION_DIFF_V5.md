@@ -20,3 +20,11 @@
 
 ## 変更していないもの(確認)
 Production共通定数 `FAMILY_X_ROLE_STYLE_EN`/`FAMILY_X_ROLE_STYLE_JA`/`KEY_PHRASE_EXPLANATION_EN`、`FAMILY_X_B1_COMMENT_*`、`FAMILY_X_A2_COMMENT_1〜3`、共有module(er003/er006/er011/er033)、Master Store、v4成果物(`er057_output/coffee_final_v4/`、`user_test/coffee_final_v4/`)、Production原稿(`er019_output/coffee_prices/run_l3_01`)。変更: `FAMILY_X_A2_COMMENT_4_ROLE`(ユーザー承認A)、`er019_family_x_style_profile_01.py`(profile拡張)、runner(R2/P3解決・記録、`--only-segments`)。
+
+## 開示(Opus条件Cレビュー必須修正M-2、委任_03追記)
+- (a) v5の組立はTrial用assembler(`er057_coffee_final_v5_build_01.py`)によるもので、runner `--stage assemble` のM3 Gate / Audio Validation Gateは**通していない**。代替としてオフライン実行: M3 Gate=`gate_evidence/`(対象role[Std JA 5件・Adv KP解説5件]PASS、Full Storyはrunner未生成[v4流用、SKIPPED_NOT_SELECTED]のため全体判定はBLOCK)、Audio Validation相当=`AUDIO_VALIDATION_V5_01.md`(Std30/Adv29 role、sha256再計算一致)。
+- (b) Adv KP英英解説の本文はv4から非正規手順(結果ファイルへのtext bundle事前配置)で注入した。正規CLI案はOPEN-329に記録。
+- (c) 原稿はv4(Tone由来)を別source_dirにコピーしたもので、Production正本(run_l3_01)での通しrunではない。
+- (d) In One Lineはv4の2文版(仕様文言「中心1文+補足2文程度」との整合はOPEN-299で未決)。
+- (e) Comment4新Promptは共通定数`FAMILY_X_A2_COMMENT_4_ROLE`のため全Std記事に適用される。適用範囲はユーザー確認中(OPEN-316)。回答まで他Std記事の生成は行わない。
+- (f) PRODUCTION_WIREDは未判定。適用範囲の表記: 「Coffee限定: FULL_STORY/SUPPORT_JA(Std)/KP_EXPLANATION_EN(Adv)のStyle解決のみ」。

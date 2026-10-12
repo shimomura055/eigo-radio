@@ -13,6 +13,7 @@ import er057_tone_trial_final_build_03_asm as A
 import er057_tone_trial_final_build_03 as B
 import er002_common as common
 import er003_b1_p9a_audio as p9a
+DISCLOSURE_HTML = "<div class='combo' style='background:#fff0f0;border-color:#c66'><b>開示(Opus条件Cレビュー必須修正M-2、委任_03)</b><ul><li>(a) v5の組立はTrial用assembler(<code>er057_coffee_final_v5_build_01.py</code>)によるもので、runner <code>--stage assemble</code> のM3 Gate / Audio Validation Gateは通していません(代替としてオフライン実行: <code>gate_evidence/</code>、<code>AUDIO_VALIDATION_V5_01.md</code>)。</li><li>(b) Advanced Key Phrase英語解説の本文はv4から非正規手順(結果ファイルへのtext bundle事前配置)で注入しています(正規CLIは未整備、OPEN登録済み)。</li><li>(c) 原稿はv4(Tone Trial由来)を別source_dirにコピーしたもので、Production正本(run_l3_01)での通しrunではありません。</li><li>(d) In One Lineはv4の2文版です(仕様文言「中心1文+補足2文程度」との整合はOPEN-299で未決)。</li><li>(e) Comment 4の新Promptは共通定数のため、全Standard記事に適用されます(適用範囲はユーザー確認中。回答まで他Standard記事の生成は行いません)。</li><li>(f) PRODUCTION_WIREDは未判定です。適用範囲の表記: 「Coffee限定: FULL_STORY / SUPPORT_JA(Std) / KP_EXPLANATION_EN(Adv)のStyle解決のみ」。</li></ul></div>"  # 委任_03(M-2開示)。html再生成時も保持
 
 esc = html.escape
 V3D = os.path.join(ROOT, "er057_output", "coffee_final_audio_assembly_01")
@@ -210,7 +211,7 @@ document.addEventListener('play',e=>{document.querySelectorAll('audio').forEach(
     chg_std = "、".join(ROLE_JA.get(k, k) for k in D5["std"]["changed_roles"])
     chg_adv = "、".join(k.replace("_explanation_en", " 英語解説") .replace("kp", "Key Phrase ") for k in D5["adv"]["changed_roles"])
     c4_new = T["std"]["sup"]["comment_4"]
-    intro = ("<p>FAMILY-X-COFFEE-FINAL-V5-PRODUCTION-WIRING-01 委任_01(Coffee最終試聴版 v5)。ユーザー正式決定(2026-10-12)を反映した版です。"
+    intro = (DISCLOSURE_HTML + "<p>FAMILY-X-COFFEE-FINAL-V5-PRODUCTION-WIRING-01 委任_01(Coffee最終試聴版 v5)。ユーザー正式決定(2026-10-12)を反映した版です。"
              "<b>v4からの変更</b>: (1) Standard Comment 4 = Trial-03の最小修正Prompt(「In One Lineは番組の最後に流れる英語の要点整理」「橋渡しは『続いて』より『最後に』」の2文を追加)で文章を再生成。"
              "(2) Standard Preview/Comment 1〜4 = 承認済みR2 Styleで音声を再生成(文章はv4のまま、Comment 4のみ新文章)。(3) Advanced Key Phrase英語解説(5件)= 正式選択済みP3 Styleで音声を再生成。"
              f"変更あり: Standard [{chg_std}]、Advanced [{chg_adv}]。それ以外(Full Story=P8、Standard 6%減速、In One Line、固定音源、Key Phrase英語・日本語意味など)はv4の音声をそのまま再利用しています(sha256で同一を確認、PRODUCTION_DIFF_V5.md)。"

@@ -743,5 +743,33 @@ class AssembledFilenameThemeComponentTests(unittest.TestCase):
             "FAMILY_X_B3_PRODUCTION_WIRING_01")
 
 
+class OnlySegmentsArgsValidationTests(unittest.TestCase):
+    """OPEN-329(委任_03): --only-segmentsの未知segment名拒否・--level both併用禁止。"""
+
+    def test_valid_names_accepted_for_a2_and_b1b(self):
+        sel, err = runner.validate_only_segments_args("tts", False, "a2", "preview, comment_1,comment_4")
+        self.assertIsNone(err)
+        self.assertEqual(sel, {"preview", "comment_1", "comment_4"})
+        sel, err = runner.validate_only_segments_args("tts", False, "b1b", "kp1_explanation,kp5_explanation")
+        self.assertIsNone(err)
+        self.assertEqual(sel, {"kp1_explanation", "kp5_explanation"})
+
+    def test_unknown_segment_name_rejected(self):
+        for bad in ("prevew", "kp6_explanation", "kp1_expl", "comment_0", "preview;comment_1"):
+            sel, err = runner.validate_only_segments_args("tts", False, "a2", bad)
+            self.assertIsNone(sel, bad)
+            self.assertIn("未知", err or "", bad)
+
+    def test_level_both_rejected(self):
+        sel, err = runner.validate_only_segments_args("tts", False, "both", "preview")
+        self.assertIsNone(sel)
+        self.assertIn("both", err)
+
+    def test_stage_dryrun_and_empty_rejected(self):
+        self.assertIsNotNone(runner.validate_only_segments_args("assemble", False, "a2", "preview")[1])
+        self.assertIsNotNone(runner.validate_only_segments_args("tts", True, "a2", "preview")[1])
+        self.assertIsNotNone(runner.validate_only_segments_args("tts", False, "a2", " , ")[1])
+
+
 if __name__ == "__main__":
     unittest.main()
