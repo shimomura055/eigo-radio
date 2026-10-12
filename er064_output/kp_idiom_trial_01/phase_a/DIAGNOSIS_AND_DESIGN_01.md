@@ -169,3 +169,7 @@
 | `sim_inject_db_entries_01.{py,json}` | 仮想DB見出し注入(メモリ上のみ)での現行照合のヒット可否 |
 | `proto_placeholder_match_01.{py,json}` / `_loose.json` / `proto_placeholder_match_02_strict.{py,json}` | placeholder照合試作と副作用走査(400本) |
 | `inputs/` | v4原稿複製 |
+
+## 14. 委任_02での追記(2026-10-12)
+
+- B1正規化の先行確定test結果・MUST達成の前提条件(選定LLMのdisplay_phraseは`pump its fist`/`pump one's fist`の形で出る必要がある。`pumps its fist`のままだと正規化INVALID、`my`->`someone's`もINVALID。`mark the date on your calendar`は6語でKEY_PHRASE_MAX_WORDS=5によりINVALID)、受入基準(MUST/WANT)、使用モデル(gpt-6-luna、Production比較可能性の例外)は `er064_output/kp_idiom_trial_01/PHASE_BC_REPORT_01.md` 1節・5節に記載。
