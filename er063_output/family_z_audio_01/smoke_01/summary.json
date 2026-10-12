@@ -1,0 +1,90 @@
+{
+  "budget_jpy": 3.0,
+  "tts_execution_mode": "STANDARD",
+  "clips": {
+    "narrator": {
+      "clip_id": "full_story_part1_c1",
+      "source": "existing artifacts of run 1",
+      "voice_expected": "Aoede",
+      "style_label": "PD8",
+      "style_prefix_sha256": "329ff46a5ec3877f7dc23375e14ee8a806efeff7cfe27963492a3cf95d182226",
+      "attempt_files_meta": [
+        {
+          "model": "gemini-3.8-flash-lite-tts",
+          "voice": "Aoede",
+          "tts_execution_mode": "STANDARD",
+          "tts_backend": "speech_metadata_flash_lite",
+          "loop_attempt_index": 1,
+          "verified": false,
+          "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+          "asr_text": "The sun was low in the sky, and mellows began to run toward the city."
+        },
+        {
+          "model": "gemini-3.8-flash-lite-tts",
+          "voice": "Aoede",
+          "tts_execution_mode": "STANDARD",
+          "tts_backend": "speech_metadata_flash_lite",
+          "loop_attempt_index": 1,
+          "verified": true,
+          "audio_classification": "NORMALIZED_MATCH",
+          "asr_text": "The sun was low in the sky as Melos began to run toward the city."
+        }
+      ],
+      "local_rewrite": {
+        "status": "RESOLVED_BY_LOCAL_REWRITE",
+        "ng_span": "the sky and melos began to run",
+        "asr_span": "the sky and mellows began to run",
+        "rewritten": "The sun was low in the sky, as Melos began to run toward the city."
+      },
+      "duration_seconds": 4.27,
+      "mp3": "er063_output/family_z_audio_01/smoke_01/narrator.mp3",
+      "wav": "er063_output/family_z_audio_01/smoke_01/melos/run_smoke/b1b/narration/full_story_part1_c1.wav"
+    },
+    "king": {
+      "clip_id": "full_story_part1_c2",
+      "status": "OK",
+      "z_adoption": "adopted",
+      "voice_expected": "Charon",
+      "voice_in_entry": "Charon",
+      "model_ids_measured_entry": [],
+      "style_label": "existing_dialogue_style(ENGLISH_STYLE_PREFIX)",
+      "style_prefix_sha256": null,
+      "fallback_used": false,
+      "attempts": 1,
+      "attempt_files_meta": [
+        {
+          "model": "gemini-2.5-pro-preview-tts",
+          "voice": "Charon",
+          "tts_execution_mode": "STANDARD",
+          "loop_attempt_index": 1,
+          "verified": true,
+          "audio_classification": "NORMALIZED_MATCH",
+          "asr_text": "You will never come back, said the king."
+        }
+      ],
+      "asr_text": "You will never come back, said the king.",
+      "duration_seconds": 3.501,
+      "mp3": "er063_output/family_z_audio_01/smoke_01/king.mp3",
+      "wav": "er063_output/family_z_audio_01/smoke_01/melos/run_smoke/b1b/narration/full_story_part1_c2.wav",
+      "cooldown_occurred": false,
+      "local_rewrite": null
+    }
+  },
+  "cost_jpy_total": 1.911,
+  "cost_by_provider_jpy": {
+    "gemini": 0.61,
+    "openai_asr": 0.1,
+    "azure": 0.79,
+    "perplexity": 0.0,
+    "openai": 0.42
+  },
+  "cost_log_calls_by_model_segment": {
+    "gemini:gemini-3.8-flash-lite-tts:seg=full_story_part1_c1": 2,
+    "openai_asr:gpt-4o-mini-transcribe:seg=full_story_part1_c1": 3,
+    "azure:azure-speech-stt:seg=full_story_part1_c1": 3,
+    "perplexity:sonar:seg=full_story_part1_c1": 1,
+    "openai:gpt-6-luna:seg=full_story_part1_c1": 2,
+    "gemini:gemini-2.5-pro-preview-tts:seg=full_story_part1_c2": 1,
+    "openai_asr:gpt-4o-mini-transcribe:seg=full_story_part1_c2": 1
+  }
+}
