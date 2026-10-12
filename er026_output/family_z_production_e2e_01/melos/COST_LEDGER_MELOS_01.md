@@ -88,3 +88,9 @@ KP外側retry(最大3)・TTS clip checkpoint(中断時の再課金防止)は維�
 - run_e2e_02 実費合計(cost_log集計, compute_cost_jpy_so_far): **JPY61.08**(openai 23.25 / gemini 22.33 / openai_asr 4.81 / azure 10.69)。12B停止時39.32 -> +21.76(Comment3再生成の小額 + tts_a2)。
 - 合算(run_e2e_01 108.1 + run_e2e_02 61.08)= **約169.2 / 300**。警告92(run単体)未到達、200未到達。tts_a2はrc=2(clip失敗STOP)、起動1回(Comment3再生成の`--stage support`起動は別)。
 - 残stageを最後まで実行した場合の追加見込みは小額(gate/assemble/pages/page_verifyはAPIなし)。HR clipの再生成を承認する場合は1 clipあたり約JPY1-2、Std cooldown(10分)あり。
+
+## 5. 委任_03(FAMILY-Z-MELOS-PROPER-NOUN-ASR-ROOT-CAUSE-01、2026-10-12)
+- 反例ASR(Phrase List誘導型、TTSなし): **約JPY3.71**(Azure 3.45 / OpenAI ASR 0.25、`asr_root_cause_01/reeval_cost_log.jsonl`の75行目以降。見積JPY1を超過)。
+- 正規QA再生成(part1_c1 + part3_c3、起動1回): run_e2e_02 実費 61.08 -> **62.00**(+JPY0.92、各1回生成)。
+- Opus任意改善: JPY0。
+- 累計(Melos E2E): run_e2e_01 108.11 + run_e2e_02 62.00 + 再評価(委任_01 約11 + 本委任 3.71) = **約184.8 / 300**。警告92(run単体)未到達、残枠 約115。

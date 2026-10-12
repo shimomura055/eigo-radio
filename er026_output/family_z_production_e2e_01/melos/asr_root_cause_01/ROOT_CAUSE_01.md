@@ -108,3 +108,17 @@ ASR再評価のみ。スクリプトを計3回実行した(初回2回は`cl.inst
 ## 9. STOP確認
 
 作業開始時、`docs/pm/delegation_log/*STOP_NOTICE*`は1件(2026-10-12_..._STOP_NOTICE.md、run_e2e_01の旧runner暴走の記録、本委任と別run)。`STOP`/`STOP_ALL`は有料呼出直前に不在を確認。本委任は既存wavへのASR再評価のみ許可されており、STOP_NOTICEはrun_e2e_01スコープと解釈して実施(この解釈をFableへ報告)。runner・TTSの起動・再起動は無し。
+
+
+## 10. 委任_03(2026-10-12): Phrase List誘導型反例 + 正規QA再生成 + 改善
+### 10-1 反例(Phrase List["Melos"]付き、TTSなし、`reeval_counterexample_phraselist_01.py/.json`)
+音声はMelosを含まない非固有名詞clip(a2 part1_c7/part3_c4/c5/c9/c10)に対し、canonical側の該当語(ruler/I/he/he/a man)をMelosへ1:1置換し、是正A後の経路(`_post_slowdown_cascade_rescue`、Ledger由来Phrase List=Melos)で各2試行。
+結果: 10/10 NOT_PASS(誤PASSなし)。Primary/Azureとも実際の語("The ruler smiled and said,"/"I almost left you to die."/"he said softly."等)を転写し、Phrase List["Melos"]に誘導されて"Melos"と綴る事例は0件(Azure 26呼出)。cascade_invoked=全件True、final=ASR_VALIDATION_UNCERTAIN。費用: 約JPY3.71(Azure 3.45 + OpenAI ASR 0.25、見積JPY1を上回った。Azure STT 26呼出×平均3秒)。
+### 10-2 正規QA再生成(`--only-clips full_story_part1_c1,full_story_part3_c3`、起動1回、rc=0、改善後コードeb4c6479で実行)
+- part1_c1: status=OK、attempt=1(TTS生成1回、model=gemini-3.8-flash-lite-tts)。減速前: Primary "Mellus called..."→SECONDARY_ASR_CORROBORATED_MATCH。減速後: Primary "Mellos called across the hall."=ASR_VALIDATION_UNCERTAIN→`post_slowdown_cascade`(invoked=true,cascade_entered=true,verified=true)、Tier3 Azure="Melos called across the hall."→SECONDARY_ASR_CORROBORATED_MATCH(救済)。
+- part3_c3: status=OK、attempt=1。減速前Primary "Mellis"→SECONDARY_ASR_CORROBORATED_MATCH。減速後Primary "Mellos fell..."→cascade Tier3 Azure="Melos fell against him."→救済。
+- 取り直し0・cooldown0。`tts_generation_results.json`(a2)に両clipOK正規記録、attempt_historyに`A2_SLOWDOWN_REVERIFY`(post_slowdown_cascade全step)が残存。part1_c5は`--only-clips`対象外でSTOPPED維持(Melos said.、ユーザー判断待ち)。
+- 費用: run_e2e_02 61.08→62.00(+JPY0.92)。旧wav退避: `pre_regen_backup/`。
+### 10-3 Opus任意改善(eb4c6479)
+`_post_slowdown_cascade_rescue`: ledger準備失敗はinvoked=False、cascade呼出中の例外はinvoked=True+cascade_entered+aborted_by_exception、cost logger未初期化/単価未登録(RuntimeError "init_logger"/"[STOP]")は伝播(er006 L237-241方針)。top-level `post_slowdown_final_classification` 追加。test +5(Primary#2単発PASS、CMU Case A、例外invoked、設定不備伝播、final_classification)。
+注: `post_slowdown_final_classification`は`generate_a2_segment_with_slowdown`の戻りdictには入るが、er063 `build_entry`が`tts_generation_results.json`へは伝播していない(attempt_historyのA2_SLOWDOWN_REVERIFYにはcascade final_statusあり)。伝播は未実施(範囲外、必要ならFable判断)。
