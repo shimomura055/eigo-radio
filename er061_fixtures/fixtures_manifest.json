@@ -1,0 +1,110 @@
+{
+  "note": "意図的改変(F4-F8)は原作から逸脱する箇所をdescriptionに明記。F5bは追加fixture(王の改心否定のみ)。expected_categoriesはany-of(FAIL項目のcategoryのいずれかが含まれればよい)。",
+  "fixtures": [
+    {
+      "id": "F1",
+      "file": "F1_trial2_r2_normal.md",
+      "expected_verdict": "PASS",
+      "expected_categories": [],
+      "description": "Trial②R2(er059 m2_sol_only/r2.md)の正常例。名前はMelosのみ。",
+      "source": "er059_output/melos_sol_b3z_trial_01/m2_sol_only/r2.md",
+      "modification": "verbatim copy",
+      "sha256": "1d07846edd72817e65469a501aa4327854438d394d2ed429d0cb52726d31c90d"
+    },
+    {
+      "id": "F2",
+      "file": "F2_existing_luna_normal.md",
+      "expected_verdict": "PASS",
+      "expected_categories": [],
+      "description": "既存Luna版(er026 run_01/article.md)の正常例。",
+      "source": "er026_output/family_z_production_e2e_01/melos/run_01/article.md",
+      "modification": "verbatim copy",
+      "sha256": "820226322e0a325bc47db11c6a14e0b0a82be5a9f61bb8de15539699d35a7c89"
+    },
+    {
+      "id": "F3",
+      "file": "F3_names_omitted_normal.md",
+      "expected_verdict": "PASS",
+      "expected_categories": [],
+      "description": "F2から人物名(', Dionysius,' / ', Selinuntius,')を機械的に削り役割語のみとした名前省略の正常例。",
+      "source": "F2",
+      "modification": "名前2箇所の削除のみ(他は不変)",
+      "sha256": "ff93d8a5767ae48b232245ea5aa047df2062fd0bb55894c9eca5e009842ff146"
+    },
+    {
+      "id": "F4",
+      "file": "F4_friend_relation_missing.md",
+      "expected_verdict": "FAIL",
+      "expected_categories": [
+        "role_relation",
+        "event"
+      ],
+      "description": "F1から改変: 親友を『見知らぬ他人』に置換し、友という関係・信頼・約束の情緒的核を消した。原作逸脱: 人質は親友ではない/友情が成立しない/再会も他人同士の別れ。",
+      "source": "F1",
+      "modification": "友->stranger置換、信頼の動機除去、結末も他人同士の別れ",
+      "sha256": "0a5b36de32917e48e6fc9731773c90873be739bdc905323a93bc0b598c4ee280"
+    },
+    {
+      "id": "F5",
+      "file": "F5_ending_too_late.md",
+      "expected_verdict": "FAIL",
+      "expected_categories": [
+        "ending"
+      ],
+      "description": "F1から改変: 間に合わず友は処刑済み、王は改心せず嘲笑、Melosは連行される。原作逸脱: 結末全体(間に合う/友救出/王の改心)の反転。",
+      "source": "F1",
+      "modification": "最終部分を'too late'結末に差し替え",
+      "sha256": "b477c4093e0298a8c848f6fc7f9d447597fb57a29129157e6d43a826a8c8f3f2"
+    },
+    {
+      "id": "F5b",
+      "file": "F5b_ending_ruler_unchanged.md",
+      "expected_verdict": "FAIL",
+      "expected_categories": [
+        "ending",
+        "causality"
+      ],
+      "description": "F1から改変: 間に合い友も助かるが、王は改心せず『処刑は続ける、信頼などない』と言い放つ。原作逸脱: 王の改心(結末の核)の否定。",
+      "source": "F1",
+      "modification": "王の改心を否定する結末に差し替え",
+      "sha256": "d5f06c5a59e1378546c1a4e21910cec15167150be0fd688b4f5fc4ba0bb27654"
+    },
+    {
+      "id": "F6",
+      "file": "F6_causality_reversed.md",
+      "expected_verdict": "FAIL",
+      "expected_categories": [
+        "causality"
+      ],
+      "description": "F1から改変: 因果の反転/別動機化。原作逸脱: 王の死刑決定が先でMelosの批判がその結果/友は自発でなく強制/Melosの立ち直りは友の信頼でなく追手への恐怖/王が二人を許すのは民衆への恐怖。出来事の骨格は概ね維持。",
+      "source": "F1",
+      "modification": "因果関係を原作と逆または別動機に差し替え",
+      "sha256": "86bb396982ac6b8ac5a8762269e057d5f4ec66e805a0db62c51c6baa9ab5c0c0"
+    },
+    {
+      "id": "F7",
+      "file": "F7_event_missing_no_hardship.md",
+      "expected_verdict": "FAIL",
+      "expected_categories": [
+        "event"
+      ],
+      "description": "F1から改変: 帰路の障害(川の氾濫・襲撃)と疲労・諦めの誘惑・立ち直りを全て削除し、楽な旅にした。原作逸脱: 重要出来事の欠落と緊迫感の消失。",
+      "source": "F1",
+      "modification": "帰路の出来事を『何も起きない旅』に差し替え",
+      "sha256": "080908e221c5bb42aeafc5f6146b53d54e115baa833f6e34eba09dcd8bf681ee"
+    },
+    {
+      "id": "F8",
+      "file": "F8_new_facts_added.md",
+      "expected_verdict": "FAIL",
+      "expected_categories": [
+        "added_fact",
+        "event"
+      ],
+      "description": "F1から改変: 川の精霊の魔法の剣、王の息子という出自、スパイ、魔法の馬、ドラゴン、友が魔法使い、Melosが王になる等の重大な新Fact追加。原作逸脱: 物語の性質そのもの。捏造引用(偽evidence_quote)の無効化はmock testで別途検証(実LLMに偽引用を誘導しない)。",
+      "source": "F1",
+      "modification": "重大な新Factを複数追加",
+      "sha256": "24d760994cd4a438fd42806422724aa2844cea26537ebf64f01f9b447aeeb2ce"
+    }
+  ]
+}

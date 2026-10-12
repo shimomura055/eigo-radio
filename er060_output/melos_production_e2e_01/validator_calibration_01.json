@@ -1,0 +1,468 @@
+{
+  "schema_version": "er061_calibration_v1",
+  "date": "2026-10-12",
+  "routing_key": "FAMILY_Z_SEMANTIC_JUDGE",
+  "requested_model": "gpt-6-luna",
+  "actual_model_ids": [
+    "gpt-6-luna"
+  ],
+  "anchors_sha256": "9aafa24df56549b797a727e7497c29c884d35e1b388e890aa23a98f428413bb5",
+  "rows": [
+    {
+      "fixture": "F1",
+      "description": "Trial②R2(er059 m2_sol_only/r2.md)の正常例。名前はMelosのみ。",
+      "expected_verdict": "PASS",
+      "expected_categories_any_of": [],
+      "final_verdict": "PASS",
+      "layer1_verdict": "PASS",
+      "layer1_hard_fails": [],
+      "layer2_verdict": "PASS",
+      "layer2_confirmed": null,
+      "layer2_fail_categories": [],
+      "judgements": [
+        {
+          "attempt": 1,
+          "valid": true,
+          "verdict": "PASS",
+          "fail_categories": [],
+          "invalid_reasons": [],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.22005
+        }
+      ],
+      "cost_jpy": 0.22,
+      "calibration_ok": true
+    },
+    {
+      "fixture": "F2",
+      "description": "既存Luna版(er026 run_01/article.md)の正常例。",
+      "expected_verdict": "PASS",
+      "expected_categories_any_of": [],
+      "final_verdict": "WARN",
+      "layer1_verdict": "PASS",
+      "layer1_hard_fails": [],
+      "layer2_verdict": "WARN",
+      "layer2_confirmed": null,
+      "layer2_fail_categories": [],
+      "judgements": [
+        {
+          "attempt": 1,
+          "valid": true,
+          "verdict": "WARN",
+          "fail_categories": [],
+          "invalid_reasons": [],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.23691
+        }
+      ],
+      "cost_jpy": 0.2369,
+      "calibration_ok": true
+    },
+    {
+      "fixture": "F3",
+      "description": "F2から人物名(', Dionysius,' / ', Selinuntius,')を機械的に削り役割語のみとした名前省略の正常例。",
+      "expected_verdict": "PASS",
+      "expected_categories_any_of": [],
+      "final_verdict": "WARN",
+      "layer1_verdict": "PASS",
+      "layer1_hard_fails": [],
+      "layer2_verdict": "WARN",
+      "layer2_confirmed": null,
+      "layer2_fail_categories": [],
+      "judgements": [
+        {
+          "attempt": 1,
+          "valid": true,
+          "verdict": "WARN",
+          "fail_categories": [],
+          "invalid_reasons": [],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.28242
+        }
+      ],
+      "cost_jpy": 0.2824,
+      "calibration_ok": true
+    },
+    {
+      "fixture": "F4",
+      "description": "F1から改変: 親友を『見知らぬ他人』に置換し、友という関係・信頼・約束の情緒的核を消した。原作逸脱: 人質は親友ではない/友情が成立しない/再会も他人同士の別れ。",
+      "expected_verdict": "FAIL",
+      "expected_categories_any_of": [
+        "role_relation",
+        "event"
+      ],
+      "final_verdict": "FAIL",
+      "layer1_verdict": "WARN",
+      "layer1_hard_fails": [],
+      "layer2_verdict": "FAIL",
+      "layer2_confirmed": true,
+      "layer2_fail_categories": [
+        "added_fact",
+        "causality",
+        "charm",
+        "ending",
+        "event",
+        "role_relation"
+      ],
+      "judgements": [
+        {
+          "attempt": 1,
+          "valid": true,
+          "verdict": "FAIL",
+          "fail_categories": [
+            "added_fact",
+            "causality",
+            "charm",
+            "ending",
+            "event",
+            "role_relation"
+          ],
+          "invalid_reasons": [],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.28541
+        },
+        {
+          "attempt": 1,
+          "valid": true,
+          "verdict": "FAIL",
+          "fail_categories": [
+            "added_fact",
+            "causality",
+            "charm",
+            "ending",
+            "event",
+            "role_relation"
+          ],
+          "invalid_reasons": [],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.23262
+        }
+      ],
+      "cost_jpy": 0.518,
+      "calibration_ok": true
+    },
+    {
+      "fixture": "F5",
+      "description": "F1から改変: 間に合わず友は処刑済み、王は改心せず嘲笑、Melosは連行される。原作逸脱: 結末全体(間に合う/友救出/王の改心)の反転。",
+      "expected_verdict": "FAIL",
+      "expected_categories_any_of": [
+        "ending"
+      ],
+      "final_verdict": "FAIL",
+      "layer1_verdict": "FAIL",
+      "layer1_hard_fails": [
+        "FORBIDDEN_ENDING:FE3_ruler_unchanged"
+      ],
+      "layer2_verdict": "FAIL",
+      "layer2_confirmed": true,
+      "layer2_fail_categories": [
+        "added_fact",
+        "causality",
+        "charm",
+        "ending",
+        "event",
+        "sequence"
+      ],
+      "judgements": [
+        {
+          "attempt": 1,
+          "valid": true,
+          "verdict": "FAIL",
+          "fail_categories": [
+            "added_fact",
+            "causality",
+            "charm",
+            "ending",
+            "event",
+            "sequence"
+          ],
+          "invalid_reasons": [],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.27038
+        },
+        {
+          "attempt": 1,
+          "valid": false,
+          "verdict": null,
+          "fail_categories": [],
+          "invalid_reasons": [
+            "evidence_quote_not_verbatim:C1"
+          ],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.21455
+        },
+        {
+          "attempt": 2,
+          "valid": true,
+          "verdict": "FAIL",
+          "fail_categories": [
+            "added_fact",
+            "causality",
+            "charm",
+            "ending",
+            "event",
+            "sequence"
+          ],
+          "invalid_reasons": [],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.19535
+        }
+      ],
+      "cost_jpy": 0.6803,
+      "calibration_ok": true
+    },
+    {
+      "fixture": "F5b",
+      "description": "F1から改変: 間に合い友も助かるが、王は改心せず『処刑は続ける、信頼などない』と言い放つ。原作逸脱: 王の改心(結末の核)の否定。",
+      "expected_verdict": "FAIL",
+      "expected_categories_any_of": [
+        "ending",
+        "causality"
+      ],
+      "final_verdict": "FAIL",
+      "layer1_verdict": "PASS",
+      "layer1_hard_fails": [],
+      "layer2_verdict": "FAIL",
+      "layer2_confirmed": true,
+      "layer2_fail_categories": [
+        "added_fact",
+        "causality",
+        "charm",
+        "ending",
+        "event",
+        "sequence"
+      ],
+      "judgements": [
+        {
+          "attempt": 1,
+          "valid": false,
+          "verdict": null,
+          "fail_categories": [],
+          "invalid_reasons": [
+            "evidence_quote_not_verbatim:C4"
+          ],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.20995
+        },
+        {
+          "attempt": 2,
+          "valid": true,
+          "verdict": "FAIL",
+          "fail_categories": [
+            "added_fact",
+            "causality",
+            "charm",
+            "ending",
+            "event",
+            "sequence"
+          ],
+          "invalid_reasons": [],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.24459
+        },
+        {
+          "attempt": 1,
+          "valid": true,
+          "verdict": "FAIL",
+          "fail_categories": [
+            "added_fact",
+            "causality",
+            "charm",
+            "ending",
+            "sequence"
+          ],
+          "invalid_reasons": [],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.18651
+        }
+      ],
+      "cost_jpy": 0.6411,
+      "calibration_ok": true
+    },
+    {
+      "fixture": "F6",
+      "description": "F1から改変: 因果の反転/別動機化。王の死刑決定が先でMelosの批判がその結果/友は自発でなく強制/Melosの立ち直りは友の信頼でなく追手への恐怖/王が二人を許すのは民衆への恐怖。出来事の骨格は概ね維持。",
+      "expected_verdict": "FAIL",
+      "expected_categories_any_of": [
+        "causality"
+      ],
+      "final_verdict": "FAIL",
+      "layer1_verdict": "PASS",
+      "layer1_hard_fails": [],
+      "layer2_verdict": "FAIL",
+      "layer2_confirmed": true,
+      "layer2_fail_categories": [
+        "added_fact",
+        "causality",
+        "charm",
+        "ending",
+        "event",
+        "role_relation",
+        "sequence"
+      ],
+      "judgements": [
+        {
+          "attempt": 1,
+          "valid": true,
+          "verdict": "FAIL",
+          "fail_categories": [
+            "added_fact",
+            "causality",
+            "charm",
+            "ending",
+            "event",
+            "role_relation",
+            "sequence"
+          ],
+          "invalid_reasons": [],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.25098
+        },
+        {
+          "attempt": 1,
+          "valid": true,
+          "verdict": "FAIL",
+          "fail_categories": [
+            "added_fact",
+            "causality",
+            "charm",
+            "ending",
+            "event",
+            "role_relation",
+            "sequence"
+          ],
+          "invalid_reasons": [],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.22562
+        }
+      ],
+      "cost_jpy": 0.4766,
+      "calibration_ok": true
+    },
+    {
+      "fixture": "F7",
+      "description": "F1から改変: 帰路の障害(川の氾濫・襲撃)と疲労・諦めの誘惑・立ち直りを全て削除し、楽な旅にした。原作逸脱: 重要出来事の欠落と緊迫感の消失。",
+      "expected_verdict": "FAIL",
+      "expected_categories_any_of": [
+        "event"
+      ],
+      "final_verdict": "FAIL",
+      "layer1_verdict": "WARN",
+      "layer1_hard_fails": [],
+      "layer2_verdict": "FAIL",
+      "layer2_confirmed": true,
+      "layer2_fail_categories": [
+        "added_fact",
+        "causality",
+        "charm",
+        "event",
+        "sequence"
+      ],
+      "judgements": [
+        {
+          "attempt": 1,
+          "valid": true,
+          "verdict": "FAIL",
+          "fail_categories": [
+            "added_fact",
+            "causality",
+            "charm",
+            "event",
+            "sequence"
+          ],
+          "invalid_reasons": [],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.24456
+        },
+        {
+          "attempt": 1,
+          "valid": true,
+          "verdict": "FAIL",
+          "fail_categories": [
+            "added_fact",
+            "causality",
+            "charm",
+            "event",
+            "sequence"
+          ],
+          "invalid_reasons": [],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.19779
+        }
+      ],
+      "cost_jpy": 0.4423,
+      "calibration_ok": true
+    },
+    {
+      "fixture": "F8",
+      "description": "F1から改変: 川の精霊の魔法の剣、王の息子という出自、スパイ、魔法の馬、ドラゴン、友が魔法使い、Melosが王になる等の重大な新Fact追加。原作逸脱: 物語の性質そのもの。捏造引用(偽evidence_quote)の無効化はmock testで別途検証(実LLMに偽引用を誘導しない)。",
+      "expected_verdict": "FAIL",
+      "expected_categories_any_of": [
+        "added_fact",
+        "event"
+      ],
+      "final_verdict": "FAIL",
+      "layer1_verdict": "PASS",
+      "layer1_hard_fails": [],
+      "layer2_verdict": "FAIL",
+      "layer2_confirmed": true,
+      "layer2_fail_categories": [
+        "added_fact",
+        "causality",
+        "charm",
+        "ending",
+        "event",
+        "role_relation",
+        "sequence"
+      ],
+      "judgements": [
+        {
+          "attempt": 1,
+          "valid": true,
+          "verdict": "FAIL",
+          "fail_categories": [
+            "added_fact",
+            "causality",
+            "charm",
+            "ending",
+            "event",
+            "role_relation",
+            "sequence"
+          ],
+          "invalid_reasons": [],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.28107
+        },
+        {
+          "attempt": 1,
+          "valid": true,
+          "verdict": "FAIL",
+          "fail_categories": [
+            "added_fact",
+            "causality",
+            "charm",
+            "ending",
+            "event",
+            "role_relation",
+            "sequence"
+          ],
+          "invalid_reasons": [],
+          "actual_model_id": "gpt-6-luna",
+          "cost_jpy": 0.24769
+        }
+      ],
+      "cost_jpy": 0.5288,
+      "calibration_ok": true
+    }
+  ],
+  "stopped": null,
+  "all_ok": true,
+  "cost": {
+    "total_jpy": 4.0265,
+    "calls": 17,
+    "cap_jpy": 8.0,
+    "input_tokens": 44896,
+    "cached_input_tokens": 21064,
+    "output_tokens": 45143
+  }
+}

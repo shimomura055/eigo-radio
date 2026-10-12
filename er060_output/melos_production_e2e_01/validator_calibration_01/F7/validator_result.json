@@ -1,0 +1,711 @@
+{
+  "schema_version": "er061_validator_result_v1",
+  "story_key": "melos",
+  "level": "b1b",
+  "candidate_sha256": "080908e221c5bb42aeafc5f6146b53d54e115baa833f6e34eba09dcd8bf681ee",
+  "anchors_sha256": "9aafa24df56549b797a727e7497c29c884d35e1b388e890aa23a98f428413bb5",
+  "layer1": {
+    "verdict": "WARN",
+    "hard_fails": [],
+    "warns": [
+      {
+        "id": "ANCHOR_KEYWORDS_MISSING",
+        "detail": "E4"
+      }
+    ],
+    "anchor_hits": {
+      "R1": [
+        "melos",
+        "shepherd"
+      ],
+      "R2": [
+        "ruler"
+      ],
+      "R3": [
+        "friend"
+      ],
+      "E1": [
+        "die",
+        "kill"
+      ],
+      "E2": [
+        "wedding",
+        "sister",
+        "three days",
+        "days"
+      ],
+      "E3": [
+        "river"
+      ],
+      "E4": [],
+      "E5": [
+        "promise",
+        "trust"
+      ],
+      "E6": [
+        "sunset",
+        "sun",
+        "stop",
+        "wait",
+        "square",
+        "guard",
+        "i'm here"
+      ],
+      "N1": [
+        "let them",
+        "both",
+        "trust"
+      ]
+    },
+    "paragraph_count": 20
+  },
+  "layer2": {
+    "judgements": [
+      {
+        "attempt": 1,
+        "requested_model": "gpt-6-luna",
+        "actual_model_id": "gpt-6-luna",
+        "response_id": "resp_030a469c6896a33d006acc5f30c40887d0a965e38164c71e99",
+        "cost_jpy": 0.24456,
+        "usage": {
+          "input_tokens": 2490,
+          "output_tokens": 2559
+        },
+        "valid": true,
+        "invalid_reasons": [],
+        "items": [
+          {
+            "anchor_id": "R1",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "He was only a shepherd, but he was not afraid.",
+            "note": "羊飼いのメロスが恐れずに支配者へ抗議しています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R2",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "You kill people without asking if they did anything wrong!",
+            "note": "疑いだけで人を殺し、公正な確認をしない支配者として描かれています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "His friend stepped forward. “Keep me here. I trust him.”",
+            "note": "友人が身代わりの人質となり、メロスへの信頼を示しています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E1",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“My guards will kill you too,” said the ruler.",
+            "note": "抗議の後、支配者はメロスを殺すと告げています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E2",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“Give me three days,” he said. “I promise to return.”",
+            "note": "姉の結婚式に行くための猶予と、人質となる友人が描かれています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E3",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "A bridge crossed the river, and nobody stopped him on the way.",
+            "note": "川や襲撃者の困難がなく、旅は妨げられません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "missing",
+            "severity": "major",
+            "evidence_quote": "He walked slowly and enjoyed the green fields.",
+            "note": "疲れ果てて友人を見捨てようとする場面はありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "missing",
+            "severity": "major",
+            "evidence_quote": "“I knew you would come.”",
+            "note": "友人の信頼は示されますが、それを受けてメロスが決意を取り戻す場面はありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "On the third day, he arrived in the city early in the afternoon, with plenty of time to spare.",
+            "note": "処刑直前ではなく、余裕をもって到着しています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C1",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“My guards will kill you too,” said the ruler.",
+            "note": "メロスの非難に続いて、支配者が彼を殺すと脅します。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C2",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“Keep me here. I trust him.”",
+            "note": "友人が信頼から自ら人質となり、約束を命がけにしています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "missing",
+            "severity": "major",
+            "evidence_quote": "“I knew you would come.”",
+            "note": "友人の信頼を思い出してメロスが決意を回復する因果はありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“I thought no one could trust another person so much.”",
+            "note": "二人の信頼を見た支配者が考えを改め、友人を解放します。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "On the third day, he arrived in the city early in the afternoon, with plenty of time to spare.",
+            "note": "猶予の後に障害や絶望、再決意を経て間に合う筋が省かれています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“Let them both go,” he said at last.",
+            "note": "友人は解放され、支配者も二人の信頼に心を動かされます。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend smiled. “I knew you would come.”",
+            "note": "友情の信頼は残っていますが、絶望から希望へ至る感情的な山場がありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M2",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "with plenty of time to spare.",
+            "note": "日没までの競走の緊張感が失われています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The weather was fine and the road was dry.",
+            "note": "障害の旅を、天候も道も穏やかな余裕のある帰路に置き換えています。",
+            "quote_verified": true
+          }
+        ],
+        "verdict": "FAIL",
+        "fail_items": [
+          {
+            "anchor_id": "E3",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "A bridge crossed the river, and nobody stopped him on the way.",
+            "note": "川や襲撃者の困難がなく、旅は妨げられません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "missing",
+            "severity": "major",
+            "evidence_quote": "He walked slowly and enjoyed the green fields.",
+            "note": "疲れ果てて友人を見捨てようとする場面はありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "missing",
+            "severity": "major",
+            "evidence_quote": "“I knew you would come.”",
+            "note": "友人の信頼は示されますが、それを受けてメロスが決意を取り戻す場面はありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "On the third day, he arrived in the city early in the afternoon, with plenty of time to spare.",
+            "note": "処刑直前ではなく、余裕をもって到着しています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "missing",
+            "severity": "major",
+            "evidence_quote": "“I knew you would come.”",
+            "note": "友人の信頼を思い出してメロスが決意を回復する因果はありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "On the third day, he arrived in the city early in the afternoon, with plenty of time to spare.",
+            "note": "猶予の後に障害や絶望、再決意を経て間に合う筋が省かれています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend smiled. “I knew you would come.”",
+            "note": "友情の信頼は残っていますが、絶望から希望へ至る感情的な山場がありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M2",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "with plenty of time to spare.",
+            "note": "日没までの競走の緊張感が失われています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The weather was fine and the road was dry.",
+            "note": "障害の旅を、天候も道も穏やかな余裕のある帰路に置き換えています。",
+            "quote_verified": true
+          }
+        ],
+        "warn_items": []
+      },
+      {
+        "attempt": 1,
+        "requested_model": "gpt-6-luna",
+        "actual_model_id": "gpt-6-luna",
+        "response_id": "resp_0eb11772eddc152d006acc5f46797487d0877b26e6e8a68d51",
+        "cost_jpy": 0.19779,
+        "usage": {
+          "input_tokens": 2490,
+          "output_tokens": 2422
+        },
+        "valid": true,
+        "invalid_reasons": [],
+        "items": [
+          {
+            "anchor_id": "R1",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "He was only a shepherd, but he was not afraid.",
+            "note": "羊飼いとして暴君に恐れず異議を唱える役割は保たれています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R2",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "You kill people without asking if they did anything wrong!",
+            "note": "疑いを十分に確かめず人を殺す支配者として描かれています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "Keep me here. I trust him.",
+            "note": "友人が身代わりの人質となり、メロスを信頼しています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E1",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“My guards will kill you too,” said the ruler.",
+            "note": "メロスの糾弾に続いて、支配者が死を宣告しています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E2",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“Give me three days,” he said. “I promise to return.”",
+            "note": "妹の結婚式のための三日間と、友人を人質にする約束があります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E3",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "A bridge crossed the river, and nobody stopped him on the way.",
+            "note": "川や襲撃者に妨げられる原作の旅が、妨害のない道のりに変わっています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "missing",
+            "severity": "major",
+            "evidence_quote": "He walked slowly and enjoyed the green fields.",
+            "note": "疲労の果てに友人を見捨てそうになる場面はありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "missing",
+            "severity": "major",
+            "evidence_quote": "His friend smiled. “I knew you would come.”",
+            "note": "友人への信頼を思い出してメロス自身が決意を立て直す場面はありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "On the third day, he arrived in the city early in the afternoon, with plenty of time to spare.",
+            "note": "処刑寸前の到着ではなく、時間に余裕をもって到着します。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C1",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“You kill people without asking if they did anything wrong!” he shouted. “My guards will kill you too,” said the ruler.",
+            "note": "支配者の暴政を糾弾した後に、メロスが死を宣告されています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C2",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“Keep me here. I trust him.”",
+            "note": "友人の信頼に基づく人質の申し出が、約束を命がけにしています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "missing",
+            "severity": "major",
+            "evidence_quote": "His friend smiled. “I knew you would come.”",
+            "note": "信頼を思い出したメロスが困難の中で決意を回復する因果がありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“I thought no one could trust another person so much.”",
+            "note": "友人たちの信頼を見た支配者が考えを改め、二人を解放します。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He walked slowly and enjoyed the green fields. He slept well and ate a big meal at an inn.",
+            "note": "障害、消耗、諦めかける局面、再起という旅の流れが抜け、余裕ある帰路になっています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“Let them both go,” he said at last. “I thought no one could trust another person so much.”",
+            "note": "友人は解放され、二人の信頼を見た支配者の心も変わります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He walked slowly and enjoyed the green fields.",
+            "note": "友情への信頼は残る一方、試練と絶望の後に希望へ至る感動が失われています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M2",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "On the third day, he arrived in the city early in the afternoon, with plenty of time to spare.",
+            "note": "日没までの競争がなく、時間の切迫感が失われています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He slept well and ate a big meal at an inn.",
+            "note": "障害や消耗の旅を、宿で休み食事をする余裕ある旅に置き換える事実が加わっています。",
+            "quote_verified": true
+          }
+        ],
+        "verdict": "FAIL",
+        "fail_items": [
+          {
+            "anchor_id": "E3",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "A bridge crossed the river, and nobody stopped him on the way.",
+            "note": "川や襲撃者に妨げられる原作の旅が、妨害のない道のりに変わっています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "missing",
+            "severity": "major",
+            "evidence_quote": "He walked slowly and enjoyed the green fields.",
+            "note": "疲労の果てに友人を見捨てそうになる場面はありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "missing",
+            "severity": "major",
+            "evidence_quote": "His friend smiled. “I knew you would come.”",
+            "note": "友人への信頼を思い出してメロス自身が決意を立て直す場面はありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "On the third day, he arrived in the city early in the afternoon, with plenty of time to spare.",
+            "note": "処刑寸前の到着ではなく、時間に余裕をもって到着します。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "missing",
+            "severity": "major",
+            "evidence_quote": "His friend smiled. “I knew you would come.”",
+            "note": "信頼を思い出したメロスが困難の中で決意を回復する因果がありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He walked slowly and enjoyed the green fields. He slept well and ate a big meal at an inn.",
+            "note": "障害、消耗、諦めかける局面、再起という旅の流れが抜け、余裕ある帰路になっています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He walked slowly and enjoyed the green fields.",
+            "note": "友情への信頼は残る一方、試練と絶望の後に希望へ至る感動が失われています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M2",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "On the third day, he arrived in the city early in the afternoon, with plenty of time to spare.",
+            "note": "日没までの競争がなく、時間の切迫感が失われています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He slept well and ate a big meal at an inn.",
+            "note": "障害や消耗の旅を、宿で休み食事をする余裕ある旅に置き換える事実が加わっています。",
+            "quote_verified": true
+          }
+        ],
+        "warn_items": []
+      }
+    ],
+    "confirmed": true,
+    "fail_items": [
+      {
+        "anchor_id": "E3",
+        "category": "event",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "A bridge crossed the river, and nobody stopped him on the way.",
+        "note": "川や襲撃者の困難がなく、旅は妨げられません。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "E4",
+        "category": "event",
+        "status": "missing",
+        "severity": "major",
+        "evidence_quote": "He walked slowly and enjoyed the green fields.",
+        "note": "疲れ果てて友人を見捨てようとする場面はありません。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "E5",
+        "category": "event",
+        "status": "missing",
+        "severity": "major",
+        "evidence_quote": "“I knew you would come.”",
+        "note": "友人の信頼は示されますが、それを受けてメロスが決意を取り戻す場面はありません。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "E6",
+        "category": "event",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "On the third day, he arrived in the city early in the afternoon, with plenty of time to spare.",
+        "note": "処刑直前ではなく、余裕をもって到着しています。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "C3",
+        "category": "causality",
+        "status": "missing",
+        "severity": "major",
+        "evidence_quote": "“I knew you would come.”",
+        "note": "友人の信頼を思い出してメロスが決意を回復する因果はありません。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "S1",
+        "category": "sequence",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "On the third day, he arrived in the city early in the afternoon, with plenty of time to spare.",
+        "note": "猶予の後に障害や絶望、再決意を経て間に合う筋が省かれています。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "M1",
+        "category": "charm",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "His friend smiled. “I knew you would come.”",
+        "note": "友情の信頼は残っていますが、絶望から希望へ至る感情的な山場がありません。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "M2",
+        "category": "charm",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "with plenty of time to spare.",
+        "note": "日没までの競走の緊張感が失われています。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "X1",
+        "category": "added_fact",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "The weather was fine and the road was dry.",
+        "note": "障害の旅を、天候も道も穏やかな余裕のある帰路に置き換えています。",
+        "quote_verified": true
+      }
+    ],
+    "warn_items": [],
+    "reasons": [],
+    "verdict": "FAIL",
+    "confirmed_categories": [
+      "added_fact",
+      "causality",
+      "charm",
+      "event",
+      "sequence"
+    ]
+  },
+  "std_checks": null,
+  "verdict": "FAIL",
+  "stop_required": true,
+  "reasons": [
+    "layer2:event:E3",
+    "layer2:event:E4",
+    "layer2:event:E5",
+    "layer2:event:E6",
+    "layer2:causality:C3",
+    "layer2:sequence:S1",
+    "layer2:charm:M1",
+    "layer2:charm:M2",
+    "layer2:added_fact:X1"
+  ],
+  "model": {
+    "routing_key": "FAMILY_Z_SEMANTIC_JUDGE",
+    "requested": "gpt-6-luna",
+    "actual_model_ids": [
+      "gpt-6-luna"
+    ]
+  },
+  "usage_total": {
+    "input_tokens": 39732,
+    "cached_input_tokens": 18485,
+    "output_tokens": 39102
+  },
+  "cost_jpy": 3.4977
+}

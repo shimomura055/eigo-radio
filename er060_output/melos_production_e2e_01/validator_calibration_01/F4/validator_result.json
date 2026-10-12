@@ -1,0 +1,713 @@
+{
+  "schema_version": "er061_validator_result_v1",
+  "story_key": "melos",
+  "level": "b1b",
+  "candidate_sha256": "0a5b36de32917e48e6fc9731773c90873be739bdc905323a93bc0b598c4ee280",
+  "anchors_sha256": "9aafa24df56549b797a727e7497c29c884d35e1b388e890aa23a98f428413bb5",
+  "layer1": {
+    "verdict": "WARN",
+    "hard_fails": [],
+    "warns": [
+      {
+        "id": "ANCHOR_KEYWORDS_MISSING",
+        "detail": "R3"
+      }
+    ],
+    "anchor_hits": {
+      "R1": [
+        "melos",
+        "shepherd"
+      ],
+      "R2": [
+        "ruler"
+      ],
+      "R3": [],
+      "E1": [
+        "die",
+        "kill"
+      ],
+      "E2": [
+        "wedding",
+        "sister",
+        "three days",
+        "days"
+      ],
+      "E3": [
+        "river",
+        "water",
+        "men",
+        "stick"
+      ],
+      "E4": [
+        "rest",
+        "stay alive",
+        "wanted to",
+        "forget",
+        "fell"
+      ],
+      "E5": [
+        "promise",
+        "trust",
+        "remember",
+        "word",
+        "waiting"
+      ],
+      "E6": [
+        "sunset",
+        "sun",
+        "stop",
+        "wait",
+        "square",
+        "sword",
+        "guard",
+        "i'm here"
+      ],
+      "N1": [
+        "let them",
+        "both",
+        "trust"
+      ]
+    },
+    "paragraph_count": 39
+  },
+  "layer2": {
+    "judgements": [
+      {
+        "attempt": 1,
+        "requested_model": "gpt-6-luna",
+        "actual_model_id": "gpt-6-luna",
+        "response_id": "resp_02a6c18e746b320f006acc5e5056e487d0936f0fad856f1615",
+        "cost_jpy": 0.28541,
+        "usage": {
+          "input_tokens": 2708,
+          "output_tokens": 3026
+        },
+        "valid": true,
+        "invalid_reasons": [],
+        "items": [
+          {
+            "anchor_id": "R1",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "He was only a shepherd, but he was not afraid.",
+            "note": "羊飼いのメロスが恐れずに支配者を非難しています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R2",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“You kill people without asking if they did anything wrong!” he shouted.",
+            "note": "疑いを確かめず人を殺す支配者として描かれています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "A stranger from the crowd stepped forward. “Keep me here. I do not know him",
+            "note": "友人ではなく、メロスを知らない見知らぬ人が人質になります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E1",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“My guards will kill you too,” said the ruler.",
+            "note": "非難したメロスに支配者が死を告げています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E2",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "The ruler smiled. “If you are not back by sunset on the third day, this stranger will die.”",
+            "note": "結婚式のための猶予と、戻らなければ人質が死ぬ条件が示されています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E3",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "He fought to reach the other side. At last, he caught a tree branch and pulled himself out.",
+            "note": "危険な川と襲撃者が帰路を妨げ、彼を消耗させます。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "He could rest here. He could stay alive.",
+            "note": "約束を捨てて帰らない誘惑に駆られています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“I will not let him laugh at me.”",
+            "note": "決意を取り戻す動機が友人への信頼ではなく、支配者に笑われたくない気持ちです。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "When he reached the city square, a guard was lifting his sword.",
+            "note": "処刑が始まる直前に到着しています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C1",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“You kill people without asking if they did anything wrong!” he shouted. “My guards will kill you too,” said the ruler.",
+            "note": "支配者の不正への非難に対して、死刑を告げています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C2",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“Keep me here. I do not know him, but I have nothing else to do.”",
+            "note": "人質は自発的に残りますが、信頼ではなく「ほかにすることがない」ためです。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“I will not let him laugh at me.”",
+            "note": "友人の信頼や自分の約束を思い出してではなく、反抗心から再び走ります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“I thought no one could trust another person so much.”",
+            "note": "支配者はメロスの帰還に動かされますが、二人の友人の相互の忠誠は描かれていません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "After the wedding, Melos started back. Rain fell hard all night. By morning, dark water covered the bridge.",
+            "note": "結婚式の後、障害のある帰路へ進む順序は保たれています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“Let them both go,” he said at last. “I thought no one could trust another person so much.”",
+            "note": "二人は助かり支配者も心を動かされますが、友人同士の相互信頼による結末ではありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“I will not let him laugh at me.”",
+            "note": "友情の信頼が支配者の冷笑を超える感動ではなく、反発心が中心になっています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M2",
+            "category": "charm",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "The sun was low.",
+            "note": "日没の期限が迫る緊張感があります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "A stranger from the crowd stepped forward. “Keep me here. I do not know him",
+            "note": "友人の代わりに、何の関係もない見知らぬ人が人質になる大きな変更があります。",
+            "quote_verified": true
+          }
+        ],
+        "verdict": "FAIL",
+        "fail_items": [
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "A stranger from the crowd stepped forward. “Keep me here. I do not know him",
+            "note": "友人ではなく、メロスを知らない見知らぬ人が人質になります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“I will not let him laugh at me.”",
+            "note": "決意を取り戻す動機が友人への信頼ではなく、支配者に笑われたくない気持ちです。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C2",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“Keep me here. I do not know him, but I have nothing else to do.”",
+            "note": "人質は自発的に残りますが、信頼ではなく「ほかにすることがない」ためです。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“I will not let him laugh at me.”",
+            "note": "友人の信頼や自分の約束を思い出してではなく、反抗心から再び走ります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“I thought no one could trust another person so much.”",
+            "note": "支配者はメロスの帰還に動かされますが、二人の友人の相互の忠誠は描かれていません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“Let them both go,” he said at last. “I thought no one could trust another person so much.”",
+            "note": "二人は助かり支配者も心を動かされますが、友人同士の相互信頼による結末ではありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“I will not let him laugh at me.”",
+            "note": "友情の信頼が支配者の冷笑を超える感動ではなく、反発心が中心になっています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "A stranger from the crowd stepped forward. “Keep me here. I do not know him",
+            "note": "友人の代わりに、何の関係もない見知らぬ人が人質になる大きな変更があります。",
+            "quote_verified": true
+          }
+        ],
+        "warn_items": []
+      },
+      {
+        "attempt": 1,
+        "requested_model": "gpt-6-luna",
+        "actual_model_id": "gpt-6-luna",
+        "response_id": "resp_0260517368c3a973006acc5e68db9c87d08ea09202f1168057",
+        "cost_jpy": 0.23262,
+        "usage": {
+          "input_tokens": 2708,
+          "output_tokens": 2853
+        },
+        "valid": true,
+        "invalid_reasons": [],
+        "items": [
+          {
+            "anchor_id": "R1",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "He was only a shepherd, but he was not afraid.",
+            "note": "羊飼いのメロスが恐れず暴君に声を上げています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R2",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "You kill people without asking if they did anything wrong!",
+            "note": "疑いだけで人を殺す支配者として描かれています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "I do not know him, but I have nothing else to do.",
+            "note": "友人ではなく、メロスを知らない見知らぬ人が人質になります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E1",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "My guards will kill you too,",
+            "note": "暴君を非難したメロスに、支配者が死を告げています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E2",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "If you are not back by sunset on the third day, this stranger will die.",
+            "note": "三日間の猶予と結婚式は保たれていますが、人質は友人ではありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E3",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "The water pulled him under. He fought to reach the other side.",
+            "note": "危険な川と襲撃者に遭い、疲弊する展開があります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He could rest here. He could stay alive.",
+            "note": "諦めかけますが、友人を死なせることへの葛藤は描かれません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "I will not let him laugh at me.",
+            "note": "友人への信頼や約束ではなく、支配者を笑わせない意地で立ち直ります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "When he reached the city square, a guard was lifting his sword.",
+            "note": "処刑の直前に街へ到着しています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C1",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "You kill people without asking if they did anything wrong!",
+            "note": "支配者の不正を非難した後に、メロスが処刑の脅しを受けています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C2",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "I do not know him, but I have nothing else to do.",
+            "note": "人質を申し出る理由は信頼ではなく、友人関係もありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "I will not let him laugh at me.",
+            "note": "決意を取り戻すきっかけが、友人の信頼ではなく支配者への意地です。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "I thought no one could trust another person so much.",
+            "note": "支配者は信頼に動かされますが、二人は友人ではなく相互の友情も描かれません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "He began to run again.\n\nWhen he reached the city square, a guard was lifting his sword.",
+            "note": "猶予、人質、道中の障害、疲労、再出発、処刑直前の到着という順序は保たれています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "This time, they left separately.",
+            "note": "人質は救われ支配者も動かされますが、二人の友人関係と相互の信頼が結ぶ結末ではありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "This time, they left separately.",
+            "note": "苦境からの希望は残るものの、友情と忠誠の感動が見知らぬ人との出来事に置き換わっています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M2",
+            "category": "charm",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "The sun was low.",
+            "note": "日没の期限が迫る緊張感があります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "A stranger from the crowd stepped forward.",
+            "note": "友人の代わりに、物語の中心的な人質役となる見知らぬ人物を加えています。",
+            "quote_verified": true
+          }
+        ],
+        "verdict": "FAIL",
+        "fail_items": [
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "I do not know him, but I have nothing else to do.",
+            "note": "友人ではなく、メロスを知らない見知らぬ人が人質になります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E2",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "If you are not back by sunset on the third day, this stranger will die.",
+            "note": "三日間の猶予と結婚式は保たれていますが、人質は友人ではありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He could rest here. He could stay alive.",
+            "note": "諦めかけますが、友人を死なせることへの葛藤は描かれません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "I will not let him laugh at me.",
+            "note": "友人への信頼や約束ではなく、支配者を笑わせない意地で立ち直ります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C2",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "I do not know him, but I have nothing else to do.",
+            "note": "人質を申し出る理由は信頼ではなく、友人関係もありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "I will not let him laugh at me.",
+            "note": "決意を取り戻すきっかけが、友人の信頼ではなく支配者への意地です。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "I thought no one could trust another person so much.",
+            "note": "支配者は信頼に動かされますが、二人は友人ではなく相互の友情も描かれません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "This time, they left separately.",
+            "note": "人質は救われ支配者も動かされますが、二人の友人関係と相互の信頼が結ぶ結末ではありません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "This time, they left separately.",
+            "note": "苦境からの希望は残るものの、友情と忠誠の感動が見知らぬ人との出来事に置き換わっています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "A stranger from the crowd stepped forward.",
+            "note": "友人の代わりに、物語の中心的な人質役となる見知らぬ人物を加えています。",
+            "quote_verified": true
+          }
+        ],
+        "warn_items": []
+      }
+    ],
+    "confirmed": true,
+    "fail_items": [
+      {
+        "anchor_id": "R3",
+        "category": "role_relation",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "A stranger from the crowd stepped forward. “Keep me here. I do not know him",
+        "note": "友人ではなく、メロスを知らない見知らぬ人が人質になります。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "E5",
+        "category": "event",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "“I will not let him laugh at me.”",
+        "note": "決意を取り戻す動機が友人への信頼ではなく、支配者に笑われたくない気持ちです。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "C2",
+        "category": "causality",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "“Keep me here. I do not know him, but I have nothing else to do.”",
+        "note": "人質は自発的に残りますが、信頼ではなく「ほかにすることがない」ためです。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "C3",
+        "category": "causality",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "“I will not let him laugh at me.”",
+        "note": "友人の信頼や自分の約束を思い出してではなく、反抗心から再び走ります。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "C4",
+        "category": "causality",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "“I thought no one could trust another person so much.”",
+        "note": "支配者はメロスの帰還に動かされますが、二人の友人の相互の忠誠は描かれていません。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "N1",
+        "category": "ending",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "“Let them both go,” he said at last. “I thought no one could trust another person so much.”",
+        "note": "二人は助かり支配者も心を動かされますが、友人同士の相互信頼による結末ではありません。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "M1",
+        "category": "charm",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "“I will not let him laugh at me.”",
+        "note": "友情の信頼が支配者の冷笑を超える感動ではなく、反発心が中心になっています。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "X1",
+        "category": "added_fact",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "A stranger from the crowd stepped forward. “Keep me here. I do not know him",
+        "note": "友人の代わりに、何の関係もない見知らぬ人が人質になる大きな変更があります。",
+        "quote_verified": true
+      }
+    ],
+    "warn_items": [],
+    "reasons": [],
+    "verdict": "FAIL",
+    "confirmed_categories": [
+      "added_fact",
+      "causality",
+      "charm",
+      "ending",
+      "event",
+      "role_relation"
+    ]
+  },
+  "std_checks": null,
+  "verdict": "FAIL",
+  "stop_required": true,
+  "reasons": [
+    "layer2:role_relation:R3",
+    "layer2:event:E5",
+    "layer2:causality:C2",
+    "layer2:causality:C3",
+    "layer2:causality:C4",
+    "layer2:ending:N1",
+    "layer2:charm:M1",
+    "layer2:added_fact:X1"
+  ],
+  "model": {
+    "routing_key": "FAMILY_Z_SEMANTIC_JUDGE",
+    "requested": "gpt-6-luna",
+    "actual_model_ids": [
+      "gpt-6-luna"
+    ]
+  },
+  "usage_total": {
+    "input_tokens": 13447,
+    "cached_input_tokens": 2705,
+    "output_tokens": 13515
+  },
+  "cost_jpy": 1.2574
+}

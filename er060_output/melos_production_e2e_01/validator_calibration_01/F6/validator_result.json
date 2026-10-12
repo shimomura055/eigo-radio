@@ -1,0 +1,822 @@
+{
+  "schema_version": "er061_validator_result_v1",
+  "story_key": "melos",
+  "level": "b1b",
+  "candidate_sha256": "86bb396982ac6b8ac5a8762269e057d5f4ec66e805a0db62c51c6baa9ab5c0c0",
+  "anchors_sha256": "9aafa24df56549b797a727e7497c29c884d35e1b388e890aa23a98f428413bb5",
+  "layer1": {
+    "verdict": "PASS",
+    "hard_fails": [],
+    "warns": [],
+    "anchor_hits": {
+      "R1": [
+        "melos",
+        "shepherd"
+      ],
+      "R2": [
+        "ruler"
+      ],
+      "R3": [
+        "friend"
+      ],
+      "E1": [
+        "die",
+        "sentence",
+        "kill"
+      ],
+      "E2": [
+        "wedding",
+        "sister",
+        "three days",
+        "days"
+      ],
+      "E3": [
+        "river",
+        "water",
+        "men",
+        "stick"
+      ],
+      "E4": [
+        "rest",
+        "stay alive",
+        "wanted to",
+        "forget",
+        "fell"
+      ],
+      "E5": [
+        "promise",
+        "trust"
+      ],
+      "E6": [
+        "sunset",
+        "sun",
+        "stop",
+        "wait",
+        "square",
+        "sword",
+        "guard",
+        "i'm here"
+      ],
+      "N1": [
+        "let them",
+        "both",
+        "trust"
+      ]
+    },
+    "paragraph_count": 34
+  },
+  "layer2": {
+    "judgements": [
+      {
+        "attempt": 1,
+        "requested_model": "gpt-6-luna",
+        "actual_model_id": "gpt-6-luna",
+        "response_id": "resp_07e14a51b972de30006acc5f0423c487d081285e1ab1a405b9",
+        "cost_jpy": 0.25098,
+        "usage": {
+          "input_tokens": 2686,
+          "output_tokens": 2600
+        },
+        "valid": true,
+        "invalid_reasons": [],
+        "items": [
+          {
+            "anchor_id": "R1",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "Melos shouted at him only because he was angry about his own sentence.",
+            "note": "He denounces the ruler only after being sentenced, changing his brave, principled motive.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R2",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "You kill people without asking if they did anything wrong!",
+            "note": "Melos explicitly describes the ruler’s killings as lacking fair inquiry.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not trust Melos at all.",
+            "note": "The friend’s trust is reversed, undermining the relationship’s emotional core.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E1",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler had already decided to hang a shepherd. Melos shouted at him only because he was angry about his own sentence.",
+            "note": "Both events appear, but the sentence comes before Melos’s denunciation.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E2",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“Give me three days,” he said. “I promise to return.”",
+            "note": "Melos receives three days for the wedding while his friend remains in his place.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E3",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "Three men blocked the road.",
+            "note": "The river and attackers both delay and weaken Melos on his return.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "For a moment, he wanted to forget everything.",
+            "note": "Exhausted, Melos considers abandoning his promise and not returning.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "Fear made him stand up.",
+            "note": "He renews his effort from fear of the soldiers, not trust in his friend or promise.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "When he reached the city square, a guard was lifting his sword.",
+            "note": "Melos arrives as the execution is about to happen and stops it.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C1",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler had already decided to hang a shepherd. Melos shouted at him only because he was angry about his own sentence.",
+            "note": "The sentence precedes and motivates Melos’s denunciation, reversing the original cause and effect.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C2",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not trust Melos at all.",
+            "note": "The hostage is assigned by the ruler and does not stay voluntarily out of trust.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "Fear made him stand up.",
+            "note": "Fear of the approaching soldiers, rather than remembered trust and promise, revives him.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The crowd is angry, and I am afraid of them. That is the only reason.",
+            "note": "The ruler releases them from fear of the crowd and does not change his heart.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler had already decided to hang a shepherd. Melos shouted at him only because he was angry about his own sentence.",
+            "note": "The opening reverses the denunciation-and-sentence order, and renewed resolve is driven by fear.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler went back to his palace, as cruel as before, and the two men left in silence.",
+            "note": "The friend is freed, but the ruler remains cruel rather than changed by their loyalty.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not trust Melos at all.",
+            "note": "The central mutual-trust theme is removed, and the ending offers no hopeful change of heart.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M2",
+            "category": "charm",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "The sun was low.",
+            "note": "The approaching sunset and execution create deadline tension during Melos’s return.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The crowd is angry, and I am afraid of them. That is the only reason.",
+            "note": "The ruler’s fear of the crowd is invented as the reason he releases the men, replacing his changed heart.",
+            "quote_verified": true
+          }
+        ],
+        "verdict": "FAIL",
+        "fail_items": [
+          {
+            "anchor_id": "R1",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "Melos shouted at him only because he was angry about his own sentence.",
+            "note": "He denounces the ruler only after being sentenced, changing his brave, principled motive.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not trust Melos at all.",
+            "note": "The friend’s trust is reversed, undermining the relationship’s emotional core.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E1",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler had already decided to hang a shepherd. Melos shouted at him only because he was angry about his own sentence.",
+            "note": "Both events appear, but the sentence comes before Melos’s denunciation.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "Fear made him stand up.",
+            "note": "He renews his effort from fear of the soldiers, not trust in his friend or promise.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C1",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler had already decided to hang a shepherd. Melos shouted at him only because he was angry about his own sentence.",
+            "note": "The sentence precedes and motivates Melos’s denunciation, reversing the original cause and effect.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C2",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not trust Melos at all.",
+            "note": "The hostage is assigned by the ruler and does not stay voluntarily out of trust.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "Fear made him stand up.",
+            "note": "Fear of the approaching soldiers, rather than remembered trust and promise, revives him.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The crowd is angry, and I am afraid of them. That is the only reason.",
+            "note": "The ruler releases them from fear of the crowd and does not change his heart.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler had already decided to hang a shepherd. Melos shouted at him only because he was angry about his own sentence.",
+            "note": "The opening reverses the denunciation-and-sentence order, and renewed resolve is driven by fear.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler went back to his palace, as cruel as before, and the two men left in silence.",
+            "note": "The friend is freed, but the ruler remains cruel rather than changed by their loyalty.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not trust Melos at all.",
+            "note": "The central mutual-trust theme is removed, and the ending offers no hopeful change of heart.",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The crowd is angry, and I am afraid of them. That is the only reason.",
+            "note": "The ruler’s fear of the crowd is invented as the reason he releases the men, replacing his changed heart.",
+            "quote_verified": true
+          }
+        ],
+        "warn_items": []
+      },
+      {
+        "attempt": 1,
+        "requested_model": "gpt-6-luna",
+        "actual_model_id": "gpt-6-luna",
+        "response_id": "resp_0dba22764e025bec006acc5f1a1bc087d09550827c8b8aeca2",
+        "cost_jpy": 0.22562,
+        "usage": {
+          "input_tokens": 2686,
+          "output_tokens": 2766
+        },
+        "valid": true,
+        "invalid_reasons": [],
+        "items": [
+          {
+            "anchor_id": "R1",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "Melos shouted at him only because he was angry about his own sentence.",
+            "note": "告発はするが、暴君への正義感ではなく自分の処刑への怒りが動機になっている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R2",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "minor",
+            "evidence_quote": "You kill people without asking if they did anything wrong!",
+            "note": "疑いだけで処刑する暴君像はあるが、敵を恐れる支配者という描写は変わっている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not trust Melos at all.",
+            "note": "友人は人質になるが、信頼し合う関係が明確に否定されている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E1",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler had already decided to hang a shepherd. Melos shouted at him",
+            "note": "処刑決定が告発より先に起きており、出来事の順序が逆転している。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E2",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“Give me three days,” he said. “I promise to return.”",
+            "note": "妹の結婚に出るため三日の猶予を得て、友人が帰還まで人質になる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E3",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "Three men blocked the road.",
+            "note": "増水した川と襲撃者が帰路を妨げ、メロスを弱らせる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "altered",
+            "severity": "minor",
+            "evidence_quote": "For a moment, he wanted to forget everything.",
+            "note": "諦めかける場面はあるが、友人を死なせる覚悟ではなく一時的に忘れたいという描写にとどまる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "Fear made him stand up.",
+            "note": "友人への信頼や約束ではなく、兵士への恐怖で立ち上がる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "When he reached the city square, a guard was lifting his sword.",
+            "note": "処刑が始まる直前に到着する。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C1",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler had already decided to hang a shepherd.",
+            "note": "メロスの告発が死刑の原因ではなく、死刑決定が先にある。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C2",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "You will stay here in his place, whether you like it or not.",
+            "note": "友人は信頼から自発的に人質になるのではなく、強制されている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "Fear made him stand up.",
+            "note": "決意を取り戻す原因が友人への信頼ではなく、追ってくる兵士への恐怖に変わっている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The crowd is angry, and I am afraid of them. That is the only reason.",
+            "note": "支配者は二人の忠誠心に動かされたのではなく、群衆への恐怖から解放する。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler had already decided to hang a shepherd. Melos shouted at him",
+            "note": "死刑決定と告発の順序が逆で、友人の信頼や支配者の改心という展開もない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler went back to his palace, as cruel as before, and the two men left in silence.",
+            "note": "友人は解放されるが、支配者は改心せず、二人の信頼に心を動かされない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not trust Melos at all.",
+            "note": "友人同士の信頼と忠誠が物語の中心である魅力が失われ、希望ある結末にもならない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M2",
+            "category": "charm",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "The sun was low.",
+            "note": "日没までの期限を示し、帰還を急ぐ緊張感がある。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The crowd is angry, and I am afraid of them. That is the only reason.",
+            "note": "群衆への恐怖を解放の理由とし、支配者が改心しない結末を加えている。",
+            "quote_verified": true
+          }
+        ],
+        "verdict": "FAIL",
+        "fail_items": [
+          {
+            "anchor_id": "R1",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "Melos shouted at him only because he was angry about his own sentence.",
+            "note": "告発はするが、暴君への正義感ではなく自分の処刑への怒りが動機になっている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not trust Melos at all.",
+            "note": "友人は人質になるが、信頼し合う関係が明確に否定されている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E1",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler had already decided to hang a shepherd. Melos shouted at him",
+            "note": "処刑決定が告発より先に起きており、出来事の順序が逆転している。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "Fear made him stand up.",
+            "note": "友人への信頼や約束ではなく、兵士への恐怖で立ち上がる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C1",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler had already decided to hang a shepherd.",
+            "note": "メロスの告発が死刑の原因ではなく、死刑決定が先にある。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C2",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "You will stay here in his place, whether you like it or not.",
+            "note": "友人は信頼から自発的に人質になるのではなく、強制されている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "Fear made him stand up.",
+            "note": "決意を取り戻す原因が友人への信頼ではなく、追ってくる兵士への恐怖に変わっている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The crowd is angry, and I am afraid of them. That is the only reason.",
+            "note": "支配者は二人の忠誠心に動かされたのではなく、群衆への恐怖から解放する。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler had already decided to hang a shepherd. Melos shouted at him",
+            "note": "死刑決定と告発の順序が逆で、友人の信頼や支配者の改心という展開もない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler went back to his palace, as cruel as before, and the two men left in silence.",
+            "note": "友人は解放されるが、支配者は改心せず、二人の信頼に心を動かされない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not trust Melos at all.",
+            "note": "友人同士の信頼と忠誠が物語の中心である魅力が失われ、希望ある結末にもならない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The crowd is angry, and I am afraid of them. That is the only reason.",
+            "note": "群衆への恐怖を解放の理由とし、支配者が改心しない結末を加えている。",
+            "quote_verified": true
+          }
+        ],
+        "warn_items": [
+          {
+            "anchor_id": "R2",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "minor",
+            "evidence_quote": "You kill people without asking if they did anything wrong!",
+            "note": "疑いだけで処刑する暴君像はあるが、敵を恐れる支配者という描写は変わっている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "altered",
+            "severity": "minor",
+            "evidence_quote": "For a moment, he wanted to forget everything.",
+            "note": "諦めかける場面はあるが、友人を死なせる覚悟ではなく一時的に忘れたいという描写にとどまる。",
+            "quote_verified": true
+          }
+        ]
+      }
+    ],
+    "confirmed": true,
+    "fail_items": [
+      {
+        "anchor_id": "R1",
+        "category": "role_relation",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "Melos shouted at him only because he was angry about his own sentence.",
+        "note": "He denounces the ruler only after being sentenced, changing his brave, principled motive.",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "R3",
+        "category": "role_relation",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "He did not trust Melos at all.",
+        "note": "The friend’s trust is reversed, undermining the relationship’s emotional core.",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "E1",
+        "category": "event",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "The ruler had already decided to hang a shepherd. Melos shouted at him only because he was angry about his own sentence.",
+        "note": "Both events appear, but the sentence comes before Melos’s denunciation.",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "E5",
+        "category": "event",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "Fear made him stand up.",
+        "note": "He renews his effort from fear of the soldiers, not trust in his friend or promise.",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "C1",
+        "category": "causality",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "The ruler had already decided to hang a shepherd. Melos shouted at him only because he was angry about his own sentence.",
+        "note": "The sentence precedes and motivates Melos’s denunciation, reversing the original cause and effect.",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "C2",
+        "category": "causality",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "He did not trust Melos at all.",
+        "note": "The hostage is assigned by the ruler and does not stay voluntarily out of trust.",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "C3",
+        "category": "causality",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "Fear made him stand up.",
+        "note": "Fear of the approaching soldiers, rather than remembered trust and promise, revives him.",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "C4",
+        "category": "causality",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "The crowd is angry, and I am afraid of them. That is the only reason.",
+        "note": "The ruler releases them from fear of the crowd and does not change his heart.",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "S1",
+        "category": "sequence",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "The ruler had already decided to hang a shepherd. Melos shouted at him only because he was angry about his own sentence.",
+        "note": "The opening reverses the denunciation-and-sentence order, and renewed resolve is driven by fear.",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "N1",
+        "category": "ending",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "The ruler went back to his palace, as cruel as before, and the two men left in silence.",
+        "note": "The friend is freed, but the ruler remains cruel rather than changed by their loyalty.",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "M1",
+        "category": "charm",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "He did not trust Melos at all.",
+        "note": "The central mutual-trust theme is removed, and the ending offers no hopeful change of heart.",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "X1",
+        "category": "added_fact",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "The crowd is angry, and I am afraid of them. That is the only reason.",
+        "note": "The ruler’s fear of the crowd is invented as the reason he releases the men, replacing his changed heart.",
+        "quote_verified": true
+      }
+    ],
+    "warn_items": [],
+    "reasons": [],
+    "verdict": "FAIL",
+    "confirmed_categories": [
+      "added_fact",
+      "causality",
+      "charm",
+      "ending",
+      "event",
+      "role_relation",
+      "sequence"
+    ]
+  },
+  "std_checks": null,
+  "verdict": "FAIL",
+  "stop_required": true,
+  "reasons": [
+    "layer2:role_relation:R1",
+    "layer2:role_relation:R3",
+    "layer2:event:E1",
+    "layer2:event:E5",
+    "layer2:causality:C1",
+    "layer2:causality:C2",
+    "layer2:causality:C3",
+    "layer2:causality:C4",
+    "layer2:sequence:S1",
+    "layer2:ending:N1",
+    "layer2:charm:M1",
+    "layer2:added_fact:X1"
+  ],
+  "model": {
+    "routing_key": "FAMILY_Z_SEMANTIC_JUDGE",
+    "requested": "gpt-6-luna",
+    "actual_model_ids": [
+      "gpt-6-luna"
+    ]
+  },
+  "usage_total": {
+    "input_tokens": 34752,
+    "cached_input_tokens": 15998,
+    "output_tokens": 34121
+  },
+  "cost_jpy": 3.0553
+}

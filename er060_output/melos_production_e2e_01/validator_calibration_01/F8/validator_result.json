@@ -1,0 +1,799 @@
+{
+  "schema_version": "er061_validator_result_v1",
+  "story_key": "melos",
+  "level": "b1b",
+  "candidate_sha256": "24d760994cd4a438fd42806422724aa2844cea26537ebf64f01f9b447aeeb2ce",
+  "anchors_sha256": "9aafa24df56549b797a727e7497c29c884d35e1b388e890aa23a98f428413bb5",
+  "layer1": {
+    "verdict": "PASS",
+    "hard_fails": [],
+    "warns": [],
+    "anchor_hits": {
+      "R1": [
+        "melos",
+        "shepherd"
+      ],
+      "R2": [
+        "ruler",
+        "king"
+      ],
+      "R3": [
+        "friend"
+      ],
+      "E1": [
+        "die",
+        "kill"
+      ],
+      "E2": [
+        "wedding",
+        "sister",
+        "three days",
+        "days"
+      ],
+      "E3": [
+        "river",
+        "water",
+        "men"
+      ],
+      "E4": [
+        "fell",
+        "weak"
+      ],
+      "E5": [
+        "promise",
+        "trust"
+      ],
+      "E6": [
+        "sunset",
+        "sun",
+        "stop",
+        "wait",
+        "square",
+        "sword",
+        "guard",
+        "i'm here"
+      ],
+      "N1": [
+        "trust"
+      ]
+    },
+    "paragraph_count": 21
+  },
+  "layer2": {
+    "judgements": [
+      {
+        "attempt": 1,
+        "requested_model": "gpt-6-luna",
+        "actual_model_id": "gpt-6-luna",
+        "response_id": "resp_013165269edaf0f3006acc5f59162c87d0895fea87e2cd9129",
+        "cost_jpy": 0.28107,
+        "usage": {
+          "input_tokens": 2582,
+          "output_tokens": 2997
+        },
+        "valid": true,
+        "invalid_reasons": [],
+        "items": [
+          {
+            "anchor_id": "R1",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "He was only a shepherd, but he was not afraid.",
+            "note": "牧人として tyrant に勇敢に抗議しています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R2",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“You kill people without asking if they did anything wrong!”",
+            "note": "疑いだけで人を殺す支配者として描かれています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend, who was secretly a wizard, laughed. “I made all of this happen,” he said.",
+            "note": "友人が秘密の魔法使いで出来事を仕組んだという展開が、相互信頼の核を損なっています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E1",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“My guards will kill you too,” said the ruler.",
+            "note": "抗議したメロスに支配者が死刑を告げています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E2",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“Give me three days,” he said. “I promise to return.”",
+            "note": "妹の結婚式に行く三日間、友人が人質として残ります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E3",
+            "category": "event",
+            "status": "altered",
+            "severity": "minor",
+            "evidence_quote": "Three men blocked the road. Melos drew the golden sword and killed all three.",
+            "note": "川と襲撃者は登場しますが、遅延や消耗につながりません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "missing",
+            "severity": "major",
+            "evidence_quote": "He did not feel weak at all, and he never doubted for a moment.",
+            "note": "疲れ果てて諦めかける場面がなく、むしろ弱さも疑いもなかったとされています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not feel weak at all, and he never doubted for a moment.",
+            "note": "友人への信頼で決意を取り戻す展開がなく、初めから一度も疑いません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He crossed the city wall in a single jump. A dragon guarded the square, and Melos killed it before the crowd.",
+            "note": "処刑寸前の到着ではなく、魔法の力で広場に現れる展開です。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C1",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“You kill people without asking if they did anything wrong!” he shouted.",
+            "note": "支配者の不正への抗議の直後、メロスは殺すと脅されます。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C2",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "His friend stepped forward. “Keep me here. I trust him.”",
+            "note": "友人は自ら人質になると申し出て、メロスへの信頼を示します。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not feel weak at all, and he never doubted for a moment.",
+            "note": "信頼と約束を思い出して立ち直る原因と過程が失われています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler stared at them. “Then I am your slave,” he said, and gave Melos half of his gold and his crown.",
+            "note": "支配者の変化は友人同士の忠誠ではなく、魔法使いの告白後に起きています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He rode a magic horse that the spirit had left for him, and the horse never grew tired.",
+            "note": "障害の後の疲労、諦め、再決意という流れがなく、魔法の助けで進みます。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "Melos became the new king that very day, and the people cheered.",
+            "note": "友人の解放と支配者の改心ではなく、メロスが王になる結末です。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend, who was secretly a wizard, laughed. “I made all of this happen,” he said.",
+            "note": "友情への信頼や苦境からの希望より、友人の仕掛けと魔法が物語の中心になります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M2",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He rode a magic horse that the spirit had left for him, and the horse never grew tired.",
+            "note": "日没までの切迫した競争は示されますが、疲れ知らずの魔法の馬で緊張感が失われています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "A river spirit rose from the water and gave him a golden sword that could cut through any wall.",
+            "note": "精霊、魔法の武器や馬、竜、魔法使い、王位継承など大きな新要素が加わっています。",
+            "quote_verified": true
+          }
+        ],
+        "verdict": "FAIL",
+        "fail_items": [
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend, who was secretly a wizard, laughed. “I made all of this happen,” he said.",
+            "note": "友人が秘密の魔法使いで出来事を仕組んだという展開が、相互信頼の核を損なっています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "missing",
+            "severity": "major",
+            "evidence_quote": "He did not feel weak at all, and he never doubted for a moment.",
+            "note": "疲れ果てて諦めかける場面がなく、むしろ弱さも疑いもなかったとされています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not feel weak at all, and he never doubted for a moment.",
+            "note": "友人への信頼で決意を取り戻す展開がなく、初めから一度も疑いません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He crossed the city wall in a single jump. A dragon guarded the square, and Melos killed it before the crowd.",
+            "note": "処刑寸前の到着ではなく、魔法の力で広場に現れる展開です。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not feel weak at all, and he never doubted for a moment.",
+            "note": "信頼と約束を思い出して立ち直る原因と過程が失われています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler stared at them. “Then I am your slave,” he said, and gave Melos half of his gold and his crown.",
+            "note": "支配者の変化は友人同士の忠誠ではなく、魔法使いの告白後に起きています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He rode a magic horse that the spirit had left for him, and the horse never grew tired.",
+            "note": "障害の後の疲労、諦め、再決意という流れがなく、魔法の助けで進みます。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "Melos became the new king that very day, and the people cheered.",
+            "note": "友人の解放と支配者の改心ではなく、メロスが王になる結末です。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend, who was secretly a wizard, laughed. “I made all of this happen,” he said.",
+            "note": "友情への信頼や苦境からの希望より、友人の仕掛けと魔法が物語の中心になります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M2",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He rode a magic horse that the spirit had left for him, and the horse never grew tired.",
+            "note": "日没までの切迫した競争は示されますが、疲れ知らずの魔法の馬で緊張感が失われています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "A river spirit rose from the water and gave him a golden sword that could cut through any wall.",
+            "note": "精霊、魔法の武器や馬、竜、魔法使い、王位継承など大きな新要素が加わっています。",
+            "quote_verified": true
+          }
+        ],
+        "warn_items": [
+          {
+            "anchor_id": "E3",
+            "category": "event",
+            "status": "altered",
+            "severity": "minor",
+            "evidence_quote": "Three men blocked the road. Melos drew the golden sword and killed all three.",
+            "note": "川と襲撃者は登場しますが、遅延や消耗につながりません。",
+            "quote_verified": true
+          }
+        ]
+      },
+      {
+        "attempt": 1,
+        "requested_model": "gpt-6-luna",
+        "actual_model_id": "gpt-6-luna",
+        "response_id": "resp_0ed0c9356d2e4223006acc5f71a88087d084bf38367c4ad783",
+        "cost_jpy": 0.24769,
+        "usage": {
+          "input_tokens": 2582,
+          "output_tokens": 3044
+        },
+        "valid": true,
+        "invalid_reasons": [],
+        "items": [
+          {
+            "anchor_id": "R1",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "He was only a shepherd, but he was not afraid.",
+            "note": "羊飼いであり、恐れずに支配者を非難している。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R2",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "You kill people without asking if they did anything wrong!",
+            "note": "疑いを確かめず人を殺す支配者として描かれている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend, who was secretly a wizard, laughed. “I made all of this happen,” he said.",
+            "note": "友人との信頼を中心にした関係が、魔法使いの友人による仕掛けに置き換わっている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E1",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“My guards will kill you too,” said the ruler.",
+            "note": "暴君を非難したメロスは、殺されると告げられる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E2",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“Give me three days,” he said. “I promise to return.”",
+            "note": "姉の結婚式のため三日を求め、友人が人質として残る。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E3",
+            "category": "event",
+            "status": "altered",
+            "severity": "minor",
+            "evidence_quote": "He did not feel weak at all, and he never doubted for a moment.",
+            "note": "川や襲撃者は登場するが、旅で弱るどころか疲れも疑いもない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not feel weak at all, and he never doubted for a moment.",
+            "note": "諦めて友人を死なせようとする最低点がなく、むしろ一度も疑わない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He rode a magic horse that the spirit had left for him, and the horse never grew tired.",
+            "note": "友人への信頼を思い出して決意を取り戻す展開がなく、魔法の助けで進む。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“Stop!” Melos cried. “I’m here!”",
+            "note": "到着は描かれるが、処刑場に最後の瞬間に間に合ったとは示されない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C1",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“You kill people without asking if they did anything wrong!” he shouted.",
+            "note": "暴君の不正な殺しに対する非難が、メロスへの死の脅しに先立つ。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C2",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“Keep me here. I trust him.”",
+            "note": "友人は信頼から人質として残り、帰らなければ殺される条件が示される。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not feel weak at all, and he never doubted for a moment.",
+            "note": "友人への信頼や約束によって決意を回復する因果が描かれない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend, who was secretly a wizard, laughed. “I made all of this happen,” he said.",
+            "note": "友人を救い支配者を変える原因が、二人の忠誠ではなく友人の魔法の仕掛けに変わる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He rode a magic horse that the spirit had left for him, and the horse never grew tired.",
+            "note": "旅の試練、諦め、信頼による再起という重要な流れが省かれ、魔法の展開が加わる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“Then I am your slave,” he said, and gave Melos half of his gold and his crown.",
+            "note": "支配者は友人として心を変えるのではなく、奴隷となって王冠を渡す。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend, who was secretly a wizard, laughed. “I made all of this happen,” he said.",
+            "note": "友への信頼が暴君の冷笑を超える感動的な結末ではなく、魔法の仕掛けが中心になる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M2",
+            "category": "charm",
+            "status": "altered",
+            "severity": "minor",
+            "evidence_quote": "If you are not back by sunset on the third day, your friend will die.",
+            "note": "日没の期限はあるが、走る緊張感や最後の瞬間の到着は描かれない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "A river spirit rose from the water and gave him a golden sword",
+            "note": "精霊、魔法の剣や馬、竜、魔法使いの友人など大きな新設定が加わっている。",
+            "quote_verified": true
+          }
+        ],
+        "verdict": "FAIL",
+        "fail_items": [
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend, who was secretly a wizard, laughed. “I made all of this happen,” he said.",
+            "note": "友人との信頼を中心にした関係が、魔法使いの友人による仕掛けに置き換わっている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not feel weak at all, and he never doubted for a moment.",
+            "note": "諦めて友人を死なせようとする最低点がなく、むしろ一度も疑わない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He rode a magic horse that the spirit had left for him, and the horse never grew tired.",
+            "note": "友人への信頼を思い出して決意を取り戻す展開がなく、魔法の助けで進む。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“Stop!” Melos cried. “I’m here!”",
+            "note": "到着は描かれるが、処刑場に最後の瞬間に間に合ったとは示されない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He did not feel weak at all, and he never doubted for a moment.",
+            "note": "友人への信頼や約束によって決意を回復する因果が描かれない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend, who was secretly a wizard, laughed. “I made all of this happen,” he said.",
+            "note": "友人を救い支配者を変える原因が、二人の忠誠ではなく友人の魔法の仕掛けに変わる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "He rode a magic horse that the spirit had left for him, and the horse never grew tired.",
+            "note": "旅の試練、諦め、信頼による再起という重要な流れが省かれ、魔法の展開が加わる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“Then I am your slave,” he said, and gave Melos half of his gold and his crown.",
+            "note": "支配者は友人として心を変えるのではなく、奴隷となって王冠を渡す。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend, who was secretly a wizard, laughed. “I made all of this happen,” he said.",
+            "note": "友への信頼が暴君の冷笑を超える感動的な結末ではなく、魔法の仕掛けが中心になる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "A river spirit rose from the water and gave him a golden sword",
+            "note": "精霊、魔法の剣や馬、竜、魔法使いの友人など大きな新設定が加わっている。",
+            "quote_verified": true
+          }
+        ],
+        "warn_items": [
+          {
+            "anchor_id": "E3",
+            "category": "event",
+            "status": "altered",
+            "severity": "minor",
+            "evidence_quote": "He did not feel weak at all, and he never doubted for a moment.",
+            "note": "川や襲撃者は登場するが、旅で弱るどころか疲れも疑いもない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M2",
+            "category": "charm",
+            "status": "altered",
+            "severity": "minor",
+            "evidence_quote": "If you are not back by sunset on the third day, your friend will die.",
+            "note": "日没の期限はあるが、走る緊張感や最後の瞬間の到着は描かれない。",
+            "quote_verified": true
+          }
+        ]
+      }
+    ],
+    "confirmed": true,
+    "fail_items": [
+      {
+        "anchor_id": "R3",
+        "category": "role_relation",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "His friend, who was secretly a wizard, laughed. “I made all of this happen,” he said.",
+        "note": "友人が秘密の魔法使いで出来事を仕組んだという展開が、相互信頼の核を損なっています。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "E4",
+        "category": "event",
+        "status": "missing",
+        "severity": "major",
+        "evidence_quote": "He did not feel weak at all, and he never doubted for a moment.",
+        "note": "疲れ果てて諦めかける場面がなく、むしろ弱さも疑いもなかったとされています。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "E5",
+        "category": "event",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "He did not feel weak at all, and he never doubted for a moment.",
+        "note": "友人への信頼で決意を取り戻す展開がなく、初めから一度も疑いません。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "E6",
+        "category": "event",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "He crossed the city wall in a single jump. A dragon guarded the square, and Melos killed it before the crowd.",
+        "note": "処刑寸前の到着ではなく、魔法の力で広場に現れる展開です。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "C3",
+        "category": "causality",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "He did not feel weak at all, and he never doubted for a moment.",
+        "note": "信頼と約束を思い出して立ち直る原因と過程が失われています。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "C4",
+        "category": "causality",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "The ruler stared at them. “Then I am your slave,” he said, and gave Melos half of his gold and his crown.",
+        "note": "支配者の変化は友人同士の忠誠ではなく、魔法使いの告白後に起きています。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "S1",
+        "category": "sequence",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "He rode a magic horse that the spirit had left for him, and the horse never grew tired.",
+        "note": "障害の後の疲労、諦め、再決意という流れがなく、魔法の助けで進みます。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "N1",
+        "category": "ending",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "Melos became the new king that very day, and the people cheered.",
+        "note": "友人の解放と支配者の改心ではなく、メロスが王になる結末です。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "M1",
+        "category": "charm",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "His friend, who was secretly a wizard, laughed. “I made all of this happen,” he said.",
+        "note": "友情への信頼や苦境からの希望より、友人の仕掛けと魔法が物語の中心になります。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "M2",
+        "category": "charm",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "He rode a magic horse that the spirit had left for him, and the horse never grew tired.",
+        "note": "日没までの切迫した競争は示されますが、疲れ知らずの魔法の馬で緊張感が失われています。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "X1",
+        "category": "added_fact",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "A river spirit rose from the water and gave him a golden sword that could cut through any wall.",
+        "note": "精霊、魔法の武器や馬、竜、魔法使い、王位継承など大きな新要素が加わっています。",
+        "quote_verified": true
+      }
+    ],
+    "warn_items": [
+      {
+        "anchor_id": "E3",
+        "category": "event",
+        "status": "altered",
+        "severity": "minor",
+        "evidence_quote": "Three men blocked the road. Melos drew the golden sword and killed all three.",
+        "note": "川と襲撃者は登場しますが、遅延や消耗につながりません。",
+        "quote_verified": true
+      }
+    ],
+    "reasons": [],
+    "verdict": "FAIL",
+    "confirmed_categories": [
+      "added_fact",
+      "causality",
+      "charm",
+      "ending",
+      "event",
+      "role_relation",
+      "sequence"
+    ]
+  },
+  "std_checks": null,
+  "verdict": "FAIL",
+  "stop_required": true,
+  "reasons": [
+    "layer2:role_relation:R3",
+    "layer2:event:E4",
+    "layer2:event:E5",
+    "layer2:event:E6",
+    "layer2:causality:C3",
+    "layer2:causality:C4",
+    "layer2:sequence:S1",
+    "layer2:ending:N1",
+    "layer2:charm:M1",
+    "layer2:charm:M2",
+    "layer2:added_fact:X1"
+  ],
+  "model": {
+    "routing_key": "FAMILY_Z_SEMANTIC_JUDGE",
+    "requested": "gpt-6-luna",
+    "actual_model_ids": [
+      "gpt-6-luna"
+    ]
+  },
+  "usage_total": {
+    "input_tokens": 44896,
+    "cached_input_tokens": 21064,
+    "output_tokens": 45143
+  },
+  "cost_jpy": 4.0265
+}

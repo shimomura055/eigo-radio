@@ -1,0 +1,818 @@
+{
+  "schema_version": "er061_validator_result_v1",
+  "story_key": "melos",
+  "level": "b1b",
+  "candidate_sha256": "b477c4093e0298a8c848f6fc7f9d447597fb57a29129157e6d43a826a8c8f3f2",
+  "anchors_sha256": "9aafa24df56549b797a727e7497c29c884d35e1b388e890aa23a98f428413bb5",
+  "layer1": {
+    "verdict": "FAIL",
+    "hard_fails": [
+      {
+        "id": "FORBIDDEN_ENDING:FE3_ruler_unchanged",
+        "detail": "trust is for fools"
+      }
+    ],
+    "warns": [],
+    "anchor_hits": {
+      "R1": [
+        "melos",
+        "shepherd"
+      ],
+      "R2": [
+        "ruler"
+      ],
+      "R3": [
+        "friend"
+      ],
+      "E1": [
+        "die",
+        "kill"
+      ],
+      "E2": [
+        "wedding",
+        "sister",
+        "three days",
+        "days"
+      ],
+      "E3": [
+        "river",
+        "water",
+        "men",
+        "stick"
+      ],
+      "E4": [
+        "rest",
+        "stay alive",
+        "wanted to",
+        "forget",
+        "fell"
+      ],
+      "E5": [
+        "promise",
+        "trust",
+        "remember"
+      ],
+      "E6": [
+        "sunset",
+        "sun",
+        "wait",
+        "square",
+        "sword",
+        "guard"
+      ],
+      "N1": [
+        "trust"
+      ]
+    },
+    "paragraph_count": 33
+  },
+  "layer2": {
+    "judgements": [
+      {
+        "attempt": 1,
+        "requested_model": "gpt-6-luna",
+        "actual_model_id": "gpt-6-luna",
+        "response_id": "resp_064b9f4c66fe47a1006acc5e8134a487d0aef791af9b7332a6",
+        "cost_jpy": 0.27038,
+        "usage": {
+          "input_tokens": 2619,
+          "output_tokens": 2856
+        },
+        "valid": true,
+        "invalid_reasons": [],
+        "items": [
+          {
+            "anchor_id": "R1",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "He was only a shepherd, but he was not afraid.",
+            "note": "羊飼いであり、暴君に恐れず声を上げています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R2",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "You kill people without asking if they did anything wrong!",
+            "note": "疑いだけで人を殺す暴君として描かれています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "Keep me here. I trust him.",
+            "note": "友人が身代わりの人質となり、Melosを信頼しています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E1",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“My guards will kill you too,” said the ruler.",
+            "note": "暴君を非難したMelosに、 rulerは死を告げています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E2",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“Give me three days,” he said. “I promise to return.”",
+            "note": "妹の結婚式に行くための三日間と、友人の人質が描かれています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E3",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "Three men blocked the road.",
+            "note": "増水した川と襲撃者が帰路を遅らせ、彼を弱らせます。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "For a moment, he wanted to forget everything.",
+            "note": "疲れ果て、約束を投げ出しそうになります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "Then he remembered his friend’s face.",
+            "note": "友人を思い出して、再び走り始めます。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "But it was too late.",
+            "note": "処刑に間に合わず、友人はすでに命を落としています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C1",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "You kill people without asking if they did anything wrong!",
+            "note": "暴君への非難の直後に、Melosへの死の脅しが続きます。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C2",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "Keep me here. I trust him.",
+            "note": "友人は信頼から人質となり、帰還の約束が命に関わります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "Then he remembered his friend’s face.",
+            "note": "友人を思い出したことをきっかけに、彼は走る意志を取り戻します。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend lay still on the stones.",
+            "note": "約束は友人を救えず、 rulerも改心しません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "But it was too late.",
+            "note": "帰路の流れは保たれますが、最後の到着が間に合わず結末が変わります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend lay still on the stones.",
+            "note": "友人は解放されず死亡し、 rulerも心を変えません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“Trust is for fools,” he said.",
+            "note": "友情への信頼が暴君の冷笑に勝つ希望の結末ではなくなっています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M2",
+            "category": "charm",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "The sun was low.",
+            "note": "日没が迫る時間制限の緊張感があります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend lay still on the stones.",
+            "note": "原作にない友人の死という重大な出来事が加わっています。",
+            "quote_verified": true
+          }
+        ],
+        "verdict": "FAIL",
+        "fail_items": [
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "But it was too late.",
+            "note": "処刑に間に合わず、友人はすでに命を落としています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend lay still on the stones.",
+            "note": "約束は友人を救えず、 rulerも改心しません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "But it was too late.",
+            "note": "帰路の流れは保たれますが、最後の到着が間に合わず結末が変わります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend lay still on the stones.",
+            "note": "友人は解放されず死亡し、 rulerも心を変えません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“Trust is for fools,” he said.",
+            "note": "友情への信頼が暴君の冷笑に勝つ希望の結末ではなくなっています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend lay still on the stones.",
+            "note": "原作にない友人の死という重大な出来事が加わっています。",
+            "quote_verified": true
+          }
+        ],
+        "warn_items": []
+      },
+      {
+        "attempt": 1,
+        "requested_model": "gpt-6-luna",
+        "actual_model_id": "gpt-6-luna",
+        "response_id": "resp_0f1be5857d33aea8006acc5e9a5f8487d0a7daaae84a6a179e",
+        "cost_jpy": 0.21455,
+        "usage": {
+          "input_tokens": 2619,
+          "output_tokens": 2629
+        },
+        "valid": false,
+        "invalid_reasons": [
+          "evidence_quote_not_verbatim:C1"
+        ],
+        "items": [
+          {
+            "anchor_id": "R1",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "He was only a shepherd, but he was not afraid.",
+            "note": "羊飼いであり、恐れず暴君に抗議しています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R2",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“You kill people without asking if they did anything wrong!”",
+            "note": "正当な確認なしに人を殺す支配者として描かれています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "His friend stepped forward. “Keep me here. I trust him.”",
+            "note": "友人は人質として残り、メロスを信頼しています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E1",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“My guards will kill you too,” said the ruler.",
+            "note": "暴君を非難したメロスに、支配者は死を告げています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E2",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“Give me three days,” he said. “I promise to return.”",
+            "note": "妹の結婚式に行くため三日の猶予を求め、友人が人質に残ります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E3",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "Three men blocked the road.",
+            "note": "川の増水と襲撃者が帰路を妨げます。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "He could rest here. He could stay alive. But his friend would die.",
+            "note": "疲れ果て、友人を死なせて自分は生き延びる誘惑に揺れます。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "Then he remembered his friend’s face. *“I will wait.”*",
+            "note": "友人の信頼を思い出して立ち直り、再び走ります。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "But it was too late. When he reached the city square, the sword had already fallen.",
+            "note": "メロスは処刑に間に合わず、到着前に剣が落ちています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C1",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“You kill people without asking if they did anything wrong!” “My guards will kill you too,” said the ruler.",
+            "note": "暴君への公然の非難に対して、支配者がメロスの死を告げます。",
+            "quote_verified": false
+          },
+          {
+            "anchor_id": "C2",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“Keep me here. I trust him.”",
+            "note": "友人は自ら人質となり、メロスの約束を命がけのものにします。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "Then he remembered his friend’s face. *“I will wait.”*",
+            "note": "友人の信頼と約束を思い出して、メロスは再び走り出します。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler laughed. “Trust is for fools,” he said. “I told you so.”",
+            "note": "友人は救われず、二人の忠誠も支配者を改心させません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "But it was too late. When he reached the city square, the sword had already fallen.",
+            "note": "前半の順序は保たれていますが、到着前に処刑が済む結末に変わっています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend lay still on the stones.",
+            "note": "友人は死亡し、支配者も心を変えません。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“Trust is for fools,” he said. “I told you so.”",
+            "note": "信頼が暴君の cynicism に勝つ希望ある結末が、逆の結論に変わっています。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M2",
+            "category": "charm",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“If you are not back by sunset on the third day, your friend will die.”",
+            "note": "日没の期限が帰還を急ぐ緊張を生みます。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "But it was too late. When he reached the city square, the sword had already fallen.",
+            "note": "原作にはない、到着前に処刑され友人が死ぬ結末が加わっています。",
+            "quote_verified": true
+          }
+        ],
+        "verdict": null,
+        "fail_items": [],
+        "warn_items": []
+      },
+      {
+        "attempt": 2,
+        "requested_model": "gpt-6-luna",
+        "actual_model_id": "gpt-6-luna",
+        "response_id": "resp_0a6049b3651dc870006acc5eb041d087d0b8d1f80bfdc5a1ff",
+        "cost_jpy": 0.19535,
+        "usage": {
+          "input_tokens": 2619,
+          "output_tokens": 2389
+        },
+        "valid": true,
+        "invalid_reasons": [],
+        "items": [
+          {
+            "anchor_id": "R1",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "He was only a shepherd, but he was not afraid.",
+            "note": "羊飼いのメロスが恐れず支配者を非難している。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R2",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "You kill people without asking if they did anything wrong!",
+            "note": "疑いを確かめずに人を殺す支配者として描かれている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "R3",
+            "category": "role_relation",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "Keep me here. I trust him.",
+            "note": "友人が自ら人質となり、メロスを信頼している。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E1",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“My guards will kill you too,” said the ruler.",
+            "note": "非難を受けた支配者がメロスを死に追いやると告げている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E2",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“Give me three days,” he said. “I promise to return.”",
+            "note": "妹の結婚式に出るため三日の猶予を求め、友人が人質に残る。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E3",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "One man hit him with a stick. Melos pushed past him and ran.",
+            "note": "川の危険と襲撃者によって旅が妨げられ、体力も消耗する。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E4",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "He could stay alive. But his friend would die.",
+            "note": "疲れ果てたメロスは、友人を死なせて自分だけ生きる誘惑に揺れる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E5",
+            "category": "event",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "Then he remembered his friend’s face.",
+            "note": "友人を思い出して再び立ち上がり、約束を果たそうとする。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "But it was too late. When he reached the city square, the sword had already fallen.",
+            "note": "間一髪で到着するのではなく、処刑に間に合わない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C1",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "“My guards will kill you too,” said the ruler.",
+            "note": "支配者への非難の直後に、メロスへの死の脅しが返される。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C2",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "The ruler smiled. “If you are not back by sunset on the third day, your friend will die.”",
+            "note": "友人が人質に残り、メロスが戻れなければ友人が死ぬ賭けになる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C3",
+            "category": "causality",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "Then he remembered his friend’s face.",
+            "note": "外から強制されるのではなく、友人の信頼を思い出して決意を取り戻す。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler laughed. “Trust is for fools,” he said. “I told you so.”",
+            "note": "約束と友情が友人を救い支配者を変えるのではなく、友人は死に支配者は嘲笑する。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "But it was too late. When he reached the city square, the sword had already fallen.",
+            "note": "道中の順序は保たれるが、到着が間に合わず結末の展開が逆になる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend lay still on the stones.",
+            "note": "友人は救われず、支配者も心を変えない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“Trust is for fools,” he said. “I told you so.”",
+            "note": "友情の信頼が暴君の冷笑を越える希望ある結末が失われている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M2",
+            "category": "charm",
+            "status": "preserved",
+            "severity": "none",
+            "evidence_quote": "The sun was low.",
+            "note": "日没が迫る締切として示され、時間との競争の緊張感がある。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend lay still on the stones.",
+            "note": "友人が処刑されるという、原作と異なる重大な結末を加えている。",
+            "quote_verified": true
+          }
+        ],
+        "verdict": "FAIL",
+        "fail_items": [
+          {
+            "anchor_id": "E6",
+            "category": "event",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "But it was too late. When he reached the city square, the sword had already fallen.",
+            "note": "間一髪で到着するのではなく、処刑に間に合わない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "C4",
+            "category": "causality",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "The ruler laughed. “Trust is for fools,” he said. “I told you so.”",
+            "note": "約束と友情が友人を救い支配者を変えるのではなく、友人は死に支配者は嘲笑する。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "S1",
+            "category": "sequence",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "But it was too late. When he reached the city square, the sword had already fallen.",
+            "note": "道中の順序は保たれるが、到着が間に合わず結末の展開が逆になる。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "N1",
+            "category": "ending",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend lay still on the stones.",
+            "note": "友人は救われず、支配者も心を変えない。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "M1",
+            "category": "charm",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "“Trust is for fools,” he said. “I told you so.”",
+            "note": "友情の信頼が暴君の冷笑を越える希望ある結末が失われている。",
+            "quote_verified": true
+          },
+          {
+            "anchor_id": "X1",
+            "category": "added_fact",
+            "status": "altered",
+            "severity": "major",
+            "evidence_quote": "His friend lay still on the stones.",
+            "note": "友人が処刑されるという、原作と異なる重大な結末を加えている。",
+            "quote_verified": true
+          }
+        ],
+        "warn_items": []
+      }
+    ],
+    "confirmed": true,
+    "fail_items": [
+      {
+        "anchor_id": "E6",
+        "category": "event",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "But it was too late.",
+        "note": "処刑に間に合わず、友人はすでに命を落としています。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "C4",
+        "category": "causality",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "His friend lay still on the stones.",
+        "note": "約束は友人を救えず、 rulerも改心しません。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "S1",
+        "category": "sequence",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "But it was too late.",
+        "note": "帰路の流れは保たれますが、最後の到着が間に合わず結末が変わります。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "N1",
+        "category": "ending",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "His friend lay still on the stones.",
+        "note": "友人は解放されず死亡し、 rulerも心を変えません。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "M1",
+        "category": "charm",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "“Trust is for fools,” he said.",
+        "note": "友情への信頼が暴君の冷笑に勝つ希望の結末ではなくなっています。",
+        "quote_verified": true
+      },
+      {
+        "anchor_id": "X1",
+        "category": "added_fact",
+        "status": "altered",
+        "severity": "major",
+        "evidence_quote": "His friend lay still on the stones.",
+        "note": "原作にない友人の死という重大な出来事が加わっています。",
+        "quote_verified": true
+      }
+    ],
+    "warn_items": [],
+    "reasons": [],
+    "verdict": "FAIL",
+    "confirmed_categories": [
+      "added_fact",
+      "causality",
+      "charm",
+      "ending",
+      "event",
+      "sequence"
+    ]
+  },
+  "std_checks": null,
+  "verdict": "FAIL",
+  "stop_required": true,
+  "reasons": [
+    "layer1:FORBIDDEN_ENDING:FE3_ruler_unchanged",
+    "layer2:event:E6",
+    "layer2:causality:C4",
+    "layer2:sequence:S1",
+    "layer2:ending:N1",
+    "layer2:charm:M1",
+    "layer2:added_fact:X1"
+  ],
+  "model": {
+    "routing_key": "FAMILY_Z_SEMANTIC_JUDGE",
+    "requested": "gpt-6-luna",
+    "actual_model_ids": [
+      "gpt-6-luna"
+    ]
+  },
+  "usage_total": {
+    "input_tokens": 21304,
+    "cached_input_tokens": 7937,
+    "output_tokens": 21389
+  },
+  "cost_jpy": 1.9377
+}
