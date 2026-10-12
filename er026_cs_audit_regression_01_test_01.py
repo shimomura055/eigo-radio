@@ -43,8 +43,9 @@ class FlagPropagationAndRoleTests(unittest.TestCase):
 
 
 class ApprovedPatternABoundaryTests(unittest.TestCase):
-    def test_proper_noun_exact_stem_drop_before_sibilant_is_accepted_and_never_shadowed_by_entity_gate(self):
-        """Primaryで固有名詞が接尾辞-sを落として(stem完全一致)転写された場合、entity gateに遮られず
+    def test_characterization_proper_noun_stem_final_s_drop_accepted_by_pattern_a_open330(self):
+        """[CHARACTERIZATION(現状挙動の記録。OPEN-320/328/330是正時に期待値を反転・更新する。望ましい最終仕様ではない)] 実装の受理範囲は承認根拠(-s/-es接尾辞脱落)より広く、語幹末sの固有名詞(Melos→Melo、Chris→Chri)も受理する。扱いはOPEN-330(ユーザー判断)。
+        Primaryで固有名詞が接尾辞-sを落として(stem完全一致)転写された場合、entity gateに遮られず
         Pattern A(CONNECTED_SPEECH_ACCEPT)に到達する。ordering問題(entity_only/UNCERTAINが先)は
         この形では発生しない(_is_benign_plural_pairが差分を吸収し、最終fallbackでCS Validatorが走る)。"""
         for full, stem in NAMES:
@@ -145,12 +146,13 @@ class PostSlowdownPatternATests(unittest.TestCase):
         self.assertTrue(out["post_slowdown_cascade_accepted"])
         self.assertEqual(out["post_slowdown_final_classification"], "CONNECTED_SPEECH_ACCEPT")
 
-    def test_post_slowdown_still_stopped_when_all_asr_spell_homophone_variants(self):
+    def test_characterization_post_slowdown_unrescuable_ends_stopped_not_hr_open320(self):
+        """[CHARACTERIZATION(現状挙動の記録。OPEN-320/328/330是正時に期待値を反転・更新する。望ましい最終仕様ではない)] 減速後救済不能(全ASRが同音別綴り)の場合、HRではなくSTOPPEDで終わる現状(OPEN-320)。是正時は期待値をHUMAN_REVIEW_REQUIRED系へ更新する。"""
         out = self._run("Melos said.", "Mello said.", "Mellow said.")
         self.assertEqual(out["status"], "STOPPED")
 
-    def test_equivalence_layer_flag_not_passed_in_post_slowdown_path_known_gap_open122_4(self):
-        """既知Gap(OPEN-122 追記(4))の事実固定: 減速後cascade救済はenable_connected_speech_equivalence_layerを渡さない
+    def test_characterization_equivalence_flag_not_propagated_in_post_slowdown_path_open328(self):
+        """[CHARACTERIZATION(現状挙動の記録。OPEN-320/328/330是正時に期待値を反転・更新する。望ましい最終仕様ではない)] 既知Gap(OPEN-122 追記(4))の事実固定: 減速後cascade救済はenable_connected_speech_equivalence_layerを渡さない
         (既定False)。UNCERTAIN限定の救済なので今回の事象には無関係。変更する場合はユーザー判断。"""
         seen = {}
         orig = sec.evaluate_attempt_with_cascade_detail

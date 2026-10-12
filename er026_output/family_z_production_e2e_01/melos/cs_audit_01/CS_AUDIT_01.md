@@ -190,3 +190,35 @@ Melos said.の測定(120〜190ms)は両分布の中間に位置し、**take1(190
 
 ## 12. 費用
 有料API 0。local faster-whisper(small/medium)はCPU実行で課金なし。本委任の累計費用 JPY0(Melos案件累計は約JPY184.8/300のまま)。
+
+
+## 13. 付録(委任_03、Opus独立レビュー必須修正の反映)
+
+### 13-1. Adv b1b part1_c5 Local Rewrite候補5件が7 Gateのどこで落ちたか
+出典: `er011_output/local_rewrite_recovery/run_e2e_02/b1b/local_rewrite_recovery_full_story_part1_c5.json`(`candidates[].seven_gates` / `full_segment_check` / `locality_check` / `qa.evaluations`、候補生成・QAとも gpt-6-luna、status=`NO_CANDIDATE_PASSED_ALL_SEVEN_GATES`、最終`HUMAN_REVIEW_LOCKED_NO_CANDIDATE_PASSED_QA`)。原文=`Melos said.`(2語)。
+
+| 候補 | 内容 | 不通過Gate(JSON実値) | 理由(JSON引用要旨) |
+|---|---|---|---|
+| 1 | `Melos stated.` | **Gate7のみ**(1-6は通過) | `locality_check.criterion7_not_full_rewrite=false`(unchanged_ratio=0.5)、`full_segment_check.reason=LOW_ORIGINAL_COVERAGE_OVER_MODIFIED_OR_UNRELATED`(orig_coverage=0.5)。2語中1語を変えるだけで「全面書換」判定になる |
+| 2 | `Melos spoke.` | **Gate1(意味保持)・Gate5(自然さ)・Gate7** | Gate1: 「Spoke says Melos talked but does not preserve the specific speech-attribution meaning of said」。Gate5: 「not a usual or idiomatic substitute for 'Melos said' as a quote attribution」。Gate7: 候補1と同じ(orig_coverage=0.5) |
+| 3 | `Melos remarked.` | **Gate7のみ** | LLM QA(Gate1-5)は全て通過(「common, natural attribution」)。Gate6(局所性)も通過。Gate7=unchanged_ratio=0.5、LOW_ORIGINAL_COVERAGE |
+| 4 | `Melos had this to say.` | **Gate5・Gate7** | Gate5: 「'Had this to say' is idiomatic, but it usually introduces a quote rather than serving as a natural post-quote attribution」。Gate7: `full_segment_check.reason=TOO_LONG_OVER_EXPANDED` |
+| 5 | `That was Melos speaking.` | **Gate1・Gate7** | Gate1: 「identifies Melos as the person speaking rather than simply attributing the preceding words to him」。Gate7: TOO_LONG_OVER_EXPANDED |
+
+- **全5候補がGate7(「全面書換でない」)で落ちる**。原因は構造的: 原文が2語しかないため、`said`を1語入れ替えただけで unchanged_ratio=0.5かつ原文語被覆率0.5になり、「元の語を保っていない/過剰に変更」と機械判定される(Gate6[問題箇所への局所性]は5件全て通過、`criterion6_localized_to_problem_span=true`)。
+- 加えて、Gate1/Gate5(LLM QA)で意味・自然さの理由で落ちる候補が3件(2/4/5)。Gate7を除いて最も通過に近いのは候補1・3(Gate1-6通過、Gate7のみ不通過)。
+- 全候補が`Melos`を保持するため、仮にGateを通過しても「Melos」の発音問題は解消しない(`Melos stated.`等はASRが同じMello/Mellowを返す懸念が残る。本委任ではTTS再生成していないため**未検証**)。
+- 含意: 2語clip(本事象)は Local Rewrite の Gate7 構造により救済されにくい。Gate7閾値の変更は新Production仕様となるため提案のみ(OPEN-318の「固有名詞のみの短clipを避ける原稿/分割ルール」と一体で検討)。
+
+### 13-2. Opus独立レビュー(委任_03)の必須修正4点の反映
+1. CURRENT_SPEC L2025(B1 Connected Speech Validator行)の2026-10-12記述訂正を、「形態素上の接尾辞に限定せず機械的に判定」という断定から、「当初の承認根拠(-s/-es接尾辞の脱落)より実装の受理範囲が広い(語幹末が単にsの固有名詞等を含む: Melos→Melo、Chris→Chri)ことが判明。承認範囲の拡大ではなく事実の記録。扱いはユーザー判断(OPEN-330)」へ書き換え。OPEN-330を起票(選択肢(a)現状承認/(b)接尾辞限定/(c)固有名詞は作品単位の人間承認)。
+2. 本付録13-1(LR候補5件のGate別不通過理由)。
+3. `er026_cs_audit_regression_01_test_01.py`の3 testをcharacterization化(名前・docstring。12件PASS維持): `test_characterization_proper_noun_stem_final_s_drop_accepted_by_pattern_a_open330`、`test_characterization_post_slowdown_unrescuable_ends_stopped_not_hr_open320`、`test_characterization_equivalence_flag_not_propagated_in_post_slowdown_path_open328`。OPEN-320/328/330是正時に期待値を反転・更新する。
+4. telemetry重複行: `telemetry.jsonl`本体は書き換えず、行番号manifest `cs_audit_01/telemetry_probe_rows_manifest_01.json`(+生成script `.py`)を作成(次節)。
+
+### 13-3. telemetry重複行manifest結果
+- 特定方法: 先頭7155行=監査前。7156行目以降で、入力pair(HR queue全step転写 ∪ 先頭7155行のcanonical/asr ∪ scriptの合成pair[S行列・sweep行列])にcanonical/asrの両方が一致する行を抽出。telemetryは追記専用で時刻列が無いため、時間帯の代わりに(i)7155行以降の連続領域、(ii)先頭pairの再出現(7156/7774/8405行)による**script 3回実行**の分割、(iii)全行role=FULL_STORY(script固定segment_id由来)を根拠とした。
+- 結果: **audit行 1,998行 = 7156〜9153行(連続)**。内訳: 入力pair一致1,820、合成行列177、単体test追記1(9153行、`Melos walked.`/`Melo walked.`)。classification内訳: UNCERTAIN 975 / TRUE_CONTENT_MISMATCH 1,014 / TTS_FAILURE 9。9154〜9165行(12行)は委任_02のProduction正規再生成の正当な追記で除外対象外(集計に残す)。
+- 委任文の概算(重複約1,675+Coffee約325)との差: 7156〜9153行に入力pair/合成pairへ一致しない行(=Coffee等の他agent行と判定できる行)は**0件**。pair出現数は3回=601pair(3回実行分)/1回=105pair(第3回のみ実行のsweep行列)/その他は合成行列とHR queueの重複で説明でき、説明不能な余剰は見えない。概算の約1,675は過小で、実測は1,998行(うち他agent行混入の証拠なし)。
+- 残差: (1)時刻列が無く、入力pairと偶然同一の他agent行は機械的に区別できない(混在していれば出現数が倍数から崩れるはずだが観測されず)。(2)先頭7155行の不変性は`pre_audit_lines_sha256`(manifest内)で検証可。
+- 巻き戻し(上記行の削除)はFable/ユーザー判断(OPEN-328に記録)。**telemetry.jsonlは本委任でもstageしない。**

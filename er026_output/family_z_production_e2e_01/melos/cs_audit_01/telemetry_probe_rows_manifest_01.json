@@ -1,0 +1,60 @@
+{
+ "management_id": "FAMILY-Z-MELOS-CONNECTED-SPEECH-ROOT-CAUSE-AUDIT-01 委任_03",
+ "purpose": "監査スクリプトの共有telemetry.jsonlへの重複追記行を行番号で特定(集計側の除外用)。telemetry.jsonl本体は書換えていない。",
+ "file": "er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl",
+ "total_lines_at_snapshot": 9165,
+ "pre_audit_lines": 7155,
+ "pre_audit_lines_sha256": "47fa6cffc87e730d4d184a397515ac8c2cb2b143480fe81ba5fdc1a16fa36a6b",
+ "line_numbers_are": "1-based(先頭行=1)",
+ "method": "7156行目以降で、入力pair(HR queue全step転写+先頭7155行のcanonical/asr+スクリプト合成pair)にcanonical/asr両方が一致する行を機械的に抽出。時刻列はtelemetryに無いため、時間帯の代わりに(i)7155行目より後の連続追記領域である事、(ii)先頭pairの再出現で3回のscript実行に分割できる事、(iii)全行role=FULL_STORY(script固定のsegment_id由来、元行はCOMMENT等も含む)を補助根拠とした。",
+ "audit_run_starts_line": [
+  7156,
+  7774,
+  8405
+ ],
+ "audit_rows_count": 1998,
+ "audit_rows_line_ranges": [
+  [
+   7156,
+   9153
+  ]
+ ],
+ "audit_rows_sha256_of_lines_joined_by_LF": "04d8ce6765b751a011cafe688d384999032e31406da36a028b5dfaa0852f8c6d",
+ "audit_rows_by_category": {
+  "input_pair_match": 1820,
+  "synthetic_matrix": 177,
+  "unit_test_probe": 1
+ },
+ "audit_rows_by_classification": {
+  "ASR_VALIDATION_UNCERTAIN": 975,
+  "TRUE_CONTENT_MISMATCH": 1014,
+  "TTS_FAILURE": 9
+ },
+ "audit_rows_by_role": {
+  "FULL_STORY": 1998
+ },
+ "audit_pair_multiplicity_distribution(pair複数回出現数→pair数)": {
+  "1": 105,
+  "3": 601,
+  "5": 5,
+  "6": 8,
+  "7": 1,
+  "10": 1
+ },
+ "unit_test_probe_line": 9153,
+ "excluded_post_audit_rows_line_ranges": [
+  [
+   9154,
+   9165
+  ]
+ ],
+ "excluded_post_audit_rows_note": "委任_02のStd a2 part1_c5 Production正規再生成(TTS attempt4等)による正規追記。集計から除外しない。",
+ "excluded_non_matching_rows_in_audit_window": [],
+ "comparison_with_estimate": "委任文の概算(重複約1,675行+Coffee agent約325行)に対し、7156行目〜単体test行の範囲の全行が入力pair/合成pairに一致し、一致しない行(=Coffee等の他agent行と判定できる行)は0件だった。",
+ "residual": [
+  "telemetryに時刻列が無く、入力pairと偶然一致した他agentの正規追記行は機械的に区別できない。ただしpair出現数の分布(3回=601pair=script3回実行分、1回=105pair=第3回のみ実行のsweep行列、その他=S行列/HR queueとの重複で説明可)に説明不能な余剰は見えず、Coffee等の他agent行と判定できる行は0件。",
+  "同一pairが監査内で3回(runごと)出現する。各pairの『最初の1回』を正規とみなす根拠は無い(元行は先頭7155行側に既存)ため、audit_rows_line_rangesの全行を除外対象とする。",
+  "先頭7155行目までを監査前とする境界は委任_01時点の実測。以後に他agentが追記した場合は行番号がずれるのではなく末尾側へ追加されるのみ(追記専用ファイルのため先頭側は不変、pre_audit_lines_sha256で検証可)。"
+ ],
+ "rollback_decision": "telemetry.jsonlの巻き戻し(上記行の削除)はFable/ユーザー判断。OPEN-328(3)に記録。"
+}
