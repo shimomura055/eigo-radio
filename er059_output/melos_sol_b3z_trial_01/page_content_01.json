@@ -1,0 +1,34 @@
+{
+  "note": "比較ページ生成用の入力データ(AI=Claudeによる手動確認を含む。ユーザー実読ではない)。",
+  "scene_table": [
+    ["妹の結婚", "理由+結婚式に出席する描写あり", "理由のみ(式の描写なし)", "理由のみ(式の描写なし)"],
+    ["王との約束・3日", "あり", "あり", "あり"],
+    ["友が身代わり(人質)", "あり", "あり", "あり"],
+    ["帰路:濁流", "あり(小舟が壊れる)", "あり(橋が水没、川へ飛び込む)", "あり(第三朝に川、流される)"],
+    ["帰路:山賊", "あり(馬を奪われる)", "あり(棒で殴る・金を要求=Seed外の追加)", "あり(襲撃のみ、簡潔)"],
+    ["疲労・諦めかけ", "あり", "あり(「なぜ約束したのか」追加)", "あり"],
+    ["信頼で再起", "あり", "あり(友の「I will wait」を思い出す、泉の水を飲む)", "あり(友の「I trust him」を思い出す)"],
+    ["間に合う", "あり", "あり(剣を上げる直前)", "あり(剣が止まる)"],
+    ["友の信頼・王の改心", "あり(以後、公正な裁判を求めた、と明示)", "部分的(「こんなに信頼できるとは」の独白。公正な裁判には触れない)", "弱い(解放のみ+「友はお前を信じた」。改心は暗示に留まる)"]
+  ],
+  "diff_examples": [
+    ["Seed外の脚色", "(2) \"Three men blocked the road.\" \"Give us your money!\" \"I have none!\" / \"Why did I make that promise?\"", "(3) \"Further along the road, some men attacked him. Melos pushed past them and ran.\"", "(2)はSeedに無い強盗の台詞・自問を追加(AI評価が追加出来事3件を指摘)。(3)は簡潔でAI評価の追加指摘0件。"],
+    ["因果・時間", "(2) \"Her wedding was tomorrow.\"(3日の約束との時間関係がやや不整合)", "(3) \"On the third morning, he reached a river. ... There was little time, so he stepped in.\"", "(3)は締切の圧力と行動を結びつけている。"],
+    ["感情の山・余韻", "(2) \"I almost left you,\" he said. His friend bent down. \"But you came back.\"", "(3) \"One step. Then another.\" / \"Melos held him close as the light disappeared. This time, neither had to let go.\"", "(3)は光のモチーフで余韻(結末4.5対4.0)。(2)は率直な友の言葉が心に残る。"],
+    ["王の改心", "(2) \"I thought no one could trust another person so much.\"", "(3) \"You came back to die,\" he said quietly. \"And your friend trusted you to come.\" + 解放のみ", "B3Z Briefは「ruler is changed」を明記したが本文では(3)のほうが弱い。Briefが中心Story維持を高めたとは言えない(central_story 3.5対4.0)。"],
+    ["同一文(B3Z有無の差ではない)", "(2) He could stay here. He could live. But his friend would die.", "(3) He could stay here. He could live. But his friend would die.", "諦めかけの核はSol R0以降ほぼ逐語で共通(Solの癖)。"],
+    ["記号", "(2) *\"I will wait.\"*(markdown斜体が本文に残存)", "(3) なし", "音声化時はProductionの記号QAが必要(本Trialでは未実行)。"]
+  ],
+  "r_changes": [
+    ["(2) R0->R1", "349->388語(+39)、文60/67が同一", "主に追加(タイトル、描写・短い台詞)"],
+    ["(2) R1->R2", "388->364語(-24)、47/75文が同一", "圧縮と台詞の言い換え。R0->R2で43/67文が同一"],
+    ["(3) R0->R1", "340->355語(+15)、42/58文が同一", "感情・描写の追加、タイトル追加"],
+    ["(3) R1->R2", "355->377語(+22)、35/70文が同一(テキスト類似度0.28)", "大幅な書き直し。「The Last Light」の光のモチーフを結末まで通す。R0->R2で25/58文のみ同一"]
+  ],
+  "conclusion": [
+    "(1)従来(Luna単発)は中心Story維持(王の改心まで明示)が最も強い。引き込みはやや弱め(冒頭の背景説明)。",
+    "(2)Solのみは引き込み・展開が強い反面、Seedに無い脚色(強盗の台詞等)と王の改心の弱さがある。",
+    "(3)B3Zは追加脚色を抑え感情・結末の余韻が良いが、中心Story(王の改心)は(1)に及ばない。B3Zの優位は確認できなかった(N=2・差は小さい)。",
+    "総合平均は4.10/4.20/4.10で有意差とは言えない。人間の実読評価が必要。Production採用提案ではない。"
+  ]
+}

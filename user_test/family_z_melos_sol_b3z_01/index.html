@@ -1,0 +1,716 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>走れメロス 3方式比較 (Trial)</title><style>
+body{font-family:sans-serif;max-width:1200px;margin:1em auto;padding:0 1em;line-height:1.55;color:#222}
+table{border-collapse:collapse;margin:.6em 0;font-size:.92em}td,th{border:1px solid #aaa;padding:4px 8px;vertical-align:top}th{background:#eee}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.col{border:1px solid #ccc;padding:8px 12px;background:#fafafa}
+.warn{background:#fff3cd;padding:6px 10px;border:1px solid #e0c36a}h4{margin:.4em 0}details{margin:.5em 0}pre{white-space:pre-wrap;background:#f4f4f4;padding:8px}
+@media(max-width:900px){.cols{grid-template-columns:1fr}}</style></head><body>
+<h1>『走れメロス』3方式比較 (Trial)</h1>
+<p class="warn">FAMILY-Z-MELOS-SOL-B3Z-COMPARISON-TRIAL-01 / 2026-10-12。Trial(Production未採用、音声なし、テキスト生成と品質比較のみ)。評価はAI(gpt-6-luna、方式を伏せたN=2)と機械指標によるもので、<b>ユーザー実読評価ではありません</b>。N=2で差は小さく、有意差とは言えません。</p>
+<h2>1. 方式と工程</h2><table>
+<tr><th>方式</th><th>使用モデル</th><th>工程</th><th>費用(円)</th><th>処理時間</th></tr>
+<tr><td>(1) 従来方式</td><td>gpt-5.6-luna (effort=high)</td><td>Seed -> Story 単発1call(既存Trial成果物を再利用。R0/R1/R2/B3は存在しない)</td><td>既存(約1.8円は全体10call分の既存記録)</td><td>-</td></tr>
+<tr><td>(2) Sol変更のみ</td><td>gpt-6.1-sol (effort=high)</td><td>R0(Seed->Story) -> R1(より面白く) -> R2(さらに) = 3 call</td><td>8.16</td><td>90秒</td></tr>
+<tr><td>(3) Sol+B3Z</td><td>gpt-6.1-sol (effort=high)</td><td>B3Z Brief -> R0(Seed+Brief) -> R1 -> R2 = 4 call</td><td>12.06</td><td>129秒</td></tr>
+</table><p>(2)(3)は同一のR0/R1/R2 Prompt・モデル・effortで、差分はB3Z Brief有無のみ。「GPT-6 Sol」はroutingに登録された最新のgpt-6.1-solと解釈(gpt-6-solは未登録)。評価(gpt-6-luna 2call)費用約0.49円。生成合計20.22円+評価0.49円=約20.71円(上限50円)。</p>
+<h2>2. 英語Story全文(並列)</h2><div class='cols'>
+<div class='col'><b>(1) 従来方式</b> (381語)
+<h4>The Three-Day Promise</h4>
+<p>In a small kingdom, the ruler was afraid of enemies. If anyone spoke against him, his guards could take that person to prison. Often, the ruler ordered executions without a fair trial.</p>
+<p>One day, a shepherd named Melos stood before him.</p>
+<p>“You punish people before you know the truth,” Melos said. “That is not justice.”</p>
+<p>The ruler’s face became hard. “Then you will die.”</p>
+<p>Melos’s sister was going to be married in three days. He fell to his knees.</p>
+<p>“Please let me go to her wedding,” he said. “I will return before my death.”</p>
+<p>The ruler laughed. “Why should I believe you?”</p>
+<p>Melos’s friend stepped forward. “I will stay here in his place.”</p>
+<p>So the ruler agreed. Melos had three days to go and return. If he did not come back, his friend would die.</p>
+<p>Melos ran from the city. He reached the river, but heavy rain had made the water wild. The small boat broke against a rock. Melos fell into the cold river and nearly disappeared under the water. At last, he reached the other side, shaking and weak.</p>
+<p>He hurried to the wedding. He smiled for his sister, but his eyes stayed on the road. When the wedding ended, he left at once.</p>
+<p>On the way back, three attackers jumped from behind some trees. They took his horse and pushed him to the ground. Melos tried to stand, but pain filled his body. He walked through the night, then fell beside the road.</p>
+<p>The sky was becoming bright. The time was almost finished.</p>
+<p>Melos looked toward the city. “I cannot do this,” he whispered. “Perhaps my friend is already dead.”</p>
+<p>For a moment, he wanted to hide in the forest.</p>
+<p>Then he remembered his friend’s calm face. His friend had trusted him enough to face death.</p>
+<p>“No,” Melos said. “I gave my word.”</p>
+<p>He stood and ran.</p>
+<p>At the city gate, the guards were leading his friend to the place of execution. Then Melos shouted, “Wait!”</p>
+<p>Everyone turned. Melos fell before the ruler.</p>
+<p>“I promised to return,” he said. “I am here.”</p>
+<p>The ruler looked at the two friends. Slowly, he lowered his hand.</p>
+<p>“Free him,” he said.</p>
+<p>After that day, the ruler demanded fair trials. He had learned that trust and loyalty could be stronger than fear.</p></div>
+<div class='col'><b>(2) Sol変更のみ</b> (364語)
+<h4>Before Sunset</h4>
+<p>Melos stood before the ruler. He was only a shepherd, but he was not afraid.</p>
+<p>“You kill people without asking if they did anything wrong!” he shouted.</p>
+<p>“My guards will kill you too,” said the ruler.</p>
+<p>Melos thought of his sister. Her wedding was tomorrow.</p>
+<p>“Give me three days,” he said. “I promise to return.”</p>
+<p>“What if you run away?”</p>
+<p>His friend stepped forward. “Keep me here. I trust him.”</p>
+<p>The ruler smiled. “If you are not back by sunset on the third day, your friend will die.”</p>
+<p>Melos looked at his friend.</p>
+<p>“I will wait,” his friend said.</p>
+<p>After the wedding, Melos started back. Rain fell hard all night. By morning, dark water covered the bridge.</p>
+<p>He could not wait. His friend’s life depended on him.</p>
+<p>Melos jumped into the river.</p>
+<p>The water pulled him under. He fought to reach the other side. At last, he caught a tree branch and pulled himself out.</p>
+<p>Cold and wet, he ran on.</p>
+<p>Three men blocked the road.</p>
+<p>“Give us your money!”</p>
+<p>“I have none!”</p>
+<p>One man hit him with a stick. Melos pushed past him and ran. The men shouted behind him.</p>
+<p>Soon his legs shook. He could hardly move. He fell beside the road.</p>
+<p>The sun was low.</p>
+<p>He could rest here. He could stay alive.</p>
+<p>But his friend would die.</p>
+<p>“Why did I make that promise?” he whispered.</p>
+<p>He closed his eyes. For a moment, he wanted to forget everything.</p>
+<p>Then he remembered his friend’s face.</p>
+<p>*“I will wait.”*</p>
+<p>Melos opened his eyes. Water ran between some stones nearby. He drank and slowly stood up.</p>
+<p>His friend was still waiting.</p>
+<p>He began to run again.</p>
+<p>When he reached the city square, a guard was lifting his sword. His friend stood with his hands tied.</p>
+<p>“Stop!” Melos cried. “I’m here!”</p>
+<p>He fell at his friend’s feet.</p>
+<p>“I almost left you,” he said.</p>
+<p>His friend bent down. “But you came back.”</p>
+<p>The ruler stared at them. For a moment, no one spoke.</p>
+<p>“Let them both go,” he said at last. “I thought no one could trust another person so much.”</p>
+<p>The guard cut the ropes.</p>
+<p>Melos took his friend’s hand. This time, they left together.</p></div>
+<div class='col'><b>(3) Sol+B3Z</b> (377語)
+<h4>The Last Light</h4>
+<p>Melos stood before the ruler of the kingdom. His heart beat fast, but his voice was clear.</p>
+<p>“You kill people because you think they are your enemies,” he said. “You do not give them a fair trial. That is wrong.”</p>
+<p>The ruler rose from his chair.</p>
+<p>“Then you will die too.”</p>
+<p>“Please give me three days,” Melos said. “My sister is getting married. Let me go to her wedding. Then I will return.”</p>
+<p>His friend stepped forward.</p>
+<p>“I will stay here.”</p>
+<p>The ruler looked at him. “If Melos is not back before sunset on the third day, you will die in his place.”</p>
+<p>“I trust him,” his friend said.</p>
+<p>After the wedding, Melos hurried towards the city.</p>
+<p>On the third morning, he reached a river. The water was high and fast. There was little time, so he stepped in.</p>
+<p>The river pulled him away. He fought the water. At last, his feet touched land.</p>
+<p>He was safe, but he had lost hours.</p>
+<p>Further along the road, some men attacked him. Melos pushed past them and ran.</p>
+<p>His legs hurt. Each step was harder than the last.</p>
+<p>The sun sank lower.</p>
+<p>At last, Melos fell to his knees.</p>
+<p>He could stay here. He could live.</p>
+<p>But his friend would die.</p>
+<p>Melos looked down at the road. For a moment, he did not want to stand. He wanted the pain to stop.</p>
+<p>Then he remembered his friend’s voice.</p>
+<p>“I trust him.”</p>
+<p>His friend was still waiting. Still hoping.</p>
+<p>“I am coming,” Melos said.</p>
+<p>He stood slowly.</p>
+<p>One step. Then another.</p>
+<p>Pain filled his legs, but he kept moving. Soon, he was running again.</p>
+<p>When he reached the city, the last light was leaving the sky.</p>
+<p>His friend stood before the ruler.</p>
+<p>A guard raised his sword.</p>
+<p>“Stop!” Melos shouted. “I am here!”</p>
+<p>The sword stopped.</p>
+<p>Melos ran to his friend and held him tightly. His legs shook. He could hardly speak.</p>
+<p>The ruler watched them. For a long moment, he said nothing.</p>
+<p>“You came back to die,” he said quietly. “And your friend trusted you to come.”</p>
+<p>Then he told the guard to free them both.</p>
+<p>The sword was down. His friend was safe.</p>
+<p>Melos held him close as the light disappeared.</p>
+<p>This time, neither had to let go.</p></div>
+</div>
+<h2>3. AI評価(5項目、1〜5、N=2平均)</h2><table>
+<tr><th>方式</th><th>引き込み</th><th>展開</th><th>感情</th><th>中心Story</th><th>結末</th><th>平均</th><th>順位(rep1,rep2)</th></tr>
+<tr><td>(1) 従来方式</td><td>3.5</td><td>4.0</td><td>4.0</td><td>5.0</td><td>4.0</td><td>4.1</td><td>1,1</td></tr>
+<tr><td>(2) Sol変更のみ</td><td>4.5</td><td>4.5</td><td>4.0</td><td>4.0</td><td>4.0</td><td>4.2</td><td>3,2</td></tr>
+<tr><td>(3) Sol+B3Z</td><td>4.0</td><td>4.0</td><td>4.5</td><td>3.5</td><td>4.5</td><td>4.1</td><td>2,3</td></tr>
+</table><p>1〜5点(5=優れる)。順位は1位が最良。傾向: (2)は引き込み・展開、(3)は感情・結末、(1)は中心Story維持が高い。</p>
+<h3>機械指標</h3><table>
+<tr><th>指標</th><th>(1) 従来方式</th><th>(2) Sol変更のみ</th><th>(3) Sol+B3Z</th></tr>
+<tr><td>語数(本文)</td><td>381</td><td>364</td><td>377</td></tr>
+<tr><td>文数</td><td>53</td><td>65</td><td>65</td></tr>
+<tr><td>平均語数/文</td><td>7.26</td><td>5.68</td><td>5.82</td></tr>
+<tr><td>最長文(語)</td><td>15</td><td>15</td><td>17</td></tr>
+<tr><td>18語超の文</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>長語率(9字以上, %)</td><td>1.56</td><td>0.81</td><td>0.53</td></tr>
+<tr><td>本文中のmarkdown記号</td><td>なし</td><td>*“I will wait.”*</td><td>なし</td></tr>
+</table><p>全方式A2基準(平均11語以下・最長18語以下・280〜420語)内。(2)(3)は(1)より更に短文化しておりA2難化はありません。</p>
+<h3>原作の重要場面との対応(AI=Claudeの手動確認)</h3><table>
+<tr><th>場面</th><th>(1) 従来方式</th><th>(2) Sol変更のみ</th><th>(3) Sol+B3Z</th></tr>
+<tr><td>妹の結婚</td><td>理由+結婚式に出席する描写あり</td><td>理由のみ(式の描写なし)</td><td>理由のみ(式の描写なし)</td></tr>
+<tr><td>王との約束・3日</td><td>あり</td><td>あり</td><td>あり</td></tr>
+<tr><td>友が身代わり(人質)</td><td>あり</td><td>あり</td><td>あり</td></tr>
+<tr><td>帰路:濁流</td><td>あり(小舟が壊れる)</td><td>あり(橋が水没、川へ飛び込む)</td><td>あり(第三朝に川、流される)</td></tr>
+<tr><td>帰路:山賊</td><td>あり(馬を奪われる)</td><td>あり(棒で殴る・金を要求=Seed外の追加)</td><td>あり(襲撃のみ、簡潔)</td></tr>
+<tr><td>疲労・諦めかけ</td><td>あり</td><td>あり(「なぜ約束したのか」追加)</td><td>あり</td></tr>
+<tr><td>信頼で再起</td><td>あり</td><td>あり(友の「I will wait」を思い出す、泉の水を飲む)</td><td>あり(友の「I trust him」を思い出す)</td></tr>
+<tr><td>間に合う</td><td>あり</td><td>あり(剣を上げる直前)</td><td>あり(剣が止まる)</td></tr>
+<tr><td>友の信頼・王の改心</td><td>あり(以後、公正な裁判を求めた、と明示)</td><td>部分的(「こんなに信頼できるとは」の独白。公正な裁判には触れない)</td><td>弱い(解放のみ+「友はお前を信じた」。改心は暗示に留まる)</td></tr>
+</table>
+<h3>(2)と(3)の具体的な差(文単位)</h3><table>
+<tr><th>観点</th><th>(2) Sol変更のみ</th><th>(3) Sol+B3Z</th><th>所見</th></tr>
+<tr><td>Seed外の脚色</td><td>(2) &quot;Three men blocked the road.&quot; &quot;Give us your money!&quot; &quot;I have none!&quot; / &quot;Why did I make that promise?&quot;</td><td>(3) &quot;Further along the road, some men attacked him. Melos pushed past them and ran.&quot;</td><td>(2)はSeedに無い強盗の台詞・自問を追加(AI評価が追加出来事3件を指摘)。(3)は簡潔でAI評価の追加指摘0件。</td></tr>
+<tr><td>因果・時間</td><td>(2) &quot;Her wedding was tomorrow.&quot;(3日の約束との時間関係がやや不整合)</td><td>(3) &quot;On the third morning, he reached a river. ... There was little time, so he stepped in.&quot;</td><td>(3)は締切の圧力と行動を結びつけている。</td></tr>
+<tr><td>感情の山・余韻</td><td>(2) &quot;I almost left you,&quot; he said. His friend bent down. &quot;But you came back.&quot;</td><td>(3) &quot;One step. Then another.&quot; / &quot;Melos held him close as the light disappeared. This time, neither had to let go.&quot;</td><td>(3)は光のモチーフで余韻(結末4.5対4.0)。(2)は率直な友の言葉が心に残る。</td></tr>
+<tr><td>王の改心</td><td>(2) &quot;I thought no one could trust another person so much.&quot;</td><td>(3) &quot;You came back to die,&quot; he said quietly. &quot;And your friend trusted you to come.&quot; + 解放のみ</td><td>B3Z Briefは「ruler is changed」を明記したが本文では(3)のほうが弱い。Briefが中心Story維持を高めたとは言えない(central_story 3.5対4.0)。</td></tr>
+<tr><td>同一文(B3Z有無の差ではない)</td><td>(2) He could stay here. He could live. But his friend would die.</td><td>(3) He could stay here. He could live. But his friend would die.</td><td>諦めかけの核はSol R0以降ほぼ逐語で共通(Solの癖)。</td></tr>
+<tr><td>記号</td><td>(2) *&quot;I will wait.&quot;*(markdown斜体が本文に残存)</td><td>(3) なし</td><td>音声化時はProductionの記号QAが必要(本Trialでは未実行)。</td></tr>
+</table>
+<h3>R0 -> R1 -> R2 の変化</h3><table>
+<tr><th>区間</th><th>語数・同一文数</th><th>内容</th></tr>
+<tr><td>(2) R0-&gt;R1</td><td>349-&gt;388語(+39)、文60/67が同一</td><td>主に追加(タイトル、描写・短い台詞)</td></tr>
+<tr><td>(2) R1-&gt;R2</td><td>388-&gt;364語(-24)、47/75文が同一</td><td>圧縮と台詞の言い換え。R0-&gt;R2で43/67文が同一</td></tr>
+<tr><td>(3) R0-&gt;R1</td><td>340-&gt;355語(+15)、42/58文が同一</td><td>感情・描写の追加、タイトル追加</td></tr>
+<tr><td>(3) R1-&gt;R2</td><td>355-&gt;377語(+22)、35/70文が同一(テキスト類似度0.28)</td><td>大幅な書き直し。「The Last Light」の光のモチーフを結末まで通す。R0-&gt;R2で25/58文のみ同一</td></tr>
+</table>
+<h2>4. B3Z Brief 全文((3)のR0入力に追加)</h2>
+<details open><summary>brief_text</summary><pre>Storyline: Melos must return to face death in time to save his friend.
+
+Write a 300–350-word story in simple, mainly third-person English for A2 learners. Keep the kingdom setting. Use Melos as the only personal name; refer to others by their roles.
+
+Begin with Melos openly criticizing the ruler for killing suspected enemies without fair trials. The ruler sentences him to death but gives him three days to attend his sister&#x27;s wedding. His friend stays as a hostage and will die if Melos does not return in time.
+
+After the wedding, Melos races back. Dangerous water and then attackers delay him and leave him weak. Make the time pressure grow through these obstacles. At his lowest point, he nearly collapses and is tempted to stop, even though his friend would die. Keep this difficult choice: trust helps him recover his resolve and continue.
+
+The climax is his arrival just before the execution begins. His friend is freed, and the ruler is changed by their loyalty and mutual trust. End with relief and a sense of the strength of trust. Wedding details and descriptions of the obstacles may be brief, but keep the promise, the temptation, and the renewed effort.</pre></details>
+<details><summary>B3Z 5項目の構造化出力(central_conflict / key_scenes / engaging_progression / climax_and_aftertaste / preservation_conditions)</summary><pre>{
+  &quot;central_conflict&quot;: &quot;Melos must return within three days to face death, or his friend, held as a hostage, will die. Dangerous delays and his temptation to give up test his promise and their trust.&quot;,
+  &quot;key_scenes&quot;: [
+    {
+      &quot;id&quot;: &quot;S1&quot;,
+      &quot;scene&quot;: &quot;Melos openly criticizes the ruler for killing suspected enemies without fair trials and is sentenced to death.&quot;,
+      &quot;role&quot;: &quot;setup&quot;,
+      &quot;why&quot;: &quot;This establishes the ruler&#x27;s cruelty and the serious danger facing Melos.&quot;
+    },
+    {
+      &quot;id&quot;: &quot;S2&quot;,
+      &quot;scene&quot;: &quot;Melos receives three days to attend his sister&#x27;s wedding while his friend stays as a hostage.&quot;,
+      &quot;role&quot;: &quot;setup&quot;,
+      &quot;why&quot;: &quot;The deadline and the friend&#x27;s danger make keeping the promise a matter of life and death.&quot;
+    },
+    {
+      &quot;id&quot;: &quot;S3&quot;,
+      &quot;scene&quot;: &quot;After the wedding, Melos races back, but dangerous water and then attackers delay and weaken him.&quot;,
+      &quot;role&quot;: &quot;turning_point&quot;,
+      &quot;why&quot;: &quot;The obstacles make his return uncertain and increase the pressure of the deadline.&quot;
+    },
+    {
+      &quot;id&quot;: &quot;S4&quot;,
+      &quot;scene&quot;: &quot;Near collapse, Melos is tempted to give up and let his friend die.&quot;,
+      &quot;role&quot;: &quot;turning_point&quot;,
+      &quot;why&quot;: &quot;This is his lowest point, when keeping his promise becomes an inner struggle as well as a difficult journey.&quot;
+    },
+    {
+      &quot;id&quot;: &quot;S5&quot;,
+      &quot;scene&quot;: &quot;Trust helps Melos revive and decide again to keep his promise.&quot;,
+      &quot;role&quot;: &quot;turning_point&quot;,
+      &quot;why&quot;: &quot;His renewed resolve connects the theme of trust to his effort to return.&quot;
+    },
+    {
+      &quot;id&quot;: &quot;S6&quot;,
+      &quot;scene&quot;: &quot;Melos reaches the city just before the execution begins, and his friend is freed.&quot;,
+      &quot;role&quot;: &quot;climax&quot;,
+      &quot;why&quot;: &quot;The last-minute arrival answers the central question of whether he will keep his promise in time.&quot;
+    },
+    {
+      &quot;id&quot;: &quot;S7&quot;,
+      &quot;scene&quot;: &quot;The ruler is changed by the loyalty and mutual trust of Melos and his friend.&quot;,
+      &quot;role&quot;: &quot;resolution&quot;,
+      &quot;why&quot;: &quot;Their trust affects the ruler and gives the ending meaning beyond the friend&#x27;s escape from death.&quot;
+    }
+  ],
+  &quot;engaging_progression&quot;: &quot;The death sentence, three-day deadline, and hostage arrangement make the reader wonder whether Melos can return in time. Dangerous water and attackers slow him down and leave him weak, until he is tempted to abandon his friend. His renewed trust turns that low point into a final effort toward the city.&quot;,
+  &quot;climax_and_aftertaste&quot;: &quot;The climax is Melos&#x27;s arrival just before the execution begins, followed by his friend&#x27;s release. The ruler&#x27;s change should let the ending move from danger and doubt to relief and a sense of the strength of mutual trust.&quot;,
+  &quot;preservation_conditions&quot;: [
+    &quot;Keep the kingdom and tyrant setting, with Melos&#x27;s criticism of unfair executions causing his death sentence.&quot;,
+    &quot;Keep the three-day leave for his sister&#x27;s wedding and his friend held hostage in his place.&quot;,
+    &quot;Keep dangerous water and then attackers delaying and weakening Melos on his return.&quot;,
+    &quot;Keep his near-collapse, temptation to abandon his friend, and renewed resolve through trust.&quot;,
+    &quot;Keep the last-minute arrival, the friend&#x27;s release, and the ruler&#x27;s change through their loyalty and mutual trust.&quot;,
+    &quot;Use simple, mainly third-person A2 English in about 300–350 words; name only Melos and identify others by role.&quot;
+  ],
+  &quot;may_simplify_or_omit&quot;: [
+    &quot;Details of the sister&#x27;s wedding.&quot;,
+    &quot;Detailed descriptions of the dangerous water and attackers, but not the obstacles themselves.&quot;,
+    &quot;The exact wording of Melos&#x27;s criticism of the ruler.&quot;,
+    &quot;Descriptions of the kingdom and city.&quot;
+  ],
+  &quot;brief_text&quot;: &quot;Storyline: Melos must return to face death in time to save his friend.\n\nWrite a 300–350-word story in simple, mainly third-person English for A2 learners. Keep the kingdom setting. Use Melos as the only personal name; refer to others by their roles.\n\nBegin with Melos openly criticizing the ruler for killing suspected enemies without fair trials. The ruler sentences him to death but gives him three days to attend his sister&#x27;s wedding. His friend stays as a hostage and will die if Melos does not return in time.\n\nAfter the wedding, Melos races back. Dangerous water and then attackers delay him and leave him weak. Make the time pressure grow through these obstacles. At his lowest point, he nearly collapses and is tempted to stop, even though his friend would die. Keep this difficult choice: trust helps him recover his resolve and continue.\n\nThe climax is his arrival just before the execution begins. His friend is freed, and the ruler is changed by their loyalty and mutual trust. End with relief and a sense of the strength of trust. Wedding details and descriptions of the obstacles may be brief, but keep the promise, the temptation, and the renewed effort.&quot;
+}</pre></details>
+<h2>5. (2)(3)のR0 / R1 / R2 全文(折りたたみ)</h2>
+<details><summary>(2) Sol変更のみ R0</summary><pre>Melos stood before the ruler. He was a shepherd, but he was not afraid.
+
+“You kill people without asking if they did anything wrong!” he shouted.
+
+“The guards will kill you, too,” said the ruler.
+
+Melos thought of his sister. “Her wedding is tomorrow. Give me three days. I promise to return.”
+
+“And if you run away?”
+
+His friend stepped forward. “Keep me here. I trust him.”
+
+The ruler smiled. “Then you will die if he is not back by sunset on the third day.”
+
+Melos looked at his friend.
+
+“I will wait,” his friend said.
+
+After the wedding, Melos started back. Heavy rain fell all night. By morning, the river had covered the bridge.
+
+He could not wait for the water to fall.
+
+He jumped in.
+
+The water pulled him under. He fought to reach the other side. At last, he caught a tree branch and pulled himself out.
+
+He ran on in his wet clothes.
+
+Then three men blocked the road.
+
+“Give us your money!”
+
+“I have none!”
+
+One man hit him with a stick. Melos pushed past him and ran. Behind him, the men shouted.
+
+Soon, his legs began to shake. He fell beside the road.
+
+The sun was low.
+
+He could stay here. He could live.
+
+In the city, his friend would die.
+
+“Why did I make that promise?” he whispered.
+
+For a moment, he closed his eyes.
+
+Then he remembered his friend’s face.
+
+*I will wait.*
+
+Melos opened his eyes. Nearby, water ran between some stones. He drank, then slowly stood.
+
+His friend was still waiting.
+
+He began to run again.
+
+When Melos reached the city square, a guard was lifting his sword. His friend stood with his hands tied.
+
+“Stop!” Melos cried. “I’m here!”
+
+He fell at his friend’s feet.
+
+“I almost left you,” he said.
+
+His friend bent down. “But you came back.”
+
+The ruler stared at them.
+
+“Let them both go,” he said at last. “I thought no one could trust another person so much.”
+
+The guard cut the ropes.
+
+Melos reached for his friend’s hand. This time, they left together.
+</pre></details>
+<details><summary>(2) Sol変更のみ R1</summary><pre># Before Sunset
+
+Melos stood before the ruler. He was only a shepherd, but he was not afraid. He looked straight at the ruler.
+
+“You kill people without asking if they did anything wrong!” he shouted.
+
+“The guards will kill you, too,” the ruler said.
+
+Melos thought of his sister. “Her wedding is tomorrow. Give me three days. I promise to return.”
+
+“And if you run away?”
+
+His friend stepped forward. “Keep me here. I trust him.”
+
+The ruler smiled. “Then you will die if he is not back by sunset on the third day.”
+
+Melos looked at his friend.
+
+“I will wait,” his friend said.
+
+After the wedding, Melos started back. Heavy rain fell all night. By morning, the river had covered the bridge. There was only fast, dark water.
+
+He could not wait. His friend would die if he was late.
+
+He jumped in.
+
+The water pulled him under. He fought to reach the other side. At last, he caught a tree branch and pulled himself out.
+
+Wet and cold, he ran on.
+
+Then three men blocked the road.
+
+“Give us your money!”
+
+“I have none!”
+
+One man hit him with a stick. Melos pushed past him and ran. The men shouted behind him.
+
+Soon, his legs began to shake. Each step was harder. He fell beside the road.
+
+The sun was low. There was so little time.
+
+He could stay here. He could rest. He could live.
+
+But in the city, his friend would die.
+
+“Why did I make that promise?” he whispered.
+
+He closed his eyes. For a moment, he wanted to forget everything.
+
+Then he remembered his friend’s face.
+
+*I will wait.*
+
+Melos opened his eyes. Nearby, water ran between some stones. He drank, then slowly stood.
+
+His friend was still waiting.
+
+He began to run again.
+
+When Melos reached the city square, a guard was lifting his sword. His friend stood with his hands tied.
+
+“Stop!” Melos cried. “I’m here!”
+
+He fell at his friend’s feet.
+
+“I almost left you,” he said.
+
+His friend bent down. “But you came back.”
+
+The ruler stared at them. For a moment, he said nothing.
+
+“Let them both go,” he said at last. “I thought no one could trust another person so much.”
+
+The guard cut the ropes.
+
+Melos reached for his friend’s hand. This time, they left together.
+</pre></details>
+<details><summary>(2) Sol変更のみ R2</summary><pre># Before Sunset
+
+Melos stood before the ruler. He was only a shepherd, but he was not afraid.
+
+“You kill people without asking if they did anything wrong!” he shouted.
+
+“My guards will kill you too,” said the ruler.
+
+Melos thought of his sister. Her wedding was tomorrow.
+
+“Give me three days,” he said. “I promise to return.”
+
+“What if you run away?”
+
+His friend stepped forward. “Keep me here. I trust him.”
+
+The ruler smiled. “If you are not back by sunset on the third day, your friend will die.”
+
+Melos looked at his friend.
+
+“I will wait,” his friend said.
+
+After the wedding, Melos started back. Rain fell hard all night. By morning, dark water covered the bridge.
+
+He could not wait. His friend’s life depended on him.
+
+Melos jumped into the river.
+
+The water pulled him under. He fought to reach the other side. At last, he caught a tree branch and pulled himself out.
+
+Cold and wet, he ran on.
+
+Three men blocked the road.
+
+“Give us your money!”
+
+“I have none!”
+
+One man hit him with a stick. Melos pushed past him and ran. The men shouted behind him.
+
+Soon his legs shook. He could hardly move. He fell beside the road.
+
+The sun was low.
+
+He could rest here. He could stay alive.
+
+But his friend would die.
+
+“Why did I make that promise?” he whispered.
+
+He closed his eyes. For a moment, he wanted to forget everything.
+
+Then he remembered his friend’s face.
+
+*“I will wait.”*
+
+Melos opened his eyes. Water ran between some stones nearby. He drank and slowly stood up.
+
+His friend was still waiting.
+
+He began to run again.
+
+When he reached the city square, a guard was lifting his sword. His friend stood with his hands tied.
+
+“Stop!” Melos cried. “I’m here!”
+
+He fell at his friend’s feet.
+
+“I almost left you,” he said.
+
+His friend bent down. “But you came back.”
+
+The ruler stared at them. For a moment, no one spoke.
+
+“Let them both go,” he said at last. “I thought no one could trust another person so much.”
+
+The guard cut the ropes.
+
+Melos took his friend’s hand. This time, they left together.
+</pre></details>
+<details><summary>(3) Sol+B3Z R0</summary><pre>“You kill people because you think they are your enemies,” Melos said to the ruler of the kingdom. “You do not give them a fair trial. That is wrong.”
+
+The ruler stood up. “Then you will die too.”
+
+“Please give me three days,” said Melos. “My sister is getting married. I must go to her wedding. Then I will come back.”
+
+His friend stepped forward. “I will stay here.”
+
+“If Melos is not back before sunset on the third day, you will die in his place,” the ruler said.
+
+“I trust him,” his friend answered.
+
+After the wedding, Melos hurried towards the city. On the third morning, he reached a river. The water was high and fast. He tried to cross, but the water pulled him away. He fought his way to the other side.
+
+He had lost hours.
+
+Then some men attacked him on the road. He pushed past them and ran, but now his legs hurt. The sun was already low.
+
+At last, he fell to his knees.
+
+“I cannot do this,” he thought. “I could stay here. I could live.”
+
+His friend would die. Melos knew it, but for a moment he did not want to stand up.
+
+Then he remembered his friend’s voice: “I trust him.”
+
+His friend was waiting. He believed Melos would return.
+
+“I am coming,” Melos said.
+
+He stood slowly. He took one step, then another. Soon he was running again.
+
+At the city, the last light was leaving the sky. His friend stood before the ruler. A guard raised his sword.
+
+“Stop!” Melos shouted. “I am here!”
+
+The sword stopped. Melos reached his friend and held him tightly.
+
+The ruler looked at the two men. For a long moment, he said nothing.
+
+“You came back to die,” he said quietly. “And your friend trusted you to come.”
+
+He told the guard to free them both.
+
+Melos’s legs were still shaking. But his friend was safe, and the sword was lowered. They held each other, and this time neither had to let go.
+</pre></details>
+<details><summary>(3) Sol+B3Z R1</summary><pre># The Last Light
+
+Melos stood before the ruler of the kingdom.
+
+“You kill people because you think they are your enemies,” he said. “You do not give them a fair trial. That is wrong.”
+
+The ruler stood up. “Then you will die too.”
+
+“Please give me three days,” Melos said. “My sister is getting married. I must go to her wedding. Then I will come back.”
+
+His friend stepped forward. “I will stay here.”
+
+“If Melos is not back before sunset on the third day, you will die in his place,” the ruler said.
+
+“I trust him,” his friend answered.
+
+After the wedding, Melos hurried towards the city. On the third morning, he reached a river. The water was high and fast.
+
+He went into the water. It pulled him away. He fought to reach the other side. At last, he reached land.
+
+But he had lost hours. Hours he could not get back.
+
+Then some men attacked him on the road. Melos pushed past them and ran. His legs hurt, but he kept going.
+
+The sun was low now. Melos fell to his knees.
+
+“I cannot do this,” he thought. “I could stay here. I could live.”
+
+His friend would die. Melos knew that. Still, for a moment, he did not want to get up.
+
+Then he remembered his friend’s voice.
+
+“I trust him.”
+
+His friend was waiting. He still believed Melos would come back.
+
+“I am coming,” Melos said.
+
+He stood slowly. One step. Then another. His legs hurt with every step. But soon he was running again.
+
+At the city, the last light was leaving the sky. His friend stood before the ruler.
+
+A guard raised his sword.
+
+“Stop!” Melos shouted. “I am here!”
+
+The sword stopped. Melos reached his friend and held him tightly.
+
+The ruler looked at them. For a long moment, he said nothing.
+
+“You came back to die,” he said quietly. “And your friend trusted you to come.”
+
+He told the guard to free them both.
+
+Melos’s legs were still shaking. But his friend was safe. The sword was down.
+
+They held each other. This time, neither had to let go.
+</pre></details>
+<details><summary>(3) Sol+B3Z R2</summary><pre># The Last Light
+
+Melos stood before the ruler of the kingdom. His heart beat fast, but his voice was clear.
+
+“You kill people because you think they are your enemies,” he said. “You do not give them a fair trial. That is wrong.”
+
+The ruler rose from his chair.
+
+“Then you will die too.”
+
+“Please give me three days,” Melos said. “My sister is getting married. Let me go to her wedding. Then I will return.”
+
+His friend stepped forward.
+
+“I will stay here.”
+
+The ruler looked at him. “If Melos is not back before sunset on the third day, you will die in his place.”
+
+“I trust him,” his friend said.
+
+After the wedding, Melos hurried towards the city.
+
+On the third morning, he reached a river. The water was high and fast. There was little time, so he stepped in.
+
+The river pulled him away. He fought the water. At last, his feet touched land.
+
+He was safe, but he had lost hours.
+
+Further along the road, some men attacked him. Melos pushed past them and ran.
+
+His legs hurt. Each step was harder than the last.
+
+The sun sank lower.
+
+At last, Melos fell to his knees.
+
+He could stay here. He could live.
+
+But his friend would die.
+
+Melos looked down at the road. For a moment, he did not want to stand. He wanted the pain to stop.
+
+Then he remembered his friend’s voice.
+
+“I trust him.”
+
+His friend was still waiting. Still hoping.
+
+“I am coming,” Melos said.
+
+He stood slowly.
+
+One step. Then another.
+
+Pain filled his legs, but he kept moving. Soon, he was running again.
+
+When he reached the city, the last light was leaving the sky.
+
+His friend stood before the ruler.
+
+A guard raised his sword.
+
+“Stop!” Melos shouted. “I am here!”
+
+The sword stopped.
+
+Melos ran to his friend and held him tightly. His legs shook. He could hardly speak.
+
+The ruler watched them. For a long moment, he said nothing.
+
+“You came back to die,” he said quietly. “And your friend trusted you to come.”
+
+Then he told the guard to free them both.
+
+The sword was down. His friend was safe.
+
+Melos held him close as the light disappeared.
+
+This time, neither had to let go.
+</pre></details>
+<details><summary>R0 Prompt((2): Seedのみ / (3): Seed+Brief)</summary><pre>[Story Seed -- inspired by a real, rights-cleared source, freely reimagined;
+this is NOT a summary to reproduce, just raw material]
+- A shepherd named Melos openly denounces a tyrant who executes suspected enemies without fair trials.
+- Melos is sentenced to death but receives three days to attend his sister’s wedding, with his friend held hostage in his place.
+- Melos must race back to the city before the execution begins.
+- A series of obstacles, including dangerous water and attackers, delays and weakens him.
+- At his lowest point, Melos is tempted to give up and let his friend die, but he revives and recommits to his promise through trust.
+- Melos arrives just in time; his friend is freed, and the ruler is changed by their loyalty and mutual trust.
+
+[How to convert it]
+Keep the kingdom and tyrant setting because the execution gives the promise its serious stakes; do not modernize the event. Write it mainly in simple third-person English at about 300–350 words, using only Melos as a personal name and role descriptions such as “his friend” and “the ruler” for the others. Preserve the obstacle sequence, Melos’s near-collapse and temptation to abandon his friend, his renewed resolve, and his last-minute arrival while simplifying the language and minor details for A2 learners.
+
+[Story Brief -- organized by the editor from the Seed above. Use it to decide what to keep; do not add events that are not in the Seed or this Brief.]
+Storyline: Melos must return to face death in time to save his friend.
+
+Write a 300–350-word story in simple, mainly third-person English for A2 learners. Keep the kingdom setting. Use Melos as the only personal name; refer to others by their roles.
+
+Begin with Melos openly criticizing the ruler for killing suspected enemies without fair trials. The ruler sentences him to death but gives him three days to attend his sister&#x27;s wedding. His friend stays as a hostage and will die if Melos does not return in time.
+
+After the wedding, Melos races back. Dangerous water and then attackers delay him and leave him weak. Make the time pressure grow through these obstacles. At his lowest point, he nearly collapses and is tempted to stop, even though his friend would die. Keep this difficult choice: trust helps him recover his resolve and continue.
+
+The climax is his arrival just before the execution begins. His friend is freed, and the ruler is changed by their loyalty and mutual trust. End with relief and a sense of the strength of trust. Wedding details and descriptions of the obstacles may be brief, but keep the promise, the temptation, and the renewed effort.
+
+[Common principles for this story family]
+A good premise here makes the listener want to know what happens next. Prefer concrete events over abstract or literary implication. Keep to a small cast, one time frame, and few places. Meaning may come at the end, but the story itself must be clear first.
+
+[Your single job]
+Write a short story inspired by the Story Seed above. Make a reader genuinely feel something, want to keep reading, and feel some excitement and a little tension along the way. Do not follow any fixed structure, fixed number of scenes, fixed number of emotional turns, or a fixed ending shape -- choose whatever narrative shape makes THIS Story Seed land most strongly. Do not just retell the original source with no changes at all, but also do not force superficial changes for their own sake -- a faithful, simplified retelling of the real event is welcome here.
+
+[Characters -- keep it simple]
+Use 1 or 2 characters as the core of the story; 3 at the absolute most if truly needed. Only the main character (the protagonist) may be given a personal name. Every other person should be referred to through their relationship to the main character (for example: her mother, his father, her friend, their daughter, his neighbor) instead of a separate name. Do not add named characters that are not necessary for the story.
+
+[Length and level]
+- Write for an A2-level English learner: short, clear sentences, common vocabulary, simple hedging like &quot;might&quot;/&quot;could&quot;/&quot;If ... , ...&quot;.
+- Target length for the reader-facing text is about 350 words (roughly 280-420 words is fine).
+
+[Listening-friendliness -- an editorial goal, not a hard rule]
+This article will also be listened to as audio. Try to keep it easy for a listener to follow: avoid introducing more named people than necessary, avoid jumping between many different times or places, avoid long strings of abstract explanation, and try to keep it reasonably clear at each point whose perspective the reader/listener is in.
+
+Write the article now. Do not add a title unless it helps the story -- if you do, keep it short.</pre></details>
+<details><summary>R1/R2 Prompt(共通)</summary><pre>ust another person so much.”
+
+The guard cut the ropes.
+
+Melos reached for his friend’s hand. This time, they left together.
+
+Without changing the events, the characters, or the cause-and-effect, please revise it into a more engaging story. Keep it at A2 level (short, clear sentences, common vocabulary), about 280-420 words, in third person, and only Melos may have a personal name. Output the title and the story only.</pre></details>
+<h2>6. 暫定所見(Production採用提案ではない)</h2><ul>
+<li>(1)従来(Luna単発)は中心Story維持(王の改心まで明示)が最も強い。引き込みはやや弱め(冒頭の背景説明)。</li>
+<li>(2)Solのみは引き込み・展開が強い反面、Seedに無い脚色(強盗の台詞等)と王の改心の弱さがある。</li>
+<li>(3)B3Zは追加脚色を抑え感情・結末の余韻が良いが、中心Story(王の改心)は(1)に及ばない。B3Zの優位は確認できなかった(N=2・差は小さい)。</li>
+<li>総合平均は4.10/4.20/4.10で有意差とは言えない。人間の実読評価が必要。Production採用提案ではない。</li>
+</ul><p>残る判断(ユーザー): 実読評価、「GPT-6 Sol」=gpt-6.1-solの確認、Sol・B3Z・R0/R1/R2工程をFamily Zへ採用するか(未採用。Production Writer/Prompt/Routingは変更していません)。</p>
+<p>証跡: er059_output/melos_sol_b3z_trial_01/ (BASELINE_01.md, B3Z_DESIGN_01.md, COST_ESTIMATE_01.md, metrics_01.json, eval/, eval_summary_01.json)</p></body></html>
