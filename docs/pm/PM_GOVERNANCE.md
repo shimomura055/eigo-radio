@@ -804,6 +804,15 @@ check_delegation_prompt.py`へ、旧文言(「超えそうなら実行前STOP」
 ブロッキングではない)を追加。詳細: `DECISION_LOG.md`
 `PM-BUDGET-CAP-GUARDRAIL-POLICY-01`。
 
+### 7-7. Trial費用JPY100以下のFable判断承認(2026-10-12ユーザー決定、PM-TRIAL-BUDGET-AUTONOMY-100JPY-01)
+
+ユーザー決定(逐語、2026-10-12): 「少なくとも１００円以下のトライアルは貴殿採用で決めてください。開発速度優先。」
+
+- Trial費用がJPY100以下の場合は、Fable判断で承認・実行してよい(事前のユーザー確認不要)。
+- JPY100超のTrial、Production採用(`APPROVED_FOR_PRODUCTION`)、仕様変更は従来どおりユーザー判断。
+- 実費・使用モデル(応答model_id実測)は報告とSSOT(DECISION_LOG等)に記録する。
+- 既存文言(7-5・7-6、委任文の予算Cap/上限更新の扱い等)と矛盾する箇所があっても上書きせず、**費用承認の要否については本決定が優先**する。ただし7-6の暴走検知STOP・ループ上限(11節)・Gate 1〜7・Human Review Lock・Production承認原則は変更・緩和しない。
+
 ## 8. Agent並列起動の原則
 
 - 原則は1タスクずつ進める。ただし、対象ファイル・出力先(`er0XX_output/`配下の
