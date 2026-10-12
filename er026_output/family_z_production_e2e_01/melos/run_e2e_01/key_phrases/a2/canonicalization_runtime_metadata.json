@@ -5,7 +5,7 @@
   "approval_status": "NOT_APPROVED",
   "final_status": "CANONICALIZATION_INVALID",
   "model_id": "gpt-6-luna",
-  "response_id": "resp_0d6b311dd56807c9006acc6daf876487d0b522f1dc3fae9089",
+  "response_id": "resp_078ca0cfc6b1d0a5006acc6fafe73487d087481d1d9c2acb6a",
   "attempts_detail": [
     {
       "attempt": 1,
@@ -28,7 +28,7 @@
             "key_phrase": "take someone's place",
             "changed_from_display_phrase": true,
             "normalization_reason": "generalize_person_dependent_reference",
-            "reasoning": "記事中の特定人物を指す my を、表現の意味を保つ辞書的な someone's に一般化しました。「take someone's place」は自然な学習単位です。",
+            "reasoning": "記事中の特定人物を指す my を、表現の意味を保ったまま一般的な someone's に置き換えました。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -44,10 +44,10 @@
           },
           {
             "rank": 2,
-            "key_phrase": "current",
+            "key_phrase": "executioner",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「current」は単独で自然な名詞として成立し、この文脈での川の流れという意味を担います。source_spanに追加できる語がないため、変更せず維持します。",
+            "reasoning": "単独で意味の分かる自然な名詞であり、変更や追加は不要です。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -63,10 +63,10 @@
           },
           {
             "rank": 3,
-            "key_phrase": "legs fail",
+            "key_phrase": "legs fail someone",
             "changed_from_display_phrase": false,
             "normalization_reason": "inherit_selection_normalization",
-            "reasoning": "display_phraseは「legs suddenly failed him」から時制などを学習用に正規化した形なので、そのまま維持します。「legs fail」は脚が力を失う意味を保ち、独立した学習単位として理解できます。",
+            "reasoning": "方式Lですでに基本形と一般的な someone に整理された形で、誰かの脚が力尽きるという意味を自然に表しています。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -82,10 +82,10 @@
           },
           {
             "rank": 4,
-            "key_phrase": "executioner",
+            "key_phrase": "current",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「executioner」は単独で意味の通る自然な名詞で、本文の語を追加・削除する必要はありません。",
+            "reasoning": "単独で学習できる語彙項目であり、文脈にある川の水の流れという意味も保たれています。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -101,10 +101,10 @@
           },
           {
             "rank": 5,
-            "key_phrase": "pull oneself ashore",
+            "key_phrase": "stumble past",
             "changed_from_display_phrase": false,
             "normalization_reason": "inherit_selection_normalization",
-            "reasoning": "display_phraseは本文の「pulled himself ashore」を学習用に基本形化し、人称を一般化した形なので、そのまま維持します。「ashore」を含むことで岸に上がる動作が十分に伝わります。",
+            "reasoning": "方式Lで基本形に整理された自然な動詞句です。「よろめきながら通り過ぎる」という意味を保ち、補語を加えなくても学習単位として成立します。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -121,7 +121,7 @@
         ]
       },
       "model": "gpt-6-luna",
-      "response_id": "resp_0db4a8e5ec2bfef5006acc6d8dc69087d09cdf000eeee2a3dd"
+      "response_id": "resp_0c3365f5548a7385006acc6f9c2c9c87d09dad512688323650"
     },
     {
       "attempt": 2,
@@ -144,7 +144,7 @@
             "key_phrase": "take someone's place",
             "changed_from_display_phrase": true,
             "normalization_reason": "generalize_person_dependent_reference",
-            "reasoning": "myは本文中のMelosを指すため、辞書的な一般形someone'sに置き換えました。「誰かの代わりを務める」という意味は保たれています。",
+            "reasoning": "本文の話者に依存する my を someone’s に一般化し、「人の代わりを務める」という用法を保ちました。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -160,10 +160,10 @@
           },
           {
             "rank": 2,
-            "key_phrase": "current",
+            "key_phrase": "executioner",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "currentは単独で語彙学習単位として成立しており、source_spanにも追加できる語がありません。文脈では川の流れを指し、語自体を変更する必要はありません。",
+            "reasoning": "単独で意味の分かる自然な語であり、文脈限定語も含まないため、そのままにしました。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -179,10 +179,10 @@
           },
           {
             "rank": 3,
-            "key_phrase": "legs fail",
+            "key_phrase": "legs fail someone",
             "changed_from_display_phrase": false,
             "normalization_reason": "inherit_selection_normalization",
-            "reasoning": "方式Lで正規化済みの表示形を維持します。「脚が急に力を失う」という意味はlegs failで理解でき、本文の時制や追加語へ戻す必要はありません。",
+            "reasoning": "時制を基本形にし、記事固有の him を someone に一般化した表示形は、表現の意味が分かる学習単位として成立しています。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -198,10 +198,10 @@
           },
           {
             "rank": 4,
-            "key_phrase": "executioner",
+            "key_phrase": "current",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "executionerは単独で意味を持つ語彙学習単位で、表示形のままで自然です。",
+            "reasoning": "川の流れを指す語として自然な学習単位であり、本文中の語をそのまま保ちました。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -217,10 +217,10 @@
           },
           {
             "rank": 5,
-            "key_phrase": "pull oneself ashore",
+            "key_phrase": "stumble past",
             "changed_from_display_phrase": false,
             "normalization_reason": "inherit_selection_normalization",
-            "reasoning": "oneselfは特定の人物に依存しない一般形で、句動詞的な意味を含む自然な学習単位です。方式Lで正規化済みの表示形を維持します。",
+            "reasoning": "本文の過去形から基本形に整理済みの句動詞表現で、単独でも自然な学習単位として使えます。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -237,7 +237,7 @@
         ]
       },
       "model": "gpt-6-luna",
-      "response_id": "resp_0d6b311dd56807c9006acc6daf876487d0b522f1dc3fae9089"
+      "response_id": "resp_078ca0cfc6b1d0a5006acc6fafe73487d087481d1d9c2acb6a"
     }
   ]
 }

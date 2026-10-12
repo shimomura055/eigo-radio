@@ -810,6 +810,17 @@ def generate_with_lint(gen, lint, retries: int = 1) -> tuple:
     raise FamilyZLintStop(f"SUPPORT_LINT_FAILED(retry {retries}回後もNG): {attempts}")
 
 
+COMMENT3_FACT_RATIO = 0.40     # Fable判断(委任_08): Comment3のcontent_factsはPart3の前半(先頭約40%、最低2段落)に限定
+COMMENT3_FACT_MIN_PARAGRAPHS = 2
+
+
+def limit_comment3_part(part3_text: str) -> str:
+    """Comment3(Part3紹介)へ渡す事実をPart3前半の段落に限定する(結末ネタバレ防止)。段落数が少なければ全段落。"""
+    paras = [p for p in part3_text.split("\n\n") if p.strip()]
+    k = max(COMMENT3_FACT_MIN_PARAGRAPHS, int(round(len(paras) * COMMENT3_FACT_RATIO)))
+    return "\n\n".join(paras[:min(k, len(paras))])
+
+
 def _support_text(fn, client, role, context, model):
     r = fn(client, role, context, model=model)
     if r.get("status") != "OK":
@@ -817,7 +828,7 @@ def _support_text(fn, client, role, context, model):
     return r["text"]
 
 
-def run_support_std(client, parts: dict, full_text: str, *, ja_support_fn=None, story_key="melos") -> dict:
+def run_support_std(client, parts: dict, full_text: str, *, ja_support_fn=None, story_key="melos", prior: dict = None) -> dict:
     """Std: JA Preview + JA Comment1〜3(実LLM呼出。E2Eで実施。本委任ではmockのみ)。
     Comment n は「これから聞くPart n」に実在する事実のみ(content_facts)。lint NG -> retry1 -> STOP。"""
     import er003_v1_iran01_a2_generate as a2gen
@@ -829,10 +840,15 @@ def run_support_std(client, parts: dict, full_text: str, *, ja_support_fn=None, 
     transitions = {1: "", 2: "ここまでの場面を聞き終えたところで、物語の続きに入ります。",
                    3: "さらに物語が進み、次の場面に入ります。"}
     for n in (1, 2, 3):
+        if prior and n in (1, 2):      # 再生成時はComment1/2を再利用(Comment3のみ再生成)
+            out["comments"][str(n)] = prior["comments"][str(n)]
+            out["attempts"][f"comment_{n}"] = prior["attempts"][f"comment_{n}"]
+            continue
         content_facts = ("これから聞く英文(下の【これから聞く部分】)に実際に書かれている事実のみ。場所・状況、人物関係、"
                          "場面の変化、次の行動、選択や対立点のうち必要なもの。【これから聞く部分】に書かれていない事実・"
                          "人物・結末は使わない。")
-        art = f"【これから聞く部分】\n{parts[n]}"
+        listen = limit_comment3_part(parts[n]) if n == 3 else parts[n]    # Comment3はPart3前半のみ
+        art = f"【これから聞く部分】\n{listen}"
         if n > 1:
             art += f"\n\n【すでに聞いた部分(流れの参考のみ。ここの事実を再説明しない)】\n{parts[n - 1]}"
 
@@ -853,12 +869,15 @@ def run_support_std(client, parts: dict, full_text: str, *, ja_support_fn=None, 
     def gen_p(i):
         return _support_text(fn, client, role, ctx, model)
 
+    if prior and prior.get("preview"):
+        out["preview"], out["attempts"]["preview"] = prior["preview"], prior["attempts"]["preview"]
+        return out
     text, att = generate_with_lint(gen_p, lint)
     out["preview"], out["attempts"]["preview"] = text, att
     return out
 
 
-def run_support_adv(client, parts: dict, full_text: str, *, en_support_fn=None, story_key="melos") -> dict:
+def run_support_adv(client, parts: dict, full_text: str, *, en_support_fn=None, story_key="melos", prior: dict = None) -> dict:
     """Adv: EN Preview + EN Comment1〜3。X B1のCOMMENT_1_ROLE/COMMENT_2_ROLE/PREVIEW_ROLEを無改変で再利用
     (Comment2とComment3は同じCOMMENT_2_ROLE。Comment4・COMMENT_3_ROLE[Point橋渡し]は呼ばない)。"""
     import er003_v1_b1_scaffold_01_generate as b1s
@@ -869,15 +888,23 @@ def run_support_adv(client, parts: dict, full_text: str, *, en_support_fn=None, 
     ctxs = {
         1: f"【本文(これから聞く部分)】\n{parts[1]}\n\n{NOT_NEWS_NOTE}",
         2: f"【すでに聞いた本文(前半)】\n{parts[1]}\n\n【これから聞く本文(後半)】\n{parts[2]}\n\n{NOT_NEWS_NOTE}",
-        3: f"【すでに聞いた本文(前半)】\n{parts[1]}\n\n{parts[2]}\n\n【これから聞く本文(後半)】\n{parts[3]}\n\n{NOT_NEWS_NOTE}",
+        3: f"【すでに聞いた本文(前半)】\n{parts[1]}\n\n{parts[2]}\n\n【これから聞く本文(後半)】\n{limit_comment3_part(parts[3])}\n\n{NOT_NEWS_NOTE}",
     }
     roles = {1: b1s.COMMENT_1_ROLE, 2: b1s.COMMENT_2_ROLE, 3: b1s.COMMENT_2_ROLE}
     for n in (1, 2, 3):
+        if prior and n in (1, 2):
+            out["comments"][str(n)] = prior["comments"][str(n)]
+            out["attempts"][f"comment_{n}"] = prior["attempts"][f"comment_{n}"]
+            continue
+
         def gen(i, n=n):
             return _support_text(fn, client, roles[n], ctxs[n], model)
         text, att = generate_with_lint(gen, lint)
         out["comments"][str(n)] = text
         out["attempts"][f"comment_{n}"] = att
+    if prior and prior.get("preview"):
+        out["preview"], out["attempts"]["preview"] = prior["preview"], prior["attempts"]["preview"]
+        return out
     prole = b1s.PREVIEW_ROLE.format(comment_1=out["comments"]["1"], comment_2=out["comments"]["2"])
 
     def gen_p(i):

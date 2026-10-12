@@ -1527,6 +1527,7 @@ Story"専用設計であり、In One Line相当のsegmentがFamily Cに存在し
 - **音声Style(Family Z採用範囲)**: Family Xの承認済みStyleを対応Roleに適用する。Full Story NarratorはPD8を基本とする(Standardは6%減速併用)。**登場人物のセリフは既存の別Voice・従来Dialogue Style**(PD8を無条件適用しない)。Standard日本語Preview/CommentはR2を基本、Advanced英語Preview/CommentはFamily Xの対応既存方式、Key Phrase/shellは既存対応方式。**Coffee限定承認(OPEN-298/300、他記事への全記事共通展開は未承認のまま)とは別に、「Family Z採用」として記録する**。最終品質はユーザー試聴で確認する。
 - **費用上限**: 本E2Eの追加API費用上限は**¥300**。超過見込みでSTOP。並列化・再利用を行う。
 - **その他方針**: Family C本体は原則変更しない・Family X影響最小化・既存正式機構を再利用し重複機構を作らない。DEV/Trial scriptだけで動く状態を完了としない。初回/retry/fallback/regeneration/resumeの仕様整合を取る。
+- **Z E2E実行状態(2026-10-12時点、委任_08)**: Sol R0->R2を採用(B3Zは不採用)。writer/validate/std_adjust/plan/supportまで実行済み。**a2 KP canonicalizationがRule7違反でCANONICALIZATION_INVALID(--regenerate-stage kp_a2 1回再試行後も同一)のためkp段でSTOP**、TTS・試聴ページは未実行。Melos Voice=Algieba暫定(未承認)。Z E2E状態=**未完了(STOP中)**、PRODUCTION_WIRED判定とProduction採用はユーザー承認待ち(本節時点で`APPROVED_FOR_PRODUCTION`はユーザー決定の方針部分のみ)。
 
 ## Family体系(2026-09-27ユーザー決定、`PM-FAMILY-SYSTEM-MIGRATION-ABC-TO-XYZ-2026-09-27`)
 

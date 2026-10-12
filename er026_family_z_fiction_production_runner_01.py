@@ -1181,12 +1181,17 @@ def stage_support(ctx) -> dict:
 
         def runner(lv=lv, parts=parts, text=text):
             _guard(ctx, f"support_{lv}", E2E_STAGE_EST_JPY["support"] / 2)
+            prior_path = f"{ctx.out_dir}/support/{lv}_support.json"
+            prior = None   # 明示再生成時のみ: 既存のPreview/Comment1/2を再利用しComment3だけ再生成(委任_08 Fable判断)
+            if ctx.regenerate_stage == f"support_{lv}" and os.path.exists(prior_path):
+                prior = w62.rj(prior_path)
+                shutil.copyfile(prior_path, prior_path.replace(".json", "_prev_before_c3_limit.json"))
             if lv == "a2":
                 res = w62.run_support_std(ctx.llm_client, parts, text, ja_support_fn=ctx.hooks.get("ja_support_fn"),
-                                          story_key=ctx.story_key)
+                                          story_key=ctx.story_key, prior=prior)
             else:
                 res = w62.run_support_adv(ctx.llm_client, parts, text, en_support_fn=ctx.hooks.get("en_support_fn"),
-                                          story_key=ctx.story_key)
+                                          story_key=ctx.story_key, prior=prior)
             return st.dumps(res), {}
 
         r = w62.ensure_stage(prov, f"support_{lv}", _sha(text + w62.file_sha(plan_path)),

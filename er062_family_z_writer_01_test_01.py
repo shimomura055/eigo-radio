@@ -349,6 +349,47 @@ class PlanRunTest(unittest.TestCase):
             self.assertTrue(plan["clips"])
 
 
+class Comment3ContentFactsLimitTest(unittest.TestCase):
+    """委任_08 Fable判断: Comment3のcontent_factsはPart3前半(約40%、最低2段落)に限定。"""
+
+    def _p3(self, n):
+        return "\n\n".join(f"para{i}" for i in range(1, n + 1))
+
+    def test_limit_ratio_and_min(self):
+        sep = chr(10) * 2
+        for n, k in ((10, 4), (8, 3), (3, 2), (1, 1)):
+            self.assertEqual(w.limit_comment3_part(self._p3(n)), sep.join(f"para{i}" for i in range(1, k + 1)))
+
+    def test_std_comment3_receives_only_front_part_and_prior_reused(self):
+        seen = []
+
+        def fn(client, role, context, model=None):
+            seen.append(context)
+            return {"status": "OK", "text": "ok"}
+
+        import er013_family_c_production_01 as fam_c
+        orig = fam_c.generate_family_c_a2_comment
+        calls = []
+
+        def fake(client, n, art, facts, **kw):
+            calls.append((n, art))
+            return {"text": "メロスは走ります。"}
+        fam_c.generate_family_c_a2_comment = fake
+        try:
+            parts = {1: "a1", 2: "a2", 3: self._p3(10)}
+            prior = {"comments": {"1": "P1", "2": "P2"}, "attempts": {"comment_1": [], "comment_2": []},
+                     "preview": "PV", "attempts_dummy": 1}
+            prior["attempts"]["preview"] = []
+            out = w.run_support_std(None, parts, "full", ja_support_fn=fn, prior=prior)
+        finally:
+            fam_c.generate_family_c_a2_comment = orig
+        self.assertEqual([c[0] for c in calls], [3])
+        self.assertIn("para4", calls[0][1].split("【すでに聞いた部分")[0])
+        self.assertNotIn("para5", calls[0][1].split("【すでに聞いた部分")[0])
+        self.assertEqual(out["comments"]["1"], "P1")
+        self.assertEqual(out["preview"], "PV")
+
+
 class DialogueFixtureTest(unittest.TestCase):
     def _run(self, text, kw=None, llm_map=None):
         paras = [text]
