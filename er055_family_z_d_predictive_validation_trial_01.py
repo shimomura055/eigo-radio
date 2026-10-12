@@ -446,6 +446,8 @@ def main(argv=None) -> int:
         if est["cap_jpy"] > a.approved_budget_jpy:
             print(f"STOP: 上限見積{est['cap_jpy']}円 > 承認額{a.approved_budget_jpy}円")
             return 2
+        from dotenv import load_dotenv  # realのみ。値は表示しない
+        load_dotenv(os.path.join(ROOT, ".env"))
         from openai import OpenAI  # realのみ遅延import(.env等は読まない。環境変数のキーを使用)
         client = OpenAI()
     else:
