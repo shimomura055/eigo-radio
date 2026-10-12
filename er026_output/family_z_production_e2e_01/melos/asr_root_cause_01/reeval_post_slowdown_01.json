@@ -1,0 +1,2384 @@
+{
+ "ts": "2026-10-12T20:44:03",
+ "rows": [
+  {
+   "case": "P1_a2_part1_c1",
+   "kind": "positive",
+   "trial": 1,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c1.wav",
+   "canonical": "Melos called across the hall,",
+   "primary_asr": "Mellos called across the hall.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": true,
+   "final_status": "SECONDARY_ASR_CORROBORATED_MATCH",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "Mellos called across the hall.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "Melos called across the hall.",
+     "classification": null
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [
+     "secondary"
+    ],
+    "warning": true,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 0,
+     "canonical_word": "melos",
+     "asr_word": "mellos"
+    }
+   }
+  },
+  {
+   "case": "P1_a2_part1_c1",
+   "kind": "positive",
+   "trial": 2,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c1.wav",
+   "canonical": "Melos called across the hall,",
+   "primary_asr": "Mello's called across the hall.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": true,
+   "final_status": "NORMALIZED_MATCH",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "Mello's called across the hall.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "primary_2",
+     "provider": "openai_asr",
+     "text": "Mellos called across the hall.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_1",
+     "provider": "azure",
+     "text": "Melos called across the hall.",
+     "classification": "NORMALIZED_MATCH"
+    }
+   ],
+   "semantic_equivalence_info": null
+  },
+  {
+   "case": "P1_a2_part1_c1",
+   "kind": "positive",
+   "trial": 3,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c1.wav",
+   "canonical": "Melos called across the hall,",
+   "primary_asr": "Mellos called across the hall.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": true,
+   "final_status": "SECONDARY_ASR_CORROBORATED_MATCH",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "Mellos called across the hall.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "Melos called across the hall.",
+     "classification": null
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [
+     "secondary"
+    ],
+    "warning": true,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 0,
+     "canonical_word": "melos",
+     "asr_word": "mellos"
+    }
+   }
+  },
+  {
+   "case": "P2_a2_part1_c5",
+   "kind": "positive",
+   "trial": 1,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c5.wav",
+   "canonical": "Melos said.",
+   "primary_asr": "Mello said.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": false,
+   "final_status": "ASR_VALIDATION_UNCERTAIN",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "Mello said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": null
+    },
+    {
+     "step": "primary_2",
+     "provider": "openai_asr",
+     "text": "Mello said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_1",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_2",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_attempted_no_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [],
+    "warning": false,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 0,
+     "canonical_word": "melos",
+     "asr_word": "mello"
+    }
+   }
+  },
+  {
+   "case": "P2_a2_part1_c5",
+   "kind": "positive",
+   "trial": 2,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c5.wav",
+   "canonical": "Melos said.",
+   "primary_asr": "Mellow said.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": false,
+   "final_status": "ASR_VALIDATION_UNCERTAIN",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": null
+    },
+    {
+     "step": "primary_2",
+     "provider": "openai_asr",
+     "text": "Mello said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_1",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_2",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_attempted_no_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [],
+    "warning": false,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 0,
+     "canonical_word": "melos",
+     "asr_word": "mellow"
+    }
+   }
+  },
+  {
+   "case": "P2_a2_part1_c5",
+   "kind": "positive",
+   "trial": 3,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c5.wav",
+   "canonical": "Melos said.",
+   "primary_asr": "Mello said.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": false,
+   "final_status": "ASR_VALIDATION_UNCERTAIN",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "Mello said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": null
+    },
+    {
+     "step": "primary_2",
+     "provider": "openai_asr",
+     "text": "Mello said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_1",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_2",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_attempted_no_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [],
+    "warning": false,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 0,
+     "canonical_word": "melos",
+     "asr_word": "mello"
+    }
+   }
+  },
+  {
+   "case": "P3_a2_part3_c3",
+   "kind": "positive",
+   "trial": 1,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part3_c3.wav",
+   "canonical": "His friend turned around, and Melos fell against him.",
+   "primary_asr": "His friend turned around, and Mellos fell against him.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": true,
+   "final_status": "SECONDARY_ASR_CORROBORATED_MATCH",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "His friend turned around, and Mellos fell against him.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "His friend turned around and Melos fell against him.",
+     "classification": null
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [
+     "secondary"
+    ],
+    "warning": true,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 5,
+     "canonical_word": "melos",
+     "asr_word": "mellos"
+    }
+   }
+  },
+  {
+   "case": "P3_a2_part3_c3",
+   "kind": "positive",
+   "trial": 2,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part3_c3.wav",
+   "canonical": "His friend turned around, and Melos fell against him.",
+   "primary_asr": "His friend turned around, and Mellos fell against him.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": true,
+   "final_status": "SECONDARY_ASR_CORROBORATED_MATCH",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "His friend turned around, and Mellos fell against him.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "His friend turned around and Melos fell against him.",
+     "classification": null
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [
+     "secondary"
+    ],
+    "warning": true,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 5,
+     "canonical_word": "melos",
+     "asr_word": "mellos"
+    }
+   }
+  },
+  {
+   "case": "P3_a2_part3_c3",
+   "kind": "positive",
+   "trial": 3,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part3_c3.wav",
+   "canonical": "His friend turned around, and Melos fell against him.",
+   "primary_asr": "His friend turned around, and Mellows fell against him.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": true,
+   "final_status": "SECONDARY_ASR_CORROBORATED_MATCH",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "His friend turned around, and Mellows fell against him.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "His friend turned around and Melos fell against him.",
+     "classification": null
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [
+     "secondary"
+    ],
+    "warning": true,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 5,
+     "canonical_word": "melos",
+     "asr_word": "mellows"
+    }
+   }
+  },
+  {
+   "case": "P4_b1b_part1_c5",
+   "kind": "positive",
+   "trial": 1,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/b1b/narration/full_story_part1_c5.wav",
+   "canonical": "Melos said.",
+   "primary_asr": "Mello said.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": false,
+   "final_status": "ASR_VALIDATION_UNCERTAIN",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "Mello said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": null
+    },
+    {
+     "step": "primary_2",
+     "provider": "openai_asr",
+     "text": "Mello said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_1",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_2",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_attempted_no_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [],
+    "warning": false,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 0,
+     "canonical_word": "melos",
+     "asr_word": "mello"
+    }
+   }
+  },
+  {
+   "case": "P4_b1b_part1_c5",
+   "kind": "positive",
+   "trial": 2,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/b1b/narration/full_story_part1_c5.wav",
+   "canonical": "Melos said.",
+   "primary_asr": "Mello said.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": false,
+   "final_status": "ASR_VALIDATION_UNCERTAIN",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "Mello said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": null
+    },
+    {
+     "step": "primary_2",
+     "provider": "openai_asr",
+     "text": "Mello said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_1",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_2",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_attempted_no_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [],
+    "warning": false,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 0,
+     "canonical_word": "melos",
+     "asr_word": "mello"
+    }
+   }
+  },
+  {
+   "case": "P4_b1b_part1_c5",
+   "kind": "positive",
+   "trial": 3,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/b1b/narration/full_story_part1_c5.wav",
+   "canonical": "Melos said.",
+   "primary_asr": "Mello said.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": false,
+   "final_status": "ASR_VALIDATION_UNCERTAIN",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "Mello said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": null
+    },
+    {
+     "step": "primary_2",
+     "provider": "openai_asr",
+     "text": "Mello said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_1",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_2",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_attempted_no_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [],
+    "warning": false,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 0,
+     "canonical_word": "melos",
+     "asr_word": "mello"
+    }
+   }
+  },
+  {
+   "case": "CE1_other_name_Marcus",
+   "kind": "counter",
+   "trial": 1,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c1.wav",
+   "canonical": "Marcus called across the hall,",
+   "primary_asr": "Mellos called across the hall.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": false,
+   "final_status": "ASR_VALIDATION_UNCERTAIN",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "Mellos called across the hall.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "Mellows called across the hall.",
+     "classification": null
+    },
+    {
+     "step": "primary_2",
+     "provider": "openai_asr",
+     "text": "Mellos called across the hall.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_1",
+     "provider": "azure",
+     "text": "Mellows called across the hall.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_2",
+     "provider": "azure",
+     "text": "Mellows called across the hall.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_attempted_no_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [],
+    "warning": false,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 0,
+     "canonical_word": "marcus",
+     "asr_word": "mellos"
+    }
+   }
+  },
+  {
+   "case": "CE1_other_name_Marcus",
+   "kind": "counter",
+   "trial": 2,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c1.wav",
+   "canonical": "Marcus called across the hall,",
+   "primary_asr": "Mellos called across the hall.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": false,
+   "final_status": "ASR_VALIDATION_UNCERTAIN",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "Mellos called across the hall.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "Mellows called across the hall.",
+     "classification": null
+    },
+    {
+     "step": "primary_2",
+     "provider": "openai_asr",
+     "text": "Mellos called across the hall.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_1",
+     "provider": "azure",
+     "text": "Mellows called across the hall.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_2",
+     "provider": "azure",
+     "text": "Mellows called across the hall.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_attempted_no_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [],
+    "warning": false,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 0,
+     "canonical_word": "marcus",
+     "asr_word": "mellos"
+    }
+   }
+  },
+  {
+   "case": "CE2_other_name_Philon",
+   "kind": "counter",
+   "trial": 1,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part3_c3.wav",
+   "canonical": "His friend turned around, and Philon fell against him.",
+   "primary_asr": "His friend turned around, and Mellos fell against him.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": false,
+   "final_status": "ASR_VALIDATION_UNCERTAIN",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "His friend turned around, and Mellos fell against him.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "His friend turned around and Melos fell against him.",
+     "classification": null
+    },
+    {
+     "step": "primary_2",
+     "provider": "openai_asr",
+     "text": "His friend turned around, and Mellos fell against him.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_1",
+     "provider": "azure",
+     "text": "His friend turned around and Melos fell against him.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_2",
+     "provider": "azure",
+     "text": "His friend turned around and Melos fell against him.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_attempted_no_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [],
+    "warning": false,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 5,
+     "canonical_word": "philon",
+     "asr_word": "mellos"
+    }
+   }
+  },
+  {
+   "case": "CE2_other_name_Philon",
+   "kind": "counter",
+   "trial": 2,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part3_c3.wav",
+   "canonical": "His friend turned around, and Philon fell against him.",
+   "primary_asr": "His friend turned around, and Mellos fell against him.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": false,
+   "final_status": "ASR_VALIDATION_UNCERTAIN",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "His friend turned around, and Mellos fell against him.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "His friend turned around and Melos fell against him.",
+     "classification": null
+    },
+    {
+     "step": "primary_2",
+     "provider": "openai_asr",
+     "text": "His friend turned around, and Mellos fell against him.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_1",
+     "provider": "azure",
+     "text": "His friend turned around and Melos fell against him.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_2",
+     "provider": "azure",
+     "text": "His friend turned around and Melos fell against him.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_attempted_no_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [],
+    "warning": false,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 5,
+     "canonical_word": "philon",
+     "asr_word": "mellos"
+    }
+   }
+  },
+  {
+   "case": "CE3_other_name_Selinuntius",
+   "kind": "counter",
+   "trial": 1,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c5.wav",
+   "canonical": "Selinuntius said.",
+   "primary_asr": "Mello said.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": false,
+   "final_status": "ASR_VALIDATION_UNCERTAIN",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "Mello said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": null
+    },
+    {
+     "step": "primary_2",
+     "provider": "openai_asr",
+     "text": "Mello said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_1",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_2",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_attempted_no_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [],
+    "warning": false,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 0,
+     "canonical_word": "selinuntius",
+     "asr_word": "mello"
+    }
+   }
+  },
+  {
+   "case": "CE3_other_name_Selinuntius",
+   "kind": "counter",
+   "trial": 2,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c5.wav",
+   "canonical": "Selinuntius said.",
+   "primary_asr": "Mello said.",
+   "err": null,
+   "primary_classification": "ASR_VALIDATION_UNCERTAIN",
+   "primary_should_pass": false,
+   "cascade_invoked": true,
+   "rescued_pass": false,
+   "final_status": "ASR_VALIDATION_UNCERTAIN",
+   "steps": [
+    {
+     "step": "primary_1",
+     "provider": "openai_asr",
+     "text": "Mello said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "tier3_corroboration_secondary",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": null
+    },
+    {
+     "step": "primary_2",
+     "provider": "openai_asr",
+     "text": "Mello said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_1",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    },
+    {
+     "step": "secondary_2",
+     "provider": "azure",
+     "text": "Mellow said.",
+     "classification": "ASR_VALIDATION_UNCERTAIN"
+    }
+   ],
+   "semantic_equivalence_info": {
+    "tier_applied": "tier3_attempted_no_corroboration",
+    "sub_reason": "entity_only",
+    "corroborated_by": [],
+    "warning": false,
+    "role": "FULL_STORY",
+    "diff_spans": {
+     "index": 0,
+     "canonical_word": "selinuntius",
+     "asr_word": "mello"
+    }
+   }
+  },
+  {
+   "case": "CE4_content_word_shouted",
+   "kind": "counter",
+   "trial": 1,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c1.wav",
+   "canonical": "Melos shouted across the hall,",
+   "primary_asr": "Mello's called across the hall.",
+   "err": null,
+   "primary_classification": "TRUE_CONTENT_MISMATCH",
+   "primary_should_pass": false,
+   "cascade_invoked": false,
+   "rescued_pass": false,
+   "final_status": "TRUE_CONTENT_MISMATCH",
+   "steps": [],
+   "semantic_equivalence_info": null
+  },
+  {
+   "case": "CE4_content_word_shouted",
+   "kind": "counter",
+   "trial": 2,
+   "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c1.wav",
+   "canonical": "Melos shouted across the hall,",
+   "primary_asr": "Mellos called across the hall.",
+   "err": null,
+   "primary_classification": "TRUE_CONTENT_MISMATCH",
+   "primary_should_pass": false,
+   "cascade_invoked": false,
+   "rescued_pass": false,
+   "final_status": "TRUE_CONTENT_MISMATCH",
+   "steps": [],
+   "semantic_equivalence_info": null
+  }
+ ],
+ "telemetry_captured": [
+  {
+   "canonical": "Melos called across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos called across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos called across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "SECONDARY_ASR_CORROBORATED_MATCH",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellos"
+   },
+   "corroborated_by": [
+    "secondary"
+   ],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos called across the hall,",
+   "asr": "Mello's called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": null,
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos called across the hall,",
+   "asr": "Mello's called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": null,
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos called across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos called across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos called across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos called across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "SECONDARY_ASR_CORROBORATED_MATCH",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellos"
+   },
+   "corroborated_by": [
+    "secondary"
+   ],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "corroborated_by": [],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellow"
+   },
+   "corroborated_by": [],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "corroborated_by": [],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Melos fell against him.",
+   "asr": "His friend turned around, and Mellos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "melos",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Melos fell against him.",
+   "asr": "His friend turned around, and Mellos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "melos",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Melos fell against him.",
+   "asr": "His friend turned around, and Mellos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "SECONDARY_ASR_CORROBORATED_MATCH",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "melos",
+    "asr_word": "mellos"
+   },
+   "corroborated_by": [
+    "secondary"
+   ],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Melos fell against him.",
+   "asr": "His friend turned around, and Mellos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "melos",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Melos fell against him.",
+   "asr": "His friend turned around, and Mellos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "melos",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Melos fell against him.",
+   "asr": "His friend turned around, and Mellos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "SECONDARY_ASR_CORROBORATED_MATCH",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "melos",
+    "asr_word": "mellos"
+   },
+   "corroborated_by": [
+    "secondary"
+   ],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Melos fell against him.",
+   "asr": "His friend turned around, and Mellows fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "melos",
+    "asr_word": "mellows"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Melos fell against him.",
+   "asr": "His friend turned around, and Mellows fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "melos",
+    "asr_word": "mellows"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Melos fell against him.",
+   "asr": "His friend turned around, and Mellows fell against him.",
+   "role": "FULL_STORY",
+   "classification": "SECONDARY_ASR_CORROBORATED_MATCH",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "melos",
+    "asr_word": "mellows"
+   },
+   "corroborated_by": [
+    "secondary"
+   ],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "corroborated_by": [],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "corroborated_by": [],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "corroborated_by": [],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "melos",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Marcus called across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "marcus",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Marcus called across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "marcus",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Marcus called across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "marcus",
+    "asr_word": "mellos"
+   },
+   "corroborated_by": [],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Marcus called across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "marcus",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Marcus called across the hall,",
+   "asr": "Mellows called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "marcus",
+    "asr_word": "mellows"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Marcus called across the hall,",
+   "asr": "Mellows called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "marcus",
+    "asr_word": "mellows"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Marcus called across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "marcus",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Marcus called across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "marcus",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Marcus called across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "marcus",
+    "asr_word": "mellos"
+   },
+   "corroborated_by": [],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Marcus called across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "marcus",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Marcus called across the hall,",
+   "asr": "Mellows called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "marcus",
+    "asr_word": "mellows"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Marcus called across the hall,",
+   "asr": "Mellows called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "marcus",
+    "asr_word": "mellows"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Philon fell against him.",
+   "asr": "His friend turned around, and Mellos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "philon",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Philon fell against him.",
+   "asr": "His friend turned around, and Mellos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "philon",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Philon fell against him.",
+   "asr": "His friend turned around, and Mellos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "philon",
+    "asr_word": "mellos"
+   },
+   "corroborated_by": [],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Philon fell against him.",
+   "asr": "His friend turned around, and Mellos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "philon",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Philon fell against him.",
+   "asr": "His friend turned around and Melos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "philon",
+    "asr_word": "melos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Philon fell against him.",
+   "asr": "His friend turned around and Melos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "philon",
+    "asr_word": "melos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Philon fell against him.",
+   "asr": "His friend turned around, and Mellos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "philon",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Philon fell against him.",
+   "asr": "His friend turned around, and Mellos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "philon",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Philon fell against him.",
+   "asr": "His friend turned around, and Mellos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "philon",
+    "asr_word": "mellos"
+   },
+   "corroborated_by": [],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Philon fell against him.",
+   "asr": "His friend turned around, and Mellos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "philon",
+    "asr_word": "mellos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Philon fell against him.",
+   "asr": "His friend turned around and Melos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "philon",
+    "asr_word": "melos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "His friend turned around, and Philon fell against him.",
+   "asr": "His friend turned around and Melos fell against him.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 5,
+    "canonical_word": "philon",
+    "asr_word": "melos"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Selinuntius said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "selinuntius",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Selinuntius said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "selinuntius",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Selinuntius said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "selinuntius",
+    "asr_word": "mello"
+   },
+   "corroborated_by": [],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Selinuntius said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "selinuntius",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Selinuntius said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "selinuntius",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Selinuntius said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "selinuntius",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Selinuntius said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "selinuntius",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Selinuntius said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "selinuntius",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Selinuntius said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "selinuntius",
+    "asr_word": "mello"
+   },
+   "corroborated_by": [],
+   "step": "tier3_corroboration",
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Selinuntius said.",
+   "asr": "Mello said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "selinuntius",
+    "asr_word": "mello"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Selinuntius said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "selinuntius",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Selinuntius said.",
+   "asr": "Mellow said.",
+   "role": "FULL_STORY",
+   "classification": "ASR_VALIDATION_UNCERTAIN",
+   "sub_reason": "entity_only",
+   "diff_span": {
+    "index": 0,
+    "canonical_word": "selinuntius",
+    "asr_word": "mellow"
+   },
+   "entity_like_source": [
+    "capitalized"
+   ]
+  },
+  {
+   "canonical": "Melos shouted across the hall,",
+   "asr": "Mello's called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "sub_reason": "content_word",
+   "diff_span": null,
+   "entity_like_source": []
+  },
+  {
+   "canonical": "Melos shouted across the hall,",
+   "asr": "Mellos called across the hall.",
+   "role": "FULL_STORY",
+   "classification": "TRUE_CONTENT_MISMATCH",
+   "sub_reason": "content_word",
+   "diff_span": null,
+   "entity_like_source": []
+  }
+ ]
+}

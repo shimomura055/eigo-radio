@@ -114,6 +114,39 @@ A2_SLOWDOWN_TARGET_SEGMENTS = (
 )
 
 
+def _post_slowdown_cascade_rescue(result: dict, tts_input_text: str, asr_text: str, classification,
+                                  out_path: str, segment_id: str) -> bool:
+    """減速後再検証でPrimary判定がASR_VALIDATION_UNCERTAIN(固有名詞/同音語らしき
+    差のみ)の場合に限り、減速前の検証と同じ共有Cascade
+    (secondary_asr.evaluate_attempt_with_cascade_detail: CMU Case A・Tier3
+    Secondary ASR corroboration等、全て承認済みの既存規則)を最終音声に対して
+    実行する。verified=Trueの場合のみTrueを返す。例外・Secondary失敗・
+    corroborationなしの場合はFalse(従来どおりSTOPPED、fail-closed)。TRUE_CONTENT_
+    MISMATCH/数字/否定の不一致はCascade対象外のまま(従来どおり不合格)。
+    HR queueへは書き込まない(_detail版を使用、Review Lock側の既存経路に委ねる)。"""
+    if classification.classification != "ASR_VALIDATION_UNCERTAIN":
+        return False
+    if not secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED:
+        return False
+    try:
+        import er006_pronunciation_ledger_01 as pronun_ledger
+        ledger_phrases = [h["canonical_spelling"]
+                          for h in pronun_ledger.get_hint_for_text(tts_input_text, min_confidence="low")]
+        detail = secondary_asr.evaluate_attempt_with_cascade_detail(
+            tts_input_text, asr_text, [], out_path, language="en-US", ledger_phrases=ledger_phrases,
+            cascade_enabled=True, segment_id=segment_id)
+    except Exception as exc:  # fail-closed: 例外時は救済しない
+        result["post_slowdown_cascade"] = {"invoked": False, "error": f"{type(exc).__name__}: {exc}"}
+        return False
+    cls = detail.get("classification")
+    result["post_slowdown_cascade"] = {
+        "invoked": bool(detail.get("cascade_invoked")), "verified": bool(detail.get("verified")),
+        "final_status": detail.get("final_status"), "steps": detail.get("steps"),
+        "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None) if cls is not None else None,
+    }
+    return bool(detail.get("verified"))
+
+
 def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text: str, result: dict) -> dict:
     """generate_english_segment_with_fallback()が返した通常ペースの
     結果(status=="OK")に対し、6% time-stretchを適用し、post-process後の
@@ -181,11 +214,23 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
     # 配線済みだったが、こちらは独立した再検証コードパスだったため)。
     # 同じ既存判定関数をそのまま再利用し、新規ロジックは追加しない。
     homophone_accepted = secondary_asr.is_homophone_candidate_mismatch(classification)
-    if classification.should_pass or homophone_accepted:
+    # FAMILY-Z-MELOS-PROPER-NOUN-ASR-ROOT-CAUSE-01 委任_01(是正A): 承認済みの
+    # 固有名詞救済(Tier3 corroboration=SECONDARY_ASR_CORROBORATED_MATCH、
+    # CMU Case A)は、減速前の検証(共有Cascade)でのみ発火し、この減速後
+    # 再検証では未配線だった(減速前にcascadeでPASSした音声が、減速後に
+    # Primary1回だけで再判定されて全滅、OPEN-270記載のGap)。同じ既存
+    # 共有Cascade関数をそのまま再利用し、新規ロジックは追加しない。
+    cascade_accepted = False
+    if not (classification.should_pass or homophone_accepted):
+        cascade_accepted = _post_slowdown_cascade_rescue(
+            result, tts_input_text, asr_text, classification, out_path, name)
+    if classification.should_pass or homophone_accepted or cascade_accepted:
         result["asr_verified"] = True
         result["asr_text"] = asr_text
         if homophone_accepted:
             result["post_slowdown_homophone_accepted"] = True
+        if cascade_accepted:
+            result["post_slowdown_cascade_accepted"] = True
     else:
         result["status"] = "STOPPED"
         result["asr_verified"] = False
@@ -286,6 +331,8 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
             "post_slowdown_classification": result.get("post_slowdown_classification"),
             # 記録欠落是正(委任_04A): 減速後再検証の転写全文を上書きせず各周回へ残す。
             "post_slowdown_asr_text": result.get("post_slowdown_asr_text"),
+            # 是正A(委任_01): 減速後に共有Cascadeを実行した場合の判定と全step転写。
+            "post_slowdown_cascade": result.get("post_slowdown_cascade"),
             "tts_generations_used_cumulative": generations_used,
         })
         review_lock.append_attempt_history_event(out_path, "A2_SLOWDOWN_REVERIFY", slowdown_attempts_log[-1])
