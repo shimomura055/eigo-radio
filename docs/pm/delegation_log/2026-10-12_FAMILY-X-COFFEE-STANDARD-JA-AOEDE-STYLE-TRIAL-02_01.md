@@ -1,0 +1,16 @@
+# 委任ログ: FAMILY-X-COFFEE-STANDARD-JA-AOEDE-STYLE-TRIAL-02 委任_01 (2026-10-12)
+- 範囲: Standard日本語Aoede Styleの追加探索。Preview/Comment用R1〜R8(P2中心)、KP日本語意味用Q1〜Q8(M2中心)を各1回生成。基準P2/M2は既存Trial音声を再利用。Trial限定、SSOT未編集。
+- 基準確認: `er057_output/ja_aoede_style_trial_02/BASELINE_CONFIRMATION_01.md`(P2=Preview/Comment1-4、M2=KP日本語意味5、Voice=Aoede、japanese_titleは既存承認音声のまま対象外。基準wav sha全10件が前回Final v2記録と一致)。
+- Prompt: prompts/prompts_R.md・prompts_Q.md・prompt_sha256.json。R(文字数 P2=166): R1 99 / R2 168 / R3 177 / R4 175 / R5 174 / R6 165 / R7 147 / R8 158。Q(M2=67): Q1 31 / Q2 93 / Q3 89 / Q4 98 / Q5 92 / Q6 60 / Q7 81 / Q8 85。速度数値のみの差なし。置換・整理あり(R1,R2,R3,R5,R8、Q1,Q6,Q8)。
+- 方式: Trial専用script `er057_ja_aoede_style_trial_02.py`(01B scriptのload_texts/gen_one/trimを再利用、call_ttsは同一リクエスト形でmodel_version記録を追加)。Production runner・Master Store・manifest・telemetry・queue・attempt_history・cost_logger非使用/書込なし。model=gemini-3.8-flash-lite-tts(最新世代、Production同一固定)、応答model_version=gemini-3.8-flash-lite-tts(本生成では記録し損ね、同一形1 callのprobeで実測 `model_version_probe_01.json`)、Voice=Aoede、speech_metadata_flash_lite、Standard同期(DEV)、trim margin 0.35、音量は現行assembleと同じ目標RMSに全音声同一正規化。
+- 結果: 80/80 OK、duration anomaly 0、生成call 85(+probe 1)=技術失敗retry 5(R1の5件。初回失敗理由は未記録)、生成wall 50秒(並列6)。
+- ASR(Primary OpenAI ja-JP+classify_ja_asr_match、cascade/review log非使用、NGでも再生成なし): 候補80+基準10=90件。基準P2/M2はNGなし。候補のTRUE_CONTENT_MISMATCH 10(R1:1,R2:1,R3:1,R4:1,R5:3,R7:2,Q8:1)、PHONETIC_MATCH 6、他EXACT/NORMALIZED。詳細 `QUALITY_COMPARISON_01_metrics.md`。
+- 費用: 概算 約JPY19.4(retry+ASR込み、上限25)。実費 TTS約JPY13.73(usage実測tokens、失敗retry分のusage未取得)+probe約JPY0.1+ASR約JPY1以下=合計約JPY15以下(請求画面未確認)。`cost_actual_01.json`。
+- 試聴URL: https://shimomura055.github.io/eigo-radio/user_test/coffee_ja_style_trial_02/index.html
+- Playwright: audio 108/108実再生PASS、HTTP全109件200、file:///・C:\なし、Gate 7(l)(m)(n)確認(`PLAY_EVIDENCE_01.md`)。
+- 品質比較: `QUALITY_COMPARISON_01.md`/`_metrics.md`。機械指標と所見(AI未聴取、仮説)を区別。R6・R8はASR基準同等、R5(NG3+文末「?」疑い)・R7(NG2)はリスク大、R8は+約7秒(11%)長い。異音検知は全てlow(候補10件、基準0件)。
+- Production不変: Master Store manifest/reuse_telemetry/human_review_queue/pronunciation ledger等8ファイルのsha256を作業中盤と終了時に比較しUNCHANGED(`production_sha_after_01.txt`/`production_sha_final_01.txt`)。ただしattempt_history.jsonl・er021 telemetryは本Trial開始前(mtime 08:56/09:13、本Trial生成は09:54以降)に別作業で更新済みで、生成前スナップショットは取得していない(前回04記録とは異なる)。本Trialのscriptはこれらへ書込しないことをコード上確認。
+- Dangling: なし(ASR/probe含め全API完了、background無し)。ACTIVE_TASK別ファイルは.gitignore対象のためコミットせずローカルのみ。
+- Status案: USER_DECISION_REQUIRED(ユーザー試聴待ち。候補選定・採用なし)。
+- 正式採用時の確認項目: 初回/retry/fallback/regeneration整合(特にASR NGが出る候補は本番Cascade・retry上限との相性)、J2(現行Production Style)との関係(P2はJ2+追記、他Rも土台はJ2系の置換/追記)、共通Style(Preview/Comment用とKP日本語意味用)の再承認、japanese_titleの扱い、Standard同期とBatch既定の差、Primary発音hint(resolver)付与のTrial省略。
+- 禁止遵守: git add -A/-f・amend・rebase・force push・stash・clean・reset・checkout -f 不使用、並行agent領域(pace_trial)不接触、ACTIVE_TASK.md/RESULT_PACKET.md/SSOT未編集、追加候補の生成なし。
