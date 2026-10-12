@@ -122,3 +122,7 @@ ASR再評価のみ。スクリプトを計3回実行した(初回2回は`cl.inst
 ### 10-3 Opus任意改善(eb4c6479)
 `_post_slowdown_cascade_rescue`: ledger準備失敗はinvoked=False、cascade呼出中の例外はinvoked=True+cascade_entered+aborted_by_exception、cost logger未初期化/単価未登録(RuntimeError "init_logger"/"[STOP]")は伝播(er006 L237-241方針)。top-level `post_slowdown_final_classification` 追加。test +5(Primary#2単発PASS、CMU Case A、例外invoked、設定不備伝播、final_classification)。
 注: `post_slowdown_final_classification`は`generate_a2_segment_with_slowdown`の戻りdictには入るが、er063 `build_entry`が`tts_generation_results.json`へは伝播していない(attempt_historyのA2_SLOWDOWN_REVERIFYにはcascade final_statusあり)。伝播は未実施(範囲外、必要ならFable判断)。
+
+
+## 11. 訂正(2026-10-12 CS監査 FAMILY-Z-MELOS-CONNECTED-SPEECH-ROOT-CAUSE-AUDIT-01 委任_01)
+- 本文0節/3節の『分類C+D(2語clipで機械判定不能)』および1節#4eの『Connected Speech層はentity_like差に到達しない』は不正確だった。実測では: (a)Pattern A(B1 Connected Speech Validator)はstem綴り完全一致(Melo)ならentity gateに遮られず発火し、Melos案件で計5回ACCEPT(Std a2 part1_c5 fallbackのAzure=`Melo said.`を含む)。(b)Std a2 part1_c5は減速前に2回PASS済みで、STOPPEDは減速後救済欠落(A)。(c)残るHR/未救済の本因は『stem同音の別綴り(Mello/Mellow)が綴り水準のPattern A対象外+Equivalence LayerがUNCERTAIN入口除外かつCMU OOVで不能』(C)。詳細: `../cs_audit_01/CS_AUDIT_01.md`。

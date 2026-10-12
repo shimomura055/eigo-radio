@@ -1,0 +1,71 @@
+{
+ "n_pairs": 612,
+ "n_cs_environment": 26,
+ "cs_environment_by_classification": {
+  "NUMERIC_EQUIVALENCE_MATCH": 1,
+  "TRUE_CONTENT_MISMATCH": 7,
+  "ASR_VALIDATION_UNCERTAIN": 18
+ },
+ "cs_environment_by_cs_validator": {
+  "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING": 26
+ },
+ "n_shadowed_by_entity_gate": 0,
+ "n_A_prime_candidates": 10
+}
+--- synthetic ---
+proper_noun_exact_stem_drop                    | 'Melos said.' <- 'Melo said.' | cls=CONNECTED_SPEECH_ACCEPT pass=True entity=False cs=CONNECTED_SPEECH_ACCEPT eq=CONNECTED_SPEECH_ACCEPT A'=Y shadow=False
+proper_noun_stem_homophone_spelling(今回)        | 'Melos said.' <- 'Mello said.' | cls=ASR_VALIDATION_UNCERTAIN pass=False entity=True cs=UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING eq=NOT_A_PHONEME_PREFIX_DROP A'=Y shadow=False
+proper_noun_stem_homophone_spelling(今回)        | 'Melos said.' <- 'Mellow said.' | cls=ASR_VALIDATION_UNCERTAIN pass=False entity=True cs=UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING eq=NOT_A_PHONEME_PREFIX_DROP A'=Y shadow=False
+COUNTER_real_mispronunciation_or_other_word    | 'Melos said.' <- 'Melon said.' | cls=ASR_VALIDATION_UNCERTAIN pass=False entity=True cs=UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING eq=NOT_A_PHONEME_PREFIX_DROP A'=- shadow=False
+COUNTER_unrelated_name                         | 'Melos said.' <- 'Marcus said.' | cls=ASR_VALIDATION_UNCERTAIN pass=False entity=True cs=UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING eq=NOT_A_PHONEME_PREFIX_DROP A'=- shadow=False
+COUNTER_unrelated_word                         | 'Melos said.' <- 'Melody said.' | cls=ASR_VALIDATION_UNCERTAIN pass=False entity=True cs=UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING eq=NOT_A_PHONEME_PREFIX_DROP A'=- shadow=False
+proper_noun_exact_stem_drop                    | 'Marcus smiled.' <- 'Marcu smiled.' | cls=CONNECTED_SPEECH_ACCEPT pass=True entity=False cs=CONNECTED_SPEECH_ACCEPT eq=CONNECTED_SPEECH_ACCEPT A'=- shadow=False
+proper_noun_variant_spelling_full_s_present    | 'Marcus smiled.' <- 'Markus smiled.' | cls=ASR_VALIDATION_UNCERTAIN pass=False entity=True cs=UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING eq=NOT_A_PHONEME_PREFIX_DROP A'=- shadow=False
+COUNTER_unrelated                              | 'Marcus smiled.' <- 'Marker smiled.' | cls=ASR_VALIDATION_UNCERTAIN pass=False entity=True cs=UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING eq=NOT_A_PHONEME_PREFIX_DROP A'=- shadow=False
+proper_noun_variant_spelling_s_present         | 'Chris saw him.' <- 'Kris saw him.' | cls=ASR_VALIDATION_UNCERTAIN pass=False entity=True cs=UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING eq=NOT_A_PHONEME_PREFIX_DROP A'=- shadow=False
+proper_noun_s_dropped_variant_spelling         | 'Chris saw him.' <- 'Cree saw him.' | cls=ASR_VALIDATION_UNCERTAIN pass=False entity=True cs=UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING eq=NOT_A_PHONEME_PREFIX_DROP A'=- shadow=False
+proper_noun_exact_stem_drop                    | 'Thomas sat down.' <- 'Thoma sat down.' | cls=CONNECTED_SPEECH_ACCEPT pass=True entity=False cs=CONNECTED_SPEECH_ACCEPT eq=CONNECTED_SPEECH_ACCEPT A'=Y shadow=False
+proper_noun_other                              | 'Dionysius spoke.' <- 'Dionysia spoke.' | cls=ASR_VALIDATION_UNCERTAIN pass=False entity=True cs=UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING eq=NOT_A_PHONEME_PREFIX_DROP A'=- shadow=False
+general_noun_PatternA(承認済み)                    | 'The studies suggest a link.' <- 'The study suggests a link.' | cls=CONNECTED_SPEECH_ACCEPT pass=True entity=False cs=CONNECTED_SPEECH_ACCEPT eq=CONNECTED_SPEECH_ACCEPT A'=Y shadow=False
+general_noun_exact_stem_drop                   | 'The bosses said so.' <- 'The boss said so.' | cls=CONNECTED_SPEECH_ACCEPT pass=True entity=False cs=CONNECTED_SPEECH_ACCEPT eq=CONNECTED_SPEECH_ACCEPT A'=Y shadow=False
+general_noun_exact_stem_drop                   | 'The classes started late.' <- 'The class started late.' | cls=CONNECTED_SPEECH_ACCEPT pass=True entity=False cs=CONNECTED_SPEECH_ACCEPT eq=CONNECTED_SPEECH_ACCEPT A'=Y shadow=False
+general_noun_exact_stem_drop                   | 'The glasses sit there.' <- 'The glass sit there.' | cls=CONNECTED_SPEECH_ACCEPT pass=True entity=False cs=CONNECTED_SPEECH_ACCEPT eq=CONNECTED_SPEECH_ACCEPT A'=Y shadow=False
+non_suffix_final_consonant                     | 'The bus stops here.' <- 'The bu stops here.' | cls=CONNECTED_SPEECH_ACCEPT pass=True entity=False cs=CONNECTED_SPEECH_ACCEPT eq=CONNECTED_SPEECH_ACCEPT A'=- shadow=False
+non_suffix_final_consonant                     | 'This school starts soon.' <- 'This schoo starts soon.' | cls=TRUE_CONTENT_MISMATCH pass=False entity=False cs=UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING eq=NOT_A_PHONEME_PREFIX_DROP A'=- shadow=False
+non_suffix_final_consonant                     | 'A nice sign.' <- 'A nigh sign.' | cls=TRUE_CONTENT_MISMATCH pass=False entity=False cs=UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING eq=EQUIVALENCE_LAYER_INSUFFICIENT_EVIDENCE A'=- shadow=False
+PatternB_not_applicable_nextword               | 'He opened the door.' <- 'He open the door.' | cls=TRUE_CONTENT_MISMATCH pass=False entity=False cs=UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING eq=EQUIVALENCE_LAYER_INSUFFICIENT_EVIDENCE A'=- shadow=False
+PatternB(承認済み)                                 | 'He opened to them.' <- 'He open to them.' | cls=CONNECTED_SPEECH_ACCEPT pass=True entity=False cs=CONNECTED_SPEECH_ACCEPT eq=CONNECTED_SPEECH_ACCEPT A'=- shadow=False
+COUNTER_real_error_other_word                  | 'The studies suggest a link.' <- 'The studio suggests a link.' | cls=TRUE_CONTENT_MISMATCH pass=False entity=False cs=UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING eq=NOT_A_PHONEME_PREFIX_DROP A'=- shadow=False
+COUNTER_unrelated                              | 'The bosses said so.' <- 'The bonus said so.' | cls=TRUE_CONTENT_MISMATCH pass=False entity=False cs=UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING eq=NOT_A_PHONEME_PREFIX_DROP A'=- shadow=False
+general_noun_ies_drop                          | 'The cities seem calm.' <- 'The city seem calm.' | cls=CONNECTED_SPEECH_ACCEPT pass=True entity=False cs=CONNECTED_SPEECH_ACCEPT eq=CONNECTED_SPEECH_ACCEPT A'=Y shadow=False
+--- real: env rows ---
+sibilant_boundary | HRqueue:primary_1 | 'The result was clear for fruit and vegetables. After 3 months, sales  <- 'The result was clear for fruit and vegetables. After three months, sa | NUMERIC_EQUIVALENCE_MATCH UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+sibilant_boundary | HRqueue:secondary_forced | 'The result was clear for fruit and vegetables. After 3 months, sales  <- 'The result was clear for fruit and vegetables. After three months, sa | TRUE_CONTENT_MISMATCH UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+sibilant_boundary | HRqueue:secondary_2 | 'The guards went still when Melos spoke.' <- 'The guards went still when Milo spoke.' | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+sibilant_boundary | HRqueue:primary_2 | 'At the river, he stopped. The bridge was gone. Brown water rushed thr <- 'At the river, he stopped. The bridge was gone. Brown water rushed thr | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+sibilant_boundary | HRqueue:secondary_2 | 'At the river, he stopped. The bridge was gone. Brown water rushed thr <- 'At the river, he stopped. The bridge was gone. Brown water rushed thr | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING A'
+sibilant_boundary | HRqueue:primary_2 | 'Beyond the river, attackers blocked the road. One grabbed his arm. An <- 'Beyond the river, attackers blocked the road. One grabbed his arm. An | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING A'
+sibilant_boundary | HRqueue:primary_2 | 'Melos said.' <- 'Mello said.' | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING A'
+sibilant_boundary | HRqueue:secondary_2 | 'Melos said.' <- 'Mellow said.' | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING A'
+sibilant_boundary | er021_telemetry | "This story is not only about a person taking over a call. It also rai <- "The story is not only about a person taking over a call, it also rais | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+sibilant_boundary | er021_telemetry | "This story was not only about who handled the calls. It was also abou <- "The story is not only about a person taking over a call, it also rais | TRUE_CONTENT_MISMATCH UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+sibilant_boundary | er021_telemetry | 'The 20% charge was announced, but important details were not clear. A <- 'The 20% charge was announced, but important details were not clear. A | TRUE_CONTENT_MISMATCH UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+stop_boundary | er021_telemetry | 'This news feels like a short play in 3 acts. The first act was 20%. A <- 'This news feels like a short play in 3 acts. The first act was 20%. A | TRUE_CONTENT_MISMATCH UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+stop_boundary | er021_telemetry | 'This news feels like a short play in 3 acts. Act One was 20%. Act 2 b <- 'This news feels like a short play in 3 acts. Act One was 20%. Act 2 b | TRUE_CONTENT_MISMATCH UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+stop_boundary | er021_telemetry | 'This episode examines a test of an AI service that makes phone calls  <- 'This episode examines a test of an AI service that makes phone calls  | TRUE_CONTENT_MISMATCH UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+sibilant_boundary | er021_telemetry | 'The 20% charge was announced, but important details were not clear. A <- 'The 20% charge was announced, but important details were not clear.Ab | TRUE_CONTENT_MISMATCH UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+sibilant_boundary | er021_telemetry | "Melos's stomach tightened." <- "Mello's stomach tightened." | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+sibilant_boundary | er021_telemetry | 'The guards went still when Melos spoke.' <- 'The guards went still when Mello spoke.' | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING A'
+sibilant_boundary | er021_telemetry | 'At the wedding, Melos smiled whenever his sister smiled. He watched h <- 'At the wedding, mellow smiled whenever his sister smiled. He watched  | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING A'
+sibilant_boundary | er021_telemetry | 'At the river, he stopped. The bridge was gone. Brown water rushed thr <- 'At the river, he stopped. The bridge was gone. Brown water rushed thr | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING A'
+sibilant_boundary | er021_telemetry | 'At the river, he stopped. The bridge was gone. Brown water rushed thr <- 'At the river, he stopped. The bridge was gone. Brown water rushed thr | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING A'
+sibilant_boundary | er021_telemetry | 'At the river, he stopped. The bridge was gone. Brown water rushed thr <- 'At the river he stopped. The bridge was gone. Brown water rushed thro | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING A'
+sibilant_boundary | er021_telemetry | 'Melos said.' <- 'Mello said' | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING A'
+sibilant_boundary | er021_telemetry | 'Melos said.' <- 'Mellos said.' | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+sibilant_boundary | er021_telemetry | 'Melos said.' <- "Mello's said." | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+sibilant_boundary | er021_telemetry | 'Melos said.' <- 'Mallow said.' | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+sibilant_boundary | er021_telemetry | 'Melos said.' <- 'Mellows said.' | ASR_VALIDATION_UNCERTAIN UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING 
+--- sweep ---
+exact_stem_drop {('PASS', 'CONNECTED_SPEECH_ACCEPT', "A'"): 42, ('PASS', 'CONNECTED_SPEECH_ACCEPT', '-'): 66}
+stem_variant_spelling {('NOT_PASS', 'ASR_VALIDATION_UNCERTAIN', "A'"): 12, ('NOT_PASS', 'ASR_VALIDATION_UNCERTAIN', '-'): 96, ('PASS', 'CONNECTED_SPEECH_ACCEPT', "A'"): 6}
+sweep_shadowed_by_entity_gate: 0

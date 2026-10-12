@@ -20648,6 +20648,15 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - Opus任意改善(eb4c6479): 例外時invoked正確化、cost logger設定不備は伝播、top-level `post_slowdown_final_classification`追加、test+5(合計16件)。回帰: er021 62/er063 47/er026統合42/runner 21 PASS。
 - 費用累計 約JPY184.8 / 300。詳細: `er026_output/family_z_production_e2e_01/melos/asr_root_cause_01/ROOT_CAUSE_01.md` 10節、`COST_LEDGER_MELOS_01.md` 5節、委任ログ`docs/pm/delegation_log/2026-10-12_FAMILY-Z-MELOS-PROPER-NOUN-ASR-ROOT-CAUSE-01_03.md`。
 
+## FAMILY-Z-MELOS-CONNECTED-SPEECH-ROOT-CAUSE-AUDIT-01 委任_01(2026-10-12、既承認Connected Speech機構の配線・発火監査。read-only+オフライン再現、Production変更0、有料API 0、新仕様なし、`APPROVED_FOR_PRODUCTION`ではない)
+- 結論: 先行調査の『2語clip機械判定不能(D)』を **C(設計上の不足)主体+A(是正済み: 減速後救済欠落)+D残余(音声実体)** へ訂正。B1 Connected Speech Validator(Pattern A)は配線・実発火済み: Melos案件で計5回`CONNECTED_SPEECH_ACCEPT`(うち4回Melos clip、Std a2 part1_c5 fallback attemptではAzure=`Melo said.`をPattern Aで受理)。Std a2 part1_c5は減速前に2回PASS(take1=Tier3[Azure=Melos]、take3=Pattern A)し、STOPPEDの直接原因は減速後再検証の救済欠落(委任_01是正A、再実行は未実施)。
+- 残るHR(Adv b1b)/減速後最終wav未救済の本因: ASRが`Mello`/`Mellow`(CMU音素がMeloと同一の別綴り)を返すと、Pattern A(綴り水準: ASR==canonical-`s/es`)対象外、Equivalence Layer(OPEN-122)は`TRUE_CONTENT_MISMATCH`限定+CMU音素必須のため`melos`(OOV)で構造的に発火不能、Tier3はAzureが`Melos`と綴ることが必要。entity gate(entity_only→UNCERTAIN)がValidatorを遮る問題は実データ26pair・合成108pair(18名×6語)で0件。Equivalence LayerはMelos案件で0回(他証跡では発火実績あり)。
+- 汎化: exact stem drop 108/108 PASS、反例(Melon/Marcus/Melody/studio/bonus等)誤PASS 0。A'(stem同音拡張)の追加効果は合成でMelosの12件のみ(CMU収録stemに限定)。実データはMelos 17/18でMelos以外の事例が無い(一般性は合成のみ)。探索的音響指標(摩擦区間長)はA群n=4で未校正。
+- 実施: Productionコード変更0。再発防止test `er026_cs_audit_regression_01_test_01.py` 12件PASS(現行承認境界の固定: stem同音の別綴りNOT_PASS・反例非PASS・Eq Layer未呼出・減速後cascadeのEq flag未配線の事実固定)。既存CS関連test(cascade rescue 16/no18 15/Eq Layer wiring/secondary_asr)PASS。er021/er063/統合/runnerは共有tracked stateへ書込むため未実行(変更0)。
+- 副作用: 初回オフライン再評価が共有`er021_output/.../telemetry.jsonl`へ重複約1,675行を追記(以後no-op化、整理はFable/ユーザー判断、OPEN-328)。
+- 新規OPEN: OPEN-327(C案: 音素水準A'/音響独立証拠、USER_DECISION_REQUIRED・Trial要・Opus条件A)、OPEN-328(観測性+減速後Eq flag既知Gap)。OPEN-318/320/322へ追記。有料検証案(上限JPY10)は未実行。
+- 証跡: `er026_output/family_z_production_e2e_01/melos/cs_audit_01/CS_AUDIT_01.md`(trace表・8項目検証・汎化・音響)、`cs_offline_reeval_01.py/.json`、`local_asr_probe_01.*`、`sibilant_*_probe_01.*`、委任ログ`docs/pm/delegation_log/2026-10-12_FAMILY-Z-MELOS-CONNECTED-SPEECH-ROOT-CAUSE-AUDIT-01_01.md`。
+
 ## FAMILY-X-KP-IDIOM-EXTRACTION-SELECTION-TRIAL-01 暫定記録(2026-10-12、委任_01〜04。Trial経過の暫定記録であり`APPROVED_FOR_PRODUCTION`ではない。Opusレビュー③待ち)
 - 発端: Coffee v4原稿で`pumps its fist`(MUST)と`mark the date on your calendar`(WANT)が、Family X DB Hybrid KPの候補抽出で取りこぼされ最終選定でも優先されなかった。範囲=Trial+Opus+改善案検証まで(Production無変更、Coffee専用hardcode禁止、本件専用追加予算JPY50)。
 - Phase A(委任_01、JPY0): 診断・設計。Phase B/C(委任_02): Trial実装((a)placeholder照合、(b1)LLM補助抽出、(c)予約枠、(d)選定guidance置換)とCoffee初回Trial(実費JPY14.44、MUST-1 6/6・MUST-2 達成、WANT未達、抽出は6/6で上限5件=枠埋め偏り)。
