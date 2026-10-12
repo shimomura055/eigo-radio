@@ -79,3 +79,7 @@ KP外側retry(最大3)・TTS clip checkpoint(中断時の再課金防止)は維�
   ③旧累計を含む機構を別途実装する(今回は実装せず。OPEN起票)。上記①が追加実装なしで最も安全。
 - 予算判断の目安: 見積A/Bのいずれも JPY300 上限には収まるが、不具合による再試行(特にTTS再起動)が1回でも入ると JPY200超過の可能性が高い。
   再試行は委任文で回数を明示許可した範囲のみ(PM_GOVERNANCE 26節)。
+
+## 3. run_e2e_02 開始前(委任_12B, 2026-10-12)
+- 開始前累計 JPY108.1(run_e2e_01)。approved-budget 191.9 / warn 92。Z Style表キーにP8なしをdry-runで確認(Coffee P8非適用)。
+- 停止時点(17:54 JST、rc=2、tts_b1bでSTOP): run_e2e_02 実費 JPY39.32 (openai 23.11 / gemini 9.28 / asr 1.42 / azure 5.52)。合算 147.4 / 300。LR/cool-down発火なし(未確認分あり)。再起動なし。
