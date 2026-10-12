@@ -23,7 +23,7 @@ def build_audio(name, paths):
 for c in G.CANDS: build_audio(c, [f"{OUT}/attempts/{c}_adv_part{n}.wav" for n in (1, 2, 3)])
 sr = build_audio("F5", [f"{F5}/adv_part{n}_f5.wav" for n in (1, 2, 3)])
 def block(c, base=False):
-    r = S[c]; jp = "基準(Final v2 Advanced Full Storyの既存音声。再生成なし)" if base else G.CANDS[c][0]
+    r = S[c]; jp = "基準(現行F5。既存音声を再利用、再生成なし)" if base else G.CANDS[c][0]
     style = G.style_of_f5() if base else G.style_of(c)
     h = f"<tr id='{c}'><td class='id'><b>{c}</b><br>{html.escape(jp)}<br><span class='sec'>合計WPM <b>{r['total_wpm']}</b></span></td><td class='play'>"
     for n in (1, 2, 3): h += f"Part{n} ({r['part_wpm'][n-1]} WPM)<br><audio controls preload='none' src='audio/{c}_p{n}.mp3'></audio><br>"
