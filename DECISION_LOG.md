@@ -20602,3 +20602,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 問題: FAMILY-X-COFFEE-STD-COMMENT4-BRIDGE-PROMPT-TRIAL-01で15本中の一部(選定Run)しか全文開示しておらず、C2を『3回とも合格・最良』としたがRun1に「続いて」が残っていた。前回判定(終盤|聞き終|英語+聞等の存在検査+読解)は望ましくない語の機能を見ておらず検出できなかった。
 - 是正: 15本全文を開示し、(a)終了伝達(b)橋渡し(c)自然簡潔(d)進行語感の4観点で文脈評価。結果: C1 3/3○、C2 2/3○+1/3△、C4 2/3○+1/3×、C0/C3 0/3○。推薦を「C1第一・C2次点」へ変更(推薦のみ、採否はユーザー、OPEN-316)。
 - 状態: VALIDATED(Trial)。CURRENT_SPEC不変、Production Prompt/定数/音声不変。証跡: `er057_output/coffee_comment4_trial_01/ALL_RUNS_DISCLOSURE_01.md`、ページ `user_test/coffee_comment4_trial_01/all_runs.html`、報告 `docs/pm/delegation_log/2026-10-12_COFFEE-COMMENT4-TRIAL-ALL-RUNS-DISCLOSURE-01.md`。
+
+## FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01 委任_12B/12C/12D(2026-10-12、Trial実走、PRODUCTION_WIRED未達、CURRENT_SPEC不変)
+- 委任_12B: run_e2e_02(--stage all)はtts_b1bで停止(rc=2)。b1b full_story_part1_c5『Melos said.』がASR_VALIDATION_UNCERTAIN(entity_only、Mello/Mellow)でHuman Review到達。b1b part3_c1はLocal Rewrite(Melos->He)でaudio_text_deviation発生。委任_12C(read-only)で事実整理。
+- 委任_12D(1)gate修正: er063 assert_tts_results_complete の`LOCAL_REWRITE_NOT_REVALIDATED`不採択を撤去(ユーザー決定③=原作保持Validator撤廃後の取り残し)。Local Rewrite採択clipはverdict=NOT_REQUIREDでも採択、audio_text_deviation(before/after/diff_summary/clip一覧)をgate出力`audio_text_deviations`とgate_result evidenceへ記録。test追加、er063/er026統合 新規failure 0。
+- 委任_12D(2)Comment3規則: Fable判断で`limit_comment3_part`を先頭約25%(最低2段落)+到着・結末段落(city gate/sword/square/arrive等のマーカー該当段落以降)を含めない、へ変更(Z所有、Adv/Std共通)。Std Comment3のみ`--regenerate-stage support_a2`で再生成(Preview/Comment1/2再利用)。再生成Comment3は到着・再会・王の改心に触れない。B1 Comment3は規則施行前生成として現行維持。
+- 委任_12D(3)tts_a2(起動1回、rc=2): 39 clip中OK35/非OK4(a2 comment_1[JA]、full_story_part1_c1、part1_c5、part3_c3)。固有名詞のみ差のHR到達はEN3件。Std cooldown(10分)発火1回。HR採択・override・regenerateは未実施(ユーザー試聴後)。試聴ページ `user_test/family_z_melos_01/hr_review_01.html`(b1b 2件+a2 4件)。
+- 状態: Trial実走・未完(gate/assemble/pages/page_verify未実行)。Production採用判断なし。

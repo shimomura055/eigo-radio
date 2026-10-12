@@ -345,6 +345,27 @@ class StageGateTest(unittest.TestCase):
         self.assertTrue(all(v == "OK" for v in out["statuses"].values()))
         self.assertFalse(os.path.exists(f"{self.run}/b1b/audit/tts_checkpoint.json"))
 
+    def test_m2_gate_passes_local_rewrite_not_required_and_lists_deviation(self):
+        # 委任_12D: local_rewrite_revalidation.verdict=NOT_REQUIRED は不採択理由にしない。deviation一覧をgate出力へ載せる。
+        lvl = f"{self.run}/a2"
+        plan, _, _, out = self._run_stage("a2")
+        ids = [s.clip_id for s in plan]
+        pth = f"{lvl}/audit/tts_generation_results.json"
+        data = json.load(open(pth, encoding="utf-8"))
+        data["segments"]["comment_2"]["audio_text_deviation"] = {
+            "canonical_text_before_local_rewrite": "Melos drank", "audio_text_after": "He drank", "diff_summary": "Melos->He"}
+        data["segments"]["comment_2"]["local_rewrite_revalidation"] = {"verdict": "NOT_REQUIRED"}
+        json.dump(data, open(pth, "w", encoding="utf-8"))
+        r = z.assert_tts_results_complete(lvl, ids)
+        self.assertEqual([d["clip_id"] for d in r["audio_text_deviations"]], ["comment_2"])
+        self.assertEqual(r["audio_text_deviations"][0]["audio_text_after"], "He drank")
+        self.assertEqual(r["audio_text_deviations"][0]["canonical_text_before_local_rewrite"], "Melos drank")
+        # 非OK(未採択)clipは従来どおり不採択
+        data["segments"]["comment_2"]["status"] = "ASR_VALIDATION_UNCERTAIN"
+        json.dump(data, open(pth, "w", encoding="utf-8"))
+        with self.assertRaises(z.FamilyZTtsResultsIncompleteStop):
+            z.assert_tts_results_complete(lvl, ids)
+
     def test_m2_gate_requires_file_and_entries(self):
         lvl = f"{self.run}/a2"
         with self.assertRaises(z.FamilyZTtsResultsIncompleteStop):

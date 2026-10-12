@@ -83,3 +83,8 @@ KP外側retry(最大3)・TTS clip checkpoint(中断時の再課金防止)は維�
 ## 3. run_e2e_02 開始前(委任_12B, 2026-10-12)
 - 開始前累計 JPY108.1(run_e2e_01)。approved-budget 191.9 / warn 92。Z Style表キーにP8なしをdry-runで確認(Coffee P8非適用)。
 - 停止時点(17:54 JST、rc=2、tts_b1bでSTOP): run_e2e_02 実費 JPY39.32 (openai 23.11 / gemini 9.28 / asr 1.42 / azure 5.52)。合算 147.4 / 300。LR/cool-down発火なし(未確認分あり)。再起動なし。
+
+## 4. 委任_12D(2026-10-12): Comment3再生成 + tts_a2
+- run_e2e_02 実費合計(cost_log集計, compute_cost_jpy_so_far): **JPY61.08**(openai 23.25 / gemini 22.33 / openai_asr 4.81 / azure 10.69)。12B停止時39.32 -> +21.76(Comment3再生成の小額 + tts_a2)。
+- 合算(run_e2e_01 108.1 + run_e2e_02 61.08)= **約169.2 / 300**。警告92(run単体)未到達、200未到達。tts_a2はrc=2(clip失敗STOP)、起動1回(Comment3再生成の`--stage support`起動は別)。
+- 残stageを最後まで実行した場合の追加見込みは小額(gate/assemble/pages/page_verifyはAPIなし)。HR clipの再生成を承認する場合は1 clipあたり約JPY1-2、Std cooldown(10分)あり。

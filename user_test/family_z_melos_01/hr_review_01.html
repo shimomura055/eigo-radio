@@ -1,0 +1,65 @@
+<!doctype html><meta charset='utf-8'><title>Family Z メロス Human Review試聴</title>
+<style>body{font-family:sans-serif;max-width:960px;margin:1em auto;padding:0 1em}table{border-collapse:collapse;margin:.5em 0}td,th{border:1px solid #999;padding:4px 8px;font-size:14px;vertical-align:top}.hr{background:#fee}.lr{background:#ffe}section{border:1px solid #ccc;padding:.5em 1em;margin:1em 0}code{background:#eee;padding:0 3px}</style>
+<h1>Family Z メロス Human Review試聴 (run_e2e_02)</h1>
+<p>Trial/検証用ページ。Production採用ではありません。採択・override・再生成は試聴後にユーザーが判断します(本ページは何も採択しません)。ASR転写は Primary(OpenAI gpt-4o-mini-transcribe) と Secondary(Azure)。</p>
+<p>対象 6 clip</p>
+<section class='hr'><h2>b1b / full_story_part1_c5 : HUMAN_REVIEW_REQUIRED</h2>
+<audio controls preload='none' src='audio/b1b_full_story_part1_c5.mp3'></audio> <small>status=ASR_VALIDATION_UNCERTAIN voice=Aoede model=[&#x27;gemini-3.8-flash-lite-tts&#x27;] 1.44s</small>
+<table>
+<tr><th>原文(canonical)</th><td>Melos said.</td></tr>
+<tr><th>最終ASR転写(Primary)</th><td>Mello said.</td></tr>
+<tr><th>primary_1 (openai_asr)</th><td>Mello said.<br><small>ASR_VALIDATION_UNCERTAIN</small></td></tr>
+<tr><th>tier3_corroboration_secondary (azure)</th><td>Mellow said.<br><small>entity_only</small></td></tr>
+<tr><th>primary_2 (openai_asr)</th><td>Mello said.<br><small>ASR_VALIDATION_UNCERTAIN</small></td></tr>
+<tr><th>secondary_1 (azure)</th><td>Mellow said.<br><small>ASR_VALIDATION_UNCERTAIN</small></td></tr>
+<tr><th>secondary_2 (azure)</th><td>Mellow said.<br><small>ASR_VALIDATION_UNCERTAIN</small></td></tr>
+<tr><th>attempts</th><td>#1 ASR_VALIDATION_UNCERTAIN: Mello said.</td></tr>
+</table></section>
+<section class='lr'><h2>b1b / full_story_part3_c1 : LOCAL_REWRITE逸脱</h2>
+<audio controls preload='none' src='audio/b1b_full_story_part3_c1.mp3'></audio> <small>status=OK voice=Aoede model=[&#x27;gemini-3.8-flash-lite-tts&#x27;] 23.81s</small>
+<table>
+<tr><th>原文(canonical)</th><td>Then he remembered the hands held out for the chains. His friend had trusted him without asking for another promise. Water dripped from a crack in the rock. Melos drank, pushed himself onto his knees, and stood. One step. Another. At the city gates, the execution bell rang. He ran toward the square. Above his friend, the sword was already raised.</td></tr>
+<tr><th>Local Rewrite前(原文)</th><td>Then he remembered the hands held out for the chains. His friend had trusted him without asking for another promise. Water dripped from a crack in the rock. Melos drank, pushed himself onto his knees, and stood. One step. Another. At the city gates, the execution bell rang. He ran toward the square. Above his friend, the sword was already raised.</td></tr>
+<tr><th>Local Rewrite後(音声が読む文)</th><td>Then he remembered the hands held out for the chains. His friend had trusted him without asking for another promise. Water dripped from a crack in the rock. He drank, pushed himself onto his knees, and stood. One step. Another. At the city gates, the execution bell rang. He ran toward the square. Above his friend, the sword was already raised.</td></tr>
+<tr><th>差異種別</th><td>replace: &#x27;Melos&#x27; -&gt; &#x27;He&#x27;</td></tr>
+<tr><th>最終ASR転写(Primary)</th><td>Then he remembered the hands held out for the chains. His friend had trusted him without asking for another promise. Water dripped from a crack in the rock. He drank, pushed himself onto his knees, and stood. One step, another. At the city gates, the execution bell rang. He ran toward the square. Above his friend, the sword was already raised.</td></tr>
+<tr><th>primary_1 (openai_asr)</th><td>Then he remembered the hands held out for the chains. His friend had trusted him without asking for another promise. Water dripped from a crack in the rock. Mello drank, pushed himself onto his knees, and stood. One step, another. At the city gates, the execution bell rang. He ran toward the square. Above his friend, the sword was already raised.<br><small>ASR_VALIDATION_UNCERTAIN</small></td></tr>
+<tr><th>tier3_corroboration_secondary (azure)</th><td>Then he remembered the hands held up for the chains. His friend had trusted him without asking for another promise. Water dripped from a crack in the rock. Mellow strength pushed himself onto his knees and stood.One step, another at the city gates. The execution bell rang. He ran toward the square above his friend. The sword was already raised.<br><small>entity_only</small></td></tr>
+<tr><th>primary_2 (openai_asr)</th><td>Then he remembered the hands held up for the chains. His friend had trusted him without asking for another promise. Water dripped from a crack in the rock. Mello drank, pushed himself onto his knees, and stood. One step, another. At the city gates, the execution bell rang. He ran toward the square. Above his friend, the sword was already raised.<br><small>TRUE_CONTENT_MISMATCH</small></td></tr>
+<tr><th>secondary_1 (azure)</th><td>Then he remembered the hands held up for the chains. His friend had trusted him without asking for another promise. Water dripped from a crack in the rock. Mellow strength pushed himself onto his knees and stood.One step, another at the city gates. The execution bell rang. He ran toward the square above his friend. The sword was already raised.<br><small>TRUE_CONTENT_MISMATCH</small></td></tr>
+<tr><th>secondary_2 (azure)</th><td>Then he remembered the hands held up for the chains. His friend had trusted him without asking for another promise. Water dripped from a crack in the rock. Mellow strength pushed himself onto his knees and stood.One step, another at the city gates. The execution bell rang. He ran toward the square above his friend. The sword was already raised.<br><small>TRUE_CONTENT_MISMATCH</small></td></tr>
+<tr><th>attempts</th><td>#1 ASR_VALIDATION_UNCERTAIN: Then he remembered the hands held out for the chains. His friend had trusted him without asking for another promise. Water dripped from a crack in the rock. Mello drank, pushed himself onto his knees, and stood. One step, another. At the city gates, the execution bell rang. He ran toward the square. Above his friend, the sword was already raised.<br>#1 NUMERIC_EQUIVALENCE_MATCH: Then he remembered the hands held out for the chains. His friend had trusted him without asking for another promise. Water dripped from a crack in the rock. He drank, pushed himself onto his knees, and stood. One step, another. At the city gates, the execution bell rang. He ran toward the square. Above his friend, the sword was already raised.</td></tr>
+</table></section>
+<section class='hr'><h2>a2 / comment_1 : HUMAN_REVIEW_REQUIRED</h2>
+<audio controls preload='none' src='audio/a2_comment_1.mp3'></audio> <small>status=STOPPED voice=Aoede model=[&#x27;gemini-3.8-flash-lite-tts&#x27;] 18.8s</small>
+<table>
+<tr><th>原文(canonical)</th><td>メロスは、恐怖から人を殺し、話す機会も与えない支配者を責め、死刑を命じられます。妹の結婚式に出るため三日間の猶予を求め、友人を残して出発しますが、遅れて戻れば友人が代わりに死ぬことになっています。</td></tr>
+<tr><th>最終ASR転写(Primary)</th><td></td></tr>
+<tr><th>attempts</th><td>#1 TRUE_CONTENT_MISMATCH: メロスは恐怖から人を殺し、話す機会も与えない支配者を責め、死刑を命じられます。妹の結婚式に出るため3日間の猶予を求め、友人を残して出発しますが、遅れて戻れば友人が代わりに死ぬことになっています。<br>#2 TRUE_CONTENT_MISMATCH: メオスは恐怖から人を殺し、話す機会も与えない支配者を責め、死刑を命じられます。妹の結婚式に出るため3日間の猶予を求め、友人を残して出発しますが、遅れて戻れば友人が代わりに死ぬことになっています。<br>#1 TRUE_CONTENT_MISMATCH: メロスは恐怖から人を殺し、話す機会も与えない支配者を責め、死刑を命じられます。妹の結婚式に出るため3日間の猶予を求め、友人を残して出発しますが、遅れて戻れば友人が代わりに死ぬことになっています。</td></tr>
+</table></section>
+<section class='hr'><h2>a2 / full_story_part1_c1 : HUMAN_REVIEW_REQUIRED</h2>
+<audio controls preload='none' src='audio/a2_full_story_part1_c1.mp3'></audio> <small>status=STOPPED voice=Aoede model=[&#x27;gemini-3.8-flash-lite-tts&#x27;] 2.491s</small>
+<table>
+<tr><th>原文(canonical)</th><td>Melos called across the hall,</td></tr>
+<tr><th>最終ASR転写(Primary)</th><td>Mello&#x27;s called across the hall.</td></tr>
+<tr><th>attempts</th><td>#1 NORMALIZED_MATCH: Mello&#x27;s called across the hall.</td></tr>
+</table></section>
+<section class='hr'><h2>a2 / full_story_part1_c5 : HUMAN_REVIEW_REQUIRED</h2>
+<audio controls preload='none' src='audio/a2_full_story_part1_c5.mp3'></audio> <small>status=STOPPED voice=Aoede model=[&#x27;gemini-2.5-pro-preview-tts&#x27;, &#x27;gemini-3.8-flash-lite-tts&#x27;] 1.29s</small>
+<table>
+<tr><th>原文(canonical)</th><td>Melos said.</td></tr>
+<tr><th>最終ASR転写(Primary)</th><td>Mello said.</td></tr>
+<tr><th>primary_1 (openai_asr)</th><td>Mello said.<br><small>ASR_VALIDATION_UNCERTAIN</small></td></tr>
+<tr><th>tier3_corroboration_secondary (azure)</th><td>Mellow said.<br><small>entity_only</small></td></tr>
+<tr><th>primary_2 (openai_asr)</th><td>Mello said.<br><small>ASR_VALIDATION_UNCERTAIN</small></td></tr>
+<tr><th>secondary_1 (azure)</th><td>Mellow said.<br><small>ASR_VALIDATION_UNCERTAIN</small></td></tr>
+<tr><th>secondary_2 (azure)</th><td>Mellow said.<br><small>ASR_VALIDATION_UNCERTAIN</small></td></tr>
+<tr><th>attempts</th><td>#1 ASR_VALIDATION_UNCERTAIN: Mello said.<br>#1 CONNECTED_SPEECH_ACCEPT: Mello said.</td></tr>
+</table></section>
+<section class='hr'><h2>a2 / full_story_part3_c3 : HUMAN_REVIEW_REQUIRED</h2>
+<audio controls preload='none' src='audio/a2_full_story_part3_c3.mp3'></audio> <small>status=STOPPED voice=Aoede model=[&#x27;gemini-3.8-flash-lite-tts&#x27;] 4.945s</small>
+<table>
+<tr><th>原文(canonical)</th><td>His friend turned around, and Melos fell against him.</td></tr>
+<tr><th>最終ASR転写(Primary)</th><td>His friend turned around and mellows fell against him.</td></tr>
+<tr><th>attempts</th><td>#1 SECONDARY_ASR_CORROBORATED_MATCH: His friend turned around and mellows fell against him.</td></tr>
+</table></section>

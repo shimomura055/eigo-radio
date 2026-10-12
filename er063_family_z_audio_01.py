@@ -998,7 +998,7 @@ def assert_tts_results_complete(level_dir: str, required_clip_ids_: list) -> dic
         raise FamilyZTtsResultsIncompleteStop("tts_generation_results.json が空です")
     approvals_p = f"{level_dir}/audit/human_approved_segments.json"
     approvals = _read_json(approvals_p) if os.path.exists(approvals_p) else {}
-    missing, not_adopted = [], []
+    missing, not_adopted, deviations = [], [], []
     for cid in required_clip_ids_:
         e = _lookup_entry(data, cid)
         if e is None:
@@ -1006,15 +1006,18 @@ def assert_tts_results_complete(level_dir: str, required_clip_ids_: list) -> dic
             continue
         ok = e.get("status") == "OK" or e.get("z_adoption") in ("adopted", "human_review_adopted") and e.get("status") == "OK" \
             or (cid in approvals or f"kp{cid}" in approvals)
-        if ok and e.get("audio_text_deviation") and (e.get("local_rewrite_revalidation") or {}).get("verdict") != "PASS":
-            ok = False
-            not_adopted.append(f"{cid}=LOCAL_REWRITE_NOT_REVALIDATED")
-            continue
+        # 2026-10-12ユーザー決定③(原作保持Validator撤廃)+Fable判断(委任_12D): Local Rewrite採択clipは
+        # local_rewrite_revalidation.verdict(NOT_REQUIRED)を不採択理由にしない。audio_text_deviationを監査記録として出力する。
+        if ok and e.get("audio_text_deviation"):
+            dv = e["audio_text_deviation"]
+            deviations.append({"clip_id": cid, "canonical_text_before_local_rewrite": dv.get("canonical_text_before_local_rewrite"),
+                               "audio_text_after": dv.get("audio_text_after"), "diff_summary": dv.get("diff_summary"),
+                               "local_rewrite_revalidation_verdict": (e.get("local_rewrite_revalidation") or {}).get("verdict")})
         if not ok:
             not_adopted.append(f"{cid}={e.get('status')}")
     if missing or not_adopted:
         raise FamilyZTtsResultsIncompleteStop(f"required clip entry 欠落={missing} 未採択={not_adopted}")
-    return {"checked": len(required_clip_ids_), "path": p}
+    return {"checked": len(required_clip_ids_), "path": p, "audio_text_deviations": deviations}
 
 
 def verify_std_english_slowdown(level_dir: str, required_clip_entries: dict, narration_dir: str | None = None) -> dict:
@@ -1081,7 +1084,7 @@ def run_audio_gate(run_dir: str, level: str, plan: list, shell_names: list, *, a
     (Local Rewriteの音声書換テキストは渡さない)。"""
     level_dir = f"{run_dir}/{level}"
     ids = required_clip_ids(plan, shell_names)
-    assert_tts_results_complete(level_dir, ids)
+    m2 = assert_tts_results_complete(level_dir, ids)
     data = _read_json(f"{level_dir}/audit/tts_generation_results.json")
     entries = {cid: _lookup_entry(data, cid) for cid in ids}
     slow = None
@@ -1092,6 +1095,7 @@ def run_audio_gate(run_dir: str, level: str, plan: list, shell_names: list, *, a
         raise FamilyZAudioStop(f"clip品質確認でNG: {problems}")
     deviations = {k: v["audio_text_deviation"] for k, v in entries.items() if v and v.get("audio_text_deviation")}
     result = {"m2_complete": True, "m1_slowdown": slow, "audio_text_deviation_clips": sorted(deviations),
+              "audio_text_deviations": m2["audio_text_deviations"],
               "article_text_source": "canonical(原稿のまま)", "shared_gate": "skipped" if skip_shared_gate else "PASS"}
     if not skip_shared_gate:
         import er003_v1_n3_01_assemble as asm

@@ -813,15 +813,25 @@ def generate_with_lint(gen, lint, retries: int = 1) -> tuple:
     raise FamilyZLintStop(f"SUPPORT_LINT_FAILED(retry {retries}回後もNG): {attempts}")
 
 
-COMMENT3_FACT_RATIO = 0.40     # Fable判断(委任_08): Comment3のcontent_factsはPart3の前半(先頭約40%、最低2段落)に限定
-COMMENT3_FACT_MIN_PARAGRAPHS = 2
+COMMENT3_FACT_RATIO = 0.25     # Fable判断(委任_12D): Comment3のcontent_factsはPart3の先頭約25%(最低2段落)に限定
+COMMENT3_FACT_MIN_PARAGRAPHS = 2   # (委任_08は40%だったが、短いPart3でも到着・結末まで述べたため25%+到着/結末段落除外へ変更。両レベル共通)
+# 到着・結末に相当する段落の目印(最初に該当した段落以降をComment3の事実から除外する)
+COMMENT3_ENDING_MARKER_RE = re.compile(
+    r"\b(arriv\w*|reach(?:ed|es)?\s+the\b|(?:city\s+)?gates?\b|square\b|sword\b|I['’]m\s+back|"
+    r"fell\s+against|held\s+each\s+other|embrac\w*|forg\w*|free\s+both)", re.IGNORECASE)
 
 
 def limit_comment3_part(part3_text: str) -> str:
-    """Comment3(Part3紹介)へ渡す事実をPart3前半の段落に限定する(結末ネタバレ防止)。段落数が少なければ全段落。"""
+    """Comment3(Part3紹介)へ渡す事実をPart3の先頭約25%(最低2段落)に限定し、さらに到着・結末に相当する段落
+    (COMMENT3_ENDING_MARKER_RE該当)以降を含めない(結末ネタバレ防止)。最低1段落は残す。段落数が少なければ全段落が上限。"""
     paras = [p for p in part3_text.split("\n\n") if p.strip()]
     k = max(COMMENT3_FACT_MIN_PARAGRAPHS, int(round(len(paras) * COMMENT3_FACT_RATIO)))
-    return "\n\n".join(paras[:min(k, len(paras))])
+    head = paras[:min(k, len(paras))]
+    for i, p in enumerate(head):
+        if COMMENT3_ENDING_MARKER_RE.search(p):
+            head = head[:max(i, 1)]
+            break
+    return "\n\n".join(head)
 
 
 def _support_text(fn, client, role, context, model):

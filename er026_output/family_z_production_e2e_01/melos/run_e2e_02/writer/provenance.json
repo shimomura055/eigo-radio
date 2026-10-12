@@ -1,0 +1,182 @@
+{
+  "story_key": "melos",
+  "seed_sha256": "f4a85f5ceb9a1d7cd511872644391dddd8e2f61516e2f09e08da9ddeeb42c761",
+  "chain": [
+    {
+      "stage": "r0",
+      "input_sha256": "f4a85f5ceb9a1d7cd511872644391dddd8e2f61516e2f09e08da9ddeeb42c761",
+      "output_sha256": "795651ca4a0f5abd2b4ba0d35943295aa2843bba68ab2dbc53289ef2785350f3",
+      "generated_at": "2026-10-12T08:31:10+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R0",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0c56ee57ca7fc3e1006acc9aa546ac87d0b6f48ba98168eaa4",
+      "attempts": 1,
+      "cost_jpy": 1.9338,
+      "prompt_sha256": "a94fd4f5b34cfdbee6c723c436f4b2dcb943ea1a7c132d647c36682c3dde9bfd",
+      "input_tokens": 983,
+      "output_tokens": 1012,
+      "reasoning_tokens": 516,
+      "conversion_substitutions": [
+        "simple third-person English at about 300[–-]350 words",
+        "while simplifying the language and minor details for A2 learners"
+      ],
+      "guardrails": {
+        "word_count": 377
+      }
+    },
+    {
+      "stage": "r1",
+      "input_sha256": "795651ca4a0f5abd2b4ba0d35943295aa2843bba68ab2dbc53289ef2785350f3",
+      "output_sha256": "eb40dc08403c64a45754c8cde1d78ecade0ef29658dc5b0d0a14b51b1db2b041",
+      "generated_at": "2026-10-12T08:31:52+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R1",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_071fa1c5eef6255d006acc9ace94e887d0a61303852964a21e",
+      "attempts": 1,
+      "cost_jpy": 3.1939,
+      "prompt_sha256": "1324e49619d3b03bfb0ab3ae70d2be931e3c67f1d206d996dd5ed869fc089568",
+      "input_tokens": 571,
+      "output_tokens": 1882,
+      "reasoning_tokens": 1382,
+      "guardrails": {
+        "word_count": 382
+      }
+    },
+    {
+      "stage": "r2",
+      "input_sha256": "eb40dc08403c64a45754c8cde1d78ecade0ef29658dc5b0d0a14b51b1db2b041",
+      "output_sha256": "2a79a472a1d6301c43898d3187e0f23863d59753646d33cfa4224c59ffa03f18",
+      "generated_at": "2026-10-12T08:32:25+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R2",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0064d0eb24796cc7006acc9af8a14c87d0b5f6c467cd3ea450",
+      "attempts": 1,
+      "cost_jpy": 2.0496,
+      "prompt_sha256": "c26e5bac8edba73eef097bb0856965cc30361ac14543fc70e2cc4626e2a933d5",
+      "input_tokens": 575,
+      "output_tokens": 1166,
+      "reasoning_tokens": 658,
+      "guardrails": {
+        "word_count": 387,
+        "warnings": [],
+        "failures": []
+      }
+    },
+    {
+      "stage": "std_adjust",
+      "input_sha256": "2a79a472a1d6301c43898d3187e0f23863d59753646d33cfa4224c59ffa03f18",
+      "output_sha256": "6a47e9d774fced82cbc00f594b3fa69f5ee746f71b6fd96ffc672a8496ca6569",
+      "generated_at": "2026-10-12T08:34:20+00:00",
+      "routing_key": "FAMILY_Z_STD_ADJUST",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "resp_0ba6c75d95b58b06006acc9b1a25f087d0a272e36295ea9fba",
+      "attempts": 1,
+      "cost_jpy": 8.639,
+      "prompt_sha256": "61178075385b0d6527ef6fe3e0c65796905ffc8456ad791015c220b0a6019f55",
+      "input_tokens": 1257,
+      "output_tokens": 5148,
+      "reasoning_tokens": 4629,
+      "guardrails": {
+        "std_words": 408,
+        "adv_words": 387,
+        "ratio": 1.0543,
+        "identical_sentence_ratio": 0.0,
+        "avg_sentence_len_std": 8.87,
+        "avg_sentence_len_adv": 6.79,
+        "paragraph_count_std": 29,
+        "paragraph_count_adv": 29,
+        "std_adv_paragraph_count_match": true,
+        "warnings": [
+          "STD_AVG_SENT_LEN_NOT_SHORTER:8.87 vs adv 6.79x0.85 (soft gate)"
+        ],
+        "failures": []
+      }
+    }
+  ],
+  "downstream_stale": [],
+  "downstream_stages": {
+    "plan_b1b": {
+      "stage": "plan_b1b",
+      "input_sha256": "3f48b23fc474f14b186cbf4e39b7c409e2861b002180f01114e50a736050941a",
+      "output_sha256": "01c92a67e8ee206e84e86e77a24a7d2f5cb6f4525d930f7c2461f1e6b4dc0ea8",
+      "generated_at": "2026-10-12T08:34:36+00:00",
+      "routing_keys": [
+        "FAMILY_Z_STORY_SPLIT",
+        "FAMILY_Z_DIALOGUE_ATTRIBUTION"
+      ],
+      "cost_jpy": 0.1261
+    },
+    "plan_a2": {
+      "stage": "plan_a2",
+      "input_sha256": "95f3126879afbe1ddb5fc4abdb774e77a8aefa434561ee3cd479a4ad82e56449",
+      "output_sha256": "fb957bb31da7de259db5177e34bf4f5c72d643f49f138db22789fcb856314bfd",
+      "generated_at": "2026-10-12T08:34:41+00:00",
+      "routing_keys": [
+        "FAMILY_Z_STORY_SPLIT",
+        "FAMILY_Z_DIALOGUE_ATTRIBUTION"
+      ],
+      "cost_jpy": 0.0441
+    },
+    "support_b1b": {
+      "stage": "support_b1b",
+      "input_sha256": "d420be81648d85268bd7afe0e88dbb720ab0b04c91b04d81657b2e2ab768989b",
+      "output_sha256": "90ee5296523dab91a86d351ebdc7c42df20416845f18a6f0fe4cf908018dbbf0",
+      "generated_at": "2026-10-12T08:35:03+00:00"
+    },
+    "support_a2": {
+      "stage": "support_a2",
+      "input_sha256": "4cd664ba23de90e499813555fd00ea0396c247b7dc4f32aa8a3ace0e93a3e729",
+      "output_sha256": "4ff00745b09a9571d2766c072cf29cb66010f243cf20a2eeff89e6e600c3e975",
+      "generated_at": "2026-10-12T09:22:07+00:00"
+    },
+    "kp_b1b": {
+      "stage": "kp_b1b",
+      "input_sha256": "03b3787d1c4eae4f508c2140de3864effae9c46debc2f133a42c4cb1917c0981",
+      "output_sha256": "6c840941da867206ecee971976d1936f24ec1ba7c0739222d591cbf50371c537",
+      "generated_at": "2026-10-12T08:38:01+00:00"
+    },
+    "kp_a2": {
+      "stage": "kp_a2",
+      "input_sha256": "efba2a233a8a8100b10d615ca56da69d350681a9dfc3dff7a2f352649ffb091c",
+      "output_sha256": "02cba75796738983f0b72d8fd026d93192fe510daa7ecb6df53f32e1a7f27924",
+      "generated_at": "2026-10-12T08:46:32+00:00"
+    },
+    "kp_expl_b1b": {
+      "stage": "kp_expl_b1b",
+      "input_sha256": "6de29d2e1ece19cf3e7033cfc21f1a26b6a7f4498d72588c673bf1747b9938ac",
+      "output_sha256": "12c2b7ff5b64abfb15423eaf360fcc3b83a1aeedcfc565c44d17db7e31f5e7b5",
+      "generated_at": "2026-10-12T08:46:36+00:00"
+    }
+  },
+  "regenerations": [
+    {
+      "stage": "support_a2",
+      "replaced_at": "2026-10-12T09:22:07+00:00",
+      "old": {
+        "stage": "support_a2",
+        "input_sha256": "4cd664ba23de90e499813555fd00ea0396c247b7dc4f32aa8a3ace0e93a3e729",
+        "output_sha256": "113222ce2095d5350a4a44677f06bc85acfd4f19e5807ff94e1f1c5b1667ecfa",
+        "generated_at": "2026-10-12T08:36:20+00:00"
+      }
+    }
+  ],
+  "audio_text_deviations": [
+    {
+      "clip_id": "full_story_part3_c1",
+      "canonical_text_before_local_rewrite": "Then he remembered the hands held out for the chains. His friend had trusted him without asking for another promise. Water dripped from a crack in the rock. Melos drank, pushed himself onto his knees, and stood. One step. Another. At the city gates, the execution bell rang. He ran toward the square. Above his friend, the sword was already raised.",
+      "audio_text_after": "Then he remembered the hands held out for the chains. His friend had trusted him without asking for another promise. Water dripped from a crack in the rock. He drank, pushed himself onto his knees, and stood. One step. Another. At the city gates, the execution bell rang. He ran toward the square. Above his friend, the sword was already raised.",
+      "diff_summary": "replace: 'Melos' -> 'He'"
+    }
+  ],
+  "reference_only": {},
+  "adv_final_sha256": "2a79a472a1d6301c43898d3187e0f23863d59753646d33cfa4224c59ffa03f18",
+  "std_sha256": "6a47e9d774fced82cbc00f594b3fa69f5ee746f71b6fd96ffc672a8496ca6569"
+}

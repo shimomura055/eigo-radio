@@ -360,15 +360,27 @@ class PlanRunTest(unittest.TestCase):
 
 
 class Comment3ContentFactsLimitTest(unittest.TestCase):
-    """委任_08 Fable判断: Comment3のcontent_factsはPart3前半(約40%、最低2段落)に限定。"""
+    """委任_12D Fable判断: Comment3のcontent_factsはPart3先頭約25%(最低2段落)かつ到着・結末段落を含めない。"""
 
     def _p3(self, n):
         return "\n\n".join(f"para{i}" for i in range(1, n + 1))
 
     def test_limit_ratio_and_min(self):
         sep = chr(10) * 2
-        for n, k in ((10, 4), (8, 3), (3, 2), (1, 1)):
+        for n, k in ((10, 2), (8, 2), (3, 2), (1, 1), (16, 4)):
             self.assertEqual(w.limit_comment3_part(self._p3(n)), sep.join(f"para{i}" for i in range(1, k + 1)))
+
+    def test_ending_paragraph_excluded(self):
+        sep = chr(10) * 2
+        paras = ["He remembered the hands.", "Water came; he drank.", "He took one step.", "At the city gates, the bell rang.",
+                 "He raced to the square.", "The sword was raised.", "They held each other.", "The ruler spoke."]
+        # 8段落 -> k=2。先頭2段落に結末マーカー無し
+        self.assertEqual(w.limit_comment3_part(sep.join(paras)), sep.join(paras[:2]))
+        # 16段落 -> k=4。4段落目(index3)が"city gates"なので除外され先頭3段落
+        longp = paras[:3] + paras[3:4] + ["x"] * 12
+        self.assertEqual(w.limit_comment3_part(sep.join(longp)), sep.join(paras[:3]))
+        # 先頭段落が結末マーカーでも最低1段落は残す
+        self.assertEqual(w.limit_comment3_part(sep.join(["He arrived at the gate.", "b", "c", "d"])), "He arrived at the gate.")
 
     def test_std_comment3_receives_only_front_part_and_prior_reused(self):
         seen = []
@@ -394,8 +406,8 @@ class Comment3ContentFactsLimitTest(unittest.TestCase):
         finally:
             fam_c.generate_family_c_a2_comment = orig
         self.assertEqual([c[0] for c in calls], [3])
-        self.assertIn("para4", calls[0][1].split("【すでに聞いた部分")[0])
-        self.assertNotIn("para5", calls[0][1].split("【すでに聞いた部分")[0])
+        self.assertIn("para2", calls[0][1].split("【すでに聞いた部分")[0])
+        self.assertNotIn("para3", calls[0][1].split("【すでに聞いた部分")[0])
         self.assertEqual(out["comments"]["1"], "P1")
         self.assertEqual(out["preview"], "PV")
 
