@@ -20635,3 +20635,8 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **Coffee次回Assemblyの必須条件(ユーザー指示)**: In One Line関連仕様確定後のCoffee最終版再Assemblyでは必ず、(a)確定したIn One Line関連仕様を反映 (b)**Adv KP英英解説の正式選択済みP3音声Styleを反映** (c)Std Preview/CommentのR2を反映 (d)既存音声の流用だけで済ませず変更対象の音声を更新 (e)最終Assembly後、対象Styleの適用をruntime evidenceと試聴ページで確認。Production正式経路への反映完了はGate 3の全条件を満たしてから判定。計画: `docs/pm/design/2026-10-12_COFFEE-FINAL-REASSEMBLY-PLAN-01.md`(OPEN-321)。
 - **ユーザー判断事項の管理方針(ユーザー指示)**: 4区分(判断済み/調査・Trial中/USER_DECISION_REQUIRED/Deferred・Non-blocking)を必ず区別、報告前にSSOT・過去承認を照合、`APPROVED_FOR_PRODUCTION`を未決扱いに戻さない、多数のOpen Itemを理由なく一括再提示しない、次工程を妨げる事項と将来課題を分離。`docs/pm/PM_GOVERNANCE.md` 12節へ追記、レジスタ=`docs/pm/USER_DECISION_REGISTER_01.md`。
 - 状態: P3選択=判断済み(反映作業は未、`PRODUCTION_WIRED`未達)。OPEN-316(Comment4 Trial-03採否=In One Line関連仕様確定)は`USER_DECISION_REQUIRED`のまま。CURRENT_SPEC/Production/Prompt/音声不変。報告: `docs/pm/delegation_log/2026-10-12_PM-COFFEE-REASSEMBLY-CONDITIONS-AND-USER-DECISION-REGISTER-01_01.md`。
+
+## FAMILY-Z-MELOS-PROPER-NOUN-ASR-ROOT-CAUSE-01 委任_02(2026-10-12、Opus独立レビュー反映、SSOT訂正のみ、費用JPY0)
+- Opus判定: 是正A(減速後`_post_slowdown_cascade_rescue`)は維持可(revert不要)。C-bは不採用(発音誤りを区別できず安全≠成功原則)。推奨順序: ①B'系HR遷移 → ②C-a(作品単位EN読み確定) → ③原稿側回避(固有名詞のみ短clipを避ける) → ④C-c Trial → ⑤TTS注入。
+- 訂正: 救済範囲はcascade全体(Primary#2/Secondary/Tier3/CMU)、減速前cascadeはsegment_id未配線で非対称(別タスク候補)、ER-010 phonetic corroborationはsuperseded(呼出元0)。未解決: 減速後cascade枯渇時にHR/stop_retryingを無視しSTOPPED化(OPEN-320、実装はOpus条件A+ユーザー判断)。
+- Phrase List誘導型反例(¥約1)はSTOP_ALL存在のため未実施(STOP_ALL解除後に別途再実施)。
