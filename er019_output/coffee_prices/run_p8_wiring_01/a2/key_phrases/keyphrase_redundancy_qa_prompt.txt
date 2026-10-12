@@ -1,0 +1,83 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Coffee Prices Fall, but Store Prices Stay: Coffee’s “Jet Lag”
+
+“Coffee prices are falling!” Great! Maybe spring will finally come to my wallet, too. But supermarket prices do not change. They look calm, as if saying, “News? I haven’t heard any.” If bean prices have fallen, why don’t we pay less?
+
+First, let’s go back to when high prices caused a stir. Bad weather in Brazil and Vietnam hurt the supply. Few beans were for sale, and stocks were low. Then demand around the world was strong. It was a hard mix for prices to settle down.
+
+At about the same time, ICE’s future prices for arabica coffee reached a record high. But future prices are not prices for green beans sold right away. They are not store prices, either. They may all wear the same name tag, “coffee price,” but they mean different things.
+
+After that, an index showing world market prices fell by 25% in seven months. The USDA says this happened because more supplies became easier to get. But in the US, the coffee part of the Consumer Price Index was still higher. It was higher than in the same month a year earlier.
+
+“Wait a minute, that doesn’t add up!” You might want to say that. But one is a world market index, and the other is the US Consumer Price Index. One shows a drop over seven months, while the other compares prices with a year earlier. They are on different stages and run on different clocks. If you pour the numbers into the same cup, the story gets muddled.
+
+And price tags follow their own schedule. Reuters spoke with market experts and others. They estimated that it takes around nine months or longer. That is how long green-bean prices take to show up in store prices. If market prices are a breaking news alert, price tags are patient letters.
+
+US roasters keep green beans in stock. Then they roast and pack them. Reports also say price talks with stores often happen every three months. There are several steps between the beans and the store shelf. Even when market prices fall, not every step responds, “Got it, cut prices now!”
+
+Of course, around nine months is an estimate from market experts and others. It is not a timer for every company. It is not a promise that prices will definitely be lower nine months from now. It is too soon to circle a sale on your calendar.
+
+In other words, a fall in market prices is not an update button for price tags. The prices on shelves may reflect purchases and talks from some time ago. Next time you see a headline about falling prices, ask the price tag. Say, “By the way, how many months ago did you get here?”
+
+## In one line
+Falling coffee market prices take months to lower supermarket prices.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "run on",
+    "japanese_gloss": "異なる時間軸で動く",
+    "source_sentence": "They are on different stages and run on different clocks"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "green beans",
+    "japanese_gloss": "焙煎前のコーヒー豆",
+    "source_sentence": "But future prices are not prices for green beans sold right away"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "show up",
+    "japanese_gloss": "表れる",
+    "source_sentence": "That is how long green-bean prices take to show up in store prices"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "add up",
+    "japanese_gloss": "つじつまが合う",
+    "source_sentence": "Wait a minute, that doesn't add up"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "settle down",
+    "japanese_gloss": "落ち着く",
+    "source_sentence": "It was a hard mix for prices to settle down"
+  }
+]
