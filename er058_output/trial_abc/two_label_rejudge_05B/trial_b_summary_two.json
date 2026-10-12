@@ -1,0 +1,252 @@
+{
+ "by_type": {},
+ "overall": {
+  "primary": {
+   "false_pass": [
+    2,
+    30
+   ],
+   "false_ng_control": [
+    1,
+    29
+   ]
+  },
+  "azure": {
+   "false_pass": [
+    2,
+    30
+   ],
+   "false_ng_control": [
+    1,
+    29
+   ]
+  },
+  "local_medium": {
+   "false_pass": [
+    3,
+    30
+   ],
+   "false_ng_control": [
+    3,
+    29
+   ]
+  },
+  "azure_pl": {
+   "false_pass": [
+    0,
+    3
+   ],
+   "false_ng_control": [
+    0,
+    0
+   ]
+  },
+  "flow": {
+   "wrong_adopt": 3,
+   "wrong_by_secondary": 1,
+   "n_confirmed": 30,
+   "control_rejected": 0,
+   "n_control": 29
+  }
+ },
+ "false_pass_examples": [
+  [
+   "ja_voi5_mis",
+   "azure",
+   "電気をつけた。",
+   "てんきをつけた。",
+   "電気をつけた。",
+   "EXACT_MATCH",
+   "ADOPT_S"
+  ],
+  [
+   "ja_voi5_mis",
+   "local_medium",
+   "電気をつけた。",
+   "てんきをつけた。",
+   "電気をつけた",
+   "NORMALIZED_MATCH",
+   "ADOPT_S"
+  ],
+  [
+   "ja_hom1_mis",
+   "primary",
+   "会議を行った。",
+   "会議をいった。",
+   "会議を言った。",
+   "PHONETIC_MATCH",
+   "ADOPT_P"
+  ],
+  [
+   "ja_hom1_mis",
+   "local_medium",
+   "会議を行った。",
+   "会議をいった。",
+   "会議を行った",
+   "NORMALIZED_MATCH",
+   "ADOPT_P"
+  ],
+  [
+   "ja_hom2_mis",
+   "primary",
+   "人気がない。",
+   "にんきがない。",
+   "人気がない。",
+   "EXACT_MATCH",
+   "ADOPT_P"
+  ],
+  [
+   "ja_hom2_mis",
+   "azure",
+   "人気がない。",
+   "にんきがない。",
+   "人気がない。",
+   "EXACT_MATCH",
+   "ADOPT_P"
+  ],
+  [
+   "ja_hom2_mis",
+   "local_medium",
+   "人気がない。",
+   "にんきがない。",
+   "人気がない",
+   "NORMALIZED_MATCH",
+   "ADOPT_P"
+  ]
+ ],
+ "unverified_misreads": [
+  [
+   "en_inf1_mis",
+   "He show us the map.",
+   {
+    "primary": "He showed us the map.",
+    "azure": "He showed us the map.",
+    "local_medium": "He showed us the map.",
+    "azure_pl": "He showed us the map."
+   }
+  ],
+  [
+   "en_inf2_mis",
+   "She ask me twice.",
+   {
+    "primary": "She asked me twice.",
+    "azure": "She asked me twice.",
+    "local_medium": "She asked me twice.",
+    "azure_pl": "She asked me twice."
+   }
+  ],
+  [
+   "en_inf3_mis",
+   "The bean are cheap.",
+   {
+    "primary": "The beans are cheap.",
+    "azure": "The beans are cheap.",
+    "local_medium": "The beans are cheap.",
+    "azure_pl": "The beans are cheap."
+   }
+  ],
+  [
+   "en_inf4_mis",
+   "Cost rose last year.",
+   {
+    "primary": "Costs rose last year.",
+    "azure": "Costs rose last year.",
+    "local_medium": "Costs rose last year."
+   }
+  ],
+  [
+   "en_voi1_mis",
+   "He barked the van.",
+   {
+    "primary": "He parked the van.",
+    "azure": "He parked the van.",
+    "local_medium": "He parked the van.",
+    "azure_pl": "He parked the van."
+   }
+  ],
+  [
+   "en_prn1_mis",
+   "We met at Starbacks.",
+   {
+    "primary": "We met at Starbucks.",
+    "azure": "We met at Starbucks.",
+    "local_medium": "We met at Starbucks.",
+    "azure_pl": "We met at Starbucks."
+   }
+  ],
+  [
+   "en_prn2_mis",
+   "Coffee from Columbia.",
+   {
+    "primary": "Coffee from Colombia.",
+    "azure": "Coffee from Colombia.",
+    "local_medium": "Coffee from Colombia",
+    "azure_pl": "Coffee from Colombia."
+   }
+  ],
+  [
+   "en_prn3_mis",
+   "Beans from Ethopia.",
+   {
+    "primary": "Beans from Ethiopia.",
+    "azure": "Beans from Ethiopia.",
+    "local_medium": "Beans from Ethiopia.",
+    "azure_pl": "Beans from Ethiopia."
+   }
+  ],
+  [
+   "en_hom1_mis",
+   "I will red it tomorrow.",
+   {
+    "primary": "I will read it tomorrow.",
+    "azure": "I will read it tomorrow.",
+    "local_medium": "I will read it tomorrow."
+   }
+  ],
+  [
+   "en_hom2_mis",
+   "He tried to led the team.",
+   {
+    "primary": "He tried to lead the team.",
+    "azure": "He tried to lead the team.",
+    "local_medium": "He tried to lead the team."
+   }
+  ],
+  [
+   "ja_voi3_mis",
+   "コミを捨てた。",
+   {
+    "primary": "ゴミを捨てた。",
+    "azure": "ゴミを捨てた。",
+    "local_medium": "ゴミを捨てた"
+   }
+  ],
+  [
+   "ja_prn2_mis",
+   "スターバクスで会う。",
+   {
+    "primary": "スターバックスで会う。",
+    "azure": "スターバックスで会う。",
+    "local_medium": "スターバックスで会う"
+   }
+  ],
+  [
+   "ja_prn3_mis",
+   "コヒーを飲む。",
+   {
+    "primary": "コーヒーを飲む。",
+    "azure": "コーヒーを飲む。",
+    "local_medium": "コーヒーを飲む"
+   }
+  ],
+  [
+   "ja_min2_mis",
+   "仕事を照会した。",
+   {
+    "primary": "仕事を紹介した。",
+    "azure": "仕事を紹介した。",
+    "local_medium": "仕事を紹介した"
+   }
+  ]
+ ]
+}
