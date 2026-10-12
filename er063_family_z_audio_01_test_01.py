@@ -312,6 +312,37 @@ class StageGateTest(unittest.TestCase):
         self.assertEqual(calls, [])
         self.assertTrue(all(v == "OK" for v in out2["statuses"].values()))
 
+    def test_checkpoint_resume_after_interruption(self):
+        """委任_10: 途中でprocessが中断(例外)しても、完了済みclipは再課金せず再利用し、完走後は途中経過ファイルが残らない。"""
+        plan, _, _ = make_plan("b1b")
+        stop_at = plan[3].clip_id
+        done = []
+
+        def boom_factory(kind):
+            base = fake_generators()[kind]
+
+            def fn(spec, out_path):
+                if spec.clip_id == stop_at:
+                    raise KeyboardInterrupt("simulated kill")
+                done.append(spec.clip_id)
+                return base(spec, out_path)
+            return fn
+        gens = {k: boom_factory(k) for k in fake_generators()}
+        with self.assertRaises(KeyboardInterrupt):
+            z.run_tts_stage(self.run, "b1b", plan, generators=gens)
+        self.assertEqual(len(done), 3)
+        self.assertTrue(os.path.exists(f"{self.run}/b1b/audit/tts_checkpoint.json"))
+        calls = []
+
+        def counting(kind):
+            base = fake_generators()[kind]
+            return lambda spec, p: (calls.append(spec.clip_id), base(spec, p))[1]
+        out = z.run_tts_stage(self.run, "b1b", plan, generators={k: counting(k) for k in fake_generators()})
+        self.assertEqual(len(calls), len(plan) - 3)          # 完了済み3clipは再生成しない
+        self.assertNotIn(plan[0].clip_id, calls)
+        self.assertTrue(all(v == "OK" for v in out["statuses"].values()))
+        self.assertFalse(os.path.exists(f"{self.run}/b1b/audit/tts_checkpoint.json"))
+
     def test_m2_gate_requires_file_and_entries(self):
         lvl = f"{self.run}/a2"
         with self.assertRaises(z.FamilyZTtsResultsIncompleteStop):

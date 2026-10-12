@@ -1226,8 +1226,12 @@ def stage_kp(ctx) -> dict:
 
         def runner(lv=lv, text=text):
             _guard(ctx, f"kp_{lv}", E2E_STAGE_EST_JPY["kp"] / 2)
-            res = w62.run_kp_stage(lv, text, ctx.out_dir, ctx.slug, kp_fn=ctx.hooks.get("kp_fn"))
-            if res.get("status") == "NG_REVIEW_REQUIRED" or not res.get("canonicalization"):
+            # 委任_10: Z限定・暫定の外側retry(OPEN-310回避、共有module無改変、canonicalization INVALID時のみ通算3回)。
+            res = w62.run_kp_stage(lv, text, ctx.out_dir, ctx.slug,
+                                   kp_fn=ctx.hooks.get("kp_fn") or w62.run_kp_with_outer_retry)
+            canon_status = (res.get("canonicalization") or {}).get("status")
+            if (res.get("status") in ("NG_REVIEW_REQUIRED", "OUTER_RETRY_EXHAUSTED") or not res.get("canonicalization")
+                    or canon_status not in ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED")):
                 raise FamilyZE2EStop(f"FAMILY_Z_KP_NOT_PASSED({lv}): status={res.get('status')} "
                                      f"canonicalization={bool(res.get('canonicalization'))}(自動採用しない)")
             return st.dumps(res), {}

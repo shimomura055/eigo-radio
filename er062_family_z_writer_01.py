@@ -21,6 +21,7 @@ import datetime as dt
 import json
 import os
 import re
+import shutil
 import sys
 import time
 
@@ -924,6 +925,108 @@ def run_kp_stage(level: str, text: str, out_dir: str, slug: str, *, kp_fn=None) 
     os.makedirs(kp_dir, exist_ok=True)
     res = fn(text, kp_dir, f"family_z_{slug}_{LEVEL_DIR[level]}", src_level, process=process)
     return res
+
+
+# ------------------------------------------------------------
+# Z限定・暫定: KP外側retry(委任_10、OPEN-310の暫定回避。Production恒久策ではない)
+# 共有module(er003 canonicalization/KP backend)は無改変。selection->canonicalization->redundancyを
+# Z側で組み、canonicalization INVALID時のみselectionを外側retryする(通算上限Z_KP_OUTER_RETRY_MAX)。
+# ------------------------------------------------------------
+Z_KP_OUTER_RETRY_MAX = 3
+Z_KP_GENERIC_NOTE = ("【選定上の注意(汎用)】所有格人称代名詞(my/our 等)を含むphraseは、可能な限り避けて"
+                     "ください。代名詞を含まない、または後段の辞書形化で形が変わりにくいphraseを優先してください。")
+
+
+def _copy_attempt_artifacts(kp_dir: str, attempt: int) -> str:
+    dst = f"{kp_dir}/outer_retry/attempt_{attempt}"
+    os.makedirs(dst, exist_ok=True)
+    for name in os.listdir(kp_dir):
+        src = f"{kp_dir}/{name}"
+        if os.path.isfile(src):
+            shutil.copyfile(src, f"{dst}/{name}")
+    return dst
+
+
+def _canon_reasons(kp_dir: str):
+    """共有canonicalizationがkp_dirへ書く runtime_metadata から各attemptの検証理由を抜く(証跡用)。"""
+    p = f"{kp_dir}/canonicalization_runtime_metadata.json"
+    if not os.path.exists(p):
+        return None
+    d = json.load(open(p, encoding="utf-8"))
+    return [{k: v for k, v in a.items() if k != "raw_text"} for a in d.get("attempts_detail", [])]
+
+
+def run_kp_with_outer_retry(text: str, kp_dir: str, article_id: str, source_level: str, process=None, *,
+                            max_outer: int = Z_KP_OUTER_RETRY_MAX, generic_note: str = Z_KP_GENERIC_NOTE,
+                            select_fn=None, canon_fn=None, redundancy_fn=None, **_):
+    """canonicalization INVALID時のみselectionを外側retry(通算max_outer回、外側1回目から汎用noteを付与)。
+    Redundancy NG時の選定やり直しは共有run_key_phrasesと同じ上限(KEY_PHRASE_REDUNDANCY_RETRY_MAX)で別カウント。"""
+    import er003_v1_n3_01_scaffold_generate as sc
+    select_fn = select_fn or sc.run_key_phrase_selection
+    canon_fn = canon_fn or sc.run_key_phrase_canonicalization
+    redundancy_fn = redundancy_fn or sc.run_key_phrase_redundancy_qa
+    os.makedirs(kp_dir, exist_ok=True)
+    red_max = sc.KEY_PHRASE_REDUNDANCY_RETRY_MAX
+    red_note, red_attempt, canon_failures, log, redundancy_retry_log = None, 0, 0, [], []
+    outer = 0
+
+    def save_log():
+        wt(f"{kp_dir}/outer_retry_log.json", json.dumps(
+            {"scope": "Z限定・暫定(OPEN-310回避策、Production恒久策ではない)", "max_outer": max_outer,
+             "generic_note": generic_note, "attempts": log}, ensure_ascii=False, indent=2))
+
+    while True:
+        outer += 1
+        note = generic_note + (("\n\n" + red_note) if red_note else "")
+        sel = select_fn(text, kp_dir, article_id, source_level, process=process, diagnostic_note=note)
+        entry = {"outer_attempt": outer, "note_sha256": sha(note), "selection_status": sel.get("status"),
+                 "selection_phrases": [it.get("display_phrase") for it in
+                                       ((sel.get("parsed") or {}).get("items") or [])]}
+        if sel.get("status") != "KEY_WORDS_STRUCTURE_PASS":
+            entry["artifacts"] = _copy_attempt_artifacts(kp_dir, outer)
+            log.append(entry)
+            save_log()
+            return {"selection": sel, "canonicalization": None, "redundancy_qa": None,
+                    "redundancy_retry_log": redundancy_retry_log, "outer_retry_log": log}
+        canon = canon_fn(text, sel["original_items"], kp_dir, article_id, process=process)
+        entry["canonicalization_status"] = canon.get("status")
+        entry["canonicalization_attempts"] = _canon_reasons(kp_dir)
+        if canon.get("status") not in ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED"):
+            canon_failures += 1
+            entry["artifacts"] = _copy_attempt_artifacts(kp_dir, outer)
+            log.append(entry)
+            save_log()
+            if canon_failures >= max_outer:
+                return {"selection": sel, "canonicalization": canon, "redundancy_qa": None,
+                        "redundancy_retry_log": redundancy_retry_log, "outer_retry_log": log,
+                        "status": "OUTER_RETRY_EXHAUSTED"}
+            continue
+        merged_items = canon["merged"]["items"]
+        red = redundancy_fn(text, merged_items, kp_dir, article_id, process=process)
+        findings = sc.detect_key_phrase_symbol_findings(merged_items)
+        flagged = sc.safety.symbol_gate_requires_stop(findings)
+        redundancy_retry_log.append({"attempt": red_attempt, "status": red.get("status"),
+                                     "duplicate_pairs": red.get("duplicate_pairs"), "symbol_flagged": flagged,
+                                     "symbol_findings": findings})
+        entry.update({"redundancy_status": red.get("status"), "symbol_flagged": flagged,
+                      "artifacts": _copy_attempt_artifacts(kp_dir, outer)})
+        log.append(entry)
+        save_log()
+        if red.get("status") != "REDUNDANCY_NG" and not flagged:
+            return {"selection": sel, "canonicalization": canon, "redundancy_qa": red,
+                    "redundancy_retry_log": redundancy_retry_log, "redundancy_retry_attempts": red_attempt,
+                    "outer_retry_log": log}
+        if red_attempt >= red_max:
+            return {"selection": sel, "canonicalization": canon, "redundancy_qa": red,
+                    "redundancy_retry_log": redundancy_retry_log, "redundancy_retry_attempts": red_attempt,
+                    "outer_retry_log": log, "status": "NG_REVIEW_REQUIRED"}
+        by_rank = {it["rank"]: it for it in merged_items}
+        red_note = ""
+        if red.get("status") == "REDUNDANCY_NG":
+            red_note += sc.redundancy_qa.build_redundancy_diagnostic_note(red["duplicate_pairs"], by_rank)
+        if flagged:
+            red_note += ("\n\n" if red_note else "") + sc.safety.build_symbol_violation_prompt_note(findings)
+        red_attempt += 1
 
 
 def english_phrase_sharing_allowed(std_text: str, adv_text: str) -> bool:

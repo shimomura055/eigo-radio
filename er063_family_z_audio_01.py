@@ -789,6 +789,41 @@ def load_results(level_dir: str) -> dict | None:
         return None
 
 
+def _checkpoint_path(level_dir: str) -> str:
+    return f"{level_dir}/audit/tts_checkpoint.json"
+
+
+def load_checkpoint(level_dir: str) -> dict | None:
+    """clip単位の途中経過(委任_10: 実行processが外部要因で中断しても完了済みclipを再課金しない)。"""
+    p = _checkpoint_path(level_dir)
+    if not os.path.exists(p):
+        return None
+    try:
+        return _read_json(p)
+    except Exception:
+        return None
+
+
+def save_checkpoint(level_dir: str, segments: dict, key_phrases: dict) -> None:
+    p = _checkpoint_path(level_dir)
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    tmp = p + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump({"segments": segments, "key_phrases": key_phrases}, f, ensure_ascii=False)
+    os.replace(tmp, p)
+
+
+def _merge_checkpoint(cached: dict | None, ck: dict | None) -> dict | None:
+    if not ck:
+        return cached
+    out = {"segments": dict((cached or {}).get("segments") or {}),
+           "key_phrases": {k: dict(v) for k, v in ((cached or {}).get("key_phrases") or {}).items()}}
+    out["segments"].update(ck.get("segments") or {})
+    for rank, subs in (ck.get("key_phrases") or {}).items():
+        out["key_phrases"].setdefault(rank, {}).update(subs)
+    return out
+
+
 _KP_SUBKEY = {"kp_en": "english", "kp_ja": "japanese_meaning", "kp_expl_en": "explanation"}
 
 
@@ -819,6 +854,7 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
     os.makedirs(narr, exist_ok=True)
     os.makedirs(f"{level_dir}/audit", exist_ok=True)
     cached = load_results(level_dir)
+    cached = _merge_checkpoint(cached, load_checkpoint(level_dir))   # 委任_10: process中断時もOK clipを再利用(再課金しない)
     segments, key_phrases, evidence = {}, {}, []
     deferred_stop = None
     import er005_cost_logger as cl
@@ -844,6 +880,7 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
                 deferred_stop = e  # 監査記録を書き終えてからSTOPする(実費をかけた生成結果を失わない)
         _store(segments, key_phrases, spec, entry)
         evidence.append(_evidence_row(spec, out_path, entry))
+        save_checkpoint(level_dir, segments, key_phrases)
         if deferred_stop is not None:
             break
     import er011_human_review_lock_01 as review_lock
@@ -853,6 +890,8 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
            "style_version": FAMILY_Z_ROLE_STYLE_VERSION, "management_id": MANAGEMENT_ID, "level": level}
     with open(results_path, "w", encoding="utf-8") as f:
         json.dump(doc, f, ensure_ascii=False, indent=2)
+    if os.path.exists(_checkpoint_path(level_dir)):
+        os.remove(_checkpoint_path(level_dir))        # 最終results確定後は途中経過を残さない(古い内容で上書きされない)
     ev_path = f"{level_dir}/audit/runtime_evidence_{SUB_TASK_ID}.json"
     with open(ev_path, "w", encoding="utf-8") as f:
         json.dump({"level": level, "style_version": FAMILY_Z_ROLE_STYLE_VERSION, "clips": evidence}, f, ensure_ascii=False, indent=2)

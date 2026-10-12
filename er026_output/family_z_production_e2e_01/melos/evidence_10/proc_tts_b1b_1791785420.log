@@ -1,0 +1,40 @@
+[DBG 15:10:20] pid=21692 stage=tts_b1b
+[E2E] stage=tts_b1b mode=real ...
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+Timeout (0:00:08)!
+Thread 0x000042b0 (most recent call first):
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\ssl.py", line 1140 in read
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\ssl.py", line 1285 in recv
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\httpcore\_backends\sync.py", line 128 in read
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\httpcore\_sync\http11.py", line 217 in _receive_event
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\httpcore\_sync\http11.py", line 177 in _receive_response_headers
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\httpcore\_sync\http11.py", line 106 in handle_request
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\httpcore\_sync\connection.py", line 103 in handle_request
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\httpcore\_sync\connection_pool.py", line 236 in handle_request
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\httpx\_transports\default.py", line 250 in handle_request
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\httpx\_client.py", line 1014 in _send_single_request
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\httpx\_client.py", line 979 in _send_handling_redirects
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\httpx\_client.py", line 942 in _send_handling_auth
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\httpx\_client.py", line 914 in send
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\google\genai\_api_client.py", line 1513 in _request_once
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\tenacity\__init__.py", line 473 in __call__
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\google\genai\_api_client.py", line 1537 in _request
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\google\genai\_api_client.py", line 1750 in request
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\google\genai\models.py", line 4688 in _generate_content
+  File "C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\google\genai\models.py", line 6251 in generate_content
+  File "C:\Users/tensh/eigo-radio\er005_cost_logger.py", line 176 in patched_generate_content
+  File "C:\Users/tensh/eigo-radio\er033_tts_flash_lite_backend_wiring_01.py", line 193 in tts_call_fn
+  File "C:\Users/tensh/eigo-radio\er002_common.py", line 712 in _call_tts_with_retry
+  File "C:\Users/tensh/eigo-radio\er003_v1_sing01_voice01_generate.py", line 164 in generate_charon_english
+  File "C:\Users/tensh/eigo-radio\er011_human_review_lock_01.py", line 692 in wrapper
+  File "C:\Users/tensh/eigo-radio\er063_family_z_audio_01.py", line 574 in charon_en
+  File "C:\Users/tensh/eigo-radio\er063_family_z_audio_01.py", line 594 in preview
+  File "C:\Users/tensh/eigo-radio\er026_family_z_fiction_production_runner_01.py", line 1322 in w
+  File "C:\Users/tensh/eigo-radio\er063_family_z_audio_01.py", line 839 in <lambda>
+  File "C:\Users/tensh/eigo-radio\er063_family_z_audio_01.py", line 519 in generate_or_reuse_z
+  File "C:\Users/tensh/eigo-radio\er063_family_z_audio_01.py", line 837 in run_tts_stage
+  File "C:\Users/tensh/eigo-radio\er026_family_z_fiction_production_runner_01.py", line 1334 in stage_tts
+  File "C:\Users/tensh/eigo-radio\er026_family_z_fiction_production_runner_01.py", line 1456 in run_stage
+  File "C:\Users/tensh/eigo-radio\er026_family_z_fiction_production_runner_01.py", line 1474 in run_stages
+  File "C:\Users/tensh/eigo-radio\er026_family_z_fiction_production_runner_01.py", line 1763 in main
+  File "C:\Users\tensh\AppData\Local\Temp\claude\C--Users-tensh-eigo-radio\f2c17cf7-6207-4666-abec-016808eac6d3\scratchpad\runner_dbg2.py", line 23 in <module>

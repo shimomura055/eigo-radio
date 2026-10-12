@@ -671,6 +671,89 @@ class ProvenanceChainTest(unittest.TestCase):
                 w.ensure_stage(prov, "plan_b1b", "B", out, lambda: ("{}", {}))
 
 
+class KpOuterRetryTest(unittest.TestCase):
+    """委任_10: Z限定・暫定のKP外側retry(課金0、fake関数)。"""
+
+    @staticmethod
+    def _fakes(canon_script, red_script=None):
+        calls = {"sel": [], "canon": 0, "red": 0}
+        red_script = list(red_script or [])
+
+        def sel(text, d, aid, lvl, process=None, diagnostic_note=None):
+            calls["sel"].append(diagnostic_note)
+            items = [{"rank": i, "display_phrase": f"phrase{i}"} for i in range(1, 6)]
+            return {"status": "KEY_WORDS_STRUCTURE_PASS", "parsed": {"items": items}, "original_items": items}
+
+        def canon(text, items, d, aid, process=None):
+            st_ = canon_script[calls["canon"]]
+            calls["canon"] += 1
+            if st_ == "CANONICALIZATION_PASS":
+                return {"status": st_, "merged": {"items": [dict(it, used_form=it["display_phrase"]) for it in items]}}
+            return {"status": st_}
+
+        def red(text, merged, d, aid, process=None):
+            calls["red"] += 1
+            s_ = red_script.pop(0) if red_script else "REDUNDANCY_OK"
+            return {"status": s_, "duplicate_pairs": [{"rank_a": 1, "rank_b": 2, "reasoning": "r"}] if s_ == "REDUNDANCY_NG" else []}
+        return calls, sel, canon, red
+
+    def _run(self, d, canon_script, red_script=None):
+        calls, sel, canon, red = self._fakes(canon_script, red_script)
+        res = w.run_kp_with_outer_retry("text", d, "a", "A2", process="A2_SUPPORT",
+                                        select_fn=sel, canon_fn=canon, redundancy_fn=red)
+        return calls, res
+
+    def test_pass_on_third_outer_attempt_with_generic_note_from_first(self):
+        with tempfile.TemporaryDirectory() as d:
+            calls, res = self._run(d, ["CANONICALIZATION_INVALID", "CANONICALIZATION_INVALID", "CANONICALIZATION_PASS"])
+            self.assertEqual(len(calls["sel"]), 3)
+            self.assertTrue(all(n and w.Z_KP_GENERIC_NOTE in n for n in calls["sel"]))
+            self.assertEqual(res["canonicalization"]["status"], "CANONICALIZATION_PASS")
+            log = json.load(open(f"{d}/outer_retry_log.json", encoding="utf-8"))
+            self.assertEqual([a["canonicalization_status"] for a in log["attempts"]],
+                             ["CANONICALIZATION_INVALID", "CANONICALIZATION_INVALID", "CANONICALIZATION_PASS"])
+            self.assertTrue(os.path.isdir(f"{d}/outer_retry/attempt_3"))
+
+    def test_exhausted_after_three_never_fourth(self):
+        with tempfile.TemporaryDirectory() as d:
+            calls, res = self._run(d, ["CANONICALIZATION_INVALID"] * 5)
+            self.assertEqual(len(calls["sel"]), 3)
+            self.assertEqual(calls["canon"], 3)
+            self.assertEqual(res["status"], "OUTER_RETRY_EXHAUSTED")
+            self.assertEqual(w.Z_KP_OUTER_RETRY_MAX, 3)
+
+    def test_note_is_generic_no_phrase_names(self):
+        n = w.Z_KP_GENERIC_NOTE
+        for forbidden in ("take my place", "my place", "someone's", "Melos", "メロス", "'", '"', "「"):
+            self.assertNotIn(forbidden, n)
+        self.assertIn("所有格人称代名詞", n)
+        # 実呼出時のnoteにも個別phrase名(fake phrase1..5)が混入しない(最初のINVALID後でも同一note)
+        with tempfile.TemporaryDirectory() as d:
+            calls, _ = self._run(d, ["CANONICALIZATION_INVALID", "CANONICALIZATION_PASS"])
+            for note in calls["sel"]:
+                self.assertEqual(note, n)
+                self.assertNotRegex(note, r"phrase\d")
+
+    def test_redundancy_retry_separate_counter_and_appends_note(self):
+        with tempfile.TemporaryDirectory() as d:
+            calls, res = self._run(d, ["CANONICALIZATION_PASS", "CANONICALIZATION_PASS"], ["REDUNDANCY_NG", "REDUNDANCY_OK"])
+            self.assertEqual(len(calls["sel"]), 2)
+            self.assertTrue(calls["sel"][1].startswith(w.Z_KP_GENERIC_NOTE))
+            self.assertGreater(len(calls["sel"][1]), len(w.Z_KP_GENERIC_NOTE))
+            self.assertEqual(res["redundancy_qa"]["status"], "REDUNDANCY_OK")
+
+    def test_ensure_stage_reuse_does_not_rerun(self):
+        """b1b等のPASS済みstageは再実行しない(runnerを呼ばない)。"""
+        with tempfile.TemporaryDirectory() as d:
+            prov = w.Provenance(f"{d}/p.json", "melos", "s" * 64)
+            out = f"{d}/key_phrases/b1b_result.json"
+            w.ensure_stage(prov, "kp_b1b", "A", out, lambda: ("{}", {}))
+            called = []
+            r = w.ensure_stage(prov, "kp_b1b", "A", out, lambda: called.append(1) or ("{}", {}))
+            self.assertEqual(r["status"], "reused")
+            self.assertEqual(called, [])
+
+
 class CliTest(unittest.TestCase):
     def test_dry_run_has_no_side_effects(self):
         before = set(os.listdir("er026_output/family_z_production_e2e_01/melos")) if os.path.isdir(
