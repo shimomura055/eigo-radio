@@ -20597,3 +20597,8 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 内容: Coffee v4 Advanced KP英語解説clipの長い無音削減を目的としたStyle Trial。P0=現行Variant B(`KEY_PHRASE_EXPLANATION_EN`)、P1〜P8=差分句追加。同一Voice(Aoede)・gemini-3.8-flash-lite-tts・v4解説原稿逐語・v4 Phrase再利用・同一trim/gain/pause。対象KP4(主)/KP1、各パターン3サンプル(TTSばらつき対策)。実費JPY5.353/30。
 - 所見: 解説clip内の文中無音は最大0.33s、長い無音の主因は固定margin(0.3s)+固定pause(0.4s)側。Style効果は小さくサンプル間ばらつき(core WPM±8%)と同程度。推薦のみ: P5(速度不変・文中無音減)、次点P8。
 - 状態: VALIDATED(Trial)。採否・境界無音短縮の要否はユーザー判断(OPEN-317)。CURRENT_SPEC不変。証跡: `er057_output/kp_en_explanation_style_trial_01/REPORT_01.md`、報告: `docs/pm/delegation_log/2026-10-12_FAMILY-X-COFFEE-KP-EN-EXPLANATION-STYLE-TRIAL-01.md`。
+
+## COFFEE-COMMENT4-TRIAL-ALL-RUNS-DISCLOSURE-01(2026-10-12、是正、費用JPY0、API/再生成なし、Production不変)
+- 問題: FAMILY-X-COFFEE-STD-COMMENT4-BRIDGE-PROMPT-TRIAL-01で15本中の一部(選定Run)しか全文開示しておらず、C2を『3回とも合格・最良』としたがRun1に「続いて」が残っていた。前回判定(終盤|聞き終|英語+聞等の存在検査+読解)は望ましくない語の機能を見ておらず検出できなかった。
+- 是正: 15本全文を開示し、(a)終了伝達(b)橋渡し(c)自然簡潔(d)進行語感の4観点で文脈評価。結果: C1 3/3○、C2 2/3○+1/3△、C4 2/3○+1/3×、C0/C3 0/3○。推薦を「C1第一・C2次点」へ変更(推薦のみ、採否はユーザー、OPEN-316)。
+- 状態: VALIDATED(Trial)。CURRENT_SPEC不変、Production Prompt/定数/音声不変。証跡: `er057_output/coffee_comment4_trial_01/ALL_RUNS_DISCLOSURE_01.md`、ページ `user_test/coffee_comment4_trial_01/all_runs.html`、報告 `docs/pm/delegation_log/2026-10-12_COFFEE-COMMENT4-TRIAL-ALL-RUNS-DISCLOSURE-01.md`。
