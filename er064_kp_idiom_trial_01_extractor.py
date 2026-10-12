@@ -18,11 +18,11 @@ import er023_key_phrase_db_extraction as ext
 import er030_key_phrase_db_hybrid_core_01 as core
 import er003_key_words_production as prod
 
-PROMPT_PATH = "er064_output/kp_idiom_trial_01/prompts/extractor_prompt_v2.txt"  # extractor v2 (M1/M3): cap3, transparency, core_span
+PROMPT_PATH = "er064_output/kp_idiom_trial_01/prompts/extractor_prompt_v3.txt"  # extractor v3 (委任_04): 不透明度順位(rank)・件数圧文言なし・transparencyは記録のみ
 MIN_WORDS, MAX_WORDS, ITEM_CAP = 2, 5, 3
 LEVEL_DESC = {
     "std": "A2(英検3〜準2級相当。日常の基本語彙・高頻度の定型句は既知とみなす)",
-    "adv": "B1(英検2級相当。基本的な句動詞・高頻度コロケーションは既知とみなすが、慣用句・比喩は未知の可能性が高い)",
+    "adv": "B1(英検2級相当。慣用句・比喩は未知の可能性が高い。句動詞でも本文中で基本義と異なる意味で使われ構成語から意味を推測しにくいものは対象に含める。構成語どおりの意味で使われている基本的な句動詞・高頻度コロケーションは既知とみなす)",
 }
 KINDS = ["idiom_or_fixed_expression", "figurative_or_metaphorical_use", "nontransparent_collocation_or_phrasal"]
 TRANSPARENCY = ["opaque", "semi", "transparent"]
@@ -32,11 +32,11 @@ SCHEMA = {
         "type": "object",
         "properties": {"items": {"type": "array", "items": {
             "type": "object",
-            "properties": {"span": {"type": "string"}, "core_span": {"type": "string"},
+            "properties": {"rank": {"type": "integer"}, "span": {"type": "string"}, "core_span": {"type": "string"},
                            "transparency": {"type": "string", "enum": TRANSPARENCY},
                            "kind": {"type": "string", "enum": KINDS},
                            "reason_en": {"type": "string"}},
-            "required": ["span", "core_span", "transparency", "kind", "reason_en"],
+            "required": ["rank", "span", "core_span", "transparency", "kind", "reason_en"],
             "additionalProperties": False}}},
         "required": ["items"], "additionalProperties": False},
     "strict": True,
@@ -111,7 +111,8 @@ def verify_span(span: str, sentence_units: list) -> dict:
             cand = {
                 "surface_form": surface, "canonical_form": ext._normalize_key(surface), "n": len(real),
                 "matched_dbs": [], "db_match_count": 0, "db_categories": ["llm_noncompositional"],
-                "unit_type": ext.UNIT_TYPE_PHRASE,  # M2: idiom固定にしない(中立のphrase) "cefr_level": None, "source_span": surface,
+                "unit_type": ext.UNIT_TYPE_PHRASE,  # M2: idiom固定にしない(中立のphrase)
+                "cefr_level": None, "source_span": surface,
                 "context_mismatch_rule": None, "important_noun_phrase_candidate": False,
                 "repetition_count_in_article": None, "observed_surface_variants": [surface],
                 "evidence": "llm_noncompositional",
@@ -158,17 +159,18 @@ def contains_existing_with_closed_diff(canon: str, existing_multiword: set) -> s
 def build_llm_candidates(parsed: dict, sentence_units: list, existing_canonicals: set,
                          cap: int = ITEM_CAP) -> dict:
     """LLM出力 -> 検証済み候補(extractor v2)。
-    - transparency==transparent は除外(M1。confidenceは閾値に使わない)
+    - rank昇順に処理(v3)。transparencyは記録のみ(除外しない)。confidenceは使わない
     - core_span が span の連続部分なら core_span を候補にする(M3、主語名詞の除去)
     - 既存DB候補とcanonical重複は除外、既存の複数語候補を含み差分が閉クラスのみの候補も除外(M3)
     - capは検証通過後のitem数に対する上限(LLMの並び順=重要度順を保つ)。"""
     accepted, rejected, dup, seen = [], [], [], set()
     existing_multi = {c for c in existing_canonicals if len(c.split()) >= 2}
-    for it in (parsed.get("items") or []):
+    # v3: rank昇順(不透明度が高い順)に並べ替える。rank無し/同順位は元の並びを保つ(stable)。
+    # transparency自己申告は記録のみ(除外に使わない。委任_03でtransparent 0件・弁別力なしと確認)。
+    ordered = sorted(enumerate(parsed.get("items") or []),
+                     key=lambda p: (p[1].get("rank") if isinstance(p[1].get("rank"), int) else 10 ** 6, p[0]))
+    for _, it in ordered:
         raw_span = it.get("span", "")
-        if (it.get("transparency") or "") == "transparent":
-            rejected.append({"ok": False, "reason": "self_declared_transparent", "span": raw_span})
-            continue
         nar = narrow_to_core_span(raw_span, it.get("core_span", ""))
         v = verify_span(nar["span"], sentence_units)
         v["kind"], v["reason_en"] = it.get("kind"), it.get("reason_en")
@@ -189,6 +191,7 @@ def build_llm_candidates(parsed: dict, sentence_units: list, existing_canonicals
         seen.add(c["canonical_form"])
         c["llm_kind"], c["llm_reason_en"] = it.get("kind"), it.get("reason_en")
         c["llm_transparency"], c["llm_raw_span"], c["core_span_narrowed"] = it.get("transparency"), raw_span, nar["narrowed"]
+        c["llm_rank"] = it.get("rank")
         accepted.append(c)
     return {"accepted": accepted, "rejected": rejected, "duplicate_of_existing": dup,
             "raw_item_count": len(parsed.get("items") or [])}

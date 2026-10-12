@@ -27,8 +27,8 @@ import er064_kp_idiom_trial_01_select as S
 
 ROOT = "er064_output/kp_idiom_trial_01"
 PD = f"{ROOT}/phase_d"
-PLAN_PATH = f"{PD}/FROZEN_PLAN_01.json"
-BUDGET_LIMIT = 35.56           # 本件専用残予算(JPY)。Phase C累計14.4411を引いた後の残額
+PLAN_PATH = f"{PD}/FROZEN_PLAN_02.json"  # 委任_04: extractor v3で再凍結(01は履歴として保持)
+BUDGET_LIMIT = 34.28           # 本件専用残予算(JPY)。本件上限50 - (Phase C 14.4411 + 委任_03 M1 1.2792)。委任_04の費用は cost_02.json に記録
 JOB_EST = 1.4                  # 1 job(選定+正規化+QA)の保守的見積(JPY)
 EXTRACT_EST = 0.25
 DETS = {"the", "a", "an", "your", "my", "his", "her", "its", "their", "our", "this", "that", "these", "those"}
@@ -40,13 +40,14 @@ def sha_file(p: str) -> str:
 
 
 def stop_files_present() -> list:
-    return (glob.glob("docs/pm/delegation_log/*KP-IDIOM*STOP*") + glob.glob(f"{ROOT}/STOP") + glob.glob(f"{PD}/STOP") +
-            glob.glob("er026_output/family_z_production_e2e_01/STOP_ALL"))
+    # 本件の有料run判定は本件用STOP(+本件名のSTOP_NOTICE)のみ(Fable指示 委任_04。Family ZのSTOP_ALLは別案件のtest由来で対象外)。
+    # Family Z STOP_ALLの存在は参考として stage 開始時にログ出力する。
+    return glob.glob("docs/pm/delegation_log/*KP-IDIOM*STOP*") + glob.glob(f"{ROOT}/STOP") + glob.glob(f"{PD}/STOP")
 
 
 def load_plan() -> dict:
     if not os.path.exists(PLAN_PATH):
-        sys.exit("FROZEN_PLAN_01.json missing: not frozen")
+        sys.exit("FROZEN_PLAN_02.json missing: not frozen")
     plan = json.load(open(PLAN_PATH, encoding="utf-8"))
     for f, h in plan["file_sha256"].items():
         if sha_file(f) != h:
@@ -60,7 +61,7 @@ def load_plan() -> dict:
 class Budget:
     def __init__(self):
         self.lock = threading.Lock()
-        self.cost_path = f"{PD}/cost.json"
+        self.cost_path = f"{PD}/cost_02.json"
         if os.path.exists(self.cost_path):
             self.cost = json.load(open(self.cost_path, encoding="utf-8"))
         else:
@@ -320,10 +321,10 @@ def stage_m1(plan: dict, budget: Budget) -> None:
         sys.exit("budget stop")
     for a in plan["m1"]:
         for k in (1, 2, 3):
-            jobs.append(((a["id"], k), extract_one, a, k, budget, f"{PD}/m1_recheck", "m1"))
+            jobs.append(((a["id"], k), extract_one, a, k, budget, f"{PD}/m1_recheck_02", "m1"))
     res, err = pool_run(jobs)
     res = sorted(res, key=lambda r: (r["id"], r["run"]))
-    json.dump({"runs": res, "errors": err, "cumulative_jpy": budget.spent}, open(f"{PD}/m1_summary.json", "w", encoding="utf-8"),
+    json.dump({"runs": res, "errors": err, "cumulative_jpy": budget.spent}, open(f"{PD}/m1_summary_02.json", "w", encoding="utf-8"),
               ensure_ascii=False, indent=2)
     for r in res:
         print(r["id"], r["run"], "raw", r["raw_item_count"], "acc", r["accepted"], "tgt_acc", r["accepted_targets"], "tgt_sl", r["v2_shortlist_targets"],
@@ -343,7 +344,7 @@ def stage_extract(plan: dict, budget: Budget) -> None:
         sys.exit(f"budget stop: spent {budget.spent} + est {est} > {BUDGET_LIMIT}")
     res, err = pool_run(jobs)
     res = sorted(res, key=lambda r: (r["id"], r["run"]))
-    json.dump({"runs": res, "errors": err, "cumulative_jpy": budget.spent}, open(f"{PD}/extract_summary.json", "w", encoding="utf-8"),
+    json.dump({"runs": res, "errors": err, "cumulative_jpy": budget.spent}, open(f"{PD}/extract_summary_02.json", "w", encoding="utf-8"),
               ensure_ascii=False, indent=2)
     for r in res:
         print(r["id"], r["run"], "raw", r["raw_item_count"], "acc", r["accepted"], "rej", [x["reason"] for x in r["rejected"]], "cost", r["cost_jpy"])
@@ -359,7 +360,7 @@ def stage_final(plan: dict, budget: Budget, group: list) -> None:
                 jobs.append(((aid, variant, k), run_variant_job, a, variant, k, budget))
     res, err = pool_run(jobs)
     res = sorted(res, key=lambda r: (r["id"], r["variant"], r["run"]))
-    path = f"{PD}/final_summary_{'_'.join(group)}.json"
+    path = f"{PD}/final_summary_02_{'_'.join(group)}.json"
     json.dump({"runs": res, "errors": err, "cumulative_jpy": budget.spent}, open(path, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     for r in res:
         print(r["id"], r["variant"], r["run"], r["stop_reason"], r["final_phrases"], "llm/ph", r["final_llm_or_placeholder_count"],
@@ -367,11 +368,27 @@ def stage_final(plan: dict, budget: Budget, group: list) -> None:
     print("errors", err, "cum", budget.spent)
 
 
+def stage_v1d(plan: dict, budget: Budget) -> None:
+    """任意: Coffee Adv V1+d n=2(効果分離)。必須分完了後・残額>=3のときのみ手動起動。"""
+    if BUDGET_LIMIT - budget.spent < 3.0:
+        sys.exit(f"budget remaining {BUDGET_LIMIT - budget.spent:.2f} < 3.0: skip")
+    a = get_art(plan, "coffee_adv")
+    jobs = [(("coffee_adv", "V1d", k), run_variant_job, a, "V1d", k, budget) for k in (1, 2)]
+    res, err = pool_run(jobs)
+    res = sorted(res, key=lambda r: r["run"])
+    json.dump({"runs": res, "errors": err, "cumulative_jpy": budget.spent}, open(f"{PD}/v1d_summary_02.json", "w", encoding="utf-8"),
+              ensure_ascii=False, indent=2)
+    for r in res:
+        print(r["id"], r["variant"], r["run"], r["stop_reason"], r["final_phrases"], r.get("final_targets"), r["cost_jpy"])
+    print("errors", err, "cum", budget.spent)
+
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--stage", required=True, choices=["m1", "extract", "final"])
+    ap.add_argument("--stage", required=True, choices=["m1", "extract", "final", "v1d"])
     ap.add_argument("--group", default="")
     a = ap.parse_args()
+    print("family_z_STOP_ALL_present(参考のみ):", bool(glob.glob("er026_output/family_z_production_e2e_01/STOP_ALL")))
     sf = stop_files_present()
     if sf:
         sys.exit(f"STOP files present: {sf}")
@@ -382,5 +399,7 @@ if __name__ == "__main__":
         stage_m1(plan, budget)
     elif a.stage == "extract":
         stage_extract(plan, budget)
+    elif a.stage == "v1d":
+        stage_v1d(plan, budget)
     else:
         stage_final(plan, budget, [x for x in a.group.split(",") if x])

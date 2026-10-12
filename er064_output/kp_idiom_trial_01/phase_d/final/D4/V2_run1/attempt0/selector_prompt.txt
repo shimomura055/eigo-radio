@@ -1,0 +1,101 @@
+以下のB1英語記事本文から、初回リスニングで意味を取れず、その後の理解を止める可能性が高い英語表現を、支援価値の高い順にちょうど5個選んでください。
+
+まず初回リスニングで難しい箇所を見つけ、その箇所をコピーするのではなく、学ぶべき最小の単語・句・コロケーションへ抽出してください。
+
+display_phraseは1〜5語にしてください。完全文、主語と有限動詞を持つ節、記事固有の長い説明は禁止です。
+
+動詞表現は本文の時制を残さず、原則として基本形へ直してください。受動表現を学ぶ価値がある場合は、be + past participleの見出し形を使用できます。
+
+文字で読み返したときではなく、音声で一度だけ聞いたときに意味を処理できるかを最優先してください。
+
+優先順位は、初回音声での処理困難、未知の可能性、瞬時の推測困難、本文の事実・感情・面白さへの影響、記事内重要度、汎用性の順です。
+
+未知単語、題材固有表現、短い複数語パターン、比喩・感情表現を同格の候補として扱ってください。構成語から意味を容易に推測できる透明表現は、記事上重要でも優先度を下げてください。
+
+「ソロ旅行を～％とする」のように、数値を補わないと意味が成立しない句・日本語グロス(数値の穴埋めを必要とする不完全な表現)は選ばないでください。それ単体で意味が成立する句・グロスを選んでください。
+
+選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。
+
+日本語グロスは、辞書的に正しいだけでなく、日本人の英語学習者が聞いてすぐ意味を理解できる、自然で平易な現代日本語にしてください。直訳調や、「常態」「是正」のような過度に硬い報道語・漢語、一般的な学習者には伝わりにくい表現は避けてください。
+
+日本語グロスには、括弧（　）を使って別の訳し方・専門用語・補足情報を書き添えないでください。音声だけで聞いてそのまま意味が伝わる、平易な言い換えだけの一文にしてください。
+
+日本語グロスは、辞書的な表記として自然な範囲であれば「～」「〜」を使ってもかまいません(例: 「～を示す」)。ただし「…」のようなプレースホルダー記号は使わないでください。日本語グロスに数字を含める場合は、算用数字(1、2、3…)ではなく漢数字(一、二、三…)で書いてください。
+
+5個のうち1個は、汎用性や一般的な学習重要度は必ずしも高くなくても、この記事に特有であり、事前に意味・用法・音を理解しておくことでこの記事の本文全体を追いやすくなる語または表現を選んでください(key_phrase_role="topic")。判断基準は「この語・表現を事前に理解していると、この記事の本文を明確に追いやすくなるか」です。人名・企業名・ブランド名・地名だから選ぶ、専門用語だから選ぶ、といった特定の種類を優先するルールではありません。該当する語・表現が見当たらない場合でも、topicの項目を空にせず、その記事の中で最も近いと考えられる候補を選んでください。残り4個は、上記の基準に従って選んでください(key_phrase_role="important")。このkey_phrase_roleは、候補の種類・区分とは独立した、選定後の役割ラベルです。
+
+【Topic】title: A Company Tries Three Days in the Office
+
+【重要な単語・単語群候補】
+- id: C16 | candidate: "new schedule" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S2
+- id: C17 | candidate: "Three Days" | type: noun_phrase | occ: 4 | evidence: repeated_compound_noun | sentence: S1
+- id: C18 | candidate: "good work" | type: noun_phrase | occ: 1 | evidence: wiktionary_multiword | sentence: S5
+- id: C19 | candidate: "remote work" | type: noun_phrase | occ: 1 | evidence: wiktionary_multiword | sentence: S16
+- id: C20 | candidate: "five-day" | type: important_word | occ: 1 | evidence: heuristic[rare_technical_single_word_heuristic] | sentence: S21
+- id: C21 | candidate: "one-year" | type: important_word | occ: 1 | evidence: heuristic[rare_technical_single_word_heuristic] | sentence: S23
+- id: C22 | candidate: "three-day" | type: important_word | occ: 1 | evidence: heuristic[rare_technical_single_word_heuristic] | sentence: S23
+
+【phrase / idiom / phrasal verb候補】
+- id: C1 | candidate: "add up" | type: phrasal_verb | occ: 1 | evidence: wiktionary[idiom,phrasal_verb] | sentence: S18
+- id: C2 | candidate: "add up to" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S18
+- id: C3 | candidate: "as well" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S13
+- id: C4 | candidate: "asked for" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S16
+- id: C5 | candidate: "At first" | type: idiom | occ: 2 | evidence: wiktionary[idiom] | sentence: S7
+- id: C6 | candidate: "at home" | type: idiom | occ: 2 | evidence: wiktionary[idiom] | sentence: S2
+- id: C7 | candidate: "came out" | type: phrasal_verb | occ: 1 | evidence: wiktionary[idiom,phrasal_verb]+irregular_rescue | sentence: S4
+- id: C8 | candidate: "comes with" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S13
+- id: C9 | candidate: "fell by" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb]+irregular_rescue | sentence: S14
+- id: C10 | candidate: "figure out" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S5
+- id: C11 | candidate: "go back" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S21
+- id: C12 | candidate: "go back to" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S21
+- id: C13 | candidate: "of a" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S23
+- id: C14 | candidate: "on average" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S9
+- id: C15 | candidate: "picked up" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S10
+
+【word候補】
+- id: C23 | candidate: "teamwork" | type: word | occ: 1 | evidence: cefr_j | sentence: S7
+- id: C24 | candidate: "slowed" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S15
+- id: C25 | candidate: "fade" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S21
+- id: C26 | candidate: "weaker" | type: word | occ: 1 | evidence: ngsl_family | sentence: S23
+- id: C27 | candidate: "feared" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S7
+
+【SENTENCE REFERENCE】(文脈参照専用。この表の文字列をそのままitemへ書かないでください)
+S1: "A Company Tries Three Days in the Office"
+S2: "A software company with 800 employees has spent a year testing a new schedule: three days in the office and two at home"
+S4: "Its first report came out this week"
+S5: "Managers first had to figure out how to measure good work"
+S7: "At first, many managers put off the study because they feared a drop in teamwork"
+S9: "Projects were finished two days earlier on average"
+S10: "Customer complaints went down by 9%, and sales picked up in the third quarter"
+S13: "The new schedule comes with costs as well as gains"
+S14: "Office rent fell by 15%, but the company spent more on video tools and home equipment"
+S15: "The savings only show up in the report after the second quarter, when the extra spending slowed"
+S16: "Some workers asked for full remote work, and the company turned down the request"
+S18: "The numbers do not add up to a clear winner, she added"
+S21: "If the early gains fade, the company will go back to a five-day office week"
+S23: "A one-year test of a three-day office schedule shows faster projects and lower rent, but weaker learning for younger staff"
+
+【選定方針】
+- 最終的に選ぶ5件は、必ず下記の候補一覧の中から選んでください。候補に
+  無い新しい表現を作らないでください。
+- 5個のうち少なくとも1個は、[重要な単語・単語群候補]区分から選んで
+  ください(記事理解・再利用価値の高い重要な名詞・専門用語・複合語)。
+- 残りの枠は、[phrase / idiom / phrasal verb候補]と[word候補]を、区分名ではなく次の基準で比較して選んでください。
+  最優先は、本文中で字義どおりではなく非字義的に使われている表現(慣用句・比喩・擬人化・組み合わさると特別な意味になる語句)のうち、
+  初回のリスニングで意味を取りにくいものです。区分名(idiom等)やevidenceラベルがあるだけでは選ばないでください。
+  構成語から意味を容易に推測できる透明な表現や、学習者がすでに知っている可能性が高い高頻度の定型表現は、区分がphrase/idiomでも優先度を下げてください。
+  対象はB1相当の学習者です。慣用句・比喩・文脈で意味が変わるコロケーションは初見で難しい可能性が高いものとして扱ってください。句動詞でも、本文中で基本義と異なる意味(抽象的な主語や数値が主語など)で使われ、構成語から意味を推測しにくいものは、非字義的表現として同列に評価してください。構成語どおりの意味で使われている基本的な句動詞や高頻度コロケーションは既知とみなして構いません。
+  evidenceが llm_noncompositional または placeholder_title の候補は、辞書の完全一致以外の方法で見つけた補助候補です。
+  他の候補と同じ基準で評価し、本文中で非字義的でない、または意味を推測しやすい場合は選ばないでください。
+  [phrase / idiom / phrasal verb候補]に適切な候補が少ない場合のみ、[word候補]区分で補ってください。
+- CEFR難易度・語彙レベルを主要な判断軸にしないでください。
+- 各itemのsource_candidate_idには、下記候補一覧の各行に付与されている
+  candidate ID(例: C7)のうち、実際に選んだ候補のIDを1つだけ指定して
+  ください。本文の文字列そのもの(元のsource_sentence/source_span相当の
+  自由記述)は一切書かないでください。
+- surface_echoには、選んだ候補が表す表現を短く(1〜6語程度)書いて
+  ください。これは内部確認用の参考情報であり、正誤判定には使用しません。
+- 上記5件とは別に、backup_itemとして、重要語・重要表現
+  (key_phrase_role="important")の予備候補を1件、上記5件とは異なる
+  candidate IDで選んでください。topicの候補が正しく選べた場合でも、
+  backup_itemは必ず1件返してください(その場合は採用されません)。

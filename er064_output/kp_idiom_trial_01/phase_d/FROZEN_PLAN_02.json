@@ -1,0 +1,563 @@
+{
+  "plan_id": "FAMILY-X-KP-IDIOM-EXTRACTION-SELECTION-TRIAL-01 / PHASE_D_FROZEN_PLAN_02 (委任_04, extractor v3)",
+  "model": "gpt-6-luna",
+  "budget_limit_jpy": 34.28,
+  "m1": [
+    {
+      "id": "coffee_std",
+      "level": "std",
+      "file": "er064_output/kp_idiom_trial_01/phase_a/inputs/v4_std_article.md",
+      "targets": [
+        {
+          "id": "m1_pump",
+          "exact": [
+            "pumps its fist",
+            "pump its fist",
+            "pump one's fist"
+          ],
+          "partial_all": [
+            "pump",
+            "fist"
+          ],
+          "role": "must1"
+        }
+      ]
+    },
+    {
+      "id": "coffee_adv",
+      "level": "adv",
+      "file": "er064_output/kp_idiom_trial_01/phase_a/inputs/v4_adv_article.md",
+      "targets": [
+        {
+          "id": "m1_pump",
+          "exact": [
+            "pumps its fist",
+            "pump its fist",
+            "pump one's fist"
+          ],
+          "partial_all": [
+            "pump",
+            "fist"
+          ],
+          "role": "must1"
+        }
+      ]
+    }
+  ],
+  "articles": [
+    {
+      "id": "N1",
+      "level": "std",
+      "file": "n1_std.md",
+      "role": "negative_control",
+      "extract_n": 3,
+      "final_runs": {
+        "V0": [
+          1
+        ],
+        "V2": [
+          1,
+          2
+        ]
+      },
+      "targets": [
+        {
+          "id": "n1_tongue",
+          "exact": [
+            "bit her tongue",
+            "bite her tongue",
+            "bite one's tongue"
+          ],
+          "partial_all": [
+            "tongue"
+          ],
+          "role": "literal_neg"
+        },
+        {
+          "id": "n1_eyes",
+          "exact": [
+            "opened his eyes",
+            "open his eyes",
+            "open one's eyes",
+            "open someone's eyes"
+          ],
+          "partial_all": [
+            "eyes"
+          ],
+          "role": "literal_neg"
+        },
+        {
+          "id": "n1_keys",
+          "exact": [
+            "lost her keys",
+            "lose one's keys"
+          ],
+          "partial_all": [
+            "keys"
+          ],
+          "role": "literal_neg"
+        },
+        {
+          "id": "n1_ice",
+          "exact": [
+            "broke the ice",
+            "break the ice"
+          ],
+          "partial_all": [
+            "ice"
+          ],
+          "role": "literal_neg"
+        },
+        {
+          "id": "n1_beans",
+          "exact": [
+            "spill the beans",
+            "spilled the beans"
+          ],
+          "partial_all": [
+            "beans"
+          ],
+          "role": "literal_neg"
+        }
+      ]
+    },
+    {
+      "id": "D6",
+      "level": "adv",
+      "file": "d6_adv.md",
+      "role": "negative_control",
+      "extract_n": 3,
+      "final_runs": {
+        "V0": [
+          1
+        ],
+        "V2": [
+          1,
+          2
+        ]
+      },
+      "targets": []
+    },
+    {
+      "id": "D2",
+      "level": "std",
+      "file": "d2_std.md",
+      "role": "positive",
+      "extract_n": 2,
+      "final_runs": {
+        "V0": [
+          1
+        ],
+        "V2": [
+          1,
+          2
+        ]
+      },
+      "targets": [
+        {
+          "id": "d2_temper",
+          "exact": [
+            "lost his temper",
+            "lose his temper",
+            "lose one's temper"
+          ],
+          "partial_all": [
+            "temper"
+          ],
+          "role": "gold"
+        },
+        {
+          "id": "d2_leg",
+          "exact": [
+            "pulling my leg",
+            "pull my leg",
+            "pull one's leg",
+            "pull someone's leg"
+          ],
+          "partial_all": [
+            "leg"
+          ],
+          "role": "gold"
+        },
+        {
+          "id": "d2_tongue",
+          "exact": [
+            "bit her tongue",
+            "bite her tongue",
+            "bite one's tongue"
+          ],
+          "partial_all": [
+            "tongue"
+          ],
+          "role": "gold"
+        },
+        {
+          "id": "d2_mind",
+          "exact": [
+            "change her mind",
+            "change one's mind"
+          ],
+          "partial_all": [
+            "mind"
+          ],
+          "role": "gold"
+        },
+        {
+          "id": "d2_eye",
+          "exact": [
+            "kept an eye on",
+            "keep an eye on"
+          ],
+          "partial_all": [
+            "eye"
+          ],
+          "role": "gold"
+        },
+        {
+          "id": "d2_beans",
+          "exact": [
+            "spill the beans"
+          ],
+          "partial_all": [
+            "beans"
+          ],
+          "role": "gold"
+        }
+      ]
+    },
+    {
+      "id": "D5",
+      "level": "std",
+      "file": "d5_std.md",
+      "role": "negative_control",
+      "extract_n": 3,
+      "final_runs": {
+        "V0": [
+          1
+        ],
+        "V2": [
+          1,
+          2
+        ]
+      },
+      "targets": []
+    },
+    {
+      "id": "D3",
+      "level": "adv",
+      "file": "d3_adv.md",
+      "role": "positive",
+      "extract_n": 2,
+      "final_runs": {
+        "V0": [
+          1
+        ],
+        "V2": [
+          1,
+          2
+        ]
+      },
+      "targets": [
+        {
+          "id": "d3_breath",
+          "exact": [
+            "holding its breath",
+            "hold its breath",
+            "hold one's breath"
+          ],
+          "partial_all": [
+            "breath"
+          ],
+          "role": "gold"
+        },
+        {
+          "id": "d3_shrug",
+          "exact": [
+            "shrugged off",
+            "shrug off"
+          ],
+          "partial_all": [
+            "shrug"
+          ],
+          "role": "gold"
+        },
+        {
+          "id": "d3_surface",
+          "exact": [
+            "under the surface"
+          ],
+          "partial_all": [
+            "surface"
+          ],
+          "role": "gold"
+        },
+        {
+          "id": "d3_whisper",
+          "exact": [
+            "whisper a different story"
+          ],
+          "partial_all": [
+            "whisper"
+          ],
+          "role": "gold",
+          "b1_only": true
+        },
+        {
+          "id": "d3_asleep",
+          "exact": [
+            "are asleep"
+          ],
+          "partial_all": [
+            "asleep"
+          ],
+          "role": "gold",
+          "b1_only": true
+        },
+        {
+          "id": "d3_loan",
+          "exact": [
+            "a loan taken out against the future",
+            "taken out against the future",
+            "loan taken out against the future"
+          ],
+          "partial_all": [
+            "loan"
+          ],
+          "role": "gold",
+          "b1_only": true
+        }
+      ]
+    },
+    {
+      "id": "R3",
+      "level": "adv",
+      "file": "r3_adv.md",
+      "role": "negative_control",
+      "extract_n": 3,
+      "final_runs": {
+        "V2": [
+          1
+        ]
+      },
+      "targets": [
+        {
+          "id": "r3_eyes",
+          "exact": [
+            "open your eyes",
+            "open one's eyes",
+            "open someone's eyes"
+          ],
+          "partial_all": [
+            "eyes"
+          ],
+          "role": "literal_neg"
+        }
+      ]
+    },
+    {
+      "id": "D4",
+      "level": "adv",
+      "file": "d4_adv.md",
+      "role": "regression_watch",
+      "extract_n": 2,
+      "final_runs": {
+        "V0": [
+          1
+        ],
+        "V2": [
+          1,
+          2
+        ]
+      },
+      "targets": [
+        {
+          "id": "d4_comeswith",
+          "exact": [
+            "comes with",
+            "come with"
+          ],
+          "partial_all": [
+            "come",
+            "with"
+          ],
+          "role": "gold",
+          "cd": true
+        },
+        {
+          "id": "d4_addup",
+          "exact": [
+            "add up",
+            "add up to"
+          ],
+          "partial_all": [
+            "add up"
+          ],
+          "role": "gold",
+          "cd": true
+        },
+        {
+          "id": "d4_pickedup",
+          "exact": [
+            "picked up",
+            "pick up"
+          ],
+          "partial_all": [
+            "picked up"
+          ],
+          "role": "gold",
+          "cd": true
+        },
+        {
+          "id": "d4_showup",
+          "exact": [
+            "show up"
+          ],
+          "partial_all": [
+            "show up"
+          ],
+          "role": "gold",
+          "cd": true
+        },
+        {
+          "id": "d4_raninto",
+          "exact": [
+            "ran into",
+            "run into"
+          ],
+          "partial_all": [
+            "ran into"
+          ],
+          "role": "gold",
+          "cd": true
+        },
+        {
+          "id": "d4_figure",
+          "exact": [
+            "figure out"
+          ],
+          "partial_all": [
+            "figure out"
+          ],
+          "role": "gold"
+        },
+        {
+          "id": "d4_putoff",
+          "exact": [
+            "put off"
+          ],
+          "partial_all": [
+            "put off"
+          ],
+          "role": "gold"
+        },
+        {
+          "id": "d4_turneddown",
+          "exact": [
+            "turned down",
+            "turn down"
+          ],
+          "partial_all": [
+            "turned down"
+          ],
+          "role": "gold"
+        }
+      ]
+    },
+    {
+      "id": "R1",
+      "level": "adv",
+      "file": "r1_adv.md",
+      "role": "shortlist_only",
+      "extract_n": 0,
+      "final_runs": {},
+      "targets": [
+        {
+          "id": "r1_mind",
+          "exact": [
+            "changes my mind",
+            "change my mind",
+            "change one's mind"
+          ],
+          "partial_all": [
+            "mind"
+          ],
+          "role": "natural_use"
+        }
+      ]
+    },
+    {
+      "id": "R2",
+      "level": "std",
+      "file": "r2_std.md",
+      "role": "shortlist_only",
+      "extract_n": 0,
+      "final_runs": {},
+      "targets": [
+        {
+          "id": "r2_mark",
+          "exact": [
+            "made his mark",
+            "make his mark",
+            "make one's mark"
+          ],
+          "partial_all": [
+            "mark"
+          ],
+          "role": "ambiguous"
+        }
+      ]
+    }
+  ],
+  "variants": {
+    "V0": "Production現行shortlist + Production guidance",
+    "V1+d": "V0 + placeholder予約枠 + Trial guidance(b1抽出なし)",
+    "V2": "a(placeholder) + b1(extractor v3: cap3/不透明度rank順/transparency記録のみ/core_span/包含重複除外) + 予約枠cap3(cap15外) + Trial guidance(d, M4反映)",
+    "V3": "shortlistのみ(b2ルール候補+c)。最終選定なし"
+  },
+  "acceptance": {
+    "negative_control_fail": "N1/D6/D5/R3 の run単位で、最終5件の llm_noncompositional/placeholder_title 由来件数 == 0 をPASS。1件でもあればFAIL。",
+    "negative_control_extraction": "陰性対照4記事×n=3のaccepted件数の1回あたり平均 <= 1 を合格(2.0超は枠埋め偏りと判定)",
+    "D2_shortlist": "V2 shortlistのexact再現 >=5/6(V0は2/6。予約枠cap3のため(a)placeholder 4件のうち最大3件が回復対象。cap3と抽出候補で押し出された件数も別途報告)",
+    "D2_final": "run単位: gold6件のうち >=2件が最終5件(exact or partial)。V2 n=2の両runでPASS",
+    "D3_shortlist": "run単位: b1_only 3件のうち>=1件がshortlist(exact or partial)。両runでPASS",
+    "D3_final": "run単位: gold6件のうち >=2件が最終5件(partial可)。両runでPASS",
+    "D4_final": "run単位: gold8件のうち >=2件が最終5件(partial可) かつ CD(cd=true)5件の最終内件数 >= V0最終のCD件数-1。両runでPASS",
+    "M1_must1": "Coffee Std/Adv n=3: pump&fistが抽出accepted 6/6 かつ V2 shortlist 6/6。未達ならSTOP(事後基準変更・再実行禁止)",
+    "MUST3_unit": "MUST-3(正規化PASS・重複QA PASS・source_span整合)の判定単位は item単位(対象項目)とrun単位(run最終のgate全PASS)を分けて報告する。run単位=retry後の最終状態"
+  },
+  "retry_policy": "Redundancy QA NGの場合のみ、Productionのretry方式(診断メモ追記、選定からやり直し)を1回(Production上限2回のうち1回)。V0はretryしない",
+  "subject_included_heuristic": "近似: 限定詞/所有格で始まり3語以上で後続にbe動詞または-s/-ed/-es/-ing語尾語を含む、またはcore_span縮約が発生した場合を主語込みとみなす",
+  "job_cost_estimate_jpy": 1.4,
+  "execution_order": "m1 -> extract(全記事) -> final: [N1,D6] -> [D2] -> [D5] -> [D3] -> [R3] -> [D4] -> 任意 V1+d Coffee Adv n=2 (残額>=3)",
+  "file_sha256": {
+    "er064_kp_idiom_trial_01_extractor.py": "89ac0ea3729af51f5995c2cfe2baf13d3313112313ed9a559d26973320658e86",
+    "er064_kp_idiom_trial_01_matcher.py": "91ece944c42cdf075e4f076138d8b9045047b99e72852ae38bdca9633ff2def2",
+    "er064_kp_idiom_trial_01_pipeline.py": "42b15c358d7c412b675a3eb6497299cde69bc376f763bb6444de30d1f6b3da28",
+    "er064_kp_idiom_trial_01_select.py": "e90db1719ffd83fff16d2007f109af749180fd2f41065beface7f970d1758793",
+    "er064_kp_idiom_trial_01_phase_d_run.py": "71b34a326f3fa57d482c973d6604598e95fdb743ab727e02499af3b6cead09fb",
+    "er064_kp_idiom_trial_01_test_01.py": "bf62501d81eb9e2bab10fda8ee911a09cc71d1531e66ec3729b968ecbee4398a",
+    "er064_output/kp_idiom_trial_01/prompts/extractor_prompt_v3.txt": "2e55b524607ab4852bfb3b19a2e25b50ad58346ff5b1d34f42f0f451563b341b",
+    "er064_output/kp_idiom_trial_01/prompts/trial_guidance_std_v2.txt": "ec88f2012433b4ff1f08f462c73109a8ae72a7ae0698b5f329e3d84b1760d467",
+    "er064_output/kp_idiom_trial_01/prompts/trial_guidance_adv_v2.txt": "5488c8952b83c6ddbad7e7194130dc2f975efd3958a02d6692108156ec053455",
+    "er064_output/kp_idiom_trial_01/prompts/production_guidance_before.txt": "dadc60fe59fe1b05bc7cecfe04275fccadebf817f125a1d00dcbdf3c496084db",
+    "er003_v1_translator_briefs/b1_p2_keywords_l_prompt_template.txt": "69d0e6ff548987896b561c0684e7aca10eae5b35a4974490fe92d42933d2e8f6",
+    "er064_output/kp_idiom_trial_01/phase_d/GOLD_TABLE_02.md": "3d5e9227ed36767fb05e01743b83aed9ebc8e9998ad76660406dcfbdf49636c5",
+    "er064_output/kp_idiom_trial_01/phase_d/inputs\\d2_std.md": "4c4e8b177ecb5528b5778c8236c9871dbddd3e33f63a8cb32a0f235283ce0f54",
+    "er064_output/kp_idiom_trial_01/phase_d/inputs\\d3_adv.md": "7f584ce1ac50e38dde4155c618c248459f6793177f662b0888ebf59c418f8278",
+    "er064_output/kp_idiom_trial_01/phase_d/inputs\\d4_adv.md": "68d0c86750d69099761a8f5900ee35ee2345620e2109f9b9a2c16870a16c3e24",
+    "er064_output/kp_idiom_trial_01/phase_d/inputs\\d5_std.md": "5485ead5adf9a0559691c5fa62d1cbde9a5ad00ba53d50cd54d354e6116a986b",
+    "er064_output/kp_idiom_trial_01/phase_d/inputs\\d6_adv.md": "831fc54ac7eae1a719fc046f6a4c79ce4c285abfefc32405272ca7da459d9d63",
+    "er064_output/kp_idiom_trial_01/phase_d/inputs\\n1_std.md": "4392d8f2faf8bc0fd14ee50807ce9a95074daa91d00b2100d80486ab875bd680",
+    "er064_output/kp_idiom_trial_01/phase_d/inputs\\r1_adv.md": "fd9193d7fa85cd156f165c724a20b0720ba848242b971dc3a3f329098fc9b71d",
+    "er064_output/kp_idiom_trial_01/phase_d/inputs\\r2_std.md": "b58adac6fda7035ebd35e61598e51315edc45eb4cfe455c10dbfbde3e829e9d8",
+    "er064_output/kp_idiom_trial_01/phase_d/inputs\\r3_adv.md": "a7b62938eb30eecd589a5fb617eba36f65b462b31a8d4384d8c1218daa73220d",
+    "er064_output/kp_idiom_trial_01/phase_a/inputs/v4_std_article.md": "a3cc7bb98af7526f55485b6a589354eeb36eb74a80bbd43a5e5be151915e4ff7",
+    "er064_output/kp_idiom_trial_01/phase_a/inputs/v4_adv_article.md": "d9b77190905d9060d578b2b21d634d48193decfd4c4eb90f1ae9bdb7da028e67"
+  },
+  "frozen_at_epoch": 1791807154.8520522,
+  "frozen_at": "2026-10-12T21:12:34+0900",
+  "caps": {
+    "ITEM_CAP": 3,
+    "RESERVED_SLOT_CAP": 3
+  }
+}

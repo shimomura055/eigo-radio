@@ -335,15 +335,41 @@ class M1toM4ExtractorV2(unittest.TestCase):
         self.assertIn("core_span", props)
         self.assertEqual(props["transparency"]["enum"], ["opaque", "semi", "transparent"])
         self.assertNotIn("confidence", props)
-        self.assertIn("通常は0〜2件", X.prompt_template())
+        self.assertIn("rank", props)
+        p = X.prompt_template()
+        for bad in ("通常は0〜2件", "通常は", "枠が3件あることは"):
+            self.assertNotIn(bad, p)  # v3: 件数圧文言なし
+        self.assertIn("最大3件", p)
+        self.assertIn("rank 1", p)
+        self.assertTrue(X.PROMPT_PATH.endswith("extractor_prompt_v3.txt"))
 
-    def test_transparent_self_declared_is_excluded(self):
-        it = {"span": "a long shot", "core_span": "a long shot", "transparency": "transparent", "kind": X.KINDS[0], "reason_en": "x"}
+    def test_transparent_self_declared_is_record_only_not_excluded(self):
+        it = {"rank": 1, "span": "a long shot", "core_span": "a long shot", "transparency": "transparent", "kind": X.KINDS[0], "reason_en": "x"}
         r = X.build_llm_candidates({"items": [it]}, self.units, set())
-        self.assertEqual(r["accepted"], [])
-        self.assertEqual(r["rejected"][0]["reason"], "self_declared_transparent")
-        it["transparency"] = "opaque"
-        self.assertEqual(len(X.build_llm_candidates({"items": [it]}, self.units, set())["accepted"]), 1)
+        self.assertEqual(len(r["accepted"]), 1)  # v3: 除外しない
+        self.assertEqual(r["accepted"][0]["llm_transparency"], "transparent")
+        self.assertFalse(any(x["reason"] == "self_declared_transparent" for x in r["rejected"]))
+
+    def test_rank_order_applied_before_cap_and_missing_rank_keeps_order(self):
+        mk = lambda s, rk: {"rank": rk, "span": s, "core_span": s, "transparency": "semi", "kind": X.KINDS[1], "reason_en": "x"}
+        items = [mk("show up in", 3), mk("eats away at", 2), mk("a long shot", 1), mk("the tide turns", 4)]
+        r = X.build_llm_candidates({"items": items}, self.units, set(), cap=2)
+        self.assertEqual([c["surface_form"] for c in r["accepted"]], ["a long shot", "eats away at"])
+        self.assertEqual([c["llm_rank"] for c in r["accepted"]], [1, 2])
+        nr = [{k: v for k, v in mk(s, 0).items() if k != "rank"} for s in ("a long shot", "eats away at")]
+        r2 = X.build_llm_candidates({"items": nr}, self.units, set())
+        self.assertEqual([c["surface_form"] for c in r2["accepted"]], ["a long shot", "eats away at"])
+
+    def test_adv_level_desc_consistent_with_phrasal_wording(self):
+        d = X.LEVEL_DESC["adv"]
+        self.assertNotIn("基本的な句動詞・高頻度コロケーションは既知とみなすが", d)
+        self.assertIn("基本義と異なる意味", d)
+        self.assertIn("構成語どおりの意味で使われている基本的な句動詞", d)
+
+    def test_llm_candidate_has_source_span_and_cefr_keys(self):
+        c = X.verify_span("a long shot", self.units)["candidate"]
+        self.assertEqual(c["source_span"], "a long shot")
+        self.assertIn("cefr_level", c)
 
     def test_core_span_narrows_only_within_llm_span(self):
         it = {"span": "the tide turns slowly", "core_span": "tide turns", "transparency": "semi", "kind": X.KINDS[1], "reason_en": "x"}

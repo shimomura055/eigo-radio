@@ -20647,3 +20647,14 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 正規QA再生成(`--only-clips`、起動1回、rc=0、コードeb4c6479): Std a2 part1_c1/part3_c3はともにattempt=1でstatus=OK。減速後Primary=ASR_VALIDATION_UNCERTAIN→減速後cascade(Tier3 Azure corroboration)でSECONDARY_ASR_CORROBORATED_MATCH救済、`tts_generation_results.json`に正規記録。是正Aの実運用有効性を確認(OPEN-318/320/308のpart1_c1/c3は解決)。part1_c5(Melos said.)とJA comment_1はユーザー判断待ちのまま不変。費用+JPY0.92。
 - Opus任意改善(eb4c6479): 例外時invoked正確化、cost logger設定不備は伝播、top-level `post_slowdown_final_classification`追加、test+5(合計16件)。回帰: er021 62/er063 47/er026統合42/runner 21 PASS。
 - 費用累計 約JPY184.8 / 300。詳細: `er026_output/family_z_production_e2e_01/melos/asr_root_cause_01/ROOT_CAUSE_01.md` 10節、`COST_LEDGER_MELOS_01.md` 5節、委任ログ`docs/pm/delegation_log/2026-10-12_FAMILY-Z-MELOS-PROPER-NOUN-ASR-ROOT-CAUSE-01_03.md`。
+
+## FAMILY-X-KP-IDIOM-EXTRACTION-SELECTION-TRIAL-01 暫定記録(2026-10-12、委任_01〜04。Trial経過の暫定記録であり`APPROVED_FOR_PRODUCTION`ではない。Opusレビュー③待ち)
+- 発端: Coffee v4原稿で`pumps its fist`(MUST)と`mark the date on your calendar`(WANT)が、Family X DB Hybrid KPの候補抽出で取りこぼされ最終選定でも優先されなかった。範囲=Trial+Opus+改善案検証まで(Production無変更、Coffee専用hardcode禁止、本件専用追加予算JPY50)。
+- Phase A(委任_01、JPY0): 診断・設計。Phase B/C(委任_02): Trial実装((a)placeholder照合、(b1)LLM補助抽出、(c)予約枠、(d)選定guidance置換)とCoffee初回Trial(実費JPY14.44、MUST-1 6/6・MUST-2 達成、WANT未達、抽出は6/6で上限5件=枠埋め偏り)。
+- Opus独立レビュー①②(Fableが実施): Opus②の必須修正M1〜M5を委任_03で実装(cap5->3、transparency欄、core_span縮約、包含重複除外、表示phrase化、Adv句動詞guidance、Phase D事前凍結)。Opus①②の指摘全文は委任ログ・Fable管理側にあり本ファイルでは要旨のみ。
+- 委任_03: extractor v2(「通常0〜2件」)でM1 Coffee再確認 5/6でMUST-1未達 -> 事前基準どおりSTOP(Phase D未実行、JPY1.28)。
+- 委任_04(Fable判断(a)): extractor v3(不透明度rank順・件数圧文言なし・transparencyは記録のみ)で再凍結(frozen_at 2026-10-12T21:12:34+0900、最初の有料call 21:12:40+0900)。M1 Coffee再確認 6/6でMUST-1 PASS(ただしpump-fistはrank1が2/6のみ、主因は毎回3件出力されcapに収まったこと)。Phase D本体: D2 shortlist 2/6->5/6・最終2/6->4/6、D4句動詞回帰基準PASS、N1/D5/D6の偽陽性0。一方 **陰性対照R3 run1でLLM由来`get the first word`が最終に入りFAIL**、D3_shortlistがrun2でb1のみ回収0件でFAIL。
+- Status見込み: **再設計(REJECTED as-is)**。効果の大半は(a)+(c)+(d)由来で、b1(LLM抽出)は寄与が小さく偽陽性リスクと「本文全文をLLMへ送らない」原則との衝突を伴う。V1+d Coffee単独効果分離は未実行(自プロセスのtimeout打切り、再起動せず)。
+- 費用: 本件累計 約JPY36.53 / 50(Phase C 14.44 + 委任_03 1.28 + 委任_04 20.81、V1+d未計上分あり得る)。
+- 状態: Trial結果(`VALIDATED`ではない)。Production仕様ではない。Opusレビュー③待ち、採否はOPEN-325(USER_DECISION_REQUIRED)。
+- 証跡: `er064_output/kp_idiom_trial_01/phase_d/PHASE_D_REPORT_02.md`、`PHASE_D_REPORT_01.md`、`FROZEN_PLAN_02.md`、`er064_output/kp_idiom_trial_01/PHASE_BC_REPORT_01.md`、委任ログ`docs/pm/delegation_log/2026-10-12_FAMILY-X-KP-IDIOM-EXTRACTION-SELECTION-TRIAL-01_04.md`。
