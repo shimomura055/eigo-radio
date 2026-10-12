@@ -98,6 +98,59 @@ class PostSlowdownCascadeRescueTests(unittest.TestCase):
         self.assertEqual(out["status"], "STOPPED")
         self.assertIn("error", out["post_slowdown_cascade"])
 
+    # --- 委任_03 改善(Opus任意改善) ---
+    def test_exception_after_cascade_start_records_invoked_true(self):
+        result = {"status": "OK", "sha256": None, "duration_seconds": 2.0}
+        with mock.patch.object(tg.a2_slowdown, "apply_a2_slowdown", side_effect=self._fake_stretch),              mock.patch.object(tg.routing, "transcribe", return_value=("Mello said.", None)),              mock.patch.object(sec, "evaluate_attempt_with_cascade_detail", side_effect=ConnectionError("net")):
+            out = tg.apply_a2_slowdown_postprocess(self.name, self.tmp, "Melos said.", result)
+        pc = out["post_slowdown_cascade"]
+        self.assertEqual(out["status"], "STOPPED")
+        self.assertTrue(pc["invoked"])
+        self.assertTrue(pc["aborted_by_exception"])
+
+    def test_cost_logger_misconfiguration_is_not_swallowed(self):
+        result = {"status": "OK", "sha256": None, "duration_seconds": 2.0}
+        with mock.patch.object(tg.a2_slowdown, "apply_a2_slowdown", side_effect=self._fake_stretch),              mock.patch.object(tg.routing, "transcribe", return_value=("Mello said.", None)),              mock.patch.object(sec, "evaluate_attempt_with_cascade_detail",
+                               side_effect=RuntimeError("init_logger()が呼ばれていません")):
+            with self.assertRaises(RuntimeError):
+                tg.apply_a2_slowdown_postprocess(self.name, self.tmp, "Melos said.", result)
+
+    def test_final_classification_top_level_field(self):
+        out, _ = self._run("Melos called across the hall,", "Mellos called across the hall.",
+                           "Melos called across the hall.")
+        self.assertEqual(out["post_slowdown_final_classification"], "SECONDARY_ASR_CORROBORATED_MATCH")
+        out2, _ = self._run("Melos said.", "Mello said.", "Mellow said.")
+        self.assertEqual(out2["post_slowdown_final_classification"], "ASR_VALIDATION_UNCERTAIN")
+        out3, _ = self._run("Melos called across the hall,", "Melos called across the hall.", None)
+        self.assertNotEqual(out3["post_slowdown_final_classification"], "")
+        self.assertIn("post_slowdown_final_classification", out3)
+
+    def test_primary2_single_pass_rescues_after_tier3_no_corroboration(self):
+        # Primary#1は"Mellos"でUNCERTAIN、cascadeのPrimary#2(同音声の再転写)が正規綴りで単発PASS
+        result = {"status": "OK", "sha256": None, "duration_seconds": 2.0}
+        azure_calls = []
+        with mock.patch.object(tg.a2_slowdown, "apply_a2_slowdown", side_effect=self._fake_stretch),              mock.patch.object(tg.routing, "transcribe",
+                               side_effect=[("Mellos called across the hall.", None),
+                                            ("Melos called across the hall.", None)]),              mock.patch.object(sec, "get_full_text_via_azure_stt_with_phrase_list",
+                               side_effect=lambda *a, **k: azure_calls.append(1) or ("Mellow called across the hall.", None)),              mock.patch.object(sec, "_resolve_unresolved_entity_for_review", return_value=None),              mock.patch.object(sec.semantic_equivalence, "append_telemetry_log"):
+            out = tg.apply_a2_slowdown_postprocess(self.name, self.tmp, "Melos called across the hall,", result)
+        self.assertEqual(out["status"], "OK")
+        self.assertTrue(out["post_slowdown_cascade_accepted"])
+        steps = [s["step"] for s in out["post_slowdown_cascade"]["steps"]]
+        # Tier3(Azure)は誤綴りでcorroborationなし -> Primary#2が正規綴りで単発PASS -> Secondary#1以降へ進まない
+        self.assertEqual(steps[-1], "primary_2")
+        self.assertEqual(len(azure_calls), 1)
+        self.assertIn(out["post_slowdown_final_classification"], ("EXACT_MATCH", "NORMALIZED_MATCH"))
+
+    def test_cmu_case_a_homophone_name_rescued_without_extra_asr(self):
+        # CMU辞書上の発音完全一致(Kristie/Christy)はPrimary#1の時点で追加ASRなしにPASS(Case A)
+        out, calls = self._run("Kristie called across the hall,", "Christy called across the hall.", None)
+        self.assertEqual(out["status"], "OK")
+        self.assertEqual(calls, [])
+        self.assertTrue(out["post_slowdown_homophone_accepted"])
+        self.assertIn(out["post_slowdown_final_classification"],
+                      ("PROPER_NOUN_ENTITY_ARPABET_CONFIRMED", "HOMOPHONE_EQUIVALENT"))
+
     # --- 既存挙動の維持 ---
     def test_primary_pass_does_not_invoke_cascade(self):
         out, calls = self._run("Melos called across the hall,", "Melos called across the hall.", None)

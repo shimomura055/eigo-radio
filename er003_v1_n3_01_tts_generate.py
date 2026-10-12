@@ -128,19 +128,38 @@ def _post_slowdown_cascade_rescue(result: dict, tts_input_text: str, asr_text: s
         return False
     if not secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED:
         return False
+    # FAMILY-Z-MELOS-PROPER-NOUN-ASR-ROOT-CAUSE-01 委任_03(Opus任意改善):
+    # (1) cascade呼出前の準備(ledger参照)で失敗した場合は invoked=False(API未消費)。
+    # (2) cascade呼出中に例外が出た場合は、API呼出・cost記録が既に進んでいた可能性があるため
+    #     invoked=True(cascade_entered)+aborted_by_exceptionとして記録する(誤ってinvoked=Falseにしない)。
+    # (3) cost logger未初期化・単価未登録等の設定不備(er006 _resolve_unresolved_entity_for_review
+    #     L237-241の既存方針と同じ)は揉み消さず伝播させる。ネットワーク/SDK等の実行時例外のみfail-closed。
     try:
         import er006_pronunciation_ledger_01 as pronun_ledger
         ledger_phrases = [h["canonical_spelling"]
                           for h in pronun_ledger.get_hint_for_text(tts_input_text, min_confidence="low")]
+    except Exception as exc:  # fail-closed: cascade未開始(API未消費)
+        result["post_slowdown_cascade"] = {"invoked": False, "cascade_entered": False,
+                                           "error": f"{type(exc).__name__}: {exc}"}
+        return False
+    try:
         detail = secondary_asr.evaluate_attempt_with_cascade_detail(
             tts_input_text, asr_text, [], out_path, language="en-US", ledger_phrases=ledger_phrases,
             cascade_enabled=True, segment_id=segment_id)
-    except Exception as exc:  # fail-closed: 例外時は救済しない
-        result["post_slowdown_cascade"] = {"invoked": False, "error": f"{type(exc).__name__}: {exc}"}
+    except RuntimeError as exc:
+        if "init_logger" in str(exc) or "[STOP]" in str(exc):
+            raise  # 設定不備(cost logger未初期化/単価未登録)は握りつぶさない
+        result["post_slowdown_cascade"] = {"invoked": True, "cascade_entered": True, "aborted_by_exception": True,
+                                           "error": f"{type(exc).__name__}: {exc}"}
+        return False
+    except Exception as exc:  # fail-closed: 例外時は救済しない。API呼出済みの可能性があるためinvoked=True
+        result["post_slowdown_cascade"] = {"invoked": True, "cascade_entered": True, "aborted_by_exception": True,
+                                           "error": f"{type(exc).__name__}: {exc}"}
         return False
     cls = detail.get("classification")
     result["post_slowdown_cascade"] = {
-        "invoked": bool(detail.get("cascade_invoked")), "verified": bool(detail.get("verified")),
+        "invoked": bool(detail.get("cascade_invoked")), "cascade_entered": True,
+        "verified": bool(detail.get("verified")),
         "final_status": detail.get("final_status"), "steps": detail.get("steps"),
         "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None) if cls is not None else None,
     }
@@ -224,6 +243,17 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
     if not (classification.should_pass or homophone_accepted):
         cascade_accepted = _post_slowdown_cascade_rescue(
             result, tts_input_text, asr_text, classification, out_path, name)
+    # top-level最終分類(委任_03): 減速後再検証の最終的な判定ラベル。cascadeが走った場合は
+    # その最終status(例: SECONDARY_ASR_CORROBORATED_MATCH)、そうでなければPrimary判定。
+    _pc = result.get("post_slowdown_cascade") or {}
+    if cascade_accepted and _pc.get("final_status"):
+        _final_cls = _pc["final_status"]
+    elif homophone_accepted and not classification.should_pass:
+        # homophone/固有名詞Case A(CMU辞書の発音完全一致)による単独PASS。ラベルは共有Cascadeと同じ関数で求める。
+        _final_cls = secondary_asr._step_alternate_pass(classification) or "HOMOPHONE_EQUIVALENT"
+    else:
+        _final_cls = classification.classification
+    result["post_slowdown_final_classification"] = _final_cls
     if classification.should_pass or homophone_accepted or cascade_accepted:
         result["asr_verified"] = True
         result["asr_text"] = asr_text
