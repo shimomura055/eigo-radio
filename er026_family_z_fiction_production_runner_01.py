@@ -1633,6 +1633,7 @@ def build_parser():
 
 
 def main(argv=None):
+    import er_secret_mask_01 as _sm; _sm.install_stream_masking()   # GIT-SECRET-REPAIR-01: stderr/stdoutの秘密値をマスク
     args = build_parser().parse_args(argv)
     slug = args.slug or args.story
     args.slug = slug

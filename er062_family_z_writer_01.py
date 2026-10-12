@@ -1200,6 +1200,7 @@ def _setup_real(out_dir):
 
 
 def main(argv=None):
+    import er_secret_mask_01 as _sm; _sm.install_stream_masking()   # GIT-SECRET-REPAIR-01
     ap = argparse.ArgumentParser(description="Family Z Writer/Std/分割/話者判定/Support (委任_04B)")
     ap.add_argument("--story", default="melos")
     ap.add_argument("--run", required=True)

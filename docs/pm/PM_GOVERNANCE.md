@@ -3207,6 +3207,13 @@ STOPして報告する(広いTrialへは進まない。委任_16実例: Hook-awa
 ### 26-4. 注記
 本節は運用ルールであり新しいChecker/Validatorではない。STOPセンチネルはFamily Z runnerに実装済み(2026-10-12)。他Familyのrunnerへの展開は必要時に別途判断する。
 
+### 26-X. commit前secret scan必須・デバッグログはcommit対象外(2026-10-12、GIT-SECRET-REPAIR-01、事故再発防止)
+
+- 背景: er026 Melos evidence_10のデバッグログへAzure Speech Keyが平文混入し、GitHub push protectionがpushを拒否した(未push局所commitのみ再作成して解消。remote履歴は無変更、Keyローテーションは別判断)。
+- 必須: commit前に`python tools/secret_scan_01.py --staged`(または`--rev <commit>`/`--untracked`)を実行し、hits=0を確認してからcommit/pushする。.envの全値(長さ12以上)の一致と一般パターン(Azure Key・`sk-`・`AIza`・`pplx-`・`SPEECH_KEY`/`API_KEY=`等)を検査する。出力は件数・ファイル・行番号・種別のみで秘密の値は表示しない。
+- デバッグログ(`evidence_*/**/*.log`)はcommit対象外(`.gitignore`済み)。証跡が必要な場合は秘密をマスクした要約(JSON/MD)を保存する。
+- ログ/例外出力: `er_secret_mask_01.py`(`install_stream_masking()`)でstdout/stderrの秘密値を`***`へ置換する(er026/er062/er063のmainで有効化)。アドホックなデバッグスクリプトでもAPI引数(`ctypes`audit等)を無加工でログへ出さない。
+
 ## 変更履歴
 
 - 2026-10-12(`FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01`委任_11、ユーザー仕様修正に伴う事故再発防止): 26節(有料runの停止・再起動・STOP通知の運用)を新設。実行層の再起動禁止ルール(a)〜(d)、Fable側STOP_ALL先置き手順(e)(f)。

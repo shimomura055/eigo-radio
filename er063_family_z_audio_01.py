@@ -1357,6 +1357,7 @@ def lint_page_html(html_text: str) -> dict:
 # 11. CLI(dry-runは副作用ゼロ)
 # ============================================================
 def main() -> None:
+    import er_secret_mask_01 as _sm; _sm.install_stream_masking()   # GIT-SECRET-REPAIR-01
     ap = argparse.ArgumentParser(description="Family Z Audio (04C)。実TTSはE2E委任で実施。")
     ap.add_argument("--check", action="store_true", help="Style表sha・Melos Voice機構の自己確認のみ")
     args = ap.parse_args()
