@@ -247,7 +247,8 @@ class RunnerCaptureTests(unittest.TestCase):
     def test_all_style_resolution_goes_through_single_resolver(self):
         """grep型: runnerのstyle解決(_role_style/_role_style_slower)は全てresolve_role_styleを経由する。"""
         src = open("er019_family_x_audio_production_runner_01.py", encoding="utf-8").read()
-        self.assertEqual(src.count("style_profile_mod.resolve_role_style("), 3)  # b1 / a2 / a2 slower
+        # b1 / a2 / a2 slower / a2 support_ja(V5, R2) / b1 KP explanation(V5, P3)
+        self.assertEqual(src.count("style_profile_mod.resolve_role_style("), 5)
         self.assertEqual(src.count("fl_styles.FAMILY_X_ROLE_STYLE_EN.get("), 2)  # 各_base_role_style内のみ
         self.assertEqual(src.count("def _base_role_style("), 2)
         # 非resolver経由の旧定義が残っていない
@@ -518,6 +519,303 @@ class PlanStageTests(unittest.TestCase):
             with self.assertRaises(sp.StyleProfileStop):
                 runner.main()
         self.assertFalse(os.path.exists(sp.record_path(out)))
+
+
+# ================================================================
+# FAMILY-X-COFFEE-FINAL-V5-PRODUCTION-WIRING-01 委任_01: coffee_final_v5
+#   Std Preview/Comment1〜4=R2、Adv KP英英解説=P3(+Full Story=P8維持)。Coffee限定。
+# ================================================================
+R2_SOURCE_MD = "er057_output/ja_aoede_style_trial_02/prompts/prompts_R.md"
+P3_SOURCE_MD = "er057_output/kp_en_explanation_style_trial_01/prompts/prompts_kp_en_explanation_style_01.md"
+C4_TRIAL_MD = "er057_output/coffee_comment4_trial_03/prompts/prompt_trial_03.md"
+V5 = "coffee_final_v5"
+
+
+def _md_block(path, heading):
+    md = open(path, encoding="utf-8").read()
+    start = md.index(heading)
+    return re.search(r"```\n(.*?)\n```", md[start:], re.S).group(1)
+
+
+class V5ConstantTests(unittest.TestCase):
+    def test_r2_matches_trial_source_and_sha(self):
+        self.assertEqual(len(sp.R2_TEXT), 168)
+        self.assertEqual(sp.sha256_text(sp.R2_TEXT), "625826c1187b6381fe36ff444f1f568fc1f68d639d6a6a8931e728463692252f")
+        if os.path.exists(R2_SOURCE_MD):
+            self.assertEqual(_md_block(R2_SOURCE_MD, "## R2 "), sp.R2_TEXT)
+
+    def test_p3_matches_trial_source_sha_and_is_p0_plus_diff(self):
+        self.assertEqual(len(sp.P3_TEXT), 141)
+        self.assertEqual(sp.sha256_text(sp.P3_TEXT), "a8aaec591ef6d9acb42532cc0c84b6edfb2f75991e713d413c565b7e27677acc")
+        self.assertTrue(sp.P3_TEXT.startswith(fl_styles.KEY_PHRASE_EXPLANATION_EN + " "))
+        if os.path.exists(P3_SOURCE_MD):
+            self.assertEqual(_md_block(P3_SOURCE_MD, "## P3 "), sp.P3_TEXT)
+        er002_common.assert_no_wpm_specification(sp.P3_TEXT)
+        er002_common.assert_no_wpm_specification(sp.R2_TEXT)
+
+    def test_shared_constants_unchanged_by_v5(self):
+        self.assertEqual(fl_styles.KEY_PHRASE_EXPLANATION_EN, "clear, precise, at a measured pace, without dragging")
+        self.assertNotEqual(fl_styles.FAMILY_X_ROLE_STYLE_JA, sp.R2_TEXT)
+
+    def test_comment4_prompt_is_trial03_minimal_two_sentences(self):
+        import er019_family_x_audio_plan_01 as plan
+        c4 = plan.FAMILY_X_A2_COMMENT_4_ROLE
+        self.assertEqual(sp.sha256_text(c4), "22feebde438ad5ec70d6a3ce19e067bc0c5fa3890de3fc600b5c6477278a3663")
+        self.assertIn("In One Lineは、番組の最後に流れる英語による要点整理です。橋渡しの表現では、\n"
+                      "「続いて」より「最後に」を使ってください。", c4)
+        if os.path.exists(C4_TRIAL_MD):
+            self.assertEqual(re.search(r"```\n(.*?)\n```", open(C4_TRIAL_MD, encoding="utf-8").read(), re.S).group(1), c4)
+        # 他Role(Comment 3等)は不変
+        self.assertNotIn("最後に", plan.FAMILY_X_A2_COMMENT_3_ROLE)
+
+
+class V5ResolveTests(unittest.TestCase):
+    def test_roles_and_levels(self):
+        self.assertEqual(sp.overridden_roles(V5), ["FULL_STORY", "KP_EXPLANATION_EN", "SUPPORT_JA"])
+        self.assertEqual(sp.overridden_segment_names(V5, "a2"),
+                          ["full_story_part1", "full_story_part2", "full_story_part3",
+                           "preview", "comment_1", "comment_2", "comment_3", "comment_4"])
+        self.assertEqual(sp.overridden_segment_names(V5, "b1b"),
+                          ["full_story_part1", "full_story_part2", "full_story_part3"])
+
+    def test_support_ja_is_r2_for_a2_only_and_kp_is_p3_for_b1b_only(self):
+        self.assertEqual(sp.resolve_role_style(V5, "SUPPORT_JA", "a2", lambda r: "BASE"), sp.R2_TEXT)
+        self.assertEqual(sp.resolve_role_style(V5, "SUPPORT_JA", "b1b", lambda r: "BASE"), "BASE")
+        self.assertEqual(sp.resolve_role_style(V5, "KP_EXPLANATION_EN", "b1b", lambda r: "BASE"), sp.P3_TEXT)
+        self.assertEqual(sp.resolve_role_style(V5, "KP_EXPLANATION_EN", "a2", lambda r: "BASE"), "BASE")
+        for level in ("a2", "b1b"):
+            self.assertEqual(sp.resolve_role_style(V5, "FULL_STORY", level, lambda r: "BASE"), sp.P8_TEXT)
+            for role in ("TOPIC_INTRO", "PREVIEW", "COMMENT", "IN_ONE_LINE", "HEADING_READOUT"):
+                self.assertEqual(sp.resolve_role_style(V5, role, level, lambda r: "BASE"), "BASE")
+
+    def test_other_profiles_unchanged(self):
+        for prof in ("default", "coffee_p8"):
+            for level in ("a2", "b1b"):
+                for role in ("SUPPORT_JA", "KP_EXPLANATION_EN"):
+                    self.assertEqual(sp.resolve_role_style(prof, role, level, lambda r: "BASE"), "BASE")
+        self.assertEqual(sp.overridden_roles("coffee_p8"), ["FULL_STORY"])
+        self.assertEqual(sp.overridden_segment_names("coffee_p8"), ["full_story_part1", "full_story_part2", "full_story_part3"])
+
+    def test_record_roundtrip_and_sha_mismatch_stops(self):
+        tmp = tempfile.mkdtemp(prefix="v5rec_")
+        try:
+            pid, src = sp.resolve_run_profile(tmp, V5)
+            self.assertEqual((pid, src), (V5, "cli_new_record"))
+            rec = sp.read_record(tmp)
+            self.assertEqual(sorted(rec["roles"]), ["FULL_STORY", "KP_EXPLANATION_EN", "SUPPORT_JA"])
+            self.assertEqual(rec["roles"]["SUPPORT_JA"]["sha256"], sp.R2_SHA256)
+            self.assertEqual(rec["roles"]["KP_EXPLANATION_EN"]["sha256"], sp.P3_SHA256)
+            self.assertEqual(sp.verify_record(rec), V5)
+            self.assertEqual(sp.resolve_run_profile(tmp, None), (V5, "record"))
+            with self.assertRaises(sp.StyleProfileStop):  # profile変更不可
+                sp.resolve_run_profile(tmp, "coffee_p8")
+            rec["roles"]["SUPPORT_JA"]["sha256"] = "0" * 64
+            with self.assertRaises(sp.StyleProfileStop):
+                sp.verify_record(rec)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_m5_legacy_backend_stops_for_v5(self):
+        with self.assertRaises(sp.StyleProfileStop):
+            sp.assert_profile_backend(V5, "structured_separation")
+        sp.assert_profile_backend(V5, FL)
+
+
+class V5RunnerCaptureTests(unittest.TestCase):
+    """runner経由(mock TTS)でStd preview/comment=R2、Adv KP解説=P3、Full Story=P8、他role/default不変。"""
+
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp(prefix="v5cap_")
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def _run(self, tmpdir, profile, only=None):
+        cap = {"a2": {}, "kp": {}, "b1b": {}}
+        _make_b1b_dir(tmpdir)
+        _make_a2_dir(tmpdir)
+        kp = {"items": [{"rank": 1, "used_form": "price tag", "display_phrase": "price tag",
+                         "japanese_gloss": "値札", "source_sentence": "A price tag."}]}
+        os.makedirs(f"{tmpdir}/b1b/key_phrases", exist_ok=True)
+        json.dump(kp, open(f"{tmpdir}/b1b/key_phrases/keywords_canonicalized.json", "w", encoding="utf-8"))
+
+        def a2_ja(text, out, *a, **k):
+            cap["a2"][os.path.basename(out)] = k.get("style_prefix_override")
+            return {"status": "OK", "canonical_text": "x", "fallback_used": False}
+
+        def kp_expl(text, out, style_prefix_override=None, tts_backend="x"):
+            cap["kp"][os.path.basename(out)] = style_prefix_override
+            return {"status": "OK", "attempts_log": [{"attempt": 1, "style_prefix": {
+                "sha256": sp.sha256_text(style_prefix_override), "head200": style_prefix_override[:200],
+                "len": len(style_prefix_override)}}]}
+
+        def other_b1(text, out, *a, **k):
+            cap["b1b"][os.path.basename(out)] = k.get("style_prefix_override")
+            return {"status": "OK", "canonical_text": "x", "fallback_used": False}
+
+        def other_a2(text, out, *a, **k):
+            cap["a2"][os.path.basename(out)] = k.get("style_prefix_override")
+            return {"status": "OK", "canonical_text": "x", "fallback_used": False}
+
+        def kp_en(text, out, *a, **k):
+            return {"status": "OK", "canonical_text": "x"}
+
+        bundle = {"items": {1: {"english_explanation": "a tag showing the price", "status": "OK", "qa": {}}},
+                  "phrases_signature": ["price tag"]}
+        with mock.patch.object(runner.shared_narration, "ensure_all_shared_narration_b1"), \
+             mock.patch.object(runner.shared_narration, "ensure_all_shared_narration_a2"), \
+             mock.patch.object(runner.shared_narration, "ensure_key_phrase_english_component", side_effect=kp_en), \
+             mock.patch.object(runner.voice01, "generate_charon_english", side_effect=other_b1), \
+             mock.patch.object(runner.news_tail_fix, "generate_news_narration_wide_margin", side_effect=other_b1), \
+             mock.patch.object(runner.crosslevel_common, "generate_english_segment_with_fallback", side_effect=other_a2), \
+             mock.patch.object(runner.n3_tts, "generate_a2_japanese_with_reading_safety", side_effect=a2_ja), \
+             mock.patch.object(runner.n3_tts, "generate_a2_segment_with_slowdown", side_effect=other_a2), \
+             mock.patch.object(runner.n3_tts, "resolve_key_phrase_ja_gloss_tts", return_value=("値札", False)), \
+             mock.patch.object(runner, "_resolve_kp_explanations_text", return_value=dict(bundle)), \
+             mock.patch.object(runner, "generate_key_phrase_explanation_en_verified", side_effect=kp_expl), \
+             mock.patch.object(runner, "_ONLY_SEGMENTS", only):
+            runner.generate_family_x_b1_segments(tmpdir, tts_backend=FL, style_profile=profile)
+            os.makedirs(f"{tmpdir}/a2/key_phrases", exist_ok=True)
+            json.dump(kp, open(f"{tmpdir}/a2/key_phrases/keywords_canonicalized.json", "w", encoding="utf-8"))
+            runner.generate_family_x_a2_segments(tmpdir, "タイトル", tts_backend=FL, style_profile=profile)
+        return cap
+
+    def test_v5_applies_r2_p3_and_leaves_others_identical_to_default(self):
+        t_def = tempfile.mkdtemp(prefix="v5cap_def_")
+        try:
+            cap_def = self._run(t_def, "default")
+            cap_v5 = self._run(self.tmp, V5)
+        finally:
+            shutil.rmtree(t_def, ignore_errors=True)
+        # Std JA: preview/comment1-4=R2。japanese_title/meaning_1は不変(J3のまま)。
+        for n in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
+            self.assertEqual(cap_v5["a2"][f"{n}.wav"], sp.R2_TEXT, n)
+            self.assertEqual(cap_def["a2"][f"{n}.wav"], fl_styles.FAMILY_X_ROLE_STYLE_JA, n)
+        for n in ("japanese_title.wav", "meaning_1.wav"):
+            self.assertEqual(cap_v5["a2"][n], cap_def["a2"][n], n)
+            self.assertEqual(cap_v5["a2"][n], fl_styles.FAMILY_X_ROLE_STYLE_JA)
+        # Adv KP解説=P3(defaultはP0=KEY_PHRASE_EXPLANATION_EN)
+        self.assertEqual(cap_v5["kp"]["kp1_explanation_en.wav"], sp.P3_TEXT)
+        self.assertEqual(cap_def["kp"]["kp1_explanation_en.wav"], fl_styles.KEY_PHRASE_EXPLANATION_EN)
+        # Adv側のPreview/Comment/Full Story等: Full Storyのみ変更、他はdefaultと同一
+        for fname, style in cap_v5["b1b"].items():
+            if fname.startswith("full_story_part"):
+                self.assertEqual(style, sp.P8_TEXT, fname)
+            else:
+                self.assertEqual(style, cap_def["b1b"][fname], fname)
+        # 記録: 対象roleのsegmentだけにstyle_profile記録
+        res = json.load(open(f"{self.tmp}/a2/audit/tts_generation_results.json", encoding="utf-8"))
+        with_rec = sorted(n for n, e in res["segments"].items() if "style_profile" in e)
+        self.assertEqual(with_rec, ["comment_1", "comment_2", "comment_3", "comment_4", "full_story_part1",
+                                     "full_story_part2", "full_story_part3", "preview"])
+        for n in ("preview", "comment_1"):
+            self.assertEqual(res["segments"][n]["style_profile"]["style_base_sha256"], sp.R2_SHA256)
+        resb = json.load(open(f"{self.tmp}/b1b/audit/tts_generation_results.json", encoding="utf-8"))
+        self.assertEqual(resb["key_phrases"]["1"]["explanation"]["style_profile"]["style_base_sha256"], sp.P3_SHA256)
+
+    def test_default_writes_no_support_or_kp_style_profile_keys(self):
+        self._run(self.tmp, "default")
+        res = json.load(open(f"{self.tmp}/a2/audit/tts_generation_results.json", encoding="utf-8"))
+        resb = json.load(open(f"{self.tmp}/b1b/audit/tts_generation_results.json", encoding="utf-8"))
+        self.assertTrue(all("style_profile" not in e for e in res["segments"].values()))
+        self.assertNotIn("style_profile", resb["key_phrases"]["1"]["explanation"])
+        self.assertNotIn("only_segments", res)
+
+    def test_only_segments_generates_requested_only(self):
+        only = {"preview", "comment_4", "kp1_explanation"}
+        cap = self._run(self.tmp, V5, only=only)
+        self.assertEqual(sorted(cap["a2"]), ["comment_4.wav", "preview.wav"])
+        self.assertEqual(sorted(cap["kp"]), ["kp1_explanation_en.wav"])
+        # Adv側: 同名(preview/comment_4)のみ(segment名はlevel共通。実運用は--levelで片側ずつ)。Full Story等は生成されない
+        self.assertEqual(sorted(cap["b1b"]), ["comment_4.wav", "preview.wav"])
+        res = json.load(open(f"{self.tmp}/a2/audit/tts_generation_results.json", encoding="utf-8"))
+        self.assertEqual(res["only_segments"], sorted(only))
+        self.assertEqual(res["segments"]["comment_1"]["status"], "SKIPPED_NOT_SELECTED")
+        self.assertNotIn("style_profile", res["segments"]["comment_1"])
+        self.assertNotIn("style_profile", res["segments"]["full_story_part1"])
+        self.assertEqual(res["segments"]["preview"]["style_profile"]["style_base_sha256"], sp.R2_SHA256)
+        # 未生成segmentがあるresultsはM3 GateがBLOCK(Assemblyへ進めない)
+        self.assertEqual(sp.m3_assembly_gate(V5, "a2", res)["status"], "BLOCK")
+
+    def test_only_segments_rejected_outside_tts_stage(self):
+        for argv_extra in (["--stage", "assemble"], ["--stage", "all"], ["--dry-run"]):
+            argv = ["x", "--slug", "s", "--run", "r", "--out-dir", f"{self.tmp}/o", "--only-segments", "preview"] + argv_extra
+            with mock.patch("sys.argv", argv):
+                with self.assertRaises(SystemExit):
+                    runner.main()
+        self.assertFalse(os.path.exists(f"{self.tmp}/o"))
+
+
+class V5M3GateTests(unittest.TestCase):
+    @staticmethod
+    def _a2_support_entry(fallback=False, base=None):
+        return {"status": "OK", "fallback_used": fallback, "canonical_text": "t",
+                "style_profile": {"profile_id": V5, "role": "SUPPORT_JA", "expected_base_sha256": sp.R2_SHA256,
+                                  "style_base_sha256": base or sp.R2_SHA256}}
+
+    @staticmethod
+    def _kp_entry(style=None, status="OK", base=None):
+        style = sp.P3_TEXT if style is None else style
+        return {"status": status, "canonical_text": "t",
+                "attempts_log": [{"attempt": 1, "style_prefix": {"sha256": _sha(style), "head200": style[:200], "len": len(style)}}],
+                "en_pronunciation_resolver_info": {"hints_applied": False, "cache_hits": []},
+                "style_profile": {"profile_id": V5, "role": "KP_EXPLANATION_EN", "expected_base_sha256": sp.P3_SHA256,
+                                  "style_base_sha256": base or sp.P3_SHA256}}
+
+    def _a2_results(self, **mut):
+        segs = {n: _std_entry() for n in sp.ROLE_SEGMENTS["FULL_STORY"]}
+        for n in sp.ROLE_SEGMENTS["SUPPORT_JA"]:
+            segs[n] = self._a2_support_entry()
+        for n, fn in mut.items():
+            fn(segs[n])
+        return {"segments": segs}
+
+    def test_a2_pass_and_blocks(self):
+        g = sp.m3_assembly_gate(V5, "a2", self._a2_results())
+        self.assertEqual(g["status"], "PASS", g)
+        self.assertEqual(len(g["checked"]), 8)
+        for mut, reason in ((lambda e: e.update(fallback_used=True), "JA_FALLBACK_USED_OR_UNKNOWN"),
+                            (lambda e: e.pop("fallback_used"), "JA_FALLBACK_USED_OR_UNKNOWN"),
+                            (lambda e: e["style_profile"].update(style_base_sha256="0" * 64), "STYLE_BASE_SHA_MISMATCH_OR_MISSING"),
+                            (lambda e: e.update(local_rewrite_recovery={"x": 1}), "LOCAL_REWRITE_RECOVERY")):
+            g = sp.m3_assembly_gate(V5, "a2", self._a2_results(comment_4=mut))
+            self.assertEqual(g["status"], "BLOCK")
+            self.assertEqual([b["segment"] for b in g["blocked"]], ["comment_4"])
+            self.assertIn(reason, g["blocked"][0]["violations"])
+
+    def test_a2_missing_support_record_blocks(self):
+        res = self._a2_results()
+        del res["segments"]["comment_2"]
+        g = sp.m3_assembly_gate(V5, "a2", res)
+        self.assertEqual(g["status"], "BLOCK")
+        self.assertIn("NO_SEGMENT_RECORD", g["blocked"][0]["violations"])
+
+    def test_b1b_kp_explanation_gate(self):
+        res = {"segments": {n: _adv_entry() for n in sp.ROLE_SEGMENTS["FULL_STORY"]},
+               "key_phrases": {"1": {"explanation": self._kp_entry()}, "2": {"explanation": self._kp_entry()}}}
+        g = sp.m3_assembly_gate(V5, "b1b", res)
+        self.assertEqual(g["status"], "PASS", g)
+        self.assertEqual(sorted(n for n in g["checked"] if n.startswith("kp")), ["kp1_explanation", "kp2_explanation"])
+        # P0(旧style)で生成された解説clipはBLOCK
+        p0 = fl_styles.KEY_PHRASE_EXPLANATION_EN
+        res["key_phrases"]["2"]["explanation"] = self._kp_entry(style=p0, base=sp.sha256_text(p0))
+        g = sp.m3_assembly_gate(V5, "b1b", res)
+        self.assertEqual(g["status"], "BLOCK")
+        self.assertEqual([b["segment"] for b in g["blocked"]], ["kp2_explanation"])
+        # STOPPED(text gate)もBLOCK
+        res["key_phrases"]["2"]["explanation"] = {"status": "STOPPED", "canonical_text": "t"}
+        self.assertEqual(sp.m3_assembly_gate(V5, "b1b", res)["status"], "BLOCK")
+        # KP hint追記時はhead200で判定
+        hinted = sp.P3_TEXT + " Pronunciation: x."
+        e = self._kp_entry(style=hinted)
+        e["en_pronunciation_resolver_info"] = {"hints_applied": True, "cache_hits": [{"surface": "x"}]}
+        res["key_phrases"]["2"]["explanation"] = e
+        self.assertEqual(sp.m3_assembly_gate(V5, "b1b", res)["status"], "PASS")
+
+    def test_default_and_p8_gates_unaffected_by_v5_roles(self):
+        res = {"segments": {n: _adv_entry() for n in sp.ROLE_SEGMENTS["FULL_STORY"]}}
+        self.assertEqual(sp.m3_assembly_gate("coffee_p8", "b1b", res)["status"], "PASS")
+        self.assertEqual(sp.m3_assembly_gate("default", "a2", {})["status"], "PASS")
 
 
 if __name__ == "__main__":

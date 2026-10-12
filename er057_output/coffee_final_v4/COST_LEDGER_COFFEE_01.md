@@ -27,3 +27,8 @@ SSOT(DECISION_LOG/OPEN_ITEMS)をgrep: Coffee全体枠の上限記載は見つか
 - 本委任実費 JPY9.48(TTS 6 call=JPY7.22 gemini-3.8-flash-lite-tts、Primary ASR+減速後参考ASR推定 約JPY2.26 gpt-4o-mini-transcribe、Secondary Azure 0回)。全clip attempt1採択、再生成0。上限JPY30以内。
 - Coffee累計(上記小計124.43 + 本委任9.48) = 約JPY133.9(未集計項目除く)。
 - 請求画面は未確認(usage_metadata実測x単価の推定)。
+
+## 追記 FAMILY-X-COFFEE-FINAL-V5-PRODUCTION-WIRING-01 委任_01 (2026-10-12)
+- 生成前見積: 約JPY3〜11、上限見込み約JPY15(PRECHECK_V5_01.md 7節)。委任上限JPY100(承認予算不明時の既定)、runner `--budget-jpy 30`。
+- 実費(`raw_usage_log.jsonl`実測、compute_cost_jpy_so_far): **JPY3.91**(openai[Comment4文章1 call+Risk Flagger] 1.02 / gemini[RF guard gemini-3.5-flash-lite] 1.45 / gemini_batch[TTS gemini-3.8-flash-lite-tts 9 call: Std 6 + Adv 3] 0.96 / openai_asr 0.48)。段別: Comment4文章 約JPY0.05、Std tts(RF guard含む)約JPY2.4、Adv tts(RF guard+kp1〜3)約JPY1.4。Adv kp4のBatch submitが中断前に発生した可能性があり、その分は未計上(数円未満)。
+- Coffee累計(上記小計124.43 + P8 v4 9.48[以前の記載]+ P8 wiring 13.19 + 本委任 3.91) = 約JPY151.0(未集計項目除く)。本委任上限JPY100に対しては3.91。

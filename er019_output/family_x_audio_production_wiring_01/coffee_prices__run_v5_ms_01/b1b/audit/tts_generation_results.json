@@ -1,0 +1,95 @@
+{
+  "key_phrase_explanations_text": {
+    "items": {
+      "1": {
+        "english_explanation": "a delay between one event and another",
+        "qa": {
+          "word_count": 7,
+          "within_max_words": true,
+          "max_words": 15,
+          "new_fact_tokens": [],
+          "passed": true
+        },
+        "status": "OK"
+      },
+      "2": {
+        "english_explanation": "a label that shows how much something costs",
+        "qa": {
+          "word_count": 8,
+          "within_max_words": true,
+          "max_words": 15,
+          "new_fact_tokens": [],
+          "passed": true
+        },
+        "status": "OK"
+      },
+      "3": {
+        "english_explanation": "to become visible or noticeable in a result or situation",
+        "qa": {
+          "word_count": 10,
+          "within_max_words": true,
+          "max_words": 15,
+          "new_fact_tokens": [],
+          "passed": true
+        },
+        "status": "OK"
+      },
+      "4": {
+        "english_explanation": "to become lower in amount or level",
+        "qa": {
+          "word_count": 7,
+          "within_max_words": true,
+          "max_words": 15,
+          "new_fact_tokens": [],
+          "passed": true
+        },
+        "status": "OK"
+      },
+      "5": {
+        "english_explanation": "to include or involve something as part of a thing or experience",
+        "qa": {
+          "word_count": 12,
+          "within_max_words": true,
+          "max_words": 15,
+          "new_fact_tokens": [],
+          "passed": true
+        },
+        "status": "OK"
+      }
+    },
+    "audit": {
+      "management_id": "FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01",
+      "source_trial_management_id": "KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02",
+      "model": "gpt-6-luna",
+      "prompt_sha256": "c3d3734b760af258b86020002ef8a1ab63e16633a72bdab45019ca5b7be6fa7e",
+      "max_words": 15,
+      "calls": [
+        {
+          "response_model": "gpt-6-luna",
+          "usage": {
+            "input_tokens": 606,
+            "output_tokens": 234,
+            "cached_input_tokens": 0
+          },
+          "response_id": "resp_0a700c07771a68ba006acb3fb2b37487d082dddfe064e1d2f2",
+          "cost_jpy": 0.0284
+        }
+      ],
+      "retried_for_parse": false,
+      "retried_for_qa": false
+    },
+    "phrases_signature": [
+      "lag",
+      "price tag",
+      "show up",
+      "come down",
+      "come with"
+    ],
+    "reused_from_previous_run": false
+  },
+  "seed_provenance": {
+    "purpose": "Adv KP解説textをv4原稿(Tone run_e_tone_01)のまま固定するため、text bundleのみを事前配置(音声segment resultsは含めない)。LLMによる解説text再生成を避ける。",
+    "source": "tone worktree coffee_prices__run_e_tone_01/b1b/audit/tts_generation_results.json[key_phrase_explanations_text]",
+    "source_sha256": "f13e9faad45d76b1c2e4e55ef00bbaa77f26d228c0a7a5ec198a075504d69d53"
+  }
+}

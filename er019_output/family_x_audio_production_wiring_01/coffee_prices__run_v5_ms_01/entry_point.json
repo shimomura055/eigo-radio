@@ -1,0 +1,74 @@
+{
+  "runner": "er019_family_x_audio_production_runner_01.py",
+  "management_id": "NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01",
+  "slug": "coffee_prices",
+  "run": "run_v5_ms_01",
+  "source_dir": "er019_output/coffee_prices/run_v5_ms_01",
+  "levels": [
+    "b1b"
+  ],
+  "stage": "tts",
+  "dry_run": false,
+  "japanese_title": "コーヒー豆は値下がり。値札は、まだ旅の途中？",
+  "japanese_title_source": "er019_output/coffee_prices/run_v5_ms_01/ja_writer/runtime_evidence.json",
+  "budget_jpy": 30.0,
+  "tts_backend": "speech_metadata_flash_lite",
+  "allow_legacy_backend": false,
+  "style_profile": "coffee_final_v5",
+  "style_profile_source": "record",
+  "only_segments": [
+    "kp1_explanation",
+    "kp2_explanation",
+    "kp3_explanation",
+    "kp4_explanation",
+    "kp5_explanation"
+  ],
+  "risk_flagger": {
+    "b1b": {
+      "status": "OK",
+      "reason": null,
+      "rf_run_id": "rf20261012T122527Z-5ff3",
+      "article_sha256": "d9b77190905d9060d578b2b21d634d48193decfd4c4eb90f1ae9bdb7da028e67",
+      "ledger_sha256": "e94a50c1d22686d52bd65beca4272650ecc8286de54629c3d8dfb42fa397ef7b",
+      "splitter_version": "en_split_v1",
+      "timestamp": "2026-10-12T12:25:27+00:00",
+      "producer": "deterministic_v2",
+      "run_label": "audio_tts_guard",
+      "issue_count": 6,
+      "conditions": [
+        {
+          "model_key": "luna",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.233424
+        },
+        {
+          "model_key": "luna",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 4,
+          "cost_jpy": 0.260784
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.328384
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.379344
+        }
+      ]
+    }
+  }
+}

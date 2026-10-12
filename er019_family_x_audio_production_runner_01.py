@@ -243,6 +243,7 @@ def run_plan_stage(source_dir: str, out_dir: str, levels: list[str], style_profi
                 "full_story_style_sha256": style_profile_mod.P8_SHA256,
                 "full_story_style_length": style_profile_mod.P8_LENGTH,
                 "ledger_hits_web_lookup_disabled": hits,
+                "roles_sha256": {r: o["sha256"] for r, o in style_profile_mod.get_profile(style_profile)["overrides"].items()},
             }
     return result
 
@@ -418,6 +419,19 @@ def _load_cached_tts_results(out_dir: str) -> dict | None:
         return None
 
 
+# FAMILY-X-COFFEE-FINAL-V5-PRODUCTION-WIRING-01: 必要なsegmentだけを生成する明示CLI(--only-segments)。
+# 既定None=全segment(従来とバイト同一)。指定時は対象外segment/Key Phrase componentを生成せず
+# status="SKIPPED_NOT_SELECTED"を記録し(Audio Validation Gateは非OKとして扱いAssemblyを止める)、
+# shared narrationの確保も行わない。assemble stageとの併用はmain()が拒否する。
+_ONLY_SEGMENTS: set | None = None
+
+
+def _only_segments_skip(label: str):
+    if _ONLY_SEGMENTS is not None and label not in _ONLY_SEGMENTS:
+        return {"status": "SKIPPED_NOT_SELECTED", "reason": "--only-segmentsに含まれないため生成しません"}
+    return None
+
+
 def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_fn, expected_text: str | None = None):
     """前回run(同一out_dir)のOK segmentを再利用する。Stage 3c(見出し
     sub-segment分離)で判明した安全性ギャップの修正: 従来はstatus=="OK"+
@@ -435,6 +449,9 @@ def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_f
     segmentのreuseを一切行わない(必ずgenerate_fn()で再生成する)。
     旧cache(本是正以前のrun)にはこのキー自体が無いため既定でNoneとなり、
     確実に不一致(=再生成)になる。"""
+    _skip = _only_segments_skip(name)
+    if _skip is not None:
+        return _skip
     if cached is not None and cached.get("style_version") != FAMILY_X_VARIABLE_ROLE_STYLE_VERSION:
         return generate_fn()
     cached_result = (cached.get("segments") or {}).get(name) if cached else None
@@ -466,6 +483,9 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
     使用形そのもの、Master Store側のversioningで別途管理)は既定どおり
     require_style_version=Falseのまま(この引数を渡さない呼び出し元は
     従来どおりの挙動)。"""
+    _skip = _only_segments_skip(f"kp{rank}_{role}")
+    if _skip is not None:
+        return _skip
     if require_style_version and cached is not None and cached.get("style_version") != FAMILY_X_VARIABLE_ROLE_STYLE_VERSION:
         return generate_fn()
     kp_cache = (cached.get("key_phrases") or {}) if cached else {}
@@ -630,7 +650,8 @@ def generate_family_x_b1_segments(
     # Key Phrase生成のみ明示的にスキップし、他segmentは生成を継続する。
     kp = load_json(kp_path) if os.path.exists(kp_path) else None
 
-    shared_narration_raw_b1 = shared_narration.ensure_all_shared_narration_b1(narration_dir, tts_backend=tts_backend)
+    shared_narration_raw_b1 = ({} if _ONLY_SEGMENTS is not None else
+                               shared_narration.ensure_all_shared_narration_b1(narration_dir, tts_backend=tts_backend))
     shared_narration_status = _summarize_shared_narration(shared_narration_raw_b1)
     _cached = _load_cached_tts_results(out_dir)
 
@@ -701,12 +722,13 @@ def generate_family_x_b1_segments(
         # M4/S3: 上書き対象roleのsegmentにだけ、hint追記前のStyle sha(style_base_sha256)を記録する。
         # 非対象(default/IN_ONE_LINE)は何も書かない(新keyなし)。
         _seg_role = "IN_ONE_LINE" if name == "in_one_line" else "FULL_STORY"
-        style_profile_mod.attach_segment_profile_record(results[name], style_profile, _seg_role,
-                                                         _role_style(_seg_role))
+        if results[name].get("status") != "SKIPPED_NOT_SELECTED":
+            style_profile_mod.attach_segment_profile_record(results[name], style_profile, _seg_role,
+                                                             _role_style(_seg_role))
 
     if kp is not None:
         kp_results, kp_explanation_text_bundle = _generate_key_phrase_segments_b1(
-            kp, narration_dir, _cached, tts_backend=tts_backend)
+            kp, narration_dir, _cached, tts_backend=tts_backend, style_profile=style_profile)
     else:
         kp_results, kp_explanation_text_bundle = {}, None
     kp_scaffold_status = "OK" if kp is not None else "KP_SCAFFOLD_JSON_MISSING(upstream key phrase Gateで未生成)"
@@ -728,7 +750,8 @@ def generate_family_x_b1_segments(
                "key_phrase_explanations_text": kp_explanation_text_bundle,
                # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2所見
                # MAJOR-3是正): 可変segment reuse判定用のcache version guard。
-               "style_version": FAMILY_X_VARIABLE_ROLE_STYLE_VERSION})
+               "style_version": FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
+               **({"only_segments": sorted(_ONLY_SEGMENTS)} if _ONLY_SEGMENTS is not None else {})})
     save_json(f"{out_dir}/run_summary_tts.json",
               {"segment_status": all_status, "key_phrase_status": kp_status,
                "shared_narration_status": {k: v["status"] for k, v in shared_narration_status.items()},
@@ -765,7 +788,8 @@ def _resolve_kp_explanations_text(kp_items: list, cached: dict | None) -> dict:
 
 
 def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict | None = None,
-                                      tts_backend: str = "structured_separation") -> dict:
+                                      tts_backend: str = "structured_separation",
+                                      style_profile: str = "default") -> dict:
     # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4、2026-09-29ユーザー
     # 正式決定): Advanced(B1B)Key Phraseの中間segmentを、日本語意味
     # (旧"japanese"role)から英語解説(新"explanation"role、Variant B
@@ -781,10 +805,16 @@ def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict 
     # speech_metadata_flash_lite選択時のみVariant Bを適用)。従来は
     # backendに関わらず無条件でVariant Bを渡しており、legacy backend
     # (未検証の組み合わせ)にもVariant Bが適用されてしまっていた。
-    def _kp_explanation_style() -> str | None:
+    def _base_kp_explanation_style(_role: str) -> str | None:
         if tts_backend != "speech_metadata_flash_lite":
             return None
         return fl_styles.KEY_PHRASE_EXPLANATION_EN
+
+    def _kp_explanation_style() -> str | None:
+        # FAMILY-X-COFFEE-FINAL-V5-PRODUCTION-WIRING-01: 単一解決関数経由(defaultはbase素通し=バイト同一、
+        # coffee_final_v5のAdv KP英英解説のみP3)。
+        return style_profile_mod.resolve_role_style(
+            style_profile, style_profile_mod.ROLE_KP_EXPLANATION_EN, "b1b", _base_kp_explanation_style)
 
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
     explanation_bundle = _resolve_kp_explanations_text(kp_items, cached)
@@ -840,6 +870,10 @@ def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict 
                     expected_text=explanation_text, require_style_version=True)
         expl_r["explanation_text"] = explanation_text
         expl_r["canonical_text"] = explanation_text
+        # M4/S3: profile対象(coffee_final_v5のP3)のときだけ、hint追記前のStyle shaを記録する(defaultは新keyなし)。
+        if expl_r.get("status") != "SKIPPED_NOT_SELECTED":
+            style_profile_mod.attach_segment_profile_record(
+                expl_r, style_profile, style_profile_mod.ROLE_KP_EXPLANATION_EN, _kp_explanation_style())
         expl_r["explanation_qa"] = explanation_row.get("qa")
         expl_r["explanation_status_from_text_gate"] = text_gate_status
         expl_r["display_gloss"] = item["japanese_gloss"]
@@ -952,6 +986,13 @@ def generate_family_x_a2_segments(
             return None
         return fl_styles.FAMILY_X_ROLE_STYLE_JA
 
+    def _role_style_ja_support() -> str | None:
+        # FAMILY-X-COFFEE-FINAL-V5-PRODUCTION-WIRING-01: Std preview/comment_1〜4のみ(japanese_title・
+        # Key Phrase日本語意味は対象外)。defaultはbase(_role_style_ja)素通し=バイト同一。
+        # coffee_final_v5のみR2(日本語Aoede、ユーザー承認済み)。
+        return style_profile_mod.resolve_role_style(
+            style_profile, style_profile_mod.ROLE_SUPPORT_JA, "a2", lambda _r: _role_style_ja())
+
     out_dir = f"{theme_out_dir}/a2"
     narration_dir = f"{out_dir}/narration"
     os.makedirs(narration_dir, exist_ok=True)
@@ -964,7 +1005,8 @@ def generate_family_x_a2_segments(
     # 回避しない)。
     kp = load_json(kp_path) if os.path.exists(kp_path) else None
 
-    shared_narration_raw_a2 = shared_narration.ensure_all_shared_narration_a2(narration_dir, tts_backend=tts_backend)
+    shared_narration_raw_a2 = ({} if _ONLY_SEGMENTS is not None else
+                               shared_narration.ensure_all_shared_narration_a2(narration_dir, tts_backend=tts_backend))
     shared_narration_status = _summarize_shared_narration(shared_narration_raw_a2)
     _cached = _load_cached_tts_results(out_dir)
 
@@ -1006,8 +1048,12 @@ def generate_family_x_a2_segments(
                 _cached, name, f"{narration_dir}/{name}.wav",
                 lambda text=text: n3_tts.generate_a2_japanese_with_reading_safety(
                     text, f"{narration_dir}/{name}.wav", n3_tts.expected_substring_ja(text),
-                    style_prefix_override=_role_style_ja(),
+                    style_prefix_override=_role_style_ja_support(),
                     tts_backend=tts_backend), expected_text=text)
+        # M4/S3: profile対象(coffee_final_v5のR2)のときだけ記録(defaultは新keyなし)。
+        if results[name].get("status") != "SKIPPED_NOT_SELECTED":
+            style_profile_mod.attach_segment_profile_record(
+                results[name], style_profile, style_profile_mod.ROLE_SUPPORT_JA, _role_style_ja_support())
 
     # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1、2026-09-29): Heading
     # Readout撤去(旧Stage 3cのfull_story_part2_heading/full_story_part3_
@@ -1034,8 +1080,9 @@ def generate_family_x_a2_segments(
         results[name]["canonical_text"] = text
         # M4/S3: 上書き対象roleのsegmentにだけ記録(非対象は新keyを書かない)。
         _seg_role = "IN_ONE_LINE" if name == "in_one_line" else "FULL_STORY"
-        style_profile_mod.attach_segment_profile_record(results[name], style_profile, _seg_role,
-                                                         _role_style_slower(_seg_role))
+        if results[name].get("status") != "SKIPPED_NOT_SELECTED":
+            style_profile_mod.attach_segment_profile_record(results[name], style_profile, _seg_role,
+                                                             _role_style_slower(_seg_role))
 
     kp_results = _generate_key_phrase_segments_a2(kp, narration_dir, _cached,
                                                    tts_backend=tts_backend) if kp is not None else {}
@@ -1050,7 +1097,8 @@ def generate_family_x_a2_segments(
                "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend,
                # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2所見
                # MAJOR-3是正): 可変segment reuse判定用のcache version guard。
-               "style_version": FAMILY_X_VARIABLE_ROLE_STYLE_VERSION})
+               "style_version": FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
+               **({"only_segments": sorted(_ONLY_SEGMENTS)} if _ONLY_SEGMENTS is not None else {})})
     save_json(f"{out_dir}/run_summary_tts.json",
               {"segment_status": all_status, "key_phrase_status": kp_status,
                "shared_narration_status": {k: v["status"] for k, v in shared_narration_status.items()},
@@ -1918,6 +1966,12 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--style-profile", default=None, choices=tuple(style_profile_mod.STYLE_PROFILES),
                          help="Style profile(既定: 未指定=default)。coffee_p8=Coffee Full Story限定のP8置換"
                               "(APPROVED_FOR_PRODUCTION[Coffee限定]・Production未配線)。")
+    # FAMILY-X-COFFEE-FINAL-V5-PRODUCTION-WIRING-01: 必要なsegmentだけを生成する(既定None=全segment、従来と同一)。
+    # 例: --only-segments preview,comment_1,comment_4 / kp1_explanation,kp2_explanation。
+    # tts stage専用(assemble/all/playerとの併用は拒否)。対象外はstatus=SKIPPED_NOT_SELECTEDとして記録され、
+    # Audio Validation GateがAssemblyを止める。
+    parser.add_argument("--only-segments", default=None,
+                         help="カンマ区切りのsegment名(例: preview,comment_1 / kp1_explanation)。tts stage専用。")
     return parser
 
 
@@ -2092,6 +2146,14 @@ def main() -> None:
     parser = build_arg_parser()
     args = parser.parse_args()
 
+    global _ONLY_SEGMENTS
+    if args.only_segments is not None:
+        if args.stage != "tts" or args.dry_run:
+            parser.error("--only-segmentsは--stage tts(--dry-runなし)でのみ使えます。")
+        _ONLY_SEGMENTS = {x.strip() for x in args.only_segments.split(",") if x.strip()}
+        if not _ONLY_SEGMENTS:
+            parser.error("--only-segmentsが空です。")
+
     source_dir = f"er019_output/{args.slug}/{args.run}"
     out_dir = derive_out_dir(args.slug, args.run, args.out_dir)
     # OPEN-300: style profileは課金・ファイル作成前に決定する。M5(backend)→M2/固定記録の順で、
@@ -2128,6 +2190,7 @@ def main() -> None:
         # S3: defaultでは新keyを書かない(entry_point.jsonもバイト同一の構造)。
         **({"style_profile": _profile_id, "style_profile_source": _profile_source}
            if _profile_id != style_profile_mod.PROFILE_DEFAULT else {}),
+        **({"only_segments": sorted(_ONLY_SEGMENTS)} if _ONLY_SEGMENTS is not None else {}),
     })
 
     if args.dry_run or args.stage == "plan":
