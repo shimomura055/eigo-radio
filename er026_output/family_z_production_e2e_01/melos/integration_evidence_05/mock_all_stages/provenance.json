@@ -1,0 +1,167 @@
+{
+  "story_key": "melos",
+  "seed_sha256": "f4a85f5ceb9a1d7cd511872644391dddd8e2f61516e2f09e08da9ddeeb42c761",
+  "chain": [
+    {
+      "stage": "r0",
+      "input_sha256": "f4a85f5ceb9a1d7cd511872644391dddd8e2f61516e2f09e08da9ddeeb42c761",
+      "output_sha256": "1d07846edd72817e65469a501aa4327854438d394d2ed429d0cb52726d31c90d",
+      "generated_at": "2026-10-12T04:48:33+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R0",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "mock_resp",
+      "attempts": 1,
+      "cost_jpy": 1.12,
+      "prompt_sha256": "be0c1a92a52567655cbf458be218bc51fe9026a035cb33ca30053c9a03f4fc52",
+      "input_tokens": 1000,
+      "output_tokens": 500,
+      "reasoning_tokens": null,
+      "conversion_substitutions": [
+        "simple third-person English at about 300[–-]350 words",
+        "while simplifying the language and minor details for A2 learners"
+      ],
+      "guardrails": {
+        "word_count": 364
+      }
+    },
+    {
+      "stage": "r1",
+      "input_sha256": "1d07846edd72817e65469a501aa4327854438d394d2ed429d0cb52726d31c90d",
+      "output_sha256": "1d07846edd72817e65469a501aa4327854438d394d2ed429d0cb52726d31c90d",
+      "generated_at": "2026-10-12T04:48:33+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R1",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "mock_resp",
+      "attempts": 1,
+      "cost_jpy": 1.12,
+      "prompt_sha256": "fc14c14723575ab9033540e7146e2a16c85584c98a8e7d663c55dce9884d3146",
+      "input_tokens": 1000,
+      "output_tokens": 500,
+      "reasoning_tokens": null,
+      "guardrails": {
+        "word_count": 364
+      }
+    },
+    {
+      "stage": "r2",
+      "input_sha256": "1d07846edd72817e65469a501aa4327854438d394d2ed429d0cb52726d31c90d",
+      "output_sha256": "1d07846edd72817e65469a501aa4327854438d394d2ed429d0cb52726d31c90d",
+      "generated_at": "2026-10-12T04:48:33+00:00",
+      "routing_key": "FAMILY_Z_WRITER_ADV_R2",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "mock_resp",
+      "attempts": 1,
+      "cost_jpy": 1.12,
+      "prompt_sha256": "fc14c14723575ab9033540e7146e2a16c85584c98a8e7d663c55dce9884d3146",
+      "input_tokens": 1000,
+      "output_tokens": 500,
+      "reasoning_tokens": null,
+      "guardrails": {
+        "word_count": 364,
+        "warnings": [
+          "ADV_WORDS_OUT_OF_RANGE:364 (Guardrail (400, 560), OPEN-302未承認)"
+        ],
+        "failures": []
+      }
+    },
+    {
+      "stage": "std_adjust",
+      "input_sha256": "1d07846edd72817e65469a501aa4327854438d394d2ed429d0cb52726d31c90d",
+      "output_sha256": "3c522d31c4811aa2539536f191d9344188339c94131fea12210d0593b6b21031",
+      "generated_at": "2026-10-12T04:48:33+00:00",
+      "routing_key": "FAMILY_Z_STD_ADJUST",
+      "requested_model": "gpt-6.1-sol",
+      "actual_model_id": "gpt-6.1-sol",
+      "effort": "high",
+      "response_id": "mock_resp",
+      "attempts": 1,
+      "cost_jpy": 1.12,
+      "prompt_sha256": "9f1faba110e0f637adbdd3121a3eafa9b4af4effd21ecf5bc86f4c6f3eb6ec5f",
+      "input_tokens": 1000,
+      "output_tokens": 500,
+      "reasoning_tokens": null,
+      "guardrails": {
+        "std_words": 431,
+        "adv_words": 364,
+        "ratio": 1.1841,
+        "identical_sentence_ratio": 0.0,
+        "avg_sentence_len_std": 6.43,
+        "avg_sentence_len_adv": 5.43,
+        "paragraph_count_std": 39,
+        "paragraph_count_adv": 39,
+        "std_adv_paragraph_count_match": true,
+        "warnings": [
+          "STD_ADV_RATIO_OUT_OF_RANGE:1.184 (Guardrail (0.85, 1.1))",
+          "STD_AVG_SENT_LEN_NOT_SHORTER:6.43 vs adv 5.43x0.85 (soft gate)"
+        ],
+        "failures": []
+      }
+    }
+  ],
+  "downstream_stale": [],
+  "downstream_stages": {
+    "plan_b1b": {
+      "stage": "plan_b1b",
+      "input_sha256": "7114cd649c4f0e63319757626e9690aa372ccf318eb25a5ba2bf501064202be1",
+      "output_sha256": "c50b9ae762b03260e69f39eae137e00c21811d56039f4d22e317d0e345baabc2",
+      "generated_at": "2026-10-12T04:48:33+00:00",
+      "routing_keys": [
+        "FAMILY_Z_STORY_SPLIT",
+        "FAMILY_Z_DIALOGUE_ATTRIBUTION"
+      ],
+      "cost_jpy": 0.112
+    },
+    "plan_a2": {
+      "stage": "plan_a2",
+      "input_sha256": "c7528120bb3c944db66aad4a26082f83238dcaf0a2c80538ad37a8557e4d1551",
+      "output_sha256": "b046179de1896d374f39a27b8af68e7f66c69734218b963714c670a76c7da435",
+      "generated_at": "2026-10-12T04:48:33+00:00",
+      "routing_keys": [
+        "FAMILY_Z_STORY_SPLIT",
+        "FAMILY_Z_DIALOGUE_ATTRIBUTION"
+      ],
+      "cost_jpy": 0.056
+    },
+    "support_b1b": {
+      "stage": "support_b1b",
+      "input_sha256": "695b9322dea1c56809dac7e70ea733a3812291e27ec2d1638ef65c3df5d379e8",
+      "output_sha256": "092893f6cd1c3670a707e51b3b2c1e650e11354fe6acb1cdc209cf35217e25d4",
+      "generated_at": "2026-10-12T04:48:33+00:00"
+    },
+    "support_a2": {
+      "stage": "support_a2",
+      "input_sha256": "754144b794d17dc59bdb7c71005a017e0b358019117ff18006edbac31b20b31a",
+      "output_sha256": "27017fc6ff1e14f53b74848f8b76ea70838b752102941d052a23aade7da322f5",
+      "generated_at": "2026-10-12T04:48:33+00:00"
+    },
+    "kp_b1b": {
+      "stage": "kp_b1b",
+      "input_sha256": "232c348a060c009a86669ed5cbb36757734d937d26def4310463322823202efd",
+      "output_sha256": "5cc7dca5a61e83be4210b0ea08eb8b3c00ba15337609eb0b1d1e782c0ddcac7f",
+      "generated_at": "2026-10-12T04:48:33+00:00"
+    },
+    "kp_a2": {
+      "stage": "kp_a2",
+      "input_sha256": "028fe9bafe3e43073dd11491bd9b5cbea306bb7933fa27a76ab46127582053f2",
+      "output_sha256": "5cc7dca5a61e83be4210b0ea08eb8b3c00ba15337609eb0b1d1e782c0ddcac7f",
+      "generated_at": "2026-10-12T04:48:33+00:00"
+    },
+    "kp_expl_b1b": {
+      "stage": "kp_expl_b1b",
+      "input_sha256": "98ed7999ae52231233f29461c7b5abe8353bd905cabb760c7e51c31cab026592",
+      "output_sha256": "35d47007218dc71e8f7e4610fd2be2e5bce26290472057d6775f091df8731526",
+      "generated_at": "2026-10-12T04:48:33+00:00"
+    }
+  },
+  "regenerations": [],
+  "audio_text_deviations": [],
+  "reference_only": {},
+  "adv_final_sha256": "1d07846edd72817e65469a501aa4327854438d394d2ed429d0cb52726d31c90d",
+  "std_sha256": "3c522d31c4811aa2539536f191d9344188339c94131fea12210d0593b6b21031"
+}

@@ -88,9 +88,16 @@ class SegmentPlanConnectedSpeechMappingTest(unittest.TestCase):
             self.assertFalse(r["connected_speech_enabled"])
             self.assertEqual(r["proposed_segment_id"], r["raw_segment_id"])
 
-    def test_known_gap_and_caveat_are_reported_not_silently_dropped(self):
-        self.assertIsNotNone(self.plan["known_gap"])
-        self.assertIn("resolve_narrative_role", self.plan["known_gap"])
+    def test_known_gap_resolved_by_er020_family_z_clip_pattern(self):
+        # 委任_05: 新仕様。委任_03のer020 _FAMILY_Z_STORY_CLIP_PATTERN により full_story_part{1-3}_c{k} が
+        # FULL_STORY(connected speech=True)と解決されるため、旧known_gap(position>3が未解決)は解消扱い。
+        self.assertIsNone(self.plan["known_gap"])
+        self.assertTrue(self.plan["known_gap_status"].startswith("RESOLVED_BY_ER020_FAMILY_Z_CLIP_PATTERN"))
+        for i in ("full_story_part1_c1", "full_story_part2_c9", "full_story_part3_c30"):
+            self.assertEqual(tts_role.resolve_narrative_role(i), "FULL_STORY")
+            self.assertTrue(tts_role.connected_speech_enabled_for(i))
+        # 旧命名(story_XXX)は引き続き未解決(旧mappingの事実記録は残す)
+        self.assertIsNone(tts_role.resolve_narrative_role("story_004"))
 
     def test_resolve_narrative_role_import_is_read_only_reference(self):
         # er020側の挙動を直接確認する(本テストはer020を一切編集しない、
@@ -154,16 +161,31 @@ class DryRunZeroSideEffectTest(unittest.TestCase):
         self.assertTrue(result["dry_run"])
 
 
-class TtsStageStubTest(unittest.TestCase):
-    def test_tts_stage_raises_not_implemented_with_reason(self):
-        with self.assertRaises(NotImplementedError) as ctx:
-            runner.stage_tts()
-        self.assertIn("FAMILY_Z_TTS_STAGE_NOT_IMPLEMENTED_IN_THIS_PHASE", str(ctx.exception))
+class TtsAssembleStagesImplementedTest(unittest.TestCase):
+    """委任_05: stage_tts/stage_assemble はNotImplementedErrorスタブではなく実装済み(E2E stage)。"""
 
-    def test_assemble_stage_raises_not_implemented(self):
-        with self.assertRaises(NotImplementedError) as ctx:
-            runner.stage_assemble()
-        self.assertIn("FAMILY_Z_ASSEMBLE_STAGE_NOT_IMPLEMENTED_IN_THIS_PHASE", str(ctx.exception))
+    def test_stage_tts_and_assemble_are_implemented_not_stubs(self):
+        import inspect
+        for fn in (runner.stage_tts, runner.stage_assemble):
+            self.assertNotIn("NotImplementedError", inspect.getsource(fn))
+        self.assertIn("tts_b1b", runner.E2E_STAGES)
+        self.assertIn("tts_a2", runner.E2E_STAGES)
+        self.assertIn("assemble", runner.E2E_STAGES)
+
+    def test_old_name_rule_functions_are_marked_superseded(self):
+        self.assertIn("SUPERSEDED", runner.check_character_name_rule.__doc__)
+        self.assertIn("SUPERSEDED", runner.restore_character_names.__doc__)
+
+    def test_run_text_stage_uses_er061_not_old_name_rule(self):
+        import inspect
+        src = inspect.getsource(runner.run_text_stage)
+        self.assertNotIn("check_character_name_rule", src)
+        self.assertNotIn("restore_character_names", src)
+        self.assertIn("resolve_canonical_text_v2", src)
+        v2 = runner.resolve_canonical_text_v2("melos")
+        self.assertIn(v2["layer1_verdict"], ("PASS", "WARN"))
+        self.assertEqual(v2["edits"], [])
+        self.assertEqual(v2["trial_sha256"], v2["final_sha256"])  # Trial本文は改変しない
 
 
 if __name__ == "__main__":

@@ -31,7 +31,7 @@ from dataclasses import dataclass, field
 MANAGEMENT_ID = "FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01"
 SUB_TASK_ID = "04C"
 TTS_BACKEND = "speech_metadata_flash_lite"
-FAMILY_Z_ROLE_STYLE_VERSION = "z_v1_pd8_r2_e1_e2up_k2_m2_20261012"
+FAMILY_Z_ROLE_STYLE_VERSION = "z_v2_pd8_r2_e1_e2up_k2_m2_kpx_20261012"  # v2: Adv KP第3segment(英語解説)のStyle追加(委任_05)
 DEFAULT_SLUG = "melos"
 LEVEL_DIR = {"std": "a2", "adv": "b1b"}  # a2=Standard、b1b=Advanced(出力ディレクトリ名のみ。ページ表示にはラベルを出さない)
 GATE_LEVEL_STRING = {"a2": "A2", "b1b": "B1"}
@@ -125,6 +125,10 @@ _X_TOPIC_INTRO = ("brief, clear, engaging news topic introduction with natural e
 _X_JA_J3 = ("落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。"
             "演技がかった話し方は避けてください。")
 
+# 委任_05: Advanced KP第3segment(英語解説、Coffee最終v3 Advと同一構成)。X既存承認のKP解説Style
+# (er033 KEY_PHRASE_EXPLANATION_EN)の逐語コピー。Xは不変(一致をtestで固定)。
+_X_KP_EXPLANATION_EN = "clear, precise, at a measured pace, without dragging"
+
 # 原典照合値(2026-10-12実装時に原典ファイルから抽出して一致確認済み。runtimeはTrialファイルへ依存しない)
 _STYLE_SHA256 = {
     "PD8": "329ff46a5ec3877f7dc23375e14ee8a806efeff7cfe27963492a3cf95d182226",
@@ -182,6 +186,9 @@ FAMILY_Z_ROLE_STYLE = {
                        "origin": "er033 FAMILY_X_ROLE_STYLE_EN['TOPIC_INTRO'] の逐語コピー(Xは不変)", "path": "crosslevel/voice01"},
     "JAPANESE_TITLE": {"style_label": "X_J3(既存承認)", "text": _X_JA_J3, "voice": "Aoede", "language": "ja",
                        "origin": "er033 FAMILY_X_ROLE_STYLE_JA(J3)の逐語コピー(Xは不変)", "path": "n3_tts.generate_a2_japanese_with_reading_safety"},
+    "KP_EXPL_EN": {"style_label": "X_KP_EXPLANATION_EN(既存承認)", "text": _X_KP_EXPLANATION_EN, "voice": "Aoede", "language": "en",
+                   "origin": "er033 KEY_PHRASE_EXPLANATION_EN の逐語コピー(Xは不変。Coffee最終v3 Advのkp解説は既存承認Style=Pと同一)",
+                   "path": "er019.generate_key_phrase_explanation_en_verified"},
     "SHELL": {"style_label": "既存Master/共有Production資産(変更なし)", "text": None, "voice": "Charon", "language": "en",
               "origin": "assemble_mod.B1_SHARED_SOURCE_DIR(読み取りコピーのみ、Master Store書込なし)", "path": "copy"},
 }
@@ -421,6 +428,8 @@ def role_key_for(kind: str, level: str, speaker: str = "narrator") -> str:
         return "KP_EN"
     if kind == "kp_ja":
         return "KP_JA"
+    if kind == "kp_expl_en":
+        return "KP_EXPL_EN"
     if kind == "topic_intro":
         return "TOPIC_INTRO_EN"
     if kind == "japanese_title":
@@ -429,7 +438,8 @@ def role_key_for(kind: str, level: str, speaker: str = "narrator") -> str:
 
 
 def build_level_plan(level: str, story_clips: list, preview_text: str, comments: dict, kp_items: list,
-                     topic_title: str, japanese_title_text: str | None = None) -> list:
+                     topic_title: str, japanese_title_text: str | None = None,
+                     kp_explanations: dict | None = None) -> list:
     """生成が必要なClipSpec列を組む。story_clips=[{id,part,voice(speaker key or 'narrator'),text}]。
     shell/番号(welcome等)は provision_shell_assets で別途コピー(TTSなし)。"""
     plan = []
@@ -449,6 +459,14 @@ def build_level_plan(level: str, story_clips: list, preview_text: str, comments:
     for it in sorted(kp_items, key=lambda x: x["rank"]):
         r = it["rank"]
         plan.append(ClipSpec(f"kp{r}_en", level, "kp_en", it["used_form"], voice="Aoede", role_key="KP_EN", rank=r, language="en"))
+        if kp_explanations is not None:
+            # 委任_05: KP第3segmentは英語解説(Coffee最終v3 Adv / X B1と同一構成)。kp{r}_ja は作らない。
+            expl = (kp_explanations.get(r) or kp_explanations.get(str(r)) or "").strip()
+            if not expl:
+                raise FamilyZAudioStop(f"KP{r}の英語解説textがありません(fail-closed)")
+            plan.append(ClipSpec(f"kp{r}_explanation_en", level, "kp_expl_en", expl, voice="Aoede", role_key="KP_EXPL_EN",
+                                 rank=r, language="en", extra={"used_form": it["used_form"]}))
+            continue
         ja = it.get("japanese_gloss_tts") or it.get("japanese_gloss")
         plan.append(ClipSpec(f"kp{r}_ja", level, "kp_ja", ja, voice="Aoede", role_key="KP_JA", rank=r, language="ja",
                              extra={"used_form": it["used_form"]}))
@@ -594,6 +612,11 @@ def real_generators() -> dict:
         fb["fallback_used"] = True
         return fb
 
+    def kp_expl_en(spec, out_path):
+        import er019_family_x_audio_production_runner_01 as x_runner  # 既存承認のKP英語解説TTS(関数は不変・読み取り利用)
+        return x_runner.generate_key_phrase_explanation_en_verified(
+            spec.text, out_path, style_prefix_override=style_text_for(spec), tts_backend=TTS_BACKEND)
+
     def kp_ja(spec, out_path):
         return n3_tts.generate_a2_japanese_with_reading_safety(
             spec.text, out_path, n3_tts.expected_substring_ja(spec.text), max_extra_chars=30,
@@ -601,7 +624,7 @@ def real_generators() -> dict:
             tts_backend=TTS_BACKEND)
 
     return {"narrator": narrator, "dialogue": dialogue, "topic_intro": topic_intro, "preview": preview,
-            "comment": preview, "japanese_title": lambda s, p: ja_simple(s, p), "kp_en": kp_en, "kp_ja": kp_ja}
+            "comment": preview, "japanese_title": lambda s, p: ja_simple(s, p), "kp_en": kp_en, "kp_ja": kp_ja, "kp_expl_en": kp_expl_en}
 
 
 # ============================================================
@@ -766,11 +789,14 @@ def load_results(level_dir: str) -> dict | None:
         return None
 
 
+_KP_SUBKEY = {"kp_en": "english", "kp_ja": "japanese_meaning", "kp_expl_en": "explanation"}
+
+
 def _cached_entry(cached: dict | None, spec: ClipSpec):
     if not cached:
         return None
-    if spec.kind in ("kp_en", "kp_ja"):
-        sub = "english" if spec.kind == "kp_en" else "japanese_meaning"
+    if spec.kind in ("kp_en", "kp_ja", "kp_expl_en"):
+        sub = _KP_SUBKEY[spec.kind]
         return ((cached.get("key_phrases") or {}).get(str(spec.rank)) or {}).get(sub)
     return (cached.get("segments") or {}).get(spec.clip_id)
 
@@ -837,8 +863,8 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
 
 
 def _store(segments: dict, key_phrases: dict, spec: ClipSpec, entry: dict) -> None:
-    if spec.kind in ("kp_en", "kp_ja"):
-        key_phrases.setdefault(str(spec.rank), {})["english" if spec.kind == "kp_en" else "japanese_meaning"] = entry
+    if spec.kind in ("kp_en", "kp_ja", "kp_expl_en"):
+        key_phrases.setdefault(str(spec.rank), {})[_KP_SUBKEY[spec.kind]] = entry
     else:
         segments[spec.clip_id] = entry
 
@@ -931,9 +957,9 @@ def _lookup_entry(data: dict, clip_id: str):
     seg = (data.get("segments") or {}).get(clip_id)
     if seg is not None:
         return seg
-    m = re.fullmatch(r"kp([0-9]+)_(en|ja)", clip_id)
+    m = re.fullmatch(r"kp([0-9]+)_(en|ja|explanation_en)", clip_id)
     if m:
-        sub = "english" if m.group(2) == "en" else "japanese_meaning"
+        sub = {"en": "english", "ja": "japanese_meaning", "explanation_en": "explanation"}[m.group(2)]
         return ((data.get("key_phrases") or {}).get(m.group(1)) or {}).get(sub)
     return None
 
@@ -1100,15 +1126,16 @@ def comment_after_segment_ids(story_clips: list) -> dict:
 
 
 def build_z_sequence(narr_dir: str, *, level: str, story_clips: list, kp_items: list, target_rms, gs, gs_already_stereo,
-                     intro_gained, notification_gained, outro_gained) -> list:
+                     intro_gained, notification_gained, outro_gained, kp_third: str = "japanese") -> list:
     """Z sequence: Intro(Literature導入なし)->Welcome->Topic->(Std: JA title)->Preview->KP->Comment1->
     Story Part1(clips)->Comment2->Part2->Comment3->Part3->Outro(In One Lineなし)。Family Cのbuilderをそのまま利用。"""
     import er013_family_c_production_runner_01 as runner_c
     story_segments = [{"id": c["id"], "audio_path": f"{narr_dir}/{c['id']}.wav",
                        "voice": normalize_speaker(c.get("speaker") or c.get("voice_role") or c.get("voice") or "narrator")}
                       for c in story_clips]
+    third = "explanation_en" if kp_third == "explanation" else "ja"  # 委任_05: Adv=英語解説(Coffee最終v3 Adv構成)
     kp_blocks = [(it["rank"], f"{narr_dir}/kp{it['rank']}_number.wav", f"{narr_dir}/kp{it['rank']}_en.wav",
-                  f"{narr_dir}/kp{it['rank']}_ja.wav") for it in sorted(kp_items, key=lambda x: x["rank"])]
+                  f"{narr_dir}/kp{it['rank']}_{third}.wav") for it in sorted(kp_items, key=lambda x: x["rank"])]
     comment_wavs = {n: f"{narr_dir}/comment_{n}.wav" for n in (1, 2, 3)}
     return runner_c.build_family_c_episode_sequence(
         audio_dir=narr_dir, target_rms=target_rms, gs=gs, gs_already_stereo=gs_already_stereo,
@@ -1118,7 +1145,8 @@ def build_z_sequence(narr_dir: str, *, level: str, story_clips: list, kp_items: 
         preview_asset_name="preview.wav")
 
 
-def run_assembly(run_dir: str, level: str, story_clips: list, kp_items: list, *, story_key: str = DEFAULT_SLUG) -> dict:
+def run_assembly(run_dir: str, level: str, story_clips: list, kp_items: list, *, story_key: str = DEFAULT_SLUG,
+                 kp_third: str = "japanese") -> dict:
     """gain -> sequence -> assemble_with_timeline -> headroom safety valve -> wav + timeline.json。"""
     import numpy as np
     import er002_common as common
@@ -1155,7 +1183,8 @@ def run_assembly(run_dir: str, level: str, story_clips: list, kp_items: list, *,
     outro_m = outro["samples"] * p9a.compute_gain_for_target_rms(outro["samples"], p9a.rms(intro_g))
     outro_g = outro_m * asm.OUTRO_EXTRA_GAIN_LINEAR
     seq = build_z_sequence(narr, level=level, story_clips=story_clips, kp_items=kp_items, target_rms=target_rms, gs=gs,
-                           gs_already_stereo=gs_stereo, intro_gained=intro_g, notification_gained=notif_g, outro_gained=outro_g)
+                           gs_already_stereo=gs_stereo, intro_gained=intro_g, notification_gained=notif_g, outro_gained=outro_g,
+                           kp_third=kp_third)
     res = asm.assemble_with_timeline(seq)
     safety = asm.apply_headroom_safety_valve(res["assembled"], seq)
     os.makedirs(f"{level_dir}/assembly", exist_ok=True)
@@ -1265,7 +1294,7 @@ def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_d
             n = part.split("_")[-1]
             kp = (data.get("key_phrases") or {}).get(n) or {}
             en = (kp.get("english") or {}).get("canonical_text", "未取得")
-            ja = (kp.get("japanese_meaning") or {}).get("canonical_text", "未取得")
+            ja = (kp.get("japanese_meaning") or kp.get("explanation") or {}).get("canonical_text", "未取得")
             kp_rows.append((en, ja))
             row["script"] = f"{en} / {ja}"
             row["voice"] = "Aoede(KP) / Charon(番号)"
