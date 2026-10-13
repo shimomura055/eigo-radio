@@ -1,0 +1,22 @@
+{
+ "managed_id": "FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01",
+ "delegation": "02",
+ "date": "2026-10-13",
+ "models": {"kp_llm": "gpt-6-luna (selector/canonicalization, 本番既定)", "tts": "gemini-3.8-flash-lite-tts (speech_metadata_flash_lite, 承認済みProduction backend、最新世代)", "asr": "openai_asr + azure(既存secondary cascade)", "note": "本番ラインの既存モデルをそのまま使用(評価用の旧モデル使用なし)"},
+ "run_dir": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_m2p0_n01_01",
+ "profile": "coffee_n01_r2_p3 (N01 sha d1956c91c925d197e27cf1204d7ed17248a96bef096b082fb1bd0846106a0477)",
+ "kp": {
+  "std": {"status": "CANONICALIZATION_INVALID", "kp_backend_used": "db_hybrid", "kp_supply": "m2", "attempts": 2, "reason": "rank5 'based on interviews' != source_span 'based on' (Rule7)", "regeneration_policy": "1レベル1回の上限に到達のため再実行せず", "selected": ["raw bean", "pump one's fist", "roasting", "right away", "based on"]},
+  "adv": {"status": "CANONICALIZATION_PASS", "kp_backend_used": "db_hybrid", "kp_supply": "m2", "final": ["time lag", "show up", "come down", "pump one's fist", "hold on"], "v5": ["lag", "price tag", "show up", "come down", "come with"], "reserved_slot_selected": ["pumps its fist"], "fragment_risk_selected": [], "demoted_allow_count": 1, "m2_total_seconds": 17.35},
+  "std_m2_report": {"demoted_allow_count": 1, "reserved": ["pumps its fist", "imagine your usual"], "reserved_slot_selected": ["pumps its fist"], "fragment_risk_selected": [], "m2_total_seconds": 15.85}
+ },
+ "full_story": {
+  "std": {"part1": "N01 attempt1合格(NORMALIZED_MATCH)、6%減速(5.966%)、減速後NUMERIC_EQUIVALENCE_MATCH", "part2": "N01 attempt1 ASR不合格(ASR_VALIDATION_UNCERTAIN)→既存Standard fallback(minimal)経路で600秒cooldown後attempt3合格(NUMERIC_EQUIVALENCE_MATCH)、6%減速(5.98%)、減速後NORMALIZED_MATCH。fallback_used=True=N01 takeではない", "part3": "N01 attempt1合格(NORMALIZED_MATCH)、6%減速(5.969%)、減速後NORMALIZED_MATCH"},
+  "adv": {"part1": "N01(style_prefix sha d1956c91…)attempt1 TRUE_CONTENT_MISMATCH→attempt2合格(NORMALIZED_MATCH)", "part2": "attempt1合格(NORMALIZED_MATCH)", "part3": "attempt1合格(HIGH_SIMILARITY_SAFE)"}
+ },
+ "kp_audio_adv": "kp1-5_en + kp1-5_explanation_en 全OK(kp4_en attempt1 TRUE_CONTENT_MISMATCH→attempt2合格)",
+ "m3_gate_offline": {"std": "BLOCK (full_story_part2 fallback_used=True / FINAL_STYLE_SHA_MISMATCH; preview/comment_1-4は--only-segmentsで結果がSKIPPED_NOT_SELECTEDに上書きされSTYLE_BASE_SHA_MISMATCH_OR_MISSING)", "adv": "PASS (Full Story 3 part + KP解説5件)"},
+ "cost_jpy": {"total": 25.7, "by_provider": {"openai": 2.06, "gemini": 11.5, "openai_asr": 3.3, "azure": 8.84}, "guardrail": 80, "soft_stop": 60, "detail": "cost_02.json", "kp_llm_in_raw_usage_log": true},
+ "speed_pause": "speed_pause_02.json (coffee_evidence_02/)",
+ "page": {"url": "https://shimomura055.github.io/eigo-radio/user_test/coffee_m2p0_n01_01/index.html", "playwright": "28/28 audio play OK、seek OK、全編322.77秒、console error 0、HTTP>=400 0"}
+}

@@ -1,0 +1,83 @@
+{
+ "total_jpy": 25.7,
+ "by_provider": {
+  "openai": 2.06,
+  "gemini": 11.5,
+  "openai_asr": 3.3,
+  "azure": 8.84
+ },
+ "budget_guardrail_jpy": 80,
+ "soft_stop_jpy": 60,
+ "groups": [
+  {
+   "stage": "scaffold",
+   "provider": "openai",
+   "level_hint": "?",
+   "n_calls": 6,
+   "jpy": 2.023,
+   "segments_sample": [
+    ""
+   ]
+  },
+  {
+   "stage": "tts",
+   "provider": "azure",
+   "level_hint": "?",
+   "n_calls": 4,
+   "jpy": 8.845,
+   "segments_sample": [
+    "full_story_part2"
+   ]
+  },
+  {
+   "stage": "tts",
+   "provider": "gemini",
+   "level_hint": "?",
+   "n_calls": 19,
+   "jpy": 11.496,
+   "segments_sample": [
+    "full_story_part1",
+    "full_story_part2",
+    "full_story_part3",
+    "kp1_english",
+    "kp1_explanation_en",
+    "kp2_explanation_en"
+   ]
+  },
+  {
+   "stage": "tts",
+   "provider": "openai",
+   "level_hint": "?",
+   "n_calls": 1,
+   "jpy": 0.032,
+   "segments_sample": [
+    ""
+   ]
+  },
+  {
+   "stage": "tts",
+   "provider": "openai_asr",
+   "level_hint": "?",
+   "n_calls": 23,
+   "jpy": 3.301,
+   "segments_sample": [
+    "full_story_part1",
+    "full_story_part2",
+    "full_story_part3",
+    "kp1_english",
+    "kp1_explanation_en",
+    "kp2_explanation_en"
+   ]
+  }
+ ],
+ "n_records": 53,
+ "opus9_kp_llm_in_raw_usage_log": {
+  "scaffold_records": 6,
+  "models": [
+   "gpt-6-luna"
+  ],
+  "segments": [
+   null
+  ]
+ }
+}

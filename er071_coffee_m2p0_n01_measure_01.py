@@ -103,7 +103,7 @@ def main(out_dir, ev_dir):
                                 "sentence_end_pause_mean_ms": round(float(np.mean(allp))) if allp else None,
                                 "sentence_end_pause_max_ms": max(allp) if allp else None, "n_sentence_end_pauses": len(allp),
                                 # 800ms以上の無音(find_pauses、-40dBFS基準): 文末・内部を区別せず各part全体で数える
-                                "n_long_silence_ge_800ms_total": sum(p["n_long_silence_ge_800ms"] for p in parts)}}
+                                "n_long_silence_ge_800ms_total": sum(p["n_long_silence_ge_800ms"] for p in parts)}
         lv = res["levels"][level]
         ref_w = TRIAL_REF["std_wpm_post_slowdown"] if level == "std" else TRIAL_REF["adv_wpm"]
         lv["reference_comparison"] = {
