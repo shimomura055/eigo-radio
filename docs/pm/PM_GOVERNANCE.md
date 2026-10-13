@@ -813,6 +813,18 @@ check_delegation_prompt.py`へ、旧文言(「超えそうなら実行前STOP」
 - 実費・使用モデル(応答model_id実測)は報告とSSOT(DECISION_LOG等)に記録する。
 - 既存文言(7-5・7-6、委任文の予算Cap/上限更新の扱い等)と矛盾する箇所があっても上書きせず、**費用承認の要否については本決定が優先**する。ただし7-6の暴走検知STOP・ループ上限(11節)・Gate 1〜7・Human Review Lock・Production承認原則は変更・緩和しない。
 
+### 7-8. 探索Trialの一括承認運用(2026-10-13ユーザー決定、FAMILY-X-KP-INTEGRATED-OPTIMIZATION-TRIAL-01 委任_03で記録)
+
+ユーザー決定(2026-10-13、原文要旨): 低コスト・既存予算内・Production非変更の探索Trialの運用について次の4点を示した。
+
+1. 低コスト・既存予算内・Production非変更の探索Trialでは、個別の技術的選択肢を逐一ユーザー判断させない。
+2. ただし現行PM Gateのユーザー承認ルールは遵守し、未承認の次Trialを独自判断で開始しない。
+3. Trial開始時に探索範囲・費用上限・STOP条件をまとめて提示し、承認範囲内で効率的に探索する。
+4. Production正式採用・仕様変更・予算超過・重大な品質リスクは必ずユーザー判断とする。
+
+- 7-7(Trial費用JPY100以下のFable判断承認)・11節(ループ上限)・Gate 1〜7・Production承認原則は変更・緩和しない。本節は個別選択肢の逐一確認を減らす運用方針の記録であり、(b1)等の承認済みTrialの範囲内に限って適用する。
+- 初回適用: `FAMILY-X-KP-INTEGRATED-OPTIMIZATION-TRIAL-01` Round 3((b1)LLM補助抽出をTrialに含める承認、Trialのみ、累計JPY300上限)。
+
 ## 8. Agent並列起動の原則
 
 - 原則は1タスクずつ進める。ただし、対象ファイル・出力先(`er0XX_output/`配下の
@@ -3236,6 +3248,8 @@ Family Z runner(er026/er062/er063)に次を実装済み(課金0のmock/dry-run�
 - ログ/例外出力: `er_secret_mask_01.py`(`install_stream_masking()`)でstdout/stderrの秘密値を`***`へ置換する(er026/er062/er063のmainで有効化)。アドホックなデバッグスクリプトでもAPI引数(`ctypes`audit等)を無加工でログへ出さない。
 
 ## 変更履歴
+
+- 2026-10-13(`FAMILY-X-KP-INTEGRATED-OPTIMIZATION-TRIAL-01`委任_03、ユーザー決定): 7-8節(探索Trialの一括承認運用4点)を新設。既存節は無変更。
 
 - 2026-10-12(`FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01`委任_11、ユーザー仕様修正に伴う事故再発防止): 26節(有料runの停止・再起動・STOP通知の運用)を新設。実行層の再起動禁止ルール(a)〜(d)、Fable側STOP_ALL先置き手順(e)(f)。
 
