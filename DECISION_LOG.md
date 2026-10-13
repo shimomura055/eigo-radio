@@ -20942,3 +20942,11 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - Family Z: N01配線+style label不一致STOP+mock(¥0、記事再生成・音声化なし)のみ。Checklist 5/6(runtime発火・actual model_id)は未確認。Melos run_e2e_02の旧PD8系entryは読取でLEGACY_NARRATOR_ENTRIES_MISMATCH(=不一致STOP仕様の確認)。
 - Status: Family X=`APPROVED_FOR_PRODUCTION`→**配線済み・未完了**(Checklist 5/11が部分: Std KP INVALID・Std Full Story part2がN01非適用take・runner `--stage assemble`経由のend-to-end未完)。`PRODUCTION_WIRED`は付与しない。Family Z=配線済み・runtime未確認(`PRODUCTION_WIRED`ではない)。新規OPEN-343〜346、UDR #45〜#47。
 - 注記: 実装commit d365e1fb・試聴ページcommit cba81d31には委任文指定のtrailer`Managed-ID:`が付いていない(以後のcommitから付与)。
+
+## 2026-10-13 FAMILY-Z-STANDARD-PREVIEW-COMMENT-DEPENDENCY-TRIAL-01 委任_01(Trial、Production無変更・採用判断なし)
+- ユーザー指示要旨: Family Z Std Previewが抽象的になる原因の切り分け(Comment 1・2の参照量・重複回避条件)。Comment 1は冗長性を重く評価、Comment 2は軽微重複を許容、本文全体は常に参照、Writerへの新制約なし。
+- 条件(Melos run_e2e_02 Std、Production同一gpt-6-luna・effort high、本文全文・developer messageはProduction同一): A=現行+C1・C2全文(er072既存3 take再利用)/B=C1のみ(C2は`(生成失敗)`=Family X欠落時埋め値、Prompt本文逐語)/C=各Commentの第1文のみ(決定論、LLM要約なし)/D=重複回避文言2箇所のみ置換(C1厳格・C2軽微許容)/E=Comment関連の指示・placeholder・埋込ブロックを除去(追加文言なし)。B〜E各3 take=12 call、再生成なし。差分表: `er074_output/family_z_std_preview_comment_dependency_01/CONDITIONS_01.md`。
+- 結果: A・D=3/3抽象、B=1/3具体、C・E=3/3具体だがComment 1と同事実を繰返し重複『問題』(3/3)。Comment 2重複は許容範囲。C3にlint違反1(LISTEN_INSTRUCTION)、C2に事実誤り(姉の結婚式)。E混入確認はtestで機械確認(全PASS)。
+- 原因分析: PreviewとComment 1の役割衝突(冒頭前提はC1が担う)が最有力。Comment 2回避は従、重複優先順位変更(D)は無効、Family X Prompt枠自体は主因でない(E 3/3具体)。n=3・Melos1作品、他作品データなし(再現性未検証)。
+- 改善候補(未検証・採用判断なし): P1 Preview構成指針追加(Family X共通仕様変更の要否=ユーザー判断)、P2 Preview先行生成+Comment 1調整(処理フロー変更、Opus条件A)、P3 B相当。Family Zの記事再生成・音声化STOP維持。
+- 費用: JPY1.0114/100(12 call、応答model_id=gpt-6-luna実測)。Status=USER_DECISION_REQUIRED(UDR #48、OPEN-338)。証跡: `er074_output/family_z_std_preview_comment_dependency_01/FINAL_REPORT_01.md`。

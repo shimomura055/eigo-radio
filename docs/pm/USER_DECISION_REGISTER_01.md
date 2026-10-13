@@ -57,24 +57,25 @@
 | 40 | KP `no way`単独選定の最小修正P0X(Meta Adv)の採否 | **判断済み**(ユーザー事前規定「Side effect確認時は不採用・M2P0維持」を適用。Trial Status=REJECTED。Production採用なし) | いいえ | DECISION_LOG「FAMILY-X-KP-NO-WAY-MINIMAL-FIX-TRIAL-01 委任_02」、OPEN-336追記、`er064_output/kp_no_way_fix_01/TRIAL_REPORT_02.md` |
 | 41 | ASR発音同等性に基づく一般化判定(全Family共通設計方針)の実装方式・安全性(ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01) | **USER_DECISION_REQUIRED**(Opus条件Aレビュー後の判断事項4件。設計=DESIGN_REVISED[Opus必須1〜4反映済み]、検証=V1'テキストのみREJECTED/V2'末尾暫定ゲート付きUSER_DECISION_REQUIRED。(1)優先順位R1/F1/M1(Opus推奨R1>F1>M1) (2)暫定非対称の許容か末尾確認の全経路化(OPEN-341) (3)F1是正(OPEN-340、既存成果物の判定がPASS→NGになり得る)の承認 (4)CMU未収録名で綴り基準へ戻すことの許容+初出時1回HR要否) | いいえ(Melos最終試聴#23の依存事項。追加生成・Production反映は進めない) | OPEN-339・340・341・342(OPEN-122(4)/318/327/328/330/331/335と整理)、DECISION_LOG「ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01 委任_01/委任_02」、`er068_output/asr_phonetic_equivalence_generalization_01/`(DESIGN_DRAFT_02.md/OFFLINE_EVAL_02.md/FINAL_SUMMARY_01.md) |
 
-| 42 | Family Z Std PreviewのFamily X基準統一Promptの採否・追加調整要否(OPEN-338。設計方針=Family X基準はユーザー確定済み、変更後Promptは検証済みでなくProduction未採用) | **USER_DECISION_REQUIRED**(Trial結果: あらすじ化なし/抽象・評論調残存/終盤示唆の可能性、1サンプル) | いいえ | DECISION_LOG「FAMILY-Z-STANDARD-PREVIEW-X-ALIGNMENT-01 委任_01」、`er070_output/family_z_std_preview_x_alignment_01/TRIAL_REPORT_01.md`。2026-10-13追記: 3 take比較(#44)でStd 3件も抽象・評論調で同傾向、`er072_output/melos_preview_std_adv_3take_01/COMPARE_REPORT_01.md` |
+| 42 | Family Z Std PreviewのFamily X基準統一Promptの採否・追加調整要否(OPEN-338。設計方針=Family X基準はユーザー確定済み、変更後Promptは検証済みでなくProduction未採用) | **USER_DECISION_REQUIRED**(Trial結果: あらすじ化なし/抽象・評論調残存/終盤示唆の可能性、1サンプル) | いいえ | DECISION_LOG「FAMILY-Z-STANDARD-PREVIEW-X-ALIGNMENT-01 委任_01」、`er070_output/family_z_std_preview_x_alignment_01/TRIAL_REPORT_01.md`。2026-10-13追記: 3 take比較(#44)でStd 3件も抽象・評論調で同傾向、`er072_output/melos_preview_std_adv_3take_01/COMPARE_REPORT_01.md` 2026-10-13追記: Comment参照条件B〜E比較(FAMILY-Z-STANDARD-PREVIEW-COMMENT-DEPENDENCY-TRIAL-01、#48) |
 
 | 43 | Family Z 語末s名+s始まり動詞の分割Trial(FAMILY-Z-ATTRIBUTION-CLIP-SPLIT-IMPROVEMENT-TRIAL-01、OPEN-318)のR1(原稿側ルール「語末歯擦音の固有名詞の直後に歯擦音始まりの語を置かない」)のProduction化判断 | **USER_DECISION_REQUIRED**(Trial、s+s融合が主因と分離、効果はMelos型の名前のみ、R2は効果未検出。選択肢A=Writer prompt指針+決定論WARN lintをProduction化、B=追加確認[別名前タイプ・ledger未登録名のPLなし通過率]を先に、C=見送り。Opus推奨順 R1>F1>M1) | いいえ(Melos最終試聴#23の依存事項。Production無変更) | OPEN-318、DECISION_LOG「FAMILY-Z-ATTRIBUTION-CLIP-SPLIT-IMPROVEMENT-TRIAL-01 委任_01〜_02」、`er069_output/attribution_clip_split_trial_01/trial_conclusion_02.md` |
-| 44 | Family Z Std/Adv Preview 3 take比較(FAMILY-Z-MELOS-PREVIEW-STD-ADV-3TAKE-COMPARE-01、OPEN-338)の結果を受けたStd Preview方針(統一Promptの採否・追加切り分けTrialの要否) | **USER_DECISION_REQUIRED**(Trial、Std 3件は抽象・評論調で一貫、Adv 3件は具体的発端を提示。原因はComment量との交絡があり断定不可。選択肢案: A=Comment量/Prompt構造の切り分けTrialを先に行う、B=統一Promptを現状評価のまま判断、C=見送り。採用判断はしていない) | いいえ | DECISION_LOG「FAMILY-Z-MELOS-PREVIEW-STD-ADV-3TAKE-COMPARE-01 委任_01」、`er072_output/melos_preview_std_adv_3take_01/COMPARE_REPORT_01.md` |
+| 44 | Family Z Std/Adv Preview 3 take比較(FAMILY-Z-MELOS-PREVIEW-STD-ADV-3TAKE-COMPARE-01、OPEN-338)の結果を受けたStd Preview方針(統一Promptの採否・追加切り分けTrialの要否) | **USER_DECISION_REQUIRED**(Trial、Std 3件は抽象・評論調で一貫、Adv 3件は具体的発端を提示。原因はComment量との交絡があり断定不可。選択肢案: A=Comment量/Prompt構造の切り分けTrialを先に行う、B=統一Promptを現状評価のまま判断、C=見送り。採用判断はしていない) | いいえ | DECISION_LOG「FAMILY-Z-MELOS-PREVIEW-STD-ADV-3TAKE-COMPARE-01 委任_01」、`er072_output/melos_preview_std_adv_3take_01/COMPARE_REPORT_01.md` 2026-10-13追記: Comment参照条件B〜E比較(FAMILY-Z-STANDARD-PREVIEW-COMMENT-DEPENDENCY-TRIAL-01、#48) |
 | 45 | Family Z KPへのM2P0適用(Z-1。Z KPは現状Strategy L、M2適用=DB Hybrid採用の別仕様変更) | **USER_DECISION_REQUIRED**(Z側M2P0は未着手・STOP) | いいえ | OPEN-344、DECISION_LOG「FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 委任_02」 |
 | 46 | N01の『sharing a true story』文言のFamily Z(Fiction)での扱い(N-2) | **USER_DECISION_REQUIRED**(N01は逐語使用、文言変更なし。Zのruntime音声確認時に評価) | いいえ | OPEN-345、DECISION_LOG「FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 委任_02」 |
 | 47 | Coffee Std未完(KP canonicalization INVALID・Std Full Story part2のfallback take)の扱い=追加KP再生成の可否[約JPY1、1レベル1回上限の緩和]・fallback takeの人間承認か再生成か・runner assemble経由の完走方法(N-1適用範囲/N-3対象=Full Storyのみ/X-1原稿正本/X-2再生成範囲は推奨解釈で実装) | **USER_DECISION_REQUIRED** | はい(Family X `PRODUCTION_WIRED`付与の前提) | OPEN-343、`er071_output/m2p0_n01_production_wiring_01/FINAL_REPORT_01.md` |
+| 48 | Family Z Std PreviewのComment参照条件(FAMILY-Z-STANDARD-PREVIEW-COMMENT-DEPENDENCY-TRIAL-01、OPEN-338)の結果を受けた方針=PreviewとComment 1の役割衝突への対処[P1 Preview構成指針追加=Family X共通仕様変更要否 / P2 Preview先行+Comment 1調整=処理フロー変更(Opus条件A) / 現状維持]、Comment 1重複の許容範囲 | **USER_DECISION_REQUIRED** | いいえ(Family Z記事再生成・音声化STOP維持中) | OPEN-338、`er074_output/family_z_std_preview_comment_dependency_01/FINAL_REPORT_01.md` |
 
-## 区分別集計(2026-10-13更新・47件。#45〜#47追加[M2P0/N01 Production配線、USER_DECISION_REQUIRED]。#44追加[3 take比較、USER_DECISION_REQUIRED]。#43追加[分割Trial R1判断、USER_DECISION_REQUIRED]。#41はOpus条件A後にUSER_DECISION_REQUIRED化。#42追加[FAMILY-Z-STANDARD-PREVIEW-X-ALIGNMENT-01、USER_DECISION_REQUIRED]。#41追加[ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01、調査・Trial中]。#39・#40追加。#10は判断済みへ、#14と#23は判断保留へ、#36追加)
+## 区分別集計(2026-10-13更新・48件。#48追加[Comment参照条件Trial、USER_DECISION_REQUIRED]。#45〜#47追加[M2P0/N01 Production配線、USER_DECISION_REQUIRED]。#44追加[3 take比較、USER_DECISION_REQUIRED]。#43追加[分割Trial R1判断、USER_DECISION_REQUIRED]。#41はOpus条件A後にUSER_DECISION_REQUIRED化。#42追加[FAMILY-Z-STANDARD-PREVIEW-X-ALIGNMENT-01、USER_DECISION_REQUIRED]。#41追加[ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01、調査・Trial中]。#39・#40追加。#10は判断済みへ、#14と#23は判断保留へ、#36追加)
 
 | 区分 | 件数 | 項目# |
 |---|---|---|
 | 判断済み | 12 | 2, 3, 10, 13, 17, 34, 35, 36, 37, 38, 39, 40 |
 | 判断保留(依存事項待ち、判断時期延期) | 2 | 14, 23 |
 | 調査・Trial中 | 1 | 19 |
-| USER_DECISION_REQUIRED | 27 | 1, 4(暫定), 5, 7, 8, 9, 11, 12, 15, 18, 24〜33, 41, 42, 43, 44, 45, 46, 47 |
+| USER_DECISION_REQUIRED | 28 | 1, 4(暫定), 5, 7, 8, 9, 11, 12, 15, 18, 24〜33, 41, 42, 43, 44, 45, 46, 47, 48 |
 | Deferred / Non-blocking | 5 | 6, 16, 20, 21, 22 |
-| 合計 | 47 | |
+| 合計 | 48 | |
 
 ## 「次工程をブロックするUDR」のみ(これだけを最優先で提示する)
 
