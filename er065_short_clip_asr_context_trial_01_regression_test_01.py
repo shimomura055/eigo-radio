@@ -127,9 +127,11 @@ class ThreeWayPolicy(unittest.TestCase):
 
     def test_independent_evidence_allows_only_explained(self):
         self.assertEqual(self.tw("Melos said.", "Mello said.", {"acoustic_geminate_ok": True}), "許容")
-        self.assertEqual(self.tw("Melos said.", "Mello said.", {"second_engine_exact": True}), "許容")
+        # [委任_04訂正] second_engine_exact(Azure+Phrase List)はPhrase List誘導のため独立証拠から除外 -> 単独では許容にならない
+        self.assertEqual(self.tw("Melos said.", "Mello said.", {"second_engine_exact": True}), "HR")
         self.assertEqual(self.tw("Melos said.", "Mello said.", {"acoustic_geminate_ok": False}), "HR")
         self.assertEqual(self.tw("Melos said.", "Mello said.", {"acoustic_geminate_ok": False, "second_engine_exact": True}), "HR")
+        self.assertEqual(self.tw("Melos said.", "Mello said.", {"acoustic_geminate_ok": True, "second_engine_exact": False}), "許容")
 
     def test_defects_never_allowed_even_with_evidence(self):
         ev = {"acoustic_geminate_ok": True, "second_engine_exact": True}
@@ -145,6 +147,109 @@ class ThreeWayPolicy(unittest.TestCase):
 
     def test_exact_is_allowed(self):
         self.assertEqual(self.tw("Melos said.", "Melos said."), "許容")
+
+
+# ============================================================ 委任_04追加(Opus必須修正3 / 推奨: 回帰test不足の補完)
+class TrialSafetyPremise_Delegation04(unittest.TestCase):
+    """Trial音韻判定は protected_check を持たない。否定・時制・数・別語の反例を明示固定する(ASR呼出なし)。"""
+
+    COUNTER = [("I can't talk", "I can talk"), ("he walked to town", "he walk to town"),
+               ("great time", "gray time"), ("they walked to", "they walk to")]
+
+    def test_documented_hole_explain_diff_alone_explains_negation_tense_lexical(self):
+        # 設計前提(protected_check通過後にのみ適用)が崩れると危険になることの記録: 単体では『説明可』と出てしまう
+        for c, a in self.COUNTER:
+            self.assertEqual(P.explain_diff(c, a)["verdict"], "PHON_EXPLAINED_FUSION", (c, a))
+
+    def test_risk_flags_detect_each_counterexample(self):
+        self.assertIn("negation", P.risk_flags("I can't talk", "I can talk"))
+        self.assertIn("tense_or_suffix_drop", P.risk_flags("he walked to town", "he walk to town"))
+        self.assertIn("lexical_change_between_dictionary_words", P.risk_flags("great time", "gray time"))
+        self.assertIn("number", P.risk_flags("three trees", "tree trees"))
+
+    def test_with_flags_never_allows_counterexamples_even_with_evidence(self):
+        ev = {"acoustic_geminate_ok": True, "second_engine_exact": True}
+        for c, a in self.COUNTER:
+            self.assertEqual(P.three_way_with_flags(c, a, ev)["class"], "HR", (c, a))
+        self.assertEqual(P.three_way_with_flags("three trees", "tree trees", ev)["class"], "NG")
+
+    def test_three_vs_tree_is_not_allowed(self):
+        self.assertNotEqual(P.three_way_with_flags("three men", "tree men", {"acoustic_geminate_ok": True})["class"], "許容")
+
+    def test_melos_still_allowed_with_acoustic_and_no_flags(self):
+        # 回帰: 安全装置が Melos(OOV, S/Z + S) の許容経路を壊さない
+        self.assertEqual(P.risk_flags("Melos said.", "Mello said."), [])
+        self.assertEqual(P.three_way_with_flags("Melos said.", "Mello said.", {"acoustic_geminate_ok": True})["class"], "許容")
+
+    def test_acoustic_evidence_not_applicable_to_stop_boundaries(self):
+        # 音響(摩擦区間長)は s+s でしか較正されていない。破裂音境界(t+t, d+k)では『測定不能』扱い=証拠に数えない
+        for c, a in (("last time", "lass time"), ("pay showed coffee", "pay show coffee")):
+            e = P.explain_diff(c, a)
+            self.assertEqual(e["verdict"], "PHON_EXPLAINED_FUSION")
+            self.assertEqual(P.three_way(e, {"acoustic_geminate_ok": True})["class"], "HR", c)
+
+    def test_acoustic_evidence_applies_to_sibilant_boundaries(self):
+        self.assertEqual(P.three_way(P.explain_diff("stores stock", "store stock"), {"acoustic_geminate_ok": True})["class"], "許容")
+        self.assertEqual(P.three_way(P.explain_diff("stores stock", "store stock"), {"acoustic_geminate_ok": False})["class"], "HR")
+
+    def test_phrase_list_second_engine_is_not_independent(self):
+        self.assertEqual(P.three_way(P.explain_diff("Melos said.", "Mello said."), {"second_engine_exact": True})["class"], "HR")
+
+
+class ProductionPatternsAndEqLayer_Delegation04(unittest.TestCase):
+    """既存対策の機能確認(単体関数レベル)の補完: Pattern B/C一般例、Eq Layer受理経路、減速後経路の配線。"""
+
+    def test_pattern_b_general_examples(self):
+        self.assertEqual(prod("it opened to", "it open to")[1], True)
+        self.assertEqual(csv3.classify_connected_speech("opened to", "open to")["rule"], "Pattern_B_stop_consonant_sequence")
+        # 反例: 次語頭が破裂音でなければ発火しない
+        self.assertEqual(csv3.classify_connected_speech("opened up", "open up")["new_judgment"], "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING")
+
+    def test_pattern_c_general_examples(self):
+        r = csv3.classify_connected_speech("The survey suggest", "The surveys suggest")
+        self.assertEqual((r["rule"], r["new_judgment"]), ("Pattern_C_resegmentation_added_consonant", "CONNECTED_SPEECH_RESEGMENTATION"))
+
+    def test_equivalence_layer_accept_path_with_corroboration(self):
+        # 正例: 辞書語の語末d脱落で、独立ASR(Secondary/local)がcanonical綴りを返した場合のみ ACCEPT
+        j = eq.classify_connected_speech_equivalence("pay showed coffee", "pay show coffee",
+                                                     secondary_asr_text="pay showed coffee",
+                                                     local_asr_text="pay showed coffee")["layer_judgment"]
+        self.assertIn(j, eq.ACCEPT_JUDGMENTS)
+        # 独立ASRが同じ誤り転写なら受理しない
+        j2 = eq.classify_connected_speech_equivalence("pay showed coffee", "pay show coffee",
+                                                      secondary_asr_text="pay show coffee",
+                                                      local_asr_text="pay show coffee")["layer_judgment"]
+        self.assertNotIn(j2, eq.ACCEPT_JUDGMENTS)
+
+    def test_post_slowdown_wiring(self):
+        import types
+        import er003_v1_n3_01_tts_generate as gen
+        calls = []
+        orig = gen.secondary_asr.evaluate_attempt_with_cascade_detail
+
+        def fake(*a, **k):
+            calls.append(k)
+            return {"classification": None, "verified": False, "cascade_invoked": True, "final_status": "X", "steps": []}
+        gen.secondary_asr.evaluate_attempt_with_cascade_detail = fake
+        try:
+            # (1) TRUE_CONTENT_MISMATCH -> 減速後経路は即False。cascade(=Eq Layer入口)を一切呼ばない
+            cls = types.SimpleNamespace(classification="TRUE_CONTENT_MISMATCH")
+            self.assertFalse(gen._post_slowdown_cascade_rescue({}, "pay showed coffee", "pay show coffee", cls, "x.wav", "full_story_part1"))
+            self.assertEqual(calls, [])
+            # (2) UNCERTAIN -> cascadeが呼ばれる(feature flag有効時)。ただし Eq Layer flag は渡されない(未配線の記録: OPEN-122(4))
+            if gen.secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED:
+                cls = types.SimpleNamespace(classification="ASR_VALIDATION_UNCERTAIN")
+                gen._post_slowdown_cascade_rescue({}, "Melos said.", "Mello said.", cls, "x.wav", "full_story_part1")
+                self.assertEqual(len(calls), 1)
+                self.assertNotIn("enable_connected_speech_equivalence_layer", calls[0])
+        finally:
+            gen.secondary_asr.evaluate_attempt_with_cascade_detail = orig
+
+    def test_equivalence_layer_entry_is_true_content_mismatch_only(self):
+        import inspect
+        import er006_secondary_asr_01 as sa
+        src = inspect.getsource(sa.evaluate_attempt_with_cascade_detail)
+        self.assertIn('cls.classification == "TRUE_CONTENT_MISMATCH"', src)
 
 
 if __name__ == "__main__":

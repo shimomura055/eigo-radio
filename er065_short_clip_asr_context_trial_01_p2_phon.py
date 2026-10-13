@@ -258,18 +258,68 @@ def explain_diff(canonical: str, asr: str) -> dict:
 
 
 # ---------------------------------------------------------------- 3分類
-def three_way(expl: dict, independent_evidence: Optional[dict] = None) -> dict:
-    """許容 / NG / HR の3分類(Trial方針、Production未配線)。
+# [委任_04訂正] 設計前提(安全):
+#  (P1) 本判定(explain_diff / three_way)は「Production の protected_check(否定・時制・数・固有名詞等の保護語チェック)通過後にのみ」
+#       適用する前提で設計されている。本モジュール自体は protected_check を持たない。protected_check なしに単独で使うと
+#       `can't talk`->`can talk`(T+T融合)や `great time`->`gray time` を『連結発音で説明可』とし得る(回帰testで固定)。
+#       その代替の最小安全装置として risk_flags()(否定・時制/語尾・数・辞書語どうしの別語化)を用意し、three_way_with_flags()では
+#       フラグが1つでもあれば『許容』にせずHR(警告併記)へ止める。HR画面にも警告を併記する前提。
+#  (P2) 音響証拠 acoustic_geminate_ok は s+s(摩擦音連続)でしか較正されていない。落ちた音素が S/Z かつ境界型が
+#       GEMINATE_SAME/SIBILANT_SEQ の領域以外(破裂音境界など)では『測定不能』として証拠に数えない。
+#  (P3) second_engine_exact(Azure + Phrase List 等)は Phrase List により綴りが誘導されるため独立証拠から除外(無視)する。
+ACOUSTIC_CALIBRATED_BOUNDARIES = {"GEMINATE_SAME", "SIBILANT_SEQ"}
+ACOUSTIC_CALIBRATED_DROPPED = {"S", "Z"}
+NEG_MARKERS = {"not", "no", "never", "cannot", "neither", "nor", "without", "none", "nothing"}
+NUMBER_WORDS = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve",
+                "twenty", "thirty", "forty", "fifty", "hundred", "thousand", "million", "billion", "first", "second", "third"}
+
+
+def _is_neg(t: str) -> bool:
+    return t in NEG_MARKERS or t.endswith("n't") or t.endswith("n’t")
+
+
+def risk_flags(canonical: str, asr: str) -> list[str]:
+    """否定・時制/語尾・数・辞書語どうしの別語化を伴う差分に警告を付ける(protected_checkの代替ではなく最小の安全装置)。"""
+    cw, aw = tokens(canonical), tokens(asr)
+    flags: list[str] = []
+    sm = difflib.SequenceMatcher(a=cw, b=aw, autojunk=False)
+    for tag, i1, i2, j1, j2 in sm.get_opcodes():
+        if tag == "equal":
+            continue
+        c_reg, a_reg = cw[i1:i2], aw[j1:j2]
+        if any(_is_neg(t) for t in c_reg + a_reg):
+            flags.append("negation")
+        if any(re.fullmatch(r"\d+", t) or t in NUMBER_WORDS for t in c_reg + a_reg):
+            flags.append("number")
+        for ct in c_reg:
+            for at in a_reg:
+                if at != ct and ct.startswith(at) and len(ct) - len(at) <= 2 and ct.endswith(("ed", "d", "t", "s", "es")):
+                    flags.append("tense_or_suffix_drop")
+        if c_reg and a_reg and all(cmu(t) for t in c_reg) and all(cmu(t) for t in a_reg) and c_reg != a_reg:
+            flags.append("lexical_change_between_dictionary_words")
+    return sorted(set(flags))
+
+
+def _acoustic_applicable(expl: dict) -> bool:
+    """全差分領域が、音響証拠の較正された型(S/Zの脱落 かつ 摩擦音境界)か。"""
+    regs = [r for r in expl.get("regions", []) if r.get("verdict") == "PHON_EXPLAINED_FUSION"]
+    return bool(regs) and all(r.get("boundary") in ACOUSTIC_CALIBRATED_BOUNDARIES and r.get("dropped") in ACOUSTIC_CALIBRATED_DROPPED
+                              for r in regs)
+
+
+def three_way(expl: dict, independent_evidence: Optional[dict] = None, flags: Optional[list] = None) -> dict:
+    """許容 / 説明不能(既存判定に委譲) / HR の3分類(Trial方針、Production未配線)。クラス名は後方互換のため 'NG' を維持
+    (意味は『連結発音では説明不能=Productionの既存判定に委ねる』であり、人間がNGと確定した意味ではない)。
 
     独立証拠 independent_evidence(辞書、無ければ{}):
-      acoustic_geminate_ok: bool|None  境界の摩擦/閉鎖区間長が融合長(較正済み閾値以上)
-      second_engine_exact:  bool|None  別engine(Azure+Phrase List等)が綴りまでcanonical一致
+      acoustic_geminate_ok: bool|None  境界の摩擦区間長が融合長(較正済み閾値以上)。s+s(S/Z脱落かつ摩擦音境界)以外は測定不能として無視
+      second_engine_exact:  無視(Phrase List誘導のため独立証拠にしない)
     ルール:
       EXACT                          -> 許容(通常PASS、本機構の対象外)
-      PHON_EXPLAINED_FUSION          -> 独立証拠が1つ以上True: 許容 / 全てFalse(音響が融合長でない): HR / 証拠なし: HR
+      PHON_EXPLAINED_FUSION          -> 適用可能な音響証拠がTrue: 許容 / False: HR / 証拠なし: HR
       PHON_EXPLAINED_VOICING / PHON_HOMOPHONE_ONLY / NO_PHONOLOGICAL_EVIDENCE -> HR
-      NOT_EXPLAINED                  -> NG(連結発音では説明できない=別語/語幹置換/母音違い等。Productionの既存判定に委ねる)
-    ASRの推測(=expl)だけでは決して『許容』にしない。
+      NOT_EXPLAINED                  -> NG(説明不能。既存判定に委譲)
+    flags(risk_flags)が非空なら『許容』にせずHR(警告併記)。ASRの推測(=expl)だけでは決して『許容』にしない。
     """
     ev = independent_evidence or {}
     v = expl["verdict"]
@@ -278,11 +328,16 @@ def three_way(expl: dict, independent_evidence: Optional[dict] = None) -> dict:
     if v == "NOT_EXPLAINED":
         return {"class": "NG", "reason": "not_explained_by_connected_speech"}
     if v == "PHON_EXPLAINED_FUSION":
-        pos = [k for k in ("acoustic_geminate_ok", "second_engine_exact") if ev.get(k) is True]
-        neg = [k for k in ("acoustic_geminate_ok",) if ev.get(k) is False]
-        if pos and not neg:
-            return {"class": "許容", "reason": "explained+independent:" + ",".join(pos)}
-        if neg:
-            return {"class": "HR", "reason": "explained_but_acoustic_negative"}
-        return {"class": "HR", "reason": "explained_but_no_independent_evidence"}
-    return {"class": "HR", "reason": v.lower()}
+        ac = ev.get("acoustic_geminate_ok") if _acoustic_applicable(expl) else None
+        if ac is False:
+            return {"class": "HR", "reason": "explained_but_acoustic_negative", "flags": flags or []}
+        if ac is True:
+            if flags:
+                return {"class": "HR", "reason": "explained+acoustic_but_risk_flag", "flags": flags}
+            return {"class": "許容", "reason": "explained+independent:acoustic_geminate_ok"}
+        return {"class": "HR", "reason": "explained_but_no_independent_evidence", "flags": flags or []}
+    return {"class": "HR", "reason": v.lower(), "flags": flags or []}
+
+
+def three_way_with_flags(canonical: str, asr: str, independent_evidence: Optional[dict] = None) -> dict:
+    return three_way(explain_diff(canonical, asr), independent_evidence, risk_flags(canonical, asr))
