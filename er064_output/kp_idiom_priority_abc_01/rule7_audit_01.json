@@ -1,0 +1,192 @@
+{
+  "cost_jpy": 0,
+  "note": "Production関数kc.validate_canonicalization_itemを呼ぶのみ(修正なし)",
+  "cases": [
+    {
+      "case": "pump_its_fist: display=pump its fist -> key=pump one's fist (reason=generalize)",
+      "key_phrase": "pump one's fist",
+      "display_phrase": "pump its fist",
+      "source_span": "your wallet pumps its fist",
+      "normalization_reason": "generalize_person_dependent_reference",
+      "ok": true,
+      "reasons": [],
+      "person_generalization_valid": true
+    },
+    {
+      "case": "pump_its_fist: display=pump its fist -> key=pump someone's fist (its->someone's)",
+      "key_phrase": "pump someone's fist",
+      "display_phrase": "pump its fist",
+      "source_span": "your wallet pumps its fist",
+      "normalization_reason": "generalize_person_dependent_reference",
+      "ok": false,
+      "reasons": [
+        "key_phrase(\"pump someone's fist\")がdisplay_phraseと一致せず、source_span('your wallet pumps its fist')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: sourc"
+      ],
+      "person_generalization_valid": false
+    },
+    {
+      "case": "pump_its_fist: display=pumps its fist -> key=pump one's fist (活用形+its同時変更)",
+      "key_phrase": "pump one's fist",
+      "display_phrase": "pumps its fist",
+      "source_span": "pumps its fist",
+      "normalization_reason": "generalize_person_dependent_reference",
+      "ok": false,
+      "reasons": [
+        "key_phrase(\"pump one's fist\")がdisplay_phraseと一致せず、source_span('pumps its fist')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書"
+      ],
+      "person_generalization_valid": false
+    },
+    {
+      "case": "pump_its_fist: display=pumps its fist -> key=pumps one's fist (活用形保持)",
+      "key_phrase": "pumps one's fist",
+      "display_phrase": "pumps its fist",
+      "source_span": "pumps its fist",
+      "normalization_reason": "generalize_person_dependent_reference",
+      "ok": true,
+      "reasons": [],
+      "person_generalization_valid": true
+    },
+    {
+      "case": "pump_its_fist: display=pump its fist -> key=pump its fist (無変更)",
+      "key_phrase": "pump its fist",
+      "display_phrase": "pump its fist",
+      "source_span": "pumps its fist",
+      "normalization_reason": null,
+      "ok": true,
+      "reasons": [],
+      "person_generalization_valid": false
+    },
+    {
+      "case": "pump_its_fist: display=pump its fist -> key=pump one's fist (reasonがgeneralize以外)",
+      "key_phrase": "pump one's fist",
+      "display_phrase": "pump its fist",
+      "source_span": "pumps its fist",
+      "normalization_reason": "other",
+      "ok": false,
+      "reasons": [
+        "key_phrase(\"pump one's fist\")がdisplay_phraseと一致せず、source_span('pumps its fist')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書"
+      ],
+      "person_generalization_valid": true
+    },
+    {
+      "case": "hold_breath: display=hold one's breath(無変更, src=holding its breath)",
+      "key_phrase": "hold one's breath",
+      "display_phrase": "hold one's breath",
+      "source_span": "holding its breath",
+      "normalization_reason": null,
+      "ok": true,
+      "reasons": [],
+      "person_generalization_valid": false
+    },
+    {
+      "case": "his->someone's: display=lose his temper -> key=lose someone's temper",
+      "key_phrase": "lose someone's temper",
+      "display_phrase": "lose his temper",
+      "source_span": "lose his temper",
+      "normalization_reason": "generalize_person_dependent_reference",
+      "ok": true,
+      "reasons": [],
+      "person_generalization_valid": true
+    },
+    {
+      "case": "her->one's: display=bite her tongue -> key=bite one's tongue",
+      "key_phrase": "bite one's tongue",
+      "display_phrase": "bite her tongue",
+      "source_span": "bit her tongue",
+      "normalization_reason": "generalize_person_dependent_reference",
+      "ok": true,
+      "reasons": [],
+      "person_generalization_valid": true
+    },
+    {
+      "case": "their->someone's: display=catch their attention -> key=catch someone's attention",
+      "key_phrase": "catch someone's attention",
+      "display_phrase": "catch their attention",
+      "source_span": "catch their attention",
+      "normalization_reason": "generalize_person_dependent_reference",
+      "ok": true,
+      "reasons": [],
+      "person_generalization_valid": true
+    },
+    {
+      "case": "my->someone's: display=take my place -> key=take someone's place (OPEN-310)",
+      "key_phrase": "take someone's place",
+      "display_phrase": "take my place",
+      "source_span": "take my place",
+      "normalization_reason": "generalize_person_dependent_reference",
+      "ok": false,
+      "reasons": [
+        "key_phrase(\"take someone's place\")がdisplay_phraseと一致せず、source_span('take my place')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない"
+      ],
+      "person_generalization_valid": false
+    },
+    {
+      "case": "my->one's: display=take my place -> key=take one's place",
+      "key_phrase": "take one's place",
+      "display_phrase": "take my place",
+      "source_span": "take my place",
+      "normalization_reason": "generalize_person_dependent_reference",
+      "ok": true,
+      "reasons": [],
+      "person_generalization_valid": true
+    },
+    {
+      "case": "its->someone's: display=in its own right -> key=in someone's own right",
+      "key_phrase": "in someone's own right",
+      "display_phrase": "in its own right",
+      "source_span": "in its own right",
+      "normalization_reason": "generalize_person_dependent_reference",
+      "ok": false,
+      "reasons": [
+        "key_phrase(\"in someone's own right\")がdisplay_phraseと一致せず、source_span('in its own right')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに"
+      ],
+      "person_generalization_valid": false
+    },
+    {
+      "case": "hidden_clock: display=its own hidden clock -> key=one's own hidden clock",
+      "key_phrase": "one's own hidden clock",
+      "display_phrase": "its own hidden clock",
+      "source_span": "its own hidden clock",
+      "normalization_reason": "generalize_person_dependent_reference",
+      "ok": true,
+      "reasons": [],
+      "person_generalization_valid": true
+    },
+    {
+      "case": "hidden_clock: display=own hidden clock -> key=one's own hidden clock (語追加、語数不一致)",
+      "key_phrase": "one's own hidden clock",
+      "display_phrase": "own hidden clock",
+      "source_span": "its own hidden clock",
+      "normalization_reason": "generalize_person_dependent_reference",
+      "ok": false,
+      "reasons": [
+        "key_phrase(\"one's own hidden clock\")がdisplay_phraseと一致せず、source_span('its own hidden clock')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_s"
+      ],
+      "person_generalization_valid": false
+    },
+    {
+      "case": "loan_future: display=take out against the future -> key=loan against the future (辞書外の名詞追加)",
+      "key_phrase": "loan against the future",
+      "display_phrase": "take out against the future",
+      "source_span": "taken out against the future",
+      "normalization_reason": "other",
+      "ok": false,
+      "reasons": [
+        "key_phrase('loan against the future')がdisplay_phraseと一致せず、source_span('taken out against the future')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7:"
+      ],
+      "person_generalization_valid": false
+    },
+    {
+      "case": "loan_future: display=take out against the future -> key=a loan against the future",
+      "key_phrase": "a loan against the future",
+      "display_phrase": "take out against the future",
+      "source_span": "taken out against the future",
+      "normalization_reason": "other",
+      "ok": false,
+      "reasons": [
+        "key_phrase('a loan against the future')がdisplay_phraseと一致せず、source_span('taken out against the future')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule"
+      ],
+      "person_generalization_valid": false
+    }
+  ]
+}

@@ -20732,3 +20732,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 結果: 文末無音平均 v5 Adv 475 / PD8 490 / F5 Adv 438ms、v5 Std(6%後)525 / F5 Std 517ms。文ごとの差SD約190ms・相関r=0.08でtake間ばらつきが大きい。Assembly pauseは全版同一(実効gap約1.3-1.6s)。仕様逸脱・実装バグ・後処理誤適用は検出なし。Std 6%減速の寄与は+約6%。
 - 判断: 文末無音の測定ではv5がPD8/F5より長いことは裏付けられず、聴感差の候補は文中小無音(+55%)・Std Part1のtake固有の長い文末・segment間gap・WPM低下。新ポーズ基準/後処理/Prompt緩和案はOPEN-332としてUDR(実装なし)。OPEN-299/326/329へ追記。
 - 証跡: `er057_output/coffee_v5_pause_01/REPORT_PAUSE_ROOT_CAUSE_01.md`・`sentence_end_pause_stats.json`・`segment_silence_and_effective_gaps.json`・`take_variance_comparison.json`、script `er057_coffee_v5_pause_01_{measure,segments,compare}.py`。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-V5-PAUSE-ROOT-CAUSE-01_01.md`。
+
+## FAMILY-X-KP-IDIOM-PRIORITY-ABC-TRIAL-01 委任_01(2026-10-13、Trial記録、採用判断なし。Production未配線)
+- 範囲: 固定したCoffee候補リスト(Phase D M1 v3 run1、pump-fist入り)で、選定Prompt(template 11行目)の優先順位のみA(現行、逐語一致をtest固定)/B(1と2交換)/C(指定順)を Std/Adv n=3で比較。Production関数(選定gate/canonicalization/重複QA)のまま、retryは予算のため未実行。モデルgpt-6-luna(Production比較可能性の例外)。
+- 結果: pump-fist選定採択 A5/6・B5/6・C4/6。run最終gate完全PASS A6/6・B2/6・C1/6(INVALID主因はpump以外のRule7語追加系: `be behind`->`be behind price increases`、`raw-bean`->`raw-bean prices`、`its own hidden clock`->`something's...`)。Cは透明寄りの名詞連語が入り不透明表現が押し出される。Status案: A=VALIDATED相当(現行維持)、B/C=REJECTED案(最終判断はユーザー)。
+- Rule7監査(¥0、修正なし): person表(its/my/our->one'sのみ)とPrompt案内(someone's可)が不一致(OPEN-310と同根)。`loan against the future`型は語追加で別論点。OPEN-310/325へ追記、新規OPENなし。
+- 費用: JPY19.1078 / 20。
+- 証跡: `er064_output/kp_idiom_priority_abc_01/ABC_REPORT_01.md`、`rule7_audit_01.json`、`cost_01.json`、委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-X-KP-IDIOM-PRIORITY-ABC-TRIAL-01_01.md`。
