@@ -57,16 +57,18 @@
 | 40 | KP `no way`単独選定の最小修正P0X(Meta Adv)の採否 | **判断済み**(ユーザー事前規定「Side effect確認時は不採用・M2P0維持」を適用。Trial Status=REJECTED。Production採用なし) | いいえ | DECISION_LOG「FAMILY-X-KP-NO-WAY-MINIMAL-FIX-TRIAL-01 委任_02」、OPEN-336追記、`er064_output/kp_no_way_fix_01/TRIAL_REPORT_02.md` |
 | 41 | ASR発音同等性に基づく一般化判定(全Family共通設計方針)の実装方式・安全性(ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01) | **調査・Trial中**(設計方針はユーザー合意済み[2026-10-13、設計方針の承認のみ・Production採用ではない]。設計草案=`DESIGN_DRAFT`・Opus独立技術レビュー条件A待ち、read-only検証=テキストのみ方式はREJECTED候補/末尾確認付き方式はUSER_DECISION_REQUIRED。判断を要求する段階ではない) | いいえ(Melos最終試聴#23の依存事項。追加生成・Production反映は進めない) | OPEN-339(OPEN-122(4)/318/327/328/330/331/335と整理)、DECISION_LOG「ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01 委任_01」、`docs/pm/design_principles/connected_speech_proper_noun_phonetic_equivalence_2026-10-13.md`、`er068_output/asr_phonetic_equivalence_generalization_01/` |
 
-## 区分別集計(2026-10-13更新・41件。#41追加[ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01、調査・Trial中]。#39・#40追加。#10は判断済みへ、#14と#23は判断保留へ、#36追加)
+| 42 | Family Z Std PreviewのFamily X基準統一Promptの採否・追加調整要否(OPEN-338。設計方針=Family X基準はユーザー確定済み、変更後Promptは検証済みでなくProduction未採用) | **USER_DECISION_REQUIRED**(Trial結果: あらすじ化なし/抽象・評論調残存/終盤示唆の可能性、1サンプル) | いいえ | DECISION_LOG「FAMILY-Z-STANDARD-PREVIEW-X-ALIGNMENT-01 委任_01」、`er070_output/family_z_std_preview_x_alignment_01/TRIAL_REPORT_01.md` |
+
+## 区分別集計(2026-10-13更新・42件。#42追加[FAMILY-Z-STANDARD-PREVIEW-X-ALIGNMENT-01、USER_DECISION_REQUIRED]。#41追加[ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01、調査・Trial中]。#39・#40追加。#10は判断済みへ、#14と#23は判断保留へ、#36追加)
 
 | 区分 | 件数 | 項目# |
 |---|---|---|
 | 判断済み | 12 | 2, 3, 10, 13, 17, 34, 35, 36, 37, 38, 39, 40 |
 | 判断保留(依存事項待ち、判断時期延期) | 2 | 14, 23 |
 | 調査・Trial中 | 2 | 19, 41 |
-| USER_DECISION_REQUIRED | 20 | 1, 4(暫定), 5, 7, 8, 9, 11, 12, 15, 18, 24〜33 |
+| USER_DECISION_REQUIRED | 21 | 1, 4(暫定), 5, 7, 8, 9, 11, 12, 15, 18, 24〜33, 42 |
 | Deferred / Non-blocking | 5 | 6, 16, 20, 21, 22 |
-| 合計 | 41 | |
+| 合計 | 42 | |
 
 ## 「次工程をブロックするUDR」のみ(これだけを最優先で提示する)
 
