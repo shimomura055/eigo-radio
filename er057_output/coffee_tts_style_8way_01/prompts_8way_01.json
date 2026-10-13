@@ -1,0 +1,210 @@
+{
+ "voice": "Aoede",
+ "model": "gemini-3.8-flash-lite-tts",
+ "method": "speech_metadata(Part.speech_metadata.style)",
+ "candidates": {
+  "A": {
+   "label": "現行P8 Baseline(完全同一条件)",
+   "style": "Warm, bright, cozy storytelling in the manner of a well-loved radio feature: unhurried, richly expressive, with full vowels and gentle emphasis, never flat or sleepy. Let the pitch rise and fall a little more on key words. Add a touch more brightness and a hint of a smile in the voice, while staying unhurried. Articulate crisply: distinct consonants, clean word endings, every syllable clearly heard.",
+   "chars": 402,
+   "words": 65,
+   "sha256": "3eadf4f6f788b822c90f17ba56d893bccb5fab840358cf48845472cd4f4e5595",
+   "design_intent": "比較基準。P8逐語(sha 3eadf4f6)。",
+   "expected_side_effects": "v5実測どおり: 文中の小無音多め、Std Part1に局所長無音、take間リズム差大。",
+   "decel_word_policy": "unhurried 2回(減速語あり=現状)。",
+   "contains_unhurried": true
+  },
+  "B": {
+   "label": "P8の最小修正(減速語のみ肯定形の流れ指定へ置換、他は逐語維持)",
+   "style": "Warm, bright, cozy storytelling in the manner of a well-loved radio feature: at an easy, flowing pace, richly expressive, with full vowels and gentle emphasis, never flat or sleepy. Let the pitch rise and fall a little more on key words. Add a touch more brightness and a hint of a smile in the voice, with each phrase flowing smoothly into the next. Articulate crisply: distinct consonants, clean word endings, every syllable clearly heard.",
+   "chars": 441,
+   "words": 74,
+   "sha256": "90744852fc1abf0cd329c75cef90141a46394c932d0932b65c004a3ace966116",
+   "design_intent": "単一変数の検証: 『unhurried』が文中小無音(+55%)の原因かを、P8の他要素(声質・抑揚・明瞭さ)を保ったまま切り分ける。",
+   "expected_side_effects": "文末の間は残る可能性。『flowing』で語尾が流れて明瞭さが落ちる懸念(明瞭さ文は維持)。",
+   "decel_word_policy": "unhurriedを削除し『easy, flowing pace』『flowing smoothly into the next』へ。減速語を使わず速度は自然に委ねる(180目安に近づく想定)。",
+   "contains_unhurried": false
+  },
+  "C": {
+   "label": "不要な間の削減を明示(この1候補のみ)",
+   "style": "Warm, bright storytelling with a friendly smile in the voice. Do not pause after every sentence: take a breath only where the meaning truly needs one, and let one sentence lead straight into the next. Keep consonants distinct and word endings clean.",
+   "chars": 249,
+   "words": 42,
+   "sha256": "7e60501e99aa41e84cda26fdb921a3815c7adb4ead6c1863cd37290364c3233a",
+   "design_intent": "唯一、不要な間の削減を直接指示。意味上の息継ぎは『meaning truly needs』で残す。",
+   "expected_side_effects": "命令(Do not pause)の副作用: 息継ぎ不足、早口化、聞き疲れ、文末の語尾が詰まる。",
+   "decel_word_policy": "減速語なし。速度語も書かず、間の削減のみで全体が速くなる可能性(180を超える懸念をWPMで確認)。",
+   "contains_unhurried": false
+  },
+  "D": {
+   "label": "最短Prompt(過剰制御の回避)",
+   "style": "Warm, bright and clear, like a friendly radio host chatting naturally with one listener.",
+   "chars": 88,
+   "words": 14,
+   "sha256": "450b317fccfe11fe4fb53567a2e90fb1a22dd9fd3cc05d13002554ff8e8f6003",
+   "design_intent": "指示を最小化しモデル本来の自然な語りに任せる。過剰制御による不自然な間・抑揚を避ける。",
+   "expected_side_effects": "明瞭さ・明るさの保証が弱い。take間差が大きい可能性。",
+   "decel_word_policy": "減速語なし。chatting naturallyで会話速度。",
+   "contains_unhurried": false
+  },
+  "E": {
+   "label": "テンポ・文間のつながりを肯定形で指定(F5系の友人への語り+lively rhythm)",
+   "style": "Tell this like a short story to a friend: a lively, natural rhythm in which every sentence picks up right where the last one left off, so the whole passage sounds like one continuous thought. Warm, friendly and upbeat, with clear, credible news narration.",
+   "chars": 255,
+   "words": 44,
+   "sha256": "d07944c9491f556a4976fedb1b2e1de331dd812d9766aa45f54908a664b0345a",
+   "design_intent": "文と文を一続きの考えとして繋げる肯定形のテンポ指示。F5の『lively natural rhythm』を継承。",
+   "expected_side_effects": "友人調で口語化し、ニュース報道の信頼感が落ちる可能性(credible news narrationで補強)。",
+   "decel_word_policy": "not hurriedを含めず『lively, natural rhythm』で速度を暗示。減速語なし。",
+   "contains_unhurried": false
+  },
+  "F": {
+   "label": "明るさ・抑揚を少し強める(演技過剰は避ける)",
+   "style": "Bright, warm and smiling, with lively, melodic intonation: let the pitch lift on key words and numbers and settle gently at the end of each idea. Expressive but natural, never theatrical. Crisp consonants and clean word endings.",
+   "chars": 228,
+   "words": 37,
+   "sha256": "e08eeaa63d158773b38b1aa4c20f7e34ab35a3a3f6bb27b6653ae54b5078e591",
+   "design_intent": "明るさ・抑揚の底上げ(目標2・4)。語尾を落ち着かせて抑揚の起伏で文の終わりを作る。",
+   "expected_side_effects": "演技過剰・大げさ、数字強調で不自然な上昇調。間への直接効果は限定的。",
+   "decel_word_policy": "速度語なし。『settle gently』は語尾の抑揚指示で、減速語ではない。",
+   "contains_unhurried": false
+  },
+  "G": {
+   "label": "明瞭さと自然な会話速度の両立(Podcastホスト像)",
+   "style": "An engaging podcast host explaining an interesting news story to a curious listener at a natural conversational pace: every word easy to catch, with a smooth, steady rhythm and a warm, friendly tone. Consonants distinct, word endings complete.",
+   "chars": 243,
+   "words": 38,
+   "sha256": "3255b56e9f66374b1abdd98cf8df07a5fb7af6ede987fdadade3f6a2603c0c4f",
+   "design_intent": "明瞭さ(目標3)と自然速度(目標5)の両立。PD4系Podcast像+P8の明瞭さ文を要約。",
+   "expected_side_effects": "平板化・熱量不足、明るさがP8より下がる懸念。",
+   "decel_word_policy": "減速語なし。『natural conversational pace』『smooth, steady rhythm』で180目安に整合。",
+   "contains_unhurried": false
+  },
+  "H": {
+   "label": "PD1系(報道キャスター調、実測最速)+PD8の温かさの組合せ",
+   "style": "A warm, composed daytime radio news presenter telling a human-interest story: clear, credible and approachable, with a smile in the voice. Group words into meaningful phrases, keep the phrasing smooth and connected, and breathe naturally between ideas.",
+   "chars": 252,
+   "words": 37,
+   "sha256": "49af7437080d2d216d854f316f7820ec0a9ec74ada52fd99f00c079b6dd60dd7",
+   "design_intent": "PD1(報道キャスター調、実測WPM最速186.8)の落ち着いた信頼感+PD8系の smile を統合。意味単位でまとめ文中の細かい止まりを減らす。",
+   "expected_side_effects": "硬い・淡々とした印象で明るさ不足、抑揚が控えめ。",
+   "decel_word_policy": "減速語なし。『breathe naturally between ideas』で息継ぎを意味の切れ目に限定。",
+   "contains_unhurried": false
+  }
+ },
+ "similarity_pairs": {
+  "A-B": {
+   "token_jaccard": 0.797,
+   "char_seq_ratio": 0.199
+  },
+  "A-C": {
+   "token_jaccard": 0.233,
+   "char_seq_ratio": 0.052
+  },
+  "A-D": {
+   "token_jaccard": 0.097,
+   "char_seq_ratio": 0.216
+  },
+  "A-E": {
+   "token_jaccard": 0.081,
+   "char_seq_ratio": 0.024
+  },
+  "A-F": {
+   "token_jaccard": 0.243,
+   "char_seq_ratio": 0.063
+  },
+  "A-G": {
+   "token_jaccard": 0.117,
+   "char_seq_ratio": 0.012
+  },
+  "A-H": {
+   "token_jaccard": 0.13,
+   "char_seq_ratio": 0.034
+  },
+  "B-C": {
+   "token_jaccard": 0.244,
+   "char_seq_ratio": 0.049
+  },
+  "B-D": {
+   "token_jaccard": 0.087,
+   "char_seq_ratio": 0.208
+  },
+  "B-E": {
+   "token_jaccard": 0.075,
+   "char_seq_ratio": 0.023
+  },
+  "B-F": {
+   "token_jaccard": 0.253,
+   "char_seq_ratio": 0.06
+  },
+  "B-G": {
+   "token_jaccard": 0.163,
+   "char_seq_ratio": 0.012
+  },
+  "B-H": {
+   "token_jaccard": 0.133,
+   "char_seq_ratio": 0.032
+  },
+  "C-D": {
+   "token_jaccard": 0.163,
+   "char_seq_ratio": 0.315
+  },
+  "C-E": {
+   "token_jaccard": 0.172,
+   "char_seq_ratio": 0.032
+  },
+  "C-F": {
+   "token_jaccard": 0.169,
+   "char_seq_ratio": 0.034
+  },
+  "C-G": {
+   "token_jaccard": 0.172,
+   "char_seq_ratio": 0.057
+  },
+  "C-H": {
+   "token_jaccard": 0.169,
+   "char_seq_ratio": 0.064
+  },
+  "D-E": {
+   "token_jaccard": 0.178,
+   "char_seq_ratio": 0.047
+  },
+  "D-F": {
+   "token_jaccard": 0.093,
+   "char_seq_ratio": 0.025
+  },
+  "D-G": {
+   "token_jaccard": 0.179,
+   "char_seq_ratio": 0.066
+  },
+  "D-H": {
+   "token_jaccard": 0.175,
+   "char_seq_ratio": 0.041
+  },
+  "E-F": {
+   "token_jaccard": 0.091,
+   "char_seq_ratio": 0.062
+  },
+  "E-G": {
+   "token_jaccard": 0.183,
+   "char_seq_ratio": 0.04
+  },
+  "E-H": {
+   "token_jaccard": 0.161,
+   "char_seq_ratio": 0.02
+  },
+  "F-G": {
+   "token_jaccard": 0.14,
+   "char_seq_ratio": 0.034
+  },
+  "F-H": {
+   "token_jaccard": 0.082,
+   "char_seq_ratio": 0.029
+  },
+  "G-H": {
+   "token_jaccard": 0.121,
+   "char_seq_ratio": 0.044
+  }
+ },
+ "max_jaccard_excluding_A_B": 0.253
+}
