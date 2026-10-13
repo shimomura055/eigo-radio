@@ -50,6 +50,7 @@
 | 33 | OPEN-333/334/335(JA-ASR低重大度候補、HR queue verdict記録) | **UDR / OPEN候補** | いいえ | OPEN-333/334/335 |
 | 34 | OPEN-323 | **判断済み**(CLOSED) | いいえ | `docs/pm/delegation_log/2026-10-13_EIGO-RADIO-QUALITY-CROSS-FAMILY-FOLLOWUP-01_OPEN323.md` |
 | 35 | Melos HR 3件(Std part1_c5 attempt4/Adv part1_c5/Std comment_1) | **判断済み**(個別承認、record_human_approval済み) | いいえ | `docs/pm/delegation_log/2026-10-13_FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01_01.md`、CURRENT_SPEC追記 |
+| 36 | TRIAL-03予算¥300承認(Coffee H-speed音声Prompt探索、Trialのみ) | **判断済み**(2026-10-13ユーザー承認、累計¥300上限、Production採用なし) | いいえ | `docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-TRIAL-04_01.md` |
 
 ## 区分別集計(2026-10-13更新・35件。#10は判断済みへ、#14と#23は判断保留へ)
 

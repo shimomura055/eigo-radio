@@ -1,0 +1,200 @@
+{
+ "voice": "Aoede",
+ "model": "gemini-3.8-flash-lite-tts",
+ "method": "speech_metadata(Part.speech_metadata.style)",
+ "baseline": {
+  "H0": {
+   "style": "A warm, composed daytime radio news presenter telling a human-interest story: clear, credible and approachable, with a smile in the voice. Group words into meaningful phrases, keep the phrasing smooth and connected, and breathe naturally between ideas.",
+   "sha256": "49af7437080d2d216d854f316f7820ec0a9ec74ada52fd99f00c079b6dd60dd7"
+  }
+ },
+ "candidates": {
+  "M01": {
+   "style": "A gentle friend telling a true story across the table, bright and warm, smiling as you speak. Go slightly slower than usual; when the story turns to a new point, start it as easily as you start any sentence.",
+   "chars": 207,
+   "words": 39,
+   "sentences": 2,
+   "sha256": "51b8df85996f35505831dc00fbe98083c10c76548f2e6433b0bf059b014c8485",
+   "axes": {
+    "speed": "slightly slower(K01型、指示文として1回)",
+    "pause": "話題転換(新しい要点)でも通常の文頭と同じ入り方(肯定形)",
+    "voice": "親しい語り手(K01の穏やか+明るい構造を保持)",
+    "strength": "中",
+    "structure": "K01構造(像+減速指示+接続指示)の接続指示を話題転換の扱いへ置換"
+   },
+   "design_intent": "K01(raw167.8/172.6)の構造を保ち、flow straight onの代わりに話題転換点の扱いを指示。Std長無音3本(約18/33秒付近)が減るかを見る。",
+   "prior_basis": "K01(減速有効・Std長無音3本)、Step A(S05/S09に長無音が集中)",
+   "expected_side_effects": "接続指示が文頭全般を詰めてAdvが速くなる",
+   "max_jaccard_vs_prior": {
+    "cand": "K01",
+    "jaccard": 0.319
+   },
+   "jaccard_vs_H0": 0.103,
+   "seq_ratio_vs_max": 0.502,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false,
+   "contains_position_words": false
+  },
+  "M02": {
+   "style": "A friendly, clear narrator relating a true story at a slightly slower pace than usual. Take up each new point just as you take up any sentence, starting right after the last word, as one connected telling.",
+   "chars": 205,
+   "words": 37,
+   "sentences": 2,
+   "sha256": "0253f9f306bfc38118258e575bdb162d5f44085d146dd7c5178eab27410d38ee",
+   "axes": {
+    "speed": "slightly slower pace than usual(L02型、1回)",
+    "pause": "新しい要点も他の文と同じく直前語の直後から開始(肯定形)",
+    "voice": "ナレーター(明瞭・親しみ)",
+    "strength": "中〜やや強",
+    "structure": "L02構造(ナレーター+相対ペース+一続きの語り)の禁止形を肯定の開始位置指示+話題転換へ置換"
+   },
+   "design_intent": "L02(raw165.0/171.5、Std文末563ms・長無音870ms1本)の構造を保ち、待たない(禁止形)を直前語の直後から開始の肯定形+話題転換の扱いに置換。",
+   "prior_basis": "L02(Std/Adv速度が揃う)、Step A",
+   "expected_side_effects": "right after the last wordが文末全体を詰めすぎてAdv超過、または息継ぎ不足",
+   "max_jaccard_vs_prior": {
+    "cand": "L02",
+    "jaccard": 0.475
+   },
+   "jaccard_vs_H0": 0.102,
+   "seq_ratio_vs_max": 0.677,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false,
+   "contains_position_words": false
+  },
+  "M03": {
+   "style": "A bright, warm voice with a smile in it, telling a true story to a friend. Read slightly slower than usual, and treat every change of topic as just another sentence break.",
+   "chars": 171,
+   "words": 32,
+   "sentences": 2,
+   "sha256": "72798353308528d99eba3808c5e5d0af58b84c4350ebf3e7e80848713d81e97d",
+   "axes": {
+    "speed": "slightly slower(像に埋めず独立の指示文として置換)",
+    "pause": "話題の変わり目=普通の文の切れ目と同じ扱い(肯定形)",
+    "voice": "明るく温かい声",
+    "strength": "中",
+    "structure": "像(速度語なし)+速度指示文+話題転換指示文"
+   },
+   "design_intent": "L05(像に減速を埋めて不発)の逆で、減速語を話者像から外し独立した指示文にして効きを確保。話題転換を通常の文末と同等に扱わせる。",
+   "prior_basis": "L05(像埋込は不発)、K01/L02(指示としての減速は有効)、Step A",
+   "expected_side_effects": "3要素(声/速度/話題転換)の指示分離で話題転換指示が薄まる",
+   "max_jaccard_vs_prior": {
+    "cand": "K01",
+    "jaccard": 0.395
+   },
+   "jaccard_vs_H0": 0.17,
+   "seq_ratio_vs_max": 0.481,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false,
+   "contains_position_words": false
+  },
+  "M04": {
+   "style": "A friendly radio presenter, calm and clear, sharing a true story. Let your pace be measured. When the story moves on to something new, go into it as lightly as into any other sentence.",
+   "chars": 184,
+   "words": 34,
+   "sentences": 3,
+   "sha256": "b689e360e2f24a509c3fa4ae7ade6d6dba9f3c7aab7d9fc41867f86adfc3484e",
+   "axes": {
+    "speed": "measured(指示文として1回、K06/L04型の語を別文に置く)",
+    "pause": "話題転換でも他の文頭と同じ軽さで入る(肯定形)",
+    "voice": "落ち着いた明瞭なラジオ進行役",
+    "strength": "中",
+    "structure": "像+独立の速度文(measured)+話題転換文(3文)"
+   },
+   "design_intent": "measuredをK06の話者像内ではなく独立の短い指示文に置き直す。K06はStd文末478/486msで再現済み、Advで長無音1040ms/ASR揺れがあり、話題転換の指示で補えるかを見る。",
+   "prior_basis": "K06(Std合格2/2、Advで長無音)、Step A",
+   "expected_side_effects": "短い独立文でmeasuredの減速力が出ない/Advが速い",
+   "max_jaccard_vs_prior": {
+    "cand": "K01",
+    "jaccard": 0.245
+   },
+   "jaccard_vs_H0": 0.145,
+   "seq_ratio_vs_max": 0.386,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false,
+   "contains_position_words": false
+  },
+  "M05": {
+   "style": "A warm, bright storyteller telling a true story, going slightly slower than usual. Finish every sentence fully, then move straight to the next one, even when the story changes direction.",
+   "chars": 186,
+   "words": 30,
+   "sentences": 2,
+   "sha256": "c915f73aefab8afcd924fcd250ec85eb7b806c4ff9ebafa05a4100606178599f",
+   "axes": {
+    "speed": "slightly slower(像側ではなく進行の描写、1回)",
+    "pause": "語尾を最後まで言い切って次へ直行、話の方向が変わるときも同様(肯定形)",
+    "voice": "温かく明るい語り手",
+    "strength": "中",
+    "structure": "像+減速+語尾言い切り→次へ(話題転換を含む)"
+   },
+   "design_intent": "L01(語尾を柔らかく終えて即次へ、不発)を最後まで言い切って次へに変え、話題転換の扱いを併記して再検証。",
+   "prior_basis": "L01(Std長無音0だが速度ずれ)、Step A",
+   "expected_side_effects": "言い切りの強調で文末が長くなる/Advが速すぎる(L01型)",
+   "max_jaccard_vs_prior": {
+    "cand": "K01",
+    "jaccard": 0.349
+   },
+   "jaccard_vs_H0": 0.091,
+   "seq_ratio_vs_max": 0.577,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false,
+   "contains_position_words": false
+  },
+  "M06": {
+   "style": "A calm, friendly voice with a smile in it, speaking at a measured pace. Say each sentence ending clearly and carry on at once, giving a change of subject the same short stop as every other sentence.",
+   "chars": 198,
+   "words": 37,
+   "sentences": 2,
+   "sha256": "90a6bf3769944b0b63221a44ec22d81b685a183a1a01cfae91f1acea8f684f91",
+   "axes": {
+    "speed": "measured pace(指示文内の語として1回)",
+    "pause": "語尾を明瞭に言い切って即続行、話題転換にも他と同じ短い間(肯定形)",
+    "voice": "穏やかで親しみのある声",
+    "strength": "中",
+    "structure": "像+速度+語尾明瞭→続行+話題転換の間の統一"
+   },
+   "design_intent": "語尾を落とさず次へ系の2案目。M05と異なり減速語をmeasuredにし、話題転換の間を他と同じ短い間と明示して長無音を均す。",
+   "prior_basis": "L04(均一化の逆効果。ここでは長さでなく短さの統一を指示)、K06、Step A",
+   "expected_side_effects": "同じ短い間が機械的な均一さを生む(L04型)",
+   "max_jaccard_vs_prior": {
+    "cand": "K05",
+    "jaccard": 0.289
+   },
+   "jaccard_vs_H0": 0.121,
+   "seq_ratio_vs_max": 0.406,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false,
+   "contains_position_words": false
+  }
+ },
+ "similarity_pairs": {
+  "M01-M02": 0.312,
+  "M01-M03": 0.364,
+  "M01-M04": 0.271,
+  "M01-M05": 0.318,
+  "M01-M06": 0.105,
+  "M02-M03": 0.22,
+  "M02-M04": 0.216,
+  "M02-M05": 0.229,
+  "M02-M06": 0.143,
+  "M03-M04": 0.157,
+  "M03-M05": 0.302,
+  "M03-M06": 0.245,
+  "M04-M05": 0.14,
+  "M04-M06": 0.24,
+  "M05-M06": 0.073
+ },
+ "self_check": {
+  "duplicates": "M01-M06 sha全相異、J01-J13・K01-K08・L01-L06・H0ともsha相異(assert済)。M内最大Jaccard: M01-M03=0.364, M01-M05=0.318, M01-M02=0.312, M03-M05=0.302, M01-M04=0.271",
+  "vs_prior": "J/K/L/H0を部分文字列に含む・含まれる候補なし(assert済)。最大Jaccard(J/K/L): M01:K01=0.319, M02:L02=0.475, M03:K01=0.395, M04:K01=0.245, M05:K01=0.349, M06:K05=0.289 / H0: M01=0.103, M02=0.102, M03=0.17, M04=0.145, M05=0.091, M06=0.121",
+  "contradictions": "矛盾なし(減速語は各1回、接続は話題転換の扱いに限定)。paragraphの語は使わない(tts_inputに段落区切りが無いため。silence_positions_r4.md)。",
+  "redundancy": "速度語は各1回、数値WPM・unhurried/slowly不使用・位置の語を直接指定していない(assert済)。全て肯定形(not/never/do not不使用、assert済)",
+  "sentence_count": {
+   "M01": 2,
+   "M02": 2,
+   "M03": 2,
+   "M04": 3,
+   "M05": 2,
+   "M06": 2
+  }
+ }
+}

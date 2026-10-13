@@ -20840,3 +20840,11 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - Round 2方針(Fable判断): (1)M2固定(`match:`注釈は外す) (2)(b1)LLM補助抽出はRound 2に含めない(未承認、ユーザー判断事項としてFableが別途提示) (3)Production gate(Redundancy/canonicalization)は変更しない(NG/INVALIDは計測・分類のみ) (4)P3を土台にP5を再設計(Production P0の「比喩・感情表現を同格」文の復活、定着表現の比喩的・擬人的使用を定着表現扱い、低優先抑制維持、出力契約再確認)。
 - Status: `VALIDATED`/`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない。Production採用はユーザーのみ。CURRENT_SPEC無変更。Production code/Prompt/DB/gate無変更。
 - 反映先: OPEN-310(source_span超え表示拡張サブクラス)・OPEN-337(Wiktionary照会オフライン索引化の必要性)へ追記のみ、新規OPENなし(Round 3完了時にまとめる)。証跡: `er064_output/kp_integrated_opt_01/round1/ROUND1_REPORT_01.md`、`round2/ROUND2_REPORT_02.md`。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-X-KP-INTEGRATED-OPTIMIZATION-TRIAL-01_01.md`・`_02.md`。
+
+### FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-TRIAL-04 委任_01(2026-10-13、TRIAL-03継続・Round 4。採用判断なし。Status=VALIDATED(Trial到達上限)/Production未反映)
+- (a)【ユーザー承認(要旨)】2026-10-13「音声Prompt探索 TRIAL-03 について予算を¥300まで与えるので効率的にトライアルを行ってください」。Trialのみ。TRIAL-03 Round 1〜3の¥72.99を含め累計¥300上限(ハードストップ¥290)。
+- (b)【Fable探索計画・STOP条件(ユーザー提示済み)】Round 4=ノイズ切り分け+再現する構造の確定。成功STOP=単一PromptでStd/Adv 3take全合格→試聴ページ、無益STOP=2 Round連続で最良候補の目標距離が改善しない、予算STOP、品質STOP(同一構造で重大ASR事故2回以上)。
+- (c)【Round 4結果】Step A: Round 1-3全64wav(Std/Adv各32)の長無音(>=800ms)はStdの73%が第5/第9文末(delay.→The、continue.→The)、Advの89%が第7/第4文末に集中。ただしtts_inputに段落区切りは無く、話題転換の文末である。M01-M06(話題転換の扱いを肯定形で指示、12call)でも同位置の無音は減らず、仮説は支持されず。単一Prompt両合格0件。最良M05=Std暫定合格、Advは速度172.7/文末587ms/長無音0だがPrimary ASRのみ不合格(want→wanna)。Step D(再現性)・E(試聴ページ)は条件未達で未実施。STOP条件4種: 成功/無益/予算は非該当、品質STOPは該当の可能性あり(M05/M06 Adv ASR 2件、Fable判断)。Round 5は設計案のみ(別委任)。
+- (d)【費用・モデル】12call、JPY15.28、累計JPY88.27/300。gemini-3.8-flash-lite-tts(要求=応答、最新)、voice Aoede。
+- Status: VALIDATED(Trial)。`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない。Production code/Prompt/DB/gate無変更。CURRENT_SPEC無変更。Production採用はユーザーのみ。
+- 反映先: OPEN-332へは追記せず(Fableが次判断時に整理)、新規OPENなし。証跡: `er057_output/coffee_tts_style_h_speed_04/round4/ROUND4_REPORT_01.md`、`silence_positions_r4.md`。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-TRIAL-04_01.md`。
