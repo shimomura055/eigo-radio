@@ -1,0 +1,583 @@
+{
+ "voice": "Aoede",
+ "model": "gemini-3.8-flash-lite-tts",
+ "method": "speech_metadata(Part.speech_metadata.style)",
+ "baseline": {
+  "H0": {
+   "style": "A warm, composed daytime radio news presenter telling a human-interest story: clear, credible and approachable, with a smile in the voice. Group words into meaningful phrases, keep the phrasing smooth and connected, and breathe naturally between ideas.",
+   "sha256": "49af7437080d2d216d854f316f7820ec0a9ec74ada52fd99f00c079b6dd60dd7",
+   "note": "TRIAL-02 H0 Take1再利用(再生成なし)"
+  }
+ },
+ "candidates": {
+  "J01": {
+   "style": "A warm, friendly radio presenter telling a human-interest story at about 150 words per minute. Sound clear and smiling, and carry each sentence straight into the next without a long stop.",
+   "chars": 187,
+   "words": 31,
+   "sentences": 2,
+   "sha256": "a260edefa43e73b241903789b47a1a7d1052e2624250ac6998ca12ae0d61ea24",
+   "axes": {
+    "speed": "数値WPM(150)",
+    "pause": "文末停止抑制(carry ... without a long stop)",
+    "voice": "自然な語りかけ",
+    "strength": "明確",
+    "structure": "速度中心",
+    "brevity": "必要条件明示の短文"
+   },
+   "design_intent": "数値WPMがTTSの速度に効くかを検証。Adv現状175-187なので150指定でどこまで下がるか。",
+   "expected_side_effects": "数値を無視して速いまま/数値に引かれて間が増える恐れ",
+   "contains_unhurried_slowly": false
+  },
+  "J02": {
+   "style": "Speak at a slow, steady 130 words per minute, warm and clear, with a smile in your voice. Do not pause after sentences; let each one roll into the next.",
+   "chars": 152,
+   "words": 30,
+   "sentences": 2,
+   "sha256": "a695d10dac7b6c3f3875e0a4f917f5b8fe3190d37a913b74d249f69992be95b5",
+   "axes": {
+    "speed": "数値WPM(130, slow steadyで強め)",
+    "pause": "文末停止禁止(Do not pause)",
+    "voice": "自然な語りかけ",
+    "strength": "強め",
+    "structure": "速度+ポーズ併記",
+    "brevity": "必要条件明示の短文"
+   },
+   "design_intent": "J01より強い数値指定+強い停止抑制。数値の強さ依存(150 vs 130)と相反効果(速度↓でポーズ↑)の検出。",
+   "expected_side_effects": "過減速、語尾の引き延ばし、no pauseによる不自然な詰め込み",
+   "contains_unhurried_slowly": false
+  },
+  "J03": {
+   "style": "A warm storyteller reading a human-interest story in a measured, deliberate pace, clear and smiling. Let each sentence lead naturally into the next, pausing only briefly at the end of a sentence.",
+   "chars": 195,
+   "words": 32,
+   "sentences": 2,
+   "sha256": "322aed420aeaf973dbeb8ca6960d737caa92447e28eda144ac2b576900ce9472",
+   "axes": {
+    "speed": "速度語(measured, deliberate)",
+    "pause": "文末は短く(only briefly)",
+    "voice": "落ち着いたストーリーテリング",
+    "strength": "明確",
+    "structure": "速度中心",
+    "brevity": "必要条件明示の短文"
+   },
+   "design_intent": "measured/deliberateという速度語の強さ検証。slowlyを避けつつ減速できるか。",
+   "expected_side_effects": "deliberateが文末間・文中間を増やす恐れ(相反)",
+   "contains_unhurried_slowly": false
+  },
+  "J04": {
+   "style": "A friendly radio host chatting with one listener in a relaxed, easy tempo. Keep the voice bright and clear, with a smile in it.",
+   "chars": 127,
+   "words": 24,
+   "sentences": 2,
+   "sha256": "2d31d5420561e3e4ce6097930be379f944898a066199b88c4f310b41edd608f9",
+   "axes": {
+    "speed": "テンポ語(relaxed, easy)",
+    "pause": "指示なし",
+    "voice": "自然な語りかけ",
+    "strength": "控えめ",
+    "structure": "速度中心",
+    "brevity": "最小限"
+   },
+   "design_intent": "ポーズ指示なしでテンポ語のみ。会話調だけでペースが落ちるか(TRIAL-02 H2はcalm conversationalでも速かった)。",
+   "expected_side_effects": "速度ほぼ不変の可能性、間の挙動はモデル任せ",
+   "contains_unhurried_slowly": false
+  },
+  "J05": {
+   "style": "A warm radio presenter, clear and approachable, with a smile in the voice. Never leave a long silence after a sentence: let the end of each sentence glide into the start of the next, as one continuous story.",
+   "chars": 207,
+   "words": 38,
+   "sentences": 2,
+   "sha256": "42d3a95953ab6ff828011097e30d300e67b74a4efc2b91b57a21d44933fd8cd5",
+   "axes": {
+    "speed": "指示なし",
+    "pause": "文末停止抑制を強く(Never ... long silence / glide)",
+    "voice": "ラジオニュース調寄り(presenter)",
+    "strength": "強め",
+    "structure": "ポーズ中心",
+    "brevity": "必要条件明示の短文"
+   },
+   "design_intent": "ポーズ指示のみの純粋効果(速度指示なし)。文末無音がどこまで短くなり、速度が上がるか(相反効果の観察)。",
+   "expected_side_effects": "ポーズ短縮で全体が速くなる(目標超過)可能性が高い",
+   "contains_unhurried_slowly": false
+  },
+  "J06": {
+   "style": "A friendly storyteller. Link words into long, smooth phrases and keep the voice moving through each clause, taking short natural breaths only at commas and sentence ends.",
+   "chars": 170,
+   "words": 27,
+   "sentences": 2,
+   "sha256": "2d4cf138989968c59e976ef2fe7d2f3c494c983572d96c8a5fb316c98fa8d712",
+   "axes": {
+    "speed": "指示なし",
+    "pause": "フレーズ接続強調+息継ぎ位置限定",
+    "voice": "自然な語りかけ",
+    "strength": "明確",
+    "structure": "ポーズ中心",
+    "brevity": "必要条件明示の短文"
+   },
+   "design_intent": "文中のつながり(フレーズ接続)を強調した時の文中無音・速度への影響。",
+   "expected_side_effects": "長いphraseで早口化、息継ぎ位置限定で抑揚が平板になる恐れ",
+   "contains_unhurried_slowly": false
+  },
+  "J07": {
+   "style": "A warm, calm radio presenter, bright and clear. Take short, natural breaths between ideas, and never let a breath linger.",
+   "chars": 121,
+   "words": 20,
+   "sentences": 2,
+   "sha256": "db2980e83a6fa8144e293ea294683184eda6f4b02b985283c1ff6cde573f3867",
+   "axes": {
+    "speed": "指示なし(calmのみ)",
+    "pause": "自然な息継ぎ優先(短く)",
+    "voice": "ラジオニュース調寄り",
+    "strength": "控えめ",
+    "structure": "ポーズ中心",
+    "brevity": "最小限"
+   },
+   "design_intent": "TRIAL-02 H0の『breathe naturally』を一から短く言い換え、息継ぎ指示の最小効果を観察。",
+   "expected_side_effects": "速度は元のHに近い=速め傾向の再現の可能性",
+   "contains_unhurried_slowly": false
+  },
+  "J08": {
+   "style": "A crisp radio news announcer reading a human-interest story at a calm broadcast pace, clear, credible and warm, with an upbeat smile in the voice. Keep sentence endings short and connected.",
+   "chars": 189,
+   "words": 31,
+   "sentences": 2,
+   "sha256": "f752c1cf3fef61c76688df9dbec55a55e9d184948781570610321e3d93572e4d",
+   "axes": {
+    "speed": "テンポ語(calm broadcast pace)",
+    "pause": "文末は短く接続",
+    "voice": "ラジオニュース調",
+    "strength": "明確",
+    "structure": "簡潔統合",
+    "brevity": "必要条件明示の短文"
+   },
+   "design_intent": "ニュース調でcalm指定+crispの変化を見る(TRIAL-02 H1のnews-broadcast paceとの対比)。",
+   "expected_side_effects": "crispが速度を上げる恐れ、硬さで温かみ低下",
+   "contains_unhurried_slowly": false
+  },
+  "J09": {
+   "style": "A natural, easygoing narrator speaking to a friend, warm and animated, with lively intonation and a smile in the voice. Talk at a relaxed pace, as if you were just telling someone what you read.",
+   "chars": 194,
+   "words": 35,
+   "sentences": 2,
+   "sha256": "e398e9d2f231de53cea136746aaad7db98008aad861f33757d8c2b4ee401cf8c",
+   "axes": {
+    "speed": "relaxed pace(語りかけの含意)",
+    "pause": "指示なし",
+    "voice": "自然な語りかけ(友人への語り)",
+    "strength": "控えめ",
+    "structure": "簡潔統合",
+    "brevity": "必要条件明示の短文"
+   },
+   "design_intent": "最も口語的な像+抑揚(lively intonation)重視。声質(抑揚)への効果と速度の関係を見る。",
+   "expected_side_effects": "animatedが速度を上げる恐れ、口語で語尾が崩れる恐れ",
+   "contains_unhurried_slowly": false
+  },
+  "J10": {
+   "style": "A calm storyteller telling a true story to a small audience, warm and gentle, with expressive intonation. Slow the pace slightly, but keep the silence between sentences short and each ending connected to what follows.",
+   "chars": 217,
+   "words": 35,
+   "sentences": 2,
+   "sha256": "dc69610a8a4b72f1238dcf06df51dfb79a813d239ef2fcae196acc24563dac12",
+   "axes": {
+    "speed": "slightly slower(控えめな減速)",
+    "pause": "文末停止抑制(short silence / connected)",
+    "voice": "落ち着いたストーリーテリング",
+    "strength": "明確",
+    "structure": "速度+ポーズ併記(統合)",
+    "brevity": "必要条件明示の短文"
+   },
+   "design_intent": "減速と文末間短縮を同時に明示し、相反効果を打ち消せるかの本命候補の一つ。",
+   "expected_side_effects": "slowが文中間・語尾を延ばす、またはbut節で片方が無視される",
+   "contains_unhurried_slowly": false
+  },
+  "J11": {
+   "style": "Warm and clear, with a smile. Calm pace, short pauses.",
+   "chars": 54,
+   "words": 10,
+   "sentences": 2,
+   "sha256": "3555c3fb4c238131b3e5340184f5bcbfd739d9c9bd06da6f3d64b65a076601fe",
+   "axes": {
+    "speed": "calm pace",
+    "pause": "short pauses",
+    "voice": "指定最小",
+    "strength": "控えめ",
+    "structure": "簡潔統合",
+    "brevity": "最小限(極短)"
+   },
+   "design_intent": "最小限の指示で何が効くか。声質像を省いた時の声質劣化も確認。",
+   "expected_side_effects": "声質像が薄くなる。極短Prompt(下限探索、2文)",
+   "contains_unhurried_slowly": false
+  },
+  "J12": {
+   "style": "Speak warmly and clearly, with a smile in the voice. Keep a pace of about 150 words per minute, and keep every pause between sentences under half a second.",
+   "chars": 155,
+   "words": 29,
+   "sentences": 2,
+   "sha256": "4d6a07370b855b20e697d1debb21fcec2140ee7da10c6301b40f58096bdc85fc",
+   "axes": {
+    "speed": "数値WPM(150)",
+    "pause": "数値の停止上限(0.5s未満)",
+    "voice": "自然な語りかけ",
+    "strength": "明確",
+    "structure": "簡潔統合",
+    "brevity": "必要条件明示の短文"
+   },
+   "design_intent": "数値条件(速度+間の上限)の明示が効くかを検証。J01との差で『数値の間指定』の効果を分離。",
+   "expected_side_effects": "数値の間指定は無視される可能性、短すぎる間で不自然",
+   "contains_unhurried_slowly": false
+  },
+  "J13": {
+   "style": "Read noticeably slower than a news bulletin, warm and bright, with expressive intonation. Between sentences keep the silence very short and let the voice carry on.",
+   "chars": 163,
+   "words": 26,
+   "sentences": 2,
+   "sha256": "ec4ecd8e91b942a674931468324a69e2e1d85c75f534bea343a06c39e4ef5ff6",
+   "axes": {
+    "speed": "相対速度(noticeably slower than a news bulletin)",
+    "pause": "文末の間を非常に短く(very short / carry on)",
+    "voice": "ラジオニュース調との対比",
+    "strength": "強め",
+    "structure": "簡潔統合",
+    "brevity": "必要条件明示の短文"
+   },
+   "design_intent": "相対基準で強めに減速+強く間を詰める。強め指示の限界と副作用を見る。",
+   "expected_side_effects": "過減速で不自然、または間の抑制が負けて長沈黙",
+   "contains_unhurried_slowly": false
+  }
+ },
+ "similarity_pairs": {
+  "J01-J02": {
+   "jaccard": 0.273,
+   "seq": 0.448
+  },
+  "J01-J03": {
+   "jaccard": 0.333,
+   "seq": 0.56
+  },
+  "J01-J04": {
+   "jaccard": 0.143,
+   "seq": 0.363
+  },
+  "J01-J05": {
+   "jaccard": 0.289,
+   "seq": 0.056
+  },
+  "J01-J06": {
+   "jaccard": 0.227,
+   "seq": 0.314
+  },
+  "J01-J07": {
+   "jaccard": 0.15,
+   "seq": 0.403
+  },
+  "J01-J08": {
+   "jaccard": 0.239,
+   "seq": 0.532
+  },
+  "J01-J09": {
+   "jaccard": 0.115,
+   "seq": 0.236
+  },
+  "J01-J10": {
+   "jaccard": 0.137,
+   "seq": 0.035
+  },
+  "J01-J11": {
+   "jaccard": 0.118,
+   "seq": 0.224
+  },
+  "J01-J12": {
+   "jaccard": 0.156,
+   "seq": 0.456
+  },
+  "J01-J13": {
+   "jaccard": 0.106,
+   "seq": 0.251
+  },
+  "J02-J03": {
+   "jaccard": 0.244,
+   "seq": 0.346
+  },
+  "J02-J04": {
+   "jaccard": 0.231,
+   "seq": 0.366
+  },
+  "J02-J05": {
+   "jaccard": 0.349,
+   "seq": 0.033
+  },
+  "J02-J06": {
+   "jaccard": 0.174,
+   "seq": 0.379
+  },
+  "J02-J07": {
+   "jaccard": 0.122,
+   "seq": 0.3
+  },
+  "J02-J08": {
+   "jaccard": 0.213,
+   "seq": 0.416
+  },
+  "J02-J09": {
+   "jaccard": 0.184,
+   "seq": 0.399
+  },
+  "J02-J10": {
+   "jaccard": 0.16,
+   "seq": 0.027
+  },
+  "J02-J11": {
+   "jaccard": 0.188,
+   "seq": 0.408
+  },
+  "J02-J12": {
+   "jaccard": 0.333,
+   "seq": 0.463
+  },
+  "J02-J13": {
+   "jaccard": 0.182,
+   "seq": 0.413
+  },
+  "J03-J04": {
+   "jaccard": 0.116,
+   "seq": 0.348
+  },
+  "J03-J05": {
+   "jaccard": 0.318,
+   "seq": 0.065
+  },
+  "J03-J06": {
+   "jaccard": 0.2,
+   "seq": 0.312
+  },
+  "J03-J07": {
+   "jaccard": 0.122,
+   "seq": 0.348
+  },
+  "J03-J08": {
+   "jaccard": 0.295,
+   "seq": 0.526
+  },
+  "J03-J09": {
+   "jaccard": 0.137,
+   "seq": 0.211
+  },
+  "J03-J10": {
+   "jaccard": 0.16,
+   "seq": 0.117
+  },
+  "J03-J11": {
+   "jaccard": 0.152,
+   "seq": 0.257
+  },
+  "J03-J12": {
+   "jaccard": 0.13,
+   "seq": 0.274
+  },
+  "J03-J13": {
+   "jaccard": 0.106,
+   "seq": 0.307
+  },
+  "J04-J05": {
+   "jaccard": 0.25,
+   "seq": 0.03
+  },
+  "J04-J06": {
+   "jaccard": 0.15,
+   "seq": 0.377
+  },
+  "J04-J07": {
+   "jaccard": 0.152,
+   "seq": 0.363
+  },
+  "J04-J08": {
+   "jaccard": 0.256,
+   "seq": 0.361
+  },
+  "J04-J09": {
+   "jaccard": 0.19,
+   "seq": 0.305
+  },
+  "J04-J10": {
+   "jaccard": 0.111,
+   "seq": 0.023
+  },
+  "J04-J11": {
+   "jaccard": 0.2,
+   "seq": 0.331
+  },
+  "J04-J12": {
+   "jaccard": 0.222,
+   "seq": 0.248
+  },
+  "J04-J13": {
+   "jaccard": 0.189,
+   "seq": 0.352
+  },
+  "J05-J06": {
+   "jaccard": 0.167,
+   "seq": 0.276
+  },
+  "J05-J07": {
+   "jaccard": 0.2,
+   "seq": 0.311
+  },
+  "J05-J08": {
+   "jaccard": 0.255,
+   "seq": 0.434
+  },
+  "J05-J09": {
+   "jaccard": 0.176,
+   "seq": 0.334
+  },
+  "J05-J10": {
+   "jaccard": 0.154,
+   "seq": 0.061
+  },
+  "J05-J11": {
+   "jaccard": 0.176,
+   "seq": 0.322
+  },
+  "J05-J12": {
+   "jaccard": 0.174,
+   "seq": 0.425
+  },
+  "J05-J13": {
+   "jaccard": 0.174,
+   "seq": 0.232
+  },
+  "J06-J07": {
+   "jaccard": 0.128,
+   "seq": 0.33
+  },
+  "J06-J08": {
+   "jaccard": 0.17,
+   "seq": 0.318
+  },
+  "J06-J09": {
+   "jaccard": 0.12,
+   "seq": 0.324
+  },
+  "J06-J10": {
+   "jaccard": 0.143,
+   "seq": 0.021
+  },
+  "J06-J11": {
+   "jaccard": 0.091,
+   "seq": 0.259
+  },
+  "J06-J12": {
+   "jaccard": 0.136,
+   "seq": 0.345
+  },
+  "J06-J13": {
+   "jaccard": 0.136,
+   "seq": 0.336
+  },
+  "J07-J08": {
+   "jaccard": 0.175,
+   "seq": 0.194
+  },
+  "J07-J09": {
+   "jaccard": 0.091,
+   "seq": 0.203
+  },
+  "J07-J10": {
+   "jaccard": 0.143,
+   "seq": 0.089
+  },
+  "J07-J11": {
+   "jaccard": 0.273,
+   "seq": 0.331
+  },
+  "J07-J12": {
+   "jaccard": 0.077,
+   "seq": 0.348
+  },
+  "J07-J13": {
+   "jaccard": 0.2,
+   "seq": 0.359
+  },
+  "J08-J09": {
+   "jaccard": 0.204,
+   "seq": 0.449
+  },
+  "J08-J10": {
+   "jaccard": 0.229,
+   "seq": 0.039
+  },
+  "J08-J11": {
+   "jaccard": 0.3,
+   "seq": 0.321
+  },
+  "J08-J12": {
+   "jaccard": 0.205,
+   "seq": 0.378
+  },
+  "J08-J13": {
+   "jaccard": 0.205,
+   "seq": 0.415
+  },
+  "J09-J10": {
+   "jaccard": 0.2,
+   "seq": 0.049
+  },
+  "J09-J11": {
+   "jaccard": 0.176,
+   "seq": 0.323
+  },
+  "J09-J12": {
+   "jaccard": 0.174,
+   "seq": 0.372
+  },
+  "J09-J13": {
+   "jaccard": 0.174,
+   "seq": 0.409
+  },
+  "J10-J11": {
+   "jaccard": 0.212,
+   "seq": 0.28
+  },
+  "J10-J12": {
+   "jaccard": 0.174,
+   "seq": 0.43
+  },
+  "J10-J13": {
+   "jaccard": 0.286,
+   "seq": 0.568
+  },
+  "J11-J12": {
+   "jaccard": 0.172,
+   "seq": 0.44
+  },
+  "J11-J13": {
+   "jaccard": 0.172,
+   "seq": 0.313
+  },
+  "J12-J13": {
+   "jaccard": 0.2,
+   "seq": 0.352
+  }
+ },
+ "self_check": {
+  "duplicates": "全13件sha相異。最大jaccardペア: J02-J05=0.349, J01-J03=0.333, J02-J12=0.333, J03-J05=0.318, J08-J11=0.3, J03-J08=0.295",
+  "contradictions": "矛盾なし(J02のslow/no pause、J10/J13の減速+間短縮の併記は相反効果検証のため意図的)",
+  "redundancy": "各Promptは速度/間/声質を各1回ずつ。J11のみ極短(意図)",
+  "H0_append_check": "H0を部分文字列に含む/含まれる候補なし(assert済)。H0とのjaccard: {\"J01\": 0.271, \"J02\": 0.22, \"J03\": 0.22, \"J04\": 0.233, \"J05\": 0.286, \"J06\": 0.18, \"J07\": 0.186, \"J08\": 0.378, \"J09\": 0.167, \"J10\": 0.189, \"J11\": 0.162, \"J12\": 0.213, \"J13\": 0.188}",
+  "sentence_count": {
+   "J01": 2,
+   "J02": 2,
+   "J03": 2,
+   "J04": 2,
+   "J05": 2,
+   "J06": 2,
+   "J07": 2,
+   "J08": 2,
+   "J09": 2,
+   "J10": 2,
+   "J11": 2,
+   "J12": 2,
+   "J13": 2
+  }
+ }
+}
