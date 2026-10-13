@@ -20969,3 +20969,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - Regression: er062 64/er063 59/er026_family_z_fiction 21/er030 108、全PASS。Strategy L稼働実績=run_e2e_02の既存記録引用(新規runなし)。
 - SSOT更新: CURRENT_SPEC M2供給節、OPEN-344→CLOSED(REJECTED)、OPEN-347はFamily X限定明記、UDR #45判断済み(判断済み14/UDR 28/合計50)、REPORT_LEDGER。
 - Status: Closeout完了。Family Z `PRODUCTION_WIRED`は主張しない(Z E2EはSTOP継続)。証跡: `er073_output/family_z_kp_db_hybrid_m2p0_migration_01/closeout/`。
+
+## FAMILY-Z-PREVIEW-COMMENT1-DUAL-TRIAL-01 委任_01(2026-10-13、Trial、JPY1.19、Production無変更・採用判断なし)
+- 実施: Family Z Std(Melos run_e2e_02 std.md)でTrial A(Preview先行→Comment 1補足)/Trial B(Comment 1先行[Advanced準拠意図]→Preview)を各3 take=12生成(gpt-6-luna effort high、再生成・選別なし、TTSなし)。6セット全文・評価・A/B比較・既存方式比較・Production影響調査は`er076_output/family_z_preview_comment1_dual_trial_01/SETS_01.md`/`PRODUCTION_IMPACT_01.md`。
+- 所見(事実): A=Preview具体性良好3/3・事実誤り0・lint OK 6/6、Comment 1は前提/発端の再話。B(実装)=Comment 1がAdv型にならず(role本文優先)Previewが3/3抽象・評論調、lint NG 1/6。
+- 分類案(Sonnet案): A=USER_DECISION_REQUIRED(VALIDATED寄り)、B=REJECTED(この実装に限る。Adv型ListeningFocus適用は未検証)。確定判断ではない。
+- 未決: UDR #51(役割分担方式の選択。#48と関連)。`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`なし。Production code/Prompt/Validator/Gate無変更(state_guard changed=[])、Family X/Z Adv無変更、記事再生成・音声化なし。
+- Regression: er062 64件・er026_family_z_fiction 21件 全PASS。

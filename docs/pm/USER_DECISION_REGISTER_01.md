@@ -67,17 +67,18 @@
 | 48 | Family Z Std PreviewのComment参照条件(FAMILY-Z-STANDARD-PREVIEW-COMMENT-DEPENDENCY-TRIAL-01、OPEN-338)の結果を受けた方針=PreviewとComment 1の役割衝突への対処[P1 Preview構成指針追加=Family X共通仕様変更要否 / P2 Preview先行+Comment 1調整=処理フロー変更(Opus条件A) / 現状維持]、Comment 1重複の許容範囲 | **USER_DECISION_REQUIRED** | いいえ(Family Z記事再生成・音声化STOP維持中) | OPEN-338、`er074_output/family_z_std_preview_comment_dependency_01/FINAL_REPORT_01.md` |
 | 49 | Coffee Std/Advの聴感判断(Std 6%減速後168WPM[参考157±6の外]・Adv 178WPM・文末ポーズ平均572ms。Productionに自動の速度/ポーズ合否基準なし、新Gateは作っていない) | **USER_DECISION_REQUIRED**(試聴ページで確認) | いいえ | `er071_output/m2p0_n01_production_wiring_01/EVIDENCE_01.md`、試聴ページ |
 | 50 | Std KP『based on』型のRule7 INVALID再発への対処(selection段の機能語fragment選択防止・canonicalization側対処は新仕様候補/手動KP差替え/Std KPなしで進行)と、Adv/Std正式`--stage assemble`の完走手段(v5再利用segmentのAudio Validation Gate上の扱い=OPEN-346②) | **USER_DECISION_REQUIRED** | はい(Family X `PRODUCTION_WIRED`付与の前提) | OPEN-343/346/310、`er071_output/m2p0_n01_production_wiring_01/FINAL_REPORT_02.md` |
+| 51 | Family Z Std Preview/Comment 1の役割分担方式(A=Preview先行・Comment 1補足 / B=Comment 1先行[今回実装はREJECTED案、Adv型Comment 1適用は未検証] / E方式[Preview単独先行・Comment現行] / 現状維持)、およびStd Comment 1を聴取ガイド化するか。#48(P1/P2/現状維持)の具体化・関連 | **USER_DECISION_REQUIRED** | いいえ(Family Z記事再生成・音声化STOP維持中) | OPEN-338、`er076_output/family_z_preview_comment1_dual_trial_01/SETS_01.md`・`PRODUCTION_IMPACT_01.md`(FAMILY-Z-PREVIEW-COMMENT1-DUAL-TRIAL-01) |
 
-## 区分別集計(2026-10-13更新・50件。#45を判断済み化[Strategy L維持・移行案REJECTED、FAMILY-Z-KP-STRATEGY-L-DECISION-CLOSEOUT-01]。#49・#50追加・#46判断済み化・#45はTrial承認済み/移行方式採用判断のみ未決[FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 委任_03]。#48追加[Comment参照条件Trial、USER_DECISION_REQUIRED]。#45〜#47追加[M2P0/N01 Production配線、USER_DECISION_REQUIRED]。#44追加[3 take比較、USER_DECISION_REQUIRED]。#43追加[分割Trial R1判断、USER_DECISION_REQUIRED]。#41はOpus条件A後にUSER_DECISION_REQUIRED化。#42追加[FAMILY-Z-STANDARD-PREVIEW-X-ALIGNMENT-01、USER_DECISION_REQUIRED]。#41追加[ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01、調査・Trial中]。#39・#40追加。#10は判断済みへ、#14と#23は判断保留へ、#36追加)
+## 区分別集計(2026-10-13更新・51件(#51追加: FAMILY-Z-PREVIEW-COMMENT1-DUAL-TRIAL-01)。#45を判断済み化[Strategy L維持・移行案REJECTED、FAMILY-Z-KP-STRATEGY-L-DECISION-CLOSEOUT-01]。#49・#50追加・#46判断済み化・#45はTrial承認済み/移行方式採用判断のみ未決[FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 委任_03]。#48追加[Comment参照条件Trial、USER_DECISION_REQUIRED]。#45〜#47追加[M2P0/N01 Production配線、USER_DECISION_REQUIRED]。#44追加[3 take比較、USER_DECISION_REQUIRED]。#43追加[分割Trial R1判断、USER_DECISION_REQUIRED]。#41はOpus条件A後にUSER_DECISION_REQUIRED化。#42追加[FAMILY-Z-STANDARD-PREVIEW-X-ALIGNMENT-01、USER_DECISION_REQUIRED]。#41追加[ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01、調査・Trial中]。#39・#40追加。#10は判断済みへ、#14と#23は判断保留へ、#36追加)
 
 | 区分 | 件数 | 項目# |
 |---|---|---|
 | 判断済み | 14 | 2, 3, 10, 13, 17, 34, 35, 36, 37, 38, 39, 40, 45, 46 |
 | 判断保留(依存事項待ち、判断時期延期) | 2 | 14, 23 |
 | 調査・Trial中 | 1 | 19 |
-| USER_DECISION_REQUIRED | 28 | 1, 4(暫定), 5, 7, 8, 9, 11, 12, 15, 18, 24〜33, 41, 42, 43, 44, 47, 48, 49, 50 |
+| USER_DECISION_REQUIRED | 29 | 1, 4(暫定), 5, 7, 8, 9, 11, 12, 15, 18, 24〜33, 41, 42, 43, 44, 47, 48, 49, 50, 51 |
 | Deferred / Non-blocking | 5 | 6, 16, 20, 21, 22 |
-| 合計 | 50 | |
+| 合計 | 51 | |
 
 ## 「次工程をブロックするUDR」のみ(これだけを最優先で提示する)
 
