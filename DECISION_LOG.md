@@ -20725,3 +20725,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - `limit_comment3_part`(Part3先頭25%・最低2段落・到着/結末マーカー除外、Melos run_e2e_02で施行済み)は現状維持。Melos固有マーカーの共通化は『今回は実施しない』(Deferredではない)。
 - 対象ファイル: OPEN_ITEMS.md OPEN-323行(CLOSED)のみ。Melos原稿・音声・supportファイルは無変更、再生成なし。Production変更なし。API呼出・費用JPY0。
 - 委任ログ: `docs/pm/delegation_log/2026-10-13_EIGO-RADIO-QUALITY-CROSS-FAMILY-FOLLOWUP-01_OPEN323.md`。
+
+## FAMILY-X-COFFEE-V5-PAUSE-ROOT-CAUSE-01 委任_01(2026-10-13、オフライン調査記録のみ。区分: 音声品質調査、Production変更なし、新仕様なし)
+- 調査: ユーザーがCoffee v5に感じる『文末ごとの不自然に長い間』を、local faster-whisper(small)語timestamp+原稿difflib整列+無音run(-40dBFS/50ms)で全文末(Adv25/Std34境界)を測定。v5/v4(同一wav)・PD8 Trial・v3・F5の比較。費用JPY0、API呼出なし、Production state不変。
+- 由来確定: v5 Full Story 6本は**v4新規生成(2026-10-12 15:12、P8=PD8+3文、style sha 3eadf4f6)の流用**で、PD8 Trial take(sha b20b1208等、style 329ff46a)の再利用ではない(再利用はv3 Advのみ)。「v5のFull StoryはTrialと同一take」という過去説明はv4/v5に誤り。原稿tts_input shaは全版同一。v5 runnerはFull Story未生成(Std R2/Adv P3のみruntime発火)。
+- 結果: 文末無音平均 v5 Adv 475 / PD8 490 / F5 Adv 438ms、v5 Std(6%後)525 / F5 Std 517ms。文ごとの差SD約190ms・相関r=0.08でtake間ばらつきが大きい。Assembly pauseは全版同一(実効gap約1.3-1.6s)。仕様逸脱・実装バグ・後処理誤適用は検出なし。Std 6%減速の寄与は+約6%。
+- 判断: 文末無音の測定ではv5がPD8/F5より長いことは裏付けられず、聴感差の候補は文中小無音(+55%)・Std Part1のtake固有の長い文末・segment間gap・WPM低下。新ポーズ基準/後処理/Prompt緩和案はOPEN-332としてUDR(実装なし)。OPEN-299/326/329へ追記。
+- 証跡: `er057_output/coffee_v5_pause_01/REPORT_PAUSE_ROOT_CAUSE_01.md`・`sentence_end_pause_stats.json`・`segment_silence_and_effective_gaps.json`・`take_variance_comparison.json`、script `er057_coffee_v5_pause_01_{measure,segments,compare}.py`。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-V5-PAUSE-ROOT-CAUSE-01_01.md`。
