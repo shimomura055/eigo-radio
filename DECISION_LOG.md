@@ -20793,3 +20793,9 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - RESTART_STORM STOP解除: Fable承認の`--clear-stop --reason`を1回実行(`audit_stop_sentinel.jsonl`にCLEARED記録、STOP_ALL不在・無変更)。pages/page_verifyを各1回(直近300秒のLAUNCH数<=2を確認)、rc=0、費用JPY0。
 - 完成版Standard/Advanced試聴ページ公開(commit 17f65941)。Playwright実再生: https://shimomura055.github.io/eigo-radio/user_test/family_z_melos_01/ Standard 44/44・Advanced 45/45再生OK、HTTP>=400無し、console error無し。local page_verifyのseek_ok_all=falseはhttp.serverのRange非対応による既知の偽陰性(runner側で合否除外)。
 - PRODUCTION_WIRED未達(ユーザー試聴承認・OPEN-306/320/331/318/327/330未判断)。累計(Melos E2E)約233.5/300、本委任追加JPY0。
+
+## FAMILY-X-KP-CANDIDATE-SELECTION-QUALITY-DESIGN-01 委任_01(2026-10-13、設計案提出・採用判断なし)
+- 範囲: Key Phrase候補選定品質の調査・設計のみ(費用JPY0、LLM/TTS/ASR呼出0、Production code/Prompt/DB無変更)。Wiktionary公開APIを既存関数で1回だけ照会(17語、無料)。
+- 実証した原因: `lag`が残り`time lag`が選ばれない=抽出段(Wiktionary online lookup予算60の並びがほぼアルファベット順で、Advの`time lag`は未一致2-3-gram pool 694件中76番目[v4/v5とも]。既存関数照会で`time lag`はWiktionaryヒット)。`in the ring`への短縮=LLM補助抽出(Phase D extractor)の出力そのもの(span/core_spanとも`in the ring`、Rule7・縮約・包含除外は無関係)。既存機構はIdiom/Collocation/単語/記事独自比喩を区別せず、CEFR-J・wordfreqでは既知性・連語強度を機械判定不可(`right away`=A1+A1、`show up`=A2+A2、`time lag`のZipf=`lag`のZipf=3.67)。
+- 提案(未承認): Pkg U1-U4(上流機械処理)/Pkg P(Family X guidance追記のみ、現行6指標の順序維持)/Pkg E(補助抽出v4=OPEN-325(b1)従属)/Pkg R(Rule7ヘッドワード=OPEN-310従属)/Pkg X(解説ページ用レコード案)。机上のみで有料Trial未実施。
+- 新規OPEN-336起票、OPEN-325/310へ相互参照追記。CURRENT_SPEC.md無変更。設計書: `docs/pm/design/2026-10-13_KP-CANDIDATE-SELECTION-QUALITY-DESIGN-01.md`。次はFableによるOpus独立レビュー(条件A)。
