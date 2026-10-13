@@ -20756,6 +20756,7 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 副次発見: `normalize_ja`が〜/、を除去した直後にNORMALIZED_MATCHとなり、3〜5日vs35日・3、4人vs34人が通ることを実測 → 新規OPEN-334(修正なし)。
 - テスト: test_01 18件+test_02 31件=49件全PASS。state不変確認`state_guard_02.json`(changed=[])。付帯: commit b46ec8b8の事後secret scan(--rev/--paths)hits=0。
 - 証跡: `er066_output/ja_asr_orthographic_equivalence_01/`(`before_after_tables_02.md`/`before_after_02.json`/`state_guard_02.json`/`eval_02_stdout.txt`)、委任ログは本回答(Fable)へ引き渡し。OPEN-319/287/333更新、OPEN-334新規。
+- 参照追記(委任_03、記録補完): 報告書`er066_output/ja_asr_orthographic_equivalence_01/REPORT_02.md`・委任ログ`docs/pm/delegation_log/2026-10-13_JA-ASR-ORTHOGRAPHIC-EQUIVALENCE-COMPREHENSIVE-01_02.md`(委任_03で作成)。
 
 
 ## FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01 委任_03(2026-10-13、連結発音対策の徹底監査+評価単位+NG時Fallback+再発防止。監査/Trial記録。採用判断は書かない)
