@@ -60,15 +60,21 @@ def main():
         import subprocess
         subprocess.run([A.FFMPEG, "-y", "-loglevel", "error", "-i", src, "-ac", "1", "-b:a", "96k", os.path.join(AUD, fn)], check=True)
         std_clips.append((n, fn, rj(os.path.join(RUN, "a2", "parts.json"))[f"part{n}"]))
+    # 委任_03: Std part2のN01 attempt1(ASR不合格・減速前の生音声)を参考clipとして追加(ユーザー判断用)
+    import subprocess as _sp
+    _a1 = os.path.join(RUN, "a2", "narration", "attempts", "full_story_part2_attempt1_custom942f25cd.wav")
+    _sp.run([A.FFMPEG, "-y", "-loglevel", "error", "-i", _a1, "-ac", "1", "-b:a", "96k", os.path.join(AUD, "std_fs_part2_n01_attempt1_asrfail.mp3")], check=True)
     css = """<style>body{font-family:sans-serif;max-width:1100px;margin:1em auto;padding:0 1em;line-height:1.5}table{border-collapse:collapse;width:100%;margin-bottom:1.5em}
 th,td{border:1px solid #ccc;padding:6px;vertical-align:top;text-align:left}td.play{min-width:340px}td.play audio,audio{width:100%}.sec{color:#666;font-size:.85em}
 .script{background:#f6f6f6;padding:4px;margin:3px 0;font-size:.95em}.note{background:#fff8e0;padding:3px;margin:3px 0;font-size:.85em}
 .kp td{border:1px solid #ccc;padding:4px 10px;width:50%}.combo{background:#eef6ff;padding:10px;border:1px solid #99c;margin-bottom:1em}.warn{background:#fff0f0;padding:10px;border:1px solid #c66;margin-bottom:1em}</style>"""
     disc = ("<div class='warn'><b>開示</b><ul>"
-            "<li>これはTrial用assemblerによる試聴版です(Production runnerの <code>--stage assemble</code>(M3 Gate/Audio Validation Gate)は通していません)。"
+            "<li>これはTrial用assemblerによる試聴版です。Production runnerの <code>--stage assemble --level b1b</code> は委任_03で実行しましたが、Audio Validation Gateが "
+            "topic_intro/preview/comment_1-4/in_one_line=UNVALIDATED(今回のrunで生成していないv5再利用segment)としてBLOCKしました(Gateは迂回していません)。"
             "再生成部分(KP・Full Story)はProduction runner(<code>--style-profile coffee_n01_r2_p3</code>)で生成。</li>"
             "<li>Advanced: 新KP(M2P0)5件 + Full Story=N01。Preview/Comment/In One Line/固定音源はv5承認済み音声を再利用。M3 Gate(オフライン実行)=PASS。</li>"
-            "<li>Standard: Key Phrase生成(M2P0)がCANONICALIZATION_INVALID(既存retry上限2回で不合格、KP再生成は1レベル1回の上限のため再実行せず)。"
+            "<li>Standard: Key Phrase生成(M2P0)がCANONICALIZATION_INVALID(rank5「based on」→canonicalizationが「based on interviews」にしRule7不一致)。"
+            "委任_03でKPを1回再生成しましたが同じrank5で再度INVALID(既存retry各2回、合計4回不合格)。上限により再実行せず、Std KP音声・Std完成版はありません。"
             "よってStandardの完成版エピソードはありません。参考として Full Story N01音声(+6%減速)3 partのみ掲載します。Part2はN01の初回attempt不合格→"
             "minimal fallback(N01ではないtake)で合格のため、M3 GateではBLOCK(人間承認待ち)です。</li></ul></div>")
     trs = "".join(f"<tr><td><b>{esc(p)}</b><br><span class='sec'>{s:.1f}秒〜 ({d:.1f}秒)</span></td><td class='play'><audio controls preload='none' src='audio/{fn}'></audio></td>"
@@ -76,6 +82,9 @@ th,td{border:1px solid #ccc;padding:6px;vertical-align:top;text-align:left}td.pl
     sc = "".join(f"<tr><td><b>Std Full Story Part {n}</b></td><td class='play'><audio controls preload='none' src='audio/{fn}'></audio></td>"
                  f"<td><div class='note'>N01 + 6%減速(Production runner生成)" + (" / 初回N01 attempt不合格のためminimal fallback take" if n == 2 else "") + f"</div><div class='script'>{esc(t).replace(chr(10), '<br>')}</div></td></tr>"
                  for n, fn, t in std_clips)
+    p2extra = ("<tr><td><b>Std Full Story Part 2(参考: N01 attempt1、ASR不合格・減速前の生音声)</b></td><td class='play'><audio controls preload='none' src='audio/std_fs_part2_n01_attempt1_asrfail.mp3'></audio></td>"
+               "<td><div class='note'>N01 attempt1。ASRで「costs 6.1% more…the year earlier」が誤読と判定されASR_VALIDATION_UNCERTAINで不合格(Production合格音声ではありません。上のPart2=fallback takeとの聴き比べ用)。</div></td></tr>")
+    sc = sc + p2extra
     pg = (f"<!DOCTYPE html><html lang='ja'><head><meta charset='utf-8'><title>Coffee M2P0+N01 試聴</title><meta name='viewport' content='width=device-width, initial-scale=1'>{css}</head><body>"
           f"<h1>Coffee M2P0 + N01 試聴版</h1>{disc}"
           f"<h2 id='adv'>Advanced(通し全編 {man['duration_seconds']:.0f}秒)</h2><div class='combo'><audio id='main_adv' controls preload='none' src='audio/Coffee_Advanced_m2p0_n01.mp3'></audio></div>"
