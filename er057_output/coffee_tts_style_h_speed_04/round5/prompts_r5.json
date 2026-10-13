@@ -1,0 +1,153 @@
+{
+ "voice": "Aoede",
+ "model": "gemini-3.8-flash-lite-tts",
+ "method": "speech_metadata(Part.speech_metadata.style)",
+ "baseline": {
+  "H0": {
+   "style": "A warm, composed daytime radio news presenter telling a human-interest story: clear, credible and approachable, with a smile in the voice. Group words into meaningful phrases, keep the phrasing smooth and connected, and breathe naturally between ideas.",
+   "sha256": "49af7437080d2d216d854f316f7820ec0a9ec74ada52fd99f00c079b6dd60dd7"
+  },
+  "M05": {
+   "style": "A warm, bright storyteller telling a true story, going slightly slower than usual. Finish every sentence fully, then move straight to the next one, even when the story changes direction.",
+   "sha256": "c915f73aefab8afcd924fcd250ec85eb7b806c4ff9ebafa05a4100606178599f"
+  }
+ },
+ "candidates": {
+  "N01": {
+   "style": "A cheerful, kind storyteller sharing a true story at a pace a little slower than usual. Bring each sentence to its natural close, then go directly on to the next, including where the story takes a turn.",
+   "chars": 202,
+   "words": 37,
+   "sentences": 2,
+   "sha256": "d1956c91c925d197e27cf1204d7ed17248a96bef096b082fb1bd0846106a0477",
+   "axes": {
+    "speed": "a little slower than usual(M05のslightly slowerを別表現、1回)",
+    "pause": "文を自然な終わりまで言い切り→直接次へ。話の転換でも同様(肯定形、M05と別表現)",
+    "voice": "陽気で優しい語り手",
+    "strength": "中",
+    "structure": "像+ペース+言い切り→次へ(話題転換節あり)"
+   },
+   "design_intent": "M05の言い切り→次へ直行を別表現に書き換え、構造の頑健性を確認(話題転換節は維持)。",
+   "prior_basis": "M05(Std全指標圏内、Adv数値圏内でASRのみ不合格)",
+   "expected_side_effects": "別表現でM05の効きが再現しない/Advが速い",
+   "max_jaccard_vs_prior": {
+    "cand": "M05",
+    "jaccard": 0.267
+   },
+   "jaccard_vs_M05": 0.267,
+   "jaccard_vs_H0": 0.05,
+   "seq_ratio_vs_max": 0.639,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false,
+   "contains_position_words": false,
+   "negation": false,
+   "speed_word_count": 1
+  },
+  "N02": {
+   "style": "A warm, bright storyteller telling a true story, going slightly slower than usual. Finish every sentence fully, then move straight on to the next one.",
+   "chars": 150,
+   "words": 25,
+   "sentences": 2,
+   "sha256": "a08fc23ccd3c3a0a8e34f9ad4df496e3177c5fce77c362885581b86e4de03466",
+   "axes": {
+    "speed": "slightly slower(M05と同一語、1回)",
+    "pause": "語尾を最後まで言い切って次へ直行(肯定形、話題転換節なし)",
+    "voice": "温かく明るい語り手",
+    "strength": "中",
+    "structure": "像+減速+言い切り→次へ(話題転換節を除去した切除比較。M05に対し1語'on'のみ差、部分文字列回避)"
+   },
+   "design_intent": "M05から話題転換節(even when the story changes direction)を除き、その節が寄与しているかを切除比較する。",
+   "prior_basis": "M05、Step A/Round4(話題転換指示は長無音を減らさない)",
+   "expected_side_effects": "話題転換節の除去で文末が長くなる/変化なし",
+   "max_jaccard_vs_prior": {
+    "cand": "M05",
+    "jaccard": 0.821
+   },
+   "jaccard_vs_M05": 0.821,
+   "jaccard_vs_H0": 0.096,
+   "seq_ratio_vs_max": 0.875,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false,
+   "contains_position_words": false,
+   "negation": false,
+   "speed_word_count": 1
+  },
+  "N03": {
+   "style": "A warm, bright storyteller telling a true story, going slightly slower than usual. Read the text word for word exactly as written, finish every sentence fully, then move straight to the next one, even when the story changes direction.",
+   "chars": 234,
+   "words": 39,
+   "sentences": 2,
+   "sha256": "d29d73710513952eb45cdac5c287ce17050596142825973d12cf6d81246da48a",
+   "axes": {
+    "speed": "slightly slower(M05同一語、1回)",
+    "pause": "言い切り→次へ直行(M05同一)",
+    "voice": "温かく明るい語り手",
+    "strength": "中",
+    "structure": "M05+書かれた通りに一語ずつ読む肯定形指示(want→wanna対策、新軸=忠実読み)"
+   },
+   "design_intent": "M05のAdv ASR不合格(want→wanna)に対し、書かれた通りに読む肯定形指示でASR一致が改善するかを見る。",
+   "prior_basis": "Round4 M05/M06 Adv(want→wanna)",
+   "expected_side_effects": "忠実読み指示が1語ずつの区切りを生み文中無音が増える/Stdが遅くなる",
+   "max_jaccard_vs_prior": {
+    "cand": "M05",
+    "jaccard": 0.794
+   },
+   "jaccard_vs_M05": 0.794,
+   "jaccard_vs_H0": 0.081,
+   "seq_ratio_vs_max": 0.881,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false,
+   "contains_position_words": false,
+   "negation": false,
+   "speed_word_count": 1
+  },
+  "N04": {
+   "style": "A friendly, bright narrator telling a true story at a measured pace. Finish each sentence fully, then go on to the next at once.",
+   "chars": 128,
+   "words": 24,
+   "sentences": 2,
+   "sha256": "efb6821ea79ff2464afc8c737f1c293be5d82cf8595edcb653634434d60815aa",
+   "axes": {
+    "speed": "measured pace(1回)",
+    "pause": "言い切って即次へ(肯定形、話題転換節なし)",
+    "voice": "親しみのある明るいナレーター",
+    "strength": "中",
+    "structure": "像+measured+言い切り→次へ(M05構造のmeasured版、話題転換節なし、2文)"
+   },
+   "design_intent": "M06のStd文末長・長無音を、話題転換節なしのmeasured+言い切り→次へで改善できるか、Adv速度安定を見る。",
+   "prior_basis": "M06(Std 535ms/長無音1)、M05",
+   "expected_side_effects": "measuredの減速力が弱くAdvが速い",
+   "max_jaccard_vs_prior": {
+    "cand": "M05",
+    "jaccard": 0.333
+   },
+   "jaccard_vs_M05": 0.333,
+   "jaccard_vs_H0": 0.08,
+   "seq_ratio_vs_max": 0.592,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false,
+   "contains_position_words": false,
+   "negation": false,
+   "speed_word_count": 1
+  }
+ },
+ "similarity_pairs": {
+  "N01-N02": 0.317,
+  "N01-N03": 0.231,
+  "N01-N04": 0.342,
+  "N02-N03": 0.657,
+  "N02-N04": 0.406,
+  "N03-N04": 0.279
+ },
+ "self_check": {
+  "duplicates": "N01-N04 sha全相異、J/K/L/M/H0とsha相異(assert済)。N内最大Jaccard: N02-N03=0.657, N02-N04=0.406, N01-N04=0.342, N01-N02=0.317, N03-N04=0.279, N01-N03=0.231",
+  "vs_prior": "J/K/L/M/H0を部分文字列に含む・含まれる候補なし(assert済)。最大Jaccard: N01:M05=0.267, N02:M05=0.821, N03:M05=0.794, N04:M05=0.333 / H0: N01=0.05, N02=0.096, N03=0.081, N04=0.08",
+  "contradictions": "矛盾なし。N02はM05からの意図的切除比較で語彙がM05に極めて近い(Jaccard高)が1語差で部分文字列ではない。N03はM05構造+忠実読み指示。",
+  "redundancy": "速度語は各1回(slower/measured)、数値WPM・unhurried/slowly・否定形・位置語なし(assert済)",
+  "sentence_count": {
+   "N01": 2,
+   "N02": 2,
+   "N03": 2,
+   "N04": 2
+  }
+ }
+}

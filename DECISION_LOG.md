@@ -20848,3 +20848,11 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (d)【費用・モデル】12call、JPY15.28、累計JPY88.27/300。gemini-3.8-flash-lite-tts(要求=応答、最新)、voice Aoede。
 - Status: VALIDATED(Trial)。`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない。Production code/Prompt/DB/gate無変更。CURRENT_SPEC無変更。Production採用はユーザーのみ。
 - 反映先: OPEN-332へは追記せず(Fableが次判断時に整理)、新規OPENなし。証跡: `er057_output/coffee_tts_style_h_speed_04/round4/ROUND4_REPORT_01.md`、`silence_positions_r4.md`。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-TRIAL-04_01.md`。
+
+### FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-TRIAL-04 委任_01〜02(2026-10-13、Round 4〜5。採用判断なし。Status=VALIDATED(Trial到達上限)/無益STOP該当/Production未反映)
+- (a)【Round 4(委任_01)】M01-M06 Take1 12call、JPY15.28。単一Prompt両合格0件。Step Aの位置分析: Std長無音(>=800ms)の73%が第5/第9文末(話題転換点)。話題転換の扱い指示は長無音を減らさず仮説不支持。M05=Std暫定合格、Adv ASRのみ不合格(want→wanna)。
+- (b)【Round 5(委任_02)】M05 Take2/3 + N01-N04 Take1 x Std/Adv = 12call、技術retry 0、JPY15.40(累計JPY103.67/300)。**単一Prompt両合格(Take1)0件**。M05再現: Std 1/3、Adv 0/3(Std raw 168.7/157.8/158.3、Adv 172.7/176.1/180.2、wannaはTake1のみ)。N01(言い切り別表現+話題転換節): Std暫定合格(raw163.3/494ms)、Adv 167.1/長無音1/ASR OKだが文末627ms(基準593超過+34ms)。N02(話題転換節を除去): 両レベル速度圏内(171.6/170.9)、文末514/600msで基準をStd+16/Adv+7ms超過。N03(忠実読み指示): 両レベル速い(175.9/174.7)、wanna抑制効果は判別不能。N04(measured版): Std暫定合格、Adv 191.5で極端に速くASR不一致(his挿入)。話題転換節の有無で差は判別できず。長無音7本は全て話題転換位置(第5/第7〜9文末)。
+- (c)【STOP判定】成功STOP非該当/**無益STOP該当**(Fable記録: Round 5でTake1両合格が出なければ無益STOP)/予算STOP非該当/品質STOP非該当(wanna型逸脱Round 5で0回)。Step C/D(再現性・試聴ページ)は条件未達で未実施。Round 6は実施せず、総括をROUND5_REPORT_01.md 8節に記載(ユーザー判断選択肢: Std/Adv別Prompt、Adv軽微減速後処理、H0 T1暫定維持、探索継続。推奨なし)。
+- (d)【費用・モデル】gemini-3.8-flash-lite-tts(要求=応答、最新)、voice Aoede。価格定数は既存build_03のPRICE定数(新規出典確認なし=未確認)。
+- Status: VALIDATED(Trial)。`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない。Production code/Prompt/DB/gate無変更。CURRENT_SPEC無変更。Production採用はユーザーのみ。
+- 反映先: OPEN-332へ要約追記(新規OPENなし)。証跡: `er057_output/coffee_tts_style_h_speed_04/round5/ROUND5_REPORT_01.md`(8節に総括)、`round4/ROUND4_REPORT_01.md`。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-TRIAL-04_02.md`。

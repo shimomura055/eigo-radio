@@ -52,16 +52,16 @@
 | 35 | Melos HR 3件(Std part1_c5 attempt4/Adv part1_c5/Std comment_1) | **判断済み**(個別承認、record_human_approval済み) | いいえ | `docs/pm/delegation_log/2026-10-13_FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01_01.md`、CURRENT_SPEC追記 |
 | 36 | TRIAL-03予算¥300承認(Coffee H-speed音声Prompt探索、Trialのみ) | **判断済み**(2026-10-13ユーザー承認、累計¥300上限、Production採用なし) | いいえ | `docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-TRIAL-04_01.md` |
 
-## 区分別集計(2026-10-13更新・35件。#10は判断済みへ、#14と#23は判断保留へ)
+## 区分別集計(2026-10-13更新・36件。#10は判断済みへ、#14と#23は判断保留へ、#36追加)
 
 | 区分 | 件数 | 項目# |
 |---|---|---|
-| 判断済み | 7 | 2, 3, 10, 13, 17, 34, 35 |
+| 判断済み | 8 | 2, 3, 10, 13, 17, 34, 35, 36 |
 | 判断保留(依存事項待ち、判断時期延期) | 2 | 14, 23 |
 | 調査・Trial中 | 1 | 19 |
 | USER_DECISION_REQUIRED | 20 | 1, 4(暫定), 5, 7, 8, 9, 11, 12, 15, 18, 24〜33 |
 | Deferred / Non-blocking | 5 | 6, 16, 20, 21, 22 |
-| 合計 | 35 | |
+| 合計 | 36 | |
 
 ## 「次工程をブロックするUDR」のみ(これだけを最優先で提示する)
 
