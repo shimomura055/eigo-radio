@@ -1,0 +1,169 @@
+{
+ "voice": "Aoede",
+ "model": "gemini-3.8-flash-lite-tts",
+ "method": "speech_metadata(Part.speech_metadata.style)",
+ "candidates": {
+  "H0": {
+   "label": "前回H完全同一(Baseline、Take1/2再利用+Take3新規)",
+   "style": "A warm, composed daytime radio news presenter telling a human-interest story: clear, credible and approachable, with a smile in the voice. Group words into meaningful phrases, keep the phrasing smooth and connected, and breathe naturally between ideas.",
+   "chars": 252,
+   "words": 37,
+   "sentences": 2,
+   "sha256": "49af7437080d2d216d854f316f7820ec0a9ec74ada52fd99f00c079b6dd60dd7",
+   "design_intent": "前回高評価Take1の再現基準。速度指示なし、『breathe naturally』のみ。",
+   "speed_control_method": "速度指示なし(息継ぎ指示のみ)",
+   "expected_side_effects": "前回実測: Adv T差20.6、Std T2 ASR警告。速度ばらつきが課題。",
+   "contains_unhurried_slowly": false
+  },
+  "H1": {
+   "label": "自然なニュース朗読速度を明示",
+   "style": "A warm daytime radio news presenter sharing a human-interest story, clear, credible and approachable, with a smile in the voice. Read at a natural, steady news-broadcast pace, grouping words into meaningful phrases and breathing only between ideas.",
+   "chars": 248,
+   "words": 37,
+   "sentences": 2,
+   "sha256": "254f038bafe4a7b82aeff22e46d197440588cd71060147cc3b6548f70f7eae8f",
+   "design_intent": "速度の基準を『報道の標準朗読速度』という既知の話し方に固定し、Hの声質文は短縮のみで維持。",
+   "speed_control_method": "名詞句で速度基準を明示(natural, steady news-broadcast pace)",
+   "expected_side_effects": "報道調が硬さを増し明るさ低下の恐れ。news paceが元々速い基準で速度が下がらない可能性。",
+   "contains_unhurried_slowly": false
+  },
+  "H2": {
+   "label": "落ち着いた会話テンポ",
+   "style": "A bright, friendly radio presenter telling a human-interest story to one listener in a calm conversational tempo. Keep the voice clear, credible and smiling, and let each phrase flow into the next.",
+   "chars": 197,
+   "words": 32,
+   "sentences": 2,
+   "sha256": "0d1ca2881b6097122cdd4e5ec10801b7528e8e2702342709dd8ee51876d7962d",
+   "design_intent": "キャスター像を『1人のリスナーへの会話』に置換し、テンポをcalm conversationalで指定。8wayでC/G(会話系)のStdのT差が小さかった点を根拠にする。",
+   "speed_control_method": "テンポ語1つ(calm conversational tempo)+流れの接続1つ(flow into the next)",
+   "expected_side_effects": "会話調になり報道の信頼感(Hの核)が薄れる恐れ。Gのように熱量不足の懸念。",
+   "contains_unhurried_slowly": false
+  },
+  "H3": {
+   "label": "急がず、意味の変わり目でのみ間",
+   "style": "A warm radio news presenter with a smile in the voice, clear and credible. Tell this human-interest story without rushing, linking each phrase smoothly to the next and pausing only where the meaning changes.",
+   "chars": 207,
+   "words": 34,
+   "sentences": 2,
+   "sha256": "ea4e95c46d8a6c596a30349c9c2cb65c7000cf00d6629514d0368d9f156cfe50",
+   "design_intent": "速度を否定形1語(without rushing)で穏やかに抑え、間は肯定形『meaning changesでのみ』に限定。A(unhurried重複で間増加)の轍を避け、減速語は1回のみ。",
+   "speed_control_method": "否定形の緩い抑制1つ(without rushing)",
+   "expected_side_effects": "8wayでAのunhurried系が文中/文末無音を増やした前例。単発でも間増加・語尾の伸びの恐れ(リスク最大候補、検知対象)。",
+   "contains_unhurried_slowly": false
+  },
+  "H4": {
+   "label": "文章全体のリズム均一化(take間ばらつき対策)",
+   "style": "A warm radio news presenter telling a human-interest story, clear, credible and smiling. Hold one even rhythm from the first sentence to the last, with phrases grouped by meaning and breaths only between ideas.",
+   "chars": 210,
+   "words": 34,
+   "sentences": 2,
+   "sha256": "f25beb1e27e549570283af9cfe4d13164b8909b1dd62524cf5052ad3e5544b36",
+   "design_intent": "速度の絶対値ではなく『最初から最後まで一定のリズム』を指定し、文ごとの加速・減速(take間差の主因と推定)を抑える。",
+   "speed_control_method": "リズム一定の指示1つ(one even rhythm)",
+   "expected_side_effects": "平板・機械的に聞こえる恐れ(抑揚低下)。速度の絶対値は動かず、全体が速いまま均一化するだけの可能性。",
+   "contains_unhurried_slowly": false
+  },
+  "H5": {
+   "label": "最小限(速度指示なしでTTSに委ねる)",
+   "style": "A warm, composed radio news presenter telling a human-interest story: clear, credible and approachable, with a smile in the voice.",
+   "chars": 130,
+   "words": 20,
+   "sentences": 1,
+   "sha256": "e0200b75c0dffe33522f04cda7a8d31f9debb5dd55c8415719914492a8bdf988",
+   "design_intent": "H0から語句構造指示(Group words/phrasing/breathe)を全て外し、声質像のみ。速度・間はモデルの自然な読みに委ねる(D最短の知見の再検証、ただし声質像を維持)。",
+   "speed_control_method": "速度指示なし(persona の『composed』のみが示唆)",
+   "expected_side_effects": "8wayのD(最短)はAdv T差19.5で不安定。H0と同等以上に速い/ばらつく可能性。語数は40未満(短さ優先の例外)。",
+   "contains_unhurried_slowly": false
+  }
+ },
+ "similarity_pairs": {
+  "H0-H1": {
+   "token_jaccard": 0.558,
+   "char_seq_ratio": 0.564
+  },
+  "H0-H2": {
+   "token_jaccard": 0.319,
+   "char_seq_ratio": 0.45
+  },
+  "H0-H3": {
+   "token_jaccard": 0.333,
+   "char_seq_ratio": 0.065
+  },
+  "H0-H4": {
+   "token_jaccard": 0.354,
+   "char_seq_ratio": 0.134
+  },
+  "H0-H5": {
+   "token_jaccard": 0.576,
+   "char_seq_ratio": 0.681
+  },
+  "H1-H2": {
+   "token_jaccard": 0.26,
+   "char_seq_ratio": 0.449
+  },
+  "H1-H3": {
+   "token_jaccard": 0.354,
+   "char_seq_ratio": 0.057
+  },
+  "H1-H4": {
+   "token_jaccard": 0.347,
+   "char_seq_ratio": 0.45
+  },
+  "H1-H5": {
+   "token_jaccard": 0.472,
+   "char_seq_ratio": 0.619
+  },
+  "H2-H3": {
+   "token_jaccard": 0.364,
+   "char_seq_ratio": 0.064
+  },
+  "H2-H4": {
+   "token_jaccard": 0.298,
+   "char_seq_ratio": 0.054
+  },
+  "H2-H5": {
+   "token_jaccard": 0.371,
+   "char_seq_ratio": 0.55
+  },
+  "H3-H4": {
+   "token_jaccard": 0.34,
+   "char_seq_ratio": 0.163
+  },
+  "H3-H5": {
+   "token_jaccard": 0.471,
+   "char_seq_ratio": 0.32
+  },
+  "H4-H5": {
+   "token_jaccard": 0.378,
+   "char_seq_ratio": 0.606
+  }
+ },
+ "max_jaccard_H1_to_H5": 0.472,
+ "self_check": {
+  "H1": {
+   "speed_instruction_count": "1つ(natural, steady news-broadcast pace)",
+   "pause_consistency": "矛盾なし(息継ぎ=ideas間のみ)",
+   "H_voice_elements": "warm/clear/credible/approachable/smile 全保持"
+  },
+  "H2": {
+   "speed_instruction_count": "1つ(calm conversational tempo)。flow は接続指示で速度語ではない",
+   "pause_consistency": "矛盾なし",
+   "H_voice_elements": "bright/friendly/clear/credible/smile。warmはfriendlyで代替、approachable脱落(会話像で含意)"
+  },
+  "H3": {
+   "speed_instruction_count": "1つ(without rushing)",
+   "pause_consistency": "矛盾なし(pause only where meaning changes は意味上の間を残す)",
+   "H_voice_elements": "warm/clear/credible/smile。approachable脱落"
+  },
+  "H4": {
+   "speed_instruction_count": "0〜1(one even rhythm=リズム均一、絶対速度語なし)",
+   "pause_consistency": "矛盾なし",
+   "H_voice_elements": "warm/clear/credible/smiling。approachable脱落"
+  },
+  "H5": {
+   "speed_instruction_count": "0(速度指示なし)",
+   "pause_consistency": "間の指示なし(矛盾なし)",
+   "H_voice_elements": "warm/composed/clear/credible/approachable/smile 全保持"
+  }
+ }
+}
