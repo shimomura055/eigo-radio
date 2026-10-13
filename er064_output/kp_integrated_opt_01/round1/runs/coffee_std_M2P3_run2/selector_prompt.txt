@@ -1,0 +1,80 @@
+以下の英語記事の候補一覧から、対象レベルの学習者にとって学ぶ価値の高い表現を、価値の高い順にちょうど5個選んでください。
+
+【比較して選ぶ】
+候補を一つずつ採点せず、候補どうしを比べて選んでください。5個を仮に選んだら、次を確認して必要なら入れ替えてください。
+- その枠を使うに値する表現か。
+- 選ばなかった候補の中に、初見で理解しにくく、学んだあとの再利用価値も高いものが残っていないか。
+学習者がすでに知っていそうな基本表現や、構成語から意味が分かる透明な表現は、価値の高い候補が残っている限り枠を使わないでください。候補が乏しいときは選んでかまいません。比較の軸の順序は次のとおりです。
+優先順位は、初回音声での処理困難、未知の可能性、瞬時の推測困難、本文の事実・感情・面白さへの影響、記事内重要度、汎用性の順です。
+長い表現だから、辞書にあるからという理由だけで優先せず、区分名(idiom等)やCEFR等級も根拠にしないでください。この記事は初級(A2相当)向けなので、日常で頻出する基本的な句は既知として扱ってください。候補行の`contains:`はその候補がCnを含む、`contained_in:`はCnの一部であることを示し、`fragment_risk`は先頭が前置詞・冠詞などで断片の恐れがあることを示します。`match:`は辞書との一致の確かさ(exact=見出しと一致、inflected=活用形で一致、term=複合語辞書、placeholder=one's等の見出しに一致、pattern=辞書にはなく語の並びだけで拾った)の参考情報で、これだけで選ばないでください。
+
+【学ぶ単位】
+用法が成り立つ最小のまとまりを選んでください(例: 動詞なら目的語・補語まで)。同じ内容を両方選ばず、長い側が主語・時・場所の付け足しだけなら短い側を選んでください。display_phraseは1〜5語で、完全文や主語と有限動詞を持つ節は禁止です。動詞は本文の時制を残さず基本形へ直してください(受動はbe + past participleの見出し形も可)。
+
+【役割】
+5個のうち1個は、この記事に特有で、事前に知っていると本文の主張や展開を追いやすくなる語または表現にしてください(key_phrase_role="topic")。汎用性は高くなくてかまいません。該当が見当たらなくても空にせず、最も近い候補を選んでください。
+残り4個(key_phrase_role="important")は、他の記事でも使える定着した表現にしてください。この記事だけの創作的な言い回しは選ばないでください(topicには選べます)。topicとimportantは別々に比較し、一方のために他方の良い候補を押し出さないでください。
+
+【日本語グロス】
+日本語グロスは、日本人の英語学習者が音声で聞いてすぐ意味を理解できる、自然で平易な現代日本語の一文にしてください。直訳調や、「常態」「是正」のような硬い報道語・漢語は避けてください。括弧（　）で別訳・専門用語・補足を書き添えないでください。「～」「〜」は辞書的に自然な範囲(例: 「～を示す」)でのみ使い、「…」のようなプレースホルダー記号は使わないでください。数字を含める場合は算用数字ではなく漢数字(一、二、三…)で書いてください。「ソロ旅行を～％とする」のように数値を補わないと意味が成立しない句・グロスは選ばず、それ単体で意味が成立するものを選んでください。
+
+【Topic】title: Coffee Bean Prices Fall. Are Price Tags Still on a Journey?
+
+【重要な単語・単語群候補】
+- id: C9 | candidate: "bean prices" | type: noun_phrase | occ: 12 | evidence: repeated_compound_noun | contained_in: C13,C16 | sentence: S1
+- id: C10 | candidate: "price tag" | type: noun_phrase | occ: 6 | evidence: repeated_compound_noun | contains: C24 | sentence: S2
+- id: C11 | candidate: "nine months" | type: noun_phrase | occ: 4 | evidence: repeated_compound_noun | sentence: S23
+- id: C12 | candidate: "prices fall" | type: noun_phrase | occ: 6 | evidence: repeated_compound_noun | contained_in: C13 | sentence: S1
+- id: C13 | candidate: "Bean Prices Fall" | type: noun_phrase | occ: 4 | evidence: repeated_compound_noun | contains: C9,C12 | sentence: S1
+- id: C14 | candidate: "Beans cost" | type: noun_phrase | occ: 4 | evidence: repeated_compound_noun | contains: C23 | sentence: S3
+- id: C15 | candidate: "Coffee Bean" | type: noun_phrase | occ: 4 | evidence: repeated_compound_noun | contained_in: C16 | sentence: S1
+- id: C16 | candidate: "Coffee Bean Prices" | type: noun_phrase | occ: 4 | evidence: repeated_compound_noun | contains: C9,C15 | sentence: S1
+- id: C17 | candidate: "coffee prices" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S8
+- id: C18 | candidate: "shop prices" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S23
+- id: C19 | candidate: "usual cup" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S5
+- id: C20 | candidate: "bad weather" | type: noun_phrase | occ: 1 | evidence: wiktionary_multiword | sentence: S13
+- id: C21 | candidate: "raw-bean" | type: important_word | occ: 1 | evidence: heuristic[rare_technical_single_word_heuristic] | sentence: S23
+
+【phrase / idiom / phrasal verb候補】
+- id: C1 | candidate: "based on" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S29
+- id: C2 | candidate: "feels like" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S7
+- id: C3 | candidate: "on a regular basis" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S27
+- id: C4 | candidate: "prices up" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S34
+- id: C5 | candidate: "right away" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S6
+- id: C6 | candidate: "take for" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S21
+- id: C7 | candidate: "take time" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S26
+- id: C8 | candidate: "waiting for" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S37
+- id: C27 | candidate: "pumps its fist" | type: phrase | occ: 1 | evidence: rule_poss_pattern | contains: C25 | sentence: S4
+- id: C28 | candidate: "imagine your usual" | type: phrase | occ: 1 | evidence: rule_poss_pattern | sentence: S5
+
+【word候補】
+- id: C22 | candidate: "Roasting" | type: word | occ: 1 | evidence: cefr_j | sentence: S26
+- id: C23 | candidate: "costing" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | contained_in: C14 | sentence: S5
+- id: C24 | candidate: "Tags" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | contained_in: C10 | sentence: S2
+- id: C25 | candidate: "pumps" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | contained_in: C27 | sentence: S4
+- id: C26 | candidate: "roast" | type: word | occ: 1 | evidence: cefr_j | sentence: S25
+
+【SENTENCE REFERENCE】(文脈参照専用。この表の文字列をそのままitemへ書かないでください)
+S1: "Coffee Bean Prices Fall"
+S2: "Are Price Tags Still on a Journey"
+S3: "Beans cost less now"
+S4: "When you hear that, your wallet pumps its fist"
+S5: "You already imagine your usual cup costing less, too"
+S6: "But a shop's price may not change right away"
+S7: "When a price tag makes you ask, "Haven't you heard the news?", it feels like there is a delay"
+S8: "The International Coffee Organization shared a measure of coffee prices"
+S13: "There was bad weather in Brazil and Vietnam"
+S21: "So, how long does it take for bean prices to reach a price tag"
+S23: "They estimate raw-bean prices take at least about nine months to appear in US shop prices"
+S25: "The article says US companies that roast coffee keep raw beans in stock"
+S26: "Roasting and packing the beans also take time"
+S27: "These companies often talk with stores about prices on a regular basis"
+S29: "However, "about nine months" is an estimate based on interviews"
+S34: "A person who runs a cafe in Chicago said three costs had pushed prices up"
+S37: "If you are waiting for your usual cup to get cheaper, ask more than, "How much do beans cost now"
+
+【出力のルール】
+- 5件は必ず上記の候補一覧から選び、新しい表現を作らないでください。[重要な単語・単語群候補]区分から少なくとも1個を選び、[word候補]区分は他に価値の高い候補が不足するときだけ使ってください。
+- 各itemのsource_candidate_idには、選んだ候補のcandidate ID(例: C7)を1つだけ指定してください。本文の文字列(source_sentence/source_span相当)は書かないでください。
+- surface_echoには、選んだ候補が表す表現を短く(1〜6語程度)書いてください。内部確認用で、正誤判定には使いません。
+- 上記5件とは別に、backup_itemとして、重要語・重要表現(key_phrase_role="important")の予備候補を、異なるcandidate IDで1件、必ず返してください(topicが正しく選べた場合は採用されません)。

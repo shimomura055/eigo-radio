@@ -1,0 +1,129 @@
+{
+ "purpose": "評価専用アンカー(ユーザー提示のCoffee評価アンカー順位)。選定Prompt・shortlist builder・抽出ロジックには一切使わない(固定リスト化・ハードコード禁止)。解析スクリプトとtestだけが読む。",
+ "source": "FAMILY-X-KP-INTEGRATED-OPTIMIZATION-TRIAL-01 委任文(ユーザー提示)",
+ "weight_rule": "weight = 13 - rank (rank1=12 ... rank12=1)。run単位スコア = 最終5件に含まれるアンカー(各アンカー最大1回、fullのみ)の重みの合計。fragmentは別集計(部分一致)。",
+ "anchors": [
+  {
+   "rank": 1,
+   "label": "pump one's fist",
+   "role": "important",
+   "full": "\\bpump(s|ed|ing)?\\b.*\\bfist\\b",
+   "fragment": "^pump(s|ed|ing)?$"
+  },
+  {
+   "rank": 2,
+   "label": "be behind price increases",
+   "role": "important",
+   "full": "\\bbehind price increases?\\b",
+   "fragment": "^(be |been )?behind$"
+  },
+  {
+   "rank": 3,
+   "label": "push prices up",
+   "role": "important",
+   "full": "\\bpush(es|ed|ing)? prices up\\b",
+   "fragment": "^prices up$"
+  },
+  {
+   "rank": 4,
+   "label": "time lag",
+   "role": "topic_or_important",
+   "full": "\\btime lag\\b",
+   "fragment": "^lag$"
+  },
+  {
+   "rank": 5,
+   "label": "show up",
+   "role": "important",
+   "full": "\\bshow(s|ed|ing)? up\\b",
+   "fragment": null
+  },
+  {
+   "rank": 6,
+   "label": "come down",
+   "role": "important",
+   "full": "\\b(come|comes|came|coming) down\\b",
+   "fragment": null
+  },
+  {
+   "rank": 7,
+   "label": "roasting",
+   "role": "topic",
+   "full": "\\broast(ing|s|ed)?\\b",
+   "fragment": null
+  },
+  {
+   "rank": 8,
+   "label": "raw beans",
+   "role": "topic",
+   "full": "\\braw[- ]beans?\\b",
+   "fragment": null
+  },
+  {
+   "rank": 9,
+   "label": "on a regular basis",
+   "role": "important",
+   "full": "\\bon a regular basis\\b",
+   "fragment": null
+  },
+  {
+   "rank": 10,
+   "label": "hold on",
+   "role": "important",
+   "full": "\\bhold on\\b",
+   "fragment": null
+  },
+  {
+   "rank": 11,
+   "label": "right away",
+   "role": "important",
+   "full": "\\bright away\\b",
+   "fragment": null
+  },
+  {
+   "rank": 12,
+   "label": "take time",
+   "role": "important",
+   "full": "\\b(take|takes|took|taken|taking) time\\b",
+   "fragment": null
+  }
+ ],
+ "low_priority_ranks": [
+  9,
+  10,
+  11,
+  12
+ ],
+ "contrast_pairs": [
+  {
+   "high": "pump one's fist",
+   "low": "take time"
+  },
+  {
+   "high": "push prices up",
+   "low": "right away"
+  },
+  {
+   "high": "time lag",
+   "low": "lag",
+   "note": "断片(lag単独)は低評価"
+  },
+  {
+   "high": "be behind price increases",
+   "low": "be behind",
+   "note": "長さの機械優先ではない。目的語を含む側が完結"
+  }
+ ],
+ "creative_metaphor_patterns": [
+  "in the ring",
+  "hidden clock",
+  "clock of its own",
+  "own clock",
+  "unseen clock",
+  "flash to a new price",
+  "road to a price tag",
+  "on a journey",
+  "price tags? .*journey"
+ ],
+ "creative_note": "評価専用: Coffee記事独自の創作的比喩(定着イディオムではない)。Importantに入ればNG、Topicは可。判定はdisplay_phrase/source_span/candidate_surfaceへの部分一致。"
+}
