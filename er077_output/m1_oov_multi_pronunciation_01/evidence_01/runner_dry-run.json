@@ -1,0 +1,132 @@
+{
+ "mode": "dry-run",
+ "stop_files_present": [
+  "docs/pm/delegation_log\\2026-10-12_FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01_STOP_NOTICE.md"
+ ],
+ "plan": {
+  "existing_wav_reasr": 12,
+  "new_tts_clips": [
+   {
+    "id": "nonsib_left_t1",
+    "text": "Melos left.",
+    "take": 1,
+    "purpose": "非歯擦音文脈(次語が歯擦音でない): F1 explained 不成立 → 非PASS 維持が期待",
+    "tts": true
+   },
+   {
+    "id": "nonsib_left_t2",
+    "text": "Melos left.",
+    "take": 2,
+    "purpose": "非歯擦音文脈(次語が歯擦音でない): F1 explained 不成立 → 非PASS 維持が期待",
+    "tts": true
+   },
+   {
+    "id": "nonsib_left_t3",
+    "text": "Melos left.",
+    "take": 3,
+    "purpose": "非歯擦音文脈(次語が歯擦音でない): F1 explained 不成立 → 非PASS 維持が期待",
+    "tts": true
+   },
+   {
+    "id": "nonsib_ran_t1",
+    "text": "Melos ran.",
+    "take": 1,
+    "purpose": "同上(第2語)",
+    "tts": true
+   },
+   {
+    "id": "nonsib_ran_t2",
+    "text": "Melos ran.",
+    "take": 2,
+    "purpose": "同上(第2語)",
+    "tts": true
+   },
+   {
+    "id": "nonsib_ran_t3",
+    "text": "Melos ran.",
+    "take": 3,
+    "purpose": "同上(第2語)",
+    "tts": true
+   },
+   {
+    "id": "repeat_t1",
+    "text": "Melos said Melos left.",
+    "take": 1,
+    "purpose": "同語反復(2 出現のうち 2 つ目が非歯擦音文脈): 非PASS 維持が期待",
+    "tts": true
+   },
+   {
+    "id": "repeat_t2",
+    "text": "Melos said Melos left.",
+    "take": 2,
+    "purpose": "同語反復(2 出現のうち 2 つ目が非歯擦音文脈): 非PASS 維持が期待",
+    "tts": true
+   },
+   {
+    "id": "repeat_t3",
+    "text": "Melos said Melos left.",
+    "take": 3,
+    "purpose": "同語反復(2 出現のうち 2 つ目が非歯擦音文脈): 非PASS 維持が期待",
+    "tts": true
+   },
+   {
+    "id": "neg_num_t1",
+    "text": "Melos did not wait five days.",
+    "take": 1,
+    "purpose": "否定・数値を含む文: M1 が成立しても否定/数値の差分は非PASS が期待",
+    "tts": true
+   },
+   {
+    "id": "neg_num_t2",
+    "text": "Melos did not wait five days.",
+    "take": 2,
+    "purpose": "否定・数値を含む文: M1 が成立しても否定/数値の差分は非PASS が期待",
+    "tts": true
+   },
+   {
+    "id": "neg_num_t3",
+    "text": "Melos did not wait five days.",
+    "take": 3,
+    "purpose": "否定・数値を含む文: M1 が成立しても否定/数値の差分は非PASS が期待",
+    "tts": true
+   }
+  ],
+  "n_observations": 24,
+  "estimated_jpy": 3.29,
+  "estimate_basis": "er069 実績 1観測≈¥0.137(cost_02.json)×観測数。既存12件は TTS 不要のため実際はこれ以下"
+ },
+ "isolation": {
+  "human_review_queue": "er077_output/m1_oov_multi_pronunciation_01/evidence_01/human_review_queue.jsonl",
+  "attempt_history": "er077_output/m1_oov_multi_pronunciation_01/evidence_01/attempt_history.jsonl",
+  "master_audio_store": "er077_output/m1_oov_multi_pronunciation_01/evidence_01/master_audio_store",
+  "reuse_telemetry": "er077_output/m1_oov_multi_pronunciation_01/evidence_01/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er077_output/m1_oov_multi_pronunciation_01/evidence_01/er021_telemetry.jsonl",
+  "er025_telemetry": "er077_output/m1_oov_multi_pronunciation_01/evidence_01/er025_telemetry.jsonl",
+  "cost_log": "er077_output/m1_oov_multi_pronunciation_01/evidence_01/cost_log.jsonl",
+  "ledger_snapshot": "er077_output/m1_oov_multi_pronunciation_01/evidence_01/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)"
+ },
+ "state_md5_before": {
+  "er005_output/cost_baseline_01/cost_summary.json": "211a6a8108b779070d91f196556708dd",
+  "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl": "1deaaac705ec4d881952231e4db31407",
+  "er006_output/master_audio_store_01/manifest.json": "b8692fabcc4fe32636a39e2055292a8a",
+  "er006_output/master_audio_store_01/reuse_telemetry.jsonl": "c5ff9e0e799dd949fed209de498f17bf",
+  "er006_output/pronunciation_ledger_01/ledger.json": "7ec991722fc7f9087602504a93714d59",
+  "er011_output/attempt_history.jsonl": "5ba6a088510db3d9dc6055de7177bf1f",
+  "er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl": "a10d49d1f9176d3a780f9cfb80890653",
+  "er025_output/pronunciation_resolution_core_telemetry_01/telemetry.jsonl": "db090f1a3073936c470a6f673a7f174f"
+ },
+ "started_at": "2026-10-13T21:41:11",
+ "state_md5_after": {
+  "er005_output/cost_baseline_01/cost_summary.json": "211a6a8108b779070d91f196556708dd",
+  "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl": "1deaaac705ec4d881952231e4db31407",
+  "er006_output/master_audio_store_01/manifest.json": "b8692fabcc4fe32636a39e2055292a8a",
+  "er006_output/master_audio_store_01/reuse_telemetry.jsonl": "c5ff9e0e799dd949fed209de498f17bf",
+  "er006_output/pronunciation_ledger_01/ledger.json": "7ec991722fc7f9087602504a93714d59",
+  "er011_output/attempt_history.jsonl": "5ba6a088510db3d9dc6055de7177bf1f",
+  "er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl": "a10d49d1f9176d3a780f9cfb80890653",
+  "er025_output/pronunciation_resolution_core_telemetry_01/telemetry.jsonl": "db090f1a3073936c470a6f673a7f174f"
+ },
+ "shared_state_unchanged": true
+}

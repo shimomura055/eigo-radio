@@ -389,10 +389,120 @@ def render_md(res, path):
     open(path, "w", encoding="utf-8").write(chr(10).join(L) + chr(10))
 
 
+# ---------------------------------------------------------------------------
+# 委任_02: Production module(er006_m1_multi_candidate_01)での再評価(--use-module)。F1 explained 必須(OF-178)反映後。
+# ---------------------------------------------------------------------------
+SEG_STARTED = "2099-01-01T00:00:00"  # 現 Ledger の全エントリより後=全て『segment 開始前』
+
+
+def mod_final(canonical, asr, ledger, secondary_text=None):
+    """Production 相当の最終判定(Primary 分類→alternate pass→M1 module)。凍結候補を 1 回作って注入する。"""
+    import er006_m1_multi_candidate_01 as MM
+    pj = O.prod_judge(canonical, asr)
+    if pj["pass"]:
+        return {"pass": True, "basis": "prod:" + str(pj["pass_basis"]), "m1": None}
+    fz = MM.freeze_candidates(canonical, ledger_snapshot=ledger, segment_started_at=SEG_STARTED)
+    r = MM.m1_multi_candidate_judge(canonical, asr, fz, base_cls=pj["cls"], secondary_asr_text=secondary_text)
+    return {"pass": r.accepted, "basis": "m1:" + r.reason, "m1": r}
+
+
+def melos12_module(ledger):
+    rows = json.load(open("er069_output/attribution_clip_split_trial_01/results_02.json", encoding="utf-8"))["rows"]
+    rows = [r for r in rows if r["name"] == "Melos" and r["verb"] == "said"]
+    rows.sort(key=lambda r: (["std", "adv"].index(r["level"]), r["target"] != "raw", r["take"]))
+    out = []
+    for r in rows:
+        c = r["text"]
+        e = {"job": r["job"], "level": r["level"], "target": r["target"], "take": r["take"], "canonical": c}
+        for eng, oth in (("openai", "azure"), ("azure", "openai")):
+            a, b = r[eng]["text"], r[oth]["text"]
+            m = mod_final(c, a, ledger, secondary_text=b)
+            e[eng] = {"asr": a, "before": legacy_pass(c, a, f1=False), "f1_only": legacy_pass(c, a, f1=True), "module": m["pass"],
+                      "basis": m["basis"], "secondary_agree": (m["m1"].secondary_agree if m["m1"] else None),
+                      "subs": [(s["from"], s["to"], s["source"], s["confidence"], s["rule"], s["ledger_key"]) for s in (m["m1"].subs if m["m1"] else [])],
+                      "no_match_reason": (m["m1"].no_match_reason if m["m1"] else None)}
+        e["before_or"] = e["openai"]["before"] or e["azure"]["before"]
+        e["f1_or"] = e["openai"]["f1_only"] or e["azure"]["f1_only"]
+        e["module_or"] = e["openai"]["module"] or e["azure"]["module"]
+        # 両エンジン同意: 双方 PASS で、M1 受理側の secondary_agree=True、または一方が元から Production で PASS
+        e["module_both_agree"] = bool((e["openai"]["module"] and e["azure"]["module"]) and
+                                      (e["openai"]["secondary_agree"] or e["azure"]["secondary_agree"] or
+                                       e["openai"]["basis"].startswith("prod") or e["azure"]["basis"].startswith("prod")))
+        out.append(e)
+    return out
+
+
+def module_main(out_dir):
+    import er006_m1_multi_candidate_01 as MM
+    os.makedirs(out_dir, exist_ok=True)
+    md5_before = hashlib.md5(open(LEDGER_PATH, "rb").read()).hexdigest()
+    ledger = load_ledger()
+    res = {"ledger_md5_before": md5_before, "api_calls": 0, "module": MM.M1_VERSION}
+    res["melos12"] = melos12_module(ledger)
+    syn = []
+    for kind, c, a, exp, note, fake in SYNTH:
+        led = dict(ledger)
+        if fake:
+            led["_fake_" + fake["surface"]] = dict(fake, canonical_spelling=fake["surface"], sources=["fake-test-source"])
+        m = mod_final(c, a, led)
+        syn.append({"kind": kind, "canonical": c, "asr": a, "expected_01": exp, "got": "PASS" if m["pass"] else "NONPASS", "basis": m["basis"]})
+    res["synthetic"] = syn
+    import er075_m1_f1_production_wiring_01_census as C
+    res["counter_f1"] = [{"canonical": c, "asr": a, "expected": exp, "pass": mod_final(c, a, ledger)["pass"]} for c, a, exp in C.COUNTER]
+    pairs, meta = C.load_pairs()
+    cnt, new_rows, regress, audits = collections.Counter(), [], [], []
+    for (c, a), src in pairs.items():
+        try:
+            lp = legacy_pass(c, a, f1=True)
+            m = mod_final(c, a, ledger)
+        except Exception:
+            cnt["errors"] += 1
+            continue
+        cnt[f"legacy={lp}|module={m['pass']}"] += 1
+        if lp and not m["pass"]:
+            regress.append({"src": src, "canonical": c, "asr": a})
+        if m["m1"] is not None and m["m1"].accepted and not lp:
+            new_rows.append({"src": src, "canonical": c, "asr": a, "subs": [(s["from"], s["to"], s["canonical_word"], s["source"], s["confidence"], s["rule"]) for s in m["m1"].subs]})
+            audits.append(m["m1"].audit)
+    res["pairs"] = {"n": len(pairs), "counts": dict(cnt), "new_pass": new_rows, "regressions": regress,
+                    "aggregate_by_ledger_key": MM.aggregate_by_ledger_key(audits)}
+    res["ledger_md5_after"] = hashlib.md5(open(LEDGER_PATH, "rb").read()).hexdigest()
+    json.dump(res, open(os.path.join(out_dir, "eval_02.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
+    m = res["melos12"]
+    cok = sum((x["pass"] if x["expected"].startswith("pass") else (not x["pass"])) for x in res["counter_f1"])
+    L = ["# EVAL_02 M1 複数発音候補 Production module(OF-178 反映後)offline評価(API 0 / JPY0 / 既存Production無変更 / Ledger読取のみ)", "",
+         f"- module={MM.M1_VERSION} / Ledger md5 前後一致: {res['ledger_md5_before'] == res['ledger_md5_after']}",
+         "- 判定経路: Production 分類→_step_alternate_pass→M1 module(凍結候補注入、置換後 F1 再実行、置換位置が f1_explained に含まれること必須)", "",
+         "## 1. Melos said 12件 Before / F1のみ / 本module", "",
+         "| # | level/target/take | OpenAI転写 | Azure転写 | Before(OR) | F1のみ(OR) | module(OR) | module(両エンジン同意) | 理由(OpenAI / Azure) |", "|---|---|---|---|---|---|---|---|---|"]
+    for i, e in enumerate(m, 1):
+        L.append(f"| {i} | {e['level']}/{e['target']}/t{e['take']} | {e['openai']['asr']} | {e['azure']['asr']} | {'PASS' if e['before_or'] else 'NG'} | {'PASS' if e['f1_or'] else 'NG'} | {'PASS' if e['module_or'] else 'NG'} | {'PASS' if e['module_both_agree'] else 'NG'} | {e['openai']['basis']}({e['openai']['no_match_reason'] or ''}) / {e['azure']['basis']}({e['azure']['no_match_reason'] or ''}) |")
+    L += ["", f"集計: Before {sum(x['before_or'] for x in m)}/12、F1のみ {sum(x['f1_or'] for x in m)}/12、module(OR) {sum(x['module_or'] for x in m)}/12、module(両エンジン同意) {sum(x['module_both_agree'] for x in m)}/12。",
+          "委任_01(OF-178前)は module相当で 12/12 だった。差は『置換位置が Pattern A/B/C[f1_explained]で説明できること』を必須にした結果で、次語が歯擦音でない文(`Melos left`型)で F1 の benign(規則単複)に吸収される置換を不受理にしたため。", "",
+          "## 2. 合成24ケース(委任_01の期待との比較)", "", "| 類型 | canonical | ASR | 委任_01期待 | module結果 | basis |", "|---|---|---|---|---|---|"]
+    for s in syn:
+        L.append(f"| {s['kind']} | {s['canonical']} | {s['asr']} | {s['expected_01']} | {s['got']} | {s['basis']} |")
+    L += ["", f"## 3. F1反例19件: 期待どおり {cok}/{len(res['counter_f1'])}", "",
+          f"## 4. 674ペア: {json.dumps(res['pairs']['counts'], ensure_ascii=False)}", f"- 新規PASS(M1起因)={len(new_rows)}件 / 既存PASS→非PASSの回帰={len(regress)}件", "",
+          "| src | canonical | ASR | 置換(from,to,canonical,source,conf,rule) |", "|---|---|---|---|"]
+    for r in new_rows:
+        L.append(f"| {r['src']} | {r['canonical'][:80]} | {r['asr'][:80]} | {r['subs']} |")
+    L += ["", "ledger_key別集計: " + json.dumps(res["pairs"]["aggregate_by_ledger_key"], ensure_ascii=False)]
+    open(os.path.join(out_dir, "EVAL_02.md"), "w", encoding="utf-8").write(chr(10).join(L) + chr(10))
+    print("melos12 before/f1/module OR:", sum(x["before_or"] for x in m), sum(x["f1_or"] for x in m), sum(x["module_or"] for x in m),
+          "both-agree:", sum(x["module_both_agree"] for x in m))
+    print("pairs:", json.dumps(res["pairs"]["counts"], ensure_ascii=False), "new:", len(new_rows), "regressions:", len(regress))
+    print("counter ok:", cok, "/", len(res["counter_f1"]))
+    print("ledger unchanged:", res["ledger_md5_before"] == res["ledger_md5_after"])
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
+    ap.add_argument("--use-module", action="store_true")
     a = ap.parse_args()
+    if a.use_module:
+        return module_main(a.out)
     os.makedirs(a.out, exist_ok=True)
     md5_before = hashlib.md5(open(LEDGER_PATH, "rb").read()).hexdigest()
     ledger = load_ledger()
