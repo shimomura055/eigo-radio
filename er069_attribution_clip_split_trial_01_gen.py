@@ -64,6 +64,7 @@ def run(task, call, out_dir, budget, styles, log_path, stopflag):
            "model_requested": B.MODEL, "model_version": usage["model_version"], "voice": B.VOICE,
            "execution_mode": "STANDARD(sync, DEV Trial)", "style_sha256": sha(style),
            "input_tokens": usage["input_tokens"], "output_tokens": usage["output_tokens"],
+           "verb": task.get("verb"), "vgroup": task.get("vgroup"), "nophrase": task.get("nophrase", False),
            "tts_cost_jpy": round(tts_jpy, 5), "tts_price_usd_per_m": [B.PRICE_IN, B.PRICE_OUT], "elapsed_s": round(time.time() - t0, 2)}
     if trimmed is None:
         rec["status"] = "NO_SPEECH"
@@ -89,6 +90,7 @@ def main():
     ap.add_argument("--budget-jpy", type=float, default=100.0)
     ap.add_argument("--no-telemetry", action="store_true", help="常時no-op(互換フラグ)。本scriptは共有telemetryへ書かない")
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--run-tag", default="01", help="log/summaryファイル名のtag(委任_02は run02。既定01=委任_01互換)")
     a = ap.parse_args()
     out_dir = a.out_dir
     assert not stop_present(out_dir), "STOP present"
@@ -97,7 +99,7 @@ def main():
     tasks = plan["tasks"][:a.limit] if a.limit else plan["tasks"]
     styles = {"adv": Z.FAMILY_Z_ROLE_STYLE["NARRATOR_FULL_STORY_ADV"]["text"],
               "std": Z.FAMILY_Z_ROLE_STYLE["NARRATOR_FULL_STORY_STD"]["text"]}
-    log_path = os.path.join(out_dir, "generation_log_01.jsonl")
+    log_path = os.path.join(out_dir, f"generation_log_{a.run_tag}.jsonl")
     done = set()
     if os.path.exists(log_path):
         for l in open(log_path, encoding="utf-8"):
@@ -113,7 +115,7 @@ def main():
         results = list(ex.map(lambda t: run(t, call, out_dir, a.budget_jpy, styles, log_path, stopflag), tasks))
     summ = {"n_tasks": len(tasks), "results": results, "tts_spent_jpy": round(B._spent["jpy"], 4),
             "retries_used": _retries["n"], "elapsed_s": round(time.time() - t0, 1)}
-    json.dump(summ, open(os.path.join(out_dir, "gen_summary_01.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump(summ, open(os.path.join(out_dir, f"gen_summary_{a.run_tag}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     from collections import Counter
     print(Counter(r["status"] for r in results), "tts_spent_jpy", summ["tts_spent_jpy"], "elapsed", summ["elapsed_s"])
 

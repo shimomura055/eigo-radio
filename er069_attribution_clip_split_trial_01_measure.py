@@ -32,6 +32,18 @@ def measure_one(rec, target, wav_rel, val):
            "openai": {k: oa.get(k) for k in ("ok", "text", "input_tokens", "output_tokens", "jpy", "error")},
            "azure": {k: az.get(k) for k in ("ok", "text", "audio_seconds", "jpy", "error")},
            "whisper_small": {"ok": wh.get("ok"), "text": wh.get("text")}}
+    row["verb"] = rec.get("verb")
+    row["vgroup"] = rec.get("vgroup")
+    if rec.get("nophrase"):      # 委任_02: Phrase Listなし(ledger未登録名=Production初出に近い)条件
+        anp = A.azure_asr(path, phrases=None)
+        row["azure_np"] = {k: anp.get(k) for k in ("ok", "text", "audio_seconds", "jpy", "error")}
+        row["azure_np_pass"] = False
+        row["azure_np_class"] = None
+        if anp.get("ok"):
+            c0 = val.classify_asr_match(text, anp["text"], segment_id=rec["job"])
+            row["azure_np_pass"] = bool(c0.should_pass)
+            row["azure_np_class"] = c0.classification
+        row["spell_azure_np"] = name.lower() in norm(anp.get("text")).split() if anp.get("ok") else False
     row["openai_verified"] = False
     row["openai_class"] = None
     if oa.get("ok"):
@@ -51,7 +63,7 @@ def measure_one(rec, target, wav_rel, val):
     row["spell_openai"] = nm in norm(oa.get("text")).split() if oa.get("ok") else False
     row["spell_azure"] = nm in norm(az.get("text")).split() if az.get("ok") else False
     row["spell_whisper"] = nm in norm(wh.get("text")).split()
-    row["cost_jpy"] = round((oa.get("jpy") or 0) + (az.get("jpy") or 0), 5)
+    row["cost_jpy"] = round((oa.get("jpy") or 0) + (az.get("jpy") or 0) + ((row.get("azure_np") or {}).get("jpy") or 0), 5)
     return row
 
 
@@ -75,10 +87,11 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--no-telemetry", action="store_true")
     ap.add_argument("--budget-jpy", type=float, default=100.0)
+    ap.add_argument("--run-tag", default="01")
     a = ap.parse_args()
     patch_noop_telemetry()
     import er006_preprod_hardening_01_validation as val
-    recs = [json.loads(l) for l in open(os.path.join(a.gen_dir, "generation_log_01.jsonl"), encoding="utf-8")]
+    recs = [json.loads(l) for l in open(os.path.join(a.gen_dir, f"generation_log_{a.run_tag}.jsonl"), encoding="utf-8")]
     recs = [r for r in recs if r.get("status") == "OK"]
     gen_jpy = sum(r["tts_cost_jpy"] for r in recs)
     jobs = []
@@ -107,6 +120,7 @@ def main():
            "by_level_target_boundary_length": agg(rows, lambda r: f"{r['level']}|{r['target']}|{r['boundary']}|{r['length']}"),
            "by_level_target_boundary_length_OOV_only": agg([r for r in rows if r["name"] != "Kallis"],
                                                               lambda r: f"{r['level']}|{r['target']}|{r['boundary']}|{r['length']}"),
+           "by_name_verb": agg(rows, lambda r: f"{r['name']}|{r['verb']}"),
            "by_name_boundary_length": agg(rows, lambda r: f"{r['name']}|{r['boundary']}|{r['length']}"),
            "rows": rows}
     json.dump(res, open(a.out, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
@@ -119,7 +133,7 @@ def main():
             "totals": {"tts_jpy": round(gen_jpy, 4), "asr_jpy": res["asr_jpy_openai_text_price_azure_hourly"], "total_jpy": res["total_jpy"],
                        "note": "OpenAI ASRは音声入力tokenの正式単価が未確認(text単価USD1.25/Mで計上=過小の可能性)。Azureは$1.0/h(Retail Prices)。USD_JPY=160"},
             "tts_model_versions_observed": sorted({r["model_version"] for r in recs})}
-    json.dump(cost, open(os.path.join(os.path.dirname(os.path.abspath(a.out)), "cost_01.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump(cost, open(os.path.join(os.path.dirname(os.path.abspath(a.out)), f"cost_{a.run_tag}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print("done", res["n_obs"], "obs; total_jpy", res["total_jpy"], flush=True)
 
 

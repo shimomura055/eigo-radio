@@ -42,5 +42,23 @@ check("desk_apply clip count unchanged", all(v["before"]["n_clips"] == v["after"
 check("gen script never writes shared state (static scan)",
       not any(s in open("er069_attribution_clip_split_trial_01_gen.py", encoding="utf8").read()
               for s in ("er006_output", "er011_output", "er021_output", "er025_output", "melos/run_e2e_02")))
+# --- 委任_02 ---
+import er069_attribution_clip_split_trial_01_mkplan02 as M2
+import er069_attribution_clip_split_trial_01_summarize02 as S2
+t2 = M2.build()
+check("plan02 84 tasks", len(t2) == 84 and len({t["id"] for t in t2}) == 84)
+check("plan02 verbs cross s/ns with 3 each", {t["verb"] for t in t2 if t["vgroup"] == "s"} == {"said", "says", "sighed"}
+      and {t["verb"] for t in t2 if t["vgroup"] == "ns"} == {"replied", "answered", "asked"})
+check("plan02 s-group verbs start with sibilant, ns do not", all((t["verb"][0] == "s") == (t["vgroup"] == "s") for t in t2))
+check("plan02 L2 fixed 2 words", all(t["word_count"] == 2 and t["text"] == f"{t['name']} {t['verb']}." for t in t2))
+check("plan02 nophrase only Melos said/replied", {(t["name"], t["verb"]) for t in t2 if t["nophrase"]} == {("Melos", "said"), ("Melos", "replied")})
+check("plan02 takes Melos4 Brontes3", len([t for t in t2 if t["name"] == "Melos" and t["verb"] == "said" and t["level"] == "adv"]) == 4
+      and len([t for t in t2 if t["name"] == "Brontes" and t["verb"] == "said" and t["level"] == "adv"]) == 3)
+check("summarize02 cnt/fmt", S2.fmt([{"k": True}, {"k": False}], "k") == "1/2")
+check("summarize02 compare", S2.compare([{"vgroup": "a", "k": 1}] * 3, lambda r: r["vgroup"] == "a", lambda r: False, "k")[:2] == (3, 3))
+r2 = json.load(open(f"{OUT}/results_02.json", encoding="utf8"))
+check("results_02 obs 126 (std 2 + adv 1 per audio)", r2["n_obs"] == 126)
+check("results_02 nophrase obs only on Melos said/replied", all((("azure_np" in r) == (r["name"] == "Melos" and r["verb"] in ("said", "replied"))) for r in r2["rows"]))
+check("results_02 total within JPY25 guardrail", r2["total_jpy"] <= 25)
 print("FAILS:", fails)
 sys.exit(1 if fails else 0)
