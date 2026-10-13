@@ -1,0 +1,93 @@
+{
+ "purpose": "FAMILY-X-KP-NO-WAY-MINIMAL-FIX-TRIAL-01 委任_01 費用実績と見積(JPY0。LLM/TTS/ASR呼出なし。見積のみ)",
+ "spent_this_delegation_jpy": 0.0,
+ "llm_calls": 0,
+ "model": "gpt-6-luna (Round1/2と同一=比較可能性の例外。最上位系モデルでの検証ではない)",
+ "unit_cost_sources": {
+  "actual": "er064_output/kp_integrated_opt_01/round1/runs/*M2P0*/job_result.json cost_jpy (14 jobs mean 0.9132, max 1.1869) と round2 *M2P5* (10 jobs, M2P5のみ参考)",
+  "conservative": "1.185 JPY/job (委任文/Round1 EST std値)",
+  "pricing": "er009 pricing_snapshot (USD/JPY=160)"
+ },
+ "added_input_tokens_per_job_approx": 155,
+ "added_cost_per_job_jpy_approx": 0.0025,
+ "n_jobs": 20,
+ "per_cell": [
+  {
+   "cell": "meta_adv",
+   "n": 5,
+   "M2P0_mean_jpy_per_job": 0.8162,
+   "M2P5_mean_jpy_per_job": 0.8722,
+   "central_jpy": 4.093,
+   "p5_scaled_jpy": 4.373,
+   "conservative_jpy": 5.925
+  },
+  {
+   "cell": "coffee_std",
+   "n": 3,
+   "M2P0_mean_jpy_per_job": 0.8785,
+   "M2P5_mean_jpy_per_job": 1.0253,
+   "central_jpy": 2.643,
+   "p5_scaled_jpy": 3.083,
+   "conservative_jpy": 3.555
+  },
+  {
+   "cell": "coffee_adv",
+   "n": 3,
+   "M2P0_mean_jpy_per_job": 0.8973,
+   "M2P5_mean_jpy_per_job": 0.9439,
+   "central_jpy": 2.699,
+   "p5_scaled_jpy": 2.839,
+   "conservative_jpy": 3.555
+  },
+  {
+   "cell": "meta_std",
+   "n": 3,
+   "M2P0_mean_jpy_per_job": 0.806,
+   "M2P5_mean_jpy_per_job": 0.9131,
+   "central_jpy": 2.425,
+   "p5_scaled_jpy": 2.747,
+   "conservative_jpy": 3.555
+  },
+  {
+   "cell": "hormuz_std",
+   "n": 3,
+   "M2P0_mean_jpy_per_job": 1.1422,
+   "M2P5_mean_jpy_per_job": 1.2974,
+   "central_jpy": 3.434,
+   "p5_scaled_jpy": 3.9,
+   "conservative_jpy": 3.555
+  },
+  {
+   "cell": "hormuz_adv",
+   "n": 3,
+   "M2P0_mean_jpy_per_job": 0.9643,
+   "M2P5_mean_jpy_per_job": 1.1341,
+   "central_jpy": 2.9,
+   "p5_scaled_jpy": 3.41,
+   "conservative_jpy": 3.555
+  }
+ ],
+ "estimate_total_jpy": {
+  "central": 18.19,
+  "p5_like_reasoning_plus10to12pct": 20.35,
+  "conservative": 23.7
+ },
+ "optional_control_addon_meta_adv_M2P0_x3": {
+  "n_jobs": 3,
+  "central": 2.449,
+  "conservative": 3.555,
+  "note": "meta_adv対照をn=2->5にそろえる場合のみ(既存2runに3run追加)。M2P0のsha一致は確認済み"
+ },
+ "estimate_with_optional_total_jpy": {
+  "central": 20.64,
+  "conservative": 27.25
+ },
+ "recommended_hard_cap_jpy": 30.0,
+ "job_cap_jpy": 2.5,
+ "cumulative_context": "本Trial累計102.46/300(Round3終了時、cost_r3.json) + 本見積は上限内。委任_01の実支出は0。",
+ "notes": [
+  "中央値=M2P0実績の記事別平均+追加入力約155tokens。P5並みに推論量が+10〜12%増える場合を別行で表示。",
+  "保守値=1.185/job一律。",
+  "Opus/Haiku/他モデル費用なし。"
+ ]
+}

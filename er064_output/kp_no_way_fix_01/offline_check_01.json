@@ -1,0 +1,658 @@
+{
+ "purpose": "FAMILY-X-KP-NO-WAY-MINIMAL-FIX-TRIAL-01 委任_01 offline check (JPY0, LLM呼出なし)",
+ "llm_calls": 0,
+ "prompt": {
+  "added_paragraph": "切り出した語句が、本文ではto不定詞・前置詞句・目的語などが続いて初めて意味が成立する構文の一部で、その語句だけでは意味や用法が十分に伝わらない場合は、候補の語句に本文で隣り合う語を加えて、意味が成立する1〜5語の形をdisplay_phraseにしてください(source_candidate_idは元の候補のままで構いません)。is・have・canなどの有限の助動詞はdisplay_phraseに含められないため、含めずに意味が成立する形にできない場合は、その候補を選ばないでください。",
+  "cells": {
+   "coffee_std": {
+    "P0_msg_sha256": "320e969c836d5c531ce26e8edf979a2541ad0bcbc8cea32a9df4ff8482c8ee4a",
+    "P0X_msg_sha256": "9bac38159a98032151886878025b207440ccd3618a9eae30c96644fbdea5a072",
+    "rows_sha256": "079413b11f53028c7f367bd3b3d18af789a6ae5a52bc519366455c6d1f533809",
+    "P0X_minus_added_paragraph_equals_P0": true,
+    "n_candidates": 28,
+    "chars_P0": 6712,
+    "chars_P0X": 6961,
+    "control": {
+     "n_existing_M2P0_runs": 3,
+     "msg_sha256_set_match_current_P0": true,
+     "rows_sha256_set_match": true
+    }
+   },
+   "coffee_adv": {
+    "P0_msg_sha256": "147f8648d6515d556e2eadb254adf8e05d7914c8d088e1d0cd0e96122c70a40c",
+    "P0X_msg_sha256": "e29fa1cda12224cac7d24a8926b5d3921ac3dc636521d6700c83e4e50a346c09",
+    "rows_sha256": "37a14a8a94a91b80438b19d59521f2ed3476317a7e79ca3f1e24b057d166cabe",
+    "P0X_minus_added_paragraph_equals_P0": true,
+    "n_candidates": 34,
+    "chars_P0": 7968,
+    "chars_P0X": 8217,
+    "control": {
+     "n_existing_M2P0_runs": 3,
+     "msg_sha256_set_match_current_P0": true,
+     "rows_sha256_set_match": true
+    }
+   },
+   "meta_std": {
+    "P0_msg_sha256": "6875ae6517b425e6e356e3f1b1868f466ba3e939378550615529651bbc882899",
+    "P0X_msg_sha256": "26c3b7782eb7ffc4c0e6c370c0ceb1b1baf7aca64f85f2c19e79500b0f4bc558",
+    "rows_sha256": "5295e2d9821a522a4ce0f8d369e82c709353537d411d53d919cf23e960cd4fb9",
+    "P0X_minus_added_paragraph_equals_P0": true,
+    "n_candidates": 20,
+    "chars_P0": 5334,
+    "chars_P0X": 5583,
+    "control": {
+     "n_existing_M2P0_runs": 2,
+     "msg_sha256_set_match_current_P0": true,
+     "rows_sha256_set_match": true
+    }
+   },
+   "meta_adv": {
+    "P0_msg_sha256": "654158bb414970c16e58587b2c0f238dd55431fdc4ff9c959bf0ff7da25820a2",
+    "P0X_msg_sha256": "df5d83bdaeaba0f92d94f30046a5d4183b84bed12b9df3add220dcd7662124c5",
+    "rows_sha256": "93d391af571769d5c522b5bd2d27bb2b14351d2daf2be0bdc18e61e41c9a04a6",
+    "P0X_minus_added_paragraph_equals_P0": true,
+    "n_candidates": 21,
+    "chars_P0": 5776,
+    "chars_P0X": 6025,
+    "control": {
+     "n_existing_M2P0_runs": 2,
+     "msg_sha256_set_match_current_P0": true,
+     "rows_sha256_set_match": true
+    }
+   },
+   "hormuz_std": {
+    "P0_msg_sha256": "0ecb5e462f4c6076692febb1f7b18fa111558fb36d921e8b209cffd2836d95ab",
+    "P0X_msg_sha256": "73395818b7c4431e0e0ef2900994db574413474ba69eef7c6d90e749e0b5f22d",
+    "rows_sha256": "7e8d839d03693ddbc90e1f9a1dd9276ae9f678330a352d811b0cd90d79b755dc",
+    "P0X_minus_added_paragraph_equals_P0": true,
+    "n_candidates": 20,
+    "chars_P0": 5543,
+    "chars_P0X": 5792,
+    "control": {
+     "n_existing_M2P0_runs": 2,
+     "msg_sha256_set_match_current_P0": true,
+     "rows_sha256_set_match": true
+    }
+   },
+   "hormuz_adv": {
+    "P0_msg_sha256": "d526c96b68a099a0d1f95cf5d905b0dff22da215da9456a58ba070e933bddfba",
+    "P0X_msg_sha256": "ba58a13f4ac2c5d91b51367d616edca5e836086ae46e6fc483616e01033f107c",
+    "rows_sha256": "a9fac0c3887d6b0c391895878c3951ca1aff6f72384c357088d3386086e500f4",
+    "P0X_minus_added_paragraph_equals_P0": true,
+    "n_candidates": 20,
+    "chars_P0": 5732,
+    "chars_P0X": 5981,
+    "control": {
+     "n_existing_M2P0_runs": 2,
+     "msg_sha256_set_match_current_P0": true,
+     "rows_sha256_set_match": true
+    }
+   }
+  },
+  "head_unified_diff": [
+   "--- P0_head",
+   "+++ P0X_head",
+   "@@ -16,2 +16,4 @@",
+   " ",
+   "+切り出した語句が、本文ではto不定詞・前置詞句・目的語などが続いて初めて意味が成立する構文の一部で、その語句だけでは意味や用法が十分に伝わらない場合は、候補の語句に本文で隣り合う語を加えて、意味が成立する1〜5語の形をdisplay_phraseにしてください(source_candidate_idは元の候補のままで構いません)。is・have・canなどの有限の助動詞はdisplay_phraseに含められないため、含めずに意味が成立する形にできない場合は、その候補を選ばないでください。",
+   "+",
+   " 選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。"
+  ],
+  "head_chars": {
+   "P0": 1381,
+   "P0X": 1630,
+   "added": 249
+  },
+  "approx_tokens_added": 155,
+  "tokens_method": "UTF-8 bytes/4近似(tiktoken未導入)",
+  "all_cells_only_added_paragraph_differs_and_control_reusable": true
+ },
+ "origin_stage": {
+  "M0": {
+   "candidate_entry": [
+    {
+     "canonical_form": "no way",
+     "evidence": "wiktionary[idiom]",
+     "fragment_risk": false,
+     "match_kind": "exact",
+     "surface_form": "no way",
+     "unit_type": "idiom"
+    }
+   ],
+   "n_candidates": 20,
+   "tier_h_dropped": [],
+   "reserved": [],
+   "longer_variants_in_shortlist": []
+  },
+  "M2": {
+   "candidate_entry": [
+    {
+     "canonical_form": "no way",
+     "evidence": "wiktionary[idiom]",
+     "fragment_risk": false,
+     "match_kind": "exact",
+     "surface_form": "no way",
+     "unit_type": "idiom"
+    }
+   ],
+   "n_candidates": 21,
+   "tier_h_dropped": [],
+   "reserved": [],
+   "longer_variants_in_shortlist": []
+  },
+  "wiktionary_snapshot_lookups": {
+   "had no way": false,
+   "no way to": false,
+   "way to": false,
+   "way to know": false
+  },
+  "fragment_risk_rule": {
+   "FRAG_START_contains_first_token": false,
+   "registered_exempts": true,
+   "fragment_risk(registered=True)": false,
+   "fragment_risk(registered=False)": false
+  },
+  "c7_selections": [
+   {
+    "tag": "meta_adv_M2P0_run1",
+    "rank": 3,
+    "display_phrase": "no way",
+    "surface_echo": "had no way to know",
+    "normalization_type": "idiom_core",
+    "normalization_note": "本文の語句から慣用表現の核を抽出",
+    "selection_reason": "利用者が相手をAIか人か見分けられなかった点を理解するのに役立ちます。",
+    "gate": [
+     "KEY_WORDS_STRUCTURE_PASS",
+     "CANONICALIZATION_PASS",
+     "REDUNDANCY_PASS",
+     "PASS"
+    ],
+    "canonicalized": [
+     {
+      "rank": 3,
+      "key_phrase": "no way",
+      "display_phrase": "no way",
+      "ja_gloss": null,
+      "normalization_reason": "none",
+      "qa_overall_status": "PASS"
+     }
+    ]
+   },
+   {
+    "tag": "meta_adv_M2P0_run2",
+    "rank": 5,
+    "display_phrase": "no way",
+    "surface_echo": "no way",
+    "normalization_type": "idiom_core",
+    "normalization_note": "本文中の句を基本形のまま採用。",
+    "selection_reason": "利用者が相手の正体を知る手段がなかったことを理解するのに役立つ。",
+    "gate": [
+     "KEY_WORDS_STRUCTURE_PASS",
+     "CANONICALIZATION_PASS",
+     "REDUNDANCY_PASS",
+     "PASS"
+    ],
+    "canonicalized": [
+     {
+      "rank": 5,
+      "key_phrase": "no way",
+      "display_phrase": "no way",
+      "ja_gloss": null,
+      "normalization_reason": "none",
+      "qa_overall_status": "PASS"
+     }
+    ]
+   },
+   {
+    "tag": "meta_adv_M2P3_run1",
+    "rank": 5,
+    "display_phrase": "no way",
+    "surface_echo": "no way",
+    "normalization_type": "idiom_core",
+    "normalization_note": "後ろの不定詞を含めず、候補のまとまりを選んだ。",
+    "selection_reason": "利用者が相手がAIか人かを知る手段がなかった、という状況を簡潔に表す定着した言い方。",
+    "gate": [
+     "KEY_WORDS_STRUCTURE_PASS",
+     "CANONICALIZATION_PASS",
+     "REDUNDANCY_PASS",
+     "PASS"
+    ],
+    "canonicalized": [
+     {
+      "rank": 5,
+      "key_phrase": "no way",
+      "display_phrase": "no way",
+      "ja_gloss": null,
+      "normalization_reason": "none",
+      "qa_overall_status": "PASS"
+     }
+    ]
+   },
+   {
+    "tag": "meta_adv_M2P3_run2",
+    "rank": 4,
+    "display_phrase": "no way",
+    "surface_echo": "no way",
+    "normalization_type": "idiom_core",
+    "normalization_note": "本文の用法に合わせて句の基本形を採用。",
+    "selection_reason": "利用者が相手を見分ける手段を持たなかったことを表し、展開の理解に役立つ。ほかの場面でもよく使われる。",
+    "gate": [
+     "KEY_WORDS_STRUCTURE_PASS",
+     "CANONICALIZATION_PASS",
+     "REDUNDANCY_PASS",
+     "PASS"
+    ],
+    "canonicalized": [
+     {
+      "rank": 4,
+      "key_phrase": "no way",
+      "display_phrase": "no way",
+      "ja_gloss": null,
+      "normalization_reason": "none",
+      "qa_overall_status": "PASS"
+     }
+    ]
+   },
+   {
+    "tag": "meta_adv_M2P5_run2",
+    "rank": 4,
+    "display_phrase": "no way to know",
+    "surface_echo": "no way to know",
+    "normalization_type": "idiom_core",
+    "normalization_note": "候補の no way に本文の補語を加え、意味が完結する形にしました。",
+    "selection_reason": "利用者が相手を見分けられなかったという状況を短く示す定着した型です。no way を文字どおりの「道がない」と取ると意味を誤りやすく、別の場面にも応用できます。",
+    "gate": [
+     "KEY_WORDS_STRUCTURE_PASS",
+     "CANONICALIZATION_PASS",
+     "REDUNDANCY_PASS",
+     "PASS"
+    ],
+    "canonicalized": [
+     {
+      "rank": 4,
+      "key_phrase": "no way to know",
+      "display_phrase": "no way to know",
+      "ja_gloss": null,
+      "normalization_reason": "none",
+      "qa_overall_status": "PASS"
+     }
+    ]
+   }
+  ],
+  "phase2_meta_adv_canon_not_pass": [
+   {
+    "tag": "meta_adv_C0_run1",
+    "canon": "CANONICALIZATION_INVALID",
+    "canon_reasons": [
+     [
+      {
+       "index": 4,
+       "rank": 5,
+       "reasons": [
+        "key_phrase('no way to know')がdisplay_phraseと一致せず、source_span('no way')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+       ]
+      }
+     ],
+     [
+      {
+       "index": 4,
+       "rank": 5,
+       "reasons": [
+        "key_phrase('no way to know')がdisplay_phraseと一致せず、source_span('no way')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+       ]
+      }
+     ]
+    ]
+   },
+   {
+    "tag": "meta_adv_C2_run2",
+    "canon": null,
+    "canon_reasons": null
+   }
+  ]
+ },
+ "case_b_validator_check": [
+  {
+   "display_phrase": "no way",
+   "n_words": 2,
+   "fake_calls": 1,
+   "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+   "validation_reasons": [],
+   "item_reasons": [],
+   "contract_violation": [],
+   "literal_in_source_sentence": true,
+   "verbatim_note": "本文に逐語で存在",
+   "candidate_mismatch_suspected": false,
+   "source_span_missing": [],
+   "rule7_unchanged_key_phrase": {
+    "ok": true,
+    "reasons": []
+   }
+  },
+  {
+   "display_phrase": "no way to know",
+   "n_words": 4,
+   "fake_calls": 1,
+   "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+   "validation_reasons": [],
+   "item_reasons": [],
+   "contract_violation": [],
+   "literal_in_source_sentence": true,
+   "verbatim_note": "本文に逐語で存在",
+   "candidate_mismatch_suspected": false,
+   "source_span_missing": [],
+   "rule7_unchanged_key_phrase": {
+    "ok": true,
+    "reasons": []
+   }
+  },
+  {
+   "display_phrase": "have no way to know",
+   "n_words": 5,
+   "fake_calls": 1,
+   "selection_status": "KEY_WORDS_STRUCTURE_INVALID",
+   "validation_reasons": [],
+   "item_reasons": [
+    {
+     "index": 2,
+     "reasons": [
+      "有限助動詞(is/are/was/were/has/have/had/will/would/can/could/should/may/might/must)が含まれている"
+     ],
+     "warnings": []
+    }
+   ],
+   "contract_violation": [],
+   "literal_in_source_sentence": false,
+   "verbatim_note": "本文に逐語では存在しない(時制の基本形化または追加語)",
+   "rule7_unchanged_key_phrase": {
+    "ok": false,
+    "reasons": [
+     "有限助動詞が含まれている"
+    ]
+   }
+  },
+  {
+   "display_phrase": "had no way to know",
+   "n_words": 5,
+   "fake_calls": 1,
+   "selection_status": "KEY_WORDS_STRUCTURE_INVALID",
+   "validation_reasons": [],
+   "item_reasons": [
+    {
+     "index": 2,
+     "reasons": [
+      "有限助動詞(is/are/was/were/has/have/had/will/would/can/could/should/may/might/must)が含まれている"
+     ],
+     "warnings": []
+    }
+   ],
+   "contract_violation": [],
+   "literal_in_source_sentence": true,
+   "verbatim_note": "本文に逐語で存在",
+   "rule7_unchanged_key_phrase": {
+    "ok": false,
+    "reasons": [
+     "有限助動詞が含まれている"
+    ]
+   }
+  },
+  {
+   "display_phrase": "no way to",
+   "n_words": 3,
+   "fake_calls": 1,
+   "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+   "validation_reasons": [],
+   "item_reasons": [],
+   "contract_violation": [],
+   "literal_in_source_sentence": true,
+   "verbatim_note": "本文に逐語で存在",
+   "candidate_mismatch_suspected": false,
+   "source_span_missing": [],
+   "rule7_unchanged_key_phrase": {
+    "ok": true,
+    "reasons": []
+   }
+  },
+  {
+   "display_phrase": "no way to know whether",
+   "n_words": 5,
+   "fake_calls": 1,
+   "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+   "validation_reasons": [],
+   "item_reasons": [],
+   "contract_violation": [],
+   "literal_in_source_sentence": true,
+   "verbatim_note": "本文に逐語で存在",
+   "candidate_mismatch_suspected": false,
+   "source_span_missing": [],
+   "rule7_unchanged_key_phrase": {
+    "ok": true,
+    "reasons": []
+   }
+  },
+  {
+   "display_phrase": "have no way",
+   "n_words": 3,
+   "fake_calls": 1,
+   "selection_status": "KEY_WORDS_STRUCTURE_INVALID",
+   "validation_reasons": [],
+   "item_reasons": [
+    {
+     "index": 2,
+     "reasons": [
+      "有限助動詞(is/are/was/were/has/have/had/will/would/can/could/should/may/might/must)が含まれている"
+     ],
+     "warnings": []
+    }
+   ],
+   "contract_violation": [],
+   "literal_in_source_sentence": false,
+   "verbatim_note": "本文に逐語では存在しない(時制の基本形化または追加語)",
+   "rule7_unchanged_key_phrase": {
+    "ok": false,
+    "reasons": [
+     "有限助動詞が含まれている"
+    ]
+   }
+  },
+  {
+   "display_phrase": "no way to know whether they",
+   "n_words": 6,
+   "fake_calls": 1,
+   "selection_status": "KEY_WORDS_STRUCTURE_INVALID",
+   "validation_reasons": [],
+   "item_reasons": [
+    {
+     "index": 2,
+     "reasons": [
+      "display_phraseが1〜5語でない(実際: 6語)"
+     ],
+     "warnings": []
+    }
+   ],
+   "contract_violation": [],
+   "literal_in_source_sentence": true,
+   "verbatim_note": "本文に逐語で存在",
+   "rule7_unchanged_key_phrase": {
+    "ok": false,
+    "reasons": [
+     "key_phraseが1〜5語でない(実際: 6語)"
+    ]
+   }
+  },
+  {
+   "display_phrase": "no way to tell",
+   "n_words": 4,
+   "fake_calls": 1,
+   "selection_status": "KEY_WORDS_STRUCTURE_PASS",
+   "validation_reasons": [],
+   "item_reasons": [],
+   "contract_violation": [],
+   "literal_in_source_sentence": false,
+   "verbatim_note": "本文に逐語では存在しない(時制の基本形化または追加語)",
+   "candidate_mismatch_suspected": false,
+   "source_span_missing": [],
+   "rule7_unchanged_key_phrase": {
+    "ok": true,
+    "reasons": []
+   }
+  }
+ ],
+ "canonicalization_rule_checks": [
+  {
+   "case": "A. selection=bare / canon LLMがsource_span超えへ拡張(Phase2 C0 run1で観測された型)",
+   "ok": false,
+   "reasons": [
+    "key_phrase('no way to know')がdisplay_phraseと一致せず、source_span('no way')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+   ]
+  },
+  {
+   "case": "B. selection=extended display / canon unchanged",
+   "ok": true,
+   "reasons": []
+  },
+  {
+   "case": "C. 有限助動詞(have)を含む表示形はunchangedでも不可",
+   "ok": false,
+   "reasons": [
+    "有限助動詞が含まれている"
+   ]
+  },
+  {
+   "case": "D. one's一般化(display 'pump its fist' -> key \"pump one's fist\"、1対1置換)は許可",
+   "ok": true,
+   "reasons": []
+  },
+  {
+   "case": "D2. 動詞活用を同時に変える置換(pumps its fist -> pump one's fist)は一般化に該当せず不可(canon LLMはdisplayを先に基本形へ整える必要)",
+   "ok": false,
+   "reasons": [
+    "key_phrase(\"pump one's fist\")がdisplay_phraseと一致せず、source_span('pumps its fist')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+   ]
+  },
+  {
+   "case": "E. 既存で通る拡張例(push prices up、span 'prices up')はunchangedなら通る",
+   "ok": true,
+   "reasons": []
+  },
+  {
+   "case": "F. 6語は不可",
+   "ok": false,
+   "reasons": [
+    "key_phraseが1〜5語でない(実際: 7語)",
+    "有限助動詞が含まれている"
+   ]
+  }
+ ],
+ "hardcode_check": {
+  "added_paragraph_ban_word_hits": [],
+  "added_paragraph_anchor_hits": [],
+  "added_paragraph_candidate_phrase_hits": [],
+  "prompts_module_code_ban_word_hits": [],
+  "n_candidate_phrases_checked": 108,
+  "ban_words": [
+   "no way",
+   "know",
+   "meta",
+   "coffee",
+   "hormuz",
+   "pump",
+   "fist",
+   "wallet",
+   "time lag",
+   "show up",
+   "come down",
+   "behind",
+   "price",
+   "roast",
+   "bean",
+   "concierge",
+   "contract",
+   "scenes",
+   "strait"
+  ],
+  "pass": true
+ },
+ "cost_actuals": {
+  "per_cell_actual_jpy": {
+   "coffee_adv_M2P0": {
+    "n": 3,
+    "mean": 0.8973,
+    "max": 0.9439,
+    "min": 0.8356
+   },
+   "coffee_adv_M2P5": {
+    "n": 5,
+    "mean": 0.9439,
+    "max": 1.0387,
+    "min": 0.8717
+   },
+   "coffee_std_M2P0": {
+    "n": 3,
+    "mean": 0.8785,
+    "max": 0.9583,
+    "min": 0.7607
+   },
+   "coffee_std_M2P5": {
+    "n": 5,
+    "mean": 1.0253,
+    "max": 1.2395,
+    "min": 0.8931
+   },
+   "hormuz_adv_M2P0": {
+    "n": 2,
+    "mean": 0.9643,
+    "max": 1.0751,
+    "min": 0.8535
+   },
+   "hormuz_adv_M2P5": {
+    "n": 2,
+    "mean": 1.1341,
+    "max": 1.3997,
+    "min": 0.8686
+   },
+   "hormuz_std_M2P0": {
+    "n": 2,
+    "mean": 1.1422,
+    "max": 1.1869,
+    "min": 1.0975
+   },
+   "hormuz_std_M2P5": {
+    "n": 2,
+    "mean": 1.2974,
+    "max": 1.3777,
+    "min": 1.2172
+   },
+   "meta_adv_M2P0": {
+    "n": 2,
+    "mean": 0.8162,
+    "max": 0.8356,
+    "min": 0.7968
+   },
+   "meta_adv_M2P5": {
+    "n": 2,
+    "mean": 0.8722,
+    "max": 0.9023,
+    "min": 0.8421
+   },
+   "meta_std_M2P0": {
+    "n": 2,
+    "mean": 0.806,
+    "max": 0.8782,
+    "min": 0.7339
+   },
+   "meta_std_M2P5": {
+    "n": 2,
+    "mean": 0.9131,
+    "max": 0.9383,
+    "min": 0.8879
+   }
+  },
+  "M2P0_all_n": 14,
+  "M2P0_mean": 0.9132,
+  "M2P0_max": 1.1869,
+  "M2P0_M2P5_all_n": 32,
+  "all_mean": 0.9708,
+  "all_max": 1.3997
+ }
+}
