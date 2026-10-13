@@ -1,0 +1,151 @@
+{
+ "status": "ESTIMATE_ONLY_NOT_EXECUTED",
+ "unit_cost_jpy_per_job_from_ABC": {
+  "std": 1.1854,
+  "adv": 0.9377
+ },
+ "uplift_non_C0": 1.03,
+ "n_per_cell": 3,
+ "budget_jpy": 50.0,
+ "stop_rule_jpy": 48.0,
+ "stages": [
+  {
+   "name": "Stage 1: Coffee C0/C2 両Level + C1 Adv + C2' Adv",
+   "jobs": 18,
+   "cost_jpy": 18.72,
+   "cumulative_jpy": 18.72
+  },
+  {
+   "name": "Stage 2: meta C0/C2 両Level",
+   "jobs": 12,
+   "cost_jpy": 12.93,
+   "cumulative_jpy": 31.65
+  },
+  {
+   "name": "Stage 3: hormuz C0/C2 両Level",
+   "jobs": 12,
+   "cost_jpy": 12.93,
+   "cumulative_jpy": 44.58
+  }
+ ],
+ "rows": [
+  {
+   "article": "coffee",
+   "level": "std",
+   "condition": "C0",
+   "n": 3,
+   "unit_jpy": 1.1854,
+   "cost_jpy": 3.556
+  },
+  {
+   "article": "coffee",
+   "level": "std",
+   "condition": "C2",
+   "n": 3,
+   "unit_jpy": 1.221,
+   "cost_jpy": 3.663
+  },
+  {
+   "article": "coffee",
+   "level": "adv",
+   "condition": "C0",
+   "n": 3,
+   "unit_jpy": 0.9377,
+   "cost_jpy": 2.813
+  },
+  {
+   "article": "coffee",
+   "level": "adv",
+   "condition": "C2",
+   "n": 3,
+   "unit_jpy": 0.9658,
+   "cost_jpy": 2.897
+  },
+  {
+   "article": "meta",
+   "level": "std",
+   "condition": "C0",
+   "n": 3,
+   "unit_jpy": 1.1854,
+   "cost_jpy": 3.556
+  },
+  {
+   "article": "meta",
+   "level": "std",
+   "condition": "C2",
+   "n": 3,
+   "unit_jpy": 1.221,
+   "cost_jpy": 3.663
+  },
+  {
+   "article": "meta",
+   "level": "adv",
+   "condition": "C0",
+   "n": 3,
+   "unit_jpy": 0.9377,
+   "cost_jpy": 2.813
+  },
+  {
+   "article": "meta",
+   "level": "adv",
+   "condition": "C2",
+   "n": 3,
+   "unit_jpy": 0.9658,
+   "cost_jpy": 2.897
+  },
+  {
+   "article": "hormuz",
+   "level": "std",
+   "condition": "C0",
+   "n": 3,
+   "unit_jpy": 1.1854,
+   "cost_jpy": 3.556
+  },
+  {
+   "article": "hormuz",
+   "level": "std",
+   "condition": "C2",
+   "n": 3,
+   "unit_jpy": 1.221,
+   "cost_jpy": 3.663
+  },
+  {
+   "article": "hormuz",
+   "level": "adv",
+   "condition": "C0",
+   "n": 3,
+   "unit_jpy": 0.9377,
+   "cost_jpy": 2.813
+  },
+  {
+   "article": "hormuz",
+   "level": "adv",
+   "condition": "C2",
+   "n": 3,
+   "unit_jpy": 0.9658,
+   "cost_jpy": 2.897
+  },
+  {
+   "article": "coffee",
+   "level": "adv",
+   "condition": "C1",
+   "n": 3,
+   "unit_jpy": 0.9658,
+   "cost_jpy": 2.897
+  },
+  {
+   "article": "coffee",
+   "level": "adv",
+   "condition": "C2prime",
+   "n": 3,
+   "unit_jpy": 0.9658,
+   "cost_jpy": 2.897
+  }
+ ],
+ "total_jobs": 42,
+ "total_jpy": 44.58,
+ "margin_to_stop_rule": 3.42,
+ "margin_to_budget": 5.42,
+ "note_C0prime": "C0'(方式2のV2 shortlist+現行Prompt)はABC-A既存18 jobの結果を再利用(新規費用0)",
+ "note_without_uplift": 43.84
+}

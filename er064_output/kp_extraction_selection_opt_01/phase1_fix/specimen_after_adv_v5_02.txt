@@ -1,0 +1,86 @@
+以下の英語記事の候補一覧から、初回リスニングで意味を取れず、その後の理解を止める可能性が高い表現を、支援価値の高い順にちょうど5個選んでください。
+
+【判断の基準】
+音声で一度だけ聞いたときに意味を処理できるかを最優先してください。優先順位は、初回音声での処理困難、未知の可能性、瞬時の推測困難、本文の事実・感情・面白さへの影響、記事内重要度、汎用性の順です。
+
+未知単語、題材固有表現、短い複数語パターン、比喩・感情表現を同格の候補として扱ってください。構成語から意味を容易に推測できる透明表現は、記事上重要でも優先度を下げてください。
+
+同程度の候補どうしでは、定着した自然な表現(慣用句、自然なコロケーション、句動詞、本文で基本義と異なる意味の表現)を、構成語どおりの基本連語やこの記事だけの言い回しより優先してください。区分名(idiom等)やevidenceラベルだけでは選ばず、CEFR等級だけでも判断しないでください。この記事はB1相当向けなので、基本義と異なる意味の句動詞や文脈で意味が変わるコロケーションは、初見で難しいものとして同列に評価してください。
+
+【学ぶ単位】
+動詞表現は目的語・補語まで、名詞表現は修飾語まで含めた、用法が成り立つ最小のまとまりを選んでください(例: rateよりinterest rate)。候補行の`contains: Cn`はCnを含む、`contained_in: Cn`はCnの一部であることを示します。同じ内容を両方選ばず、用法を成り立たせる要素を含む側を選んでください(長い側が主語・時・場所の付け足しだけなら短い側)。
+display_phraseは1〜5語にしてください。完全文、主語と有限動詞を持つ節は禁止です。動詞は本文の時制を残さず基本形へ直してください(受動はbe + past participleの見出し形も可)。
+
+【役割】
+5個のうち1個は、この記事に特有で、事前に知っていると本文の主張や展開を追いやすくなる語または表現にしてください(key_phrase_role="topic")。汎用性は高くなくてかまいません。人名・企業名・地名、専門用語、比喩という種類だけでは選びません。該当が見当たらなくても空にせず、最も近い候補を選んでください。
+残り4個(key_phrase_role="important")は、他の記事でも使える定着した表現にしてください。この記事だけの創作的な言い回しは選ばないでください(topicには選べます)。key_phrase_roleは候補の区分とは独立した、選定後の役割ラベルです。
+
+【日本語グロス】
+日本語グロスは、日本人の英語学習者が音声で聞いてすぐ意味を理解できる、自然で平易な現代日本語の一文にしてください。直訳調や、「常態」「是正」のような硬い報道語・漢語は避けてください。括弧（　）で別訳・専門用語・補足を書き添えないでください。「～」「〜」は辞書的に自然な範囲(例: 「～を示す」)でのみ使い、「…」のようなプレースホルダー記号は使わないでください。数字を含める場合は算用数字ではなく漢数字(一、二、三…)で書いてください。「ソロ旅行を～％とする」のように数値を補わないと意味が成立しない句・グロスは選ばず、それ単体で意味が成立するものを選んでください。
+
+【Topic】title: Coffee Bean Prices Fall. Are Price Tags Still on a Journey?
+
+【重要な単語・単語群候補】
+- id: C16 | candidate: "price tag" | type: noun_phrase | occ: 7 | evidence: repeated_compound_noun | sentence: S2
+- id: C17 | candidate: "bean prices" | type: noun_phrase | occ: 7 | evidence: repeated_compound_noun | sentence: S1
+- id: C18 | candidate: "nine months" | type: noun_phrase | occ: 4 | evidence: repeated_compound_noun | sentence: S17
+- id: C19 | candidate: "Bean Prices Fall" | type: noun_phrase | occ: 4 | evidence: repeated_compound_noun | sentence: S1
+- id: C20 | candidate: "Coffee Bean" | type: noun_phrase | occ: 4 | evidence: repeated_compound_noun | sentence: S1
+- id: C21 | candidate: "Coffee Bean Prices" | type: noun_phrase | occ: 4 | evidence: repeated_compound_noun | sentence: S1
+- id: C22 | candidate: "price measure" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S8
+- id: C23 | candidate: "Prices Fall" | type: noun_phrase | occ: 4 | evidence: repeated_compound_noun | sentence: S1
+- id: C24 | candidate: "raw beans" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S17
+- id: C25 | candidate: "retail prices" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S17
+- id: C26 | candidate: "usual cup" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S5
+- id: C27 | candidate: "bad weather" | type: noun_phrase | occ: 1 | evidence: wiktionary_multiword | sentence: S10
+
+【phrase / idiom / phrasal verb候補】
+- id: C1 | candidate: "According to" | type: phrase | occ: 2 | evidence: cefr_j | sentence: S17
+- id: C2 | candidate: "as well" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S27
+- id: C3 | candidate: "At that" | type: idiom | occ: 2 | evidence: wiktionary[idiom] | sentence: S4
+- id: C4 | candidate: "based on" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S23
+- id: C5 | candidate: "came from" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb]+irregular_rescue | sentence: S10
+- id: C6 | candidate: "come down" | type: phrasal_verb | occ: 2 | evidence: wiktionary[idiom,phrasal_verb] | sentence: S5
+- id: C7 | candidate: "comes with" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S26
+- id: C8 | candidate: "go down" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S12
+- id: C9 | candidate: "Hold on" | type: phrasal_verb | occ: 2 | evidence: wiktionary[idiom,phrasal_verb] | sentence: S15
+- id: C10 | candidate: "of a" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S14
+- id: C11 | candidate: "on a regular basis" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S21
+- id: C12 | candidate: "right away" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S6
+- id: C13 | candidate: "show up" | type: phrasal_verb | occ: 1 | evidence: wiktionary[idiom,phrasal_verb] | sentence: S17
+- id: C14 | candidate: "take for" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S16
+- id: C15 | candidate: "take time" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S20
+
+【word候補】
+- id: C28 | candidate: "insiders" | type: word | occ: 1 | evidence: ngsl_family | sentence: S17
+- id: C29 | candidate: "Roasting" | type: word | occ: 1 | evidence: cefr_j | sentence: S20
+- id: C30 | candidate: "harvested" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S9
+- id: C31 | candidate: "lag" | type: word | occ: 1 | evidence: ngsl_family | sentence: S7
+- id: C32 | candidate: "Tags" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S2
+
+【SENTENCE REFERENCE】(文脈参照専用。この表の文字列をそのままitemへ書かないでください)
+S1: "Coffee Bean Prices Fall"
+S2: "Are Price Tags Still on a Journey"
+S4: "At that news, your wallet pumps its fist"
+S5: "In your mind, the price of your usual cup has already come down, too"
+S6: "But the price tag in a shop may not change right away"
+S7: "When you see a price tag that makes you want to say, "Haven't you heard the news?", it seems there is a time lag"
+S8: "The price measure reported by the International Coffee Organization fell 8.7% from the previous month"
+S9: "The reason, it said, was that more beans harvested in Brazil had entered the market, and a good supply was expected to continue"
+S10: "The US Department of Agriculture said that earlier high prices came from several factors happening at once: bad weather in Brazil and Vietnam, fewer beans available for sale, and strong demand"
+S12: "It may leave you wondering, "Did prices go down or up"
+S14: "And it does not show the price of a cup at a cafe"
+S15: "Hold on before putting the two figures in the ring"
+S16: "So, how long does it take for the price of beans to reach a price tag"
+S17: "According to estimates from market insiders and experts interviewed by Reuters, it takes at least about nine months for the price of raw beans to show up in US retail prices"
+S20: "Roasting and packing the beans also take time"
+S21: "They also often negotiate prices with retailers on a regular basis"
+S23: "However, the "about nine months" figure is an estimate based on interviews"
+S26: "And a cup at a cafe comes with costs besides the beans"
+S27: "One cafe operator in Chicago said that the cost of cups and labor, as well as the cost of buying beans, had been behind price increases"
+
+【出力のルール】
+- 5件は必ず上記の候補一覧から選び、新しい表現を作らないでください。[重要な単語・単語群候補]区分から少なくとも1個、残りは[phrase / idiom / phrasal verb候補]区分を優先し、[word候補]区分は良い候補が不足するときだけ使ってください。この区分の優先は、質が同程度のときの補充規則です。
+- 各itemのsource_candidate_idには、選んだ候補のcandidate ID(例: C7)を1つだけ指定してください。本文の文字列(source_sentence/source_span相当)は書かないでください。
+- surface_echoには、選んだ候補が表す表現を短く(1〜6語程度)書いてください。内部確認用で、正誤判定には使いません。
+- 上記5件とは別に、backup_itemとして、重要語・重要表現(key_phrase_role="important")の予備候補を、異なるcandidate IDで1件、必ず返してください(topicが正しく選べた場合は採用されません)。

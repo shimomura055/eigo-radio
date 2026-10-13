@@ -1,0 +1,66 @@
+PASS M3 std: 6指標の順序行が逐語で1回
+PASS M3 std: Coffee/記事語句なし(take care含む)
+PASS M3 std: established_or_article_specific欄の言及なし
+PASS M3 std: 『takeよりtake care of』例示なし
+PASS M3 std: 必須語『key_phrase_role="topic"』保持
+PASS M3 std: 必須語『key_phrase_role="important"』保持
+PASS M3 std: 必須語『backup_item』保持
+PASS M3 std: 必須語『source_candidate_id』保持
+PASS M3 std: 必須語『surface_echo』保持
+PASS M3 std: 必須語『[重要な単語・単語群候補]』保持
+PASS M3 std: 必須語『漢数字』保持
+PASS M3 std: 必須語『1〜5語』保持
+PASS M3 std: 必須語『ちょうど5個』保持
+PASS M3 std: 必須語『括弧』保持
+PASS M3 std: 必須語『質が同程度のときの補充規則』保持
+PASS M3 adv: 6指標の順序行が逐語で1回
+PASS M3 adv: Coffee/記事語句なし(take care含む)
+PASS M3 adv: established_or_article_specific欄の言及なし
+PASS M3 adv: 『takeよりtake care of』例示なし
+PASS M3 adv: 必須語『key_phrase_role="topic"』保持
+PASS M3 adv: 必須語『key_phrase_role="important"』保持
+PASS M3 adv: 必須語『backup_item』保持
+PASS M3 adv: 必須語『source_candidate_id』保持
+PASS M3 adv: 必須語『surface_echo』保持
+PASS M3 adv: 必須語『[重要な単語・単語群候補]』保持
+PASS M3 adv: 必須語『漢数字』保持
+PASS M3 adv: 必須語『1〜5語』保持
+PASS M3 adv: 必須語『ちょうど5個』保持
+PASS M3 adv: 必須語『括弧』保持
+PASS M3 adv: 必須語『質が同程度のときの補充規則』保持
+PASS M3: Level差は各1文のみ(句点1つ)
+PASS M3: Std/Advの差はLEVEL_RULEのみ
+PASS M3: schemaはProduction同一(追加欄なし)
+PASS M3: Std After <= 現行(2,755)
+PASS M3: Adv After <= 現行(3,127)
+PASS M3: 現行token=2,755/3,127(Phase1-Bと同一計測)
+PASS M3 std: 候補セクションがBeforeとバイト一致
+PASS M3 std: specimenファイルとsha一致
+PASS M3 adv: 候補セクションがBeforeとバイト一致
+PASS M3 adv: specimenファイルとsha一致
+PASS M1: Promptがrows側定数のラベル(contains: Cn / contained_in: Cn)を参照
+PASS M1: Promptに旧日本語ラベル(含む:Cn/含まれる:Cn)が残っていない
+PASS M1: rows内の注釈ラベルは全てPromptが説明している(未説明のfragment_risk等が無い)
+PASS M1: rows内注釈の書式 `| contains: C1,C2`
+PASS M1: current(C0)のrowsに注釈が無い
+PASS M2: shortlists_fixed_02.json sha一致
+PASS M2: snapshot sha一致
+PASS M2: 全rows_text sha自己整合
+PASS M2: 全条件・全記事で実タイトルが入っている('T'なし)
+PASS M2: C0がProduction実runの候補行とバイト一致(Coffee Std/Adv, meta Std/Adv)
+PASS M2: hormuzは旧方式のPromptで判定不能と記録(None)
+PASS M2: 旧01固定shortlistは無変更のまま存在
+PASS M4: 8表現(Coffee5+hormuz3)が全記事・全構成のshortlistに存在しない
+PASS R1: want to/close to/call itがR1構成のimportantに残らない
+PASS R1: take care/be wrongはR1構成にも残る(最後が内容語)
+PASS R1: 除去3種=call it/close to/want to
+PASS R1: 希少単語の押し出し件数は減らない(guarded==guarded_r1)
+PASS R2: 長い側がdemoted(online hit・非important)ならTier-H発火せずTier-S
+PASS R2: 長い側がimportant判定ならTier-H発火
+PASS R2: r2=False(01互換)ではdemotedでもTier-H
+PASS R3: 助動詞始まり(been behind price increases等)はfragment_riskでない(no_aux)
+PASS R3: in the ring / the two numbers in the ringは引き続きfragment_risk
+PASS R3: 01互換(no_aux=False)では助動詞始まりも対象
+PASS Production 8ファイルの未コミット差分なし
+
+RESULT 64/64 PASS

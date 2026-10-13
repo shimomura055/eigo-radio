@@ -290,7 +290,7 @@ def is_dictionary_registered(c):
     return "wiktionary" in (c.get("matched_dbs") or [])
 
 
-def compute_containment(cands, sentence_units):
+def compute_containment(cands, sentence_units, r2=False):
     """各候補(shortlist内)について、含む/含まれる関係と Tier-H(word整理対象)を機械算出。
     戻り: {"pairs":[{small,big,small_type,big_registered,all_small_occurrences_inside_big,tier}], }"""
     sent_stems = [[_stem(t) for t in u["tokens"]] for u in sentence_units]
@@ -318,7 +318,9 @@ def compute_containment(cands, sentence_units):
             all_inside = bool(a_occs) and all(all((si, i + off) in covered for off in range(len(a["seq"]))) for (si, i) in a_occs)
             small_is_word = a["c"].get("unit_type") == "word"
             reg = is_dictionary_registered(b["c"])
-            tier = "H" if (small_is_word and reg and all_inside) else "S"
+            # 委任_02 R2: 長い側がimportant判定、またはdemotedでない(=名詞句判定で外れたonline hitではない)ときだけTier-H
+            big_demoted = is_online_multiword_hit(b["c"]) and not b["c"].get("important_noun_phrase_candidate")
+            tier = "H" if (small_is_word and reg and all_inside and not (r2 and big_demoted)) else "S"
             pairs.append({"small": a["c"]["canonical_form"], "big": b["c"]["canonical_form"], "small_unit_type": a["c"].get("unit_type"),
                           "big_registered": reg, "all_small_occurrences_inside_big": all_inside, "tier": tier})
     return pairs
@@ -334,10 +336,17 @@ def all_closed_only(surface):
     return bool(toks) and all(t in CLOSED for t in toks)
 
 
-def fragment_risk(surface, registered):
-    """U3(ii): 辞書未登録かつ先頭が閉じた語類(前置詞/冠詞/助動詞/接続詞)の複数語 -> 注釈のみ(置換しない)。"""
+AUX_START = {"is", "are", "was", "were", "be", "been", "being", "do", "does", "did", "has", "have", "had", "can", "could", "may", "might",
+             "must", "should", "will", "would"}
+FRAG_START_NOAUX = FRAG_START - AUX_START  # 委任_02 R3: 助動詞始まりは断片ではない(been behind price increases等)ため対象外
+
+
+def fragment_risk(surface, registered, no_aux=False):
+    """U3(ii): 辞書未登録かつ先頭が閉じた語類(前置詞/冠詞/助動詞/接続詞)の複数語 -> 注釈のみ(置換しない)。
+    no_aux=True(委任_02 R3): 助動詞始まりを対象から外す。"""
     toks = [t.lower() for t in _TOK_RE.findall(surface)]
-    return bool(len(toks) >= 2 and toks[0] in FRAG_START and not registered)
+    start = FRAG_START_NOAUX if no_aux else FRAG_START
+    return bool(len(toks) >= 2 and toks[0] in start and not registered)
 
 
 # ------------------------------------------------------------
@@ -359,13 +368,28 @@ def is_online_multiword_hit(c):
 
 
 def assemble_shortlist(stage1_after_lookup, *, phrase_cap=15, realign=False, tiebreak_pos=False, u3_exclude=False, u3_annotate=False,
-                       u2="none", dbs=None, demoted_allow=None):
+                       u2="none", dbs=None, demoted_allow=None, r1_guard=False, r2=False, r3=False):
     """run_stage1_and_shortlist(patched)が返したstage1(= demoted_to_phrase付与済み)を受けて、U2/U3/U4を適用した
     shortlist_infoを返す。u2: none / tierH+S / tierS。realign: demoted_to_phraseを含むphrase_survivorsを(-db_match_count, canonical)へ整列し直す。
     tiebreak_pos: 同値内を本文の出現順にする(U4(b))。Production関数のbuild_shortlistを再利用する。"""
     st = dict(stage1_after_lookup)
     phrases = list(st["phrase_survivors"])
     excluded_u3 = []
+    r1_moved = []
+    if r1_guard:
+        # 委任_02 R1: 最後のtokenが閉じた語類のonline multiword hit(want to/close to/call it型)のimportant判定を外し、phrase(demoted)側へ回す。
+        # take care/be wrongのように最後が内容語のものは残す。rare単語(important_noun_candidates内の1-gram)は対象外。
+        keep_imp = []
+        for c in st["important_noun_candidates"]:
+            last = ([t.lower() for t in _TOK_RE.findall(c["surface_form"])] or [""])[-1]
+            if is_online_multiword_hit(c) and last in CLOSED:
+                c2 = dict(c)
+                c2["important_noun_phrase_candidate"] = False
+                phrases.append(c2)
+                r1_moved.append(c["canonical_form"])
+            else:
+                keep_imp.append(c)
+        st["important_noun_candidates"] = keep_imp
     if demoted_allow is not None:
         # 精度ガード(Trial比較用): 現行の照会窓(予算60)の外で新規に拾った「名詞句判定で外れたhit(demoted)」はphraseへ入れない。
         # important判定のhit(time lag等)は影響を受けない。
@@ -389,7 +413,7 @@ def assemble_shortlist(stage1_after_lookup, *, phrase_cap=15, realign=False, tie
     removed_tier_h = []
     pairs = []
     if u2 in ("tierH+S", "tierS"):
-        pairs = compute_containment(sl, st["sentence_units"])
+        pairs = compute_containment(sl, st["sentence_units"], r2=r2)
         if u2 == "tierH+S":
             drop = {p["small"] for p in pairs if p["tier"] == "H"}
             # backfill: wordを削った分だけ次の希少word_survivorsを補う(shortlist word枠の件数を維持)
@@ -408,7 +432,7 @@ def assemble_shortlist(stage1_after_lookup, *, phrase_cap=15, realign=False, tie
                     sl.append(c)
                     in_sl.add(c["canonical_form"])
                     need -= 1
-                pairs = compute_containment(sl, st["sentence_units"])
+                pairs = compute_containment(sl, st["sentence_units"], r2=r2)
     ctx = core.attach_compact_context(sl, st["sentence_units"])
     sl = ctx["shortlist"]
     for c in sl:
@@ -417,15 +441,21 @@ def assemble_shortlist(stage1_after_lookup, *, phrase_cap=15, realign=False, tie
     for c in sl:
         c2 = dict(c)
         if u3_annotate:
-            c2["fragment_risk"] = fragment_risk(c2["surface_form"], is_dictionary_registered(c2) or c2["canonical_form"] in (dbs or {}).get("wiktionary", {}))
+            c2["fragment_risk"] = fragment_risk(c2["surface_form"], is_dictionary_registered(c2) or c2["canonical_form"] in (dbs or {}).get("wiktionary", {}), no_aux=r3)
         out.append(c2)
     return {"shortlist": out, "sentence_reference": ctx["sentence_reference"], "containment_pairs": pairs, "u2_removed_tier_h": removed_tier_h,
-            "u3_excluded_closed_only": excluded_u3,
+            "u3_excluded_closed_only": excluded_u3, "r1_moved_from_important": r1_moved,
             "counts": {"phrase": info["phrase_included_count"], "important": info["important_noun_included_count"],
                        "word": info["word_included_count"], "total": len(out)}}
 
 
-def candidate_row_text(sl, sentence_reference, with_annotations=True, pairs=()):
+# 委任_02 M1: 注釈ラベルの単一定義。rows側(下記)とPrompt側(prompt_build)が同じ定数を参照する。
+LABEL_CONTAINS = "contains:"
+LABEL_CONTAINED = "contained_in:"
+LABEL_FRAGMENT = "fragment_risk"
+
+
+def candidate_row_text(sl, sentence_reference, with_annotations=True, pairs=(), title="T"):
     """選定LLMへ渡す候補行+SENTENCE REFERENCE部分の文字列(static_instructions空、実Promptと同じ整形関数を使用)。
     注釈(含む/含まれる、fragment_risk)は行末に追加した場合の増分を含める。"""
     wc = contract.assign_candidate_ids(sl)
@@ -444,13 +474,13 @@ def candidate_row_text(sl, sentence_reference, with_annotations=True, pairs=()):
         s = base_ev(c)
         if with_annotations:
             if c["canonical_form"] in contains:
-                s += " | contains: " + ",".join(contains[c["canonical_form"]])
+                s += " | " + LABEL_CONTAINS + " " + ",".join(contains[c["canonical_form"]])
             if c["canonical_form"] in contained:
-                s += " | contained_in: " + ",".join(contained[c["canonical_form"]])
+                s += " | " + LABEL_CONTAINED + " " + ",".join(contained[c["canonical_form"]])
             if c.get("fragment_risk"):
-                s += " | fragment_risk"
+                s += " | " + LABEL_FRAGMENT
         return s
-    return contract.build_lightweight_user_message("T", wc["shortlist_with_ids"], sentence_reference, "", "family_x", None, ev)
+    return contract.build_lightweight_user_message(title, wc["shortlist_with_ids"], sentence_reference, "", "family_x", None, ev)
 
 
 def approx_tokens(text):
