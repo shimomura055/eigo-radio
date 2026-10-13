@@ -642,13 +642,13 @@
     "full_story_part1_c5": {
       "status": "STOPPED",
       "path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c5.wav",
-      "sha256": "6b6fb56e9a3bb9b24bd67a23874881b5e9fd7dfc8e8987429eb57caa744a447a",
+      "sha256": "e71bc2ebe1dbe12b2cffbdc7b6da5f4ccc4536ad40ebcfbf145d277b2216c954",
       "canonical_text": "Melos said.",
       "text": "Melos said.",
       "disfluency_checked": false,
       "asr_text": null,
-      "slowdown_applied": null,
-      "z_adoption": "failed",
+      "slowdown_applied": true,
+      "z_adoption": "human_review_adopted",
       "segment_id": "full_story_part1_c5",
       "narration_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c5.wav",
       "role": "FULL_STORY",
@@ -687,7 +687,7 @@
         "style_prefix_sha256": "74b456cacf74af0ad08636776dc32fc35e041f869ecc7d60ecab190cf99a1f91",
         "tts_backend": "speech_metadata_flash_lite"
       },
-      "slowdown_ratio": null,
+      "slowdown_ratio": 1.0564,
       "attempts": [
         {
           "phase": "standard",
@@ -742,10 +742,91 @@
       ],
       "audio_text_deviation": null,
       "tts_generations_used": 3,
-      "duration_seconds": 1.56,
+      "duration_seconds": 1.648,
       "USER_HR_APPROVAL_NOTE_20261013": "ユーザー個別HR承認(2026-10-13、FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01)。HR試聴ページv2で試聴し問題なしと判断。この1clip・1takeのみの個別承認で、ASR許容規則の一般化ではない。 元status=STOPPED(正直な記録として維持)。 narration/full_story_part1_c5.wavをattempt4(sha256一致)へ置換、置換前attempt6はevidence_13/pre_adopt_backupへ退避。sha256フィールドは採用wavに更新(ASSET_HASH_MISMATCH回避、旧shaはpre_adopt_sha256)。",
       "pre_adopt_sha256": "b67dc896379f568123992a6d594b77be52e36f8e47199805b74689df5ae3b40a",
-      "adopted_attempt_audio_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/attempts/full_story_part1_c5_attempt4_customadfcf33f.wav"
+      "adopted_attempt_audio_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/attempts/full_story_part1_c5_attempt4_customadfcf33f.wav",
+      "slowdown_info": {
+        "slowdown_pct_target": 6.0,
+        "slowdown_pct_actual": 5.617,
+        "src_duration_seconds": 1.56,
+        "dst_duration_seconds": 1.648,
+        "src_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c5_original.wav",
+        "dst_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c5.wav"
+      },
+      "original_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c5_original.wav",
+      "post_slowdown_asr_text": "Mella said.",
+      "post_slowdown_classification": "ASR_VALIDATION_UNCERTAIN",
+      "post_slowdown_final_classification": "ASR_VALIDATION_UNCERTAIN",
+      "post_slowdown_cascade": {
+        "invoked": true,
+        "cascade_entered": true,
+        "verified": false,
+        "final_status": "ASR_VALIDATION_UNCERTAIN",
+        "steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Mella said.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "tier3_corroboration_secondary",
+            "provider": "azure",
+            "text": "Mallow said.",
+            "sub_reason": "entity_only",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "primary_2",
+            "provider": "openai_asr",
+            "text": "Mella said.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Mallow said.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": true,
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_2",
+            "provider": "azure",
+            "text": "Mallow said.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": true,
+            "entity_like_source": [
+              "capitalized"
+            ]
+          }
+        ],
+        "semantic_equivalence_info": {
+          "tier_applied": "tier3_attempted_no_corroboration",
+          "sub_reason": "entity_only",
+          "corroborated_by": [],
+          "warning": false,
+          "role": "FULL_STORY",
+          "diff_spans": {
+            "index": 0,
+            "canonical_word": "melos",
+            "asr_word": "mella"
+          }
+        }
+      },
+      "post_slowdown_status_honest": "STOPPED (減速後再検証 ASR_VALIDATION_UNCERTAIN: Mella/Mallow said, Tier3不成立)。HR個別承認(canonical sha一致)により採用。新規自動PASS規則は不使用",
+      "pre_slowdown_attempt4_sha256": "6b6fb56e9a3bb9b24bd67a23874881b5e9fd7dfc8e8987429eb57caa744a447a"
     },
     "full_story_part1_c6": {
       "status": "OK",

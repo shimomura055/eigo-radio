@@ -101,3 +101,9 @@ KP外側retry(最大3)・TTS clip checkpoint(中断時の再課金防止)は維�
 
 ## 7. FINAL-ASSEMBLY 委任_01(2026-10-13)
 - provision_shell・gate各1回: API呼出なし、**JPY0**。run_e2e_02実費 62.60のまま(runner出力 spent_jpy 62.5957)。累計(Melos E2E)**約185.4 / 300**、残枠約114.6。gateはrc=2(FamilyZSlowdownGateStop、OPEN-331)でSTOP、assemble/pages/page_verify未実行。
+
+
+## 8. FINAL-ASSEMBLY 委任_02(2026-10-13)
+- ④Trial(別管理 FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01): 委任_01 JPY39.61、委任_03 JPY8.21(COST_LEDGER未追記だった分をここで追記)。
+- 本委任: attempt4へ既存6%減速+減速後ASR再検証(Primary+Tier3 Azure+cascade)1回 = run_e2e_02 実費 62.5957 -> 62.8314(**+JPY0.236**)。gate/assemble: API呼出なし JPY0。TTS再生成なし。
+- 累計(Melos E2E)= 185.4 + 39.61 + 8.21 + 0.24 = **約233.5 / 300**(残枠約66.5)。

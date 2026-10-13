@@ -20781,3 +20781,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - Status案: USER_DECISION_REQUIRED(ユーザー試聴待ち)。Trial結果はProduction仕様ではない。採用時はFULL_STORY styleのprofile差替えのみで初回/retry/fallback経路は不変の見込み(未確認、採用承認後に別委任で設計)。
 - 費用: JPY39.55推定(TTS 32.42 + ASR推定 7.13、上限JPY60、中央見積43.4)。所要: 生成50秒、測定約15分。
 - 証跡: `er057_output/coffee_tts_style_8way_01/`(`MEASUREMENTS_02.md`/`measurements_02.json`/`generation_log_02.jsonl`/`cost_02.json`/`state_guard_02.json`/`play_evidence_02.json`)、試聴ページ`user_test/coffee_style_8way_01/index.html`、委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-TTS-STYLE-8WAY-AB-TRIAL-01_02.md`。OPEN-332へ参照追記(新規OPENなし)。
+
+### 2026-10-13 FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01 委任_02: attempt4へ既存正式6%減速+減速後QA、gate/assembleまで(pages/page_verifyはRESTART_STORM STOPで未実行)
+- 採用判断(既存仕様内): Std a2 part1_c5は、attempt1/3は減速前QA通過だが減速後再検証でSTOPPED(18:35/18:45のA2_SLOWDOWN_REVERIFY記録)、attempt2/4/5/6は減速前NG。いずれも減速後を含む正式QAを自動通過せず、HR承認済みattempt4を維持(別attemptの優位根拠なし=再試聴不要)。④Trialの音韻説明可判定等の未承認自動PASS規則はMelos QAに不使用。
+- 実装確認(コード): `apply_a2_slowdown_postprocess`は再検証UNCERTAIN/STOPPEDでも減速後wavをout_pathに残す(statusをSTOPPEDにするのみ、元に戻さない)。`_segment_gate_status`のSTOPPED分岐はcanonical text sha基準のHR承認でHUMAN_APPROVED扱い(wav非依存)。`_original.wav`はattempt3の古い残骸(1.23s)だったが、apply時に正しくattempt4(1.56s)で上書きされた。
+- 実行(1回): ratio 1.0564(1.56s->1.648s)、減速後ASR=`Mella said.`/Azure `Mallow said.`、分類ASR_VALIDATION_UNCERTAIN(entity_onlyのみ、TRUE_CONTENT_MISMATCHではない)、Tier3不成立。STOPPEDを正直に記録しHR個別承認で採用(`z_adoption=human_review_adopted`)。減速後wav sha256 e71bc2eb... 。費用+JPY0.236。
+- gate rc=0、assemble rc=0(Std 354.9秒/Adv 306.88秒、Std part1_c5=減速後attempt4 1.648s)。pages実行時にgate/assemble/pagesを短時間(約17秒)に連続起動したためRESTART_STORM自動STOP(`run_e2e_02/STOP`)。センチネル不削除、Fable/ユーザー判断待ち。Regression 8スイート計250件OK。
+- 証跡: `er026_output/family_z_production_e2e_01/melos/evidence_14/`、委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01_02.md`。Status: 完成版未完(pages/page_verify未実行)。PRODUCTION_WIRED未達。

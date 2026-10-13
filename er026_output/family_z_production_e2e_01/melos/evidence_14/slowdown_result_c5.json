@@ -1,0 +1,103 @@
+{
+  "status": "STOPPED",
+  "sha256": "e71bc2ebe1dbe12b2cffbdc7b6da5f4ccc4536ad40ebcfbf145d277b2216c954",
+  "duration_seconds": 1.648,
+  "original_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c5_original.wav",
+  "slowdown_applied": true,
+  "slowdown_info": {
+    "slowdown_pct_target": 6.0,
+    "slowdown_pct_actual": 5.617,
+    "src_duration_seconds": 1.56,
+    "dst_duration_seconds": 1.648,
+    "src_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c5_original.wav",
+    "dst_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_02/a2/narration/full_story_part1_c5.wav"
+  },
+  "post_slowdown_asr_text": "Mella said.",
+  "post_slowdown_classification": "ASR_VALIDATION_UNCERTAIN",
+  "post_slowdown_semantic_equivalence": {
+    "tier_applied": "none",
+    "sub_reason": "entity_only",
+    "corroborated_by": [],
+    "warning": false,
+    "role": "FULL_STORY",
+    "diff_spans": {
+      "index": 0,
+      "canonical_word": "melos",
+      "asr_word": "mella"
+    }
+  },
+  "post_slowdown_cascade": {
+    "invoked": true,
+    "cascade_entered": true,
+    "verified": false,
+    "final_status": "ASR_VALIDATION_UNCERTAIN",
+    "steps": [
+      {
+        "step": "primary_1",
+        "provider": "openai_asr",
+        "text": "Mella said.",
+        "classification": "ASR_VALIDATION_UNCERTAIN",
+        "entity_like_source": [
+          "capitalized"
+        ]
+      },
+      {
+        "step": "tier3_corroboration_secondary",
+        "provider": "azure",
+        "text": "Mallow said.",
+        "sub_reason": "entity_only",
+        "entity_like_source": [
+          "capitalized"
+        ]
+      },
+      {
+        "step": "primary_2",
+        "provider": "openai_asr",
+        "text": "Mella said.",
+        "classification": "ASR_VALIDATION_UNCERTAIN",
+        "entity_like_source": [
+          "capitalized"
+        ]
+      },
+      {
+        "step": "secondary_1",
+        "provider": "azure",
+        "text": "Mallow said.",
+        "classification": "ASR_VALIDATION_UNCERTAIN",
+        "phrase_list_used": true,
+        "entity_like_source": [
+          "capitalized"
+        ]
+      },
+      {
+        "step": "secondary_2",
+        "provider": "azure",
+        "text": "Mallow said.",
+        "classification": "ASR_VALIDATION_UNCERTAIN",
+        "phrase_list_used": true,
+        "entity_like_source": [
+          "capitalized"
+        ]
+      }
+    ],
+    "semantic_equivalence_info": {
+      "tier_applied": "tier3_attempted_no_corroboration",
+      "sub_reason": "entity_only",
+      "corroborated_by": [],
+      "warning": false,
+      "role": "FULL_STORY",
+      "diff_spans": {
+        "index": 0,
+        "canonical_word": "melos",
+        "asr_word": "mella"
+      }
+    }
+  },
+  "post_slowdown_final_classification": "ASR_VALIDATION_UNCERTAIN",
+  "asr_verified": false,
+  "reason": "post-process(6%減速)後の音声がASR再検証で不一致: classification=ASR_VALIDATION_UNCERTAIN",
+  "_pre_slowdown_sha256": "6b6fb56e9a3bb9b24bd67a23874881b5e9fd7dfc8e8987429eb57caa744a447a",
+  "_post_slowdown_sha256": "e71bc2ebe1dbe12b2cffbdc7b6da5f4ccc4536ad40ebcfbf145d277b2216c954",
+  "_spent_before": 62.595678222222276,
+  "_spent_after": 62.83141155555561
+}
