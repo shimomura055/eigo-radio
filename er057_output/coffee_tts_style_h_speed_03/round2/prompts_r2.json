@@ -1,0 +1,260 @@
+{
+ "voice": "Aoede",
+ "model": "gemini-3.8-flash-lite-tts",
+ "method": "speech_metadata(Part.speech_metadata.style)",
+ "baseline": {
+  "H0": {
+   "style": "A warm, composed daytime radio news presenter telling a human-interest story: clear, credible and approachable, with a smile in the voice. Group words into meaningful phrases, keep the phrasing smooth and connected, and breathe naturally between ideas.",
+   "sha256": "49af7437080d2d216d854f316f7820ec0a9ec74ada52fd99f00c079b6dd60dd7",
+   "note": "TRIAL-02 H0 Take1再利用(再生成なし)"
+  }
+ },
+ "candidates": {
+  "K01": {
+   "style": "A gentle storyteller sharing a true story with a few friends, warm and bright, with a smile in the voice. Go slightly slower than usual, and let every sentence flow straight on into the one after it.",
+   "chars": 199,
+   "words": 37,
+   "sentences": 2,
+   "sha256": "af17626370cc8f3a73aeeea79c8cb7bb3d502af5739cda9dcf7bb4c0a834659f",
+   "axes": {
+    "speed": "slightly slower(控えめ減速、1回のみ)",
+    "pause": "肯定形の接続(flow straight on)",
+    "voice": "落ち着いたストーリーテリング",
+    "strength": "中",
+    "structure": "速度+ポーズ肯定形"
+   },
+   "design_intent": "J10(raw速度が両レベルで揃った)の減速語を残し、J10で負けた『short silence』の否定的抑制をJ02型の肯定形接続に置換して、文末間増を防げるか。",
+   "round1_basis": "J10(slow系)とJ02(Do not pause系)の知見: 減速でStd文末+100〜200ms、肯定形ポーズ抑制はStdで有効",
+   "expected_side_effects": "減速に接続指示が負けて文末が再び伸びる/長無音が出る",
+   "max_jaccard_vs_J": {
+    "cand": "J05",
+    "jaccard": 0.298
+   },
+   "jaccard_vs_H0": 0.185,
+   "seq_ratio_vs_max_J": 0.049,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false
+  },
+  "K02": {
+   "style": "A bright, friendly presenter reading at a pace a little slower than a news bulletin, with lively intonation. Between sentences leave only the tiniest gap, and keep going.",
+   "chars": 170,
+   "words": 28,
+   "sentences": 2,
+   "sha256": "a7b881e0015e1634388b1e2d2078823f9a069a071bc403673ccc40c2391bc2bd",
+   "axes": {
+    "speed": "相対速度(a little slower than a news bulletin、J13の中間化)",
+    "pause": "極小の間(tiniest gap / keep going)",
+    "voice": "ラジオ/プレゼンター+抑揚",
+    "strength": "中(J13の強めを緩和)",
+    "structure": "速度+ポーズ併記"
+   },
+   "design_intent": "J13はStd157.8/Adv177.6でAdvが+10.6速い。相対速度の強さをnoticeablyからa littleに弱め、Advを下げつつStdが過減速しないかを見る(強さ依存の確認)。",
+   "round1_basis": "J13(Std良好・Adv速すぎ)",
+   "expected_side_effects": "弱めすぎてStd/Adv両方とも速くなる可能性",
+   "max_jaccard_vs_J": {
+    "cand": "J13",
+    "jaccard": 0.361
+   },
+   "jaccard_vs_H0": 0.16,
+   "seq_ratio_vs_max_J": 0.583,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false
+  },
+  "K03": {
+   "style": "A steady, gentle voice, warm and clear, with a smile in it. Do not pause between sentences; keep the story moving from one to the next.",
+   "chars": 135,
+   "words": 26,
+   "sentences": 2,
+   "sha256": "c172f31707046ebefbd001a92ff4dfcc4822dda24ce7001345a6ea16de0eb71c",
+   "axes": {
+    "speed": "steady, gentle(slowを使わない弱形、数値なし)",
+    "pause": "停止禁止(Do not pause、肯定の継続指示つき)",
+    "voice": "自然な語りかけ",
+    "strength": "中(J02のslowを緩和)",
+    "structure": "速度語+ポーズ併記"
+   },
+   "design_intent": "J02(slow, steady+Do not pause)はStd 156.1/Adv 186.8でStdのみ効いた。slowを外しても減速が残るか、Advの過速が緩和するかを切り分ける。",
+   "round1_basis": "J02(Stdのみ有効、数値130は不信頼)",
+   "expected_side_effects": "slowを外すと減速効果自体が消えて両レベルが速くなる",
+   "max_jaccard_vs_J": {
+    "cand": "J02",
+    "jaccard": 0.444
+   },
+   "jaccard_vs_H0": 0.267,
+   "seq_ratio_vs_max_J": 0.662,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false
+  },
+  "K04": {
+   "style": "A calm, upbeat radio host with a warm, clear voice, speaking a touch slower than a news reader. Keep your breaths brief between thoughts, and never hold one.",
+   "chars": 157,
+   "words": 28,
+   "sentences": 2,
+   "sha256": "6e294dd6dc6acf4a44c8573af0b9cbdbc50664f38de2cf04b98033b5ed36f3e1",
+   "axes": {
+    "speed": "a touch slower than a news reader(弱い相対減速)",
+    "pause": "短い息継ぎ(brief breaths / never hold)",
+    "voice": "ラジオニュース調寄り(host)",
+    "strength": "控えめ",
+    "structure": "速度+ポーズ併記"
+   },
+   "design_intent": "J07(calm+短い息継ぎ)はAdv 169.4で良好だがStd 168.3で速かった。弱い相対減速を一言だけ入れて、Advを保ちStdを下げられるか。",
+   "round1_basis": "J07(Advのみ合格、Stdが速い)",
+   "expected_side_effects": "Advまで遅くなる、またはStdが変わらない",
+   "max_jaccard_vs_J": {
+    "cand": "J07",
+    "jaccard": 0.265
+   },
+   "jaccard_vs_H0": 0.208,
+   "seq_ratio_vs_max_J": 0.403,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false
+  },
+  "K05": {
+   "style": "A friendly storyteller, warm and relaxed, with a smile in the voice. Tell it as one continuous story, so each sentence glides into the next without any stop.",
+   "chars": 157,
+   "words": 28,
+   "sentences": 2,
+   "sha256": "f84c44f88ee6eafa683e36c17581f0b066b62537bac988b2bdbe06c83747e22b",
+   "axes": {
+    "speed": "relaxed(像として含意、速度指示なし)",
+    "pause": "肯定形の連続(one continuous story / glides)",
+    "voice": "落ち着いたストーリーテリング",
+    "strength": "中",
+    "structure": "ポーズ中心"
+   },
+   "design_intent": "J05(ニュース調像+Never long silence)は速度指示なしで速くなった。像をstorytellerに替え、肯定形の連続指示だけにして速度ずれと文末間が像で変わるか確認。",
+   "round1_basis": "J05(ポーズ指示のみで速度↑)、J06",
+   "expected_side_effects": "ポーズ短縮で全体が速くなる(Adv超過)",
+   "max_jaccard_vs_J": {
+    "cand": "J05",
+    "jaccard": 0.4
+   },
+   "jaccard_vs_H0": 0.204,
+   "seq_ratio_vs_max_J": 0.027,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false
+  },
+  "K06": {
+   "style": "A warm storyteller with a measured voice, clear and smiling. Pause only briefly at the end of each sentence, then go on.",
+   "chars": 120,
+   "words": 22,
+   "sentences": 2,
+   "sha256": "f1c2786b945aaf7f9cd853569a07657f78f369aa643b47306486aeb0de30d64b",
+   "axes": {
+    "speed": "measured単独(deliberateを除く)",
+    "pause": "文末のみ短く(only briefly, then go on)",
+    "voice": "落ち着いたストーリーテリング",
+    "strength": "中",
+    "structure": "速度+ポーズ併記"
+   },
+   "design_intent": "J03(measured, deliberate)はStd 152.9/Adv 173.3と減速に有効だが文末間・1030ms長無音が増えた。deliberateを除いたmeasured単独で間延びが切り分けられるか。",
+   "round1_basis": "J03(減速有効、間延び副作用)",
+   "expected_side_effects": "measured単独では減速が弱くStd/Adv速い、または間延びが残る",
+   "max_jaccard_vs_J": {
+    "cand": "J03",
+    "jaccard": 0.441
+   },
+   "jaccard_vs_H0": 0.149,
+   "seq_ratio_vs_max_J": 0.629,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false
+  },
+  "K07": {
+   "style": "A warm, trustworthy radio news presenter at a calm broadcast pace, clear and bright. Never stop between sentences; move straight on to the next.",
+   "chars": 144,
+   "words": 24,
+   "sentences": 2,
+   "sha256": "146abfac43180bce8ca9e4c977fce11ee3efce96f63997bf5e0cbdf86aba602a",
+   "axes": {
+    "speed": "calm broadcast pace",
+    "pause": "停止禁止(Never stop / move straight on)",
+    "voice": "ラジオニュース調固定",
+    "strength": "中",
+    "structure": "速度+ポーズ併記"
+   },
+   "design_intent": "J08(calm broadcast pace+short and connected)はStd 161.8/文末523ms、惜しかった。像はニュース調のまま、間抑制を強い禁止形にして文末を詰められるか。",
+   "round1_basis": "J08(Std惜しい、Adv 182速い)",
+   "expected_side_effects": "ニュース調でAdvが速いまま(+15)になる",
+   "max_jaccard_vs_J": {
+    "cand": "J07",
+    "jaccard": 0.323
+   },
+   "jaccard_vs_H0": 0.191,
+   "seq_ratio_vs_max_J": 0.408,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false
+  },
+  "K08": {
+   "style": "A warm, friendly storyteller with a bright, clear voice and a smile. Steady pace, brief pauses, expressive intonation.",
+   "chars": 118,
+   "words": 18,
+   "sentences": 2,
+   "sha256": "53b6a34b06267f37ba6ea919813e5fa01f4bfbc043b99a08ba71be2194ab227e",
+   "axes": {
+    "speed": "steady pace(弱形)",
+    "pause": "brief pauses",
+    "voice": "自然な語りかけ+声質像(storyteller)",
+    "strength": "控えめ",
+    "structure": "簡潔統合(約20語、声質像つき)"
+   },
+   "design_intent": "J11(10語)は声質像不足で品質事故。声質像(bright, clear, expressive intonation)を残した約20語の短形で、最小指示の効果を見直す。",
+   "round1_basis": "J11(極短で品質劣化、AdvでASR挿入)",
+   "expected_side_effects": "短い指示が弱く両レベル速い、または抑揚指示が速度を上げる",
+   "max_jaccard_vs_J": {
+    "cand": "J11",
+    "jaccard": 0.444
+   },
+   "jaccard_vs_H0": 0.167,
+   "seq_ratio_vs_max_J": 0.477,
+   "contains_unhurried_slowly": false,
+   "has_numeric_wpm": false
+  }
+ },
+ "similarity_pairs": {
+  "K01-K02": 0.143,
+  "K01-K03": 0.279,
+  "K01-K04": 0.167,
+  "K01-K05": 0.326,
+  "K01-K06": 0.238,
+  "K01-K07": 0.149,
+  "K01-K08": 0.205,
+  "K02-K03": 0.167,
+  "K02-K04": 0.19,
+  "K02-K05": 0.109,
+  "K02-K06": 0.15,
+  "K02-K07": 0.263,
+  "K02-K08": 0.206,
+  "K03-K04": 0.225,
+  "K03-K05": 0.316,
+  "K03-K06": 0.216,
+  "K03-K07": 0.237,
+  "K03-K08": 0.25,
+  "K04-K05": 0.133,
+  "K04-K06": 0.15,
+  "K04-K07": 0.231,
+  "K04-K08": 0.206,
+  "K05-K06": 0.237,
+  "K05-K07": 0.14,
+  "K05-K08": 0.235,
+  "K06-K07": 0.189,
+  "K06-K08": 0.233,
+  "K07-K08": 0.182
+ },
+ "self_check": {
+  "duplicates": "K01-K08 sha全相異、J01-J13・H0ともsha相異(assert済)。K内最大jaccard: K01-K05=0.326, K03-K05=0.316, K01-K03=0.279, K02-K07=0.263, K03-K08=0.25",
+  "vs_J_H0": "J系/H0を部分文字列に含む・含まれる候補なし(assert済)。最大Jaccard(J系): K01:J05=0.298, K02:J13=0.361, K03:J02=0.444, K04:J07=0.265, K05:J05=0.4, K06:J03=0.441, K07:J07=0.323, K08:J11=0.444 / H0: K01=0.185, K02=0.16, K03=0.267, K04=0.208, K05=0.204, K06=0.149, K07=0.191, K08=0.167",
+  "contradictions": "矛盾なし(K01/K02/K04/K06/K07は減速+間短縮の併記で、Round1で有効だった『強い形容1回の減速+肯定/禁止形の間抑制』構造の再検証)",
+  "redundancy": "速度/間/声質を各1回ずつ。数値WPM・unhurried/slowly不使用(assert済)",
+  "sentence_count": {
+   "K01": 2,
+   "K02": 2,
+   "K03": 2,
+   "K04": 2,
+   "K05": 2,
+   "K06": 2,
+   "K07": 2,
+   "K08": 2
+  }
+ }
+}
