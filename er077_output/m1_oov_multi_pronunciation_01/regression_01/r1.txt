@@ -1,0 +1,44 @@
+[run_project_regression] repo root: C:\Users\tensh\eigo-radio
+[run_project_regression] discovery pattern: er006*_test*.py
+[run_project_regression] discovered 18 test file(s):
+  - er006_asr_provider_routing_01_test.py
+  - er006_audio_cost_pilot_02_shared_narration_test.py
+  - er006_batch_tts_wiring_01_test.py
+  - er006_kp5_canonical_bug_01_test.py
+  - er006_m1_multi_candidate_01_test_01.py
+  - er006_master_audio_store_01_test.py
+  - er006_model_routing_contract_01_boundary_test.py
+  - er006_model_routing_contract_01_test.py
+  - er006_model_routing_gpt6_wiring_test_01.py
+  - er006_model_routing_pricing_coverage_test_01.py
+  - er006_pool_benches_luna_audio_wiring_test.py
+  - er006_pool_pilot_01_ledger_test.py
+  - er006_preprod_hardening_01_validation_test.py
+  - er006_pronunciation_ledger_01_test.py
+  - er006_pronunciation_phase4_entity_like_test_01.py
+  - er006_pronunciation_tts_injection_01_test.py
+  - er006_secondary_asr_01_m1_wiring_test_01.py
+  - er006_secondary_asr_01_test.py
+.................F.........................
+======================================================================
+FAIL: test_flagger_design_models_registered (er006_model_routing_pricing_coverage_test_01.PricingCoverageTest.test_flagger_design_models_registered)
+WRITER-DEV-RISK-FLAGGER-DESIGN-01 委任_01B: gpt-6.1-sol / deepseek-v4-pro 追加、gpt-5.6-sol を公式現行値へ更新(2026-10-09取得)。
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er006_model_routing_pricing_coverage_test_01.py", line 115, in test_flagger_design_models_registered
+    self.assertEqual(sol_keys, {"FAMILY_X_STORYLINE_B3", "FAMILY_X_FACTLOCK_R0", "FAMILY_X_FACTLOCK_REVISE"})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Items in the first set but not the second:
+'FAMILY_Z_WRITER_ADV_R2'
+'FAMILY_Z_STD_ADJUST'
+'FAMILY_Z_WRITER_ADV_R0'
+'FAMILY_Z_WRITER_ADV_R1'
+
+----------------------------------------------------------------------
+Ran 43 tests in 0.408s
+
+FAILED (failures=1)
+OK: er006_pool_pilot_01_ledger_test.py all assertions passed
+[run_project_regression] collected 43 test(s)
+[ModelRoutingContract][OVERRIDE] process 'B1_WRITER': Approved Model 'gpt-6-luna' の代わりに 'gpt-5.6-luna' を明示override(理由: 旧Trial再現)で使用します。
+[run_project_regression] collected=43 passed=42 failed=1 errors=0 skipped=0

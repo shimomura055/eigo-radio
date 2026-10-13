@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import os
 import re
@@ -159,6 +160,69 @@ import er011_connected_speech_equivalence_layer_production_01 as cs_equivalence
 # 表記差のcorroboration付き救済)。このmoduleはval/er006_secondary_asr_01を
 # 一切importしないため、module-level importでも循環importは発生しない。
 import er021_en_asr_semantic_equivalence_production_01 as semantic_equivalence
+# ASR-M1-OOV-MULTI-PRONUNCIATION-PRODUCTION-01(APPROVED_FOR_PRODUCTION 2026-10-13):
+# CMU未収録語の複数発音候補(Ledger由来、segment開始前に凍結)によるM1判定。
+import er006_m1_multi_candidate_01 as m1_multi
+
+
+# --- M1 複数発音候補(ASR-M1-OOV-MULTI-PRONUNCIATION-PRODUCTION-01) -------------
+_M1_FROZEN_CACHE: dict = {}
+
+
+def _reset_m1_freeze_cache() -> None:
+    _M1_FROZEN_CACHE.clear()
+
+
+def _m1_frozen_for(canonical_text: str):
+    """segment最初の試行前に1回だけ候補集合を凍結する(OF-179)。同一canonical_textの
+    2回目以降(retry/fallback/regen/減速後)は同じ凍結物を返し、再計算しない。
+    失敗時はNone(M1不発=従来挙動、fail-closed)。"""
+    if canonical_text in _M1_FROZEN_CACHE:
+        return _M1_FROZEN_CACHE[canonical_text]
+    try:
+        snap = copy.deepcopy(pronun_ledger._load())
+        fz = m1_multi.freeze_candidates(
+            canonical_text, ledger_snapshot=snap, segment_started_at=time.strftime("%Y-%m-%dT%H:%M:%S"))
+    except Exception:
+        fz = None
+    _M1_FROZEN_CACHE[canonical_text] = fz
+    return fz
+
+
+def _m1_try(canonical_text, asr_text, cls_step, frozen, *, language, m1_enabled, secondary_text=None, step_name):
+    """M1を試し、(accepted, audit)を返す。例外はfail-closed(accepted=False)。
+    追加のASR/TTS呼出は一切行わない(コスト0)。"""
+    if frozen is None or not m1_enabled or cls_step is None or asr_text is None:
+        return False, None
+    try:
+        r = m1_multi.m1_multi_candidate_judge(
+            canonical_text, asr_text, frozen, base_cls=cls_step, secondary_asr_text=secondary_text,
+            m1_enabled=m1_enabled, lang=language)
+    except Exception as exc:  # fail-closed
+        return False, {"m1_layer_invoked": True, "m1_error": f"{type(exc).__name__}: {exc}", "step": step_name}
+    audit = dict(r.audit)
+    audit.update({"step": step_name, "reason": r.reason, "m1_layer_invoked": bool(r.applicable or r.audit),
+                  "accepted": bool(r.accepted)})
+    if not r.accepted and r.no_match_reason and "no_match_reason" not in audit:
+        audit["no_match_reason"] = r.no_match_reason
+    return bool(r.accepted), audit
+
+
+def _m1_accept(result, steps, audit, cls_step):
+    """M1受理: 既存ラベルと同形でPASS_WITH_WARNING相当の結果にする。"""
+    result["verified"] = True
+    result["stop_retrying"] = False
+    result["final_status"] = m1_multi.ACCEPT_REASON
+    result["m1_multi_candidate"] = audit
+    if cls_step is not None:
+        result["classification"] = cls_step
+    steps.append({**audit, "step": "m1_multi_candidate", "provider": "local", "at_step": audit.get("step")})
+    return result
+
+
+def _m1_note_reject(result, audit):
+    if audit is not None:
+        result.setdefault("m1_multi_candidate_rejected", []).append(audit)
 
 FEATURE_FLAG_SECONDARY_ASR_ENABLED = True  # Production既定でON(ER-006-GATE-EVIDENCE-REVIEW-CASCADE-ON-MATH-ADOPT-01。
                                             # 旧OFF状態はOPEN-48で「追加検証待ち」としていたが、
@@ -220,7 +284,13 @@ def _resolve_unresolved_entity_for_review(canonical_span: str) -> dict | None:
 
     **重要**: この関数が返す情報は、Human Reviewパッケージを充実させる
     ためだけに使う。IPA→ARPAbet変換等による自動PASSの根拠には一切
-    使わない(D-2'参照。外国語由来の固有名詞をARPAbetへ強制変換すると
+    使わない(D-2'参照。ただし2026-10-13ユーザー承認『辞書未収録語は既存
+    Pronunciation Ledgerや利用可能な発音情報から合理的な候補を取得する』による
+    D-2'限定置換: 自動PASSの根拠に使うのは、M1(er006_m1_multi_candidate_01)が
+    CMU未収録語かつLedgerのexpected/alternate IPA(canonical_spelling一致・
+    sources非空・segment開始前のエントリ)を凍結候補として、F1の全差分点検と
+    Pattern A/B/C(f1_explained)で説明できる場合に限る。Tier3の調査結果の即時
+    利用・ASR側転写からの後付け候補・綴りからの推定は引き続き自動PASSの根拠にしない)。外国語由来の固有名詞をARPAbetへ強制変換すると
     音韻情報が失われ誤PASSのリスクがあるため)。lookup/research失敗時は
     Noneを返し、呼び出し側は追加のTTS呼び出しを一切行わずHuman Reviewへ
     進むこと(安全側)。"""
@@ -354,6 +424,7 @@ def evaluate_attempt_with_cascade(
     # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(既定None):
     # evaluate_attempt_with_cascade_detail()へそのまま転送する。
     segment_id: Optional[str] = None,
+    m1_enabled: bool = True,
 ) -> tuple[bool, bool, "val.ClassificationResult"]:
     """Production retry loop向けのdrop-in互換ラッパー。val.evaluate_attempt()
     と同じ(verified, stop_retrying, classification)のタプルを返す
@@ -397,7 +468,7 @@ def evaluate_attempt_with_cascade(
         cascade_enabled=cascade_enabled, force_secondary=force_secondary,
         enable_non_latin_cascade=enable_non_latin_cascade,
         enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-        segment_id=segment_id)
+        segment_id=segment_id, m1_enabled=m1_enabled)
     if detail["human_review_required"]:
         _log_human_review(detail)
     if detail_out is not None:
@@ -471,6 +542,8 @@ def evaluate_attempt_with_cascade_detail(
     # (val.classify_asr_matchのrole gating)とTier 3(下記)の両方へ転送する。
     # Noneの既存呼び出し元は挙動無変更(role gate非適用)。
     segment_id: Optional[str] = None,
+    # ASR-M1-OOV-MULTI-PRONUNCIATION-PRODUCTION-01: 既定True(全英語ASR経路、KP含む)。
+    m1_enabled: bool = True,
 ) -> dict:
     """既存のval.evaluate_attempt()(Primary ASR 1回分の判定)をラップし、
     その結果が「固有名詞由来のASR_VALIDATION_UNCERTAIN」であれば、TTSを
@@ -535,6 +608,8 @@ def evaluate_attempt_with_cascade_detail(
               # S3(additive、修正1回目): entity_like判定の根拠カテゴリ。
               "entity_like_source": val.aggregate_entity_like_sources(cls.protected.content_word_diffs)}]
     cumulative_cost_usd = 0.0
+    # M1: segment単位の凍結(最初の呼出時のみ生成、以降は再利用)。cascade_enabled=False/en-US以外は不発。
+    _m1_frozen = _m1_frozen_for(canonical_text) if (m1_enabled and cascade_enabled and language == "en-US") else None
 
     result = {
         "verified": verified, "stop_retrying": stop_retrying, "classification": cls,
@@ -717,6 +792,15 @@ def evaluate_attempt_with_cascade_detail(
         if cls_s_forced is not None and cls_s_forced.should_pass:
             # Primary/Secondaryが一致 -> 従来どおりPASS
             return result
+        if cls_s_forced is not None:
+            _ok, _au = _m1_try(canonical_text, text_s_forced, cls_s_forced, _m1_frozen, language=language,
+                               m1_enabled=m1_enabled, secondary_text=asr_text, step_name="secondary_forced")
+            if _ok:
+                # Primaryは既にPASS済み。SecondaryもM1(矛盾なし)で説明できる -> PASS維持
+                result["m1_multi_candidate"] = _au
+                steps.append({**_au, "step": "m1_multi_candidate", "provider": "local", "at_step": _au.get("step")})
+                return result
+            _m1_note_reject(result, _au)
         # SecondaryがPrimaryのPASS判定に同意しない -> 無条件PASSさせない
         result["verified"] = False
         result["stop_retrying"] = False
@@ -743,6 +827,12 @@ def evaluate_attempt_with_cascade_detail(
         result["final_status"] = immediate_label
         return result
 
+    _ok, _au = _m1_try(canonical_text, asr_text, cls, _m1_frozen, language=language,
+                       m1_enabled=m1_enabled, secondary_text=None, step_name="primary_1")
+    if _ok:
+        return _m1_accept(result, steps, _au, cls)
+    _m1_note_reject(result, _au)
+
     result["cascade_invoked"] = True
 
     # --- Primary #2(同じ音声、TTSは再生成しない) ---
@@ -768,6 +858,13 @@ def evaluate_attempt_with_cascade_detail(
             result["final_status"] = label
             result["classification"] = cls_p2
             return result
+
+    if cls_p2 is not None:
+        _ok, _au = _m1_try(canonical_text, text_p2, cls_p2, _m1_frozen, language=language,
+                           m1_enabled=m1_enabled, secondary_text=None, step_name="primary_2")
+        if _ok:
+            return _m1_accept(result, steps, _au, cls_p2)
+        _m1_note_reject(result, _au)
 
     if cumulative_cost_usd > COST_GUARD_MAX_USD_PER_SEGMENT:
         result["cost_guard_triggered"] = True
@@ -800,6 +897,13 @@ def evaluate_attempt_with_cascade_detail(
             result["classification"] = cls_s1
             return result
 
+    if cls_s1 is not None:
+        _ok, _au = _m1_try(canonical_text, text_s1, cls_s1, _m1_frozen, language=language,
+                           m1_enabled=m1_enabled, secondary_text=asr_text, step_name="secondary_1")
+        if _ok:
+            return _m1_accept(result, steps, _au, cls_s1)
+        _m1_note_reject(result, _au)
+
     if cumulative_cost_usd > COST_GUARD_MAX_USD_PER_SEGMENT:
         result["cost_guard_triggered"] = True
         result["human_review_required"] = True
@@ -830,6 +934,13 @@ def evaluate_attempt_with_cascade_detail(
             result["final_status"] = label
             result["classification"] = cls_s2
             return result
+
+    if cls_s2 is not None:
+        _ok, _au = _m1_try(canonical_text, text_s2, cls_s2, _m1_frozen, language=language,
+                           m1_enabled=m1_enabled, secondary_text=text_s1 if text_s1 is not None else asr_text, step_name="secondary_2")
+        if _ok:
+            return _m1_accept(result, steps, _au, cls_s2)
+        _m1_note_reject(result, _au)
 
     # --- 4 step全て不一致 -> Human Review(TTSは再生成しない、§9の通り
     # 固有名詞だけの表記差ではretryしない) ---
