@@ -194,6 +194,95 @@ def convert_display_gloss_to_tts_text(display_gloss: Optional[str]) -> str:
     return safety.normalize_tilde_placeholder_ja(display_gloss or "")
 
 
+# ============================================================
+# FAMILY-XZ-M2P0-N01-PRODUCTION-COMPLETION-01(2026-10-13、是正①): 候補ID方式
+# (DB Hybrid / M2P0)のsource_spanが、末尾で意味が閉じない機能語(前置詞・冠詞等)で
+# 終わる場合の「復元用spanの原文内拡張」。
+#
+# 根本原因: 候補ID方式(Source Reference Contract)ではsource_span=候補のsurface_form
+# (DB照合した短いn-gram、例: "based on")であり、Strategy Lのように選定LLMが
+# 文脈込みで書いたspanではない。一方canonicalization Promptは「意味理解に必要な語を
+# source_spanから復元する」(restore_semantic_complement)と指示する。surface_formが
+# 前置詞で終わる(例: "based on")と、LLMはPrompt指示どおり補語を復元しようとするが、
+# 補語("interviews")はsource_spanの外(source_sentence側)にしか無く、結果が
+# Rule7(source_span内の連続部分文字列でなければならない)違反になる。同一Prompt・
+# 同一入力のためretryでも同じ結果になる(実測: Coffee Std 2 job x 内部2回=4回すべて
+# 同一のINVALID)。
+# 修正(Prompt・Rule7・Validatorは無変更): canonicalizationへ渡すsource_spanを、
+# source_sentence内の実出現位置に基づき「末尾が機能語のときに限り、直後の語を
+# 内容語1語を含むところまで(最大3語)」原文どおりに拡張する。拡張後のspanは
+# 原文の連続部分文字列であり、Rule7は従来どおり「拡張後span内の連続部分文字列」を
+# 要求する(緩和ではない)。拡張はcanonicalization入力とRule7判定にのみ使い、
+# 選定結果のsource_span(Source Consistency Gate等が参照)は書き換えない。
+# 適用範囲は候補ID方式のitem(source_reference_contractを持つ)のみ。Strategy L等は
+# 入力が同一でバイト同一。
+# ============================================================
+_DANGLING_TAIL_WORDS = frozenset({
+    "a", "an", "the", "some", "any", "this", "that", "these", "those",
+    "my", "your", "his", "her", "its", "our", "their", "one's", "someone's",
+    "to", "of", "in", "on", "at", "for", "with", "by", "from", "as", "than",
+    "into", "onto", "upon", "against", "toward", "towards", "through",
+    "between", "among", "within", "without", "during", "about", "and", "or", "but",
+})
+_SPAN_EXTENSION_MAX_WORDS = 3
+_SPAN_WORD_RE = re.compile(r"[A-Za-z0-9]+(?:['’\-][A-Za-z0-9]+)*")
+
+
+def expand_dangling_source_span(item: dict) -> str:
+    """item["source_span"]の末尾が機能語で終わる候補ID方式itemに限り、source_sentence内の
+    実出現位置の直後から、内容語1語を含むところまで(最大3語)を原文どおり連結して返す。
+    条件を満たさない場合(Strategy L等、末尾が内容語、sentence内に見つからない、直後が
+    句読点)は元のsource_spanをそのまま返す。"""
+    span = item.get("source_span") or ""
+    sentence = item.get("source_sentence") or ""
+    if not item.get("source_reference_contract") or not span or not sentence:
+        return span
+    tail_words = _SPAN_WORD_RE.findall(span)
+    if not tail_words or tail_words[-1].lower().replace("’", "'") not in _DANGLING_TAIL_WORDS:
+        return span
+    start = sentence.lower().find(span.lower())
+    if start < 0:
+        return span
+    end = start + len(span)
+    cursor = end
+    added = 0
+    while added < _SPAN_EXTENSION_MAX_WORDS:
+        gap_match = re.match(r"[ 	]+", sentence[cursor:])
+        if not gap_match:
+            break  # 直後が句読点・文末(空白なしの記号)ならこれ以上拡張しない
+        word_match = _SPAN_WORD_RE.match(sentence, cursor + gap_match.end())
+        if not word_match:
+            break
+        cursor = word_match.end()
+        added += 1
+        if word_match.group(0).lower().replace("’", "'") not in _DANGLING_TAIL_WORDS:
+            break  # 内容語を1語含めたら止める
+    if added == 0:
+        return span
+    expanded = sentence[start:cursor]
+    return expanded if _span_word_count_ok(expanded) else span
+
+
+def _span_word_count_ok(text: str) -> bool:
+    return _word_count(text) <= p2g.DISPLAY_PHRASE_MAX_WORDS + _SPAN_EXTENSION_MAX_WORDS
+
+
+def canonicalization_view_items(items: list) -> list:
+    """canonicalization入力・Rule7判定に使うitem群(source_spanのみ拡張した浅いコピー)。
+    拡張が起きたitemには`source_span_original`を付ける。元のitemsは変更しない。"""
+    out = []
+    for it in items:
+        expanded = expand_dangling_source_span(it)
+        if expanded != (it.get("source_span") or ""):
+            new_it = dict(it)
+            new_it["source_span_original"] = it.get("source_span")
+            new_it["source_span"] = expanded
+            out.append(new_it)
+        else:
+            out.append(it)
+    return out
+
+
 def load_prompt_template(path: str = PROMPT_TEMPLATE_PATH) -> str:
     return er003.restore.load_text_file(path)
 
@@ -203,6 +292,7 @@ def build_user_message(items: list, article_text: str, template: Optional[str] =
     source_sentence/ja_gloss等)をそのまま渡す。この工程では選定内容
     (どの5件か)を一切変更しないため、items自体には手を加えない。"""
     template = template if template is not None else load_prompt_template()
+    items = canonicalization_view_items(items)
     items_for_prompt = [
         {
             "rank": it["rank"],
@@ -447,7 +537,7 @@ def validate_canonicalization_response(parsed: dict, original_items: list) -> di
     display_phrase_by_rank = {
         it["rank"]: (it.get("display_phrase") or it.get("canonical_english")) for it in original_items
     }
-    source_span_by_rank = {it["rank"]: it.get("source_span", "") for it in original_items}
+    source_span_by_rank = {it["rank"]: it.get("source_span", "") for it in canonicalization_view_items(original_items)}
 
     for i, item in enumerate(items):
         this_reasons = []
@@ -579,6 +669,8 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
     REQUIRED)を付与する。REVIEW_REQUIRED項目は自動採用せず、人間確認後に
     採用する運用とする(構造的には既にvalidを通過済み)。"""
     canon_by_rank = {it["rank"]: it for it in canonicalization_items}
+    expanded_span_by_rank = {it["rank"]: it["source_span"] for it in canonicalization_view_items(original_items)
+                              if "source_span_original" in it}
     merged_items = []
     any_review_required = False
     for original in sorted(original_items, key=lambda it: it["rank"]):
@@ -621,6 +713,9 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
         # key_phrase_role(important|topic)も同じbackward compatibleな
         # passthroughパターンで引き継ぐ(旧artifactに存在しない場合は
         # 旧contractとして扱う、既存の他フィールドと同様)。
+        if rank in expanded_span_by_rank:
+            # 是正①: canonicalization入力に使った拡張span(選定結果のsource_spanは無変更)を監査用に記録。
+            merged_item["canonicalization_source_span"] = expanded_span_by_rank[rank]
         for passthrough_field in ("source_reference_contract", "source_candidate_id",
                                    "surface_echo", "candidate_mismatch_suspected", "key_phrase_role"):
             if passthrough_field in original:

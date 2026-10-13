@@ -1,0 +1,24 @@
+{
+ "before_current_state": {
+  "tag": "現状(SKIPPED_NOT_SELECTED)",
+  "result": "BLOCK",
+  "detail": "['topic_intro=UNVALIDATED', 'preview=UNVALIDATED', 'comment_1=UNVALIDATED', 'comment_2=UNVALIDATED', 'comment_3=UNVALIDATED', 'comment_4=UNVALIDATED', 'in_one_line=UNVALIDATED']"
+ },
+ "after_inheritance": {
+  "tag": "引継ぎ後(証拠が揃う5 segmentのみ)",
+  "result": "BLOCK",
+  "detail": "['preview=UNVALIDATED', 'in_one_line=UNVALIDATED']"
+ },
+ "inherited": [
+  "comment_1",
+  "comment_2",
+  "comment_3",
+  "comment_4",
+  "topic_intro"
+ ],
+ "not_inherited": {
+  "in_one_line": "WITNESS_SHA256_MISMATCH",
+  "preview": "WITNESS_SHA256_MISMATCH"
+ },
+ "note": "KP source gate(段階2)はsegment判定通過後に実行される。not_inheritedが残る限りGateはBLOCKを維持する(緩和なし)。"
+}

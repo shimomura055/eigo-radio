@@ -1,0 +1,116 @@
+{
+ "purpose": "是正① dry-run(LLM呼出なし、記録済みLLM出力を修正後validatorへ再投入)",
+ "jobs": [
+  {
+   "job": "key_phrases_d02_attempt_invalid",
+   "recorded_final_status": "CANONICALIZATION_INVALID",
+   "span_expansion": [
+    {
+     "rank": 5,
+     "display_phrase": "based on",
+     "original_source_span": "based on",
+     "canonicalization_source_span": "based on interviews"
+    }
+   ],
+   "attempts": [
+    {
+     "attempt": 1,
+     "recorded": {
+      "status": "CANONICALIZATION_INVALID",
+      "item_reasons": [
+       {
+        "index": 4,
+        "rank": 5,
+        "reasons": [
+         "key_phrase('based on interviews')がdisplay_phraseと一致せず、source_span('based on')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+        ]
+       }
+      ]
+     },
+     "replayed_with_fix": {
+      "status": "CANONICALIZATION_PASS",
+      "item_reasons": [],
+      "items_requiring_review": []
+     }
+    },
+    {
+     "attempt": 2,
+     "recorded": {
+      "status": "CANONICALIZATION_INVALID",
+      "item_reasons": [
+       {
+        "index": 4,
+        "rank": 5,
+        "reasons": [
+         "key_phrase('based on interviews')がdisplay_phraseと一致せず、source_span('based on')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+        ]
+       }
+      ]
+     },
+     "replayed_with_fix": {
+      "status": "CANONICALIZATION_PASS",
+      "item_reasons": [],
+      "items_requiring_review": []
+     }
+    }
+   ]
+  },
+  {
+   "job": "key_phrases",
+   "recorded_final_status": "CANONICALIZATION_INVALID",
+   "span_expansion": [
+    {
+     "rank": 5,
+     "display_phrase": "based on",
+     "original_source_span": "based on",
+     "canonicalization_source_span": "based on interviews"
+    }
+   ],
+   "attempts": [
+    {
+     "attempt": 1,
+     "recorded": {
+      "status": "CANONICALIZATION_INVALID",
+      "item_reasons": [
+       {
+        "index": 4,
+        "rank": 5,
+        "reasons": [
+         "key_phrase('based on interviews')がdisplay_phraseと一致せず、source_span('based on')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+        ]
+       }
+      ]
+     },
+     "replayed_with_fix": {
+      "status": "CANONICALIZATION_REVIEW_REQUIRED",
+      "item_reasons": [],
+      "items_requiring_review": [
+       5
+      ]
+     }
+    },
+    {
+     "attempt": 2,
+     "recorded": {
+      "status": "CANONICALIZATION_INVALID",
+      "item_reasons": [
+       {
+        "index": 4,
+        "rank": 5,
+        "reasons": [
+         "key_phrase('based on interviews')がdisplay_phraseと一致せず、source_span('based on')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+        ]
+       }
+      ]
+     },
+     "replayed_with_fix": {
+      "status": "CANONICALIZATION_PASS",
+      "item_reasons": [],
+      "items_requiring_review": []
+     }
+    }
+   ]
+  }
+ ],
+ "note": "LLMは呼んでいない。修正後は拡張span('based on interviews')が原文連続部分文字列のため、記録済みLLM出力('based on interviews')がRule7を満たす。ただし修正後入力でLLMが同じ出力を返すかは正式経路での再実行(委任_02)で確認する。"
+}

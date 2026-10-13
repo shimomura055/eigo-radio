@@ -55,6 +55,7 @@ import er006_model_routing_contract_01 as routing
 import er019_family_x_audio_plan_01 as plan
 import er019_family_x_kp_explanation_01 as kp_explanation_gen
 import er019_family_x_style_profile_01 as style_profile_mod
+import er019_family_x_validation_inheritance_01 as validation_inheritance
 import er020_tts_retry_local_rewrite_01 as retry_primitive
 import er053_review_queue_01 as rq
 import er053_risk_flagger_production_01 as rf
@@ -526,7 +527,15 @@ def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_f
     確実に不一致(=再生成)になる。"""
     _skip = _only_segments_skip(name)
     if _skip is not None:
-        return _skip
+        # FAMILY-XZ-M2P0-N01-PRODUCTION-COMPLETION-01(是正②、OPEN-346②): 非選択segmentでも、同一out_dirの前回results
+        # entryが正式Validation済み(status=OK・asr_verified・entry.sha256==現在wav・canonical_text一致)の場合に限り、
+        # SKIPPED_NOT_SELECTEDで上書きせず検証済みentryを引き継ぐ(label=REUSED_VALIDATED)。証拠が揃わなければ従来どおり
+        # SKIPPED(=Gate BLOCK維持)。Gateの判定は変更していない。
+        _inh = validation_inheritance.try_inherit_from_cached(
+            (cached.get("segments") or {}).get(name) if cached else None, wav_path, expected_text,
+            cached.get("style_version") if cached else None, FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
+            {"kind": "same_out_dir_previous_results", "label": name})
+        return _inh if _inh is not None else _skip
     if cached is not None and cached.get("style_version") != FAMILY_X_VARIABLE_ROLE_STYLE_VERSION:
         return generate_fn()
     cached_result = (cached.get("segments") or {}).get(name) if cached else None
@@ -560,7 +569,14 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
     従来どおりの挙動)。"""
     _skip = _only_segments_skip(f"kp{rank}_{role}")
     if _skip is not None:
-        return _skip
+        # 是正②: 上記_generate_or_reuseと同じ証拠つき引継ぎ(Key Phrase component版)。
+        _kp_cache0 = (cached.get("key_phrases") or {}) if cached else {}
+        _cached_kp = (_kp_cache0.get(str(rank)) or _kp_cache0.get(rank) or {}).get(role) if _kp_cache0 else None
+        _inh = validation_inheritance.try_inherit_from_cached(
+            _cached_kp, wav_path, expected_text,
+            cached.get("style_version") if cached else None, FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
+            {"kind": "same_out_dir_previous_results", "label": f"kp{rank}_{role}"})
+        return _inh if _inh is not None else _skip
     if require_style_version and cached is not None and cached.get("style_version") != FAMILY_X_VARIABLE_ROLE_STYLE_VERSION:
         return generate_fn()
     kp_cache = (cached.get("key_phrases") or {}) if cached else {}
@@ -797,7 +813,7 @@ def generate_family_x_b1_segments(
         # M4/S3: 上書き対象roleのsegmentにだけ、hint追記前のStyle sha(style_base_sha256)を記録する。
         # 非対象(default/IN_ONE_LINE)は何も書かない(新keyなし)。
         _seg_role = "IN_ONE_LINE" if name == "in_one_line" else "FULL_STORY"
-        if results[name].get("status") != "SKIPPED_NOT_SELECTED":
+        if results[name].get("status") != "SKIPPED_NOT_SELECTED" and not results[name].get("validation_inheritance"):
             style_profile_mod.attach_segment_profile_record(results[name], style_profile, _seg_role,
                                                              _role_style(_seg_role))
 
@@ -946,7 +962,7 @@ def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict 
         expl_r["explanation_text"] = explanation_text
         expl_r["canonical_text"] = explanation_text
         # M4/S3: profile対象(coffee_final_v5のP3)のときだけ、hint追記前のStyle shaを記録する(defaultは新keyなし)。
-        if expl_r.get("status") != "SKIPPED_NOT_SELECTED":
+        if expl_r.get("status") != "SKIPPED_NOT_SELECTED" and not expl_r.get("validation_inheritance"):
             style_profile_mod.attach_segment_profile_record(
                 expl_r, style_profile, style_profile_mod.ROLE_KP_EXPLANATION_EN, _kp_explanation_style())
         expl_r["explanation_qa"] = explanation_row.get("qa")
@@ -1126,7 +1142,7 @@ def generate_family_x_a2_segments(
                     style_prefix_override=_role_style_ja_support(),
                     tts_backend=tts_backend), expected_text=text)
         # M4/S3: profile対象(coffee_final_v5のR2)のときだけ記録(defaultは新keyなし)。
-        if results[name].get("status") != "SKIPPED_NOT_SELECTED":
+        if results[name].get("status") != "SKIPPED_NOT_SELECTED" and not results[name].get("validation_inheritance"):
             style_profile_mod.attach_segment_profile_record(
                 results[name], style_profile, style_profile_mod.ROLE_SUPPORT_JA, _role_style_ja_support())
 
@@ -1155,7 +1171,7 @@ def generate_family_x_a2_segments(
         results[name]["canonical_text"] = text
         # M4/S3: 上書き対象roleのsegmentにだけ記録(非対象は新keyを書かない)。
         _seg_role = "IN_ONE_LINE" if name == "in_one_line" else "FULL_STORY"
-        if results[name].get("status") != "SKIPPED_NOT_SELECTED":
+        if results[name].get("status") != "SKIPPED_NOT_SELECTED" and not results[name].get("validation_inheritance"):
             style_profile_mod.attach_segment_profile_record(results[name], style_profile, _seg_role,
                                                              _role_style_slower(_seg_role))
 
