@@ -53,17 +53,18 @@
 | 36 | TRIAL-03予算¥300承認(Coffee H-speed音声Prompt探索、Trialのみ) | **判断済み**(2026-10-13ユーザー承認、累計¥300上限、Production採用なし) | いいえ | `docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-TRIAL-04_01.md` |
 | 37 | (b1)LLM補助抽出 Round 3 Trial承認(Trialのみ) | **判断済み**(2026-10-13ユーザー承認、既存累計¥300上限、Production採用なし) | いいえ | `docs/pm/delegation_log/2026-10-13_FAMILY-X-KP-INTEGRATED-OPTIMIZATION-TRIAL-01_03.md` |
 | 38 | 探索Trial一括承認運用ルール(低コスト・既存予算内・Production非変更の探索Trialで個別選択肢を逐一確認しない。Gate承認・Production採用・仕様変更・予算超過・重大品質リスクはユーザー判断) | **判断済み**(2026-10-13ユーザー決定) | いいえ | `docs/pm/PM_GOVERNANCE.md` 7-8節 |
+| 39 | K06 Std / K01 Adv(Coffee H-speed TRIAL-04のレベル別Prompt)のユーザー試聴評価 | **判断済み**(2026-10-13ユーザー試聴: **NG**。比較対象から除外。Production採用なし。5候補比較試聴ページ作成済み、候補選定は#29のUDR継続) | いいえ | DECISION_LOG「FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-LISTEN-COMPARE-01 委任_01」、`docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-LISTEN-COMPARE-01_01.md` |
 
-## 区分別集計(2026-10-13更新・38件。#10は判断済みへ、#14と#23は判断保留へ、#36追加)
+## 区分別集計(2026-10-13更新・39件。#39追加。#10は判断済みへ、#14と#23は判断保留へ、#36追加)
 
 | 区分 | 件数 | 項目# |
 |---|---|---|
-| 判断済み | 10 | 2, 3, 10, 13, 17, 34, 35, 36, 37, 38 |
+| 判断済み | 11 | 2, 3, 10, 13, 17, 34, 35, 36, 37, 38, 39 |
 | 判断保留(依存事項待ち、判断時期延期) | 2 | 14, 23 |
 | 調査・Trial中 | 1 | 19 |
 | USER_DECISION_REQUIRED | 20 | 1, 4(暫定), 5, 7, 8, 9, 11, 12, 15, 18, 24〜33 |
 | Deferred / Non-blocking | 5 | 6, 16, 20, 21, 22 |
-| 合計 | 38 | |
+| 合計 | 39 | |
 
 ## 「次工程をブロックするUDR」のみ(これだけを最優先で提示する)
 

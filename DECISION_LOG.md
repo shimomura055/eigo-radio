@@ -20871,3 +20871,9 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (c)【費用・モデル】1call、約JPY0.096(見積0.30、上限20)。`gpt-6-luna`(Production Preview生成と同一、要求=応答、effort high)。Regression(`er062_family_z_writer_01_test_01` 64件、`er026_family_z_fiction_production_runner_01_test` 21件)OK、Production state sha256前後不変(406ファイル)。
 - Status: USER_DECISION_REQUIRED(Trial)。`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない。Production code/Prompt/DB/gate無変更。CURRENT_SPEC無変更。Production採用はユーザーのみ。
 - 反映先: OPEN-338新規。証跡: `er067_output/family_z_std_preview_trial_01/TRIAL_REPORT_01.md`(prompt_*/preview_*/validator_result_01.json/cost_01.json/state_guard_01.json)。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-Z-STANDARD-PREVIEW-PROMPT-TRIAL-01_01.md`。
+
+### FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-LISTEN-COMPARE-01 委任_01(2026-10-13、ユーザー試聴結果記録+比較試聴ページ作成。採用判断なし。Status=VALIDATED(Trial到達上限)/Production未反映)
+- (i)【ユーザー試聴評価(2026-10-13)】K06 Standard / K01 Advanced(TRIAL-04 委任_03の試聴ページ`user_test/coffee_style_h_speed_04/`)は**NG**。以後の比較対象から除外。機械指標の暫定合格(K06 Std 2/3、K01 Adv 2/3)がユーザー試聴と一致しなかった事実として記録(「安全≠成功」、機械指標は十分条件でない)。
+- (ii)【比較試聴ページ】有望5候補N01/N02/L02/J13/J07のStd/Adv Take1既存音声(新規TTS/ASRなし、¥0)+H0 Take1+現行v5 Part1を並べた`user_test/coffee_style_h_speed_05/index.html`を作成。Stdは測定に用いた6%減速後wav(sha一致を確認)。測定値は各Roundの`measurements_r*.json`から転記、合否は`classification_r*.json`と再計算の一致を確認。同一Take1内で5候補のうちStd/Adv両方が機械基準を満たすものは0(N01・J13はStdのみ、L02・J07はAdvのみ)。
+- Status: VALIDATED(Trial到達上限)。`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない。Production code/Prompt/DB/経路無変更。CURRENT_SPEC無変更。採用判断なし、採用はユーザーのみ。
+- 反映先: OPEN-332は更新不要(代替検討の結果待ち状態が継続、新規OPENなし)。証跡: `er057_output/coffee_tts_style_h_speed_05_listen/LISTEN_COMPARE_REPORT_01.md`・`play_evidence_01.json`・`audio_conversion_01.json`。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-LISTEN-COMPARE-01_01.md`。
