@@ -20799,3 +20799,9 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 実証した原因: `lag`が残り`time lag`が選ばれない=抽出段(Wiktionary online lookup予算60の並びがほぼアルファベット順で、Advの`time lag`は未一致2-3-gram pool 694件中76番目[v4/v5とも]。既存関数照会で`time lag`はWiktionaryヒット)。`in the ring`への短縮=LLM補助抽出(Phase D extractor)の出力そのもの(span/core_spanとも`in the ring`、Rule7・縮約・包含除外は無関係)。既存機構はIdiom/Collocation/単語/記事独自比喩を区別せず、CEFR-J・wordfreqでは既知性・連語強度を機械判定不可(`right away`=A1+A1、`show up`=A2+A2、`time lag`のZipf=`lag`のZipf=3.67)。
 - 提案(未承認): Pkg U1-U4(上流機械処理)/Pkg P(Family X guidance追記のみ、現行6指標の順序維持)/Pkg E(補助抽出v4=OPEN-325(b1)従属)/Pkg R(Rule7ヘッドワード=OPEN-310従属)/Pkg X(解説ページ用レコード案)。机上のみで有料Trial未実施。
 - 新規OPEN-336起票、OPEN-325/310へ相互参照追記。CURRENT_SPEC.md無変更。設計書: `docs/pm/design/2026-10-13_KP-CANDIDATE-SELECTION-QUALITY-DESIGN-01.md`。次はFableによるOpus独立レビュー(条件A)。
+
+## FAMILY-X-KP-CANDIDATE-SELECTION-QUALITY-DESIGN-01 委任_02(2026-10-13、Opus独立レビュー(条件A)必須修正の反映、採用判断なし)
+- 範囲: 設計書の訂正のみ(費用JPY0、LLM/Wiktionary追加照会なし、Production code/Prompt/DB無変更)。
+- 訂正: (1)Pkg P 2文目を「動詞の目的語・補語など用法を成り立たせる要素を含む側を選ぶ。主語・時・場所の付け足しだけなら短い側」へ書換え、「注釈無しでPrompt同一バイト列」を訂正(guidance追記でPromptは常に変わる、同一なのは候補行のみ)。(2)U4「内容語の最小Zipf順」撤回(高頻度語の句動詞が末尾でcapに切られ原則と逆)→cap緩和(15→20)推奨/語頻度非依存タイブレーク併記、`demoted_to_phrase`末尾追加問題(`er030_..._core_01.py` L454-455、`er027_..._stage1.py` L643)の対処をU案に追加。(3)U3(ii)左拡張置換を撤回(検出・除外/`fragment_risk`注釈のみ。粒度は抽出Prompt側)。`two figures in the ring`は5語で上限内と事実訂正、`in the ring`短縮の寄与要因(5語上限・選定Prompt 5行目)を追記。(4)受入例1を○→△、Step1に`run_stage1_and_shortlist`全体再生を必須追加、「実質アルファベット順」を正確化。(5)U1と照会予算拡大の比較を追加(K=10固定は推奨しない)。(6)Step3対照を同一入力・n≥3・36 job≈JPY32.4へ修正、期待ラベル事前登録。
+- 推奨修正: Topic/Importantはguidance+記録だけの軽い検査(T6)、U2はTier-Sのみ比較、スキーマ(occurrences[]・本文hash・理由コード)、sidecar限定、取りこぼし頻度調査等。ユーザー判断B/E更新、J(Std選定Prompt冒頭「B1」)新設。
+- 受入7例(机上): 1△ 2△ 3△ 4△ 5△ 6△ 7△(Std側はOPEN-325(b1)原則改訂に依存)。未採用・未実装。OPEN-336更新。設計書: `docs/pm/design/2026-10-13_KP-CANDIDATE-SELECTION-QUALITY-DESIGN-01.md`。
