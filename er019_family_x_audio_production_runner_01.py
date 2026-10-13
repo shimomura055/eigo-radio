@@ -409,13 +409,22 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
         # scaffold stage完了後に行う)。
         kp_backend_used = (kp.get("selection") or {}).get("kp_backend_used")
 
+        _fb_events = list(kp.get("m2_fallback_events") or [])
         result[level] = {"parts": parts, "support": {k: v.get("status") for k, v in support.items()},
-                          "key_phrases_status": kp_status, "kp_backend_used": kp_backend_used}
+                          "key_phrases_status": kp_status, "kp_backend_used": kp_backend_used,
+                          # 委任_03(2026-10-13): M2→Strategy L Fallbackの必須ユーザー報告(summaryキー契約)
+                          "m2_fallback": (_fb_events[-1] if _fb_events else None),
+                          "m2_fallback_events": _fb_events}
+        if _fb_events:
+            print(sc.format_m2_fallback_stdout(_fb_events))
         if scaffold_only:
             result[level]["scaffold_only"] = scaffold_only
         if budget_check is not None:
             budget_check(f"after scaffold {level}")
     save_json(f"{out_dir}/scaffold_run_summary.json", result)
+    _all_fb = [ev for lv in result.values() for ev in (lv.get("m2_fallback_events") or [])]
+    if _all_fb:
+        sc.write_m2_fallback_notice(out_dir, _all_fb, header=os.path.basename(out_dir))
     return result
 
 
@@ -2214,6 +2223,20 @@ def ensure_rf_record(source_dir: str, out_dir: str, level: str, budget_jpy: floa
     return rec
 
 
+def print_m2_fallback_final_line(out_dir: str) -> str:
+    """runner終了時の標準出力にM2→Strategy L Fallbackの有無を常に明示する(委任_03、必須ユーザー報告の1要素)。"""
+    _fb_notice = os.path.join(out_dir, sc.M2_FALLBACK_NOTICE_FILENAME)
+    events = []
+    _sum_path = f"{out_dir}/scaffold_run_summary.json"
+    if os.path.exists(_sum_path):
+        with open(_sum_path, encoding="utf-8") as _f:
+            _sum = json.load(_f)
+        events = [ev for lv in _sum.values() if isinstance(lv, dict) for ev in (lv.get("m2_fallback_events") or [])]
+    line = sc.format_m2_fallback_stdout(events) + (f" notice={_fb_notice}" if os.path.exists(_fb_notice) else "")
+    print(line)
+    return line
+
+
 def main() -> None:
     parser = build_arg_parser()
     args = parser.parse_args()
@@ -2301,6 +2324,9 @@ def main() -> None:
             entry_point["kp_backend_used_by_level"] = {
                 level: (scaffold_result.get(level) or {}).get("kp_backend_used") for level in levels
             }
+            entry_point["m2_fallback_by_level"] = {
+                level: (scaffold_result.get(level) or {}).get("m2_fallback") for level in levels
+            }
             save_json(entry_point_path, entry_point)
 
     if args.stage in ("tts", "all"):
@@ -2339,6 +2365,9 @@ def main() -> None:
         player_path = build_player_html(out_dir, args.slug, japanese_title)
         print(f"[FAMILY-X-AUDIO-RUNNER] player.html: {os.path.abspath(player_path)}")
 
+    # 委任_03(2026-10-13): M2→Strategy L Fallbackの必須ユーザー報告。runner終了時の標準出力に常に明示する
+    # (stage問わず。noticeがあれば存在とpathを示す)。Fallback成功をM2P0正常動作と誤認させない。
+    print_m2_fallback_final_line(out_dir)
     final_jpy, by_provider = compute_cost_jpy_so_far(f"{out_dir}/raw_usage_log.jsonl")
     print(f"[FAMILY-X-AUDIO-RUNNER] stage={args.stage} 完了。out_dir={out_dir} "
           f"累計費用(JPY)={final_jpy:.2f} by_provider={by_provider}")

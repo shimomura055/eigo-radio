@@ -506,6 +506,73 @@ def _merge_kp_backend_metadata_into_runtime_file(out_dir: str, extra: dict) -> N
         json.dump(existing, f, ensure_ascii=False, indent=2)
 
 
+# ============================================================
+# M2構築失敗時のStrategy L Fallback通知(FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 委任_03、2026-10-13)
+# ユーザー承認: 「M2の候補生成が正常に完了できない場合、既存のStrategy L方式へのFallbackを許可。ただし
+# Fallback発生を検知・記録し、必ずユーザーへ報告する。Fallback成功をM2P0正常動作と誤認しない」。
+# 既存パターン(run dir内notice file[STOP_NOTICEと同パターン]+run summary+標準出力)のみで実現する。
+# summaryキー契約(Family X/Z共通): `m2_fallback`(最後の1件のdictまたはNone)/`m2_fallback_events`(全件list)。
+# 各eventのキー: family/article/level/stage/reason_code/reason/fallback_result/m2_related/kp_supply_actual/note。
+# ============================================================
+M2_FALLBACK_NOTICE_FILENAME = "M2_FALLBACK_NOTICE.md"
+M2_FALLBACK_EVENT_KEYS = ("family", "article", "level", "stage", "reason_code", "reason",
+                          "fallback_result", "m2_related", "kp_supply_actual", "note")
+# M2構築そのものの失敗(M2内部例外/Wiktionary照会失敗)。他のDB Hybrid fallback理由(SHORTLIST_TOO_SMALL等)も
+# 同じStrategy L fallbackなので同様に報告対象とする(m2_related=Falseで区別、報告は省略しない)。
+M2_RELATED_FALLBACK_REASON_CODES = ("M2_SUPPLY_EXCEPTION", "SELECTOR_EXCEPTION")
+
+
+def infer_family_from_article_id(article_id: str) -> str:
+    a = (article_id or "")
+    if a.startswith("FAMILY_X_AUDIO_"):
+        return "X"
+    if a.lower().startswith("family_z_"):
+        return "Z"
+    return "UNKNOWN"
+
+
+def build_m2_fallback_record(article_id: str, source_level: str, reason_code: str, reason: str,
+                             fallback_result_status, m2_related: bool = True,
+                             stage: str = "key_phrase_selection(db_hybrid->strategy_l)") -> dict:
+    return {
+        "family": infer_family_from_article_id(article_id), "article": article_id, "level": source_level,
+        "stage": stage, "reason_code": reason_code, "reason": reason,
+        "fallback_result": f"strategy_l_fallback status={fallback_result_status}",
+        "m2_related": bool(m2_related), "kp_supply_actual": "strategy_l_fallback(M2不発火・M2P0正常動作ではない)",
+        "note": "Fallback成功はM2P0正常動作ではない。Fable/PMはユーザーへ必ず報告すること(CURRENT_SPEC M2供給節)。",
+    }
+
+
+def write_m2_fallback_notice(out_dir: str, events: list, header: str = "") -> str:
+    """run dir直下へ人間可読notice(STOP_NOTICEと同パターン)を書く。eventsが空なら何も書かずNoneを返す。"""
+    if not events:
+        return None
+    path = os.path.join(out_dir, M2_FALLBACK_NOTICE_FILENAME)
+    lines = [f"# M2_FALLBACK_NOTICE ({header or os.path.basename(out_dir)})", "",
+             "M2候補供給が正常に完了できず、承認済みの既存Strategy L方式へFallbackしました(2026-10-13ユーザー承認の挙動)。",
+             "**Fallback成功はM2P0正常動作ではありません。PM/Fableはユーザーへ必ず報告してください。**", ""]
+    for i, ev in enumerate(events, 1):
+        lines.append(f"## Fallback {i}")
+        for k in M2_FALLBACK_EVENT_KEYS:
+            lines.append(f"- {k}: {ev.get(k)}")
+        lines.append("")
+    os.makedirs(out_dir, exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+    return path
+
+
+def format_m2_fallback_stdout(events: list) -> str:
+    if not events:
+        return "[M2-FALLBACK] 発生なし(M2P0はFallbackなしで完了)"
+    parts = [f"[M2-FALLBACK][NOTICE] M2→Strategy L Fallbackが{len(events)}件発生しました。"
+             f"M2P0正常動作ではありません。ユーザーへ必ず報告してください({M2_FALLBACK_NOTICE_FILENAME}参照)。"]
+    for ev in events:
+        parts.append(f"  - family={ev.get('family')} article={ev.get('article')} level={ev.get('level')} "
+                     f"stage={ev.get('stage')} reason_code={ev.get('reason_code')} result={ev.get('fallback_result')}")
+    return "\n".join(parts)
+
+
 def _run_key_phrase_selection_db_hybrid_with_fallback(
         article_text: str, out_dir: str, article_id: str, source_level: str,
         process: str = None, diagnostic_note: str = None, synthetic: bool = False,
@@ -559,6 +626,12 @@ def _run_key_phrase_selection_db_hybrid_with_fallback(
             diagnostic_note=diagnostic_note)
         result["kp_backend_used"] = "strategy_l_fallback"
         result["kp_backend_fallback_reason_code"] = e.reason_code
+        # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 委任_03(2026-10-13、ユーザー承認: M2構築失敗時のStrategy L
+        # Fallbackは許可、ただし発生時は必ずユーザーへ報告): Fallbackを構造化recordにしてresultへ載せる
+        # (runnerがsummary/notice file/標準出力へ出す)。Fallback成功はM2P0正常動作ではない。
+        result["m2_fallback"] = build_m2_fallback_record(
+            article_id, source_level, e.reason_code, str(e), result.get("status"),
+            m2_related=(e.reason_code in M2_RELATED_FALLBACK_REASON_CODES))
         _merge_kp_backend_metadata_into_runtime_file(out_dir, {
             "kp_backend": "db_hybrid_attempted", "kp_backend_used": "strategy_l_fallback",
             "kp_backend_fallback_reason_code": e.reason_code, "kp_backend_fallback_reason": str(e),
@@ -697,6 +770,19 @@ def detect_key_phrase_symbol_findings(merged_items: list) -> list:
 def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_level: str,
                      process: str = None, synthetic: bool = False,
                      kp_backend: str = "strategy_l") -> dict:
+    """`_run_key_phrases_impl`の薄いwrapper(委任_03、2026-10-13): retryループ全attemptで発生した
+    M2→Strategy L Fallback eventを`m2_fallback_events`(list、空=発生なし)として戻り値へ追記する。
+    それ以外の戻り値・挙動は無変更(全呼び出し元で追記キーのみ増える)。"""
+    sink: list = []
+    result = _run_key_phrases_impl(article_text, out_dir, article_id, source_level, process=process,
+                                   synthetic=synthetic, kp_backend=kp_backend, _m2_fb_sink=sink)
+    result["m2_fallback_events"] = sink
+    return result
+
+
+def _run_key_phrases_impl(article_text: str, out_dir: str, article_id: str, source_level: str,
+                     process: str = None, synthetic: bool = False,
+                     kp_backend: str = "strategy_l", _m2_fb_sink: list = None) -> dict:
     """processの意味はrun_key_phrase_selection()と同じ(ER-006-MODEL-ROUTING-
     CONTRACT-01追補、"B1_SUPPORT"/"A2_SUPPORT"を渡す)。
 
@@ -732,6 +818,8 @@ def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_lev
                                         diagnostic_note=diagnostic_note, kp_backend=kp_backend,
                                         synthetic=synthetic, shortlist_cache=shortlist_cache)
         cumulative_cost_jpy += (sel.get("cost_jpy") or 0.0)
+        if _m2_fb_sink is not None and sel.get("m2_fallback"):
+            _m2_fb_sink.append(sel["m2_fallback"])
         if kp_backend == "db_hybrid":
             import er030_key_phrase_db_hybrid_selector_01 as _db_hybrid_mod
             if cumulative_cost_jpy > _db_hybrid_mod.KP_ARTICLE_COST_CAP_JPY:
