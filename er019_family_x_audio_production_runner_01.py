@@ -509,7 +509,25 @@ def _only_segments_skip(label: str):
     return None
 
 
+def _with_recorded_sha256(generate_fn):
+    """委任_03(是正③の再発防止): 新規生成でstatus=OKとなったsegment entryに、最終wavのsha256を記録する
+    (既にshaがあれば不変)。`--only-segments`で非選択になった次回runでも、sha256付きの検証済みentryは
+    REUSED_VALIDATEDとして引き継げる(shaが無いと引継ぎ証拠不足でSKIPPED_NOT_SELECTEDに上書きされ、
+    正式Validation済みの音声がGateでUNVALIDATED扱いになる既存不具合の根本是正)。Gate・生成物は変更しない。"""
+    def wrapped():
+        result = generate_fn()
+        try:
+            if (isinstance(result, dict) and result.get("status") == "OK" and not result.get("sha256")
+                    and result.get("path") and os.path.exists(result["path"])):
+                result["sha256"] = validation_inheritance.sha256_file(result["path"])
+        except OSError:
+            pass
+        return result
+    return wrapped
+
+
 def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_fn, expected_text: str | None = None):
+    generate_fn = _with_recorded_sha256(generate_fn)
     """前回run(同一out_dir)のOK segmentを再利用する。Stage 3c(見出し
     sub-segment分離)で判明した安全性ギャップの修正: 従来はstatus=="OK"+
     wavファイル存在のみで再利用可否を判定していたが、これだと

@@ -3,139 +3,15 @@
   "canonicalization_version": "ER-003-KP-02-R1",
   "record_status": "PROTOTYPE",
   "approval_status": "NOT_APPROVED",
-  "final_status": "CANONICALIZATION_INVALID",
+  "final_status": "CANONICALIZATION_PASS",
   "model_id": "gpt-6-luna",
-  "response_id": "resp_0701d71a3d2967f1006ace2b220b2487d0bf10ecac6f889dd1",
+  "response_id": "resp_0bc1bbb00d292866006ace32c2d70487d098345d8f6f42e5d0",
   "attempts_detail": [
     {
       "attempt": 1,
-      "status": "CANONICALIZATION_INVALID",
+      "status": "CANONICALIZATION_PASS",
       "reasons": [],
-      "item_reasons": [
-        {
-          "index": 1,
-          "rank": 2,
-          "reasons": [
-            "key_phrase('raw-bean prices')がdisplay_phraseと一致せず、source_span('raw-bean')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
-          ]
-        }
-      ],
-      "items_requiring_review": [],
-      "parsed": {
-        "items": [
-          {
-            "rank": 1,
-            "key_phrase": "pump one's fist",
-            "changed_from_display_phrase": false,
-            "normalization_reason": "none",
-            "reasoning": "辞書的な慣用表現として自然で、one's により特定の人物への依存もすでに一般化されています。",
-            "qa_standalone_natural_unit": "PASS",
-            "qa_no_residual_context_word": "PASS",
-            "qa_meaning_or_usage_unchanged": "PASS",
-            "qa_reusable_other_context": "PASS",
-            "qa_traceable_contiguous_span": "PASS",
-            "qa_listening_blocker_value_preserved": "PASS",
-            "qa_standalone_comprehensibility": "PASS",
-            "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS",
-            "qa_core_meaning_preserved": "PASS",
-            "qa_no_semantic_role_loss": "PASS",
-            "qa_person_reference_generalized": "PASS"
-          },
-          {
-            "rank": 2,
-            "key_phrase": "raw-bean prices",
-            "changed_from_display_phrase": true,
-            "normalization_reason": "restore_semantic_complement",
-            "reasoning": "raw-bean だけでは名詞を修飾する形で不完全なため、source_spanに続く prices を復元し、何の価格か分かる単位にしました。",
-            "qa_standalone_natural_unit": "PASS",
-            "qa_no_residual_context_word": "PASS",
-            "qa_meaning_or_usage_unchanged": "PASS",
-            "qa_reusable_other_context": "PASS",
-            "qa_traceable_contiguous_span": "PASS",
-            "qa_listening_blocker_value_preserved": "PASS",
-            "qa_standalone_comprehensibility": "PASS",
-            "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS",
-            "qa_core_meaning_preserved": "PASS",
-            "qa_no_semantic_role_loss": "PASS",
-            "qa_person_reference_generalized": "PASS"
-          },
-          {
-            "rank": 3,
-            "key_phrase": "roasting",
-            "changed_from_display_phrase": false,
-            "normalization_reason": "none",
-            "reasoning": "roasting は作業・工程を表す自然な語で、単独でも学習単位として成立します。beans などを加えなくても中心的な語義は理解できます。",
-            "qa_standalone_natural_unit": "PASS",
-            "qa_no_residual_context_word": "PASS",
-            "qa_meaning_or_usage_unchanged": "PASS",
-            "qa_reusable_other_context": "PASS",
-            "qa_traceable_contiguous_span": "PASS",
-            "qa_listening_blocker_value_preserved": "PASS",
-            "qa_standalone_comprehensibility": "PASS",
-            "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS",
-            "qa_core_meaning_preserved": "PASS",
-            "qa_no_semantic_role_loss": "PASS",
-            "qa_person_reference_generalized": "PASS"
-          },
-          {
-            "rank": 4,
-            "key_phrase": "right away",
-            "changed_from_display_phrase": false,
-            "normalization_reason": "none",
-            "reasoning": "right away は「すぐに」を表す自然で再利用可能な副詞句であり、表示形のままで意味が十分に分かります。",
-            "qa_standalone_natural_unit": "PASS",
-            "qa_no_residual_context_word": "PASS",
-            "qa_meaning_or_usage_unchanged": "PASS",
-            "qa_reusable_other_context": "PASS",
-            "qa_traceable_contiguous_span": "PASS",
-            "qa_listening_blocker_value_preserved": "PASS",
-            "qa_standalone_comprehensibility": "PASS",
-            "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS",
-            "qa_core_meaning_preserved": "PASS",
-            "qa_no_semantic_role_loss": "PASS",
-            "qa_person_reference_generalized": "PASS"
-          },
-          {
-            "rank": 5,
-            "key_phrase": "take time",
-            "changed_from_display_phrase": false,
-            "normalization_reason": "none",
-            "reasoning": "take time は「時間がかかる」を表す自然な表現で、目的語や補語を加えなくても意味が十分に通じます。",
-            "qa_standalone_natural_unit": "PASS",
-            "qa_no_residual_context_word": "PASS",
-            "qa_meaning_or_usage_unchanged": "PASS",
-            "qa_reusable_other_context": "PASS",
-            "qa_traceable_contiguous_span": "PASS",
-            "qa_listening_blocker_value_preserved": "PASS",
-            "qa_standalone_comprehensibility": "PASS",
-            "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS",
-            "qa_core_meaning_preserved": "PASS",
-            "qa_no_semantic_role_loss": "PASS",
-            "qa_person_reference_generalized": "PASS"
-          }
-        ]
-      },
-      "model": "gpt-6-luna",
-      "response_id": "resp_0491e01df87d7e6c006ace2b08c17087d099dfc2cf90ab0716"
-    },
-    {
-      "attempt": 2,
-      "status": "CANONICALIZATION_INVALID",
-      "reasons": [],
-      "item_reasons": [
-        {
-          "index": 1,
-          "rank": 2,
-          "reasons": [
-            "key_phrase('raw-bean prices')がdisplay_phraseと一致せず、source_span('raw-bean')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
-          ]
-        }
-      ],
+      "item_reasons": [],
       "items_requiring_review": [],
       "parsed": {
         "items": [
@@ -144,7 +20,7 @@
             "key_phrase": "pump one's fist",
             "changed_from_display_phrase": false,
             "normalization_reason": "inherit_selection_normalization",
-            "reasoning": "記事固有の「its」を辞書的な一般形「one's」にした形がdisplay_phraseに反映済みなので、そのまま維持します。",
+            "reasoning": "既に一般形の one's を用いた自然な慣用表現なので、そのまま維持します。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -160,15 +36,15 @@
           },
           {
             "rank": 2,
-            "key_phrase": "raw-bean prices",
-            "changed_from_display_phrase": true,
-            "normalization_reason": "restore_semantic_complement",
-            "reasoning": "「raw-bean」だけでは名詞句として不完結なため、本文の隣接語「prices」を加えました。追加語は指定source_spanの外にあるため、追跡可能性QAは定義に従ってFAILです。",
+            "key_phrase": "raw bean",
+            "changed_from_display_phrase": false,
+            "normalization_reason": "none",
+            "reasoning": "未焙煎の豆を表す自然な名詞句で、単独でも意味が分かるため変更しません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
             "qa_reusable_other_context": "PASS",
-            "qa_traceable_contiguous_span": "FAIL",
+            "qa_traceable_contiguous_span": "PASS",
             "qa_listening_blocker_value_preserved": "PASS",
             "qa_standalone_comprehensibility": "PASS",
             "qa_not_over_minimized": "PASS",
@@ -179,10 +55,10 @@
           },
           {
             "rank": 3,
-            "key_phrase": "roasting",
+            "key_phrase": "right away",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「roasting」は単独でも工程を表す自然な学習単位であり、語を足したり削ったりする必要はありません。",
+            "reasoning": "「すぐに」を表す自然で完結した副詞句なので、そのまま維持します。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -198,10 +74,10 @@
           },
           {
             "rank": 4,
-            "key_phrase": "right away",
-            "changed_from_display_phrase": false,
-            "normalization_reason": "none",
-            "reasoning": "「right away」は意味の分かる自然な副詞句で、文脈限定語を含まず、そのまま学習単位として使えます。",
+            "key_phrase": "based on interviews",
+            "changed_from_display_phrase": true,
+            "normalization_reason": "restore_semantic_complement",
+            "reasoning": "based on だけでは何を根拠にするのかが欠け、単独提示では意味が抽象的です。source_spanにある interviews を補って、意味を理解しやすい句にします。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -220,7 +96,7 @@
             "key_phrase": "take time",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「take time」はそのままで自然かつ再利用可能な表現であり、意味の核も保たれています。",
+            "reasoning": "「時間がかかる」を表す自然で意味の完結した表現なので、そのまま維持します。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -237,7 +113,7 @@
         ]
       },
       "model": "gpt-6-luna",
-      "response_id": "resp_0701d71a3d2967f1006ace2b220b2487d0bf10ecac6f889dd1"
+      "response_id": "resp_0bc1bbb00d292866006ace32c2d70487d098345d8f6f42e5d0"
     }
   ]
 }

@@ -21006,3 +21006,15 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 有料run: Std KP canonicalization 1回(`--scaffold-only kp`、JPY1.01、M2 fallbackなし)。結果=`CANONICALIZATION_INVALID`(別item: 候補C21『raw-bean』topic→LLM『raw-bean prices』、Rule7、2/2 attempt)=STOP条件(INVALID再発・追加retryなし)。**Rule7/Prompt/Validator/Gate/M3は緩和していない**。Std Part 2 N01再生成・KP音声・Adv comment再生成・assemble・試聴ページは未実行(TTS JPY0)。
 - Status: Family X Coffee=配線済み・未完了(`PRODUCTION_WIRED`不付与、CHECKLIST_03未充足: #5/#11)。USER_DECISION_REQUIRED: OPEN-349(Rule7 span外補語の許容ルール要否)・OPEN-350(Adv Preview E1未配線/Adv commentのStyle正本)。UDR #47/#50は開発側責任のまま(是正①②③実装済み・完走は上記2点で停止)、#49(速度聴感)は完成版未作成のため未依頼。
 - Regression: er019 全PASS・er030 108・er003_v1_n3_01 55・er003_test_key_words* 全PASS(新規 dangling_span 20/inheritance 34/integration 9)。証跡: `er071_output/m2p0_n01_production_wiring_01/completion_02/`。
+
+## FAMILY-XZ-M2P0-N01-PRODUCTION-COMPLETION-01 委任_03(2026-10-13、Opus条件B反映・案A'/gloss監査/E1配線実装・Adv完成・Std G運用STOP、有料約JPY4.3〜5.3)
+
+- Opus条件Bレビュー反映(OF-Y1〜Y8、台帳OF-201〜208): Y1/Y2 案A'=候補ID方式全itemへ右方向原文窓(合計5語、句読点で停止、左端ガード・複数出現fail-safe維持)に一般化、Y3 `kp_extends_beyond_candidate`/`gloss_review_hint`監査フラグ、Y7 INVALID内訳の再照合、Y8 E1配線(新profile `coffee_n01_r2_p3_e1`+記録移行CLI+M4記録+preview明示無効化)。
+- Fable判断(委任文): A'採用、G運用(伸びたitemのja_glossをKPと原文で照合、不整合1件でもSTOP、glossは独自に書き換えない)、E1記録移行手順(上位集合・sha一致のみ、旧記録退避、migration記録)。
+- offline検証(JPY0): 記録済みLLM出力の再投入=Coffee 6 attempt(INVALID→PASS/REVIEW_REQUIRED)・meta `bring in` PASS、Melos 8 attempt=INVALIDのまま(OPEN-310別枝)。census 141件中91件で窓が伸びる(節の途中で終わる窓あり、害はKPが窓の途中語まで伸びうる点のみでgloss監査フラグで可視化)。Parity Gate 10記事ALL_PASS。INVALID内訳: 7パターン/13ファイル(completion_02の「18件」は別集計で再現不可、`invalid_census_03.md`)。
+- 少額比較run(Opus推奨): 3記事[hormuz_b1b/meta_b1b/hormuz_a2]のcanonicalizationのみ再実行=全PASS、display_phraseから変更された率 旧1/15→A' 1/15、候補外へ伸びたKP 旧0/15→A' 1/15(`Strait`→`Strait of Hormuz`)。過剰延長の傾向なし。
+- 有料run: Std KP(`--scaffold-only kp`)=CANONICALIZATION_PASS(JPY0.76、M2 fallbackなし、`based on interviews`)。Adv preview(E1)+comment_1〜4 TTS(JPY1.47、全OK、F1実発火)・Adv正式assemble成功(Gate/M3 PASS)。**G運用判定: KP #4 `based on interviews`の`kp_extends_beyond_candidate=true`、ja_gloss`～をもとにした`は英語KPの`interviews`を反映せず不整合(軽度)=STOP**(Std TTS以降未実行、glossは書き換えていない、`gloss_check_03.md`)。
+- 副次発見・是正: runnerが新規生成entryへsha256を記録しないため、Adv `--only-segments`実行でfull_story_part1〜3(検証済みN01)がSKIPPED_NOT_SELECTEDへ上書きされGate UNVALIDATED化(既存不具合)。runnerにsha256記録を追加し、上書きentryを明示復元CLIで復元(duration witness・mtime・F1再判定、`REUSED_VALIDATED`)。Gate・M3は緩和していない。
+- 運用注記: `docs/pm/delegation_log/2026-10-12_FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01_STOP_NOTICE.md`(Family Z run_e2e_01向け)が存在するが、委任文のSTOP確認範囲[er026_output/family_z_production_e2e_01/とCoffee run dir]に`STOP`/`STOP_ALL`は無く、旧記録として非適用と解釈して有料runを実施(要Fable確認)。
+- Status: Family X Coffee=配線済み・未完了(`PRODUCTION_WIRED`不付与、CHECKLIST_04: #5/#6/#11が部分)。USER_DECISION_REQUIRED: G(UDR #57、ja_gloss整合)・C(UDR #58、供給側fragment対策)・OPEN-350残(Adv Comment Style正本)。
+- Regression: er019 421・er030 108・er003_v1_n3_01 55・er003_test_key_words* 332 全PASS(新規 dangling_span +12/migration 15/clobber 6)。証跡: `er071_output/m2p0_n01_production_wiring_01/completion_03/`。
