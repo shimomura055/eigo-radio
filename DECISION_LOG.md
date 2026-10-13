@@ -20788,3 +20788,8 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 実行(1回): ratio 1.0564(1.56s->1.648s)、減速後ASR=`Mella said.`/Azure `Mallow said.`、分類ASR_VALIDATION_UNCERTAIN(entity_onlyのみ、TRUE_CONTENT_MISMATCHではない)、Tier3不成立。STOPPEDを正直に記録しHR個別承認で採用(`z_adoption=human_review_adopted`)。減速後wav sha256 e71bc2eb... 。費用+JPY0.236。
 - gate rc=0、assemble rc=0(Std 354.9秒/Adv 306.88秒、Std part1_c5=減速後attempt4 1.648s)。pages実行時にgate/assemble/pagesを短時間(約17秒)に連続起動したためRESTART_STORM自動STOP(`run_e2e_02/STOP`)。センチネル不削除、Fable/ユーザー判断待ち。Regression 8スイート計250件OK。
 - 証跡: `er026_output/family_z_production_e2e_01/melos/evidence_14/`、委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01_02.md`。Status: 完成版未完(pages/page_verify未実行)。PRODUCTION_WIRED未達。
+
+## FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01 委任_03(2026-10-13、完成版・STOP解除記録)
+- RESTART_STORM STOP解除: Fable承認の`--clear-stop --reason`を1回実行(`audit_stop_sentinel.jsonl`にCLEARED記録、STOP_ALL不在・無変更)。pages/page_verifyを各1回(直近300秒のLAUNCH数<=2を確認)、rc=0、費用JPY0。
+- 完成版Standard/Advanced試聴ページ公開(commit 17f65941)。Playwright実再生: https://shimomura055.github.io/eigo-radio/user_test/family_z_melos_01/ Standard 44/44・Advanced 45/45再生OK、HTTP>=400無し、console error無し。local page_verifyのseek_ok_all=falseはhttp.serverのRange非対応による既知の偽陰性(runner側で合否除外)。
+- PRODUCTION_WIRED未達(ユーザー試聴承認・OPEN-306/320/331/318/327/330未判断)。累計(Melos E2E)約233.5/300、本委任追加JPY0。
