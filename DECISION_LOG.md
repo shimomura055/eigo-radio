@@ -20718,3 +20718,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 語末子音脱落の一般化範囲を限定: clip末の予測しやすい語(said/death、基音声3本)の切詰めは単独・文脈付きともASRの綴りでは検出されなかったに限定。語中の語末子音(`Melos`のs)は未検証。D-5 G0表頭を実際の受理基準(最終語の綴り一致/Production判定)へ訂正。42/42は12音声x recipeの非独立観測。
 - 推奨(2)(4)の記述訂正: (2)は作品非依存の音声的条件(語末歯擦音+s始まり語の連続回避、引用間narrator chunk最小語数)で、長clip化の効果は未検証。(4)allow-listは『その名前の語末s脱落リスクを作品内で許容する方針決定』と等価で、(i)方針許容/(ii)audio sha256紐付け/(iii)音響的独立証拠併用の3択をユーザー判断として提示。OPEN-331と一体検討。
 - Status表記訂正(上記見出し)。費用単価: pricing_snapshotに音声入力tokenの別掲単価なし(text単価$1.25/Mで計算)=過小評価の可能性、OpenAI usage画面との照合が必要。Production無変更・未実装。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01_02.md`。
+
+## EIGO-RADIO-QUALITY-CROSS-FAMILY-FOLLOWUP-01 ②(OPEN-323、2026-10-13、ユーザー決定の記録のみ。区分: サービス・生成仕様の判断、実装変更なし)
+- 決定(ユーザー正式、2026-10-13): Family Z Comment3ネタバレ(OPEN-323)について、現行Melos Standard Comment 3原文(`er026_output/family_z_production_e2e_01/melos/run_e2e_02/support/a2_support.json`のcomment 3、旧版との比較をFableが提示済み)を確認し**許容**。今回の文章は採用可能。
+- 追加のネタバレ対策は不要。25%制限のFamily Z共通化Trialは実施しない。Comment 1・2対象の新Trialも不要。新しいネタバレ防止仕様は追加しない。
+- `limit_comment3_part`(Part3先頭25%・最低2段落・到着/結末マーカー除外、Melos run_e2e_02で施行済み)は現状維持。Melos固有マーカーの共通化は『今回は実施しない』(Deferredではない)。
+- 対象ファイル: OPEN_ITEMS.md OPEN-323行(CLOSED)のみ。Melos原稿・音声・supportファイルは無変更、再生成なし。Production変更なし。API呼出・費用JPY0。
+- 委任ログ: `docs/pm/delegation_log/2026-10-13_EIGO-RADIO-QUALITY-CROSS-FAMILY-FOLLOWUP-01_OPEN323.md`。
