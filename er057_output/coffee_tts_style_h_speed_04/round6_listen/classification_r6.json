@@ -1,0 +1,129 @@
+{
+ "per_job": {
+  "K01_adv_part1_t1": {
+   "cls": "暫定合格",
+   "speed_ok": true,
+   "pause_ok": true,
+   "quality_ok": true,
+   "wpm": 172.6,
+   "raw_wpm": 172.6,
+   "end_mean": 580,
+   "long800_n": 1,
+   "asr": "NORMALIZED_MATCH"
+  },
+  "K01_adv_part1_t2": {
+   "cls": "暫定合格",
+   "speed_ok": true,
+   "pause_ok": true,
+   "quality_ok": true,
+   "wpm": 170.3,
+   "raw_wpm": 170.3,
+   "end_mean": 466,
+   "long800_n": 1,
+   "asr": "NORMALIZED_MATCH"
+  },
+  "K01_adv_part1_t3": {
+   "cls": "不合格(ASR/異音)",
+   "speed_ok": true,
+   "pause_ok": false,
+   "quality_ok": false,
+   "wpm": 166.2,
+   "raw_wpm": 166.2,
+   "end_mean": 626,
+   "long800_n": 1,
+   "asr": "TRUE_CONTENT_MISMATCH"
+  },
+  "K06_std_part1_t1": {
+   "cls": "暫定合格",
+   "speed_ok": true,
+   "pause_ok": true,
+   "quality_ok": true,
+   "wpm": 154.5,
+   "raw_wpm": 164.4,
+   "end_mean": 478,
+   "long800_n": 0,
+   "asr": "NORMALIZED_MATCH"
+  },
+  "K06_std_part1_t2": {
+   "cls": "暫定合格",
+   "speed_ok": true,
+   "pause_ok": true,
+   "quality_ok": true,
+   "wpm": 156.0,
+   "raw_wpm": 166.0,
+   "end_mean": 486,
+   "long800_n": 0,
+   "asr": "NORMALIZED_MATCH"
+  },
+  "K06_std_part1_t3": {
+   "cls": "速度のみOK(ポーズ不良)",
+   "speed_ok": true,
+   "pause_ok": false,
+   "quality_ok": true,
+   "wpm": 154.2,
+   "raw_wpm": 164.0,
+   "end_mean": 572,
+   "long800_n": 2,
+   "asr": "NORMALIZED_MATCH"
+  }
+ },
+ "agg": {
+  "K06_std": {
+   "pass_count": 2,
+   "wpm": [
+    154.5,
+    156.0,
+    154.2
+   ],
+   "wpm_range": [
+    154.2,
+    156.0
+   ],
+   "wpm_spread": 1.8,
+   "end_mean": [
+    478,
+    486,
+    572
+   ],
+   "end_range": [
+    478,
+    572
+   ],
+   "end_spread": 94,
+   "classes": [
+    "暫定合格",
+    "暫定合格",
+    "速度のみOK(ポーズ不良)"
+   ]
+  },
+  "K01_adv": {
+   "pass_count": 2,
+   "wpm": [
+    172.6,
+    170.3,
+    166.2
+   ],
+   "wpm_range": [
+    166.2,
+    172.6
+   ],
+   "wpm_spread": 6.4,
+   "end_mean": [
+    580,
+    466,
+    626
+   ],
+   "end_range": [
+    466,
+    626
+   ],
+   "end_spread": 160,
+   "classes": [
+    "暫定合格",
+    "暫定合格",
+    "不合格(ASR/異音)"
+   ]
+  }
+ },
+ "criteria": "Std 157+-6 / Adv 167+-6 / 文末平均 Std<=498 Adv<=593 / 800ms+<=1 / ASR verified+tail+long_gap異音なし (Round5同一)"
+}
