@@ -1,0 +1,93 @@
+{
+ "n_pairs": 674,
+ "by_src": {
+  "human_review_queue": 187,
+  "er021_telemetry": 434,
+  "er069_results_02": 53
+ },
+ "meta": {
+  "attempt_history_has_text_records": 3,
+  "attempt_history_keys": {
+   "timestamp": 12891,
+   "action": 12891,
+   "segment_id": 12777,
+   "run_id": 12243,
+   "theme_id": 12129,
+   "level": 12129,
+   "tts_attempts_this_call": 11335,
+   "asr_calls_this_call": 11335,
+   "result_status": 11335,
+   "human_review_reached": 11335,
+   "final_lock_state": 11335,
+   "language": 9314
+  }
+ },
+ "errors": 0,
+ "old_pass_via_connected_speech": 10,
+ "pass_to_nonpass": 0,
+ "nonpass_to_pass": 0,
+ "other_class_change_same_pass": 0,
+ "transitions": {},
+ "labeled_sets": {
+  "cs_sweep|normal_by_construction": {
+   "n": 222,
+   "old_pass": 114,
+   "new_pass": 114
+  },
+  "cs_synthetic|normal_by_construction": {
+   "n": 19,
+   "old_pass": 10,
+   "new_pass": 10
+  },
+  "cs_synthetic|defect": {
+   "n": 6,
+   "old_pass": 0,
+   "new_pass": 0
+  },
+  "defect_text|defect": {
+   "n": 41,
+   "old_pass": 4,
+   "new_pass": 3
+  },
+  "normal_text|normal": {
+   "n": 20,
+   "old_pass": 13,
+   "new_pass": 13
+  },
+  "general_2word|normal": {
+   "n": 324,
+   "old_pass": 162,
+   "new_pass": 162
+  },
+  "real_diff|normal": {
+   "n": 124,
+   "old_pass": 36,
+   "new_pass": 32
+  }
+ },
+ "api_calls": 0
+}
+LAB defect CONNECTED_SPEECH_ACCEPT -> TRUE_CONTENT_MISMATCH | The studies suggest cats today. | The study suggests dogs today.
+LAB normal CONNECTED_SPEECH_ACCEPT -> TRUE_CONTENT_MISMATCH | a US sea blockade | a U S se blockade
+LAB normal CONNECTED_SPEECH_ACCEPT -> TRUE_CONTENT_MISMATCH | a US sea blockade | a U S blockade
+LAB normal CONNECTED_SPEECH_ACCEPT -> TRUE_CONTENT_MISMATCH | planned US sea blockade | planned U S blockade
+LAB normal CONNECTED_SPEECH_ACCEPT -> TRUE_CONTENT_MISMATCH | a US sea blockade | a U S C blockade
+CTR nonpass ['CONNECTED_SPEECH_ACCEPT', True] ['TRUE_CONTENT_MISMATCH', False] Pattern_A_sibilant_sequence | The studies suggest cats today. | The study suggests dogs today.
+CTR pass ['CONNECTED_SPEECH_ACCEPT', True] ['CONNECTED_SPEECH_ACCEPT', True] Pattern_A_sibilant_sequence | The studies suggest cats today. | The study suggests cats today.
+CTR pass ['CONNECTED_SPEECH_ACCEPT', True] ['CONNECTED_SPEECH_ACCEPT', True] Pattern_A_sibilant_sequence | The studies suggest cats today. | The study suggest cats today.
+CTR pass ['CONNECTED_SPEECH_ACCEPT', True] ['CONNECTED_SPEECH_ACCEPT', True] Pattern_A_sibilant_sequence | The studies suggest that cats sleep. | The study suggests that cats sleep.
+CTR nonpass ['CONNECTED_SPEECH_ACCEPT', True] ['TRUE_CONTENT_MISMATCH', False] Pattern_A_sibilant_sequence | The studies suggest that cats sleep. | The study suggests that dogs sleep.
+CTR nonpass ['CONNECTED_SPEECH_ACCEPT', True] ['TRUE_CONTENT_MISMATCH', False] Pattern_A_sibilant_sequence | The studies suggest that cats sleep. | The study suggests that cats sleep more.
+CTR nonpass ['CONNECTED_SPEECH_ACCEPT', True] ['TRUE_CONTENT_MISMATCH', False] Pattern_A_sibilant_sequence | The studies suggest that cats sleep. | The study suggests cats sleep.
+CTR nonpass ['TRUE_CONTENT_MISMATCH', False] ['TRUE_CONTENT_MISMATCH', False] None | The studies suggest that cats sleep. | The study suggests that cats did not sleep.
+CTR nonpass ['CONNECTED_SPEECH_ACCEPT', True] ['TRUE_CONTENT_MISMATCH', False] Pattern_A_sibilant_sequence | The studies suggest that cats sleep. | The study suggests that cats slept.
+CTR nonpass ['TRUE_CONTENT_MISMATCH', False] ['TRUE_CONTENT_MISMATCH', False] None | The studies suggest that 5 cats sleep. | The study suggests that 6 cats sleep.
+CTR nonpass ['CONNECTED_SPEECH_ACCEPT', True] ['TRUE_CONTENT_MISMATCH', False] Pattern_A_sibilant_sequence | The studies suggest that Rex sleeps. | The study suggests that Max sleeps.
+CTR nonpass ['CONNECTED_SPEECH_ACCEPT', True] ['TRUE_CONTENT_MISMATCH', False] Pattern_A_sibilant_sequence | The studies suggest that cats sleep. | The study suggests that cats.
+CTR pass ['CONNECTED_SPEECH_ACCEPT', True] ['CONNECTED_SPEECH_ACCEPT', True] Pattern_B_stop_consonant_sequence | The company opened today and it closed to the public. | The company open today and it closed to the public.
+CTR nonpass ['CONNECTED_SPEECH_ACCEPT', True] ['TRUE_CONTENT_MISMATCH', False] Pattern_B_stop_consonant_sequence | The company opened today and it closed to the public. | The company open today and it closes to the public.
+CTR nonpass ['CONNECTED_SPEECH_ACCEPT', True] ['TRUE_CONTENT_MISMATCH', False] Pattern_B_stop_consonant_sequence | The company opened today and it closed to the public. | The company open today and it closed to the people.
+CTR pass? ['CONNECTED_SPEECH_PASS_WITH_WARNING', True] ['CONNECTED_SPEECH_PASS_WITH_WARNING', True] Pattern_C_resegmentation_added_consonant | The survey suggests that cats sleep. | The surveys suggest that cats sleep.
+CTR nonpass ['CONNECTED_SPEECH_PASS_WITH_WARNING', True] ['TRUE_CONTENT_MISMATCH', False] Pattern_C_resegmentation_added_consonant | The survey suggests that cats sleep. | The surveys suggest that dogs sleep.
+CTR pass ['CONNECTED_SPEECH_ACCEPT', True] ['CONNECTED_SPEECH_PASS_WITH_WARNING', True] Pattern_A_sibilant_sequence | Their studies suggest cats and their survey suggests cats. | Their study suggests cats and their surveys suggest cats.
+CTR nonpass ['CONNECTED_SPEECH_ACCEPT', True] ['TRUE_CONTENT_MISMATCH', False] Pattern_A_sibilant_sequence | Their studies suggest cats and their survey suggests cats. | Their study suggests cats and their surveys suggest dogs.
