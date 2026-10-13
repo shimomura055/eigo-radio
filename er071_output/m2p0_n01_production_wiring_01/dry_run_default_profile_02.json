@@ -1,0 +1,28 @@
+{
+ "purpose": "defaultのprofile選択(新規out_dir->n01)の¥0確認",
+ "cases": {
+  "new_out_dir_cli_unspecified": {
+   "rc": 0,
+   "style_profile": "n01",
+   "source": "default_new_run_n01",
+   "record_profile": "n01",
+   "full_story_sha256": "d1956c91c925d197e27cf1204d7ed17248a96bef096b082fb1bd0846106a0477",
+   "api_cost_jpy": 0
+  },
+  "existing_run_state_cli_unspecified": {
+   "rc": 1,
+   "stopped_before_any_write": true,
+   "stderr_tail": "er019_family_x_style_profile_01.StyleProfileStop: [STOP][M2][USER_DECISION_REQUIRED] 既存のrun記録があるout_dirで、style profileの固定記録がありません(既定profile='n01'は新規out_dirにのみ適用されます。Review Lock/人間承認はtext shaのみで照合されStyleを区別しないため、既存runへの途中適用はStyle混在を招きます)。既存の記録: ['C:\\\\Users\\\\tensh\\\\AppData\\\\Local\\\\Temp\\\\tmplt9rwafh/ol"
+  },
+  "existing_run_state_explicit_default": {
+   "rc": 0,
+   "style_profile_key_absent_in_entry_point": true,
+   "record_created": false
+  },
+  "new_out_dir_legacy_backend": {
+   "rc": 0,
+   "style_profile_key_absent_in_entry_point": true,
+   "tts_backend": "structured_separation"
+  }
+ }
+}

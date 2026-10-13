@@ -82,11 +82,13 @@ class StyleTableTest(unittest.TestCase):
         for k, v in rep.items():
             self.assertTrue(v["verbatim_match"], k)
 
-    def test_std_narrator_is_pd8_plus_existing_a2_instruction(self):
+    def test_std_narrator_is_n01_verbatim_without_a2_instruction(self):
+        # 2026-10-13 FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01: 期待値を意図的に更新(旧: PD8 / PD8+A2減速instruction連結)。
+        # N01(ユーザー正式決定APPROVED_FOR_PRODUCTION)は Std/Adv とも逐語(Std減速instruction非連結)。
         import er003_v1_n3_01_tts_generate as n3
-        self.assertEqual(z.FAMILY_Z_ROLE_STYLE["NARRATOR_FULL_STORY_STD"]["text"],
-                         z._PD8 + "\n" + n3.A2_SLOWER_PACE_INSTRUCTION.strip())
-        self.assertEqual(z.FAMILY_Z_ROLE_STYLE["NARRATOR_FULL_STORY_ADV"]["text"], z._PD8)
+        self.assertEqual(z.FAMILY_Z_ROLE_STYLE["NARRATOR_FULL_STORY_STD"]["text"], z._N01)
+        self.assertEqual(z.FAMILY_Z_ROLE_STYLE["NARRATOR_FULL_STORY_ADV"]["text"], z._N01)
+        self.assertNotIn(n3.A2_SLOWER_PACE_INSTRUCTION.strip(), z.FAMILY_Z_ROLE_STYLE["NARRATOR_FULL_STORY_STD"]["text"])
 
     def test_x_constants_untouched_and_copies_match(self):
         import er033_tts_flash_lite_family_x_styles_01 as fl
@@ -573,13 +575,13 @@ class WiringTest(unittest.TestCase):
                 return s
         raise AssertionError((level, kind))
 
-    def test_adv_narrator_uses_x_b1_entry_with_pd8(self):
+    def test_adv_narrator_uses_x_b1_entry_with_n01(self):
         import er003_v1_sing01_news_tail_fix as ntf
         spec = self._spec("b1b", "narrator")
         with mock.patch.object(ntf, "generate_news_narration_wide_margin", return_value={"status": "OK"}) as m:
             z.real_generators()["narrator"](spec, "x/b1b/narration/full_story_part1_c1.wav")
         kw = m.call_args.kwargs
-        self.assertEqual(kw["style_prefix_override"], z._PD8)
+        self.assertEqual(kw["style_prefix_override"], z._N01)  # 2026-10-13: PD8 -> N01(期待値を意図的に更新)
         self.assertEqual(kw["tts_backend"], "speech_metadata_flash_lite")
         self.assertTrue(kw["enable_connected_speech_equivalence_layer"])
 
@@ -588,7 +590,7 @@ class WiringTest(unittest.TestCase):
         spec = self._spec("a2", "narrator")
         with mock.patch.object(n3, "generate_a2_segment_with_slowdown", return_value={"status": "OK"}) as m:
             z.real_generators()["narrator"](spec, "x/a2/narration/full_story_part1_c1.wav")
-        self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._STYLE_TEXT["PD8_A2SLOW"])
+        self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._N01)  # 2026-10-13: PD8_A2SLOW -> N01逐語(期待値を意図的に更新)
 
     def test_adv_dialogue_has_no_style_override_and_right_voice(self):
         import er012_b_family_voices_production_01 as bv

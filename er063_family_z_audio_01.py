@@ -69,6 +69,11 @@ class FamilyZStyleIntegrityStop(FamilyZAudioStop):
     """Style定数のsha不一致(逐語一致が崩れた)。"""
 
 
+class FamilyZNarratorStyleMismatchStop(FamilyZAudioStop):
+    """run単位のnarrator style label記録と現行定義が食い違う(FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 Opus必須7)。
+    既存Z run dir(Melos等)はPD8で生成済み。N01へ途中切替するとrun内でnarrator styleが混在するため課金前にSTOPする。"""
+
+
 class FamilyZVoiceMappingStop(FamilyZAudioStop):
     """Dialogue speakerに対応するVoiceが無い。"""
 
@@ -129,8 +134,17 @@ _X_JA_J3 = ("落ち着いた、自然な話し言葉で。意味の流れ・強�
 # (er033 KEY_PHRASE_EXPLANATION_EN)の逐語コピー。Xは不変(一致をtestで固定)。
 _X_KP_EXPLANATION_EN = "clear, precise, at a measured pace, without dragging"
 
+# N01(ユーザー正式決定2026-10-13 APPROVED_FOR_PRODUCTION、FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01): Full Story narrationの
+# メイン音声Prompt。Xの`er019_family_x_style_profile_01.N01_TEXT`と同一文言の逐語copy(Xは不変・一致をtestで固定)。
+# Std/Adv共通、Stdも逐語(旧PD8_A2SLOWの減速instruction連結は廃止。生成後6%減速・減速後再検証は共有module側で無変更)。
+# 対象=narrator役のFull Story clip(短い帰属句narrator clipを含む)。Dialogue voices・Preview・Comment・KP等は対象外。
+# 「sharing a true story」はFiction(Family Z)と意味がずれる可能性があり、USER_DECISION_REQUIRED N-2(文言は変更しない)。
+_N01 = ("A cheerful, kind storyteller sharing a true story at a pace a little slower than usual. "
+        "Bring each sentence to its natural close, then go directly on to the next, including where the story takes a turn.")
+
 # 原典照合値(2026-10-12実装時に原典ファイルから抽出して一致確認済み。runtimeはTrialファイルへ依存しない)
 _STYLE_SHA256 = {
+    "N01": "d1956c91c925d197e27cf1204d7ed17248a96bef096b082fb1bd0846106a0477",
     "PD8": "329ff46a5ec3877f7dc23375e14ee8a806efeff7cfe27963492a3cf95d182226",
     "PD8_A2SLOW": "74b456cacf74af0ad08636776dc32fc35e041f869ecc7d60ecab190cf99a1f91",
     "R2": "625826c1187b6381fe36ff444f1f568fc1f68d639d6a6a8931e728463692252f",
@@ -143,6 +157,7 @@ _STYLE_SHA256 = {
 }
 
 _STYLE_TEXT = {
+    "N01": _N01,
     "PD8": _PD8,
     "PD8_A2SLOW": _PD8 + "\n" + _A2_SLOW_INSTRUCTION,
     "R2": _R2, "E1": _E1, "E2_UPBEAT": _E2_UPBEAT, "K2": _K2, "M2": _M2, "A5": _A5, "B5": _B5,
@@ -151,11 +166,12 @@ _STYLE_TEXT = {
 # role key -> 仕様。text=Noneは「Zで独自styleを渡さない(従来/既存Master)」。
 FAMILY_Z_ROLE_STYLE = {
     "NARRATOR_FULL_STORY_ADV": {
-        "style_label": "PD8", "text": _PD8, "voice": "Aoede", "language": "en",
-        "origin": "er057_output/pace_trial_02/prompts/prompts_pace_02.md ## PD8", "path": "news_tail_fix.generate_news_narration_wide_margin"},
+        "style_label": "N01", "text": _N01, "voice": "Aoede", "language": "en",
+        "origin": "er057_output/coffee_tts_style_h_speed_04/round5/prompts_r5.json candidates.N01.style(旧PD8から2026-10-13置換)",
+        "path": "news_tail_fix.generate_news_narration_wide_margin"},
     "NARRATOR_FULL_STORY_STD": {
-        "style_label": "PD8+A2_SLOWDOWN_INSTRUCTION", "text": _STYLE_TEXT["PD8_A2SLOW"], "voice": "Aoede", "language": "en",
-        "origin": "PD8逐語 + n3_tts.A2_SLOWER_PACE_INSTRUCTION.strip()(改行1つで連結、Coffee Std方式)",
+        "style_label": "N01", "text": _N01, "voice": "Aoede", "language": "en",
+        "origin": "N01逐語(Std減速instruction非連結。旧PD8_A2SLOW[PD8+A2減速instruction連結]から2026-10-13置換)",
         "path": "n3_tts.generate_a2_segment_with_slowdown(6%減速)"},
     "DIALOGUE_ADV": {
         "style_label": "existing_dialogue_style(ENGLISH_STYLE_PREFIX)", "text": None, "voice": "per-speaker", "language": "en",
@@ -481,6 +497,59 @@ def build_level_plan(level: str, story_clips: list, preview_text: str, comments:
         plan.append(ClipSpec(c["id"], level, kind, c["text"], voice=voice, speaker=speaker,
                              role_key=role_key_for(kind, level, speaker), part=int(m.group(1)), language="en"))
     return plan
+
+
+# ============================================================
+# 3-N. run単位のnarrator style label記録(Opus必須7): 既存Z run dir(PD8生成済み)へのN01混在を課金前にSTOP
+# ============================================================
+NARRATOR_STYLE_RECORD_RELPATH = "audit/narrator_style_record.json"
+
+
+def expected_narrator_style(level: str) -> dict:
+    role_key = "NARRATOR_FULL_STORY_ADV" if level == "b1b" else "NARRATOR_FULL_STORY_STD"
+    spec = FAMILY_Z_ROLE_STYLE[role_key]
+    return {"role_style_key": role_key, "style_label": spec["style_label"],
+            "style_prefix_sha256": style_prefix_sha256(spec["text"])}
+
+
+def inspect_run_narrator_style(level_dir: str, level: str, cached: dict | None) -> dict:
+    """読み取りのみ。status: NEW_RUN / RECORD_MATCH / RECORD_MISMATCH / ENTRIES_MATCH_NO_RECORD /
+    LEGACY_NARRATOR_ENTRIES_MISMATCH。*_MISMATCHは呼び出し側でSTOPする。"""
+    exp = expected_narrator_style(level)
+    rec_path = f"{level_dir}/{NARRATOR_STYLE_RECORD_RELPATH}"
+    if os.path.exists(rec_path):
+        rec = _read_json(rec_path)
+        ok = (rec.get("style_label") == exp["style_label"]
+              and rec.get("style_prefix_sha256") == exp["style_prefix_sha256"])
+        return {"status": "RECORD_MATCH" if ok else "RECORD_MISMATCH", "expected": exp, "recorded": rec}
+    mismatches, seen = [], 0
+    for clip_id, e in ((cached or {}).get("segments") or {}).items():
+        if (e or {}).get("clip_kind") != "narrator" and not str((e or {}).get("role_style_key", "")).startswith("NARRATOR_"):
+            continue
+        seen += 1
+        st = (e or {}).get("style") or {}
+        if st.get("instruction_label") != exp["style_label"] or st.get("style_prefix_sha256") != exp["style_prefix_sha256"]:
+            mismatches.append({"clip_id": clip_id, "recorded_label": st.get("instruction_label"),
+                               "recorded_sha256": st.get("style_prefix_sha256")})
+    if mismatches:
+        return {"status": "LEGACY_NARRATOR_ENTRIES_MISMATCH", "expected": exp, "mismatches": mismatches}
+    return {"status": "ENTRIES_MATCH_NO_RECORD" if seen else "NEW_RUN", "expected": exp, "narrator_entries": seen}
+
+
+def assert_run_narrator_style(level_dir: str, level: str, cached: dict | None, *, write: bool = True) -> dict:
+    info = inspect_run_narrator_style(level_dir, level, cached)
+    if info["status"] in ("RECORD_MISMATCH", "LEGACY_NARRATOR_ENTRIES_MISMATCH"):
+        raise FamilyZNarratorStyleMismatchStop(
+            f"[STOP][N01] {level_dir} のnarrator styleが現行定義(N01)と一致しません: {info['status']} "
+            f"(期待={info['expected']['style_label']}/{info['expected']['style_prefix_sha256']}, "
+            f"{info.get('recorded') or info.get('mismatches')})。既存runはPD8等の旧styleで生成済みです。"
+            "run内でnarrator styleが混在するため、課金前にSTOPしました(新規run dirで実行してください。記録は変更していません)。")
+    if write and info["status"] in ("NEW_RUN", "ENTRIES_MATCH_NO_RECORD"):
+        os.makedirs(f"{level_dir}/audit", exist_ok=True)
+        _write_json(f"{level_dir}/{NARRATOR_STYLE_RECORD_RELPATH}", {
+            **info["expected"], "level": level, "management_id": "FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01",
+            "n01_sha256": _STYLE_SHA256["N01"]})
+    return info
 
 
 # ============================================================
@@ -858,12 +927,17 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
                 "style_label": FAMILY_Z_ROLE_STYLE[s.role_key]["style_label"], "out_path": f"{narr}/{s.wav_name()}",
                 "layout_valid": layout_is_valid(f"{narr}/{s.wav_name()}")} for s in plan]
     if dry_run:
-        return {"dry_run": True, "planned": planned, "writes": 0}
+        _c = _merge_checkpoint(load_results(level_dir), load_checkpoint(level_dir))
+        return {"dry_run": True, "planned": planned, "writes": 0,
+                "narrator_style_record": inspect_run_narrator_style(level_dir, level, _c)}
+    cached = load_results(level_dir)
+    cached = _merge_checkpoint(cached, load_checkpoint(level_dir))   # 委任_10: process中断時もOK clipを再利用(再課金しない)
+    # Opus必須7: 生成器(TTS client)を作る前・課金前に、run単位のnarrator style label記録を確認する。
+    assert_run_narrator_style(level_dir, level, cached, write=False)
     gens = generators or real_generators()
     os.makedirs(narr, exist_ok=True)
     os.makedirs(f"{level_dir}/audit", exist_ok=True)
-    cached = load_results(level_dir)
-    cached = _merge_checkpoint(cached, load_checkpoint(level_dir))   # 委任_10: process中断時もOK clipを再利用(再課金しない)
+    assert_run_narrator_style(level_dir, level, cached, write=True)
     segments, key_phrases, evidence = {}, {}, []
     deferred_stop = None
     import er005_cost_logger as cl

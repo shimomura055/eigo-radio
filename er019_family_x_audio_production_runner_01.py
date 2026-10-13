@@ -235,13 +235,18 @@ def run_plan_stage(source_dir: str, out_dir: str, levels: list[str], style_profi
             # (hint追記有無)をplan段階で記録する(読み取りのみ、web lookup無効、課金0)。
             # defaultではkeyを追加しない(バイト同一)。
             import er025_entity_pronunciation_resolver_core_01 as pron_core
+            # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01: Full Story styleは適用中profileの値(P8またはN01)で記録・判定する。
+            _fs = style_profile_mod.get_profile(style_profile)["overrides"].get("FULL_STORY")
+            _fs_text = _fs["text"] if _fs else style_profile_mod.P8_TEXT
+            _fs_sha = _fs["sha256"] if _fs else style_profile_mod.P8_SHA256
             with pron_core.disable_web_lookup_for_test():
-                hits = style_profile_mod.compute_ledger_hits(parts, tts_safe_fn=n3_tts.tts_safe_news_en)
+                hits = style_profile_mod.compute_ledger_hits(parts, tts_safe_fn=n3_tts.tts_safe_news_en,
+                                                             full_story_text=_fs_text)
             result[level]["style_profile_plan"] = {
                 "profile_id": style_profile,
                 "overridden_roles": style_profile_mod.overridden_roles(style_profile),
-                "full_story_style_sha256": style_profile_mod.P8_SHA256,
-                "full_story_style_length": style_profile_mod.P8_LENGTH,
+                "full_story_style_sha256": _fs_sha,
+                "full_story_style_length": len(_fs_text),
                 "ledger_hits_web_lookup_disabled": hits,
                 "roles_sha256": {r: o["sha256"] for r, o in style_profile_mod.get_profile(style_profile)["overrides"].items()},
             }
@@ -320,7 +325,21 @@ def run_family_x_a2_scaffold(client, parts: dict, out_dir: str) -> dict:
     return results
 
 
+def _support_texts_path(level: str, level_out_dir: str) -> str:
+    return f"{level_out_dir}/b1_support_texts.json" if level == "b1b" else f"{level_out_dir}/a2_support_texts.json"
+
+
+def _kp_already_generated(kp_dir: str) -> list[str]:
+    """`--scaffold-only kp`のQ5(iv): KP再生成は1レベル1回まで。既にKP成果物がある場合はその一覧を返す。"""
+    found = []
+    for name in ("keywords_runtime_metadata.json", "keywords_canonicalized.json", "key_phrases_db_hybrid"):
+        if os.path.exists(f"{kp_dir}/{name}"):
+            found.append(f"{kp_dir}/{name}")
+    return found
+
+
 def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
+                        scaffold_only: str | None = None, budget_check=None,
                         kp_backend: str = "db_hybrid") -> dict:
     """既存sc.run_key_phrases()(選定+canonicalization+redundancy QA)を
     Family X本文へそのまま適用する(記事冒頭Key Phrasesは既存Family A
@@ -334,6 +353,13 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
     `er030_output/kp_backend_telemetry_01/telemetry.jsonl`で観測可能)。
     他Family(A/B/C/News/Z)の`sc.run_key_phrases`呼び出しはこの引数を
     渡さないため既定"strategy_l"のまま無変更。"""
+    # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01(Opus Q5条件、`--scaffold-only kp`):
+    #  (i) `sc.run_key_phrases(..., kp_backend=kp_backend)`呼出は下記の同じ行を通す(support生成ブロックのみskip)
+    #  (ii) `record_scaffold_article_sha`と`scaffold_run_summary`/`kp_backend_used`記録は維持
+    #  (iii) support成果物(sha照合済みcopy)がout_dirに無ければSTOP
+    #  (iv) KP再生成は1レベル1回(既にKP成果物があればSTOP、NGでも引き直さない)
+    if scaffold_only not in (None, "kp"):
+        raise ValueError(f"scaffold_onlyはNoneまたは'kp'のみ: {scaffold_only!r}")
     result = {}
     for level in levels:
         article_path = f"{source_dir}/{level}/article.md"
@@ -352,12 +378,25 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
         # (TTS直前の三者sha照合[scaffold時sha == source記事sha == Queue sha]の1者目)。
         record_scaffold_article_sha(out_dir, level, article_path)
 
-        if level == "b1b":
+        kp_dir = f"{level_out_dir}/key_phrases"
+        if scaffold_only == "kp":
+            _sp = _support_texts_path(level, level_out_dir)
+            if not os.path.exists(_sp):
+                raise RuntimeError(
+                    f"[STOP][scaffold-only kp] support成果物が{_sp}にありません。承認済みPreview/Commentの"
+                    "sha照合済みcopyをout_dirへ置いてから実行してください(support文面は再生成しません)。")
+            _done = _kp_already_generated(kp_dir)
+            if _done:
+                raise RuntimeError(
+                    f"[STOP][scaffold-only kp] {level}のKey Phraseは既に生成済みです({_done})。"
+                    "KP再生成は1レベル1回までです(NGでも引き直しません)。Fableへ報告してください。")
+            support = {}
+        elif level == "b1b":
             support = run_family_x_b1_scaffold(client, parts, level_out_dir)
         else:
             support = run_family_x_a2_scaffold(client, parts, level_out_dir)
 
-        kp_dir = f"{level_out_dir}/key_phrases"
+        # (下は変更なし: kp_dir定義は上へ移動済み)
         article_id = f"FAMILY_X_AUDIO_{os.path.basename(out_dir)}_{level}"
         kp_process = "B1_SUPPORT" if level == "b1b" else "A2_SUPPORT"
         kp = sc.run_key_phrases(article_text, kp_dir, article_id, level, process=kp_process,
@@ -372,6 +411,10 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
 
         result[level] = {"parts": parts, "support": {k: v.get("status") for k, v in support.items()},
                           "key_phrases_status": kp_status, "kp_backend_used": kp_backend_used}
+        if scaffold_only:
+            result[level]["scaffold_only"] = scaffold_only
+        if budget_check is not None:
+            budget_check(f"after scaffold {level}")
     save_json(f"{out_dir}/scaffold_run_summary.json", result)
     return result
 
@@ -1987,8 +2030,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     # 新key/fileを書かない)、記録があれば記録を採用(resume)。coffee_p8は新しいout_dirでのみ実行可
     # (M2)、speech_metadata_flash_lite backend必須(M5)。
     parser.add_argument("--style-profile", default=None, choices=tuple(style_profile_mod.STYLE_PROFILES),
-                         help="Style profile(既定: 未指定=default)。coffee_p8=Coffee Full Story限定のP8置換"
-                              "(APPROVED_FOR_PRODUCTION[Coffee限定]・Production未配線)。")
+                         help="Style profile。未指定: 記録があれば記録を採用(resume)、記録も既存run stateもない新規out_dirは"
+                              "n01(Full Story narration=N01、FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01)、既存run stateがある"
+                              "out_dirは課金前にSTOP(従来styleでresumeするなら`--style-profile default`を明示)。"
+                              "coffee_p8=Coffee限定P8置換、coffee_n01_r2_p3=N01+R2+P3(Coffee用)。")
+    # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01(Opus Q5): KPだけを再生成する最小CLI。--stage scaffold専用。
+    parser.add_argument("--scaffold-only", default=None, choices=("kp",),
+                         help="kp: scaffold stageでKey Phrase(M2P0)のみ再生成する(Preview/Comment等のsupport文面は"
+                              "再生成しない。support成果物がout_dirに無ければSTOP、KP再生成は1レベル1回)。--stage scaffold専用。")
     # FAMILY-X-COFFEE-FINAL-V5-PRODUCTION-WIRING-01: 必要なsegmentだけを生成する(既定None=全segment、従来と同一)。
     # 例: --only-segments preview,comment_1,comment_4 / kp1_explanation,kp2_explanation。
     # tts stage専用(assemble/all/playerとの併用は拒否)。対象外はstatus=SKIPPED_NOT_SELECTEDとして記録され、
@@ -2176,13 +2225,17 @@ def main() -> None:
             parser.error(_err)
         _ONLY_SEGMENTS = _sel
 
+    if args.scaffold_only is not None and args.stage != "scaffold":
+        parser.error("--scaffold-onlyは--stage scaffoldでのみ使えます。")
     source_dir = f"er019_output/{args.slug}/{args.run}"
     out_dir = derive_out_dir(args.slug, args.run, args.out_dir)
     # OPEN-300: style profileは課金・ファイル作成前に決定する。M5(backend)→M2/固定記録の順で、
     # いずれかでSTOPした場合はout_dir/記録を作らない。
-    _profile_id, _profile_source = style_profile_mod.resolve_run_profile(out_dir, args.style_profile, write=False)
+    _profile_id, _profile_source = style_profile_mod.resolve_run_profile(
+        out_dir, args.style_profile, write=False, tts_backend=args.tts_backend)
     style_profile_mod.assert_profile_backend(_profile_id, args.tts_backend)
-    _profile_id, _profile_source = style_profile_mod.resolve_run_profile(out_dir, args.style_profile, write=True)
+    _profile_id, _profile_source = style_profile_mod.resolve_run_profile(
+        out_dir, args.style_profile, write=True, tts_backend=args.tts_backend)
     os.makedirs(out_dir, exist_ok=True)
 
     levels = ["a2", "b1b"] if args.level == "both" else [args.level]
@@ -2213,6 +2266,7 @@ def main() -> None:
         **({"style_profile": _profile_id, "style_profile_source": _profile_source}
            if _profile_id != style_profile_mod.PROFILE_DEFAULT else {}),
         **({"only_segments": sorted(_ONLY_SEGMENTS)} if _ONLY_SEGMENTS is not None else {}),
+        **({"scaffold_only": args.scaffold_only} if args.scaffold_only else {}),
     })
 
     if args.dry_run or args.stage == "plan":
@@ -2233,7 +2287,9 @@ def main() -> None:
 
     if args.stage in ("scaffold", "all"):
         with cl.logging_context(args.slug, "scaffold"):
-            scaffold_result = run_theme_scaffold(client, source_dir, out_dir, levels)
+            scaffold_result = run_theme_scaffold(
+                client, source_dir, out_dir, levels, scaffold_only=args.scaffold_only,
+                budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
         assert_budget_ok(out_dir, args.budget_jpy, "after scaffold")
         # 修正1回目(Opus L2所見B2、2026-09-27): scaffold完了後、
         # entry_point.jsonへlevelごとのkp_backend_usedを追記する
@@ -2267,6 +2323,9 @@ def main() -> None:
                     generate_family_x_a2_segments(
                         out_dir, japanese_title=japanese_title or "(japanese title unavailable)",
                         tts_backend=args.tts_backend, style_profile=_profile_id)
+                # Opus必須9: 全stage累計(KP/TTS/ASR/Azure、raw_usage_log.jsonlの全provider)をlevelごとにも確認する
+                # (既存の上限・Guardの意味は変えず、チェック頻度のみ増やす)。
+                assert_budget_ok(out_dir, args.budget_jpy, f"after tts {level}")
         assert_budget_ok(out_dir, args.budget_jpy, "after tts")
 
     if args.stage in ("assemble", "all"):

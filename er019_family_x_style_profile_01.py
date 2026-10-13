@@ -76,9 +76,29 @@ P3_TEXT = (
 P3_SHA256 = "a8aaec591ef6d9acb42532cc0c84b6edfb2f75991e713d413c565b7e27677acc"
 P3_LENGTH = 141
 
+# N01原文(逐語、FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01、ユーザー正式決定2026-10-13: メイン音声Prompt=N01
+# APPROVED_FOR_PRODUCTION、Family X/Z)。202文字・37語・2文。数値WPM・速度倍率・unhurried/slowly・位置語を含まない。
+# 出典: er057_output/coffee_tts_style_h_speed_04/round5/prompts_r5.json candidates.N01.style。
+# Std/Adv共通に同一文言。Stdも逐語(減速instruction非連結)+生成後6%減速(共有module側、無変更)。
+# 対象はFull Story narration(Std/Adv part1-3)のみ。"sharing a true story"の意味ズレ(Fiction=Family Z)は
+# USER_DECISION_REQUIRED N-2(文言は変更しない)。
+N01_TEXT = (
+    "A cheerful, kind storyteller sharing a true story at a pace a little slower than usual. "
+    "Bring each sentence to its natural close, then go directly on to the next, including where the story takes a turn."
+)
+N01_SHA256 = "d1956c91c925d197e27cf1204d7ed17248a96bef096b082fb1bd0846106a0477"
+N01_LENGTH = 202
+
 PROFILE_DEFAULT = "default"
 PROFILE_COFFEE_P8 = "coffee_p8"
 PROFILE_COFFEE_FINAL_V5 = "coffee_final_v5"
+# FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01: N01(Full Story)。新規out_dir(記録なし・CLI指定なし・run stateなし)の
+# 既定profile(必須5 B': FAMILY_X_ROLE_STYLE_EN定数は書き換えず、既存のprofile機構[sha検証・固定記録・M2/M5/M3 Gate]を使う)。
+PROFILE_N01 = "n01"
+# Coffee用結合profile: Full Story=N01 + Std Preview/Comment1〜4=R2 + Adv KP英英解説=P3(必須6、明示CLI指定専用)。
+PROFILE_COFFEE_N01_R2_P3 = "coffee_n01_r2_p3"
+# `resolve_run_profile`が「記録なし・CLI指定なし・run stateなし」の新規out_dirへ解決するprofile。
+DEFAULT_NEW_RUN_PROFILE = PROFILE_N01
 
 # role名(Std JA Preview/Comment1〜4、Adv KP英英解説)
 ROLE_SUPPORT_JA = "SUPPORT_JA"
@@ -103,6 +123,12 @@ _FULL_STORY_OVERRIDE = {
     "std_append_slower_instruction": False,
 }
 
+_FULL_STORY_OVERRIDE_N01 = {
+    "text": N01_TEXT, "sha256": N01_SHA256,
+    # Std/Advとも逐語(減速指示非連結)+生成後6%減速(共有module側、無変更)。S1のStd逐語例外をN01でも踏襲。
+    "std_append_slower_instruction": False,
+}
+
 STYLE_PROFILES = {
     PROFILE_DEFAULT: {"overrides": {}},
     PROFILE_COFFEE_P8: {
@@ -116,7 +142,19 @@ STYLE_PROFILES = {
             ROLE_KP_EXPLANATION_EN: {"text": P3_TEXT, "sha256": P3_SHA256},
         },
     },
+    PROFILE_N01: {"overrides": {"FULL_STORY": dict(_FULL_STORY_OVERRIDE_N01)}},
+    # N01(Full Story) + R2(Std Preview/Comment1〜4) + P3(Adv KP英英解説)。Coffee(明示CLI)用。
+    PROFILE_COFFEE_N01_R2_P3: {
+        "overrides": {
+            "FULL_STORY": dict(_FULL_STORY_OVERRIDE_N01),
+            ROLE_SUPPORT_JA: {"text": R2_TEXT, "sha256": R2_SHA256},
+            ROLE_KP_EXPLANATION_EN: {"text": P3_TEXT, "sha256": P3_SHA256},
+        },
+    },
 }
+
+# roleごとのlevel情報を記録へ含めるprofile(V5以降の複数role profile)。
+_PROFILES_RECORDING_LEVELS = (PROFILE_COFFEE_FINAL_V5, PROFILE_COFFEE_N01_R2_P3)
 
 PROFILE_RECORD_RELPATH = "audit/style_profile.json"
 APPROVED_BACKEND = "speech_metadata_flash_lite"
@@ -137,7 +175,7 @@ def sha256_text(text: str) -> str:
 def _verify_constants() -> None:
     import er002_common as common
     for label, text, sha, length in (("P8", P8_TEXT, P8_SHA256, P8_LENGTH), ("R2", R2_TEXT, R2_SHA256, R2_LENGTH),
-                                     ("P3", P3_TEXT, P3_SHA256, P3_LENGTH)):
+                                     ("P3", P3_TEXT, P3_SHA256, P3_LENGTH), ("N01", N01_TEXT, N01_SHA256, N01_LENGTH)):
         if sha256_text(text) != sha or len(text) != length:
             raise StyleProfileStop(
                 f"[STOP][STYLE-PROFILE] {label}定数のsha256/長さが原典と一致しません"
@@ -215,7 +253,7 @@ def build_record(profile_id: str) -> dict:
         "roles": {role: {"sha256": o["sha256"], "length": len(o["text"]),
                           **({"std_append_slower_instruction": o["std_append_slower_instruction"]}
                              if "std_append_slower_instruction" in o else {}),
-                          **({"levels": list(ROLE_LEVELS[role])} if profile_id == PROFILE_COFFEE_FINAL_V5 else {})}
+                          **({"levels": list(ROLE_LEVELS[role])} if profile_id in _PROFILES_RECORDING_LEVELS else {})}
                   for role, o in profile["overrides"].items()},
         "std_verbatim_exception_id": STD_VERBATIM_EXCEPTION_ID,
         "created_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
@@ -260,12 +298,19 @@ def existing_run_artifacts(out_dir: str) -> list[str]:
     return found
 
 
-def resolve_run_profile(out_dir: str, cli_profile: str | None, write: bool = True) -> tuple[str, str]:
+def resolve_run_profile(out_dir: str, cli_profile: str | None, write: bool = True,
+                        tts_backend: str | None = None) -> tuple[str, str]:
     """run全体のprofileを決定する。戻り値は (profile_id, source)。
     - 固定記録がある場合は記録を正とする。CLI未指定なら記録を採用(resume)。CLI明示で
       記録と食い違う場合はSTOP(silentにdefaultへ戻らない/途中でprofileが混在しない)。
-    - 記録が無い場合: CLI未指定/default -> default(新規file/keyは書かない、S3)。
-      CLI coffee_p8: 既存run記録(M2)があればSTOP、無ければ記録を作成する。"""
+    - 記録が無い場合:
+        * CLI `default`(明示): 従来どおりdefault(新規file/keyは書かない、S3)。既存run(記録なし)のresume用。
+        * CLI未指定(FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01、必須5 B'): run stateが無い新規out_dirは
+          N01 profileへ解決し固定記録を作成する(Family Xの既定Full Story style=N01)。
+          既存run state(Review Lock/人間承認/TTS結果)があるout_dirは、Style混在を防ぐため課金前にSTOPする
+          (`--style-profile default`を明示してresume)。tts_backendがspeech_metadata_flash_lite以外
+          (legacy backend、Trial/regression用)の場合は従来どおりdefault(M5によりN01は適用できない)。
+        * CLI指定profile(coffee_p8 / n01 / coffee_n01_r2_p3等): 既存run記録(M2)があればSTOP、無ければ記録を作成する。"""
     if cli_profile is not None:
         get_profile(cli_profile)
     record = read_record(out_dir)
@@ -276,19 +321,32 @@ def resolve_run_profile(out_dir: str, cli_profile: str | None, write: bool = Tru
                 f"[STOP][USER_DECISION_REQUIRED] --style-profile={cli_profile!r} が{record_path(out_dir)}の"
                 f"固定記録({recorded!r})と食い違います。途中でprofileを変更できません。")
         return recorded, "record"
-    if cli_profile is None or cli_profile == PROFILE_DEFAULT:
+    if cli_profile == PROFILE_DEFAULT:
         return PROFILE_DEFAULT, "default_no_record"
     existing = existing_run_artifacts(out_dir)
-    if existing:
-        raise StyleProfileStop(
-            f"[STOP][M2][USER_DECISION_REQUIRED] --style-profile={cli_profile!r} は新しいout_dirでのみ実行できます"
-            f"(Review Lock/人間承認はtext shaのみで照合されStyleを区別しないため、既存run記録の混在を防ぐ)。"
-            f"既存の記録: {existing}。style_profile.jsonは作成していません。")
+    if cli_profile is None:
+        if tts_backend is not None and tts_backend != APPROVED_BACKEND:
+            return PROFILE_DEFAULT, "default_no_record_legacy_backend"
+        if existing:
+            raise StyleProfileStop(
+                f"[STOP][M2][USER_DECISION_REQUIRED] 既存のrun記録があるout_dirで、style profileの固定記録がありません"
+                f"(既定profile={DEFAULT_NEW_RUN_PROFILE!r}は新規out_dirにのみ適用されます。Review Lock/人間承認は"
+                f"text shaのみで照合されStyleを区別しないため、既存runへの途中適用はStyle混在を招きます)。"
+                f"既存の記録: {existing}。従来のstyleでresumeする場合は`--style-profile default`を明示してください。"
+                f"style_profile.jsonは作成していません。")
+        profile_id, source = DEFAULT_NEW_RUN_PROFILE, "default_new_run_n01"
+    else:
+        if existing:
+            raise StyleProfileStop(
+                f"[STOP][M2][USER_DECISION_REQUIRED] --style-profile={cli_profile!r} は新しいout_dirでのみ実行できます"
+                f"(Review Lock/人間承認はtext shaのみで照合されStyleを区別しないため、既存run記録の混在を防ぐ)。"
+                f"既存の記録: {existing}。style_profile.jsonは作成していません。")
+        profile_id, source = cli_profile, "cli_new_record"
     if write:
         os.makedirs(os.path.dirname(record_path(out_dir)), exist_ok=True)
         with open(record_path(out_dir), "w", encoding="utf-8") as f:
-            json.dump(build_record(cli_profile), f, ensure_ascii=False, indent=2)
-    return cli_profile, "cli_new_record"
+            json.dump(build_record(profile_id), f, ensure_ascii=False, indent=2)
+    return profile_id, source
 
 
 # ------------------------------------------------------------
@@ -450,7 +508,7 @@ def m3_assembly_gate(profile_id: str, level: str, results: dict, approvals: dict
 # ------------------------------------------------------------
 # S2: plan段階のPronunciation Ledger hit計算(読み取りのみ、web lookup無効、課金0)
 # ------------------------------------------------------------
-def compute_ledger_hits(parts: dict, tts_safe_fn=None) -> dict:
+def compute_ledger_hits(parts: dict, tts_safe_fn=None, full_story_text: str = P8_TEXT) -> dict:
     """Full Story各part(part1..3)について、現行Pronunciation Ledger(cache)のhintが
     P8へ追記されるかを事前計算する。augment_style_prefix_with_pronunciation を直接呼ぶ
     (resolve_and_augment_en_style_prefixの第1段と同一。低confidence再research[web]は呼ばない)。"""
@@ -461,11 +519,13 @@ def compute_ledger_hits(parts: dict, tts_safe_fn=None) -> dict:
         if text is None:
             continue
         safe = tts_safe_fn(text) if tts_safe_fn else text
-        augmented, hits = en_injection.augment_style_prefix_with_pronunciation(P8_TEXT, safe, min_confidence="medium")
+        augmented, hits = en_injection.augment_style_prefix_with_pronunciation(full_story_text, safe, min_confidence="medium")
         out[f"full_story_{key}"] = {
             "hint_applied": bool(hits),
             "cache_hits": [{"surface": h.get("surface"), "confidence": h.get("confidence")} for h in hits],
-            "p8_len": len(P8_TEXT), "augmented_len": len(augmented),
-            "augmented_startswith_p8": augmented.startswith(P8_TEXT),
+            "p8_len": len(full_story_text), "augmented_len": len(augmented),
+            # key名は後方互換(中身は適用中profileのFull Story style[P8またはN01]で判定)
+            "augmented_startswith_p8": augmented.startswith(full_story_text),
+            "augmented_startswith_full_story_style": augmented.startswith(full_story_text),
         }
     return out

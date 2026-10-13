@@ -430,7 +430,8 @@ class CostGuardAndArticleCostCapTests(unittest.TestCase):
             out_dir = os.path.join("er030_output", "kp_backend_telemetry_01", "_test_cost_guard")
             result = db_hybrid.run_db_hybrid_selection(
                 "A test sentence with enough words to pass basic checks.",
-                out_dir, "TEST_COST_GUARD", "A2_SUPPORT", process=None, dbs={})
+                out_dir, "TEST_COST_GUARD", "A2_SUPPORT", process=None, dbs={},
+                candidate_supply="m0")  # M2既定化(2026-10-13)後も、本testは従来供給(M0)の単体挙動を検証する
         self.assertEqual(result["status"], "KEY_WORDS_STRUCTURE_PASS")
         self.assertTrue(result["cost_guard_exceeded"])
         mocked_factory.assert_called_once()
@@ -486,7 +487,8 @@ class ModelContractViolationStopsWithoutFallbackTests(unittest.TestCase):
             with self.assertRaises(db_hybrid.DbHybridFailure) as ctx:
                 db_hybrid.run_db_hybrid_selection(
                     "A test sentence with enough words to pass basic checks.",
-                    out_dir, "TEST_MISMATCH", "A2_SUPPORT", process=None, dbs={})
+                    out_dir, "TEST_MISMATCH", "A2_SUPPORT", process=None, dbs={},
+                    candidate_supply="m0")  # M2既定化後も本testは従来供給(M0)での契約違反STOPを検証する
         self.assertEqual(ctx.exception.reason_code, "MODEL_CONTRACT_VIOLATION")
         self.assertFalse(ctx.exception.fallback_allowed)
 

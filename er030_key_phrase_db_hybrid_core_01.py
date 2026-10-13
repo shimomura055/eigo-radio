@@ -491,7 +491,11 @@ def run_stage1_and_shortlist(
     context_result = attach_compact_context(shortlist_info["shortlist"], stage1["sentence_units"])
     shortlist_info["shortlist"] = context_result["shortlist"]
     shortlist_info["sentence_reference"] = context_result["sentence_reference"]
-    return {"stage1": stage1, "shortlist_info": shortlist_info}
+    # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01(2026-10-13、Opus必須1・Fable判断): 追記のみの共有module変更。
+    # Wiktionary multiword照会の生の結果(候補surface -> bool)を`results`として返す(M2供給が拡大照会
+    # 1回の結果から「現行60窓」のdemoted_allowを純関数で再計算するために使う)。既存の戻り値key
+    # (`stage1`/`shortlist_info`)は不変(testで固定)。
+    return {"stage1": stage1, "shortlist_info": shortlist_info, "results": mw_result["results"]}
 
 
 @lru_cache(maxsize=1)

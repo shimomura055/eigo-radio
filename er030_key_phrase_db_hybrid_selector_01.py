@@ -47,6 +47,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -59,6 +60,7 @@ import er003_key_words_production as prod
 import er006_model_routing_contract_01 as routing
 import er009_n1_routing_governance_10_actual_model_cost as pricing
 import er030_key_phrase_db_hybrid_core_01 as core
+import er030_key_phrase_db_hybrid_m2_supply_01 as m2_supply
 import er030_key_phrase_db_hybrid_source_reference_contract_01 as src_ref_contract
 
 # Trial-04実測(12本文合計¥12.8159、最大¥2.0284/記事)の約2.5倍を安全域と
@@ -384,10 +386,38 @@ def _verify_source_spans_against_raw_article(items: list, article_text: str) -> 
     return missing
 
 
+def build_production_selection_message(title: str, shortlist_info: dict, static_instructions: str,
+                                       family_profile: str = "family_x", containment_pairs: list = None) -> dict:
+    """候補ID付与 -> source_span整合補正 -> 選定Promptメッセージ組立(Production経路の唯一の実装)。
+    `run_db_hybrid_selection`と、Parity Gate test(Trial M2P0 Promptとのsha一致、Opus必須3)が同じ関数を通る。
+    `containment_pairs`指定時(M2)は、span補正後の`shortlist_with_ids`から注釈(contains:/contained_in:/
+    fragment_risk)のcandidate_id対応表を作る(補正で除外された候補への参照は捨てる)。"""
+    ids_result = src_ref_contract.assign_candidate_ids(shortlist_info["shortlist"])
+    shortlist_with_ids = ids_result["shortlist_with_ids"]
+    # SF-1(b)(Opus L2所見、修正1回目、2026-09-28): API呼び出し前にsource_span
+    # 整合性を機械監査・補正する(surface_form/context_sentence_idの独立
+    # 決定に起因する不整合の是正、詳細はsrc_ref_contract側docstring参照)。
+    span_consistency_result = src_ref_contract.correct_shortlist_source_span_consistency(
+        shortlist_with_ids, shortlist_info["sentence_reference"])
+    shortlist_with_ids = span_consistency_result["shortlist_with_ids"]
+    evidence_fn = None
+    if containment_pairs is not None:
+        evidence_fn = m2_supply.make_annotating_evidence_fn(
+            containment_pairs, shortlist_with_ids, _compact_evidence_string)
+    message = src_ref_contract.build_lightweight_user_message(
+        title, shortlist_with_ids, shortlist_info["sentence_reference"], static_instructions,
+        family_profile=family_profile, evidence_fn=evidence_fn)
+    return {"message": message, "shortlist_with_ids": shortlist_with_ids,
+            "id_to_candidate": span_consistency_result["id_to_candidate"],
+            "candidate_ids": span_consistency_result["candidate_ids"],
+            "span_consistency_result": span_consistency_result}
+
+
 def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, source_level: str,
                              process: str = None, diagnostic_note: str = None,
                              dbs: dict = None, cost_guard_jpy: float = None,
-                             shortlist_cache: dict = None, family_profile: str = "family_x") -> dict:
+                             shortlist_cache: dict = None, candidate_supply: str = "m2",
+                             family_profile: str = "family_x") -> dict:
     """DB Hybrid方式でKey Phrase選定gateを1回実行する。戻り値は既存
     `run_key_phrase_selection`(Strategy L全文方式)と同じ最小契約
     (`status`/`parsed`/`original_items`)を満たし、追加でtelemetry用の
@@ -437,6 +467,15 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
     (詳細はTrial-06 REPORT参照)。既存Production validator
     (`p2g.validate_min_unit_selection`)・canonicalization・Source
     Consistency Gateはいずれも無変更のまま通す。"""
+    # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01(2026-10-13、ユーザー正式決定M2P0=APPROVED_FOR_PRODUCTION):
+    # `candidate_supply`(既定"m2"): Family Xの正式候補供給。"m2"=M2(`er030_key_phrase_db_hybrid_m2_supply_01`、
+    # M1[照会予算n2+100・precision guard・U2・U3]+(a)(b2)予約枠cap3)、"m0"=従来の候補供給
+    # (`core.run_stage1_and_shortlist`、回帰・切戻し用。**自動fallback先としては使わない**)。
+    # M2の構築で例外が出た場合はM0へ黙って落とさず、通信失敗=`SELECTOR_EXCEPTION`・M2内部例外=
+    # `M2_SUPPLY_EXCEPTION`として`DbHybridFailure`を送出する(既存のStrategy L fallbackに乗る。
+    # M2未発火はtelemetryの`kp_supply`欠落/`fallback_triggered`で判別できる)。
+    if candidate_supply not in ("m2", "m0"):
+        raise ValueError(f"candidate_supplyは'm2'または'm0'のみ: {candidate_supply!r}")
     # SF-7(Opus L2所見、修正1回目、2026-09-28): family_profileの妥当性を
     # 冒頭(Stage1/Wiktionary lookup前)でfail-closed確認する。未サポート値
     # (例: "family_z")は、Stage1候補生成・Wiktionary API呼び出し等の
@@ -447,12 +486,32 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
     dbs = dbs if dbs is not None else core.load_group1_dbs()
     title = extract_article_title(article_text)
 
-    cache_key = _shortlist_cache_key(article_text) if shortlist_cache is not None else None
+    # M2: shortlist_cacheのkeyに候補供給を含める(retryで再照会せず、pairs/m2メタ=注釈も同一に保つ)。
+    # m0のkeyは従来どおり(article_text sha256のみ)。
+    cache_key = None
+    if shortlist_cache is not None:
+        cache_key = _shortlist_cache_key(article_text)
+        if candidate_supply == "m2":
+            cache_key = cache_key + ":m2"
     if cache_key is not None and cache_key in shortlist_cache:
         s1r = shortlist_cache[cache_key]
     else:
         try:
-            s1r = core.run_stage1_and_shortlist(article_text, dbs, title)
+            if candidate_supply == "m2":
+                s1r = m2_supply.build_m2_stage1_and_shortlist(article_text, dbs, title)
+            else:
+                s1r = core.run_stage1_and_shortlist(article_text, dbs, title)
+        except m2_supply.M2SupplyInternalError as e:
+            # 必須4: M2内部例外を通信失敗と区別して記録する(Strategy L fallbackには乗るが、reason_codeは別)。
+            raise DbHybridFailure(
+                "M2_SUPPLY_EXCEPTION", f"M2候補供給の内部処理に失敗しました: {e}",
+                telemetry={"reason_code": "M2_SUPPLY_EXCEPTION", "error": str(e),
+                           "kp_supply_attempted": "m2"}) from e
+        except m2_supply.M2LookupFailure as e:
+            raise DbHybridFailure(
+                "SELECTOR_EXCEPTION", f"stage1/shortlist構築(Wiktionary照会)に失敗しました: {e}",
+                telemetry={"reason_code": "SELECTOR_EXCEPTION", "error": str(e),
+                           "kp_supply_attempted": "m2"}) from e
         except Exception as e:
             raise DbHybridFailure(
                 "SELECTOR_EXCEPTION", f"stage1/shortlist構築に失敗しました: {type(e).__name__}: {e}",
@@ -491,23 +550,14 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
     # 候補データから決定論的に復元する(旧来の自由記述契約で発生していた
     # 表示delimiter付き引用符の誤コピー等の書式ゆらぎが構造的に発生しなく
     # なる、詳細はTrial-06 REPORT参照)。
-    ids_result = src_ref_contract.assign_candidate_ids(shortlist_info["shortlist"])
-    shortlist_with_ids = ids_result["shortlist_with_ids"]
-    id_to_candidate = ids_result["id_to_candidate"]
-    candidate_ids = ids_result["candidate_ids"]
-
-    # SF-1(b)(Opus L2所見、修正1回目、2026-09-28): API呼び出し前にsource_span
-    # 整合性を機械監査・補正する(surface_form/context_sentence_idの独立
-    # 決定に起因する不整合の是正、詳細はsrc_ref_contract側docstring参照)。
-    span_consistency_result = src_ref_contract.correct_shortlist_source_span_consistency(
-        shortlist_with_ids, shortlist_info["sentence_reference"])
-    shortlist_with_ids = span_consistency_result["shortlist_with_ids"]
-    id_to_candidate = span_consistency_result["id_to_candidate"]
-    candidate_ids = span_consistency_result["candidate_ids"]
-
-    lightweight_message = src_ref_contract.build_lightweight_user_message(
-        title, shortlist_with_ids, shortlist_info["sentence_reference"], static_instructions,
-        family_profile=family_profile)
+    built = build_production_selection_message(
+        title, shortlist_info, static_instructions, family_profile,
+        containment_pairs=(s1r.get("containment_pairs") if candidate_supply == "m2" else None))
+    shortlist_with_ids = built["shortlist_with_ids"]
+    id_to_candidate = built["id_to_candidate"]
+    candidate_ids = built["candidate_ids"]
+    span_consistency_result = built["span_consistency_result"]
+    lightweight_message = built["message"]
     if diagnostic_note:
         lightweight_message = lightweight_message + "\n\n" + diagnostic_note
     assert_no_full_article_body(lightweight_message, article_text)
@@ -577,6 +627,7 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
     runtime_metadata = {
         "article_id": article_id, "strategy_id": prod.STANDARD_STRATEGY_ID, "source_level": source_level,
         "kp_backend": "db_hybrid", "final_status": status, "model_id": model_id, "response_id": response_id,
+        "kp_supply": candidate_supply if candidate_supply == "m2" else None,
         "cost_jpy": round(cost_jpy, 4), "cost_guard_exceeded": cost_guard_exceeded, "usage": usage,
         "selection_contract": "4plus1_v1", "role_counts": role_counts,
         "shortlist_total_count": shortlist_count,
@@ -680,10 +731,37 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
             "candidates": auxiliary_candidates,
         }, f, ensure_ascii=False, indent=2)
 
+    m2_report = None
+    if candidate_supply == "m2":
+        # runtime evidence用(M2の発火・予約枠・fragment_risk付き候補が最終KPに選ばれたか)。
+        meta = dict(s1r.get("m2_meta") or {})
+        selected_rows = []
+        for it in parsed["items"]:
+            if not isinstance(it, dict):
+                continue
+            cand = id_to_candidate.get(it.get("source_candidate_id")) or {}
+            selected_rows.append({
+                "rank": it.get("rank"), "key_phrase_role": it.get("key_phrase_role"),
+                "source_candidate_id": it.get("source_candidate_id"), "display_phrase": it.get("display_phrase"),
+                "candidate_canonical": cand.get("canonical_form"), "evidence": cand.get("evidence"),
+                "reserved_slot_candidate": cand.get("canonical_form") in (meta.get("reserved") or []),
+                "fragment_risk": bool(cand.get("fragment_risk"))})
+        m2_report = {
+            "kp_supply": "m2", "m2_meta": meta,
+            "selected_reserved_slot_candidates": [r["candidate_canonical"] for r in selected_rows if r["reserved_slot_candidate"]],
+            "selected_fragment_risk_candidates": [r["candidate_canonical"] for r in selected_rows if r["fragment_risk"]],
+            "selected_rows": selected_rows,
+            "selector_message_sha256": hashlib.sha256(lightweight_message.encode("utf-8")).hexdigest(),
+        }
+        with open(os.path.join(out_dir, "m2_supply_report.json"), "w", encoding="utf-8") as f:
+            json.dump(m2_report, f, ensure_ascii=False, indent=2)
+
     result = {
         "status": status, "parsed": parsed, "original_items": parsed["items"],
         "model_id": model_id, "response_id": response_id, "cost_jpy": round(cost_jpy, 4),
         "cost_guard_exceeded": cost_guard_exceeded,
+        "kp_supply": candidate_supply if candidate_supply == "m2" else None,
+        "m2_report": m2_report,
         "shortlist_total_count": shortlist_count, "kp_backend": "db_hybrid",
         "source_reference_contract": src_ref_contract.SOURCE_REFERENCE_CONTRACT_ID,
         "selection_contract": "4plus1_v1", "role_counts": role_counts,

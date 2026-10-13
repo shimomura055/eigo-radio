@@ -267,11 +267,18 @@ class RunProfileResolutionTests(unittest.TestCase):
         shutil.rmtree(self.root, ignore_errors=True)
 
     def test_no_cli_no_record_is_default_and_writes_nothing(self):
-        pid, src = sp.resolve_run_profile(self.out, None)
-        self.assertEqual((pid, src), ("default", "default_no_record"))
-        self.assertFalse(os.path.exists(self.out))
+        # 2026-10-13 FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01(Opus必須5 B'): 期待値を意図的に更新。
+        # 旧: CLI未指定・記録なし -> default(何も書かない)。新: 新規out_dirはN01 profileへ解決し固定記録を作る。
+        # `--style-profile default`を明示した場合は従来どおりdefault(何も書かない)。
+        pid, src = sp.resolve_run_profile(self.out, None, write=False)
+        self.assertEqual((pid, src), ("n01", "default_new_run_n01"))
+        self.assertFalse(os.path.exists(self.out))  # write=Falseでは書かない
         pid, _ = sp.resolve_run_profile(self.out, "default")
         self.assertEqual(pid, "default")
+        self.assertFalse(os.path.exists(self.out))
+        # legacy backend(Trial/regression用)では従来どおりdefault(N01はspeech_metadata_flash_lite必須、M5)
+        pid, src = sp.resolve_run_profile(self.out, None, tts_backend="structured_separation")
+        self.assertEqual((pid, src), ("default", "default_no_record_legacy_backend"))
         self.assertFalse(os.path.exists(self.out))
 
     def test_new_out_dir_coffee_p8_writes_record_with_overridden_roles(self):
@@ -310,8 +317,12 @@ class RunProfileResolutionTests(unittest.TestCase):
             with self.assertRaises(sp.StyleProfileStop, msg=rel):
                 sp.resolve_run_profile(out, "coffee_p8")
             self.assertFalse(os.path.exists(sp.record_path(out)), rel)
-            # default / 未指定は従来どおり通る(既存run不変)
-            self.assertEqual(sp.resolve_run_profile(out, None)[0], "default")
+            # 2026-10-13(Opus必須5 B'): 既存run state(記録なし)でCLI未指定は課金前にSTOP(N01へ途中適用しない)。
+            # `--style-profile default`を明示すれば従来どおり通る(既存run不変)。
+            with self.assertRaises(sp.StyleProfileStop, msg=rel):
+                sp.resolve_run_profile(out, None)
+            self.assertFalse(os.path.exists(sp.record_path(out)), rel)
+            self.assertEqual(sp.resolve_run_profile(out, "default")[0], "default")
 
     def test_m5_in_main_flow_helper(self):
         with self.assertRaises(sp.StyleProfileStop):

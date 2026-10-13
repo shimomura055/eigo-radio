@@ -443,6 +443,21 @@ def _role_counts_from_items(items):
     return dict(Counter(it.get("key_phrase_role") for it in items if isinstance(it, dict)))
 
 
+def _m2_summary_for_telemetry(m2_report):
+    """M2供給のtelemetry用要約(件数・予約枠・照会秒数)。M2未使用ならNone。"""
+    if not m2_report:
+        return None
+    meta = m2_report.get("m2_meta") or {}
+    return {"n_candidates": meta.get("n_candidates"), "reserved": meta.get("reserved"),
+            "overflow_beyond_cap": meta.get("overflow_beyond_cap"),
+            "fragment_risk_candidates": meta.get("fragment_risk_candidates"),
+            "selected_reserved_slot_candidates": m2_report.get("selected_reserved_slot_candidates"),
+            "selected_fragment_risk_candidates": m2_report.get("selected_fragment_risk_candidates"),
+            "m2_lookup_seconds": meta.get("m2_lookup_seconds"),
+            "wiktionary_multiword_lookup": meta.get("wiktionary_multiword_lookup"),
+            "selector_message_sha256": m2_report.get("selector_message_sha256")}
+
+
 def _log_kp_backend_telemetry(article_id: str, source_level: str, requested_backend: str,
                                backend_used: str, final_status, fallback_triggered: bool,
                                fallback_reason_code: str = None, model_id: str = None,
@@ -566,7 +581,10 @@ def _run_key_phrase_selection_db_hybrid_with_fallback(
         # ユーザー既決事項): topic欠損/単独無効をbackup_itemで機械的に
         # 補完したかの観測用フラグ・理由。
         topic_slot_filled_by_backup=result.get("topic_slot_filled_by_backup"),
-        backup_substitution_reason=result.get("backup_substitution_reason"))
+        backup_substitution_reason=result.get("backup_substitution_reason"),
+        # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01(2026-10-13): 候補供給(M2)の発火記録。追記のみ。
+        kp_supply=result.get("kp_supply"),
+        m2_summary=_m2_summary_for_telemetry(result.get("m2_report")))
     result["kp_backend_used"] = "db_hybrid"
     _merge_kp_backend_metadata_into_runtime_file(out_dir, {
         "kp_backend": "db_hybrid", "kp_backend_used": "db_hybrid",
@@ -582,6 +600,8 @@ def _run_key_phrase_selection_db_hybrid_with_fallback(
         "kp_backend_auxiliary_candidate_count": result.get("auxiliary_candidate_count"),
         "kp_backend_topic_slot_filled_by_backup": result.get("topic_slot_filled_by_backup"),
         "kp_backend_backup_substitution_reason": result.get("backup_substitution_reason"),
+        "kp_backend_kp_supply": result.get("kp_supply"),
+        "kp_backend_m2_report": result.get("m2_report"),
     })
     return result
 
