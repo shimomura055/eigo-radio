@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01 委任_01: 一般化判定方式の Trial 隔離プロトタイプ + 既存データ read-only 検証。
+"""ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01 委任_01/_02(_02=Opus条件A必須修正1〜4・推奨を反映した改訂版): 一般化判定方式の Trial 隔離プロトタイプ + 既存データ read-only 検証。
 
 位置づけ(重要):
   * 本ファイルは DEV/Trial 専用。Production 経路(er006/er011/er003/er020/er021/er025/er026/er062/er063)へは
@@ -178,6 +178,59 @@ def expected_spellings(c: str) -> set:
     return e
 
 
+# --- 委任_02(Opus必須1): 基準を「綴り」から「音素」へ ---------------------------------------------
+# 受理に使う同音綴り候補 cand は、canonical 語 c の音素列から Pattern A/B/C が許す形(語末 /S/ /Z/ を 1 つだけ除く、
+# -ed の語末 /T/ /D/ を除く、-s を足す)に音素レベルで一致する場合のみ採る。c が CMU 未収録(OOV)の場合のみ従来の
+# 語幹綴り基準へ戻す(USER_DECISION_REQUIRED(4)。G2P は未導入のため OOV の音素は推定しない)。
+BASIS_PHONEME = "phoneme"
+BASIS_SPELLING = "spelling"  # 委任_01 の旧基準(比較・再現用のみ)
+ALLOWED_VARIANT_CLASSES = {"EXACT_MATCH", "NORMALIZED_MATCH", "CONNECTED_SPEECH_ACCEPT", "CONNECTED_SPEECH_PASS_WITH_WARNING",
+                           "CONNECTED_SPEECH_RESEGMENTATION"}  # 委任_02(Opus必須2): 受理理由の限定(純粋同音+Pattern A/B/C のみ)
+_SIB = ("S", "Z")
+
+
+def phone_variants(word: str, primary_only: bool = False) -> list:
+    vs = _cmu_variants(word.strip("'"))
+    return vs[:1] if primary_only else vs
+
+
+def derived_phone_forms(c: str, primary_only: bool) -> dict:
+    """canonical 語 c の音素列から、承認済み Pattern(厳密一致/A/B/C)が受理側として期待する音素列を導く。
+    戻り値: {音素列tuple: 規則名}。c が CMU 未収録なら空(=OOV、呼出側が綴り基準へ戻す)。"""
+    out = {}
+    cl = c.lower().strip("'")
+    for v in phone_variants(cl, primary_only):
+        out.setdefault(v, "exact")
+        if v and v[-1] in _SIB:
+            out.setdefault(v[:-1], "drop_final_S_or_Z")  # Pattern A(1 つだけ除く)
+        if cl.endswith("ed"):
+            if v and v[-1] in ("T", "D"):
+                out.setdefault(v[:-1], "drop_ed")  # Pattern B
+            if len(v) >= 2 and v[-2:] == ("IH", "D"):
+                out.setdefault(v[:-2], "drop_ed")
+        out.setdefault(v + ("S",), "add_s")  # Pattern C
+        out.setdefault(v + ("Z",), "add_s")
+        out.setdefault(v + ("IH", "Z"), "add_s")
+    return out
+
+
+def phoneme_ok(c: str, cand: str, entity_like: bool) -> tuple:
+    """(ok, basis, rule)。基準=音素。c が OOV の場合のみ綴り基準へ戻す(basis='oov_spelling_fallback')。"""
+    forms = derived_phone_forms(c, entity_like)
+    if not forms:
+        return (cand in expected_spellings(c)), "oov_spelling_fallback", None
+    for v in phone_variants(cand, entity_like):
+        if v in forms:
+            return True, "phoneme", forms[v]
+    return False, "phoneme", None
+
+
+def normalize_possessive(t: str) -> str:
+    """所有格 's を s へ(Mello's -> Mellos)。ASR/canonical 両方に同じ関数を適用する(委任_02 推奨)。"""
+    t = _norm_text(t)
+    return re.sub(r"(?<=[A-Za-z])'s\b", "s", t)
+
+
 _WORD = re.compile(r"[A-Za-z0-9']+")
 
 
@@ -185,7 +238,7 @@ def _norm_text(t: str) -> str:
     return (t or "").replace("’", "'")
 
 
-def m1_candidates(canonical: str, asr: str, cls) -> list:
+def m1_candidates(canonical: str, asr: str, cls, basis: str = BASIS_PHONEME) -> list:
     """Production が『フラグした差分』(cls.protected.content_word_diffs)に含まれる ASR トークンだけを対象に、
     (token_index, 元綴り, 置換綴り, 根拠, 対応 canonical 語) を列挙する。無関係な語への副作用を避けるため、
     フラグされていない差分語(機能語・句読点由来など)には置換を適用しない。"""
@@ -210,10 +263,21 @@ def m1_candidates(canonical: str, asr: str, cls) -> list:
                 continue
             cls_words, prov = homophone_class(aw[j], primary_only=flagged[aw[j]])
             for cand in cls_words:
-                if cand in exp:
+                if cand not in exp:
+                    continue
+                if basis == BASIS_SPELLING:
                     cc = next((c for c in cw[i1:i2] if cand in expected_spellings(c)), cw[i1])
                     out.append({"asr_index": j, "from": aw[j], "to": cand, "provenance": prov, "canonical_word": cc,
-                                "entity_like": flagged[aw[j]]})
+                                "entity_like": flagged[aw[j]], "basis": "spelling_legacy", "phoneme_rule": None})
+                    continue
+                for c in cw[i1:i2]:
+                    if cand not in expected_spellings(c):
+                        continue
+                    ok, bs, rule = phoneme_ok(c, cand, flagged[aw[j]])
+                    if ok:
+                        out.append({"asr_index": j, "from": aw[j], "to": cand, "provenance": prov, "canonical_word": c,
+                                    "entity_like": flagged[aw[j]], "basis": bs, "phoneme_rule": rule})
+                        break
     return out
 
 
@@ -237,10 +301,25 @@ def _replace_tokens(asr: str, repl: dict) -> str:
     return "".join(pieces)
 
 
-def m1_try(canonical: str, asr: str, cls, max_combo: int = 64) -> dict | None:
-    """M1 本体。置換候補(複数の差分トークンは直積、上限 max_combo)を Production 既存判定へ流し、
-    既存判定が PASS にする組合せが 1 つでもあれば返す。置換後も Production が通さなければ None(新基準は作らない)。"""
-    cands = m1_candidates(canonical, asr, cls)
+def _f1_guard_ok(canonical: str, asr2: str, subs_idx: set) -> bool:
+    """F1 対策(委任_02): 置換後の文と canonical の全差分領域が、M1 が置換したトークンを含む領域に限られること。
+    (Pattern A は最初の食い違い語しか見ない=F1。置換後の文に置換と無関係な別の差分が残る場合は受理しない。)"""
+    cw, aw = P.tokens(canonical), P.tokens(asr2)
+    sm = difflib.SequenceMatcher(a=cw, b=aw, autojunk=False)
+    for tag, i1, i2, j1, j2 in sm.get_opcodes():
+        if tag == "equal":
+            continue
+        if not any(j1 <= k < j2 for k in subs_idx):
+            return False
+    return True
+
+
+def m1_try(canonical: str, asr: str, cls, max_combo: int = 64, basis: str = BASIS_PHONEME,
+           restrict_reason: bool = True, f1_guard: bool = True) -> dict | None:
+    """M1 本体(委任_02 改訂)。置換候補(複数の差分トークンは直積、上限 max_combo)を Production 既存判定へ流し、
+    既存判定が PASS にし、かつ受理理由が ALLOWED_VARIANT_CLASSES(純粋同音+Pattern A/B/C)の組合せがあれば返す。
+    restrict_reason=False / basis=BASIS_SPELLING は委任_01 の旧挙動の再現・比較用(Production 採用案ではない)。"""
+    cands = m1_candidates(canonical, asr, cls, basis=basis)
     if not cands:
         return None
     by_idx = collections.defaultdict(list)
@@ -253,16 +332,22 @@ def m1_try(canonical: str, asr: str, cls, max_combo: int = 64) -> dict | None:
         repl = {c["asr_index"]: c["to"] for c in combo}
         asr2 = _replace_tokens(asr, repl)
         pj = prod_judge(canonical, asr2)
-        # 保守基準の維持: 変種文の PASS 根拠が『固有名詞らしき差分に対する HOMOPHONE_EQUIVALENT(CMU いずれかの変種一致)』
-        # の場合は M1 の受理にしない(Production は固有名詞に代表発音一致のみを要求する設計[Tse の実例]。
-        # M1 経由で緩い経路を通さない)。説明付き HR 候補(M2)へ落ちる。
+        # 保守基準の維持: 固有名詞らしき差分への HOMOPHONE_EQUIVALENT(CMU いずれかの変種一致)経路は受理根拠にしない(F2)
         if pj["pass"] and pj["pass_basis"] == "HOMOPHONE_EQUIVALENT" and any(
                 d.get("entity_like") for d in pj["cls"].protected.content_word_diffs):
             continue
-        if pj["pass"]:
-            return {"normalized_asr": asr2, "subs": [{k: c[k] for k in ("from", "to", "provenance", "canonical_word", "entity_like")} for c in combo],
-                    "variant_classification": pj["classification"], "variant_pass_basis": pj["pass_basis"],
-                    "cs_rule": (pj["cls"].connected_speech_info or {}).get("rule") if getattr(pj["cls"], "connected_speech_info", None) else None}
+        if not pj["pass"]:
+            continue
+        if restrict_reason and pj["classification"] not in ALLOWED_VARIANT_CLASSES:
+            continue  # 必須2: HIGH_SIMILARITY_SAFE / NUMERIC_EQUIVALENCE_MATCH / HOMOPHONE_EQUIVALENT 等を理由とする受理は除く
+        if f1_guard and not _f1_guard_ok(canonical, asr2, set(repl)):
+            continue
+        return {"normalized_asr": asr2, "subs": [{k: c.get(k) for k in ("from", "to", "provenance", "canonical_word", "entity_like", "basis", "phoneme_rule")} for c in combo],
+                "variant_classification": pj["classification"], "variant_pass_basis": pj["pass_basis"],
+                "cs_rule": (pj["cls"].connected_speech_info or {}).get("rule") if getattr(pj["cls"], "connected_speech_info", None) else None,
+                "pass_with_warning": True,
+                "audit_trail": {"original_asr": asr, "normalized_asr": asr2, "acceptance_reason": pj["classification"],
+                                "subs": [(c["from"], c["to"], c.get("basis"), c.get("phoneme_rule")) for c in combo]}}
     return None
 
 
@@ -340,7 +425,20 @@ def design_judge(canonical: str, asr: str) -> dict:
         return dict(base, verdict="DEFER_PROTECTED_FAIL")
     # M1 は Production が『固有名詞/同音語のみの差で UNCERTAIN』とした場合に限る(TRUE_CONTENT_MISMATCH=内容語の差は対象外。
     # それは Eq Layer の入口条件[OPEN-122(4)]の別問題であり、M1 で覆い隠さない)。
-    m1 = m1_try(canonical, asr, pj["cls"]) if pj["classification"] == "ASR_VALIDATION_UNCERTAIN" else None
+    m1 = None
+    if pj["classification"] == "ASR_VALIDATION_UNCERTAIN":
+        m1 = m1_try(canonical, asr, pj["cls"])
+        if m1 is None:
+            cn, an = normalize_possessive(canonical), normalize_possessive(asr)
+            if (cn, an) != (_norm_text(canonical), _norm_text(asr)):  # 所有格のみ正規化して再試行(PASS_WITH_WARNING+audit trail)
+                pj2 = prod_judge(cn, an)
+                if (not pj2["pass"]) and pj2["classification"] == "ASR_VALIDATION_UNCERTAIN":
+                    m1 = m1_try(cn, an, pj2["cls"])
+                    if m1:
+                        m1["possessive_normalized"] = True
+                        m1["audit_trail"]["possessive_normalized"] = True
+                        m1["audit_trail"]["original_asr"] = asr  # 正規化前の綴りを保持(監査用)
+                        m1["audit_trail"]["possessive_normalized_asr"] = an
     if m1:
         return dict(base, verdict="ACCEPT_M1", m1=m1)
     expl = P.explain_diff(canonical, asr)
@@ -756,7 +854,7 @@ def tail_detection_by_target(evals: list) -> dict:
     return res
 
 
-def write_report(out_dir: str, S: dict, evals: list) -> str:
+def write_report(out_dir: str, S: dict, evals: list, rev: str = "01") -> str:
     L = []
     A = L.append
     A("# OFFLINE_EVAL_01: 発音同等性に基づく一般化ASR判定(Trial隔離プロトタイプ)の既存データ read-only 評価\n")
@@ -873,12 +971,12 @@ def write_report(out_dir: str, S: dict, evals: list) -> str:
             A(f"| {r['name']} | {', '.join(r['native_stems'])} | {', '.join(r['m1_extra_spellings'])} |")
     A("\n## 6. State guard\n")
     A("`state_guard_01.json` 参照: 実行前後で Production state 9ファイル(Melos run_e2e_02 a2/b1b の review_lock_state・tts_generation_results、Master Store manifest、er021 telemetry、HR queue、attempt_history、Pronunciation ledger)の sha256/行数が不変: " + str(all(S["state_guard"]["unchanged"].values())))
-    path = os.path.join(out_dir, "OFFLINE_EVAL_01.md")
+    path = os.path.join(out_dir, f"OFFLINE_EVAL_{rev}_auto.md" if rev != "01" else "OFFLINE_EVAL_01.md")
     open(path, "w", encoding="utf-8").write("\n".join(L) + "\n")
     return path
 
 
-def run(out_dir: str, no_telemetry: bool = True) -> dict:
+def run(out_dir: str, no_telemetry: bool = True, rev: str = "01") -> dict:
     assert no_telemetry, "telemetry 追記は許可されない"
     os.makedirs(out_dir, exist_ok=True)
     before = guard.snapshot()
@@ -903,9 +1001,9 @@ def run(out_dir: str, no_telemetry: bool = True) -> dict:
     S["tail_calibration"] = tail_calibration()
     S["tail_detection_by_target"] = tail_detection_by_target(evals)
     S["tail_params"] = {"threshold_db": TAIL_THRESHOLD_DB, "tail_ms": TAIL_MS}
-    json.dump({"summary": S, "records": evals}, open(os.path.join(out_dir, "offline_eval_01.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
-    write_report(out_dir, S, evals)
-    json.dump(S["state_guard"], open(os.path.join(out_dir, "state_guard_01.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump({"summary": S, "records": evals}, open(os.path.join(out_dir, f"offline_eval_{rev}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
+    write_report(out_dir, S, evals, rev)
+    json.dump(S["state_guard"], open(os.path.join(out_dir, f"state_guard_{rev}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     return {"summary": S, "records": evals}
 
 
@@ -913,7 +1011,8 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--out-dir", default=OUT_DEFAULT)
     ap.add_argument("--no-telemetry", action="store_true", required=True)
+    ap.add_argument("--revision", default="01")
     args = ap.parse_args()
-    res = run(args.out_dir, no_telemetry=True)
+    res = run(args.out_dir, no_telemetry=True, rev=args.revision)
     print(json.dumps({k: v for k, v in res["summary"].items() if k != "state_guard"}, ensure_ascii=False, indent=1)[:6000])
     print("state_guard unchanged:", res["summary"]["state_guard"]["unchanged"])

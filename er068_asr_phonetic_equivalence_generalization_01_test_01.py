@@ -64,7 +64,8 @@ class M1Behavior(unittest.TestCase):
     def test_not_melos_specific_other_names_follow_same_rule(self):
         # Melos以外(CMU収録stemを持つ名前)にも同じ機構で効く。綴りの個別登録はしていない。
         self.assertEqual(jd("Carlos said.", "Karlow said."), "ACCEPT_M1")
-        self.assertEqual(jd("Giles said.", "Guile said."), "ACCEPT_M1")
+        # 委任_02(Opus必須1): Giles/Guile は語頭子音が違う(JH vs G)=音素基準で受理しない(委任_01の綴り基準では受理面にあった)
+        self.assertNotEqual(jd("Giles said.", "Guile said."), "ACCEPT_M1")
         self.assertEqual(jd("Lucas said.", "Luka said."), "ACCEPT_M1")
 
     def test_stem_not_in_cmu_is_not_guessed(self):
@@ -158,7 +159,7 @@ class SlowdownAndRouteInvariance(unittest.TestCase):
 class NoHardcodeAndIsolation(unittest.TestCase):
     def test_no_melos_literals_in_mechanism_source(self):
         for fn in (O.homophone_class, O.expected_spellings, O.m1_candidates, O.m1_try, O.design_judge, O.v2_verdict, O.tail_integrity,
-                   O._replace_tokens):
+                   O._replace_tokens, O.phoneme_ok, O.derived_phone_forms, O.normalize_possessive, O._f1_guard_ok):
             src = inspect.getsource(fn).lower()
             code = "\n".join(l for l in src.splitlines() if not l.strip().startswith("#"))
             code = re.sub(r'""".*?"""', "", code, flags=re.S)
@@ -192,6 +193,79 @@ class NoHardcodeAndIsolation(unittest.TestCase):
         names_with_extra = [x["name"] for x in r["rows"] if x["m1_extra_spellings"]]
         self.assertGreater(len(names_with_extra), 5)  # Melos以外にも効く(=Melos専用ではない)
         self.assertTrue(any(n != "Melos" for n in names_with_extra))
+
+
+class Delegation02PhonemeBasis(unittest.TestCase):
+    """委任_02: Opus条件A必須修正1(音素基準)・必須2(受理理由の限定)・推奨(所有格)・F1の回帰test。"""
+
+    def test_opus_examples_not_accepted_phonemes_differ(self):
+        # 必須1: Moses/moss(母音・音節)、Hades/haid、Torres/tore、Giles/guile(語頭子音)は音素が異なるため受理しない
+        for c, a in (("Moses", "moss"), ("Hades", "haid"), ("Torres", "tore"), ("Giles", "guile")):
+            ok, basis, _ = O.phoneme_ok(c.lower(), a.lower(), True)
+            self.assertFalse(ok, (c, a))
+            self.assertEqual(basis, "phoneme")
+            self.assertNotEqual(jd(c + " said.", a.capitalize() + " said."), "ACCEPT_M1", (c, a))
+
+    def test_opus_true_same_phoneme_examples_remain(self):
+        # Jones<-Joan / Hayes<-Hey は音素列が真に同一(語末 /Z/ を除いた列)なので残る(Pattern A の本質的帰結。受理面として明示済み)
+        for c, a in (("Jones", "joan"), ("Hayes", "hey")):
+            ok, basis, rule = O.phoneme_ok(c.lower(), a, True)
+            self.assertTrue(ok)
+            self.assertEqual(rule, "drop_final_S_or_Z")
+        self.assertEqual(jd("Jones said.", "Joan said."), "ACCEPT_M1")
+        self.assertEqual(jd("Hayes said.", "Hey said."), "ACCEPT_M1")
+
+    def test_only_one_final_sibilant_is_dropped(self):
+        forms = O.derived_phone_forms("moses", True)
+        self.assertNotIn(("M", "OW", "Z"), forms)  # 語末 AH S から S を 1 つ除いた形(M OW Z AH)までで、母音まで削る形は作らない
+        self.assertNotIn(("M", "AO", "S"), forms)  # moss の音素列は導出されない
+
+    def test_oov_canonical_falls_back_to_spelling_basis_and_is_marked(self):
+        ok, basis, _ = O.phoneme_ok("melos", "melo", True)
+        self.assertTrue(ok)
+        self.assertEqual(basis, "oov_spelling_fallback")  # USER_DECISION_REQUIRED(4): OOV 名のみ綴り基準へ戻す
+        r = O.design_judge("Melos said.", "Mello said.")
+        self.assertEqual(r["verdict"], "ACCEPT_M1")
+        self.assertEqual(r["m1"]["subs"][0]["basis"], "oov_spelling_fallback")
+
+    def test_reason_restriction_excludes_high_similarity_and_numeric(self):
+        # 必須2: 歯擦音が続かない文脈(Mello called)の /z/ 欠落を HIGH_SIMILARITY_SAFE 理由で受理しない
+        for a in ("Mello called across the hall.", "Mellow called across the hall."):
+            self.assertNotEqual(jd("Melos called across the hall.", a), "ACCEPT_M1", a)
+        self.assertEqual(jd("Melos said across the hall.", "Mello said across the hall."), "ACCEPT_M1")  # Pattern A(歯擦音が続く)は受理
+        self.assertIn("HIGH_SIMILARITY_SAFE", {"HIGH_SIMILARITY_SAFE"} - O.ALLOWED_VARIANT_CLASSES)
+        self.assertIn("NUMERIC_EQUIVALENCE_MATCH", {"NUMERIC_EQUIVALENCE_MATCH"} - O.ALLOWED_VARIANT_CLASSES)
+        self.assertEqual(O.ALLOWED_VARIANT_CLASSES, {"EXACT_MATCH", "NORMALIZED_MATCH", "CONNECTED_SPEECH_ACCEPT",
+                                                     "CONNECTED_SPEECH_PASS_WITH_WARNING", "CONNECTED_SPEECH_RESEGMENTATION"})
+
+    def test_possessive_normalized_and_audit_trail(self):
+        self.assertEqual(O.normalize_possessive("Mello's said."), "Mellos said.")
+        r = O.design_judge("Melos said.", "Mello's said.")
+        self.assertEqual(r["verdict"], "ACCEPT_M1")
+        self.assertTrue(r["m1"]["pass_with_warning"])
+        self.assertTrue(r["m1"]["possessive_normalized"])
+        at = r["m1"]["audit_trail"]
+        self.assertEqual(at["original_asr"], "Mello's said.")
+        self.assertIn("normalized_asr", at)
+        self.assertIn("acceptance_reason", at)
+
+    def test_accept_always_has_audit_trail_and_warning(self):
+        r = O.design_judge("Melos said.", "Mello said.")
+        self.assertTrue(r["m1"]["pass_with_warning"])
+        self.assertEqual(r["m1"]["audit_trail"]["acceptance_reason"], r["m1"]["variant_classification"])
+
+    def test_replaced_sentence_does_not_pass_via_f1_first_diff_only(self):
+        # F1(最初の差だけ見る)経由で置換後の文がPASSしない: 置換と無関係な後続差分が残る文は M1 で受理しない
+        for c, a in (("Melos said cats today.", "Mello said dogs today."), ("Melos said the studies suggest cats.", "Mello said the study suggests dogs."),
+                     ("Melos said hello to Marcus.", "Mello said hello to Mark.")):
+            self.assertNotEqual(jd(c, a), "ACCEPT_M1", (c, a))
+        self.assertFalse(O._f1_guard_ok("Melos said cats today.", "Melo said dogs today.", {0}))
+        self.assertTrue(O._f1_guard_ok("Melos said cats today.", "Melo said cats today.", {0}))
+
+    def test_cmu_known_words_never_use_spelling_basis(self):
+        # CMU 収録 canonical(Moses 等)では綴り基準へ戻らない(戻るのは OOV のみ)
+        self.assertTrue(O.derived_phone_forms("moses", True))
+        self.assertFalse(O.derived_phone_forms("melos", True))
 
 
 if __name__ == "__main__":
