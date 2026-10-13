@@ -124,12 +124,142 @@ def run_clip(rec: dict, out_dir: str) -> dict:  # pragma: no cover  (有料。�
     asr_text, err = routing.transcribe(wav, language="en-US")
     phrases = [h["canonical_spelling"] for h in ledger_mod.get_hint_for_text(text, min_confidence="low")]
     detail = sec.evaluate_attempt_with_cascade_detail(text, asr_text, [], wav, language="en-US", ledger_phrases=phrases,
-                                                      cascade_enabled=True, segment_id=rec.get("segment_id", "full_story_part1"))
+                                                      cascade_enabled=True, segment_id=rec["segment_id"])
     cls = detail.get("classification")
     return {"id": rec["id"], "text": text, "primary_asr": asr_text, "asr_err": err, "verified": detail.get("verified"),
             "final_status": detail.get("final_status"), "classification": getattr(cls, "classification", None),
-            "m1_audit": detail.get("m1_multi_candidate") or detail.get("m1_audit"),  # 委任_03 配線時のキー名に合わせる
-            "steps": detail.get("steps")}
+            "segment_id": rec["segment_id"],
+            "m1_audit": detail.get("m1_multi_candidate"), "m1_rejected": detail.get("m1_multi_candidate_rejected"),
+            "human_review_required": detail.get("human_review_required"), "cascade_invoked": detail.get("cascade_invoked"),
+            "steps": [{k: v for k, v in st.items() if k not in ("entity_like_source",)} for st in (detail.get("steps") or [])]}
+
+
+
+EXISTING_DIR = "er069_output/attribution_clip_split_trial_01/gen02/wav"
+EXISTING_IDS = ([f"Melos_said_L2_adv_t{t}_raw" for t in (1, 2, 3, 4)]
+                + [f"Melos_said_L2_std_t{t}_{v}" for t in (1, 2, 3, 4) for v in ("raw", "slow6")])
+AZURE_JPY_PER_S = 0.0444   # er069 cost_02: 0.08711 JPY / 1.96 s
+OPENAI_JPY_PER_CALL = 0.0094
+HARD_STOP_JPY = 6.0
+
+
+class Meter:
+    """ASR呼出の実費概算(Azure=秒単価, OpenAI=1call単価)。TTSはgen.runが返す実費を加算。"""
+    def __init__(self):
+        self.asr_jpy = 0.0
+        self.tts_jpy = 0.0
+        self.n_openai = 0
+        self.n_azure = 0
+
+    @property
+    def total(self):
+        return self.asr_jpy + self.tts_jpy
+
+
+def install_meter(meter: Meter):
+    import wave
+    import er006_asr_provider_routing_01 as routing
+    import er006_secondary_asr_01 as sec
+    _t, _az = routing.transcribe, sec.get_full_text_via_azure_stt_with_phrase_list
+
+    def dur(wav):
+        try:
+            with wave.open(wav, "rb") as w:
+                return w.getnframes() / float(w.getframerate())
+        except Exception:
+            return 3.0
+
+    def t_wrap(wav_path, *a, **k):
+        if meter.total > HARD_STOP_JPY:
+            raise RuntimeError("[STOP] hard stop budget exceeded")
+        meter.n_openai += 1
+        meter.asr_jpy += OPENAI_JPY_PER_CALL
+        return _t(wav_path, *a, **k)
+
+    def az_wrap(wav_path, *a, **k):
+        if meter.total > HARD_STOP_JPY:
+            raise RuntimeError("[STOP] hard stop budget exceeded")
+        meter.n_azure += 1
+        meter.asr_jpy += AZURE_JPY_PER_S * dur(wav_path)
+        return _az(wav_path, *a, **k)
+
+    routing.transcribe = t_wrap
+    sec.get_full_text_via_azure_stt_with_phrase_list = az_wrap
+
+
+def execute(out_dir: str, budget: float, result: dict) -> None:  # pragma: no cover  (有料)
+    import er006_secondary_asr_01 as sec
+    meter = Meter()
+    install_meter(meter)
+    rows = []
+    state = {"soft_stop": False}
+
+    def one(rec):
+        if stop_present():
+            state["soft_stop"] = True
+            return
+        if meter.total > budget:
+            state["soft_stop"] = True
+            result.setdefault("budget_stops", []).append(rec["id"])
+            return
+        sec._reset_m1_freeze_cache()  # 1 clip = 1 segment の初回試行を再現
+        r = run_clip(rec, out_dir)
+        fz = sec._M1_FROZEN_CACHE.get(rec["text"])
+        r["frozen_hash"] = getattr(fz, "candidate_set_hash", None)
+        r["source"] = rec.get("source")
+        r["wav"] = rec["wav"]
+        r["meter_total_jpy"] = round(meter.total, 4)
+        rows.append(r)
+        json.dump(rows, open(f"{out_dir}/clip_results.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+
+    # 1) 既存12-take(wav再利用=TTS 0): segment_id=full_story_part1相当
+    for i in EXISTING_IDS:
+        one({"id": i, "text": "Melos said.", "wav": f"{EXISTING_DIR}/{i}.wav", "segment_id": "full_story_part1", "source": "existing_er069"})
+    # 2) 同12-take: segment_id=None相当(dialogue/point_headings相当=Tier3不発、M1はP1で完結しAzure不要)
+    for i in EXISTING_IDS:
+        one({"id": i + "__segNone", "text": "Melos said.", "wav": f"{EXISTING_DIR}/{i}.wav", "segment_id": None, "source": "existing_er069"})
+    # 3) 新規 4文x3take(TTS Aoede, er069と同条件=Std style)
+    import er069_attribution_clip_split_trial_01_gen as gen
+    import er063_family_z_audio_01 as Z
+    import er057_tone_trial_final_build_03 as B
+    styles = {"std": Z.FAMILY_Z_ROLE_STYLE["NARRATOR_FULL_STORY_STD"]["text"]}
+    call = B.make_tts_call()
+    gen_out = f"{out_dir}/gen"
+    os.makedirs(f"{gen_out}/wav", exist_ok=True)
+    log_path = f"{gen_out}/generation_log.jsonl"
+    stopflag = {"stop": False}
+    for key, text, why in NEW_CLIPS:
+        for t in range(1, TAKES + 1):
+            jid = f"{key}_t{t}"
+            if state["soft_stop"] or stop_present():
+                break
+            if meter.total > budget:
+                state["soft_stop"] = True
+                result.setdefault("budget_stops", []).append(jid)
+                break
+            task = {"id": jid, "name": "Melos", "boundary": "n/a", "length": "L2", "level": "std", "take": t, "text": text}
+            g = gen.run(task, call, gen_out, HARD_STOP_JPY, styles, log_path, stopflag)
+            if g.get("status") != "OK":
+                result.setdefault("tts_failures", []).append(g)
+                continue
+            meter.tts_jpy += g.get("jpy", 0.0)
+            one({"id": jid, "text": text, "wav": f"{gen_out}/wav/{jid}_raw.wav", "segment_id": "full_story_part1",
+                 "source": "new_tts", "purpose": why})
+    tts_models = set()
+    if os.path.exists(log_path):
+        for l in open(log_path, encoding="utf-8"):
+            tts_models.add(json.loads(l).get("model_version"))
+    result.update({"rows": rows,
+                   "cost": {"asr_jpy": round(meter.asr_jpy, 4), "tts_jpy": round(meter.tts_jpy, 4), "total_jpy": round(meter.total, 4),
+                            "n_openai_asr_calls": meter.n_openai, "n_azure_calls": meter.n_azure, "budget_jpy": budget,
+                            "basis": "Azure 0.0444 JPY/s, OpenAI 0.0094 JPY/call, TTS=gen.run実測(トークン単価)"},
+                   "models": {"primary_asr": "gpt-4o-mini-transcribe", "secondary_asr": "azure_speech(phrase list)",
+                              "tts_model_version": sorted(x for x in tts_models if x), "tts_voice": "Aoede"},
+                   "soft_stop": state["soft_stop"]})
+    json.dump({"total_jpy": round(meter.total, 4), "asr_jpy": round(meter.asr_jpy, 4), "tts_jpy": round(meter.tts_jpy, 4),
+               "n_observations": len(rows), "n_azure_calls": meter.n_azure, "n_openai_asr_calls": meter.n_openai,
+               "budget_jpy": budget, "hard_stop_jpy": HARD_STOP_JPY},
+              open(f"{out_dir}/cost_01.json", "w", encoding="utf-8"), indent=1)
 
 
 def main():
@@ -152,7 +282,7 @@ def main():
         elif a.budget_jpy <= 0 or p["estimated_jpy"] > a.budget_jpy:
             result["aborted"] = f"budget {a.budget_jpy} < estimate {p['estimated_jpy']}"
         else:
-            result["aborted"] = "execute body is run by 委任_03 after M1 wiring (clips wav generation + run_clip loop)"  # 配線前に有料実行しない
+            execute(OUT, a.budget_jpy, result)
     after = snapshot_state()
     result["state_md5_after"] = after
     result["shared_state_unchanged"] = before == after
