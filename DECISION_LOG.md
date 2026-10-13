@@ -20989,3 +20989,11 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **UDR登録**: UDR-1=#52(OOV: A=(iii)/B=読み確定+Ledger高信頼化/C=(i)で止める。Opus評価: Aは必須条件抵触、Bが唯一原理的、12/12目標自体の見直し)、UDR-2=#53(Eq Layerガード=今回実装済みとして記録、異議時差戻し)、UDR-3=#54(US sea 4件・誤NG定義)、UDR-4=#55(F1とM1のPRODUCTION_WIRED分離宣言)。
 - Regression: F1 test 13件・Eq Layer ALL PASS・er019 357・er063 59・er012 231・er026_cs_audit+er065 44 全PASS。er006 43件中1件失敗(`er006_model_routing_pricing_coverage_test_01`、Family Zのrouting登録に起因する既存失敗で本変更と無関係)。
 - 反映先: CURRENT_SPEC(連結発音Validator行へF1追記、M1は未配線)/OPEN-339・340更新/OPEN-348新規/`docs/pm/USER_DECISION_REGISTER_01.md`#52〜55/`docs/pm/OPUS_FINDINGS_LEDGER.md`/`docs/pm/REPORT_LEDGER.md`。証跡: `er075_output/m1_f1_production_wiring_01/`。commit: 7948bd78。
+
+## FAMILY-XZ-M2P0-N01-PRODUCTION-COMPLETION-01 委任_01(2026-10-13、是正①②実装、JPY0、有料runなし)
+
+- ユーザー指示要旨(2026-10-13): Std KPのRule7 INVALID(①)・Adv Audio Validation Gateの検証状態引継ぎ不備(②)・Std Part 2旧Fallback音声(③)は、原則として開発側が自律的に解決すべき既存不具合・未完了作業でありUSER_DECISION_REQUIREDではない。M2P0・N01の正式Production採用は承認済みで、今回は追加Trialでなく是正・完成作業。Gate/Rule7の緩和・承認済みPrompt変更が必要な場合のみSTOP。今回の到達目標はPRODUCTION_WIRED(PM強制Gate未充足なら完了扱いにしない)。
+- 決定/実施(本委任_01=①②): ①根本原因=候補ID方式のsource_spanが短いDB n-gramのままcanonicalizationへ渡り、Promptの復元指示と復元元不在が食い違っていた(retryは同一入力ゆえ4/4回同一)。修正=canonicalization入力・Rule7判定に用いるspanを、候補ID方式かつ機能語末尾のspanに限り原文内の直後語へ拡張(`er003_key_words_canonicalization.py`)。Rule7・Prompt・M2供給・P0 shaは無変更、Parity Gate一致、Strategy L入力バイト同一。②根本原因=(A)`--only-segments`非選択分岐が前回OK entryを消す、(B)Adv再利用segmentにresults entryが元々無い。修正=`er019_family_x_validation_inheritance_01.py`+runner: 元記録がOK/asr_verified/wav sha一致/text一致の場合のみ`REUSED_VALIDATED`として引継ぎ、証拠が無い/不一致はUNVALIDATEDのままGate BLOCK維持(Gate無変更)。
+- Status: ①②=FIXED_PENDING_PRODUCTION_RUN(PRODUCTION_WIREDは付与しない)。Adv dry-run: 5/7 segmentは引継ぎ可、preview/in_one_lineはTrial raw wavでProduction Validation記録なし=引継ぎ不可(BLOCK維持)。委任_02(③、Std KP再生成、Adv/Std正式assemble、試聴ページ)はFableのOpus条件Aレビュー後。
+- Regression: 新規 er003_test_*dangling_span 12件・er019_test_*validation_inheritance 21件PASS、er019 378/378・er030 108/108・er003_v1_n3_01 55/55 PASS、er003_test_* 1475/1479(失敗4件は`er003_test_p2j_investigate.py`のtest件数照合で本変更前から失敗)。
+- 証跡: `er071_output/m2p0_n01_production_wiring_01/completion_01/`(FIX1_ROOT_CAUSE_01.md/FIX2_DESIGN_01.md/dry-run json)。commit cdb32fda。反映先: OPEN-343/346/310追記、UDR #47/#50、REPORT_LEDGER。CURRENT_SPECは本委任では変更しない(既存記述との矛盾なし)。
