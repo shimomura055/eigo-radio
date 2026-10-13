@@ -20739,3 +20739,11 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - Rule7監査(¥0、修正なし): person表(its/my/our->one'sのみ)とPrompt案内(someone's可)が不一致(OPEN-310と同根)。`loan against the future`型は語追加で別論点。OPEN-310/325へ追記、新規OPENなし。
 - 費用: JPY19.1078 / 20。
 - 証跡: `er064_output/kp_idiom_priority_abc_01/ABC_REPORT_01.md`、`rule7_audit_01.json`、`cost_01.json`、委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-X-KP-IDIOM-PRIORITY-ABC-TRIAL-01_01.md`。
+
+## JA-ASR-ORTHOGRAPHIC-EQUIVALENCE-COMPREHENSIVE-01 委任_01(2026-10-13、調査・Trial記録、採用判断なし。Production未配線・無変更)
+- 範囲: 「三日間/3日間」型(正しく発音されているのにASR表記差でValidatorがNG)を助数詞の個別対応で終わらせず包括的に扱う方針の調査とTrial。既存機構(normalize_ja閉リスト、Variant Layer、Reading Resolver、SCG S1除外、Cascade D-2、OPEN-286〜291統一フロー案)をコード位置・判定順序・適用範囲で1表化し、PM_GOVERNANCE 21節でA/B/C分類。
+- 調査結果: 全JA経路(初回・retry・minimal fallback・SCG・Cascade・Family X/Z・B1 JA)が同一`classify_ja_asr_match`を通り、閉リスト助数詞の仕様通りの表記差は30件全PASS。減速後再検証・Local RewriteはJAにProduction未適用。既存承認仕様の配線漏れ・不具合は該当なし(是正なし、CURRENT_SPEC無変更)。
+- Trial(ASR再呼出なし、費用JPY0): 数値+助数詞を値署名+かな読みへ展開し既存Production判定へ委譲、署名不一致・曖昧語(十分)は不許容。過去1,002ペアで実run新規救済6件(Melos三日間3・20％・10代・1日)、取消0、正常例37件全PASS、敵対的反例35件誤PASS 0(Before 1: Candidate E由来『三日間→三日目』)。Status案: Trial=VALIDATED(オフライン・小標本)、Production未配線。採用(Stage1署名一致のみ→Stage2読み展開)はUSER_DECISION_REQUIRED。
+- 副次発見: 現行Production Candidate Eが三日間→三日目を誤PASS → 新規OPEN-333候補(署名ガードで取消可、Production無変更)。
+- テスト: `er066_ja_asr_orthographic_equivalence_01_test_01.py` 18件全PASS。state不変確認`state_guard_01.json`。
+- 証跡: `er066_output/ja_asr_orthographic_equivalence_01/`、`before_after_tables_01.md`、委任ログ`docs/pm/delegation_log/2026-10-13_JA-ASR-ORTHOGRAPHIC-EQUIVALENCE-COMPREHENSIVE-01_01.md`。OPEN-319/308/287へ追記、OPEN-333新規。
