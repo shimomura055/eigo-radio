@@ -20813,3 +20813,8 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 将来影響: 採用時はFULL_STORY style profile(Style文字列)の差替えのみで、初回Production/retry/fallbackの経路・上限・Gateは不変の見込み(未確認、採用承認後に別委任で設計・正式確認)。Trial限定の「Std減速後ASR省略」は採用判断に引き継がない(Productionは既存どおり減速後QAを実施)。
 - 費用: JPY39.725推定(TTS 32.595 + ASR推定 7.130、上限JPY60、見積中央39.55)。所要: 生成51秒、測定約15分。
 - 証跡: `er057_output/coffee_tts_style_h_speed_02/`(`MEASUREMENTS_02.md`/`measurements_02.json`/`generation_log_02.jsonl`/`cost_02.json`/`state_guard_02.json`/`play_evidence_02.json`)、試聴ページ`user_test/coffee_style_h_speed_02/index.html`、委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-TRIAL-02_02.md`。OPEN-332へ参照追記(新規OPENなし)。Dangling Reference Check: Production code/Promptから本Trialへの参照0件。
+
+### FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01 委任_04: Melos最終試聴は依存事項待ち・判断保留(2026-10-13、ユーザー正式指示、仕様変更なし)
+- ユーザー指示要旨: Melosは、進行中のVoice Prompt改善(FAMILY-X-COFFEE-TTS-STYLE-8WAY-AB-TRIAL-01 / H-SPEED-TRIAL-02系)が完了し、その正式採用仕様を反映した音声を最終版とする。今回提出のStandard/Advanced試聴ページ(`user_test/family_z_melos_01/`)は暫定成果物。(1)現時点でMelosの最終試聴・受入判断を求めない (2)最終受入判断はVoice Prompt改善結果が確定しユーザーが正式採用を判断した後 (3)新PromptのMelosへの適用は自動決定せず承認された適用範囲に従う (4)ASRの連結発音・短尺判定の改善(OPEN-318/327/330/331/122(4)/335、SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01の判断1〜4)も未解決の依存事項として管理 (5)SSOT/判断管理表に「Melos最終試聴は依存事項待ち・判断保留」と記録 (6)現行の完成候補を最終版・Production承認済みとして扱わない。
+- Status: USER_DECISION_REQUIRED(判断時期を明示的に延期)。現行試聴ページ=暫定。再試聴依頼禁止。追加生成・Production反映・最終承認作業は進めない。PRODUCTION_WIRED/APPROVED_FOR_PRODUCTIONではない。
+- 反映先: CURRENT_SPEC追記、OPEN-331/306/320追記(新規OPENなし)、`docs/pm/USER_DECISION_REGISTER_01.md`。費用JPY0。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01_04.md`。
