@@ -9,10 +9,11 @@ import er003_key_words_canonicalization as kc
 SENT = 'However, "about nine months" is an estimate based on interviews'
 
 
-def _item(span, sentence, contract="candidate_id_v1", rank=5):
+def _item(span, sentence, contract="candidate_id_v1", rank=5, **extra):
     it = {"rank": rank, "display_phrase": span, "source_span": span, "source_sentence": sentence}
     if contract:
         it["source_reference_contract"] = contract
+    it.update(extra)
     return it
 
 
@@ -106,6 +107,62 @@ class Rule7StillStrictTest(unittest.TestCase):
         merged2 = kc.merge_canonicalization_result([_item("right away", "x right away")],
                                                    [_llm_item(5, "right away", reason="none", changed=False)])
         self.assertNotIn("canonicalization_source_span", merged2["items"][0])
+
+
+class CompletionO2LeftEndGuardTest(unittest.TestCase):
+    """委任_02 OF-X1/X2: 左端ガード・語境界・追加test。"""
+
+    def _status(self, span, sentence, key_phrase, **extra):
+        it = _item(span, sentence)
+        it.update(extra)
+        return kc.validate_canonicalization_response({"items": [_llm_item(5, key_phrase)]}, [it])["status"]
+
+    def test_of_x1_complement_only_is_invalid(self):
+        for bad in ("interviews", "on interviews"):
+            self.assertEqual(self._status("based on", SENT, bad), "CANONICALIZATION_INVALID", bad)
+
+    def test_of_x1_right_completion_still_valid(self):
+        self.assertNotEqual(self._status("based on", SENT, "based on interviews"), "CANONICALIZATION_INVALID")
+        self.assertNotEqual(self._status("the urge to", "I feel the urge to watch another video.", "urge to watch"),
+                            "CANONICALIZATION_INVALID")
+        self.assertNotEqual(self._status("urge to", "I feel the urge to watch another video.", "urge to watch"),
+                            "CANONICALIZATION_INVALID")
+
+    def test_of_x1_within_original_span_unchanged_behaviour(self):
+        # 原span内に収まるkey_phraseは従来どおり受理(拡張の有無に影響されない)
+        self.assertNotEqual(self._status("based on", SENT, "based on"), "CANONICALIZATION_INVALID")
+
+    def test_of_x2_word_boundary(self):
+        it = _item("in the", "The firm said within the report that it is in the market now")
+        self.assertEqual(kc.expand_dangling_source_span(it), "in the market")
+        it2 = _item("in the", "It is within the report only")
+        self.assertEqual(kc.expand_dangling_source_span(it2), "in the")  # 'within the'へ誤一致しない
+
+    def test_of_x2_repeated_occurrence(self):
+        same = _item("based on", "It is based on data, and also based on data.")
+        self.assertEqual(kc.expand_dangling_source_span(same), "based on data")
+        amb = _item("based on", "It is based on data, and also based on experts.")
+        self.assertEqual(kc.expand_dangling_source_span(amb), "based on")  # 曖昧なら拡張しない(fail-safe)
+
+    def test_three_function_words_stop_at_three(self):
+        it = _item("rely on", "We rely on the of in data here")
+        self.assertEqual(kc.expand_dangling_source_span(it), "rely on the of in")
+
+    def test_span_corrected_in_restore_item(self):
+        it = _item("based on", SENT, source_span_corrected_in_restore=True)
+        out = kc.canonicalization_view_items([it])[0]
+        self.assertEqual(out["source_span"], "based on interviews")
+        self.assertTrue(out["source_span_corrected_in_restore"])
+        merged = kc.merge_canonicalization_result([it], [_llm_item(5, "based on interviews")])
+        self.assertEqual(merged["items"][0]["source_span"], "based on")
+
+    def test_topic_role_item(self):
+        it = _item("based on", SENT, key_phrase_role="topic")
+        merged = kc.merge_canonicalization_result([it], [_llm_item(5, "based on interviews")])
+        self.assertEqual(merged["items"][0]["key_phrase_role"], "topic")
+        self.assertEqual(merged["items"][0]["canonicalization_source_span"], "based on interviews")
+        self.assertEqual(self._status("based on", SENT, "on interviews", key_phrase_role="topic"),
+                         "CANONICALIZATION_INVALID")
 
 
 if __name__ == "__main__":

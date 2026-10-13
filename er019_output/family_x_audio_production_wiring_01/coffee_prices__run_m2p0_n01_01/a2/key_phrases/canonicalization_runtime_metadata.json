@@ -5,7 +5,7 @@
   "approval_status": "NOT_APPROVED",
   "final_status": "CANONICALIZATION_INVALID",
   "model_id": "gpt-6-luna",
-  "response_id": "resp_04051bb3f854883b006ace153a2d7487d0892b0ebea76a8e57",
+  "response_id": "resp_0701d71a3d2967f1006ace2b220b2487d0bf10ecac6f889dd1",
   "attempts_detail": [
     {
       "attempt": 1,
@@ -13,10 +13,10 @@
       "reasons": [],
       "item_reasons": [
         {
-          "index": 4,
-          "rank": 5,
+          "index": 1,
+          "rank": 2,
           "reasons": [
-            "key_phrase('based on interviews')がdisplay_phraseと一致せず、source_span('based on')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+            "key_phrase('raw-bean prices')がdisplay_phraseと一致せず、source_span('raw-bean')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
           ]
         }
       ],
@@ -25,10 +25,10 @@
         "items": [
           {
             "rank": 1,
-            "key_phrase": "raw bean",
+            "key_phrase": "pump one's fist",
             "changed_from_display_phrase": false,
-            "normalization_reason": "inherit_selection_normalization",
-            "reasoning": "display_phraseはコーヒーの未焙煎豆を指す自然な名詞句で、単独で学習単位として成立するため変更しません。",
+            "normalization_reason": "none",
+            "reasoning": "辞書的な慣用表現として自然で、one's により特定の人物への依存もすでに一般化されています。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -44,10 +44,10 @@
           },
           {
             "rank": 2,
-            "key_phrase": "pump one's fist",
+            "key_phrase": "raw-bean prices",
             "changed_from_display_phrase": true,
-            "normalization_reason": "generalize_person_dependent_reference",
-            "reasoning": "記事中の擬人化されたwalletを指すitsを、慣用句として一般的なone'sに置き換えます。他の語は変更せず、拳を突き上げて喜ぶ意味を保っています。",
+            "normalization_reason": "restore_semantic_complement",
+            "reasoning": "raw-bean だけでは名詞を修飾する形で不完全なため、source_spanに続く prices を復元し、何の価格か分かる単位にしました。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -63,10 +63,10 @@
           },
           {
             "rank": 3,
-            "key_phrase": "push prices up",
+            "key_phrase": "roasting",
             "changed_from_display_phrase": false,
-            "normalization_reason": "inherit_selection_normalization",
-            "reasoning": "display_phraseは「価格を押し上げる」という意味が完結した自然な表現です。sourceの過去形を理由に戻さず、そのまま維持します。",
+            "normalization_reason": "none",
+            "reasoning": "roasting は作業・工程を表す自然な語で、単独でも学習単位として成立します。beans などを加えなくても中心的な語義は理解できます。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -85,7 +85,7 @@
             "key_phrase": "right away",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「すぐに」を表す自然で再利用可能な副詞句であり、限定語の除去や補足は不要です。",
+            "reasoning": "right away は「すぐに」を表す自然で再利用可能な副詞句であり、表示形のままで意味が十分に分かります。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -101,10 +101,69 @@
           },
           {
             "rank": 5,
-            "key_phrase": "based on interviews",
+            "key_phrase": "take time",
+            "changed_from_display_phrase": false,
+            "normalization_reason": "none",
+            "reasoning": "take time は「時間がかかる」を表す自然な表現で、目的語や補語を加えなくても意味が十分に通じます。",
+            "qa_standalone_natural_unit": "PASS",
+            "qa_no_residual_context_word": "PASS",
+            "qa_meaning_or_usage_unchanged": "PASS",
+            "qa_reusable_other_context": "PASS",
+            "qa_traceable_contiguous_span": "PASS",
+            "qa_listening_blocker_value_preserved": "PASS",
+            "qa_standalone_comprehensibility": "PASS",
+            "qa_not_over_minimized": "PASS",
+            "qa_context_sufficiency": "PASS",
+            "qa_core_meaning_preserved": "PASS",
+            "qa_no_semantic_role_loss": "PASS",
+            "qa_person_reference_generalized": "PASS"
+          }
+        ]
+      },
+      "model": "gpt-6-luna",
+      "response_id": "resp_0491e01df87d7e6c006ace2b08c17087d099dfc2cf90ab0716"
+    },
+    {
+      "attempt": 2,
+      "status": "CANONICALIZATION_INVALID",
+      "reasons": [],
+      "item_reasons": [
+        {
+          "index": 1,
+          "rank": 2,
+          "reasons": [
+            "key_phrase('raw-bean prices')がdisplay_phraseと一致せず、source_span('raw-bean')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
+          ]
+        }
+      ],
+      "items_requiring_review": [],
+      "parsed": {
+        "items": [
+          {
+            "rank": 1,
+            "key_phrase": "pump one's fist",
+            "changed_from_display_phrase": false,
+            "normalization_reason": "inherit_selection_normalization",
+            "reasoning": "記事固有の「its」を辞書的な一般形「one's」にした形がdisplay_phraseに反映済みなので、そのまま維持します。",
+            "qa_standalone_natural_unit": "PASS",
+            "qa_no_residual_context_word": "PASS",
+            "qa_meaning_or_usage_unchanged": "PASS",
+            "qa_reusable_other_context": "PASS",
+            "qa_traceable_contiguous_span": "PASS",
+            "qa_listening_blocker_value_preserved": "PASS",
+            "qa_standalone_comprehensibility": "PASS",
+            "qa_not_over_minimized": "PASS",
+            "qa_context_sufficiency": "PASS",
+            "qa_core_meaning_preserved": "PASS",
+            "qa_no_semantic_role_loss": "PASS",
+            "qa_person_reference_generalized": "PASS"
+          },
+          {
+            "rank": 2,
+            "key_phrase": "raw-bean prices",
             "changed_from_display_phrase": true,
             "normalization_reason": "restore_semantic_complement",
-            "reasoning": "based onだけでは何を根拠にするのかが欠けるため、本文のinterviewsを補い、意味が理解できる単位にします。ただし、提示されたsource_spanは「based on」のみなので、文字列追跡の条件は満たしません。",
+            "reasoning": "「raw-bean」だけでは名詞句として不完結なため、本文の隣接語「prices」を加えました。追加語は指定source_spanの外にあるため、追跡可能性QAは定義に従ってFAILです。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -117,72 +176,13 @@
             "qa_core_meaning_preserved": "PASS",
             "qa_no_semantic_role_loss": "PASS",
             "qa_person_reference_generalized": "PASS"
-          }
-        ]
-      },
-      "model": "gpt-6-luna",
-      "response_id": "resp_0cded4749678cf7f006ace15164e9087d0887de37c8cc52083"
-    },
-    {
-      "attempt": 2,
-      "status": "CANONICALIZATION_INVALID",
-      "reasons": [],
-      "item_reasons": [
-        {
-          "index": 4,
-          "rank": 5,
-          "reasons": [
-            "key_phrase('based on interviews')がdisplay_phraseと一致せず、source_span('based on')内の連続部分文字列でもない(人称代名詞・所有格の一般化[閉じた語彙集合による1対1置換]にも該当しない)(Rule7: source_spanに存在しない別の辞書形を勝手に生成しない)"
-          ]
-        }
-      ],
-      "items_requiring_review": [],
-      "parsed": {
-        "items": [
-          {
-            "rank": 1,
-            "key_phrase": "raw bean",
-            "changed_from_display_phrase": false,
-            "normalization_reason": "inherit_selection_normalization",
-            "reasoning": "「raw bean」は「未焙煎の豆」を表す自然な名詞句で、単独でも意味が理解できます。表示形は既に学習用に整えられているため、そのまま維持します。",
-            "qa_standalone_natural_unit": "PASS",
-            "qa_no_residual_context_word": "PASS",
-            "qa_meaning_or_usage_unchanged": "PASS",
-            "qa_reusable_other_context": "PASS",
-            "qa_traceable_contiguous_span": "PASS",
-            "qa_listening_blocker_value_preserved": "PASS",
-            "qa_standalone_comprehensibility": "PASS",
-            "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS",
-            "qa_core_meaning_preserved": "PASS",
-            "qa_no_semantic_role_loss": "PASS",
-            "qa_person_reference_generalized": "PASS"
-          },
-          {
-            "rank": 2,
-            "key_phrase": "pump one's fist",
-            "changed_from_display_phrase": true,
-            "normalization_reason": "generalize_person_dependent_reference",
-            "reasoning": "「its」は文中のwalletを指す文脈依存の所有格なので、慣用表現として再利用しやすい一般形「one's」に置き換えます。表現の意味と動詞句は維持しています。",
-            "qa_standalone_natural_unit": "PASS",
-            "qa_no_residual_context_word": "PASS",
-            "qa_meaning_or_usage_unchanged": "PASS",
-            "qa_reusable_other_context": "PASS",
-            "qa_traceable_contiguous_span": "PASS",
-            "qa_listening_blocker_value_preserved": "PASS",
-            "qa_standalone_comprehensibility": "PASS",
-            "qa_not_over_minimized": "PASS",
-            "qa_context_sufficiency": "PASS",
-            "qa_core_meaning_preserved": "PASS",
-            "qa_no_semantic_role_loss": "PASS",
-            "qa_person_reference_generalized": "PASS"
           },
           {
             "rank": 3,
-            "key_phrase": "push prices up",
+            "key_phrase": "roasting",
             "changed_from_display_phrase": false,
-            "normalization_reason": "inherit_selection_normalization",
-            "reasoning": "「push prices up」は価格を押し上げるという意味の自然な表現で、単独でも理解できます。表示形は本文の時制を学習用に正規化した形として、そのまま維持します。",
+            "normalization_reason": "none",
+            "reasoning": "「roasting」は単独でも工程を表す自然な学習単位であり、語を足したり削ったりする必要はありません。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -201,7 +201,7 @@
             "key_phrase": "right away",
             "changed_from_display_phrase": false,
             "normalization_reason": "none",
-            "reasoning": "「right away」は「すぐに」を意味する自然で完結した副詞句です。文脈限定語を含まず、このままで学習単位として十分です。",
+            "reasoning": "「right away」は意味の分かる自然な副詞句で、文脈限定語を含まず、そのまま学習単位として使えます。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -217,10 +217,10 @@
           },
           {
             "rank": 5,
-            "key_phrase": "based on interviews",
-            "changed_from_display_phrase": true,
-            "normalization_reason": "restore_semantic_complement",
-            "reasoning": "「based on」だけでは何に基づくのかが欠け、単独提示では意味が不十分です。source_spanから必要最小限の補語「interviews」を戻します。",
+            "key_phrase": "take time",
+            "changed_from_display_phrase": false,
+            "normalization_reason": "none",
+            "reasoning": "「take time」はそのままで自然かつ再利用可能な表現であり、意味の核も保たれています。",
             "qa_standalone_natural_unit": "PASS",
             "qa_no_residual_context_word": "PASS",
             "qa_meaning_or_usage_unchanged": "PASS",
@@ -237,7 +237,7 @@
         ]
       },
       "model": "gpt-6-luna",
-      "response_id": "resp_04051bb3f854883b006ace153a2d7487d0892b0ebea76a8e57"
+      "response_id": "resp_0701d71a3d2967f1006ace2b220b2487d0bf10ecac6f889dd1"
     }
   ]
 }

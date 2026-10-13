@@ -240,10 +240,22 @@ def expand_dangling_source_span(item: dict) -> str:
     tail_words = _SPAN_WORD_RE.findall(span)
     if not tail_words or tail_words[-1].lower().replace("’", "'") not in _DANGLING_TAIL_WORDS:
         return span
-    start = sentence.lower().find(span.lower())
-    if start < 0:
+    # OF-X2(2026-10-13): 語境界を見る(例: "in the"が"within the"内に誤一致しない)。
+    # 複数出現があり拡張結果が一致しない場合は曖昧なので拡張しない(従来どおり元span=fail-safe)。
+    pattern = re.compile(r"(?<![A-Za-z0-9])" + re.escape(span) + r"(?![A-Za-z0-9])", re.IGNORECASE)
+    expansions = set()
+    for m in pattern.finditer(sentence):
+        exp = _extend_from(sentence, m.start(), m.end())
+        if exp is None:
+            return span
+        expansions.add(exp)
+    if len(expansions) != 1:
         return span
-    end = start + len(span)
+    expanded = expansions.pop()
+    return expanded if _span_word_count_ok(expanded) else span
+
+
+def _extend_from(sentence: str, start: int, end: int):
     cursor = end
     added = 0
     while added < _SPAN_EXTENSION_MAX_WORDS:
@@ -258,9 +270,8 @@ def expand_dangling_source_span(item: dict) -> str:
         if word_match.group(0).lower().replace("’", "'") not in _DANGLING_TAIL_WORDS:
             break  # 内容語を1語含めたら止める
     if added == 0:
-        return span
-    expanded = sentence[start:cursor]
-    return expanded if _span_word_count_ok(expanded) else span
+        return sentence[start:end]
+    return sentence[start:cursor]
 
 
 def _span_word_count_ok(text: str) -> bool:
@@ -462,8 +473,28 @@ def _qa_field_effective_verdict(field: str, verdict: str, key_phrase: str, displ
     return verdict
 
 
+def _left_end_guard_ok(key_phrase: str, expanded_span: str, original_span: str) -> bool:
+    """OF-X1(2026-10-13): 拡張spanで受理範囲が広がるのは「選定句を保持したまま右方向へ補完する」場合のみ。
+    key_phraseが拡張span内で(a)原spanの内側に収まる(従来の受理範囲)か、(b)左端が原span内にあり、
+    かつ原spanの内容語(機能語以外)をすべて含む場合に限り受理する。"""
+    nk = _normalize_for_match(key_phrase)
+    nh = _normalize_for_match(expanded_span)
+    no = _normalize_for_match(original_span)
+    content = [w for w in _SPAN_WORD_RE.findall(no) if w not in _DANGLING_TAIL_WORDS]
+    key_words = set(_SPAN_WORD_RE.findall(nk))
+    idx = nh.find(nk)
+    while idx >= 0:
+        if idx + len(nk) <= len(no):
+            return True
+        if idx < len(no) and all(w in key_words for w in content):
+            return True
+        idx = nh.find(nk, idx + 1)
+    return False
+
+
 def validate_canonicalization_item(key_phrase: str, display_phrase: str, source_span: str,
-                                    normalization_reason: Optional[str] = None) -> dict:
+                                    normalization_reason: Optional[str] = None,
+                                    original_span: Optional[str] = None) -> dict:
     """LLMが提案したkey_phraseの構造的安全性のみを検査する。冠詞削除・
     語の復元の要否そのものは判定しない(それはLLMの役割)。ここで弾くのは、
     (a) 空文字、(b) source_spanにもdisplay_phraseにも存在しない文字列の
@@ -483,6 +514,12 @@ def validate_canonicalization_item(key_phrase: str, display_phrase: str, source_
         return {"ok": False, "reasons": reasons}
 
     unchanged = _normalize_for_match(key_phrase) == _normalize_for_match(display_phrase)
+    if (not unchanged and original_span is not None and original_span != source_span
+            and _is_contiguous_substring(key_phrase, source_span)
+            and not _left_end_guard_ok(key_phrase, source_span, original_span)):
+        reasons.append(
+            f"key_phrase({key_phrase!r})は拡張span({source_span!r})内にあるが、選定句(原span {original_span!r})の"
+            "左端・内容語を保持していない(OF-X1: 拡張spanは右方向の補完にのみ使える)")
     if not unchanged and not _is_contiguous_substring(key_phrase, source_span):
         is_valid_person_generalization = (
             normalization_reason == "generalize_person_dependent_reference"
@@ -538,6 +575,7 @@ def validate_canonicalization_response(parsed: dict, original_items: list) -> di
         it["rank"]: (it.get("display_phrase") or it.get("canonical_english")) for it in original_items
     }
     source_span_by_rank = {it["rank"]: it.get("source_span", "") for it in canonicalization_view_items(original_items)}
+    original_span_by_rank = {it["rank"]: it.get("source_span", "") for it in original_items}
 
     for i, item in enumerate(items):
         this_reasons = []
@@ -564,7 +602,8 @@ def validate_canonicalization_response(parsed: dict, original_items: list) -> di
         source_span = source_span_by_rank.get(item.get("rank"), "")
         structural = validate_canonicalization_item(
             item["key_phrase"], display_phrase, source_span,
-            normalization_reason=item.get("normalization_reason"))
+            normalization_reason=item.get("normalization_reason"),
+            original_span=original_span_by_rank.get(item.get("rank")))
         this_reasons.extend(structural["reasons"])
 
         if this_reasons:

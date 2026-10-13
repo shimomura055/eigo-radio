@@ -813,7 +813,7 @@ def generate_family_x_b1_segments(
         # M4/S3: 上書き対象roleのsegmentにだけ、hint追記前のStyle sha(style_base_sha256)を記録する。
         # 非対象(default/IN_ONE_LINE)は何も書かない(新keyなし)。
         _seg_role = "IN_ONE_LINE" if name == "in_one_line" else "FULL_STORY"
-        if results[name].get("status") != "SKIPPED_NOT_SELECTED" and not results[name].get("validation_inheritance"):
+        if not validation_inheritance.is_untouched_entry(results[name]):
             style_profile_mod.attach_segment_profile_record(results[name], style_profile, _seg_role,
                                                              _role_style(_seg_role))
 
@@ -962,7 +962,7 @@ def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict 
         expl_r["explanation_text"] = explanation_text
         expl_r["canonical_text"] = explanation_text
         # M4/S3: profile対象(coffee_final_v5のP3)のときだけ、hint追記前のStyle shaを記録する(defaultは新keyなし)。
-        if expl_r.get("status") != "SKIPPED_NOT_SELECTED" and not expl_r.get("validation_inheritance"):
+        if not validation_inheritance.is_untouched_entry(expl_r):
             style_profile_mod.attach_segment_profile_record(
                 expl_r, style_profile, style_profile_mod.ROLE_KP_EXPLANATION_EN, _kp_explanation_style())
         expl_r["explanation_qa"] = explanation_row.get("qa")
@@ -1142,7 +1142,7 @@ def generate_family_x_a2_segments(
                     style_prefix_override=_role_style_ja_support(),
                     tts_backend=tts_backend), expected_text=text)
         # M4/S3: profile対象(coffee_final_v5のR2)のときだけ記録(defaultは新keyなし)。
-        if results[name].get("status") != "SKIPPED_NOT_SELECTED" and not results[name].get("validation_inheritance"):
+        if not validation_inheritance.is_untouched_entry(results[name]):
             style_profile_mod.attach_segment_profile_record(
                 results[name], style_profile, style_profile_mod.ROLE_SUPPORT_JA, _role_style_ja_support())
 
@@ -1171,7 +1171,7 @@ def generate_family_x_a2_segments(
         results[name]["canonical_text"] = text
         # M4/S3: 上書き対象roleのsegmentにだけ記録(非対象は新keyを書かない)。
         _seg_role = "IN_ONE_LINE" if name == "in_one_line" else "FULL_STORY"
-        if results[name].get("status") != "SKIPPED_NOT_SELECTED" and not results[name].get("validation_inheritance"):
+        if not validation_inheritance.is_untouched_entry(results[name]):
             style_profile_mod.attach_segment_profile_record(results[name], style_profile, _seg_role,
                                                              _role_style_slower(_seg_role))
 
