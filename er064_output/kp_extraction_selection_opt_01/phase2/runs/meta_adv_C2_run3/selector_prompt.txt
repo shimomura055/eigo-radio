@@ -1,0 +1,68 @@
+以下の英語記事の候補一覧から、初回リスニングで意味を取れず、その後の理解を止める可能性が高い表現を、支援価値の高い順にちょうど5個選んでください。
+
+【判断の基準】
+音声で一度だけ聞いたときに意味を処理できるかを最優先してください。優先順位は、初回音声での処理困難、未知の可能性、瞬時の推測困難、本文の事実・感情・面白さへの影響、記事内重要度、汎用性の順です。
+
+未知単語、題材固有表現、短い複数語パターン、比喩・感情表現を同格の候補として扱ってください。構成語から意味を容易に推測できる透明表現は、記事上重要でも優先度を下げてください。
+
+同程度の候補どうしでは、定着した自然な表現(慣用句、自然なコロケーション、句動詞、本文で基本義と異なる意味の表現)を、構成語どおりの基本連語やこの記事だけの言い回しより優先してください。区分名(idiom等)やevidenceラベルだけでは選ばず、CEFR等級だけでも判断しないでください。この記事はB1相当向けなので、基本義と異なる意味の句動詞や文脈で意味が変わるコロケーションは、初見で難しいものとして同列に評価してください。
+
+【学ぶ単位】
+動詞表現は目的語・補語まで、名詞表現は修飾語まで含めた、用法が成り立つ最小のまとまりを選んでください(例: rateよりinterest rate)。候補行の`contains: Cn`はCnを含む、`contained_in: Cn`はCnの一部であることを示します。同じ内容を両方選ばず、用法を成り立たせる要素を含む側を選んでください(長い側が主語・時・場所の付け足しだけなら短い側)。
+display_phraseは1〜5語にしてください。完全文、主語と有限動詞を持つ節は禁止です。動詞は本文の時制を残さず基本形へ直してください(受動はbe + past participleの見出し形も可)。
+
+【役割】
+5個のうち1個は、この記事に特有で、事前に知っていると本文の主張や展開を追いやすくなる語または表現にしてください(key_phrase_role="topic")。汎用性は高くなくてかまいません。人名・企業名・地名、専門用語、比喩という種類だけでは選びません。該当が見当たらなくても空にせず、最も近い候補を選んでください。
+残り4個(key_phrase_role="important")は、他の記事でも使える定着した表現にしてください。この記事だけの創作的な言い回しは選ばないでください(topicには選べます)。key_phrase_roleは候補の区分とは独立した、選定後の役割ラベルです。
+
+【日本語グロス】
+日本語グロスは、日本人の英語学習者が音声で聞いてすぐ意味を理解できる、自然で平易な現代日本語の一文にしてください。直訳調や、「常態」「是正」のような硬い報道語・漢語は避けてください。括弧（　）で別訳・専門用語・補足を書き添えないでください。「～」「〜」は辞書的に自然な範囲(例: 「～を示す」)でのみ使い、「…」のようなプレースホルダー記号は使わないでください。数字を含める場合は算用数字ではなく漢数字(一、二、三…)で書いてください。「ソロ旅行を～％とする」のように数値を補わないと意味が成立しない句・グロスは選ばず、それ単体で意味が成立するものを選んでください。
+
+【Topic】title: Some AI Phone Calls Had Humans Behind the Scenes
+
+【重要な単語・単語群候補】
+- id: C9 | candidate: "phone calls" | type: noun_phrase | occ: 8 | evidence: repeated_compound_noun | sentence: S1
+- id: C10 | candidate: "contract workers" | type: noun_phrase | occ: 3 | evidence: repeated_compound_noun | sentence: S8
+- id: C11 | candidate: "be wrong" | type: noun_phrase | occ: 1 | evidence: wiktionary_multiword | sentence: S21
+- id: C12 | candidate: "call center" | type: noun_phrase | occ: 1 | evidence: wiktionary_multiword | sentence: S17
+- id: C13 | candidate: "call it" | type: noun_phrase | occ: 0 | evidence: wiktionary_multiword | sentence: ?
+- id: C14 | candidate: "take care" | type: noun_phrase | occ: 1 | evidence: wiktionary_multiword | sentence: S7
+- id: C15 | candidate: "concierge" | type: important_word | occ: 1 | evidence: heuristic[rare_technical_single_word_heuristic] | sentence: S23
+- id: C16 | candidate: "unintentionally" | type: important_word | occ: 1 | evidence: heuristic[rare_technical_single_word_heuristic] | sentence: S17
+
+【phrase / idiom / phrasal verb候補】
+- id: C1 | candidate: "Behind the Scenes" | type: idiom | occ: 6 | evidence: wiktionary[idiom] | sentence: S1
+- id: C2 | candidate: "calls it" | type: idiom | occ: 0 | evidence: wiktionary[idiom] | sentence: ?
+- id: C3 | candidate: "calls to" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S19
+- id: C4 | candidate: "end of" | type: idiom | occ: 2 | evidence: wiktionary[idiom] | sentence: S15
+- id: C5 | candidate: "instead of" | type: phrase | occ: 1 | evidence: cefr_j | sentence: S8
+- id: C6 | candidate: "needed to" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S17
+- id: C7 | candidate: "no way" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S14
+- id: C8 | candidate: "talking to" | type: phrasal_verb | occ: 1 | evidence: wiktionary[idiom,phrasal_verb] | sentence: S14
+
+【word候補】
+- id: C17 | candidate: "haircuts" | type: word | occ: 1 | evidence: cefr_j | sentence: S6
+- id: C18 | candidate: "troublesome" | type: word | occ: 1 | evidence: cefr_j | sentence: S7
+- id: C19 | candidate: "Muse" | type: word | occ: 4 | evidence: cefr_j | sentence: S5
+- id: C20 | candidate: "internally" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S18
+- id: C21 | candidate: "realizing" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S15
+
+【SENTENCE REFERENCE】(文脈参照専用。この表の文字列をそのままitemへ書かないでください)
+S1: "Some AI Phone Calls Had Humans Behind the Scenes"
+S5: "The main player was Muse, Meta's AI assistant"
+S6: "Muse can call businesses and stores in the United States to book haircuts, check whether items are in stock, and get price estimates from businesses"
+S7: "If AI can take care of troublesome phone calls, it seems very useful"
+S8: "However, in some tests of its calling feature, trained human contract workers made the calls instead of AI"
+S14: "And if this was not properly explained, users had no way to know whether they were talking to AI or a person"
+S15: "They were enjoying the convenience of AI, only to find a human on the other end of the call without realizing it"
+S17: "Also, when user information was needed to continue a call, it might be shared unintentionally with contract workers at a call center"
+S18: "Meta employees pointed this out internally as a privacy concern"
+S19: "News reports also cited an employee's report that human staff made inappropriate comments about race during calls to negotiate internet or cable fees"
+S21: "It would be wrong to apply it to all contract workers"
+S23: "The company also restored the human concierge feature to the way it had been before, at least for now"
+
+【出力のルール】
+- 5件は必ず上記の候補一覧から選び、新しい表現を作らないでください。[重要な単語・単語群候補]区分から少なくとも1個、残りは[phrase / idiom / phrasal verb候補]区分を優先し、[word候補]区分は良い候補が不足するときだけ使ってください。この区分の優先は、質が同程度のときの補充規則です。
+- 各itemのsource_candidate_idには、選んだ候補のcandidate ID(例: C7)を1つだけ指定してください。本文の文字列(source_sentence/source_span相当)は書かないでください。
+- surface_echoには、選んだ候補が表す表現を短く(1〜6語程度)書いてください。内部確認用で、正誤判定には使いません。
+- 上記5件とは別に、backup_itemとして、重要語・重要表現(key_phrase_role="important")の予備候補を、異なるcandidate IDで1件、必ず返してください(topicが正しく選べた場合は採用されません)。
