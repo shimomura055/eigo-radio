@@ -1,0 +1,18 @@
+PASS A prompt == er072 std prompt (sha一致)
+PASS A: 本文std.md全文を含む
+PASS B: 本文std.md全文を含む
+PASS C: 本文std.md全文を含む
+PASS D: 本文std.md全文を含む
+PASS E: 本文std.md全文を含む
+PASS B: C1全文含む/C2全文含まない/(生成失敗)含む
+PASS C: 第1文のみ(全文は含まない)
+PASS D: C1・C2全文含む/置換文言あり/旧文言なし
+PASS E: C1・C2全文が無い
+PASS E: C1・C2の各文が無い(5文)
+PASS E: 'Comment' / placeholder が無い
+PASS E: Comment固有語がprompt(本文以外)に無い (promptヒット=[], 本文ヒット=[])
+PASS E: 本文を除いた部分にComment固有語が無い
+PASS E: 重複回避文言('重複')が残らない
+PASS A->E: 追加行なし(除去のみ)
+PASS A->D: 変更行は4行(2箇所の-/+)
+PASS effortはProduction同一(high)
