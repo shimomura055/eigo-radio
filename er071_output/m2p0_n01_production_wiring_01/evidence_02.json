@@ -1,0 +1,15 @@
+{
+ "management_id": "FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01",
+ "delegation": "03",
+ "date": "2026-10-13",
+ "stop_check": {"STOP_NOTICE_files": ["2026-10-12_FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01_STOP_NOTICE.md (Melos旧記録、本件非適用)"], "coffee_run_dir_STOP": false, "er026_STOP_ALL": false, "git_index_lock": false},
+ "fallback_notice": {"mechanism": "result.m2_fallback(_events) -> scaffold_run_summary.json[level].m2_fallback/m2_fallback_events + entry_point.json.m2_fallback_by_level + run dir M2_FALLBACK_NOTICE.md + stdout '[M2-FALLBACK]' line (scaffold中と終了時)", "test": "er030_key_phrase_db_hybrid_m2_fallback_notice_01_test_01.py 6 tests OK (synthetic/mock)", "unimplemented_elements": [], "coffee_d02_m2_fallback_occurred": false, "coffee_d03_m2_fallback_occurred": false, "telemetry_evidence": "er030_output/kp_backend_telemetry_01/telemetry.jsonl: a2/b1b/a2(再生成) すべて backend_used=db_hybrid, fallback_triggered=false, kp_supply=m2, model_id=gpt-6-luna"},
+ "std_kp_regen": {"command": "er019_family_x_audio_production_runner_01.py --slug coffee_prices --run run_v5_ms_01 --out-dir <run> --stage scaffold --scaffold-only kp --level a2 --style-profile coffee_n01_r2_p3 --tts-backend speech_metadata_flash_lite --budget-jpy 55.7", "result": "CANONICALIZATION_INVALID (rank5 'based on interviews' vs source_span 'based on', Rule7, 既存retry 2回とも不合格)", "same_as_d02": true, "kp_supply": "m2", "m2_total_seconds": 15.77, "cost_jpy": 1.07, "reran": false, "prev_attempt_dir": "a2/key_phrases_d02_attempt_invalid"},
+ "std_kp_audio": "NOT_RUN (KP INVALID)",
+ "adv_formal_assemble": {"command": "--stage assemble --level b1b --style-profile coffee_n01_r2_p3 ...", "result": "BLOCKED: EPISODE_BLOCKED_BY_AUDIO_VALIDATION (topic_intro/preview/comment_1-4/in_one_line=UNVALIDATED)", "gate_bypassed": false, "seed": "audit/seed_provenance_03_assemble.json (16 roles, sha256一致)"},
+ "std_assemble": "NOT_RUN (M3 Gate BLOCK part2 + Std KP INVALID)",
+ "pages": {"url": "https://shimomura055.github.io/eigo-radio/user_test/coffee_m2p0_n01_01/index.html", "playwright": "29/29 play OK, seek OK, console error 0, http>=400 0, file:/// なし", "evidence": "coffee_evidence_02/pages_play_evidence_03.json"},
+ "cost": {"delegation_jpy": 1.07, "run_dir_total_jpy": 26.77, "baseline_d02_jpy": 25.70, "guardrail_this_delegation_jpy": 30, "runner_budget_arg_jpy": 55.7},
+ "tests": {"er030": "108/108 (102+6)", "er019": "357/357", "er063": "59/59", "er026": "107/107 (並行regression同時実行で1件失敗→単独再実行で全PASS)"},
+ "models": {"kp": "gpt-6-luna (本番既定)", "tts": "gemini-3.8-flash-lite-tts (承認済みProduction backend、本委任でTTS呼出なし)", "latest_model_rule": "本番ラインのモデルをそのまま使用。旧/下位モデルの評価目的使用なし"}
+}
