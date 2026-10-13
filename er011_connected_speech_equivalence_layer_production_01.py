@@ -235,6 +235,22 @@ def classify_connected_speech_equivalence(canonical_text: str, asr_text: str,
             "equivalence_layer_info": None,
         }
 
+    # F1(OF-159, 2026-10-13): 最初の差分(existing["diff"])だけを評価して再PASSする穴を塞ぐ。
+    # 残差(連結発音/benignで説明できない差分)がちょうど1件で、それが評価対象のdiffと
+    # 同じ位置のときのみ評価する。2件以上、または別位置の残差があれば不適格(限定方向のみ)。
+    f1_residual = existing.get("f1_residual")
+    if f1_residual is not None and existing.get("f1_version"):
+        d0 = existing.get("diff") or {}
+        same_pos = (len(f1_residual) == 1 and f1_residual[0].get("index") is not None
+                    and f1_residual[0]["index"] == d0.get("index")
+                    and [w.lower() for w in f1_residual[0].get("canonical") or []][:1]
+                    == ([d0["canonical_word"].lower()] if d0.get("canonical_word") else []))
+        if not same_pos:
+            return {"layer_judgment": "NO_DELETION_SHAPED_DIFF", "source": "equivalence_layer",
+                    "ineligible_reason": "F1_RESIDUAL_NOT_EXACTLY_ONE_AT_DIFF",
+                    "f1_residual_count": len(f1_residual),
+                    "existing_result": existing, "equivalence_layer_info": None}
+
     diff = existing.get("diff")
     if diff is None or diff.get("canonical_word") is None or diff.get("asr_word") is None:
         return {"layer_judgment": "NO_DELETION_SHAPED_DIFF", "source": "equivalence_layer",

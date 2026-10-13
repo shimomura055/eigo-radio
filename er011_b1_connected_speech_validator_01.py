@@ -26,6 +26,7 @@
 
 from __future__ import annotations
 
+import difflib
 import re
 
 _VOICED_CONSONANT_LETTERS = set("bdgvzlmnr")
@@ -122,8 +123,9 @@ def word_diff(canonical: str, asr: str):
     return None
 
 
-def classify_connected_speech(canonical: str, asr: str) -> dict:
-    """canonicalとasrの最初の食い違いが、承認済み3パターンのいずれかで
+def _classify_first_diff(canonical: str, asr: str) -> dict:
+    """(F1以前の classify_connected_speech 本体。Pattern A/B/C判定は無変更。)
+    canonicalとasrの最初の食い違いが、承認済み3パターンのいずれかで
     説明できるかを判定する。戻り値の new_judgment:
       CONNECTED_SPEECH_ACCEPT          -> PASS(警告なし)候補
       CONNECTED_SPEECH_RESEGMENTATION  -> PASS_WITH_WARNING候補
@@ -194,3 +196,120 @@ def classify_connected_speech(canonical: str, asr: str) -> dict:
 
     result["false_accept_risk"] = "N/A(パターン非該当のため既存判定を維持)"
     return result
+
+
+# ============================================================
+# F1(ASR-PHONETIC-EQUIVALENCE-M1-F1-PRODUCTION-WIRING-01 委任_03、2026-10-13)
+# 「最初の食い違い1か所だけでACCEPT」欠陥の是正。新しい許容ルールは作らない。
+#   - 全差分を列挙し、各差分を既存Pattern A/B/C(_classify_first_diff、無変更)で個別判定
+#   - 許容(benign)は冠詞(a/an/the)のみの差と、規則的単複(_is_benign_plural_pair)の1:1差のみ(OF-160)
+#   - 説明できない差分=残差。残差0のときのみ従来ACCEPT/RESEGMENTATION。残差ありはUNCLASSIFIED
+#   - 限定方向のみ: 従来のUNCLASSIFIED/NO_DIFFは判定不変、従来のACCEPT/RESEGは残差0のときのみ維持
+# ============================================================
+F1_VERSION = "F1-2026-10-13"
+_ARTICLES = {"a", "an", "the"}
+_OK_JUDGMENTS = ("CONNECTED_SPEECH_ACCEPT", "CONNECTED_SPEECH_RESEGMENTATION")
+_UNCL = "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING"
+_DIGIT_RE = re.compile(r"\d+(?:[.,]\d+)*")
+
+
+def _plural_pair_ok(a: str, b: str) -> bool:
+    try:
+        import er006_preprod_hardening_01_validation as _val  # 遅延import(循環回避)
+        return bool(_val._is_benign_plural_pair(a, b))
+    except Exception:
+        return False  # 判定不能は残差側(厳格側)
+
+
+def _benign_span(cspan: list[str], aspan: list[str]) -> bool:
+    """benign=冠詞のみの差、または冠詞を除いた残りが規則単複の1:1差。他の機能語差(are/were, in/on, and/or等)は残差。"""
+    c = [w for w in cspan if w not in _ARTICLES]
+    a = [w for w in aspan if w not in _ARTICLES]
+    if not c and not a:
+        return True
+    return len(c) == 1 and len(a) == 1 and _plural_pair_ok(c[0], a[0])
+
+
+def _pair_classify(c_word: str, a_word: str, next_word: str | None) -> dict:
+    """1語対を既存Pattern A/B/C(_classify_first_diff)で判定する(next_wordはcanonical側の次語)。"""
+    if next_word is None:
+        return {"new_judgment": _UNCL, "rule": None}
+    return _classify_first_diff(f"{c_word} {next_word}", f"{a_word} {next_word}")
+
+
+def classify_connected_speech(canonical: str, asr: str) -> dict:
+    """F1版: 全差分を点検する。戻り値 new_judgment:
+      CONNECTED_SPEECH_ACCEPT / CONNECTED_SPEECH_RESEGMENTATION -> 全差分が説明できる(残差0)ときのみ
+      UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING -> 既存判定を維持(非該当、または残差あり)
+    追加キー(後方互換、キー追加のみ): f1_version / f1_all_diffs / f1_explained / f1_residual / f1_residual_kind。
+    残差ありで元が最初の1か所でACCEPTだったケースは、diffに「最初の残差」を入れる(説明済み差分ではない)。"""
+    base = _classify_first_diff(canonical, asr)
+    out = dict(base)
+    out["f1_version"] = F1_VERSION
+    out["f1_all_diffs"] = []
+    out["f1_explained"] = []
+    out["f1_residual"] = []
+    out["f1_residual_kind"] = "none"
+    if base.get("new_judgment") == "NO_DIFF":
+        return out
+
+    cw, aw = tokenize(canonical), tokenize(asr)
+    cl, al = [w.lower() for w in cw], [w.lower() for w in aw]
+    sm = difflib.SequenceMatcher(a=cl, b=al, autojunk=False)
+    all_diffs, explained, residual = [], [], []
+    for tag, i1, i2, j1, j2 in sm.get_opcodes():
+        if tag == "equal":
+            continue
+        all_diffs.append({"op": tag, "index": i1, "canonical": cw[i1:i2], "asr": aw[j1:j2]})
+        c_pos = [i for i in range(i1, i2) if cl[i] not in _ARTICLES]
+        a_pos = [j for j in range(j1, j2) if al[j] not in _ARTICLES]
+        # replaceブロックは冠詞(benign)を除いた語数が同数なら、位置ごとに個別判定する
+        if tag == "replace" and c_pos and len(c_pos) == len(a_pos):
+            for ci, aj in zip(c_pos, a_pos):
+                if cl[ci] == al[aj]:
+                    continue
+                nxt = cw[ci + 1] if ci + 1 < len(cw) else None
+                r = _pair_classify(cw[ci], aw[aj], nxt)
+                if r.get("new_judgment") in _OK_JUDGMENTS:
+                    explained.append({"index": ci, "canonical": cw[ci], "asr": aw[aj], "rule": r.get("rule"),
+                                      "judgment": r["new_judgment"],
+                                      "expected_phoneme_boundary": r.get("expected_phoneme_boundary")})
+                elif not _benign_span([cl[ci]], [al[aj]]):
+                    residual.append({"op": "replace", "index": ci, "canonical": [cw[ci]], "asr": [aw[aj]]})
+        elif not _benign_span(cl[i1:i2], al[j1:j2]):
+            residual.append({"op": tag, "index": i1, "canonical": cw[i1:i2], "asr": aw[j1:j2]})
+    # 数字: csv3.tokenizeは数字を落とすため、数字列の不一致は別途残差にする(安全側)
+    if _DIGIT_RE.findall(canonical) != _DIGIT_RE.findall(asr):
+        residual.append({"op": "number", "index": None, "canonical": _DIGIT_RE.findall(canonical),
+                         "asr": _DIGIT_RE.findall(asr)})
+    residual.sort(key=lambda d: (d["index"] is None, d["index"] or 0))
+
+    out["f1_all_diffs"] = all_diffs
+    out["f1_explained"] = explained
+    out["f1_residual"] = residual
+    out["f1_residual_kind"] = "content" if residual else "none"
+
+    if base.get("new_judgment") in _OK_JUDGMENTS:
+        if residual or not explained:
+            out["new_judgment"] = _UNCL
+            out["rule"] = None
+            out["expected_phoneme_boundary"] = None
+            out["false_accept_risk"] = "F1: 説明できない残差差分があるため連結発音ACCEPTしない(既存判定へ戻す)"
+            if residual:
+                r0 = residual[0]
+                idx = r0["index"]
+                out["diff"] = {
+                    "index": idx,
+                    "canonical_word": r0["canonical"][0] if r0["canonical"] and idx is not None else None,
+                    "asr_word": r0["asr"][0] if r0["asr"] and idx is not None else None,
+                    "prev_word": cw[idx - 1] if idx else None,
+                    "next_word": cw[idx + 1] if idx is not None and idx + 1 < len(cw) else None,
+                    "f1_residual_first": True,
+                }
+        else:
+            kinds = {e["judgment"] for e in explained}
+            out["new_judgment"] = ("CONNECTED_SPEECH_RESEGMENTATION" if "CONNECTED_SPEECH_RESEGMENTATION" in kinds
+                                   else "CONNECTED_SPEECH_ACCEPT")
+            out["rule"] = "+".join(sorted({e["rule"] for e in explained}))
+            out["expected_phoneme_boundary"] = " | ".join(e["expected_phoneme_boundary"] for e in explained)
+    return out

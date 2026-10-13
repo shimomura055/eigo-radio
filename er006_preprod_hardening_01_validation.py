@@ -955,6 +955,28 @@ class ClassificationResult:
     semantic_equivalence_info: dict | None = None
 
 
+def _f1_refine_residual_kind(cs: dict, protected) -> str:
+    """F1残差の種別を protected.content_word_diffs(entity_like/homophone_candidate)と照合して確定し、
+    cs["f1_residual_kind"]を更新して返す。none/entity_or_homophone_only/content。
+    全残差が「置換(両側に語あり)」かつ entity_like/homophone_candidate の1:1差と一致する場合のみ
+    entity_or_homophone_only(それ以外はcontent=従来どおりTRUE_CONTENT_MISMATCH側、安全側)。"""
+    res = cs.get("f1_residual") or []
+    if not res:
+        cs["f1_residual_kind"] = "none"
+        return "none"
+    ok_pairs = {(d["canonical"], d["asr"]) for d in protected.content_word_diffs
+                if d.get("entity_like") or d.get("homophone_candidate")}
+    kind = "entity_or_homophone_only"
+    for r in res:
+        c = [w.lower() for w in r.get("canonical") or []]
+        a = [w.lower() for w in r.get("asr") or []]
+        if r.get("op") != "replace" or len(c) != 1 or len(a) != 1 or (c[0], a[0]) not in ok_pairs:
+            kind = "content"
+            break
+    cs["f1_residual_kind"] = kind
+    return kind
+
+
 def _classify_asr_match_core(canonical_text: str, asr_text: str,
                               high_similarity_threshold: float = 0.98,
                               uncertain_threshold: float = 0.85,
@@ -1086,12 +1108,23 @@ def _classify_asr_match_core(canonical_text: str, asr_text: str,
                 reason=f"語境界の自然な再分節として説明可能(blockingしないが警告を残す): {cs['rule']} "
                        f"({cs['expected_phoneme_boundary']})",
                 connected_speech_info=cs)
+        # F1(ASR-PHONETIC-EQUIVALENCE-M1-F1-PRODUCTION-WIRING-01 委任_03, OF-161):
+        # F1が最初の差分は連結発音で説明できるが残差(説明できない差分)が固有名詞/同音語のみの
+        # 場合は、従来(F1前)の固有名詞/同音語経路と同じUNCERTAIN(blind retryしない)へ送る。
+        # 内容語の残差が1件でもあれば従来どおりTRUE_CONTENT_MISMATCH。
+        if cs.get("f1_residual") and _f1_refine_residual_kind(cs, protected) == "entity_or_homophone_only":
+            return ClassificationResult("ASR_VALIDATION_UNCERTAIN", ratio, protected,
+                                         should_pass=False, should_retry=False,
+                                         reason=f"F1: 連結発音で説明できない残差が固有名詞/同音語のみ"
+                                                f"(retryでは解決しない可能性が高い): {cs.get('f1_residual')}",
+                                         connected_speech_info=cs)
         # 固有名詞以外の内容語(動詞・形容詞・名詞等)の置換/欠落/追加は、
         # 一致率が高くても自動PASSさせず、retry対象のTRUE_CONTENT_MISMATCHのままにする
         # (例: "increase"→"decrease"、重要語の欠落を見逃さないため)。
         return ClassificationResult("TRUE_CONTENT_MISMATCH", ratio, protected,
                                      should_pass=False, should_retry=True,
-                                     reason=f"固有名詞以外の内容語に差がある(内容誤りの可能性): {non_entity_diffs}")
+                                     reason=f"固有名詞以外の内容語に差がある(内容誤りの可能性): {non_entity_diffs}",
+                                     connected_speech_info=(cs if cs.get("f1_explained") else None))
 
     if entity_only_diffs:
         return ClassificationResult("ASR_VALIDATION_UNCERTAIN", ratio, protected,

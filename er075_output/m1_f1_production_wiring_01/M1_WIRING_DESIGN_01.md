@@ -44,3 +44,12 @@ R1(Writer語順制約)・V2(末尾エネルギー検査)・固有名詞allow-lis
 ## 7. 未解決(USER_DECISION_REQUIRED候補)
 1. **OOV語の扱い**(`OOV_SAFETY_01.md`): 既定=CMU収録語のみ。Melos 12件のPASS数は4/12で現行と同じ(M1の主目的は達成できない)。(iii)を採るにはユーザーの新基準承認が必要。
 2. Eq Layerの同種F1不備を今回の是正範囲に含めるか(`F1_FIX_DESIGN_01.md`)。
+
+## 8. 委任_03 設計訂正(Opus条件A/C所見 OF-163/164/165反映、2026-10-13。M1は未配線のため設計書のみ更新、コード追加なし)
+- **forced-secondary(OF-163)**: `er006_secondary_asr_01.py` L711付近の `force_secondary=True` 経路(Primary PASS後の追加Secondary確認)にもM1適用が必要。Secondary同意条件=「Primary・Secondary双方の転写が、独立に同じcanonical語への置換(同音綴り)と判定される」場合のみ受理。片方のみは不受理(既存HR/retryへ)。
+- **減速後再検証(OF-164)**: 減速後再検証(L196付近)は `classify_asr_match` を直接呼ぶため、M1は **L146 rescue経由でのみ有効**(再検証の入口で独立にM1を呼ばない)。audit記録先は `post_slowdown_cascade`。
+- **`m1_enabled` フラグ(OF-164)**: 既定True。KP呼出側 `enable_non_latin_cascade=True` 経路はFalseを渡す(KP経路へM1を波及させない)。language が `en-US` 以外では不発。
+- **`cascade_enabled=False` 時(OF-165)**: M1はcascade層の後段(UNCERTAIN→rescue)に置くため、`cascade_enabled=False` では **不発**(Primary判定のみ=現行と同じ)。M1単体で `classify_asr_match` を変えることはしない。
+- **各stepの適用位置(OF-165)**: 各step(Primary#1/#2・Secondary#1/#2・forced-secondary・減速後)とも、`should_pass` 判定と `_step_alternate_pass` の **後**(それらで未PASSかつ UNCERTAIN の場合のみ)にM1を試す。既存PASS判定は一切変えない。
+- **F1実装済みとの関係**: F1(委任_03で `WIRED_PENDING_RUNTIME_EVIDENCE`)は先行実装。M1が将来配線されるとき、置換後の文には実装済みF1(全差分検証)が自動適用される。
+- **M1(i)実益**: `M1_BENEFIT_CENSUS_01.md` 参照(674ペアで新規受理0件)。

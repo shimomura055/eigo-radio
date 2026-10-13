@@ -1,0 +1,665 @@
+{
+ "summary": {
+  "n_pairs": 674,
+  "by_src": {
+   "human_review_queue": 187,
+   "er021_telemetry": 434,
+   "er069_results_02": 53
+  },
+  "meta": {
+   "kp_pairs_added": 0,
+   "attempt_history_has_text_records": 3,
+   "attempt_history_keys": {
+    "timestamp": 12896,
+    "action": 12896,
+    "segment_id": 12777,
+    "run_id": 12248,
+    "theme_id": 12129,
+    "level": 12129,
+    "tts_attempts_this_call": 11335,
+    "asr_calls_this_call": 11335,
+    "result_status": 11335,
+    "human_review_reached": 11335,
+    "final_lock_state": 11335,
+    "language": 9314
+   }
+  },
+  "api_calls": 0,
+  "mode": "production",
+  "seg_full_story_part1": {
+   "segment_id": "full_story_part1",
+   "errors": 0,
+   "old_pass_via_connected_speech": 10,
+   "pass_to_nonpass": 0,
+   "nonpass_to_pass": 0,
+   "nonpass_to_nonpass_class_change": 0,
+   "transitions": {}
+  },
+  "seg_None": {
+   "segment_id": null,
+   "errors": 0,
+   "old_pass_via_connected_speech": 10,
+   "pass_to_nonpass": 0,
+   "nonpass_to_pass": 0,
+   "nonpass_to_nonpass_class_change": 0,
+   "transitions": {}
+  },
+  "labeled_sets": {
+   "cs_sweep|normal_by_construction": {
+    "n": 222,
+    "old_pass": 114,
+    "new_pass": 114
+   },
+   "cs_synthetic|normal_by_construction": {
+    "n": 19,
+    "old_pass": 10,
+    "new_pass": 10
+   },
+   "cs_synthetic|defect": {
+    "n": 6,
+    "old_pass": 0,
+    "new_pass": 0
+   },
+   "defect_text|defect": {
+    "n": 41,
+    "old_pass": 4,
+    "new_pass": 3
+   },
+   "normal_text|normal": {
+    "n": 20,
+    "old_pass": 13,
+    "new_pass": 13
+   },
+   "general_2word|normal": {
+    "n": 324,
+    "old_pass": 162,
+    "new_pass": 162
+   },
+   "real_diff|normal": {
+    "n": 124,
+    "old_pass": 36,
+    "new_pass": 32
+   }
+  }
+ },
+ "changed": {
+  "full_story_part1": [],
+  "None": []
+ },
+ "labeled_changed": [
+  {
+   "ds": "defect_text_multi_diff_masking_existing_hole",
+   "truth": "defect",
+   "canonical": "The studies suggest cats today.",
+   "asr": "The study suggests dogs today.",
+   "old": "CONNECTED_SPEECH_ACCEPT",
+   "new": "TRUE_CONTENT_MISMATCH"
+  },
+  {
+   "ds": "real_diff_instances",
+   "truth": "normal",
+   "canonical": "a US sea blockade",
+   "asr": "a U S se blockade",
+   "old": "CONNECTED_SPEECH_ACCEPT",
+   "new": "TRUE_CONTENT_MISMATCH"
+  },
+  {
+   "ds": "real_diff_instances",
+   "truth": "normal",
+   "canonical": "a US sea blockade",
+   "asr": "a U S blockade",
+   "old": "CONNECTED_SPEECH_ACCEPT",
+   "new": "TRUE_CONTENT_MISMATCH"
+  },
+  {
+   "ds": "real_diff_instances",
+   "truth": "normal",
+   "canonical": "planned US sea blockade",
+   "asr": "planned U S blockade",
+   "old": "CONNECTED_SPEECH_ACCEPT",
+   "new": "TRUE_CONTENT_MISMATCH"
+  },
+  {
+   "ds": "real_diff_instances",
+   "truth": "normal",
+   "canonical": "a US sea blockade",
+   "asr": "a U S C blockade",
+   "old": "CONNECTED_SPEECH_ACCEPT",
+   "new": "TRUE_CONTENT_MISMATCH"
+  }
+ ],
+ "counterexamples": [
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The studies suggest cats today.",
+   "asr": "The study suggests dogs today.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The studies suggest cats today.",
+   "asr": "The study suggests cats today.",
+   "expect": "pass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The studies suggest cats today.",
+   "asr": "The study suggest cats today.",
+   "expect": "pass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The studies suggest that cats sleep.",
+   "asr": "The study suggests that cats sleep.",
+   "expect": "pass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The studies suggest that cats sleep.",
+   "asr": "The study suggests that dogs sleep.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The studies suggest that cats sleep.",
+   "asr": "The study suggests that cats sleep more.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The studies suggest that cats sleep.",
+   "asr": "The study suggests cats sleep.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The studies suggest that cats sleep.",
+   "asr": "The study suggests that cats did not sleep.",
+   "expect": "nonpass",
+   "old": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The studies suggest that cats sleep.",
+   "asr": "The study suggests that cats slept.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The studies suggest that 5 cats sleep.",
+   "asr": "The study suggests that 6 cats sleep.",
+   "expect": "nonpass",
+   "old": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The studies suggest that Rex sleeps.",
+   "asr": "The study suggests that Max sleeps.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "ASR_VALIDATION_UNCERTAIN",
+    false
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The studies suggest that cats sleep.",
+   "asr": "The study suggests that cats.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The company opened today and it closed to the public.",
+   "asr": "The company open today and it closed to the public.",
+   "expect": "pass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The company opened today and it closed to the public.",
+   "asr": "The company open today and it closes to the public.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The company opened today and it closed to the public.",
+   "asr": "The company open today and it closed to the people.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The survey suggests that cats sleep.",
+   "asr": "The surveys suggest that cats sleep.",
+   "expect": "pass?",
+   "old": [
+    "CONNECTED_SPEECH_PASS_WITH_WARNING",
+    true
+   ],
+   "new": [
+    "CONNECTED_SPEECH_PASS_WITH_WARNING",
+    true
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "The survey suggests that cats sleep.",
+   "asr": "The surveys suggest that dogs sleep.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_PASS_WITH_WARNING",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "Their studies suggest cats and their survey suggests cats.",
+   "asr": "Their study suggests cats and their surveys suggest cats.",
+   "expect": "pass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "CONNECTED_SPEECH_PASS_WITH_WARNING",
+    true
+   ]
+  },
+  {
+   "segment_id": "full_story_part1",
+   "canonical": "Their studies suggest cats and their survey suggests cats.",
+   "asr": "Their study suggests cats and their surveys suggest dogs.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The studies suggest cats today.",
+   "asr": "The study suggests dogs today.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The studies suggest cats today.",
+   "asr": "The study suggests cats today.",
+   "expect": "pass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The studies suggest cats today.",
+   "asr": "The study suggest cats today.",
+   "expect": "pass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The studies suggest that cats sleep.",
+   "asr": "The study suggests that cats sleep.",
+   "expect": "pass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The studies suggest that cats sleep.",
+   "asr": "The study suggests that dogs sleep.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The studies suggest that cats sleep.",
+   "asr": "The study suggests that cats sleep more.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The studies suggest that cats sleep.",
+   "asr": "The study suggests cats sleep.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The studies suggest that cats sleep.",
+   "asr": "The study suggests that cats did not sleep.",
+   "expect": "nonpass",
+   "old": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The studies suggest that cats sleep.",
+   "asr": "The study suggests that cats slept.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The studies suggest that 5 cats sleep.",
+   "asr": "The study suggests that 6 cats sleep.",
+   "expect": "nonpass",
+   "old": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The studies suggest that Rex sleeps.",
+   "asr": "The study suggests that Max sleeps.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "ASR_VALIDATION_UNCERTAIN",
+    false
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The studies suggest that cats sleep.",
+   "asr": "The study suggests that cats.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The company opened today and it closed to the public.",
+   "asr": "The company open today and it closed to the public.",
+   "expect": "pass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The company opened today and it closed to the public.",
+   "asr": "The company open today and it closes to the public.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The company opened today and it closed to the public.",
+   "asr": "The company open today and it closed to the people.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The survey suggests that cats sleep.",
+   "asr": "The surveys suggest that cats sleep.",
+   "expect": "pass?",
+   "old": [
+    "CONNECTED_SPEECH_PASS_WITH_WARNING",
+    true
+   ],
+   "new": [
+    "CONNECTED_SPEECH_PASS_WITH_WARNING",
+    true
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "The survey suggests that cats sleep.",
+   "asr": "The surveys suggest that dogs sleep.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_PASS_WITH_WARNING",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "Their studies suggest cats and their survey suggests cats.",
+   "asr": "Their study suggests cats and their surveys suggest cats.",
+   "expect": "pass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "CONNECTED_SPEECH_PASS_WITH_WARNING",
+    true
+   ]
+  },
+  {
+   "segment_id": null,
+   "canonical": "Their studies suggest cats and their survey suggests cats.",
+   "asr": "Their study suggests cats and their surveys suggest dogs.",
+   "expect": "nonpass",
+   "old": [
+    "CONNECTED_SPEECH_ACCEPT",
+    true
+   ],
+   "new": [
+    "TRUE_CONTENT_MISMATCH",
+    false
+   ]
+  }
+ ]
+}
