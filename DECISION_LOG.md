@@ -20960,3 +20960,12 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - Adv正式`--stage assemble --level b1b`: `EPISODE_BLOCKED_BY_AUDIO_VALIDATION`(topic_intro/preview/comment_1-4/in_one_line=UNVALIDATED)でBLOCK。v5承認済み再利用segmentをsha一致でseed(`audit/seed_provenance_03_assemble.json`、16 role)してもresults entryが`SKIPPED_NOT_SELECTED`(OPEN-346②)でGateはUNVALIDATED扱い。**Gateは迂回していない**(results手編集・Gate緩和なし)。Checklist 5/11は未充足のまま。
 - 試聴ページ更新(https://shimomura055.github.io/eigo-radio/user_test/coffee_m2p0_n01_01/index.html、Playwright 29/29再生OK)。費用: 本委任JPY1.07(上限30)、run dir累計JPY26.77。runner `--budget-jpy`はrun dir累計基準のため55.7(=25.70+30)を指定(委任文の`--budget-jpy 30`だとrun dir累計25.70で即時近接するため)。
 - Status: Family X=**配線済み・未完了**(Checklist 5/11未充足。`PRODUCTION_WIRED`不付与)/Family Z=配線済み・runtime未確認。OPEN-345 CLOSED、OPEN-344はTrial承認(Production実装は採用判断後)、OPEN-343/346/310追記、新規OPEN-347、UDR #46判断済み・#45更新・#49/#50追加。証跡: `er071_output/m2p0_n01_production_wiring_01/{EVIDENCE_02,CHECKLIST_02,FINAL_REPORT_02}.md`。
+
+## FAMILY-Z-KP-STRATEGY-L-DECISION-CLOSEOUT-01 委任_01(2026-10-13、Closeout、JPY0、code無変更)
+- ユーザー正式決定(要旨): `FAMILY-Z-KP-DB-HYBRID-M2P0-MIGRATION-TRIAL-01`の結果を受け、Family Z KP選定=現行Strategy L維持/Family ZへのDB Hybrid+M2P0移行案=REJECTED/Family XのDB Hybrid+M2P0採用=維持/Family X・Z音声Prompt N01採用=維持(文言変更不要の既存決定も維持)。
+- 撤回した決定: 「Family ZにもM2P0を適用する」(FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 委任_02の決定)。Family X側は撤回しない。
+- 維持: Strategy LのPrompt/選定ロジック、Validator、canonicalization、Redundancy QA、OPEN-310暫定外側retry、Z既存KP再生成なし、Z記事再生成・音声化STOP。候補供給再設計Trialは行わない(Trial結果: 良質KPがshortlist段で15件中12件喪失)。
+- コード確認: Z KP経路(`er026` runner→`er062.run_kp_with_outer_retry`→`sc.run_key_phrase_selection`、`kp_backend`既定`strategy_l`)にDB Hybrid/M2分岐なし。`family_z`は`NotImplementedError`残存。er073 Trialはer073_*自身以外から参照されない。委任_02/_03のZ側変更はer063(N01)のみ。Production code変更なし。
+- Regression: er062 64/er063 59/er026_family_z_fiction 21/er030 108、全PASS。Strategy L稼働実績=run_e2e_02の既存記録引用(新規runなし)。
+- SSOT更新: CURRENT_SPEC M2供給節、OPEN-344→CLOSED(REJECTED)、OPEN-347はFamily X限定明記、UDR #45判断済み(判断済み14/UDR 28/合計50)、REPORT_LEDGER。
+- Status: Closeout完了。Family Z `PRODUCTION_WIRED`は主張しない(Z E2EはSTOP継続)。証跡: `er073_output/family_z_kp_db_hybrid_m2p0_migration_01/closeout/`。
