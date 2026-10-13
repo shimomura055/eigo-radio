@@ -39,7 +39,7 @@
 | 22 | XZ残(Family X/Z共通仕様レビューの残件)・g8(ガス->カス、C1カタカナ率ヒューリスティック)・Std Preview/Commentの全記事共通化 | **Deferred** | いいえ | XZ残: 管理ID `FAMILY-XZ-CROSS-FAMILY-SPEC-REVIEW-01`(`docs/pm/design/2026-10-11_FAMILY-XZ-CROSS-FAMILY-SPEC-REVIEW-01_XZ_MAPPING_01.md`、**OPEN_ITEMS該当行なし**、起票はFable判断)。g8=OPEN-272(L775、U-1)。共通化=OPEN-295(L798)/OPEN-298(L801) |
 | 23 | **Melos最終試聴・受入判断** | **判断保留**(依存事項待ち、判断時期延期、2026-10-13ユーザー指示)。依存: (a)Voice Prompt改善の正式採用仕様とMelos適用範囲 (b)ASR連結発音・短尺判定の改善(OPEN-318/327/330/331/122(4)/335、短尺ASR判断1〜4)。現行試聴ページは暫定。再試聴依頼禁止 | いいえ(判断保留。追加生成・Production反映は進めない) | OPEN-331/306/320、DECISION_LOG「FAMILY-Z-MELOS-FINAL...委任_04」、`docs/pm/delegation_log/2026-10-13_FAMILY-Z-MELOS-FINAL-ASSEMBLY-AND-ASR-GENERALIZATION-01_04.md` |
 | 24 | JA-ASR 判断1〜5(要約のみ、判断は加えない) | **UDR** | いいえ | OPEN-333/334、`docs/pm/delegation_log/2026-10-13_JA-ASR-ORTHOGRAPHIC-EQUIVALENCE-COMPREHENSIVE-01_02.md` |
-| 25 | 短尺ASR 判断1〜4(FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01) | **UDR**(#23の依存事項) | いいえ | OPEN-318/327、`docs/pm/delegation_log/2026-10-13_FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01_04.md` |
+| 25 | 短尺ASR 判断1〜4(FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01) | **UDR**(#23の依存事項) | いいえ | OPEN-318/327、`docs/pm/delegation_log/2026-10-13_FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01_04.md` → ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01で設計方針合意(2026-10-13)、実装・安全性は未検証(OPEN-339、判断1〜4のうちMelo/Mello非対称[判断3]はOPEN-339論点1へ接続) |
 | 26 | KP Idiom 優先度ABC 判断1〜4 | **UDR** | いいえ | OPEN-325、`docs/pm/delegation_log/2026-10-13_FAMILY-X-KP-IDIOM-PRIORITY-ABC-TRIAL-01_01.md` |
 | 27 | OPEN-332(Coffee v5文末ポーズ緩和)= 8way/H-speedで代替検討 | **UDR**(8way/H-speed結果待ち) | いいえ | OPEN-332、`docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-V5-PAUSE-ROOT-CAUSE-01_01.md` |
 | 28 | Coffee 8way候補選定 | **UDR**(ユーザー試聴・選定。#23の依存事項) | いいえ | `docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-TTS-STYLE-8WAY-AB-TRIAL-01_02.md` |
@@ -55,17 +55,18 @@
 | 38 | 探索Trial一括承認運用ルール(低コスト・既存予算内・Production非変更の探索Trialで個別選択肢を逐一確認しない。Gate承認・Production採用・仕様変更・予算超過・重大品質リスクはユーザー判断) | **判断済み**(2026-10-13ユーザー決定) | いいえ | `docs/pm/PM_GOVERNANCE.md` 7-8節 |
 | 39 | K06 Std / K01 Adv(Coffee H-speed TRIAL-04のレベル別Prompt)のユーザー試聴評価 | **判断済み**(2026-10-13ユーザー試聴: **NG**。比較対象から除外。Production採用なし。5候補比較試聴ページ作成済み、候補選定は#29のUDR継続) | いいえ | DECISION_LOG「FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-LISTEN-COMPARE-01 委任_01」、`docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-LISTEN-COMPARE-01_01.md` |
 | 40 | KP `no way`単独選定の最小修正P0X(Meta Adv)の採否 | **判断済み**(ユーザー事前規定「Side effect確認時は不採用・M2P0維持」を適用。Trial Status=REJECTED。Production採用なし) | いいえ | DECISION_LOG「FAMILY-X-KP-NO-WAY-MINIMAL-FIX-TRIAL-01 委任_02」、OPEN-336追記、`er064_output/kp_no_way_fix_01/TRIAL_REPORT_02.md` |
+| 41 | ASR発音同等性に基づく一般化判定(全Family共通設計方針)の実装方式・安全性(ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01) | **調査・Trial中**(設計方針はユーザー合意済み[2026-10-13、設計方針の承認のみ・Production採用ではない]。設計草案=`DESIGN_DRAFT`・Opus独立技術レビュー条件A待ち、read-only検証=テキストのみ方式はREJECTED候補/末尾確認付き方式はUSER_DECISION_REQUIRED。判断を要求する段階ではない) | いいえ(Melos最終試聴#23の依存事項。追加生成・Production反映は進めない) | OPEN-339(OPEN-122(4)/318/327/328/330/331/335と整理)、DECISION_LOG「ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01 委任_01」、`docs/pm/design_principles/connected_speech_proper_noun_phonetic_equivalence_2026-10-13.md`、`er068_output/asr_phonetic_equivalence_generalization_01/` |
 
-## 区分別集計(2026-10-13更新・40件。#39・#40追加。#10は判断済みへ、#14と#23は判断保留へ、#36追加)
+## 区分別集計(2026-10-13更新・41件。#41追加[ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01、調査・Trial中]。#39・#40追加。#10は判断済みへ、#14と#23は判断保留へ、#36追加)
 
 | 区分 | 件数 | 項目# |
 |---|---|---|
 | 判断済み | 12 | 2, 3, 10, 13, 17, 34, 35, 36, 37, 38, 39, 40 |
 | 判断保留(依存事項待ち、判断時期延期) | 2 | 14, 23 |
-| 調査・Trial中 | 1 | 19 |
+| 調査・Trial中 | 2 | 19, 41 |
 | USER_DECISION_REQUIRED | 20 | 1, 4(暫定), 5, 7, 8, 9, 11, 12, 15, 18, 24〜33 |
 | Deferred / Non-blocking | 5 | 6, 16, 20, 21, 22 |
-| 合計 | 40 | |
+| 合計 | 41 | |
 
 ## 「次工程をブロックするUDR」のみ(これだけを最優先で提示する)
 

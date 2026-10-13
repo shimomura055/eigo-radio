@@ -12,6 +12,8 @@
 **追記索引(2026-10-08、OPEN-243)**: `OPEN-243-TRANSLATION-NG-ANALYSIS-01`(翻訳段NG解析→Opus独立レビュー→ユーザー決定、S0監査)、astra正式単価確認(Sol×5・過去のSol×2.5推定の訂正・予算超過)、Batch調査結果、ユーザー決定(ホルムズ・ミニバッグも系列X採用)、PM運用ルール(重要数値は推測で言わない)は本ファイル末尾`## OPEN-243-TRANSLATION-NG-ANALYSIS-01`節。
 **追記索引(2026-10-08、OPEN-243 委任_03)**: M1〜M3 Trial実装・既存データ検証(MEASURED、Production変更なし)とユーザー回答3件の逐語・Goは本ファイル末尾`## OPEN-243-TRANSLATION-NG-ANALYSIS-01 委任_03`節。
 
+**追記索引(2026-10-13)**: `ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01`(発音同等性に基づくASR判定の全Family共通設計方針の合意、設計方針の承認のみ・Production採用ではない・未検証ロジックはCURRENT_SPEC非記載)は本ファイル末尾`## ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01 委任_01`節参照。
+
 **履歴全文(直前の記録・その前の記録、以下さらに前の記録、合計12件、原文のまま移動): `DECISION_LOG_HISTORY.md`の`## ER-PM-001_CHAIN`節参照**
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -20884,3 +20886,13 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (iii)ユーザー受入条件(3)(4)・Side effect規定により**REJECTED、M2P0維持**。回帰15 jobは「良好なKey Phraseの喪失」STOP条件のため未実行(JPY約25未使用)。
 - Status: REJECTED(Trial、微調整Trial範囲)。`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない。Production code/Prompt/DB/gate/Validator無変更。CURRENT_SPEC無変更。Production state sha前後不変。
 - 反映先: OPEN-336へ追記(新規OPENなし)。証跡: `er064_output/kp_no_way_fix_01/TRIAL_REPORT_02.md`・`before_after_meta_adv_02.md`・`regression_02.md`・`cost_run_02.json`。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-X-KP-NO-WAY-MINIMAL-FIX-TRIAL-01_02.md`。
+
+## ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01 委任_01(2026-10-13、発音同等性に基づくASR判定の全Family共通設計方針の合意。設計方針の承認のみ・新ValidatorのProduction採用ではない・Production無変更)
+- **ユーザー決定(2026-10-13、設計方針の合意)**: 「原文とASR結果の文字列差分を、発音上の同等性と自然な音声変化に基づいて評価し、同じ音韻現象には同じ判定を適用する。ただし、実質的な発音・内容の誤りを許容しないための安全条件を維持する。これはMelos専用ではなく、固有名詞・一般語を含む全Family共通の設計指針とする。今回の承認は設計方針の承認であり、新ValidatorのProduction採用承認ではない」。現行の連結発音許容原則(`Melos said`→`Melo said`をPattern Aで許容)は維持し、同じ音素列として確認できる別綴り(`Mello`/`Mellow`等)に同じ基準を適用する(同じ現象の一部だけに異なる厳格な証拠基準を課さない)。ただし既存許容原則自体の誤PASSリスクは認識し安全性検証の対象とする。Melos/Melo/Mello/Mellow/Mellosは説明用の例にすぎず、綴りの個別登録・Melos専用hardcodeは禁止。単語単体の読みと連結発音後の読みを混同しない。音素が実質的に異なるケースまで許容しない。
+- **基本構造7段**: (1)差分検出 (2)固有名詞・一般語それぞれの発音確認 (3)確認済み発音辞書・G2P・既存Resolver等で音素レベル同等性評価 (4)同音異綴り/自然な連結発音/融合・弱化・脱落/語境界再分割を区別診断 (5)既存承認済み許容ルールを一貫適用 (6)否定・時制・数・重要語の置換/欠落等の安全条件維持 (7)根拠不十分なら無条件PASSにせず既存の安全な判定/Human Reviewへ。
+- **受入条件(減速後を含む全経路同時適用)**: Standard減速前/Standard 6%減速後/Advanced/初回生成/retry・fallback・regeneration/Local Rewrite後の再検証を設計・Trialに最初から含める(減速前先行・減速後後追いは禁止)。減速前後で判定思想が変わらないことを受入条件とする。承認済み仕様が減速後に未適用の場合は、未配線/既知スコープ外/新規仕様を区別して記録する。
+- **Repo記録**: 上位設計原則文書を新設(`docs/pm/design_principles/connected_speech_proper_noun_phonetic_equivalence_2026-10-13.md`、指定パスの文書は委任時点で未作成だったため新規作成)。Status=`DESIGN_PRINCIPLE_AGREED`/実装・安全性=未検証/Production採用=未承認。**未検証ロジックは`CURRENT_SPEC.md`へ記載しない**(本委任でCURRENT_SPEC編集なし)。現行Production仕様の所在=CURRENT_SPEC L2025(Pattern A/B/C)・L2026(Equivalence Layer)・L2019(ASR Semantic Equivalence)。
+- **作業範囲の分担**: 1)上位設計指針の反映 2)既存機構との対応・ギャップ整理(GAP_MAP_01.md) 3)一般化判定方式の設計草案(DESIGN_DRAFT_01.md、Status=`DESIGN_DRAFT`・Opus独立技術レビュー条件A待ち=委任_01完了後にFableが別途起動) 4)既存データ・read-onlyの低コスト検証(OFFLINE_EVAL_01.md、費用JPY0) 5)英文・音声分割改善Trial=別管理ID`FAMILY-Z-ATTRIBUTION-CLIP-SPLIT-IMPROVEMENT-TRIAL-01`(Trial実施承認済み、別agentで並行、出力`er069_output/`)。今回の目的はMelosを通すことではなく、同種の問題が量産時に繰り返されない仕組みを確立すること。個別ケースがPASSしただけではTrial成功と判定しない。
+- **read-only検証の結果(Trial隔離プロトタイプ、Production無変更・費用JPY0・有料API 0)**: 方式M1(ASR側のCMU確認済み同音綴り正規化→既存Pattern A/B/C・厳密一致へ帰着、新受理基準なし)。**テキストのみ(V1)は既存判定比の誤PASS増分28件(`said`語末70〜220ms切詰の合成音声)で`REJECTED`候補**。M1+末尾完全性の独立確認(V2)は同データで増分0だが合成依存で一般保証ではない=`USER_DECISION_REQUIRED`。受理面が広がる(s終わり固有名詞54語中17語で38綴り追加、`Jones`←`Joan`等の別実在語を含む)。実データの救済はMelosの`Mello/Mellow/Mellos/Mellows`のみ(Melos以外0)。減速前後で同一転写の15対は判定15/15一致(判定は入力にroute/減速を持たない純関数)。新規発見(既存仕様の穴、本委任で修正せず報告): Pattern A/B/Cは最初の食い違い語のみで判定し後続の無関係な置換を見逃す(F1)/固有名詞の代表発音基準と`HOMOPHONE_EQUIVALENT`経路の不整合(F2)。詳細`er068_output/asr_phonetic_equivalence_generalization_01/`。
+- **Status/Gate**: 設計=`DESIGN_DRAFT`、検証=`USER_DECISION_REQUIRED`(V1=REJECTED候補、V2=Opus条件Aレビュー待ち)。`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない。Production採用は人間ユーザーのみ。**未承認項目の実装禁止**(新自動PASSロジック・Validator許容範囲変更・安全Gate緩和はSTOP)。
+- 反映先: OPEN-339(新規、未検証の実装方式・安全性)を起票し、OPEN-122/318/327/328/330/331/335へ重複・競合の整理結果を追記(UDR #25追記・#41新設)。委任ログ`docs/pm/delegation_log/2026-10-13_ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01_01.md`。費用JPY0。
