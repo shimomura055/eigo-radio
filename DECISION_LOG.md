@@ -20756,3 +20756,14 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 副次発見: `normalize_ja`が〜/、を除去した直後にNORMALIZED_MATCHとなり、3〜5日vs35日・3、4人vs34人が通ることを実測 → 新規OPEN-334(修正なし)。
 - テスト: test_01 18件+test_02 31件=49件全PASS。state不変確認`state_guard_02.json`(changed=[])。付帯: commit b46ec8b8の事後secret scan(--rev/--paths)hits=0。
 - 証跡: `er066_output/ja_asr_orthographic_equivalence_01/`(`before_after_tables_02.md`/`before_after_02.json`/`state_guard_02.json`/`eval_02_stdout.txt`)、委任ログは本回答(Fable)へ引き渡し。OPEN-319/287/333更新、OPEN-334新規。
+
+
+## FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01 委任_03(2026-10-13、連結発音対策の徹底監査+評価単位+NG時Fallback+再発防止。監査/Trial記録。採用判断は書かない)
+### 2026-10-13 委任_03(Production無変更、費用JPY8.21/20、Melos累計約233.2/300)
+- 判断軸(ユーザー承認済み基本原則): 子音連続による融合・弱化・脱落は、音韻構造を診断し正常な連結発音で説明できるなら許容。ただし文脈によるASRの推測だけを根拠に自動PASSしない。
+- A監査(5機構x8点、`phase2/A_AUDIT_02.md`): 基本原則は綴り水準の限定3パターン(Pattern A/B/C)としてのみ実装。欠落層=綴り水準vs音韻水準、Eq Layer入口条件(`TRUE_CONTENT_MISMATCH`限定)、OOV固有名詞のG2P欠如。配線漏れ・判定順序バグは新規0件(受理可能だったのにentity gateに遮られた実例0)。既存仕様の是正は実施せず(是正候補: OPEN-122(4)・OPEN-322・OPEN-328、いずれも今回事象に無関係/効果確認不能のため未実施)。
+- Trial音韻判定(`er065_..._p2_phon.py`、Production未配線): Melos said->Mello/Mellow/Melo は s+s融合で説明可、meloset/Mellowsetは融合+/d/無声化、Mellis(母音差)・別語・語欠落は説明不能。ASR文字列は融合と語末s脱落を区別できない。音響独立証拠(摩擦区間長、既存wav215本)はAUC0.74で単独gate不可(人間承認b1b_att1が0ms)。→ 自動許容REJECTED(独立証拠未校正)。説明付きHR候補化はUSER_DECISION_REQUIRED。
+- B: 短尺不安定の主因はOpenAIでは短さ+OOV名(Melos+非s 2語cut exact 0/16)、Azure+PLではs+s融合も有意(Melos語一致 2/14 vs 6/8、p=0.008)。1文単位(gap80)は改善せず(OpenAI 0/14, Azure 0/7)。一般語2語窓も融合型/対照で有意差なし(p=0.37)。長範囲ASR方式は費用約14倍・整合コスト・maskingのため非推奨(設計案は報告書B-2)。
+- C: 同条件繰返しはNG take 0/5救済。文脈付き音韻判定はNG take転写の33-100%を連結発音で説明可に分類(HR候補化、救済ではない)。
+- D: Production実データ英語2,030対、境界7,412、差分124 instance。一般語の正常音声ではTrialは新たな許容をほぼ生まない。反例の増分誤許容19件はすべてsyn_B1_trunc(語末切詰、領域外の欠陥)=clip末尾完全性の独立確認併用が必要。人手verdictがHR queueに残らないため過去HRのNG実音声は取得不可。
+- 回帰test `er065_short_clip_asr_context_trial_01_regression_test_01.py` 19件PASS。Dangling Reference Check: Production code/Promptからer065 Trialへの参照0件。state不変`phase2/state_guard_02.json`。詳細`phase2/PHASE2_REPORT_02.md`、委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01_03.md`。OPEN-318/327/330/331/122/107/110へ追記、新規OPENなし(重複確認済み)。

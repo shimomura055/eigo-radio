@@ -1,0 +1,53 @@
+{
+ "task": "FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01 委任_03",
+ "currency": "JPY",
+ "usd_jpy": 160.0,
+ "pricing_source": "er005_output/cost_baseline_01/pricing_snapshot.json (委任_01と同一。gpt-4o-mini-transcribe音声入力単価は未確認=過小評価の可能性、usage画面照合要) / Azure STT 1.0 USD/audio-hour",
+ "models": {
+  "openai": "gpt-4o-mini-transcribe (Production Primary同一; 最新モデル原則の例外=比較可能性)",
+  "azure": "Azure Speech STT en-US (Production Secondary同一; Melos=PhraseList['Melos'], 一般語=PhraseListなし)",
+  "whisper": "local faster-whisper small/medium (無料CPU, Production対象外の第三者参照)"
+ },
+ "total_jpy": 8.2063,
+ "cap_jpy": 20.0,
+ "remaining_jpy": 11.7937,
+ "by_engine_jpy": {
+  "azure": 5.6109,
+  "openai": 2.5954,
+  "whisper-small": 0.0,
+  "whisper-medium": 0.0
+ },
+ "n_calls": {
+  "azure": 88,
+  "openai": 265,
+  "whisper-small": 102,
+  "whisper-medium": 68
+ },
+ "audio_seconds": {
+  "azure": 126.2,
+  "openai": 497.8,
+  "whisper-small": 220.4,
+  "whisper-medium": 72.8
+ },
+ "by_tag_jpy": {
+  "azure_02": 2.7358,
+  "azure_e_02": 0.2898,
+  "azure_g_02": 2.244,
+  "azure_v2_02": 0.3413,
+  "openai_02": 1.36,
+  "openai_e_02": 0.1092,
+  "openai_g2_02": 0.6772,
+  "openai_g_02": 0.3386,
+  "openai_v2_02": 0.1104,
+  "whisper_02": 0.0,
+  "whisper_e_02": 0.0,
+  "whisper_g_02": 0.0,
+  "whisper_v2_02": 0.0
+ },
+ "melos_cumulative": {
+  "before_this_delegation_est": 225.0,
+  "after": 233.21,
+  "cap": 300.0,
+  "note": "225.0 = 185.4 + 委任_01 Trial 39.61 (COST_LEDGER_MELOS_01.md 記載の185.4に委任_01 Trialの39.61を加算した値)。ledger本体には未追記(Production state書込禁止のため、記録は本ファイルとSSOTのみ)"
+ }
+}

@@ -622,3 +622,10 @@
 - a2_att5: n=2, ctx_has_focus=False, 転写=['melo said', 'melos said'], melos said=1
 - a2_att6: n=2, ctx_has_focus=False, 転写=['melos said'], melos said=2
 - b1b_att1: n=1, ctx_has_focus=False, 転写=['mello said'], melos said=0
+
+## [委任_03追記] 連結発音対策の徹底監査+評価単位+NG時Fallback+再発防止(2026-10-13、統合先: `phase2/`)
+
+詳細は `er065_output/short_clip_asr_context_trial_01/phase2/PHASE2_REPORT_02.md`(A監査表 `A_AUDIT_02.md`、B/C/D集計 `analysis_{b,c,d}_02.md`)。Production無変更・TTS生成0・費用JPY8.21/20。
+- 基本原則(子音連続の融合・脱落を音韻診断で連結発音と説明できれば許容。ASR推測のみで自動PASSしない)は、現行では綴り水準の限定3パターンとしてのみ実装。欠落層=綴り vs 音韻、Equivalence Layer入口条件、OOV固有名詞のG2P欠如。配線漏れ・判定順序バグ新規0件。
+- 本文0節(1)(c)で未分離としていた『長さ vs s+s融合』を実測で分離: OpenAIは Melos+非s 2語cutでも exact 0/16(短さ+OOV名が主因)、Azure+PLはs+s寄与が有意(Melos語一致 2/14 vs 6/8、p=0.008)。1文単位(gap80)は改善せず。
+- 音響の独立証拠(摩擦区間長)は既存wav215本でAUC0.74=単独gate不可。自動許容はREJECTED、音韻説明可の『説明付きHR候補化』は USER_DECISION_REQUIRED。
