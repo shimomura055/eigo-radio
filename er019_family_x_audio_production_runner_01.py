@@ -34,6 +34,7 @@
 from __future__ import annotations
 
 import argparse
+import sys
 import hashlib
 import json
 import os
@@ -783,6 +784,11 @@ def generate_family_x_b1_segments(
                     enable_pronunciation_resolver=True, tts_backend=tts_backend),
                 expected_text=text)
         results[name]["canonical_text"] = text
+        # 委任_03(OF-Y8): Adv Preview(E1)のM4記録。profileにPREVIEW overrideがあるときだけ付く
+        # (default/他profileは何も書かない=バイト同一)。Comment 1〜4は対象外。
+        if name == "preview" and not validation_inheritance.is_untouched_entry(results[name]):
+            style_profile_mod.attach_segment_profile_record(
+                results[name], style_profile, style_profile_mod.ROLE_PREVIEW, _role_style("PREVIEW"))
 
     # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1、2026-09-29): Heading
     # Readout撤去(旧Stage 3cのfull_story_part2_heading/full_story_part3_
@@ -2253,7 +2259,32 @@ def print_m2_fallback_final_line(out_dir: str) -> str:
     return line
 
 
+MIGRATE_MANAGED_ID = "FAMILY-XZ-M2P0-N01-PRODUCTION-COMPLETION-01"
+
+
+def _maybe_migrate_style_profile_record(argv: list) -> bool:
+    """`--migrate-style-profile-record`が指定された場合のみ、固定記録を上位集合profileへ1回限り移行して終了する
+    (API呼出なし・生成なし)。M2(既存run stateありで新規記録禁止)の唯一の例外で、監査記録を必須とする。"""
+    if "--migrate-style-profile-record" not in argv:
+        return False
+    mp = argparse.ArgumentParser(add_help=False)
+    mp.add_argument("--migrate-style-profile-record", action="store_true")
+    mp.add_argument("--out-dir", required=True)
+    mp.add_argument("--from", dest="migrate_from", required=True)
+    mp.add_argument("--to", dest="migrate_to", required=True)
+    mp.add_argument("--reason", required=True)
+    mp.add_argument("--managed-id", default=MIGRATE_MANAGED_ID)
+    margs, _unknown = mp.parse_known_args(argv)
+    rec = style_profile_mod.migrate_record(margs.out_dir, margs.migrate_from, margs.migrate_to,
+                                           margs.reason, margs.managed_id)
+    print(f"[STYLE-PROFILE][MIGRATED] {margs.migrate_from} -> {margs.migrate_to} "
+          f"added_roles={rec['migration']['added_roles']} archived={rec['migration']['archived_old_record']}")
+    return True
+
+
 def main() -> None:
+    if _maybe_migrate_style_profile_record(sys.argv[1:]):
+        return
     parser = build_arg_parser()
     args = parser.parse_args()
 

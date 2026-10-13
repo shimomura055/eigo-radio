@@ -224,32 +224,26 @@ _DANGLING_TAIL_WORDS = frozenset({
     "into", "onto", "upon", "against", "toward", "towards", "through",
     "between", "among", "within", "without", "during", "about", "and", "or", "but",
 })
-_SPAN_EXTENSION_MAX_WORDS = 3
 _SPAN_WORD_RE = re.compile(r"[A-Za-z0-9]+(?:['’\-][A-Za-z0-9]+)*")
 
 
 def expand_dangling_source_span(item: dict) -> str:
-    """item["source_span"]の末尾が機能語で終わる候補ID方式itemに限り、source_sentence内の
-    実出現位置の直後から、内容語1語を含むところまで(最大3語)を原文どおり連結して返す。
-    条件を満たさない場合(Strategy L等、末尾が内容語、sentence内に見つからない、直後が
-    句読点)は元のsource_spanをそのまま返す。"""
+    """案A'(OF-Y1/Y2、2026-10-13): 候補ID方式(source_reference_contractあり)の全itemについて、
+    source_sentence内の候補の実出現位置から右へ、句読点・引用符・文末に当たるまで、かつ候補語を
+    含めて合計KEY_PHRASE_MAX_WORDS(5語)以内の原文窓を返す(末尾語判定は廃止)。
+    維持: 語境界regex、複数出現で窓が一致しない場合は拡張しない(fail-safe)。
+    条件を満たさない場合(Strategy L等、source_sentence内に見つからない、候補が既に5語以上、
+    直後が句読点)は元のsource_spanをそのまま返す。"""
     span = item.get("source_span") or ""
     sentence = item.get("source_sentence") or ""
     if not item.get("source_reference_contract") or not span or not sentence:
         return span
-    tail_words = _SPAN_WORD_RE.findall(span)
-    if not tail_words or tail_words[-1].lower().replace("’", "'") not in _DANGLING_TAIL_WORDS:
-        return span
-    # OF-X2(2026-10-13): 語境界を見る(例: "in the"が"within the"内に誤一致しない)。
-    # 複数出現があり拡張結果が一致しない場合は曖昧なので拡張しない(従来どおり元span=fail-safe)。
+    # OF-X2: 語境界を見る(例: "in the"が"within the"内に誤一致しない)。
     pattern = re.compile(r"(?<![A-Za-z0-9])" + re.escape(span) + r"(?![A-Za-z0-9])", re.IGNORECASE)
     expansions = set()
     for m in pattern.finditer(sentence):
-        exp = _extend_from(sentence, m.start(), m.end())
-        if exp is None:
-            return span
-        expansions.add(exp)
-    if len(expansions) != 1:
+        expansions.add(_extend_from(sentence, m.start(), m.end()))
+    if len(expansions) != 1 or None in expansions:
         return span
     expanded = expansions.pop()
     return expanded if _span_word_count_ok(expanded) else span
@@ -257,25 +251,23 @@ def expand_dangling_source_span(item: dict) -> str:
 
 def _extend_from(sentence: str, start: int, end: int):
     cursor = end
-    added = 0
-    while added < _SPAN_EXTENSION_MAX_WORDS:
+    total = _word_count(sentence[start:end])
+    while total < KEY_PHRASE_MAX_WORDS:
         gap_match = re.match(r"[ 	]+", sentence[cursor:])
         if not gap_match:
-            break  # 直後が句読点・文末(空白なしの記号)ならこれ以上拡張しない
+            break  # 直後が句読点・引用符・文末(空白なしの記号)ならこれ以上拡張しない
         word_match = _SPAN_WORD_RE.match(sentence, cursor + gap_match.end())
         if not word_match:
-            break
+            break  # 空白の後が記号(ダッシュ・括弧・引用符等)なら停止
         cursor = word_match.end()
-        added += 1
-        if word_match.group(0).lower().replace("’", "'") not in _DANGLING_TAIL_WORDS:
-            break  # 内容語を1語含めたら止める
-    if added == 0:
-        return sentence[start:end]
+        total += 1
+    if cursor == end:
+        return None  # 拡張なし(呼出側で元spanを返す)
     return sentence[start:cursor]
 
 
 def _span_word_count_ok(text: str) -> bool:
-    return _word_count(text) <= p2g.DISPLAY_PHRASE_MAX_WORDS + _SPAN_EXTENSION_MAX_WORDS
+    return _word_count(text) <= KEY_PHRASE_MAX_WORDS
 
 
 def canonicalization_view_items(items: list) -> list:
@@ -697,6 +689,21 @@ def run_canonicalization_gate(
     return None, "TECHNICAL_GENERATION_FAILED", attempts_detail, None, None
 
 
+def kp_extends_beyond_candidate(original: dict, expanded_span: Optional[str], key_phrase: str) -> bool:
+    """KPが、元候補span/display_phraseに含まれない語を、A'窓の右拡張部分から取り込んだか(活用形の違い
+    [gave/give等]は拡張部分の語ではないため対象外)。候補ID方式で窓が拡張されたitemのみ判定する。"""
+    if not original.get("source_reference_contract") or not expanded_span:
+        return False
+    span = original.get("source_span", "") or ""
+    disp = original.get("display_phrase") or original.get("canonical_english") or ""
+    known = set(_SPAN_WORD_RE.findall(_normalize_for_match(span))) | set(_SPAN_WORD_RE.findall(_normalize_for_match(disp)))
+    win_tokens = _SPAN_WORD_RE.findall(_normalize_for_match(expanded_span))
+    n_span = len(_SPAN_WORD_RE.findall(_normalize_for_match(span)))
+    extension = set(win_tokens[n_span:])
+    extra = [t for t in _SPAN_WORD_RE.findall(_normalize_for_match(key_phrase)) if t not in known]
+    return any(t in extension for t in extra)
+
+
 def merge_canonicalization_result(original_items: list, canonicalization_items: list) -> dict:
     """source_span/display_phrase(選定結果、無変更)と、key_phrase/
     used_form/QA/reasoning(この工程の出力)を1つのproduction artifactへ
@@ -755,6 +762,11 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
         if rank in expanded_span_by_rank:
             # 是正①: canonicalization入力に使った拡張span(選定結果のsource_spanは無変更)を監査用に記録。
             merged_item["canonicalization_source_span"] = expanded_span_by_rank[rank]
+        # OF-Y3(2026-10-13): 非ブロッキング監査フラグ。key_phraseが元候補spanの外(A'窓の右拡張部分)の語を
+        # 取り込んで伸びた場合、日本語gloss(候補由来)とKPの整合を人間/PMが原文と照合する(gloss_review_hint)。
+        _beyond = kp_extends_beyond_candidate(original, expanded_span_by_rank.get(rank), canon["key_phrase"])
+        merged_item["kp_extends_beyond_candidate"] = _beyond
+        merged_item["gloss_review_hint"] = _beyond
         for passthrough_field in ("source_reference_contract", "source_candidate_id",
                                    "surface_echo", "candidate_mismatch_suspected", "key_phrase_role"):
             if passthrough_field in original:

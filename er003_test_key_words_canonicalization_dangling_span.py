@@ -31,17 +31,18 @@ class DanglingSpanExpansionTest(unittest.TestCase):
 
     def test_similar_dangling_tails(self):
         self.assertEqual(kc.expand_dangling_source_span(
-            _item("urge to", "I feel the urge to watch another video, again.")), "urge to watch")
+            _item("urge to", "I feel the urge to watch another video, again.")), "urge to watch another video")
         self.assertEqual(kc.expand_dangling_source_span(
-            _item("look at", "We look at the data again")), "look at the data")
+            _item("look at", "We look at the data again")), "look at the data again")
         self.assertEqual(kc.expand_dangling_source_span(
             _item("rely on", "Firms rely on, say, data.")), "rely on")
 
 
     def test_complete_spans_untouched(self):
+        # 案A'(OF-Y1): 文末で終わる/既に5語のspanは不変
         for span, sent in [("right away", "But a shop's price may not change right away"),
                            ("prices up", "A person said three costs had pushed prices up"),
-                           ("raw-bean", "The raw-bean price fell")]:
+                           ("one two three four five", "Say one two three four five six seven")]:
             self.assertEqual(kc.expand_dangling_source_span(_item(span, sent)), span)
 
     def test_punctuation_stops_expansion(self):
@@ -134,7 +135,7 @@ class CompletionO2LeftEndGuardTest(unittest.TestCase):
 
     def test_of_x2_word_boundary(self):
         it = _item("in the", "The firm said within the report that it is in the market now")
-        self.assertEqual(kc.expand_dangling_source_span(it), "in the market")
+        self.assertEqual(kc.expand_dangling_source_span(it), "in the market now")
         it2 = _item("in the", "It is within the report only")
         self.assertEqual(kc.expand_dangling_source_span(it2), "in the")  # 'within the'へ誤一致しない
 
@@ -167,3 +168,82 @@ class CompletionO2LeftEndGuardTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ApproachAPrimeGeneralizedWindowTest(unittest.TestCase):
+    """案A'(OF-Y1/Y2/Y3、委任_03): 候補ID方式の全itemを対象に右方向原文窓(合計5語以内、句読点で停止)。"""
+
+    def test_content_word_ending_span_also_expands(self):
+        # 末尾語判定の廃止: 内容語で終わる候補も右へ窓が伸びる(合計5語まで)
+        self.assertEqual(kc.expand_dangling_source_span(
+            _item("bring in", "Roasters bring in raw beans from abroad every week")), "bring in raw beans from")
+        self.assertEqual(kc.expand_dangling_source_span(
+            _item("price", "The price fell sharply last month.")), "price fell sharply last month")
+
+    def test_window_stops_at_punctuation_and_quotes(self):
+        self.assertEqual(kc.expand_dangling_source_span(_item("price", "The price fell, sharply.")), "price fell")
+        self.assertEqual(kc.expand_dangling_source_span(_item("price", 'The price "fell" sharply.')), "price")
+        self.assertEqual(kc.expand_dangling_source_span(_item("price fell", "The price fell sharply.")), "price fell sharply")
+
+    def test_total_five_word_cap(self):
+        out = kc.expand_dangling_source_span(_item("a b", "x a b c d e f g h"))
+        self.assertEqual(out, "a b c d e")
+        self.assertLessEqual(len(out.split()), kc.KEY_PHRASE_MAX_WORDS)
+
+    def test_hyphen_word_is_one_token(self):
+        self.assertEqual(kc.expand_dangling_source_span(
+            _item("raw-bean", "The raw-bean price fell a lot today")), "raw-bean price fell a lot")
+
+    def test_multi_occurrence_mismatch_not_expanded(self):
+        it = _item("price", "The price fell. Another price rose sharply.")
+        self.assertEqual(kc.expand_dangling_source_span(it), "price")
+
+    def test_strategy_l_byte_identical(self):
+        it = _item("price", "The price fell sharply.", contract=None)
+        self.assertEqual(kc.canonicalization_view_items([it]), [it])
+
+    def test_left_end_guard_maintained(self):
+        # 候補の内容語(price)を落とし補語だけにするKPは、A'窓でも拒否(OF-X1維持)
+        it = _item("price", "The price fell sharply.")
+        r = kc.validate_canonicalization_response({"items": [_llm_item(5, "fell sharply")]}, [it])
+        self.assertEqual(r["status"], "CANONICALIZATION_INVALID")
+        ok = kc.validate_canonicalization_response({"items": [_llm_item(5, "price fell sharply")]}, [it])
+        self.assertNotEqual(ok["status"], "CANONICALIZATION_INVALID")
+
+
+class GlossAuditFlagTest(unittest.TestCase):
+    def _merge(self, span, key_phrase, sentence="Roasters bring in raw beans from abroad."):
+        it = _item(span, sentence)
+        it["ja_gloss"] = "x"
+        canon = _llm_item(5, key_phrase)
+        return kc.merge_canonicalization_result([it], [canon])["items"][0]
+
+    def test_flag_false_when_within_candidate(self):
+        m = self._merge("bring in", "bring in")
+        self.assertFalse(m["kp_extends_beyond_candidate"])
+        self.assertFalse(m["gloss_review_hint"])
+
+    def test_flag_true_when_beyond_candidate(self):
+        m = self._merge("bring in", "bring in raw beans")
+        self.assertTrue(m["kp_extends_beyond_candidate"])
+        self.assertTrue(m["gloss_review_hint"])
+
+    def test_flag_false_for_non_candidate_id_items(self):
+        it = _item("bring in", "x", contract=None)
+        it["ja_gloss"] = "x"
+        m = kc.merge_canonicalization_result([it], [_llm_item(5, "bring in raw beans")])["items"][0]
+        self.assertFalse(m["kp_extends_beyond_candidate"])
+
+
+class GlossAuditInflectionTest(unittest.TestCase):
+    def test_inflection_normalization_is_not_flagged(self):
+        it = _item("gave back", "Prices gave back some of the gains on Monday.")
+        it["ja_gloss"] = "x"
+        m = kc.merge_canonicalization_result([it], [_llm_item(5, "give back", reason="normalize_inflection")])["items"][0]
+        self.assertFalse(m["kp_extends_beyond_candidate"])
+
+    def test_taking_window_words_is_flagged(self):
+        it = _item("gave back", "Prices gave back some of the gains on Monday.")
+        it["ja_gloss"] = "x"
+        m = kc.merge_canonicalization_result([it], [_llm_item(5, "give back some of the gains")])["items"][0]
+        self.assertTrue(m["kp_extends_beyond_candidate"])

@@ -89,6 +89,13 @@ N01_TEXT = (
 N01_SHA256 = "d1956c91c925d197e27cf1204d7ed17248a96bef096b082fb1bd0846106a0477"
 N01_LENGTH = 202
 
+# E1原文(逐語、Adv Preview[英語・Charon] Style Trial、ユーザー承認済み。正本: er057_tone_trial_tts_gen_01.py
+# SPECS["E"]["E1"][2]、CURRENT_SPEC「E1」承認sha先頭8862317ff766)。68文字。数値WPM・速度倍率を含まない。
+# FAMILY-XZ-M2P0-N01-PRODUCTION-COMPLETION-01 委任_03(OF-Y8): Adv Preview(b1b "preview" segmentのみ)へ配線。
+E1_TEXT = "calm, composed news anchor; steady and unhurried, clear and natural."
+E1_SHA256 = "8862317ff76693ff519ddfa956260a8cce2d540763333b54096b63161d84f641"
+E1_LENGTH = 68
+
 PROFILE_DEFAULT = "default"
 PROFILE_COFFEE_P8 = "coffee_p8"
 PROFILE_COFFEE_FINAL_V5 = "coffee_final_v5"
@@ -97,24 +104,29 @@ PROFILE_COFFEE_FINAL_V5 = "coffee_final_v5"
 PROFILE_N01 = "n01"
 # Coffee用結合profile: Full Story=N01 + Std Preview/Comment1〜4=R2 + Adv KP英英解説=P3(必須6、明示CLI指定専用)。
 PROFILE_COFFEE_N01_R2_P3 = "coffee_n01_r2_p3"
+# 委任_03(OF-Y8): coffee_n01_r2_p3 + Adv Preview=E1。既存profileは不変(上位集合として新設)。
+PROFILE_COFFEE_N01_R2_P3_E1 = "coffee_n01_r2_p3_e1"
 # `resolve_run_profile`が「記録なし・CLI指定なし・run stateなし」の新規out_dirへ解決するprofile。
 DEFAULT_NEW_RUN_PROFILE = PROFILE_N01
 
 # role名(Std JA Preview/Comment1〜4、Adv KP英英解説)
 ROLE_SUPPORT_JA = "SUPPORT_JA"
 ROLE_KP_EXPLANATION_EN = "KP_EXPLANATION_EN"
+ROLE_PREVIEW = "PREVIEW"  # Adv(b1b)のPreview(英語)のみ。Comment 1〜4は対象外(Style正本は未決)。
 
 # 上書き対象role -> そのroleに対応するsegment名(runner側のsegment名)。
 ROLE_SEGMENTS = {
     "FULL_STORY": ("full_story_part1", "full_story_part2", "full_story_part3"),
     # Std(a2)のみ。japanese_title・Key Phrase日本語意味・IN_ONE_LINEは対象外。
     ROLE_SUPPORT_JA: ("preview", "comment_1", "comment_2", "comment_3", "comment_4"),
+    ROLE_PREVIEW: ("preview",),
 }
 # roleが適用されるlevel("a2"=Standard、"b1b"=Advanced)。levelが対象外ならbase_getterを素通し。
 ROLE_LEVELS = {
     "FULL_STORY": ("a2", "b1b"),
     ROLE_SUPPORT_JA: ("a2",),
     ROLE_KP_EXPLANATION_EN: ("b1b",),
+    ROLE_PREVIEW: ("b1b",),
 }
 
 _FULL_STORY_OVERRIDE = {
@@ -151,10 +163,19 @@ STYLE_PROFILES = {
             ROLE_KP_EXPLANATION_EN: {"text": P3_TEXT, "sha256": P3_SHA256},
         },
     },
+    # N01(Full Story) + R2(Std) + P3(Adv KP英英解説) + E1(Adv Preview)。Coffee(明示CLI)用。
+    PROFILE_COFFEE_N01_R2_P3_E1: {
+        "overrides": {
+            "FULL_STORY": dict(_FULL_STORY_OVERRIDE_N01),
+            ROLE_SUPPORT_JA: {"text": R2_TEXT, "sha256": R2_SHA256},
+            ROLE_KP_EXPLANATION_EN: {"text": P3_TEXT, "sha256": P3_SHA256},
+            ROLE_PREVIEW: {"text": E1_TEXT, "sha256": E1_SHA256},
+        },
+    },
 }
 
 # roleごとのlevel情報を記録へ含めるprofile(V5以降の複数role profile)。
-_PROFILES_RECORDING_LEVELS = (PROFILE_COFFEE_FINAL_V5, PROFILE_COFFEE_N01_R2_P3)
+_PROFILES_RECORDING_LEVELS = (PROFILE_COFFEE_FINAL_V5, PROFILE_COFFEE_N01_R2_P3, PROFILE_COFFEE_N01_R2_P3_E1)
 
 PROFILE_RECORD_RELPATH = "audit/style_profile.json"
 APPROVED_BACKEND = "speech_metadata_flash_lite"
@@ -175,7 +196,8 @@ def sha256_text(text: str) -> str:
 def _verify_constants() -> None:
     import er002_common as common
     for label, text, sha, length in (("P8", P8_TEXT, P8_SHA256, P8_LENGTH), ("R2", R2_TEXT, R2_SHA256, R2_LENGTH),
-                                     ("P3", P3_TEXT, P3_SHA256, P3_LENGTH), ("N01", N01_TEXT, N01_SHA256, N01_LENGTH)):
+                                     ("P3", P3_TEXT, P3_SHA256, P3_LENGTH), ("N01", N01_TEXT, N01_SHA256, N01_LENGTH),
+                                     ("E1", E1_TEXT, E1_SHA256, E1_LENGTH)):
         if sha256_text(text) != sha or len(text) != length:
             raise StyleProfileStop(
                 f"[STOP][STYLE-PROFILE] {label}定数のsha256/長さが原典と一致しません"
@@ -493,6 +515,13 @@ def m3_assembly_gate(profile_id: str, level: str, results: dict, approvals: dict
             elif role == ROLE_SUPPORT_JA:
                 if entry.get("fallback_used") is not False:
                     violations.append("JA_FALLBACK_USED_OR_UNKNOWN")
+            elif role == ROLE_PREVIEW:
+                # Adv Preview(E1): 実送信styleがE1で始まる/minimal_fallback(E1を落とす)でない。
+                sp = entry.get("style_prefix")
+                if not (isinstance(sp, str) and sp.startswith(exp_text)):
+                    violations.append("PREVIEW_STYLE_PREFIX_NOT_E1_PREFIXED")
+                if entry.get("instruction_type") == "minimal_fallback":
+                    violations.append("PREVIEW_MINIMAL_FALLBACK")
             if entry.get("local_rewrite_recovery"):
                 violations.append("LOCAL_REWRITE_RECOVERY")
         checked.append(name)
@@ -504,6 +533,63 @@ def m3_assembly_gate(profile_id: str, level: str, results: dict, approvals: dict
     return {"status": "BLOCK" if blocked else "PASS", "profile_id": profile_id, "level": level,
             "checked": checked, "blocked": blocked, "human_approved": human_approved}
 
+
+
+# ------------------------------------------------------------
+# 記録移行(委任_03 OF-Y8): 既存out_dirのstyle_profile.jsonを上位集合profileへ1回限り明示的に移行する。
+# 通常のresolve_run_profile(M2)は既存run state有りで新規記録を禁止する。移行はこの関数(明示CLI経由)のみ例外。
+# ------------------------------------------------------------
+MIGRATED_FROM_RELPATH_TMPL = "audit/style_profile_migrated_from_{n:02d}.json"
+
+
+def _canonical_sha(obj) -> str:
+    return sha256_text(json.dumps(obj, ensure_ascii=False, sort_keys=True))
+
+
+def migrate_record(out_dir: str, from_profile: str, to_profile: str, reason: str, managed_id: str,
+                   now: str | None = None) -> dict:
+    """条件: (1)固定記録が存在しprofile_id==from_profile かつ現行定義でverify通過、(2)from!=to、
+    (3)移行先のoverride role集合が移行元の上位集合で、移行元の全roleの文言shaが移行先と一致、(4)reason/managed_id非空。
+    動作: 旧記録を audit/style_profile_migrated_from_NN.json へ退避(上書きしない)→新記録にmigration情報を含めて書く。"""
+    if not (reason or "").strip() or not (managed_id or "").strip():
+        raise StyleProfileStop("[STOP][STYLE-PROFILE][MIGRATE] --reasonとManaged-IDは必須です。")
+    if from_profile == to_profile:
+        raise StyleProfileStop("[STOP][STYLE-PROFILE][MIGRATE] 移行元と移行先が同一です。")
+    get_profile(from_profile)
+    get_profile(to_profile)
+    old = read_record(out_dir)
+    if old is None:
+        raise StyleProfileStop("[STOP][STYLE-PROFILE][MIGRATE] 移行元の固定記録がありません。")
+    if old.get("profile_id") != from_profile:
+        raise StyleProfileStop(f"[STOP][STYLE-PROFILE][MIGRATE] 記録のprofile_id({old.get('profile_id')!r})が--from({from_profile!r})と不一致です。")
+    verify_record(old)
+    from_over = get_profile(from_profile)["overrides"]
+    to_over = get_profile(to_profile)["overrides"]
+    missing = sorted(set(from_over) - set(to_over))
+    if missing:
+        raise StyleProfileStop(f"[STOP][STYLE-PROFILE][MIGRATE] 移行先が移行元のrole集合の上位集合ではありません(欠落role={missing})。")
+    for role, o in from_over.items():
+        if to_over[role]["sha256"] != o["sha256"]:
+            raise StyleProfileStop(f"[STOP][STYLE-PROFILE][MIGRATE] role={role}の文言shaが移行先と一致しません(既存roleの変更は不可)。")
+    old_path = record_path(out_dir)
+    with open(old_path, "rb") as f:
+        old_bytes_sha = hashlib.sha256(f.read()).hexdigest()
+    n = 1
+    while os.path.exists(f"{out_dir}/{MIGRATED_FROM_RELPATH_TMPL.format(n=n)}"):
+        n += 1
+    archive = f"{out_dir}/{MIGRATED_FROM_RELPATH_TMPL.format(n=n)}"
+    new_rec = build_record(to_profile)
+    new_sha = _canonical_sha({k: new_rec[k] for k in ("profile_id", "overridden_roles", "roles")})
+    ts = now or time.strftime("%Y-%m-%dT%H:%M:%S")
+    new_rec["migration"] = {"from": from_profile, "to": to_profile, "reason": reason, "managed_id": managed_id,
+                            "timestamp": ts, "old_sha": old_bytes_sha, "new_sha": new_sha,
+                            "archived_old_record": os.path.basename(archive),
+                            "added_roles": sorted(set(to_over) - set(from_over))}
+    os.replace(old_path, archive)
+    with open(old_path, "w", encoding="utf-8") as f:
+        json.dump(new_rec, f, ensure_ascii=False, indent=2)
+    verify_record(read_record(out_dir))
+    return new_rec
 
 # ------------------------------------------------------------
 # S2: plan段階のPronunciation Ledger hit計算(読み取りのみ、web lookup無効、課金0)
