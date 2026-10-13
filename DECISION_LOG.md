@@ -20923,3 +20923,9 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **R1/R2**: R1を「語末歯擦音の固有名詞の直後に歯擦音始まりの語を置かない」へ修正(Writer prompt指針+決定論WARN lint。効果はMelos型の名前のみ)。R2(最小語数ルール)は効果未検出。減速: Melos s群OR raw 4/12→slow6 3/12、非s群12/12→12/12。
 - **限界**: 観測126・独立音声84、名前2種のみ、自然さ・聴感評価未実施、Fisher p値は過小評価。残課題: 別名前タイプの追加確認、ledger未登録名のPLなし通過率。
 - Status: USER_DECISION_REQUIRED(Trial)。`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない。Production code/Prompt無変更。採用判断なし。ユーザー判断(R1 A/B/C: A=Production化[Writer prompt指針+WARN lint]、B=追加確認を先に、C=見送り)は別途報告。反映先: OPEN-318。証跡: `er069_output/attribution_clip_split_trial_01/trial_conclusion_02.md`。
+
+### 2026-10-13 FAMILY-Z-MELOS-PREVIEW-STD-ADV-3TAKE-COMPARE-01 委任_01(Trial、比較生成のみ)
+- ユーザー指示要旨: メロスのPreviewをStd統一Prompt(FAMILY-Z-STANDARD-PREVIEW-X-ALIGNMENT-01のFamily X準拠)3回/Adv現行Prompt 3回、計6回の新規生成で比較し、Take間ばらつきとレベル間品質差を確認。Prompt変更・Comment/本文/KP再生成・TTS・Production採用判断は禁止。
+- 実施: 6 call(1 take=1 call、再生成なし)。Std送信promptのshaはer070と一致、Adv送信promptはrun_support_adv(mock)と一致を検証。使用モデル=gpt-6-luna(応答model_id実測)、effort high(Production Preview生成との比較可能性を例外理由とする)。費用JPY0.5652(Guardrail JPY5以内)。lint全6 OK。回帰: er062 writer 64 OK、er070 23 PASS、er072 7 PASS。state_guard不変。
+- 結果要約: Std統一Prompt(er070、sha一致)x3 / Adv現行PREVIEW_ROLE x3、gpt-6-luna effort high、6 call JPY0.5652、lint全6 OK。Std 3 take(75〜80字)は全て『信頼』テーマで出来事の具体性が低く(抽象・評論調、er067/er070単発と合わせ5/5件同傾向)、Adv 3 take(33〜35語)は全て『羊飼いが支配者に声を上げる』発端の具体事象+問い(Take2/3は死刑宣告まで言及、Take1に『支配者が聞くことを学べるか』の示唆あり)。Take間ばらつきはStd/Advとも小さくレベル間差の方が大きい。原因切り分け: 5/5件同傾向で単なる揺れとは考えにくいが、Std Commentが3文x2で発端〜中盤の事実を網羅する量差の交絡があり、Prompt構造由来とは断定不可(追加Trial未実施)。サンプル=メロス1作品・各3件。Status=USER_DECISION_REQUIRED(Trial、Production無変更・採用判断なし)。証跡: er072_output/melos_preview_std_adv_3take_01/COMPARE_REPORT_01.md
+- Status: USER_DECISION_REQUIRED(Trial)。`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない。Production code/Prompt無変更。採用判断なし。反映先: OPEN-338。
