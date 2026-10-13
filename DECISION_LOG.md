@@ -20743,7 +20743,16 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 ## JA-ASR-ORTHOGRAPHIC-EQUIVALENCE-COMPREHENSIVE-01 委任_01(2026-10-13、調査・Trial記録、採用判断なし。Production未配線・無変更)
 - 範囲: 「三日間/3日間」型(正しく発音されているのにASR表記差でValidatorがNG)を助数詞の個別対応で終わらせず包括的に扱う方針の調査とTrial。既存機構(normalize_ja閉リスト、Variant Layer、Reading Resolver、SCG S1除外、Cascade D-2、OPEN-286〜291統一フロー案)をコード位置・判定順序・適用範囲で1表化し、PM_GOVERNANCE 21節でA/B/C分類。
 - 調査結果: 全JA経路(初回・retry・minimal fallback・SCG・Cascade・Family X/Z・B1 JA)が同一`classify_ja_asr_match`を通り、閉リスト助数詞の仕様通りの表記差は30件全PASS。減速後再検証・Local RewriteはJAにProduction未適用。既存承認仕様の配線漏れ・不具合は該当なし(是正なし、CURRENT_SPEC無変更)。
-- Trial(ASR再呼出なし、費用JPY0): 数値+助数詞を値署名+かな読みへ展開し既存Production判定へ委譲、署名不一致・曖昧語(十分)は不許容。過去1,002ペアで実run新規救済6件(Melos三日間3・20％・10代・1日)、取消0、正常例37件全PASS、敵対的反例35件誤PASS 0(Before 1: Candidate E由来『三日間→三日目』)。Status案: Trial=VALIDATED(オフライン・小標本)、Production未配線。採用(Stage1署名一致のみ→Stage2読み展開)はUSER_DECISION_REQUIRED。
+- Trial(ASR再呼出なし、費用JPY0): 数値+助数詞を値署名+かな読みへ展開し既存Production判定へ委譲、署名不一致・曖昧語(十分)は不許容。過去1,002ペアで実run新規救済6件(Melos三日間3・20％・10代・1日)、取消0、正常例37件全PASS、敵対的反例35件誤PASS 0(Before 1: Candidate E由来『三日間→三日目』)。Status案: [委任_02で訂正: Trial: 安全側=合成反例で誤PASS 0(オフライン限定)/救済の有効性=PRELIMINARY(実run 6件、真値確認1件)/runtime evidenceなし/Production=未配線。当初の『VALIDATED(オフライン・小標本)』と『真値確認Melos3件』は撤回、真値確認はユニーク1組のみ]。採用はUSER_DECISION_REQUIRED。
 - 副次発見: 現行Production Candidate Eが三日間→三日目を誤PASS → 新規OPEN-333候補(署名ガードで取消可、Production無変更)。
 - テスト: `er066_ja_asr_orthographic_equivalence_01_test_01.py` 18件全PASS。state不変確認`state_guard_01.json`。
 - 証跡: `er066_output/ja_asr_orthographic_equivalence_01/`、`before_after_tables_01.md`、委任ログ`docs/pm/delegation_log/2026-10-13_JA-ASR-ORTHOGRAPHIC-EQUIVALENCE-COMPREHENSIVE-01_01.md`。OPEN-319/308/287へ追記、OPEN-333新規。
+
+## JA-ASR-ORTHOGRAPHIC-EQUIVALENCE-COMPREHENSIVE-01 委任_02(2026-10-13、Opus独立レビュー必須修正反映・再Trial・訂正記録。採用判断なし。Production未配線・無変更)
+- 訂正: (1)真値確認件数はユニーク1組(`asr_root_cause_01/pre_regen_backup`由来、HR承認済み)のみ。`run_e2e_01/a2`由来2件は真値未確認。(2)Status表記を「VALIDATED(オフライン・小標本)」から「Trial: 安全側=合成反例で誤PASS 0(オフライン限定)/救済の有効性=PRELIMINARY(実run 6件、真値確認1件)/runtime evidenceなし/Production=未配線」へ変更。(3)推奨(2)の根拠を「両側が同形に置換されるため」から「追加型(既存判定NGのときだけ動き、normalize_jaと_CLOSED_COUNTERS_JAを変更しない)ため」へ訂正し、Production実装条件に「閉リスト拡張方式では実装しない」を明記。
+- 再Trial(費用JPY0): Stage 1'(署名スパンを同一不透明記号へ置換し既存classify_ja_asr_matchへ委ねる、読み表不使用)を追加実装。実run救済は Stage 1=3件(10代・1日・Melos Std)/Stage 1'=6件(+20％・Melos A2 2件)/Stage 2=6件(追加0)。コーパス通過 Before752→759→762→762。敵対的反例74件(旧35+新規39)の誤PASSは全段階0、Candidate E由来のBefore誤PASS3件は取消。限定Stage 1だけではMelos A2とあと/後併発型は救済不可。
+- 残余リスク(USER_DECISION_REQUIRED): 値が同じで読みが誤った音声(さんにちかん等)をASRが算用数字で書けば通る。増分は限定的だがゼロでなく、負例0件で誤PASS率は測定不能。対応案(a)不規則読み署名はPASS_WITH_WARNING→最終試聴リスト(推奨、実run 6件中4件が該当)、(b)対象外。曖昧語へ一時/一月/一分/N分のを追加。
+- Opus推奨: Candidate E取消ガード修正(片側かな書きは読み展開で比較、構造化フィールド前提、Stage 2/1'にも適用)、OPEN-333を重大度低へ、桁区切り3桁のみ、読み表誤り修正(6歳ろくさい等)、推奨(4)(S1署名判定は「締める」側)の言い直し。
+- 副次発見: `normalize_ja`が〜/、を除去した直後にNORMALIZED_MATCHとなり、3〜5日vs35日・3、4人vs34人が通ることを実測 → 新規OPEN-334(修正なし)。
+- テスト: test_01 18件+test_02 31件=49件全PASS。state不変確認`state_guard_02.json`(changed=[])。付帯: commit b46ec8b8の事後secret scan(--rev/--paths)hits=0。
+- 証跡: `er066_output/ja_asr_orthographic_equivalence_01/`(`before_after_tables_02.md`/`before_after_02.json`/`state_guard_02.json`/`eval_02_stdout.txt`)、委任ログは本回答(Fable)へ引き渡し。OPEN-319/287/333更新、OPEN-334新規。

@@ -1,0 +1,78 @@
+{
+ "corpus_pairs": 1002,
+ "before_pass": 752,
+ "after_pass": {
+  "S1": 759,
+  "S1P": 762,
+  "S2": 762
+ },
+ "vetoed_prod_pass": 0,
+ "rescued_real_by_stage_cumulative": {
+  "S1": 3,
+  "S1P": 6,
+  "S2": 6
+ },
+ "rescued_real_total": 6,
+ "rescued_real_with_warning": 4,
+ "rescued_real_without_warning": 2,
+ "rescued_real_truth_confirmed": 1,
+ "rescued_synthetic_fixture": 4,
+ "truth_confirmed_unique_pairs": 1,
+ "positive_total": 47,
+ "positive_before_pass": 14,
+ "positive_after_pass_by_stage": {
+  "S1": 38,
+  "S1P": 40,
+  "S2": 47
+ },
+ "positive_warning": 10,
+ "negative_total": 74,
+ "negative_v1": 35,
+ "negative_v2": 39,
+ "negative_before_false_pass": 3,
+ "negative_after_false_pass_by_stage": {
+  "S1": 0,
+  "S1P": 0,
+  "S2": 0
+ },
+ "negative_after_false_pass_total": 0,
+ "negative_trial_rescued": 0,
+ "negative_vetoed": 3,
+ "prodbug_total": 9,
+ "prodbug_prod_pass": 9,
+ "prodbug_trial_rescued": 0,
+ "ambiguity_total": 5,
+ "ambiguity_after_pass": 0,
+ "ambiguity_not_rescued": 5,
+ "corpus_canonical_with_digit_separator_digit": 0
+}
+--- rescued (corpus)
+S1P - real  ./er007_ja_scg_phase0_fixture_01.jsonl | まず、20％という計画が発表されたあと、支払い方法など何がま | まず、20パーセントという計画が発表された後、支払い方法など
+S1 - real  ./er003_output/a2_audio_02/A02/audit/v2_segments_result.json | 英国政府が、10代の若者とSNSの使い方をめぐる新しい計画を | 英国政府が、十代の若者とSNSの使い方をめぐる新しい計画を発
+S1 warn real  ./er003_output/crosslevel_audio_02/ADD03/audit/text_segments | 料金の話は、わずか1日で投資の話へと変わりました。では、原油 | 料金の話は、わずか一日で投資の話へと変わりました。では、原油
+S1 warn real truth ./er026_output/family_z_production_e2e_01/melos/asr_root_cau | メロスは、恐怖から人を殺し、話す機会も与えない支配者を責め、 | メロスは恐怖から人を殺し、話す機会も与えない支配者を責め、死
+S1P warn real  ./er026_output/family_z_production_e2e_01/melos/run_e2e_01/a | メロスは王に、公平な裁判もせず人を殺すのは不公平だと訴えます | メロスは王に、公平な裁判もせず人を殺すのは不公平だと訴えます
+S1P warn real  ./er026_output/family_z_production_e2e_01/melos/run_e2e_01/a | メロスは王に、公平な裁判もせず人を殺すのは不公平だと訴えます | メロスは王に、公平な裁判もせず人を殺すのは不公平だと訴えます
+S1 warn syn  ./er058_output/trial_abc/zero_yen_checks_05B/zero_yen_checks | 二人で行きました。 | 2人で行きました。
+S1 - syn  ./er058_output/trial_abc/zero_yen_checks_05B/zero_yen_checks | 20％の人が来ました。 | 20パーセントの人が来ました。
+S1 - syn  ./er058_output/trial_abc/zero_yen_checks_05B/zero_yen_checks | 三十人が来ました。 | 30人が来ました。
+S1 - syn  ./er058_output/trial_abc/zero_yen_checks_05B/zero_yen_checks | 100円でした。 | 百円でした。
+--- vetoed (corpus)
+--- negatives passing
+--- positives failing (after S2)
+--- prodbug
+3〜5日待つ 35日待つ NORMALIZED_MATCH True PRODUCTION_PASS
+3、4人来た 34人来た NORMALIZED_MATCH True PRODUCTION_PASS
+3、4日待つ 34日待つ NORMALIZED_MATCH True PRODUCTION_PASS
+1、2回試した 12回試した NORMALIZED_MATCH True PRODUCTION_PASS
+2〜3時間かかる 23時間かかる NORMALIZED_MATCH True PRODUCTION_PASS
+5〜10人来た 510人来た NORMALIZED_MATCH True PRODUCTION_PASS
+3~5日待つ 35日待つ PHONETIC_MATCH True PRODUCTION_PASS
+3～5日待つ 35日待つ PHONETIC_MATCH True PRODUCTION_PASS
+35日待つ 3〜5日待つ NORMALIZED_MATCH True PRODUCTION_PASS
+--- ambiguity
+{'canonical': '一月に会う', 'asr': '1月に会う', 'verdict': 'AMBIGUOUS_NO_RESCUE', 'after_pass': False}
+{'canonical': '一時に会う', 'asr': '1時に会う', 'verdict': 'AMBIGUOUS_NO_RESCUE', 'after_pass': False}
+{'canonical': '一分待つ', 'asr': '1分待つ', 'verdict': 'AMBIGUOUS_NO_RESCUE', 'after_pass': False}
+{'canonical': '三分の一', 'asr': '3分の1', 'verdict': 'AMBIGUOUS_NO_RESCUE', 'after_pass': False}
+{'canonical': '十分待った', 'asr': '10分待った', 'verdict': 'AMBIGUOUS_NO_RESCUE', 'after_pass': False}
