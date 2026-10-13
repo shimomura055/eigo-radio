@@ -1,0 +1,46 @@
+{
+ "status": "DRAFT_NOT_REGISTERED (Fable/ユーザー承認前に有料Trialを実行しない。承認時にsha256を凍結してから実行する)",
+ "based_on": "er064_output/kp_candidate_selection_design_01/step3_expected_labels_preregistration_01.json",
+ "changes_from_base": [
+  "pump one's fist を good(Important可)へ追加(ABC現行で5/6採択済みの維持確認。ただし設計書§10-E=ユーザー確認待ちのため『維持確認用』とし、採択率の上下は合否に使わない)",
+  "article_specific_creative に two numbers in the ring / in the ring / its own hidden clock を集約(Important混入率の分母)",
+  "meta/hormuz は既存の過去選定由来の暫定ラベル。ユーザー確認前は avoid を『要確認』として集計のみ(合否に使わない)"
+ ],
+ "coffee": {
+  "good_as_important_or_topic": ["time lag(Phase 1-Aで候補に入った場合のみ)", "push prices up", "be behind price increases", "show up", "come down"],
+  "good_as_topic": ["raw bean", "price tag", "(time) lag"],
+  "keep_check_only": ["pump one's fist"],
+  "article_specific_creative": ["two numbers in the ring", "in the ring", "its own hidden clock"],
+  "avoid_as_important": ["two numbers in the ring", "in the ring", "its own hidden clock", "be behind(単独、been behind price increasesが候補にあるとき)"],
+  "low_priority_relative": ["take time", "right away", "on a regular basis", "price measure", "retail prices", "usual cup"],
+  "never_fragment": ["be behind(been behind price increases が候補にあるとき)", "lag(time lag が候補にあるとき)"]
+ },
+ "meta": {
+  "good": ["Behind the Scenes", "contract workers", "concierge", "bargain", "by mistake"],
+  "avoid": ["of a", "calls to / calls it (phone callsが候補にあるとき)", "end of", "needed to"],
+  "status_note": "過去の最終選定と断片所見からの暫定。ユーザー確認待ち"
+ },
+ "hormuz": {
+  "good": ["give back gains(Phase 1-A候補に入った場合)", "sea blockade", "Brent crude futures(同)", "take a sharp turn(同)", "center stage"],
+  "avoid": ["settle at", "take for", "gave back(give back gainsが候補にあるとき)"],
+  "status_note": "同上。暫定"
+ },
+ "metrics": {
+  "primary": [
+   "受入2: Important枠での記事独自比喩混入率 = (Important 4枠のうちarticle_specific_creative集合に属する数)/(Important 4枠)。Std/Adv別、C0/C1/C2別",
+   "受入3: Topic枠が good_as_topic または本文理解への貢献が高いと人手判定された割合(人手判定は少数ケースのみ。LLM自己判定は使わない)",
+   "受入4: never_fragment/断片(closed-class始まり、動詞を欠く前置詞句)の採択率",
+   "受入5: good_as_important_or_topic の採択率",
+   "受入6: low_priority_relative が5枠中に占める枠数(Std)",
+   "pump one's fist 採択率(維持確認、上下は合否に使わない)"
+  ],
+  "secondary": [
+   "選定の安定性(Jaccard、同一条件n=3のitem集合間)",
+   "gate通過率(完全PASS=選定+canonicalization+Redundancy QA)。非PASSは原因をRule7語追加/Rule7人称/選定INVALID/Redundancy NG/QA失敗(REVIEW)に分類して別集計",
+   "established_or_article_specific の分布と、Important×article_specific の組(flag件数、記録のみ、retryなし)",
+   "ja_gloss機械検査: 括弧(全角/半角)・算用数字・『…』・数値穴埋め形の出現件数(グロス段落統合の副作用検査)",
+   "出力token数/費用/所要時間(Afterの入力+10%の実コスト)"
+  ],
+  "judging_rule": "『改善』判定は C2 が C0 に対して受入2/4/5/6のいずれかで改善し、かつ gate通過率(Rule7起因を除外した選定品質層)が低下しない場合のみ。n=3では確率差の断定はせず『方向性の確認』と明記する(ABC同様)"
+ }
+}

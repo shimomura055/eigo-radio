@@ -1,0 +1,42 @@
+PASS T1 before: 6指標の優先順位行が逐語で1回存在
+PASS T2 after(std): 6指標の優先順位行が逐語で1回存在(順序維持)
+PASS T3 after(std): Coffee記事語句をPromptに含まない
+PASS T4 after(std): 必須語『key_phrase_role="topic"』を保持
+PASS T4 after(std): 必須語『key_phrase_role="important"』を保持
+PASS T4 after(std): 必須語『backup_item』を保持
+PASS T4 after(std): 必須語『source_candidate_id』を保持
+PASS T4 after(std): 必須語『surface_echo』を保持
+PASS T4 after(std): 必須語『[重要な単語・単語群候補]』を保持
+PASS T4 after(std): 必須語『漢数字』を保持
+PASS T4 after(std): 必須語『1〜5語』を保持
+PASS T4 after(std): 必須語『ちょうど5個』を保持
+PASS T4 after(std): 必須語『括弧』を保持
+PASS T4 after(std): 必須語『「含む:Cn」』を保持
+PASS T4 after(std): 必須語『established_or_article_specific』を保持
+PASS T2 after(adv): 6指標の優先順位行が逐語で1回存在(順序維持)
+PASS T3 after(adv): Coffee記事語句をPromptに含まない
+PASS T4 after(adv): 必須語『key_phrase_role="topic"』を保持
+PASS T4 after(adv): 必須語『key_phrase_role="important"』を保持
+PASS T4 after(adv): 必須語『backup_item』を保持
+PASS T4 after(adv): 必須語『source_candidate_id』を保持
+PASS T4 after(adv): 必須語『surface_echo』を保持
+PASS T4 after(adv): 必須語『[重要な単語・単語群候補]』を保持
+PASS T4 after(adv): 必須語『漢数字』を保持
+PASS T4 after(adv): 必須語『1〜5語』を保持
+PASS T4 after(adv): 必須語『ちょうど5個』を保持
+PASS T4 after(adv): 必須語『括弧』を保持
+PASS T4 after(adv): 必須語『「含む:Cn」』を保持
+PASS T4 after(adv): 必須語『established_or_article_specific』を保持
+PASS T5 after: Std/Advの差はLEVEL_RULEのみ
+PASS T6 before(std): v5実run先頭=static逐語
+PASS T7 before(std): v5実run末尾=guidance逐語
+PASS T8 after(std): 候補セクション(行・SENTENCE REFERENCE)がBeforeとバイト一致
+PASS T6 before(adv): v5実run先頭=static逐語
+PASS T7 before(adv): v5実run末尾=guidance逐語
+PASS T8 after(adv): 候補セクション(行・SENTENCE REFERENCE)がBeforeとバイト一致
+PASS T9 schema: 追加は1フィールドのみ(他不変)
+PASS T10 schema: 追加フィールドはenum(established/article_specific/unsure)でrequired
+PASS T11 schema: backup_itemにも同schema
+PASS T12 Production Prompt/schema/builder 4ファイルの未コミット差分なし
+
+40/40 PASS
