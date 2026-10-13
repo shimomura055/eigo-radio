@@ -20767,3 +20767,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - C: 同条件繰返しはNG take 0/5救済。文脈付き音韻判定はNG take転写の33-100%を連結発音で説明可に分類(HR候補化、救済ではない)。
 - D: Production実データ英語2,030対、境界7,412、差分124 instance。一般語の正常音声ではTrialは新たな許容をほぼ生まない。反例の増分誤許容19件はすべてsyn_B1_trunc(語末切詰、領域外の欠陥)=clip末尾完全性の独立確認併用が必要。人手verdictがHR queueに残らないため過去HRのNG実音声は取得不可。
 - 回帰test `er065_short_clip_asr_context_trial_01_regression_test_01.py` 19件PASS。Dangling Reference Check: Production code/Promptからer065 Trialへの参照0件。state不変`phase2/state_guard_02.json`。詳細`phase2/PHASE2_REPORT_02.md`、委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-Z-SHORT-CLIP-ASR-CONTEXT-GENERALIZATION-TRIAL-01_03.md`。OPEN-318/327/330/331/122/107/110へ追記、新規OPENなし(重複確認済み)。
+
+## FAMILY-X-COFFEE-TTS-STYLE-8WAY-AB-TRIAL-01 委任_02(2026-10-13、Trial生成・測定・試聴ページ記録。採用判断なし。Production未配線・無変更)
+- 範囲: Coffee v5 Full Story Part1(Std/Adv)で、Style Prompt(Aoede、gemini-3.8-flash-lite-tts、speech_metadata方式。最新世代のProduction同一モデル)をA(現行P8)〜H(8方向)で比較。8候補x2 take x 2レベル=32 call、全件OK(技術failure 0、retry 0)。tts_input shaはv5と一致をassert。Take間のraw sha256は32件すべて異なる。Std 6%減速後ASRは省略(減速前Primary ASR 1回のみ、Trial限定)。ASR NGでも再生成なし。
+- 機械指標(参考。数値だけで最良を決めない): 文中無音総時間はA(Std4.5s/Adv5.9s)よりC〜Hで減少(E最少 Std2.7/Adv3.2s)。Adv WPMはC188/D191/E199/G191でD・Eに195超のtakeあり(速すぎ注意)。BはAとの差が単一変数(unhurried削除)だが、Take間WPM差約12でunhurried単独の因果は断定不能。ASR警告: B Adv T2(原稿に無い一文が末尾に追加された疑い)、H Std T2(said->says)。A新規takeでもv5より文末無音・WPMが動く(Std WPM 151.8 vs v5 145.5)=take間ばらつきが大きい。
+- Status案: USER_DECISION_REQUIRED(ユーザー試聴待ち)。Trial結果はProduction仕様ではない。採用時はFULL_STORY styleのprofile差替えのみで初回/retry/fallback経路は不変の見込み(未確認、採用承認後に別委任で設計)。
+- 費用: JPY39.55推定(TTS 32.42 + ASR推定 7.13、上限JPY60、中央見積43.4)。所要: 生成50秒、測定約15分。
+- 証跡: `er057_output/coffee_tts_style_8way_01/`(`MEASUREMENTS_02.md`/`measurements_02.json`/`generation_log_02.jsonl`/`cost_02.json`/`state_guard_02.json`/`play_evidence_02.json`)、試聴ページ`user_test/coffee_style_8way_01/index.html`、委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-TTS-STYLE-8WAY-AB-TRIAL-01_02.md`。OPEN-332へ参照追記(新規OPENなし)。

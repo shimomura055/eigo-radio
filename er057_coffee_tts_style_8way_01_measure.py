@@ -1,0 +1,67 @@
+# -*- coding: utf-8 -*-
+"""8way Trial測定(API呼出なし、費用0、faster-whisper small local)。⑤(er057_coffee_v5_pause_01_measure)のanalyze/silent_runsを再利用。"""
+import os, sys, json, re, hashlib
+import numpy as np, soundfile as sf
+ROOT = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, ROOT)
+import er057_coffee_v5_pause_01_measure as M
+import er057_audio_anomaly_detect_trial_01 as D
+OUT = os.path.join(ROOT, "er057_output", "coffee_tts_style_8way_01")
+os.makedirs(os.path.join(OUT, "words"), exist_ok=True); M.OUT = OUT
+GL = [json.loads(l) for l in open(os.path.join(OUT, "generation_log_02.jsonl"), encoding="utf-8")]
+GL = {r["job"]: r for r in GL if r.get("status") == "OK"}
+NW = {"std": 117, "adv": 131}
+V5 = {"std": "er057_output/coffee_final_v4/segments/std_part1_slow6.wav", "adv": "er057_output/coffee_final_v4/segments/adv_part1_raw.wav"}
+def sha(p): return hashlib.sha256(open(os.path.join(ROOT, p), "rb").read()).hexdigest()
+def measure(p, lv, key):
+    a = M.analyze(p, ); a["lv"] = lv
+    x, sr = M.load(p); runs, dur = M.silent_runs(x, sr); w = M.words_of(p)
+    end_p = [q["pause_ms"] for q in a["sentence_end_pauses"]]
+    oth = a["other_internal_runs_ms"]
+    # 500ms超無音除外の発話WPM(先頭/末尾の無音は除外)
+    long_sil = sum(b - c for c, b in runs if (b - c) > 0.5 and c > 0.005 and b < dur - 0.011)
+    inner = [(c, b) for c, b in runs if c > 0.005 and b < dur - 0.011]
+    longpos = []
+    for c, b in inner:
+        if (b - c) >= 0.8:
+            prev = [q for q in w if q["e"] <= c + 0.15]; nxt = [q for q in w if q["s"] >= b - 0.15]
+            longpos.append({"t": round(c, 2), "ms": round((b - c) * 1000), "prev": prev[-1]["w"] if prev else None, "next": nxt[0]["w"] if nxt else None})
+    # 語尾欠落: 参照末尾3語がASR末尾に残るか
+    ref = M.REF[f"{lv}_part1"]["text"]; rt = [M.norm(t) for t in re.findall(r"\S+", ref) if M.norm(t)]
+    at = [M.norm(q["w"]) for q in w if M.norm(q["w"])]
+    tail_ok = rt[-3:] == at[-3:]
+    rms = float(np.sqrt((x ** 2).mean())); peak = float(np.abs(x).max())
+    anom, _ = D.analyze(x.astype("float64"), sr, key, True)
+    anom_s = [{"symptom": e["symptom"], "conf": e["confidence"], "t": round(float(e["t"]), 2)} for e in anom]
+    return {"path": p, "sha12": a["sha12"], "dur_s": a["dur_s"], "words_ref": NW[lv], "wpm": round(NW[lv] / dur * 60, 1),
+            "speech_wpm500": round(NW[lv] / (dur - long_sil) * 60, 1),
+            "end_pause_ms": {"n": len(end_p), **{k: v for k, v in M.stats(end_p).items() if k in ("mean", "median", "max", "hist")}} if end_p else None,
+            "mid": {"n": len(oth), "total_s": round(sum(oth) / 1000, 2), "n300": sum(1 for v in oth if v >= 300)},
+            "long800": longpos, "tail_last3_match": tail_ok, "align_ratio": a["align_ratio"], "asr_words": len(w),
+            "rms_dbfs": round(20 * np.log10(rms + 1e-12), 1), "peak_dbfs": round(20 * np.log10(peak + 1e-12), 1),
+            "anomalies": anom_s, "anomaly_medium_plus": sum(1 for e in anom_s if str(e["conf"]).lower() in ("medium", "high"))}
+def main():
+    res = {"method": "faster-whisper small local, -40dBFS silence, min 50ms, sentence-end via difflib alignment (same as coffee_v5_pause_01); Std measured as heard (slow6 applied: durations/silences x1.06)",
+           "takes": {}, "v5": {}}
+    shas = {}
+    for jid, r in sorted(GL.items()):
+        p = r["final_wav"]; lv = r["level"]
+        m = measure(p, lv, jid)
+        m.update(cand=r["cand"], take=r["take"], primary_asr=r["classification"], asr_verified=r["verified"], duration_anomaly=r.get("duration_anomaly"),
+                 raw_sha256=r["raw_sha256"], final_sha256=r["final_sha256"], tts_input_sha256=r["tts_input_sha256"], model_version=r["model_version"])
+        res["takes"][jid] = m; shas.setdefault(r["raw_sha256"], []).append(jid)
+        print(jid, m["wpm"], m["end_pause_ms"] and m["end_pause_ms"]["mean"], m["mid"], flush=True)
+    res["raw_sha_all_distinct"] = all(len(v) == 1 for v in shas.values())
+    for lv in ("std", "adv"):
+        m = measure(V5[lv], lv, f"v5_{lv}"); m["sha12_expected"] = {"std": "6546b00f7805", "adv": "8b616edca69c"}[lv]; res["v5"][lv] = m
+    # take diff & aggregates
+    agg = {}
+    for c in "ABCDEFGH":
+        for lv in ("std", "adv"):
+            t1, t2 = res["takes"][f"{c}_{lv}_part1_t1"], res["takes"][f"{c}_{lv}_part1_t2"]
+            agg[f"{c}_{lv}"] = {"wpm": [t1["wpm"], t2["wpm"]], "wpm_diff": round(abs(t1["wpm"] - t2["wpm"]), 1),
+                "end_mean": [t1["end_pause_ms"]["mean"], t2["end_pause_ms"]["mean"]], "end_mean_diff": abs(t1["end_pause_ms"]["mean"] - t2["end_pause_ms"]["mean"]),
+                "mid_n": [t1["mid"]["n"], t2["mid"]["n"]], "mid_total_s": [t1["mid"]["total_s"], t2["mid"]["total_s"]],
+                "long800_n": [len(t1["long800"]), len(t2["long800"])]}
+    res["by_cand_level"] = agg
+    json.dump(res, open(os.path.join(OUT, "measurements_02.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
+if __name__ == "__main__": main()
