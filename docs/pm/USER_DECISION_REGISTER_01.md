@@ -68,6 +68,10 @@
 | 49 | Coffee Std/Advの聴感判断(Std 6%減速後168WPM[参考157±6の外]・Adv 178WPM・文末ポーズ平均572ms。Productionに自動の速度/ポーズ合否基準なし、新Gateは作っていない) | **USER_DECISION_REQUIRED**(試聴ページで確認) | いいえ | `er071_output/m2p0_n01_production_wiring_01/EVIDENCE_01.md`、試聴ページ |
 | 50 | Std KP『based on』型のRule7 INVALID再発への対処(selection段の機能語fragment選択防止・canonicalization側対処は新仕様候補/手動KP差替え/Std KPなしで進行)と、Adv/Std正式`--stage assemble`の完走手段(v5再利用segmentのAudio Validation Gate上の扱い=OPEN-346②) | **USER_DECISION_REQUIRED** | はい(Family X `PRODUCTION_WIRED`付与の前提) | OPEN-343/346/310、`er071_output/m2p0_n01_production_wiring_01/FINAL_REPORT_02.md` |
 | 51 | Family Z Std Preview/Comment 1の役割分担方式(A=Preview先行・Comment 1補足 / B=Comment 1先行[今回実装はREJECTED案、Adv型Comment 1適用は未検証] / E方式[Preview単独先行・Comment現行] / 現状維持)、およびStd Comment 1を聴取ガイド化するか。#48(P1/P2/現状維持)の具体化・関連 | **USER_DECISION_REQUIRED** | いいえ(Family Z記事再生成・音声化STOP維持中) | OPEN-338、`er076_output/family_z_preview_comment1_dual_trial_01/SETS_01.md`・`PRODUCTION_IMPACT_01.md`(FAMILY-Z-PREVIEW-COMMENT1-DUAL-TRIAL-01) |
+| 52 | **UDR-1 OOV(CMU未収録語)の扱い**(ASR-PHONETIC-EQUIVALENCE-M1-F1-PRODUCTION-WIRING-01、OPEN-339): A=(iii) 綴りfallbackでOOVも救済 / B=読み確定+Pronunciation Ledger高信頼化(unique・信頼度high)のみ使用 / C=(i) CMU収録語のみで止める。Opus評価: Aは『辞書駆動・allow-listなし』の必須条件に抵触、Bが唯一原理的、12/12目標自体の見直しが必要。M1(i)実益=674ペアで新規受理0件。OOVコードは未実装 | **USER_DECISION_REQUIRED** | はい(M1配線のみ。F1は独立に実装済み) | OPEN-339、`er075_output/m1_f1_production_wiring_01/OOV_SAFETY_01.md`・`M1_BENEFIT_CENSUS_01.md` |
+| 53 | **UDR-2 Eq Layer(OPEN-122)のF1ガード**: F1の戻り値diffを最初の残差とし、Eq Layerは残差ちょうど1件かつ同位置のみ評価(OPEN-122の受理範囲を広げず限定方向のみ)。**今回実装済み**として記録。ユーザー異議があれば差戻し | **USER_DECISION_REQUIRED**(実装済み記録、異議時のみ差戻し) | いいえ | OPEN-340、OF-168、`er011_connected_speech_equivalence_layer_production_01.py` |
+| 54 | **UDR-3 US sea blockade 4件の扱いと誤NG定義**: 固定定義『全差分が承認済みPattern A/B/Cまたは既存正規化で説明できるのにF1が非PASS』に4件は該当しない(Pattern Aが`US`→`U`+sを複数形と誤認、未承認の頭字語正規化)。頭字語の扱いは新規OPEN-348として起票済み(未承認・未実装)。誤NG定義の確定と頭字語扱いの要否 | **USER_DECISION_REQUIRED** | いいえ | OPEN-348、`er075_output/m1_f1_production_wiring_01/F1_IMPACT_CENSUS_02.md` |
+| 55 | **UDR-4 F1とM1のPRODUCTION_WIRED分離宣言**: F1=`WIRED_PENDING_RUNTIME_EVIDENCE`(実装済み・Production runでの自然発生evidence取得後に`PRODUCTION_WIRED`)、M1=設計済み未配線。F1の`PRODUCTION_WIRED`をM1やOOV判断に依存させない | **USER_DECISION_REQUIRED**(分離宣言の確認) | いいえ | OPEN-340/339、`er075_output/m1_f1_production_wiring_01/` |
 
 ## 区分別集計(2026-10-13更新・51件(#51追加: FAMILY-Z-PREVIEW-COMMENT1-DUAL-TRIAL-01)。#45を判断済み化[Strategy L維持・移行案REJECTED、FAMILY-Z-KP-STRATEGY-L-DECISION-CLOSEOUT-01]。#49・#50追加・#46判断済み化・#45はTrial承認済み/移行方式採用判断のみ未決[FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 委任_03]。#48追加[Comment参照条件Trial、USER_DECISION_REQUIRED]。#45〜#47追加[M2P0/N01 Production配線、USER_DECISION_REQUIRED]。#44追加[3 take比較、USER_DECISION_REQUIRED]。#43追加[分割Trial R1判断、USER_DECISION_REQUIRED]。#41はOpus条件A後にUSER_DECISION_REQUIRED化。#42追加[FAMILY-Z-STANDARD-PREVIEW-X-ALIGNMENT-01、USER_DECISION_REQUIRED]。#41追加[ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01、調査・Trial中]。#39・#40追加。#10は判断済みへ、#14と#23は判断保留へ、#36追加)
 
@@ -76,9 +80,9 @@
 | 判断済み | 14 | 2, 3, 10, 13, 17, 34, 35, 36, 37, 38, 39, 40, 45, 46 |
 | 判断保留(依存事項待ち、判断時期延期) | 2 | 14, 23 |
 | 調査・Trial中 | 1 | 19 |
-| USER_DECISION_REQUIRED | 29 | 1, 4(暫定), 5, 7, 8, 9, 11, 12, 15, 18, 24〜33, 41, 42, 43, 44, 47, 48, 49, 50, 51 |
+| USER_DECISION_REQUIRED | 33 | 1, 4(暫定), 5, 7, 8, 9, 11, 12, 15, 18, 24〜33, 41, 42, 43, 44, 47, 48, 49, 50, 51, 52, 53, 54, 55 |
 | Deferred / Non-blocking | 5 | 6, 16, 20, 21, 22 |
-| 合計 | 51 | |
+| 合計 | 55 | |
 
 ## 「次工程をブロックするUDR」のみ(これだけを最優先で提示する)
 

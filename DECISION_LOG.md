@@ -17,6 +17,8 @@
 **追記索引(2026-10-13、M2P0/N01 Production配線)**: `FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01`委任_02(ユーザー正式決定: Key Phrase=M2P0・メイン音声Prompt=N01を`APPROVED_FOR_PRODUCTION`[Family X・Z]、Family X配線済み・未完了[Coffee: Adv完走/Std KP INVALID]、Family Z配線済み・runtime未確認)は本ファイル末尾`## FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 委任_02`節。
 **追記索引(2026-10-13、M2P0/N01 Production配線 委任_03)**: ユーザー追加決定(N-2判断済み・Family Z DB Hybrid+M2P0移行Trial承認・M2構築失敗時Strategy L Fallback承認+必須ユーザー報告)の反映と、Coffee Std KP再生成(再度INVALID)・Adv正式assemble(Audio Validation Gate BLOCK)の結果は本ファイル末尾`## FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 委任_03`節。
 
+**追記索引(2026-10-13、M1/F1 Production配線 委任_03)**: `ASR-PHONETIC-EQUIVALENCE-M1-F1-PRODUCTION-WIRING-01`委任_03(F1是正をProduction実装[`WIRED_PENDING_RUNTIME_EVIDENCE`]、M1は未配線[OOV UDR-1待ち]、census PASS→非PASS0、UDR #52〜55)。詳細は本ファイル末尾`## ASR-PHONETIC-EQUIVALENCE-M1-F1-PRODUCTION-WIRING-01 委任_03`節参照。
+
 **履歴全文(直前の記録・その前の記録、以下さらに前の記録、合計12件、原文のまま移動): `DECISION_LOG_HISTORY.md`の`## ER-PM-001_CHAIN`節参照**
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -20976,3 +20978,14 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 分類案(Sonnet案): A=USER_DECISION_REQUIRED(VALIDATED寄り)、B=REJECTED(この実装に限る。Adv型ListeningFocus適用は未検証)。確定判断ではない。
 - 未決: UDR #51(役割分担方式の選択。#48と関連)。`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`なし。Production code/Prompt/Validator/Gate無変更(state_guard changed=[])、Family X/Z Adv無変更、記事再生成・音声化なし。
 - Regression: er062 64件・er026_family_z_fiction 21件 全PASS。
+
+## ASR-PHONETIC-EQUIVALENCE-M1-F1-PRODUCTION-WIRING-01 委任_03(2026-10-13、F1是正実装・M1未配線。Opus条件A/C反映。費用JPY0)
+- **ユーザー正式決定の前提**: M1+F1=`APPROVED_FOR_PRODUCTION`(委任_02保存分に原文)。F1期待挙動=全差分を点検し連結発音で説明できる差分のみ許容、`The studies suggest cats today.`←`The study suggests dogs today.`は非PASS必須、既存PASS→非PASSのcensus必須、誤NG=0。
+- **Opus独立技術レビュー(条件A/C)反映**(OF-168〜177): Eq Layerガード/benign限定(冠詞のみ+規則単複1:1)/`f1_residual_kind`でentity・同音語のみ残差はUNCERTAINへ/観測項目`f1_*`/設計訂正(forced-secondary・減速後・m1_enabled・cascade_enabled=False・適用位置)。
+- **F1実装(Production)**: `er011_b1_connected_speech_validator_01.py`(全差分点検、Pattern A/B/C本体は`_classify_first_diff`として無変更)、`er006_preprod_hardening_01_validation.py`(`_f1_refine_residual_kind`+entity/同音語のみ残差はASR_VALIDATION_UNCERTAIN)、`er011_connected_speech_equivalence_layer_production_01.py`(残差ちょうど1件かつ同位置のみ評価)。判定を厳しくする方向のみ。Pattern拡張・緩和・頭字語正規化・allow-listなし。
+- **実装中の設計判断(Sonnet、ユーザー異議時は差戻し)**: (1)トークン化はcsv3(英字のみ)を継続しEq Layerのindexと整合させ、数字列不一致は別途残差化(委任文は`val.tokenize`への統一を指定していたが、benignを冠詞/単複に限定したことで`protected_check`を使わなくなり、index整合を優先)。(2)元の最初の差分がPatternで説明できないケースはF1でも対象外(緩和なし)。(3)replaceブロックは冠詞を除いた語数が同数なら位置ごとに個別判定。
+- **census(API 0)**: 674ペア(HR queue 187/er021 telemetry 434/er069 53)、segment_id有/None両条件でPASS→非PASS=0・非PASS→PASS=0・誤NG(固定定義)=0。真値付きデータ: defect(ユーザー例)非PASS化、US sea 4件はPASS→非PASSだが固定誤NG定義に非該当(頭字語、OPEN-348)。KP実データは差分ペアなし。M1(i)実益=新規受理0件。
+- **Status**: F1=`WIRED_PENDING_RUNTIME_EVIDENCE`(unit/replay/censusのみ。Production runでの自然発生evidence取得後に`PRODUCTION_WIRED`)。M1=`WIRING_DESIGN_DRAFT`維持(未配線)。OOV=`USER_DECISION_REQUIRED`。
+- **UDR登録**: UDR-1=#52(OOV: A=(iii)/B=読み確定+Ledger高信頼化/C=(i)で止める。Opus評価: Aは必須条件抵触、Bが唯一原理的、12/12目標自体の見直し)、UDR-2=#53(Eq Layerガード=今回実装済みとして記録、異議時差戻し)、UDR-3=#54(US sea 4件・誤NG定義)、UDR-4=#55(F1とM1のPRODUCTION_WIRED分離宣言)。
+- Regression: F1 test 13件・Eq Layer ALL PASS・er019 357・er063 59・er012 231・er026_cs_audit+er065 44 全PASS。er006 43件中1件失敗(`er006_model_routing_pricing_coverage_test_01`、Family Zのrouting登録に起因する既存失敗で本変更と無関係)。
+- 反映先: CURRENT_SPEC(連結発音Validator行へF1追記、M1は未配線)/OPEN-339・340更新/OPEN-348新規/`docs/pm/USER_DECISION_REGISTER_01.md`#52〜55/`docs/pm/OPUS_FINDINGS_LEDGER.md`/`docs/pm/REPORT_LEDGER.md`。証跡: `er075_output/m1_f1_production_wiring_01/`。commit: 7948bd78。
