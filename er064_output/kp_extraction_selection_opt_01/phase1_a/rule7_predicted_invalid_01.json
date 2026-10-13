@@ -1,0 +1,617 @@
+{
+ "cost_jpy": 0,
+ "note": "予測のみ。Production(person表・Prompt)は修正していない。Phase 2のQA失敗(INVALID)を選定能力と切り分けるための事前リスト。",
+ "table_vs_prompt_matrix_n": 70,
+ "predicted_invalid_cells": [
+  {
+   "class": "poss",
+   "display_token": "my",
+   "prompt_suggested_generic": "someone's",
+   "validator_ok": false
+  },
+  {
+   "class": "poss",
+   "display_token": "my",
+   "prompt_suggested_generic": "somebody's",
+   "validator_ok": false
+  },
+  {
+   "class": "poss",
+   "display_token": "its",
+   "prompt_suggested_generic": "someone's",
+   "validator_ok": false
+  },
+  {
+   "class": "poss",
+   "display_token": "its",
+   "prompt_suggested_generic": "somebody's",
+   "validator_ok": false
+  },
+  {
+   "class": "poss",
+   "display_token": "our",
+   "prompt_suggested_generic": "someone's",
+   "validator_ok": false
+  },
+  {
+   "class": "poss",
+   "display_token": "our",
+   "prompt_suggested_generic": "somebody's",
+   "validator_ok": false
+  },
+  {
+   "class": "poss",
+   "display_token": "yours",
+   "prompt_suggested_generic": "someone's",
+   "validator_ok": false
+  },
+  {
+   "class": "poss",
+   "display_token": "yours",
+   "prompt_suggested_generic": "somebody's",
+   "validator_ok": false
+  },
+  {
+   "class": "poss",
+   "display_token": "theirs",
+   "prompt_suggested_generic": "someone's",
+   "validator_ok": false
+  },
+  {
+   "class": "poss",
+   "display_token": "theirs",
+   "prompt_suggested_generic": "somebody's",
+   "validator_ok": false
+  },
+  {
+   "class": "subj",
+   "display_token": "we",
+   "prompt_suggested_generic": "someone",
+   "validator_ok": false
+  },
+  {
+   "class": "subj",
+   "display_token": "we",
+   "prompt_suggested_generic": "somebody",
+   "validator_ok": false
+  },
+  {
+   "class": "subj",
+   "display_token": "we",
+   "prompt_suggested_generic": "one",
+   "validator_ok": false
+  },
+  {
+   "class": "subj",
+   "display_token": "i",
+   "prompt_suggested_generic": "someone",
+   "validator_ok": false
+  },
+  {
+   "class": "subj",
+   "display_token": "i",
+   "prompt_suggested_generic": "somebody",
+   "validator_ok": false
+  },
+  {
+   "class": "subj",
+   "display_token": "i",
+   "prompt_suggested_generic": "one",
+   "validator_ok": false
+  },
+  {
+   "class": "subj",
+   "display_token": "it",
+   "prompt_suggested_generic": "someone",
+   "validator_ok": false
+  },
+  {
+   "class": "subj",
+   "display_token": "it",
+   "prompt_suggested_generic": "somebody",
+   "validator_ok": false
+  },
+  {
+   "class": "subj",
+   "display_token": "it",
+   "prompt_suggested_generic": "one",
+   "validator_ok": false
+  },
+  {
+   "class": "obj",
+   "display_token": "me",
+   "prompt_suggested_generic": "someone",
+   "validator_ok": false
+  },
+  {
+   "class": "obj",
+   "display_token": "me",
+   "prompt_suggested_generic": "somebody",
+   "validator_ok": false
+  },
+  {
+   "class": "obj",
+   "display_token": "him",
+   "prompt_suggested_generic": "someone",
+   "validator_ok": false
+  },
+  {
+   "class": "obj",
+   "display_token": "him",
+   "prompt_suggested_generic": "somebody",
+   "validator_ok": false
+  },
+  {
+   "class": "obj",
+   "display_token": "her",
+   "prompt_suggested_generic": "someone",
+   "validator_ok": false
+  },
+  {
+   "class": "obj",
+   "display_token": "her",
+   "prompt_suggested_generic": "somebody",
+   "validator_ok": false
+  },
+  {
+   "class": "obj",
+   "display_token": "them",
+   "prompt_suggested_generic": "someone",
+   "validator_ok": false
+  },
+  {
+   "class": "obj",
+   "display_token": "them",
+   "prompt_suggested_generic": "somebody",
+   "validator_ok": false
+  },
+  {
+   "class": "obj",
+   "display_token": "us",
+   "prompt_suggested_generic": "someone",
+   "validator_ok": false
+  },
+  {
+   "class": "obj",
+   "display_token": "us",
+   "prompt_suggested_generic": "somebody",
+   "validator_ok": false
+  },
+  {
+   "class": "obj",
+   "display_token": "it",
+   "prompt_suggested_generic": "someone",
+   "validator_ok": false
+  },
+  {
+   "class": "obj",
+   "display_token": "it",
+   "prompt_suggested_generic": "somebody",
+   "validator_ok": false
+  },
+  {
+   "class": "refl",
+   "display_token": "myself",
+   "prompt_suggested_generic": "oneself",
+   "validator_ok": false
+  },
+  {
+   "class": "refl",
+   "display_token": "itself",
+   "prompt_suggested_generic": "oneself",
+   "validator_ok": false
+  },
+  {
+   "class": "refl",
+   "display_token": "ourselves",
+   "prompt_suggested_generic": "oneself",
+   "validator_ok": false
+  },
+  {
+   "class": "refl",
+   "display_token": "yourselves",
+   "prompt_suggested_generic": "oneself",
+   "validator_ok": false
+  }
+ ],
+ "predicted_invalid_summary": [
+  "her->somebody",
+  "her->someone",
+  "him->somebody",
+  "him->someone",
+  "i->one",
+  "i->somebody",
+  "i->someone",
+  "it->one",
+  "it->somebody",
+  "it->someone",
+  "its->somebody's",
+  "its->someone's",
+  "itself->oneself",
+  "me->somebody",
+  "me->someone",
+  "my->somebody's",
+  "my->someone's",
+  "myself->oneself",
+  "our->somebody's",
+  "our->someone's",
+  "ourselves->oneself",
+  "theirs->somebody's",
+  "theirs->someone's",
+  "them->somebody",
+  "them->someone",
+  "us->somebody",
+  "us->someone",
+  "we->one",
+  "we->somebody",
+  "we->someone",
+  "yours->somebody's",
+  "yours->someone's",
+  "yourselves->oneself"
+ ],
+ "article_candidates_with_person_tokens": [
+  {
+   "source": "meta_adv/current",
+   "candidate": "calls it",
+   "strong_person_tokens": [],
+   "ambiguous_tokens": [
+    "it"
+   ]
+  },
+  {
+   "source": "meta_adv/improved",
+   "candidate": "calls it",
+   "strong_person_tokens": [],
+   "ambiguous_tokens": [
+    "it"
+   ]
+  },
+  {
+   "source": "meta_adv/improved",
+   "candidate": "call it",
+   "strong_person_tokens": [],
+   "ambiguous_tokens": [
+    "it"
+   ]
+  },
+  {
+   "source": "meta_std/current",
+   "candidate": "calls it",
+   "strong_person_tokens": [],
+   "ambiguous_tokens": [
+    "it"
+   ]
+  },
+  {
+   "source": "meta_std/improved",
+   "candidate": "calls it",
+   "strong_person_tokens": [],
+   "ambiguous_tokens": [
+    "it"
+   ]
+  },
+  {
+   "source": "semi_adv/improved",
+   "candidate": "that's it",
+   "strong_person_tokens": [],
+   "ambiguous_tokens": [
+    "it"
+   ]
+  },
+  {
+   "source": "semi_adv/improved",
+   "candidate": "your head",
+   "strong_person_tokens": [
+    "your"
+   ],
+   "ambiguous_tokens": []
+  }
+ ],
+ "extractor_span_person_candidates": [
+  {
+   "span": "an unseen clock of its own",
+   "person_tokens": [
+    "its"
+   ],
+   "ambiguous": [],
+   "predicted": [
+    {
+     "generic": "one's",
+     "key_phrase": "an unseen clock of one's own",
+     "ok": false
+    },
+    {
+     "generic": "someone's",
+     "key_phrase": "an unseen clock of someone's own",
+     "ok": false
+    },
+    {
+     "generic": "somebody's",
+     "key_phrase": "an unseen clock of somebody's own",
+     "ok": false
+    }
+   ],
+   "predicted_invalid": [
+    "an unseen clock of one's own",
+    "an unseen clock of someone's own",
+    "an unseen clock of somebody's own"
+   ]
+  },
+  {
+   "span": "bit her tongue",
+   "person_tokens": [],
+   "ambiguous": [
+    "her"
+   ],
+   "predicted": [],
+   "predicted_invalid": []
+  },
+  {
+   "span": "clock of its own",
+   "person_tokens": [
+    "its"
+   ],
+   "ambiguous": [],
+   "predicted": [
+    {
+     "generic": "one's",
+     "key_phrase": "clock of one's own",
+     "ok": true
+    },
+    {
+     "generic": "someone's",
+     "key_phrase": "clock of someone's own",
+     "ok": false
+    },
+    {
+     "generic": "somebody's",
+     "key_phrase": "clock of somebody's own",
+     "ok": false
+    }
+   ],
+   "predicted_invalid": [
+    "clock of someone's own",
+    "clock of somebody's own"
+   ]
+  },
+  {
+   "span": "holding its breath",
+   "person_tokens": [
+    "its"
+   ],
+   "ambiguous": [],
+   "predicted": [
+    {
+     "generic": "one's",
+     "key_phrase": "holding one's breath",
+     "ok": true
+    },
+    {
+     "generic": "someone's",
+     "key_phrase": "holding someone's breath",
+     "ok": false
+    },
+    {
+     "generic": "somebody's",
+     "key_phrase": "holding somebody's breath",
+     "ok": false
+    }
+   ],
+   "predicted_invalid": [
+    "holding someone's breath",
+    "holding somebody's breath"
+   ]
+  },
+  {
+   "span": "its own hidden clock",
+   "person_tokens": [
+    "its"
+   ],
+   "ambiguous": [],
+   "predicted": [
+    {
+     "generic": "one's",
+     "key_phrase": "one's own hidden clock",
+     "ok": true
+    },
+    {
+     "generic": "someone's",
+     "key_phrase": "someone's own hidden clock",
+     "ok": false
+    },
+    {
+     "generic": "somebody's",
+     "key_phrase": "somebody's own hidden clock",
+     "ok": false
+    }
+   ],
+   "predicted_invalid": [
+    "someone's own hidden clock",
+    "somebody's own hidden clock"
+   ]
+  },
+  {
+   "span": "pulling my leg",
+   "person_tokens": [
+    "my"
+   ],
+   "ambiguous": [],
+   "predicted": [
+    {
+     "generic": "one's",
+     "key_phrase": "pulling one's leg",
+     "ok": true
+    },
+    {
+     "generic": "someone's",
+     "key_phrase": "pulling someone's leg",
+     "ok": false
+    },
+    {
+     "generic": "somebody's",
+     "key_phrase": "pulling somebody's leg",
+     "ok": false
+    }
+   ],
+   "predicted_invalid": [
+    "pulling someone's leg",
+    "pulling somebody's leg"
+   ]
+  },
+  {
+   "span": "pumps its fist",
+   "person_tokens": [
+    "its"
+   ],
+   "ambiguous": [],
+   "predicted": [
+    {
+     "generic": "one's",
+     "key_phrase": "pumps one's fist",
+     "ok": true
+    },
+    {
+     "generic": "someone's",
+     "key_phrase": "pumps someone's fist",
+     "ok": false
+    },
+    {
+     "generic": "somebody's",
+     "key_phrase": "pumps somebody's fist",
+     "ok": false
+    }
+   ],
+   "predicted_invalid": [
+    "pumps someone's fist",
+    "pumps somebody's fist"
+   ]
+  },
+  {
+   "span": "unseen clock of its own",
+   "person_tokens": [
+    "its"
+   ],
+   "ambiguous": [],
+   "predicted": [
+    {
+     "generic": "one's",
+     "key_phrase": "unseen clock of one's own",
+     "ok": true
+    },
+    {
+     "generic": "someone's",
+     "key_phrase": "unseen clock of someone's own",
+     "ok": false
+    },
+    {
+     "generic": "somebody's",
+     "key_phrase": "unseen clock of somebody's own",
+     "ok": false
+    }
+   ],
+   "predicted_invalid": [
+    "unseen clock of someone's own",
+    "unseen clock of somebody's own"
+   ]
+  },
+  {
+   "span": "wallet pumps its fist",
+   "person_tokens": [
+    "its"
+   ],
+   "ambiguous": [],
+   "predicted": [
+    {
+     "generic": "one's",
+     "key_phrase": "wallet pumps one's fist",
+     "ok": true
+    },
+    {
+     "generic": "someone's",
+     "key_phrase": "wallet pumps someone's fist",
+     "ok": false
+    },
+    {
+     "generic": "somebody's",
+     "key_phrase": "wallet pumps somebody's fist",
+     "ok": false
+    }
+   ],
+   "predicted_invalid": [
+    "wallet pumps someone's fist",
+    "wallet pumps somebody's fist"
+   ]
+  },
+  {
+   "span": "your wallet pumps its fist",
+   "person_tokens": [
+    "your",
+    "its"
+   ],
+   "ambiguous": [],
+   "predicted": [
+    {
+     "generic": "one's",
+     "key_phrase": "one's wallet pumps its fist",
+     "ok": true
+    },
+    {
+     "generic": "someone's",
+     "key_phrase": "someone's wallet pumps its fist",
+     "ok": true
+    },
+    {
+     "generic": "somebody's",
+     "key_phrase": "somebody's wallet pumps its fist",
+     "ok": true
+    },
+    {
+     "generic": "one's",
+     "key_phrase": "your wallet pumps one's fist",
+     "ok": true
+    },
+    {
+     "generic": "someone's",
+     "key_phrase": "your wallet pumps someone's fist",
+     "ok": false
+    },
+    {
+     "generic": "somebody's",
+     "key_phrase": "your wallet pumps somebody's fist",
+     "ok": false
+    }
+   ],
+   "predicted_invalid": [
+    "your wallet pumps someone's fist",
+    "your wallet pumps somebody's fist"
+   ]
+  }
+ ],
+ "inflection_plus_person_double_change(Rule7語数同一・他token不変に抵触)": [
+  {
+   "span": "holding its breath",
+   "dict_form_key": "hold one's breath",
+   "ok": false
+  },
+  {
+   "span": "pulling my leg",
+   "dict_form_key": "pull one's leg",
+   "ok": false
+  },
+  {
+   "span": "pumps its fist",
+   "dict_form_key": "pump one's fist",
+   "ok": false
+  }
+ ],
+ "other_known_invalid_types_not_from_person_table": [
+  "活用形戻し(been->be): `been behind price increases` -> `be behind price increases` (OPEN-310/336 Pkg R)",
+  "辞書形の語追加(loan against the future 等): source_span外のtoken追加 (OPEN-325 b4)",
+  "記事内固有語の過剰一般化(`one's own hidden clock` 等): OPEN-325 b4"
+ ],
+ "remediation_candidates_NOT_APPLIED": [
+  "(i) validatorの表をPromptに合わせて拡張: my/our/its/yours/theirs->someone's/somebody's、目的格(me/him/her/them/us/it)->someone/somebody、1人称/it系の再帰(myself/itself/ourselves/yourselves)->oneself を追加",
+  "(ii) Promptを表に合わせて縮小: its/my/our/yours/theirs は one's のみ、目的格・myself/itself/ourselves は一般化対象から外す",
+  "(iii) 折衷: 表拡張は人称(my/our)のみ、its->someone's は意味的に不自然なので許可しない(Prompt側で「its は one's のみ」と明記)"
+ ]
+}
