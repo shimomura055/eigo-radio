@@ -20877,3 +20877,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (ii)【比較試聴ページ】有望5候補N01/N02/L02/J13/J07のStd/Adv Take1既存音声(新規TTS/ASRなし、¥0)+H0 Take1+現行v5 Part1を並べた`user_test/coffee_style_h_speed_05/index.html`を作成。Stdは測定に用いた6%減速後wav(sha一致を確認)。測定値は各Roundの`measurements_r*.json`から転記、合否は`classification_r*.json`と再計算の一致を確認。同一Take1内で5候補のうちStd/Adv両方が機械基準を満たすものは0(N01・J13はStdのみ、L02・J07はAdvのみ)。
 - Status: VALIDATED(Trial到達上限)。`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない。Production code/Prompt/DB/経路無変更。CURRENT_SPEC無変更。採用判断なし、採用はユーザーのみ。
 - 反映先: OPEN-332は更新不要(代替検討の結果待ち状態が継続、新規OPENなし)。証跡: `er057_output/coffee_tts_style_h_speed_05_listen/LISTEN_COMPARE_REPORT_01.md`・`play_evidence_01.json`・`audio_conversion_01.json`。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-X-COFFEE-TTS-STYLE-H-SPEED-LISTEN-COMPARE-01_01.md`。
+
+### FAMILY-X-KP-NO-WAY-MINIMAL-FIX-TRIAL-01 委任_02(2026-10-13、P0X有料run。採用判断なし。Status=REJECTED(Trial)/M2P0維持)
+- (i)【改善案P0X】P0へ1段落(249字、構文の一部で意味が不十分な語句は隣接語で拡張、有限助動詞は含めない)。候補ブロック・gate・canonicalization・モデル無変更。Fable判断: Validator緩和なし、成立形`no way to know`を案Bの実現形とする。
+- (ii)【Stage 1 meta_adv n=5、5 job、JPY4.8948(上限30)、gpt-6-luna】裸`no way` 2/2→0/5(5/5が`no way to know`、本文逐語25/25、全gate PASS、有限助動詞INVALID 0)。一方`concierge` 2/2→0/5(2 runはrank6 backupへ後退)、5枠目が`instead of AI`/`other end of the call`×2/`talking to AI`/`take care of`の断片拡張に置換(over_extended 7/25)。費用+20%/時間+45%(対照n=2、参考)。
+- (iii)ユーザー受入条件(3)(4)・Side effect規定により**REJECTED、M2P0維持**。回帰15 jobは「良好なKey Phraseの喪失」STOP条件のため未実行(JPY約25未使用)。
+- Status: REJECTED(Trial、微調整Trial範囲)。`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない。Production code/Prompt/DB/gate/Validator無変更。CURRENT_SPEC無変更。Production state sha前後不変。
+- 反映先: OPEN-336へ追記(新規OPENなし)。証跡: `er064_output/kp_no_way_fix_01/TRIAL_REPORT_02.md`・`before_after_meta_adv_02.md`・`regression_02.md`・`cost_run_02.json`。委任ログ`docs/pm/delegation_log/2026-10-13_FAMILY-X-KP-NO-WAY-MINIMAL-FIX-TRIAL-01_02.md`。
