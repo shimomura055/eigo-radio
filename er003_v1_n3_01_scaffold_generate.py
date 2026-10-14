@@ -35,6 +35,7 @@ from collections import Counter
 import er003_audio_tts_asr_safety as safety
 import er003_b1_p2_keywords as bk
 import er003_key_words_canonicalization as kc
+import er003_key_words_gloss_alignment as gloss_align
 import er003_key_words_production as prod
 import er003_v1_b1_scaffold_01_generate as b1s
 import er003_v1_iran01_a2_generate as a2gen
@@ -707,6 +708,19 @@ def run_key_phrase_canonicalization(article_text: str, original_items: list, out
     if status not in ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED"):
         return result
     merged = kc.merge_canonicalization_result(original_items, parsed["items"])
+    # KP-GLOSS-ALIGNMENT-01(2026-10-14): 最終KPが表示候補に無い語を含む場合だけ、glossを最終KP基準で再整合する
+    # (対象0件ならAPI呼出なし・merged無変更)。初回/redundancy retry/fallback/regenerationの全経路がこの関数を通る。
+    def _align_factory(msg: str):
+        kwargs = {}
+        if process is not None:
+            kwargs["model"] = routing.require_model(process, routing.SUPPORT_MODEL)
+        else:
+            kwargs["model"] = routing.SUPPORT_MODEL
+        return gloss_align.make_alignment_fn(msg, **kwargs)
+
+    aligned = gloss_align.align_glosses(merged, article_text, _align_factory, out_dir=out_dir, article_id=article_id)
+    merged = aligned["merged"]
+    result["gloss_alignment_status"] = aligned["status"]
     with open(f"{out_dir}/keywords_canonicalized.json", "w", encoding="utf-8") as f:
         json.dump(merged, f, ensure_ascii=False, indent=2)
     result["merged"] = merged

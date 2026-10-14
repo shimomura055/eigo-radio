@@ -1,0 +1,10 @@
+# FAMILY-XZ-M2P0-N01-PRODUCTION-COMPLETION-01 委任_04 (最終委任、2026-10-14)
+## 0. ユーザー指示(2026-10-14、逐語)
+「Coffee Standardの以下の問題について、以前から明確に指示している。最終英語KP:`based on interviews`/日本語gloss:`〜をもとにした`/TTS読み:`なになにをもとにした`。**最終英語KPと日本語glossの意味的整合は、当然満たすべき基本品質要件である。** これはG1/G2/G3からユーザーに選択させる問題ではない。特にG2『拡張されたKPを自動でHuman Reviewに送る』を標準対策として推奨しない。すでに指示済みの内容: 1.最終KP確定とgloss生成の工程順序・依存関係を調査する。2.原因を特定する。3.既存の翻訳・正規化・検証機構を優先して利用する。4.自動的な整合を実現する方向で是正する。5.効果・副作用・Regression・量産コストを確認する。6.新仕様のProduction採用が本当に必要な場合だけ、検証結果を揃えてユーザー判断を求める。**『人間が訳を決めればCoffeeを完成できる』という理由で、技術的な根本問題をHumanに戻さないこと。** また、Coffee完成を不要に長期間停止させないこと。既存承認範囲内で解決できる是正と、正式採用が必要な新仕様を区別し、ブロックされない工程は進めること。原因調査が進んでも解決の見込みが乏しい場合は、同じTrialを反復せず、工程設計全体を俯瞰して代替アプローチを提案する。」
+「Fragment候補: **C4『当面変更なし・A′の結果を確認』が既に選択されている。** C1〜C4の選択を改めて求めない。`raw-bean`1例からハイフン付き修飾語の一律除外を導入することは認めていない。A′は引き続き: 原文外への拡張が発生しないこと/不自然・長すぎるKPを採用しないこと/既存KP品質が悪化しないこと/原文窓の拡張と日本語glossの整合を別の問題として扱うこと/Production初回・retry・fallback・regenerationで整合すること、を確認する。」
+「Advanced Comment 1〜4のE0: 今回`main E0`で生成できたことだけを理由に正式採用判断を求めない。確認: E0とはどの仕様か/いつ・どの経緯で導入されたか/CURRENT_SPEC・DECISION_LOG・過去ユーザー承認と整合するか/Coffeeで使用したStyleは既存承認済み仕様か/本当に今回ユーザーが新たに採用判断をする必要があるのか。既存承認済みなら記録を整理してClose。新しいStyleへの実質変更が必要な場合だけ文例・比較・QDC・推奨を示してユーザー判断を求める。**今回、E0の新規採用を承認したわけではない。**」
+「Coffee Standard/Advancedの聴感判断は完成版試聴ページ提示時に行う。その際、Standardの6%減速後のWPM、AdvancedのWPM、文末ポーズ、実際の聴きやすさを確認できるようにすること。本件は**判断タイミング合意済みのdeferred item**として記録する。」
+「Production作業の受入条件: 正式Production初回経路、retry/fallback/regeneration、必要Regression、実runtime evidence、model_id/routing、CURRENT_SPEC、DECISION_LOG、OPEN_ITEMS、Gitを確認する。未完了項目があれば`PRODUCTION_WIRED`と報告しない。」「ユーザーの『異議がなければ承認』という扱いは禁止。」
+## 作業要点
+1-1 Std Part2 N01再生成+japanese_title / 1-2 KP gloss不整合の根本是正(既存機構優先、Prompt実質変更はFableへ) / 1-3 Std KP音声+assemble+WPM/ポーズ / 1-4 試聴ページ final_03+Playwright / 1-5 E0照合(事実のみ、completion_04/E0_RECONCILIATION_04.md) / 1-6 UDR#49 deferred,#57 判断不要,#58 C4,OPEN-352/353/349/310,SPEC/DECISION,Checklist(completion_04/CHECKLIST_05.md)、10項目報告。
+固定: D-1(er077/er006 M1/tools/stop_scope/er076不可触、Prompt/Gate/Validator基準変更禁止、STOP編集禁止)、G-1(明示add、Managed-ID trailer、secret_scan)、F-1(予算JPY25、run dir累計30.01→上限80)。
