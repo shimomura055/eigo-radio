@@ -90,9 +90,10 @@ class Alignment(unittest.TestCase):
         self.assertEqual(fn.calls, 1)
 
     def test_already_consistent(self):
-        fn = FakeFn([_resp([(2, True, "～をもとにした", "PASS")])])
-        r = ga.align_glosses(self.m, "art", lambda msg: fn)
-        self.assertEqual(r["merged"]["items"][1]["gloss_alignment"]["status"], "GLOSS_ALREADY_CONSISTENT")
+        m = _merged([_item(2, "based on", "based on interviews", "インタビューをもとにした", beyond=True)])
+        fn = FakeFn([_resp([(2, True, "インタビューをもとにした", "PASS")])])
+        r = ga.align_glosses(m, "art", lambda msg: fn)
+        self.assertEqual(r["merged"]["items"][0]["gloss_alignment"]["status"], "GLOSS_ALREADY_CONSISTENT")
 
     def test_retry_then_pass(self):
         fn = FakeFn([_resp([(2, False, "インタビュー（取材）をもとにした", "PASS")]),
@@ -102,18 +103,77 @@ class Alignment(unittest.TestCase):
         self.assertEqual(r["status"], "ALIGN_PASS")
         self.assertEqual(r["merged"]["items"][1]["japanese_gloss"], "インタビューをもとにした")
 
-    def test_fallback_reverts_kp_after_two_failures(self):
+    def test_fallback_default_keeps_kp_and_marks_failed(self):
+        """OF-227/228: 既定(ii)=最終KP維持+FAILED記録+通知。KPは戻さない。"""
         fn = FakeFn([_resp([(2, False, "x", "FAIL")]), RuntimeError("boom")])
-        r = ga.align_glosses(self.m, "art", lambda msg: fn)
+        r = ga.align_glosses(self.m, "art", lambda msg: fn, article_id="ART1")
         self.assertEqual(fn.calls, ga.MAX_GLOSS_ALIGNMENT_ATTEMPTS)
         self.assertEqual(r["status"], "ALIGN_FAILED")
         it = r["merged"]["items"][1]
-        self.assertEqual(it["key_phrase"], "based on")
-        self.assertEqual(it["used_form"], "based on")
+        self.assertEqual(it["key_phrase"], "based on interviews")
         self.assertEqual(it["japanese_gloss"], "～をもとにした")
-        self.assertFalse(it["kp_extends_beyond_candidate"])
+        self.assertTrue(it["gloss_review_hint"])
+        self.assertEqual(it["gloss_alignment_status"], "FAILED")
+        self.assertEqual(it["gloss_alignment"]["status"], "GLOSS_ALIGNMENT_FAILED_KP_KEPT")
+        self.assertEqual(r["merged"]["gloss_alignment_failed"][0]["rank"], 2)
+        ev = r["fallback_event"]
+        self.assertEqual(ev["reason_code"], "GLOSS_ALIGNMENT_FAILED")
+        self.assertEqual(ev["article"], "ART1")
+        # 対象外itemは無変更
+        self.assertEqual(r["merged"]["items"][0], self.m["items"][0])
+
+    def test_fallback_revert_mode_reverts_when_safe_and_invalidates_qa(self):
+        m = _merged([dict(_item(2, "right away", "right away now", "すぐに今", beyond=True),
+                          source_span="do it right away now", normalization_reason="restore_semantic_complement",
+                          reasoning="r", qa={"a": "PASS"}, qa_overall_status="PASS", canonicalization_source_span="zzz")])
+        fn = FakeFn([_resp([(2, False, "x", "FAIL")]), _resp([(2, False, "x", "FAIL")])])
+        r = ga.align_glosses(m, "art", lambda msg: fn, fallback_mode=ga.FALLBACK_REVERT_IF_SAFE)
+        it = r["merged"]["items"][0]
+        self.assertEqual(it["key_phrase"], "right away")
+        self.assertEqual(it["used_form"], "right away")
+        self.assertEqual(it["normalization_reason"], "none")
+        self.assertEqual(it["qa"], {"a": "INVALIDATED_BY_GLOSS_REVERT"})
+        self.assertNotIn("canonicalization_source_span", it)
+        self.assertTrue(it["gloss_review_hint"])
+        self.assertEqual(it["gloss_alignment_status"], "FAILED")
         self.assertEqual(it["gloss_alignment"]["status"], "FALLBACK_KP_REVERTED_TO_DISPLAY_PHRASE")
-        self.assertEqual(it["gloss_alignment"]["key_phrase_before_revert"], "based on interviews")
+
+    def test_fallback_revert_mode_blocked_by_dangling_tail_and_span(self):
+        ok, why = ga.revert_to_candidate_allowed({"display_phrase": "based on", "source_span": "based on interviews"})
+        self.assertFalse(ok)
+        self.assertIn("末尾機能語", why)
+        ok, why = ga.revert_to_candidate_allowed({"display_phrase": "take a player off", "source_span": "took off players"})
+        self.assertFalse(ok)
+        ok, why = ga.revert_to_candidate_allowed({"display_phrase": "right away", "source_span": "do it right away now"})
+        self.assertTrue(ok)
+        # revertモードでも不可のitemは(ii)で処理(KP維持)
+        fn = FakeFn([_resp([(2, False, "x", "FAIL")]), _resp([(2, False, "x", "FAIL")])])
+        r = ga.align_glosses(self.m, "art", lambda msg: fn, fallback_mode=ga.FALLBACK_REVERT_IF_SAFE)
+        it = r["merged"]["items"][1]
+        self.assertEqual(it["key_phrase"], "based on interviews")
+        self.assertEqual(it["gloss_alignment"]["status"], "GLOSS_ALIGNMENT_FAILED_KP_KEPT")
+
+    def test_flag_off_no_api_no_change(self):
+        fn = FakeFn([])
+        r = ga.align_glosses(self.m, "art", lambda msg: fn, enabled=False)
+        self.assertEqual(r["status"], "DISABLED")
+        self.assertIs(r["merged"], self.m)
+        self.assertEqual(fn.calls, 0)
+
+    def test_default_flag_on_and_default_mode_keep(self):
+        self.assertTrue(ga.GLOSS_ALIGNMENT_ENABLED)
+        self.assertEqual(ga.GLOSS_ALIGNMENT_FALLBACK_MODE, ga.FALLBACK_KEEP_KP)
+
+    def test_usage_cost_recorded_in_attempts(self):
+        class U(FakeFn):
+            def __call__(self):
+                self.last_usage = {"input_tokens": 1000, "output_tokens": 500, "cached_input_tokens": 0}
+                return super().__call__()
+        fn = U([_resp([(2, False, "インタビューをもとにした", "PASS")])])
+        r = ga.align_glosses(self.m, "art", lambda msg: fn)
+        self.assertEqual(r["attempts"][0]["usage"]["input_tokens"], 1000)
+        self.assertIsNotNone(r["attempts"][0]["cost_jpy"])
+        self.assertEqual(r["cost_jpy"], r["attempts"][0]["cost_jpy"])
 
     def test_rank_mismatch_invalid(self):
         fn = FakeFn([_resp([(9, False, "a", "PASS")]), _resp([(9, False, "a", "PASS")])])
@@ -125,9 +185,25 @@ class Alignment(unittest.TestCase):
             v = ga.validate_alignment_response(_resp([(2, False, bad, "PASS")]), [self.m["items"][1]])
             self.assertFalse(v["ok"], bad)
 
-    def test_slot_tilde_allowed_and_tts_converted(self):
+    def test_slot_tilde_allowed_only_when_kp_has_slot_word(self):
+        t = [_item(2, "take someone's", "take someone's place", "～の代わりをする", beyond=True)]
+        v = ga.validate_alignment_response(_resp([(2, False, "～の代わりをする", "PASS")]), t)
+        self.assertTrue(v["ok"], v["reasons"])
+        # KPにスロット語なし -> 「～」が残ればFAIL(LLMがPASSを自己申告しても)
         v = ga.validate_alignment_response(_resp([(2, False, "～をもとにした", "PASS")]), [self.m["items"][1]])
-        self.assertTrue(v["ok"])
+        self.assertFalse(v["ok"])
+        self.assertTrue(any("スロット" in r for r in v["reasons"]))
+        for ch in ("〜", "~"):
+            self.assertTrue(ga.gloss_has_unjustified_slot("based on interviews", ch + "をもとにした"))
+        self.assertFalse(ga.gloss_has_unjustified_slot("based on interviews", "インタビューをもとにした"))
+        self.assertFalse(ga.gloss_has_unjustified_slot("pull oneself together", "～を落ち着かせる"))
+
+    def test_already_consistent_with_stale_slot_gloss_is_rejected(self):
+        """OF-230(b): GLOSS_ALREADY_CONSISTENT申告でも旧glossがスロット付き(KPにスロット語なし)ならFAIL->retry->fallback。"""
+        fn = FakeFn([_resp([(2, True, "～をもとにした", "PASS")]), _resp([(2, True, "～をもとにした", "PASS")])])
+        r = ga.align_glosses(self.m, "art", lambda msg: fn)
+        self.assertEqual(r["status"], "ALIGN_FAILED")
+        self.assertEqual(fn.calls, 2)
 
     def test_writes_audit_files(self):
         fn = FakeFn([_resp([(2, False, "インタビューをもとにした", "PASS")])])
@@ -216,13 +292,62 @@ class ScaffoldIntegration(unittest.TestCase):
         self.assertEqual(fake.calls, 0)
         self.assertEqual(saved["items"][1]["japanese_gloss"], "～をもとにした")
 
-    def test_failed_alignment_reverts_kp_automatically_not_human_review(self):
+    def test_failed_alignment_keeps_kp_flags_failed_not_human_review(self):
         fake = FakeFn([_resp([(2, False, "x", "FAIL")]), _resp([(2, False, "x", "FAIL")])])
         res, saved = self._run("based on interviews", fake)
         self.assertEqual(res["status"], "CANONICALIZATION_PASS")
-        self.assertEqual(saved["items"][1]["key_phrase"], "based on")
+        self.assertEqual(saved["items"][1]["key_phrase"], "based on interviews")
         self.assertEqual(saved["items"][1]["japanese_gloss"], "～をもとにした")
+        self.assertEqual(saved["items"][1]["gloss_alignment_status"], "FAILED")
+        self.assertTrue(saved["items"][1]["gloss_review_hint"])
         self.assertEqual(res["gloss_alignment_status"], "ALIGN_FAILED")
+        self.assertEqual(res["gloss_alignment_fallback"]["reason_code"], "GLOSS_ALIGNMENT_FAILED")
+
+
+class RulesExtraction(unittest.TestCase):
+    EXPECTED_SHA256 = "447e07cb8b9a30850a8dc75b6c3cce48c53d99b5f1fafa88d19b778d9155949b"
+
+    def test_sha256_pinned(self):
+        """承認済みテンプレートの該当段落が変わったら検知する(OF-229)。"""
+        self.assertEqual(ga.rules_sha256(ga.load_approved_gloss_rules()), self.EXPECTED_SHA256)
+
+    def test_selection_instruction_paragraph_included(self):
+        self.assertIn("短く自然な日本語グロス", ga.load_approved_gloss_rules())
+
+    def test_extraction_failure_raises_immediately(self):
+        with tempfile.TemporaryDirectory() as d:
+            p = os.path.join(d, "t.txt")
+            open(p, "w", encoding="utf-8").write("日本語グロスは1。\n\n日本語グロスは2。\n\n日本語グロスは3。\n")
+            with self.assertRaises(ga.GlossRulesExtractionError):
+                ga.load_approved_gloss_rules(p)
+            open(p, "w", encoding="utf-8").write("短く自然な日本語グロスを付ける。\n\n日本語グロスは1。\n")
+            with self.assertRaises(ga.GlossRulesExtractionError):
+                ga.load_approved_gloss_rules(p)
+
+    def test_preflight_caches_and_noop_when_disabled(self):
+        self.assertIsNone(ga.preflight(False))
+        a = ga.preflight(True)
+        self.assertEqual(a["sha256"], self.EXPECTED_SHA256)
+        self.assertIs(ga.preflight(True), a)
+
+    def test_metadata_records_sha256(self):
+        m = _merged([_item(2, "based on", "based on interviews", "～をもとにした", beyond=True)])
+        fn = FakeFn([_resp([(2, False, "インタビューをもとにした", "PASS")])])
+        with tempfile.TemporaryDirectory() as d:
+            ga.align_glosses(m, "art", lambda msg: fn, out_dir=d, article_id="A")
+            meta = json.load(open(os.path.join(d, "gloss_alignment_runtime_metadata.json"), encoding="utf-8"))
+        self.assertEqual(meta["rules_sha256"], self.EXPECTED_SHA256)
+
+
+class NoticeFiles(unittest.TestCase):
+    def test_notice_written_and_stdout(self):
+        ev = ga.build_gloss_alignment_fallback_record(
+            "ART", [{"rank": 2, "key_phrase": "k", "japanese_gloss": "g", "action": "a"}], "m")
+        with tempfile.TemporaryDirectory() as d:
+            p = ga.write_failed_notice(d, [ev])
+            self.assertTrue(os.path.exists(p))
+            self.assertIsNone(ga.write_failed_notice(d, []))
+        self.assertIn("ユーザーへ必ず報告", ga.format_failed_stdout([ev]))
 
 
 if __name__ == "__main__":

@@ -718,9 +718,15 @@ def run_key_phrase_canonicalization(article_text: str, original_items: list, out
             kwargs["model"] = routing.SUPPORT_MODEL
         return gloss_align.make_alignment_fn(msg, **kwargs)
 
-    aligned = gloss_align.align_glosses(merged, article_text, _align_factory, out_dir=out_dir, article_id=article_id)
+    # OF-233: alignment呼出のusageをcost loggerのstageタグ付きで記録できるようにする(cl.install()済みの場合のみ
+    # raw_usage_log.jsonlへ記録される。未installなら何も起きない純粋加算)。
+    import er005_cost_logger as _cl
+    with _cl.logging_context(article_id or "unknown_article", "kp_gloss_alignment"):
+        aligned = gloss_align.align_glosses(merged, article_text, _align_factory, out_dir=out_dir, article_id=article_id)
     merged = aligned["merged"]
     result["gloss_alignment_status"] = aligned["status"]
+    result["gloss_alignment_cost_jpy"] = aligned.get("cost_jpy")
+    result["gloss_alignment_fallback"] = aligned.get("fallback_event")
     with open(f"{out_dir}/keywords_canonicalized.json", "w", encoding="utf-8") as f:
         json.dump(merged, f, ensure_ascii=False, indent=2)
     result["merged"] = merged
@@ -788,9 +794,18 @@ def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_lev
     M2→Strategy L Fallback eventを`m2_fallback_events`(list、空=発生なし)として戻り値へ追記する。
     それ以外の戻り値・挙動は無変更(全呼び出し元で追記キーのみ増える)。"""
     sink: list = []
+    # OF-229: gloss規則の抽出失敗は記事内容に依存しない設定不備なので、run開始時(最初の記事のAPI呼出前)に即時停止する。
+    gloss_align.preflight()
     result = _run_key_phrases_impl(article_text, out_dir, article_id, source_level, process=process,
                                    synthetic=synthetic, kp_backend=kp_backend, _m2_fb_sink=sink)
     result["m2_fallback_events"] = sink
+    # OF-227/228: gloss再整合失敗(gloss_alignment_status=FAILED)をm2_fallbackと同形でrun summaryへ必ず載せる。
+    canon = result.get("canonicalization") or {}
+    gfb = canon.get("gloss_alignment_fallback")
+    result["gloss_alignment_fallback_events"] = [gfb] if gfb else []
+    if gfb:
+        gloss_align.write_failed_notice(out_dir, [gfb])
+        print(gloss_align.format_failed_stdout([gfb]))
     return result
 
 
