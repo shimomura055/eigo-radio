@@ -232,15 +232,107 @@ def run(out, takes, budget):
     return 0
 
 
+def ngrams4(t):
+    t = "".join(ch for ch in t if ch not in "。、 \n")
+    return {t[i:i + 4] for i in range(len(t) - 3)}
+
+
+def run_b_corrected(out, budget):
+    """委任_03: 承認済みTrial Bを仕様どおり実施(Trial Aは再生成せず takes_01.json を流用)。
+    B1'=Advanced型Listening Focus Comment 1(Family X A2の日本語版COMMENT_1_ROLE=a2gen.COMMENT_1_ROLE、無改変。
+        b1s.COMMENT_1_ROLEの日本語出力版で役割本文は同一)。ctx=er062 run_support_advのComment1と同形式(【本文(これから聞く部分)】Part1+NOT_NEWS_NOTE)。
+    B2'=現行Production Std Previewプロンプト(build_family_z_preview_prompt)+Comment 1重複回避(run_support_stdと同一)。
+    各3 take独立、max_attempts=1、再生成/選別なし、lintは記録のみ。"""
+    sent = [p for p in STOP_FILES + [f"{out}/STOP"] if os.path.exists(p)]
+    if sent:
+        print("STOP sentinel present:", sent)
+        return 3
+    import er003_v1_iran01_a2_generate as a2gen
+    import er006_model_routing_contract_01 as routing
+    import er003_v1_en_direct_vfl_01_generate as vfl01
+    import er026_family_z_fiction_production_runner_01 as er026
+    c1, c2, std_text, parts, bnd, st, w62 = load_all()
+    m = routing.require_model("A2_SUPPORT", routing.SUPPORT_MODEL)
+    prev = json.load(open(f"{out}/cost_01.json", encoding="utf-8"))
+    remain = budget - prev["total_jpy"]
+    role1 = a2gen.COMMENT_1_ROLE
+    ctx1 = f"【本文(これから聞く部分)】\n{parts[1]}\n\n{w62.NOT_NEWS_NOTE}"
+    pb1 = a2gen.build_support_prompt(role1, ctx1)
+    prev_role = er026.build_family_z_preview_prompt()
+    dup = "\n\n【重複回避】直前に流れるComment 1は次の通りです。これと内容が重複しないようにしてください。\n"
+    ctx2 = f"【物語全文(参考、新しい設定・事実の追加禁止)】\n{std_text}"
+    pb2_ex = a2gen.build_support_prompt(prev_role + dup + "{B1_COMMENT1}", ctx2)
+    e = lambda p: ((len(p) + 100) * e70.PRICE["input"] + 3000 * e70.PRICE["output"]) / 1e6 * e70.USD_JPY  # noqa: E731
+    est = 3 * (e(pb1) + e(pb2_ex))
+    print("est conservative JPY", round(est, 4), "remain", round(remain, 4))
+    assert est < remain, (est, remain)
+    open(f"{out}/prompt_B_full_02.txt", "w", encoding="utf-8").write(
+        "=== B1' (Comment 1, prompt) ===\n" + pb1 + "\n\n=== B2' (Preview, prompt; {B1_COMMENT1}=同TakeのB1'生成物) ===\n" + pb2_ex)
+    before = e70.state_snapshot()
+    rec = []
+    client = Proxy(vfl01.get_client(), rec)
+    lint = lambda t: st.lint_support_text(t, "ja", "melos")  # noqa: E731
+
+    def chain(take):
+        r = {"method": "B2", "take": take}
+        if any(os.path.exists(p) for p in STOP_FILES + [f"{out}/STOP"]):
+            r["aborted"] = "STOP"
+            return r
+        res1 = a2gen.run_support_text(client, role1, ctx1, max_attempts=1, model=m)
+        r["step1"] = {"kind": "B1prime_comment1", "status": res1["status"], "text": (res1.get("text") or "").strip(),
+                      "prompt_sha": sha(res1["prompt"]), "matches_design": res1["prompt"] == pb1}
+        if res1["status"] != "OK":
+            return r
+        role2 = prev_role + dup + r["step1"]["text"]
+        res2 = a2gen.run_support_text(client, role2, ctx2, max_attempts=1, model=m)
+        r["step2"] = {"kind": "B2prime_preview", "ref_comment_take": take, "status": res2["status"],
+                      "text": (res2.get("text") or "").strip(), "prompt_sha": sha(res2["prompt"])}
+        return r
+
+    with cf.ThreadPoolExecutor(max_workers=3) as ex:
+        chains = [f.result() for f in [ex.submit(chain, t) for t in (1, 2, 3)]]
+    for r in chains:
+        for k in ("step1", "step2"):
+            s = r.get(k)
+            if s and s.get("status") == "OK":
+                s["lint"] = lint(s["text"])
+                s["chars"] = e74.charlen(s["text"])
+                s["sentences"] = e74.sents_ja(s["text"])
+                s["sha"] = sha(s["text"])
+        if r.get("step1", {}).get("status") == "OK" and r.get("step2", {}).get("status") == "OK":
+            r["overlap_4gram"] = sorted(ngrams4(r["step1"]["text"]) & ngrams4(r["step2"]["text"]))
+    total = sum(jpy(x["input_tokens"], x["output_tokens"]) for x in rec)
+    json.dump({"model": m, "trialA_source": "takes_01.json(再生成なし)", "chains_B_corrected": chains, "usage_calls": rec, "n_api_calls": len(rec)},
+              open(f"{out}/takes_02.json", "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    cost02 = {"delegation_01_jpy": prev["total_jpy"], "delegation_03_jpy": round(total, 4),
+              "combined_jpy": round(prev["total_jpy"] + total, 4), "budget_jpy": budget, "n_api_calls_03": len(rec),
+              "calls_03": [{**x, "jpy": round(jpy(x["input_tokens"], x["output_tokens"]), 4)} for x in rec]}
+    json.dump(cost02, open(f"{out}/cost_02.json", "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    after = e70.state_snapshot()
+    changed = [p for p in before if before[p] != after.get(p)]
+    json.dump({"files_checked": len(before), "changed": changed, "unchanged_all": not changed, "generated_at": dt.datetime.now().isoformat()},
+              open(f"{out}/state_guard_02.json", "w", encoding="utf-8"), indent=1)
+    for r in chains:
+        print("====", r["take"])
+        for k in ("step1", "step2"):
+            s = r.get(k, {})
+            print(k, s.get("status"), s.get("lint"), s.get("text"))
+    print("api calls", len(rec), "total JPY", round(total, 4), "combined", cost02["combined_jpy"], "state changed", changed)
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser()
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--plan-only", action="store_true")
     g.add_argument("--run", action="store_true")
+    g.add_argument("--run-b-corrected", action="store_true")
     ap.add_argument("--takes", type=int, default=3)
     ap.add_argument("--budget-jpy", type=float, default=20.0)
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
+    if a.run_b_corrected:
+        return run_b_corrected(a.out, a.budget_jpy)
     return plan_only(a.out) if a.plan_only else run(a.out, a.takes, a.budget_jpy)
 
 
