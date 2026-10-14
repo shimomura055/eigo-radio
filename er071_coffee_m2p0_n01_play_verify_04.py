@@ -32,7 +32,7 @@ with sync_playwright() as p:
     o["plays_ok"] = sum(1 for x in plays if x.get("error") is None and x.get("advanced") and x.get("duration", 0) > 0)
     o["plays_failed"] = [x["src"] for x in plays if not (x.get("error") is None and x.get("advanced"))]
     o["seek_ok_all"] = all(x.get("seekOk") in (None, True) for x in plays)
-    o["full_durations"] = {x["src"]: round(x["duration"], 2) for x in plays if "Coffee_Advanced" in x["src"]}
+    o["full_durations"] = {x["src"]: round(x["duration"], 2) for x in plays if "final_03.mp3" in x["src"]}
     o["http_ge400"] = bad; o["console_errors"] = errs
     out["pages"]["index.html"] = o
     br.close()
