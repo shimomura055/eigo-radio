@@ -2,6 +2,7 @@
 
 - 管理ID: PM-AUTONOMOUS-PROJECT-OPERATING-MODEL-RESEARCH-01 委任_02(2026-10-14、JPY0)
 - 位置づけ: **設計案**。CLAUDE.md・PM_GOVERNANCE・PM_BRIEF・Agent定義・SSOT・Production・Promptは一切変更していない。ここに書く数値(文字数・金額・回数)は**初期案で、根拠が薄いものは[推測]と明記**し、Phase 2で較正する。採用はユーザーのみが決める。
+- 改訂: 委任_03でOpus独立レビュー所見OF-209〜OF-224を反映済み(末尾「改訂履歴」参照)。ユーザー判断事項U1〜U4は`FINAL_REPORT_01.md` §8。
 - 表記: **[事実]**=外部/内部の記載で確認済み、**[推測]**=本書の設計判断。事例N=`EXTERNAL_RESEARCH_01.md`、R-ID/T=`INTERNAL_DIAGNOSIS_01.md`。比較の根拠は`OPERATING_MODEL_COMPARISON_01.md`(案D=案B+機械強制ハーネス)。
 
 ## 1. 設計の前提
@@ -27,7 +28,8 @@ Charter案(抜粋、そのまま使える形。約1,700字):
 3. ユーザー判断が必要なのは、次の出自(origin)のどれかに当たるときだけ(詳細はDecision Policy表):
    NEW_SPEC_ADOPTION(新仕様のProduction採用) / GATE_RELAXATION(Gate・品質基準の緩和) /
    APPROVED_SPEC_CHANGE(承認済み仕様の変更) / BUDGET_EXCEEDANCE(予算ハード上限超過・追加予算) /
-   QCD_TRADEOFF(承認範囲を超える品質・費用・納期の入替え) / HR_POLICY(Human Review方針)。
+   QCD_TRADEOFF(承認範囲を超える品質・費用・納期の入替え) / HR_POLICY(Human Review方針) /
+   APPROVED_PROMPT_CHANGE(承認済みPrompt・Validator/Gate閾値・CURRENT_SPEC承認済み節=保護対象の実質変更)。
    「作業が必要」「設計案が複数ある」「軽度の不整合」「念のため」は理由にならない。
 4. 3状態(混同禁止): TRIAL_VALIDATED(検証済み、Production未採用) / APPROVED_FOR_PRODUCTION(ユーザーが採用承認) /
    PRODUCTION_WIRED(配線済み・Gate通過)。状態は状態ファイルが正本で、昇格はAIが勝手にできない。
@@ -69,12 +71,12 @@ Charter案(抜粋、そのまま使える形。約1,700字):
 ### 4-2 区分表
 | # | 区分 | AI自律 | ユーザー判断 | 軸 | グレーゾーンの扱い |
 |---|---|---|---|---|---|
-| 1 | 既存仕様内バグ修正 | 修正・Trial・Regression・承認済み範囲のProduction反映まで(Gateは通す)。結果は事後報告(FYI) | しない。ただし修正がGate/品質基準の緩和を伴う場合は#5へ | 不可逆(反映時) | 「バグか新仕様か」で迷ったら、現行の承認済み仕様に照らして**期待動作が書かれているならバグ**。書かれていない選択が要るなら新仕様候補(#4)。判定はFable |
+| 1 | 既存仕様内バグ修正 | 修正・Trial・Regressionまでは自律。承認済み範囲のProduction反映は、**既定=シャドー運用**(AIが「バグ/新仕様/保護対象」の分類まで行い、反映前にユーザーが分類を事後監査できる形で提示。Phase 2で誤分類率を測ってから、クラス単位で自律反映を開放。OF-217/U2)。Gateは通す。結果は事後報告(FYI) | しない。ただし修正がGate/品質基準の緩和を伴う場合は#5へ。**保護対象パス(§6-2: Prompt・Validator/Gate閾値/config・CURRENT_SPEC承認済み節)に触れる修正は、分類記録(誰が・どの根拠で「緩和でない/実質変更でない」と判定)が無ければcommit拒否、かつOpus独立判定枠に必須。実質変更なら`APPROVED_PROMPT_CHANGE`としてユーザー判断**(OF-209) | 不可逆(反映時) | 「バグか新仕様か」で迷ったら、現行の承認済み仕様に照らして**期待動作が書かれているならバグ**。書かれていない選択が要るなら新仕様候補(#4)。判定はFable |
 | 2 | 原因調査 | 全て自律(read-only、DEV隔離再現、census、有料APIはTrial枠内) | しない | - | 調査の追加費用がenvelopeを超えるなら#8 |
 | 3 | 安全なTrial | DEV/Trial隔離経路・Production非接触・Gate緩和なし・envelope内なら自律。結果は`TRIAL_VALIDATED`まで | しない | - | Production経路に混入する設計なら安全なTrialではない(#4) |
 | 4 | 新仕様のProduction採用 | 採用判断に必要なTrial、実例・効果・ネガ・QCD・推奨案の**採用パッケージ**作成まで | **採用承認**(`APPROVED_FOR_PRODUCTION`)はユーザーのみ | 方針変更・不可逆 | 「承認済み仕様の範囲で挙動が変わる」場合は#1。範囲を拡げるなら#4 |
-| 5 | 品質基準緩和 | 基準を同等以上に保つ/厳格化する変更は自律 | Gate閾値・PASS条件・自動検証・Rule/ASR基準を**緩める**変更は必ずユーザー | 方針変更 | 緩和か否かは「同じ入力で以前より通りやすくなるか」で判定。判定不能なら緩和扱い |
-| 6 | QCDトレードオフ | **承認済みQCDの範囲内**(品質floor以上・費用envelope以内・納期目標以内)での選択は自律 | 品質を下げて費用/納期を取る、または承認範囲を超えて費用/納期を取る選択はユーザー | 方針変更・予算 | QCDの床/天井の値自体はユーザーが設定(未設定の間は現行承認値を床/天井とみなす) |
+| 5 | 品質基準変更 | **Trial内**(DEV隔離・Production非接触)での厳格化は自律 | Gate閾値・PASS条件・自動検証・Rule/ASR基準を**緩める**変更は必ずユーザー。**Production Gateの厳格化・新品質基準の採用もユーザー判断**(ユーザー2026-10-13枠組み「Validator・Gateの安全基準変更」に揃える。厳格化でもINVALID増加で量産性QCDに影響し得るため。OF-216/U1) | 方針変更 | 緩和か否かは「同じ入力で以前より通りやすくなるか」で判定。判定不能なら緩和扱い |
+| 6 | QCDトレードオフ | **承認済みQCDの範囲内**(品質floor以上・費用envelope以内・納期目標以内)での選択は自律 | 品質を下げて費用/納期を取る、または承認範囲を超えて費用/納期を取る選択はユーザー | 方針変更・予算 | QCDの床/天井の値自体はユーザーが設定(未設定の間は現行承認値を床/天井とみなす)。**床・天井が数値化されていない品質項目(gloss不整合等)は、#1のグレー規則(期待動作が書かれていない→新仕様候補)へ回す**(OF-218) |
 | 7 | Human Review | HRの要否は仕様の条件どおりに適用。HR件数を減らす施策のTrial(量産性)は自律 | HRが必要な項目の**人による聴取/判断**、HR対象の拡大・縮小・HR方針の変更 | 方針変更 | AIが独自にHRを増やさない/減らさない。提示はバッチ化し、1件ずつの個別承認依頼を避ける |
 | 8 | 予算超過 | envelope内は自律。ソフト上限到達は記録して継続(原因把握済み・承認scope内・異常retryでない・残作業明確の全てを満たす場合) | **ハード上限超過**・追加予算・envelopeを超える新しい支出方針 | 予算 | 暴走疑い(異常retry・原因不明の費用増)は条件を満たさないのでSTOP(機械) |
 
@@ -82,7 +84,7 @@ Charter案(抜粋、そのまま使える形。約1,700字):
 1. **事後報告(FYI)と判断依頼(UDR)を分ける**。#1〜#3と#5/#6/#8の自律範囲は、完了後の報告に書くだけで、UDRにしない(R21: 現行の「異議時のみ差戻し」型のUDRを廃止)。
 2. ユーザー判断が必要な項目も、AIは**Trial・実例・効果・ネガ・QCD・推奨案**を揃えてから提示する。「判断が必要になった瞬間に止まる」のではなく、判断待ち項目は並行してブロックされない作業を続ける(非ブロッキング)。
 3. 承認は増やすほど形骸化する(事例6: 許可の93%を承認)。一方で、承認を減らしても介入できる位置(要約・ログ・STOP手段)は維持する(事例7)。
-4. 信頼の蓄積に応じた緩和の余地: 事例10の"until confidence in the agent's reliability grows"にならい、クラス単位の包括承認(例:「Coffee系の既存仕様内バグ修正のProduction反映」)は、実績(KPI)を見てユーザーが与える**ユーザー判断事項**(`FINAL_REPORT_01.md` §8)。
+4. 信頼の蓄積に応じた緩和の余地: 事例10の"until confidence in the agent's reliability grows"にならい、クラス単位の包括承認(例:「Coffee系の既存仕様内バグ修正のProduction反映」)は、実績(KPI)を見てユーザーが与える**ユーザー判断事項**(`FINAL_REPORT_01.md` §8)。**それまでの既定は#1の「シャドー運用」**(AIが分類まで行い、反映前にユーザーが分類を事後監査)。Phase 2で誤分類率(M9含む)を測ってからクラス単位で開放する。したがって「承認済み仕様内のバグ修正はProduction反映まで自動」は、包括承認を与えたクラスにだけ適用される(OF-217/U2)。
 
 ## 5. Problem-Solving Loop(単なるretryとの違い)
 
@@ -96,7 +98,7 @@ Charter案(抜粋、そのまま使える形。約1,700字):
 
 ### 5-2 必須成果物(`root_cause_dossier`、既存の`ER-*_REPORT.md`または`erNNN_output/<管理ID>/`に保存)
 1. 症状と**再現証跡**(コマンド・出力パス・日時)。
-2. 仮説2件以上。各仮説に「真なら観測されるはずの予測」と**反証実験の結果**(予測を実験の前に書く)。
+2. 仮説2件以上。各仮説に「真なら観測されるはずの予測」と**反証実験の結果**(予測を実験の前に書く)。**仮説・予測は実験runより前の時刻でcommitし、`docs_lint`がgit履歴の順序(仮説・予測のcommit < 実験run/出力の時刻)を検査する**(OF-219)。
 3. `failure_mode_id`と**census**(同種の事例を横断検索した件数。分母つき。分母0の「全件OK」は無効、事例18)。OPEN起票時にも同じ確認を行う(R11)。
 4. 対策案ごとの「原因除去か症状抑制か」の明記、効果・副作用・QCD見積もり、Regression結果。
 5. 既存仕様・過去Trial照合(現行§21)。
@@ -106,17 +108,22 @@ Charter案(抜粋、そのまま使える形。約1,700字):
 |---|---|---|
 | 機械 | 全dossierに対し必須項目の有無、分母>0、前回差分の有無を`docs_lint`が検査 | スクリプト |
 | Fable | DEV隔離・初回・census clean・低リスクの修正 | Fable(サンプリング受入) |
-| Opus独立判定 | Production経路に触れる修正、同一failure modeの再発、設計変更、新仕様候補の採用パッケージ | Opus(現行の条件B/A/Cと同一枠) |
+| Opus独立判定(原因確定前の往復) | **同一failure modeの再発**、**保護対象パス(§6-2)に触れる修正**(必須) | Opus(現行の条件B/A/Cと同一枠) |
+| Opus独立判定(その他) | Production経路に触れる修正、設計変更、新仕様候補の採用パッケージ | Opus(条件A/Cの枠。原因確定前の往復ではなく、J1〜J6観点の**事後サンプリング**) |
 
 Opus判定は「指摘を出し過ぎる」副作用があるため、**正確性・要件に影響する指摘のみ**報告させる(事例5)。判定の観点: (J1)再現証跡、(J2)仮説2件以上と予測の事前記載、(J3)census分母、(J4)原因除去と症状抑制の区別、(J5)副作用評価、(J6)既存仕様照合。外部に確立形は無く(外部§2-C)、**本設計は未検証**でPhase 2で効果を測る。
 
-なお、Workerは他のAgentを起動できない(維持)ため、独立判定は**Worker→Fable→Opus→Fable→Worker**の1往復になる。往復を節目(原因確定前・対策採用前)に限定し、各反復の中にはFableが入らない。
+なお、Workerは他のAgentを起動できない(維持)ため、独立判定は**Worker→Fable→Opus→Fable→Worker**の1往復になる。**原因確定前のOpus往復は、「同一failure modeの再発」「保護対象パスに触れる修正」の場合だけ**とし、それ以外はJ1〜J6観点での事後サンプリングにする(往復による遅延を抑える。OF-219)。各反復の中にはFableが入らない。
 
 ### 5-4 停止条件・再計画
 1. 同一`failure_mode_id`に対し、修正または同入力再生成を**2回行っても再発**したら、Workerはdossierを残して終了し、**context破棄・再計画**(事例5 "after two failed corrections, /clear"、事例16 A-4の修正サイクル2回超のサーキットブレーカー)。Fableは現行のOpus条件Bを発動する。
-2. 再計画後の1回(合計3回目)でも再発、または検証手段がない(分母0)場合は、`PARKED`としてOPEN作業キュー(担当・期限・優先度・failure_mode_id)に登録しFableが優先順位を判断する。**この時点でも、Decision Policyの出自に当たらなければユーザーには戻さない**。
+2. 再計画後の1回(合計3回目)でも再発、または検証手段がない(分母0)場合は、`PARKED`としてOPEN作業キュー(担当・期限・優先度・failure_mode_id)に登録しFableが優先順位を判断する。**この時点でも、Decision Policyの出自に当たらなければユーザーには戻さない**。ただし**PARKEDが納期に影響する場合は`QCD_TRADEOFF`としてユーザーへ**(納期の入替え判断)。PARKEDの再開は**新しい仮説がある場合のみ**(同じ手を再実行しない)。
 3. 費用がソフト上限に到達しても、§8の継続条件を満たす限り継続。ハード上限は機械が止める。
-4. 上限値(2回・3回)は[推測]の初期案で、Phase 2で較正する。「Sonnet委任は管理IDあたり初回+3回」という現行の管理ID単位の上限は、failure mode単位の上述に置き換え、管理ID単位の委任回数は上限でなく**観測指標**にする(ID再発行で回避された実績、内部§1-2)。
+4. 上限値(2回・3回)は[推測]の初期案で、Phase 2で較正する。「Sonnet委任は管理IDあたり初回+3回」という現行の管理ID単位の上限は、failure mode単位の上述に置き換える。ただし機械化の抜け穴を塞ぐため(OF-214):
+   - (a) **`failure_mode_id`はFableがintake/OPEN起票時に付与**し(Workerが自己付与しない)、census(`docs_lint`)で重複・分割による回避を検知する。
+   - (b) **試行計数は機械的に**: runner起動ログ(26-5の`run_launch_log.jsonl`方式)と`budget_gate`の予約記録に`failure_mode`/`component`タグを付け、そこから集計する(Workerの自己申告に依存しない)。同一入力の再生成もここで数える。
+   - (c) **管理ID単位の委任回数は上限でなく警告閾値**として残す(例: 6回に達したらOpus判定またはユーザーFYIを必須。ID再発行で回避された実績、内部§1-2)。
+   - (d) PARKEDが納期に影響する場合は`QCD_TRADEOFF`でユーザーへ(上記2)。
 
 ## 6. Trial・Production Gate(3状態の維持と状態ファイル化)
 
@@ -124,12 +131,21 @@ Opus判定は「指摘を出し過ぎる」副作用があるため、**正確�
 | 状態 | 意味 | 書込み可能な主体 | 前提 |
 |---|---|---|---|
 | `TRIAL_VALIDATED` | DEV/Trialで検証済み。Production未採用 | `state_gate`(Workerの申請を検証して記録) | 証跡パス(evidence_ref)が存在し、受入基準の機械検査がPASS |
-| `APPROVED_FOR_PRODUCTION` | ユーザーがProduction採用を承認 | ユーザーの承認原文(現行Gate 2の逐語保存)を引用して記録。Worker/Fableの自己承認は不可 | `TRIAL_VALIDATED`であること、`decision_ref`(承認原文の所在) |
+| `APPROVED_FOR_PRODUCTION` | ユーザーがProduction採用を承認 | ユーザーの承認原文(現行Gate 2の逐語保存)を引用して記録。Worker/Fableの自己承認は不可 | `TRIAL_VALIDATED`であること、`decision_ref`が**`docs/pm/transcripts/`の実在するユーザー発言(時刻・本文一致)を指す**ことを`state_gate`が照合した時のみ許可(OF-210) |
 | `PRODUCTION_WIRED` | 配線済みでProduction Gateを通過 | `state_gate wire`のみ(テスト・Parity・Audio Validation等のGate PASSを確認) | `APPROVED_FOR_PRODUCTION`であること |
 
 2. 現行どおり、Trial結果(`VALIDATED`等)をProduction仕様と誤認しない。状態ファイルは**3値を明示的に別の欄**として持ち、遷移履歴(`status_history`: from/to/at/by/evidence_ref/decision_ref)を追記のみで保持する(事例3: `passes`のみ編集可、JSONはMarkdownより誤上書きされにくい)。
-3. 配置案: `docs/pm/state/<管理ID>.json`。含む欄: 管理ID、状態、状態履歴、failure_modeごとの試行履歴(§5)、委任回数(観測用)、予算envelope参照、報告済みフラグ。台帳(REPORT_LEDGER)の「未報告」管理はこの欄に統合する。
+3. 配置案: `docs/pm/state/<spec_id_or_component>.json`(**記録単位はspec_id/component**。管理IDは参照欄。OF-210)。含む欄: spec_id、参照管理ID、状態、状態履歴、failure_modeごとの試行履歴(§5)、委任回数(観測用)、予算envelope参照、報告済みフラグ。台帳(REPORT_LEDGER)の「未報告」管理はこの欄に統合する。
 4. **限界**: 単独ユーザーのローカル環境では、完全な改ざん防止はできない(AIが承認欄を書く可能性)。緩和策は、(a)承認欄に承認原文の引用を必須、(b)hookでWorkerによる承認状態の直接編集を拒否し`state_gate`経由に限定、(c)Fableのサンプル監査、(d)Opus/ユーザー報告で承認の出典を常に提示。これらは[推測]で、有効性はPhase 2で監査する。
+5. (OF-210) **管理ID再発行で状態をリセットできない**: 状態は管理IDでなくspec_id/componentに紐づくため、新しい管理IDを起こしても既存の`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`の履歴は引き継がれる。
+6. (OF-210) **`PRODUCTION_WIRED`仕様へのバグ修正も`state_gate fix`**(承認範囲内の記録=変更前後の状態・根拠・保護対象判定)を経由する。経由しない修正は、状態ファイルとgit差分の照合(`docs_lint`)で検出する。
+
+### 6-2 保護対象パスと分類記録(OF-209/OF-212)
+1. **保護対象パス一覧**(`docs/pm/state/protected_paths.json`案): (a) Prompt(記事生成・コメント・KP等のProduction Prompt)、(b) Validator/Gateの閾値・configファイル、(c) CURRENT_SPECの承認済み節。一覧自体の変更も保護対象。
+2. **強制点はgit pre-commit hook**(Claude hooksではない。理由は§13「Claude hooksの注意点」): 保護対象パスに触れるdiffは、**分類記録(誰が・どの根拠で「緩和でない/実質変更でない」と判定したか)が無ければcommitを拒否**する。実質変更と判定された場合は`APPROVED_PROMPT_CHANGE`(ユーザー判断)へ。
+3. 保護対象パスに触れる修正は、**Opus独立判定枠に必須**(§5-3)。
+4. 位置づけ: 「本来UDRにすべきなのに自律で実施した」ケースを**検出する手段**。防止の完全性は保証しない(分類者が誤る可能性。M9で抜取り監査)。
+5. 同じpre-commit hookに**`tools/secret_scan_01.py --staged`を組み込む**(hits>0で拒否。現行は人が実行する運用)。
 
 ## 7. 新仕様候補の採用パッケージ(ユーザー提示の形式)
 
@@ -151,22 +167,22 @@ Opus判定は「指摘を出し過ぎる」副作用があるため、**正確�
 | 方式 | 内容 | 長所 | 短所 | 外部根拠 |
 |---|---|---|---|---|
 | (a) タスク単位 | 管理IDごとにenvelopeを設定 | 単純、原因と費用が紐づく | 並行する複数タスクの合計が見えない | 事例5(spend limit階層) |
-| (b) 日次共有枠 JPY1,000(**未承認の検討案**) | 全agent共通の1日枠 | 全体の上限が明快 | 並行agentの二重支出防止に単一残高の書込みが必要。共有ロックは失敗しやすい(事例11)。先行例なし | 外部「不明」 |
+| (b) 日次共有枠 JPY1,000(**未承認の検討案**) | 全agent共通の1日枠 | 全体の上限が明快 | 日次または週次の合計上限は、reserve時に各runファイルを合算して判定でき**共有ロックは不要**(下記8-3)。先行例なし | 外部「不明」 |
 | (c) 階層型 | run上限<タスクenvelope<(日次は観測) | 暴走はrun単位で、計画はタスク単位で守る | 実装が3層 | 事例5(`--max-budget-usd`とorg/個人limit階層) |
 
-### 8-2 推奨: (c) 階層型(日次は当面ソフト観測のみ)
+### 8-2 推奨: (c) 階層型+日次または週次の合計ハード上限(金額はユーザー決定=U3)
 理由([推測]、根拠つき):
 1. 現行の被害実績は**run単位の暴走**(2026-10-12事故、約JPY71の旧仕様TTS、内部§3-1-2)で、対策は既に26-5(run単位の機械STOP)が有効。run単位ハード上限を全runnerへ広げれば同種事故を防げる。
-2. 費用の規模が小さい。直近の管理IDの記録は委任_02でJPY1.01、COMPLETION-01委任_03でJPY約4.3〜5.3(コミット記載、[事実])。日次共有枠JPY1,000は、これらの200倍規模で、**限界効果が小さい**(日次の追加防御価値は、複数agentが同時に暴走する稀なケースのみ)。
-3. 日次共有残高は外部に先行例が無く(外部§2-E)、共有状態は競合しやすい(事例11)。導入するなら、Phase 2で「個別ファイル+単一集約者」(事例24)の小規模Trialとして観測だけ行い、効果が確認できてから採否を判断する。
-4. したがって**日次JPY1,000は採用推奨しない**(未承認の検討案のまま)。ユーザーが日次枠を望むなら、ソフト上限(警告のみ)から始めるのを推奨する。
+2. 費用の規模(開発期): 直近の管理IDの記録は委任_02でJPY1.01、COMPLETION-01委任_03でJPY約4.3〜5.3(コミット記載、[事実])。日次JPY1,000は、これらの約200倍の規模。**ただしこの「200倍」の根拠は開発期のみ**で、量産期(Family Z 1run JPY300規模)には当てはまらない。量産期は複数runの同時暴走が現実の損失になり得るため、合計上限の価値は開発期の見積りより大きい(OF-222)。
+3. 日次共有残高は外部に先行例が無い(外部§2-E)。ただし「共有ロックが必要」という前提は誤りだった: 各runは自分専用ファイルにだけ書き(事例24)、`reserve`時に**各runファイルを合算して合計上限と比較**すればよく、ロックは不要。同時に予約が重なっても超過は**同時実行数×run上限以内**に収まる(許容)。(OF-222で論拠を修正)
+4. したがって**日次または週次の合計ハード上限を設けることを推奨する**(OF-222)。**金額と日次/週次の別は、ユーザー決定(U3)**。JPY1,000/日は検討案の1つ(未承認)。ユーザーが未決の間は、既存の承認枠(現行§7-7のTrial JPY100以下等)とrun上限が有効。
 
 ### 8-3 設計
-1. **単一書込所有者**: 支出の記録は`budget_gate`だけが書く。各runは自分専用の個別ファイル(`docs/pm/state/budget/<run_id>.json`)にだけ書き、集約は`budget_gate`が読取時に合算する(共有ロックを使わない、事例24、事例11の教訓)。
+1. **単一書込所有者**: 支出の記録は`budget_gate`だけが書く。各runは自分専用の個別ファイル(`docs/pm/state/budget/<run_id>.json`)にだけ書き、集約は`budget_gate`が読取時に合算する(共有ロックを使わない、事例24、事例11の教訓)。合計上限の判定も`reserve`時にこの合算で行う(OF-222)。
 2. **予約→実績**: 有料API呼出の前に`reserve(run_id, 見積)`を呼び、run上限/タスク上限を超える場合は呼出を拒否する(26-5のSDK入口wrapの水平展開)。呼出後に実績を記録する。
 3. **run上限(ハード)**: タスクenvelopeの一部(初期案は50%[推測])。到達で機械STOP。
 4. **タスクenvelope**: Fableがintake時に設定し、既存の承認枠(現行§7-7のTrial JPY100以下のFable承認等)の範囲で自律設定する。envelopeの総額が承認枠を超える場合は#8(ユーザー)。
-5. **ソフト上限**: envelopeの80%で警告を記録。継続条件は現行T-3どおり(承認済みscope内/原因把握済み/異常retryでない/残作業明確/追加費用が合理的)。超過許容は[推測]の初期案としてenvelopeの+20%まで自律。
+5. **ソフト上限**: envelopeの80%で警告を記録。継続条件は現行T-3どおり(承認済みscope内/原因把握済み/異常retryでない/残作業明確/追加費用が合理的)。超過許容は[推測]の初期案としてenvelopeの+20%まで自律。**ただしこの+20%自律超過は承認枠の内側に限る**(現行§7-7のJPY100上限、合計ハード上限を超えない。超えるなら#8でユーザー。OF-222)。
 6. **追加予算の条件**: (a)原因が把握済み、(b)期待されるQCD改善と上限・打切り条件が説明できる、(c)承認済みscope内。(a)〜(c)を満たしてもハード上限超過は#8(ユーザー)。
 7. 数値(50%、80%、+20%)はすべて[推測]の初期案で、Phase 2で実績の分布に基づき較正する。
 
@@ -185,7 +201,7 @@ Opus判定は「指摘を出し過ぎる」副作用があるため、**正確�
 ## 10. Escalation Policy / Agent間の役割・引継ぎ
 
 ### 10-1 UDR(ユーザー判断依頼)の起票ルール
-1. **出自(origin)フィールドを必須**にする。値は`NEW_SPEC_ADOPTION`/`GATE_RELAXATION`/`APPROVED_SPEC_CHANGE`/`BUDGET_EXCEEDANCE`/`QCD_TRADEOFF`の5つ(診断書§5-2-4の案)に、本書で`HR_POLICY`を追加した6つ。空、または一覧外の起票は`docs_lint`が拒否する(R21)。
+1. **出自(origin)フィールドを必須**にする。値は`NEW_SPEC_ADOPTION`/`GATE_RELAXATION`/`APPROVED_SPEC_CHANGE`/`BUDGET_EXCEEDANCE`/`QCD_TRADEOFF`の5つ(診断書§5-2-4の案)に、本書で`HR_POLICY`と`APPROVED_PROMPT_CHANGE`(OF-209)を追加した**7つ**。空、または一覧外の起票は`docs_lint`が拒否する(R21)。
 2. 必須欄: 判断してほしい1文、選択肢2〜3と**推奨案**、AIがすでに行ったTrial・実例・効果・ネガ・QCD、判断が遅れた場合の影響、**ユーザーが取るべき具体的アクション**(事例16のRC-2: 状況ダンプで終わらせない)。
 3. UDRにしないもの: 事後報告(FYI)、AIが決められる事項、作業が必要という理由、記録目的の確認(現行#53/#55型)。Fableは「要判断」をそのままユーザーに転送せず、Decision Policyに照らして自分で決める(R22)。
 4. 宛先: Worker→Fableのみ。Fable→ユーザーは出自つきUDRと、固定5節の報告のみ。
@@ -193,7 +209,7 @@ Opus判定は「指摘を出し過ぎる」副作用があるため、**正確�
 ### 10-2 STOPの3種
 | 種別 | 発動 | 解除 |
 |---|---|---|
-| SAFETY STOP | `STOP`/`STOP_ALL`/`STOP_NOTICE`(構造化: management_id、scope、status=ACTIVE/CLOSED、expires)。`stop_check`が全runner共通で判定 | Fable(スコープ内の閉鎖)・ユーザー。STOPセンチネルをWorkerは削除・回避しない(維持) |
+| SAFETY STOP | `STOP`/`STOP_ALL`/`STOP_NOTICE`(構造化: management_id、scope、status=ACTIVE/CLOSED、expires、**`issuer`=USER/FABLE/SYSTEM**)。`stop_check`が全runner共通で判定(26-5の機構の共通化であり、別系統を重複して作らない。OF-220) | Fable(`issuer`がFABLE/SYSTEMのものをスコープ内で閉鎖)・ユーザー(**`issuer=USER`のSTOPはユーザーのみが閉鎖可**。OF-218)。STOPセンチネルをWorkerは削除・回避しない(維持) |
 | BUDGET STOP | `budget_gate`のrun/タスクのハード上限 | ユーザー(追加予算) |
 | LOOP STOP | §5-4(再発2回→再計画→PARKED) | Fable(優先順位)。ユーザーには戻さない |
 
@@ -203,20 +219,24 @@ Opus判定は「指摘を出し過ぎる」副作用があるため、**正確�
 | Fable(最上位) | ユーザー窓口、intake、優先順位、受入、Opus起用の判断、PARKEDの優先付け | Loopの各反復、調査・実装の実行、定型集計 |
 | Sonnet | 原因究明〜是正〜Trial〜確認、SSOT・台帳の更新、Git | 独立判定(自分の作業の採否) |
 | Opus | 独立判定(原因判定の高リスク分、条件A〜D、Production採用提案前) | 通常の実装・調査 |
-| Haiku | 定型集計、`accept_check`の実行、lint実行、費用集計(read-only) | 判断を含む作業、SSOT編集 |
+| Haiku | 定型集計、lint実行、費用集計(read-only)。**`accept_check`はHaikuに依存しない**(下記R5案3。OF-215) | 判断を含む作業、SSOT編集 |
 
 **常時PM vs 難判断時のみ**: 推奨は「**窓口と節目だけFable、反復の中身には入らない**」(ハイブリッド)。根拠: (1)多agentはトークンを約15倍使い、価値が十分高い作業にだけ使うべき(事例2)。(2)指揮者を薄くし実作業はagentへ(事例22)。(3)現行の手順指定型委任(13kB級)と全反復への介入が中継コストを生んでいる(内部§1-2、§3-5)。ただし**高コストモデルの常時PMの費用対効果を直接測った公開データは無い(外部§2-B「不明」)**ため、(a)呼び忘れ(Opus条件の見落とし)を機械で防ぐ(`state_gate`が`judged_by`欄の無い遷移を拒否)、(b)Fable起用回数・トークンをPhase 2でKPI化して実測する、を前提とする。
 
-**R5(Fableのtools制約)への設計案**: agent定義は本委任で変更しない。受入時の独立検証手段は、(案1)`haiku-worker`が`accept_check`(read-only)を実行し、件数・費用・状態を**再計算**した結果をRESULT_PACKETに添える、(案2)Fableに限定的なBash(`tools/accept_check*`のみ)を許す、の2案。**案1を推奨**([推測])。理由: 案2はtools定義の粒度制御が可能か未確認(要確認)で、案1はFableの禁止事項(編集・実装・調査の禁止、er0XX_output閲覧禁止)を保ったまま中継を減らせる。tools欄と本文が不一致のhaiku-worker(内部§3-3-9)も同時に解消する。
+**R5(Fableのtools制約)への設計案**(委任_03でOF-215により推奨を変更): agent定義は本委任で変更しない。受入時の独立検証手段は3案。
+- (案1・**不成立**)`haiku-worker`が`accept_check`を実行して結果を添える。`haiku-worker.md`のtoolsにBashが無く、`sandwich-pm.md`のtoolsに`haiku-worker`が未登録の可能性があるため、現状の構成では実行できない。
+- (案2・注記つき)Fableに限定的なBash(`tools/accept_check*`のみ)を許す。tools定義でコマンド単位の粒度制御ができる確証がなく、`;`/`&&`等の**連結でFableが任意コマンドを実行できてしまう**リスクがある。Fableの禁止事項(編集・実装・調査の禁止)と両立しない可能性。
+- (案3・**推奨**)**SubagentStop hookで`accept_check`を確定実行し、結果を`docs/pm/state/accept/<管理ID>.json`へ書き出す。Fableは既存のReadで読むだけ**。hookはプロセスとして機械的に走るため、Fableのtoolsを変更せず、Workerの自己申告に依存しない。`stop_hook_active`フラグで無限ループを防止する。hook自体の動作確認(Worker終了時に確実に発火するか)はPhase 1の確認事項。
+tools欄と本文が不一致のhaiku-worker(内部§3-3-9)は、案3とは独立に整合させる。
 
 ### 10-4 引継ぎ
-- Fable→Worker: **ミッション型委任文(2,000字以内)**。目的/受入基準(機械検査可能)/予算envelope/参照パス(最大5件、目的つき)/出力先(既存構造)/禁止は安全規則のみ。STOP条件や「再発したら止まる」型の事前敷設は書かない(R9)。固定ブロックE-1/D-1/G-1/F-1/T-0〜T-3は`sonnet-worker.md`の常設指示へ移す(R8)。事例2(目的・出力形式・境界を渡す)、事例14(事前スコープ品質)、事例22(目的/参照パス/出力先)に対応。
+- Fable→Worker: **ミッション型委任文(2,000字以内)**。目的/受入基準(機械検査可能)/予算envelope/参照パス(最大5件、目的つき)/出力先(既存構造)/禁止は安全規則のみ。STOP条件や「再発したら止まる」型の事前敷設は書かない(R9)。**ただし「有料run再起動の許可回数」と「予算envelope」はR9の除外対象ではなく、委任文の必須欄として残す**(PM_GOVERNANCE 26-2(c)との整合。OF-211)。固定ブロックE-1/D-1/G-1/F-1/T-0〜T-3は`sonnet-worker.md`の常設指示へ移す(R8)。事例2(目的・出力形式・境界を渡す)、事例14(事前スコープ品質)、事例22(目的/参照パス/出力先)に対応。
 - Worker→Fable: RESULT_PACKET(20行以内)+状態ファイルの更新+dossierパス。
 - Fable→Opus: dossier+論点(現行のOpusレビューブロックを維持)。
 - 委任文の全文保存は不要(要点保存を標準)とし、`check_delegation_prompt`は要点保存版/全文版で基準を分け、blocking項目を限定する(R7)。
 
 ## 11. 効果測定KPI
-詳細な定義・測定方法・基準値・目標・期間は`ROLLOUT_AND_VALIDATION_PLAN_01.md` §2。要約: (1)不要なユーザー判断依頼件数、(2)自律的問題解決率、(3)原因分析の深さと正確性、(4)対策Trialの副作用検出率、(5)Production完成までのリードタイム、(6)API費用・モデル費用、(7)ユーザー対応負荷、(8)不具合再発率。補助: 常駐文書の文字数、check FAIL率(意味検査後)、強制の有効性(既知違反の検出率)、管理ID当たり委任回数。
+詳細な定義・測定方法・基準値・目標・期間は`ROLLOUT_AND_VALIDATION_PLAN_01.md` §2。要約: (1)不要なユーザー判断依頼件数、(2)自律的問題解決率、(3)原因分析の深さと正確性、(4)対策Trialの副作用検出率、(5)Production完成までのリードタイム、(6)API費用・モデル費用、(7)ユーザー対応負荷、(8)不具合再発率、(9)**自律決定の抜き取り監査による必要UDR見逃し件数(M9、OF-223)**。補助: 常駐文書の文字数、check FAIL率(意味検査後)、強制の有効性(既知違反の検出率)、管理ID当たり委任回数。
 
 ## 12. 既存定義との差分表
 
@@ -224,7 +244,7 @@ Opus判定は「指摘を出し過ぎる」副作用があるため、**正確�
 
 | # | 対象 | 区分 | 変更内容 | 診断書対応 | 手段 |
 |---|---|---|---|---|---|
-| 1 | CLAUDE.md: PM層の要約(Opus Gate・ループ上限・最新モデル・並列原則の本文) | 削除 | 本文を削除し、PM_GOVERNANCEへの参照1行にする | 5-1-5 | 文 |
+| 1 | CLAUDE.md: PM層の要約(Opus Gate・ループ上限・最新モデル・並列原則の本文) | 削除(**ユーザー判断U4**) | 本文を削除し、PM_GOVERNANCEへの参照1行にする。ただしCLAUDE.mdのPM層は過去のユーザー指示を含むため、削除するかは**ユーザー判断事項U4**(`FINAL_REPORT_01.md` §8)。**安全上の不変条件4点(§12 #26)は削除せずCLAUDE.mdに残す**(OF-213/OF-221) | 5-1-5 | 文 |
 | 2 | CLAUDE.md: ユーザー指示部分(説明方法・開発方針・Git運用・テーマ選定) | 維持 | 変更しない(ユーザー定義) | 5-3-7, 5-3-10 | 文 |
 | 3 | CLAUDE.md: 「開発側責任」枠組みの参照 | 改訂 | Charter(旧PM_BRIEF)へ誘導する1段落を追加 | 5-1-2 | 文 |
 | 4 | CLAUDE.md: compact復帰手順 | 改訂 | 読み先にCharter・状態ファイル要約を追加。全文読込禁止は維持 | - | 文 |
@@ -241,24 +261,24 @@ Opus判定は「指摘を出し過ぎる」副作用があるため、**正確�
 | 15 | PM_GOVERNANCE §11 Sonnet委任上限(初回+3→UDR) | 改訂 | failure mode単位の停止(再発2回→再計画)に置換。管理ID単位は観測指標化 | 5-1-9 | 文+機(#51) |
 | 16 | PM_GOVERNANCE §11-3 Opus条件A〜D | 維持 | 条件A〜D・採否台帳・「Opusレビュー自体をユーザーGateにしない」を維持 | 5-3-1 | 文 |
 | 17 | 同: 条件Bの定義/条件Aの観点 | 改訂 | 条件Bに「同一入力の再生成も試行と数える」、条件Aに「共有moduleの入力契約変更時は下流契約テスト必須」を追記 | 5-2-8 | 文 |
-| 18 | PM_GOVERNANCE §12 報告単位管理 | 維持 | 12-13(UDR更新)は機械生成に置換(#46) | - | 文 |
+| 18 | PM_GOVERNANCE §12 報告単位管理 | 維持 | 12-13(UDR更新)は機械生成に置換(#46)。**PM_GOVERNANCEには「12-13」節番号が2つある(L2591とL2603)ため、どちらが対象かを着手前に特定する**(OF-221)。縮小時は§14のとおり移行表を必須とする | - | 文 |
 | 19 | PM_GOVERNANCE §13 新規記事テーマ選定 | 維持 | ユーザー選定を維持 | 5-3-10 | 文 |
 | 20 | PM_GOVERNANCE §14-1 PM処理原則 | 改訂 | 原因切り分け・failure mode一般化をProblem-Solving Loopとして昇格。必須成果物を規定 | - | 文+機 |
 | 21 | PM_GOVERNANCE §14-6 PASS済み成果物の再利用 | 維持 | 趣旨維持。機構化はstate_gate。runner共通展開は後続(下記注) | 5-3-9 | 文 |
 | 22 | PM_GOVERNANCE §21 Existing Spec/Prior Trial Check | 維持 | 維持 | - | 文 |
 | 23 | PM_GOVERNANCE §25 最新モデル原則 | 維持 | 報告項目を維持 | 5-3-11 | 文 |
-| 24 | PM_GOVERNANCE §26 STOP/再起動 | 改訂 | STOP_NOTICEにmanagement_id/scope/status/expires、閉鎖手順、Fableの解釈権限を追加 | 5-2-1 | 文+機(#52) |
-| 25 | 26-5 機械的STOP(STOP_ALL・RUN_LOCK・RESTART_STORM)、26-X secret scan | 維持 | 維持。`stop_check`で水平展開 | 5-3-4, 5-3-5 | 機 |
-| 26 | Production採用はユーザーのみ・Trial結果の自動格上げ禁止(CLAUDE.md・agents・§2に多重記載) | 維持 | 記載を1箇所に集約し、状態ファイルで強制 | 5-3-2 | 文+機 |
+| 24 | PM_GOVERNANCE §26 STOP/再起動 | 改訂 | STOP_NOTICEにmanagement_id/scope/status/expires/**issuer**、閉鎖手順(issuer=USERはユーザーのみ閉鎖可)、Fableの解釈権限を追加 | 5-2-1 | 文+機(#52) |
+| 25 | 26-5 機械的STOP(STOP_ALL・RUN_LOCK・RESTART_STORM)、26-X secret scan | 維持+機械化(hooks枠#55内) | 26-5は維持し`stop_check`で水平展開。secret scanは人の実行から**pre-commit hookの`--staged`実行(hits>0で拒否)**へ機械化(OF-212) | 5-3-4, 5-3-5 | 機 |
+| 26 | Production採用はユーザーのみ・Trial結果の自動格上げ禁止(CLAUDE.md・agents・§2に多重記載) | 維持 | 記載を原則1箇所に集約し、状態ファイルで強制。**集約の例外**: 安全上の不変条件4点(Production採用はユーザーのみ/3状態の区別/Gate迂回禁止/STOPセンチネル不可侵)は、Workerが最初に読む`sonnet-worker.md`と、ユーザー定義の`CLAUDE.md`の**両方に重複して残す**(状態ファイル・hookが故障しても最後の砦になるため。OF-213) | 5-3-2 | 文+機 |
 | 27 | Gate迂回禁止(Audio Validation/Rule7/M3/ASR)と停止時の姿勢 | 維持 | 「止まった後は原因調査して直す」責任を明文化 | 5-3-3 | 文 |
 | 28 | Managed-ID trailer・明示add・`git add -A`禁止 | 維持 | 維持 | 5-3-7 | 文 |
 | 29 | 費用Guardrailのcontinue/STOP書き分け(T-3、§11冒頭の2026-10-05指示) | 維持 | Cost Budget Policy(§8)の継続条件として維持 | 5-3-8 | 文 |
 | 30 | sandwich-pm.md(手順・報告・上限到達時) | 改訂 | 候補セクション制の指示を削除、UDR既定を撤回、上限→failure mode型、ミッション型委任、受入検証、haiku委任とtoolsの整合 | 5-1-1, 5-1-9, 5-1-10 | 文 |
-| 31 | sandwich-pm.md: Fableの編集・実装・調査禁止、er0XX_output閲覧禁止 | 維持 | 変更しない。独立検証は`accept_check`(Haiku)経由 | 5-2-10 | 文 |
+| 31 | sandwich-pm.md: Fableの編集・実装・調査禁止、er0XX_output閲覧禁止 | 維持 | 変更しない。独立検証は、SubagentStop hookが確定実行して書き出した`accept_check`結果(`docs/pm/state/accept/<管理ID>.json`)を既存Readで読む(OF-215) | 5-2-10 | 文 |
 | 32 | sonnet-worker.md | 改訂 | UDR文化の撤回、報告先をFable一本化、Problem-Solving Loopを既定動作に、固定ブロックを吸収、「既存構造」の定義 | 5-1-6, 5-1-10 | 文 |
 | 33 | sonnet-worker.md: Production安全性・検証・禁止・有料run STOP節 | 維持 | 維持(26節の複製部分は参照に縮小) | 5-3-2, 5-3-3 | 文 |
 | 34 | opus-consultant.md | 改訂 | 原因判定の独立判定役(J1〜J6、正確性に影響する指摘のみ)を追記 | - | 文 |
-| 35 | haiku-worker.md | 改訂 | tools欄と本文の整合。`accept_check`・集計・lint実行を担当 | 5-2-10 | 文 |
+| 35 | haiku-worker.md | 改訂 | tools欄と本文の整合。集計・lint実行を担当(`accept_check`はhook実行でHaikuに依存しない。OF-215) | 5-2-10 | 文 |
 | 36 | 委任テンプレート固定ブロック(DELEGATION_READ_EFFICIENCY_BLOCK、2,491字) | 削除 | 委任文への再掲を廃止し、sonnet-worker.mdの常設指示へ | 5-1-6 | 文 |
 | 37 | DELEGATION_STANDARD_TEMPLATE(6,158字) | 改訂 | ミッション型(2,000字以内)へ。STOP事前敷設欄・事前Read一覧・コマンド全文を原則廃止 | 5-1-6 | 文 |
 | 38 | Opusレビューブロック(3,618字) | 維持 | 維持 | 5-3-1 | 文 |
@@ -275,14 +295,14 @@ Opus判定は「指摘を出し過ぎる」副作用があるため、**正確�
 | 49 | delegation_log | 改訂 | 要点保存を標準化。古い分はアーカイブ | - | 文 |
 | 50 | 証跡置き場(erNNN_output、ER-*_REPORT.md) | 維持 | 「1管理ID=1出力ディレクトリ」と明記して曖昧さを解消(R24) | - | 文 |
 | 51 | **state_gate**+状態ファイル(`docs/pm/state/<管理ID>.json`) | 新設 | 3状態、遷移検証、failure mode試行・委任回数の計数 | 5-2-3 | 機 |
-| 52 | **stop_check**(共通ライブラリ) | 新設 | 構造化STOP_NOTICE判定。全runnerで共通化 | 5-2-1 | 機 |
+| 52 | **stop_check**(共通ライブラリ) | 新設 | 構造化STOP_NOTICE判定。全runnerで共通化。**26-5の既存機構(STOPセンチネル・STOP_ALL・RUN_LOCK)の共通化として実装し、別系統の重複実装にしない**(OF-220) | 5-2-1 | 機 |
 | 53 | **budget_gate** | 新設 | 予約→実績、run上限、単一集約者 | - | 機 |
 | 54 | **docs_lint** | 新設 | 常駐文字数予算、UDR出自、OPEN行、台帳ポインタ、重複規則、dossier必須項目 | 5-2-2, 5-2-4, 5-2-5, 5-2-7 | 機 |
-| 55 | **hooks**(報告マーカー、Worker終了時のevidence検査)+強制回帰テスト | 新設 | 既知の違反サンプル(T1〜T6)が検出されることを継続検査(事例20) | 5-2-6 | 機 |
+| 55 | **hooks**(報告マーカー、Worker終了時のevidence検査、SubagentStop hookによる`accept_check`確定実行、**git pre-commit hook**[保護対象パス分類記録、`secret_scan_01.py --staged`])+強制回帰テスト | 新設 | 既知の違反サンプル(T1〜T6)が検出されることを継続検査(事例20)。保護対象パス/secret scanの強制点はClaude hooksでなくgit pre-commit(OF-209/OF-212)。hooks設定ファイル自体のhashを`docs_lint`で監視(§13) | 5-2-6 | 機 |
 
 注: 診断書§5-2-9(検証状態引継ぎ`REUSED_VALIDATED`のrunner共通展開)は**Productionに近いコード変更**であり、本研究の範囲外。ユーザー承認後の別管理IDの後続項目とする。診断書§5-1/5-2/5-3の全項目(5-1:12、5-2:10、5-3:11)は上表のいずれかに対応する。
 
-**差分表の件数(全55行)**: 維持22 / 統合4 / 削除4 / 改訂20 / 新設5(新設は5点: state_gate、stop_check、budget_gate、docs_lint、hooks+強制回帰テスト)。
+**差分表の件数(全55行)**: 維持22(うち#25は「維持+機械化」) / 統合4 / 削除4(うち#1はU4でユーザー判断) / 改訂20 / 新設5(新設は5点: state_gate、stop_check、budget_gate、docs_lint、hooks+強制回帰テスト)。
 
 ## 13. 文書に書くもの/仕組みで強制するもの
 原則(事例5、事例9、事例17): 判断基準・目的・トレードオフの説明は文書(少量)、**例外なく守る/間違えると不可逆なもの**は仕組み、判断の質は評価サイクル(サンプル精査)。
@@ -299,6 +319,13 @@ Opus判定は「指摘を出し過ぎる」副作用があるため、**正確�
 | 完了の定義 | DoD 8項目 | Worker終了時のStop hook(evidence・分母>0) | 分母ゼロ合格の検出 |
 | 原因調査の質 | J1〜J6の観点 | dossier必須項目のlint | 事後に原因が覆った率(KPI3) |
 | 新規記事テーマ・Gate迂回禁止 | 文書(判断を含む) | 既存のGate(Audio Validation等) | 既存どおり |
+| 保護対象パス(Prompt・Gate閾値/config・承認済みSpec)の無承認変更 | 7出自の1つ`APPROVED_PROMPT_CHANGE`(Charter) | **git pre-commit hook**(分類記録が無ければcommit拒否)+Opus独立判定枠 | M9: 抜取り監査での見逃し件数(1件で即時中止、ROLL §5-1) |
+| 秘密情報のcommit混入 | 既存の26-X | pre-commit hook(`secret_scan_01.py --staged`、hits>0で拒否) | hits件数の推移 |
+
+### Claude hooksの注意点(OF-220)
+1. **PreToolUse hookは終了コード2のみがブロック**で、それ以外の異常終了(例外・タイムアウト等)は既定でfail-open(通過)になる。そのため**例外時は必ずexit 2を返すラッパー**(try/exceptで全体を包み、例外ならexit 2)を必須とする。
+2. Edit/Write向けのパスhookは、**Bash経由の書込み(`>`、`sed -i`、`python -c`等)で回避される**。したがって状態ファイル・保護対象の保護は、Claude hooksに頼らず**git pre-commit hook+`state_gate`の照合**で行う。
+3. **hooks設定ファイル自体(`.claude/settings*.json`等)のhashを`docs_lint`で監視**し、無断の変更(hook無効化)を検出する。
 
 「ブロック数が多い=安全」ではない(事例20: hookが822回ブロックしても本番DB変更は1度も止まらなかった)。有効性監査は、**ブロック回数でなく既知違反サンプルの検出率とカバレッジ**で見る。
 
@@ -316,13 +343,31 @@ Opus判定は「指摘を出し過ぎる」副作用があるため、**正確�
 | 状態サマリ(`state_gate`生成) | - | 1,500以下 | UDR件数・未解決OPEN等 |
 | **Fable起動時の読込合計**(CLAUDE.md+sandwich-pm.md+Charter+ACTIVE_TASK+RESULT_PACKET+状態サマリ) | **約48,500** | **18,000以下** | 約63%削減 |
 | Worker起動時(CLAUDE.md+sonnet-worker.md+委任文) | 約6,000+委任文1,000〜13,000 | 約8,300(委任文2,000以内) | 委任文の全文化・固定ブロック再掲を廃止 |
-| PM_GOVERNANCE(参照層、常駐ではない) | 156,897 | Phase 1で約119,000(履歴分離)、Phase 3で70,000以下 | 節単位Grep参照 |
+| PM_GOVERNANCE(参照層、常駐ではない) | 156,897 | Phase 1で約119,000(履歴分離)、Phase 3で70,000以下 | 節単位Grep参照。**Phase 3の縮小の前に、ユーザー承認済み決定(1記事ずつ完結原則、安全≠成功原則、§14-2 HR最後の手段 等)の移行表(旧節→新所在/アーカイブ)を必須**とする(承認済み決定が縮小で消えないことの確認。OF-221)。「12-13」節番号の重複(L2591/L2603)も同表で特定する |
 
 文字数は`docs_lint`が常駐対象について自動計測し、予算超過を報告する(事例17)。**SSOT(CURRENT_SPEC・DECISION_LOG等)を物理削除はしない**(監査証跡。常駐層とアーカイブ層の分離のみ、外部§2事例17の注意)。
 
 ## 15. 限界・未決
 1. 設計の根拠は外部事例の傾向と内部診断で、案Dの有効性は未検証。Phase 2で実測する。
-2. Fableのtools制限の緩和(案2)、hook(Worker Stop hook)の可否、`--max-budget-usd`のsubagentへの適用範囲は、実装前に環境で確認が必要([推測]、未確認)。
+2. SubagentStop hook(案3)の発火確実性・`stop_hook_active`の挙動、Fableのtools制限の緩和(案2、連結回避リスクあり)、`--max-budget-usd`のsubagentへの適用範囲は、実装前に環境で確認が必要([推測]、未確認)。
 3. 承認欄の改ざん防止は完全にはできない(§6-1の限界)。
 4. 数値(文字数・金額・回数)は初期案。
 5. 本設計は新構造の設計なので、採用前に**Opus独立技術レビュー(条件A)を入れるのが現行運用に沿う**(Fableが判断)。
+
+## 改訂履歴(委任_03: OF-209〜OF-224反映)
+- OF-209: 出自を7種に(`APPROVED_PROMPT_CHANGE`追加)、§6-2に保護対象パス・分類記録・pre-commit強制を新設、§4-2 #1、§5-3、§13、§12 #55。
+- OF-210: §6-1の記録単位をspec_id/componentへ、decision_ref照合、再発行でのリセット不可、`state_gate fix`。
+- OF-211: §10-4(R9除外範囲から有料run再起動許可回数・予算envelopeを外す)。
+- OF-212: §6-2 5、§12 #25(維持+機械化)、#55。
+- OF-213: §12 #26(安全不変条件4点はCLAUDE.mdとsonnet-worker.mdに重複して残す)。
+- OF-214: §5-4(failure_mode_id付与者、機械計数、警告閾値、PARKED→QCD_TRADEOFF)。
+- OF-215: §10-3 R5(案3=SubagentStop hook+accept結果ファイル)、§10-3表、§12 #31/#35/#55、§15。
+- OF-216: §4-2 #5(Production Gate厳格化もユーザー判断、U1)。
+- OF-217: §4-2 #1/運用ルール4(既定=シャドー運用、U2)。
+- OF-218: §10-2 `issuer`、§4-2 #6グレー規則、§12 #24。
+- OF-219: §5-2 2(仮説のgit順序検査)、§5-3(Opus往復を限定)。
+- OF-220: §10-2/§12 #52(26-5の共通化)、§13 Claude hooksの注意点。
+- OF-221: §14(移行表必須)、§12 #1(U4)/#18(12-13重複)。
+- OF-222: §8(合計ハード上限=U3、ロック不要、200倍の根拠は開発期のみ、+20%は承認枠内)。
+- OF-223: §11(M9)。詳細は`ROLLOUT_AND_VALIDATION_PLAN_01.md`。
+- OF-224: `FINAL_REPORT_01.md`で対応。
