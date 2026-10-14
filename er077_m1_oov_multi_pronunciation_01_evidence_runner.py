@@ -42,7 +42,12 @@ SHARED_STATE = [
     "er021_output/en_asr_semantic_equivalence_production_wiring_01/telemetry.jsonl",
     "er025_output/pronunciation_resolution_core_telemetry_01/telemetry.jsonl",
 ]
-STOP_GLOBS = ["docs/pm/delegation_log/*STOP_NOTICE*", OUT + "/STOP", "er026_output/family_z_production_e2e_01/STOP_ALL"]
+# STOP判定は共通helper(STOP_NOTICE適用範囲規則、STOP-NOTICE-SCOPE-RULE-PRODUCTION-01、ユーザー2026-10-14案a承認)。
+# STOP_ALL・自run STOP・RESTART_STORM/RUN_LOCK・自ID宛/全体scope/parse不能(fail-closed)のNOTICEは引き続き停止。
+# 他管理IDの「限定run」NOTICEだけが非適用(根拠はhelperの判定JSONに記録)。
+MANAGED_IDS = ["ASR-M1-OOV-MULTI-PRONUNCIATION-PRODUCTION-01", "STOP-NOTICE-SCOPE-RULE-PRODUCTION-01"]
+sys.path.insert(0, os.path.join(ROOT, "tools"))
+import stop_scope_check_01 as _stop_scope  # noqa: E402
 
 # clip 構成(OF-186)。existing_wav: er069 の既存 12-take(ASR+cascade のみ再実行=TTS 不要)。new: 新規 TTS(Std 3 take ずつ)。
 EXISTING_MELOS_SAID = "er069_output/attribution_clip_split_trial_01/results_02.json"  # name=Melos/verb=said の 12 行(wav は gen/gen02 配下)
@@ -57,7 +62,8 @@ EST_JPY_PER_OBSERVATION = 0.137  # 出典: er069_output/attribution_clip_split_t
 
 
 def stop_present() -> list:
-    return [p for g in STOP_GLOBS for p in glob.glob(g)]
+    r = _stop_scope.check(MANAGED_IDS, os.path.join(ROOT, OUT))
+    return [f"{a['kind']}:{a['path']}" for a in r["applicable"]]
 
 
 def md5(p: str):

@@ -2640,6 +2640,23 @@ OPEN-178/179・既存Topic Discovery Trial結果を上書きしない。
 
 既存の`docs/pm/PM_GOVERNANCE.md` 13節(新規記事テーマはClaude単独で決めず、複数候補提示→ユーザー選択)との関係: 本決定は候補数24・6ジャンル・型付与・履歴管理を具体化するもので、13節と矛盾しない。
 
+## STOP_NOTICE適用範囲規則(2026-10-14ユーザー正式承認・案a、`STOP-NOTICE-SCOPE-RULE-PRODUCTION-01`、Status: `APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`未宣言)
+
+- 規則: 有料run前の停止判定は (1)当該管理IDに有効なSTOP_NOTICE (2)共通のSTOP/STOP_ALL等の全体停止条件 (3)既存安全機構が定めるその他の有効な停止条件(自run STOP、RESTART_STORM_LOCK、生存PIDのRUN_LOCK)に限る。別管理IDの過去のSTOP_NOTICEが無関係なrunを機械的に停止させない。**単純な管理ID文字列一致で安全停止を迂回してよいという承認ではない。**
+- 実装: `tools/stop_scope_check_01.py`(読取専用、API 0、STOP/NOTICE/LOCKを作成・編集・削除しない。CLI/import両対応。判定JSONへ各NOTICEのsha256・適用規則・理由を記録)。NOTICE判定: status=CLOSED等・期限切れ→非適用 / 自ID・親IDが本文にある→適用 / scope=ALL・全体・有料run全般・API・親→適用 / run限定で他ID→非適用 / 未知scope・期限parse不能・読取失敗→適用(fail-closed) / 旧書式(scope欄なし)は「見出しIDとファイル名ID一致+対象run明示限定の文言+全体宣言なし+対象が自runでない」の全てを満たすときだけ非適用、他はfail-closed。
+- 配線範囲(本管理ID): M1 evidence runner(`er077_m1_oov_multi_pronunciation_01_evidence_runner.py`)のみ。**他runner(er019/er026・062・063/er064系/er065/er067/er073)のSTOP判定コードは無変更**(解釈は不統一のまま。後続管理ID=OPEN-354でhelperへ統一)。Coffee(er019)はコード内にSTOP_NOTICE確認なしで、文書規則(PM_GOVERNANCE 26-2(d))のみ。
+- Regression: `tools/stop_scope_check_01_test_01.py` 21件+9 subtest PASS(自ID宛・STOP_ALL・自run STOP・RUN_LOCK・scope=ALL・CLOSED・他ID限定run・parse不能・旧書式の9系統+NOTICEがセンチネルを覆い隠さない/helper読取専用/親ID/実Melos NOTICEが対象run・自IDでは適用)。旧Melos NOTICE(FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01、run_e2e_01限定、全体宣言なし)はM1 runには`d_legacy_id_match_run_limited`で非適用。正式runner実行(JPY3.3435、36観測)でSTOP誤停止なしを確認。証跡: `er077_output/m1_oov_multi_pronunciation_01/STOP_SCOPE_RULE_01.md`・`EVIDENCE_RUN_01.md`・`evidence_01/stop_check_01.json`。
+- 未充足(PRODUCTION_WIRED未宣言の理由): 他runner・Coffee側へのコード統一、NOTICE新書式(scope/status/issuer/expires)の正本化とPM_GOVERNANCE 26-2(d)・`sonnet-worker.md`文言統一(OPEN-355、Day 2設計)。
+
+## M1 複数発音候補(OOV、2026-10-13ユーザー承認、`ASR-M1-OOV-MULTI-PRONUNCIATION-PRODUCTION-01`、Status: `APPROVED_FOR_PRODUCTION`・配線済み・`PRODUCTION_WIRED`未宣言)
+
+- 方針(ユーザー承認2026-10-13): 複数の合理的な発音候補のいずれか1つで音韻整合すればPASS可。**綴りだけを根拠に任意の発音を許容してはならない**(2026-10-14ユーザー再確認)。
+- 実装: `er006_m1_multi_candidate_01.py`(Production module)を`er006_secondary_asr_01.py`のPrimary#1/P2/S1/S2/forced-secondaryへ配線(`m1_enabled`既定True、en-US限定、`_m1_frozen_for`で候補集合をsegment最初の試行前に1回凍結)。候補: C1=CMU全異読(固有名詞らしき差分は代表発音のみ)、C2=Pronunciation Ledger IPA(CMU未収録語のみ。canonical_spelling≠surface除外・sources空除外・segment開始以降の更新除外・ja_reading_katakana除外・非英語ラベル断片除外)。C3(綴り規則推定)・ASR転写からの後付け候補は存在しない。語あたり上限6。
+- 受理: 置換後文のF1残差0、かつexact以外の置換位置が全て`f1_explained`(Pattern A/B/C)に含まれること(benign吸収は不受理)。受理理由`M1_MULTI_CANDIDATE_ACCEPT`(PASS_WITH_WARNING)、audit記録(ledger_key/updated_at/ipa_raw/candidate_set_hash/一致候補/secondary_agree/no_match_reason)。Secondary同意は必須化せず、両転写が手元にある場合のみ矛盾(protected fail/内容誤り)で非PASS。F1(OPEN-340)の内側で動作し、他差分があれば非PASS。
+- D-2'限定的置換: `er006_secondary_asr_01.py`の旧方針「Tier3情報はHR用のみ、自動PASS根拠に使わない」は、M1かつCMU未収録語のPronunciation Ledger由来候補に限り置換(Tier3調査結果の同一segment内即時利用・ASR後付け候補・綴り推定は引き続き禁止)。
+- 検証: unit/integration 68+22件PASS、offline(Melos 12/12、F1反例19/19、674ペア新規PASS13〜18[全てMelos型]・回帰0)。runtime evidence(隔離runner、実音声、JPY3.3435、2026-10-14): Melos 24観測で`M1_MULTI_CANDIDATE_ACCEPT` 21件(全て`C2_ledger_alt`/low/`drop_final_S_or_Z`/F1 Pattern A)、Before3/12・0/12→After 12/12・12/12、新規TTS 12観測でM1の誤受理0(repeat文はF1_RESIDUAL_CONTENTで却下)。証跡: `er077_output/m1_oov_multi_pronunciation_01/EVIDENCE_RUN_01.md`・`CHECKLIST_M1_01.md`。
+- 未充足(PRODUCTION_WIRED未宣言): 自然発生Production runでのM1発火evidence未取得、C1(CMU全異読)の実機発火未観測、Ledger自動/人手エントリの区別フィールド要判断(OPEN-339)。
+
 ## 参照元
 
 [ER-003-A2-00_SPEC_AUDIT.md](ER-003-A2-00_SPEC_AUDIT.md)、
