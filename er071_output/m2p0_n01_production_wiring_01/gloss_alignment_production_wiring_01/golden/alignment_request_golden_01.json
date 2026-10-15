@@ -1,0 +1,183 @@
+{
+  "std_a2": {
+    "kwargs": {
+      "model": "golden-fixed-model",
+      "reasoning": {
+        "effort": "high"
+      },
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "key_phrase_gloss_alignment_corrected",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "rank": {
+                      "type": "integer"
+                    },
+                    "current_gloss_consistent": {
+                      "type": "boolean"
+                    },
+                    "japanese_gloss": {
+                      "type": "string"
+                    },
+                    "qa_reflects_all_key_phrase_words": {
+                      "type": "string",
+                      "enum": [
+                        "PASS",
+                        "FAIL"
+                      ]
+                    },
+                    "reasoning": {
+                      "type": "string"
+                    },
+                    "added_word_mappings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "english_word": {
+                            "type": "string"
+                          },
+                          "japanese_span": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "english_word",
+                          "japanese_span"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "rank",
+                    "current_gloss_consistent",
+                    "japanese_gloss",
+                    "added_word_mappings",
+                    "qa_reflects_all_key_phrase_words",
+                    "reasoning"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "items"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      },
+      "input": [
+        {
+          "role": "developer",
+          "content": "英語学習教材のKey Phraseに付ける日本語グロスを、最終的な英語Key Phrase全体の意味に過不足なく一致させてください。"
+        },
+        {
+          "role": "user",
+          "content": "以下の各英語key_phraseは、教材として最終確定した英語表現です。current_japanese_glossは、確定前の候補表現(display_phrase_before_canonicalization)を基準に付けた日本語グロスで、確定したkey_phrase全体とは一致していない可能性があります。added_content_wordsは、確定時に候補表現へ新しく加わった内容語です(空の場合があります)。\n\n各項目について、次を行ってください。\n1. current_japanese_glossが、最終的なkey_phrase全体(目的語・補語・修飾語を含むすべての語)の意味と過不足なく一致しているかを判定し(current_gloss_consistent)てください。「～」「〜」を含むかどうかは判定の基準ではありません。key_phrase全体の意味が日本語に表れているかどうかだけで判定してください。\n2. 一致している場合は、japanese_glossにcurrent_japanese_glossをそのまま返してください。一致していない場合は、最終key_phrase全体に一致する日本語グロスを返してください。current_japanese_glossが最終key_phrase全体の意味を既に表している場合は、より自然・より適切と思える言い換えがあっても書き換えず、current_japanese_glossをそのまま返してください。書き換えるのは、key_phraseの語の意味が欠けている・誤っている場合だけです。\n3. added_content_wordsの各語について、japanese_glossの中でその語の意味を表している部分を、japanese_glossからそのまま切り出してadded_word_mappingsに書いてください(english_wordには対応させる英語の語、複数語をまとめた句でもかまいません。japanese_spanにはjapanese_glossに含まれない文字列や、「～」などの記号だけを書かないでください)。複数の英語語が一つの日本語表現でまとめて表されている場合は、同じ部分を複数の語に対応させてかまいません。added_content_wordsが空の項目は、added_word_mappingsを空配列にしてください。\n判定の参考例:\n- key_phrase「based on」にcurrent「～をもとにした」: 辞書的に自然なので一致です。\n- key_phrase「based on interviews」にcurrent「～をもとにした」: interviewsの意味が欠けているので不一致です。「インタビューをもとにした」なら一致です。\n- key_phrase「fall into」にcurrent「～に落ちる」: 意味は表れているので一致です(「～に陥る」へ書き換えません)。\n\nkey_phrase単体で他の文脈でも再利用できる自然な訳にし、本文固有の固有名詞・文脈の追加はしないでください。key_phrase全体の意味を反映できている場合のみqa_reflects_all_key_phrase_wordsをPASSにしてください。\n\n【日本語グロスの規則(承認済み選定Promptと同一)】\n選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。\n\n日本語グロスは、辞書的に正しいだけでなく、日本人の英語学習者が聞いてすぐ意味を理解できる、自然で平易な現代日本語にしてください。直訳調や、「常態」「是正」のような過度に硬い報道語・漢語、一般的な学習者には伝わりにくい表現は避けてください。\n\n日本語グロスには、括弧（　）を使って別の訳し方・専門用語・補足情報を書き添えないでください。音声だけで聞いてそのまま意味が伝わる、平易な言い換えだけの一文にしてください。\n\n日本語グロスは、辞書的な表記として自然な範囲であれば「～」「〜」を使ってもかまいません(例: 「～を示す」)。ただし「…」のようなプレースホルダー記号は使わないでください。日本語グロスに数字を含める場合は、算用数字(1、2、3…)ではなく漢数字(一、二、三…)で書いてください。\n\n【対象項目】\n[\n  {\n    \"rank\": 1,\n    \"key_phrase\": \"based on interviews\",\n    \"display_phrase_before_canonicalization\": \"based on\",\n    \"current_japanese_gloss\": \"～をもとにした\",\n    \"source_sentence\": \"the film was based on interviews with local farmers.\",\n    \"added_content_words\": [\n      \"interviews\"\n    ]\n  },\n  {\n    \"rank\": 2,\n    \"key_phrase\": \"give up easily\",\n    \"display_phrase_before_canonicalization\": \"give up\",\n    \"current_japanese_gloss\": \"簡単にあきらめる\",\n    \"source_sentence\": \"The team did not give up easily.\",\n    \"added_content_words\": [\n      \"easily\"\n    ]\n  }\n]\n\n【記事本文(参考)】\nReporters said the film was based on interviews with local farmers. The team did not give up easily."
+        }
+      ]
+    },
+    "sha256": "1b3a01d48df3223763e7453f7e60c5b90b2da877f6a46ddfeb7a441eb4c3f634"
+  },
+  "adv_b1b": {
+    "kwargs": {
+      "model": "golden-fixed-model",
+      "reasoning": {
+        "effort": "high"
+      },
+      "text": {
+        "format": {
+          "type": "json_schema",
+          "name": "key_phrase_gloss_alignment_corrected",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "rank": {
+                      "type": "integer"
+                    },
+                    "current_gloss_consistent": {
+                      "type": "boolean"
+                    },
+                    "japanese_gloss": {
+                      "type": "string"
+                    },
+                    "qa_reflects_all_key_phrase_words": {
+                      "type": "string",
+                      "enum": [
+                        "PASS",
+                        "FAIL"
+                      ]
+                    },
+                    "reasoning": {
+                      "type": "string"
+                    },
+                    "added_word_mappings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "english_word": {
+                            "type": "string"
+                          },
+                          "japanese_span": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "english_word",
+                          "japanese_span"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "rank",
+                    "current_gloss_consistent",
+                    "japanese_gloss",
+                    "added_word_mappings",
+                    "qa_reflects_all_key_phrase_words",
+                    "reasoning"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "items"
+            ],
+            "additionalProperties": false
+          },
+          "strict": true
+        }
+      },
+      "input": [
+        {
+          "role": "developer",
+          "content": "英語学習教材のKey Phraseに付ける日本語グロスを、最終的な英語Key Phrase全体の意味に過不足なく一致させてください。"
+        },
+        {
+          "role": "user",
+          "content": "以下の各英語key_phraseは、教材として最終確定した英語表現です。current_japanese_glossは、確定前の候補表現(display_phrase_before_canonicalization)を基準に付けた日本語グロスで、確定したkey_phrase全体とは一致していない可能性があります。added_content_wordsは、確定時に候補表現へ新しく加わった内容語です(空の場合があります)。\n\n各項目について、次を行ってください。\n1. current_japanese_glossが、最終的なkey_phrase全体(目的語・補語・修飾語を含むすべての語)の意味と過不足なく一致しているかを判定し(current_gloss_consistent)てください。「～」「〜」を含むかどうかは判定の基準ではありません。key_phrase全体の意味が日本語に表れているかどうかだけで判定してください。\n2. 一致している場合は、japanese_glossにcurrent_japanese_glossをそのまま返してください。一致していない場合は、最終key_phrase全体に一致する日本語グロスを返してください。current_japanese_glossが最終key_phrase全体の意味を既に表している場合は、より自然・より適切と思える言い換えがあっても書き換えず、current_japanese_glossをそのまま返してください。書き換えるのは、key_phraseの語の意味が欠けている・誤っている場合だけです。\n3. added_content_wordsの各語について、japanese_glossの中でその語の意味を表している部分を、japanese_glossからそのまま切り出してadded_word_mappingsに書いてください(english_wordには対応させる英語の語、複数語をまとめた句でもかまいません。japanese_spanにはjapanese_glossに含まれない文字列や、「～」などの記号だけを書かないでください)。複数の英語語が一つの日本語表現でまとめて表されている場合は、同じ部分を複数の語に対応させてかまいません。added_content_wordsが空の項目は、added_word_mappingsを空配列にしてください。\n判定の参考例:\n- key_phrase「based on」にcurrent「～をもとにした」: 辞書的に自然なので一致です。\n- key_phrase「based on interviews」にcurrent「～をもとにした」: interviewsの意味が欠けているので不一致です。「インタビューをもとにした」なら一致です。\n- key_phrase「fall into」にcurrent「～に落ちる」: 意味は表れているので一致です(「～に陥る」へ書き換えません)。\n\nkey_phrase単体で他の文脈でも再利用できる自然な訳にし、本文固有の固有名詞・文脈の追加はしないでください。key_phrase全体の意味を反映できている場合のみqa_reflects_all_key_phrase_wordsをPASSにしてください。\n\n【日本語グロスの規則(承認済み選定Promptと同一)】\n選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。\n\n日本語グロスは、辞書的に正しいだけでなく、日本人の英語学習者が聞いてすぐ意味を理解できる、自然で平易な現代日本語にしてください。直訳調や、「常態」「是正」のような過度に硬い報道語・漢語、一般的な学習者には伝わりにくい表現は避けてください。\n\n日本語グロスには、括弧（　）を使って別の訳し方・専門用語・補足情報を書き添えないでください。音声だけで聞いてそのまま意味が伝わる、平易な言い換えだけの一文にしてください。\n\n日本語グロスは、辞書的な表記として自然な範囲であれば「～」「〜」を使ってもかまいません(例: 「～を示す」)。ただし「…」のようなプレースホルダー記号は使わないでください。日本語グロスに数字を含める場合は、算用数字(1、2、3…)ではなく漢数字(一、二、三…)で書いてください。\n\n【対象項目】\n[\n  {\n    \"rank\": 1,\n    \"key_phrase\": \"based on interviews\",\n    \"display_phrase_before_canonicalization\": \"based on\",\n    \"current_japanese_gloss\": \"～をもとにした\",\n    \"source_sentence\": \"the film was based on interviews with local farmers.\",\n    \"added_content_words\": [\n      \"interviews\"\n    ]\n  },\n  {\n    \"rank\": 2,\n    \"key_phrase\": \"give up easily\",\n    \"display_phrase_before_canonicalization\": \"give up\",\n    \"current_japanese_gloss\": \"簡単にあきらめる\",\n    \"source_sentence\": \"The team did not give up easily.\",\n    \"added_content_words\": [\n      \"easily\"\n    ]\n  }\n]\n\n【記事本文(参考)】\nThe documentary, which was based on interviews with former employees, showed how managers fall into a pattern."
+        }
+      ]
+    },
+    "sha256": "adb5936500c682206d8eab8eb3b59134ac6d1ebeda3bb69c0ab9f18953f74043"
+  },
+  "combined_sha256": "47fe3cd757a464ebbd5c228fa1771ec08556f7b0206d00acec7905489211d8cb"
+}
