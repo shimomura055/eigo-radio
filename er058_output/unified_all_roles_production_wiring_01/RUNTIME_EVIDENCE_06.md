@@ -502,4 +502,7 @@ T-0: 委任文 `docs/pm/delegation_log/2026-10-16_ASR-TTS-UNIFIED-ALL-ROLES-PROD
 - `git merge --no-edit origin/main`(競合 0、取込は docs 21 file のみ)後、AUW 中核 12 file `411 passed`(`evidence_07/tests_auw_core_post_merge.txt`)・静的監査 15 passed かつ `unlisted_new_calls`/`vanished`/`count_changed` が空(`static_audit_post_merge.txt`)。flag OFF ロールバック経路(06c `test_g_*`)3 passed(`tests_flag_off_rollback_branch.txt`)。通信遮断 plugin の遮断ログに新規試行: `er078_asr_unified_wiring_06c_test_01.py::test_d_en_last_slot_real_ng_still_goes_to_hr` が api.perplexity.ai を DNS 試行(遮断され費用 0。既存 test の mock 不足=OPEN-378)。
 
 ### 15-4. commit 後の確認(07)
-- (commit 後に追記)
+- commit: 2316deceb(branch feat/auw-unified-asr-01、cfada30b7..2316deceb push 済み、main 無変更・未merge)
+- `secret_scan_01 --staged`: hits=0(33 files、`.wav` は .gitignore で対象外)
+- `git worktree list` に予行 worktree なし。`stop_scope_check` 開始 rc=0・有料 run 前 rc=0・終了 rc=0(`stop_check_07.json`・`evidence_07/stop_check_prepaid.json`・`stop_check_07_end.json`)
+- `er011_human_review_lock_01.py` の本委任での diff 0 行(`origin/main...HEAD` 全体では `asr_judgement` additive 2 行のみ)。有料 API: 約 JPY 0.57(07 単体)
