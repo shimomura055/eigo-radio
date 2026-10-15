@@ -1,0 +1,61 @@
+{
+  "attempt_number": 1,
+  "route": "custom_60ebc452",
+  "segment_id": "kp2_en",
+  "theme_id": "run",
+  "level": "a2",
+  "source_out_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/nlkp/run/a2/narration/kp2_en.wav",
+  "saved_at": "2026-10-16T02:37:55",
+  "sha256": "caac428c8a94a5d75f77e36901dc0c103a592d274eb6ccc3be3d1ab3aaec8256",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Say only this phrase, exactly once, without adding, omitting, or changing any words, and make sure the final sound is actually spoken.",
+  "asr_text": "三十百分比",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "verified": true,
+  "disfluency_checked": true,
+  "disfluency_evidence": {
+    "flagged": false,
+    "repeats": [],
+    "word_count": 2,
+    "transcript": "30 %",
+    "method": "faster_whisper_small_local_verbatim"
+  },
+  "repetition_qa_checked": false,
+  "repetition_qa_evidence": null,
+  "scg_info": null,
+  "asr_prompt_applied": true,
+  "non_latin_cascade_enabled": true,
+  "non_latin_cascade_invoked": true,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "三十百分比",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "entity_like_source": []
+    },
+    {
+      "step": "non_latin_secondary",
+      "provider": "azure",
+      "text": "30%.",
+      "classification": "NORMALIZED_MATCH",
+      "phrase_list_used": false,
+      "non_latin_info": {
+        "latin_chars": 0,
+        "cjk_chars": 5,
+        "ratio_cjk": 1.0,
+        "is_non_latin_dominant": true,
+        "threshold": 0.5
+      },
+      "entity_like_source": []
+    }
+  ]
+}

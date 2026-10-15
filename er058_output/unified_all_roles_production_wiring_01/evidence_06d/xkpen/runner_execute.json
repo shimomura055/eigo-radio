@@ -1,0 +1,167 @@
+{
+ "part": "xkpen",
+ "mode": "execute",
+ "stop_files_present": [],
+ "isolation": {
+  "human_review_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/xkpen/human_review_queue.jsonl",
+  "attempt_history": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/xkpen/attempt_history.jsonl",
+  "master_audio_store": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/xkpen/master_audio_store",
+  "reuse_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/xkpen/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/xkpen/er021_telemetry.jsonl",
+  "er025_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/xkpen/er025_telemetry.jsonl",
+  "cost_log": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/xkpen/cost_log.jsonl",
+  "ledger_snapshot": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/xkpen/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)",
+  "foreign_token_hr_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/xkpen/foreign_token_hr_queue.jsonl",
+  "human_review_queue_ja": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/xkpen/human_review_queue_ja.jsonl"
+ },
+ "budget_jpy": 2.0,
+ "ledger_before": 22.1044,
+ "cap_remaining": 22.8956,
+ "ja_queue_lines_before": {
+  "er009_output/ja_foreign_token_gate_01/human_review_queue.jsonl": 343,
+  "er007_output/ja_asr_cascade_01/human_review_queue.jsonl": 11
+ },
+ "phrases": [
+  "hold the line",
+  "cut it close",
+  "right away"
+ ],
+ "attempt_history_rows": [
+  {
+   "segment": "kp1_english",
+   "level": "a2",
+   "lang": "en",
+   "status": "OK",
+   "n_attempts": 1,
+   "tts_this_call": 1,
+   "state": "PASS",
+   "reason": "primary_pass",
+   "role": null,
+   "slot": 1,
+   "version": "v0",
+   "secondary_calls": 0,
+   "has_asr_judgement": true,
+   "final_lock_state": "RESOLVED",
+   "human_review_reached": false
+  },
+  {
+   "segment": "kp2_english",
+   "level": "a2",
+   "lang": "en",
+   "status": "OK",
+   "n_attempts": 1,
+   "tts_this_call": 1,
+   "state": "PASS",
+   "reason": "primary_pass",
+   "role": null,
+   "slot": 1,
+   "version": "v0",
+   "secondary_calls": 0,
+   "has_asr_judgement": true,
+   "final_lock_state": "RESOLVED",
+   "human_review_reached": false
+  }
+ ],
+ "rows": [
+  {
+   "phrase": "hold the line",
+   "status": "OK",
+   "reused": false,
+   "keys": [
+    "asr_judgement",
+    "asr_text",
+    "asr_verified",
+    "attempts_log",
+    "audio_classification",
+    "cache_miss_reason",
+    "call_count",
+    "clipping_detected",
+    "connected_speech_info",
+    "disfluency_checked",
+    "disfluency_evidence",
+    "duration_seconds",
+    "en_pronunciation_resolver_info",
+    "fallback_used",
+    "language",
+    "master_audio_id",
+    "master_audio_key",
+    "model",
+    "path",
+    "primary_instruction_type"
+   ],
+   "has_asr_judgement": true,
+   "state": "PASS",
+   "reason": "primary_pass"
+  },
+  {
+   "phrase": "cut it close",
+   "status": "OK",
+   "reused": false,
+   "keys": [
+    "asr_judgement",
+    "asr_text",
+    "asr_verified",
+    "attempts_log",
+    "audio_classification",
+    "cache_miss_reason",
+    "call_count",
+    "clipping_detected",
+    "connected_speech_info",
+    "disfluency_checked",
+    "disfluency_evidence",
+    "duration_seconds",
+    "en_pronunciation_resolver_info",
+    "fallback_used",
+    "language",
+    "master_audio_id",
+    "master_audio_key",
+    "model",
+    "path",
+    "primary_instruction_type"
+   ],
+   "has_asr_judgement": true,
+   "state": "PASS",
+   "reason": "primary_pass"
+  },
+  {
+   "phrase": "right away",
+   "status": "OK",
+   "reused": true,
+   "keys": [
+    "asr_text",
+    "asr_verified",
+    "cache_miss_reason",
+    "disfluency_checked",
+    "disfluency_evidence",
+    "master_audio_id",
+    "master_audio_key",
+    "path",
+    "reused",
+    "sha256",
+    "status"
+   ],
+   "has_asr_judgement": false,
+   "state": null,
+   "reason": null
+  }
+ ],
+ "ja_queue_lines_after": {
+  "er009_output/ja_foreign_token_gate_01/human_review_queue.jsonl": 343,
+  "er007_output/ja_asr_cascade_01/human_review_queue.jsonl": 11
+ },
+ "ja_queue_lines_unchanged": true,
+ "shared_state_unchanged": true,
+ "shared_files_changed_outside_evidence": [],
+ "cost": {
+  "est_total_jpy": 0.1002,
+  "n_tts": 2,
+  "n_openai_asr": 2,
+  "n_azure": 0,
+  "azure_seconds": 0.0,
+  "n_text_llm": 0,
+  "azure_duplicate_wavs": 0
+ },
+ "ledger_after": 22.2046
+}

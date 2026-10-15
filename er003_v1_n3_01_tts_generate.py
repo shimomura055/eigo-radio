@@ -1295,6 +1295,10 @@ def main():
     theme_ids = sys.argv[1:] or [t["theme_id"] for t in gen.THEMES]
     themes_by_id = {t["theme_id"]: t for t in gen.THEMES}
     for theme_id in theme_ids:
+        # AUW 委任_06d(06c(C)/06 D1): legacy A の本番入口はcost loggerを一度もinstallしておらず、統一judgeのSecondary(Azure)が
+        # 初回に呼ばれた時点で`cl.record`が`init_logger()が呼ばれていません`のRuntimeError(設定不備として再送出)で停止し、かつ費用が
+        # 一切記録されなかった。他のProduction runner(X/B/C/Z)と同じく`cl.install`でtheme単位のcost logを設定する(新単価は追加しない)。
+        cl.install(f"{themes_by_id[theme_id]['out_dir']}/raw_usage_log.jsonl")
         run_theme(themes_by_id[theme_id])
     print("[N3-TTS] 完了。")
 

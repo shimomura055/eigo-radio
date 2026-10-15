@@ -1,0 +1,323 @@
+{
+  "topic_intro_en": {
+    "state": "HUMAN_REVIEW_REQUIRED",
+    "canonical_text_sha256": "9ebe620654268c02a3f4f0fd34bd0552c61bf81ace86cdb2c9ecbc59e0065193",
+    "language": "en",
+    "theme_id": "run",
+    "level": "a2",
+    "segment_id": "topic_intro_en",
+    "updated_at": "2026-10-16T02:44:01",
+    "reason": "最終status=STOPPED。標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+    "final_status": "STOPPED",
+    "wav_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/reuse/run/a2/narration/topic_intro_en.wav",
+    "cumulative_tts_attempts": 3,
+    "cumulative_asr_calls": 3,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 5.76,
+        "asr_text": "Today's topic is a fast start and a strong finish. Hanchen wins 8-1.",
+        "asr_text_length": 68,
+        "max_len": 98,
+        "substring_ok": null,
+        "length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 96,
+          "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+          "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Today's topic is a fast start and a strong finish. Hanchen wins 8-1.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Today's topic is a fast start and a strong finish. Han Chin wins 8 to 1.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": false,
+            "cached": false,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "topic_intro_en",
+          "audio_sha256": "18b1ec19e4825615cd94a71975eac47e7a78884e48987daaa4b48564cde118f6",
+          "primary": {
+            "text": "Today's topic is a fast start and a strong finish. Hanchen wins 8-1.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Today's topic is a fast start and a strong finish. Han Chin wins 8 to 1.",
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "8",
+                  "hyp": "8",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                },
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "8",
+                  "hyp": "8",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                },
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 5.76,
+            "est_jpy": 0.2667,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 2118,
+            "secondary_ms": 2116
+          },
+          "technical_stop": null,
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "topic_intro_en",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/reuse/run/a2/narration/attempts/topic_intro_en_attempt1_custom60a24f1e.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 5.2,
+        "asr_text": "Today's topic is a fast start and a strong finish. Hanchen wins 8-1.",
+        "asr_text_length": 68,
+        "max_len": 98,
+        "substring_ok": null,
+        "length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 96,
+          "sha256": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+          "head200": "brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic."
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Today's topic is a fast start and a strong finish. Hanchen wins 8-1.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Today's topic is a fast start and a strong finish. Hong Chin wins 8 to 1.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": false,
+            "cached": false,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 2,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "topic_intro_en",
+          "audio_sha256": "387f8ba19fe47c8d31f3c8febf506d5496facf8b3764a985290d38a87dd948c9",
+          "primary": {
+            "text": "Today's topic is a fast start and a strong finish. Hanchen wins 8-1.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Today's topic is a fast start and a strong finish. Hong Chin wins 8 to 1.",
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "8",
+                  "hyp": "8",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                },
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "EQUAL",
+              "pairs": [
+                {
+                  "src": "8",
+                  "hyp": "8",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                },
+                {
+                  "src": "1",
+                  "hyp": "1",
+                  "verdict": "EQUAL",
+                  "reason": "same_surface"
+                }
+              ],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 5.2,
+            "est_jpy": 0.2667,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 1052,
+            "secondary_ms": 1051
+          },
+          "technical_stop": null,
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "topic_intro_en",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 4,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/reuse/run/a2/narration/attempts/topic_intro_en_attempt2_custom60a24f1e.wav"
+      }
+    ]
+  }
+}

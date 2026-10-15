@@ -1,0 +1,55 @@
+{
+ "part": "cja",
+ "mode": "execute",
+ "stop_files_present": [],
+ "isolation": {
+  "human_review_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/human_review_queue.jsonl",
+  "attempt_history": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/attempt_history.jsonl",
+  "master_audio_store": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/master_audio_store",
+  "reuse_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/er021_telemetry.jsonl",
+  "er025_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/er025_telemetry.jsonl",
+  "cost_log": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/cost_log.jsonl",
+  "ledger_snapshot": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)",
+  "foreign_token_hr_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/foreign_token_hr_queue.jsonl",
+  "human_review_queue_ja": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/human_review_queue_ja.jsonl"
+ },
+ "budget_jpy": 8.0,
+ "ledger_before": 8.1546,
+ "cap_remaining": 36.8454,
+ "ja_queue_lines_before": {
+  "er009_output/ja_foreign_token_gate_01/human_review_queue.jsonl": 343,
+  "er007_output/ja_asr_cascade_01/human_review_queue.jsonl": 11
+ },
+ "only_segments": [
+  "comment_1",
+  "comment_2",
+  "comment_3"
+ ],
+ "japanese_title_text": "記憶の箱と、迷う心",
+ "exception": "RuntimeError: BUDGET_WOULD_EXCEED: stage 'family_c_a2_comment_memory_3_llm_attempt1' の見込み追加費用(推定)¥3.00を加えると累計¥9.00が上限¥8.00を超えます。ここで停止します。",
+ "exception_traceback": "jpy, args.only_segments, args.resume)\n    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er078_secondary_run_scope_01.py\", line 68, in wrapper\n    return fn(*args, **kwargs)\n  File \"C:\\Users\\tensh\\eigo-radio\\er013_family_c_production_runner_01.py\", line 762, in run_full_generation\n    comments_result = run_comments_stage_a2(\n        level_cfg, out_dir, audio_dir, article_text, budget, reuse_from, resume,\n        only_segments_set, article_id)\n  File \"C:\\Users\\tensh\\eigo-radio\\er013_family_c_production_runner_01.py\", line 614, in run_comments_stage_a2\n    result = fam_c.generate_family_c_a2_comment(\n        client, n, article_text, cmt_cfg.get(\"content_facts\", \"\"),\n        scene_transition=cmt_cfg.get(\"scene_transition\", \"\"),\n        extra_instructions=level_cfg.get(\"extra_instructions\", \"\"),\n        budget=budget, label_prefix=f\"family_c_a2_comment_{article_id}\")\n  File \"C:\\Users\\tensh\\eigo-radio\\er013_family_c_production_01.py\", line 499, in generate_family_c_a2_comment\n    budget.check_before(llm_call_cost_jpy, label)\n    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er013_family_c_production_runner_01.py\", line 205, in check_before\n    raise RuntimeError(\n    ...<2 lines>...\n        f\"上限¥{self.cap:.2f}を超えます。ここで停止します。\")\nRuntimeError: BUDGET_WOULD_EXCEED: stage 'family_c_a2_comment_memory_3_llm_attempt1' の見込み追加費用(推定)¥3.00を加えると累計¥9.00が上限¥8.00を超えます。ここで停止します。\n",
+ "stage_result": {
+  "main": "RuntimeError: BUDGET_WOULD_EXCEED: stage 'family_c_a2_comment_memory_3_llm_attempt1' の見込み追加費用(推定)¥3.00を加えると累計¥9.00が上限¥8.00を超えます。ここで停止します。"
+ },
+ "clip_rows": [],
+ "ja_queue_lines_after": {
+  "er009_output/ja_foreign_token_gate_01/human_review_queue.jsonl": 343,
+  "er007_output/ja_asr_cascade_01/human_review_queue.jsonl": 11
+ },
+ "ja_queue_lines_unchanged": true,
+ "shared_state_unchanged": true,
+ "shared_files_changed_outside_evidence": [],
+ "cost": {
+  "est_total_jpy": 0.3078,
+  "n_tts": 0,
+  "n_openai_asr": 0,
+  "n_azure": 0,
+  "azure_seconds": 0.0,
+  "n_text_llm": 2,
+  "azure_duplicate_wavs": 0
+ },
+ "ledger_after": 8.4624
+}

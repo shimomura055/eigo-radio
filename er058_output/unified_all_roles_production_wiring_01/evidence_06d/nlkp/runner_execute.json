@@ -1,0 +1,145 @@
+{
+ "part": "nlkp",
+ "mode": "execute",
+ "stop_files_present": [],
+ "isolation": {
+  "human_review_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/nlkp/human_review_queue.jsonl",
+  "attempt_history": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/nlkp/attempt_history.jsonl",
+  "master_audio_store": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/nlkp/master_audio_store",
+  "reuse_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/nlkp/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/nlkp/er021_telemetry.jsonl",
+  "er025_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/nlkp/er025_telemetry.jsonl",
+  "cost_log": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/nlkp/cost_log.jsonl",
+  "ledger_snapshot": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/nlkp/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)",
+  "foreign_token_hr_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/nlkp/foreign_token_hr_queue.jsonl",
+  "human_review_queue_ja": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/nlkp/human_review_queue_ja.jsonl"
+ },
+ "budget_jpy": 4.0,
+ "ledger_before": 13.5355,
+ "cap_remaining": 31.4645,
+ "ja_queue_lines_before": {
+  "er009_output/ja_foreign_token_gate_01/human_review_queue.jsonl": 343,
+  "er007_output/ja_asr_cascade_01/human_review_queue.jsonl": 11
+ },
+ "plan": [
+  {
+   "clip_id": "kp1_en",
+   "kind": "kp_en",
+   "level": "a2",
+   "speaker": "narrator",
+   "text": "can't wait"
+  },
+  {
+   "clip_id": "kp2_en",
+   "kind": "kp_en",
+   "level": "a2",
+   "speaker": "narrator",
+   "text": "30 percent"
+  }
+ ],
+ "primary_language_hint_injection": [
+  {
+   "wav": "kp1_en.wav",
+   "forced_language_hint": "ja",
+   "primary_text": "Can't wait!",
+   "error": null
+  },
+  {
+   "wav": "kp2_en.wav",
+   "forced_language_hint": "ja",
+   "primary_text": "三十百分比",
+   "error": null
+  }
+ ],
+ "stage_result": {
+  "results_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/nlkp/run/a2/audit/tts_generation_results.json",
+  "evidence_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/nlkp/run/a2/audit/runtime_evidence_04C.json",
+  "statuses": {
+   "kp1_en": "OK",
+   "kp2_en": "OK"
+  }
+ },
+ "clip_rows": [
+  {
+   "clip": "kp1_english",
+   "status": "OK",
+   "has_asr_judgement": true,
+   "inherited": false,
+   "state": "PASS",
+   "reason": "primary_pass",
+   "secondary_called": false,
+   "secondary_cached": false,
+   "attempts": 1,
+   "reused": false,
+   "tech_stop": null
+  },
+  {
+   "clip": "kp2_english",
+   "status": "OK",
+   "has_asr_judgement": true,
+   "inherited": false,
+   "state": "PASS_WITH_WARNING",
+   "reason": "primary_pass",
+   "secondary_called": false,
+   "secondary_cached": false,
+   "attempts": 1,
+   "reused": false,
+   "tech_stop": null
+  }
+ ],
+ "attempt_history_rows": [
+  {
+   "segment": "kp1_en",
+   "level": "a2",
+   "lang": "en",
+   "status": "OK",
+   "n_attempts": 1,
+   "tts_this_call": 1,
+   "state": "PASS",
+   "reason": "primary_pass",
+   "role": null,
+   "slot": 1,
+   "version": "v0",
+   "secondary_calls": 0,
+   "has_asr_judgement": true,
+   "final_lock_state": "RESOLVED",
+   "human_review_reached": false
+  },
+  {
+   "segment": "kp2_en",
+   "level": "a2",
+   "lang": "en",
+   "status": "OK",
+   "n_attempts": 1,
+   "tts_this_call": 1,
+   "state": "PASS_WITH_WARNING",
+   "reason": "primary_pass",
+   "role": null,
+   "slot": 1,
+   "version": "v0",
+   "secondary_calls": 0,
+   "has_asr_judgement": true,
+   "final_lock_state": "RESOLVED",
+   "human_review_reached": false
+  }
+ ],
+ "ja_queue_lines_after": {
+  "er009_output/ja_foreign_token_gate_01/human_review_queue.jsonl": 343,
+  "er007_output/ja_asr_cascade_01/human_review_queue.jsonl": 11
+ },
+ "ja_queue_lines_unchanged": true,
+ "shared_state_unchanged": true,
+ "shared_files_changed_outside_evidence": [],
+ "cost": {
+  "est_total_jpy": 0.1503,
+  "n_tts": 2,
+  "n_openai_asr": 2,
+  "n_azure": 1,
+  "azure_seconds": 1.54,
+  "n_text_llm": 0,
+  "azure_duplicate_wavs": 0
+ },
+ "ledger_after": 14.0222
+}

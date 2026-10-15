@@ -296,3 +296,119 @@ main 無変更。判定の宣言(PRODUCTION_WIRED 可否)はしない。**材料
 - 満たす材料: 条件 3・5・6・7・8 は実音声で充足。条件 1・2・4・9 は大幅前進(残は §12-11-3 の4点)。誤受理 0・数値/否定誤 PASS 0・旧 PASS→新 NG 0(06b 110 entry/127 attempt)。X/Z の最終 HTML に試聴リスト節(0件・n件)が出ることを実 run で確認。HR Lock 非抵触(全 Lock は run 内)。
 - 満たしていない材料(「1項目でも未確認」に該当): 条件 1・2・4・9 の残4点、条件 11・12(merge)・13・15。ならびに D-B4〜D-B6(LR 入れ子)の仕様判断、D-B1/B2 の queue 2行。
 - 費用: 06b 約 JPY 52.0(推定を含む、上限 80 内)、06+06b ≒ 61.9。
+
+
+# §13 委任_06d 追加 evidence (残 Section/Family 実音声・是正後経路の実音声・再利用 guard・legacy A 費用記録の是正)
+
+管理ID `ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01` 委任_06d / 日付 2026-10-16 / branch `feat/auw-unified-asr-01`(起点 HEAD `e81696197`)。main 無変更。**判定の宣言(PRODUCTION_WIRED 可否)はしない。材料のみ。**
+Production コード変更は **E の 1 箇所のみ**(`er003_v1_n3_01_tts_generate.py` `main()` に `cl.install(...)` 4 行追加)。他は evidence runner(`er078_auw_runtime_evidence_06d.py`/`..._06d_z.py`)・集計(`er078_auw_aggregate_06d.py`)・test(`er078_asr_unified_wiring_06d_test_01.py`)・本節・`evidence_06d/`。
+使用モデル(最新か): Primary ASR=`gpt-4o-mini-transcribe`(Production の ASR_ROUTING 現行)、Secondary=Azure Speech、TTS=X/Z/KP/reuse は `gemini-3.8-flash-lite-tts`、Family B・legacy A・Dialogue(Voice A/B 経路)・C は `gemini-2.5-pro-preview-tts`(各 Family の Production 現行モデル。評価用に選んだものではない)、LLM(C Comment・Local Rewrite)は `gpt-6-luna`。
+費用の記録: 全有料経路を SDK レベル wrapper で呼出『前』に STOP/予算確認+応答 usage の token×`pricing_snapshot`(USD_JPY=160)で記録(`usage_log.jsonl` の Gemini/OpenAI 133 行すべて `basis=token_actual`、固定単価・fallback 定数の使用 0。Azure 18 行は送信 wav 秒の実測×0.0444 JPY/秒)。pro-preview-tts は 20 USD/M output token(25 token/秒)=約 0.084 JPY/秒(C の 17 秒 clip 1 本=1.43 JPY を実測確認)。Production cost logger 実額との突合: b1 7.617 vs 7.617、xkp 0.54 vs 0.5376、lega1 2.2884 vs 2.2877。
+前提: 各 run 前に `tools/stop_scope_check_01.py --managed-id AUW-06D --run-dir <run> ...` を実行し rc=0(`evidence_06d/<run>/stop_check_pre.json`、T-0 は `evidence_06d/stop_check_T0.json`)。外部停止・原因不明 rc≠0 は無し。T-0: 委任文 `docs/pm/delegation_log/2026-10-16_ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01_06d.md`、checker=`_06d_check.json`(FAIL: 標準テンプレ見出し欠落、非ブロッキング)。
+
+## 13-1. 当初目的(ユーザー原文の逐語。`docs/pm/delegation_log/2026-10-15_ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01_01.md`)
+- L54「Primary NGなら、不一致の種類によらず原則Secondaryを実行する。」 L55「Primary NG・Secondary PASSなら、PASS_WITH_WARNINGとして採用する。」 L58「Primary・Secondary両方NGなら次のTTS再生成へ進む。」 L59「Secondaryが障害・利用不能の場合、PASS扱いせず、既存の安全な障害処理へ進む。」 L60「同じ音声に対するSecondaryの重複API呼び出しを防ぐ。」
+- L97「この安全条件と「Secondary PASSなら採用」の原則が競合する場合は、数値・否定などの明確な重大内容差を誤採用しないことを優先する。」
+- L201-L215 必須受入条件 15 項目(§3 左列と同じ)。L217「1項目でも未確認であればPRODUCTION_WIREDと報告しない。」
+
+## 13-2. 実行した run 一覧と費用(`evidence_06d/cost/spend_ledger.jsonl`、合計 **JPY 23.83**、上限 45 の 53%)
+| run | 内容(Production 入口) | TTS | ASR | Azure(呼出/同一wav重複) | JPY |
+|---|---|---|---|---|---|
+| `xkp` | X `er019 main --stage tts/assemble/player --level a2`(KGCPW 整合済み E7 の KP[gloss_alignment_status=ALIGN_PASS]+06b xrun a2 の非KP 11 clip を cache 複製) | 6 | 6 | 1 / 0 | 0.54 |
+| `xkpen` | X の KP 英語入口 `ensure_key_phrase_english_component`(Master Store 経由。未登録 2 phrase+登録済み 1 phrase) | 2 | 2 | 0 / 0 | 0.10 |
+| `b1` | Family B `er012 run_tts`(B1 全 Section: Topic/Preview/Comment×4/見出し×2/Voice A,B 本文/Hook×2/Tension/Closing=14 clip。**入力は各 1-2 文に縮約**、leaf・引数は run_tts のまま) | 14 | 14 | 0 / 0 | 7.62 |
+| `cja`(+`cja_attempt0/1/2_*` 停止・不成立 run) | Family C `er013 main --level a2 --only-segments comment_1..3`(Comment JA の LLM 再生成+TTS、JA title) | 3 | 0 | 0 | 5.38(LLM 11 call 約 1.27+TTS 3 clip 約 4.12) |
+| `dlg_recover` | Z `run_tts_stage` Dialogue(Std)、減速段階に故障注入 1 回 → 取り直し → OK | 2 | 4 | 0 / 0 | 0.75 |
+| `dlg_cap` | 同、減速段階に 3 回故障注入(別文に数値語あり=保護差) → 通算 3 回 → STOPPED | 3 | 6 | 0 / 0 | 1.03 |
+| `dlg_cap2` | 同、数値語なしの別文 → Secondary(Azure)経路 → 通算 3 回 → STOPPED | 3 | 6 | 1 / 0 | 1.50 |
+| `kp4_leaf` | KP 英語 4 回構成の Production 入口 `generate_key_phrase_component_verified`(固有名で全 NG) | 4 | 4 | 4 / 0 | 0.70 |
+| `kp4` | Z `kp_en`(同じ固有名) | 2 | 2 | 2 / 0 | 0.34 |
+| `nlkp` | Z `kp_en` で "can't wait"・"30 percent"(Primary に言語ヒント ja を与え非ラテン転写を誘発) | 2 | 2 | 1 / 0 | 0.15 |
+| `probe_nl` | 否定入り phrase に zh/ko/ru/ar ヒントで非ラテン転写が得られるかの実 Primary 4 呼出 | 0 | 4 | 0 | 0.02 |
+| `nlneg` | 非ラテン KP 救済の否定/数値(半実音声: 実 TTS+実 Azure+保存例の非ラテン Primary 転写) | 3 | 3 | 3 / 0 | 0.54 |
+| `tstop` | Z `run_tts_stage`(b1b comment×3)、Secondary(Azure)のみ mock 障害 | 4 | 4 | 0(mock 5) | 1.62(Luna 4 call 含む) |
+| `derive` | 06b zep2 の実 run に対し registry 導出を失敗させて最終ページ再生成(API 0) | 0 | 0 | 0 | 0 |
+| `reuse` | Z results cache 再利用: DIFF(hanshin topic_intro、blocklist)→再生成 / EQUAL(zep の full_story_part2_c1)→再利用 | 3 | 3 | 3 / 0 | 1.25 |
+| `lega1` | legacy A `er003_v1_n3_01_tts_generate.main()`(是正後)→ 1 clip(b1b Charon comment、Secondary まで到達) | 3 | 3 | 3 / 0 | 2.29 |
+| **06d 合計** | | **54** | **63** | **18 / 重複 0** | **23.83** |
+累計: 委任_06(再推定約 9.9)+06b(52.0)+06d(23.83)≒ **JPY 85.7**。06d 単体は上限 45 内。
+
+## 13-3. A: 残 Section の実音声 (①〜④)
+**① X a2 KP**(`xkp`、`xkp/clip_table.md`・`xkp/x_out/a2/audit/tts_generation_results.json`): KGCPW 整合済み KP(E7、`gloss_alignment_status=ALIGN_PASS`)で **gloss Gate は停止せず通過**(Gate 迂回なし)。`tts`→`assemble`→`player` すべて OK。KP 日本語意味 5 clip を新規生成し **5/5 `asr_judgement` あり**(PASS 5、うち 1 件 `primary_pass_approved_equivalence:READING_MATCH`、Secondary 呼出 0)。KP 英語 5 clip は Master Store 再利用(判定なし=仕様どおり)。非KP 11 clip は cache 再利用(値ガード EQUAL → `asr_judgement_inherited` 継承 11/11、API 0 → C の X 側確認を兼ねる)。X の KP 英語の**新規生成**は `xkpen` で補完: 未登録 "hold the line"・"cut it close" を Production 入口で生成、いずれも `asr_judgement` あり(PASS)、登録済み "right away" は Master hit(API 0・判定なし)。
+**② Family B B1 全体**(`b1`、`b1/clip_table.md`): 14 clip すべて **`asr_judgement` あり・PASS**(Primary のみで通過、Secondary 0・重複 0)。見出し 2・Voice A/B 本文 2・Hook 2・Tension・Closing(in_one_line)・Topic/Preview/Comment×4。見出しは `point_headings.generate`(独立 QA 維持)。**注意**: 入力縮約(各 1-2 文)のため pro-preview の 1 clip は短く(総 7.62 JPY)、長尺本文の実費とは異なる。また `run_tts` 後の `finalize_tts_results` が KP ファイル不足で例外になり(runner 側の前提不足、Production 無関係)、results JSON は未生成。判定は隔離 `attempt_history.jsonl`(14 record)から表化(06b D-B7 と同じ扱い)。有料 run は再実行せず。
+**③ Family C Comment(JA)・JA title**: **Production runner 上で成立しなかった**(§13-7 F4)。`cja`: Comment 3 本の LLM 再生成は成功(gpt-6-luna、3 call)、TTS が `tts_call_for_voice("narrator")` → `generate_narration_snippet_verified_strict(text, "en", ...)` で**英語固定**のため日本語 Comment の音声が 3 回とも「生成音声長 16.9/15.3/16.4 秒が見積上限 5.5 秒を超過」で破棄され STOPPED(ASR 0 回、実費 4.46)。JA title は Comment の後段のため未到達。reuse_from 経由の旧資産では動くが、その場合は `.ok` のみ複製で `meta` を複製しないため **LLM 再生成した新しい文面にも旧音声が紐づく**(`cja_attempt1/2` で実測)。JA Comment/JA title の AUW 判定の実音声は **Z(06b zep2 a2 comment、japanese_title)と legacy A(06b lega a2 comment)** で既に取得済み(§12-2)。
+**④ Dialogue(Std) 通算 3 回・KP 4 回**:
+- `dlg_recover`(半実音声: 減速段階の出力を**別文の実音声を 6% 減速したもの**に 1 回だけ差替、TTS/Primary/Secondary は実物): `A2_SLOWDOWN_REVERIFY` attempt1 = 不一致 → 通常ペースから**取り直し**(TTS 通算 2 回)→ 2 回目 OK(`tts_generations_used=2`)。
+- `dlg_cap`(3 回とも差替、別文に数値語 "nine"): 減速後 Primary が値差 → **`NG_PROTECTED p1_value_diff`・Secondary 不呼出**(保護差の仕様どおり)、`tts_generations_used_cumulative` 1→2→3、最終 `STOPPED`(通算 3 回で打切り、4 回目なし)。
+- `dlg_cap2`(数値語なしの別文): 減速後 Primary 分類 `TTS_FAILURE`(別文の転写=内容不一致)→ **Secondary(Azure)1 回**(同一 wav は run cache で 2 回目以降不呼出=重複 0)→ 不採用 → 通算 3 回 → `STOPPED`。
+- KP 英語 4 回構成の Production 入口(`kp4_leaf`、固有名 "Xzqwtrlk wrangle"): **TTS 4 回(MINIMAL×2+ENGLISH_LOCK×2)・Secondary 4 回(重複 0)・HR queue 1 行(slot 4 のみ)**、slot 1→4 が各 attempt の `asr_judgement.slot` に記録。既存例外(4 回構成・Prompt 切替・LR なし)は維持。
+- ただし Z の `kp_en`(同じ固有名、`kp4`)は **TTS 2 回で `HUMAN_REVIEW_LOCKED`**(§13-7 F1)。
+各 clip の `asr_judgement` 有無・state・Secondary 回数: `evidence_06d/*/clip_table.md`。
+
+## 13-4. B: 是正後経路の実音声
+**(a) 非ラテン KP 救済(06c OF-AUW-C-01)**:
+- `probe_nl`: 実 Primary は "can't wait" を言語ヒント zh/ko/ru/ar でも "Can't wait!" と英語で転写(**自然発生しない**)。
+- 実音声(`nlkp` kp2): "30 percent" の Primary(ja ヒント)転写 `三十百分比`(非ラテン)→ Azure `30%.` を採用転写 → **`PASS_WITH_WARNING`(layers=`non_latin`、Secondary 1 回)**。
+- 半実音声(`nlneg`、実 TTS 音声+実 Azure+保存例の非ラテン Primary 転写。Primary 転写の注入は明記): ① "I can't wait for 3 days." → Azure `I can't wait for three days.` → **PASS_WITH_WARNING**(`adopted_text`=Azure 転写、最終ゲート `value_guard=EQUAL, negation_diff=false`)。② 音声が "I can wait for 3 days."(否定欠落)→ Azure `I can wait for three days.` → **`NG_PROTECTED`**。③ 音声が "I can't wait for 4 days." → Azure `... four days.` → **`NG_PROTECTED`**。保護差は救済されない(reason は adapter 非採用経路の `p1_value_diff`。`final_gate_*` ではなくその前段で不採用)。Azure 転写は `nlneg/usage_log.jsonl`。
+**(d) 技術 STOP(06c OF-AUW-C-06)**(`tstop`、実 TTS+実 Primary+Secondary のみ mock 障害): `comment_1`(b1b)は 3 attempt すべて `NG_SECONDARY_UNAVAILABLE`(`technical_stop.type=SECONDARY_UNAVAILABLE`, `restartable=true`, `approval_required=false`)で最終 slot まで到達。stage 終了時に **`[TECHNICAL_STOP] Secondary ASR障害: events=4 circuit_open=True ... Human Review Lock非投入・承認不要・再実行で再開可。`** を出力(`tstop/stdout.log:2`)。**同時に事実として**: leaf の `review_lock` は最終 `STOPPED` を理由不問で **`HUMAN_REVIEW_REQUIRED`**(`tstop/run/b1b/audit/review_lock_state.json`: `comment_1` state=HUMAN_REVIEW_REQUIRED, cumulative_tts_attempts=3)に入れ、`attempt_history` も `human_review_reached=true`(**U4 の材料**: Lock ロジック変更は未実施、現行では Secondary 障害のみの最終 STOPPED が Lock に入る)。さらに b1b は NG のまま Local Rewrite(Luna 4 call+TTS 1 回)まで進んだ。circuit open 後の 2 clip 目は技術 STOP entry を返すが、**`run_tts_stage` が `KeyError: 'style'` で異常終了**(§13-7 F2。results JSON 未生成、checkpoint のみ)。
+**(e) 導出失敗表示(06c OF-AUW-C-12)**(`derive`、API 0): 06b zep2 の実 run に対し registry の導出を例外で失敗させて `build_pages` を実行 → `standard.html`/`advanced.html`/`index.html` すべてに **「導出失敗(要確認)」**、「0件(該当なし…)」は出ない。失敗を注入しない対照では「導出失敗」は出ず n 件節が出る(`derive/runner_execute.json: page_check/page_check_control`、`derive/pages_fail/`)。
+
+## 13-5. C: 再利用経路の実動作(`reuse`)
+- **DIFF → 再生成**: blocklist の hanshin `topic_intro`(保存 ASR "Hanshin wins 81" vs 原稿 "8–1")を、現行 spec の `reuse_key` に合わせて cache に置き(= guard が無ければ再利用される状態)、`generate_or_reuse_z` が `reuse_value_guard_blocked_previous={reason: PROTECTED_DIFF:final_gate_value_diff, unified_state: NG_PROTECTED}` を記録して**実 TTS で再生成**(3 attempt)。新音声の Primary は "wins 8-1"(値は正しい)だが固有名 "Hanshin" の聞き違い等で `NG_BOTH` → 最終 STOPPED(古い誤り音声は採用されない)。
+- **EQUAL → 再利用+継承**: 06b zep の `full_story_part2_c1`(値 "8.7 percent")は guard を通過し `reused_from_previous_run=true`・**`asr_judgement_inherited`(state=PASS)**・API 0。X の cache 再利用(`xkp`)でも非KP 11/11 が同様。
+- 旧 PASS→新 NG 候補 1 件(集計 script が検出): reuse の fallback attempt1(Primary NORMALIZED_MATCH だが Azure "wins 8 to 1" が `ASR_VALIDATION_UNCERTAIN`)。これは fallback route の**既存仕様 `force_secondary`**(Primary PASS でも Secondary 許容集合 PASS を必須)による NG で、**main(旧)の同関数に同一入力を与えても `verified=False`**(`reuse/old_main_force_secondary_check.txt`、API 0)。旧 PASS→新 NG の退行ではない。
+
+## 13-6. E: legacy A 費用記録の是正
+- 変更: `er003_v1_n3_01_tts_generate.py` `main()` の theme ループで `cl.install(f"{theme['out_dir']}/raw_usage_log.jsonl")` を `run_theme` 前に呼ぶ(新単価は追加せず、`pricing_snapshot.json` は無変更)。他の legacy entry を Grep(`generate_b1_segments`/`generate_a2_segments`/`run_theme` 参照 約 50 ファイル)確認: TTS を呼ぶ入口で `cl.install` を持たないのは `er003_v1_n3_01_tts_generate.py main()` のみ(他は過去 one-off 含めすべて `cl.install` 済み。`er003_v1_n3_01_assemble.py` 等は TTS API を呼ばない)。
+- test(`er078_asr_unified_wiring_06d_test_01.py`、netguard 下 4 passed、API 0): 是正前の再現(未 install の `cl.record` は `init_logger` の RuntimeError)/`main()` が theme ごとに install/install 後は Secondary(Azure)呼出の費用が記録され RuntimeError で停止せず PASS_WITH_WARNING まで進む/pricing_snapshot 無変更。
+- 実音声(`lega1`): 是正後の本番入口 `main()` 経由で 1 clip(b1b Charon comment、固有名で Primary NG)を実行 → **Production cost log `lega1/theme/raw_usage_log.jsonl` に 9 record(azure 3・gemini 3・openai_asr 3)**、`compute_cost_jpy_so_far`=2.2884 JPY(wrapper 実測 2.2877 と一致)、Secondary 3 回(重複 0)、**RuntimeError なし**(clip は 3 回 NG_BOTH で STOPPED=固有名のため。HR Lock は run 内に隔離)。
+
+## 13-7. 発見・逸脱(正直な記録。いずれも誤受理・数値/否定の誤 PASS ではない)
+- **F1 Z `kp_en` の 4 回構成が 2 回で止まる**(`kp4`): `er063 kp_en` は `generate_narration_snippet_verified_strict` を 2 段で直接呼ぶが外側 guard が無く、1 段目の最終 `STOPPED` で Review Lock が `HUMAN_REVIEW_REQUIRED` を記録 → 2 段目(ENGLISH_LOCK)は `HUMAN_REVIEW_LOCKED`(0 API)。実測: TTS 2・Secondary 2・`review_lock_state` HUMAN_REVIEW_REQUIRED(cumulative 2)・**HR queue 行なし**(slot 2/4 のため queue 対象外)= Lock だけ立ち queue に出ない。`main` の同関数も同構造(`git show main:er063_family_z_audio_01.py` L667-684)で AUW 起因ではない既存挙動。legacy/X の入口 `generate_key_phrase_component_verified` は `@guarded_generate` の外側 guard で 4 回に成る(`kp4_leaf`)。候補: Z `kp_en` を外側 guard 化(承認済み 4 回構成の Z への適用)=Production 変更のため未実施。
+- **F2 Z の circuit open で `run_tts_stage` が `KeyError: 'style'`**(`tstop`、`tstop/runner_execute.json: stage_exception_traceback`): 06c(d)の `guard_generate` は `generate_or_reuse_z` の生成関数全体(`build_entry` を含む)を wrap するため、技術 STOP entry が `build_entry` を通らず `style` 等を持たず、`_evidence_row`(`er063:1023`)が参照して例外。stage は `[TECHNICAL_STOP]` を報告した後に異常終了(結果 JSON 未生成、checkpoint のみ。誤 PASS なし、再実行で再開可)。06c の test は `generate_or_reuse_z` の戻り値だけを検証していた。**修正案**(未実施): `run_tts_stage` で技術 STOP entry を `build_entry(spec, out_path, entry)` へ通す、または `_evidence_row`/`_store` を欠落 key 耐性にする(約 3 行)。
+- **F3 Dialogue/Voices A2 外側ループの最終 NG が Lock/HR queue に出ない**(`dlg_cap`/`dlg_cap2`): entry は `STOPPED`(Gate が止める)だが、`review_lock_state` は `RESOLVED`(leaf は毎回 OK を返すため)、HR queue 行なし、entry の `asr_judgement` は**減速前の PASS のまま**(減速後 NG の record は `asr_judgement_post_slowdown_ng` に入るが Z の entry へは出ない)。原文 L58 の「両 NG→再生成→3 回 NG で LR/HR」の末端(HR)が A2 減速後 NG では起きない。既存 `generate_a2_segment_with_slowdown`(narrator)と同構造と推定(narrator 側は未検証)。仕様判断を含むため未実施。
+- **F4 C runner の JA 新規 TTS 不能+reuse_from の旧音声紐づけ**(§13-3③): `tts_call_for_voice("narrator", ...)` は `language="en"` 固定(`er013:389`)で JA Comment/JA title/preview を新規生成できない。`_copy_with_ok` は `.ok` のみ複製し `meta` を複製しないため、reuse_from 経由の資産は文面変更を検知できない(`resumable_reuse` が現行文面の sha で meta を書く)。C の Comment(JA)/JA title の「統一 ASR 判定」は C runner からは到達しない(JA leaf `generate_a2_japanese_with_reading_safety` を呼ばない)。AUW 起因ではない既存挙動だが、条件 2 の C(JA)に影響。
+- **F5 Secondary 障害でも Local Rewrite が走る**(`tstop`): b1b comment は 3 attempt すべて `NG_SECONDARY_UNAVAILABLE`(音声の良否は未判定)のまま LR(Luna 4 call+TTS 1 回)へ進んだ。U4(Lock ロジック)と同根の判断事項(技術 STOP は LR/HR より前に止めるか)。
+- **F6 cja の有料 run 再起動 3 回(逸脱)**: `cja_attempt0`(C runner 内部 budget guard が LLM 1 call を ¥3.00 と見積り `--budget-jpy 8` で 3 本目前に停止、LLM 2 call のみ)→ 引数を直して再実行(`cja_attempt1`: reuse_from の旧音声が再コピーされ TTS 0 回、LLM 3 call)→ reuse_from 付替えで再実行(`cja_attempt2`: meta 非複製で同様、LLM 3 call)→ reuse_src から Comment/title を除いて再実行(`cja`: F4 で STOPPED)。計 4 run(初回+再起動 3)。委任文は再起動回数を明示許可していない。各回とも原因は事前確認不足(C runner の保守的見積り・reuse_from の `.ok` 挙動)で、TTS を伴う無駄は最後の 3 clip のみ。実費は計 5.38 JPY。以降の run は事前に dry-run とコード読解で挙動を確認してから 1 回で実行した。
+- **F7 tstop の共有 state 不変チェックが false**: `shared_files_changed_outside_evidence=[er011_output/attempt_history.jsonl, er021_output/.../telemetry.jsonl]`。原因は、同時刻に**私が別 shell で走らせた pytest(n3 関連 36 file)**が既存 test の副作用で本番 `attempt_history`/`telemetry` へ追記したこと(末尾が test fixture の "fox/dog"・"Ottoni" 行)。evidence run 自身は隔離済みで書込なし(他の全 run は `shared_state_unchanged=true`、JA queue 2 ファイル行数も全 run で不変)。この 2 ファイルは作業ツリーで既に差分ありのため stage しない(06 D2 と同じ)。並行実行した私の判断ミス。
+- **F8 B の runner 前提不足**: `b1` の `finalize_tts_results` が `key_phrases/keywords_canonicalized.json` を要求(縮約 run では未作成)し results JSON を作れなかった(判定は attempt_history で代替)。
+
+## 13-8. 誤受理・保護の集計(`evidence_06d/cost/aggregate_06d.json`、API 0)
+最終 entry 13 件(PASS 12/PASS_WITH_WARNING 1)・attempt 単位 47 件の judge record(PASS 30/NG_BOTH 13/PASS_WITH_WARNING 1/NG_SECONDARY_UNAVAILABLE 3)。受理のうち値ガード DIFF/否定差 **0**。独立 oracle(canonical と採用転写の数字集合・否定語)の不一致 **0**。誤受理 0。旧 PASS→新 NG 候補 1(上記 13-5、旧も NG と確認=退行なし)。Secondary 同一 wav 重複 **0**(全 18 呼出)。HR Lock・共有 state への未隔離書込 **0**(F7 は私の pytest による tracked ファイル追記で evidence run 由来ではない)。STOP 条件(誤受理・数値/否定の誤 PASS・旧 PASS→新 NG・未隔離書込・費用 45 超過・Gate 迂回)の発生なし。
+
+## 13-9. 15 必須受入条件 対応表(06d 後)
+| # | 06b 後 | 06d 後 | 根拠 / 残 |
+|---|---|---|---|
+| 1 ASR 判定仕様と Production 動作の一致 | 一部 | **一部充足(前進)** | 06b の未実施 4 点のうち ①X a2 KP ②B B1 全体・Hook/Tension/Closing・見出し ④Dialogue 通算 3 回・KP 4 回 は実音声で取得。③C の Comment(JA)/JA title は F4 により C runner から到達不能(成立しない)。是正後経路 (a)(d)(e) は実音声(一部半実音声)。新規発見 F1・F2・F3 は誤受理ではないが Production 動作の不整合 |
+| 2 日本語・英語、全 Section | 一部 | **一部充足(前進)** | 43 行マトリクス(13-10)。未充足は C の JA 新規生成(F4)と B の A2 narrator 見出し/Hook/Tension/Closing(共有 helper は Dialogue で確認) |
+| 3 Primary NG→Secondary PASS を WARNING 付で採用 | 充足 | **充足** | 06b+`xkp`/`nlkp`(PASS_WITH_WARNING `non_latin`)/`nlneg` |
+| 4 両 NG→最大 3 回の TTS 生成フロー | 一部 | **一部充足(前進)** | Dialogue(Std) の通算 3 回(`dlg_recover`/`dlg_cap`/`dlg_cap2`、半実音声)・KP 4 回(`kp4_leaf`)を実測。Z の KP 英語は F1 で 2 回止まり、A2 減速後 NG の HR 末端は F3 |
+| 5 数値の同値・異値+否定保護 | 充足 | **充足** | `nlneg` ②③・`dlg_cap`(保護差で Secondary 不呼出)・集計 oracle 0 |
+| 6 Connected Speech/M1/F1 回帰 | 充足 | 充足(06 のまま) | 06d の ASR 判定コード変更なし |
+| 7 試聴リスト連動 | 充足 | **充足** | (e) 導出失敗が最終ページに表示されること+対照を実 run で確認 |
+| 8 Secondary 二重呼出・予算・無限 retry なし | 充足 | **充足(circuit 異常終了 F2 は別途)** | 06d 全 run 重複 0(18 呼出)。circuit breaker は mock 障害で実際に開き stage が `[TECHNICAL_STOP]` を報告 |
+| 9 Production 正式 path の runtime evidence | 一部 | **一部充足(前進)** | X(a2 KP 含む)・B(B1)・legacy A(是正後 main())・Z を各 Family の Production 入口で実音声。C の JA(F4)・B の A2 narrator 一部が残 |
+| 10 Unit/Regression/Integration test PASS | 充足 | **充足** | 新規 4 passed。AUW 中核 9 file(`patch_06d/test_core.txt`、6c 44・05 50・judge 45・en 53・ja 51・value_guard 58・registry 9・static audit 15)全 passed。n3 参照 36 file(`patch_06d/test_n3_related.txt`)の失敗 13 件はすべて 06c の baseline 失敗 id と同一(新規失敗 0。`FamilyAUnchangedTest` は E の未 commit 差分のため commit 前は失敗、commit 後に解消) |
+| 11 SSOT 反映 | 未充足 | 未充足(委任_07) | |
+| 12 commit/push/merge | 一部 | 一部(06d は branch commit/push、merge は委任_07) | |
+| 13 Dangling Reference Check | 未充足 | 未充足(委任_07) | |
+| 14 未解決 UDR・未配線 APPROVED の明示 | 一部 | 一部充足 | 13-11 を追加 |
+| 15 Fable の独立照合 | 未充足 | 未充足(Fable の工程) | |
+
+## 13-10. `APPLICABILITY_MATRIX_01.csv` 43 行の実音声カバレッジ(最終版)
+- **実音声 37 行**: 06b の 34 行(X-B1-01,02,03,04,05,07 / X-A2-01〜06 / Z-B1-01〜03 / Z-A2-01〜05 / Z-ALL-01,02 / A-B1-01〜04 / A-A2-01,02 / B-A2-01 / B-B1-01 / C-01 / XC-01〜03)+ **X-A2-07(KP 英語: `xkpen`)、X-A2-08(KP 日本語意味: `xkp`)、A-A2-03(KP 英語は `xkpen` の同一 Production 入口 `ensure_key_phrase_english_component`、KP 日本語意味は 06b `lega`)**。このうち B-B1-01 は 14 clip 全 Section の実音声に拡張。**B-A2-01(A2 narrator 見出し/Hook/Tension/Closing は共有 helper を Dialogue で確認、Family B の A2 narrator 実行自体は未)・C-01(Comment JA/title は F4)は一部 segment のみ**。
+- 再利用・複製で判定なし=仕様どおり(5 行): X-B1-06、X-B1-08、X-B1-09、X-A2-09、Z-ALL-03。
+- 既存 Gate による API 0 停止: **0 行**(X-A2-07/08 の KGCPW gloss Gate は整合済み KP で通過)。N/A: Y-00。
+- 合計 37+5+0+1=43。
+- 実音声とは別に半実音声の項目(故障/転写の注入を明記): Dialogue 外側ループ(減速出力の差替)、技術 STOP(Secondary mock 障害)、非ラテン救済の否定/数値(Primary 非ラテン転写の注入)、導出失敗(registry 例外の注入)、再利用 DIFF(cache entry を意図的に再利用対象に構成)。
+
+## 13-11. 06c の逸脱記録と OPEN 候補(委任_07 が SSOT へ転記)
+- **06c(A)の逸脱記録(Fable 判断を記録)**: HR Lock `record_outcome` への技術 STOP 早期 return は**実施していない**(Lock ロジック変更=ユーザー判断事項 U4)。現行はSecondary障害のみの最終 STOPPED が Lock に入る安全側挙動(06d `tstop` で実測: `review_lock_state` HUMAN_REVIEW_REQUIRED、`attempt_history` `human_review_reached=true`)。
+- **06c(B)の OPEN 候補**: results cache の DIFF 16 件は再利用時の動的 guard で再生成へ回す現行実装を採用(`reuse` で実 run 確認)。判定器の偽陽性の可能性(「いちばん/一番」、装飾記号)は委任_07 で OPEN 化(本 run は DIFF 側 1 件[hanshin 8–1]で真陽性を確認、偽陽性側は未実測)。
+- **06c(C)**: 本委任 E で是正済み(§13-6)。
+- **OPEN 候補(新規発見、Production 変更を伴うため未実施)**: F1(Z `kp_en` 外側 guard)、F2(Z circuit open の `KeyError`)、F3(減速後 NG の HR 末端・entry の stale `asr_judgement`)、F4(C runner の JA 新規 TTS と reuse_from の meta)、F5(Secondary 障害時に LR を走らせない)。**仕様候補**: スコア表記 "8–1" と Azure "8 to 1" の等価(fallback route の `force_secondary` で NG になる)。
+
+## 13-12. 判定材料(宣言しない)
+- 満たす材料: 条件 3・5・6・7・8・10 は充足。条件 1・2・4・9 は前進(残は C JA の到達不能[F4]、B A2 narrator 一部、F1〜F3)。06d の実音声 54 TTS で誤受理 0・数値/否定の誤 PASS 0・旧 PASS→新 NG 0(候補 1 件は旧も NG)・Secondary 重複 0。E は実 clip で費用記録を確認。
+- 満たしていない材料: 条件 11・12(merge)・13・15、F1〜F3 の Production 動作の不整合(誤受理ではないが「1 項目でも未確認」の判断材料)。
+- 費用: 06d 約 JPY 23.83(token 実測、上限 45 内)、06+06b+06d ≒ 85.7。
