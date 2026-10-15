@@ -123,3 +123,7 @@ assertが見ているもの: 「回数/経路」= 呼出回数・step名・human
 ### 9-4 委任_06向けメモ
 - API-0再現(`patch_03b/melos_m1_replay_api0.py`)で Melos said: 26/27 verified、M1受理 20/21。差分1件は `Melos_said_L2_adv_t1_raw__segNone`(Primary#2廃止により保存Secondary転写が存在せず NG_SECONDARY_UNAVAILABLE)。
 - 「Melos said. 12/12・12/12」構成は保存データ(er077 evidence)に存在しない。従って実音声での runtime evidence(実TTS→実Primary→実Secondaryの経路)が委任_06で必須。保存データの再判定だけでは合否を主張できない。
+
+### 9-5 委任_03c commit後の確認
+- commit cc01cd8f3b8b31a70f692160fa725154c8a92df9 を feat/auw-unified-asr-01 へpush済(main無変更)。
+- gamma 4 id(er019 FamilyAUnchanged / er020 x2 ProductionModuleUnchanged / er064 ProductionUnchanged[のtest class全体7件])を再実行: 7 passed。gamma解消。
