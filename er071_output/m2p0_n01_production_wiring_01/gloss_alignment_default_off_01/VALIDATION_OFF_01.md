@@ -79,3 +79,18 @@ JPY1.83(Family X KP段 fresh run のみ。KPのみ上限JPY3以内)。Z mock=0�
 - T3 mock再実行(JPY0、`gloss_alignment_correction_01/trial_t3_rerun_01/`): 27/27 PASS。
 - Regression(`regression/reg3_*.txt`): er003* 1667件/1663 pass/3 fail+1 error(既存集合と同一: `er003_test_bad`fixture意図fail+`er003_test_p2j_investigate`4件)、er026* 86件/79 pass/7 fail(既存7件=cs_audit 4+post_slowdown 3と同一)、er019* 421/421。新規failure 0。
 - 費用: Z KP a2 JPY1.1191のみ(上限3内)。TTS 0。
+
+## 8. Fable判定(2026-10-15): PRODUCTION_WIRED(委任_04記録)
+既定OFF安全措置のみ。gloss再整合工程自体は未採用(APPROVED_FOR_PRODUCTIONを付けない)。既定OFFは品質改善完了ではない。
+
+| 受入条件 | 充足evidence |
+|---|---|
+| ① 明示ONなしで実行されない | unit test 78 PASS+flag一元化(委任_03、mode=correctedもflag必須) |
+| ② OFF時API 0・gloss不変・HR成果物0 | test+X/Z実LLM evidence |
+| ③ Std/Adv・X/Z・runner約65本・起動スクリプトの隔離 | 静的確認表+X(er019 KP段 実LLM、`kp_gloss_alignment`タグ0)+Z(er026 real KP段、a2_result.json `gloss_alignment_status="DISABLED"`、タグ0) |
+| ④ 明示ONのDEV/Trialで動作 | test+Trial script明示ON+T3 27/27 |
+| ⑤ test・runtime evidence | 上記(委任_02 c21cce27a・委任_03 e80360add) |
+| ⑥ SSOT/Git | 反映済み |
+
+- 残置物: `er026_output/family_z_production_e2e_01/melos/run_kga3_off_z_01`(git管理外、Z evidence用コピー、削除せず残置)。
+- 未記録事項: runner summaryに`gloss_alignment_mode`欄なし(既存仕様、追加せず)。

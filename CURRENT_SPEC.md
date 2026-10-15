@@ -2632,7 +2632,7 @@ OPEN-178/179・既存Topic Discovery Trial結果を上書きしない。
 
 **【2026-10-14追記(KP-GLOSS-ALIGNMENT-PRODUCTION-01 委任_01)】KP gloss再整合段(`er003_key_words_gloss_alignment.py`、OPEN-356)は「Production経路に配線済み・採否待ち(`APPROVED_FOR_PRODUCTION`未・`PRODUCTION_WIRED`未宣言)」である(事実のみ)。Opus所見OF-225〜235を受けて、失敗時fallback既定を「最終KP維持+`gloss_alignment_status=FAILED`通知」(例外として条件付きで候補へ戻す選択肢をconfigに保持)、決定論スロットチェック、規則抽出堅牢化、費用記録、明示flag`GLOSS_ALIGNMENT_ENABLED`(既定ON、`EIGO_KP_GLOSS_ALIGNMENT=0`でOFF)を開発側で実装した。ユーザー判断(Q1〜Q3)までは新規量産runでこの段を通さない運用。承認済みPrompt・Rule7・Gate・A'は無変更。詳細はOPEN-356/DECISION_LOG/er071_output/m2p0_n01_production_wiring_01/gloss_alignment_01/FIX_01.md。**
 
-**【2026-10-15追記(KP-GLOSS-ALIGNMENT-PRODUCTION-01 委任_02)】KP gloss再整合段は`GLOSS_ALIGNMENT_ENABLED`既定OFF(ユーザー承認の安全措置)。明示ON(`EIGO_KP_GLOSS_ALIGNMENT=1`)のDEV/Trialのみ動作する。工程自体の採用は未承認(`APPROVED_FOR_PRODUCTION`ではない)。既定OFFはevidence取得済み・PRODUCTION_WIRED判定待ち。詳細はOPEN-356/DECISION_LOG/er071_output/m2p0_n01_production_wiring_01/gloss_alignment_default_off_01/VALIDATION_OFF_01.md。** gloss再整合は`EIGO_KP_GLOSS_ALIGNMENT=1`の明示ONが必須(mode指定のみでは実行されない。委任_03)。
+**【2026-10-15追記(KP-GLOSS-ALIGNMENT-PRODUCTION-01 委任_02)】KP gloss再整合段は`GLOSS_ALIGNMENT_ENABLED`既定OFF(ユーザー承認の安全措置)。明示ON(`EIGO_KP_GLOSS_ALIGNMENT=1`)のDEV/Trialのみ動作する。工程自体の採用は未承認(`APPROVED_FOR_PRODUCTION`ではない)。既定OFFはevidence取得済み・PRODUCTION_WIRED判定待ち。詳細はOPEN-356/DECISION_LOG/er071_output/m2p0_n01_production_wiring_01/gloss_alignment_default_off_01/VALIDATION_OFF_01.md。** gloss再整合は`EIGO_KP_GLOSS_ALIGNMENT=1`の明示ONが必須(mode指定のみでは実行されない。委任_03)。 Status: 既定OFF=PRODUCTION_WIRED(2026-10-15)。工程採用は未承認。
 
 ## 記事構成・Family X選定方式(2026-10-12ユーザー正式決定、`TOPIC-SELECTION-FORM-AND-FAMILY-MIX-20261012-01`、運用方針の記録のみ・Production/Prompt/Routing変更なし)
 
