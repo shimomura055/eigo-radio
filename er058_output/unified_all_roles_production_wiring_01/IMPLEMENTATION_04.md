@@ -105,3 +105,7 @@ test(15 passed): snapshot完全一致、全entryがALLOWED_CATEGORIES、`categor
 - **挙動変化(費用/件数に関わるため委任_06の試算に要反映)**: JAのUNCERTAIN(固有名詞/濁点ゆれ)で従来Cascade尽き→`ASR_VALIDATION_UNCERTAIN`即返却(TTS再生成せずHR)だった箇所が、統一フロー(D-7: 両NG→次のTTS再生成)により通算3回まで再生成する。TTS呼出回数が増える可能性(Secondary呼出は4回→1回に減る)。実NG分布での増分費用は`attempt_history`から委任_06で試算。
 - **新仕様候補**: なし(実装は承認済み設計の範囲)。ただし上記2(adapterでの値等価)はDESIGN §5-2の実装形態の選択。
 - 委任_07向け: 旧2 test(koro/single_engine)の扱い(削除またはVariant層前提の期待へ更新)はuser原文L97/承認範囲に影響しないが、期待値変更に当たるためFable判断を推奨。OPEN-146系の旧Cascade記述(SSOT)はP#2/S#2/HR直行廃止の反映が必要。
+
+## 11. commit後の確認
+- commit 9fb1d7fec9d5(branch feat/auw-unified-asr-01へpush済、main無変更、20 files、`secret_scan_01 --staged` hits=0、`docs/pm/RESULT_PACKET_AUW4.md`は.gitignore対象のため非コミットのローカルファイル)。
+- gamma(未commit-diff guard)4 id(er019 FamilyAUnchanged / er020 ProductionModuleUnchanged x2 / er064 ProductionUnchanged[class全体7件])をcommit後に再実行: **7 passed**(gamma解消)。したがって残存失敗29件のうちgamma 4件は解消、残り25件がbaselineから変わらない既存失敗。
