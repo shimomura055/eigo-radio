@@ -373,7 +373,8 @@ def generate_narration_snippet_verified_strict(
             # 固有名詞らしさ・読みをopcode単位で個別に判定する)。
             verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
                 text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
-                expected_readings=expected_readings, length_ok=length_ok)
+                expected_readings=expected_readings, length_ok=length_ok,
+                detail_out=cascade_detail)  # AUW 委任_04: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
             verified = verified_content and length_ok
             audio_classification = cls.classification
             substring_ok = None  # 旧フィールド、新方式では使わない(下の記録用に残すだけ)
@@ -408,8 +409,8 @@ def generate_narration_snippet_verified_strict(
                 style_prefix_override if style_prefix_override is not None else p9a.ENGLISH_STYLE_PREFIX)
                 if language == "en" else None),
             "cascade_steps": cascade_detail.get("steps") if language == "en" else None,
-            # AUW 委任_03(additive): 統一judgeの監査record(ENのみ。JAは委任_04で配線)。
-            "asr_judgement": cascade_detail.get("asr_judgement") if language == "en" else None,
+            # AUW 委任_03/04(additive): 統一judgeの監査record(EN/JA共通)。
+            "asr_judgement": cascade_detail.get("asr_judgement"),
         })
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する
@@ -455,8 +456,8 @@ def generate_narration_snippet_verified_strict(
                     "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
                     "repetition_qa_checked": rep_gate["repetition_qa_checked"] if language == "en" else False,
                     "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence") if language == "en" else None,
-                    # AUW 委任_03(additive、ENのみ。JAは委任_04で配線)
-                    "asr_judgement": cascade_detail.get("asr_judgement") if language == "en" else None}
+                    # AUW 委任_03/04(additive、EN/JA共通)
+                    "asr_judgement": cascade_detail.get("asr_judgement")}
         if stop_retrying:
             return {**r, "status": "ASR_VALIDATION_UNCERTAIN", "asr_verified": False, "asr_text": asr_text,
                     "attempts_log": attempts_log,

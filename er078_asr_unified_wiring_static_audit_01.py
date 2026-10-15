@@ -11,9 +11,11 @@
 #                                 EN判定点でadapterを経由しない直接のclassify_asr_match/evaluate_attempt呼出が「明示の繰延リスト(A2減速=委任_05、J11=委任_04)」
 #                                 以外に無いこと、JA経路(er007_ja_secondary_asr_01)が統一judgeへ未到達であることをassertする。allowlistの各entryは
 #                                 `category`を持ち、未知categoryはFAIL。再生成: `--regenerate --phase post_wiring_en`。
-#   post_wiring (委任_04/05完了後に切替え): 「統一judge/adapter(allowlist内の internal_modules)経由以外のASR呼出0」をassertする。
-#                                 切替え手順: allowlist JSONの phase を post_wiring に変え、繰延カテゴリ(ja_unwired/deferred)のentryが残っていない
-#                                 こと、adapter側の呼出のみを internal として残すこと(理由必須)。
+#   post_wiring (委任_04: EN+JA+J11配線済み): 「統一judge/adapter経由以外のASR呼出0」をassertする。EN/JA両entrypointから統一judgeへ到達すること、
+#                                 繰延カテゴリ(ja_unwired/j11_deferred/diagnostic_unconfirmed)のentryが0件であることをassertする。
+#                                 唯一の残存例外は **A2 6%減速後の再検証(apply_a2_slowdown_postprocess内の直接classify_asr_match+transcribe 2 entry)**
+#                                 = category `a2_slowdown_pending_delegation_05`(委任_05で統一judge化して0件にし、このtestを「0件」へ締める)。
+#                                 再生成: `--regenerate --phase post_wiring`。
 #
 # 使い方:
 #   python er078_asr_unified_wiring_static_audit_01.py --regenerate   # allowlist(snapshot)を生成/更新
@@ -51,12 +53,22 @@ CAT_LIBRARY_INTERNAL = "library_internal"                  # EN検証library(er0
 CAT_EN_ADAPTER_ENTRY = "en_adapter_entry"                  # EN判定点(leaf)からadapterへの入口呼出(evaluate_attempt_with_cascade[_detail])
 CAT_PRIMARY_ACQUISITION = "primary_acquisition"            # Primary ASR転写の取得(judgeの入力側。判定ではない)
 CAT_SAFETY_QA = "safety_qa"                                # disfluency/repetition用の転写(内容判定ではない)
-CAT_JA_UNWIRED = "ja_unwired_delegation_04"                # JA(委任_04で配線)
-CAT_J11_DEFERRED = "j11_deferred_delegation_04"            # 引継ぎ・再利用経路の再判定(委任_04)
-CAT_A2_DEFERRED = "a2_slowdown_deferred_delegation_05"     # A2減速後の再検証(委任_05)
-CAT_DIAGNOSTIC_UNCONFIRMED = "diagnostic_unconfirmed"      # Family C診断ASR(判定に使われているか未確認、委任_04で確認)
-DEFERRED_CATEGORIES = (CAT_JA_UNWIRED, CAT_J11_DEFERRED, CAT_A2_DEFERRED, CAT_DIAGNOSTIC_UNCONFIRMED)
-ALLOWED_CATEGORIES = (CAT_ADAPTER_INTERNAL, CAT_LIBRARY_INTERNAL, CAT_EN_ADAPTER_ENTRY, CAT_PRIMARY_ACQUISITION, CAT_SAFETY_QA) + DEFERRED_CATEGORIES
+CAT_JA_UNWIRED = "ja_unwired_delegation_04"                # (post_wiring_enのみ)JA(委任_04で配線)
+CAT_J11_DEFERRED = "j11_deferred_delegation_04"            # (post_wiring_enのみ)引継ぎ・再利用経路の再判定(委任_04)
+CAT_A2_DEFERRED = "a2_slowdown_pending_delegation_05"      # A2減速後の再検証(委任_05で統一judge化)。post_wiringでの唯一の残存例外
+CAT_DIAGNOSTIC_UNCONFIRMED = "diagnostic_unconfirmed"      # (post_wiring_enのみ)Family C診断ASR(判定に使われているか未確認)
+# 委任_04で追加(post_wiringの正規category)
+CAT_JA_ADAPTER_ENTRY = "ja_adapter_entry"                  # JA判定点(leaf)からJA adapter(er007_ja_secondary_asr_01)への入口呼出=統一judge経由
+CAT_J11_UNIFIED_ENTRY = "j11_unified_judge_entry"          # J11: 引継ぎ再判定。内部でunified_judgeを呼ぶ(保存転写のPrimary再導出+最終ANDゲート、API 0)
+CAT_DIAGNOSTIC_CONFIRMED = "diagnostic_not_judgement"      # Family C診断ASR: 結果はaudit/consistency行に記録されるだけで採用判定(verified/Gate)に使われない(確認済み)
+# 委任_04で未配線のため繰延のまま許容するのはA2のみ(post_wiring)。それ以外の繰延は0でなければならない。
+DEFERRED_CATEGORIES = (CAT_JA_UNWIRED, CAT_J11_DEFERRED, CAT_DIAGNOSTIC_UNCONFIRMED)
+PENDING_DELEGATION_05_CATEGORIES = (CAT_A2_DEFERRED,)
+ALLOWED_CATEGORIES = (CAT_ADAPTER_INTERNAL, CAT_LIBRARY_INTERNAL, CAT_EN_ADAPTER_ENTRY, CAT_PRIMARY_ACQUISITION, CAT_SAFETY_QA,
+                      CAT_JA_ADAPTER_ENTRY, CAT_J11_UNIFIED_ENTRY, CAT_DIAGNOSTIC_CONFIRMED) + DEFERRED_CATEGORIES + PENDING_DELEGATION_05_CATEGORIES
+# post_wiringの委任_05繰延(明示の既知集合)。増えたらFAIL。
+A2_PENDING_ENTRIES = [("er003_v1_n3_01_tts_generate", "apply_a2_slowdown_postprocess"),
+                      ("er003_v1_n3_01_tts_generate", "apply_a2_slowdown_postprocess")]
 JA_FUNCTIONS = {("er003_v1_sing01_voice01_generate", "generate_charon_japanese"),
                 ("er003_v1_n3_01_tts_generate", "generate_a2_japanese_with_fallback")}
 EN_LEAF_MODULES = ("er003_v1_sing01_voice01_generate", "er003_v1_sing01_news_tail_fix", "er003_v1_crosslevel_audio_02_common",
@@ -210,31 +222,43 @@ def _reason_for(mod: str, fn: str, nm: str) -> str:
     return "SNAPSHOT: 現行呼出(配線前)。委任_03/04で統一judge経由かadapter内部かを個別に確定する"
 
 
-def category_for(mod: str, fn: str, nm: str) -> tuple:
-    """post_wiring_en用: (category, reason)。繰延カテゴリは委任番号を含む(post_wiringで0件になる)。"""
+def category_for(mod: str, fn: str, nm: str, phase: str = "post_wiring") -> tuple:
+    """(category, reason)。phase=post_wiring_en(委任_03時点: JA/J11/Family Cは繰延)かpost_wiring(委任_04: JA/J11配線済み)。"""
     last = nm.split(".")[-1]
     top = fn.split(".")[0]
+    en_only = (phase == "post_wiring_en")
+    if phase == "post_wiring":
+        if mod == "er007_ja_secondary_asr_01":
+            return CAT_ADAPTER_INTERNAL, "JA統一judge adapter本体(AUW 委任_04): Primary(classify_ja_asr_match)とSecondary許容集合判定。判定は全てunified_judge経由"
+        if mod == "er019_family_x_validation_inheritance_01":
+            return CAT_J11_UNIFIED_ENTRY, "J11 引継ぎ・再利用の再判定(AUW 委任_04): 保存転写のPrimary再導出後にunified_judge(最終ANDゲート)を通す。API 0・Secondary新規呼出なし"
+        if mod == "er013_family_c_production_runner_01":
+            return CAT_DIAGNOSTIC_CONFIRMED, "Family C(legacy)の診断用ASR(get_or_run_asr)。確認済み(委任_04): 結果はaudit asr_text/comment_consistency.jsonの記録のみで採用判定に使われない"
+        if last == "evaluate_attempt_ja_with_cascade":
+            return CAT_JA_ADAPTER_ENTRY, "JA判定点(leaf)からJA adapter(er007_ja_secondary_asr_01)への入口呼出=統一judge経由"
     if mod == "er006_secondary_asr_01":
         return CAT_ADAPTER_INTERNAL, "EN統一judge adapter本体(AUW 委任_03): Primary P-chain([val.evaluate_attempt/classify_asr_match])とjudge呼出。判定は全てunified_judge経由"
     if mod == "er006_preprod_hardening_01_validation":
         return CAT_LIBRARY_INTERNAL, "EN検証library内部の呼出(Primary P-chain本体)。adapter(evaluate_attempt_with_cascade_detail)経由でのみ判定に使われる"
     if mod in ("er008_disfluency_qa_18", "er011_open121_repetition_qa_production_01"):
         return CAT_SAFETY_QA, "Safety QA用の転写(disfluency/repetition)。内容一致の判定点ではない(最後にANDされる既存構造は不変)"
-    if mod == "er013_family_c_production_runner_01":
+    if en_only and mod == "er013_family_c_production_runner_01":
         return CAT_DIAGNOSTIC_UNCONFIRMED, "Family C(legacy)の診断用ASR(get_or_run_asr)。判定に使われているか未確認(委任_04で確認)"
-    if mod == "er019_family_x_validation_inheritance_01":
+    if en_only and mod == "er019_family_x_validation_inheritance_01":
         return CAT_J11_DEFERRED, "J11 引継ぎ・再利用の再判定(保存転写に対するAPI 0再判定)。統一判定の入口への置換は委任_04"
-    if mod == "er007_ja_secondary_asr_01" or nm.startswith(("ja_secondary.", "javal.")):
+    if en_only and (mod == "er007_ja_secondary_asr_01" or nm.startswith(("ja_secondary.", "javal."))):
         return CAT_JA_UNWIRED, "JA判定(SCG/JA cascade)。統一judgeへの配線は委任_04(本委任では未配線)"
-    if (mod, top) in JA_FUNCTIONS:
+    if en_only and (mod, top) in JA_FUNCTIONS and last != "transcribe":
+        return CAT_JA_UNWIRED, "JA leafの判定呼出。委任_04"
+    if en_only and (mod, top) in JA_FUNCTIONS:
         return CAT_JA_UNWIRED, "JA leafのPrimary転写取得(JA判定とセット)。委任_04"
     if mod == "er003_v1_n3_01_tts_generate" and top == "apply_a2_slowdown_postprocess":
-        return CAT_A2_DEFERRED, "A2 6%減速後の再検証(直接classify_asr_match)。減速前後を同一judgeにする汎化は委任_05"
+        return CAT_A2_DEFERRED, "A2 6%減速後の再検証(直接classify_asr_match/transcribe)。減速前後を同一judgeにする汎化は委任_05(未実装=明示の残存例外)"
     if last in ("evaluate_attempt_with_cascade", "evaluate_attempt_with_cascade_detail"):
         return CAT_EN_ADAPTER_ENTRY, "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由"
     if last == "transcribe":
         return CAT_PRIMARY_ACQUISITION, "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)"
-    return "UNCATEGORIZED", "未分類(post_wiring_enはFAIL)"
+    return "UNCATEGORIZED", "未分類(post_wiring_en/post_wiringはFAIL)"
 
 
 def build_allowlist(inv=None, phase: str = "pre_wiring") -> dict:
@@ -245,10 +269,10 @@ def build_allowlist(inv=None, phase: str = "pre_wiring") -> dict:
         e = {"module": mod, "function": fn, "callee": nm, "count": v["count"], "judgement_point": _judgement_label(mod, fn),
              "reason": _reason_for(mod, fn, nm)}
         if phase != "pre_wiring":
-            e["category"], e["reason"] = category_for(mod, fn, nm)
+            e["category"], e["reason"] = category_for(mod, fn, nm, phase)
         entries.append(e)
     return {"phase": phase, "managed_id": "ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01",
-            "generated_by": "delegation_02b" if phase == "pre_wiring" else "delegation_03",
+            "generated_by": {"pre_wiring": "delegation_02b", "post_wiring_en": "delegation_03", "post_wiring": "delegation_04"}[phase],
             "entrypoints": ENTRYPOINTS, "callee_pattern": CALLEE_RE.pattern, "entry_count": len(entries), "entries": entries}
 
 
@@ -310,12 +334,10 @@ def test_asr_call_inventory_matches_allowlist():
     inv = inventory()
     d = diff_against_allowlist(inv, al)
     assert al["phase"] in PHASES, al["phase"]
-    if al["phase"] in ("pre_wiring", "post_wiring_en"):
-        # snapshotとの完全一致。未登録の新規ASR呼出(統一judgeを経由しない呼出点の増殖)も、意図しない消失もFAIL。
-        assert d == {"unlisted_new_calls": [], "vanished": [], "count_changed": []}, d
-    else:
-        # post_wiring(委任_04/05完了後): 繰延カテゴリのentryが1件でも残っていればFAIL。
-        assert d["unlisted_new_calls"] == [], d
+    # 全phase共通: snapshotとの完全一致。未登録の新規ASR呼出(統一judgeを経由しない呼出点の増殖)も、意図しない消失もFAIL。
+    assert d == {"unlisted_new_calls": [], "vanished": [], "count_changed": []}, d
+    if al["phase"] == "post_wiring":
+        # 繰延カテゴリ(JA未配線/J11/診断未確認)は0件でなければならない。
         left = [e for e in al["entries"] if e.get("category") in DEFERRED_CATEGORIES]
         assert left == [], f"post_wiringに繰延カテゴリが残っている: {left}"
 
@@ -353,17 +375,17 @@ def _en_phase_only(fn):
 
 
 @_en_phase_only
-def test_post_wiring_en_every_entry_has_known_category():
+def test_post_wiring_every_entry_has_known_category():
     al = load_allowlist()
     bad = [e for e in al["entries"] if e.get("category") not in ALLOWED_CATEGORIES]
     assert bad == [], f"未知/未分類category(新しいASR呼出点が増えた/分類漏れ): {bad}"
     # 再導出したcategoryとallowlistが一致(allowlistの手編集で分類を偽らない)
     for e in al["entries"]:
-        assert e["category"] == category_for(e["module"], e["function"], e["callee"])[0], e
+        assert e["category"] == category_for(e["module"], e["function"], e["callee"], al["phase"])[0], e
 
 
 @_en_phase_only
-def test_post_wiring_en_every_en_leaf_reaches_unified_judge_through_adapter():
+def test_post_wiring_every_en_leaf_reaches_unified_judge_through_adapter():
     for m in EN_LEAF_MODULES:
         assert "er078_asr_unified_judge_01" in _closure(m), f"EN leaf {m} が統一judgeへ到達しない"
         assert "er006_secondary_asr_01" in imports_of(os.path.join(ROOT, m + ".py")), f"{m} がadapter(er006_secondary_asr_01)をimportしない"
@@ -371,20 +393,21 @@ def test_post_wiring_en_every_en_leaf_reaches_unified_judge_through_adapter():
 
 
 @_en_phase_only
-def test_post_wiring_en_no_en_judgement_bypasses_adapter_except_explicit_deferrals():
+def test_post_wiring_no_judgement_bypasses_adapter_except_explicit_pending():
     """EN leaf(J1-J6)の内容判定はadapter(evaluate_attempt_with_cascade[_detail])経由のみ。judge/adapter以外の直接
-    classify_asr_match/evaluate_attempt呼出は、繰延カテゴリ(A2減速=委任_05, J11=委任_04, JA=委任_04)とlibrary/adapter内部だけ。"""
+    classify_asr_match/evaluate_attempt/classify_ja_asr_match呼出は、adapter/library内部・J11(unified経由)・[post_wiring_enのみ]繰延だけ。"""
     al = load_allowlist()
     direct = [e for e in al["entries"]
               if e["callee"].split(".")[-1] in ("classify_asr_match", "evaluate_attempt", "classify_ja_asr_match")]
+    ok_cats = {CAT_ADAPTER_INTERNAL, CAT_LIBRARY_INTERNAL, CAT_J11_UNIFIED_ENTRY, CAT_A2_DEFERRED}
+    if al["phase"] == "post_wiring_en":
+        ok_cats |= {CAT_JA_UNWIRED, CAT_J11_DEFERRED}
     for e in direct:
-        assert e["category"] in (CAT_ADAPTER_INTERNAL, CAT_LIBRARY_INTERNAL, CAT_JA_UNWIRED, CAT_A2_DEFERRED, CAT_J11_DEFERRED), (
-            f"EN判定点がadapterを経由せず直接判定している: {e}")
-    # 繰延は明示の既知集合のみ(増えたらFAIL)
-    deferred = sorted((e["module"], e["function"]) for e in al["entries"] if e["category"] in (CAT_A2_DEFERRED, CAT_J11_DEFERRED))
-    assert deferred == [("er003_v1_n3_01_tts_generate", "apply_a2_slowdown_postprocess"),
-                        ("er003_v1_n3_01_tts_generate", "apply_a2_slowdown_postprocess"),
-                        ("er019_family_x_validation_inheritance_01", "rejudge_with_current_judge")], deferred
+        assert e["category"] in ok_cats, f"判定点がadapterを経由せず直接判定している: {e}"
+    pending = sorted((e["module"], e["function"]) for e in al["entries"] if e["category"] in PENDING_DELEGATION_05_CATEGORIES + (CAT_J11_DEFERRED,))
+    expect = sorted(A2_PENDING_ENTRIES + ([("er019_family_x_validation_inheritance_01", "rejudge_with_current_judge")]
+                                           if al["phase"] == "post_wiring_en" else []))
+    assert pending == expect, pending
     # EN leaf J1-J6は全てadapter入口を持つ
     have = {(e["module"], e["callee"].split(".")[-1]) for e in al["entries"]}
     for j in ("J1", "J2", "J3", "J4", "J5", "J6"):
@@ -393,14 +416,66 @@ def test_post_wiring_en_no_en_judgement_bypasses_adapter_except_explicit_deferra
 
 
 @_en_phase_only
-def test_post_wiring_en_ja_path_is_not_wired_to_unified_judge():
-    for m in ("er007_ja_secondary_asr_01", "er007_ja_asr_validator_01"):
-        c = _closure(m)
-        assert not (c & UNIFIED_MODULES), f"JA経路 {m} が統一judge系へ到達している(委任_04前の未承認配線): {c & UNIFIED_MODULES}"
-        assert "er006_secondary_asr_01" not in c
+def test_post_wiring_ja_phase_dependent_wiring():
     al = load_allowlist()
-    ja = [e for e in al["entries"] if e["category"] == CAT_JA_UNWIRED]
-    assert ja, "JA未配線entryが無い(分類漏れ)"
+    if al["phase"] == "post_wiring_en":
+        for m in ("er007_ja_secondary_asr_01", "er007_ja_asr_validator_01"):
+            c = _closure(m)
+            assert not (c & UNIFIED_MODULES), f"JA経路 {m} が統一judge系へ到達している(委任_04前の未承認配線): {c & UNIFIED_MODULES}"
+            assert "er006_secondary_asr_01" not in c
+        assert [e for e in al["entries"] if e["category"] == CAT_JA_UNWIRED], "JA未配線entryが無い(分類漏れ)"
+        return
+    # post_wiring: JA adapterが統一judgeをimportし、JA leaf全てがJA adapter入口を持つ
+    assert "er078_asr_unified_judge_01" in imports_of(os.path.join(ROOT, "er007_ja_secondary_asr_01.py"))
+    assert "er078_asr_value_guard_01" in imports_of(os.path.join(ROOT, "er007_ja_secondary_asr_01.py"))
+    for m in ("er003_v1_sing01_voice01_generate", "er003_v1_n3_01_tts_generate", "er003_v1_repro01_main_generate"):
+        assert "er007_ja_secondary_asr_01" in imports_of(os.path.join(ROOT, m + ".py")), m
+        assert "er078_asr_unified_judge_01" in _closure(m), m
+    have = {(e["module"], e["function"].split(".")[0], e["callee"].split(".")[-1]) for e in al["entries"]}
+    for j in ("J5", "J8", "J9", "J10"):
+        m, f = JUDGEMENT_POINTS[j]
+        assert any(mm == m and cal == "evaluate_attempt_ja_with_cascade" for (mm, _ff, cal) in have), f"{j} {m} にJA adapter入口が無い"
+    # JA判定の直接呼出(classify_ja_asr_matchなど)はJA adapter内部(er007_ja_secondary_asr_01)のみ
+    for e in al["entries"]:
+        if e["callee"].split(".")[-1] in ("classify_ja_asr_match", "evaluate_attempt_ja_with_cascade_detail"):
+            assert e["module"] == "er007_ja_secondary_asr_01" and e["category"] == CAT_ADAPTER_INTERNAL, e
+    assert [e for e in al["entries"] if e["category"] in DEFERRED_CATEGORIES] == []
+
+
+@_en_phase_only
+def test_post_wiring_both_entrypoint_families_reach_unified_judge():
+    """EN/JA両方のProduction entrypointから、統一judge(adapter経由)へ到達できる。"""
+    reach = reachable_modules()
+    for need in ("er078_asr_unified_judge_01", "er078_asr_value_guard_01", "er078_pass_with_warning_registry_01",
+                 "er006_secondary_asr_01", "er007_ja_secondary_asr_01", "er019_family_x_validation_inheritance_01"):
+        assert need in reach, f"Production entrypointから到達しない: {need}"
+    for adapter in ("er006_secondary_asr_01", "er007_ja_secondary_asr_01"):
+        assert "er078_asr_unified_judge_01" in imports_of(os.path.join(ROOT, adapter + ".py")), adapter
+
+
+@_en_phase_only
+def test_post_wiring_j11_calls_unified_judge_and_never_calls_asr_api():
+    """J11(rejudge_with_current_judge)は統一judge(unified_judge)を呼ぶ。Primary再導出はclassify_asr_match(保存転写・API 0)のみで、
+    transcribe/Azure(Secondary)関数は呼ばない。"""
+    tree = _parse(os.path.join(ROOT, "er019_family_x_validation_inheritance_01.py"))
+    fn = next(n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef) and n.name == "rejudge_with_current_judge")
+    names = [_callee_name(c.func) for c in ast.walk(fn) if isinstance(c, ast.Call)]
+    assert any(n.endswith("unified_judge") for n in names), names
+    for forbidden in ("transcribe", "get_full_text_via_azure_stt_with_phrase_list", "_azure_stt_strict",
+                      "get_full_text_via_azure_stt_continuous"):
+        assert not any(n.endswith(forbidden) for n in names), (forbidden, names)
+
+
+@_en_phase_only
+def test_post_wiring_family_c_asr_is_diagnostic_only():
+    """Family C(legacy)のget_or_run_asrは採用判定に使われない: 判定系関数(evaluate_attempt*/classify*)を一切呼ばず、
+    戻り値はaudit asr_textと診断consistency行(match)にのみ入る。"""
+    path = os.path.join(ROOT, "er013_family_c_production_runner_01.py")
+    src = open(path, encoding="utf-8").read()
+    assert not re.search(r"\b(evaluate_attempt\w*|classify_asr_match|classify_ja_asr_match|unified_judge)\b", src)
+    tree = _parse(path)
+    # asr_verified / status(OK/STOPPED)をASR転写で決める代入が無い(asr_textはaudit_segments[...]["asr_text"]とconsistency行にのみ入る)
+    assert "asr_verified" not in src
 
 
 def test_judgement_points_j1_to_j10_present_in_inventory():

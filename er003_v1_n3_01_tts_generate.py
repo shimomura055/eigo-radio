@@ -655,11 +655,12 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
         length_ok = asr_text is not None and len(asr_text) <= max_len
         # ER-007-JA-ASR-VALIDATOR-REDESIGN-AND-CASCADE-01: 旧prefix
         # (substring)+phonetic方式から全文Validator+Cascade方式へ置き換える。
+        _aj = {}  # AUW 委任_04: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
         verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
             text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
-            expected_readings=expected_readings, length_ok=length_ok)
+            expected_readings=expected_readings, length_ok=length_ok, detail_out=_aj)
         verified = verified_content and length_ok
-        fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
+        fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
                                    "audio_classification": cls.classification,
                                    "reading_resolver_info": getattr(cls, "reading_resolver_info", None),
                                    # OPEN-258 SCG証跡(fallback attemptでも標準経路と同様にSCGが動く)
@@ -680,6 +681,7 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
         if verified:
             r["asr_verified"] = True
             r["asr_text"] = asr_text
+            r["asr_judgement"] = _aj.get("asr_judgement")  # AUW 委任_04(additive)
             r["audio_classification"] = cls.classification
             r["reading_resolver_info"] = getattr(cls, "reading_resolver_info", None)
             r["scg_info"] = getattr(cls, "scg_info", None)

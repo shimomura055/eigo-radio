@@ -513,11 +513,12 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
         # (数字/否定/内容語/固有名詞)による新Validatorを使う。固有名詞・
         # 略語らしき語のみの差はTTSを再生成せず、Cascade(Primary#2->
         # Secondary Azure#1->#2)で同じ音声のASRだけをやり直す。
+        _aj = {}  # AUW 委任_04: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
         verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
             text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
-            expected_readings=expected_readings, length_ok=length_ok)
+            expected_readings=expected_readings, length_ok=length_ok, detail_out=_aj)
         verified = verified_content and length_ok
-        attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
+        attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
                               "length_ok": length_ok, "audio_classification": cls.classification,
                               # OPEN-258 SCG証跡(TRUE_CONTENT_MISMATCH時のみ非None)
                               "scg_info": getattr(cls, "scg_info", None),
@@ -537,6 +538,7 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
             metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
             return {"status": "OK", "text": text, "path": out_path, "voice": CHARON,
                     "asr_verified": True, "asr_text": asr_text, "attempts_log": attempts_log,
+                    "asr_judgement": _aj.get("asr_judgement"),
                     "trim_info": trim_info, "clipping_detected": metrics["clipping_detected"],
                     "fallback_used": False, "tts_backend": tts_backend,
                     "model": flw.resolve_actual_model_name(p9a.JAPANESE_MODEL_NAME, tts_backend)}
@@ -561,11 +563,12 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
             continue
         asr_text, err2 = routing.transcribe(out_path, language="ja-JP")
         length_ok = asr_text is not None and len(asr_text) <= max_len
+        _aj = {}  # AUW 委任_04
         verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
             text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
-            expected_readings=expected_readings, length_ok=length_ok)
+            expected_readings=expected_readings, length_ok=length_ok, detail_out=_aj)
         verified = verified_content and length_ok
-        fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
+        fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
                                    "length_ok": length_ok, "audio_classification": cls.classification,
                                    "scg_info": getattr(cls, "scg_info", None),
                                    "verified": verified})
@@ -583,6 +586,7 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
         if verified:
             r["asr_verified"] = True
             r["asr_text"] = asr_text
+            r["asr_judgement"] = _aj.get("asr_judgement")  # AUW 委任_04(additive)
             r["fallback_used"] = True
             r["standard_attempts_log"] = attempts_log
             r["fallback_attempts_log"] = fallback_attempts

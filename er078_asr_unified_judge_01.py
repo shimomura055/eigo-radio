@@ -367,6 +367,12 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
             return done(NG_PROTECTED, "p1_value_diff")
         if pneg:
             return done(NG_PROTECTED, "p1_negation_diff")
+        # 委任_04(JA): 既存の保護差(JA SCGが従来から除外していた per-span 数字不一致[値ガードがUNKNOWN/NO_VALUESのとき]・
+        # per-span 否定不一致・fugashi否定マーカー差)を、呼出側(adapter)が signals["protected_diff"]=<理由> で渡す。
+        # DESIGN_01 §4-3 P1「JA否定マーカー差」/DESIGN_02_ADDENDUM_01 §1-5。値ガードDIFF/否定差と同じくSecondary不呼出。
+        _pd = (pr.signals or {}).get("protected_diff")
+        if _pd:
+            return done(NG_PROTECTED, f"p1_protected_diff:{_pd}")
         hit = _exclusion_hit(ctx, pr, lang)
         if hit:
             audit["exclusion_rule"] = hit
