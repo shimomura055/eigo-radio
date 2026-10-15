@@ -480,4 +480,6 @@ T-0: 委任文 `docs/pm/delegation_log/2026-10-16_ASR-TTS-UNIFIED-ALL-ROLES-PROD
 - 満たしていない材料: F4(C の JA 新規生成・reuse_from の meta)、F5/U4(ユーザー判断)、条件 11・12(merge)・13・15。
 
 ## 14-10. commit 後の確認
-(commit 後に追記)
+- commit: dbed081d1 (branch feat/auw-unified-asr-01、faa82fdf5..dbed081d1 push 済み、main 無変更)
+- `secret_scan_01 --staged`: hits=0 (79 files、`.wav` は .gitignore で対象外)
+- commit 前後で `er011_human_review_lock_01.py` の diff 0 行。有料 API: JPY 3.51(06e 単体)

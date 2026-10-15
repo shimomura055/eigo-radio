@@ -78,4 +78,6 @@ JPY 3.51(再実 run tstop/kp4/dlg_cap2 各 1 回、token 実測、`evidence_06e/
 - 委任_07 申し送り: (a) F4(C の JA 新規 TTS・reuse_from の meta 非複製)、(b) F5/U4(Secondary 障害のみの最終 STOPPED を Lock/LR より前に止めるか。ユーザー判断)、(c) Z entry に `asr_judgement_pre_slowdown` を載せるか、(d) narrator A2 外側ループの実音声 evidence、(e) 偽陽性側の reuse guard(06c(B))、(f) 既存 test が本番 attempt_history/telemetry へ追記する副作用の隔離。
 
 ## 9. commit 後の確認(06e)
-(commit 後に追記)
+- commit: dbed081d1 (branch feat/auw-unified-asr-01、faa82fdf5..dbed081d1 push 済み、main 無変更)
+- `secret_scan_01 --staged`: hits=0 (79 files、`.wav` は .gitignore で対象外)
+- commit 前後で `er011_human_review_lock_01.py` の diff 0 行。有料 API: JPY 3.51(06e 単体)
