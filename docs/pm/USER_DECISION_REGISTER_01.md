@@ -78,6 +78,14 @@
 | 59 | (Fable経由) **PM-AUTONOMOUS-PROJECT-OPERATING-MODEL-RESEARCH-01 運営モデル採否**(FINAL_REPORT_01 §8の7項目、U1〜U4含む: 案D採否とPhase 1着手/QCD床・天井/予算と合計ハード上限[U3]/バグ修正のシャドー運用と包括承認[U2]/Production Gate厳格化もユーザー判断[U1]/HR方針/CLAUDE.md PM層削除[U4]) | **USER_DECISION_REQUIRED**(Research完了・Opus条件A所見OF-209〜224反映済み。規則・Agent定義・SSOT・Productionは変更していない) | いいえ(他の生産作業はブロックしない) | `docs/research/PM-AUTONOMOUS-PROJECT-OPERATING-MODEL-RESEARCH-01/FINAL_REPORT_01.md` §8 |
 | 60 | (Fable経由) **KP gloss再整合工程(修正版corrected)のProduction採用**(KGDC VALIDATED後の採用判断、旧OPEN-356の採用位置づけUDR[Q1/Q2/Q3・既定ON/OFF・gate化・P3書換許容]の後継) | **判断済み**(2026-10-15採用。`APPROVED_FOR_PRODUCTION`、付随事項3件承認: 機械検査=記録のみ/HR通知先=報告書+run summary+stdout+STOP status[音声HR queue不使用]/規則15行型=選定段責務。採用対象=corrected、legacy撤去、Production既定ONへ) | いいえ(承認済みの配線作業。ただし`PRODUCTION_WIRED`宣言は10条件充足後、OPEN-359未解決でgloss不整合KPが流出しうるなら不可) | DECISION_LOG「KP-GLOSS-ALIGNMENT-CORRECTED-PRODUCTION-WIRING-01 委任_01」、OPEN-356/359、`er071_output/m2p0_n01_production_wiring_01/gloss_alignment_production_wiring_01/PRODUCTION_WIRING_DESIGN_01.md` |
 | 61 | (Fable経由) **KGCPW 委任_03で出たユーザー判断事項**: (a)Adv英語解説LLMのphraseがdisplay_phrase基準でglossと食い違う(OPEN-360、OF-KGCPW-18) (b)A/B/C等Legacy Familyへの共有Gate関所追加(OPEN-362、OF-KGCPW-10) (c)OPEN-359本体(b)冗長/記号NGのKPがXで完成へ進む・(c)放棄attemptのartifactがTTSへ進む(別承認) | **USER_DECISION_REQUIRED**(未決。`PRODUCTION_WIRED`判定[Fable委任_04]とは独立に提示可) | いいえ(他の生産作業はブロックしない。ただしOPEN-359未解決でXから不整合KP流出しうる点は`PRODUCTION_WIRED`判定で考慮) | OPEN-359/360/362、er071_output/m2p0_n01_production_wiring_01/gloss_alignment_production_wiring_01/VALIDATION_WIRING_03.md |
+| 62 | (Fable経由) **PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01 Day3〜4 ユーザー判断U1〜U6** | **判断済み**(2026-10-15: U1 Charter案A/U2 回数制不採用・QDC管理/U3 Agent役割案A/U3' 5条件付き既定OFF一般例外+違反時廃止/U4(a)(b)(c)承認/U5 量産費70円・日次1,000円を必須実装/U6 Open Item管理。実装=F2 `a342f7b52`・F1 `71baeb78f`。#59『運営モデル採否』のDay1〜Day2分はこの#62で判断済み、#59の残項目は別途) | いいえ(実装進行中。運営刷新全体は未完了、盲検リプレイ未実施) | DECISION_LOG『PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01 Day3〜4 ユーザー正式判断U1〜U6』、OPEN-363 |
+| 63 | (Fable経由) **U2-Q1: 11-4(自律3回・4回目以降毎回ユーザーGate)の取扱い**(A現行維持/B回数基準→QDC基準へ置換[推奨]/C回数拡大) | **USER_DECISION_REQUIRED**(非ブロッキング。回答まで11-4は逐語維持) | いいえ | `day3/U2_AUTONOMOUS_RESOLUTION_RULE_DESIGN_01.md` §3 U2-Q1、PM_GOVERNANCE 11-4/11-6、OPEN-363 |
+| 64 | (Fable経由) **U2-Q2: L3診断後のHuman Gate**(A当面維持[推奨]/B統合/C廃止) | **Deferred**(維持。盲検リプレイ後に再提示) | いいえ | 同書 §3 U2-Q2、OPEN-363 |
+| 65 | (Fable経由) **U3'-Q1: 潜在迂回路(未発火・未有効化)をSUSPENDED(失効ではない・安全停止してユーザー裁定)とするFable判断の確認**(ユーザー原文は『隔離が破られ承認前に発火または有効配線された場合』に廃止と定め、『SUSPENDED』はFableが追加した設計=ユーザー原文の解釈を含む) | **Deferred / Non-blocking**(確認推奨。実装済み、異議があれば11-7を修正) | いいえ | PM_GOVERNANCE 11-7、OF-D3-05、OPEN-365 |
+| 66 | (Fable経由) **U5-Q1/Q2: 70円のTTS判定=Production実経路で判定しBatch換算を併記(未配線表示)/1,000円/日の成文化と超過見込み=実行前承認** | **Deferred / Non-blocking**(確認推奨。実装済み[15-9/7-9]。7-4『量産=Batch前提』は不変) | いいえ | `day3/U5_COST_MANAGEMENT_DESIGN_01.md` §6、OF-D3-10、OPEN-366 |
+| 67 | (Fable経由) **U6: pre-commit secret scan hook** | **Deferred / Non-blocking**(ユーザー合意=Open Itemで継続管理。再質問しない) | いいえ | OPEN-364 |
+| 68 | (Fable経由) **STANDARD-KP-JA-TTS-STYLE-TRIAL-01: Std KP日本語意味のStyle候補P1〜P5(J3=現行比較)の試聴と採否** | **USER_DECISION_REQUIRED**(ユーザー試聴待ち。採用時はProduction変更=Opus条件C) | いいえ | OPEN-367、`er057_output/std_kp_ja_style_trial_01/TRIAL_REPORT_01.md`、試聴ページ https://shimomura055.github.io/eigo-radio/user_test/coffee_std_kp_ja_style_trial_01/index.html |
+| 69 | (Fable経由) **FAMILY-X-COFFEE-FINAL-SPEC-COMPLETENESS-AUDIT-01 監査(a)〜(d)**: (a)In One Lineの仕様の持ち方[A=CURRENT_SPEC:583準拠/B=2文方針を正式化/C=Coffeeのみ2〜3文+仕様化は後、推奨C] (b)是正範囲と順序の承認[1=A+B+C最大17ファイル(推奨)/2=IOLのみ先行/3=Trial扱いで記録] (c)Adv Comment1〜4の承認Style正本[E0維持かE2_UPBEAT相当、ユーザー試聴で決定] (d)Coffee原稿の正本[v5 Tone原稿維持の確認、既存UDR #4と重複] | **USER_DECISION_REQUIRED**(監査完了・STOP・ユーザー判断待ち。ユーザー報告済み2026-10-15) | いいえ(他の生産作業はブロックしない。Coffee再生成のみ待つ) | `er071_output/m2p0_n01_production_wiring_01/coffee_spec_completeness_audit_01/AUDIT_REPORT_01.md` §9(commit `8f8a43d1b`) |
 
 ## 区分別集計(2026-10-13更新・51件(#51追加: FAMILY-Z-PREVIEW-COMMENT1-DUAL-TRIAL-01)。#45を判断済み化[Strategy L維持・移行案REJECTED、FAMILY-Z-KP-STRATEGY-L-DECISION-CLOSEOUT-01]。#49・#50追加・#46判断済み化・#45はTrial承認済み/移行方式採用判断のみ未決[FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 委任_03]。#48追加[Comment参照条件Trial、USER_DECISION_REQUIRED]。#45〜#47追加[M2P0/N01 Production配線、USER_DECISION_REQUIRED]。#44追加[3 take比較、USER_DECISION_REQUIRED]。#43追加[分割Trial R1判断、USER_DECISION_REQUIRED]。#41はOpus条件A後にUSER_DECISION_REQUIRED化。#42追加[FAMILY-Z-STANDARD-PREVIEW-X-ALIGNMENT-01、USER_DECISION_REQUIRED]。#41追加[ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01、調査・Trial中]。#39・#40追加。#10は判断済みへ、#14と#23は判断保留へ、#36追加)
 
@@ -89,6 +97,16 @@
 | USER_DECISION_REQUIRED | 29 | 1, 4(暫定), 5, 7, 8, 9, 11, 12, 15, 18, 24〜33, 41, 42, 43, 44, 47, 48, 49, 50, 51 |
 | Deferred / Non-blocking | 5 | 6, 16, 20, 21, 22 |
 | 合計 | 55 | |
+
+### 2026-10-15追記集計(#56〜#69。上表は#55まで未更新のため、追記のみ。上表の数値は書き換えない)
+| 区分 | 件数 | 項目# |
+|---|---|---|
+| 判断済み | 3 | 58, 60, 62 |
+| 判断不要 | 1 | 57 |
+| USER_DECISION_REQUIRED | 6 | 56, 59, 61, 63, 68, 69 |
+| Deferred / Non-blocking | 4 | 64, 65, 66, 67 |
+| 合計 | 14 | |
+(上表の#1〜#55と合算した全件数は69件。ブロックするUDRは本追記に新規なし。)
 
 ## 「次工程をブロックするUDR」のみ(これだけを最優先で提示する)
 
