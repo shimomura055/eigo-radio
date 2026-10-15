@@ -36,6 +36,7 @@
 
 **追記索引(2026-10-16、AUW 統一ASR判定・全Section Production Wiring、委任_07 Closeout準備)**: `ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01`(ユーザー正式決定2026-10-15=`APPROVED_FOR_PRODUCTION`・branch `feat/auw-unified-asr-01`で実装済み・main merge待ち・`PRODUCTION_WIRED`未宣言)のユーザー原文の決定部分(逐語)・Fable採用の技術決定・Opus条件A/C所見の採否・費用実績・事故記録は本ファイル末尾`## ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01`節。
 **追記索引(2026-10-16、FAMILY-C-JA-TTS-PRODUCTION-FIX-01 委任_02)**: ユーザー承認済み既存Production不具合是正(Family C日本語TTSの言語経路欠落+reuse_from旧音声紐づけ)。実装・test・0円検査まで完了、有料evidenceは条件付きSTOP(b)で未実施。本文は本ファイル末尾「## FAMILY-C-JA-TTS-PRODUCTION-FIX-01(2026-10-16)」。
+**追記索引(2026-10-16、FAMILY-X-COFFEE-KP-EN-EXPLANATION-PACING-TRIAL-01 委任_01)**: Coffee Advanced KP英語解説の速度/ポーズ改善Trial(固定8 Prompt x 5本=40音声、Trial専用dir、Production不変、VALIDATED+採否はUSER_DECISION_REQUIRED=ユーザー試聴待ち)の結果は本ファイル末尾`### FAMILY-X-COFFEE-KP-EN-EXPLANATION-PACING-TRIAL-01(2026-10-16)`節。
 
 **履歴全文(直前の記録・その前の記録、以下さらに前の記録、合計12件、原文のまま移動): `DECISION_LOG_HISTORY.md`の`## ER-PM-001_CHAIN`節参照**
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
@@ -21590,3 +21591,12 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 - 結果: Run A(Production正式entry)でJA 5 clip(Comment1-3・japanese_title・preview_ja)がlanguage=jaで新規TTS成功・JA ASR PASS(Secondary 0)、Story 6 clip新規PASS、episode完走(audio_validation PASS、313.97秒)。Run B(Comment1の文面のみ変更、test fixture)は変更1 clipのみ再生成、他15 clip再利用。承認済み資産138 fileのsha256は実行前後完全一致。実費JPY 12.65(Run A 11.00+Run B 1.65、見積8超過・Guardrail14内)。
 - 逸脱: story_001のtts_text本文コロンが記号Gateで止まる(API 0)ため、隔離dirの複製記事で当該コロンのみカンマに変えたtest fixtureで実行(Gate迂回なし)。Memory記事の全面再実行不能の発見をOPEN-387に記録。
 - Status: `FIX_EVIDENCED_PENDING_FABLE`。`PRODUCTION_WIRED`ではない。証跡: `er079_output/family_c_ja_tts_production_fix_01/EVIDENCE_02.md`§6。
+
+### FAMILY-X-COFFEE-KP-EN-EXPLANATION-PACING-TRIAL-01(2026-10-16)
+- 根拠: ユーザー指示原文(2026-10-16、Fable受領) `docs/pm/delegation_log/2026-10-16_FAMILY-X-COFFEE-KP-EN-EXPLANATION-PACING-TRIAL-01_USER.md`。性質=Trial(Offline・Trial専用dir `er080_output/coffee_kp_en_explanation_pacing_trial_01/`)。到達上限=VALIDATED(Production反映禁止)。
+- 固定条件: Coffee Advancedのみ・Key Phrase英語解説(explanation_en)5本(現行Production正本 `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_m2p0_n01_01/b1b/audit/tts_generation_results.json` から逐語取得、変更なし)。Voice Aoede・model `gemini-3.8-flash-lite-tts`(現行Production同一)、Production leaf(`generate_key_phrase_explanation_en_verified`)をStyle文字列のみ差し替えて呼出。8案(P0現行/P1〜P7)はユーザー指定のまま固定、追加・改変なし。P0はProductionで実送信されるStyle(style profile P3、sha256 a8aaec59...)と完全一致を照合済み。
+- 結果: 40/40 clipが初回attemptでASR verified(NORMALIZED_MATCH、Secondary 0、HR 0)。TTS 40 call・失敗0・再試行0、推定実費約JPY 2.86(見積期待2.86、上限40)。数値上の傾向(5本平均、1 take、ノイズ幅±5 WPM・±1ポーズ目安): 文末無音は全候補ほぼ同一(0.22〜0.27s、trim余白由来)。文中ポーズ数/合計はP1(0.6回/0.14s)・P7(1.0回/0.16s)・P3(1.6回/0.22s)が少なく、P0は2.0回/0.33s、P4は2.4回/0.36sで増加方向。WPMはP7 159・P3 153・P1 150(P0 144)で上昇、P4 131が最遅。主観評価(速度・ポーズ・自然さ)は未実施でユーザー試聴待ち。
+- 試聴ページ: https://shimomura055.github.io/eigo-radio/user_test/coffee_kp_pacing_trial_01/ (正式配布経路=GitHub Pages)。証跡: `er080_output/coffee_kp_en_explanation_pacing_trial_01/TRIAL_REPORT_01.md`・`metrics.json`・`audit/`。
+- 逸脱: Production leaf内部が共有 `er011_output/attempt_history.jsonl` へ40行(theme_id=p0〜p7、segment_id=kp{1-5}_explanation_en)を追記(隔離の対象に入れ損ねた。追記のみ、既存行・Production記事の行は不変、自分では削除せず扱いはFable判断)。HR queue・semantic telemetry・pronunciation ledgerはTrial dir内へ隔離し共有fileへの書込なし。
+- Status: Trial=`VALIDATED`(比較成立)、採否=`USER_DECISION_REQUIRED`(ユーザー試聴待ち)。`PRODUCTION_WIRED`でも`APPROVED_FOR_PRODUCTION`でもない。
+- Trial結果はProduction採用ではない。Coffee現行Prompt/style profile不変。採用はユーザーのAPPROVED_FOR_PRODUCTION判断。
