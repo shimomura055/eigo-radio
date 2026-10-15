@@ -35,6 +35,7 @@
 **追記索引(2026-10-15、Std KP日本語Style Trial第2弾)**: `STANDARD-KP-JA-TTS-STYLE-TRIAL-02`委任_01(7 Style x 5 Phrase、新規25 call、JPY約1.05、Status USER_DECISION_REQUIRED[ユーザー試聴待ち]、Production無変更、OPEN-367)は本ファイル末尾`## STANDARD-KP-JA-TTS-STYLE-TRIAL-02 委任_01`節。
 
 **追記索引(2026-10-16、AUW 統一ASR判定・全Section Production Wiring、委任_07 Closeout準備)**: `ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01`(ユーザー正式決定2026-10-15=`APPROVED_FOR_PRODUCTION`・branch `feat/auw-unified-asr-01`で実装済み・main merge待ち・`PRODUCTION_WIRED`未宣言)のユーザー原文の決定部分(逐語)・Fable採用の技術決定・Opus条件A/C所見の採否・費用実績・事故記録は本ファイル末尾`## ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01`節。
+**追記索引(2026-10-16、FAMILY-C-JA-TTS-PRODUCTION-FIX-01 委任_02)**: ユーザー承認済み既存Production不具合是正(Family C日本語TTSの言語経路欠落+reuse_from旧音声紐づけ)。実装・test・0円検査まで完了、有料evidenceは条件付きSTOP(b)で未実施。本文は本ファイル末尾「## FAMILY-C-JA-TTS-PRODUCTION-FIX-01(2026-10-16)」。
 
 **履歴全文(直前の記録・その前の記録、以下さらに前の記録、合計12件、原文のまま移動): `DECISION_LOG_HISTORY.md`の`## ER-PM-001_CHAIN`節参照**
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
@@ -21574,3 +21575,12 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 **旧記述の注記(Dangling Reference Check、2026-10-16 委任_07。既存行は書換え・削除しない)**: 本ファイル内の次の記述は、撤去された旧機構[`_post_slowdown_cascade_rescue`/Primary#2/Secondary#2/4段尽き→`stop_retrying`+HR直行]を前提とする。**旧記述(2026-10-16 AUWで撤去済み、現行は統一judge)**。行番号は本追記前(委任_07開始時)の値で、冒頭の索引1行追記により実際は+2行ずれる: L8045・L8047・L9762・L20548(`stop_retrying`によるretry policy)/L8117(Secondary#1/#2)/L9547(Cascade1回一致の無条件PASS・中間ASR結果[Primary#2/Secondary#1/#2])/L20604・L20649・L20662・L20663・L20711(Family X Coffee final audio assembly: 減速後`_post_slowdown_cascade_rescue`・Primary#2/Secondary x2/Tier3)。これらは**当時の判断・観測の履歴としてそのまま有効**(その時点の実装の記録)。現行の仕様は`CURRENT_SPEC.md`「統一ASR判定仕様」節。対応表の全体=`er058_output/unified_all_roles_production_wiring_01/CLOSEOUT_PLAN_07.md`§3。
 
 - 2026-10-16 委任_08: ユーザーGo(#87)によりmain merge(`b010cb469`、`--no-ff`、squashなし、競合0)。merge後 中核12 file 411 passed/後方互換 53 passed/静的監査 15 passed(`unlisted_new_calls`/`vanished`/`count_changed`すべて空)/flag OFF経路(06c `-k test_g`) 3 passed/smoke dry-run(tstop・kp4・dlg_cap2・narr_cap3)すべて`stop_files_present: []`・`shared_state_unchanged: true`。U4は現行許容(A-6)。U1是正方針・U2調査はユーザー指示A-3/A-4に従い後続委任。`PRODUCTION_WIRED`未宣言。
+
+## FAMILY-C-JA-TTS-PRODUCTION-FIX-01(2026-10-16)
+
+管理ID: `FAMILY-C-JA-TTS-PRODUCTION-FIX-01`。性質: ユーザー2026-10-16指示B(既存Production不具合の是正承認)。ユーザー承認原文の位置: `docs/pm/delegation_log/2026-10-16_FAMILY-C-JA-TTS-PRODUCTION-FIX-01_01.md:19-57`(全文`docs/pm/delegation_log/2026-10-16_AUW-FAMILY-C-DQI-USER-INSTRUCTION.md`)。AUWの統一ASRとは別件。Legacy Family Cへの例外的是正(新機能・新Voice・品質基準・Comment内容仕様の変更なし)。
+- 不具合2系統: (1)`tts_call_for_voice`がnarratorを`"en"`固定で呼び、JA Comment/japanese_title/preview_jaを新規生成できない(06d実測: 長さ見積5.50秒=en扱いで16秒のJA音声を破棄)。(2)`reuse_from`が同名wavの存在のみで再利用し、`.ok.meta.json`非複製+legacy分岐により原稿変更後も旧音声が紐づく(`--only-segments`でも復活)。
+- 是正(`er013_family_c_production_runner_01.py`のみ): `language`引数(既定"en")をnarratorへ伝達しJA SectionはJA(Voice=Aoede既存)、非narratorでen以外は即RuntimeError。`reuse_provenance_check`/`adopt_from_reuse_source`でreuse_fromを由来照合(正規meta、またはauditの`reused`偽entry、いずれもtext/wav sha256一致)、照合通過時は既存dstを全削除して再コピー+metaを自書、新規TTS前に`.ok`/meta削除、`--only-segments comment_N`でreuse_fromから旧wavを復活させない。詳細`er079_output/family_c_ja_tts_production_fix_01/IMPLEMENTATION_02.md`。
+- Opus条件A(2026-10-16)指摘FCJ-01〜11: Fable全件採用、本委任で反映(対応表`IMPLEMENTATION_02.md`、原文`er079_output/family_c_ja_tts_production_fix_01/OPUS_REVIEW_A_01_VERBATIM.md`、台帳`docs/pm/OPUS_FINDINGS_LEDGER.md` OF-FCJ-01〜11)。INVESTIGATION 5-4の「cool-down適用」は誤りと訂正(FCJ-05)。
+- evidence結果(`er079_output/family_c_ja_tts_production_fix_01/EVIDENCE_02.md`): 新規test 21+既存39=60 passed、静的監査・06d/06c/05=113 passed・監査差分空。記号Gate事前検査 5文面0件。reuse plan dry-run/Run C'(API 0): ユーザー試聴承認済みTrial-11 Memory A2(`CURRENT_SPEC.md:1049-1050,1129-1130`)をreuse_fromとすると16clip中9clip(Story 6+Comment 3)が由来不明で再生成対象(Trial-11 auditは`reused:true`・meta無しで、リポジトリ内に新規生成記録が存在しない)。**条件付きSTOP(b)に該当、有料Run A/B未実施**(費用JPY0)。
+- Status: `FIX_IMPLEMENTED_EVIDENCE_PENDING_FABLE`(実装済み・有料evidence未取得)。`PRODUCTION_WIRED`ではない。Family C全体のStatusは`APPROVED_FOR_PRODUCTION / WIRING_INCOMPLETE`のまま不変。後続判断: 承認済み資産の扱い(sha固定のユーザー承認済み資産マニフェスト案を推奨)をFable判断→必要ならユーザー確認。

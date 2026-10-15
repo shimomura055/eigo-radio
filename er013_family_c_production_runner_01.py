@@ -312,6 +312,104 @@ def _copy_with_ok(src: str, dst: str) -> None:
             f.write("ok")
 
 
+def _read_json_or_none(path: str):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return None
+
+
+def reuse_provenance_check(reuse_from: str, name: str, expected_text_sha256: str) -> dict:
+    """FAMILY-C-JA-TTS-PRODUCTION-FIX-01(2026-10-16): reuse_from先の同名wavが「現行textのために生成された音声」で
+    あることを副作用なし(読取のみ)で照合する。ok=Trueの場合のみ呼出側は再利用してよい。
+    由来証拠として認めるもの: (1)src側`.ok.meta.json`(upgraded_from_legacy_okでなく、tts_text_sha256==現行text sha256
+    かつ記録wav_sha256==src実測)、(2)src側meta無し/legacyの場合のみ`audit/tts_generation_results.json`の新規生成記録
+    (reusedが偽、sha256(canonical_text)==現行text sha256、記録sha256==src実測)。
+    認めないもの: upgraded_from_legacy_ok:trueのmeta(自己参照になる)、reused真のaudit entry、名前のみの一致。"""
+    stem = name.removesuffix(".wav")
+    src = f"{reuse_from}/audio/{name}"
+    res = {"ok": False, "basis": None, "reason": None, "src_exists": os.path.exists(src), "src_meta_kind": "none",
+           "audit_reused": None, "src_wav_sha256": None, "stem": stem}
+    if not res["src_exists"]:
+        res["reason"] = "src_wav_missing"
+        return res
+    src_sha = p9a.sha256_file(src)
+    res["src_wav_sha256"] = src_sha
+    meta = _read_json_or_none(_ok_meta_path(src)) if os.path.exists(_ok_meta_path(src)) else None
+    if meta is not None:
+        if meta.get("upgraded_from_legacy_ok"):
+            res["src_meta_kind"] = "legacy_upgraded"
+        else:
+            res["src_meta_kind"] = "regular"
+            if meta.get("tts_text_sha256") != expected_text_sha256:
+                res["reason"] = "src_meta_text_sha256_mismatch"
+                return res
+            if meta.get("wav_sha256") != src_sha:
+                res["reason"] = "src_meta_wav_sha256_mismatch"
+                return res
+            res.update(ok=True, basis="src_meta", reason="src_meta_text_and_wav_sha256_match")
+            return res
+    audit = _read_json_or_none(f"{reuse_from}/audit/tts_generation_results.json") or {}
+    entry = (audit.get("segments") or {}).get(stem)
+    if entry is None:
+        res["reason"] = "no_provenance_evidence"
+        return res
+    res["audit_reused"] = bool(entry.get("reused"))
+    if entry.get("reused"):
+        res["reason"] = "audit_entry_is_reuse_record_not_fresh_generation"
+        return res
+    if entry.get("status") != "OK" or not entry.get("canonical_text"):
+        res["reason"] = "audit_entry_not_ok_or_no_text"
+        return res
+    if _sha256_text(entry["canonical_text"]) != expected_text_sha256:
+        res["reason"] = "audit_text_sha256_mismatch"
+        return res
+    if entry.get("sha256") != src_sha:
+        res["reason"] = "audit_wav_sha256_mismatch"
+        return res
+    res.update(ok=True, basis="audit_fresh_generation", reason="audit_fresh_generation_text_and_wav_sha256_match")
+    return res
+
+
+def adopt_from_reuse_source(reuse_from: str, name: str, out_path: str, expected_text_sha256: str,
+                            canonical_text: str) -> dict | None:
+    """reuse_fromからの採用。由来照合(reuse_provenance_check)を通った場合のみ、dstの既存wav/.ok/.ok.meta.jsonを
+    先に全削除してからsrc wavをコピーし、metaを本関数自身が書く(legacy分岐・`_copy_with_ok`の上書きしない挙動に乗せない)。
+    通らなければNone(呼出側が新規TTS)。"""
+    chk = reuse_provenance_check(reuse_from, name, expected_text_sha256)
+    if not chk["ok"]:
+        return None
+    src = f"{reuse_from}/audio/{name}"
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    for suffix in ("", ".ok", ".ok.meta.json"):
+        if os.path.exists(out_path + suffix):
+            os.remove(out_path + suffix)
+    shutil.copyfile(src, out_path)
+    wav_sha = p9a.sha256_file(out_path)
+    if wav_sha != chk["src_wav_sha256"]:
+        os.remove(out_path)
+        return None
+    meta = {"tts_text_sha256": expected_text_sha256, "wav_sha256": wav_sha,
+            "reuse_from_source": src.replace(chr(92), "/"), "provenance_basis": chk["basis"]}
+    if chk["basis"] == "src_meta":
+        src_meta = _read_json_or_none(_ok_meta_path(src)) or {}
+        if src_meta.get("asr_judgement") is not None:
+            meta["asr_judgement"] = src_meta["asr_judgement"]   # PASS_WITH_WARNING等の元recordを継承(試聴リスト維持)
+    with open(out_path + ".ok", "w", encoding="utf-8") as f:
+        f.write("ok")
+    with open(_ok_meta_path(out_path), "w", encoding="utf-8") as f:
+        json.dump(meta, f, ensure_ascii=False, indent=2)
+    return resumable_reuse(out_path, expected_text_sha256, canonical_text)
+
+
+def clear_ok_markers(out_path: str) -> None:
+    """新規TTS呼出前に`.ok`と`.ok.meta.json`を削除する(失敗attempt wavと古い`.ok`の同居による無条件再利用を防ぐ)。"""
+    for suffix in (".ok", ".ok.meta.json"):
+        if os.path.exists(out_path + suffix):
+            os.remove(out_path + suffix)
+
+
 def purge_segment_outputs(audio_dir: str, seg_id: str) -> None:
     """`--only-segments`regeneration: 指定segmentのwav/.ok/meta/debugのみ
     削除し、再TTSを強制する(他segmentのresumeには影響しない)。"""
@@ -372,22 +470,28 @@ def mark_ok(r: dict, out_path: str, text_sha256: str) -> None:
 
 
 def tts_call_for_voice(voice: str, text: str, out_path: str, label: str, budget: BudgetTracker,
-                        voice_tts_names: dict) -> dict:
+                        voice_tts_names: dict, language: str = "en") -> dict:
     """既存Production TTS関数への唯一の分岐点(retry/fallback cascadeは
     各関数の内部実装にすでに内包されている、Trial-11/12でVALIDATED済みの
     呼び出しパターンをそのまま踏襲): narrator=verified_strict(標準複数
     attempt cascade)、device=Charon固定voice、その他はvoice_tts_names
     (article_config)で指定されたvoice_nameでgenerate_voice_body_wide_margin
-    (内部に独自のASR検証+attempt cascadeを持つ)を呼ぶ。"""
+    (内部に独自のASR検証+attempt cascadeを持つ)を呼ぶ。
+    FAMILY-C-JA-TTS-PRODUCTION-FIX-01: `language`("en"既定/"ja")はnarratorのみ対応。非narrator voiceで"en"以外は
+    黙った英語化を防ぐため即RuntimeError(budget.check_beforeより前)。"""
+    if voice != "narrator" and language != "en":
+        raise RuntimeError(f"NON_EN_LANGUAGE_NOT_SUPPORTED_FOR_VOICE: voice={voice!r}, language={language!r}"
+                           "(narrator以外は英語のみ。日本語は narrator の verified_strict 経路)")
     budget.check_before(TTS_CALL_EST_JPY, label)
     if secondary_run_scope.circuit_open():
         # 委任_06c(OF-AUW-C-06): Secondary連続障害のcircuit open中は残りclipのTTSを呼ばず技術STOP(承認不要・再実行で再開可・HR Lock非投入)。
         # 呼出側は status!=OK で RuntimeError(..._TTS_FAILED)を出してstageを止める。`.ok` markerはresume用に完了clip分が残る。
         return secondary_run_scope.technical_stop_entry(label)
+    clear_ok_markers(out_path)   # FCJ R3: 新規TTS前に古い.ok/.ok.metaを除去(失敗wav+古い.okの同居による無条件再利用防止)
     if voice == "narrator":
         expected_substring = text[:20]
-        r = repro01.generate_narration_snippet_verified_strict(text, "en", out_path, expected_substring)
-        budget.add(label, "tts", 1, TTS_CALL_EST_JPY, {"status": r.get("status"), "language": "en",
+        r = repro01.generate_narration_snippet_verified_strict(text, language, out_path, expected_substring)
+        budget.add(label, "tts", 1, TTS_CALL_EST_JPY, {"status": r.get("status"), "language": language,
                                                         "fn": "generate_narration_snippet_verified_strict"})
         return r
     if voice == "device":
@@ -491,13 +595,10 @@ def run_simple_narrator_asset(name: str, text: str, language: str, out_dir: str,
     text_sha = _sha256_text(text)
     reused = resumable_reuse(out_path, text_sha, text) if resume else None
     if reused is None and reuse_from:
-        src = f"{reuse_from}/audio/{name}"
-        if os.path.exists(src):
-            _copy_with_ok(src, out_path)
-            reused = resumable_reuse(out_path, text_sha, text)
+        reused = adopt_from_reuse_source(reuse_from, name, out_path, text_sha, text)
     if reused is not None:
         return reused, True
-    r = tts_call_for_voice("narrator", text, out_path, name.removesuffix(".wav"), budget, {})
+    r = tts_call_for_voice("narrator", text, out_path, name.removesuffix(".wav"), budget, {}, language=language)
     mark_ok(r, out_path, text_sha)
     if r.get("status") != "OK":
         raise RuntimeError(f"SIMPLE_ASSET_TTS_FAILED({name}): {r}")
@@ -629,16 +730,14 @@ def run_comments_stage_a2(level_cfg: dict, out_dir: str, audio_dir: str, article
         out_path = f"{audio_dir}/{name}"
         text_sha = _sha256_text(text)
         reused = resumable_reuse(out_path, text_sha, text) if resume else None
-        if reused is None and reuse_from:
-            src = f"{reuse_from}/audio/{name}"
-            if os.path.exists(src):
-                _copy_with_ok(src, out_path)
-                reused = resumable_reuse(out_path, text_sha, text)
+        forced_n = (f"comment_{n}" in only_segments) or (f"comment_{n}_ja" in only_segments)
+        if reused is None and reuse_from and not forced_n:
+            reused = adopt_from_reuse_source(reuse_from, name, out_path, text_sha, text)
         if reused is not None:
             r = reused
             was_resumed = True
         else:
-            r = tts_call_for_voice("narrator", text, out_path, f"comment_{n}_ja", budget, {})
+            r = tts_call_for_voice("narrator", text, out_path, f"comment_{n}_ja", budget, {}, language="ja")
             mark_ok(r, out_path, text_sha)
             if r.get("status") != "OK":
                 raise RuntimeError(f"COMMENT_TTS_FAILED(comment_{n}): {r}")
@@ -718,10 +817,7 @@ def run_full_generation(config: dict, level: str, out_root: str, budget_jpy: flo
         force_regen = seg["id"] in only_segments_set
         reused = None if force_regen else (resumable_reuse(out_path, text_sha, seg["tts_text"]) if resume else None)
         if reused is None and reuse_from and not force_regen:
-            src = f"{reuse_from}/audio/{seg['id']}.wav"
-            if os.path.exists(src):
-                _copy_with_ok(src, out_path)
-                reused = resumable_reuse(out_path, text_sha, seg["tts_text"])
+            reused = adopt_from_reuse_source(reuse_from, f"{seg['id']}.wav", out_path, text_sha, seg["tts_text"])
         if reused is not None:
             r = reused
             was_resumed = True

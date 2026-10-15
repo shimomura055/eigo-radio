@@ -513,3 +513,6 @@ T-0: 委任文 `docs/pm/delegation_log/2026-10-16_ASR-TTS-UNIFIED-ALL-ROLES-PROD
 - 注: 期待観測の「減速後 NG」は統一 judge の `NG_BOTH`(Primary・Secondary とも不一致)として記録された。委任_07 の想定と矛盾なし。
 - 費用: 本 run 約 JPY 0.72(ledger 0.573→1.2935、委任_07 + 07b 合計 約 1.29、委任 07b 上限 3 内)。
 - 結果: 15-1 の「未完」は解消。narrator `generate_a2_segment_with_slowdown` の通算 3 回→HR 末端を実音声で確認。
+
+
+**注記(2026-10-16 FCJ 委任_02、Dangling Reference Check。既存行は書換えない)**: 本ファイルL370付近の「C runnerから統一ASR判定に到達しない」「JA新規TTS不能(en固定)」は、FAMILY-C-JA-TTS-PRODUCTION-FIX-01で言語経路を修正した後は、C runnerからJA Section(Comment・japanese_title・preview_ja)でも`generate_narration_snippet_verified_strict(...,"ja")`経由の統一判定に到達する設計になった(test/0円検査まで。**有料の実音声evidenceは条件付きSTOP(b)で未取得**。`er079_output/family_c_ja_tts_production_fix_01/EVIDENCE_02.md`)。reuse_from旧音声紐づけも由来照合で是正済み。
