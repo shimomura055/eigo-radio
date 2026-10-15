@@ -17,7 +17,10 @@
 
 archive展開で除外したもの: `*.mp3 *.wav *.png *.m4a *.mp4 *.ogg *.zip`(容量1.67GB→約0.74GB。被験に不要な音声・画像)。運営刷新の検討資料(`docs/research/PM-AUTONOMOUS-*`)は両パッケージから除去(検証自体を示唆するため)。
 
-## 2. 起動手順(ユーザーまたはFableが実行。本委任では起動していない)
+## 2. 起動手順(2026-10-15ユーザー正式決定①により改定: 原則Fableが隔離環境から自律起動、Opusが独立採点、ユーザーのPowerShell操作・新規セッション起動は原則要求しない)
+役割: Fable=安全確認・被験セッションの起動と管理・結果収集・採点依頼・最終受入評価 / 被験セッション=新運営ルールに従い課題へ対応 / Opus=事前定義済み基準(R1〜R10)で独立採点。
+**起動前の事前確認7項目**(未確認なら起動しない。権限不足・環境制約を理由に直ちにユーザー手作業へ戻さず、まず自律的に解決可能な方法を調査する。`claude -p`で必要な検証委任ができない場合は、対話セッションの自律起動等、実運用に近い代替方法を検討する。既存の安全Gate・承認Gateは迂回しない): (1)`claude -p`等の実際の起動可否 (2)Fable/Sonnet/Opusの実際のモデル・ルーティング (3)課金経路と費用上限 (4)ツール権限・委任機能の動作 (5)被験者と採点者の独立性 (6)期待値・採点基準の漏洩がないこと (7)元のProduction Repoや秘密情報へアクセスできないこと。
+以下の手順1〜5は従来の手順であり、実行主体は原則Fable(Sonnetへの委任を含む)とする。
 1. 隔離確認のみ(起動しない): PowerShellで `C:\Users\tensh\eigo-radio-replay\runbook\RUN_SESSION.ps1 -Case defect -CheckOnly`(`-Case negative` / `-Case synthetic -Scenario SC-C1`も同様)。NGなら起動しない。
 2. 対話起動(推奨): `.\RUN_SESSION.ps1 -Case defect`。環境変数のAPIキーを全て空にし、`GIT_CEILING_DIRECTORIES`を設定し、作業dirへ`cd`して`claude --agent sandwich-pm --settings runbook\subject_settings.json`を起動する。起動後、`runbook\TASK_DEFECT_CASE.md`の内容**だけ**を貼る(説明・ヒント・採点基準は与えない)。
 3. 非対話起動(任意): `.\RUN_SESSION.ps1 -Case defect -Print`。`claude -p --agent sandwich-pm --allowedTools Read Grep Glob Agent --output-format stream-json --verbose`で起動し、出力を`runbook\out_*.jsonl`へ保存。

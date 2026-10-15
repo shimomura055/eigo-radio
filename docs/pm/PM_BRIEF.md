@@ -219,6 +219,11 @@ Fableは全委任文を`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`に
   管理し、結果が不十分なら原因と証拠を評価して再委任、同じ方法で改善が見込め
   なければ別アプローチへ再計画する(詳細は`docs/pm/PM_GOVERNANCE.md` 11-6)。
   1回で足りれば1回で止める
+- 11-4(Opus/Fable改善ループ)の固定回数制限(自律3回・4回目以降毎回ユーザー
+  Gate)も2026-10-15ユーザー決定②で撤廃済み。判断は11-6のQDC基準(委任回数
+  だけを理由にUSER_DECISION_REQUIREDへ移行しない)。L3診断後Human Gate・
+  構造的問題のSTOP条件・予算/仕様採用/Production採用/安全STOP/Human Review
+  等の既存Gateは維持
 - Opusの難問診断は1管理IDあたり最大1回まで。診断の後、Sonnetを自動的に
   再実行しない(従来どおり)
 - Opusの必須レビュー(11-3節条件A〜D、11-2節必須)は回数上限の対象外。
