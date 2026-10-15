@@ -1,0 +1,283 @@
+{
+  "phase": "pre_wiring",
+  "managed_id": "ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01",
+  "generated_by": "delegation_02b",
+  "entrypoints": [
+    "er019_family_x_audio_production_runner_01.py",
+    "er063_family_z_audio_01.py",
+    "er026_family_z_fiction_production_runner_01.py",
+    "er012_b_family_voices_a2_production_01.py",
+    "er012_b_family_voices_production_01.py",
+    "er013_family_c_production_runner_01.py",
+    "er012_e_family_entertainment_two_level_runner_01.py",
+    "er003_v1_n3_01_tts_generate.py"
+  ],
+  "callee_pattern": "^(transcribe|classify_asr_match|classify_ja_asr_match|evaluate_attempt\\w*)$",
+  "entry_count": 33,
+  "entries": [
+    {
+      "module": "er003_v1_crosslevel_audio_02_common",
+      "function": "_run_a2_minimal_fallback_attempt",
+      "callee": "routing.transcribe",
+      "count": 1,
+      "judgement_point": "J3",
+      "reason": "判定点J3: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_crosslevel_audio_02_common",
+      "function": "_run_a2_minimal_fallback_attempt",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade",
+      "count": 1,
+      "judgement_point": "J3",
+      "reason": "判定点J3: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_n3_01_tts_generate",
+      "function": "_post_slowdown_cascade_rescue",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade_detail",
+      "count": 1,
+      "judgement_point": "J7",
+      "reason": "判定点J7: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_n3_01_tts_generate",
+      "function": "apply_a2_slowdown_postprocess",
+      "callee": "en_validator.classify_asr_match",
+      "count": 1,
+      "judgement_point": "J7",
+      "reason": "判定点J7: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_n3_01_tts_generate",
+      "function": "apply_a2_slowdown_postprocess",
+      "callee": "routing.transcribe",
+      "count": 1,
+      "judgement_point": "J7",
+      "reason": "判定点J7: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_n3_01_tts_generate",
+      "function": "generate_a2_japanese_with_fallback",
+      "callee": "ja_secondary.evaluate_attempt_ja_with_cascade",
+      "count": 1,
+      "judgement_point": "J8",
+      "reason": "判定点J8: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_n3_01_tts_generate",
+      "function": "generate_a2_japanese_with_fallback",
+      "callee": "routing.transcribe",
+      "count": 1,
+      "judgement_point": "J8",
+      "reason": "判定点J8: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_repro01_main_generate",
+      "function": "generate_narration_snippet_verified_strict",
+      "callee": "ja_secondary.evaluate_attempt_ja_with_cascade",
+      "count": 1,
+      "judgement_point": "J5",
+      "reason": "判定点J5: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_repro01_main_generate",
+      "function": "generate_narration_snippet_verified_strict",
+      "callee": "routing.transcribe",
+      "count": 1,
+      "judgement_point": "J5",
+      "reason": "判定点J5: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_repro01_main_generate",
+      "function": "generate_narration_snippet_verified_strict",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade",
+      "count": 1,
+      "judgement_point": "J5",
+      "reason": "判定点J5: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_sing01_news_tail_fix",
+      "function": "generate_news_narration_wide_margin",
+      "callee": "routing.transcribe",
+      "count": 1,
+      "judgement_point": "J2",
+      "reason": "判定点J2: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_sing01_news_tail_fix",
+      "function": "generate_news_narration_wide_margin",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade",
+      "count": 1,
+      "judgement_point": "J2",
+      "reason": "判定点J2: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_sing01_point_headings_aoede",
+      "function": "generate",
+      "callee": "routing.transcribe",
+      "count": 1,
+      "judgement_point": "J6",
+      "reason": "判定点J6: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_sing01_point_headings_aoede",
+      "function": "generate",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade",
+      "count": 1,
+      "judgement_point": "J6",
+      "reason": "判定点J6: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_sing01_voice01_generate",
+      "function": "generate_charon_english",
+      "callee": "routing.transcribe",
+      "count": 1,
+      "judgement_point": "J1",
+      "reason": "判定点J1: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_sing01_voice01_generate",
+      "function": "generate_charon_english",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade",
+      "count": 1,
+      "judgement_point": "J1",
+      "reason": "判定点J1: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_sing01_voice01_generate",
+      "function": "generate_charon_japanese",
+      "callee": "ja_secondary.evaluate_attempt_ja_with_cascade",
+      "count": 2,
+      "judgement_point": "J9,J10",
+      "reason": "判定点J9,J10: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er003_v1_sing01_voice01_generate",
+      "function": "generate_charon_japanese",
+      "callee": "routing.transcribe",
+      "count": 2,
+      "judgement_point": "J9,J10",
+      "reason": "判定点J9,J10: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er006_preprod_hardening_01_validation",
+      "function": "aggregate_entity_only_phonetic_corroboration",
+      "callee": "classify_asr_match",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "EN検証ライブラリ内部の呼出(classify_asr_match/evaluate_attempt。既存Primary側P-chain)。adapter化の対象外・値ガード接続点"
+    },
+    {
+      "module": "er006_preprod_hardening_01_validation",
+      "function": "evaluate_attempt",
+      "callee": "classify_asr_match",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "EN検証ライブラリ内部の呼出(classify_asr_match/evaluate_attempt。既存Primary側P-chain)。adapter化の対象外・値ガード接続点"
+    },
+    {
+      "module": "er006_secondary_asr_01",
+      "function": "evaluate_attempt_with_cascade",
+      "callee": "evaluate_attempt_with_cascade_detail",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
+    },
+    {
+      "module": "er006_secondary_asr_01",
+      "function": "evaluate_attempt_with_cascade_detail",
+      "callee": "routing.transcribe",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
+    },
+    {
+      "module": "er006_secondary_asr_01",
+      "function": "evaluate_attempt_with_cascade_detail",
+      "callee": "val.classify_asr_match",
+      "count": 5,
+      "judgement_point": "",
+      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
+    },
+    {
+      "module": "er006_secondary_asr_01",
+      "function": "evaluate_attempt_with_cascade_detail",
+      "callee": "val.evaluate_attempt",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
+    },
+    {
+      "module": "er007_ja_secondary_asr_01",
+      "function": "_run_scg_secondary_confirm",
+      "callee": "javal.classify_ja_asr_match",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
+    },
+    {
+      "module": "er007_ja_secondary_asr_01",
+      "function": "evaluate_attempt_ja_with_cascade",
+      "callee": "evaluate_attempt_ja_with_cascade_detail",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
+    },
+    {
+      "module": "er007_ja_secondary_asr_01",
+      "function": "evaluate_attempt_ja_with_cascade_detail",
+      "callee": "javal.classify_ja_asr_match",
+      "count": 4,
+      "judgement_point": "",
+      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
+    },
+    {
+      "module": "er008_disfluency_qa_18",
+      "function": "transcribe_verbatim",
+      "callee": "model.transcribe",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "Safety QA用の転写(disfluency/repetition)。内容一致の判定点ではない=統一judge対象外(最後にANDされる既存構造は不変)"
+    },
+    {
+      "module": "er011_open121_repetition_qa_production_01",
+      "function": "run_method_c_v2_window_check",
+      "callee": "asr_routing.transcribe",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "Safety QA用の転写(disfluency/repetition)。内容一致の判定点ではない=統一judge対象外(最後にANDされる既存構造は不変)"
+    },
+    {
+      "module": "er012_b_family_voices_production_01",
+      "function": "generate_voice_body_wide_margin",
+      "callee": "asr_routing.transcribe",
+      "count": 1,
+      "judgement_point": "J4",
+      "reason": "判定点J4: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er012_b_family_voices_production_01",
+      "function": "generate_voice_body_wide_margin",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade",
+      "count": 1,
+      "judgement_point": "J4",
+      "reason": "判定点J4: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    },
+    {
+      "module": "er013_family_c_production_runner_01",
+      "function": "get_or_run_asr",
+      "callee": "asr_routing.transcribe",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "Family C(legacy)の診断用ASR(get_or_run_asr)。DESIGN J1-J11に未列挙。委任_04で採用判定に使われていないことを確認すること(未確認)"
+    },
+    {
+      "module": "er019_family_x_validation_inheritance_01",
+      "function": "rejudge_with_current_judge",
+      "callee": "en_validator.classify_asr_match",
+      "count": 1,
+      "judgement_point": "J11",
+      "reason": "判定点J11: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+    }
+  ]
+}
