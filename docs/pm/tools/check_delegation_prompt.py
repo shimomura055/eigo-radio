@@ -359,6 +359,15 @@ def run_check(text: str) -> dict:
             "言及が見つからない(Opus指摘が関係する委任のみ必須、PM_GOVERNANCE.md 11-5)"
         )
 
+    # OF-D3-02(e)(2026-10-15、PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01): 再委任・
+    # 再計画の性質欄にQDC記録が無い場合のWARN(PASS/FAILには影響しない)
+    nature_text = find_section_text(text, "性質") or ""
+    if re.search(r"委任_0[2-9]|修正|再委任|再計画", nature_text) and "QDC記録" not in text:
+        warnings.append(
+            "性質欄が再委任・再計画・修正を示すが「QDC記録」が見つからない"
+            "(前委任のQDC記録を冒頭に記す、PM_GOVERNANCE.md 11-6)"
+        )
+
     status = "PASS" if not reasons else "FAIL"
 
     return {

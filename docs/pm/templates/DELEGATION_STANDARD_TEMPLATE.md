@@ -23,7 +23,16 @@ APPROVED_FOR_PRODUCTION/PRODUCTION_WIRED/USER_DECISION_REQUIRED等]、
 無いもの)は使用しない。**Opus独立技術レビューGate(`docs/pm/PM_GOVERNANCE.md`
 11-3節、2026-10-02)の該当判定[条件A/B/C/D/非該当]を1行で記す。**
 **主要タスクでは時間見込み[全体・工程別]と並列化判断[並列実行する作業/
-直列化する場合の理由]を1〜2行で記す[PM_GOVERNANCE 8-X、2026-10-06]。**)
+直列化する場合の理由]を1〜2行で記す[PM_GOVERNANCE 8-X、2026-10-06]。**
+**再委任・再計画の委任では、前委任のQDC記録[目的/試行/原因仮説と証拠/結果/
+改善見込み/費用/次の一手]と受入記録[Gate 7、sandwich-pm.md手順4-2。判定・
+照合した証拠(ファイル:行と観測値)・目的との適合]を1ブロックで冒頭に記す
+[PM_GOVERNANCE 11-6]。**
+**費用/日次: 当日(JST)既使用JPY<y>(出典: RESULT_PACKET|LEDGER|script)/
+残JPY<1,000-y>/本委任見積JPY<e>(根拠: call数×単価、上限=Guardrail)/
+改善見込み<高|中|低>(11-6)/承認区分: <A:Fable判断可|B:ユーザー承認要|
+C:承認済みscope内>。JPY0の委任は「JPY0」のみでよい[PM_GOVERNANCE 7-9、
+2026-10-15]。T-3の定型文はこの行と別に維持する。**)
 
 ## 固定ブロック(E-1/D-1/G-1/F-1/T-0/T-1/T-2/T-3)
 
@@ -112,3 +121,6 @@ import実行される事故防止(CONSOLIDATION-124)。)
 - [ ] 並行タスク衝突回避あり
 - [ ] Opus独立技術レビューGate(PM_GOVERNANCE 11-3)の該当判定[A/B/C/D/非該当]あり
 - [ ] 時間見込み・並列化判断あり(主要タスク、PM_GOVERNANCE 8-X)
+- [ ] 再委任の場合: 前委任のQDC記録(改善見込み・当日費用残・次の一手)あり(PM_GOVERNANCE 11-6)
+- [ ] 前委任の受入記録(Gate 7、判定・証拠・目的との適合)を冒頭に記載
+- [ ] 費用/日次の行あり(当日既使用・残・見積、JPY0は「JPY0」のみ可、PM_GOVERNANCE 7-9)

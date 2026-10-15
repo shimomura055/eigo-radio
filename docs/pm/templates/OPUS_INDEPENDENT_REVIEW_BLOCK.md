@@ -1,6 +1,7 @@
 # OPUS_INDEPENDENT_REVIEW_BLOCK(Opus独立技術レビュー依頼への固定貼付ブロック)
 
 管理ID: PM-OPUS-INDEPENDENT-TECH-REVIEW-GATE-2026-10-02(2026-10-02ユーザー決定)。
+改訂記録: 2026-10-15 観点11へ注記1行のみ追加(PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01 U4(c)、ユーザー承認済み)。他の観点は逐語不変。
 発火条件・役割・不要例の正本は`docs/pm/PM_GOVERNANCE.md` 11-3節。
 本ファイルは「Opusへ渡すレビュー観点の文言」の正本である(既存の
 `DELEGATION_READ_EFFICIENCY_BLOCK.md`と同じ固定貼付ブロック方式)。
@@ -31,7 +32,7 @@ Opusへのcontext packet(`docs/pm/templates/OPUS_CONTEXT_PACKET_TEMPLATE.md`)
 8. 不要Rewriteを増やさないか
 9. コストを不必要に増やさないか
 10. retry / fallback / regenerationと矛盾しないか
-11. Failure時に安全側へ倒れるか
+11. Failure時に安全側へ倒れるか(安全側=最終成果物が目的要件を満たす側。「止まる/何も変えない」が常に安全側とは限らない。2026-10-15 U4(c))
 12. 個別パッチではなく再発防止になっているか
 
 【追加観点(発火条件別)】

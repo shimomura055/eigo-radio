@@ -6,6 +6,8 @@
 
 ## 参照順序(この順で見る)
 
+0. 共通Charter(`CLAUDE.md`冒頭、常駐)→ 本ファイル → ACTIVE_TASK の順
+   (判断区分の正本は`docs/pm/PM_GOVERNANCE.md`)
 1. `docs/pm/PM_BRIEF.md`(このファイル)
 2. `docs/pm/ACTIVE_TASK.md` — 今進めているタスクの一時作業票(SSOTではない)
 3. `docs/pm/RESULT_PACKET.md` — Sonnet/Opusからの一時報告(SSOTではない)
@@ -230,7 +232,7 @@ Fableは全委任文を`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`に
 
 Fableは、`docs/pm/ACTIVE_TASK.md`を上書きする全ての委任で、ファイル冒頭に
 以下の固定ヘッダを置く(本文はヘッダの後に続ける)。目安: ヘッダ全体で
-20〜30行・300〜800 token以内(2026-09-10、報告単位管理ルール追加に伴い
+20〜32行・300〜800 token以内(2026-09-10、報告単位管理ルール追加に伴い
 15〜25行から緩和)。ヘッダは要約であり、詳細はSSOT(`OPEN_ITEMS.md`等)を
 必要箇所だけGrepして確認する(鵜呑みにしない)。compact直後の復帰手順は
 `CLAUDE.md`「Fableサンドイッチ運用(PM層)」節末尾を参照。`USER_DECISION_
@@ -250,6 +252,8 @@ UDR-deferred: <ID:一言、複数可>(なければ「なし」)
 APPROVED未配線: <ID:一言、複数可>(なければ「なし」)
 STOP条件: <一言>(なければ「なし」)
 次アクション: <一言>
+QDC: 見込み=<高|中|低> 進捗=<前進|横ばい|後退> 当日費用=<JST日付> <累計>/1,000 次=<再委任|再計画|Opus|STOP>
+承認済み指示: <原文引用の所在+DECISION_LOG出典>
 未回答報告: <報告単位名:未回答項目ID列挙、報告日、参照REPORT>(複数可、
   なければ「なし」。`docs/pm/PM_GOVERNANCE.md`12節「報告単位管理ルール」
   対象、2026-09-10追加)
@@ -272,7 +276,12 @@ UDR-deferred: OPEN-121(重複検知一般拡張)/OPEN-122(Key Phrase展開)/
 APPROVED未配線: なし(OPEN-121/122該当範囲はPRODUCTION_WIRED済み)
 STOP条件: `point_two`がGATE_BLOCKEDのままAssembly未完了
 次アクション: UDR-blockingの(a)/(b)/(c)判断後、Assembly再試行→受入判定
+QDC: 見込み=中 進捗=横ばい 当日費用=2026-09-08 <累計例>/1,000 次=STOP
+承認済み指示: <例: 原文引用の所在ファイル:節+DECISION_LOG出典>
 ```
+(`QDC:`行・`承認済み指示:`行は2026-10-15に追加した書式。上の記入例は旧時点の
+実状態に両行の書式例を足したもので、`<累計例>`等は実測値ではない。新書式は次回のACTIVE_TASK
+上書きから適用する。)
 
 ### 観測ログ
 
