@@ -107,8 +107,8 @@ Trial終了前に各指示の実測確認+KPI全測定+未達時の継続判断�
 - `APPROVED_FOR_PRODUCTION` — **人間ユーザーだけが決定できる。** Fable/Sonnet/Opusは
   自ら`APPROVED_FOR_PRODUCTION`を宣言しない。
 - `PRODUCTION_WIRED` — 正式Production経路へ配線済み。
-- `USER_DECISION_REQUIRED` — 上限到達・仕様変更候補発見時などにSTOPし、
-  人間ユーザーの判断を待つ状態。
+- `USER_DECISION_REQUIRED` — 解決見込みなし・仕様変更候補発見・正式ユーザー判断
+  事項の発生時などにSTOPし、人間ユーザーの判断を待つ状態。
 - `USER_LISTENING_PENDING` — 記事(Trial記事含む)が音声化・標準player
   公開まで技術的に完成していても、ユーザーが実際に試聴し受入/修正判断を
   行うまでは未close(2026-09-12新設、PM-CLOSEOUT-CONSOLIDATION-97)。
@@ -211,17 +211,20 @@ Fableは全委任文を`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`に
 で検証して結果をRESULT_PACKETに記録する(詳細は
 `docs/pm/PM_GOVERNANCE.md` 11節D-2)。
 
-## ループ上限(サンドイッチ運用)
+## 問題解決運用(サンドイッチ運用。旧「ループ上限」)
 
-- Sonnetへの委任は1管理IDあたり初回+Fableからの修正・再生成指示最大3回
-  (合計最大4回)。1回で足りれば1回で止める(詳細は
-  `docs/pm/PM_GOVERNANCE.md` 11節)
+- Sonnetへの委任に固定の回数上限は置かない。FableがQDC・進捗・解決見込みを
+  管理し、結果が不十分なら原因と証拠を評価して再委任、同じ方法で改善が見込め
+  なければ別アプローチへ再計画する(詳細は`docs/pm/PM_GOVERNANCE.md` 11-6)。
+  1回で足りれば1回で止める
 - Opusの難問診断は1管理IDあたり最大1回まで。診断の後、Sonnetを自動的に
-  再実行しない
+  再実行しない(従来どおり)
 - Opusの必須レビュー(11-3節条件A〜D、11-2節必須)は回数上限の対象外。
   任意レビューはFable裁量で1日2回まで。レビュー後は11-3節の進行判断
   (STOP条件に該当しなければFable判断で次工程へ)に従う
-- 上記いずれかの上限に到達したら`USER_DECISION_REQUIRED`としてSTOPする
+- 解決見込みがなくなった場合、または明示STOP・安全STOP・Production承認Gate・
+  予算上限・承認範囲外・正式ユーザー判断事項に該当する場合は
+  `USER_DECISION_REQUIRED`としてSTOPする。Opus利用枠の到達だけではSTOPしない
 
 ## ACTIVE_TASK固定ヘッダ(compact復帰用索引)
 

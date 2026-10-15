@@ -56,12 +56,13 @@ https://raw.githubusercontent.com/shimomura055/eigo-radio/main/tts_test.py
 - サンドイッチ方式の起動は`claude --agent sandwich-pm`。
 - 上記「Git運用ルール」は維持する。ただしサンドイッチ導入・更新作業では、
   今回変更した対象ファイルだけを明示的に`git add`し、`git add -A`は使用しない。
-- ループ上限: Sonnet委任は1管理IDあたり初回+Fableからの修正・再生成指示
-  最大3回(合計最大4回)、Opusは、難問診断が1管理IDあたり最大1回まで、
-  任意レビューがFable裁量で1日2回まで(必須のOpus独立技術レビューは
-  回数上限の対象外、次項)。上限到達時は
-  `USER_DECISION_REQUIRED`としてSTOPする(詳細は`docs/pm/PM_GOVERNANCE.md`
-  11節)。
+- 問題解決運用: Sonnet委任に固定の回数上限は置かない(委任回数・Trial回数は
+  記録するがそれだけではSTOP条件にしない)。FableがQDC・進捗・解決見込みで
+  再委任・再計画・STOPを判断し、解決見込みがなくなれば現状・原因・試行・
+  代替案・見込み・推奨を付けて`USER_DECISION_REQUIRED`で報告する。Opus利用枠
+  (難問診断1回/管理ID、任意レビュー1日2回。必須レビューは対象外、次項)と、
+  明示STOP・安全STOP・Production承認Gate・予算上限・承認範囲・正式ユーザー
+  判断事項のSTOPは従来どおり。正本は`docs/pm/PM_GOVERNANCE.md` 11-6。
 - Opus独立技術レビューGate(2026-10-02ユーザー決定): 新しい構造・処理フロー
   の設計(条件A)、同じ問題へ2回修正しても再発した場合の3回目パッチ前
   (条件B)、重要変更のProduction採用提案前(条件C)、QCDが大きく悪化した
