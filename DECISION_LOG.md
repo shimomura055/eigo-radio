@@ -21040,3 +21040,7 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 
 - 2026-10-15 ユーザー判断A〜D(委任_02指示): A=最終英語KPと日本語glossの意味整合は基本品質要件、B=Human Review常態化しない、C=Human Review LockとQueueは音声用で流用しない、D=停止は関所status+stage停止+HR報告書。Fable決定: Opus条件A(OF-KGDC-01〜12)を案A'として反映、`mode=corrected`をTrial専用(明示引数、envでは切替えない)で実装し、Production既定は`legacy`のまま。『～』記号条件は撤回(承認済み規則と矛盾)、追加内容語→日本語span対応はrecord-only(gate判定並記)、retryはitem単位、通知書込失敗はfail-closed、OF-KGDC-11(Family X `NG_REVIEW_REQUIRED`素通り)は実装せずOPEN-359。
 - 結果: T1/P7/T2 JPY2.49(gpt-6-luna)。1回目INVALID 0/88・unresolved 0/88(95%上限3.3%)、P3書換4/16、T2検出24/24。Status=USER_DECISION_REQUIRED(採用/既定ON-OFF/gate化/指示文追記再Trial)。`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`未宣言。証跡: er071_output/m2p0_n01_production_wiring_01/gloss_alignment_correction_01/
+
+## KP-GLOSS-ALIGNMENT-PRODUCTION-01 委任_02: gloss再整合flag既定OFF化(2026-10-15)
+- 2026-10-15 ユーザー決定(KP-GLOSS-ALIGNMENT-PRODUCTION-01): 未承認のKP gloss再整合工程がProduction通常経路で発火しないよう、`GLOSS_ALIGNMENT_ENABLED`既定値をOFFに変更することを正式承認(案a)。安全措置としての既定値変更のみの承認であり、工程自体のProduction採用ではない。実装・test・runtime evidence: 委任_02(commitは`git log`で特定)。PRODUCTION_WIRED判定はFable照合後。
+- 実装: `er003_key_words_gloss_alignment.py`の既定を"0"へ(明示ON=`EIGO_KP_GLOSS_ALIGNMENT=1`または`enabled=True`引数)。ロジック・Prompt・Gate・Lock無変更。証跡: er071_output/m2p0_n01_production_wiring_01/gloss_alignment_default_off_01/VALIDATION_OFF_01.md(test 76 pass、Family X実runner KP段 fresh JPY1.83でalignment呼出0、Z mock、Regression新規failure 0)。Status: evidence取得済み・PRODUCTION_WIRED判定待ち。

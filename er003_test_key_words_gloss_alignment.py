@@ -8,6 +8,21 @@ import er003_key_words_canonicalization as kc
 import er003_key_words_gloss_alignment as ga
 
 
+def _explicit_on(cls):
+    """2026-10-15 既定OFF化(KP-GLOSS-ALIGNMENT-PRODUCTION-01 委任_02): 既存testは『明示ON』経路を検証するため、
+    各testでモジュールflagを明示的にONにする(終了時に元へ戻す)。既定OFFそのものはDefaultOffIsolation classで検証する。"""
+    orig = cls.setUp if "setUp" in cls.__dict__ else None
+
+    def setUp(self):
+        old = ga.GLOSS_ALIGNMENT_ENABLED
+        ga.GLOSS_ALIGNMENT_ENABLED = True
+        self.addCleanup(setattr, ga, "GLOSS_ALIGNMENT_ENABLED", old)
+        if orig is not None:
+            orig(self)
+    cls.setUp = setUp
+    return cls
+
+
 def _merged(items):
     return {"items": items, "overall_status": "PASS"}
 
@@ -38,6 +53,7 @@ def _resp(items):
                        "qa_reflects_all_key_phrase_words": q, "reasoning": "r"} for r, c, g, q in items]}
 
 
+@_explicit_on
 class TargetSelection(unittest.TestCase):
     def test_extended_kp_is_target(self):
         self.assertTrue(ga.kp_adds_words_beyond_display("based on", "based on interviews"))
@@ -68,6 +84,7 @@ class TargetSelection(unittest.TestCase):
         self.assertFalse(called)
 
 
+@_explicit_on
 class Alignment(unittest.TestCase):
     def setUp(self):
         self.m = _merged([_item(1, "right away", "right away", "すぐに"),
@@ -160,8 +177,7 @@ class Alignment(unittest.TestCase):
         self.assertIs(r["merged"], self.m)
         self.assertEqual(fn.calls, 0)
 
-    def test_default_flag_on_and_default_mode_keep(self):
-        self.assertTrue(ga.GLOSS_ALIGNMENT_ENABLED)
+    def test_default_mode_keep(self):
         self.assertEqual(ga.GLOSS_ALIGNMENT_FALLBACK_MODE, ga.FALLBACK_KEEP_KP)
 
     def test_usage_cost_recorded_in_attempts(self):
@@ -248,6 +264,7 @@ class ScaffoldWiring(unittest.TestCase):
         self.assertIn("gloss_align.align_glosses", src)
 
 
+@_explicit_on
 class ScaffoldIntegration(unittest.TestCase):
     """sc.run_key_phrase_canonicalization(Production関数)を通して、gloss再整合が初回経路で効く/対象0件ならAPI呼出なし。"""
 
@@ -304,6 +321,7 @@ class ScaffoldIntegration(unittest.TestCase):
         self.assertEqual(res["gloss_alignment_fallback"]["reason_code"], "GLOSS_ALIGNMENT_FAILED")
 
 
+@_explicit_on
 class RulesExtraction(unittest.TestCase):
     EXPECTED_SHA256 = "447e07cb8b9a30850a8dc75b6c3cce48c53d99b5f1fafa88d19b778d9155949b"
 
@@ -376,6 +394,7 @@ def _factory(payloads):
     return fn, make, msgs
 
 
+@_explicit_on
 class ModeSeparation(unittest.TestCase):
     def test_default_mode_is_legacy_and_env_not_used(self):
         self.assertEqual(ga.GLOSS_ALIGNMENT_MODE, "legacy")
@@ -744,6 +763,7 @@ class ResolveGloss(unittest.TestCase):
             self.assertEqual(open(p, encoding="utf-8").read(), before)
 
 
+@_explicit_on
 class ScaffoldCorrected(unittest.TestCase):
     def _canon(self, fake, mode):
         import unittest.mock as mock
@@ -820,6 +840,100 @@ class ScaffoldCorrected(unittest.TestCase):
             self.assertNotIn("gloss_alignment_mode", impl.call_args.kwargs)
             self.assertNotIn("gloss_alignment_human_review_events", res)
             self.assertFalse(os.path.exists(os.path.join(d, ga.HR_REPORT_JSON)))
+
+
+class DefaultOffIsolation(unittest.TestCase):
+    """2026-10-15 ユーザー承認(案a): flag既定OFF。明示ONしない限りgloss再整合は実行されない(追加API呼出0・gloss不変・HR成果物なし)。"""
+
+    @staticmethod
+    def _fresh_flag(env_value):
+        import subprocess
+        import sys
+        env = {k: v for k, v in os.environ.items() if k != "EIGO_KP_GLOSS_ALIGNMENT"}
+        if env_value is not None:
+            env["EIGO_KP_GLOSS_ALIGNMENT"] = env_value
+        out = subprocess.run([sys.executable, "-c", "import er003_key_words_gloss_alignment as g;print(g.GLOSS_ALIGNMENT_ENABLED)"],
+                             capture_output=True, text=True, env=env, cwd=os.path.dirname(os.path.abspath(__file__)))
+        return out.stdout.strip()
+
+    def test_env_unset_is_off_and_explicit_values(self):
+        self.assertEqual(self._fresh_flag(None), "False")
+        self.assertEqual(self._fresh_flag("0"), "False")
+        self.assertEqual(self._fresh_flag(""), "False")
+        self.assertEqual(self._fresh_flag("1"), "True")
+        self.assertEqual(self._fresh_flag("true"), "True")
+
+    def test_default_noop_legacy_and_corrected(self):
+        old = ga.GLOSS_ALIGNMENT_ENABLED
+        ga.GLOSS_ALIGNMENT_ENABLED = False   # 既定(env未設定)と同じ状態
+        try:
+            m = _merged([_item(2, "based on", "based on interviews", "～をもとにした", beyond=True)])
+            for mode in (None, "legacy", "corrected"):
+                fn = FakeFn([])
+                with tempfile.TemporaryDirectory() as d:
+                    r = ga.align_glosses(m, "art", lambda msg: fn, out_dir=d, article_id="a", mode=mode)
+                    self.assertEqual(os.listdir(d), [])   # artifact/HR報告書なし
+                self.assertEqual(r["status"], "DISABLED")
+                self.assertIs(r["merged"], m)
+                self.assertEqual(r["attempts"], [])
+                self.assertEqual(fn.calls, 0)
+            self.assertIsNone(ga.preflight())          # 承認規則の抽出も走らない
+        finally:
+            ga.GLOSS_ALIGNMENT_ENABLED = old
+
+    def test_scaffold_default_off_makes_no_alignment_call(self):
+        import unittest.mock as mock
+        import er003_v1_n3_01_scaffold_generate as sc
+        old = ga.GLOSS_ALIGNMENT_ENABLED
+        ga.GLOSS_ALIGNMENT_ENABLED = False
+        try:
+            m = _merged([_item(2, "based on", "based on interviews", "～をもとにした", beyond=True)])
+            with mock.patch.object(ga, "make_alignment_fn", side_effect=AssertionError("alignment API must not be created")):
+                r = ga.align_glosses(m, "art", lambda msg: (_ for _ in ()).throw(AssertionError("no api")))
+            self.assertEqual(r["status"], "DISABLED")
+            self.assertTrue(hasattr(sc, "run_key_phrase_canonicalization"))
+        finally:
+            ga.GLOSS_ALIGNMENT_ENABLED = old
+
+    def test_scaffold_canonicalization_default_off_no_call_no_change_no_files(self):
+        """Production関数sc.run_key_phrase_canonicalization(X/Z共通の到達点)を通しても、既定OFFならAPI呼出0・gloss不変・追加成果物なし。"""
+        import unittest.mock as mock
+        import er003_v1_n3_01_scaffold_generate as sc
+        old = ga.GLOSS_ALIGNMENT_ENABLED
+        ga.GLOSS_ALIGNMENT_ENABLED = False
+        try:
+            originals = [{"rank": 2, "display_phrase": "based on", "source_span": "based on",
+                          "source_sentence": "It is an estimate based on interviews with sellers.", "ja_gloss": "～をもとにした",
+                          "source_reference_contract": "X"}]
+            qa = {f: "PASS" for f in kc.QA_FIELDS}
+            parsed = {"items": [{"rank": 2, "key_phrase": "based on interviews", "changed_from_display_phrase": True,
+                                 "normalization_reason": "restore_semantic_complement", "reasoning": "r", **qa}]}
+            fake = FakeFn([])
+            for mode in (None, "legacy"):
+                with tempfile.TemporaryDirectory() as d,                         mock.patch.object(sc.kc, "run_canonicalization_gate",
+                                          return_value=(parsed, "CANONICALIZATION_PASS", [], "m", "resp")),                         mock.patch.object(sc.gloss_align, "make_alignment_fn", return_value=fake) as mk:
+                    res = sc.run_key_phrase_canonicalization("ART", originals, d, "A", process="A2_SUPPORT",
+                                                             **({} if mode is None else {"gloss_alignment_mode": mode}))
+                    saved = json.load(open(os.path.join(d, "keywords_canonicalized.json"), encoding="utf-8"))
+                    files = sorted(os.listdir(d))
+                self.assertEqual(res["gloss_alignment_status"], "DISABLED")
+                self.assertEqual(fake.calls, 0)
+                self.assertEqual(mk.call_count, 0)
+                self.assertEqual(saved["items"][0]["japanese_gloss"], "～をもとにした")
+                self.assertNotIn("gloss_alignment_status", saved["items"][0])
+                self.assertFalse([f for f in files if "GLOSS" in f.upper() or "HUMAN_REVIEW" in f.upper()])
+        finally:
+            ga.GLOSS_ALIGNMENT_ENABLED = old
+
+    def test_explicit_on_still_works(self):
+        m = _merged([_item(2, "based on", "based on interviews", "～をもとにした", beyond=True)])
+        fn = FakeFn([_resp([(2, False, "インタビューをもとにした", "PASS")])])
+        r = ga.align_glosses(m, "art", lambda msg: fn, enabled=True)
+        self.assertEqual(fn.calls, 1)
+        self.assertNotEqual(r["status"], "DISABLED")
+
+    def test_mode_default_still_legacy(self):
+        self.assertEqual(ga.GLOSS_ALIGNMENT_MODE, "legacy")
 
 
 if __name__ == "__main__":

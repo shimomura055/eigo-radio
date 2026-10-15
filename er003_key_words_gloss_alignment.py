@@ -39,9 +39,10 @@ import er003_key_words_canonicalization as kc
 GLOSS_ALIGNMENT_VERSION = "ER-003-KP-GLOSS-ALIGN-01"
 MAX_GLOSS_ALIGNMENT_ATTEMPTS = 2
 APPROVED_GLOSS_RULES_TEMPLATE_PATH = "er003_v1_translator_briefs/b1_p2_keywords_l_prompt_template.txt"
-# OF-235: 明示flag(既定ON)。環境変数EIGO_KP_GLOSS_ALIGNMENT=0でOFF。align_glosses(enabled=...)で上書き可。
-# 運用: ユーザー判断(Q1)までは新規量産runでこの段を通さない=運用側でOFFを指定する(OPEN-356)。
-GLOSS_ALIGNMENT_ENABLED = os.environ.get("EIGO_KP_GLOSS_ALIGNMENT", "1") not in ("0", "false", "False", "off", "OFF")
+# OF-235 / 2026-10-15 ユーザー承認(KP-GLOSS-ALIGNMENT-PRODUCTION-01 委任_02、案a): 未承認のgloss再整合工程が通常Production経路で
+# 意図せず実行されないよう、flagの既定値をOFFへ変更した(安全措置のみ。工程自体のProduction採用ではない)。
+# 明示ON: 環境変数EIGO_KP_GLOSS_ALIGNMENT=1(true/on/yes可)、または align_glosses(enabled=True)/preflight(True)の明示引数(DEV/Trial)。
+GLOSS_ALIGNMENT_ENABLED = os.environ.get("EIGO_KP_GLOSS_ALIGNMENT", "0").strip().lower() in ("1", "true", "on", "yes")
 # OF-227/228: fallback方式。"KEEP_KP_FLAG_FAILED"=(ii)既定 / "REVERT_TO_CANDIDATE_IF_SAFE"=(i)(条件付き)。Q2判断後に確定。
 FALLBACK_KEEP_KP = "KEEP_KP_FLAG_FAILED"
 FALLBACK_REVERT_IF_SAFE = "REVERT_TO_CANDIDATE_IF_SAFE"
