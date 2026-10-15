@@ -1,0 +1,408 @@
+{
+  "managed_id": "KP-GLOSS-ALIGNMENT-DESIGN-CORRECTION-TRIAL-01",
+  "delegation": "02",
+  "kind": "T3 mock統合(JPY0)",
+  "tts_execution_mode": "STANDARD",
+  "mode_under_test": "corrected(Trial専用)",
+  "n_patterns": 27,
+  "n_pass": 27,
+  "all_pass": true,
+  "cost_jpy": 0,
+  "api_calls": 0,
+  "results": [
+    {
+      "id": "T3(a)",
+      "title": "alignment API例外2回 -> FAILED_HUMAN_REVIEW_REQUIRED(KP維持・旧gloss維持)+HR報告書+event+stdout",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "calls": 2,
+        "status": "STOPPED_GLOSS_ALIGNMENT_FAILED",
+        "attempt_verdicts": [
+          "TECHNICAL_FAILED",
+          "TECHNICAL_FAILED"
+        ]
+      }
+    },
+    {
+      "id": "T3(b)",
+      "title": "JSON不正2回 -> HR待ち",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "verdicts": [
+          "PARSE_FAILED",
+          "PARSE_FAILED"
+        ]
+      }
+    },
+    {
+      "id": "T3(c)",
+      "title": "不正gloss(括弧/算用数字/…)2回 -> HR待ち",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "reasons": [
+          "括弧禁止違反",
+          "音声化禁止記号",
+          "算用数字禁止違反",
+          "…禁止違反",
+          "音声化禁止記号"
+        ]
+      }
+    },
+    {
+      "id": "T3(d)",
+      "title": "mapping欠落: gate判定=HR待ち / record-only=LLM判定で採用+machine_check不合格を並記(誤NG/誤PASS採否材料)",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "gate_status": "ALIGN_FAILED_HUMAN_REVIEW_REQUIRED",
+        "record_only_status": "ALIGN_PASS",
+        "record_only_machine_check": {
+          "required_words": [
+            "interviews"
+          ],
+          "covered": {},
+          "uncovered": [
+            "interviews"
+          ],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": false
+        }
+      }
+    },
+    {
+      "id": "T3(e)",
+      "title": "1回目失敗->2回目成功: 採用・HR報告書なし・event空・非OK statusなし",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "calls": 2
+      }
+    },
+    {
+      "id": "T3(f)",
+      "title": "2回連続失敗: 報告書必須項目(article/level/rank/英語KP/現gloss/失敗理由/全attempt/再生成候補)+event+stdout、queue/Lock/attempt_history不使用",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "entry_keys": [
+          "added_content_words",
+          "article",
+          "attempts",
+          "current_japanese_gloss",
+          "failure_reasons",
+          "key_phrase_en",
+          "level",
+          "rank",
+          "regeneration_candidates",
+          "resolution_how_to"
+        ],
+        "event": {
+          "article": "AID",
+          "level": "A2",
+          "ranks": [
+            2
+          ],
+          "report_schema_validated": true
+        },
+        "monitored_unchanged": true,
+        "stdout_line": "[GLOSS-ALIGN][HUMAN-REVIEW-REQUIRED] article=AID level=A2 ranks=[2] gloss再整合が成立せず対象KP segmentのTTS/完成を停止します。報告書=C:\\Users\\tensh\\AppData\\Local\\Temp\\kgdc_t3_mb_ljqt1\\f\\GLOSS_ALIGNMENT_HUMAN_REVIEW_01.md ("
+      }
+    },
+    {
+      "id": "T3(g)",
+      "title": "batch内一部成立・一部失敗: 成立分(rank5)は採用、未解決(rank2)のみHR待ち、2回目は未解決のみ送信",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "status_by_rank": {
+          "2": "FAILED_HUMAN_REVIEW_REQUIRED",
+          "5": "ALIGNED"
+        },
+        "calls": 2
+      }
+    },
+    {
+      "id": "T3(h)",
+      "title": "HR報告の書込失敗/再読検証失敗 -> GlossAlignmentNotificationErrorで当該stage停止(fail-closed)",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "json_write_fail": "HR報告書の書込失敗(fail-closed): OSError: disk full (mock)",
+        "md_write_fail": "HR報告書の書込失敗(fail-closed): OSError: disk full (mock)",
+        "reread_validation_fail": "HR報告書の再読検証に失敗(fail-closed): ['entry0.attemptsが空']"
+      }
+    },
+    {
+      "id": "T3(i-A2)",
+      "title": "FAILED itemのlevelはKP segment全体(5rank x en/ja)がSTOPPED_GLOSS_ALIGNMENT_FAILED・TTS 0 call・Gateがassembly拒否",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "tts_calls": {
+          "tts": 0,
+          "expl_llm": 0,
+          "expl_tts": 0
+        },
+        "n_segments_stopped": 10,
+        "gate_message_head": "EPISODE_BLOCKED_BY_AUDIO_VALIDATION: A2のepisode assemblyを中止しました。以下のsegmentが今回のrunでVALIDATED/HUMAN_APPROVED状態ではありません、または必須post-processのevidenceがありません: ['kp1_engl"
+      }
+    },
+    {
+      "id": "T3(p)",
+      "title": "B1: 解説LLM・解説TTS・KP TTSいずれも0 call(glossが解説LLM入力になる経路を停止)、explanation segmentはSTOPPED、Gate拒否",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "calls": {
+          "tts": 0,
+          "expl_llm": 0,
+          "expl_tts": 0
+        },
+        "explanation_status": "STOPPED_GLOSS_ALIGNMENT_FAILED",
+        "bundle": null
+      }
+    },
+    {
+      "id": "T3(o)",
+      "title": "tts_generation_results.json欠落: 既存Gateは素通り(既存fail-open)だが、assemble前チェックEPISODE_BLOCKED_BY_GLOSS_ALIGNMENTが拒否",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "existing_gate_returned_without_raise": true,
+        "pre_check": "EPISODE_BLOCKED_BY_GLOSS_ALIGNMENT: A2のepisode assemblyを中止しました。KP日本語glossの再整合が成立せずHuman Review待ちのitemがあります(rank=[2])。resolve_gloss(HR_RESOLV",
+        "stage_assemble": ""
+      }
+    },
+    {
+      "id": "T3(q)",
+      "title": "page/player: HR待ちglossは(assemble summaryがOKを装っても/BLOCKEDでも)tableに出ない",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "html_with_ok_summary": "<p style='color:#b00'>KP日本語glossがHuman Review待ちのためtable省略。</p>",
+        "html_blocked": "<p style='color:#b00'>Assembly未完了(status=BLOCKED)。table省略。</p>"
+      }
+    },
+    {
+      "id": "T3(k-X)",
+      "title": "legacy FAILED artifact(=現行Production挙動)は関所で止まらずTTSへ進む=無変更(corrected専用の関所は発動しない)",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "tts_calls": {
+          "tts": 10,
+          "expl_llm": 0,
+          "expl_tts": 0
+        }
+      }
+    },
+    {
+      "id": "T3(k-ga)",
+      "title": "mode未指定(legacy既定)のalign_glosses出力がHEAD(現行)版と同一(4シナリオ)+flag OFFはDISABLED",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "scenarios_identical": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "flag_off_disabled": true
+      }
+    },
+    {
+      "id": "T3(l-X)",
+      "title": "resolve_gloss後の再実行: KP TTSが進む(10 call)、Gateは拒否しない。人間確定glossが入力に使われる",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "tts_calls": {
+          "tts": 10,
+          "expl_llm": 0,
+          "expl_tts": 0
+        },
+        "gate_blocked": false,
+        "gate_message": "",
+        "resolution": {
+          "resolved_by": "t3_mock",
+          "resolved_at": "2026-10-15T00:00:00+00:00",
+          "previous_gloss": "～をもとにした"
+        }
+      }
+    },
+    {
+      "id": "T3(t-X)",
+      "title": "独立level(HRなし)のB1 KPは影響を受けず通常どおり進む(解説LLM 1 call・KP TTS/解説TTS実行)",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "calls": {
+          "tts": 5,
+          "expl_llm": 1,
+          "expl_tts": 5
+        }
+      }
+    },
+    {
+      "id": "T3(n)",
+      "title": "外側redundancy retryで選び直した最終artifactが整合 -> HR報告書/eventなし(途中attemptのHR孤児なし)",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "redundancy_retry_attempts": 1
+      }
+    },
+    {
+      "id": "T3(n2)",
+      "title": "最終attemptにHR待ちが残る場合、報告書は最終artifactの該当rankのみ(1回・過去attemptの分を含まない)",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "entries_ranks": [
+          5
+        ]
+      }
+    },
+    {
+      "id": "T3(v)",
+      "title": "X scaffold: legacy既定はrun_key_phrasesへmode引数を渡さずsummary形不変 / corrected時のみ明示渡し+event入りsummary+最終専用stdout行",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "legacy_kwargs": {
+          "process": "A2_SUPPORT",
+          "kp_backend": "db_hybrid"
+        },
+        "corrected_kwargs": {
+          "process": "A2_SUPPORT",
+          "kp_backend": "db_hybrid",
+          "gloss_alignment_mode": "corrected"
+        },
+        "final_line": "[GLOSS-ALIGN][HUMAN-REVIEW-REQUIRED][FINAL] events=1 reports=[] gloss再整合が成立せず対象levelのKP segment/完成を停止中です。ユーザーへ必ず報告してください。"
+      }
+    },
+    {
+      "id": "T3(j)",
+      "title": "Z stage_kp: FAILED(HR待ち)で既存FamilyZE2EStop送出、HR報告書(再読検証)+run-level event、assets未配備・stage結果未保存・TTS/解説 0 call",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "stop_message": "FAMILY_Z_KP_GLOSS_ALIGNMENT_HUMAN_REVIEW_REQUIRED(b1b): rank=[2] 報告書=C:\\Users\\tensh\\AppData\\Local\\Temp\\kgdc_t3_mb_ljqt1\\z/melos/run_mock/key_phrases/b1b\\GLOSS_ALIGNMENT_HUMAN_REVIEW_01.md (gloss再整合が成立",
+        "api_kinds_during_kp_stage": {
+          "kp": 1
+        },
+        "assets_installed": false,
+        "stage_result_saved": false
+      }
+    },
+    {
+      "id": "T3(m)",
+      "title": "tts段を別実行しても保留: assets不在=例外、HR待ちartifactコピーがあってもload_level_inputsがFamilyZE2EStop。TTS API 0 call",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "no_assets": "FileNotFoundError: [Errno 2] No such file or directory: 'C:\\\\Users\\\\tensh\\\\AppData\\\\Local\\\\Temp\\\\kgdc_t3_mb_ljqt1\\\\z/mel",
+        "with_hr_assets": "FAMILY_Z_KP_GLOSS_ALIGNMENT_HUMAN_REVIEW_REQUIRED(b1b): rank=[2] (TTS/Gate/Assemblyへ進まない。resolve_gloss後に再実行)",
+        "api_kinds": {
+          "llm": 7,
+          "support_en": 4,
+          "support_ja": 4,
+          "kp": 1
+        }
+      }
+    },
+    {
+      "id": "T3(l-Z)",
+      "title": "Z: resolve_gloss後に同stageを再実行 -> b1b選定は再実行されない(kp_fn計1回+a2初回のみ)、人間確定glossでassets配備、解説sigにgloss含む、snapshot消費済み",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "kp_fn_levels_called": [
+          "B1",
+          "A2"
+        ],
+        "expl_sig_includes_gloss": true,
+        "snapshot_consumed": true,
+        "stage_status": {
+          "status": "generated",
+          "assets": "C:\\Users\\tensh\\AppData\\Local\\Temp\\kgdc_t3_mb_ljqt1\\z/melos/run_mock/b1b/key_phrases/keywords_canonicalized.json"
+        }
+      }
+    },
+    {
+      "id": "T3(h-Z)",
+      "title": "Z: HR報告の再読検証失敗 -> GlossAlignmentNotificationErrorでkp stage停止(通知失敗のまま継続しない)、assets未配備",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "error": "HR報告書の再読検証に失敗(fail-closed): ['entry0.attemptsが空']"
+      }
+    },
+    {
+      "id": "T3(k-Z)",
+      "title": "Z legacy既定(ctx.gloss_alignment_mode未設定=legacy): 既存mock kp stageが従来どおり通る(挙動不変)",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {}
+    },
+    {
+      "id": "T3(exit)",
+      "title": "別プロセス実行: Z=FamilyZE2EStopで非0終了、X=Gate拒否で非0終了。最終stdoutに専用行(「届いた」条件③)",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "z": {
+          "rc": 1,
+          "stdout_has_line": true,
+          "stderr_tail": "er026_family_z_fiction_production_runner_01.FamilyZE2EStop: FAMILY_Z_KP_GLOSS_ALIGNMENT_HUMAN_REVIEW_REQUIRED(b1b): rank=[2] 報告書=C:\\Users\\tensh\\AppData\\Local\\Temp\\kgdc_t3_mb_ljqt1\\drv_z/melos/run_mock",
+          "unreachable": false
+        },
+        "x": {
+          "rc": 1,
+          "stdout_has_line": true,
+          "stderr_tail": "RuntimeError: EPISODE_BLOCKED_BY_AUDIO_VALIDATION: A2のepisode assemblyを中止しました。以下のsegmentが今回のrunでVALIDATED/HUMAN_APPROVED状態ではありません、または必須post-processのevidenceがありません: ['kp1_english=UNVALIDATED', 'kp1_jap",
+          "unreachable": false
+        }
+      }
+    },
+    {
+      "id": "T3(r)",
+      "title": "attempt_history.jsonl/human_review_queue.jsonl/Master Store/telemetry/cost_summaryを汚染しない(全パターン実行前後でsha同一)",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "unchanged": true,
+        "files": [
+          "er011_output/attempt_history.jsonl",
+          "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl",
+          "er006_output/master_audio_store_01/manifest.json",
+          "er006_output/master_audio_store_01/reuse_telemetry.jsonl",
+          "er030_output/kp_backend_telemetry_01/telemetry.jsonl",
+          "er005_output/cost_baseline_01/cost_summary.json"
+        ]
+      }
+    },
+    {
+      "id": "T3(api0)",
+      "title": "全パターンで実API呼出0(OpenAI/alignment/get_client禁止patchへの到達0)",
+      "pass": true,
+      "api_calls": 0,
+      "evidence": {
+        "forbidden_path_attempts": 0,
+        "tts_execution_mode": "STANDARD",
+        "real_tts_calls": 0,
+        "stub_calls_total": {
+          "tts": 25,
+          "expl_llm": 1,
+          "expl_tts": 5
+        }
+      }
+    }
+  ]
+}

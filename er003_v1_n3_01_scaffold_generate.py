@@ -681,9 +681,14 @@ def _run_key_phrase_selection_db_hybrid_with_fallback(
 
 
 def run_key_phrase_canonicalization(article_text: str, original_items: list, out_dir: str, article_id: str,
-                                     process: str = None) -> dict:
+                                     process: str = None, *, gloss_alignment_mode: str = None) -> dict:
     """processの意味はrun_key_phrase_selection()と同じ(ER-006-MODEL-ROUTING-
-    CONTRACT-01追補)。"""
+    CONTRACT-01追補)。
+
+    gloss_alignment_mode(KP-GLOSS-ALIGNMENT-DESIGN-CORRECTION-TRIAL-01 委任_02、2026-10-15): None=既定
+    (gloss_align.GLOSS_ALIGNMENT_MODE=legacy、現行挙動そのまま)。"corrected"はTrial専用の新設計で、明示引数でのみ有効
+    (Production runnerはこの引数を渡さない)。"""
+    gloss_alignment_mode = gloss_align.resolve_mode(gloss_alignment_mode)
     template = kc.load_prompt_template()
     user_message = kc.build_user_message(original_items, article_text, template=template)
     with open(f"{out_dir}/canonicalization_prompt.txt", "w", encoding="utf-8") as f:
@@ -716,17 +721,26 @@ def run_key_phrase_canonicalization(article_text: str, original_items: list, out
             kwargs["model"] = routing.require_model(process, routing.SUPPORT_MODEL)
         else:
             kwargs["model"] = routing.SUPPORT_MODEL
+        if gloss_alignment_mode == gloss_align.GLOSS_ALIGNMENT_MODE_CORRECTED:
+            kwargs["schema"] = gloss_align.GLOSS_ALIGNMENT_JSON_SCHEMA_CORRECTED
         return gloss_align.make_alignment_fn(msg, **kwargs)
 
     # OF-233: alignment呼出のusageをcost loggerのstageタグ付きで記録できるようにする(cl.install()済みの場合のみ
     # raw_usage_log.jsonlへ記録される。未installなら何も起きない純粋加算)。
     import er005_cost_logger as _cl
     with _cl.logging_context(article_id or "unknown_article", "kp_gloss_alignment"):
-        aligned = gloss_align.align_glosses(merged, article_text, _align_factory, out_dir=out_dir, article_id=article_id)
+        if gloss_alignment_mode == gloss_align.GLOSS_ALIGNMENT_MODE_CORRECTED:
+            aligned = gloss_align.align_glosses(merged, article_text, _align_factory, out_dir=out_dir,
+                                                article_id=article_id, enabled=True, mode=gloss_alignment_mode)
+        else:
+            aligned = gloss_align.align_glosses(merged, article_text, _align_factory, out_dir=out_dir,
+                                                article_id=article_id)
     merged = aligned["merged"]
     result["gloss_alignment_status"] = aligned["status"]
     result["gloss_alignment_cost_jpy"] = aligned.get("cost_jpy")
     result["gloss_alignment_fallback"] = aligned.get("fallback_event")
+    if gloss_alignment_mode == gloss_align.GLOSS_ALIGNMENT_MODE_CORRECTED:
+        result["gloss_alignment_unresolved_ranks"] = aligned.get("unresolved_ranks") or []
     with open(f"{out_dir}/keywords_canonicalized.json", "w", encoding="utf-8") as f:
         json.dump(merged, f, ensure_ascii=False, indent=2)
     result["merged"] = merged
@@ -789,16 +803,35 @@ def detect_key_phrase_symbol_findings(merged_items: list) -> list:
 
 def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_level: str,
                      process: str = None, synthetic: bool = False,
-                     kp_backend: str = "strategy_l") -> dict:
+                     kp_backend: str = "strategy_l", *, gloss_alignment_mode: str = None) -> dict:
     """`_run_key_phrases_impl`の薄いwrapper(委任_03、2026-10-13): retryループ全attemptで発生した
     M2→Strategy L Fallback eventを`m2_fallback_events`(list、空=発生なし)として戻り値へ追記する。
     それ以外の戻り値・挙動は無変更(全呼び出し元で追記キーのみ増える)。"""
     sink: list = []
+    gloss_alignment_mode = gloss_align.resolve_mode(gloss_alignment_mode)
     # OF-229: gloss規則の抽出失敗は記事内容に依存しない設定不備なので、run開始時(最初の記事のAPI呼出前)に即時停止する。
     gloss_align.preflight()
+    _impl_kwargs = {}
+    if gloss_alignment_mode != gloss_align.GLOSS_ALIGNMENT_MODE_LEGACY:
+        _impl_kwargs["gloss_alignment_mode"] = gloss_alignment_mode   # legacyでは従来のcall形のまま(Production無変更)
     result = _run_key_phrases_impl(article_text, out_dir, article_id, source_level, process=process,
-                                   synthetic=synthetic, kp_backend=kp_backend, _m2_fb_sink=sink)
+                                   synthetic=synthetic, kp_backend=kp_backend, _m2_fb_sink=sink, **_impl_kwargs)
     result["m2_fallback_events"] = sink
+    if gloss_alignment_mode == gloss_align.GLOSS_ALIGNMENT_MODE_CORRECTED:
+        # 委任_02(OF-KGDC-04): HR報告は外側retry確定後の**最終artifact**に対して1回だけ(canonicalization内では出さない)。
+        # 書込/再読検証の失敗は例外(fail-closed)=当該stageを止める。queue/Lockは使わない。
+        canon_ = result.get("canonicalization") or {}
+        final_merged = canon_.get("merged")
+        events = []
+        if final_merged is not None:
+            ev = gloss_align.emit_human_review_notice(out_dir, article_id, source_level, final_merged)
+            if ev is not None:
+                events.append(ev)
+        result["gloss_alignment_human_review_events"] = events
+        result["gloss_alignment_fallback_events"] = []
+        if events and "status" not in result:
+            result["status"] = gloss_align.STOPPED_STATUS   # 非OK(run summaryのstatus)。下流停止は消費側(X関所/Z stage_kp)
+        return result
     # OF-227/228: gloss再整合失敗(gloss_alignment_status=FAILED)をm2_fallbackと同形でrun summaryへ必ず載せる。
     canon = result.get("canonicalization") or {}
     gfb = canon.get("gloss_alignment_fallback")
@@ -811,7 +844,8 @@ def run_key_phrases(article_text: str, out_dir: str, article_id: str, source_lev
 
 def _run_key_phrases_impl(article_text: str, out_dir: str, article_id: str, source_level: str,
                      process: str = None, synthetic: bool = False,
-                     kp_backend: str = "strategy_l", _m2_fb_sink: list = None) -> dict:
+                     kp_backend: str = "strategy_l", _m2_fb_sink: list = None,
+                     gloss_alignment_mode: str = None) -> dict:
     """processの意味はrun_key_phrase_selection()と同じ(ER-006-MODEL-ROUTING-
     CONTRACT-01追補、"B1_SUPPORT"/"A2_SUPPORT"を渡す)。
 
@@ -863,8 +897,11 @@ def _run_key_phrases_impl(article_text: str, out_dir: str, article_id: str, sour
         if sel["status"] != "KEY_WORDS_STRUCTURE_PASS":
             return {"selection": sel, "canonicalization": None, "redundancy_qa": None,
                      "redundancy_retry_log": redundancy_retry_log}
+        _canon_kwargs = {}
+        if gloss_alignment_mode is not None and gloss_alignment_mode != gloss_align.GLOSS_ALIGNMENT_MODE_LEGACY:
+            _canon_kwargs["gloss_alignment_mode"] = gloss_alignment_mode   # legacyでは従来のcall形のまま
         canon = run_key_phrase_canonicalization(article_text, sel["original_items"], out_dir, article_id,
-                                                  process=process)
+                                                  process=process, **_canon_kwargs)
         if canon["status"] not in ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED"):
             return {"selection": sel, "canonicalization": canon, "redundancy_qa": None,
                      "redundancy_retry_log": redundancy_retry_log}
