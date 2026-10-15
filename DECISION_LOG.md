@@ -21606,3 +21606,11 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 - 逸脱: Production leaf内部が共有 `er011_output/attempt_history.jsonl` へ40行(theme_id=p0〜p7、segment_id=kp{1-5}_explanation_en)を追記(隔離の対象に入れ損ねた。追記のみ、既存行・Production記事の行は不変、自分では削除せず扱いはFable判断)。HR queue・semantic telemetry・pronunciation ledgerはTrial dir内へ隔離し共有fileへの書込なし。
 - Status: Trial=`VALIDATED`(比較成立)、採否=`USER_DECISION_REQUIRED`(ユーザー試聴待ち)。`PRODUCTION_WIRED`でも`APPROVED_FOR_PRODUCTION`でもない。
 - Trial結果はProduction採用ではない。Coffee現行Prompt/style profile不変。採用はユーザーのAPPROVED_FOR_PRODUCTION判断。
+
+
+### ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 委任_11(2026-10-16): U1発効+A3保留(s4)+実音声(一部)
+- 決定(Fable判断の実施): 委任_10のs1は非該当(Primary PASSの3件N1/N2/N4はU1 True/False同一・Secondary不呼出=U1と因果なし)としてU1を発効(`U1_KEEP_C1_SIMILARITY_EXCLUSIONS=False`、本commit(メッセージ冒頭『ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 委任_11』を`git log`で特定))。範囲限定A7(登録読み保護)・A1/A2/A4は維持。ロールバックは1行。
+- A3是正(OPEN-388): Primary由来lengthをANDする呼出元が10箇所・7ファイルで条件付きSTOP s4に該当→部分実装せず保留、設計案D1をFableへ。保存データ上のA3作用は統一judge記録中0件。
+- 実音声: X-B1-06 Store miss PASS(区分1へ)。narrator(B-A2-01)は部分取得(topic_intro/見出し2[数値入り]/Voice A,B)、Hook/Tension/Closingはparts.jsonに`tension_body`が無くKeyErrorで未生成(harnessの事前検査不足。修正済み・再起動は禁止事項のため未実施)。fresh JAは想定外のProduction JA Latin語web lookup(gpt-5.6-sol、1回JPY21.47)で累計Guardrailに達し遮断(OPEN-395)。
+- 費用: 実費JPY37.66(bnarr 16.13・xkp 0.06・ja_fresh 21.47)。見積約8・Guardrail16を超過。原因=Family B narrator/Voice本文のTTS単価前提(約1.5/clip)が`gemini-2.5-pro-preview-tts`の長尺で過小、およびJA Latin語web lookup費用の見積漏れ。
+- Status: `AUW_EVIDENCE_COMPLETE_PENDING_FABLE_15`には未到達(OPEN-396)。`PRODUCTION_WIRED`でも`APPROVED_FOR_PRODUCTION`でもない。

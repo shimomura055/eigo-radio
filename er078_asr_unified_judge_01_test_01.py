@@ -129,7 +129,7 @@ def test_p2_exclusions_table(monkeypatch):
 
 
 def test_u1_flag_releases_a5_a6_in_one_line(monkeypatch):
-    assert uj.U1_KEEP_C1_SIMILARITY_EXCLUSIONS is True  # 委任_10: s1条件付きSTOPにより暫定True(Fable判断で解放)
+    assert uj.U1_KEEP_C1_SIMILARITY_EXCLUSIONS is False  # 委任_11: U1発効済み(既定False)
     monkeypatch.setattr(uj, "U1_KEEP_C1_SIMILARITY_EXCLUSIONS", False)
     sec = MockSecondary("今日は晴れ。")
     r = unified_judge(ctx_("今日は晴れ。"), PrimaryResult(False, "全然違う", signals={"similarity": 0.2}), sec, lang="ja", role="x")

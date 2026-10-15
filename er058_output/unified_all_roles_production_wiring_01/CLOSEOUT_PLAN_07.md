@@ -90,3 +90,17 @@
 ## 6. 後始末の確認
 - 予行worktree 3つ(`eigo-radio-auw-revert`/`-revert-b`/`-main`)は`git worktree remove --force`で撤去済み(`git worktree list`にAUW用なし)。
 - `docs/pm/delegation_log/2026-10-15_DAY3-4-OBJECTIVE-ALIGNMENT-REBLIND-02_P.md`・`_P_check.json`は、`origin/main`取込時にuntracked同名file(main側と同一内容を確認)との衝突を避けるため、branchへ1 commit(`143d1b78a`、内容はmainと同一)として取り込んだ。
+
+
+
+## 4-b. 15条件の充足表(2026-10-16 委任_11時点。§4の再掲更新。既存表は不変)
+| # | 条件 | 委任_11時点 | 根拠・残 |
+|---|---|---|---|
+| 1 | ASR判定仕様と実際のProduction動作が一致 | **一部** | U1発効済み(`RUNTIME_EVIDENCE_06.md`§17-1)。残=A3(length)未是正(s4保留、OPEN-388)、narrator Hook/Tension/Closing未取得(OPEN-396)、fresh JA正例未取得 |
+| 2 | JA・EN、全Production音声Sectionに適用 | **一部** | 43行: 実音声37・部分1(B-A2-01)・再利用4・N/A 1。Family C JAはFCJ 委任_03で実音声済み、X-B1-06は本委任で実音声 |
+| 4 | 両NGなら最大3回のTTS生成フロー成立 | **充足(委任_07時点から変更なし)** | 本委任でpoint_twoがNG_BOTH→再生成→PASSを実音声でも確認(正当な標準retry) |
+| 9 | Production正式pathのruntime evidence | **一部** | Family B入口(`run_tts_a2_2v_new_topic`)の実音声を取得(5 clip)したが、Hook/Tension/Closingと`tts_generation_results.json`・試聴リスト導出が未到達(OPEN-396) |
+| 11 | SSOTに実態を反映 | **充足(本commitで反映)** | CURRENT_SPEC・DECISION_LOG・OPEN-394〜396・REGISTER #83・REPORT_LEDGER・Opus台帳 |
+| 12 | commit/push/merge | **充足見込み(本commit後に確認)** | mainへ反映(`crbn`でff)。merge自体は#87 Go・委任_08で完了済み |
+| 15 | Fableの独立照合 | **未充足** | Fableの工程 |
+→ 未取得evidence(条件1・2・9の一部)があるため`PRODUCTION_WIRED`とは報告しない。

@@ -70,7 +70,7 @@ APPROVED_EQUIVALENCE_BASES = frozenset({
 #   証明しないため、2026-10-11安全条件[読みでの受理禁止]に従い事前除外のまま。U1フラグの対象外)。
 # U2(force_secondary)の死定数U2_FORCE_SECONDARY_SCOPEは委任_10で撤去(どこからも参照されていなかった。実体は呼出側の
 #   er003_v1_crosslevel_audio_02_common.py `_run_a2_minimal_fallback_attempt` の force_secondary=True 1箇所のみ。静的testで固定)。
-U1_KEEP_C1_SIMILARITY_EXCLUSIONS = True   # 委任_10 s1条件付きSTOPにより暫定True(実装・Regressionは完了。Fableの採否判断で1行False化)
+U1_KEEP_C1_SIMILARITY_EXCLUSIONS = False  # 委任_11(2026-10-16): Fable判断でs1非該当→発効。True=旧挙動ロールバック用。A7(登録読み保護)・A1/A2/A3/A4は対象外で維持
 
 # ---- 費用(秒数ベース。SCGと同じ式: er007_ja_secondary_asr_01.py:309-311、単価 SCG_AZURE_USD_PER_HOUR/SCG_JPY_PER_USD と同値。parity testで突合) ----
 AZURE_USD_PER_HOUR = 1.0

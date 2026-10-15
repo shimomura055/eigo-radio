@@ -562,3 +562,43 @@ PASS/PASS_WITH_WARNING = **3件**(N1/N2/N4)。**3件とも `primary_pass`(Primar
 
 ### 16-4. 費用meter
 実費(自作ledger見積、`evidence_10/*/cost/spend_ledger.jsonl`): 保存wav x Azure JPY 1.3333 + live負例 JPY 0.8942 = **JPY 2.2275**(見積6・Guardrail12内)。Azure公式usage_log=`evidence_10/*/cost/usage_log.jsonl`。
+
+
+## 17. 委任_11(2026-10-16 JST。追記のみ): U1発効・A3集計・B-A2-01 narrator(一部)・X-B1-06・fresh JA
+
+出典: `evidence_11/{bnarr,xkp_miss,ja_fresh}/runner_execute.json`・`usage_log.jsonl`(SDK wrapperのtoken実測、単価=`pricing_snapshot`×USD_JPY160)・`evidence_11/cost/spend_ledger.jsonl`。harness=`er078_auw_runtime_evidence_11.py`(06b `begin/finish`再利用、flag/module monkeypatchなし、`tts_backend`は本番既定)。T-2事前記録=`evidence_11/T2_PRECHECK.md`、Guardrail記録=`evidence_11/GUARDRAIL_NOTE.md`。使用モデル: TTS=Family B A2 narrator/Voice=`gemini-2.5-pro-preview-tts`(topic_intro=Charon、見出し=Aoede、Voice A=Algieba、Voice B=Erinome)、X KP英語=`gemini-3.8-flash-lite-tts`(Aoede)、ASR=`gpt-4o-mini-transcribe`、Secondary=Azure、JA Latin語lookup=`gpt-5.6-sol`(Production内蔵resolver)。
+
+### 17-1. U1発効
+`U1_KEEP_C1_SIMILARITY_EXCLUSIONS=False`(`er078_asr_unified_judge_01.py:73`)。中核17 file: **486 passed / 2 failed**(2件=koro系、既知OPEN-391)。静的監査15 passed。詳細は`IMPLEMENTATION_11.md`§1。
+
+### 17-2. A3(OPEN-388)
+是正は条件付きSTOP s4により**保留**(呼出元ANDが10箇所・7ファイル)。保存データ集計(API 0): `"length_ok": false` 216件/104ファイル、統一judge導入後の記録中は0件、`p2_exclusion:A3_LENGTH_NG`記録0件。設計案は`IMPLEMENTATION_11.md`§3。
+
+### 17-3. B-A2-01 narrator(`bnarr`、`run_tts_a2_2v_new_topic`そのまま。parts=`er012_output/e_family_two_level_wiring_01/meta/a2/parts.json`の隔離複製、新テーマ名`auw11_meta_call_a2`、point_two_headingのみ数値入り`Why Meta paused the feature after 3 weeks`へ差替え)
+**結果: 部分取得・途中終了(s6)**。`run_tts_a2_2v_new_topic`内、Voice A/B本文の次の`for`タプル構築で`parts["tension_body"]`が`KeyError`(E-family partsに`tension_body`が無い。API呼出前に検出できる入力不備を私のharnessが事前検査していなかった)。**Hook(`full_story_part1/2`)・Tension・Closing(`in_one_line`)は未生成=A-5の核心部分が未取得**。再起動は禁止事項のため実施せず。
+
+| clip | role | state(attempt) | Primary | Secondary | 備考 |
+|---|---|---|---|---|---|
+| topic_intro | TOPIC_INTRO(Charon) | PASS(1) | NORMALIZED_MATCH | 不呼出 | `Today's topic is, hello, this is AI, ...` |
+| point_one_heading | HEADING_READOUT | PASS(1) | NORMALIZED_MATCH | 不呼出 | 減速後A2_SLOWDOWN_REVERIFY記録あり |
+| point_two_heading(数値入り) | HEADING_READOUT | PASS(1) | NORMALIZED_MATCH(`three weeks`) | 不呼出 | 数値`3`→`three`のvalue_guardをfinal gateで通過 |
+| point_one(Voice A) | Voice本文 | PASS(1) | NORMALIZED_MATCH | 不呼出 | |
+| point_two(Voice B) | Voice本文 | attempt1 NG_BOTH(`secondary_not_accepted`)→attempt2 PASS | TRUE_CONTENT_MISMATCH→NORMALIZED_MATCH | attempt1のみ呼出(Azure 56秒、`had paused`→`had.Caused`で不許容) | 標準の3回枠内の正当な再生成(誤受理なし) |
+- attempt_history/HR Lock: `evidence_11/bnarr/attempt_history.jsonl` 9行(theme_id=`auw11_meta_call_a2`、level=`a2`、segment=topic_intro/見出し2/point_one/point_two+各A2_SLOWDOWN_REVERIFY)。共有state(`er011_output/attempt_history.jsonl`等)は`shared_state_unchanged=true`(隔離)。HR到達0。
+- Master Store: 共有narration(welcome〜num_five/point_explanation等)はStore再利用(`reuse_telemetry`にreused 12件)。TTS新規生成は6回(topic_intro・見出し2・point_one・point_two×2)。
+- Q5(a)〜(f)充足状況: (a)runner側`@with_secondary_run`=充足 (b)前処理=runner内蔵で充足 (c)出力パス`…/<theme>/a2/narration/<name>.wav`=充足(attempt_historyでtheme/levelが導出) (d)monkeypatch/`tts_backend`なし=充足 (e)前後差分=共有state不変・隔離由来=充足 (f)`tts_generation_results.json`・試聴リスト導出=**未充足**(`finalize_tts_results_a2_2v_new_topic`まで到達せず)。
+- 費用: **JPY 16.1253**(Gemini TTS 6回計 約12.47[topic_intro 0.60・見出し 0.39/0.39・point_one 1.82・point_two 4.62/4.65]、ASR 10回 約0.96、Azure 2回[4.21秒・56.38秒]計 約2.69)。委任文の単価前提(約1.4〜1.6/clip)は`gemini-2.5-pro-preview-tts`の長尺本文では過小(音声tokenが多い)。所要191秒。
+
+### 17-4. X-B1-06(`xkp_miss`、X B1入口`er019:_generate_or_reuse_kp`+`shared_narration.ensure_key_phrase_english_component`、`tts_backend=speech_metadata_flash_lite`[Xの正式backend])
+- phrase=`a quiet refund window`(新規)。**Store miss確認**: `reuse_telemetry`に`event=generated`・`cache_miss_reason=no_existing_master`・`tts_model_id=gemini-3.8-flash-lite-tts`・voice Aoede・`style_instruction_id=key_phrase_english_component`。
+- state=**PASS**(`primary_pass`、Primary NORMALIZED_MATCH `A quiet refund window.`、Secondary不呼出、attempts 1)。費用 **JPY 0.0633**。
+- → APPLICABILITY_MATRIX X-B1-06を区分3→**区分1(実音声)**へ。あわせて旧記載の食い違い訂正: CSV「R(3回へ揃える)」はOF-AUW-12/DESIGN_02_ADDENDUM §9の旧案で現行ではない。正は`CURRENT_SPEC`「KP英語phrase=4回(MINIMAL2+ENGLISH_LOCK2)」(2026-09-01ユーザー正式決定、`generate_key_phrase_component_verified`の構成)。
+
+### 17-5. fresh JA正例(`ja_fresh`): **未取得(Secondary呼出の実音声確認に至らず)**
+- 原稿(変更なし): jf1=`AKB48の新曲『好きish』、伊藤百花が2作連続センター、近藤沙樹が初選抜`(evidence_10 S3と同一)、jf2=`合言葉はブルルクル、グロルプ、ヴンムプ、フヌクです。`(06b ja_hrと同一)。Production JA経路(`generate_japanese_title_for_new_topic`→`generate_a2_japanese_with_reading_safety`)。
+- 事象: jf1の読み解決(Production内蔵 `er025_entity_pronunciation_resolver_core_01` の `ja_web_lookup_call`、tokens=`["AKB48","ish"]`、model=`gpt-5.6-sol`)が**1回で JPY 21.4688**(入力29,205 tok・出力868 tok、web search)を消費。その直後に私のharnessの累計Guardrail(26.0)がMeter.checkで以降の全API呼出(TTS)を遮断し、jf1・jf2とも`STOPPED`(TTS 0回、ASR 0回、Azure 0回、HR到達はstop扱い=`final_lock_state=HUMAN_REVIEW_REQUIRED`だが**隔離のattempt_historyへのみ**記録)。
+- 判断: web lookup費用は想定外(委任文の見積外。T-3の暴走疑い「想定外のWeb Search発火・費用増加」に該当)→再起動せず停止(s6)。**Production resolverのJA Latin語lookup 1回21.5円は費用目標(70円/記事セット)に対して重大**(OPEN-395)。
+- fresh正例のやり直しは、(1)ラテン文字を含まない原稿(jf2のようなカタカナのみ)に限定すれば本件lookupは発火しない見込み(jf2はlookupなし=`run_call_count`は1)、(2)実行にはFable/ユーザーの再起動許可が必要。
+
+### 17-6. 費用総括(ledger `evidence_11/cost/spend_ledger.jsonl`)
+bnarr 16.1253 + xkp_miss 0.0633 + ja_fresh 21.4688(うち0はTTS) = **JPY 37.6574**(委任文の見積約8、Guardrail16を超過。超過内訳: bnarrのPro TTS単価前提誤り、ja_freshの想定外web lookup)。単価の出典=各runの`usage_log.jsonl`(`basis=token_actual`)。

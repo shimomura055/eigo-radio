@@ -208,7 +208,7 @@ def test_u1_constants_unchanged():
     # 委任_10: s1条件付きSTOPにより既定は暫定True(旧挙動)。Fable判断で解放(False)する際は judge定数と、このassertと
     # er078_asr_unified_wiring_10_test_01.py::test_u1_default_state_documented の2箇所だけを更新する。
     # U2死定数は撤去(呼出点は静的testで固定: er078_asr_unified_wiring_10_test_01.py)
-    assert uj.U1_KEEP_C1_SIMILARITY_EXCLUSIONS is True and not hasattr(uj, "U2_FORCE_SECONDARY_SCOPE")
+    assert uj.U1_KEEP_C1_SIMILARITY_EXCLUSIONS is False and not hasattr(uj, "U2_FORCE_SECONDARY_SCOPE")  # 委任_11: U1発効
 
 
 def test_c1_proper_noun_and_low_similarity_excluded_u1_current(monkeypatch):

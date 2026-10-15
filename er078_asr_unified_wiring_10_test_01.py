@@ -118,7 +118,7 @@ def test_u1_true_rolls_back_to_previous_exclusions(monkeypatch):
 
 def test_u1_default_state_documented():
     # 委任_10 s1条件付きSTOP(live負例対照でPrimary PASSが3件)により暫定True。Fable判断で解放する際はjudge定数とこのassertを更新する。
-    assert uj.U1_KEEP_C1_SIMILARITY_EXCLUSIONS is True
+    assert uj.U1_KEEP_C1_SIMILARITY_EXCLUSIONS is False  # 委任_11: U1発効(Fable判断でs1非該当)
 
 
 def test_a7_independent_of_u1():

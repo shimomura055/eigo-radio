@@ -95,13 +95,6 @@ class Phase0Regression(unittest.TestCase):
         total = 0
         for g, keys in RESCUE_SUCCESS_7_GROUPS.items():
             for k in keys:
-                if k == G8_C1_EXCLUDED:
-                    detail, n = _run(k)  # C1で対象外: 従来どおり再生成へ(誤PASSしない)
-                    self.assertEqual(n, 0)
-                    self.assertEqual(detail["scg_result"], "NOT_APPLIED")
-                    self.assertIn("entity_like_diff", detail["scg_info"]["exclusion_reason"])
-                    total += 1
-                    continue
                 detail, _ = _run(k)
                 self.assertTrue(detail["verified"], f"group {g} {k}")
                 total += 1
@@ -133,9 +126,17 @@ class Phase0Regression(unittest.TestCase):
             self.assertEqual(detail["scg_info"]["secondary_classification"], "PHONETIC_MATCH", k)
             self.assertFalse(detail["stop_retrying"], k)
 
-    def test_g7_short_text_similarity_below_0_4_not_executed(self):
+    def test_g7_short_text_similarity_below_0_4_released_by_u1(self):
+        # 委任_11(U1発効): 類似度<0.4でもPrimary NGならSecondaryを呼び、Secondary正答なら救済(旧: Azure不呼出)
         detail, n = _run(G7_SHORT_EXCLUDED)
-        self.assertEqual(n, 0, "類似度0.4未満の短文ではAzureを呼ばない")
+        self.assertEqual(n, 1, "U1発効後は類似度0.4未満でもAzureを呼ぶ")
+        self.assertTrue(detail["verified"])
+
+    def test_g7_short_text_old_behavior_under_u1_rollback(self):
+        # ロールバック(U1=True)では旧挙動(類似度<0.4はAzure不呼出)
+        with mock.patch.object(ja_secondary.unified_judge_mod, "U1_KEEP_C1_SIMILARITY_EXCLUSIONS", True):
+            detail, n = _run(G7_SHORT_EXCLUDED)
+        self.assertEqual(n, 0)
         self.assertFalse(detail["verified"])
         self.assertFalse(detail["scg_applied"])
         self.assertEqual(detail["scg_result"], "NOT_APPLIED")
@@ -146,13 +147,10 @@ class Phase0Regression(unittest.TestCase):
         executed = passed = 0
         for k, rec in FIX.items():
             detail, n = _run(k)
-            if k == G7_SHORT_EXCLUDED:
-                self.assertEqual(n, 0)
-                continue
-            if rec["existing_exclusions"]:
+            if rec["existing_exclusions"] and k != G7_SHORT_EXCLUDED:  # 委任_11: g7(ratio<0.4)はU1発効でSecondary実行
                 self.assertEqual(n, 0, k)
                 continue
-            if k == G8_C1_EXCLUDED or k in C_GROUP_EXCLUDED_BY_03:
+            if k in C_GROUP_EXCLUDED_BY_03:
                 self.assertEqual(n, 0, k)
                 self.assertFalse(detail["verified"], k)
                 continue
@@ -160,8 +158,8 @@ class Phase0Regression(unittest.TestCase):
             executed += 1
             self.assertEqual(detail["verified"], bool(rec["sec_pass"]), k)
             passed += int(detail["verified"])
-        self.assertEqual(executed, 21)  # 24 - g8(C1除外) - g12(推奨4) - g5(C2)
-        self.assertEqual(passed, 13)  # 14 - g8(C1除外)。以下は旧コメント  # META 3 + 救済7群8音声(META重複なし: g11/g8/g17/g20/g27/g31/g33x2) + g18 2 + g1 1(g7はprobeで不実行)
+        self.assertEqual(executed, 23)  # 25 - existing_exclusions - g12(推奨4) - g5(C2)。委任_11 U1発効でg7/g8も実行
+        self.assertEqual(passed, 15)  # 委任_11 U1発効: 旧13 + g7 + g8。以下は旧コメント  # META 3 + 救済7群8音声(META重複なし: g11/g8/g17/g20/g27/g31/g33x2) + g18 2 + g1 1(g7はprobeで不実行)
 
     def test_scg_evidence_fields_saved(self):
         detail, _ = _run("g35_japanese_title_a1")
@@ -231,13 +229,20 @@ class ProductionConditionRegression(unittest.TestCase):
         expected_pass = set(META_3 + LISTEN_CONFIRMED_6 + ["g17_kp5_ja_charon_a1", "g20_kp2_ja_charon_a1",
                                                            "g31_meaning_2_a1", "g33_meaning_5_a1", "g33_meaning_5_a2"])
         expected_pass.add("g11_kp5_ja_aoede_a1")
+        expected_pass.update([G7_SHORT_EXCLUDED, G8_C1_EXCLUDED])  # 委任_11 U1発効: g7(類似度<0.4)/g8(C1)も救済
         self.assertEqual(set(passed), expected_pass)
-        self.assertEqual(len(passed), 13)
+        self.assertEqual(len(passed), 15)
         self.assertEqual(len(c_ng), 5)
-        self.assertNotIn(G8_C1_EXCLUDED, passed)
 
-    def test_g8_excluded_by_implementation_not_fixture(self):
+    def test_g8_released_by_u1_not_excluded(self):
+        # 委任_11(U1発効): C1固有名詞差でもPrimary NGならSecondaryを呼ぶ(g8=ガス/カスはSecondary正答で救済)
         detail, calls = _run_prod(G8_C1_EXCLUDED)
+        self.assertEqual(calls["azure"], 1)
+        self.assertTrue(detail["verified"])
+
+    def test_g8_old_behavior_under_u1_rollback(self):
+        with mock.patch.object(ja_secondary.unified_judge_mod, "U1_KEEP_C1_SIMILARITY_EXCLUSIONS", True):
+            detail, calls = _run_prod(G8_C1_EXCLUDED)
         self.assertEqual(calls["azure"], 0)
         self.assertEqual(detail["scg_result"], "NOT_APPLIED")
 
