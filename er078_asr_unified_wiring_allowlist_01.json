@@ -1,7 +1,7 @@
 {
   "phase": "post_wiring",
   "managed_id": "ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01",
-  "generated_by": "delegation_04",
+  "generated_by": "delegation_06c",
   "entrypoints": [
     "er019_family_x_audio_production_runner_01.py",
     "er063_family_z_audio_01.py",
@@ -30,15 +30,6 @@
       "callee": "secondary_asr.evaluate_attempt_with_cascade",
       "count": 1,
       "judgement_point": "J3",
-      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
-      "category": "en_adapter_entry"
-    },
-    {
-      "module": "er003_v1_n3_01_tts_generate",
-      "function": "_post_slowdown_cascade_rescue",
-      "callee": "secondary_asr.evaluate_attempt_with_cascade_detail",
-      "count": 1,
-      "judgement_point": "J7",
       "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
       "category": "en_adapter_entry"
     },
@@ -316,9 +307,9 @@
       "module": "er019_family_x_validation_inheritance_01",
       "function": "rejudge_with_current_judge",
       "callee": "en_validator.classify_asr_match",
-      "count": 1,
+      "count": 2,
       "judgement_point": "J11",
-      "reason": "J11 引継ぎ・再利用の再判定(AUW 委任_04): 保存転写のPrimary再導出後にunified_judge(最終ANDゲート)を通す。API 0・Secondary新規呼出なし",
+      "reason": "J11 引継ぎ・再利用の再判定(AUW 委任_04): 保存転写のPrimary再導出後にunified_judge(最終ANDゲート)を通す。API 0・Secondary新規呼出なし / 委任_06c: 非ラテンKP救済(Azure転写が採用根拠)のPrimary相当再導出で+1(OF-AUW-C-01)",
       "category": "j11_unified_judge_entry"
     },
     {

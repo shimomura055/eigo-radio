@@ -602,8 +602,24 @@ def _mark_asr_judgement_inherited(reused: dict) -> None:
         reused["asr_judgement_inherited"] = reused.pop("asr_judgement")
 
 
+def _reuse_guard_blocks(cached_result: dict | None, label: str) -> dict | None:
+    """AUW 委任_06c(OF-AUW-C-03、ADDENDUM §3-1): 前回resultsのOK entryを再利用する前に、保存転写のみ(API 0)を現行の統一judgeへ
+    通す。値ガードDIFF/否定差(`reuse_blocked` markを含む)ならguard情報dictを返す(=呼出側は再利用せず再生成する)。
+    転写が無い/判定不能な旧entryは従来どおり再利用(None)。"""
+    import er078_reuse_value_guard_01 as _rvg
+    g = _rvg.guard_entry(cached_result, label=label)
+    return g if g.get("blocked") else None
+
+
+def _regenerate_after_reuse_block(generate_fn, guard_info: dict):
+    r = generate_fn()
+    if isinstance(r, dict):
+        r["reuse_value_guard_blocked_previous"] = {k: guard_info.get(k) for k in ("reason", "reason_code", "unified_state")}
+    return r
+
+
 def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_fn, expected_text: str | None = None):
-    generate_fn = _with_recorded_sha256(generate_fn)
+    generate_fn = secondary_run_scope.guard_generate(_with_recorded_sha256(generate_fn), name)  # 委任_06c: circuit open中は技術STOP
     """前回run(同一out_dir)のOK segmentを再利用する。Stage 3c(見出し
     sub-segment分離)で判明した安全性ギャップの修正: 従来はstatus=="OK"+
     wavファイル存在のみで再利用可否を判定していたが、これだと
@@ -637,6 +653,9 @@ def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_f
     if cached_result and cached_result.get("status") == "OK" and os.path.exists(wav_path):
         if expected_text is not None and cached_result.get("canonical_text") != expected_text:
             return generate_fn()
+        _blk = _reuse_guard_blocks(cached_result, name)
+        if _blk is not None:
+            return _regenerate_after_reuse_block(generate_fn, _blk)
         reused = dict(cached_result)
         reused["reused_from_previous_run"] = True
         _mark_asr_judgement_inherited(reused)
@@ -663,6 +682,7 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
     使用形そのもの、Master Store側のversioningで別途管理)は既定どおり
     require_style_version=Falseのまま(この引数を渡さない呼び出し元は
     従来どおりの挙動)。"""
+    generate_fn = secondary_run_scope.guard_generate(generate_fn, f"kp{rank}_{role}")  # 委任_06c: circuit open中は技術STOP
     _skip = _only_segments_skip(f"kp{rank}_{role}")
     if _skip is not None:
         # 是正②: 上記_generate_or_reuseと同じ証拠つき引継ぎ(Key Phrase component版)。
@@ -680,6 +700,9 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
     if cached_result and cached_result.get("status") == "OK" and os.path.exists(wav_path):
         if expected_text is not None and cached_result.get("canonical_text") != expected_text:
             return generate_fn()
+        _blk = _reuse_guard_blocks(cached_result, f"kp{rank}_{role}")
+        if _blk is not None:
+            return _regenerate_after_reuse_block(generate_fn, _blk)
         reused = dict(cached_result)
         reused["reused_from_previous_run"] = True
         _mark_asr_judgement_inherited(reused)

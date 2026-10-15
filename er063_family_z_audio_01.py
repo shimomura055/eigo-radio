@@ -580,10 +580,20 @@ def generate_or_reuse_z(cached_entry: dict | None, spec: ClipSpec, wav_path: str
     """判定キー {canonical_text, FAMILY_Z_ROLE_STYLE_VERSION, voice, style prefix sha256, tts_backend}
     の全一致のみ再利用。キーはentryの reuse_key に保存。1つでも異なれば再生成。
     再利用時はwav実在・status OK・sha256一致(stale検知)も要求。"""
+    generate_fn = secondary_run_scope.guard_generate(generate_fn, str(spec.clip_id))  # 委任_06c: circuit open中は技術STOP
     key = build_reuse_key(spec)
     if cached_entry and cached_entry.get("status") == "OK" and cached_entry.get("reuse_key") == key and os.path.exists(wav_path):
         recorded = cached_entry.get("sha256")
         if recorded is None or _sha_file(wav_path) == recorded:
+            # AUW 委任_06c(OF-AUW-C-03、ADDENDUM §3-1): 再利用前に保存転写のみ(API 0)を現行の統一judgeへ通し、値ガードDIFF/否定差
+            # (`reuse_blocked` mark含む)なら再利用せず再生成する。転写が無い/判定不能なentryは従来どおり再利用。
+            import er078_reuse_value_guard_01 as _rvg
+            _g = _rvg.guard_entry(cached_entry, label=str(spec.clip_id), canonical_text=None)
+            if _g.get("blocked"):
+                _r = generate_fn()
+                if isinstance(_r, dict):
+                    _r["reuse_value_guard_blocked_previous"] = {k: _g.get(k) for k in ("reason", "reason_code", "unified_state")}
+                return _r
             reused = dict(cached_entry)
             reused["reused_from_previous_run"] = True
             if "asr_judgement" in reused:   # AUW 委任_03: 再利用音声の元のWARNINGを継承(asr_judgement_inherited)
@@ -636,12 +646,13 @@ def real_generators() -> dict:
         text = _norm_for_tts(spec)
         if spec.level == "a2":
             # Std: 既存Voice A/B Std仕様(A2_ENGLISH_STYLE_PREFIX_SLOWER + 6%後処理)。PD8は渡さない。
-            r = bvoices.generate_voice_body_wide_margin(
-                text, out_path, spec.voice, style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER)
-            if r.get("status") == "OK":
-                narration_dir = out_path.rsplit("/", 1)[0]
-                r = n3_tts.apply_a2_slowdown_postprocess(spec.clip_id, narration_dir, text, r)
-            return r
+            # 委任_06c(OF-AUW-C-08、原文L204「最大3回のTTS生成フロー」): 減速後NGでも通算TTS3回の残予算で取り直す外側ループ
+            # (旧: 減速後NGは再生成せずSTOPPED)。Dialogue固有のPrompt(A2_ENGLISH_STYLE_PREFIX_SLOWER)・Voice・話者帰属は不変。
+            return n3_tts.generate_with_a2_slowdown_outer_loop(
+                spec.clip_id, text, out_path,
+                lambda max_attempts: bvoices.generate_voice_body_wide_margin(
+                    text, out_path, spec.voice, max_attempts=max_attempts,
+                    style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER))
         return bvoices.generate_voice_body_wide_margin(text, out_path, spec.voice)  # style_prefix_overrideを渡さない
 
     def charon_en(spec, out_path):

@@ -117,64 +117,6 @@ A2_SLOWDOWN_TARGET_SEGMENTS = (
 )
 
 
-def _post_slowdown_cascade_rescue(result: dict, tts_input_text: str, asr_text: str, classification,
-                                  out_path: str, segment_id: str) -> bool:
-    """減速後再検証でPrimary判定がASR_VALIDATION_UNCERTAIN(固有名詞/同音語らしき
-    差のみ)の場合に限り、減速前の検証と同じ共有Cascade
-    (secondary_asr.evaluate_attempt_with_cascade_detail: CMU Case A・Tier3
-    Secondary ASR corroboration等、全て承認済みの既存規則)を最終音声に対して
-    実行する。verified=Trueの場合のみTrueを返す。例外・Secondary失敗・
-    corroborationなしの場合はFalse(従来どおりSTOPPED、fail-closed)。TRUE_CONTENT_
-    MISMATCH/数字/否定の不一致はCascade対象外のまま(従来どおり不合格)。
-    HR queueへは書き込まない(_detail版を使用、Review Lock側の既存経路に委ねる)。"""
-    if classification.classification != "ASR_VALIDATION_UNCERTAIN":
-        return False
-    if not secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED:
-        return False
-    # FAMILY-Z-MELOS-PROPER-NOUN-ASR-ROOT-CAUSE-01 委任_03(Opus任意改善):
-    # (1) cascade呼出前の準備(ledger参照)で失敗した場合は invoked=False(API未消費)。
-    # (2) cascade呼出中に例外が出た場合は、API呼出・cost記録が既に進んでいた可能性があるため
-    #     invoked=True(cascade_entered)+aborted_by_exceptionとして記録する(誤ってinvoked=Falseにしない)。
-    # (3) cost logger未初期化・単価未登録等の設定不備(er006 _resolve_unresolved_entity_for_review
-    #     L237-241の既存方針と同じ)は揉み消さず伝播させる。ネットワーク/SDK等の実行時例外のみfail-closed。
-    try:
-        import er006_pronunciation_ledger_01 as pronun_ledger
-        ledger_phrases = [h["canonical_spelling"]
-                          for h in pronun_ledger.get_hint_for_text(tts_input_text, min_confidence="low")]
-    except Exception as exc:  # fail-closed: cascade未開始(API未消費)
-        result["post_slowdown_cascade"] = {"invoked": False, "cascade_entered": False,
-                                           "error": f"{type(exc).__name__}: {exc}"}
-        return False
-    try:
-        detail = secondary_asr.evaluate_attempt_with_cascade_detail(
-            tts_input_text, asr_text, [], out_path, language="en-US", ledger_phrases=ledger_phrases,
-            cascade_enabled=True, segment_id=segment_id)
-    except RuntimeError as exc:
-        if "init_logger" in str(exc) or "[STOP]" in str(exc):
-            raise  # 設定不備(cost logger未初期化/単価未登録)は握りつぶさない
-        result["post_slowdown_cascade"] = {"invoked": True, "cascade_entered": True, "aborted_by_exception": True,
-                                           "error": f"{type(exc).__name__}: {exc}"}
-        return False
-    except Exception as exc:  # fail-closed: 例外時は救済しない。API呼出済みの可能性があるためinvoked=True
-        result["post_slowdown_cascade"] = {"invoked": True, "cascade_entered": True, "aborted_by_exception": True,
-                                           "error": f"{type(exc).__name__}: {exc}"}
-        return False
-    cls = detail.get("classification")
-    result["post_slowdown_cascade"] = {
-        "invoked": bool(detail.get("cascade_invoked")), "cascade_entered": True,
-        "verified": bool(detail.get("verified")),
-        "final_status": detail.get("final_status"), "steps": detail.get("steps"),
-        "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None) if cls is not None else None,
-        "asr_judgement": detail.get("asr_judgement"),   # AUW 委任_03(additive): 減速後wavに対する統一judgeの監査record
-    }
-    if detail.get("verified") and detail.get("asr_judgement") is not None:
-        # 最終採用音声(減速後wav)の統一判定recordを最上位へ。減速前(内側)のrecordは asr_judgement_pre_slowdown へ退避。
-        if result.get("asr_judgement") is not None:
-            result["asr_judgement_pre_slowdown"] = result.get("asr_judgement")
-        result["asr_judgement"] = detail["asr_judgement"]
-    return bool(detail.get("verified"))
-
-
 def _post_slowdown_unified_judge(result: dict, tts_input_text: str, asr_text: str, out_path: str,
                                  segment_id: str, is_last_slot: bool) -> dict:
     """AUW 委任_05(J7): 6%減速後のwavを**統一judge(EN adapter)**で判定する。旧実装は直接
@@ -186,7 +128,7 @@ def _post_slowdown_unified_judge(result: dict, tts_input_text: str, asr_text: st
     減速後wavは減速前wavと別sha256のため、Secondaryは減速後wavに対して1回(同一wavはSecondaryCache共有で重複なし)。
     enable_connected_speech_equivalence_layerは従来どおり渡さない(減速後再検証はもともと非適用=Primary層は不変)。
     adapter例外は fail-closed(verified=False)。cost logger未初期化・単価未登録等の設定不備(init_logger/[STOP])は
-    握りつぶさず伝播する(旧_post_slowdown_cascade_rescueと同じ方針)。HR queueへは書かない(_detail版、Review Lock側の
+    握りつぶさず伝播する(旧_post_slowdown_cascade_rescue[委任_06cで撤去]と同じ方針)。HR queueへは書かない(_detail版、Review Lock側の
     既存経路に委ねる)。戻り値: adapterのdetail dict(例外時は {"verified": False, "aborted_by_exception": True})。"""
     ledger_error = None
     try:
@@ -426,6 +368,48 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
     result["tts_generations_used"] = generations_used
     result["slowdown_attempts_log"] = slowdown_attempts_log
     return result
+
+def generate_with_a2_slowdown_outer_loop(name: str, tts_input: str, out_path: str, gen_fn,
+                                         max_slowdown_attempts: int = 3) -> dict:
+    """AUW 委任_06c(OF-AUW-C-08、ユーザー原文L204「最大3回のTTS生成フロー」): 外側ループを持たなかった
+    Dialogue(Std)[`er063.dialogue` a2]/Voices A2[`er012_b_family_voices_a2_production_01`の`*_with_a2_slowdown`]向けの、
+    `generate_a2_segment_with_slowdown`と同じ構造の外側ループ。`gen_fn(max_attempts)->result dict`(減速前の通常ペース生成。
+    内側のstandard/fallback再試行込み)→6%減速→減速後再検証(統一judge, J7)を1セットとし、減速後NGのときは**通算TTS生成3回の
+    残予算の範囲で**通常ペースから取り直す(旧: 減速後NGは再生成せずSTOPPED)。Prompt・Voice・A2 6%減速・Dialogue固有例外
+    (話者帰属は呼出側)・閾値は不変。KP英語phraseの4回構成(2026-09-01ユーザー決定)は本関数の対象外(既存例外として維持)。"""
+    narration_dir = out_path.rsplit("/", 1)[0]
+    total_budget = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS
+    generations_used = 0
+    slowdown_attempts_log = []
+    result = None
+    for attempt in range(1, max_slowdown_attempts + 1):
+        remaining = total_budget - generations_used
+        if remaining <= 0:
+            break
+        result = gen_fn(remaining)
+        generations_used += count_tts_generations_in_result(result)
+        if result.get("status") != "OK":
+            break  # 通常ペース自体が失敗(内側のstandard/fallback exhausted。既存のSTOPPED/Human Review経路)
+        result = apply_a2_slowdown_postprocess(
+            name, narration_dir, tts_input, result,
+            is_last_slot=(generations_used >= total_budget or attempt >= max_slowdown_attempts))
+        slowdown_attempts_log.append({
+            "attempt": attempt, "status": result.get("status"),
+            "post_slowdown_classification": result.get("post_slowdown_classification"),
+            "post_slowdown_asr_text": result.get("post_slowdown_asr_text"),
+            "post_slowdown_cascade": result.get("post_slowdown_cascade"),
+            "tts_generations_used_cumulative": generations_used,
+        })
+        review_lock.append_attempt_history_event(out_path, "A2_SLOWDOWN_REVERIFY", slowdown_attempts_log[-1])
+        if result.get("status") == "OK":
+            break
+    if result is not None and result.get("status") != "OK" and generations_used >= total_budget:
+        result["tts_generation_cap_reached"] = True
+    if result is not None:
+        result["tts_generations_used"] = generations_used
+        result["slowdown_attempts_log"] = slowdown_attempts_log
+    return result
+
 
 # ER-006-POOL-PREPROD-HARDENING-01: segment単位のCost Telemetry。
 # cl.install()が呼ばれていない通常実行(cost logger未インストール時)は

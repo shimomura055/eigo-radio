@@ -264,6 +264,21 @@ main 無変更。判定の宣言(PRODUCTION_WIRED 可否)はしない。**材料
 ## 12-9. 費用の再推定方法
 `er078_auw_cost_revise_06b.py`: TTS=呼出数×平均 clip 秒×0.0243、ASR=呼出数×平均 clip 秒×0.0047(いずれも `xrun/x_out/raw_usage_log.jsonl` の token 実測から校正)、Azure=送信 wav 秒の実測×0.0444。結果 `cost/revised_estimates.json`。xrun/brun/crun は Production cost logger の実額に置換。lr_en は LR の Luna 8 call を 1 call 約 0.12 JPY(gpt-6-luna 0.1/0.5 USD per M token、約 1500 in/1200 out)で加算。
 
+### 12-9(追補・委任_06c): 「Primary NGのたびにAzure 1回」の増分費用試算(OF-AUW-C-10、API 0)
+出典: `er078_auw_cost_increment_06c.py`(`er011_output/attempt_history.jsonl`、action=PROCEED・language=en・test/wiring系theme除外)→ `evidence_06c/cost_increment_06c.json`。単価: Azure 0.0444円/秒(=$1/h x 160円/USD / 3600)。
+- **増分の発生源**: 旧は Primary が TRUE_CONTENT_MISMATCH(TCM)の場合 Secondary 不呼出。新(原文L54-55)は不一致の種類によらず(保護差・除外表を除き)Secondary 1回。ASR_VALIDATION_UNCERTAIN は旧 Cascade でも Azure を呼んでいた(旧最大2回→新1回=削減側)ので増分に数えない(悲観ケースのみ数える)。
+- **実測入力(本文 = Full Story part・Point 本文、EN)**: attempt_detail 付き 217 attempt 中 TCM 6(2.8%、95%上限 5.9%)・UNCERTAIN 14(6.5%)。1 call あたり TTS attempt 平均 1.235(全 600 call)。KP 英語 phrase は TCM 5.6%(6/108)だが約2秒/clip(Azure 約0.09円/呼出)で 5本/level でも約0.03円=無視できる。短文ナレーション(preview・topic_intro・comment)は 38 attempt 中 TCM 1。
+- **試算(1 記事セット = Advanced 本文3 part + Standard 本文3 part。Standard は減速前後の2判定で最大2回)**:
+
+| 本文 part の音声長 | Azure/呼出 | 中央値(TCM率 2.8%) | 95%上限(TCM率 5.9%) | 悲観(TCM+UNCERTAIN 9.2%を全て増分) | 全6 part が各1回NG(非現実的な上限) |
+|---|---|---|---|---|---|
+| 40秒 | 1.78円 | **0.55円/セット** | 1.17円 | 1.82円 | 16.0円 |
+| 60秒 | 2.66円 | **0.82円/セット** | 1.74円 | 2.72円 | 23.9円 |
+
+- 15-9「+1円/セット以上は記録」: 中央値(0.55〜0.82円)は閾値未満、95%上限(1.2〜1.7円)・悲観(1.8〜2.7円)は閾値超 → 記録対象。目標70円/セットに対する比: 中央値 約0.8〜1.2%、悲観でも約2.6〜3.9%。現行ベースライン(円/セット)は 15-9 のとおり未測定のため「現行→予測」は差分のみ提示。
+- KP 解説3回化(§12-7 1)の増分(期待+0.09円・最悪+2.2円/セット)と本試算は独立に加算される(合算の悲観側でも約5円/セット以内)。PASS_WITH_WARNING 採用による再生成回避(削減側)は、ログに Primary NG→Secondary 救済の記録が無く定量化できない(削減方向、未差引き)。
+- 注意: attempt_history.jsonl は近年のみ attempts_detail を持つ(217 attempt)。TCM 6 件は小標本のため 95%上限を併記した。
+
 ## 12-10. `APPLICABILITY_MATRIX_01.csv` 43 行の実音声カバレッジ
 - 実音声(34 行): X-B1-01,02,03,04,05,07 / X-A2-01,02,03,04,05,06 / Z-B1-01,02,03 / Z-A2-01,02,03,04,05 / Z-ALL-01,02 / A-B1-01,02,03,04 / A-A2-01,02 / B-A2-01(Voice A/B 本文)/ B-B1-01(Voice A/B leaf)/ C-01(narrator・device・voice 本文)/ XC-01,02,03。
 - 一部(1 行): A-A2-03(KP 日本語意味は実音声、KP 英語は Master Store 再利用)。

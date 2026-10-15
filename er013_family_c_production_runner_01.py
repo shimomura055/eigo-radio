@@ -322,7 +322,7 @@ def purge_segment_outputs(audio_dir: str, seg_id: str) -> None:
             os.remove(p)
 
 
-def resumable_reuse(out_path: str, expected_text_sha256: str) -> dict | None:
+def resumable_reuse(out_path: str, expected_text_sha256: str, canonical_text: str | None = None) -> dict | None:
     """既存wav+.okがあり、記録済みtts_text sha256が現在のplanと一致する
     場合のみresume(skip)する。sha256不一致(本文変更等)またはmeta欠如かつ
     レガシー.ok(Trial由来コピー)の場合は、現時点のtext基準でmetaを新規に
@@ -339,6 +339,13 @@ def resumable_reuse(out_path: str, expected_text_sha256: str) -> dict | None:
         # AUW 委任_05(additive): 同一wav(sha256一致)の場合のみ元の判定recordを継承する(WARNINGの事後試聴リスト引継ぎ)。
         if meta.get("asr_judgement") is not None and meta.get("wav_sha256") == p9a.sha256_file(out_path):
             inherited_judgement = meta["asr_judgement"]
+            # AUW 委任_06c(OF-AUW-C-03、ADDENDUM §3-1): 再利用前に保存転写のみ(API 0)を現行の統一judgeへ通し、値ガードDIFF/否定差なら
+            # 再利用せず(None=呼出側が再生成)。canonical_text未指定の旧呼出は従来どおり。
+            if canonical_text:
+                import er078_reuse_value_guard_01 as _rvg
+                if _rvg.guard_entry({"asr_judgement": inherited_judgement}, label=os.path.basename(out_path),
+                                    canonical_text=canonical_text).get("blocked"):
+                    return None
     else:
         with open(meta_path, "w", encoding="utf-8") as f:
             json.dump({"tts_text_sha256": expected_text_sha256,
@@ -373,6 +380,10 @@ def tts_call_for_voice(voice: str, text: str, out_path: str, label: str, budget:
     (article_config)で指定されたvoice_nameでgenerate_voice_body_wide_margin
     (内部に独自のASR検証+attempt cascadeを持つ)を呼ぶ。"""
     budget.check_before(TTS_CALL_EST_JPY, label)
+    if secondary_run_scope.circuit_open():
+        # 委任_06c(OF-AUW-C-06): Secondary連続障害のcircuit open中は残りclipのTTSを呼ばず技術STOP(承認不要・再実行で再開可・HR Lock非投入)。
+        # 呼出側は status!=OK で RuntimeError(..._TTS_FAILED)を出してstageを止める。`.ok` markerはresume用に完了clip分が残る。
+        return secondary_run_scope.technical_stop_entry(label)
     if voice == "narrator":
         expected_substring = text[:20]
         r = repro01.generate_narration_snippet_verified_strict(text, "en", out_path, expected_substring)
@@ -478,12 +489,12 @@ def run_simple_narrator_asset(name: str, text: str, language: str, out_dir: str,
     (Key Phrase等と異なりfrom-scratch生成が可能な単純asset)。"""
     out_path = f"{audio_dir}/{name}"
     text_sha = _sha256_text(text)
-    reused = resumable_reuse(out_path, text_sha) if resume else None
+    reused = resumable_reuse(out_path, text_sha, text) if resume else None
     if reused is None and reuse_from:
         src = f"{reuse_from}/audio/{name}"
         if os.path.exists(src):
             _copy_with_ok(src, out_path)
-            reused = resumable_reuse(out_path, text_sha)
+            reused = resumable_reuse(out_path, text_sha, text)
     if reused is not None:
         return reused, True
     r = tts_call_for_voice("narrator", text, out_path, name.removesuffix(".wav"), budget, {})
@@ -617,12 +628,12 @@ def run_comments_stage_a2(level_cfg: dict, out_dir: str, audio_dir: str, article
         name = f"comment_{n}_ja.wav"
         out_path = f"{audio_dir}/{name}"
         text_sha = _sha256_text(text)
-        reused = resumable_reuse(out_path, text_sha) if resume else None
+        reused = resumable_reuse(out_path, text_sha, text) if resume else None
         if reused is None and reuse_from:
             src = f"{reuse_from}/audio/{name}"
             if os.path.exists(src):
                 _copy_with_ok(src, out_path)
-                reused = resumable_reuse(out_path, text_sha)
+                reused = resumable_reuse(out_path, text_sha, text)
         if reused is not None:
             r = reused
             was_resumed = True
@@ -705,12 +716,12 @@ def run_full_generation(config: dict, level: str, out_root: str, budget_jpy: flo
         out_path = f"{audio_dir}/{seg['id']}.wav"
         text_sha = _sha256_text(seg["tts_text"])
         force_regen = seg["id"] in only_segments_set
-        reused = None if force_regen else (resumable_reuse(out_path, text_sha) if resume else None)
+        reused = None if force_regen else (resumable_reuse(out_path, text_sha, seg["tts_text"]) if resume else None)
         if reused is None and reuse_from and not force_regen:
             src = f"{reuse_from}/audio/{seg['id']}.wav"
             if os.path.exists(src):
                 _copy_with_ok(src, out_path)
-                reused = resumable_reuse(out_path, text_sha)
+                reused = resumable_reuse(out_path, text_sha, seg["tts_text"])
         if reused is not None:
             r = reused
             was_resumed = True

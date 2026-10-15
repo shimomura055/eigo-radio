@@ -266,15 +266,14 @@ def test_dialogue_and_point_headings_segment_id_none(monkeypatch):
 
 
 def test_post_slowdown_rescue_keeps_m1_audit(monkeypatch):
+    # AUW 委任_06c(OF-AUW-C-13): 旧`_post_slowdown_cascade_rescue`(Production未到達の死コード)を撤去し、統一経路(J7:
+    # `_post_slowdown_unified_judge`→EN adapter)へ付替え。意図(減速後再検証でもM1受理のaudit[m1_multi_candidate step]が残る)は不変。
     import er003_v1_n3_01_tts_generate as g
     Calls(monkeypatch)
     res = {}
-    ok = g._post_slowdown_cascade_rescue(res, CANON, HIT, sec.val.classify_asr_match(CANON, HIT),
-                                         "dummy.wav", "full_story_part1")
-    assert ok is True
-    p = res["post_slowdown_cascade"]
-    assert p["verified"] and p["final_status"] == M.ACCEPT_REASON
-    assert any(s["step"] == "m1_multi_candidate" for s in p["steps"])
+    detail = g._post_slowdown_unified_judge(res, CANON, HIT, "dummy.wav", "full_story_part1", True)
+    assert detail["verified"] is True and detail["final_status"] == M.ACCEPT_REASON
+    assert any(s["step"] == "m1_multi_candidate" for s in detail["steps"])
 
 
 def test_wrapper_passes_m1_enabled(monkeypatch):

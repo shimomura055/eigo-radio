@@ -411,7 +411,9 @@ def test_post_slowdown_rescue_replaces_final_asr_judgement(tmp_path, monkeypatch
     cls = type("C", (), {"classification": "ASR_VALIDATION_UNCERTAIN"})()
     with mock.patch.object(tg.secondary_asr, "evaluate_attempt_with_cascade_detail", return_value=detail), \
          mock.patch("er006_pronunciation_ledger_01.get_hint_for_text", return_value=[]):
-        ok = tg._post_slowdown_cascade_rescue(result, "Melos called.", "Mellos called.", cls, str(tmp_path / "a.wav"), "full_story_part1")
+        # 委任_06c(OF-AUW-C-13): 旧`_post_slowdown_cascade_rescue`撤去 -> 統一経路(J7)へ付替え(同じ意図: 最終採用音声のrecordを最上位へ)。
+        d = tg._post_slowdown_unified_judge(result, "Melos called.", "Mellos called.", str(tmp_path / "a.wav"), "full_story_part1", True)
+        ok = bool(d["verified"])
     assert ok is True and result["asr_judgement"] == j_final and result["asr_judgement_pre_slowdown"]["state"] == "PASS"
 
 

@@ -209,8 +209,9 @@ def test_cascade_replay_user_example_stays_non_pass_with_supporting_secondary():
         assert r["connected_speech_equivalence_layer_invoked"] is False  # CS/F1経由の受理はない
         assert "cs_equivalence" not in aj["adapter"]["layers"]
         assert calls == {"secondary": 1, "local": 0}  # Secondaryは統一judgeの1回のみ
-        if r["verified"]:
-            assert aj["reason_code"] == "secondary_confirmed" and aj["state"] == "PASS_WITH_WARNING", aj  # 受理はSecondary独立確認のみ+要試聴
+        # 委任_06c(OF-AUW-C-14): 条件付きassert(`if r["verified"]:`)を無条件化。mock条件(Secondaryがcanonical全文を返す)下では必ず受理される。
+        assert r["verified"] is True, (seg, aj["state"], aj["reason_code"])
+        assert aj["reason_code"] == "secondary_confirmed" and aj["state"] == "PASS_WITH_WARNING", aj  # 受理はSecondary独立確認のみ+要試聴
         # (2) 独立証拠なし(Secondaryもprimaryと同じ"dogs")ならNGのまま=旧期待(non-pass)を維持
         r2, calls2 = _replay(c, a, a, seg)
         assert r2["verified"] is False, (seg, r2["classification"].classification)
@@ -228,8 +229,8 @@ def test_cascade_replay_multi_residual_after_first_eq_eligible_diff_stays_non_pa
         assert aj["primary"]["passed"] is False
         assert r["connected_speech_equivalence_layer_invoked"] is False
         assert calls == {"secondary": 1, "local": 0}
-        if r["verified"]:
-            assert aj["reason_code"] == "secondary_confirmed" and aj["state"] == "PASS_WITH_WARNING", aj
+        assert r["verified"] is True, (seg, aj["state"], aj["reason_code"])  # 委任_06c(OF-AUW-C-14): 無条件化
+        assert aj["reason_code"] == "secondary_confirmed" and aj["state"] == "PASS_WITH_WARNING", aj
         r2, _ = _replay(canonical, primary, primary, seg)
         assert r2["verified"] is False
         assert r2["connected_speech_equivalence_layer_invoked"] is False

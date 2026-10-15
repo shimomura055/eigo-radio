@@ -101,7 +101,7 @@ def get_full_text_via_azure_stt_with_phrase_list(
             phrase_list.addPhrase(phrase)
 
     segments = []
-    done = {"flag": False, "reason": None}
+    done = {"flag": False, "reason": None, "cancel_error": None}
 
     def on_recognized(evt):
         if evt.result.reason == speechsdk.ResultReason.RecognizedSpeech:
@@ -111,9 +111,22 @@ def get_full_text_via_azure_stt_with_phrase_list(
         done["flag"] = True
         done["reason"] = str(evt)
 
+    def on_canceled(evt):
+        # 委任_06c(OF-AUW-C-02): canceledをsession_stoppedと同等に扱って部分転写をerr=Noneで返さない
+        # (JA `er007_ja_secondary_asr_01._azure_stt_strict`と同じ。CancellationReason.Error=認証/ネットワーク/サービス
+        # エラーはtext=None+err。EndOfStream[ファイル正常終了]は正常)。部分転写はPASS根拠にしない。
+        try:
+            details = evt.cancellation_details
+            if details.reason == speechsdk.CancellationReason.Error:
+                done["cancel_error"] = f"CancellationReason.Error: {getattr(details, 'error_details', None)}"
+        except Exception as exc:  # noqa: BLE001  詳細取得不能=保守側でError扱い
+            done["cancel_error"] = f"canceled(詳細取得不能): {exc}"
+        done["flag"] = True
+        done["reason"] = "canceled"
+
     recognizer.recognized.connect(on_recognized)
     recognizer.session_stopped.connect(on_stopped)
-    recognizer.canceled.connect(on_stopped)
+    recognizer.canceled.connect(on_canceled)
 
     t0 = time.time()
     recognizer.start_continuous_recognition()
@@ -132,6 +145,15 @@ def get_full_text_via_azure_stt_with_phrase_list(
             "audio_duration_submitted_seconds": duration, "phrase_list_size": len(phrases or []),
         })
         return None, f"連続認識がtimeout({timeout_seconds}秒)内に完了しませんでした"
+
+    if done["cancel_error"]:
+        cl.record({
+            "provider": "azure", "api": "get_full_text_via_azure_stt_with_phrase_list",
+            "model_id": "azure-speech-stt", "locale": language, "attempt_number": 1,
+            "success": False, "elapsed_seconds": elapsed, "usage_source": "LOCAL_WAV_HEADER_EXACT",
+            "audio_duration_submitted_seconds": duration, "phrase_list_size": len(phrases or []),
+        })
+        return None, done["cancel_error"]
 
     cl.record({
         "provider": "azure", "api": "get_full_text_via_azure_stt_with_phrase_list",
@@ -639,7 +661,12 @@ class _AzureShared:
             self.cost_guard_triggered = True
             return unified_judge_mod.SecondaryOutcome(None, error="cost_guard_exceeded")
         self.real_calls += 1
-        text, err = get_full_text_via_azure_stt_with_phrase_list(self.wav_path, language=self.language, phrases=self.phrases)
+        try:
+            text, err = get_full_text_via_azure_stt_with_phrase_list(self.wav_path, language=self.language, phrases=self.phrases)
+        except Exception as exc:  # 委任_06c(OF-AUW-C-02): CS/Tier3/非ラテン3層+監査recordを一括でSecondary障害として扱う
+            if unified_judge_mod.is_config_stop_error(exc):
+                raise  # 設定不備(cost logger未init/単価未登録)は握りつぶさず伝播(er003:152-154と同方針)
+            return unified_judge_mod.SecondaryOutcome(None, error=f"{type(exc).__name__}: {exc}")
         return unified_judge_mod.SecondaryOutcome(text, error=err)
 
     def outcome(self) -> "unified_judge_mod.SecondaryOutcome":
@@ -727,6 +754,7 @@ def evaluate_attempt_with_cascade_detail(
     az = _AzureShared(wav_path, language, ledger_phrases, sha or f"nosha:{id(result)}", cache)
     primary_warnings: list = []
     layers: list = []
+    adopted_text: Optional[str] = None  # 委任_06c(OF-AUW-C-01): 非ラテン層でAzure転写が採用根拠のとき、その転写(最終ANDゲート対象)
 
     if (not verified and enable_connected_speech_equivalence_layer
             and cls.classification == "TRUE_CONTENT_MISMATCH" and cls.protected.passed):
@@ -851,6 +879,7 @@ def evaluate_attempt_with_cascade_detail(
             result["classification"] = cls_nl
             verified = True
             cls = cls_nl
+            adopted_text = text_nl
             primary_warnings.append(unified_judge_mod.W_SECONDARY_CONFIRMED)  # Secondaryが救済した=事後試聴対象
 
     if not verified:
@@ -883,7 +912,8 @@ def evaluate_attempt_with_cascade_detail(
     primary = unified_judge_mod.PrimaryResult(
         passed=bool(verified), text=asr_text, label=str(result.get("final_status") or cls.classification),
         equivalence_basis=_equivalence_basis_of(cls) if verified else None,
-        warning_labels=tuple(dict.fromkeys(primary_warnings)), signals=signals)
+        warning_labels=tuple(dict.fromkeys(primary_warnings)), signals=signals,
+        adopted_text=adopted_text if verified else None)
     ctx = unified_judge_mod.AttemptCtx(
         canonical_text=canonical_text, wav_path=wav_path, wav_sha256=az.sha, audio_seconds=_wav_duration_seconds(wav_path),
         segment_key=segment_id or "", script_version=actx.get("script_version", "v0"), slot=int(actx.get("slot", 1)),
@@ -954,7 +984,16 @@ def evaluate_attempt_with_cascade_detail(
         result["classification"] = cls
         if audit.get("technical_stop") or jr.secondary_unavailable:
             result["technical_stop"] = audit.get("technical_stop")
-        if bool(actx.get("is_last_slot", False)):
+        # 委任_06c(OF-AUW-C-06、ADDENDUM §4): NG理由が**Secondary障害のみ**(NG_SECONDARY_UNAVAILABLE)の最終slotは、人間が聞いて判断する
+        # 品質問題ではなく技術障害のため、Human Review(Lock/queue)へ投入しない。`technical_stop`(truthy dict)+status名で
+        # 技術STOP(承認不要・再実行で再開可)として返し、runnerがcircuit_open/technical_stopを読んで残りclipを停止・報告する。
+        _tech_only = jr.state == unified_judge_mod.NG_SECONDARY_UNAVAILABLE
+        if _tech_only:
+            result["human_review_required"] = False
+            result["technical_stop"] = audit.get("technical_stop") or {"type": "SECONDARY_UNAVAILABLE", "restartable": True,
+                                                                        "approval_required": False}
+            result["technical_stop_status"] = "TECHNICAL_STOP_SECONDARY_UNAVAILABLE"
+        if bool(actx.get("is_last_slot", False)) and not _tech_only:
             result["human_review_required"] = True
             if is_entity_like_mismatch(cls):
                 pronunciation_lookups = {}

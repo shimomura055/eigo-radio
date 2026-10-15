@@ -317,6 +317,8 @@ def _run_scg_secondary_confirm(canonical_text: str, wav_path: str,
         text, err = _azure_stt_strict(
             wav_path, language="ja-JP", timeout_seconds=SCG_AZURE_TIMEOUT_SECONDS)
     except Exception as e:  # noqa: BLE001  安全側: 例外は従来動作へ戻す
+        if unified_judge_mod.is_config_stop_error(e):
+            raise  # 委任_06c(OF-AUW-C-02): 設定不備(init_logger未呼出/[STOP]単価未登録)は握りつぶさない
         err = f"{type(e).__name__}: {e}"
     info["wall_seconds"] = round(time.time() - t0, 2)
     info["timestamp"] = time.strftime("%Y-%m-%dT%H:%M:%S")
@@ -676,7 +678,14 @@ def evaluate_attempt_ja_with_cascade_detail(
             cls.scg_info = scg_info  # NG/不実行/UNAVAILABLE: 従来どおり再生成へ。証跡だけ付与(既存キー不変)
         if audit.get("technical_stop") or jr.secondary_unavailable:
             result["technical_stop"] = audit.get("technical_stop")
-        if bool(actx.get("is_last_slot", False)):
+        # 委任_06c(OF-AUW-C-06、ADDENDUM §4): NG理由がSecondary障害のみなら技術STOP(HR Lock/queueへ投入しない)。ENと同一規約。
+        _tech_only = jr.state == unified_judge_mod.NG_SECONDARY_UNAVAILABLE
+        if _tech_only:
+            result["human_review_required"] = False
+            result["technical_stop"] = audit.get("technical_stop") or {"type": "SECONDARY_UNAVAILABLE", "restartable": True,
+                                                                        "approval_required": False}
+            result["technical_stop_status"] = "TECHNICAL_STOP_SECONDARY_UNAVAILABLE"
+        if bool(actx.get("is_last_slot", False)) and not _tech_only:
             result["human_review_required"] = True
     audit["adapter"] = {"layers": (["numeric_value_equivalence"] if eq_cls is not None else []),
                         "azure_real_calls": 1 if sec.get("called") else 0, "cost_guard_triggered": state["cost_guard"],

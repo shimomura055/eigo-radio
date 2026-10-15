@@ -20,6 +20,43 @@ def run_scope_active() -> bool:
     return _secondary_module()._RUN_STATE is not None
 
 
+# 委任_06c(OF-AUW-C-06、ADDENDUM §4): Secondary障害は**技術STOP**(再実行で再開可・承認不要・Human Review Lockに投入しない)。
+# circuit breakerが開いた(連続障害)runでは、runnerの各clip生成点(`guard_generate`)が残りclipのTTSを呼ばず本statusのentryを返して
+# 停止し、stage終了時に報告する。再実行時は`status!=OK`のため再生成される(承認不要で再開可能)。
+TECHNICAL_STOP_STATUS = "TECHNICAL_STOP_SECONDARY_UNAVAILABLE"
+
+
+def circuit_open() -> bool:
+    rs = _secondary_module()._RUN_STATE
+    return bool(rs is not None and rs.circuit_open)
+
+
+def technical_stop_entry(label: str = "") -> dict:
+    rs = _secondary_module()._RUN_STATE
+    return {"status": TECHNICAL_STOP_STATUS, "label": label, "technical_stop": True, "restartable": True,
+            "approval_required": False, "human_review_required": False, "asr_verified": False,
+            "reason": "Secondary ASR(Azure)の連続障害でcircuit breakerが開いたため、残りclipの生成を停止(再実行で再開可・承認不要)",
+            "events": list(rs.technical_stop_events[-3:]) if rs is not None else []}
+
+
+def guard_generate(generate_fn, label: str = ""):
+    """runnerのclip生成関数をwrapする: circuit open中はTTS/ASRを呼ばず技術STOP entryを返す。openでなければgenerate_fnそのまま。"""
+    @functools.wraps(generate_fn)
+    def _g(*a, **k):
+        if circuit_open():
+            return technical_stop_entry(label)
+        return generate_fn(*a, **k)
+    return _g
+
+
+def _report_technical_stop(sec) -> None:
+    rs = sec._RUN_STATE
+    if rs is not None and rs.technical_stop_events:
+        kinds = sorted({e.get("type") for e in rs.technical_stop_events})
+        print(f"[TECHNICAL_STOP] Secondary ASR障害: events={len(rs.technical_stop_events)} circuit_open={rs.circuit_open} "
+              f"types={kinds}。Human Review Lock非投入・承認不要・再実行で再開可。")
+
+
 def with_secondary_run(fn):
     @functools.wraps(fn)
     def wrapper(*args, **kwargs):
@@ -30,6 +67,7 @@ def with_secondary_run(fn):
         try:
             return fn(*args, **kwargs)
         finally:
+            _report_technical_stop(sec)
             sec.end_secondary_run()
     wrapper.__secondary_run_scoped__ = True
     return wrapper

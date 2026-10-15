@@ -265,7 +265,8 @@ def test_dialogue_std_reaches_unified_judge_via_j4_and_j7_with_prompt_unchanged(
     monkeypatch.setattr(sec, "get_full_text_via_azure_stt_with_phrase_list",
                         Az((n3.tts_safe_news_en(CANON), None)))
     r = gens["dialogue"](spec, out_path)
-    assert captured["voice"] == "Puck" and captured["kw"] == {"style_prefix_override": n3.A2_ENGLISH_STYLE_PREFIX_SLOWER}  # Dialogue固有のPrompt/Voice不変
+    # Dialogue固有のPrompt/Voice不変。委任_06c(OF-AUW-C-08)で外側ループ化: 初回のmax_attempts=通算予算3(残予算)が追加される。
+    assert captured["voice"] == "Puck" and captured["kw"] == {"max_attempts": 3, "style_prefix_override": n3.A2_ENGLISH_STYLE_PREFIX_SLOWER}
     assert r["status"] == "OK" and r["slowdown_applied"] is True
     assert r["asr_judgement"]["state"] == uj.PASS_WITH_WARNING            # J7(減速後)が統一judge経由でWARNING
     assert r["asr_judgement_pre_slowdown"] == inner_judgement             # J4(減速前)のrecordは退避
@@ -288,7 +289,9 @@ def test_dialogue_and_ja_paths_statically_reach_adapters_through_z_entrypoint():
     z_closure = audit._closure("er063_family_z_audio_01")
     assert {"er012_b_family_voices_production_01", "er003_v1_n3_01_tts_generate", "er006_secondary_asr_01"} <= z_closure
     src = inspect.getsource(__import__("er063_family_z_audio_01").real_generators)
-    assert "bvoices.generate_voice_body_wide_margin" in src and "n3_tts.apply_a2_slowdown_postprocess" in src
+    # 委任_06c(OF-AUW-C-08): Dialogue(Std)の減速後判定は外側ループ(generate_with_a2_slowdown_outer_loop)経由。その内部でJ7を呼ぶ。
+    assert "bvoices.generate_voice_body_wide_margin" in src and "n3_tts.generate_with_a2_slowdown_outer_loop" in src
+    assert "apply_a2_slowdown_postprocess" in inspect.getsource(__import__("er003_v1_n3_01_tts_generate").generate_with_a2_slowdown_outer_loop)
     # leaf側(J4)・減速後(J7)ともadapter入口を持つ(EN adapter経由)
     al = audit.load_allowlist()
     assert any(e["module"] == "er012_b_family_voices_production_01" and e["category"] == audit.CAT_EN_ADAPTER_ENTRY for e in al["entries"])

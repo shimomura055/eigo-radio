@@ -113,8 +113,31 @@ def write_listening_list(run_dir: str) -> str:
     return dst
 
 
-def load_listening_list(run_dir: str) -> list:
-    """<run_dir>/audit/tts_generation_results.json から直接導出して返す(ページ生成用。ファイルを書かない・失敗は[]+warning)。"""
+class ListeningListDerivationFailed:
+    """委任_06c(OF-AUW-C-12): 試聴リスト導出失敗の表現。`[]`(=「0件・該当なし」)と区別するため空listを返さない。
+    iterate/len/boolは空として振る舞う(未更新の呼出元がクラッシュしない)が、`== []`ではなく、render_html_sectionは
+    「導出失敗(要確認)」と表示する。"""
+
+    def __init__(self, run_dir: str, error: str):
+        self.run_dir, self.error = run_dir, error
+
+    def __iter__(self):
+        return iter(())
+
+    def __len__(self):
+        return 0
+
+    def __bool__(self):
+        return False
+
+    def __repr__(self):
+        return f"ListeningListDerivationFailed(run_dir={self.run_dir!r}, error={self.error!r})"
+
+
+def load_listening_list(run_dir: str):
+    """<run_dir>/audit/tts_generation_results.json から直接導出して返す(ページ生成用。ファイルを書かない)。
+    成功: list。resultsファイルが無い: `[]`(そのrunにWARNING対象が無い=0件)。**導出失敗**(読込/解析/導出の例外):
+    `[]`ではなく`ListeningListDerivationFailed`を返す(ページ生成は失敗させない=非ブロッキング、節に「導出失敗(要確認)」と表示)。"""
     src = os.path.join(run_dir, "audit", "tts_generation_results.json")
     try:
         if not os.path.exists(src):
@@ -122,9 +145,9 @@ def load_listening_list(run_dir: str) -> list:
         with open(src, encoding="utf-8") as f:
             return derive_listening_list(json.load(f))
     except Exception as exc:  # 非ブロッキング: ページ生成を失敗させない
-        print(f"[WARN][pass_with_warning_registry] 試聴リスト導出に失敗(無視して0件扱い): {run_dir}: {type(exc).__name__}: {exc}",
+        print(f"[WARN][pass_with_warning_registry] 試聴リスト導出に失敗(「導出失敗(要確認)」と表示): {run_dir}: {type(exc).__name__}: {exc}",
               file=sys.stderr)
-        return []
+        return ListeningListDerivationFailed(run_dir, f"{type(exc).__name__}: {exc}")
 
 
 def write_listening_list_safe(run_dir: str, standalone_html: bool = False) -> dict:
@@ -144,6 +167,15 @@ def write_listening_list_safe(run_dir: str, standalone_html: bool = False) -> di
     except Exception as exc:
         rep["error"] = f"{type(exc).__name__}: {exc}"
         print(f"[WARN][pass_with_warning_registry] 試聴リスト出力に失敗(生成は継続): {run_dir}: {rep['error']}", file=sys.stderr)
+        if standalone_html:  # 委任_06c(OF-AUW-C-12): 「0件」と誤表示せず「導出失敗(要確認)」を単独HTMLにも出す(失敗してもここは例外を投げない)
+            try:
+                p = os.path.join(run_dir, "audit", STANDALONE_FILENAME)
+                os.makedirs(os.path.dirname(p), exist_ok=True)
+                with open(p, "w", encoding="utf-8") as f:
+                    f.write(render_standalone_html(ListeningListDerivationFailed(run_dir, rep["error"])))
+                rep["html"] = p
+            except Exception:
+                pass
     return rep
 
 
@@ -153,6 +185,10 @@ def render_html_section(entries: list, href_fn=None) -> str:
     href_fn(entry)->str: 音声リンク(相対/URL)を返す関数。未指定は entry["audio_path"]。空文字ならリンク無し。"""
     e_ = html.escape
     parts = [f'<section id="{SECTION_ID}"><h2>{SECTION_TITLE} WARNING音声 試聴リスト(自動採用・事後確認用)</h2>']
+    if isinstance(entries, ListeningListDerivationFailed):
+        parts.append("<p><strong>導出失敗(要確認)</strong>: 試聴リストを導出できませんでした(0件ではありません)。"
+                     f"{e_(entries.error)} / {e_(str(entries.run_dir))}</p></section>")
+        return "\n".join(parts)
     if not entries:
         parts.append("<p>0件(該当なし: PASS_WITH_WARNINGの採用音声はありません)</p></section>")
         return "\n".join(parts)

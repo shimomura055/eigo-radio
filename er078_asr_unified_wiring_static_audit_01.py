@@ -83,7 +83,7 @@ JUDGEMENT_POINTS = {
     "J4": ("er012_b_family_voices_production_01", "generate_voice_body_wide_margin"),
     "J5": ("er003_v1_repro01_main_generate", "generate_narration_snippet_verified_strict"),
     "J6": ("er003_v1_sing01_point_headings_aoede", None),
-    "J7": ("er003_v1_n3_01_tts_generate", ("apply_a2_slowdown_postprocess", "_post_slowdown_unified_judge", "_post_slowdown_cascade_rescue")),
+    "J7": ("er003_v1_n3_01_tts_generate", ("apply_a2_slowdown_postprocess", "_post_slowdown_unified_judge")),
     "J8": ("er003_v1_n3_01_tts_generate", "generate_a2_japanese_with_fallback"),
     "J9": ("er003_v1_sing01_voice01_generate", "generate_charon_japanese"),
     "J10": ("er003_v1_sing01_voice01_generate", "generate_charon_japanese"),

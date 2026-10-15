@@ -79,6 +79,16 @@ COST_GUARD_IN_UNIFIED_JUDGE = "APPLIED_AT_ADAPTER_SECONDARY_FN_ACTUAL_SECONDS_03
 CIRCUIT_BREAKER_THRESHOLD = 3  # run単位。連続Secondary障害がこの回数でそのrunのSecondary呼出を止める
 
 
+def is_config_stop_error(exc: BaseException) -> bool:
+    """委任_06c(OF-AUW-C-02): 設定不備として握りつぶしてはならない例外(er005_cost_loggerの「init_logger未呼出」・
+    「[STOP] 単価未登録」RuntimeError)。Secondary障害(NG_SECONDARY_UNAVAILABLE)に変換せず再送出する。
+    既存方針: er003_v1_n3_01_tts_generate.py `_post_slowdown_unified_judge`(init_logger/[STOP]は伝播)。"""
+    if not isinstance(exc, RuntimeError):
+        return False
+    msg = str(exc)
+    return ("init_logger" in msg) or msg.startswith("[STOP]") or "[STOP]" in msg
+
+
 def est_jpy_for_seconds(audio_seconds) -> float | None:
     if audio_seconds is None:
         return None
@@ -153,6 +163,10 @@ class PrimaryResult:
     equivalence_basis: str | None = None  # 承認済みequivalenceでPASSした根拠(最終ANDゲートが再否定しない)
     warning_labels: tuple = ()            # Primary側のwarning(CONNECTED_SPEECH/CS_EQUIVALENCE/M1_MULTI_CANDIDATE/SECONDARY_CORROBORATED等)
     signals: dict = field(default_factory=dict)  # c2_homophone_candidate / c1_proper_noun_diff / similarity など(除外表用)
+    # 委任_06c(OF-AUW-C-01): Primary層の救済(非ラテンKP層のAzure転写採用等)で**採用根拠が別転写**のとき、その転写。
+    # Primary PASSの最終ANDゲート(値ガード・否定)はこの転写(無ければtext)に対して行う(Primary非ラテン転写に英語否定語・数値を
+    # 照合しない。JA J11 `_j11_adopted_judgement`と同じ考え方)。textは監査・Primary取得失敗判定に引き続き使う。
+    adopted_text: str | None = None
 
 
 @dataclass
@@ -283,10 +297,10 @@ def _mk_primary(p) -> PrimaryResult:
         return p
     if isinstance(p, dict):
         return PrimaryResult(bool(p.get("passed")), p.get("text"), p.get("label", ""), p.get("equivalence_basis"),
-                             tuple(p.get("warning_labels", ())), dict(p.get("signals", {})))
+                             tuple(p.get("warning_labels", ())), dict(p.get("signals", {})), p.get("adopted_text"))
     return PrimaryResult(bool(getattr(p, "passed")), getattr(p, "text", None), getattr(p, "label", ""),
                          getattr(p, "equivalence_basis", None), tuple(getattr(p, "warning_labels", ())),
-                         dict(getattr(p, "signals", {}) or {}))
+                         dict(getattr(p, "signals", {}) or {}), getattr(p, "adopted_text", None))
 
 
 def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, role: str | None,
@@ -337,9 +351,14 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
     if pr.text is None:
         return done(NG_PRIMARY_ASR_FAILURE, "primary_asr_failure")
 
-    pvg, pneg = _protected(canon, pr.text, lang)
+    # 委任_06c(OF-AUW-C-01): Primary PASSの根拠が別転写(adopted_text)ならその転写で最終ANDゲートを行う。
+    gate_text = pr.adopted_text if (pr.passed and pr.adopted_text is not None) else pr.text
+    pvg, pneg = _protected(canon, gate_text, lang)
     audit["value_guard"] = {"primary": pvg.to_dict()}
     audit["negation_guard"] = {"primary": pneg}
+    if gate_text is not pr.text:
+        audit["primary"]["adopted_text"] = gate_text
+        audit["value_guard"]["gate_target"] = "adopted_text"
     warnings = list(pr.warning_labels) + list(pvg.warnings)
     primary_ng_reason = None
 
@@ -396,6 +415,8 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
     try:
         outcome, was_cached = cache.get_or_call(key, lambda: secondary_fn(ctx))
     except Exception as e:  # 障害は例外でも必ずNG_SECONDARY_UNAVAILABLEへ(PASS不可)
+        if is_config_stop_error(e):
+            raise  # 委任_06c(OF-AUW-C-02): 設定不備(init_logger未呼出/[STOP]単価未登録)は握りつぶさず再送出
         exc = f"{type(e).__name__}: {e}"
     audit["timing"]["secondary_ms"] = int((time.time() - ts) * 1000)
     audit["secondary"]["called"] = not was_cached

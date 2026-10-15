@@ -40,7 +40,8 @@ from typing import Optional
 
 REUSED_VALIDATED = "REUSED_VALIDATED"
 DURATION_WITNESS_TOLERANCE_SECONDS = 0.020
-_OVERWRITABLE_STATUSES = (None, "SKIPPED_NOT_SELECTED", "INVALIDATED_FOR_REGENERATION")
+_OVERWRITABLE_STATUSES = (None, "SKIPPED_NOT_SELECTED", "INVALIDATED_FOR_REGENERATION",
+                          "TECHNICAL_STOP_SECONDARY_UNAVAILABLE")  # 委任_06c: Secondary障害の技術STOP(再実行で再生成)
 
 
 def sha256_file(path: str) -> str:
@@ -196,6 +197,11 @@ def try_inherit_from_cached(cached_entry: Optional[dict], wav_path: str, expecte
         return None
     ev = evaluate_inheritance(cached_entry, wav_path, expected_text=expected_text)
     if ev["ok"] and ev["evidence"] == "entry_sha256":
+        # AUW 委任_06c(OF-AUW-C-03): 引継ぎ前に保存転写のみ(API 0)を現行の統一judgeへ通す。値ガードDIFF/否定差(`reuse_blocked` mark含む)
+        # なら引継ぎず(None)、呼出側は再生成/SKIPPED(=Gate BLOCK維持)へ回す。carry_over_unchanged(検証済み扱いにしない持越し)は対象外。
+        import er078_reuse_value_guard_01 as _rvg
+        if _rvg.guard_entry(cached_entry, label=str((source_ref or {}).get("label") or "")).get("blocked"):
+            return None
         return build_inherited_entry(cached_entry, wav_path, ev, source_ref, source_style_version=cached_style_version)
     return carry_over_unchanged(cached_entry, wav_path, expected_text, cached_style_version, current_style_version)
 
@@ -224,7 +230,7 @@ def _j11_adopted_judgement(entry: dict):
     return aj, sec.get("text")
 
 
-def rejudge_with_current_judge(entry: dict, level: str, label: str) -> dict:
+def rejudge_with_current_judge(entry: dict, level: str, label: str, force_lang: Optional[str] = None) -> dict:
     """J11(AUW 委任_04、DESIGN_02_ADDENDUM_01 §3-1): 既存音声の継承時に、保存済み転写を**統一judgeの入口
     (er078_asr_unified_judge_01.unified_judge)**でAPI 0のまま再判定する(旧: 英語のclassify_asr_matchのみ・日本語は対象外)。
     - Secondary(Azure)は**新規に呼ばない**(secondary_fnは元entryに保存済みのSecondary転写を返すだけ。無ければ取得不能=NG)。
@@ -236,7 +242,8 @@ def rejudge_with_current_judge(entry: dict, level: str, label: str) -> dict:
     - 元entryが`asr_judgement`(PASS_WITH_WARNING等)を持つ場合は`asr_judgement_inherited`として継承する(元のWARNINGを失わない、OF-AUW-15)。
     戻り値: {applicable, ok, reason, unified_state, secondary_new_calls(=0), asr_judgement_inherited, ...(EN: classification/f1_version/tts_input)}。"""
     import er078_asr_unified_judge_01 as uj
-    ja = is_japanese_label(level, label)
+    # 委任_06c(additive): force_lang("ja"|"en")を渡す呼出元(再利用経路の値ガード等、levelを持たない)は言語を明示できる。
+    ja = (force_lang == "ja") if force_lang in ("ja", "en") else is_japanese_label(level, label)
     asr_text = entry.get("asr_text")
     base_text = entry.get("text") or entry.get("canonical_text")
     aj, adopted = _j11_adopted_judgement(entry)
@@ -274,6 +281,16 @@ def rejudge_with_current_judge(entry: dict, level: str, label: str) -> dict:
                    f1_version=cs_info.get("f1_version") or cs.F1_VERSION, judge_module_f1_version=cs.F1_VERSION, tts_input=tts_input)
         primary = uj.PrimaryResult(passed=bool(res.should_pass), text=asr_text, label=res.classification,
                                    equivalence_basis=en_adapter._equivalence_basis_of(res) if res.should_pass else None)
+        # 委任_06c(OF-AUW-C-01): 元がKP非ラテン救済(adapter.layersにnon_latin)でAzure転写(保存済みSecondary)が採用根拠のとき、
+        # Primary(非ラテン)転写ではなく採用転写を根拠としてPrimary相当にする(Primary非ラテン転写に英語否定語・数値を照合しない)。
+        _layers = ((aj or {}).get("adapter") or {}).get("layers") or []
+        if (not res.should_pass and "non_latin" in _layers and stored_secondary
+                and (aj or {}).get("state") in ("PASS", "PASS_WITH_WARNING")):
+            res_nl = en_validator.classify_asr_match(tts_input, stored_secondary)
+            if res_nl.should_pass:
+                primary = uj.PrimaryResult(passed=True, text=asr_text, label=res_nl.classification,
+                                           equivalence_basis=en_adapter._equivalence_basis_of(res_nl),
+                                           warning_labels=(uj.W_SECONDARY_CONFIRMED,), adopted_text=stored_secondary)
 
         def accept_fn(canon, stext):
             r2 = en_validator.classify_asr_match(canon, stext)
