@@ -57,4 +57,9 @@ T-0: 委任文保存 `docs/pm/delegation_log/2026-10-16_ASR-TTS-UNIFIED-ALL-ROLE
 - 費用: JPY 0。
 
 ## 6. 受入記録
-(1) 当初目的=§0 (2) 成果物=本書・新規`er078_reuse_value_guard_01.py`/`er078_auw_reuse_bulk_rejudge_06c.py`/`er078_auw_cost_increment_06c.py`/`er078_asr_unified_wiring_06c_test_01.py`・変更ファイル(commit) (3) 証拠=`evidence_06c/`・`patch_06c/` (4) (a)(b)(c)(e)(f)(g)(h)(i)(j)=一致、(d)=adapter/wrapper/runner層は一致・leaf内Lockは不一致(§4-1)、(k)=commit後に§7へ追記 (5) 判定=条件付きPASS(§4-1のLock追加がFable承認待ち)。
+(1) 当初目的=§0 (2) 成果物=本書・新規`er078_reuse_value_guard_01.py`/`er078_auw_reuse_bulk_rejudge_06c.py`/`er078_auw_cost_increment_06c.py`/`er078_asr_unified_wiring_06c_test_01.py`・変更ファイル(commit) (3) 証拠=`evidence_06c/`・`patch_06c/` (4) (a)(b)(c)(e)(f)(g)(h)(i)(j)=一致、(d)=adapter/wrapper/runner層は一致・leaf内Lockは不一致(§4-1)、(k)=§7 (5) 判定=条件付きPASS(§4-1のLock追加がFable承認待ち)。
+
+## 7. commit後の確認
+- commit: e040a86fd (branch feat/auw-unified-asr-01, 5bacf9b47..e040a86fd push済み、main無変更)
+- secret_scan_01 --staged: hits=0 (46 files)
+- 有料API: 0 / JPY 0
