@@ -1,0 +1,117 @@
+{
+ "part": "head",
+ "mode": "execute",
+ "stop_files_present": [],
+ "isolation": {
+  "human_review_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/head/human_review_queue.jsonl",
+  "attempt_history": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/head/attempt_history.jsonl",
+  "master_audio_store": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/head/master_audio_store",
+  "reuse_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/head/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/head/er021_telemetry.jsonl",
+  "er025_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/head/er025_telemetry.jsonl",
+  "cost_log": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/head/cost_log.jsonl",
+  "ledger_snapshot": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/head/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)",
+  "foreign_token_hr_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/head/foreign_token_hr_queue.jsonl",
+  "human_review_queue_ja": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/head/human_review_queue_ja.jsonl"
+ },
+ "budget_jpy": 3.0,
+ "ledger_before": 5.6747,
+ "cap_remaining": 74.3253,
+ "plan": [
+  [
+   "head_numeric",
+   "Why prices fell 8.7 percent in one month"
+  ],
+  [
+   "head_negation",
+   "Why a cheaper bean does not mean a cheaper cup"
+  ],
+  [
+   "head_hardname",
+   "Why Mayor Xzqwtrlk delayed the bridge"
+  ]
+ ],
+ "rows": [
+  {
+   "case": "head_numeric",
+   "canonical": "Why prices fell 8.7 percent in one month",
+   "status": "OK",
+   "asr_text": "Why prices fell 8.7% in one month.",
+   "state": "PASS",
+   "reason": "primary_pass",
+   "value_guard": "EQUAL",
+   "negation_diff": false,
+   "secondary_called": false,
+   "secondary_text": null,
+   "max_len": 55,
+   "disfluency_checked": true,
+   "n_attempts": 1,
+   "has_asr_judgement": true
+  },
+  {
+   "case": "head_negation",
+   "canonical": "Why a cheaper bean does not mean a cheaper cup",
+   "status": "OK",
+   "asr_text": "Why a cheaper bean does not mean a cheaper cup.",
+   "state": "PASS",
+   "reason": "primary_pass",
+   "value_guard": "NO_VALUES",
+   "negation_diff": false,
+   "secondary_called": false,
+   "secondary_text": null,
+   "max_len": 61,
+   "disfluency_checked": true,
+   "n_attempts": 1,
+   "has_asr_judgement": true
+  },
+  {
+   "case": "head_hardname",
+   "canonical": "Why Mayor Xzqwtrlk delayed the bridge",
+   "status": "STOPPED",
+   "asr_text": null,
+   "state": null,
+   "reason": null,
+   "value_guard": null,
+   "negation_diff": null,
+   "secondary_called": null,
+   "secondary_text": null,
+   "max_len": null,
+   "disfluency_checked": null,
+   "n_attempts": 3,
+   "has_asr_judgement": false
+  }
+ ],
+ "stage_result": {
+  "headings": [
+   [
+    "head_numeric",
+    "OK",
+    "PASS"
+   ],
+   [
+    "head_negation",
+    "OK",
+    "PASS"
+   ],
+   [
+    "head_hardname",
+    "STOPPED",
+    null
+   ]
+  ]
+ },
+ "shared_state_unchanged": true,
+ "shared_files_changed_outside_evidence": [],
+ "cost": {
+  "est_total_jpy": 1.2251,
+  "n_tts": 5,
+  "n_openai_asr": 5,
+  "n_azure": 3,
+  "azure_seconds": 19.55,
+  "n_text_llm": 0,
+  "azure_duplicate_wavs": 0
+ },
+ "ledger_after": 7.1854
+}

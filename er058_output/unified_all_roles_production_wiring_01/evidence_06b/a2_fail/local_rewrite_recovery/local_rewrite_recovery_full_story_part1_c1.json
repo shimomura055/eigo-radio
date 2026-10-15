@@ -1,0 +1,513 @@
+{
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "full_story_part1_c1",
+  "segment_role_label": "Full Story narration (the article's main narrated body, incl. Point body text)",
+  "canonical_text": "Mayor Qvxzmtk said the old bridge would close in June.",
+  "last_asr_text": "Mayor Kovacsmit said the old bridge would close in June.",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "mayor qvxzmtk said the old",
+    "asr_span_with_context": "mayor kovacsmit said the old",
+    "canonical_changed_words": [
+      "qvxzmtk"
+    ],
+    "asr_changed_words": [
+      "kovacsmit"
+    ],
+    "context_window_word_indices": [
+      0,
+      5
+    ]
+  },
+  "candidate_gen": {
+    "candidates": [
+      {
+        "id": "1",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "Mayor Q-V-X-Z-M-T-K said the old bridge would close in June.",
+        "changed_span_before": "Qvxzmtk",
+        "changed_span_after": "Q-V-X-Z-M-T-K",
+        "rationale": "Spells the mayor’s name as individual letters, avoiding a misleading phonetic rendering while retaining the name."
+      },
+      {
+        "id": "2",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "Mayor Q V X Z M T K said the old bridge would close in June.",
+        "changed_span_before": "Qvxzmtk",
+        "changed_span_after": "Q V X Z M T K",
+        "rationale": "Presents each letter separately so the name is clear without changing who the mayor is."
+      },
+      {
+        "id": "3",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Q-V-X-Z-M-T-K, the mayor, said the old bridge would close in June.",
+        "changed_span_before": "Mayor Qvxzmtk said the old",
+        "changed_span_after": "Q-V-X-Z-M-T-K, the mayor, said the old",
+        "rationale": "Reorders the title and name and spells the name out letter by letter."
+      },
+      {
+        "id": "4",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "The mayor, Q-V-X-Z-M-T-K, said the old bridge would close in June.",
+        "changed_span_before": "Mayor Qvxzmtk said the old",
+        "changed_span_after": "The mayor, Q-V-X-Z-M-T-K, said the old",
+        "rationale": "Uses a natural appositive construction while retaining the mayor’s name in spelled-out form."
+      },
+      {
+        "id": "5",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Q-V-X-Z-M-T-K, who is mayor, said the old bridge would close in June.",
+        "changed_span_before": "Mayor Qvxzmtk said the old",
+        "changed_span_after": "Q-V-X-Z-M-T-K, who is mayor, said the old",
+        "rationale": "Makes the person’s role explicit and renders the name as individual letters."
+      }
+    ],
+    "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"Mayor Q-V-X-Z-M-T-K said the old bridge would close in June.\",\"changed_span_before\":\"Qvxzmtk\",\"changed_span_after\":\"Q-V-X-Z-M-T-K\",\"rationale\":\"Spells the mayor’s name as individual letters, avoiding a misleading phonetic rendering while retaining the name.\"},{\"id\":\"2\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"Mayor Q V X Z M T K said the old bridge would close in June.\",\"changed_span_before\":\"Qvxzmtk\",\"changed_span_after\":\"Q V X Z M T K\",\"rationale\":\"Presents each letter separately so the name is clear without changing who the mayor is.\"},{\"id\":\"3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Q-V-X-Z-M-T-K, the mayor, said the old bridge would close in June.\",\"changed_span_before\":\"Mayor Qvxzmtk said the old\",\"changed_span_after\":\"Q-V-X-Z-M-T-K, the mayor, said the old\",\"rationale\":\"Reorders the title and name and spells the name out letter by letter.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The mayor, Q-V-X-Z-M-T-K, said the old bridge would close in June.\",\"changed_span_before\":\"Mayor Qvxzmtk said the old\",\"changed_span_after\":\"The mayor, Q-V-X-Z-M-T-K, said the old\",\"rationale\":\"Uses a natural appositive construction while retaining the mayor’s name in spelled-out form.\"},{\"id\":\"5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Q-V-X-Z-M-T-K, who is mayor, said the old bridge would close in June.\",\"changed_span_before\":\"Mayor Qvxzmtk said the old\",\"changed_span_after\":\"Q-V-X-Z-M-T-K, who is mayor, said the old\",\"rationale\":\"Makes the person’s role explicit and renders the name as individual letters.\"}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_0c6525d987ca71da006ad0fd8d2f2487d09bb01e8f25378626",
+    "_prompt": "Segment role: Full Story narration (the article's main narrated body, incl. Point body text)\n\nFull segment (contains the problem span):\n\"Mayor Qvxzmtk said the old bridge would close in June.\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['kovacsmit'] instead of ['qvxzmtk']):\n\"mayor qvxzmtk said the old\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+  },
+  "qa": {
+    "evaluations": [
+      {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It retains the same mayor, bridge, and June closing claim, spelling the name as individual letters."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a sentence in the main story narration."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with any fact in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence stands on its own."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "Spelling this arbitrary name letter by letter sounds like dictation, not natural spoken story narration."
+        }
+      },
+      {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It retains the same mayor, bridge, and June closing claim, spelling the name as individual letters."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a sentence in the main story narration."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with any fact in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence stands on its own."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "Reading an arbitrary name as a sequence of separate letters sounds like dictation, not natural spoken story narration."
+        }
+      },
+      {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It retains the same person and claim; the mayor title is expressed as an appositive."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a sentence in the main story narration."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with any fact in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence stands on its own."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The appositive is grammatical, but spelling this arbitrary name letter by letter sounds unnatural in spoken story narration."
+        }
+      },
+      {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It retains the same person and claim, presenting the mayor title as an appositive."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a sentence in the main story narration."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with any fact in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence stands on its own."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The sentence structure is idiomatic, but spelling this arbitrary name letter by letter sounds unnatural in spoken story narration."
+        }
+      },
+      {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It retains the same person and claim, identifying the person as mayor."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a sentence in the main story narration."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with any fact in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence stands on its own."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The letter-by-letter name sounds like dictation, and “who is mayor” is awkward here; “who is the mayor” would be more idiomatic."
+        }
+      }
+    ],
+    "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"1\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It retains the same mayor, bridge, and June closing claim, spelling the name as individual letters.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a sentence in the main story narration.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with any fact in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence stands on its own.\"},\"natural_english\":{\"pass\":false,\"reason\":\"Spelling this arbitrary name letter by letter sounds like dictation, not natural spoken story narration.\"}},{\"candidate_id\":\"2\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It retains the same mayor, bridge, and June closing claim, spelling the name as individual letters.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a sentence in the main story narration.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with any fact in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence stands on its own.\"},\"natural_english\":{\"pass\":false,\"reason\":\"Reading an arbitrary name as a sequence of separate letters sounds like dictation, not natural spoken story narration.\"}},{\"candidate_id\":\"3\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It retains the same person and claim; the mayor title is expressed as an appositive.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a sentence in the main story narration.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with any fact in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence stands on its own.\"},\"natural_english\":{\"pass\":false,\"reason\":\"The appositive is grammatical, but spelling this arbitrary name letter by letter sounds unnatural in spoken story narration.\"}},{\"candidate_id\":\"4\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It retains the same person and claim, presenting the mayor title as an appositive.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a sentence in the main story narration.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with any fact in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence stands on its own.\"},\"natural_english\":{\"pass\":false,\"reason\":\"The sentence structure is idiomatic, but spelling this arbitrary name letter by letter sounds unnatural in spoken story narration.\"}},{\"candidate_id\":\"5\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"It retains the same person and claim, identifying the person as mayor.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a sentence in the main story narration.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with any fact in the original.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence stands on its own.\"},\"natural_english\":{\"pass\":false,\"reason\":\"The letter-by-letter name sounds like dictation, and “who is mayor” is awkward here; “who is the mayor” would be more idiomatic.\"}}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_0efce89c7e248c47006ad0fda929e487d0880871621edb96a2",
+    "_prompt": "Segment role: Full Story narration (the article's main narrated body, incl. Point body text)\n\nORIGINAL segment:\n\"Mayor Qvxzmtk said the old bridge would close in June.\"\n\nCandidates to evaluate:\n- candidate_id='1': \"Mayor Q-V-X-Z-M-T-K said the old bridge would close in June.\"\n- candidate_id='2': \"Mayor Q V X Z M T K said the old bridge would close in June.\"\n- candidate_id='3': \"Q-V-X-Z-M-T-K, the mayor, said the old bridge would close in June.\"\n- candidate_id='4': \"The mayor, Q-V-X-Z-M-T-K, said the old bridge would close in June.\"\n- candidate_id='5': \"Q-V-X-Z-M-T-K, who is mayor, said the old bridge would close in June.\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+  },
+  "candidates": [
+    {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Mayor Q-V-X-Z-M-T-K said the old bridge would close in June.",
+      "changed_span_before": "Qvxzmtk",
+      "changed_span_after": "Q-V-X-Z-M-T-K",
+      "rationale": "Spells the mayor’s name as individual letters, avoiding a misleading phonetic rendering while retaining the name.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It retains the same mayor, bridge, and June closing claim, spelling the name as individual letters."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a sentence in the main story narration."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with any fact in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence stands on its own."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "Spelling this arbitrary name letter by letter sounds like dictation, not natural spoken story narration."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.1111,
+        "orig_coverage": 0.9,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          1,
+          2
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false
+    },
+    {
+      "id": "2",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Mayor Q V X Z M T K said the old bridge would close in June.",
+      "changed_span_before": "Qvxzmtk",
+      "changed_span_after": "Q V X Z M T K",
+      "rationale": "Presents each letter separately so the name is clear without changing who the mayor is.",
+      "qa_llm": {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It retains the same mayor, bridge, and June closing claim, spelling the name as individual letters."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a sentence in the main story narration."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with any fact in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence stands on its own."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "Reading an arbitrary name as a sequence of separate letters sounds like dictation, not natural spoken story narration."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.1111,
+        "orig_coverage": 0.9,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          1,
+          2
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false
+    },
+    {
+      "id": "3",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Q-V-X-Z-M-T-K, the mayor, said the old bridge would close in June.",
+      "changed_span_before": "Mayor Qvxzmtk said the old",
+      "changed_span_after": "Q-V-X-Z-M-T-K, the mayor, said the old",
+      "rationale": "Reorders the title and name and spells the name out letter by letter.",
+      "qa_llm": {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It retains the same person and claim; the mayor title is expressed as an appositive."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a sentence in the main story narration."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with any fact in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence stands on its own."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The appositive is grammatical, but spelling this arbitrary name letter by letter sounds unnatural in spoken story narration."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.2222,
+        "orig_coverage": 0.9,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          0,
+          2
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false
+    },
+    {
+      "id": "4",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "The mayor, Q-V-X-Z-M-T-K, said the old bridge would close in June.",
+      "changed_span_before": "Mayor Qvxzmtk said the old",
+      "changed_span_after": "The mayor, Q-V-X-Z-M-T-K, said the old",
+      "rationale": "Uses a natural appositive construction while retaining the mayor’s name in spelled-out form.",
+      "qa_llm": {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It retains the same person and claim, presenting the mayor title as an appositive."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a sentence in the main story narration."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with any fact in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence stands on its own."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The sentence structure is idiomatic, but spelling this arbitrary name letter by letter sounds unnatural in spoken story narration."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.2222,
+        "orig_coverage": 0.9,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          0,
+          2
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false
+    },
+    {
+      "id": "5",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Q-V-X-Z-M-T-K, who is mayor, said the old bridge would close in June.",
+      "changed_span_before": "Mayor Qvxzmtk said the old",
+      "changed_span_after": "Q-V-X-Z-M-T-K, who is mayor, said the old",
+      "rationale": "Makes the person’s role explicit and renders the name as individual letters.",
+      "qa_llm": {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "It retains the same person and claim, identifying the person as mayor."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a sentence in the main story narration."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with any fact in the original."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence stands on its own."
+        },
+        "natural_english": {
+          "pass": false,
+          "reason": "The letter-by-letter name sounds like dictation, and “who is mayor” is awkward here; “who is the mayor” would be more idiomatic."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.2778,
+        "orig_coverage": 0.9,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          0,
+          2
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": false,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": false
+    }
+  ],
+  "selection": {
+    "selected": null,
+    "status": "NO_CANDIDATE_PASSED_ALL_SEVEN_GATES",
+    "selection_rationale": "全候補が7 Gateのいずれかで不合格だったため、採用候補なし。"
+  },
+  "retts_result": null,
+  "status": "HUMAN_REVIEW_LOCKED_NO_CANDIDATE_PASSED_QA"
+}
