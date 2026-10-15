@@ -1,0 +1,85 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Coffee Bean Prices Fall. Are Price Tags Still on a Journey?
+
+“Beans cost less now!” When you hear that, your wallet pumps its fist. You already imagine your usual cup costing less, too. But a shop’s price may not change right away. When a price tag makes you ask, “Haven’t you heard the news?”, it feels like there is a delay.
+
+The International Coffee Organization shared a measure of coffee prices. It fell 8.7% from the month before. The group said more beans picked in Brazil had reached the market. It also expected a good supply to continue.
+
+The US Department of Agriculture said several things had raised prices at once. There was bad weather in Brazil and Vietnam. Fewer beans were for sale. Demand was also strong.
+
+At the same time, US data on what people pay showed coffee cost 6.1% more than in the same month a year earlier. You might wonder, “Did prices fall or rise?” But this data was for a different month than the bean price measure. It also does not show the price of coffee at a cafe. Don’t put the two numbers in the ring just yet.
+
+So, how long does it take for bean prices to reach a price tag?
+
+People in the market and experts spoke with Reuters. They estimate raw-bean prices take at least about nine months to appear in US shop prices. The road to a price tag is quite a long journey.
+
+The article says US companies that roast coffee keep raw beans in stock. Roasting and packing the beans also take time. These companies often talk with stores about prices on a regular basis. A shop’s price tag does not change the moment the market moves.
+
+However, “about nine months” is an estimate based on interviews. It is not a rule for every company. And it is not a promise that “prices will fall in nine months.” It is too soon to mark the date on your calendar.
+
+A cafe cup also costs money for more than just beans. A person who runs a cafe in Chicago said three costs had pushed prices up. These were cups, workers’ pay, and buying beans. Even if bean prices fall, other costs do not always fall with them.
+
+If you are waiting for your usual cup to get cheaper, ask more than, “How much do beans cost now?” Also ask, “When does the bean price reach here?” A coffee price tag may have its own hidden clock, separate from the latest market news.
+
+## In one line
+Falling coffee bean prices may take at least nine months to affect US shop prices.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "pump one's fist",
+    "japanese_gloss": "大喜びする",
+    "source_sentence": "When you hear that, your wallet pumps its fist"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "raw bean",
+    "japanese_gloss": "生豆",
+    "source_sentence": "They estimate raw-bean prices take at least about nine months to appear in US shop prices"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "right away",
+    "japanese_gloss": "すぐに",
+    "source_sentence": "But a shop's price may not change right away"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "based on interviews",
+    "japanese_gloss": "～をもとにした",
+    "source_sentence": "However, \"about nine months\" is an estimate based on interviews"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "take time",
+    "japanese_gloss": "時間がかかる",
+    "source_sentence": "Roasting and packing the beans also take time"
+  }
+]

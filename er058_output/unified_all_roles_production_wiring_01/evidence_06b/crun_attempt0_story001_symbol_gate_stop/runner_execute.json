@@ -1,0 +1,43 @@
+{
+ "part": "crun",
+ "mode": "execute",
+ "stop_files_present": [],
+ "isolation": {
+  "human_review_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/crun/human_review_queue.jsonl",
+  "attempt_history": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/crun/attempt_history.jsonl",
+  "master_audio_store": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/crun/master_audio_store",
+  "reuse_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/crun/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/crun/er021_telemetry.jsonl",
+  "er025_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/crun/er025_telemetry.jsonl",
+  "cost_log": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/crun/cost_log.jsonl",
+  "ledger_snapshot": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/crun/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)",
+  "foreign_token_hr_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/crun/foreign_token_hr_queue.jsonl",
+  "human_review_queue_ja": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/crun/human_review_queue_ja.jsonl"
+ },
+ "budget_jpy": 6.0,
+ "ledger_before": 2.3273,
+ "cap_remaining": 77.6727,
+ "only_segments": [
+  "story_001",
+  "story_002",
+  "story_007"
+ ],
+ "stage_result": {
+  "main": "RuntimeError: STORY_TTS_FAILED(story_001): {'status': 'STOPPED', 'reason': 'canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL::', 'canonical_text': \"Lena held the small silver box in both hands. Inside it was one memory. She did not open the box. She had already seen the memory too many times: rain on the window, a hospital bed, her brother's hand going still. The memory-storage screen asked,\", 'symbol_findings': [{'token': ':', 'category': 'RESIDUAL_PLACEHOLDER_OR_PAUSE_SY"
+ },
+ "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\tensh\\eigo-radio\\er078_auw_runtime_evidence_06b.py\", line 442, in run_crun\n    C.main()\n    ~~~~~~^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er013_family_c_production_runner_01.py\", line 1064, in main\n    run_full_generation(config, args.level, out_dir, args.budget_jpy, args.only_segments, args.resume)\n    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er078_secondary_run_scope_01.py\", line 31, in wrapper\n    return fn(*args, **kwargs)\n  File \"C:\\Users\\tensh\\eigo-radio\\er013_family_c_production_runner_01.py\", line 722, in run_full_generation\n    raise RuntimeError(f\"STORY_TTS_FAILED({seg['id']}): {r}\")\nRuntimeError: STORY_TTS_FAILED(story_001): {'status': 'STOPPED', 'reason': 'canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL::', 'canonical_text': \"Lena held the small silver box in both hands. Inside it was one memory. She did not open the box. She had already seen the memory too many times: rain on the window, a hospital bed, her brother's hand going still. The memory-storage screen asked,\", 'symbol_findings': [{'token': ':', 'category': 'RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL', 'reason': \"未変換のplaceholder/ポーズ記号が残っています: ':'。波ダッシュ・三点リーダー・コロン・セミコロンは使わないでください。\"}]}\n",
+ "shared_state_unchanged": true,
+ "shared_files_changed_outside_evidence": [],
+ "cost": {
+  "est_total_jpy": 0.0,
+  "n_tts": 0,
+  "n_openai_asr": 0,
+  "n_azure": 0,
+  "azure_seconds": 0.0,
+  "n_text_llm": 0,
+  "azure_duplicate_wavs": 0
+ },
+ "ledger_after": 2.3273
+}

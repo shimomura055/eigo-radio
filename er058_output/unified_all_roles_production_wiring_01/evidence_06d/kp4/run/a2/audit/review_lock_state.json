@@ -1,0 +1,267 @@
+{
+  "kp1_en": {
+    "state": "HUMAN_REVIEW_REQUIRED",
+    "canonical_text_sha256": "b33df326463179cc9ab139f82b3e63a565ca7a8a6d4c9b0204e9abdc2e29a0d6",
+    "language": "en",
+    "theme_id": "run",
+    "level": "a2",
+    "segment_id": "kp1_en",
+    "updated_at": "2026-10-16T02:37:47",
+    "reason": "最終status=STOPPED。2回試行してもASR検証(内容+長さ)に合格しませんでした",
+    "final_status": "STOPPED",
+    "wav_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/kp4/run/a2/narration/kp1_en.wav",
+    "cumulative_tts_attempts": 2,
+    "cumulative_asr_calls": 2,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 2.28,
+        "asr_text": "Execute Trackle Wrangle.",
+        "asr_text_length": 24,
+        "max_len": 26,
+        "substring_ok": null,
+        "length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Execute Trackle Wrangle.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Execute trackle range.",
+            "classification": "TTS_FAILURE",
+            "phrase_list_used": false,
+            "cached": false,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 1,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "696ef27885532e8753afa061f2c15e43adf868ab29bc853bc24384a81d25646b",
+          "primary": {
+            "text": "Execute Trackle Wrangle.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Execute trackle range.",
+            "label": "TTS_FAILURE",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 2.28,
+            "est_jpy": 0.1333,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 1126,
+            "secondary_ms": 1125
+          },
+          "technical_stop": null,
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/kp4/run/a2/narration/attempts/kp1_en_attempt1_custom60ebc452.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 2.04,
+        "asr_text": "Zachary Charles Rangel.",
+        "asr_text_length": 23,
+        "max_len": 26,
+        "substring_ok": null,
+        "length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "TTS_FAILURE",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 332,
+          "sha256": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
+          "head200": "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Sa"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Zachary Charles Rangel.",
+            "classification": "TTS_FAILURE",
+            "entity_like_source": []
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Zuckwich, Raul. Wrangle.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": false,
+            "cached": false,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 2,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "55663e7244e5a28d1cabb289851b50adb97a2afb203d013234e7fcd4e01c34e1",
+          "primary": {
+            "text": "Zachary Charles Rangel.",
+            "passed": false,
+            "label": "TTS_FAILURE",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Zuckwich, Raul. Wrangle.",
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 2.04,
+            "est_jpy": 0.1333,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 570,
+            "secondary_ms": 568
+          },
+          "technical_stop": null,
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 4,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/kp4/run/a2/narration/attempts/kp1_en_attempt2_custom60ebc452.wav"
+      }
+    ]
+  }
+}

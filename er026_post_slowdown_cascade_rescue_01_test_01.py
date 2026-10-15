@@ -78,11 +78,20 @@ class PostSlowdownCascadeRescueTests(unittest.TestCase):
         self.assertEqual(out["status"], "STOPPED")
 
     def test_no_rescue_for_content_word_error(self):
-        # 非固有名詞の内容語誤り(TRUE_CONTENT_MISMATCH)はCascade対象外 -> Azureを呼ばない
+        # AUW 委任_05(J7、委任_03cの選択肢Aと同じ根拠=ユーザー原文L54「Primary NGなら不一致の種類によらず原則Secondary」・
+        # L55「Secondary PASSならPASS_WITH_WARNING」に追随): 旧=非固有名詞の内容語誤り(TRUE_CONTENT_MISMATCH)はCascade対象外で
+        # Azureを呼ばずSTOPPED。新=減速後wavにSecondaryを1回呼び、Secondaryが原稿全文を支持すればPASS_WITH_WARNING。
+        # 独立証拠なし(Secondaryも同じ誤り)なら従来どおりSTOPPED(誤受理0の安全側は維持)。
         out, calls = self._run("He drank water slowly.", "He dropped water slowly.", "He drank water slowly.")
-        self.assertEqual(out["status"], "STOPPED")
-        self.assertEqual(calls, [])
-        self.assertNotIn("post_slowdown_cascade", out)
+        self.assertEqual(out["status"], "OK")
+        self.assertEqual(len(calls), 1)                                   # Secondary 1回のみ
+        self.assertEqual(out["post_slowdown_classification"], "TRUE_CONTENT_MISMATCH")   # Primary層の判定は不変
+        self.assertEqual(out["asr_judgement"]["state"], "PASS_WITH_WARNING")
+        self.assertEqual(out["asr_judgement"]["reason_code"], "secondary_confirmed")
+        out2, calls2 = self._run("He drank water slowly.", "He dropped water slowly.", "He dropped water slowly.")
+        self.assertEqual(out2["status"], "STOPPED")
+        self.assertEqual(len(calls2), 1)
+        self.assertFalse(out2["asr_verified"])
 
     def test_no_rescue_for_number_error(self):
         out, calls = self._run("Melos waited three days.", "Melos waited five days.", "Melos waited three days.")
@@ -126,27 +135,33 @@ class PostSlowdownCascadeRescueTests(unittest.TestCase):
         self.assertIn("post_slowdown_final_classification", out3)
 
     def test_primary2_single_pass_rescues_after_tier3_no_corroboration(self):
-        # Primary#1は"Mellos"でUNCERTAIN、cascadeのPrimary#2(同音声の再転写)が正規綴りで単発PASS
+        # AUW 委任_03b: DESIGN_01 §4-9 / ユーザー原文「Primary NG→原則Secondary」「同じ音声に対するSecondaryの重複API呼び出しを防ぐ」に追随
+        # (旧: Tier3 corroboration無しの後、Primary#2(同音声のOpenAI再転写)が正規綴りで単発PASSして救済 -> step末尾="primary_2")。
+        # 新設計: Primary#2は廃止。Tier3(Azure)とjudgeのSecondaryは同一wavのAzure結果を共有(1回)。Secondary("Mellow")も
+        # 正規綴りでなければ救済しない(独立証拠なしに受理しない=誤受理0の安全側は維持)。
         result = {"status": "OK", "sha256": None, "duration_seconds": 2.0}
         azure_calls = []
+        primary_calls = []
+        # (tg.routing と sec.routing は同一module。1回のpatchで足りる。Primary#2が呼ばれればprimary_callsが2以上になる)
         with mock.patch.object(tg.a2_slowdown, "apply_a2_slowdown", side_effect=self._fake_stretch),              mock.patch.object(tg.routing, "transcribe",
-                               side_effect=[("Mellos called across the hall.", None),
-                                            ("Melos called across the hall.", None)]),              mock.patch.object(sec, "get_full_text_via_azure_stt_with_phrase_list",
-                               side_effect=lambda *a, **k: azure_calls.append(1) or ("Mellow called across the hall.", None)),              mock.patch.object(sec, "_resolve_unresolved_entity_for_review", return_value=None),              mock.patch.object(sec.semantic_equivalence, "append_telemetry_log"):
+                               side_effect=lambda *a, **k: primary_calls.append(1) or ("Mellos called across the hall.", None)),              mock.patch.object(sec, "get_full_text_via_azure_stt_with_phrase_list",
+                               side_effect=lambda *a, **k: azure_calls.append(1) or ("Mellow called across the hall.", None)),              mock.patch.object(sec, "_resolve_unresolved_entity_for_review", return_value=None),              mock.patch.object(sec.pronun_ledger, "_load", return_value={}),              mock.patch.object(sec.semantic_equivalence, "append_telemetry_log"):
+            # (_load={}: M1がledger.json(未commitの作業ツリー差分に依存して揺れる)の"melos"エントリで受理しないよう空ledgerに固定する)
             out = tg.apply_a2_slowdown_postprocess(self.name, self.tmp, "Melos called across the hall,", result)
-        self.assertEqual(out["status"], "OK")
-        self.assertTrue(out["post_slowdown_cascade_accepted"])
+        self.assertEqual(out["status"], "STOPPED")
+        self.assertFalse(out.get("post_slowdown_cascade_accepted", False))
+        self.assertEqual(len(primary_calls), 1, "Primary 1回のみ(Primary#2=同音声のOpenAI再転写は廃止)")
         steps = [s["step"] for s in out["post_slowdown_cascade"]["steps"]]
-        # Tier3(Azure)は誤綴りでcorroborationなし -> Primary#2が正規綴りで単発PASS -> Secondary#1以降へ進まない
-        self.assertEqual(steps[-1], "primary_2")
-        self.assertEqual(len(azure_calls), 1)
-        self.assertIn(out["post_slowdown_final_classification"], ("EXACT_MATCH", "NORMALIZED_MATCH"))
+        self.assertNotIn("primary_2", steps)
+        self.assertEqual(len(azure_calls), 1, "Tier3とjudgeのSecondaryでAzureは同一wavにつき1回(重複呼出なし)")
 
     def test_cmu_case_a_homophone_name_rescued_without_extra_asr(self):
         # CMU辞書上の発音完全一致(Kristie/Christy)はPrimary#1の時点で追加ASRなしにPASS(Case A)
         out, calls = self._run("Kristie called across the hall,", "Christy called across the hall.", None)
         self.assertEqual(out["status"], "OK")
-        self.assertEqual(calls, [])
+        # AUW 委任_05(J7): 統一judgeのEN adapterは他leafと同順序(Tier3 corroboration[Azure,共有cache]→CMU Case A)。減速後wavへの
+        # Azureは最大1回(Tier3の試行のみ。Secondaryとして再呼出しない)。Case Aの受理判定自体は不変。
+        self.assertLessEqual(len(calls), 1)
         self.assertTrue(out["post_slowdown_homophone_accepted"])
         self.assertIn(out["post_slowdown_final_classification"],
                       ("PROPER_NOUN_ENTITY_ARPABET_CONFIRMED", "HOMOPHONE_EQUIVALENT"))

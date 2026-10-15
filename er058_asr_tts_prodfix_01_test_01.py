@@ -25,7 +25,7 @@ def _inner_factory(gens_per_call, calls):
     return fake
 
 
-def _stopped_slowdown(name, narration_dir, tts_input, result):
+def _stopped_slowdown(name, narration_dir, tts_input, result, is_last_slot=True, **kw):   # AUW 委任_05: 外側ループがis_last_slotを渡す
     result["status"] = "STOPPED"
     result["post_slowdown_asr_text"] = "slow asr text"
     result["post_slowdown_classification"] = "TRUE_CONTENT_MISMATCH"
@@ -85,7 +85,7 @@ class SlowdownGenerationCapTest(unittest.TestCase):
 
     def test_ok_path_unchanged(self):
         calls = []
-        def ok_slowdown(name, d, t, result):
+        def ok_slowdown(name, d, t, result, is_last_slot=True, **kw):   # AUW 委任_05(mock署名追随)
             result["slowdown_applied"] = True
             return result
         with mock.patch.object(tg.c, "generate_english_segment_with_fallback", _inner_factory(1, calls)), \

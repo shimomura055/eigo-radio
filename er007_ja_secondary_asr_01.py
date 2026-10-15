@@ -317,6 +317,8 @@ def _run_scg_secondary_confirm(canonical_text: str, wav_path: str,
         text, err = _azure_stt_strict(
             wav_path, language="ja-JP", timeout_seconds=SCG_AZURE_TIMEOUT_SECONDS)
     except Exception as e:  # noqa: BLE001  安全側: 例外は従来動作へ戻す
+        if unified_judge_mod.is_config_stop_error(e):
+            raise  # 委任_06c(OF-AUW-C-02): 設定不備(init_logger未呼出/[STOP]単価未登録)は握りつぶさない
         err = f"{type(e).__name__}: {e}"
     info["wall_seconds"] = round(time.time() - t0, 2)
     info["timestamp"] = time.strftime("%Y-%m-%dT%H:%M:%S")
@@ -380,22 +382,140 @@ def _apply_variant_layer_voicing_upgrade(canonical_text: str, asr_text: Optional
     return upgraded if upgraded is not None else cls_step
 
 
+# ============================================================
+# ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 (AUW) 委任_04: JA統一judge adapter
+# ============================================================
+# evaluate_attempt_ja_with_cascade_detail は**署名・戻り値dictのキー・呼出元**を維持したまま、内部を統一判定
+# (er078_asr_unified_judge_01.unified_judge)へ委譲するadapterに置換された(DESIGN_01 §4-1/§4-3/§4-9、DESIGN_02_ADDENDUM_01 §1/§4/§6)。
+#   [Primary P-chain = 既存] javal.classify_ja_asr_match(+Variant層D-2) -> [本委任の追加層] 数値の値等価(三十人=30人等、値ガードEQUAL
+#       かつ数値表記を値トークンへ置換した残りが一致のときだけ。DESIGN_01 §5-2) -> 統一judge。
+#   Primary PASS -> 最終ANDゲート(値DIFF/否定差。READING_MATCH等の承認済み根拠は再否定しない)。
+#   Primary NG   -> P1 保護差(値DIFF・否定差・既存の per-span 否定/数字不一致・fugashi否定マーカー差) -> NG_PROTECTED[Secondary不呼出]
+#                   P2 除外表(length NG / C2同形異音 / [U1現行維持]類似度<0.4・C1固有名詞差) -> NG_EXCLUDED[Secondary不呼出]
+#                   P3 それ以外 -> Azure Secondary 1回(SecondaryCache共有: 同一wav+engine+lang+phrase_hashで重複呼出なし)。
+#                   Secondary許容集合 = EXACT/NORMALIZED(SCG承認済み集合=JAは10/11承認の2ラベル、DESIGN_01 §4-3c)
+#                                     + ORTHOGRAPHIC_VARIANT_CONFIRMED(Primary#1+Secondary#1の2エンジン確認、追補§6 OF-AUW-08)。
+#                   PASS -> PASS_WITH_WARNING(SECONDARY_CONFIRMED、自動採用+事後試聴リスト)。障害 -> NG_SECONDARY_UNAVAILABLE(PASS不可)。
+# 廃止(DESIGN_01 §4-9): Primary#2(同一音声OpenAI再転写) / Secondary#2 / 4段尽き->stop_retrying+HR直行。stop_retrying=False固定、
+#   human_review_required=Trueになるのは attempt_ctx.is_last_slot かつNGのときだけ(JA leafが最終slotを伝えない間はFalse。最終STOPPEDは
+#   従来どおりleaf側のHR Lock経路 record_outcome)。
+# 後方互換: cascade_enabled=False は従来どおり classify_ja_asr_match の結果そのまま(統一judgeを通らない)。
+# SCG費用式(SCG_AZURE_USD_PER_HOUR/SCG_JPY_PER_USD)・SCG_MIN_SIMILARITY・SCG_FINAL_STATUS・JA_SCG_ENABLED緊急停止は不変。
+import hashlib as _hashlib
+import unicodedata as _ud
+
+import er078_asr_unified_judge_01 as unified_judge_mod
+import er078_asr_value_guard_01 as value_guard_mod
+
+NUMERIC_VALUE_EQUIVALENT_MATCH = "NUMERIC_VALUE_EQUIVALENT_MATCH"
+# Primary PASSのうち「読み一致」を根拠にした承認済みequivalence(最終ANDゲートが再否定しない)。
+_READING_MATCH_CLASSIFICATIONS = ("PHONETIC_MATCH", "READING_RESOLVED_MATCH")
+_COST_GUARD_MAX_USD_PER_SEGMENT_FALLBACK = 0.05  # er006_secondary_asr_01.COST_GUARD_MAX_USD_PER_SEGMENT と同値(取得できない場合のみ)
+
+
+def _ja_wav_sha256(path: Optional[str]) -> Optional[str]:
+    try:
+        if path and os.path.isfile(path):
+            h = _hashlib.sha256()
+            with open(path, "rb") as f:
+                for chunk in iter(lambda: f.read(1 << 20), b""):
+                    h.update(chunk)
+            return h.hexdigest()
+    except OSError:
+        pass
+    return None
+
+
+def _shared_run_cache_and_state():
+    """EN adapterと共有するrun単位のSecondaryCache/RunState(begin_secondary_run()を呼んだ場合のみ非None。runner導入は委任_05/06)。"""
+    try:
+        import er006_secondary_asr_01 as _en
+        return _en._RUN_CACHE, _en._RUN_STATE
+    except Exception:  # noqa: BLE001
+        return None, None
+
+
+def _cost_guard_max_usd() -> float:
+    try:
+        import er006_secondary_asr_01 as _en
+        return float(_en.COST_GUARD_MAX_USD_PER_SEGMENT)
+    except Exception:  # noqa: BLE001
+        return _COST_GUARD_MAX_USD_PER_SEGMENT_FALLBACK
+
+
+def _scg_c1_reason(cls: "javal.ClassificationResultJA") -> Optional[str]:
+    """U1(C1固有名詞差)に該当する理由(_scg_exclusion_reasonの該当部分と同一判定)。該当なしはNone。"""
+    for d in (cls.protected.content_diffs or []):
+        if d.get("reading_dictionary_mismatch"):
+            return f"reading_dictionary_mismatch:{d.get('reading_dictionary_token')}"
+        if d.get("entity_like"):
+            return f"entity_like_diff:{d.get('canonical')}->{d.get('asr')}"
+        if _has_latin(d.get("canonical", "")):
+            return f"latin_in_canonical_diff:{d.get('canonical')}"
+    return None
+
+
+def _scg_c2_candidate(cls: "javal.ClassificationResultJA") -> bool:
+    return any(_scg_heterophone_candidate(d) for d in (cls.protected.content_diffs or []))
+
+
+def _has_negation_ja_text(text: str) -> bool:
+    import er003_audio_tts_asr_safety as _safety
+    return bool(_safety._has_negation_ja(text or ""))
+
+
+def _ja_value_form(text: str) -> Optional[str]:
+    """数値atom(数値+助数詞/分数)を『値+単位』の表層非依存トークンへ置換した文字列(NFKC後)。数値atomが無ければNone。"""
+    t = _ud.normalize("NFKC", text or "")
+    atoms = [a for a in value_guard_mod.extract_atoms_ja(t) if a.kind in ("num", "frac")]
+    if not atoms:
+        return None
+    out, pos = [], 0
+    for a in atoms:
+        if a.start < pos:
+            return None
+        out.append(t[pos:a.start])
+        out.append(f"【値{a.kind}:{a.value}:{a.unit}】")
+        pos = a.end
+    out.append(t[pos:])
+    return "".join(out)
+
+
+def _numeric_value_equivalence(canonical_text: str, asr_text: Optional[str], cls: "javal.ClassificationResultJA"):
+    """DESIGN_01 §5-2: 表記ではなく値と単位で比較(三十人=30人、百円=100円 等)。
+    条件(全て必須): Primaryが数字不一致でTRUE_CONTENT_MISMATCH、否定不一致なし、値ガードがEQUAL(DIFF/AMBIGUOUS/UNKNOWNは対象外)、
+    かつ数値表記を値トークンへ置換した両文が(normalize_ja後)完全一致。残りに1文字でも差があれば対象外(既存判定のまま)。"""
+    if asr_text is None or cls.classification != "TRUE_CONTENT_MISMATCH":
+        return None
+    if not cls.protected.number_mismatches or cls.protected.negation_mismatches:
+        return None
+    vg = value_guard_mod.value_guard(canonical_text, asr_text, "ja")
+    if vg.kind != value_guard_mod.EQUAL:
+        return None
+    cf, af = _ja_value_form(canonical_text), _ja_value_form(asr_text)
+    if cf is None or af is None or javal.normalize_ja(cf) != javal.normalize_ja(af):
+        return None
+    if _has_negation_ja_text(cf) != _has_negation_ja_text(af):
+        return None
+    return javal.ClassificationResultJA(
+        NUMERIC_VALUE_EQUIVALENT_MATCH, cls.similarity_ratio, javal.ProtectedCheckResultJA(passed=True),
+        should_pass=True, should_retry=False,
+        reason="数値の値と単位が同値(表記差のみ)で、数値以外の部分は完全一致(値ガードEQUAL)")
+
+
 def evaluate_attempt_ja_with_cascade_detail(
     canonical_text: str, primary_asr_text: Optional[str], wav_path: str,
     cascade_enabled: bool = FEATURE_FLAG_JA_PRIMARY_OPENAI,
-    # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: 既定None(後方互換)。
-    # 辞書登録トークンの確定読み(小文字キー、カタカナ値)。Primary#1・
-    # Primary#2・Secondary#1・Secondary#2の全ステップのclassify_ja_asr_
-    # match呼び出しへ同じ値をそのまま転送する。
+    # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: 既定None(後方互換)。辞書登録トークンの確定読み(小文字キー、カタカナ値)。
     expected_readings: dict | None = None,
-    # OPEN-258 SCG 推奨6: 呼出元で長さ超過(length_ok=False)なら、SCG PASSしても結局不合格のため
-    # Azureを無駄に呼ばない。既定True=後方互換。
+    # OPEN-258 SCG 推奨6: 呼出元で長さ超過(length_ok=False)なら、Azureを無駄に呼ばない。既定True=後方互換。
     length_ok: bool = True,
+    # AUW 委任_04(既定None=slot1/script v0/最終slotでない): 統一judgeのattempt文脈。
+    # dict: slot / script_version('v0'|'v1') / is_last_slot / segment_key / run_state / cache。
+    attempt_ctx: Optional[dict] = None,
 ) -> dict:
-    """Primary(OpenAI)#1の判定結果を受け取り、entity-likeなASR_VALIDATION_
-    UNCERTAINであれば、TTSを再生成せず同じ音声に対してCascade(Primary#2->
-    Secondary#1->Secondary#2)を追加実行する。cascade_enabled=Falseなら
-    classify_ja_asr_matchの結果をそのまま返す(後方互換)。"""
+    """統一ASR判定のJA adapter(AUW 委任_04)。署名の既存引数・戻り値dictの既存キーは従来どおり(additiveで`asr_judgement`/
+    `cost_guard_triggered`を追加)。cascade_enabled=Falseなら従来のclassify_ja_asr_matchの結果をそのまま返す。"""
     cls = javal.classify_ja_asr_match(canonical_text, primary_asr_text, expected_readings=expected_readings)
     cls = _apply_variant_layer_voicing_upgrade(canonical_text, primary_asr_text, cls)
     steps = [{"step": "primary_1", "provider": "openai_asr", "text": primary_asr_text,
@@ -406,110 +526,172 @@ def evaluate_attempt_ja_with_cascade_detail(
         "final_status": cls.classification, "human_review_required": False,
         "canonical_text": canonical_text, "wav_path": wav_path,
     }
+    if not cascade_enabled:
+        return result  # 後方互換: 統一judgeを通らない(従来のclassify結果そのまま)
 
-    # --- OPEN-258 SCG(Secondary Confirm Gate)。既存の早期returnより前、Primaryが
-    # TRUE_CONTENT_MISMATCHの場合だけ評価する(ASR_VALIDATION_UNCERTAIN経路は無変更) ---
-    if cascade_enabled and not cls.should_pass and cls.classification == "TRUE_CONTENT_MISMATCH":
-        exclusion = _scg_exclusion_reason(cls, canonical_text, primary_asr_text)
-        if exclusion is None and not length_ok:
-            exclusion = "length_not_ok(呼出元の長さ判定が不合格、SCG PASSでも不合格になるため不実行)"
-        if not _scg_enabled():
-            scg_info = {"scg_applied": False, "scg_result": "DISABLED_BY_FLAG", "exclusion_reason": "flag_off"}
-        elif exclusion is not None:
-            scg_info = {"scg_applied": False, "scg_result": "NOT_APPLIED", "exclusion_reason": exclusion}
+    actx = dict(attempt_ctx or {})
+    result["stop_retrying"] = False  # DESIGN_01 §4-2/§4-9: 同一音声のASR再試行/4段尽きHR直行は廃止(再生成は通算上限が担保)
+    result["cost_guard_triggered"] = False
+    is_tcm = cls.classification == "TRUE_CONTENT_MISMATCH"
+
+    # ---- Primary側の追加層: 数値の値等価 ----
+    eq_cls = None if cls.should_pass else _numeric_value_equivalence(canonical_text, primary_asr_text, cls)
+    if eq_cls is not None:
+        cls = eq_cls
+        is_tcm = False
+        result.update(verified=True, classification=cls, final_status=cls.classification)
+        steps[0]["classification"] = cls.classification
+        steps[0]["numeric_value_equivalence"] = True
+
+    primary_passed = bool(cls.should_pass)
+    # ---- 除外表/保護差のsignals(従来のSCG除外条件と同一判定。TRUE_CONTENT_MISMATCH時のみ=従来のSCG適用範囲) ----
+    signals: dict = {}
+    if is_tcm and primary_asr_text is not None:
+        signals["similarity"] = cls.similarity_ratio
+        c1 = _scg_c1_reason(cls)
+        if c1:
+            signals["c1_proper_noun_diff"] = c1
+        if _scg_c2_candidate(cls):
+            signals["c2_homophone_candidate"] = True
+        pd = None
+        if cls.protected.negation_mismatches:
+            pd = f"negation_mismatch:{cls.protected.negation_mismatches}"
         else:
-            scg_info = _run_scg_secondary_confirm(canonical_text, wav_path, expected_readings)
-            steps.append({"step": "scg_secondary", "provider": "azure", "text": scg_info.get("secondary_transcript"),
-                           "classification": scg_info.get("secondary_classification") or "TTS_FAILURE",
-                           "scg_result": scg_info["scg_result"]})
-        scg_info["primary_text"] = primary_asr_text
+            neg = _scg_negation_marker_diff(canonical_text, primary_asr_text)
+            if neg:
+                pd = f"negation_marker_diff:{neg}"
+        if pd is None and cls.protected.number_mismatches:
+            vg0 = value_guard_mod.value_guard(canonical_text, primary_asr_text, "ja")
+            if vg0.kind in (value_guard_mod.NO_VALUES, value_guard_mod.UNKNOWN):
+                # 値ガードが結論を出せない(UNKNOWN/NO_VALUES)場合は既存protected_checkへ委譲=従来どおり数字不一致は保護差
+                pd = f"number_mismatch:{cls.protected.number_mismatches}"
+        if pd:
+            signals["protected_diff"] = pd
+    basis = "READING_MATCH" if (primary_passed and cls.classification in _READING_MATCH_CLASSIFICATIONS) else None
+    primary = unified_judge_mod.PrimaryResult(
+        passed=primary_passed, text=primary_asr_text, label=cls.classification, equivalence_basis=basis,
+        warning_labels=(), signals=signals)
+
+    sha = _ja_wav_sha256(wav_path)
+    run_cache, run_state = _shared_run_cache_and_state()
+    cache = actx.get("cache") or (run_cache if (run_cache is not None and sha) else unified_judge_mod.SecondaryCache())
+    ctx = unified_judge_mod.AttemptCtx(
+        canonical_text=canonical_text, wav_path=wav_path, wav_sha256=sha or f"nosha:{id(result)}",
+        audio_seconds=_wav_duration_seconds(wav_path), segment_key=str(actx.get("segment_key", "")),
+        script_version=actx.get("script_version", "v0"), slot=int(actx.get("slot", 1)),
+        is_last_slot=bool(actx.get("is_last_slot", False)), length_ok=bool(length_ok),
+        force_secondary=False, engine="azure", phrase_list_hash="",
+        cache=cache, run_state=actx.get("run_state") or run_state)
+
+    state = {"cost_guard": False, "wall_seconds": None, "flag_off": False}
+    captured: dict = {}
+    primary_orth_ok = (not primary_passed and cls.classification == "ASR_VALIDATION_UNCERTAIN"
+                       and _orthographic_reading_confirmed(cls))
+
+    def _secondary_fn(_ctx):
+        if is_tcm and not _scg_enabled():
+            state["flag_off"] = True  # 緊急停止(JA_SCG_ENABLED=0/FEATURE_FLAG_JA_SCG_ENABLED=False): Azureを呼ばない
+            return unified_judge_mod.SecondaryOutcome(None, error="scg_disabled_by_flag")
+        dur = _wav_duration_seconds(wav_path)
+        if dur is not None and (dur / 3600.0 * unified_judge_mod.AZURE_USD_PER_HOUR) > _cost_guard_max_usd():
+            state["cost_guard"] = True  # COST_GUARD($0.05/segment)を実費(秒数)で等価適用: 超過ならSecondaryを呼ばずfail-closed
+            return unified_judge_mod.SecondaryOutcome(None, error="cost_guard_exceeded")
+        t0 = time.time()
+        text, err = _azure_stt_strict(wav_path, language="ja-JP", timeout_seconds=SCG_AZURE_TIMEOUT_SECONDS)
+        state["wall_seconds"] = round(time.time() - t0, 2)
+        return unified_judge_mod.SecondaryOutcome(text, error=err)
+
+    def _secondary_accept(canon, stext):
+        cls_s = javal.classify_ja_asr_match(canon, stext, expected_readings=expected_readings, allow_reading_resolver=False)
+        captured["cls_s"] = cls_s
+        if cls_s.classification in SCG_PASS_CLASSIFICATIONS:
+            return True, cls_s.classification
+        cls_s2 = _apply_variant_layer_voicing_upgrade(canon, stext, cls_s)
+        if primary_orth_ok and _orthographic_reading_confirmed(cls_s2):
+            # ER-008 Part G/H: 異なる2エンジン(OpenAI Primary#1 / Azure Secondary#1)がともに「辞書上の正当な読み候補にcanonical読みを
+            # 含む表記差のみ」に到達した場合のみ(単一エンジンの繰り返しでは確認しない)。
+            captured["orth"] = True
+            captured["cls_s"] = cls_s2
+            return True, ORTHOGRAPHIC_VARIANT_CONFIRMED
+        return False, cls_s.classification
+
+    jr = unified_judge_mod.unified_judge(ctx, primary, _secondary_fn, lang="ja", role=None,
+                                         secondary_accept_fn=_secondary_accept)
+    audit = jr.audit_record
+    sec = audit.get("secondary") or {}
+    secondary_ran = bool(sec.get("called") or sec.get("cached") or sec.get("error"))
+    cls_s = captured.get("cls_s")
+    scg_info = None
+    if is_tcm:
+        # 除外理由は従来のSCG表記(_scg_exclusion_reason / length_not_ok)を診断用に維持し、統一judgeの理由は別キーで併記する。
+        legacy_reason = _scg_exclusion_reason(cls, canonical_text, primary_asr_text)
+        if legacy_reason is None and not length_ok:
+            legacy_reason = "length_not_ok(呼出元の長さ判定が不合格、SCG PASSでも不合格になるため不実行)"
+        scg_info = {"scg_applied": False, "scg_result": "NOT_APPLIED", "exclusion_reason": legacy_reason or jr.reason_code,
+                    "primary_text": primary_asr_text, "unified_judge_state": jr.state, "unified_reason_code": jr.reason_code}
+        if secondary_ran:
+            scg_result = ("DISABLED_BY_FLAG" if state["flag_off"] else
+                          "UNAVAILABLE" if jr.state == unified_judge_mod.NG_SECONDARY_UNAVAILABLE else
+                          "PASS" if jr.verified else "NG")
+            audio_seconds = ctx.audio_seconds
+            est_jpy = unified_judge_mod.est_jpy_for_seconds(audio_seconds)
+            scg_info.update(
+                scg_applied=not state["flag_off"], scg_result=scg_result, exclusion_reason=None,
+                **_scg_service_info(), audio_seconds=round(audio_seconds, 3) if audio_seconds is not None else None,
+                est_cost_jpy=est_jpy, wall_seconds=state["wall_seconds"], timestamp=time.strftime("%Y-%m-%dT%H:%M:%S"),
+                secondary_transcript=sec.get("text"), error=sec.get("error"),
+                secondary_classification=cls_s.classification if cls_s else None,
+                judgement_reason=f"統一judge({jr.reason_code}): Secondary(Azure) label={sec.get('label')!r}")
+        scg_info["scg_info_source"] = "AUW_unified_judge"
         result["scg_applied"] = scg_info["scg_applied"]
         result["scg_result"] = scg_info["scg_result"]
         result["scg_info"] = scg_info
-        if scg_info["scg_result"] == "PASS":
-            scg_cls = javal.ClassificationResultJA(
-                SCG_FINAL_STATUS, cls.similarity_ratio, cls.protected, should_pass=True, should_retry=False,
-                reason=f"Primary(OpenAI)はTRUE_CONTENT_MISMATCHだが、Secondary(Azure)が原稿と一致: "
-                       f"{scg_info['judgement_reason']}")
-            scg_cls.scg_info = scg_info
-            result.update(verified=True, stop_retrying=False, final_status=SCG_FINAL_STATUS, classification=scg_cls)
-            return result
-        cls.scg_info = scg_info  # NG/不実行/UNAVAILABLE: 従来どおり再生成へ。証跡だけ付与(既存キー不変)
-        return result
+    if secondary_ran:
+        result["cascade_invoked"] = True
+        step = {"step": "scg_secondary" if is_tcm else "secondary_1", "provider": "azure", "text": sec.get("text"),
+                "classification": (cls_s.classification if cls_s else ("TTS_FAILURE" if not sec.get("text") else sec.get("label"))),
+                "cached": bool(sec.get("cached")), "unified_judge_state": jr.state}
+        if scg_info:
+            step["scg_result"] = scg_info["scg_result"]
+        steps.append(step)
+    if state["cost_guard"]:
+        result["cost_guard_triggered"] = True
 
-    if cls.should_pass or not cascade_enabled or not is_entity_like_mismatch_ja(cls):
-        return result
-
-    result["cascade_invoked"] = True
-    import er006_asr_provider_routing_01 as routing
-
-    # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part G/H: 「ASR側の表記が
-    # 辞書上持ちうる正当な読み候補にcanonicalの期待読みが含まれるか」を
-    # 各ステップ個別に確認し(_orthographic_reading_confirmed)、かつ
-    # 異なる2エンジン(OpenAI/Azure)以上がその状態に到達した場合のみ
-    # ORTHOGRAPHIC_VARIANT_CONFIRMEDとしてPASSする(単一エンジンの
-    # 繰り返しだけでは裏付けにしない)。entity_like・読みで説明できない
-    # 差分が一度でも出た場合はこの経路を諦める(Human Review温存)。
-    orthographic_ok_engines: set[str] = set()
-    orthographic_disqualified = False
-
-    def _track_orthographic(cls_step: "javal.ClassificationResultJA", engine: str) -> None:
-        nonlocal orthographic_disqualified
-        if cls_step is None:
-            return
-        if _orthographic_reading_confirmed(cls_step):
-            orthographic_ok_engines.add(engine)
+    result["verified"] = bool(jr.verified)
+    if jr.verified:
+        if not primary_passed:  # Secondary独立確認で採用(PASS_WITH_WARNING)
+            if captured.get("orth"):
+                result.update(final_status=ORTHOGRAPHIC_VARIANT_CONFIRMED, classification=captured["cls_s"])
+            elif is_tcm:
+                scg_cls = javal.ClassificationResultJA(
+                    SCG_FINAL_STATUS, cls.similarity_ratio, cls.protected, should_pass=True, should_retry=False,
+                    reason=f"Primary(OpenAI)はTRUE_CONTENT_MISMATCHだが、Secondary(Azure)が原稿と一致: {jr.reason_code}")
+                scg_cls.scg_info = scg_info
+                result.update(final_status=SCG_FINAL_STATUS, classification=scg_cls)
+            elif cls_s is not None:
+                result.update(final_status=cls_s.classification, classification=cls_s)
         else:
-            orthographic_disqualified = True
-
-    _track_orthographic(cls, "openai")
-
-    # --- Primary #2(同じ音声、OpenAI、TTSは再生成しない) ---
-    text_p2, err_p2 = routing._transcribe_openai_mini(wav_path, "ja-JP", "gpt-4o-mini-transcribe")
-    cls_p2 = javal.classify_ja_asr_match(
-        canonical_text, text_p2, expected_readings=expected_readings) if text_p2 is not None else None
-    cls_p2 = _apply_variant_layer_voicing_upgrade(canonical_text, text_p2, cls_p2)
-    steps.append({"step": "primary_2", "provider": "openai_asr", "text": text_p2,
-                   "classification": cls_p2.classification if cls_p2 else "TTS_FAILURE"})
-    if cls_p2 is not None and cls_p2.should_pass:
-        result.update(verified=True, stop_retrying=False, final_status=cls_p2.classification, classification=cls_p2)
-        return result
-    _track_orthographic(cls_p2, "openai")
-
-    # --- Secondary #1(Azure) ---
-    text_s1, err_s1 = p4.get_full_text_via_azure_stt_continuous(wav_path, language="ja-JP", timeout_seconds=90.0)
-    cls_s1 = javal.classify_ja_asr_match(
-        canonical_text, text_s1, expected_readings=expected_readings) if text_s1 is not None else None
-    cls_s1 = _apply_variant_layer_voicing_upgrade(canonical_text, text_s1, cls_s1)
-    steps.append({"step": "secondary_1", "provider": "azure", "text": text_s1,
-                   "classification": cls_s1.classification if cls_s1 else "TTS_FAILURE"})
-    if cls_s1 is not None and cls_s1.should_pass:
-        result.update(verified=True, stop_retrying=False, final_status=cls_s1.classification, classification=cls_s1)
-        return result
-    _track_orthographic(cls_s1, "azure")
-    if not orthographic_disqualified and len(orthographic_ok_engines) >= 2:
-        result.update(verified=True, stop_retrying=False, final_status=ORTHOGRAPHIC_VARIANT_CONFIRMED,
-                       classification=cls_s1)
-        return result
-
-    # --- Secondary #2(Azure、同じ音声を再度) ---
-    text_s2, err_s2 = p4.get_full_text_via_azure_stt_continuous(wav_path, language="ja-JP", timeout_seconds=90.0)
-    cls_s2 = javal.classify_ja_asr_match(
-        canonical_text, text_s2, expected_readings=expected_readings) if text_s2 is not None else None
-    cls_s2 = _apply_variant_layer_voicing_upgrade(canonical_text, text_s2, cls_s2)
-    steps.append({"step": "secondary_2", "provider": "azure", "text": text_s2,
-                   "classification": cls_s2.classification if cls_s2 else "TTS_FAILURE"})
-    if cls_s2 is not None and cls_s2.should_pass:
-        result.update(verified=True, stop_retrying=False, final_status=cls_s2.classification, classification=cls_s2)
-        return result
-    _track_orthographic(cls_s2, "azure")
-    if not orthographic_disqualified and len(orthographic_ok_engines) >= 2:
-        result.update(verified=True, stop_retrying=False, final_status=ORTHOGRAPHIC_VARIANT_CONFIRMED,
-                       classification=cls_s2)
-        return result
-
-    # --- 4 step全て不一致 -> Human Review(TTSは再生成しない) ---
-    result.update(human_review_required=True, stop_retrying=True, final_status="ASR_VALIDATION_UNCERTAIN")
+            result.update(final_status=cls.classification, classification=cls)
+    else:
+        result.update(final_status=cls.classification, classification=cls)
+        if scg_info is not None:
+            cls.scg_info = scg_info  # NG/不実行/UNAVAILABLE: 従来どおり再生成へ。証跡だけ付与(既存キー不変)
+        if audit.get("technical_stop") or jr.secondary_unavailable:
+            result["technical_stop"] = audit.get("technical_stop")
+        # 委任_06c(OF-AUW-C-06、ADDENDUM §4): NG理由がSecondary障害のみなら技術STOP(HR Lock/queueへ投入しない)。ENと同一規約。
+        _tech_only = jr.state == unified_judge_mod.NG_SECONDARY_UNAVAILABLE
+        if _tech_only:
+            result["human_review_required"] = False
+            result["technical_stop"] = audit.get("technical_stop") or {"type": "SECONDARY_UNAVAILABLE", "restartable": True,
+                                                                        "approval_required": False}
+            result["technical_stop_status"] = "TECHNICAL_STOP_SECONDARY_UNAVAILABLE"
+        if bool(actx.get("is_last_slot", False)) and not _tech_only:
+            result["human_review_required"] = True
+    audit["adapter"] = {"layers": (["numeric_value_equivalence"] if eq_cls is not None else []),
+                        "azure_real_calls": 1 if sec.get("called") else 0, "cost_guard_triggered": state["cost_guard"],
+                        "language": "ja-JP", "asr_text_present": primary_asr_text is not None,
+                        "cache": {"calls": cache.calls, "hits": cache.hits}}
+    result["asr_judgement"] = audit
     return result
 
 
@@ -519,12 +701,18 @@ def evaluate_attempt_ja_with_cascade(
     # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: 既定None(後方互換)。
     expected_readings: dict | None = None,
     length_ok: bool = True,
+    # AUW 委任_04(additive、既定None): 統一judgeのattempt文脈 / audit記録用の追加出力(detailをupdate)。
+    attempt_ctx: Optional[dict] = None,
+    detail_out: Optional[dict] = None,
 ) -> tuple[bool, bool, "javal.ClassificationResultJA"]:
     """Production retry loop向けのdrop-in互換ラッパー(English版
-    evaluate_attempt_with_cascade()と同じ形の戻り値)。"""
+    evaluate_attempt_with_cascade()と同じ形の戻り値)。detail_out(既定None)を渡すと、
+    detailの戻り値全体(asr_judgement等)でその場でupdate()する(戻り値tupleの形は変えない)。"""
     detail = evaluate_attempt_ja_with_cascade_detail(
         canonical_text, primary_asr_text, wav_path, cascade_enabled=cascade_enabled,
-        expected_readings=expected_readings, length_ok=length_ok)
+        expected_readings=expected_readings, length_ok=length_ok, attempt_ctx=attempt_ctx)
     if detail["human_review_required"]:
         _log_human_review(detail)
+    if detail_out is not None:
+        detail_out.update(detail)
     return detail["verified"], detail["stop_retrying"], detail["classification"]

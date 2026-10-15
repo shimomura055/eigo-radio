@@ -257,7 +257,9 @@ class NarratorHeadingRetryPolicyAlignmentTests(unittest.TestCase):
                            tts_backend="structured_separation",
                            # 委任_05A(OPEN-270 M3): 外側ループ通算cool-down判定用の新規opt-in引数
                            # (既定値付き)。このFakeは受理して無視するだけでよい。
-                           prior_generations=0, cooldown_total_budget=None):
+                           prior_generations=0, cooldown_total_budget=None,
+                           # AUW 委任_05(mock署名追随): crosslevelが統一judgeのslot通算(HR queue最終slot判定)用に渡す。
+                           slot_offset=0, total_slots=None):
             # standard側がstop_retryingにより1回のみでASR_VALIDATION_UNCERTAIN
             # を返した状態を模擬する(fallbackへの到達可否だけを検証したいため、
             # 実際のTTS/ASR APIは呼ばない)。

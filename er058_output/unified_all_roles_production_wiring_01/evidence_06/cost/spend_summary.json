@@ -1,0 +1,65 @@
+{
+ "per_run": {
+  "a2_secondary": {
+   "asr_est_jpy": 0.4315,
+   "openai_calls": 5,
+   "azure_calls": 2,
+   "azure_seconds_cost_logger": 8.66
+  },
+  "ja": {
+   "asr_est_jpy": 1.5743,
+   "openai_calls": 10,
+   "azure_calls": 2,
+   "azure_seconds_cost_logger": 33.34
+  },
+  "melos": {
+   "asr_est_jpy": 2.4154,
+   "openai_calls": 36,
+   "azure_calls": 23,
+   "azure_seconds_cost_logger": 46.78
+  },
+  "melos_negatives": {
+   "asr_est_jpy": 0.3828,
+   "openai_calls": 7,
+   "azure_calls": 3,
+   "azure_seconds_cost_logger": 7.14
+  },
+  "melos_stored_primary": {
+   "asr_est_jpy": 2.077,
+   "openai_calls": 0,
+   "azure_calls": 23,
+   "azure_seconds_cost_logger": 46.78
+  },
+  "z_fail3_prod_path": {
+   "asr_est_jpy": 1.1133,
+   "openai_calls": 3,
+   "azure_calls": 3,
+   "azure_seconds_cost_logger": 24.44,
+   "tts_clips_est": 3,
+   "tts_est_jpy": 0.186
+  },
+  "z_ja_prod_path": {
+   "asr_est_jpy": 0.12,
+   "openai_calls": 2,
+   "azure_calls": 1,
+   "azure_seconds_cost_logger": 2.28,
+   "tts_clips_est": 2,
+   "tts_est_jpy": 0.124
+  },
+  "z_prod_path": {
+   "asr_est_jpy": 0.047,
+   "openai_calls": 5,
+   "azure_calls": 0,
+   "azure_seconds_cost_logger": 0,
+   "tts_clips_est": 3,
+   "tts_est_jpy": 0.186
+  }
+ },
+ "superseded_runs_est_jpy": {
+  "a2_secondary_run1_deleted": 0.1042,
+  "a2_secondary_run2_deleted": 0.4221
+ },
+ "total_est_jpy": 9.184,
+ "cap_jpy": 50,
+ "basis": "Azure=秒数(cost logger LOCAL_WAV_HEADER_EXACT)x0.0444, OpenAI ASR=1callあたり0.0094(cost loggerに記録されない経路のためrunner wrapperのusage_log), TTS=0.062/clip(DESIGN_01 §9。STANDARD経路はcost loggerに記録されないため推定)"
+}

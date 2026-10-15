@@ -40,6 +40,7 @@ import json
 import os
 
 import audio_review_player as player_common
+import er078_secondary_run_scope_01 as secondary_run_scope  # AUW 委任_05
 import er003_v1_b1_scaffold_01_generate as b1s
 import er003_v1_crosslevel_audio_02_common as crosslevel_common
 import er003_v1_iran01_a2_generate as a2gen
@@ -51,6 +52,7 @@ import er003_v1_sing01_point_headings_aoede as point_headings
 import er003_v1_sing01_voice01_generate as voice01
 import er005_cost_logger as cl
 import er011_human_review_lock_01 as review_lock
+import er078_pass_with_warning_registry_01 as pww_registry  # AUW 委任_03: PASS_WITH_WARNING 事後試聴リスト
 import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er006_model_routing_contract_01 as routing
 import er019_family_x_audio_plan_01 as plan
@@ -593,8 +595,31 @@ def _with_recorded_sha256(generate_fn):
     return wrapped
 
 
+def _mark_asr_judgement_inherited(reused: dict) -> None:
+    """AUW 委任_03(additive): 前回runの音声を再利用する場合、元の`asr_judgement`(PASS_WITH_WARNING等)を
+    `asr_judgement_inherited`へ移し、事後試聴リストが再利用音声の元のWARNINGを継承して表示できるようにする。"""
+    if "asr_judgement" in reused:
+        reused["asr_judgement_inherited"] = reused.pop("asr_judgement")
+
+
+def _reuse_guard_blocks(cached_result: dict | None, label: str) -> dict | None:
+    """AUW 委任_06c(OF-AUW-C-03、ADDENDUM §3-1): 前回resultsのOK entryを再利用する前に、保存転写のみ(API 0)を現行の統一judgeへ
+    通す。値ガードDIFF/否定差(`reuse_blocked` markを含む)ならguard情報dictを返す(=呼出側は再利用せず再生成する)。
+    転写が無い/判定不能な旧entryは従来どおり再利用(None)。"""
+    import er078_reuse_value_guard_01 as _rvg
+    g = _rvg.guard_entry(cached_result, label=label)
+    return g if g.get("blocked") else None
+
+
+def _regenerate_after_reuse_block(generate_fn, guard_info: dict):
+    r = generate_fn()
+    if isinstance(r, dict):
+        r["reuse_value_guard_blocked_previous"] = {k: guard_info.get(k) for k in ("reason", "reason_code", "unified_state")}
+    return r
+
+
 def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_fn, expected_text: str | None = None):
-    generate_fn = _with_recorded_sha256(generate_fn)
+    generate_fn = secondary_run_scope.guard_generate(_with_recorded_sha256(generate_fn), name)  # 委任_06c: circuit open中は技術STOP
     """前回run(同一out_dir)のOK segmentを再利用する。Stage 3c(見出し
     sub-segment分離)で判明した安全性ギャップの修正: 従来はstatus=="OK"+
     wavファイル存在のみで再利用可否を判定していたが、これだと
@@ -628,8 +653,12 @@ def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_f
     if cached_result and cached_result.get("status") == "OK" and os.path.exists(wav_path):
         if expected_text is not None and cached_result.get("canonical_text") != expected_text:
             return generate_fn()
+        _blk = _reuse_guard_blocks(cached_result, name)
+        if _blk is not None:
+            return _regenerate_after_reuse_block(generate_fn, _blk)
         reused = dict(cached_result)
         reused["reused_from_previous_run"] = True
+        _mark_asr_judgement_inherited(reused)
         return reused
     return generate_fn()
 
@@ -653,6 +682,7 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
     使用形そのもの、Master Store側のversioningで別途管理)は既定どおり
     require_style_version=Falseのまま(この引数を渡さない呼び出し元は
     従来どおりの挙動)。"""
+    generate_fn = secondary_run_scope.guard_generate(generate_fn, f"kp{rank}_{role}")  # 委任_06c: circuit open中は技術STOP
     _skip = _only_segments_skip(f"kp{rank}_{role}")
     if _skip is not None:
         # 是正②: 上記_generate_or_reuseと同じ証拠つき引継ぎ(Key Phrase component版)。
@@ -670,8 +700,12 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
     if cached_result and cached_result.get("status") == "OK" and os.path.exists(wav_path):
         if expected_text is not None and cached_result.get("canonical_text") != expected_text:
             return generate_fn()
+        _blk = _reuse_guard_blocks(cached_result, f"kp{rank}_{role}")
+        if _blk is not None:
+            return _regenerate_after_reuse_block(generate_fn, _blk)
         reused = dict(cached_result)
         reused["reused_from_previous_run"] = True
+        _mark_asr_judgement_inherited(reused)
         return reused
     return generate_fn()
 
@@ -687,6 +721,9 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
 # er003_v1_n3_01_tts_generate.pyは無変更のまま維持する、
 # er019_family_x_pointless_01_test_01.FamilyAUnchangedTestが同ファイルの
 # working tree diff=0を機械的に強制しているため)。
+KP_EXPLANATION_MAX_ATTEMPTS = 3   # AUW 委任_05(OF-AUW-12): 旧2 -> 3。PRODUCTION_MAX_TTS_ATTEMPTS(=3)と同値
+
+
 def generate_key_phrase_explanation_en_verified(explanation_text: str, out_path: str,
                                                  style_prefix_override: str,
                                                  tts_backend: str = "structured_separation") -> dict:
@@ -694,7 +731,9 @@ def generate_key_phrase_explanation_en_verified(explanation_text: str, out_path:
     text = n3_tts.tts_safe_en(explanation_text)
     return repro01.generate_narration_snippet_verified_strict(
         text, "en", out_path, text,
-        max_extra_chars=max(20, len(text) // 2), max_attempts=2,
+        # AUW 委任_05(OF-AUW-12、DESIGN_02_ADDENDUM_01 §9): 統一フロー「TTS①②③、3回NGでLR/HR」に揃える
+        # (旧Trial値max_attempts=2の継承を3回へ。KP解説の回数変更はこの1点のみ。Prompt/閾値/他回数は不変)。
+        max_extra_chars=max(20, len(text) // 2), max_attempts=KP_EXPLANATION_MAX_ATTEMPTS,
         safety_margin_seconds=repro01.KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS,
         style_prefix_override=style_prefix_override, disfluency_qa=True,
         asr_prompt=repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT,
@@ -769,6 +808,7 @@ def _shared_narration_gate_blocked_summary(out_dir: str) -> dict | None:
     }
 
 
+@secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 def generate_family_x_b1_segments(
         theme_out_dir: str,
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27、
@@ -934,6 +974,9 @@ def generate_family_x_b1_segments(
                # MAJOR-3是正): 可変segment reuse判定用のcache version guard。
                "style_version": FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
                **({"only_segments": sorted(_ONLY_SEGMENTS)} if _ONLY_SEGMENTS is not None else {})})
+    # AUW 委任_03: 生成完了hook。tts_generation_results.json確定直後に事後試聴リスト(PASS_WITH_WARNING)を再導出して
+    # audit/pass_with_warning_listening_list.jsonへ出力する。失敗しても生成は失敗させない(warningログのみ、非ブロッキング)。
+    pww_registry.write_listening_list_safe(out_dir)
     save_json(f"{out_dir}/run_summary_tts.json",
               {"segment_status": all_status, "key_phrase_status": kp_status,
                "shared_narration_status": {k: v["status"] for k, v in shared_narration_status.items()},
@@ -1084,6 +1127,7 @@ def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict 
     return kp_results, explanation_bundle
 
 
+@secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 def generate_family_x_a2_segments(
         theme_out_dir: str, japanese_title: str,
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01/02
@@ -1294,6 +1338,9 @@ def generate_family_x_a2_segments(
                # MAJOR-3是正): 可変segment reuse判定用のcache version guard。
                "style_version": FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
                **({"only_segments": sorted(_ONLY_SEGMENTS)} if _ONLY_SEGMENTS is not None else {})})
+    # AUW 委任_03: 生成完了hook。tts_generation_results.json確定直後に事後試聴リスト(PASS_WITH_WARNING)を再導出して
+    # audit/pass_with_warning_listening_list.jsonへ出力する。失敗しても生成は失敗させない(warningログのみ、非ブロッキング)。
+    pww_registry.write_listening_list_safe(out_dir)
     save_json(f"{out_dir}/run_summary_tts.json",
               {"segment_status": all_status, "key_phrase_status": kp_status,
                "shared_narration_status": {k: v["status"] for k, v in shared_narration_status.items()},
@@ -2115,6 +2162,12 @@ def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | N
                           f'peak={a2_summary["peak"]} clipping={a2_summary["clipping_detected"]}</p>'
                           f'{a2_table}')
 
+    # AUW 委任_03: 事後試聴リスト(PASS_WITH_WARNING)節。0件でも節を出す(「0件」と明記)。非ブロッキング。
+    pww_sections_html = chr(10).join(
+        f"<h3>{lvl_label}</h3>" + pww_registry.render_html_section(
+            pww_registry.load_listening_list(f"{theme_out_dir}/{lvl_dir}"), href_fn=lambda e: abs_url(e["audio_path"]) if e.get("audio_path") else "")
+        for lvl_dir, lvl_label in (("b1b", "Advanced(B1)"), ("a2", "Standard(A2)")))
+
     html = f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <title>{MANAGEMENT_ID} player({theme_id})</title>
@@ -2130,6 +2183,7 @@ def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | N
 Comment1→本文1→Comment2→本文2→Comment3→本文3→Comment4→In One Line(Point構造なし)。</p>
 {b1b_audio_html}
 {a2_audio_html}
+{pww_sections_html}
 </body></html>
 """
     out_path = f"{theme_out_dir}/player.html"

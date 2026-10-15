@@ -27,6 +27,7 @@ import os
 import re
 import shutil
 from dataclasses import dataclass, field
+import er078_secondary_run_scope_01 as secondary_run_scope  # AUW 委任_05
 
 MANAGEMENT_ID = "FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01"
 SUB_TASK_ID = "04C"
@@ -579,12 +580,24 @@ def generate_or_reuse_z(cached_entry: dict | None, spec: ClipSpec, wav_path: str
     """判定キー {canonical_text, FAMILY_Z_ROLE_STYLE_VERSION, voice, style prefix sha256, tts_backend}
     の全一致のみ再利用。キーはentryの reuse_key に保存。1つでも異なれば再生成。
     再利用時はwav実在・status OK・sha256一致(stale検知)も要求。"""
+    generate_fn = secondary_run_scope.guard_generate(generate_fn, str(spec.clip_id))  # 委任_06c: circuit open中は技術STOP
     key = build_reuse_key(spec)
     if cached_entry and cached_entry.get("status") == "OK" and cached_entry.get("reuse_key") == key and os.path.exists(wav_path):
         recorded = cached_entry.get("sha256")
         if recorded is None or _sha_file(wav_path) == recorded:
+            # AUW 委任_06c(OF-AUW-C-03、ADDENDUM §3-1): 再利用前に保存転写のみ(API 0)を現行の統一judgeへ通し、値ガードDIFF/否定差
+            # (`reuse_blocked` mark含む)なら再利用せず再生成する。転写が無い/判定不能なentryは従来どおり再利用。
+            import er078_reuse_value_guard_01 as _rvg
+            _g = _rvg.guard_entry(cached_entry, label=str(spec.clip_id), canonical_text=None)
+            if _g.get("blocked"):
+                _r = generate_fn()
+                if isinstance(_r, dict):
+                    _r["reuse_value_guard_blocked_previous"] = {k: _g.get(k) for k in ("reason", "reason_code", "unified_state")}
+                return _r
             reused = dict(cached_entry)
             reused["reused_from_previous_run"] = True
+            if "asr_judgement" in reused:   # AUW 委任_03: 再利用音声の元のWARNINGを継承(asr_judgement_inherited)
+                reused["asr_judgement_inherited"] = reused.pop("asr_judgement")
             return reused
     return generate_fn()
 
@@ -613,6 +626,7 @@ def real_generators() -> dict:
     import er003_v1_repro01_main_generate as repro01
     import er012_b_family_voices_production_01 as bvoices
     import er020_tts_retry_local_rewrite_01 as retry_primitive
+    import er011_human_review_lock_01 as review_lock
 
     def cs(spec):
         return retry_primitive.connected_speech_enabled_for(spec.clip_id)
@@ -633,12 +647,13 @@ def real_generators() -> dict:
         text = _norm_for_tts(spec)
         if spec.level == "a2":
             # Std: 既存Voice A/B Std仕様(A2_ENGLISH_STYLE_PREFIX_SLOWER + 6%後処理)。PD8は渡さない。
-            r = bvoices.generate_voice_body_wide_margin(
-                text, out_path, spec.voice, style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER)
-            if r.get("status") == "OK":
-                narration_dir = out_path.rsplit("/", 1)[0]
-                r = n3_tts.apply_a2_slowdown_postprocess(spec.clip_id, narration_dir, text, r)
-            return r
+            # 委任_06c(OF-AUW-C-08、原文L204「最大3回のTTS生成フロー」): 減速後NGでも通算TTS3回の残予算で取り直す外側ループ
+            # (旧: 減速後NGは再生成せずSTOPPED)。Dialogue固有のPrompt(A2_ENGLISH_STYLE_PREFIX_SLOWER)・Voice・話者帰属は不変。
+            return n3_tts.generate_with_a2_slowdown_outer_loop(
+                spec.clip_id, text, out_path,
+                lambda max_attempts: bvoices.generate_voice_body_wide_margin(
+                    text, out_path, spec.voice, max_attempts=max_attempts,
+                    style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER))
         return bvoices.generate_voice_body_wide_margin(text, out_path, spec.voice)  # style_prefix_overrideを渡さない
 
     def charon_en(spec, out_path):
@@ -665,12 +680,21 @@ def real_generators() -> dict:
         return charon_en(spec, out_path) if spec.level == "b1b" else ja_simple(spec, out_path)
 
     def kp_en(spec, out_path):
-        text = _norm_for_tts(spec)
+        # AUW 委任_06e(F1): legacy/X入口(`generate_key_phrase_component_verified`、@guarded_generate("en"))と同じく、
+        # 2段呼出(MINIMAL×2 → ENGLISH_LOCK×2、2026-09-01ユーザー決定の4回構成)を**外側guard1つ**で包む。
+        # 外側guardが無いと1段目の最終STOPPEDを内側guardがLockへ記録し、2段目がHUMAN_REVIEW_LOCKEDで0 APIになり
+        # 4回構成が2回で止まった(06d `kp4`)。内側は同一out_pathのreentrancy guardでcheck/recordを行わず、record_outcomeは
+        # 最終結果で1回だけ発火する(Lockロジックは無変更)。
+        return _kp_en_two_stage(_norm_for_tts(spec), out_path, spec)
+
+    @review_lock.guarded_generate("en")
+    def _kp_en_two_stage(text, out_path, spec):
         primary = repro01.generate_narration_snippet_verified_strict(
             text, "en", out_path, text, max_extra_chars=10, max_attempts=repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS,
             safety_margin_seconds=repro01.KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=True,
             style_prefix_override=style_text_for(spec), asr_prompt=repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT,
-            enable_non_latin_cascade=True, tts_backend=TTS_BACKEND)
+            enable_non_latin_cascade=True, tts_backend=TTS_BACKEND,
+            slot_offset=0, total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS)  # AUW 委任_05: 4回構成の前半(HR queue対象外)
         if primary.get("status") == "OK":
             primary["fallback_used"] = False
             return primary
@@ -679,8 +703,15 @@ def real_generators() -> dict:
             safety_margin_seconds=repro01.KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=True,
             style_prefix_override=repro01.KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION,
             asr_prompt=repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True,
-            tts_backend=TTS_BACKEND)
+            tts_backend=TTS_BACKEND,
+            slot_offset=repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS,
+            total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS)  # AUW 委任_05: 4回構成の後半(最終slot)
         fb["fallback_used"] = True
+        # legacy `generate_key_phrase_component_verified`と同じ会計: record_outcomeの実TTS試行数(=4)のため、1段目の
+        # attempts_logをfallback_attempts_logへ載せる(監査用の別名も同じ)。
+        fb["fallback_attempts_log"] = primary.get("attempts_log")
+        fb["minimal_attempts_log"] = primary.get("attempts_log")
+        fb["english_lock_attempts_log"] = fb.get("attempts_log")
         return fb
 
     def kp_expl_en(spec, out_path):
@@ -816,6 +847,8 @@ def build_entry(spec: ClipSpec, out_path: str, result: dict, *, human_approved: 
         "cooldown_occurred": bool(stop_events), "cooldown_events": stop_events,
         "audio_text_deviation": deviation,
         "tts_generations_used": result.get("tts_generations_used"),
+        # AUW 委任_03(additive): 統一ASR判定の監査record(PASS_WITH_WARNING等)。事後試聴リストの入力。
+        "asr_judgement": result.get("asr_judgement"),
     }
     if os.path.exists(out_path):
         try:
@@ -912,6 +945,7 @@ def _cached_entry(cached: dict | None, spec: ClipSpec):
     return (cached.get("segments") or {}).get(spec.clip_id)
 
 
+@secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | None = None, dry_run: bool = False,
                   only_clips: set | None = None, revalidate_fn=None, article_text: str | None = None,
                   story_key: str = DEFAULT_SLUG) -> dict:
@@ -962,6 +996,7 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
                 _handle_local_rewrite(entry, spec, article_text, revalidate_fn, story_key, level, run_dir)
             except FamilyZLocalRewriteStop as e:
                 deferred_stop = e  # 監査記録を書き終えてからSTOPする(実費をかけた生成結果を失わない)
+        entry = normalize_technical_stop_entry(spec, out_path, entry)
         _store(segments, key_phrases, spec, entry)
         evidence.append(_evidence_row(spec, out_path, entry))
         save_checkpoint(level_dir, segments, key_phrases)
@@ -974,6 +1009,10 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
            "style_version": FAMILY_Z_ROLE_STYLE_VERSION, "management_id": MANAGEMENT_ID, "level": level}
     with open(results_path, "w", encoding="utf-8") as f:
         json.dump(doc, f, ensure_ascii=False, indent=2)
+    # AUW 委任_03: 生成完了hook。results確定直後に事後試聴リスト(PASS_WITH_WARNING)を再導出して
+    # audit/pass_with_warning_listening_list.jsonへ出力(失敗しても生成は失敗させない、非ブロッキング)。
+    import er078_pass_with_warning_registry_01 as _pww
+    _pww.write_listening_list_safe(level_dir)
     if os.path.exists(_checkpoint_path(level_dir)):
         os.remove(_checkpoint_path(level_dir))        # 最終results確定後は途中経過を残さない(古い内容で上書きされない)
     ev_path = f"{level_dir}/audit/runtime_evidence_{SUB_TASK_ID}.json"
@@ -983,6 +1022,22 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
         raise deferred_stop
     return {"dry_run": False, "planned": planned, "results_path": results_path, "evidence_path": ev_path,
             "statuses": {r["clip_id"]: r["status"] for r in evidence}}
+
+
+def normalize_technical_stop_entry(spec: ClipSpec, out_path: str, entry: dict) -> dict:
+    """AUW 委任_06e(F2): circuit open時に`guard_generate`が返す技術STOP entry(`technical_stop=True`、`style`等を持たない最小dict)を、
+    通常entryと同じ形(`build_entry`)にして返す。06dの`tstop`ではこのentryが`build_entry`を通らず`_evidence_row`が
+    `KeyError: 'style'`で`run_tts_stage`を異常終了させた。status/technical_stop/restartable/approval_required/
+    human_review_required/reason/events等の技術STOP固有keyは保持する。音声は生成していないため`sha256`/`duration_seconds`は
+    None(前回の残存wavを今回の結果として記録しない)。通常entry(`style`あり)はそのまま返す。"""
+    if not (isinstance(entry, dict) and entry.get("technical_stop") is True and "style" not in entry):
+        return entry
+    base = build_entry(spec, out_path, {"status": entry.get("status")})
+    base.update(entry)
+    base["sha256"] = None
+    base["duration_seconds"] = None
+    base["z_adoption"] = "failed"
+    return base
 
 
 def _store(segments: dict, key_phrases: dict, spec: ClipSpec, entry: dict) -> None:
@@ -1310,7 +1365,8 @@ def _esc(s) -> str:
 
 
 def build_listening_page_html(level_label: str, rows: list, kp_rows: list, full_audio_rel: str, duration: float,
-                              tts_mode: str = "Standard同期(TTS_EXECUTION_MODE=STANDARD)") -> str:
+                              tts_mode: str = "Standard同期(TTS_EXECUTION_MODE=STANDARD)",
+                              warn_section_html: str = "") -> str:
     """rows=[{part,start,dur,file,voice,style,script,notes[]}]。level_labelは'Standard'/'Advanced'のみ。"""
     trs = []
     for i, r in enumerate(rows):
@@ -1334,6 +1390,7 @@ def build_listening_page_html(level_label: str, rows: list, kp_rows: list, full_
             f"<h2>Key Phrases</h2>{kp}"
             "<table><thead><tr><th>パート</th><th>音声</th><th>Voice・Style・Script</th></tr></thead><tbody>"
             + "".join(trs) + "</tbody></table>"
+            + warn_section_html +
             "<script>document.querySelectorAll('button.jump').forEach(b=>b.onclick=()=>{const a=document.getElementById('main');"
             "a.currentTime=parseFloat(b.dataset.t);a.play();});</script></body></html>")
 
@@ -1379,7 +1436,7 @@ def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_d
         sf.write(f"{audio_out_dir}/{fn}", x[int(round(s * sr)): int(round((s + d) * sr))], sr, format="MP3")
         cid = part_to_clip_id(part)
         entry = _lookup_entry(data, cid) if cid else None
-        row = {"part": part, "start": s, "dur": d, "file": f"{audio_rel_prefix}{fn}", "voice": "-", "style": "-",
+        row = {"part": part, "clip_id": cid, "start": s, "dur": d, "file": f"{audio_rel_prefix}{fn}", "voice": "-", "style": "-",
                "script": "(音楽・通知音。読み上げなし)" if part.startswith(("Intro", "Outro", "Notification")) else "未取得", "notes": []}
         if entry:
             row["voice"] = entry.get("voice", "-")
@@ -1406,10 +1463,19 @@ def build_pages(run_dir: str, pages_dir: str = PAGES_DIR) -> dict:
     """user_test/family_z_melos_01/{index,standard,advanced}.html を生成する(静的ファイルのみ)。"""
     os.makedirs(pages_dir, exist_ok=True)
     out = {}
+    warn_sections = []
     for level, fname, label in (("a2", "standard.html", "Standard"), ("b1b", "advanced.html", "Advanced")):
         audio_dir = f"{pages_dir}/audio_{label.lower()}"
         rows, kp_rows, full, dur = build_page_rows(run_dir, level, f"audio_{label.lower()}/", audio_dir)
-        html_text = build_listening_page_html(label, rows, kp_rows, f"audio_{label.lower()}/{full}", dur)
+        # AUW 委任_03: 事後試聴リスト(PASS_WITH_WARNING)節(0件でも節を出す)。mp3リンクは当該partの試聴ページ内mp3。
+        import er078_pass_with_warning_registry_01 as _pww
+        warn_entries = _pww.load_listening_list(f"{run_dir}/{level}")
+        clip_to_file = {r.get("clip_id"): r["file"] for r in rows if r.get("clip_id")}
+        warn_html = _pww.render_html_section(
+            warn_entries, href_fn=lambda e: clip_to_file.get(_warn_entry_to_clip_id(e.get("entry_key", "")), ""))
+        warn_sections.append((label, warn_html))
+        html_text = build_listening_page_html(label, rows, kp_rows, f"audio_{label.lower()}/{full}", dur,
+                                              warn_section_html=warn_html)
         lint = lint_page_html(html_text)
         if any(lint.values()):
             raise FamilyZAudioStop(f"試聴ページlint NG ({label}): {lint}")
@@ -1417,14 +1483,27 @@ def build_pages(run_dir: str, pages_dir: str = PAGES_DIR) -> dict:
             f.write(html_text)
         out[label] = {"page": f"{pages_dir}/{fname}", "rows": len(rows), "kp_rows": len(kp_rows), "lint": lint}
     with open(f"{pages_dir}/index.html", "w", encoding="utf-8") as f:
-        f.write(build_index_html())
+        f.write(build_index_html(warn_sections))
     return out
 
 
-def build_index_html() -> str:
+def _warn_entry_to_clip_id(entry_key: str):
+    """事後試聴リストのentry_key(tts_generation_results.json内のpath)をtimeline rowのclip_idへ対応づける。
+    対応するrow(mp3)が無いものはNone(リンクなし表示)。"""
+    parts = entry_key.split("/")
+    if len(parts) == 2 and parts[0] == "segments":
+        return parts[1]
+    if len(parts) == 3 and parts[0] == "key_phrases" and parts[2] == "english":
+        return f"kp{parts[1]}_en"
+    return None
+
+
+def build_index_html(warn_sections=None) -> str:
+    """warn_sections=[(level_label, section_html)]: AUW 委任_03の『事後試聴リスト(PASS_WITH_WARNING)』節(0件でも節を出す)。"""
+    extra = "".join(f"<h2>{_esc(lbl)}</h2>{sec_html}" for lbl, sec_html in (warn_sections or []))
     return ("<!doctype html><html lang='ja'><head><meta charset='utf-8'><title>走れメロス 試聴</title></head><body>"
             "<h1>走れメロス 試聴</h1><ul><li><a href='standard.html'>Standard</a></li>"
-            "<li><a href='advanced.html'>Advanced</a></li></ul></body></html>")
+            "<li><a href='advanced.html'>Advanced</a></li></ul>" + extra + "</body></html>")
 
 
 def lint_page_html(html_text: str) -> dict:

@@ -43,8 +43,10 @@ class ApplyA2SlowdownPostprocessSha256Tests(unittest.TestCase):
                                  "raw_leading_silence_seconds": 0.05, "raw_trailing_silence_seconds": 0.05}}
         with mock.patch.object(tg.a2_slowdown, "apply_a2_slowdown", side_effect=self._fake_apply_a2_slowdown), \
              mock.patch.object(tg.routing, "transcribe", return_value=("some text", None)), \
-             mock.patch.object(tg.en_validator, "classify_asr_match") as mock_classify:
-            mock_classify.return_value = mock.Mock(should_pass=True, classification="EXACT_MATCH")
+             mock.patch.object(tg.en_validator, "classify_asr_match", wraps=tg.en_validator.classify_asr_match):
+            # AUW 委任_05(J7): 減速後再検証は統一judge(EN adapter)経由になり、adapterのP-chainがclassifyの戻り値の構造
+            # (protected等)を使うため、旧Mock(should_pass=True)では形が合わない。本testの主題(sha256の更新)は分類結果に
+            # 依存しないので、実classify(原稿==転写でEXACT_MATCH -> Primary PASS、Secondary不呼出)へwrapsする。
             updated = tg.apply_a2_slowdown_postprocess(self.name, self.tmp_dir, "some text", result)
 
         self.assertEqual(updated["status"], "OK")
@@ -63,8 +65,10 @@ class ApplyA2SlowdownPostprocessSha256Tests(unittest.TestCase):
         result = {"status": "OK", "sha256": None, "duration_seconds": 10.0}
         with mock.patch.object(tg.a2_slowdown, "apply_a2_slowdown", side_effect=self._fake_apply_a2_slowdown), \
              mock.patch.object(tg.routing, "transcribe", return_value=("some text", None)), \
-             mock.patch.object(tg.en_validator, "classify_asr_match") as mock_classify:
-            mock_classify.return_value = mock.Mock(should_pass=True, classification="EXACT_MATCH")
+             mock.patch.object(tg.en_validator, "classify_asr_match", wraps=tg.en_validator.classify_asr_match):
+            # AUW 委任_05(J7): 減速後再検証は統一judge(EN adapter)経由になり、adapterのP-chainがclassifyの戻り値の構造
+            # (protected等)を使うため、旧Mock(should_pass=True)では形が合わない。本testの主題(sha256の更新)は分類結果に
+            # 依存しないので、実classify(原稿==転写でEXACT_MATCH -> Primary PASS、Secondary不呼出)へwrapsする。
             updated = tg.apply_a2_slowdown_postprocess(self.name, self.tmp_dir, "some text", result)
         self.assertIsNone(updated["sha256"])
 

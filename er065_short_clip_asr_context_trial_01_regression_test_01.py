@@ -222,7 +222,10 @@ class ProductionPatternsAndEqLayer_Delegation04(unittest.TestCase):
         self.assertNotIn(j2, eq.ACCEPT_JUDGMENTS)
 
     def test_post_slowdown_wiring(self):
-        import types
+        # AUW 委任_06c(OF-AUW-C-13): 旧`_post_slowdown_cascade_rescue`(UNCERTAIN限定ゲート、Production未到達の死コード)を撤去し、
+        # 統一経路(J7 `_post_slowdown_unified_judge`)へ付替え。統一仕様(原文: Primary NGなら不一致の種類によらず原則Secondary)に
+        # 従い、TRUE_CONTENT_MISMATCHでもadapterへ1回渡る(旧=0回は05で意図的に変更済み。誤受理防止は adapter内の保護差で担保)。
+        # Eq Layer flagは引き続き渡されない(減速後再検証はPrimary層不変、OPEN-122(4)の記録)。
         import er003_v1_n3_01_tts_generate as gen
         calls = []
         orig = gen.secondary_asr.evaluate_attempt_with_cascade_detail
@@ -232,16 +235,13 @@ class ProductionPatternsAndEqLayer_Delegation04(unittest.TestCase):
             return {"classification": None, "verified": False, "cascade_invoked": True, "final_status": "X", "steps": []}
         gen.secondary_asr.evaluate_attempt_with_cascade_detail = fake
         try:
-            # (1) TRUE_CONTENT_MISMATCH -> 減速後経路は即False。cascade(=Eq Layer入口)を一切呼ばない
-            cls = types.SimpleNamespace(classification="TRUE_CONTENT_MISMATCH")
-            self.assertFalse(gen._post_slowdown_cascade_rescue({}, "pay showed coffee", "pay show coffee", cls, "x.wav", "full_story_part1"))
-            self.assertEqual(calls, [])
-            # (2) UNCERTAIN -> cascadeが呼ばれる(feature flag有効時)。ただし Eq Layer flag は渡されない(未配線の記録: OPEN-122(4))
-            if gen.secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED:
-                cls = types.SimpleNamespace(classification="ASR_VALIDATION_UNCERTAIN")
-                gen._post_slowdown_cascade_rescue({}, "Melos said.", "Mello said.", cls, "x.wav", "full_story_part1")
-                self.assertEqual(len(calls), 1)
-                self.assertNotIn("enable_connected_speech_equivalence_layer", calls[0])
+            for canon, asr in (("pay showed coffee", "pay show coffee"), ("Melos said.", "Mello said.")):
+                before = len(calls)
+                d = gen._post_slowdown_unified_judge({}, canon, asr, "x.wav", "full_story_part1", True)
+                self.assertFalse(d["verified"])
+                self.assertEqual(len(calls), before + 1)
+                self.assertNotIn("enable_connected_speech_equivalence_layer", calls[-1])
+                self.assertEqual(calls[-1]["attempt_ctx"]["is_last_slot"], True)
         finally:
             gen.secondary_asr.evaluate_attempt_with_cascade_detail = orig
 

@@ -59,6 +59,8 @@ import time
 
 import numpy as np
 
+import er078_secondary_run_scope_01 as secondary_run_scope  # AUW 委任_05
+import er078_pass_with_warning_registry_01 as pww_registry  # AUW 委任_05: PASS_WITH_WARNING 事後試聴リスト
 import er002_common as common
 import er003_b1_p9a_audio as p9a
 import er003_v1_n3_01_assemble as assemble_mod
@@ -320,7 +322,7 @@ def purge_segment_outputs(audio_dir: str, seg_id: str) -> None:
             os.remove(p)
 
 
-def resumable_reuse(out_path: str, expected_text_sha256: str) -> dict | None:
+def resumable_reuse(out_path: str, expected_text_sha256: str, canonical_text: str | None = None) -> dict | None:
     """既存wav+.okがあり、記録済みtts_text sha256が現在のplanと一致する
     場合のみresume(skip)する。sha256不一致(本文変更等)またはmeta欠如かつ
     レガシー.ok(Trial由来コピー)の場合は、現時点のtext基準でmetaを新規に
@@ -328,26 +330,42 @@ def resumable_reuse(out_path: str, expected_text_sha256: str) -> dict | None:
     if not (os.path.exists(out_path) and os.path.exists(_ok_marker_path(out_path))):
         return None
     meta_path = _ok_meta_path(out_path)
+    inherited_judgement = None
     if os.path.exists(meta_path):
         with open(meta_path, encoding="utf-8") as f:
             meta = json.load(f)
         if meta.get("tts_text_sha256") != expected_text_sha256:
             return None
+        # AUW 委任_05(additive): 同一wav(sha256一致)の場合のみ元の判定recordを継承する(WARNINGの事後試聴リスト引継ぎ)。
+        if meta.get("asr_judgement") is not None and meta.get("wav_sha256") == p9a.sha256_file(out_path):
+            inherited_judgement = meta["asr_judgement"]
+            # AUW 委任_06c(OF-AUW-C-03、ADDENDUM §3-1): 再利用前に保存転写のみ(API 0)を現行の統一judgeへ通し、値ガードDIFF/否定差なら
+            # 再利用せず(None=呼出側が再生成)。canonical_text未指定の旧呼出は従来どおり。
+            if canonical_text:
+                import er078_reuse_value_guard_01 as _rvg
+                if _rvg.guard_entry({"asr_judgement": inherited_judgement}, label=os.path.basename(out_path),
+                                    canonical_text=canonical_text).get("blocked"):
+                    return None
     else:
         with open(meta_path, "w", encoding="utf-8") as f:
             json.dump({"tts_text_sha256": expected_text_sha256,
                        "wav_sha256": p9a.sha256_file(out_path),
                        "upgraded_from_legacy_ok": True}, f, ensure_ascii=False, indent=2)
-    return {"status": "REUSED_EXISTING_FILE", "path": out_path, "sha256": p9a.sha256_file(out_path)}
+    reused = {"status": "REUSED_EXISTING_FILE", "path": out_path, "sha256": p9a.sha256_file(out_path)}
+    if inherited_judgement is not None:
+        reused["asr_judgement_inherited"] = inherited_judgement
+    return reused
 
 
 def mark_ok(r: dict, out_path: str, text_sha256: str) -> None:
     if r.get("status") in ("OK", "REUSED_EXISTING_FILE"):
         with open(_ok_marker_path(out_path), "w", encoding="utf-8") as f:
             f.write("ok")
+        _meta = {"tts_text_sha256": text_sha256, "wav_sha256": p9a.sha256_file(out_path)}
+        if r.get("asr_judgement") is not None:
+            _meta["asr_judgement"] = r["asr_judgement"]   # AUW 委任_05(additive): resume/reuse時にWARNINGを継承するため保存
         with open(_ok_meta_path(out_path), "w", encoding="utf-8") as f:
-            json.dump({"tts_text_sha256": text_sha256, "wav_sha256": p9a.sha256_file(out_path)},
-                      f, ensure_ascii=False, indent=2)
+            json.dump(_meta, f, ensure_ascii=False, indent=2, default=str)
     else:
         with open(out_path + ".debug.json", "w", encoding="utf-8") as f:
             json.dump(r, f, ensure_ascii=False, indent=2, default=str)
@@ -362,6 +380,10 @@ def tts_call_for_voice(voice: str, text: str, out_path: str, label: str, budget:
     (article_config)で指定されたvoice_nameでgenerate_voice_body_wide_margin
     (内部に独自のASR検証+attempt cascadeを持つ)を呼ぶ。"""
     budget.check_before(TTS_CALL_EST_JPY, label)
+    if secondary_run_scope.circuit_open():
+        # 委任_06c(OF-AUW-C-06): Secondary連続障害のcircuit open中は残りclipのTTSを呼ばず技術STOP(承認不要・再実行で再開可・HR Lock非投入)。
+        # 呼出側は status!=OK で RuntimeError(..._TTS_FAILED)を出してstageを止める。`.ok` markerはresume用に完了clip分が残る。
+        return secondary_run_scope.technical_stop_entry(label)
     if voice == "narrator":
         expected_substring = text[:20]
         r = repro01.generate_narration_snippet_verified_strict(text, "en", out_path, expected_substring)
@@ -387,15 +409,21 @@ def tts_call_for_voice(voice: str, text: str, out_path: str, label: str, budget:
 
 def to_audit_entry(r: dict, canonical_text: str, reused: bool, asr_text=None) -> dict:
     if reused or r.get("status") == "REUSED_EXISTING_FILE":
-        return {"status": "OK", "path": r.get("path"), "sha256": r.get("sha256"),
-                "canonical_text": canonical_text, "disfluency_checked": True, "reused": True,
-                "asr_text": asr_text}
-    return {
+        entry = {"status": "OK", "path": r.get("path"), "sha256": r.get("sha256"),
+                 "canonical_text": canonical_text, "disfluency_checked": True, "reused": True,
+                 "asr_text": asr_text}
+        if r.get("asr_judgement_inherited") is not None:   # AUW 委任_05(additive): 元のWARNINGを継承して試聴リストに載せる
+            entry["asr_judgement_inherited"] = r["asr_judgement_inherited"]
+        return entry
+    entry = {
         "status": r.get("status"), "path": r.get("path"), "sha256": r.get("sha256"),
         "canonical_text": canonical_text,
         "disfluency_checked": bool(r.get("disfluency_checked", False)),
         "asr_text": asr_text if asr_text is not None else r.get("asr_text"),
     }
+    if r.get("asr_judgement") is not None:   # AUW 委任_05(additive): 統一judgeの判定record(PASS_WITH_WARNINGの試聴リスト入力)
+        entry["asr_judgement"] = r["asr_judgement"]
+    return entry
 
 
 def get_or_run_asr(seg_id: str, wav_path: str, language: str, budget: BudgetTracker,
@@ -461,12 +489,12 @@ def run_simple_narrator_asset(name: str, text: str, language: str, out_dir: str,
     (Key Phrase等と異なりfrom-scratch生成が可能な単純asset)。"""
     out_path = f"{audio_dir}/{name}"
     text_sha = _sha256_text(text)
-    reused = resumable_reuse(out_path, text_sha) if resume else None
+    reused = resumable_reuse(out_path, text_sha, text) if resume else None
     if reused is None and reuse_from:
         src = f"{reuse_from}/audio/{name}"
         if os.path.exists(src):
             _copy_with_ok(src, out_path)
-            reused = resumable_reuse(out_path, text_sha)
+            reused = resumable_reuse(out_path, text_sha, text)
     if reused is not None:
         return reused, True
     r = tts_call_for_voice("narrator", text, out_path, name.removesuffix(".wav"), budget, {})
@@ -600,12 +628,12 @@ def run_comments_stage_a2(level_cfg: dict, out_dir: str, audio_dir: str, article
         name = f"comment_{n}_ja.wav"
         out_path = f"{audio_dir}/{name}"
         text_sha = _sha256_text(text)
-        reused = resumable_reuse(out_path, text_sha) if resume else None
+        reused = resumable_reuse(out_path, text_sha, text) if resume else None
         if reused is None and reuse_from:
             src = f"{reuse_from}/audio/{name}"
             if os.path.exists(src):
                 _copy_with_ok(src, out_path)
-                reused = resumable_reuse(out_path, text_sha)
+                reused = resumable_reuse(out_path, text_sha, text)
         if reused is not None:
             r = reused
             was_resumed = True
@@ -620,6 +648,7 @@ def run_comments_stage_a2(level_cfg: dict, out_dir: str, audio_dir: str, article
     return {"comment_texts": comment_texts, "comment_wavs": comment_wavs, "audit": audit}
 
 
+@secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 def run_full_generation(config: dict, level: str, out_root: str, budget_jpy: float,
                          only_segments: list | None, resume: bool) -> dict:
     if level not in ("a2", "b1"):
@@ -687,12 +716,12 @@ def run_full_generation(config: dict, level: str, out_root: str, budget_jpy: flo
         out_path = f"{audio_dir}/{seg['id']}.wav"
         text_sha = _sha256_text(seg["tts_text"])
         force_regen = seg["id"] in only_segments_set
-        reused = None if force_regen else (resumable_reuse(out_path, text_sha) if resume else None)
+        reused = None if force_regen else (resumable_reuse(out_path, text_sha, seg["tts_text"]) if resume else None)
         if reused is None and reuse_from and not force_regen:
             src = f"{reuse_from}/audio/{seg['id']}.wav"
             if os.path.exists(src):
                 _copy_with_ok(src, out_path)
-                reused = resumable_reuse(out_path, text_sha)
+                reused = resumable_reuse(out_path, text_sha, seg["tts_text"])
         if reused is not None:
             r = reused
             was_resumed = True
@@ -909,6 +938,9 @@ def run_full_generation(config: dict, level: str, out_root: str, budget_jpy: flo
     with open(f"{audit_dir}/tts_generation_results.json", "w", encoding="utf-8") as f:
         json.dump({"segments": audit_segments, "key_phrases": audit_key_phrases}, f,
                   ensure_ascii=False, indent=2)
+    # AUW 委任_05: 生成完了hook(Family C legacy)。tts_generation_results.json確定直後に事後試聴リスト(PASS_WITH_WARNING)を
+    # 再導出して audit/ に出力(0件でも節あり・失敗しても生成は継続)。Gate入力(tts_generation_results.json)は変更しない。
+    pww_registry.write_listening_list_safe(out_dir, standalone_html=True)
 
     level_string = f"FAMILY_C_PRODUCTION_{level.upper()}"
     gate_error = None

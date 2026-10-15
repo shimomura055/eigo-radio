@@ -1,0 +1,110 @@
+{
+  "attempt_number": 1,
+  "route": "custom_942f25cd",
+  "segment_id": "full_story_part1_c1",
+  "theme_id": "run",
+  "level": "a2",
+  "source_out_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/zep/run/a2/narration/full_story_part1_c1.wav",
+  "saved_at": "2026-10-16T00:51:27",
+  "sha256": "da8d00e307eb1e327f520099c5a01fe44cea34785a12fcf932d53a4470502f1b",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "A cheerful, kind storyteller sharing a true story at a pace a little slower than usual. Bring each sentence to its natural close, then go directly on to the next, including where the story takes a turn.",
+  "asr_text": "Coffee beans have become cheaper, but the price tag in a shop may not change right away.",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 7.16,
+    "method_a_ngram": {
+      "matches": [],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 17,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9967,
+          "time_a_seconds": 2.85,
+          "time_b_seconds": 7.01,
+          "lag_seconds": 4.16,
+          "run_length_seconds_at_thresh_0.85": 0.06
+        },
+        {
+          "similarity": 0.9891,
+          "time_a_seconds": 5.19,
+          "time_b_seconds": 7.03,
+          "lag_seconds": 1.84,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9884,
+          "time_a_seconds": 0.05,
+          "time_b_seconds": 5.22,
+          "lag_seconds": 5.17,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9852,
+          "time_a_seconds": 0.03,
+          "time_b_seconds": 2.7,
+          "lag_seconds": 2.67
+        },
+        {
+          "similarity": 0.9842,
+          "time_a_seconds": 0.05,
+          "time_b_seconds": 2.84,
+          "lag_seconds": 2.79
+        }
+      ],
+      "best_run_length_seconds": 0.06,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.23,
+      "time_a": 4.11,
+      "lag": 1.91,
+      "similarity_at_start": 0.7449,
+      "best_run_length_seconds": 0.23,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": false,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Coffee beans have become cheaper, but the price tag in a shop may not change right away.",
+      "classification": "NORMALIZED_MATCH",
+      "entity_like_source": []
+    }
+  ]
+}

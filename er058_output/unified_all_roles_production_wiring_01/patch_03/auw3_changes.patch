@@ -1,0 +1,2033 @@
+diff --git a/er003_v1_crosslevel_audio_02_common.py b/er003_v1_crosslevel_audio_02_common.py
+index 2debaf93a..36e2c55c0 100644
+--- a/er003_v1_crosslevel_audio_02_common.py
++++ b/er003_v1_crosslevel_audio_02_common.py
+@@ -215,6 +215,7 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
+                                    "en_pronunciation_resolver_info": r.get("en_pronunciation_resolver_info"),
+                                    # 委任_04A(記録欠落是正、additive、OPEN-277)
+                                    "cascade_steps": outcome.get("cascade_steps"),
++                                   "asr_judgement": outcome.get("asr_judgement"),
+                                    "style_prefix": r.get("style_prefix"),
+                                    "instruction_label": r.get("instruction_label")})
+         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
+@@ -234,6 +235,7 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
+         if verified:
+             r["asr_verified"] = True
+             r["asr_text"] = asr_text
++            r["asr_judgement"] = outcome.get("asr_judgement")  # AUW 委任_03(additive)
+             r["fallback_used"] = True
+             r["standard_attempts_log"] = standard.get("attempts_log")
+             r["fallback_attempts_log"] = fallback_attempts
+@@ -304,7 +306,11 @@ def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
+                                       disfluency_qa: bool, enable_repetition_qa: bool,
+                                       # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01
+                                       # (既定"structured_separation"で既存挙動とbyte-identical)。
+-                                      tts_backend: str = "structured_separation") -> dict:
++                                      tts_backend: str = "structured_separation",
++                                      # AUW 委任_03(既定None): 統一judgeのattempt文脈。fallback(minimal)は最終slot扱い
++                                      # (is_last_slot=True、従来のcascade由来HR queue記録と同等)。LR後v1の再TTSは
++                                      # script_version="v1"(LR_REWRITTENをPASS_WITH_WARNINGとして必ず付与)を渡す。
++                                      attempt_ctx: dict | None = None) -> dict:
+     """generate_english_segment_with_fallback()のfallback(minimal
+     instruction)経路、1 attempt分の本体。通常のfallbackループと、Local
+     Rewrite回復の再TTS(retts_fn、下記)の両方から呼ぶ共通処理として抽出
+@@ -350,7 +356,8 @@ def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
+         ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
+         force_secondary=True,
+         enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+-        segment_id=segment_id, detail_out=cascade_detail)
++        segment_id=segment_id, detail_out=cascade_detail,
++        attempt_ctx=(attempt_ctx if attempt_ctx is not None else {"is_last_slot": True}))
+     verified = verified_content and length_ok
+     gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
+     verified = gate["verified"]
+@@ -363,7 +370,8 @@ def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
+     return {"ok": True, "result": r, "verified": verified, "stop_retrying": stop_retrying,
+             "asr_text": asr_text, "classification": cls, "length_ok": length_ok,
+             "disfluency_gate": gate, "repetition_gate": rep_gate,
+-            "cascade_steps": cascade_detail.get("steps")}
++            "cascade_steps": cascade_detail.get("steps"),
++            "asr_judgement": cascade_detail.get("asr_judgement")}
+ 
+ 
+ def _local_rewrite_recovery_for_english_segment_with_fallback(
+@@ -394,10 +402,12 @@ def _local_rewrite_recovery_for_english_segment_with_fallback(
+         outcome = _run_a2_minimal_fallback_attempt(
+             rewritten_text, out_path, retts_max_len, retts_classification_history,
+             enable_connected_speech_equivalence_layer, disfluency_qa, enable_repetition_qa,
+-            tts_backend=tts_backend)
++            tts_backend=tts_backend,
++            attempt_ctx={"script_version": "v1", "is_last_slot": True})  # AUW 委任_03: LR後v1=LR_REWRITTEN警告
+         r = dict(outcome["result"])
+         if not outcome["ok"]:
+             return r
++        r["asr_judgement"] = outcome.get("asr_judgement")
+         r["asr_text"] = outcome["asr_text"]
+         r["audio_classification"] = outcome["classification"].classification
+         r["asr_verified"] = outcome["verified"]
+diff --git a/er003_v1_n3_01_tts_generate.py b/er003_v1_n3_01_tts_generate.py
+index ac473599f..901f70b05 100644
+--- a/er003_v1_n3_01_tts_generate.py
++++ b/er003_v1_n3_01_tts_generate.py
+@@ -35,6 +35,7 @@ import er003_v1_n3_01_articles_generate as gen
+ import er003_v1_repro01_main_generate as repro01
+ import er003_v1_sing01_news_tail_fix as news_tail_fix
+ import er011_human_review_lock_01 as review_lock
++import er078_pass_with_warning_registry_01 as pww_registry  # AUW 委任_03: PASS_WITH_WARNING 事後試聴リスト
+ import er003_v1_sing01_point_headings_aoede as point_headings
+ import er003_v1_sing01_voice01_generate as voice01
+ import er005_cost_logger as cl
+@@ -162,7 +163,13 @@ def _post_slowdown_cascade_rescue(result: dict, tts_input_text: str, asr_text: s
+         "verified": bool(detail.get("verified")),
+         "final_status": detail.get("final_status"), "steps": detail.get("steps"),
+         "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None) if cls is not None else None,
++        "asr_judgement": detail.get("asr_judgement"),   # AUW 委任_03(additive): 減速後wavに対する統一judgeの監査record
+     }
++    if detail.get("verified") and detail.get("asr_judgement") is not None:
++        # 最終採用音声(減速後wav)の統一判定recordを最上位へ。減速前(内側)のrecordは asr_judgement_pre_slowdown へ退避。
++        if result.get("asr_judgement") is not None:
++            result["asr_judgement_pre_slowdown"] = result.get("asr_judgement")
++        result["asr_judgement"] = detail["asr_judgement"]
+     return bool(detail.get("verified"))
+ 
+ 
+@@ -1083,6 +1090,9 @@ def generate_b1_segments(theme: dict) -> dict:
+     review_lock.archive_prior_tts_results(f"{out_dir}/audit/tts_generation_results.json")
+     with open(f"{out_dir}/audit/tts_generation_results.json", "w", encoding="utf-8") as f:
+         json.dump({"segments": results, "key_phrases": kp_results}, f, ensure_ascii=False, indent=2, default=str)
++    # AUW 委任_03: 生成完了hook(legacy Family A)。事後試聴リスト(PASS_WITH_WARNING)を再導出してaudit/へ出力
++    # (JSON+単独HTML、0件でも節を出す)。失敗しても生成は失敗させない(非ブロッキング)。
++    pww_registry.write_listening_list_safe(out_dir, standalone_html=True)
+     with open(f"{out_dir}/run_summary_tts.json", "w", encoding="utf-8") as f:
+         json.dump({"segment_status": all_status, "key_phrase_status": kp_status}, f, ensure_ascii=False, indent=2)
+     print(f"[N3-TTS][{theme_id}/b1b] 完了。segment_status={all_status} kp_status={kp_status}")
+@@ -1229,6 +1239,9 @@ def generate_a2_segments(theme: dict) -> dict:
+     review_lock.archive_prior_tts_results(f"{out_dir}/audit/tts_generation_results.json")
+     with open(f"{out_dir}/audit/tts_generation_results.json", "w", encoding="utf-8") as f:
+         json.dump({"segments": results, "key_phrases": kp_results}, f, ensure_ascii=False, indent=2, default=str)
++    # AUW 委任_03: 生成完了hook(legacy Family A)。事後試聴リスト(PASS_WITH_WARNING)を再導出してaudit/へ出力
++    # (JSON+単独HTML、0件でも節を出す)。失敗しても生成は失敗させない(非ブロッキング)。
++    pww_registry.write_listening_list_safe(out_dir, standalone_html=True)
+     with open(f"{out_dir}/run_summary_tts.json", "w", encoding="utf-8") as f:
+         json.dump({"segment_status": all_status, "key_phrase_status": kp_status}, f, ensure_ascii=False, indent=2)
+     print(f"[N3-TTS][{theme_id}/a2] 完了。segment_status={all_status} kp_status={kp_status}")
+diff --git a/er003_v1_repro01_main_generate.py b/er003_v1_repro01_main_generate.py
+index fbe87cb76..7e2ae4500 100644
+--- a/er003_v1_repro01_main_generate.py
++++ b/er003_v1_repro01_main_generate.py
+@@ -408,6 +408,8 @@ def generate_narration_snippet_verified_strict(
+                 style_prefix_override if style_prefix_override is not None else p9a.ENGLISH_STYLE_PREFIX)
+                 if language == "en" else None),
+             "cascade_steps": cascade_detail.get("steps") if language == "en" else None,
++            # AUW 委任_03(additive): 統一judgeの監査record(ENのみ。JAは委任_04で配線)。
++            "asr_judgement": cascade_detail.get("asr_judgement") if language == "en" else None,
+         })
+         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
+         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する
+@@ -452,7 +454,9 @@ def generate_narration_snippet_verified_strict(
+                     "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
+                     "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
+                     "repetition_qa_checked": rep_gate["repetition_qa_checked"] if language == "en" else False,
+-                    "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence") if language == "en" else None}
++                    "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence") if language == "en" else None,
++                    # AUW 委任_03(additive、ENのみ。JAは委任_04で配線)
++                    "asr_judgement": cascade_detail.get("asr_judgement") if language == "en" else None}
+         if stop_retrying:
+             return {**r, "status": "ASR_VALIDATION_UNCERTAIN", "asr_verified": False, "asr_text": asr_text,
+                     "attempts_log": attempts_log,
+diff --git a/er003_v1_sing01_news_tail_fix.py b/er003_v1_sing01_news_tail_fix.py
+index b6c2a9105..2e0b22a69 100644
+--- a/er003_v1_sing01_news_tail_fix.py
++++ b/er003_v1_sing01_news_tail_fix.py
+@@ -199,11 +199,12 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
+         segment_id = None
+         if review_lock._has_valid_narration_layout(out_path):
+             _, _, segment_id = review_lock.derive_segment_key(out_path)
++        _aj = {}  # AUW 委任_03: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
+         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
+             text, asr_text, classification_history, out_path, language="en-US",
+             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
+             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+-            segment_id=segment_id)
++            segment_id=segment_id, detail_out=_aj)
+         verified = verified_content and length_ok
+         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
+         verified = gate["verified"]
+@@ -213,7 +214,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
+         rep_gate = repetition_qa.apply_repetition_qa_gate(
+             verified, out_path, text, language="en", enabled=enable_repetition_qa)
+         verified = rep_gate["verified"]
+-        attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
++        attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
+                               "instruction_type": instruction_type, "audio_classification": cls.classification,
+                               "connected_speech_info": getattr(cls, "connected_speech_info", None),
+                               # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02
+@@ -252,7 +253,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
+         attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
+         if verified:
+             metrics = common.measure_metrics(common.read_wav_float(out_path)[0], common.SAMPLE_RATE)
+-            return {"status": "OK", "text": text, "path": out_path, "asr_verified": True, "asr_text": asr_text,
++            return {"status": "OK", "text": text, "path": out_path, "asr_verified": True, "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
+                     "attempts_log": attempts_log, "instruction_type": instruction_type,
+                     "trim_info": trim_info, "safety_margin_seconds": LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS,
+                     "clipping_detected": metrics["clipping_detected"],
+diff --git a/er003_v1_sing01_point_headings_aoede.py b/er003_v1_sing01_point_headings_aoede.py
+index fc92f3c36..23ca52fd6 100644
+--- a/er003_v1_sing01_point_headings_aoede.py
++++ b/er003_v1_sing01_point_headings_aoede.py
+@@ -123,13 +123,14 @@ def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTIO
+         # Protected Check+retry guardrail方式へ切り替え。
+         length_ok = asr_text is not None and len(asr_text) <= max_len
+         ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
++        _aj = {}  # AUW 委任_03: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
+         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
+             text, asr_text, classification_history, out_path, language="en-US",
+-            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED)
++            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED, detail_out=_aj)
+         verified = verified_content and length_ok
+         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
+         verified = gate["verified"]
+-        attempts_log.append({"attempt": attempt, "asr_text": asr_text, "audio_classification": cls.classification,
++        attempts_log.append({"attempt": attempt, "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"), "audio_classification": cls.classification,
+                               "length_ok": length_ok, "verified": verified, "instruction_type": instruction_type,
+                               "disfluency_checked": gate["disfluency_checked"],
+                               "disfluency_evidence": gate.get("disfluency_evidence")})
+@@ -147,7 +148,7 @@ def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTIO
+         attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
+         print(f"    attempt {attempt} ({instruction_type}): asr={asr_text!r} classification={cls.classification} length_ok={length_ok}")
+         if verified:
+-            return {"status": "OK", "text": text, "path": out_path, "voice": AOEDE, "asr_verified": True,
++            return {"status": "OK", "text": text, "path": out_path, "voice": AOEDE, "asr_verified": True, "asr_judgement": _aj.get("asr_judgement"),
+                     "asr_text": asr_text, "attempts_log": attempts_log, "instruction_type": instruction_type,
+                     "max_len": max_len,
+                     # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: top-levelへ昇格。
+diff --git a/er003_v1_sing01_voice01_generate.py b/er003_v1_sing01_voice01_generate.py
+index a0a8ffad0..502f458ca 100644
+--- a/er003_v1_sing01_voice01_generate.py
++++ b/er003_v1_sing01_voice01_generate.py
+@@ -235,6 +235,7 @@ def generate_charon_english(text: str, out_path: str,
+         # signature retry guardrail方式へ切り替える。
+         length_ok = asr_text is not None and len(asr_text) <= max_len
+         ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
++        _aj = {}  # AUW 委任_03: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
+         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
+             text, asr_text, classification_history, out_path, language="en-US",
+             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
+@@ -245,11 +246,11 @@ def generate_charon_english(text: str, out_path: str,
+             # 「事実1」)。呼び出し側がconnected_speech_enabled_for()で
+             # 判定した値をそのまま転送する。
+             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+-            segment_id=segment_id)
++            segment_id=segment_id, detail_out=_aj)
+         verified = verified_content and length_ok
+         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
+         verified = gate["verified"]
+-        attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
++        attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
+                               "instruction_type": instruction_type, "audio_classification": cls.classification,
+                               "connected_speech_info": getattr(cls, "connected_speech_info", None),
+                               "semantic_equivalence": getattr(cls, "semantic_equivalence_info", None),
+@@ -270,7 +271,7 @@ def generate_charon_english(text: str, out_path: str,
+         attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
+         if verified:
+             metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
+-            return {"status": "OK", "text": text, "path": out_path, "voice": CHARON,
++            return {"status": "OK", "text": text, "path": out_path, "voice": CHARON, "asr_judgement": _aj.get("asr_judgement"),
+                     "asr_verified": True, "asr_text": asr_text, "attempts_log": attempts_log,
+                     "instruction_type": instruction_type, "trim_info": trim_info,
+                     "clipping_detected": metrics["clipping_detected"],
+diff --git a/er006_master_audio_store_01.py b/er006_master_audio_store_01.py
+index e9629a094..bee9ccce8 100644
+--- a/er006_master_audio_store_01.py
++++ b/er006_master_audio_store_01.py
+@@ -132,6 +132,10 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
+         # 資産まで「証跡が無い」としてblockしてしまう(No.8 kp2の恒久修正
+         # 作業中に発見)。manifestに保存したqa_evidenceをここで復元する。
+         result.update(entry.get("qa_evidence") or {})
++        # AUW 委任_03(additive): 生成時の統一ASR判定record(PASS_WITH_WARNING等)を、再利用音声でも
++        # `asr_judgement_inherited`として復元する(元のWARNINGを試聴リストへ継承。OF-AUW-15)。
++        if entry.get("asr_judgement") is not None:
++            result["asr_judgement_inherited"] = entry["asr_judgement"]
+         _log_telemetry({
+             "event": "reused", "master_audio_id": master_id, "out_path": out_path,
+             "key": key.as_dict(),
+@@ -159,6 +163,8 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
+         # OPEN-258 SCG(Opus推奨7): 追加のみ(既存キー不変)。SCG PASS(Primary不一致をSecondaryで
+         # 救済)したmasterを後から識別できるようにする。SCG非関与(英語等)はNone。
+         manifest[master_id]["audio_classification"] = r.get("audio_classification")
++        # AUW 委任_03(additive): 統一ASR判定のaudit record。再利用時に`asr_judgement_inherited`として復元する。
++        manifest[master_id]["asr_judgement"] = r.get("asr_judgement")
+         _scg = r.get("scg_info")
+         manifest[master_id]["scg_result"] = _scg.get("scg_result") if isinstance(_scg, dict) else None
+         _save_manifest(manifest)
+diff --git a/er006_preprod_hardening_01_validation.py b/er006_preprod_hardening_01_validation.py
+index f38870ff0..ccc372e3d 100644
+--- a/er006_preprod_hardening_01_validation.py
++++ b/er006_preprod_hardening_01_validation.py
+@@ -619,8 +619,16 @@ _STOPWORDS = {
+ }
+ 
+ 
++# ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 委任_03(DESIGN_02_ADDENDUM_01 §2、配線と同一commit):
++# normalize_numeric()が%/$/小数点/指数を英数字のみのマーカー(xpercentx/xdollarx/xdecimalpointx/xexpx/xexpnegx)へ
++# 変換した後のtoken(例: "25xpercentx"/"5xdollarx"/"3xdecimalpointx5"/"10xexpnegx16")は、従来`isdigit()`が偽で数値扱い
++# されず、"25%"->"26%"がnumber_mismatchesに掛からず内容語差分へ流れていた(DESIGN_01 §3 穴)。マーカー付きtokenも数値として
++# 認識する。純粋な数字tokenの判定(isdigit)は従来どおり。序数(28th)は別tokenのまま(28との差は従来どおり検出)。
++_MARKED_NUMBER_RE = re.compile(r"^\d+(?:x(?:decimalpoint|exp|expneg)x\d+)*(?:x(?:percent|dollar)x)?$")
++
++
+ def _is_number(tok: str) -> bool:
+-    return tok.isdigit()
++    return tok.isdigit() or bool(_MARKED_NUMBER_RE.match(tok))
+ 
+ 
+ def _singularize_simple(word: str) -> str | None:
+diff --git a/er006_secondary_asr_01.py b/er006_secondary_asr_01.py
+index 5d5a6f2ad..cc1aaca80 100644
+--- a/er006_secondary_asr_01.py
++++ b/er006_secondary_asr_01.py
+@@ -389,7 +389,7 @@ def _connected_speech_equivalence_local_asr_text(wav_path: str) -> str | None:
+ 
+ def _connected_speech_equivalence_layer_attempt(
+         canonical_text: str, asr_text: Optional[str], wav_path: str, language: str,
+-        ledger_phrases: Optional[list[str]]) -> Optional[dict]:
++        ledger_phrases: Optional[list[str]], azure_fn=None) -> Optional[dict]:
+     """TRUE_CONTENT_MISMATCH(かつprotected_check通過済み、既存3パターン
+     UNCLASSIFIED)のfallthrough時のみ呼ばれる。まずSecondary/local ASRを
+     呼ばずに音韻環境カテゴリの該当有無だけを確認し(追加課金なし)、
+@@ -402,8 +402,13 @@ def _connected_speech_equivalence_layer_attempt(
+     if cheap_check["layer_judgment"] in cs_equivalence.NEVER_ELIGIBLE_JUDGMENTS:
+         return None
+ 
+-    secondary_text, secondary_err = get_full_text_via_azure_stt_with_phrase_list(
+-        wav_path, language=language, phrases=ledger_phrases)
++    # AUW 委任_03: azure_fn(共有SecondaryCache経由の(text, err))が渡されれば同一wavのAzure重複呼出を防ぐ。
++    # 未指定(直接呼出)は従来どおり直接呼出。
++    if azure_fn is not None:
++        secondary_text, secondary_err = azure_fn()
++    else:
++        secondary_text, secondary_err = get_full_text_via_azure_stt_with_phrase_list(
++            wav_path, language=language, phrases=ledger_phrases)
+     local_text = _connected_speech_equivalence_local_asr_text(wav_path)
+ 
+     final = cs_equivalence.classify_connected_speech_equivalence(
+@@ -425,6 +430,8 @@ def evaluate_attempt_with_cascade(
+     # evaluate_attempt_with_cascade_detail()へそのまま転送する。
+     segment_id: Optional[str] = None,
+     m1_enabled: bool = True,
++    # AUW 委任_03(既定None): 統一judgeのattempt文脈(slot/script_version/is_last_slot等)。
++    attempt_ctx: Optional[dict] = None,
+ ) -> tuple[bool, bool, "val.ClassificationResult"]:
+     """Production retry loop向けのdrop-in互換ラッパー。val.evaluate_attempt()
+     と同じ(verified, stop_retrying, classification)のタプルを返す
+@@ -468,7 +475,7 @@ def evaluate_attempt_with_cascade(
+         cascade_enabled=cascade_enabled, force_secondary=force_secondary,
+         enable_non_latin_cascade=enable_non_latin_cascade,
+         enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+-        segment_id=segment_id, m1_enabled=m1_enabled)
++        segment_id=segment_id, m1_enabled=m1_enabled, attempt_ctx=attempt_ctx)
+     if detail["human_review_required"]:
+         _log_human_review(detail)
+     if detail_out is not None:
+@@ -532,6 +539,119 @@ def _unresolved_entity_spans(cls_step: "val.ClassificationResult") -> list[str]:
+     return spans
+ 
+ 
++# ============================================================
++# ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 (AUW) 委任_03: EN統一judge adapter
++# ============================================================
++# evaluate_attempt_with_cascade_detail は**署名・戻り値dict・呼出元**を維持したまま、内部を統一判定
++# (er078_asr_unified_judge_01.unified_judge)へ委譲するadapterに置換された(DESIGN_01 §4-1/§4-3/§4-9、
++# DESIGN_02_ADDENDUM_01 §1/§4)。構造:
++#   [Primary P-chain = 既存層を現行順のまま] val.evaluate_attempt(Tier1[5role]+baseline+contraction+B1 CS)
++#       -> CS Equivalence層[flag] -> Tier3 -> 非ラテンKP -> CMU Case A/homophone -> M1(Primary)
++#       ※これらのAzure補強は全て同一wavの共有SecondaryCache経由(重複呼出なし)。
++#   [統一judge] Primary PASS -> 最終ANDゲート(値DIFF/否定差) / Primary NG -> P1保護差・P2除外・P3 Secondary 1回。
++#       Secondary許容集合は既存should_pass集合([Secondary転写をclassify_asr_match]+CMU Case A/homophone+M1)を
++#       `secondary_accept_fn`として注入(judgeへ再実装しない)。Secondary PASS -> PASS_WITH_WARNING(自動採用)。
++# 廃止(DESIGN_01 §4-9、C-C(i)): Primary#2(同一音声のOpenAI再転写) / Secondary#2 / 4段尽き->stop_retrying+HR直行。
++# 後方互換: cascade_enabled=False は従来どおりval.evaluate_attempt()と完全に同じ(統一judgeを通らない)。
++import hashlib as _hashlib
++
++import er078_asr_unified_judge_01 as unified_judge_mod
++
++# Secondary重複呼出防止: 同一wav(sha256)+engine+lang+phrase_hash のAzure呼出を1回にする(成功のみcache、失敗はcacheしない)。
++# 既定は**呼出単位のcache**(P-chainの補強層[CS Equivalence/Tier3/非ラテンKP/force_secondary]とjudgeのSecondaryが同一wavで
++# 1回に収束する。process内の別呼出・別testへ結果を持ち越さない)。run単位の共有cache+circuit breaker/技術STOP記録は
++# `begin_secondary_run()`を呼んだ場合のみ有効(opt-in。runner導入は委任_05/06で判断)。
++_RUN_CACHE: Optional["unified_judge_mod.SecondaryCache"] = None
++_SECONDARY_CACHE_MAX_ENTRIES = 512
++_RUN_STATE: Optional["unified_judge_mod.RunState"] = None
++
++
++def begin_secondary_run(circuit_breaker_threshold: int = unified_judge_mod.CIRCUIT_BREAKER_THRESHOLD) -> "unified_judge_mod.RunState":
++    """run開始時にrun単位のRunState(circuit breaker・技術STOP記録・Secondary費用集計)と共有SecondaryCacheを導入する(opt-in)。"""
++    global _RUN_STATE, _RUN_CACHE
++    _RUN_STATE = unified_judge_mod.RunState(circuit_breaker_threshold=circuit_breaker_threshold)
++    _RUN_CACHE = unified_judge_mod.SecondaryCache()
++    return _RUN_STATE
++
++
++def end_secondary_run() -> None:
++    """run単位の状態を破棄する(既定の呼出単位cacheへ戻る)。"""
++    global _RUN_STATE, _RUN_CACHE
++    _RUN_STATE, _RUN_CACHE = None, None
++
++
++def reset_secondary_cache() -> None:
++    end_secondary_run()
++
++
++def _wav_sha256(path: Optional[str]) -> Optional[str]:
++    try:
++        if path and os.path.isfile(path):
++            h = _hashlib.sha256()
++            with open(path, "rb") as f:
++                for chunk in iter(lambda: f.read(1 << 20), b""):
++                    h.update(chunk)
++            return h.hexdigest()
++    except OSError:
++        pass
++    return None
++
++
++def _phrase_hash(phrases: Optional[list]) -> str:
++    return _hashlib.sha1("\n".join(sorted(phrases or [])).encode("utf-8")).hexdigest()[:12]
++
++
++# Primary classificationラベル -> warningラベル(自動採用+事後試聴リスト対象)。ACCEPT系/完全一致系は警告なし。
++_PRIMARY_WARNING_BY_CLASSIFICATION = {
++    "CONNECTED_SPEECH_PASS_WITH_WARNING": "CONNECTED_SPEECH",
++    "CONNECTED_SPEECH_EQUIVALENCE_PASS_WITH_WARNING": "CS_EQUIVALENCE",
++    "SECONDARY_ASR_CORROBORATED_MATCH": "SECONDARY_CORROBORATED",
++}
++
++
++def _equivalence_basis_of(cls: "val.ClassificationResult") -> Optional[str]:
++    """承認済みequivalence(最終ANDゲートが再否定しない根拠)を、classificationから導出する。"""
++    if cls.classification == "HOMOPHONE_MATCH_NUMBER_EXCEPTION":
++        return "HOMOPHONE_MATCH_NUMBER_EXCEPTION"
++    if cls.classification == "NUMERIC_EQUIVALENCE_MATCH":
++        info = cls.semantic_equivalence_info or {}
++        spans = info.get("diff_spans") or {}
++        return "TIER1_DIFF_ANCHORED" if (isinstance(spans, dict) and spans.get("diff_anchored")) else "TIER1_NUMERIC_EQUIVALENCE"
++    return None
++
++
++class _AzureShared:
++    """同一wavに対するAzure(Phrase List付き)呼出を共有cache経由に一本化する(P-chainの補強層とjudgeのSecondaryで共有)。"""
++
++    def __init__(self, wav_path, language, phrases, sha, cache):
++        self.wav_path, self.language, self.phrases = wav_path, language, phrases
++        self.sha, self.cache = sha, cache
++        self.real_calls = 0
++        self.cost_guard_triggered = False
++        # judgeのSecondaryCacheキー(sha256, engine, lang, phrase_hash)と同一にする(P-chain補強層で取得済みのAzure結果を
++        # judgeのSecondaryが再利用でき、監査recordのsecondary.cachedが実態を表す)。
++        self.key = (sha, "azure", "ja" if str(language).lower().startswith("ja") else "en", _phrase_hash(phrases))
++
++    def _call(self):
++        dur = _wav_duration_seconds(self.wav_path)
++        if dur is not None and (dur / 3600.0 * unified_judge_mod.AZURE_USD_PER_HOUR) > COST_GUARD_MAX_USD_PER_SEGMENT:
++            # COST_GUARD($0.05/segment)を実費(秒数ベース)で等価適用: 1回分の見積が上限超ならSecondaryを呼ばずfail-closed。
++            self.cost_guard_triggered = True
++            return unified_judge_mod.SecondaryOutcome(None, error="cost_guard_exceeded")
++        self.real_calls += 1
++        text, err = get_full_text_via_azure_stt_with_phrase_list(self.wav_path, language=self.language, phrases=self.phrases)
++        return unified_judge_mod.SecondaryOutcome(text, error=err)
++
++    def outcome(self) -> "unified_judge_mod.SecondaryOutcome":
++        out, _hit = self.cache.get_or_call(self.key, self._call)
++        return out
++
++    def text(self):
++        """(text, err): 従来のget_full_text_via_azure_stt_with_phrase_list()と同じ形(空文字は空文字のまま返す)。"""
++        out = self.outcome()
++        return out.text, out.error
++
++
+ def evaluate_attempt_with_cascade_detail(
+     canonical_text: str, asr_text: Optional[str], prior_results: list,
+     wav_path: str, language: str = "en-US", ledger_phrases: Optional[list[str]] = None,
+@@ -544,61 +664,43 @@ def evaluate_attempt_with_cascade_detail(
+     segment_id: Optional[str] = None,
+     # ASR-M1-OOV-MULTI-PRONUNCIATION-PRODUCTION-01: 既定True(全英語ASR経路、KP含む)。
+     m1_enabled: bool = True,
++    # AUW 委任_03(既定None=slot1/script v0/最終slotでない): 統一judgeのattempt文脈。
++    # dict: slot / script_version('v0'|'v1') / is_last_slot / length_ok / run_state / cache。
++    attempt_ctx: Optional[dict] = None,
+ ) -> dict:
+-    """既存のval.evaluate_attempt()(Primary ASR 1回分の判定)をラップし、
+-    その結果が「固有名詞由来のASR_VALIDATION_UNCERTAIN」であれば、TTSを
+-    再生成せず同じ音声に対してCascade(Primary#2 -> Secondary#1 ->
+-    Secondary#2)を追加実行する。cascade_enabled=Falseなら既存のval.
+-    evaluate_attempt()と完全に同じ挙動(後方互換、Production既定)。
+-
+-    force_secondary=Trueの場合、Primaryが最初からPASSしたケースでも
+-    (is_entity_like_mismatch判定を経由せず)Secondary ASRを1回だけ
+-    追加で呼び、両方が一致した場合のみ最終的にverified=Trueとする
+-    (Part C参照)。既存のcascade_enabled/entity-like判定によるルート
+-    (Primary不一致時の4-step cascade)には一切影響しない。
+-
+-    enable_non_latin_cascade(KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-
+-    PROD-WIRING-01で追加、既定False): Trueの場合のみ、Primary ASR出力が
+-    「非ラテン文字主体」(non_latin_dominance_info、CJK比率>=
+-    NON_LATIN_DOMINANT_THRESHOLD)かつ不合格(verified=False)であれば、
+-    既存のentity_like/homophone_candidate判定([is_entity_like_mismatch]/
+-    [is_homophone_candidate_mismatch]、下記cascade_eligible)とは独立に、
+-    Secondary ASR(Azure、get_full_text_via_azure_stt_with_phrase_list、
+-    既存関数をそのまま再利用)を1回呼び、その結果をclassify_asr_matchで
+-    再判定する(KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-TRIAL-01の条件
+-    (a)をそのまま移植)。Secondaryでも不一致ならreject維持(以降の既存
+-    cascade_eligible判定へそのまま処理を継続する。数字ゲート・否定ゲート・
+-    homophone/entity_like判定・Connected Speech Validatorの判定順序・
+-    基準は一切変更しない)。既定False(呼び出し元が明示的にTrueを渡さない
+-    限り本ブロックは実行されない、適用範囲は英語Key Phrase Component
+-    経路限定)。
+-
+-    enable_connected_speech_equivalence_layer(OPEN-122-CONNECTED-SPEECH-
+-    EQUIVALENCE-LAYER-PRODUCTION-WIRING-01で追加、既定False): Trueの
+-    場合のみ、Primary#1の時点でclassify_asr_matchの判定が
+-    TRUE_CONTENT_MISMATCHかつprotected_check自体は通過済み(=数字/否定
+-    不一致ではなく、既存3パターン[csv3.classify_connected_speech]が
+-    UNCLASSIFIED_FALLS_THROUGH_TO_EXISTINGだったことによるfallthrough)
+-    である場合のみ、その後段としてConnected Speech Equivalence Layer
+-    (ARPAbetカテゴリA〜G+Secondary/local ASR corroboration、Trial-01/02
+-    でVALIDATED)を追加で試みる。protected_check不合格(数字・否定の
+-    真の不一致)には絶対に発火しない(既存のprotected_check gateを
+-    一切迂回・変更しない)。音韻環境カテゴリに該当しない場合は追加ASR
+-    呼び出し自体を行わない(_connected_speech_equivalence_layer_attempt
+-    のNEVER_ELIGIBLE_JUDGMENTS事前チェック、コスト増はfallthrough時
+-    かつカテゴリ候補時のみ)。ACCEPT/PASS_WITH_WARNINGに到達しなかった
+-    場合もclassification自体は元のTRUE_CONTENT_MISMATCHのまま(既存の
+-    blind TTS retryへ委ねる、既存のCascade eligibility判定
+-    [is_entity_like_mismatch/is_homophone_candidate_mismatch]には一切
+-    影響しない)。診断内容(secondary/local transcript・category・
+-    corroboration有無)は、accept有無に関わらずcls.connected_speech_info
+-    へ記録する(false positive疑いの事後監査用)。既定False(呼び出し元が
+-    明示的にTrueを渡さない限り本ブロックは実行されない、適用範囲は
+-    A2/B1英語本文segment限定)。
+-
+-    戻り値のdictには、Human Review用に全stepのtranscriptを保持する
+-    (canonical_text/TTS audioパス/Primary#1-2/Secondary#1-2の書き起こし)。
++    """統一ASR判定のEN adapter(AUW 委任_03)。署名と戻り値dictのキーは従来どおり(additiveで`asr_judgement`
++    を追加)。cascade_enabled=Falseなら従来のval.evaluate_attempt()と完全に同じ(後方互換、統一judgeを通らない)。
++
++    Primary P-chain(既存層を現行順で維持): Tier1[5role]+baseline+contraction+B1 CS -> CS Equivalence層
++    (enable_connected_speech_equivalence_layer、A2/B1本文限定) -> Tier3 -> 非ラテンKP(enable_non_latin_cascade)
++    -> CMU Case A/homophone -> M1。その後に統一judge: Primary PASSは最終ANDゲート(値DIFF/否定差)を通してPASS/
++    PASS_WITH_WARNING、Primary NGは保護差(値DIFF/否定差)ならNG_PROTECTED(Secondary不呼出)、length NG等の除外表に
++    該当すればNG_EXCLUDED、それ以外はAzure Secondaryを**1回**(同一wav+engine+lang+phrase_hashはSecondaryCacheで重複
++    呼出なし)。Secondary許容集合PASSならPASS_WITH_WARNING(SECONDARY_CONFIRMED、自動採用+事後試聴リスト)、取得不能
++    (例外/空転写/timeout/cost guard)はPASS不可のNG_SECONDARY_UNAVAILABLE(技術STOP記録)。
++
++    force_secondary(既定False): Trueの場合、Primary PASSでもSecondaryの許容集合PASSを必須にする(従来の保護を維持)。
++    Secondaryが同意しなければNG(従来のHR直行ではなく次attempt/slotへ)。
++
++    戻り値の差分(DESIGN_01 §4-2/§4-9): stop_retrying=False固定(同一signature打切りは通算上限と重複)、
++    Primary#2/Secondary#2/4段尽き->HR直行は廃止。human_review_required=Trueになるのは attempt_ctx.is_last_slot が
++    Trueでかつ最終NGの場合のみ(leafが最終slotを伝えない間はFalse。最終STOPPEDは従来どおりleaf側のHR Lock経路)。
+     """
++    if not cascade_enabled:
++        verified, stop_retrying, cls = val.evaluate_attempt(
++            canonical_text, asr_text, prior_results, max_same_signature=max_same_signature, segment_id=segment_id)
++        return {
++            "verified": verified, "stop_retrying": stop_retrying, "classification": cls,
++            "cascade_invoked": False,
++            "steps": [{"step": "primary_1", "provider": "openai_asr", "text": asr_text,
++                       "classification": cls.classification,
++                       "entity_like_source": val.aggregate_entity_like_sources(cls.protected.content_word_diffs)}],
++            "final_status": cls.classification, "human_review_required": False, "canonical_text": canonical_text,
++            "wav_path": wav_path, "cost_guard_triggered": False, "non_latin_cascade_invoked": False,
++            "connected_speech_equivalence_layer_invoked": False}
++
++    actx = dict(attempt_ctx or {})
++    lang = "ja" if str(language).lower().startswith("ja") else "en"
+     verified, stop_retrying, cls = val.evaluate_attempt(
+         canonical_text, asr_text, prior_results, max_same_signature=max_same_signature,
+         segment_id=segment_id)
+@@ -607,30 +709,33 @@ def evaluate_attempt_with_cascade_detail(
+               "classification": cls.classification,
+               # S3(additive、修正1回目): entity_like判定の根拠カテゴリ。
+               "entity_like_source": val.aggregate_entity_like_sources(cls.protected.content_word_diffs)}]
+-    cumulative_cost_usd = 0.0
+-    # M1: segment単位の凍結(最初の呼出時のみ生成、以降は再利用)。cascade_enabled=False/en-US以外は不発。
+-    _m1_frozen = _m1_frozen_for(canonical_text) if (m1_enabled and cascade_enabled and language == "en-US") else None
++    # M1: segment単位の凍結(最初の呼出時のみ生成、以降は再利用)。en-US以外は不発。
++    _m1_frozen = _m1_frozen_for(canonical_text) if (m1_enabled and language == "en-US") else None
+ 
+     result = {
+-        "verified": verified, "stop_retrying": stop_retrying, "classification": cls,
++        "verified": verified, "stop_retrying": False, "classification": cls,
+         "cascade_invoked": False, "steps": steps, "final_status": cls.classification,
+         "human_review_required": False, "canonical_text": canonical_text, "wav_path": wav_path,
+         "cost_guard_triggered": False, "non_latin_cascade_invoked": False,
+         "connected_speech_equivalence_layer_invoked": False,
+     }
+ 
+-    if (not verified and cascade_enabled and enable_connected_speech_equivalence_layer
++    sha = _wav_sha256(wav_path)
++    cache = actx.get("cache") or (_RUN_CACHE if (_RUN_CACHE is not None and sha) else unified_judge_mod.SecondaryCache())
++    if cache is _RUN_CACHE and len(cache._store) > _SECONDARY_CACHE_MAX_ENTRIES:
++        cache._store.clear()
++    az = _AzureShared(wav_path, language, ledger_phrases, sha or f"nosha:{id(result)}", cache)
++    primary_warnings: list = []
++    layers: list = []
++
++    if (not verified and enable_connected_speech_equivalence_layer
+             and cls.classification == "TRUE_CONTENT_MISMATCH" and cls.protected.passed):
+-        # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01:
+-        # 既存3パターン(csv3.classify_connected_speech)のUNCLASSIFIED
+-        # fallthrough後段。protected.passed=Trueは「数字/否定の真の不一致
+-        # ではない」ことを保証する(protected.passed=Falseのケースは
+-        # classify_asr_match内で既にTRUE_CONTENT_MISMATCHとして早期return
+-        # 済みで、その場合はここへ到達しない)。
++        # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01(無変更の判定、Azureのみ共有cache経由)。
+         eq_result = _connected_speech_equivalence_layer_attempt(
+-            canonical_text, asr_text, wav_path, language, ledger_phrases)
++            canonical_text, asr_text, wav_path, language, ledger_phrases, azure_fn=az.text)
+         if eq_result is not None:
+             result["connected_speech_equivalence_layer_invoked"] = True
++            layers.append("cs_equivalence")
+             steps.append({
+                 "step": "connected_speech_equivalence_secondary", "provider": "azure",
+                 "text": eq_result.get("secondary_asr_text"),
+@@ -653,37 +758,20 @@ def evaluate_attempt_with_cascade_detail(
+                            f"info={eq_result.get('equivalence_layer_info')}",
+                     connected_speech_info=eq_result)
+                 verified = True
+-                stop_retrying = False
+                 result["verified"] = True
+-                result["stop_retrying"] = False
+                 result["final_status"] = cls.classification
+                 result["classification"] = cls
+             else:
+-                # accept未達(INSUFFICIENT_EVIDENCE/MIXED_EVIDENCE/
+-                # NO_KNOWN_CATEGORY_MATCH等): 既存判定(TRUE_CONTENT_
+-                # MISMATCH、should_pass=False/should_retry=True)は変えず、
+-                # 診断情報だけをconnected_speech_infoへ付与する(false
+-                # positive疑いの事後監査・Runtime evidence用)。
++                # accept未達: 既存判定は変えず、診断情報だけをconnected_speech_infoへ付与する。
+                 cls = val.ClassificationResult(
+                     cls.classification, cls.normalized_ratio, cls.protected,
+                     should_pass=cls.should_pass, should_retry=cls.should_retry,
+                     reason=cls.reason, connected_speech_info=eq_result)
+                 result["classification"] = cls
+ 
+-    if (not verified and cascade_enabled and segment_id is not None
+-            and cls.classification == "ASR_VALIDATION_UNCERTAIN"):
+-        # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase B、
+-        # APPROVED_FOR_PRODUCTION 2026-09-27): Tier 3(規則的複数形・
+-        # 固有名詞ASR表記差のcorroboration付き救済)。既存Connected Speech
+-        # Equivalence Layerの後段に配置する(上記ブロックのfall-through、
+-        # または元々そちらの対象外[protected.passed=False等]だった場合も
+-        # ここへ到達する)。対象はPrimary#1時点でASR_VALIDATION_UNCERTAIN
+-        # かつ diffがちょうど1トークンの規則的複数形/固有名詞差のみの
+-        # ケース(entity_only_diffs自体は既存のis_entity_like_mismatch経由の
+-        # cascade[下記]でも別途扱われるが、そちらはCMU辞書ARPAbet完全一致
+-        # のみをPASS対象とする設計のため、本Tier3は「独立ASRの
+-        # corroboration」という別の根拠で救済する、経路として重複しない)。
+-        # role gatingはval側と同じSSOT(resolve_narrative_role)を再利用する。
++    if (not verified and segment_id is not None and cls.classification == "ASR_VALIDATION_UNCERTAIN"):
++        # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase B、APPROVED_FOR_PRODUCTION 2026-09-27): Tier 3
++        # (判定は無変更。Azureのみ共有cache経由=Secondary重複呼出なし)。
+         import er020_tts_retry_local_rewrite_01 as _role_gate
+         resolved_role = _role_gate.resolve_narrative_role(segment_id)
+         if resolved_role in semantic_equivalence.FIVE_ROLES_APPLICABLE:
+@@ -697,9 +785,8 @@ def evaluate_attempt_with_cascade_detail(
+                 canon_tokens=canon_tokens, asr_tokens=asr_tokens)
+             if sub_reason in ("plural_only", "entity_only") and diff_loc:
+                 result["cascade_invoked"] = True
+-                text_corr, err_corr = get_full_text_via_azure_stt_with_phrase_list(
+-                    wav_path, language=language, phrases=ledger_phrases)
+-                cumulative_cost_usd += 0.00001  # Azure概算単価(既存cascadeと同じ見積もり)
++                layers.append("tier3")
++                text_corr, err_corr = az.text()
+                 steps.append({"step": "tier3_corroboration_secondary", "provider": "azure",
+                                "text": text_corr, "sub_reason": sub_reason,
+                                "entity_like_source": val.aggregate_entity_like_sources(
+@@ -723,16 +810,10 @@ def evaluate_attempt_with_cascade_detail(
+                                 f"diff位置でcanonical語'{diff_loc['canonical_word']}'を支持"),
+                         semantic_equivalence_info=semantic_equivalence_record)
+                     verified = True
+-                    stop_retrying = False
+                     result["verified"] = True
+-                    result["stop_retrying"] = False
+                     result["final_status"] = cls.classification
+                     result["classification"] = cls
+                 else:
+-                    # 救済不可(独立ASRが支持しない、またはASR取得失敗) ->
+-                    # 既存判定(should_pass/should_retryとも元のまま)は変えず、
+-                    # 診断情報だけをsemantic_equivalence_infoへ付与する
+-                    # (false accept 0を維持する安全側フォールバック)。
+                     cls = val.ClassificationResult(
+                         cls.classification, cls.normalized_ratio, cls.protected,
+                         should_pass=cls.should_pass, should_retry=cls.should_retry,
+@@ -745,20 +826,18 @@ def evaluate_attempt_with_cascade_detail(
+                         "classification": cls.classification, "sub_reason": sub_reason,
+                         "diff_span": diff_loc, "corroborated_by": corroborated_by,
+                         "step": "tier3_corroboration",
+-                        # S3(additive): PRONUNCIATION-RESOLUTION-PHASE-4-A2-
+-                        # FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01 修正1回目。
+                         "entity_like_source": val.aggregate_entity_like_sources(
+                             cls.protected.content_word_diffs),
+                     })
+                 except OSError:
+                     pass  # telemetry書き込み失敗は判定・retry挙動に影響させない(安全側)
+ 
+-    if not verified and cascade_enabled and enable_non_latin_cascade and is_non_latin_dominant_mismatch(asr_text):
+-        # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01 対策(a)。
++    if not verified and enable_non_latin_cascade and is_non_latin_dominant_mismatch(asr_text):
++        # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01 対策(a)(判定は無変更、Azureは共有cache経由)。
+         result["cascade_invoked"] = True
+         result["non_latin_cascade_invoked"] = True
+-        text_nl, err_nl = get_full_text_via_azure_stt_with_phrase_list(
+-            wav_path, language=language, phrases=ledger_phrases)
++        layers.append("non_latin")
++        text_nl, err_nl = az.text()
+         cls_nl = val.classify_asr_match(canonical_text, text_nl, segment_id=segment_id) if text_nl is not None else None
+         steps.append({"step": "non_latin_secondary", "provider": "azure", "text": text_nl,
+                        "classification": cls_nl.classification if cls_nl else "TTS_FAILURE",
+@@ -768,213 +847,131 @@ def evaluate_attempt_with_cascade_detail(
+                                                if cls_nl else [])})
+         if cls_nl is not None and cls_nl.should_pass:
+             result["verified"] = True
+-            result["stop_retrying"] = False
+             result["final_status"] = cls_nl.classification
+             result["classification"] = cls_nl
+             verified = True
+             cls = cls_nl
+-        # Secondaryでも不一致ならreject維持(clsはPrimary#1の元の分類のまま、
+-        # 以降のcascade_eligible判定へそのまま処理を継続する)。
+-
+-    if verified and force_secondary:
+-        # ER-008-FALLBACK-TRIGGER-MITIGATION-AND-EVIDENCE-COMPRESSION-AB-04
+-        # Part C: fallback経由の音声はPrimaryがPASSしても無条件でSecondary
+-        # を1回追加実行し、両方が一致した場合のみ最終的にPASSとする。
+-        result["cascade_invoked"] = True
+-        text_s_forced, err_s_forced = get_full_text_via_azure_stt_with_phrase_list(
+-            wav_path, language=language, phrases=ledger_phrases)
+-        cls_s_forced = val.classify_asr_match(canonical_text, text_s_forced, segment_id=segment_id) if text_s_forced is not None else None
+-        steps.append({"step": "secondary_forced", "provider": "azure", "text": text_s_forced,
+-                       "classification": cls_s_forced.classification if cls_s_forced else "TTS_FAILURE",
+-                       "phrase_list_used": bool(ledger_phrases),
+-                       "entity_like_source": (val.aggregate_entity_like_sources(cls_s_forced.protected.content_word_diffs)
+-                                               if cls_s_forced else [])})
+-        if cls_s_forced is not None and cls_s_forced.should_pass:
+-            # Primary/Secondaryが一致 -> 従来どおりPASS
+-            return result
+-        if cls_s_forced is not None:
+-            _ok, _au = _m1_try(canonical_text, text_s_forced, cls_s_forced, _m1_frozen, language=language,
+-                               m1_enabled=m1_enabled, secondary_text=asr_text, step_name="secondary_forced")
+-            if _ok:
+-                # Primaryは既にPASS済み。SecondaryもM1(矛盾なし)で説明できる -> PASS維持
+-                result["m1_multi_candidate"] = _au
+-                steps.append({**_au, "step": "m1_multi_candidate", "provider": "local", "at_step": _au.get("step")})
+-                return result
+-            _m1_note_reject(result, _au)
+-        # SecondaryがPrimaryのPASS判定に同意しない -> 無条件PASSさせない
+-        result["verified"] = False
+-        result["stop_retrying"] = False
+-        result["human_review_required"] = True
+-        result["final_status"] = cls_s_forced.classification if cls_s_forced else "TTS_FAILURE"
+-        result["classification"] = cls_s_forced if cls_s_forced else cls
+-        return result
+-
+-    cascade_eligible = is_entity_like_mismatch(cls) or is_homophone_candidate_mismatch(cls)
+-    if verified or not cascade_enabled or not cascade_eligible:
+-        # 固有名詞由来・homophone由来でない不一致(数字・否定・通常内容語の
+-        # 差等)は、既存のblind TTS retryへ委ねる(Cascadeの対象外、§8の
+-        # 限定条件を守る)。
+-        return result
+-
+-    # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15: Primary#1の時点で既に
+-    # homophone/固有名詞Case Aが判定できる場合、追加のASR呼び出し無しで
+-    # PASSする(canonical綴りとASR綴りをCMU辞書経由で直接比較する強い
+-    # 根拠のため、複数ステップの収束を待つ必要が無い。コストゼロ)。
+-    immediate_label = _step_alternate_pass(cls)
+-    if immediate_label:
+-        result["verified"] = True
+-        result["stop_retrying"] = False
+-        result["final_status"] = immediate_label
+-        return result
+-
+-    _ok, _au = _m1_try(canonical_text, asr_text, cls, _m1_frozen, language=language,
+-                       m1_enabled=m1_enabled, secondary_text=None, step_name="primary_1")
+-    if _ok:
+-        return _m1_accept(result, steps, _au, cls)
+-    _m1_note_reject(result, _au)
+-
+-    result["cascade_invoked"] = True
+-
+-    # --- Primary #2(同じ音声、TTSは再生成しない) ---
+-    text_p2, err_p2 = routing.transcribe(wav_path, language=language)
+-    cost_guess = 0.000002  # OpenAI mini ASRの概算単価(1呼び出しあたり数十秒の音声で1円未満)
+-    cumulative_cost_usd += cost_guess
+-    cls_p2 = val.classify_asr_match(canonical_text, text_p2, segment_id=segment_id) if text_p2 is not None else None
+-    steps.append({"step": "primary_2", "provider": "openai_asr", "text": text_p2,
+-                   "classification": cls_p2.classification if cls_p2 else "TTS_FAILURE",
+-                   "entity_like_source": (val.aggregate_entity_like_sources(cls_p2.protected.content_word_diffs)
+-                                           if cls_p2 else [])})
+-    if cls_p2 is not None and cls_p2.should_pass:
+-        result["verified"] = True
+-        result["stop_retrying"] = False
+-        result["final_status"] = cls_p2.classification
+-        result["classification"] = cls_p2
+-        return result
+-    if cls_p2 is not None:
+-        label = _step_alternate_pass(cls_p2)
+-        if label:
+-            result["verified"] = True
+-            result["stop_retrying"] = False
+-            result["final_status"] = label
+-            result["classification"] = cls_p2
+-            return result
+-
+-    if cls_p2 is not None:
+-        _ok, _au = _m1_try(canonical_text, text_p2, cls_p2, _m1_frozen, language=language,
+-                           m1_enabled=m1_enabled, secondary_text=None, step_name="primary_2")
+-        if _ok:
+-            return _m1_accept(result, steps, _au, cls_p2)
+-        _m1_note_reject(result, _au)
+-
+-    if cumulative_cost_usd > COST_GUARD_MAX_USD_PER_SEGMENT:
+-        result["cost_guard_triggered"] = True
+-        result["human_review_required"] = True
+-        result["final_status"] = "ASR_VALIDATION_UNCERTAIN"
+-        return result
+-
+-    # --- Secondary #1(Azure + Phrase List) ---
+-    text_s1, err_s1 = get_full_text_via_azure_stt_with_phrase_list(
+-        wav_path, language=language, phrases=ledger_phrases)
+-    cumulative_cost_usd += 0.00001  # Azure概算単価(1秒あたり約$0.00028、数十秒想定)
+-    cls_s1 = val.classify_asr_match(canonical_text, text_s1, segment_id=segment_id) if text_s1 is not None else None
+-    steps.append({"step": "secondary_1", "provider": "azure", "text": text_s1,
+-                   "classification": cls_s1.classification if cls_s1 else "TTS_FAILURE",
+-                   "phrase_list_used": bool(ledger_phrases),
+-                   "entity_like_source": (val.aggregate_entity_like_sources(cls_s1.protected.content_word_diffs)
+-                                           if cls_s1 else [])})
+-    if cls_s1 is not None and cls_s1.should_pass:
+-        result["verified"] = True
+-        result["stop_retrying"] = False
+-        result["final_status"] = cls_s1.classification
+-        result["classification"] = cls_s1
+-        return result
+-    if cls_s1 is not None:
+-        label = _step_alternate_pass(cls_s1)
++            primary_warnings.append(unified_judge_mod.W_SECONDARY_CONFIRMED)  # Secondaryが救済した=事後試聴対象
++
++    if not verified:
++        cascade_eligible = is_entity_like_mismatch(cls) or is_homophone_candidate_mismatch(cls)
++        if cascade_eligible:
++            # 追加ASR無しで判定できる層(CMU辞書Case A/homophone、M1)。コストゼロ。
++            immediate_label = _step_alternate_pass(cls)
++            if immediate_label:
++                verified = True
++                result["verified"] = True
++                result["final_status"] = immediate_label
++                layers.append("cmu_alternate")
++            else:
++                _ok, _au = _m1_try(canonical_text, asr_text, cls, _m1_frozen, language=language,
++                                   m1_enabled=m1_enabled, secondary_text=None, step_name="primary_1")
++                if _ok:
++                    verified = True
++                    _m1_accept(result, steps, _au, cls)
++                    primary_warnings.append("M1_MULTI_CANDIDATE")
++                    layers.append("m1_primary")
++                else:
++                    _m1_note_reject(result, _au)
++
++    # ---- 統一judge ----
++    if verified and cls.classification in _PRIMARY_WARNING_BY_CLASSIFICATION:
++        primary_warnings.append(_PRIMARY_WARNING_BY_CLASSIFICATION[cls.classification])
++    signals = {"c1_proper_noun_diff": bool(is_entity_like_mismatch(cls)),
++               "c2_homophone_candidate": bool(is_homophone_candidate_mismatch(cls)),
++               "similarity": cls.normalized_ratio}
++    primary = unified_judge_mod.PrimaryResult(
++        passed=bool(verified), text=asr_text, label=str(result.get("final_status") or cls.classification),
++        equivalence_basis=_equivalence_basis_of(cls) if verified else None,
++        warning_labels=tuple(dict.fromkeys(primary_warnings)), signals=signals)
++    ctx = unified_judge_mod.AttemptCtx(
++        canonical_text=canonical_text, wav_path=wav_path, wav_sha256=az.sha, audio_seconds=_wav_duration_seconds(wav_path),
++        segment_key=segment_id or "", script_version=actx.get("script_version", "v0"), slot=int(actx.get("slot", 1)),
++        is_last_slot=bool(actx.get("is_last_slot", False)), length_ok=bool(actx.get("length_ok", True)),
++        force_secondary=bool(force_secondary), engine="azure", phrase_list_hash=_phrase_hash(ledger_phrases),
++        cache=cache, run_state=actx.get("run_state") or _RUN_STATE)
++    try:
++        import er020_tts_retry_local_rewrite_01 as _rg
++        judge_role = _rg.resolve_narrative_role(segment_id)
++    except Exception:
++        judge_role = None
++    captured: dict = {}
++    # 従来のstep名を維持(audit/HR packageの互換): force_secondary経路="secondary_forced"、通常="secondary_1"。
++    _sec_step_name = "secondary_forced" if (force_secondary and verified) else "secondary_1"
++
++    def _secondary_fn(_ctx):
++        return az.outcome()
++
++    def _secondary_accept(canon, stext):
++        """既存のSecondary許容集合(should_pass+CMU Case A/homophone+M1[Secondary転写])。judgeへ再実装しない。"""
++        cls_s = val.classify_asr_match(canon, stext, segment_id=segment_id)
++        captured["cls_s"] = cls_s
++        if cls_s.should_pass:
++            return True, cls_s.classification
++        label = _step_alternate_pass(cls_s)
+         if label:
+-            result["verified"] = True
+-            result["stop_retrying"] = False
+-            result["final_status"] = label
+-            result["classification"] = cls_s1
+-            return result
+-
+-    if cls_s1 is not None:
+-        _ok, _au = _m1_try(canonical_text, text_s1, cls_s1, _m1_frozen, language=language,
+-                           m1_enabled=m1_enabled, secondary_text=asr_text, step_name="secondary_1")
+-        if _ok:
+-            return _m1_accept(result, steps, _au, cls_s1)
+-        _m1_note_reject(result, _au)
+-
+-    if cumulative_cost_usd > COST_GUARD_MAX_USD_PER_SEGMENT:
++            captured["alt_label"] = label
++            return True, label
++        _ok2, _au2 = _m1_try(canon, stext, cls_s, _m1_frozen, language=language, m1_enabled=m1_enabled,
++                             secondary_text=asr_text, step_name=_sec_step_name)
++        if _ok2:
++            captured["m1_audit"] = _au2
++            return True, "M1_MULTI_CANDIDATE"
++        _m1_note_reject(result, _au2)
++        return False, cls_s.classification
++
++    jr = unified_judge_mod.unified_judge(ctx, primary, _secondary_fn, lang=lang, role=judge_role,
++                                         secondary_accept_fn=_secondary_accept)
++    audit = jr.audit_record
++    sec = audit.get("secondary") or {}
++    secondary_ran = bool(sec.get("called") or sec.get("cached") or sec.get("error"))
++    if secondary_ran:
++        result["cascade_invoked"] = True
++        cls_s = captured.get("cls_s")
++        # 従来のstep名を維持: force_secondary経路は"secondary_forced"、通常のSecondaryは"secondary_1"(audit/HR packageの互換)。
++        steps.append({"step": _sec_step_name,
++                       "provider": "azure", "text": sec.get("text"),
++                       "classification": cls_s.classification if cls_s else ("TTS_FAILURE" if not sec.get("text") else sec.get("label")),
++                       "phrase_list_used": bool(ledger_phrases), "cached": bool(sec.get("cached")),
++                       "unified_judge_state": jr.state,
++                       "entity_like_source": (val.aggregate_entity_like_sources(cls_s.protected.content_word_diffs) if cls_s else [])})
++    if az.cost_guard_triggered:
+         result["cost_guard_triggered"] = True
+-        result["human_review_required"] = True
+-        result["final_status"] = "ASR_VALIDATION_UNCERTAIN"
+-        return result
+-
+-    # --- Secondary #2(Azure + Phrase List、同じ音声を再度) ---
+-    text_s2, err_s2 = get_full_text_via_azure_stt_with_phrase_list(
+-        wav_path, language=language, phrases=ledger_phrases)
+-    cumulative_cost_usd += 0.00001
+-    cls_s2 = val.classify_asr_match(canonical_text, text_s2, segment_id=segment_id) if text_s2 is not None else None
+-    steps.append({"step": "secondary_2", "provider": "azure", "text": text_s2,
+-                   "classification": cls_s2.classification if cls_s2 else "TTS_FAILURE",
+-                   "phrase_list_used": bool(ledger_phrases),
+-                   "entity_like_source": (val.aggregate_entity_like_sources(cls_s2.protected.content_word_diffs)
+-                                           if cls_s2 else [])})
+-    if cls_s2 is not None and cls_s2.should_pass:
+-        result["verified"] = True
+-        result["stop_retrying"] = False
+-        result["final_status"] = cls_s2.classification
+-        result["classification"] = cls_s2
+-        return result
+-    if cls_s2 is not None:
+-        label = _step_alternate_pass(cls_s2)
+-        if label:
+-            result["verified"] = True
+-            result["stop_retrying"] = False
+-            result["final_status"] = label
+-            result["classification"] = cls_s2
+-            return result
+-
+-    if cls_s2 is not None:
+-        _ok, _au = _m1_try(canonical_text, text_s2, cls_s2, _m1_frozen, language=language,
+-                           m1_enabled=m1_enabled, secondary_text=text_s1 if text_s1 is not None else asr_text, step_name="secondary_2")
+-        if _ok:
+-            return _m1_accept(result, steps, _au, cls_s2)
+-        _m1_note_reject(result, _au)
+-
+-    # --- 4 step全て不一致 -> Human Review(TTSは再生成しない、§9の通り
+-    # 固有名詞だけの表記差ではretryしない) ---
+-    result["human_review_required"] = True
+-    result["stop_retrying"] = True
+-    result["final_status"] = "ASR_VALIDATION_UNCERTAIN"
+-
+-    # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 D-2'(B): CMU辞書で解決
+-    # できなかったentity_like固有名詞spanについて、Human Reviewパッケージ
+-    # (Part K)を充実させるためだけにPronunciation Ledgerをlookup/research
+-    # する(自動PASSの根拠には使わない。lookup失敗時も追加のTTS/ASR呼び
+-    # 出しは一切発生しない)。is_entity_like_mismatch(cls)は最初のPrimary
+-    # #1時点の判定を使う(canonical_textは全stepで共通のため、spanの
+-    # 特定はPrimary#1の差分で十分)。
+-    if is_entity_like_mismatch(cls):
+-        unresolved_spans = _unresolved_entity_spans(cls)
+-        pronunciation_lookups = {}
+-        for span in unresolved_spans:
+-            info = _resolve_unresolved_entity_for_review(span)
+-            # ER-008-N8-FINAL-PRODUCTION-HARDENING-23: lookup/research失敗時に
+-            # spanをそのまま省略すると、Human Reviewパッケージにその固有名詞の
+-            # 発音情報が一切表示されない(「調べたが分からなかった」のか
+-            # 「調べていない」のか区別がつかない)。ユーザーの新運用ルール
+-            # (固有名詞のHuman Review依頼には必ずIPA/pronunciation guide/
+-            # source/confidenceを添付し、確定不能ならその旨を明記する)に
+-            # 従い、失敗時も明示的なunconfirmed markerを必ず残す。
+-            pronunciation_lookups[span] = info if info is not None else {
+-                "expected_pronunciation_ipa": "", "pronunciation_hint": "",
+-                "confidence": "unconfirmed",
+-                "ambiguity_note": (
+-                    "Pronunciation Ledger lookupおよびresearch_pronunciations()が"
+-                    "いずれも情報を返さなかった(ネットワーク不可またはresearch結果0件)。"
+-                    "IPA/pronunciation guideは確定できていません。"),
+-                "sources": [],
+-            }
+-        result["pronunciation_lookups"] = pronunciation_lookups
++
++    result["verified"] = bool(jr.verified)
++    result["stop_retrying"] = False
++    if jr.verified:
++        if "m1_audit" in captured:
++            _m1_accept(result, steps, captured["m1_audit"], captured.get("cls_s"))
++        elif "alt_label" in captured:
++            result["final_status"] = captured["alt_label"]
++            result["classification"] = captured["cls_s"]
++        elif "cls_s" in captured and not primary.passed:
++            result["final_status"] = captured["cls_s"].classification
++            result["classification"] = captured["cls_s"]
++    else:
++        result["final_status"] = cls.classification
++        result["classification"] = cls
++        if audit.get("technical_stop") or jr.secondary_unavailable:
++            result["technical_stop"] = audit.get("technical_stop")
++        if bool(actx.get("is_last_slot", False)):
++            result["human_review_required"] = True
++            if is_entity_like_mismatch(cls):
++                pronunciation_lookups = {}
++                for span in _unresolved_entity_spans(cls):
++                    info = _resolve_unresolved_entity_for_review(span)
++                    pronunciation_lookups[span] = info if info is not None else {
++                        "expected_pronunciation_ipa": "", "pronunciation_hint": "",
++                        "confidence": "unconfirmed",
++                        "ambiguity_note": (
++                            "Pronunciation Ledger lookupおよびresearch_pronunciations()が"
++                            "いずれも情報を返さなかった(ネットワーク不可またはresearch結果0件)。"
++                            "IPA/pronunciation guideは確定できていません。"),
++                        "sources": [],
++                    }
++                result["pronunciation_lookups"] = pronunciation_lookups
++    audit["adapter"] = {"layers": layers, "azure_real_calls": az.real_calls, "cost_guard_triggered": az.cost_guard_triggered,
++                        "language": language, "segment_id": segment_id, "asr_text_present": asr_text is not None,
++                        "cache": {"calls": cache.calls, "hits": cache.hits}}
++    result["asr_judgement"] = audit
+     return result
+diff --git a/er011_human_review_lock_01.py b/er011_human_review_lock_01.py
+index cf4660a8b..011855e6a 100644
+--- a/er011_human_review_lock_01.py
++++ b/er011_human_review_lock_01.py
+@@ -230,6 +230,8 @@ def build_attempts_detail(result: dict) -> list:
+                 "style_prefix": a.get("style_prefix"),
+                 "instruction_label": a.get("instruction_label"),
+                 "cascade_steps": a.get("cascade_steps"),
++                # AUW 委任_03(additive): 統一ASR判定の監査record(state/primary/secondary/value_guard/cost等)
++                "asr_judgement": a.get("asr_judgement"),
+             })
+     return detail
+ 
+diff --git a/er012_b_family_voices_production_01.py b/er012_b_family_voices_production_01.py
+index 01ad0c3a4..51e635f02 100644
+--- a/er012_b_family_voices_production_01.py
++++ b/er012_b_family_voices_production_01.py
+@@ -546,10 +546,11 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
+         asr_text, asr_err = asr_routing.transcribe(out_path, language="en-US")
+         length_ok = asr_text is not None and len(asr_text) <= max_len
+         ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
++        _aj = {}  # AUW 委任_03: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
+         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
+             text, asr_text, classification_history, out_path, language="en-US",
+             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
+-            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
++            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer, detail_out=_aj)
+         verified = verified_content and length_ok
+         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=False)
+         verified = gate["verified"]
+@@ -559,7 +560,7 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
+         rep_gate = repetition_qa.apply_repetition_qa_gate(
+             verified, out_path, text, language="en", enabled=enable_repetition_qa)
+         verified = rep_gate["verified"]
+-        attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
++        attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
+                               "instruction_type": instruction_type, "audio_classification": cls.classification,
+                               "connected_speech_info": getattr(cls, "connected_speech_info", None),
+                               "length_ok": length_ok, "verified": verified,
+@@ -581,7 +582,7 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
+         attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
+         if verified:
+             metrics = common.measure_metrics(common.read_wav_float(out_path)[0], common.SAMPLE_RATE)
+-            return {"status": "OK", "text": text, "path": out_path, "voice": voice_name, "asr_verified": True,
++            return {"status": "OK", "text": text, "path": out_path, "voice": voice_name, "asr_verified": True, "asr_judgement": _aj.get("asr_judgement"),
+                     "asr_text": asr_text, "attempts_log": attempts_log, "instruction_type": instruction_type,
+                     "trim_info": trim_info, "safety_margin_seconds": news_tail_fix.LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS,
+                     "clipping_detected": metrics["clipping_detected"], "audio_classification": cls.classification,
+diff --git a/er019_family_x_audio_production_runner_01.py b/er019_family_x_audio_production_runner_01.py
+index bfd07a0af..444a19079 100644
+--- a/er019_family_x_audio_production_runner_01.py
++++ b/er019_family_x_audio_production_runner_01.py
+@@ -51,6 +51,7 @@ import er003_v1_sing01_point_headings_aoede as point_headings
+ import er003_v1_sing01_voice01_generate as voice01
+ import er005_cost_logger as cl
+ import er011_human_review_lock_01 as review_lock
++import er078_pass_with_warning_registry_01 as pww_registry  # AUW 委任_03: PASS_WITH_WARNING 事後試聴リスト
+ import er006_audio_cost_pilot_02_shared_narration as shared_narration
+ import er006_model_routing_contract_01 as routing
+ import er019_family_x_audio_plan_01 as plan
+@@ -593,6 +594,13 @@ def _with_recorded_sha256(generate_fn):
+     return wrapped
+ 
+ 
++def _mark_asr_judgement_inherited(reused: dict) -> None:
++    """AUW 委任_03(additive): 前回runの音声を再利用する場合、元の`asr_judgement`(PASS_WITH_WARNING等)を
++    `asr_judgement_inherited`へ移し、事後試聴リストが再利用音声の元のWARNINGを継承して表示できるようにする。"""
++    if "asr_judgement" in reused:
++        reused["asr_judgement_inherited"] = reused.pop("asr_judgement")
++
++
+ def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_fn, expected_text: str | None = None):
+     generate_fn = _with_recorded_sha256(generate_fn)
+     """前回run(同一out_dir)のOK segmentを再利用する。Stage 3c(見出し
+@@ -630,6 +638,7 @@ def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_f
+             return generate_fn()
+         reused = dict(cached_result)
+         reused["reused_from_previous_run"] = True
++        _mark_asr_judgement_inherited(reused)
+         return reused
+     return generate_fn()
+ 
+@@ -672,6 +681,7 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
+             return generate_fn()
+         reused = dict(cached_result)
+         reused["reused_from_previous_run"] = True
++        _mark_asr_judgement_inherited(reused)
+         return reused
+     return generate_fn()
+ 
+@@ -934,6 +944,9 @@ def generate_family_x_b1_segments(
+                # MAJOR-3是正): 可変segment reuse判定用のcache version guard。
+                "style_version": FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
+                **({"only_segments": sorted(_ONLY_SEGMENTS)} if _ONLY_SEGMENTS is not None else {})})
++    # AUW 委任_03: 生成完了hook。tts_generation_results.json確定直後に事後試聴リスト(PASS_WITH_WARNING)を再導出して
++    # audit/pass_with_warning_listening_list.jsonへ出力する。失敗しても生成は失敗させない(warningログのみ、非ブロッキング)。
++    pww_registry.write_listening_list_safe(out_dir)
+     save_json(f"{out_dir}/run_summary_tts.json",
+               {"segment_status": all_status, "key_phrase_status": kp_status,
+                "shared_narration_status": {k: v["status"] for k, v in shared_narration_status.items()},
+@@ -1294,6 +1307,9 @@ def generate_family_x_a2_segments(
+                # MAJOR-3是正): 可変segment reuse判定用のcache version guard。
+                "style_version": FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
+                **({"only_segments": sorted(_ONLY_SEGMENTS)} if _ONLY_SEGMENTS is not None else {})})
++    # AUW 委任_03: 生成完了hook。tts_generation_results.json確定直後に事後試聴リスト(PASS_WITH_WARNING)を再導出して
++    # audit/pass_with_warning_listening_list.jsonへ出力する。失敗しても生成は失敗させない(warningログのみ、非ブロッキング)。
++    pww_registry.write_listening_list_safe(out_dir)
+     save_json(f"{out_dir}/run_summary_tts.json",
+               {"segment_status": all_status, "key_phrase_status": kp_status,
+                "shared_narration_status": {k: v["status"] for k, v in shared_narration_status.items()},
+@@ -2115,6 +2131,12 @@ def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | N
+                           f'peak={a2_summary["peak"]} clipping={a2_summary["clipping_detected"]}</p>'
+                           f'{a2_table}')
+ 
++    # AUW 委任_03: 事後試聴リスト(PASS_WITH_WARNING)節。0件でも節を出す(「0件」と明記)。非ブロッキング。
++    pww_sections_html = chr(10).join(
++        f"<h3>{lvl_label}</h3>" + pww_registry.render_html_section(
++            pww_registry.load_listening_list(f"{theme_out_dir}/{lvl_dir}"), href_fn=lambda e: abs_url(e["audio_path"]) if e.get("audio_path") else "")
++        for lvl_dir, lvl_label in (("b1b", "Advanced(B1)"), ("a2", "Standard(A2)")))
++
+     html = f"""<!DOCTYPE html>
+ <html lang="en"><head><meta charset="utf-8">
+ <title>{MANAGEMENT_ID} player({theme_id})</title>
+@@ -2130,6 +2152,7 @@ def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | N
+ Comment1→本文1→Comment2→本文2→Comment3→本文3→Comment4→In One Line(Point構造なし)。</p>
+ {b1b_audio_html}
+ {a2_audio_html}
++{pww_sections_html}
+ </body></html>
+ """
+     out_path = f"{theme_out_dir}/player.html"
+diff --git a/er063_family_z_audio_01.py b/er063_family_z_audio_01.py
+index a90651c09..b55c52d61 100644
+--- a/er063_family_z_audio_01.py
++++ b/er063_family_z_audio_01.py
+@@ -585,6 +585,8 @@ def generate_or_reuse_z(cached_entry: dict | None, spec: ClipSpec, wav_path: str
+         if recorded is None or _sha_file(wav_path) == recorded:
+             reused = dict(cached_entry)
+             reused["reused_from_previous_run"] = True
++            if "asr_judgement" in reused:   # AUW 委任_03: 再利用音声の元のWARNINGを継承(asr_judgement_inherited)
++                reused["asr_judgement_inherited"] = reused.pop("asr_judgement")
+             return reused
+     return generate_fn()
+ 
+@@ -816,6 +818,8 @@ def build_entry(spec: ClipSpec, out_path: str, result: dict, *, human_approved:
+         "cooldown_occurred": bool(stop_events), "cooldown_events": stop_events,
+         "audio_text_deviation": deviation,
+         "tts_generations_used": result.get("tts_generations_used"),
++        # AUW 委任_03(additive): 統一ASR判定の監査record(PASS_WITH_WARNING等)。事後試聴リストの入力。
++        "asr_judgement": result.get("asr_judgement"),
+     }
+     if os.path.exists(out_path):
+         try:
+@@ -974,6 +978,10 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
+            "style_version": FAMILY_Z_ROLE_STYLE_VERSION, "management_id": MANAGEMENT_ID, "level": level}
+     with open(results_path, "w", encoding="utf-8") as f:
+         json.dump(doc, f, ensure_ascii=False, indent=2)
++    # AUW 委任_03: 生成完了hook。results確定直後に事後試聴リスト(PASS_WITH_WARNING)を再導出して
++    # audit/pass_with_warning_listening_list.jsonへ出力(失敗しても生成は失敗させない、非ブロッキング)。
++    import er078_pass_with_warning_registry_01 as _pww
++    _pww.write_listening_list_safe(level_dir)
+     if os.path.exists(_checkpoint_path(level_dir)):
+         os.remove(_checkpoint_path(level_dir))        # 最終results確定後は途中経過を残さない(古い内容で上書きされない)
+     ev_path = f"{level_dir}/audit/runtime_evidence_{SUB_TASK_ID}.json"
+@@ -1310,7 +1318,8 @@ def _esc(s) -> str:
+ 
+ 
+ def build_listening_page_html(level_label: str, rows: list, kp_rows: list, full_audio_rel: str, duration: float,
+-                              tts_mode: str = "Standard同期(TTS_EXECUTION_MODE=STANDARD)") -> str:
++                              tts_mode: str = "Standard同期(TTS_EXECUTION_MODE=STANDARD)",
++                              warn_section_html: str = "") -> str:
+     """rows=[{part,start,dur,file,voice,style,script,notes[]}]。level_labelは'Standard'/'Advanced'のみ。"""
+     trs = []
+     for i, r in enumerate(rows):
+@@ -1334,6 +1343,7 @@ def build_listening_page_html(level_label: str, rows: list, kp_rows: list, full_
+             f"<h2>Key Phrases</h2>{kp}"
+             "<table><thead><tr><th>パート</th><th>音声</th><th>Voice・Style・Script</th></tr></thead><tbody>"
+             + "".join(trs) + "</tbody></table>"
++            + warn_section_html +
+             "<script>document.querySelectorAll('button.jump').forEach(b=>b.onclick=()=>{const a=document.getElementById('main');"
+             "a.currentTime=parseFloat(b.dataset.t);a.play();});</script></body></html>")
+ 
+@@ -1379,7 +1389,7 @@ def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_d
+         sf.write(f"{audio_out_dir}/{fn}", x[int(round(s * sr)): int(round((s + d) * sr))], sr, format="MP3")
+         cid = part_to_clip_id(part)
+         entry = _lookup_entry(data, cid) if cid else None
+-        row = {"part": part, "start": s, "dur": d, "file": f"{audio_rel_prefix}{fn}", "voice": "-", "style": "-",
++        row = {"part": part, "clip_id": cid, "start": s, "dur": d, "file": f"{audio_rel_prefix}{fn}", "voice": "-", "style": "-",
+                "script": "(音楽・通知音。読み上げなし)" if part.startswith(("Intro", "Outro", "Notification")) else "未取得", "notes": []}
+         if entry:
+             row["voice"] = entry.get("voice", "-")
+@@ -1406,10 +1416,19 @@ def build_pages(run_dir: str, pages_dir: str = PAGES_DIR) -> dict:
+     """user_test/family_z_melos_01/{index,standard,advanced}.html を生成する(静的ファイルのみ)。"""
+     os.makedirs(pages_dir, exist_ok=True)
+     out = {}
++    warn_sections = []
+     for level, fname, label in (("a2", "standard.html", "Standard"), ("b1b", "advanced.html", "Advanced")):
+         audio_dir = f"{pages_dir}/audio_{label.lower()}"
+         rows, kp_rows, full, dur = build_page_rows(run_dir, level, f"audio_{label.lower()}/", audio_dir)
+-        html_text = build_listening_page_html(label, rows, kp_rows, f"audio_{label.lower()}/{full}", dur)
++        # AUW 委任_03: 事後試聴リスト(PASS_WITH_WARNING)節(0件でも節を出す)。mp3リンクは当該partの試聴ページ内mp3。
++        import er078_pass_with_warning_registry_01 as _pww
++        warn_entries = _pww.load_listening_list(f"{run_dir}/{level}")
++        clip_to_file = {r.get("clip_id"): r["file"] for r in rows if r.get("clip_id")}
++        warn_html = _pww.render_html_section(
++            warn_entries, href_fn=lambda e: clip_to_file.get(_warn_entry_to_clip_id(e.get("entry_key", "")), ""))
++        warn_sections.append((label, warn_html))
++        html_text = build_listening_page_html(label, rows, kp_rows, f"audio_{label.lower()}/{full}", dur,
++                                              warn_section_html=warn_html)
+         lint = lint_page_html(html_text)
+         if any(lint.values()):
+             raise FamilyZAudioStop(f"試聴ページlint NG ({label}): {lint}")
+@@ -1417,14 +1436,27 @@ def build_pages(run_dir: str, pages_dir: str = PAGES_DIR) -> dict:
+             f.write(html_text)
+         out[label] = {"page": f"{pages_dir}/{fname}", "rows": len(rows), "kp_rows": len(kp_rows), "lint": lint}
+     with open(f"{pages_dir}/index.html", "w", encoding="utf-8") as f:
+-        f.write(build_index_html())
++        f.write(build_index_html(warn_sections))
+     return out
+ 
+ 
+-def build_index_html() -> str:
++def _warn_entry_to_clip_id(entry_key: str):
++    """事後試聴リストのentry_key(tts_generation_results.json内のpath)をtimeline rowのclip_idへ対応づける。
++    対応するrow(mp3)が無いものはNone(リンクなし表示)。"""
++    parts = entry_key.split("/")
++    if len(parts) == 2 and parts[0] == "segments":
++        return parts[1]
++    if len(parts) == 3 and parts[0] == "key_phrases" and parts[2] == "english":
++        return f"kp{parts[1]}_en"
++    return None
++
++
++def build_index_html(warn_sections=None) -> str:
++    """warn_sections=[(level_label, section_html)]: AUW 委任_03の『事後試聴リスト(PASS_WITH_WARNING)』節(0件でも節を出す)。"""
++    extra = "".join(f"<h2>{_esc(lbl)}</h2>{sec_html}" for lbl, sec_html in (warn_sections or []))
+     return ("<!doctype html><html lang='ja'><head><meta charset='utf-8'><title>走れメロス 試聴</title></head><body>"
+             "<h1>走れメロス 試聴</h1><ul><li><a href='standard.html'>Standard</a></li>"
+-            "<li><a href='advanced.html'>Advanced</a></li></ul></body></html>")
++            "<li><a href='advanced.html'>Advanced</a></li></ul>" + extra + "</body></html>")
+ 
+ 
+ def lint_page_html(html_text: str) -> dict:
+diff --git a/er078_asr_unified_judge_01.py b/er078_asr_unified_judge_01.py
+index b3fc008b9..6c33fe568 100644
+--- a/er078_asr_unified_judge_01.py
++++ b/er078_asr_unified_judge_01.py
+@@ -68,8 +68,13 @@ U2_FORCE_SECONDARY_SCOPE = "A2_ONLY"           # LR後v1のSecondary必須化の
+ # ---- 費用(秒数ベース。SCGと同じ式: er007_ja_secondary_asr_01.py:309-311、単価 SCG_AZURE_USD_PER_HOUR/SCG_JPY_PER_USD と同値。parity testで突合) ----
+ AZURE_USD_PER_HOUR = 1.0
+ JPY_PER_USD = 160.0
+-# COST_GUARD($0.05/segment, er006_secondary_asr_01.py:243)は本unified_judgeでは適用しない(既存adapter側に残置。再校正/無効の明記はIMPLEMENTATION_02b.md §未実装)。
+-COST_GUARD_IN_UNIFIED_JUDGE = "NOT_APPLIED_02B"
++# COST_GUARD($0.05/segment, er006_secondary_asr_01.COST_GUARD_MAX_USD_PER_SEGMENT)の結論(委任_03確定、IMPLEMENTATION_03.md §4):
++#   旧Cascadeの累積は固定概算定数(0.000002+0.00001x2)で最大でも約$0.000022のため、$0.05には構造上到達しない「実質無効」だった。
++#   統一判定ではSecondaryがwav(sha256)あたり最大1回(SecondaryCache)かつcircuit breakerで有界。そこで**実費(秒数ベース、本module
++#   の`AZURE_USD_PER_HOUR`)で等価に適用**する: adapter(er006_secondary_asr_01)のsecondary_fnが、Secondary呼出前に
++#   「1回分の見積費用 > COST_GUARD_MAX_USD_PER_SEGMENT(= $0.05 = 音声180秒超)」を検査し、超過ならSecondaryを呼ばずfail-closed
++#   (NG_SECONDARY_UNAVAILABLE相当、cost_guard_triggered=True)にする。judge本体は純粋(API/費用判断を持たない)ため適用点はadapter。
++COST_GUARD_IN_UNIFIED_JUDGE = "APPLIED_AT_ADAPTER_SECONDARY_FN_ACTUAL_SECONDS_03"
+ 
+ CIRCUIT_BREAKER_THRESHOLD = 3  # run単位。連続Secondary障害がこの回数でそのrunのSecondary呼出を止める
+ 
+@@ -243,7 +248,13 @@ def negation_diff(canonical: str, text: str, lang: str) -> bool:
+         return bool(_safety._has_negation_ja(canonical or "")) != bool(_safety._has_negation_ja(text or ""))
+ 
+     def neg_count(t: str) -> Counter:
+-        toks = [w.replace("'", "") for w in re.findall(r"[a-z']+", unicodedata.normalize("NFKC", t or "").lower().replace("’", "'"))]
++        # 委任_03(統合で判明した偽否定の是正): 承認済みの標準contraction展開(TRANSCRIPT_STYLE_NORMALIZED_MATCH: do not/don't,
++        # will not/won't, is not/isn't, cannot/can't)と「can not」=cannotを、否定語の数える前に正規化する。展開しないと
++        # 『否定語の語形が違う』だけで承認済み等価(否定保持)をNG_PROTECTEDにしてしまう。否定の有無が反転する差
++        # (can/can't, is/isn't)は展開後も差として残る(安全側は不変)。
++        t = _val.expand_standard_contractions(t or "")
++        t = re.sub(r"\bcan\s+not\b", "cannot", unicodedata.normalize("NFKC", t).lower().replace("’", "'"))
++        toks = [w.replace("'", "") for w in re.findall(r"[a-z']+", t)]
+         return Counter(w for w in toks if w in _val._NEGATION_WORDS)
+ 
+     return neg_count(canonical) != neg_count(text)
+@@ -305,6 +316,8 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
+         "timing": {"total_ms": 0, "secondary_ms": 0},
+         "technical_stop": None,
+     }
++    if ctx.wav_sha256:
++        audit["audio_sha256"] = ctx.wav_sha256  # 委任_03: Primary PASS(Secondary不呼出)でも採用音声のsha256を記録(registryが突合に使う)
+ 
+     def done(state, reason, warnings=(), unavailable=False) -> JudgeResult:
+         audit["state"], audit["reason_code"] = state, reason
+@@ -440,4 +453,8 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
+         return done(NG_BOTH, "secondary_not_accepted", warnings)
+     if final_and_gate:
+         audit["final_gate"] = {"applied": True, "target": "secondary", "value_guard": svg.kind, "negation_diff": sneg}
++    if primary_ng_reason == "force_secondary":
++        # 委任_03: Primary PASS + force_secondary(minimal fallback/LR後v1)でSecondaryも許容集合PASS = 両エンジン合意。
++        # 従来(er006 force_secondary)もPASS扱い(警告なし)だったため、SECONDARY_CONFIRMED警告は付けない(LR後v1はdone()がLR_REWRITTENを付与)。
++        return done(PASS, "force_secondary_agreed", warnings + list(svg.warnings))
+     return done(PASS_WITH_WARNING, "secondary_confirmed", warnings + [W_SECONDARY_CONFIRMED] + list(svg.warnings))
+diff --git a/er078_asr_unified_wiring_allowlist_01.json b/er078_asr_unified_wiring_allowlist_01.json
+index b0e2fe2ea..422854d10 100644
+--- a/er078_asr_unified_wiring_allowlist_01.json
++++ b/er078_asr_unified_wiring_allowlist_01.json
+@@ -1,7 +1,7 @@
+ {
+-  "phase": "pre_wiring",
++  "phase": "post_wiring_en",
+   "managed_id": "ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01",
+-  "generated_by": "delegation_02b",
++  "generated_by": "delegation_03",
+   "entrypoints": [
+     "er019_family_x_audio_production_runner_01.py",
+     "er063_family_z_audio_01.py",
+@@ -21,7 +21,8 @@
+       "callee": "routing.transcribe",
+       "count": 1,
+       "judgement_point": "J3",
+-      "reason": "判定点J3: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
++      "category": "primary_acquisition"
+     },
+     {
+       "module": "er003_v1_crosslevel_audio_02_common",
+@@ -29,7 +30,8 @@
+       "callee": "secondary_asr.evaluate_attempt_with_cascade",
+       "count": 1,
+       "judgement_point": "J3",
+-      "reason": "判定点J3: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
++      "category": "en_adapter_entry"
+     },
+     {
+       "module": "er003_v1_n3_01_tts_generate",
+@@ -37,7 +39,8 @@
+       "callee": "secondary_asr.evaluate_attempt_with_cascade_detail",
+       "count": 1,
+       "judgement_point": "J7",
+-      "reason": "判定点J7: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
++      "category": "en_adapter_entry"
+     },
+     {
+       "module": "er003_v1_n3_01_tts_generate",
+@@ -45,7 +48,8 @@
+       "callee": "en_validator.classify_asr_match",
+       "count": 1,
+       "judgement_point": "J7",
+-      "reason": "判定点J7: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "A2 6%減速後の再検証(直接classify_asr_match)。減速前後を同一judgeにする汎化は委任_05",
++      "category": "a2_slowdown_deferred_delegation_05"
+     },
+     {
+       "module": "er003_v1_n3_01_tts_generate",
+@@ -53,7 +57,8 @@
+       "callee": "routing.transcribe",
+       "count": 1,
+       "judgement_point": "J7",
+-      "reason": "判定点J7: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "A2 6%減速後の再検証(直接classify_asr_match)。減速前後を同一judgeにする汎化は委任_05",
++      "category": "a2_slowdown_deferred_delegation_05"
+     },
+     {
+       "module": "er003_v1_n3_01_tts_generate",
+@@ -61,7 +66,8 @@
+       "callee": "ja_secondary.evaluate_attempt_ja_with_cascade",
+       "count": 1,
+       "judgement_point": "J8",
+-      "reason": "判定点J8: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "JA判定(SCG/JA cascade)。統一judgeへの配線は委任_04(本委任では未配線)",
++      "category": "ja_unwired_delegation_04"
+     },
+     {
+       "module": "er003_v1_n3_01_tts_generate",
+@@ -69,7 +75,8 @@
+       "callee": "routing.transcribe",
+       "count": 1,
+       "judgement_point": "J8",
+-      "reason": "判定点J8: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "JA leafのPrimary転写取得(JA判定とセット)。委任_04",
++      "category": "ja_unwired_delegation_04"
+     },
+     {
+       "module": "er003_v1_repro01_main_generate",
+@@ -77,7 +84,8 @@
+       "callee": "ja_secondary.evaluate_attempt_ja_with_cascade",
+       "count": 1,
+       "judgement_point": "J5",
+-      "reason": "判定点J5: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "JA判定(SCG/JA cascade)。統一judgeへの配線は委任_04(本委任では未配線)",
++      "category": "ja_unwired_delegation_04"
+     },
+     {
+       "module": "er003_v1_repro01_main_generate",
+@@ -85,7 +93,8 @@
+       "callee": "routing.transcribe",
+       "count": 1,
+       "judgement_point": "J5",
+-      "reason": "判定点J5: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
++      "category": "primary_acquisition"
+     },
+     {
+       "module": "er003_v1_repro01_main_generate",
+@@ -93,7 +102,8 @@
+       "callee": "secondary_asr.evaluate_attempt_with_cascade",
+       "count": 1,
+       "judgement_point": "J5",
+-      "reason": "判定点J5: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
++      "category": "en_adapter_entry"
+     },
+     {
+       "module": "er003_v1_sing01_news_tail_fix",
+@@ -101,7 +111,8 @@
+       "callee": "routing.transcribe",
+       "count": 1,
+       "judgement_point": "J2",
+-      "reason": "判定点J2: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
++      "category": "primary_acquisition"
+     },
+     {
+       "module": "er003_v1_sing01_news_tail_fix",
+@@ -109,7 +120,8 @@
+       "callee": "secondary_asr.evaluate_attempt_with_cascade",
+       "count": 1,
+       "judgement_point": "J2",
+-      "reason": "判定点J2: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
++      "category": "en_adapter_entry"
+     },
+     {
+       "module": "er003_v1_sing01_point_headings_aoede",
+@@ -117,7 +129,8 @@
+       "callee": "routing.transcribe",
+       "count": 1,
+       "judgement_point": "J6",
+-      "reason": "判定点J6: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
++      "category": "primary_acquisition"
+     },
+     {
+       "module": "er003_v1_sing01_point_headings_aoede",
+@@ -125,7 +138,8 @@
+       "callee": "secondary_asr.evaluate_attempt_with_cascade",
+       "count": 1,
+       "judgement_point": "J6",
+-      "reason": "判定点J6: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
++      "category": "en_adapter_entry"
+     },
+     {
+       "module": "er003_v1_sing01_voice01_generate",
+@@ -133,7 +147,8 @@
+       "callee": "routing.transcribe",
+       "count": 1,
+       "judgement_point": "J1",
+-      "reason": "判定点J1: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
++      "category": "primary_acquisition"
+     },
+     {
+       "module": "er003_v1_sing01_voice01_generate",
+@@ -141,7 +156,8 @@
+       "callee": "secondary_asr.evaluate_attempt_with_cascade",
+       "count": 1,
+       "judgement_point": "J1",
+-      "reason": "判定点J1: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
++      "category": "en_adapter_entry"
+     },
+     {
+       "module": "er003_v1_sing01_voice01_generate",
+@@ -149,7 +165,8 @@
+       "callee": "ja_secondary.evaluate_attempt_ja_with_cascade",
+       "count": 2,
+       "judgement_point": "J9,J10",
+-      "reason": "判定点J9,J10: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "JA判定(SCG/JA cascade)。統一judgeへの配線は委任_04(本委任では未配線)",
++      "category": "ja_unwired_delegation_04"
+     },
+     {
+       "module": "er003_v1_sing01_voice01_generate",
+@@ -157,7 +174,8 @@
+       "callee": "routing.transcribe",
+       "count": 2,
+       "judgement_point": "J9,J10",
+-      "reason": "判定点J9,J10: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "JA leafのPrimary転写取得(JA判定とセット)。委任_04",
++      "category": "ja_unwired_delegation_04"
+     },
+     {
+       "module": "er006_preprod_hardening_01_validation",
+@@ -165,7 +183,8 @@
+       "callee": "classify_asr_match",
+       "count": 1,
+       "judgement_point": "",
+-      "reason": "EN検証ライブラリ内部の呼出(classify_asr_match/evaluate_attempt。既存Primary側P-chain)。adapter化の対象外・値ガード接続点"
++      "reason": "EN検証library内部の呼出(Primary P-chain本体)。adapter(evaluate_attempt_with_cascade_detail)経由でのみ判定に使われる",
++      "category": "library_internal"
+     },
+     {
+       "module": "er006_preprod_hardening_01_validation",
+@@ -173,7 +192,8 @@
+       "callee": "classify_asr_match",
+       "count": 1,
+       "judgement_point": "",
+-      "reason": "EN検証ライブラリ内部の呼出(classify_asr_match/evaluate_attempt。既存Primary側P-chain)。adapter化の対象外・値ガード接続点"
++      "reason": "EN検証library内部の呼出(Primary P-chain本体)。adapter(evaluate_attempt_with_cascade_detail)経由でのみ判定に使われる",
++      "category": "library_internal"
+     },
+     {
+       "module": "er006_secondary_asr_01",
+@@ -181,31 +201,35 @@
+       "callee": "evaluate_attempt_with_cascade_detail",
+       "count": 1,
+       "judgement_point": "",
+-      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
++      "reason": "EN統一judge adapter本体(AUW 委任_03): Primary P-chain([val.evaluate_attempt/classify_asr_match])とjudge呼出。判定は全てunified_judge経由",
++      "category": "adapter_internal"
+     },
+     {
+       "module": "er006_secondary_asr_01",
+       "function": "evaluate_attempt_with_cascade_detail",
+-      "callee": "routing.transcribe",
++      "callee": "val.classify_asr_match",
+       "count": 1,
+       "judgement_point": "",
+-      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
++      "reason": "EN統一judge adapter本体(AUW 委任_03): Primary P-chain([val.evaluate_attempt/classify_asr_match])とjudge呼出。判定は全てunified_judge経由",
++      "category": "adapter_internal"
+     },
+     {
+       "module": "er006_secondary_asr_01",
+       "function": "evaluate_attempt_with_cascade_detail",
+-      "callee": "val.classify_asr_match",
+-      "count": 5,
++      "callee": "val.evaluate_attempt",
++      "count": 2,
+       "judgement_point": "",
+-      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
++      "reason": "EN統一judge adapter本体(AUW 委任_03): Primary P-chain([val.evaluate_attempt/classify_asr_match])とjudge呼出。判定は全てunified_judge経由",
++      "category": "adapter_internal"
+     },
+     {
+       "module": "er006_secondary_asr_01",
+-      "function": "evaluate_attempt_with_cascade_detail",
+-      "callee": "val.evaluate_attempt",
++      "function": "evaluate_attempt_with_cascade_detail._secondary_accept",
++      "callee": "val.classify_asr_match",
+       "count": 1,
+       "judgement_point": "",
+-      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
++      "reason": "EN統一judge adapter本体(AUW 委任_03): Primary P-chain([val.evaluate_attempt/classify_asr_match])とjudge呼出。判定は全てunified_judge経由",
++      "category": "adapter_internal"
+     },
+     {
+       "module": "er007_ja_secondary_asr_01",
+@@ -213,7 +237,8 @@
+       "callee": "javal.classify_ja_asr_match",
+       "count": 1,
+       "judgement_point": "",
+-      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
++      "reason": "JA判定(SCG/JA cascade)。統一judgeへの配線は委任_04(本委任では未配線)",
++      "category": "ja_unwired_delegation_04"
+     },
+     {
+       "module": "er007_ja_secondary_asr_01",
+@@ -221,7 +246,8 @@
+       "callee": "evaluate_attempt_ja_with_cascade_detail",
+       "count": 1,
+       "judgement_point": "",
+-      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
++      "reason": "JA判定(SCG/JA cascade)。統一judgeへの配線は委任_04(本委任では未配線)",
++      "category": "ja_unwired_delegation_04"
+     },
+     {
+       "module": "er007_ja_secondary_asr_01",
+@@ -229,7 +255,8 @@
+       "callee": "javal.classify_ja_asr_match",
+       "count": 4,
+       "judgement_point": "",
+-      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
++      "reason": "JA判定(SCG/JA cascade)。統一judgeへの配線は委任_04(本委任では未配線)",
++      "category": "ja_unwired_delegation_04"
+     },
+     {
+       "module": "er008_disfluency_qa_18",
+@@ -237,7 +264,8 @@
+       "callee": "model.transcribe",
+       "count": 1,
+       "judgement_point": "",
+-      "reason": "Safety QA用の転写(disfluency/repetition)。内容一致の判定点ではない=統一judge対象外(最後にANDされる既存構造は不変)"
++      "reason": "Safety QA用の転写(disfluency/repetition)。内容一致の判定点ではない(最後にANDされる既存構造は不変)",
++      "category": "safety_qa"
+     },
+     {
+       "module": "er011_open121_repetition_qa_production_01",
+@@ -245,7 +273,8 @@
+       "callee": "asr_routing.transcribe",
+       "count": 1,
+       "judgement_point": "",
+-      "reason": "Safety QA用の転写(disfluency/repetition)。内容一致の判定点ではない=統一judge対象外(最後にANDされる既存構造は不変)"
++      "reason": "Safety QA用の転写(disfluency/repetition)。内容一致の判定点ではない(最後にANDされる既存構造は不変)",
++      "category": "safety_qa"
+     },
+     {
+       "module": "er012_b_family_voices_production_01",
+@@ -253,7 +282,8 @@
+       "callee": "asr_routing.transcribe",
+       "count": 1,
+       "judgement_point": "J4",
+-      "reason": "判定点J4: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
++      "category": "primary_acquisition"
+     },
+     {
+       "module": "er012_b_family_voices_production_01",
+@@ -261,7 +291,8 @@
+       "callee": "secondary_asr.evaluate_attempt_with_cascade",
+       "count": 1,
+       "judgement_point": "J4",
+-      "reason": "判定点J4: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
++      "category": "en_adapter_entry"
+     },
+     {
+       "module": "er013_family_c_production_runner_01",
+@@ -269,7 +300,8 @@
+       "callee": "asr_routing.transcribe",
+       "count": 1,
+       "judgement_point": "",
+-      "reason": "Family C(legacy)の診断用ASR(get_or_run_asr)。DESIGN J1-J11に未列挙。委任_04で採用判定に使われていないことを確認すること(未確認)"
++      "reason": "Family C(legacy)の診断用ASR(get_or_run_asr)。判定に使われているか未確認(委任_04で確認)",
++      "category": "diagnostic_unconfirmed"
+     },
+     {
+       "module": "er019_family_x_validation_inheritance_01",
+@@ -277,7 +309,8 @@
+       "callee": "en_validator.classify_asr_match",
+       "count": 1,
+       "judgement_point": "J11",
+-      "reason": "判定点J11: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
++      "reason": "J11 引継ぎ・再利用の再判定(保存転写に対するAPI 0再判定)。統一判定の入口への置換は委任_04",
++      "category": "j11_deferred_delegation_04"
+     }
+   ]
+ }
+diff --git a/er078_asr_unified_wiring_static_audit_01.py b/er078_asr_unified_wiring_static_audit_01.py
+index dc07774f2..b876c02e6 100644
+--- a/er078_asr_unified_wiring_static_audit_01.py
++++ b/er078_asr_unified_wiring_static_audit_01.py
+@@ -7,9 +7,13 @@
+ # 段階(allowlistの "phase"):
+ #   pre_wiring  (本委任_02b時点): 現状の呼出一覧をsnapshot化したもの。testは「snapshotとの完全一致」(=未登録の新規ASR呼出が増えていない/
+ #                                 意図せず消えていない)を検査する。統一judgeはまだentrypointから到達しない。
+-#   post_wiring (委任_03/04で配線後に切替え): 「統一judge/adapter(allowlist内の internal_modules)経由以外のASR呼出0」をassertする。
+-#                                 切替え手順: `python er078_asr_unified_wiring_static_audit_01.py --regenerate --phase post_wiring` ではなく、
+-#                                 allowlist JSONの phase を post_wiring に変え、adapter側の呼出のみを internal として残すこと(理由必須)。
++#   post_wiring_en (委任_03: EN配線済み・JA未配線): ENのentrypoint(leaf)が統一judge(adapter=er006_secondary_asr_01経由)へ到達すること、
++#                                 EN判定点でadapterを経由しない直接のclassify_asr_match/evaluate_attempt呼出が「明示の繰延リスト(A2減速=委任_05、J11=委任_04)」
++#                                 以外に無いこと、JA経路(er007_ja_secondary_asr_01)が統一judgeへ未到達であることをassertする。allowlistの各entryは
++#                                 `category`を持ち、未知categoryはFAIL。再生成: `--regenerate --phase post_wiring_en`。
++#   post_wiring (委任_04/05完了後に切替え): 「統一judge/adapter(allowlist内の internal_modules)経由以外のASR呼出0」をassertする。
++#                                 切替え手順: allowlist JSONの phase を post_wiring に変え、繰延カテゴリ(ja_unwired/deferred)のentryが残っていない
++#                                 こと、adapter側の呼出のみを internal として残すこと(理由必須)。
+ #
+ # 使い方:
+ #   python er078_asr_unified_wiring_static_audit_01.py --regenerate   # allowlist(snapshot)を生成/更新
+@@ -39,6 +43,24 @@ ENTRYPOINTS = [
+ ]
+ CALLEE_RE = re.compile(r"^(transcribe|classify_asr_match|classify_ja_asr_match|evaluate_attempt\w*)$")
+ UNIFIED_MODULES = {"er078_asr_unified_judge_01", "er078_asr_value_guard_01", "er078_pass_with_warning_registry_01"}
++PHASES = ("pre_wiring", "post_wiring_en", "post_wiring")
++
++# post_wiring_en のentry category(委任_03)。繰延(deferred)カテゴリはpost_wiringでは0件でなければならない。
++CAT_ADAPTER_INTERNAL = "adapter_internal"                  # EN adapter本体(er006_secondary_asr_01): Primary P-chainの呼出+統一judge呼出
++CAT_LIBRARY_INTERNAL = "library_internal"                  # EN検証library(er006_preprod_hardening_01_validation)内部。adapter経由でのみ判定に使われる
++CAT_EN_ADAPTER_ENTRY = "en_adapter_entry"                  # EN判定点(leaf)からadapterへの入口呼出(evaluate_attempt_with_cascade[_detail])
++CAT_PRIMARY_ACQUISITION = "primary_acquisition"            # Primary ASR転写の取得(judgeの入力側。判定ではない)
++CAT_SAFETY_QA = "safety_qa"                                # disfluency/repetition用の転写(内容判定ではない)
++CAT_JA_UNWIRED = "ja_unwired_delegation_04"                # JA(委任_04で配線)
++CAT_J11_DEFERRED = "j11_deferred_delegation_04"            # 引継ぎ・再利用経路の再判定(委任_04)
++CAT_A2_DEFERRED = "a2_slowdown_deferred_delegation_05"     # A2減速後の再検証(委任_05)
++CAT_DIAGNOSTIC_UNCONFIRMED = "diagnostic_unconfirmed"      # Family C診断ASR(判定に使われているか未確認、委任_04で確認)
++DEFERRED_CATEGORIES = (CAT_JA_UNWIRED, CAT_J11_DEFERRED, CAT_A2_DEFERRED, CAT_DIAGNOSTIC_UNCONFIRMED)
++ALLOWED_CATEGORIES = (CAT_ADAPTER_INTERNAL, CAT_LIBRARY_INTERNAL, CAT_EN_ADAPTER_ENTRY, CAT_PRIMARY_ACQUISITION, CAT_SAFETY_QA) + DEFERRED_CATEGORIES
++JA_FUNCTIONS = {("er003_v1_sing01_voice01_generate", "generate_charon_japanese"),
++                ("er003_v1_n3_01_tts_generate", "generate_a2_japanese_with_fallback")}
++EN_LEAF_MODULES = ("er003_v1_sing01_voice01_generate", "er003_v1_sing01_news_tail_fix", "er003_v1_crosslevel_audio_02_common",
++                   "er012_b_family_voices_production_01", "er003_v1_repro01_main_generate", "er003_v1_sing01_point_headings_aoede")
+ 
+ # 判定点(DESIGN_01 §3.1 J1〜J11)とmoduleの対応。J11は引継ぎ・再利用経路(追補§3-1)。
+ JUDGEMENT_POINTS = {
+@@ -188,13 +210,45 @@ def _reason_for(mod: str, fn: str, nm: str) -> str:
+     return "SNAPSHOT: 現行呼出(配線前)。委任_03/04で統一judge経由かadapter内部かを個別に確定する"
+ 
+ 
+-def build_allowlist(inv=None) -> dict:
++def category_for(mod: str, fn: str, nm: str) -> tuple:
++    """post_wiring_en用: (category, reason)。繰延カテゴリは委任番号を含む(post_wiringで0件になる)。"""
++    last = nm.split(".")[-1]
++    top = fn.split(".")[0]
++    if mod == "er006_secondary_asr_01":
++        return CAT_ADAPTER_INTERNAL, "EN統一judge adapter本体(AUW 委任_03): Primary P-chain([val.evaluate_attempt/classify_asr_match])とjudge呼出。判定は全てunified_judge経由"
++    if mod == "er006_preprod_hardening_01_validation":
++        return CAT_LIBRARY_INTERNAL, "EN検証library内部の呼出(Primary P-chain本体)。adapter(evaluate_attempt_with_cascade_detail)経由でのみ判定に使われる"
++    if mod in ("er008_disfluency_qa_18", "er011_open121_repetition_qa_production_01"):
++        return CAT_SAFETY_QA, "Safety QA用の転写(disfluency/repetition)。内容一致の判定点ではない(最後にANDされる既存構造は不変)"
++    if mod == "er013_family_c_production_runner_01":
++        return CAT_DIAGNOSTIC_UNCONFIRMED, "Family C(legacy)の診断用ASR(get_or_run_asr)。判定に使われているか未確認(委任_04で確認)"
++    if mod == "er019_family_x_validation_inheritance_01":
++        return CAT_J11_DEFERRED, "J11 引継ぎ・再利用の再判定(保存転写に対するAPI 0再判定)。統一判定の入口への置換は委任_04"
++    if mod == "er007_ja_secondary_asr_01" or nm.startswith(("ja_secondary.", "javal.")):
++        return CAT_JA_UNWIRED, "JA判定(SCG/JA cascade)。統一judgeへの配線は委任_04(本委任では未配線)"
++    if (mod, top) in JA_FUNCTIONS:
++        return CAT_JA_UNWIRED, "JA leafのPrimary転写取得(JA判定とセット)。委任_04"
++    if mod == "er003_v1_n3_01_tts_generate" and top == "apply_a2_slowdown_postprocess":
++        return CAT_A2_DEFERRED, "A2 6%減速後の再検証(直接classify_asr_match)。減速前後を同一judgeにする汎化は委任_05"
++    if last in ("evaluate_attempt_with_cascade", "evaluate_attempt_with_cascade_detail"):
++        return CAT_EN_ADAPTER_ENTRY, "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由"
++    if last == "transcribe":
++        return CAT_PRIMARY_ACQUISITION, "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)"
++    return "UNCATEGORIZED", "未分類(post_wiring_enはFAIL)"
++
++
++def build_allowlist(inv=None, phase: str = "pre_wiring") -> dict:
++    assert phase in PHASES, phase
+     inv = inv if inv is not None else inventory()
+     entries = []
+     for (mod, fn, nm), v in sorted(inv.items()):
+-        entries.append({"module": mod, "function": fn, "callee": nm, "count": v["count"], "judgement_point": _judgement_label(mod, fn),
+-                        "reason": _reason_for(mod, fn, nm)})
+-    return {"phase": "pre_wiring", "managed_id": "ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01", "generated_by": "delegation_02b",
++        e = {"module": mod, "function": fn, "callee": nm, "count": v["count"], "judgement_point": _judgement_label(mod, fn),
++             "reason": _reason_for(mod, fn, nm)}
++        if phase != "pre_wiring":
++            e["category"], e["reason"] = category_for(mod, fn, nm)
++        entries.append(e)
++    return {"phase": phase, "managed_id": "ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01",
++            "generated_by": "delegation_02b" if phase == "pre_wiring" else "delegation_03",
+             "entrypoints": ENTRYPOINTS, "callee_pattern": CALLEE_RE.pattern, "entry_count": len(entries), "entries": entries}
+ 
+ 
+@@ -216,7 +270,8 @@ def diff_against_allowlist(inv: dict, allow: dict) -> dict:
+ def main(argv=None) -> int:
+     argv = argv if argv is not None else sys.argv[1:]
+     if "--regenerate" in argv:
+-        al = build_allowlist()
++        phase = argv[argv.index("--phase") + 1] if "--phase" in argv else "pre_wiring"
++        al = build_allowlist(phase=phase)
+         with open(ALLOWLIST_PATH, "w", encoding="utf-8") as f:
+             json.dump(al, f, ensure_ascii=False, indent=2)
+             f.write("\n")
+@@ -254,13 +309,15 @@ def test_asr_call_inventory_matches_allowlist():
+     al = load_allowlist()
+     inv = inventory()
+     d = diff_against_allowlist(inv, al)
+-    if al["phase"] == "pre_wiring":
+-        # 配線前: snapshotとの完全一致。未登録の新規ASR呼出(統一judgeを経由しない呼出点の増殖)も、意図しない消失もFAIL。
++    assert al["phase"] in PHASES, al["phase"]
++    if al["phase"] in ("pre_wiring", "post_wiring_en"):
++        # snapshotとの完全一致。未登録の新規ASR呼出(統一judgeを経由しない呼出点の増殖)も、意図しない消失もFAIL。
+         assert d == {"unlisted_new_calls": [], "vanished": [], "count_changed": []}, d
+     else:
+-        # post_wiring(委任_03/04で切替え): allowlistは「統一judge/adapter内部の呼出」のみ。それ以外のASR呼出が1件でもあればFAIL。
++        # post_wiring(委任_04/05完了後): 繰延カテゴリのentryが1件でも残っていればFAIL。
+         assert d["unlisted_new_calls"] == [], d
+-        assert all(e["module"] in UNIFIED_MODULES or e.get("internal") for e in al["entries"]), "post_wiringではinternal理由のentryのみ許可"
++        left = [e for e in al["entries"] if e.get("category") in DEFERRED_CATEGORIES]
++        assert left == [], f"post_wiringに繰延カテゴリが残っている: {left}"
+ 
+ 
+ def test_unified_judge_reachability_matches_phase():
+@@ -272,6 +329,80 @@ def test_unified_judge_reachability_matches_phase():
+         assert "er078_asr_unified_judge_01" in reach
+ 
+ 
++def _closure(start: str) -> set:
++    seen, st = set(), [start]
++    while st:
++        m = st.pop()
++        if m in seen:
++            continue
++        seen.add(m)
++        path = os.path.join(ROOT, m + ".py")
++        if os.path.exists(path):
++            st.extend(d for d in imports_of(path) if d not in seen)
++    return seen
++
++
++def _en_phase_only(fn):
++    """pre_wiringではskip(何もしない)。post_wiring_en以降のみ検査する。"""
++    def wrapper(*a, **k):
++        if load_allowlist()["phase"] == "pre_wiring":
++            return None
++        return fn(*a, **k)
++    wrapper.__name__ = fn.__name__
++    return wrapper
++
++
++@_en_phase_only
++def test_post_wiring_en_every_entry_has_known_category():
++    al = load_allowlist()
++    bad = [e for e in al["entries"] if e.get("category") not in ALLOWED_CATEGORIES]
++    assert bad == [], f"未知/未分類category(新しいASR呼出点が増えた/分類漏れ): {bad}"
++    # 再導出したcategoryとallowlistが一致(allowlistの手編集で分類を偽らない)
++    for e in al["entries"]:
++        assert e["category"] == category_for(e["module"], e["function"], e["callee"])[0], e
++
++
++@_en_phase_only
++def test_post_wiring_en_every_en_leaf_reaches_unified_judge_through_adapter():
++    for m in EN_LEAF_MODULES:
++        assert "er078_asr_unified_judge_01" in _closure(m), f"EN leaf {m} が統一judgeへ到達しない"
++        assert "er006_secondary_asr_01" in imports_of(os.path.join(ROOT, m + ".py")), f"{m} がadapter(er006_secondary_asr_01)をimportしない"
++    assert "er078_asr_unified_judge_01" in imports_of(os.path.join(ROOT, "er006_secondary_asr_01.py"))
++
++
++@_en_phase_only
++def test_post_wiring_en_no_en_judgement_bypasses_adapter_except_explicit_deferrals():
++    """EN leaf(J1-J6)の内容判定はadapter(evaluate_attempt_with_cascade[_detail])経由のみ。judge/adapter以外の直接
++    classify_asr_match/evaluate_attempt呼出は、繰延カテゴリ(A2減速=委任_05, J11=委任_04, JA=委任_04)とlibrary/adapter内部だけ。"""
++    al = load_allowlist()
++    direct = [e for e in al["entries"]
++              if e["callee"].split(".")[-1] in ("classify_asr_match", "evaluate_attempt", "classify_ja_asr_match")]
++    for e in direct:
++        assert e["category"] in (CAT_ADAPTER_INTERNAL, CAT_LIBRARY_INTERNAL, CAT_JA_UNWIRED, CAT_A2_DEFERRED, CAT_J11_DEFERRED), (
++            f"EN判定点がadapterを経由せず直接判定している: {e}")
++    # 繰延は明示の既知集合のみ(増えたらFAIL)
++    deferred = sorted((e["module"], e["function"]) for e in al["entries"] if e["category"] in (CAT_A2_DEFERRED, CAT_J11_DEFERRED))
++    assert deferred == [("er003_v1_n3_01_tts_generate", "apply_a2_slowdown_postprocess"),
++                        ("er003_v1_n3_01_tts_generate", "apply_a2_slowdown_postprocess"),
++                        ("er019_family_x_validation_inheritance_01", "rejudge_with_current_judge")], deferred
++    # EN leaf J1-J6は全てadapter入口を持つ
++    have = {(e["module"], e["callee"].split(".")[-1]) for e in al["entries"]}
++    for j in ("J1", "J2", "J3", "J4", "J5", "J6"):
++        m, _f = JUDGEMENT_POINTS[j]
++        assert any(mm == m and cal.startswith("evaluate_attempt_with_cascade") for (mm, cal) in have), f"{j} {m} にadapter入口が無い"
++
++
++@_en_phase_only
++def test_post_wiring_en_ja_path_is_not_wired_to_unified_judge():
++    for m in ("er007_ja_secondary_asr_01", "er007_ja_asr_validator_01"):
++        c = _closure(m)
++        assert not (c & UNIFIED_MODULES), f"JA経路 {m} が統一judge系へ到達している(委任_04前の未承認配線): {c & UNIFIED_MODULES}"
++        assert "er006_secondary_asr_01" not in c
++    al = load_allowlist()
++    ja = [e for e in al["entries"] if e["category"] == CAT_JA_UNWIRED]
++    assert ja, "JA未配線entryが無い(分類漏れ)"
++
++
+ def test_judgement_points_j1_to_j10_present_in_inventory():
+     inv = inventory()
+     mods = {m for (m, _f, _n) in inv}
+diff --git a/er078_pass_with_warning_registry_01.py b/er078_pass_with_warning_registry_01.py
+index 5b4b13179..2866aa3a8 100644
+--- a/er078_pass_with_warning_registry_01.py
++++ b/er078_pass_with_warning_registry_01.py
+@@ -1,28 +1,38 @@
+ # ============================================================
+-# ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 (AUW) 委任_02b
++# ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 (AUW) 委任_02b/03
+ # PASS_WITH_WARNING 試聴リスト(registry)。tts_generation_results.json から**再導出**する純関数(別store・二重管理なし・冪等)。
+-# 状態: 作業branch feat/auw-unified-asr-01 上の新規moduleのみ。Production未配線(ページ節への組込みは委任_03)。
++# 状態: 作業branch feat/auw-unified-asr-01。委任_03でEN配線(adapter)・生成完了hook・X/Z/legacyページ節に接続済み。
+ # 入力の約束: 各セグメントdictが additive キー `asr_judgement` (= er078_asr_unified_judge_01.JudgeResult.audit_record) を持つ。
+ #   継承(既存音声の引継ぎ/再利用)は `asr_judgement_inherited` を同じ形で持つ(OF-AUW-15: 元のWARNINGを継承して表示)。
+-# ページは非ブロッキング(Assembly Gate・公開可否・HR queueに影響しない)。
++# ページは非ブロッキング(Assembly Gate・公開可否・HR queueに影響しない)。deriveの失敗は生成を失敗させない
++# (`write_listening_list_safe`はwarningログを出して握りつぶす)。
+ # ============================================================
+ from __future__ import annotations
+ 
+ import html
+ import json
+ import os
++import sys
+ 
+ PASSING = ("PASS_WITH_WARNING",)
+ LIST_FILENAME = "pass_with_warning_listening_list.json"
++STANDALONE_FILENAME = "pass_with_warning_listening_list.html"
++SECTION_ID = "pass-with-warning-listening-list"
++SECTION_TITLE = "事後試聴リスト(PASS_WITH_WARNING)"
++
++
++# attempt単位のログ(試行途中のasr_judgement)は「採用音声」ではないため走査しない(採用はsegment最上位のasr_judgementのみ)。
++_SKIP_KEYS = ("asr_judgement", "asr_judgement_inherited", "attempts_log", "standard_attempts_log", "fallback_attempts_log",
++              "attempts", "cascade_steps", "post_slowdown_cascade", "local_rewrite_recovery")
+ 
+ 
+ def _walk(node, path):
+-    """asr_judgement(またはasr_judgement_inherited)を持つdictを再帰的に列挙する。"""
++    """asr_judgement(またはasr_judgement_inherited)を持つdictを再帰的に列挙する(attempt logの中は見ない)。"""
+     if isinstance(node, dict):
+         if "asr_judgement" in node or "asr_judgement_inherited" in node:
+             yield path, node
+         for k, v in node.items():
+-            if k in ("asr_judgement", "asr_judgement_inherited"):
++            if k in _SKIP_KEYS:
+                 continue
+             if isinstance(v, (dict, list)):
+                 yield from _walk(v, path + [str(k)])
+@@ -32,12 +42,19 @@ def _walk(node, path):
+                 yield from _walk(v, path + [str(i)])
+ 
+ 
++def _vg_kind(judgement, which):
++    vg = judgement.get("value_guard") or {}
++    sub = vg.get(which) or {}
++    return sub.get("kind") if isinstance(sub, dict) else None
++
++
+ def _entry(path, node, judgement, inherited):
+     sec = judgement.get("secondary") or {}
+     prim = judgement.get("primary") or {}
+     seg_id = node.get("segment_id") or "/".join(p for p in path if p not in ("segments",))
+     return {
+         "segment_id": seg_id,
++        "entry_key": "/".join(path),
+         "role": node.get("role") or judgement.get("role") or (path[-1] if path else ""),
+         "level": node.get("level") or judgement.get("level") or "",
+         "lang": node.get("language") or judgement.get("lang") or "",
+@@ -48,6 +65,8 @@ def _entry(path, node, judgement, inherited):
+         "canonical_text": node.get("text") or node.get("canonical_text") or "",
+         "primary_text": prim.get("text"),
+         "secondary_text": sec.get("text"),
++        "value_guard_kind_primary": _vg_kind(judgement, "primary"),
++        "value_guard_kind_secondary": _vg_kind(judgement, "secondary"),
+         "reason": judgement.get("reason_code") or "",
+         "slot": judgement.get("slot"),
+         "script_version": judgement.get("script_version"),
+@@ -94,28 +113,68 @@ def write_listening_list(run_dir: str) -> str:
+     return dst
+ 
+ 
+-def render_html_section(entries: list) -> str:
+-    """X/Zページの『WARNING音声 試聴リスト(自動採用・事後確認用)』節。"""
++def load_listening_list(run_dir: str) -> list:
++    """<run_dir>/audit/tts_generation_results.json から直接導出して返す(ページ生成用。ファイルを書かない・失敗は[]+warning)。"""
++    src = os.path.join(run_dir, "audit", "tts_generation_results.json")
++    try:
++        if not os.path.exists(src):
++            return []
++        with open(src, encoding="utf-8") as f:
++            return derive_listening_list(json.load(f))
++    except Exception as exc:  # 非ブロッキング: ページ生成を失敗させない
++        print(f"[WARN][pass_with_warning_registry] 試聴リスト導出に失敗(無視して0件扱い): {run_dir}: {type(exc).__name__}: {exc}",
++              file=sys.stderr)
++        return []
++
++
++def write_listening_list_safe(run_dir: str, standalone_html: bool = False) -> dict:
++    """生成完了hook用。**例外を投げない**(deriveの失敗は生成を失敗させない: warningログ+戻り値のerrorで報告)。
++    standalone_html=Trueならlegacy(Family A/B/C)向けに`audit/pass_with_warning_listening_list.html`も書く(0件でも節を出す)。"""
++    rep = {"run_dir": run_dir, "json": None, "html": None, "count": None, "error": None}
++    try:
++        rep["json"] = write_listening_list(run_dir)
++        with open(rep["json"], encoding="utf-8") as f:
++            data = json.load(f)
++        rep["count"] = data["count"]
++        if standalone_html:
++            p = os.path.join(run_dir, "audit", STANDALONE_FILENAME)
++            with open(p, "w", encoding="utf-8") as f:
++                f.write(render_standalone_html(data["entries"]))
++            rep["html"] = p
++    except Exception as exc:
++        rep["error"] = f"{type(exc).__name__}: {exc}"
++        print(f"[WARN][pass_with_warning_registry] 試聴リスト出力に失敗(生成は継続): {run_dir}: {rep['error']}", file=sys.stderr)
++    return rep
++
++
++def render_html_section(entries: list, href_fn=None) -> str:
++    """X/Zページ・legacy単独ページの『事後試聴リスト(PASS_WITH_WARNING)』節。0件のときも節を出す(「0件」と明記)。
++
++    href_fn(entry)->str: 音声リンク(相対/URL)を返す関数。未指定は entry["audio_path"]。空文字ならリンク無し。"""
+     e_ = html.escape
+-    parts = ['<section id="pass-with-warning-listening-list"><h2>WARNING音声 試聴リスト(自動採用・事後確認用)</h2>']
++    parts = [f'<section id="{SECTION_ID}"><h2>{SECTION_TITLE} WARNING音声 試聴リスト(自動採用・事後確認用)</h2>']
+     if not entries:
+-        parts.append("<p>該当なし(PASS_WITH_WARNINGの採用音声はありません)</p></section>")
++        parts.append("<p>0件(該当なし: PASS_WITH_WARNINGの採用音声はありません)</p></section>")
+         return "\n".join(parts)
+     parts.append(f"<p>{len(entries)}件。公開をブロックしません。事後に試聴して確認してください。</p><table border=\"1\"><tr>"
+-                 "<th>segment</th><th>role</th><th>warning</th><th>原稿</th><th>Primary転写</th><th>Secondary転写</th><th>理由</th><th>音声</th></tr>")
++                 "<th>segment</th><th>role</th><th>warning</th><th>原稿</th><th>Primary転写</th><th>Secondary転写</th>"
++                 "<th>値ガードkind</th><th>理由</th><th>音声</th></tr>")
+     for e in entries:
+-        audio = (f'<audio controls preload="none" src="{e_(e["audio_path"])}"></audio>' if e["audio_path"] else "")
++        href = href_fn(e) if href_fn is not None else e.get("audio_path", "")
++        audio = (f'<audio controls preload="none" src="{e_(str(href))}"></audio> <a href="{e_(str(href))}">mp3</a>' if href
++                 else "(音声リンクなし)")
+         tag = " (引継ぎ)" if e.get("inherited") else ""
++        vgk = "/".join(str(k) for k in (e.get("value_guard_kind_primary"), e.get("value_guard_kind_secondary")) if k) or "-"
+         parts.append(
+-            "<tr><td>%s%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
++            "<tr><td>%s%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
+                 e_(str(e["segment_id"])), tag, e_(str(e["role"])), e_(", ".join(e["warning_labels"])),
+                 e_(str(e["canonical_text"])), e_(str(e["primary_text"] or "")), e_(str(e["secondary_text"] or "")),
+-                e_(str(e["reason"])), audio))
++                e_(vgk), e_(str(e["reason"])), audio))
+     parts.append("</table></section>")
+     return "\n".join(parts)
+ 
+ 
+-def render_standalone_html(entries: list) -> str:
++def render_standalone_html(entries: list, href_fn=None) -> str:
+     """legacy(Family A/B/C)用の単独HTML。"""
+     return ('<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>PASS_WITH_WARNING 試聴リスト</title></head><body>'
+-            + render_html_section(entries) + "</body></html>")
++            + render_html_section(entries, href_fn) + "</body></html>")

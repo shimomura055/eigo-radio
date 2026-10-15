@@ -40,7 +40,8 @@ from typing import Optional
 
 REUSED_VALIDATED = "REUSED_VALIDATED"
 DURATION_WITNESS_TOLERANCE_SECONDS = 0.020
-_OVERWRITABLE_STATUSES = (None, "SKIPPED_NOT_SELECTED", "INVALIDATED_FOR_REGENERATION")
+_OVERWRITABLE_STATUSES = (None, "SKIPPED_NOT_SELECTED", "INVALIDATED_FOR_REGENERATION",
+                          "TECHNICAL_STOP_SECONDARY_UNAVAILABLE")  # 委任_06c: Secondary障害の技術STOP(再実行で再生成)
 
 
 def sha256_file(path: str) -> str:
@@ -123,6 +124,14 @@ def build_inherited_entry(entry: dict, wav_path: str, evaluation: dict, source_r
     new_entry["path"] = wav_path
     new_entry["sha256"] = evaluation["current_sha256"]
     new_entry["reused_from_previous_run"] = True
+    # AUW 委任_04(J11、additive): 継承再判定の統一judge record。元の`asr_judgement`は`asr_judgement_inherited`へ移し、
+    # 事後試聴リストが元のWARNINGを継承して表示できるようにする(OF-AUW-15)。f1_rejudgeにはrecord本体を二重に入れない。
+    if f1_rejudge is not None and f1_rejudge.get("asr_judgement_inherited") is not None:
+        new_entry.pop("asr_judgement", None)
+        new_entry["asr_judgement_inherited"] = f1_rejudge["asr_judgement_inherited"]
+        f1_rejudge = {k: v for k, v in f1_rejudge.items() if k != "asr_judgement_inherited"}
+    elif "asr_judgement" in new_entry:
+        new_entry["asr_judgement_inherited"] = new_entry.pop("asr_judgement")
     prior = entry.get("validation_inheritance")
     if isinstance(prior, dict) and prior.get("label") == REUSED_VALIDATED:
         vi = copy.deepcopy(prior)
@@ -188,6 +197,11 @@ def try_inherit_from_cached(cached_entry: Optional[dict], wav_path: str, expecte
         return None
     ev = evaluate_inheritance(cached_entry, wav_path, expected_text=expected_text)
     if ev["ok"] and ev["evidence"] == "entry_sha256":
+        # AUW 委任_06c(OF-AUW-C-03): 引継ぎ前に保存転写のみ(API 0)を現行の統一judgeへ通す。値ガードDIFF/否定差(`reuse_blocked` mark含む)
+        # なら引継ぎず(None)、呼出側は再生成/SKIPPED(=Gate BLOCK維持)へ回す。carry_over_unchanged(検証済み扱いにしない持越し)は対象外。
+        import er078_reuse_value_guard_01 as _rvg
+        if _rvg.guard_entry(cached_entry, label=str((source_ref or {}).get("label") or "")).get("blocked"):
+            return None
         return build_inherited_entry(cached_entry, wav_path, ev, source_ref, source_style_version=cached_style_version)
     return carry_over_unchanged(cached_entry, wav_path, expected_text, cached_style_version, current_style_version)
 
@@ -202,29 +216,104 @@ def is_japanese_label(level: str, label: str) -> bool:
     return False
 
 
-def rejudge_with_current_judge(entry: dict, level: str, label: str) -> dict:
-    """元entryの保存済み`asr_text`を、現行(F1後)の英語ASR判定関数`classify_asr_match`で再判定する。
-    戻り値: {applicable, ok, classification, f1_version, tts_input, reason}。
-    日本語segment(a2のjapanese_title/preview/comment/KP日本語意味)はF1(英語連結発音)の対象外のため applicable=False
-    (元の日本語ASR検証結果を引継ぎ対象とする)。英語で判定不能/NGはok=False(fail-closed)。"""
-    if is_japanese_label(level, label):
-        return {"applicable": False, "ok": True, "reason": "JA_SEGMENT_F1_NOT_APPLICABLE"}
+def _j11_adopted_judgement(entry: dict):
+    """元entryが統一judgeのrecord(`asr_judgement`/`asr_judgement_inherited`)を持つ場合、(record, 採用転写text)を返す。
+    Primary PASSならPrimary転写、Secondary確認で採用ならSecondary転写(=実際に最終ANDゲートで確認すべき転写)。"""
+    aj = entry.get("asr_judgement") or entry.get("asr_judgement_inherited")
+    if not isinstance(aj, dict):
+        return None, None
+    if aj.get("state") not in ("PASS", "PASS_WITH_WARNING"):
+        return aj, None
+    prim, sec = aj.get("primary") or {}, aj.get("secondary") or {}
+    if prim.get("passed"):
+        return aj, prim.get("text")
+    return aj, sec.get("text")
+
+
+def rejudge_with_current_judge(entry: dict, level: str, label: str, force_lang: Optional[str] = None) -> dict:
+    """J11(AUW 委任_04、DESIGN_02_ADDENDUM_01 §3-1): 既存音声の継承時に、保存済み転写を**統一judgeの入口
+    (er078_asr_unified_judge_01.unified_judge)**でAPI 0のまま再判定する(旧: 英語のclassify_asr_matchのみ・日本語は対象外)。
+    - Secondary(Azure)は**新規に呼ばない**(secondary_fnは元entryに保存済みのSecondary転写を返すだけ。無ければ取得不能=NG)。
+    - EN: 保存済み`asr_text`を現行(F1後)の`classify_asr_match`でPrimary再判定(従来どおり。NGでも保存済みSecondary転写が
+      許容集合PASSならPASS_WITH_WARNING)し、最終ANDゲート(値ガードDIFF/否定差)を適用する。
+    - JA(a2のjapanese_title/preview/comment/KP日本語意味): 日本語Primaryを再導出せず(Resolver=LLM呼出を避けAPI 0を守る)、
+      元の正式Validation結果(status=OK/asr_verified、inheritanceの前提)を維持したまま、**最終ANDゲートだけ**を採用転写に再適用する
+      (値ガードDIFF/否定差なら引継ぎ不可=fail-closed)。
+    - 元entryが`asr_judgement`(PASS_WITH_WARNING等)を持つ場合は`asr_judgement_inherited`として継承する(元のWARNINGを失わない、OF-AUW-15)。
+    戻り値: {applicable, ok, reason, unified_state, secondary_new_calls(=0), asr_judgement_inherited, ...(EN: classification/f1_version/tts_input)}。"""
+    import er078_asr_unified_judge_01 as uj
+    # 委任_06c(additive): force_lang("ja"|"en")を渡す呼出元(再利用経路の値ガード等、levelを持たない)は言語を明示できる。
+    ja = (force_lang == "ja") if force_lang in ("ja", "en") else is_japanese_label(level, label)
     asr_text = entry.get("asr_text")
     base_text = entry.get("text") or entry.get("canonical_text")
+    aj, adopted = _j11_adopted_judgement(entry)
     if not asr_text or not base_text:
-        return {"applicable": True, "ok": False, "reason": "NO_ASR_TEXT_OR_TEXT"}
-    import er003_v1_n3_01_tts_generate as n3_tts
-    import er006_preprod_hardening_01_validation as en_validator
-    import er011_b1_connected_speech_validator_01 as cs
-    if label.startswith("full_story") or label == "in_one_line":
-        tts_input = n3_tts.tts_safe_news_en(base_text)
+        return {"applicable": True, "ok": False, "reason": "NO_ASR_TEXT_OR_TEXT", "secondary_new_calls": 0}
+    out: dict = {"applicable": True, "secondary_new_calls": 0}
+    stored_secondary = ((aj or {}).get("secondary") or {}).get("text") or ((entry.get("scg_info") or {}).get("secondary_transcript"))
+    calls = {"n": 0}
+
+    def _no_new_secondary(_ctx):
+        """新規Secondary呼出は行わない(J11)。保存済みSecondary転写があればそれを返す。無ければ取得不能(PASS不可)。"""
+        calls["n"] += 1
+        if stored_secondary:
+            return uj.SecondaryOutcome(stored_secondary)
+        return uj.SecondaryOutcome(None, error="j11_no_new_secondary_call")
+
+    lang = "ja" if ja else "en"
+    if ja:
+        primary = uj.PrimaryResult(passed=True, text=adopted or asr_text, label=str(entry.get("audio_classification") or "ORIGINAL_VERIFIED_STATUS_OK"),
+                                   equivalence_basis=None)
+        accept_fn = None
+        tts_input = base_text
     else:
-        tts_input = n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(base_text))
-    res = en_validator.classify_asr_match(tts_input, asr_text)
-    cs_info = getattr(res, "connected_speech_info", None) or {}
-    return {"applicable": True, "ok": bool(res.should_pass), "classification": res.classification,
-            "f1_version": cs_info.get("f1_version") or cs.F1_VERSION, "judge_module_f1_version": cs.F1_VERSION,
-            "tts_input": tts_input, "reason": "OK" if res.should_pass else f"REJUDGE_NG({res.classification})"}
+        import er003_v1_n3_01_tts_generate as n3_tts
+        import er006_preprod_hardening_01_validation as en_validator
+        import er006_secondary_asr_01 as en_adapter
+        import er011_b1_connected_speech_validator_01 as cs
+        if label.startswith("full_story") or label == "in_one_line":
+            tts_input = n3_tts.tts_safe_news_en(base_text)
+        else:
+            tts_input = n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(base_text))
+        res = en_validator.classify_asr_match(tts_input, asr_text)
+        cs_info = getattr(res, "connected_speech_info", None) or {}
+        out.update(classification=res.classification,
+                   f1_version=cs_info.get("f1_version") or cs.F1_VERSION, judge_module_f1_version=cs.F1_VERSION, tts_input=tts_input)
+        primary = uj.PrimaryResult(passed=bool(res.should_pass), text=asr_text, label=res.classification,
+                                   equivalence_basis=en_adapter._equivalence_basis_of(res) if res.should_pass else None)
+        # 委任_06c(OF-AUW-C-01): 元がKP非ラテン救済(adapter.layersにnon_latin)でAzure転写(保存済みSecondary)が採用根拠のとき、
+        # Primary(非ラテン)転写ではなく採用転写を根拠としてPrimary相当にする(Primary非ラテン転写に英語否定語・数値を照合しない)。
+        _layers = ((aj or {}).get("adapter") or {}).get("layers") or []
+        if (not res.should_pass and "non_latin" in _layers and stored_secondary
+                and (aj or {}).get("state") in ("PASS", "PASS_WITH_WARNING")):
+            res_nl = en_validator.classify_asr_match(tts_input, stored_secondary)
+            if res_nl.should_pass:
+                primary = uj.PrimaryResult(passed=True, text=asr_text, label=res_nl.classification,
+                                           equivalence_basis=en_adapter._equivalence_basis_of(res_nl),
+                                           warning_labels=(uj.W_SECONDARY_CONFIRMED,), adopted_text=stored_secondary)
+
+        def accept_fn(canon, stext):
+            r2 = en_validator.classify_asr_match(canon, stext)
+            return bool(r2.should_pass), r2.classification
+    sha = entry.get("sha256") or ""
+    ctx = uj.AttemptCtx(canonical_text=tts_input, wav_sha256=sha or f"j11:{label}", segment_key=label, engine="azure",
+                        length_ok=True, script_version=(aj or {}).get("script_version", "v0"))
+    jr = uj.unified_judge(ctx, primary, _no_new_secondary, lang=lang, role=None, secondary_accept_fn=accept_fn)
+    rec = copy.deepcopy(aj) if isinstance(aj, dict) else jr.audit_record
+    if isinstance(aj, dict):
+        # 元のWARNING(元のSecondary確認等)を失わない: 再導出したWARNINGを合成し、最終ANDゲートの結果でstateを更新する。
+        rec["warnings"] = list(dict.fromkeys(list(aj.get("warnings") or []) + list(jr.warning_labels)))
+        rec["state"] = jr.state if not jr.verified else (aj.get("state") if aj.get("state") in ("PASS", "PASS_WITH_WARNING") else jr.state)
+        if jr.verified and rec["warnings"] and rec["state"] == "PASS":
+            rec["state"] = "PASS_WITH_WARNING"
+    rec["inherited"] = {"via": "J11_rejudge_with_current_judge", "api_calls": 0, "secondary_new_calls": 0,
+                        "rejudged_state": jr.state, "rejudged_reason_code": jr.reason_code, "lang": lang,
+                        "had_original_asr_judgement": isinstance(aj, dict), "stored_secondary_used": bool(stored_secondary and calls["n"]),
+                        "rejudged_at": time.strftime("%Y-%m-%dT%H:%M:%S")}
+    out.update(ok=bool(jr.verified), unified_state=jr.state, unified_reason_code=jr.reason_code,
+               reason="OK" if jr.verified else f"REJUDGE_NG({out.get('classification') or jr.state}:{jr.reason_code})",
+               asr_judgement_inherited=rec)
+    return out
 
 
 # ------------------------------------------------------------

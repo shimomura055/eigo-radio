@@ -174,16 +174,18 @@ class ScgJudgementTests(_Base):
         self.assertNotIn("scg_info", d)
 
     def test_uncertain_entity_path_unchanged_no_scg(self):
-        """ASR_VALIDATION_UNCERTAIN(entity_like)は従来Cascadeのまま(SCG分岐に入らない)。"""
-        import er006_asr_provider_routing_01 as routing
+        """ASR_VALIDATION_UNCERTAIN(entity_like)はSCG分岐に入らない(scg_info無し・SCG_FINAL_STATUSにならない)。
+        AUW 委任_04(α更新): 旧はPrimary#2(OpenAI再転写)で救済していたが、Primary#2は統一judgeで廃止。UNCERTAINでも
+        Secondary(Azure)を1回だけ呼び、原稿とEXACT/NORMALIZEDで一致した場合に限り採用する(PASS_WITH_WARNING)。"""
         canon = "解約を難しくする壁は、「スラッジ」と考えられます。"
         asr = "解約を難しくする壁は、「スラッシ」と考えられます。"
-        with mock.patch.object(routing, "_transcribe_openai_mini", return_value=(canon, None)):
-            d = self.detail(canon, asr)
+        self.mock_azure.return_value = (canon, None)
+        d = self.detail(canon, asr)
         self.assertTrue(d["verified"])
         self.assertNotEqual(d["final_status"], "SECONDARY_CONFIRMED_PRIMARY_FALSE_NG")
         self.assertNotIn("scg_info", d)
-        self.assertEqual(self.mock_azure.call_count, 0)
+        self.assertEqual(self.mock_azure.call_count, 1)
+        self.assertEqual(d["asr_judgement"]["state"], "PASS_WITH_WARNING")
 
     def test_wrapper_returns_dropin_tuple_and_scg_info_on_cls(self):
         self.mock_azure.return_value = (AZURE_NORMALIZED, None)
@@ -450,7 +452,7 @@ class OpusReviewFixTests(_Base):
         for mod in (n3, repro01, voice01):
             src = open(mod.__file__, encoding="utf-8").read()
             self.assertEqual(src.count("cls = ja_secondary.evaluate_attempt_ja_with_cascade("),
-                             src.count("expected_readings=expected_readings, length_ok=length_ok)"), mod.__name__)
+                             src.count("expected_readings=expected_readings, length_ok=length_ok"), mod.__name__)
 
     def test_rec5_secondary_does_not_call_reading_resolver(self):
         import er011_a2_reading_resolver_01 as rr

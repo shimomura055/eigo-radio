@@ -1,0 +1,410 @@
+{
+ "part": "dlg_cap2",
+ "mode": "execute",
+ "stop_files_present": [],
+ "isolation": {
+  "human_review_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06e/dlg_cap2/human_review_queue.jsonl",
+  "attempt_history": "er058_output/unified_all_roles_production_wiring_01/evidence_06e/dlg_cap2/attempt_history.jsonl",
+  "master_audio_store": "er058_output/unified_all_roles_production_wiring_01/evidence_06e/dlg_cap2/master_audio_store",
+  "reuse_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06e/dlg_cap2/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06e/dlg_cap2/er021_telemetry.jsonl",
+  "er025_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06e/dlg_cap2/er025_telemetry.jsonl",
+  "cost_log": "er058_output/unified_all_roles_production_wiring_01/evidence_06e/dlg_cap2/cost_log.jsonl",
+  "ledger_snapshot": "er058_output/unified_all_roles_production_wiring_01/evidence_06e/dlg_cap2/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)",
+  "foreign_token_hr_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06e/dlg_cap2/foreign_token_hr_queue.jsonl",
+  "human_review_queue_ja": "er058_output/unified_all_roles_production_wiring_01/evidence_06e/dlg_cap2/human_review_queue_ja.jsonl"
+ },
+ "budget_jpy": 3.0,
+ "ledger_before": 2.0186,
+ "cap_remaining": 7.9814,
+ "ja_queue_lines_before": {
+  "er009_output/ja_foreign_token_gate_01/human_review_queue.jsonl": 343,
+  "er007_output/ja_asr_cascade_01/human_review_queue.jsonl": 11
+ },
+ "plan": [
+  {
+   "clip_id": "full_story_part1_c2",
+   "kind": "dialogue",
+   "level": "a2",
+   "speaker": "melos",
+   "text": "I did not see a lower price today."
+  }
+ ],
+ "slowdown_fault_injection": {
+  "fail_calls": [
+   1,
+   2,
+   3
+  ],
+  "calls": [
+   {
+    "call": 1,
+    "injected_decoy": true
+   },
+   {
+    "call": 2,
+    "injected_decoy": true
+   },
+   {
+    "call": 3,
+    "injected_decoy": true
+   }
+  ],
+  "decoy_wav": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/zep/run/a2/narration/full_story_part1_c1_original.wav"
+ },
+ "stage_result": {
+  "results_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06e/dlg_cap2/run/a2/audit/tts_generation_results.json",
+  "evidence_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06e/dlg_cap2/run/a2/audit/runtime_evidence_04C.json",
+  "statuses": {
+   "full_story_part1_c2": "STOPPED"
+  }
+ },
+ "clip_rows": [
+  {
+   "clip": "full_story_part1_c2",
+   "status": "STOPPED",
+   "has_asr_judgement": true,
+   "inherited": false,
+   "state": "NG_BOTH",
+   "reason": "secondary_not_accepted",
+   "secondary_called": false,
+   "secondary_cached": true,
+   "attempts": 1,
+   "reused": false,
+   "tech_stop": null
+  }
+ ],
+ "dialogue_entry": {
+  "status": "STOPPED",
+  "tts_generations_used": 3,
+  "tts_generation_cap_reached": null,
+  "slowdown_attempts_log": null,
+  "reason": null,
+  "post_slowdown_classification": null,
+  "slowdown_applied": true,
+  "asr_verified": null,
+  "final_asr_judgement_state": "NG_BOTH",
+  "asr_judgement_state": "NG_BOTH",
+  "asr_judgement_none": false
+ },
+ "attempt_history_rows": [
+  {
+   "segment": "full_story_part1_c2",
+   "level": "a2",
+   "lang": "en",
+   "status": "OK",
+   "n_attempts": 1,
+   "tts_this_call": 1,
+   "state": "PASS",
+   "reason": "primary_pass",
+   "role": null,
+   "slot": 1,
+   "version": "v0",
+   "secondary_calls": 0,
+   "has_asr_judgement": true,
+   "final_lock_state": "RESOLVED",
+   "human_review_reached": false
+  },
+  {
+   "segment": "full_story_part1_c2",
+   "level": "a2",
+   "lang": null,
+   "status": null,
+   "n_attempts": 0,
+   "tts_this_call": null,
+   "state": null,
+   "reason": null,
+   "role": null,
+   "slot": null,
+   "version": null,
+   "secondary_calls": 0,
+   "has_asr_judgement": false,
+   "final_lock_state": null,
+   "human_review_reached": null
+  },
+  {
+   "segment": "full_story_part1_c2",
+   "level": "a2",
+   "lang": "en",
+   "status": "OK",
+   "n_attempts": 1,
+   "tts_this_call": 1,
+   "state": "PASS",
+   "reason": "primary_pass",
+   "role": null,
+   "slot": 1,
+   "version": "v0",
+   "secondary_calls": 0,
+   "has_asr_judgement": true,
+   "final_lock_state": "RESOLVED",
+   "human_review_reached": false
+  },
+  {
+   "segment": "full_story_part1_c2",
+   "level": "a2",
+   "lang": null,
+   "status": null,
+   "n_attempts": 0,
+   "tts_this_call": null,
+   "state": null,
+   "reason": null,
+   "role": null,
+   "slot": null,
+   "version": null,
+   "secondary_calls": 0,
+   "has_asr_judgement": false,
+   "final_lock_state": null,
+   "human_review_reached": null
+  },
+  {
+   "segment": "full_story_part1_c2",
+   "level": "a2",
+   "lang": "en",
+   "status": "OK",
+   "n_attempts": 1,
+   "tts_this_call": 1,
+   "state": "PASS",
+   "reason": "primary_pass",
+   "role": null,
+   "slot": 1,
+   "version": "v0",
+   "secondary_calls": 0,
+   "has_asr_judgement": true,
+   "final_lock_state": "RESOLVED",
+   "human_review_reached": false
+  },
+  {
+   "segment": "full_story_part1_c2",
+   "level": "a2",
+   "lang": null,
+   "status": null,
+   "n_attempts": 0,
+   "tts_this_call": null,
+   "state": null,
+   "reason": null,
+   "role": null,
+   "slot": null,
+   "version": null,
+   "secondary_calls": 0,
+   "has_asr_judgement": false,
+   "final_lock_state": null,
+   "human_review_reached": null
+  },
+  {
+   "segment": "full_story_part1_c2",
+   "level": "a2",
+   "lang": "en",
+   "status": "STOPPED",
+   "n_attempts": 0,
+   "tts_this_call": 0,
+   "state": null,
+   "reason": null,
+   "role": null,
+   "slot": null,
+   "version": null,
+   "secondary_calls": 0,
+   "has_asr_judgement": false,
+   "final_lock_state": "HUMAN_REVIEW_REQUIRED",
+   "human_review_reached": true
+  }
+ ],
+ "review_lock_state": {
+  "full_story_part1_c2": {
+   "state": "HUMAN_REVIEW_REQUIRED",
+   "canonical_text_sha256": "afd586a6c22cd5a7433fdadbe984aa0e12e77b93629540ab28480129a8b849f5",
+   "language": "en",
+   "theme_id": "run",
+   "level": "a2",
+   "segment_id": "full_story_part1_c2",
+   "updated_at": "2026-10-16T03:26:31",
+   "reason": "最終status=STOPPED。post-process(6%減速)後の音声がASR再検証で不一致: classification=TTS_FAILURE",
+   "final_status": "STOPPED",
+   "wav_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06e/dlg_cap2/run/a2/narration/full_story_part1_c2.wav",
+   "cumulative_tts_attempts": 3,
+   "cumulative_asr_calls": 3,
+   "budget_guard_triggered": false,
+   "last_attempts_log": [
+    {
+     "attempt": 1,
+     "status": "OK",
+     "asr_text": "I did not see a lower price today.",
+     "asr_judgement": {
+      "state": "PASS",
+      "reason_code": "primary_pass",
+      "slot": 1,
+      "script_version": "v0",
+      "role": null,
+      "lang": "en",
+      "segment_key": "",
+      "audio_sha256": "074685725208852b8e58954fc8f86eea720462b7a707b8dc13d72ac739e078d5",
+      "primary": {
+       "text": "I did not see a lower price today.",
+       "passed": true,
+       "label": "EXACT_MATCH",
+       "equivalence_basis": null,
+       "warning_labels": []
+      },
+      "secondary": {
+       "called": false,
+       "cached": false,
+       "engine": "azure",
+       "text": null,
+       "label": "",
+       "accepted": null,
+       "error": null,
+       "unavailable": false
+      },
+      "value_guard": {
+       "primary": {
+        "kind": "NO_VALUES",
+        "pairs": [],
+        "reasons": [],
+        "warnings": []
+       }
+      },
+      "negation_guard": {
+       "primary": false
+      },
+      "final_gate": {
+       "applied": true,
+       "value_guard": "NO_VALUES",
+       "negation_diff": false
+      },
+      "warnings": [],
+      "exclusion_rule": null,
+      "cost": {
+       "azure_calls": 0,
+       "azure_seconds": null,
+       "est_jpy": 0.0
+      },
+      "timing": {
+       "total_ms": 0,
+       "secondary_ms": 0
+      },
+      "technical_stop": null,
+      "adapter": {
+       "layers": [],
+       "azure_real_calls": 0,
+       "cost_guard_triggered": false,
+       "language": "en-US",
+       "segment_id": null,
+       "asr_text_present": true,
+       "cache": {
+        "calls": 2,
+        "hits": 1
+       }
+      }
+     },
+     "instruction_type": "english_style_prefix_wide_margin",
+     "audio_classification": "EXACT_MATCH",
+     "connected_speech_info": null,
+     "length_ok": true,
+     "verified": true,
+     "trim_info": {
+      "raw_duration_seconds": 3.131,
+      "raw_leading_silence_seconds": 0.24,
+      "raw_trailing_silence_seconds": 0.34,
+      "trimmed_duration_seconds": 3.131,
+      "leading_margin_retained_seconds": 0.24,
+      "trailing_margin_retained_seconds": 0.34
+     },
+     "disfluency_checked": false,
+     "disfluency_evidence": null,
+     "repetition_qa_checked": true,
+     "repetition_qa_evidence": {
+      "flagged": false,
+      "duration_seconds": 3.131,
+      "method_a_ngram": {
+       "matches": [],
+       "flagged": false,
+       "flagged_matches": [],
+       "word_count": 8,
+       "canonical_known": true,
+       "min_words": 3
+      },
+      "method_d_spectral_long_lag": {
+       "top_matches": [
+        {
+         "similarity": 0.9744,
+         "time_a_seconds": 0.58,
+         "time_b_seconds": 2.04,
+         "lag_seconds": 1.46,
+         "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+         "similarity": 0.9714,
+         "time_a_seconds": 0.8,
+         "time_b_seconds": 2.56,
+         "lag_seconds": 1.76,
+         "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+         "similarity": 0.9708,
+         "time_a_seconds": 0.79,
+         "time_b_seconds": 2.56,
+         "lag_seconds": 1.77,
+         "run_length_seconds_at_thresh_0.85": 0.03
+        },
+        {
+         "similarity": 0.9527,
+         "time_a_seconds": 1.08,
+         "time_b_seconds": 2.16,
+         "lag_seconds": 1.08
+        },
+        {
+         "similarity": 0.9509,
+         "time_a_seconds": 1.1,
+         "time_b_seconds": 2.55,
+         "lag_seconds": 1.45
+        }
+       ],
+       "best_run_length_seconds": 0.03,
+       "min_lag_seconds": 1.0,
+       "sim_threshold": 0.85,
+       "decision_threshold_seconds": 0.12,
+       "acoustic_flagged": false,
+       "local_asr_confirmation": null,
+       "flagged": false
+      },
+      "method_d_prime_spectral_short_lag": {
+       "run_length_seconds": 0.39,
+       "time_a": 0.59,
+       "lag": 0.87,
+       "similarity_at_start": 0.7296,
+       "best_run_length_seconds": 0.39,
+       "lag_range_seconds": [
+        0.5,
+        2.0
+       ],
+       "sim_threshold": 0.7,
+       "decision_threshold_seconds": 0.6,
+       "flagged": false
+      },
+      "method_c_v2_window_check": null
+     },
+     "attempt_audio_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06e/dlg_cap2/run/a2/narration/attempts/full_story_part1_c2_attempt3_englishstyleprefixwidemargin.wav"
+    }
+   ]
+  }
+ },
+ "hr_queue_lines": 1,
+ "ja_queue_lines_after": {
+  "er009_output/ja_foreign_token_gate_01/human_review_queue.jsonl": 343,
+  "er007_output/ja_asr_cascade_01/human_review_queue.jsonl": 11
+ },
+ "ja_queue_lines_unchanged": true,
+ "shared_state_unchanged": true,
+ "shared_files_changed_outside_evidence": [],
+ "cost": {
+  "est_total_jpy": 1.4922,
+  "n_tts": 3,
+  "n_openai_asr": 6,
+  "n_azure": 1,
+  "azure_seconds": 7.58,
+  "n_text_llm": 0,
+  "azure_duplicate_wavs": 0
+ },
+ "ledger_after": 3.5108
+}

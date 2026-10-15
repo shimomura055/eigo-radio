@@ -298,22 +298,31 @@ class Tier3CascadeIntegrationTest(unittest.TestCase):
         self.assertEqual(detail["final_status"], "ASR_VALIDATION_UNCERTAIN")
 
     def test_role_not_applicable_tier3_not_attempted(self):
+        # AUW 委任_03c(選択肢A): ユーザー原文L54-55「Primary NG→原則Secondary/Secondary PASS→PASS_WITH_WARNING採用」に追随。layer判定は不変(旧: verified False)。 補足: role gate(Tier3は5role限定)は不変: role非適用ではTier3は発火しない
+        # (steps/layersにtier3なし)。最終判定は、独立Secondaryがcanonicalを支持した場合のみ secondary_confirmed
+        # (PASS_WITH_WARNING)。Secondaryがcanonicalを支持しなければNG(旧期待)。
         canonical = "We need to bring the main point together."
         asr = "We need to bring the main points together."
         detail = self._run(canonical, asr, corroborating_text=canonical,
                             segment_id=NON_APPLICABLE_SEGMENT_ID)
-        # role非適用のため、Tier3が発火せず既存挙動のまま
-        # (cascade_eligible=False、is_entity_like/homophoneでもないため
-        # cascade自体が発火しない)。
-        self.assertFalse(detail["verified"])
-        self.assertFalse(detail["cascade_invoked"])
+        self.assertNotIn("tier3", detail["asr_judgement"]["adapter"]["layers"])
+        self.assertFalse(any(s["step"] == "tier3_corroboration_secondary" for s in detail["steps"]))
+        self.assertEqual(detail["asr_judgement"]["state"], "PASS_WITH_WARNING")
+        self.assertEqual(detail["asr_judgement"]["reason_code"], "secondary_confirmed")
+        self.assertNotEqual(detail["final_status"], "SECONDARY_ASR_CORROBORATED_MATCH")  # Tier3経由の受理ではない
+        detail2 = self._run(canonical, asr, corroborating_text=asr, segment_id=NON_APPLICABLE_SEGMENT_ID)
+        self.assertFalse(detail2["verified"])
 
     def test_no_segment_id_tier3_not_attempted(self):
+        # AUW 委任_03c(選択肢A): ユーザー原文L54-55「Primary NG→原則Secondary/Secondary PASS→PASS_WITH_WARNING採用」に追随。layer判定は不変(旧: verified False)。 補足: 上と同じ方針(segment_id未指定=role gate非適用)。
         canonical = "We need to bring the main point together."
         asr = "We need to bring the main points together."
         detail = self._run(canonical, asr, corroborating_text=canonical, segment_id=None)
-        self.assertFalse(detail["verified"])
-        self.assertFalse(detail["cascade_invoked"])
+        self.assertNotIn("tier3", detail["asr_judgement"]["adapter"]["layers"])
+        self.assertFalse(any(s["step"] == "tier3_corroboration_secondary" for s in detail["steps"]))
+        self.assertEqual(detail["asr_judgement"]["reason_code"], "secondary_confirmed")
+        detail2 = self._run(canonical, asr, corroborating_text=asr, segment_id=None)
+        self.assertFalse(detail2["verified"])
 
     def test_numeric_mismatch_still_true_content_mismatch_not_swallowed_by_tier3(self):
         # Tier3はASR_VALIDATION_UNCERTAINのみを対象とする。数字の真の不一致
@@ -511,12 +520,18 @@ class NewsTailFixB1WiringFixTest(unittest.TestCase):
             self.np.zeros(sr, dtype=self.np.float32), {"raw_duration_seconds": 1.0})
         news_tail_fix.safety.detect_duration_anomaly = lambda *a, **k: {"is_anomaly": False}
         news_tail_fix.routing.transcribe = lambda *a, **k: (self.ASR_NUMERIC_EQUIVALENT, None)
+        # 委任_06c(OF-AUW-C-02): cost logger未初期化等の設定不備(init_logger未呼出)は握りつぶさず再送出する方針になったため、
+        # Primary NG経路でSecondary(Azure)へ到達するこのtestは、実Azure SDKを呼ばないようmock(API 0を担保。旧=SDK呼出後にcost logger
+        # RuntimeErrorが障害として握りつぶされて通っていた)。Secondaryは取得不能として扱う(主題のPrimary判定・キー昇格は不変)。
+        self.orig_azure_stt = news_tail_fix.secondary_asr.get_full_text_via_azure_stt_with_phrase_list
+        news_tail_fix.secondary_asr.get_full_text_via_azure_stt_with_phrase_list = lambda *a, **k: (None, "mock: Secondary unavailable (API 0)")
 
     def tearDown(self):
         news_tail_fix.common._call_tts_with_retry = self.orig_call_tts
         news_tail_fix.p3u.trim_english_keyword_silence = self.orig_trim
         news_tail_fix.safety.detect_duration_anomaly = self.orig_anomaly
         news_tail_fix.routing.transcribe = self.orig_transcribe
+        news_tail_fix.secondary_asr.get_full_text_via_azure_stt_with_phrase_list = self.orig_azure_stt
         shutil.rmtree(self.tmp_dir, ignore_errors=True)
 
     def test_full_story_part1_numeric_diff_rescued_at_attempt1_no_cooldown(self):

@@ -196,23 +196,44 @@ def _replay(canonical, primary, secondary_text, seg):
 
 
 def test_cascade_replay_user_example_stays_non_pass_with_supporting_secondary():
+    # AUW 委任_03c(選択肢A): ユーザー原文L54-55「Primary NG→原則Secondary/Secondary PASS→PASS_WITH_WARNING採用」に追随。layer判定は不変(旧: verified False)。 補足: F1の不変条件(Primary側P-chain=F1/Eq層はnon-passのまま、Eq層は不発動)を維持し、
+    # 最終判定は「独立したSecondaryがcanonical全文を支持した場合のみ secondary_confirmed(PASS_WITH_WARNING)」へ更新
+    # (DESIGN_01 §4-3d / ユーザー原文「Primary NGなら、不一致の種類によらず原則Secondary」「Primary NG・Secondary PASSならPASS_WITH_WARNING」)。
     c, a = USER_EXAMPLE
     for seg in SEGS:
-        # Secondary/localが「最初の差分位置でcanonicalを支持する」転写(=canonical全文)を返す設定
+        # (1) Secondary/localが「最初の差分位置でcanonicalを支持する」転写(=canonical全文)を返す設定
         r, calls = _replay(c, a, c, seg)
-        assert r["verified"] is False, (seg, r["classification"].classification)
-        assert r["classification"].should_pass is False
-        assert r["classification"].classification in ("TRUE_CONTENT_MISMATCH", "ASR_VALIDATION_UNCERTAIN")
+        aj = r["asr_judgement"]
+        assert aj["primary"]["passed"] is False, (seg, aj["primary"])  # F1/Eq層のPrimary側判定はnon-passのまま
+        assert aj["primary"]["label"] in ("TRUE_CONTENT_MISMATCH", "ASR_VALIDATION_UNCERTAIN")
+        assert r["connected_speech_equivalence_layer_invoked"] is False  # CS/F1経由の受理はない
+        assert "cs_equivalence" not in aj["adapter"]["layers"]
+        assert calls == {"secondary": 1, "local": 0}  # Secondaryは統一judgeの1回のみ
+        # 委任_06c(OF-AUW-C-14): 条件付きassert(`if r["verified"]:`)を無条件化。mock条件(Secondaryがcanonical全文を返す)下では必ず受理される。
+        assert r["verified"] is True, (seg, aj["state"], aj["reason_code"])
+        assert aj["reason_code"] == "secondary_confirmed" and aj["state"] == "PASS_WITH_WARNING", aj  # 受理はSecondary独立確認のみ+要試聴
+        # (2) 独立証拠なし(Secondaryもprimaryと同じ"dogs")ならNGのまま=旧期待(non-pass)を維持
+        r2, calls2 = _replay(c, a, a, seg)
+        assert r2["verified"] is False, (seg, r2["classification"].classification)
+        assert r2["classification"].should_pass is False
+        assert r2["classification"].classification in ("TRUE_CONTENT_MISMATCH", "ASR_VALIDATION_UNCERTAIN")
 
 
 def test_cascade_replay_multi_residual_after_first_eq_eligible_diff_stays_non_pass():
+    # AUW 委任_03c(選択肢A): ユーザー原文L54-55「Primary NG→原則Secondary/Secondary PASS→PASS_WITH_WARNING採用」に追随。layer判定は不変(旧: verified False)。 補足: 上と同じ方針(F1残差>=2のEq層ガードは不変。最終受理はSecondary独立確認のみ)。
     canonical = "Young travelers still showed strong interest in the results."
     primary = "Young travelers still show strong interest in the outcomes."
     for seg in SEGS:
         r, calls = _replay(canonical, primary, canonical, seg)
-        assert r["verified"] is False
+        aj = r["asr_judgement"]
+        assert aj["primary"]["passed"] is False
         assert r["connected_speech_equivalence_layer_invoked"] is False
-        assert calls == {"secondary": 0, "local": 0}
+        assert calls == {"secondary": 1, "local": 0}
+        assert r["verified"] is True, (seg, aj["state"], aj["reason_code"])  # 委任_06c(OF-AUW-C-14): 無条件化
+        assert aj["reason_code"] == "secondary_confirmed" and aj["state"] == "PASS_WITH_WARNING", aj
+        r2, _ = _replay(canonical, primary, primary, seg)
+        assert r2["verified"] is False
+        assert r2["connected_speech_equivalence_layer_invoked"] is False
 
 
 def test_cascade_replay_normal_connected_speech_still_passes():

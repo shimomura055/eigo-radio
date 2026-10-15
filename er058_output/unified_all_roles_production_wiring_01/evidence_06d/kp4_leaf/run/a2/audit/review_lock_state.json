@@ -1,0 +1,271 @@
+{
+  "kp1_english": {
+    "state": "HUMAN_REVIEW_REQUIRED",
+    "canonical_text_sha256": "b33df326463179cc9ab139f82b3e63a565ca7a8a6d4c9b0204e9abdc2e29a0d6",
+    "language": "en",
+    "theme_id": "run",
+    "level": "a2",
+    "segment_id": "kp1_english",
+    "updated_at": "2026-10-16T02:41:43",
+    "reason": "最終status=STOPPED。Minimal instruction2回+English language lock2回(合計上限4回)とも不合格。2回試行してもASR検証(内容+長さ)に合格しませんでした",
+    "final_status": "STOPPED",
+    "wav_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/kp4_leaf/run/a2/narration/kp1_english.wav",
+    "cumulative_tts_attempts": 4,
+    "cumulative_asr_calls": 4,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 1.58,
+        "asr_text": "The Xquatl wrangle.",
+        "asr_text_length": 19,
+        "max_len": 26,
+        "substring_ok": null,
+        "length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 1246,
+          "sha256": "dcd08dcae5b0ce13fd35da0980d4cf021e0b2c0a33db0cec6c8377444b3bbf30",
+          "head200": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, examples, introductions, or any other com"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "The Xquatl wrangle.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Zeke squadal wrangle.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": false,
+            "cached": false,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 3,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "5fd85ab482e5b28008462c5b2fc57bdaea97b9be78f071f82693a30f5c33d6d5",
+          "primary": {
+            "text": "The Xquatl wrangle.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Zeke squadal wrangle.",
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.58,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 550,
+            "secondary_ms": 549
+          },
+          "technical_stop": null,
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/kp4_leaf/run/a2/narration/attempts/kp1_english_attempt3_custom31eb2f72.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 1.96,
+        "asr_text": "Execrable wrangle",
+        "asr_text_length": 17,
+        "max_len": 26,
+        "substring_ok": null,
+        "length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": true,
+        "non_latin_cascade_enabled": true,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 1246,
+          "sha256": "dcd08dcae5b0ce13fd35da0980d4cf021e0b2c0a33db0cec6c8377444b3bbf30",
+          "head200": "Speak the following short phrase aloud naturally and clearly, in a warm podcast announcer voice, exactly once. Say only this phrase — do not add explanations, examples, introductions, or any other com"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Execrable wrangle",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Executral wrangle.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": false,
+            "cached": false,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 4,
+          "script_version": "v0",
+          "role": null,
+          "lang": "en",
+          "segment_key": "",
+          "audio_sha256": "2547137adce1b2fa5ca0256a73b33f484ab16dd8e964b4fa2f3aad945cba21ad",
+          "primary": {
+            "text": "Execrable wrangle",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Executral wrangle.",
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 1.96,
+            "est_jpy": 0.0889,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 553,
+            "secondary_ms": 552
+          },
+          "technical_stop": null,
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": null,
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/kp4_leaf/run/a2/narration/attempts/kp1_english_attempt4_custom31eb2f72.wav"
+      }
+    ]
+  }
+}

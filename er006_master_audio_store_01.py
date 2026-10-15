@@ -112,7 +112,26 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
     manifest = _load_manifest()
     entry = manifest.get(master_id)
 
+    # AUW 委任_06c(OF-AUW-C-03、ADDENDUM §3-1): 再利用前に保存転写のみ(API 0)を現行の統一judgeへ通し、値ガードDIFF/否定差、
+    # または一括再判定が付けた`reuse_blocked` markがあれば再利用せず再生成へ回す(旧資産は削除せず退避して保持)。
+    reuse_guard_info = None
     if entry is not None and os.path.exists(entry["audio_path"]):
+        import er078_reuse_value_guard_01 as _rvg
+        _probe = dict(entry.get("qa_evidence") or {})
+        _probe["asr_judgement"] = entry.get("asr_judgement")
+        _probe["reuse_blocked"] = entry.get("reuse_blocked")
+        reuse_guard_info = _rvg.guard_entry(_probe, label="master:" + str(key.style_instruction_id),
+                                            canonical_text=key.canonical_text)
+        if reuse_guard_info["blocked"]:
+            _log_telemetry({"event": "reuse_blocked_by_value_guard", "master_audio_id": master_id, "out_path": out_path,
+                            "key": key.as_dict(), "guard": {k: reuse_guard_info.get(k) for k in ("reason", "reason_code", "unified_state")}})
+            try:  # 削除しない: 再生成が同じaudio_pathを上書きするため、旧音声を退避して残す
+                _bdir = f"{AUDIO_DIR}/_reuse_blocked"
+                os.makedirs(_bdir, exist_ok=True)
+                shutil.copyfile(entry["audio_path"], f"{_bdir}/{master_id}_{time.strftime('%Y%m%dT%H%M%S')}.wav")
+            except OSError:
+                pass
+    if entry is not None and os.path.exists(entry["audio_path"]) and not (reuse_guard_info or {}).get("blocked"):
         os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
         shutil.copyfile(entry["audio_path"], out_path)
         result = {
@@ -132,13 +151,18 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
         # 資産まで「証跡が無い」としてblockしてしまう(No.8 kp2の恒久修正
         # 作業中に発見)。manifestに保存したqa_evidenceをここで復元する。
         result.update(entry.get("qa_evidence") or {})
+        # AUW 委任_03(additive): 生成時の統一ASR判定record(PASS_WITH_WARNING等)を、再利用音声でも
+        # `asr_judgement_inherited`として復元する(元のWARNINGを試聴リストへ継承。OF-AUW-15)。
+        if entry.get("asr_judgement") is not None:
+            result["asr_judgement_inherited"] = entry["asr_judgement"]
         _log_telemetry({
             "event": "reused", "master_audio_id": master_id, "out_path": out_path,
             "key": key.as_dict(),
         })
         return result
 
-    cache_miss_reason = "no_existing_master" if entry is None else "stored_audio_file_missing"
+    cache_miss_reason = ("no_existing_master" if entry is None else
+                         "reuse_value_guard_blocked" if (reuse_guard_info or {}).get("blocked") else "stored_audio_file_missing")
     r = generate_fn(out_path)
     if r.get("status") == "OK":
         os.makedirs(AUDIO_DIR, exist_ok=True)
@@ -159,6 +183,8 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
         # OPEN-258 SCG(Opus推奨7): 追加のみ(既存キー不変)。SCG PASS(Primary不一致をSecondaryで
         # 救済)したmasterを後から識別できるようにする。SCG非関与(英語等)はNone。
         manifest[master_id]["audio_classification"] = r.get("audio_classification")
+        # AUW 委任_03(additive): 統一ASR判定のaudit record。再利用時に`asr_judgement_inherited`として復元する。
+        manifest[master_id]["asr_judgement"] = r.get("asr_judgement")
         _scg = r.get("scg_info")
         manifest[master_id]["scg_result"] = _scg.get("scg_result") if isinstance(_scg, dict) else None
         _save_manifest(manifest)

@@ -1,0 +1,472 @@
+{
+ "mode": "execute",
+ "stop_files_present": [],
+ "isolation": {
+  "human_review_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06/a2_secondary/human_review_queue.jsonl",
+  "attempt_history": "er058_output/unified_all_roles_production_wiring_01/evidence_06/a2_secondary/attempt_history.jsonl",
+  "master_audio_store": "er058_output/unified_all_roles_production_wiring_01/evidence_06/a2_secondary/master_audio_store",
+  "reuse_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06/a2_secondary/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06/a2_secondary/er021_telemetry.jsonl",
+  "er025_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06/a2_secondary/er025_telemetry.jsonl",
+  "cost_log": "er058_output/unified_all_roles_production_wiring_01/evidence_06/a2_secondary/cost_log.jsonl",
+  "ledger_snapshot": "er058_output/unified_all_roles_production_wiring_01/evidence_06/a2_secondary/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)"
+ },
+ "results_raw": {
+  "S1_melos_primaryNG_secondaryPASS": {
+   "status": "OK",
+   "reason": null
+  },
+  "S2_content_word_diff_both_NG": {
+   "status": "STOPPED",
+   "reason": "post-process(6%減速)後の音声がASR再検証で不一致: classification=ASR_VALIDATION_UNCERTAIN"
+  },
+  "S3_numeric_diff_protected": {
+   "status": "STOPPED",
+   "reason": "post-process(6%減速)後の音声がASR再検証で不一致: classification=TRUE_CONTENT_MISMATCH"
+  },
+  "S4_secondary_outage_mock_errreturn": {
+   "status": "STOPPED",
+   "reason": "post-process(6%減速)後の音声がASR再検証で不一致: classification=ASR_VALIDATION_UNCERTAIN"
+  },
+  "S5_secondary_outage_mock_raise": {
+   "status": "STOPPED",
+   "reason": "post-process(6%減速)後の音声がASR再検証で不一致: classification=ASR_VALIDATION_UNCERTAIN"
+  }
+ },
+ "rows": [
+  {
+   "case": "S1_melos_primaryNG_secondaryPASS",
+   "mode": "real",
+   "exception": null,
+   "canonical": "Melos said.",
+   "status": "OK",
+   "post_slowdown_asr_text": "Mellos said.",
+   "post_final_classification": "M1_MULTI_CANDIDATE_ACCEPT",
+   "state": "PASS_WITH_WARNING",
+   "reason": "secondary_confirmed",
+   "secondary_text": "Mello said.",
+   "secondary_called": false,
+   "secondary_error": null,
+   "azure_real_calls": 1,
+   "has_asr_judgement": true,
+   "has_asr_judgement_post_slowdown_ng": false,
+   "has_pre_slowdown": false,
+   "asr_judgement": {
+    "state": "PASS_WITH_WARNING",
+    "reason_code": "secondary_confirmed",
+    "slot": 1,
+    "script_version": "v0",
+    "role": "FULL_STORY",
+    "lang": "en",
+    "segment_key": "full_story_part1",
+    "audio_sha256": "ac06b6d88dc067776831baaf7deb03c2bff22589a8ced263d949b6812118c0a1",
+    "primary": {
+     "text": "Mellos said.",
+     "passed": false,
+     "label": "ASR_VALIDATION_UNCERTAIN",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": false,
+     "cached": true,
+     "engine": "azure",
+     "text": "Mello said.",
+     "label": "M1_MULTI_CANDIDATE",
+     "accepted": true,
+     "error": null,
+     "unavailable": false
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "NO_VALUES",
+      "pairs": [],
+      "reasons": [],
+      "warnings": []
+     },
+     "secondary": {
+      "kind": "NO_VALUES",
+      "pairs": [],
+      "reasons": [],
+      "warnings": []
+     }
+    },
+    "negation_guard": {
+     "primary": false,
+     "secondary": false
+    },
+    "final_gate": {
+     "applied": true,
+     "target": "secondary",
+     "value_guard": "NO_VALUES",
+     "negation_diff": false
+    },
+    "warnings": [
+     "SECONDARY_CONFIRMED"
+    ],
+    "exclusion_rule": null,
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "timing": {
+     "total_ms": 2,
+     "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "p3_entry": "p3_primary_ng",
+    "adapter": {
+     "layers": [
+      "tier3"
+     ],
+     "azure_real_calls": 1,
+     "cost_guard_triggered": false,
+     "language": "en-US",
+     "segment_id": "full_story_part1",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 1,
+      "hits": 1
+     }
+    }
+   }
+  },
+  {
+   "case": "S2_content_word_diff_both_NG",
+   "mode": "real",
+   "exception": null,
+   "canonical": "Coffee beans cost less now. Banks may still keep their prices for about nine months.",
+   "status": "STOPPED",
+   "post_slowdown_asr_text": "Coffee beans cost less now, shops may still keep their prices for about nine months.",
+   "post_final_classification": "ASR_VALIDATION_UNCERTAIN",
+   "state": "NG_BOTH",
+   "reason": "secondary_not_accepted",
+   "secondary_text": "Coffee beans cost less now. Shops may still keep their prices for about 9 months.",
+   "secondary_called": false,
+   "secondary_error": null,
+   "azure_real_calls": 1,
+   "has_asr_judgement": false,
+   "has_asr_judgement_post_slowdown_ng": true,
+   "has_pre_slowdown": false,
+   "asr_judgement": {
+    "state": "NG_BOTH",
+    "reason_code": "secondary_not_accepted",
+    "slot": 1,
+    "script_version": "v0",
+    "role": "FULL_STORY",
+    "lang": "en",
+    "segment_key": "full_story_part1",
+    "audio_sha256": "cb4b83c734654254797ecde8d56ae6642531c5b9b6b5651a240da11a6cad1d1c",
+    "primary": {
+     "text": "Coffee beans cost less now, shops may still keep their prices for about nine months.",
+     "passed": false,
+     "label": "ASR_VALIDATION_UNCERTAIN",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": false,
+     "cached": true,
+     "engine": "azure",
+     "text": "Coffee beans cost less now. Shops may still keep their prices for about 9 months.",
+     "label": "ASR_VALIDATION_UNCERTAIN",
+     "accepted": false,
+     "error": null,
+     "unavailable": false
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "EQUAL",
+      "pairs": [
+       {
+        "src": "9",
+        "hyp": "9",
+        "verdict": "EQUAL",
+        "reason": "same_surface"
+       }
+      ],
+      "reasons": [],
+      "warnings": []
+     },
+     "secondary": {
+      "kind": "EQUAL",
+      "pairs": [
+       {
+        "src": "9",
+        "hyp": "9",
+        "verdict": "EQUAL",
+        "reason": "same_surface"
+       }
+      ],
+      "reasons": [],
+      "warnings": []
+     }
+    },
+    "negation_guard": {
+     "primary": false,
+     "secondary": false
+    },
+    "final_gate": {
+     "applied": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "timing": {
+     "total_ms": 2,
+     "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "p3_entry": "p3_primary_ng",
+    "adapter": {
+     "layers": [
+      "tier3"
+     ],
+     "azure_real_calls": 1,
+     "cost_guard_triggered": false,
+     "language": "en-US",
+     "segment_id": "full_story_part1",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 1,
+      "hits": 1
+     }
+    }
+   }
+  },
+  {
+   "case": "S3_numeric_diff_protected",
+   "mode": "real",
+   "exception": null,
+   "canonical": "Coffee beans cost less now. Shops may still keep their prices for about ten months.",
+   "status": "STOPPED",
+   "post_slowdown_asr_text": "Coffee beans cost less now, shops may still keep their prices for about nine months.",
+   "post_final_classification": "TRUE_CONTENT_MISMATCH",
+   "state": "NG_PROTECTED",
+   "reason": "p1_value_diff",
+   "secondary_text": null,
+   "secondary_called": false,
+   "secondary_error": null,
+   "azure_real_calls": 0,
+   "has_asr_judgement": false,
+   "has_asr_judgement_post_slowdown_ng": true,
+   "has_pre_slowdown": false,
+   "asr_judgement": {
+    "state": "NG_PROTECTED",
+    "reason_code": "p1_value_diff",
+    "slot": 1,
+    "script_version": "v0",
+    "role": "FULL_STORY",
+    "lang": "en",
+    "segment_key": "full_story_part1",
+    "audio_sha256": "cb4b83c734654254797ecde8d56ae6642531c5b9b6b5651a240da11a6cad1d1c",
+    "primary": {
+     "text": "Coffee beans cost less now, shops may still keep their prices for about nine months.",
+     "passed": false,
+     "label": "TRUE_CONTENT_MISMATCH",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": false,
+     "cached": false,
+     "engine": "azure",
+     "text": null,
+     "label": "",
+     "accepted": null,
+     "error": null,
+     "unavailable": false
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "DIFF",
+      "pairs": [
+       {
+        "src": "10",
+        "hyp": "9",
+        "verdict": "DIFF",
+        "reason": "value_differs"
+       }
+      ],
+      "reasons": [
+       "DIFF:value_differs:'10'->'9'"
+      ],
+      "warnings": []
+     }
+    },
+    "negation_guard": {
+     "primary": false
+    },
+    "final_gate": {
+     "applied": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "timing": {
+     "total_ms": 0,
+     "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "adapter": {
+     "layers": [],
+     "azure_real_calls": 0,
+     "cost_guard_triggered": false,
+     "language": "en-US",
+     "segment_id": "full_story_part1",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 0,
+      "hits": 0
+     }
+    }
+   }
+  },
+  {
+   "case": "S4_secondary_outage_mock_errreturn",
+   "mode": "mock_outage_err",
+   "exception": null,
+   "canonical": "Coffee beans cost less now. Banks may still keep their prices for about nine months.",
+   "status": "STOPPED",
+   "post_slowdown_asr_text": "Coffee beans cost less now, shops may still keep their prices for about nine months.",
+   "post_final_classification": "ASR_VALIDATION_UNCERTAIN",
+   "state": "NG_SECONDARY_UNAVAILABLE",
+   "reason": "secondary_unavailable",
+   "secondary_text": null,
+   "secondary_called": true,
+   "secondary_error": "mock Secondary service error",
+   "azure_real_calls": 0,
+   "has_asr_judgement": false,
+   "has_asr_judgement_post_slowdown_ng": true,
+   "has_pre_slowdown": false,
+   "asr_judgement": {
+    "state": "NG_SECONDARY_UNAVAILABLE",
+    "reason_code": "secondary_unavailable",
+    "slot": 1,
+    "script_version": "v0",
+    "role": "FULL_STORY",
+    "lang": "en",
+    "segment_key": "full_story_part1",
+    "audio_sha256": "cb4b83c734654254797ecde8d56ae6642531c5b9b6b5651a240da11a6cad1d1c",
+    "primary": {
+     "text": "Coffee beans cost less now, shops may still keep their prices for about nine months.",
+     "passed": false,
+     "label": "ASR_VALIDATION_UNCERTAIN",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": true,
+     "cached": false,
+     "engine": "azure",
+     "text": null,
+     "label": "",
+     "accepted": null,
+     "error": "mock Secondary service error",
+     "unavailable": true
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "EQUAL",
+      "pairs": [
+       {
+        "src": "9",
+        "hyp": "9",
+        "verdict": "EQUAL",
+        "reason": "same_surface"
+       }
+      ],
+      "reasons": [],
+      "warnings": []
+     }
+    },
+    "negation_guard": {
+     "primary": false
+    },
+    "final_gate": {
+     "applied": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+     "azure_calls": 1,
+     "azure_seconds": 7.16,
+     "est_jpy": 0.3556,
+     "est_jpy_known": true
+    },
+    "timing": {
+     "total_ms": 0,
+     "secondary_ms": 0
+    },
+    "technical_stop": {
+     "type": "SECONDARY_UNAVAILABLE",
+     "segment_key": "full_story_part1",
+     "slot": 1,
+     "error": "mock Secondary service error",
+     "restartable": true,
+     "approval_required": false
+    },
+    "p3_entry": "p3_primary_ng",
+    "adapter": {
+     "layers": [
+      "tier3"
+     ],
+     "azure_real_calls": 2,
+     "cost_guard_triggered": false,
+     "language": "en-US",
+     "segment_id": "full_story_part1",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 3,
+      "hits": 0
+     }
+    }
+   }
+  },
+  {
+   "case": "S5_secondary_outage_mock_raise",
+   "mode": "mock_outage_raise",
+   "exception": null,
+   "canonical": "Coffee beans cost less now. Banks may still keep their prices for about nine months.",
+   "status": "STOPPED",
+   "post_slowdown_asr_text": "Coffee beans cost less now, shops may still keep their prices for about nine months.",
+   "post_final_classification": "ASR_VALIDATION_UNCERTAIN",
+   "state": null,
+   "reason": null,
+   "secondary_text": null,
+   "secondary_called": null,
+   "secondary_error": null,
+   "azure_real_calls": 0,
+   "has_asr_judgement": false,
+   "has_asr_judgement_post_slowdown_ng": false,
+   "has_pre_slowdown": false,
+   "asr_judgement": {}
+  }
+ ],
+ "azure_dupes": 0,
+ "listening_list_report": {
+  "run_dir": "er058_output/unified_all_roles_production_wiring_01/evidence_06/a2_secondary/run_a2sec",
+  "json": "er058_output/unified_all_roles_production_wiring_01/evidence_06/a2_secondary/run_a2sec\\audit\\pass_with_warning_listening_list.json",
+  "html": "er058_output/unified_all_roles_production_wiring_01/evidence_06/a2_secondary/run_a2sec\\audit\\pass_with_warning_listening_list.html",
+  "count": 3,
+  "error": null
+ },
+ "listening_list_count": 3,
+ "cost": {
+  "est_total_jpy": 0.4315,
+  "n_openai": 5,
+  "n_azure": 2
+ },
+ "shared_state_unchanged": true
+}

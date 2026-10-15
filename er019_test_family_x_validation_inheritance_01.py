@@ -333,7 +333,14 @@ class RebuildStateTest(_Tmp):
         self.assertTrue(ng["labels"]["topic_intro"]["reason"].startswith("F1_REJUDGE_NG"))
 
     def test_f1_rejudge_not_applicable_for_japanese_labels(self):
-        self.assertFalse(vi.rejudge_with_current_judge({"asr_text": "x", "text": "y"}, "a2", "preview")["applicable"])
+        # AUW 委任_04(α更新): J11が統一judge入口経由になり、日本語segmentも再判定の対象(applicable=True)になった。
+        # F1(英語連結発音)自体は日本語に適用しない(英語のclassify_asr_match/f1_versionは返さない)が、保存転写に対する
+        # 最終ANDゲート(値DIFF/否定差)は適用する(DESIGN_02_ADDENDUM_01 §3-1)。API 0・Secondary新規呼出なし。
+        rj = vi.rejudge_with_current_judge({"asr_text": "x", "text": "y"}, "a2", "preview")
+        self.assertTrue(rj["applicable"])
+        self.assertNotIn("f1_version", rj)
+        self.assertEqual(rj["secondary_new_calls"], 0)
+        self.assertFalse(vi.rejudge_with_current_judge({"asr_text": "三人", "text": "四人"}, "a2", "preview")["ok"])
         self.assertTrue(vi.is_japanese_label("a2", "japanese_title"))
         self.assertFalse(vi.is_japanese_label("a2", "in_one_line"))
         self.assertFalse(vi.is_japanese_label("b1b", "preview"))

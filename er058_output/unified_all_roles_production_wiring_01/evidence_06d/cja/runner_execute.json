@@ -1,0 +1,55 @@
+{
+ "part": "cja",
+ "mode": "execute",
+ "stop_files_present": [],
+ "isolation": {
+  "human_review_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/human_review_queue.jsonl",
+  "attempt_history": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/attempt_history.jsonl",
+  "master_audio_store": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/master_audio_store",
+  "reuse_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/er021_telemetry.jsonl",
+  "er025_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/er025_telemetry.jsonl",
+  "cost_log": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/cost_log.jsonl",
+  "ledger_snapshot": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)",
+  "foreign_token_hr_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/foreign_token_hr_queue.jsonl",
+  "human_review_queue_ja": "er058_output/unified_all_roles_production_wiring_01/evidence_06d/cja/human_review_queue_ja.jsonl"
+ },
+ "budget_jpy": 8.0,
+ "ledger_before": 9.0796,
+ "cap_remaining": 35.9204,
+ "ja_queue_lines_before": {
+  "er009_output/ja_foreign_token_gate_01/human_review_queue.jsonl": 343,
+  "er007_output/ja_asr_cascade_01/human_review_queue.jsonl": 11
+ },
+ "only_segments": [
+  "comment_1",
+  "comment_2",
+  "comment_3"
+ ],
+ "japanese_title_text": "記憶の箱と、迷う心",
+ "exception": "RuntimeError: COMMENT_TTS_FAILED(comment_1): {'status': 'STOPPED', 'reason': '3回試行してもASR検証(内容+長さ)に合格しませんでした', 'attempts_log': [{'attempt': 1, 'status': 'STOPPED', 'reason': '生成音声長(16.89秒)が、テキスト量から見積もった妥当な上限(5.50秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。'}, {'attempt': 2, 'status': 'STOPPED', 'reason': '生成音声長(15.29秒)が、テキスト量から見積もった妥当な上限(5.50秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。'}, {'attempt': 3, 'status': 'STOPPED', 'reason': '生成音声長(16.37秒)が、テキスト量から見積もった妥当な上限(5.50秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。'}], 'en_pronu",
+ "exception_traceback": "udget_jpy, args.only_segments, args.resume)\n    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er078_secondary_run_scope_01.py\", line 68, in wrapper\n    return fn(*args, **kwargs)\n  File \"C:\\Users\\tensh\\eigo-radio\\er013_family_c_production_runner_01.py\", line 762, in run_full_generation\n    comments_result = run_comments_stage_a2(\n        level_cfg, out_dir, audio_dir, article_text, budget, reuse_from, resume,\n        only_segments_set, article_id)\n  File \"C:\\Users\\tensh\\eigo-radio\\er013_family_c_production_runner_01.py\", line 644, in run_comments_stage_a2\n    raise RuntimeError(f\"COMMENT_TTS_FAILED(comment_{n}): {r}\")\nRuntimeError: COMMENT_TTS_FAILED(comment_1): {'status': 'STOPPED', 'reason': '3回試行してもASR検証(内容+長さ)に合格しませんでした', 'attempts_log': [{'attempt': 1, 'status': 'STOPPED', 'reason': '生成音声長(16.89秒)が、テキスト量から見積もった妥当な上限(5.50秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。'}, {'attempt': 2, 'status': 'STOPPED', 'reason': '生成音声長(15.29秒)が、テキスト量から見積もった妥当な上限(5.50秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。'}, {'attempt': 3, 'status': 'STOPPED', 'reason': '生成音声長(16.37秒)が、テキスト量から見積もった妥当な上限(5.50秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。'}], 'en_pronunciation_resolver_info': {'hints_applied': False, 'cache_hits': [], 'low_confidence_retry_attempted': False, 'low_confidence_retry_improved': False, 'research_meta': None}}\n",
+ "stage_result": {
+  "main": "RuntimeError: COMMENT_TTS_FAILED(comment_1): {'status': 'STOPPED', 'reason': '3回試行してもASR検証(内容+長さ)に合格しませんでした', 'attempts_log': [{'attempt': 1, 'status': 'STOPPED', 'reason': '生成音声長(16.89秒)が、テキスト量から見積もった妥当な上限(5.50秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。'}, {'attempt': 2, 'status': 'STOPPED', 'reason': '生成音声長(15.29秒)が、テキスト量から見積もった妥当な上限(5.50秒)を超えています。TTSモデルが指示文のパラフレーズ等、無関係な内容を生成した疑いがあるため、ASRへ送らずこのattemptを破棄します。'}, {'attempt': 3, 'status': 'STOPPED', 'reason': '生成音声長(16.37秒)が、テキスト量から"
+ },
+ "clip_rows": [],
+ "ja_queue_lines_after": {
+  "er009_output/ja_foreign_token_gate_01/human_review_queue.jsonl": 343,
+  "er007_output/ja_asr_cascade_01/human_review_queue.jsonl": 11
+ },
+ "ja_queue_lines_unchanged": true,
+ "shared_state_unchanged": true,
+ "shared_files_changed_outside_evidence": [],
+ "cost": {
+  "est_total_jpy": 4.4559,
+  "n_tts": 3,
+  "n_openai_asr": 0,
+  "n_azure": 0,
+  "azure_seconds": 0.0,
+  "n_text_llm": 3,
+  "azure_duplicate_wavs": 0
+ },
+ "ledger_after": 13.5355
+}

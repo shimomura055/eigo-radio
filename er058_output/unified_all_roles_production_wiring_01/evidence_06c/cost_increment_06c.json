@@ -1,0 +1,92 @@
+{
+  "source": "er011_output/attempt_history.jsonl",
+  "filter": "action=PROCEED, language=en, test/wiring theme excluded",
+  "by_role": {
+    "body": {
+      "calls": 600,
+      "attempts": 217,
+      "attempts_per_call": 1.235,
+      "attempts_with_detail_per_call": 0.362,
+      "tcm": 6,
+      "tcm_rate": 0.0276,
+      "tcm_rate_95_upper": 0.059,
+      "uncertain": 14,
+      "uncertain_rate": 0.0645
+    },
+    "other": {
+      "calls": 232,
+      "attempts": 14,
+      "attempts_per_call": 1.341,
+      "attempts_with_detail_per_call": 0.06,
+      "tcm": 0,
+      "tcm_rate": 0.0,
+      "tcm_rate_95_upper": 0.2153,
+      "uncertain": 0,
+      "uncertain_rate": 0.0
+    },
+    "short_narration": {
+      "calls": 381,
+      "attempts": 38,
+      "attempts_per_call": 1.136,
+      "attempts_with_detail_per_call": 0.1,
+      "tcm": 1,
+      "tcm_rate": 0.0263,
+      "tcm_rate_95_upper": 0.135,
+      "uncertain": 0,
+      "uncertain_rate": 0.0
+    },
+    "kp": {
+      "calls": 440,
+      "attempts": 108,
+      "attempts_per_call": 1.116,
+      "attempts_with_detail_per_call": 0.245,
+      "tcm": 6,
+      "tcm_rate": 0.0556,
+      "tcm_rate_95_upper": 0.1159,
+      "uncertain": 0,
+      "uncertain_rate": 0.0
+    },
+    "in_one_line": {
+      "calls": 82,
+      "attempts": 2,
+      "attempts_per_call": 1.159,
+      "attempts_with_detail_per_call": 0.024,
+      "tcm": 0,
+      "tcm_rate": 0.0,
+      "tcm_rate_95_upper": 0.6576,
+      "uncertain": 0,
+      "uncertain_rate": 0.0
+    }
+  },
+  "body_inputs": {
+    "attempts_per_call": 1.235,
+    "tcm_rate": 0.0276,
+    "tcm_rate_95_upper": 0.059,
+    "tcm_plus_uncertain_rate": 0.0922
+  },
+  "increment_jpy_per_article_set": {
+    "40s": {
+      "azure_jpy_per_call": 1.78,
+      "central_adv": 0.18,
+      "central_std": 0.36,
+      "central_set": 0.55,
+      "upper95_set": 1.17,
+      "pessimistic_all_NG_rate_set(TCM+UNC全てを増分と見なす)": 1.82,
+      "worst_every_part_NG_once_set(6 part, Std減速後も)": 16.02
+    },
+    "60s": {
+      "azure_jpy_per_call": 2.66,
+      "central_adv": 0.27,
+      "central_std": 0.54,
+      "central_set": 0.82,
+      "upper95_set": 1.74,
+      "pessimistic_all_NG_rate_set(TCM+UNC全てを増分と見なす)": 2.72,
+      "worst_every_part_NG_once_set(6 part, Std減速後も)": 23.94
+    }
+  },
+  "notes": [
+    "増分は TRUE_CONTENT_MISMATCH(旧=Secondary不呼出→新=Secondary 1回)に由来。UNCERTAIN は旧Cascadeでも Azure を呼んでいた(旧 最大2回→新1回で削減側)。",
+    "『記事セット』= Advanced(B1B) + Standard(A2) の本文3 part。Std は減速前後の2判定で最大2回(減速後は同一wavでも別sha256)。",
+    "KP(英語phrase 約2秒)は Azure 0.09円/呼出 x TCM率5.6% x 5本 = 約0.03円/level で無視できる。"
+  ]
+}

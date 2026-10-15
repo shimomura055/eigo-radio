@@ -1,0 +1,687 @@
+{
+  "management_id": "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01",
+  "segment_id": "comment_1",
+  "segment_role_label": "Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)",
+  "canonical_text": "Mayor Xzqwtrlk said the new bridge would open in May.",
+  "last_asr_text": "Mayor Xquatlix said the new bridge would open in May.",
+  "ng_span": {
+    "found": true,
+    "diff_tag": "replace",
+    "canonical_span_with_context": "mayor xzqwtrlk said the new",
+    "asr_span_with_context": "mayor xquatlix said the new",
+    "canonical_changed_words": [
+      "xzqwtrlk"
+    ],
+    "asr_changed_words": [
+      "xquatlix"
+    ],
+    "context_window_word_indices": [
+      0,
+      5
+    ]
+  },
+  "candidate_gen": {
+    "candidates": [
+      {
+        "id": "1",
+        "rewrite_type": "single_word_swap",
+        "rewritten_segment": "Mayor Xzqwtrlk stated the new bridge would open in May.",
+        "changed_span_before": "Mayor Xzqwtrlk said the new",
+        "changed_span_after": "Mayor Xzqwtrlk stated the new",
+        "rationale": "Swaps in a natural, neutral reporting verb while keeping the statement’s meaning."
+      },
+      {
+        "id": "2",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Mayor Xzqwtrlk said that the new bridge would open in May.",
+        "changed_span_before": "Mayor Xzqwtrlk said the new",
+        "changed_span_after": "Mayor Xzqwtrlk said that the new",
+        "rationale": "Adds a natural connecting word without changing the reported claim."
+      },
+      {
+        "id": "3",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "The mayor, Xzqwtrlk, said the new bridge would open in May.",
+        "changed_span_before": "Mayor Xzqwtrlk said the new",
+        "changed_span_after": "The mayor, Xzqwtrlk, said the new",
+        "rationale": "Recasts the title and name as an appositive while preserving who made the statement."
+      },
+      {
+        "id": "4",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Xzqwtrlk, the mayor, said the new bridge would open in May.",
+        "changed_span_before": "Mayor Xzqwtrlk said the new",
+        "changed_span_after": "Xzqwtrlk, the mayor, said the new",
+        "rationale": "Reorders the name and title in a natural spoken construction, retaining both details."
+      },
+      {
+        "id": "5",
+        "rewrite_type": "short_phrase_rewrite",
+        "rewritten_segment": "Mayor Xzqwtrlk noted that the new bridge would open in May.",
+        "changed_span_before": "Mayor Xzqwtrlk said the new",
+        "changed_span_after": "Mayor Xzqwtrlk noted that the new",
+        "rationale": "Uses a natural reporting phrase that preserves the stated opening date."
+      }
+    ],
+    "_raw_model_response_text": "{\"candidates\":[{\"id\":\"1\",\"rewrite_type\":\"single_word_swap\",\"rewritten_segment\":\"Mayor Xzqwtrlk stated the new bridge would open in May.\",\"changed_span_before\":\"Mayor Xzqwtrlk said the new\",\"changed_span_after\":\"Mayor Xzqwtrlk stated the new\",\"rationale\":\"Swaps in a natural, neutral reporting verb while keeping the statement’s meaning.\"},{\"id\":\"2\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Mayor Xzqwtrlk said that the new bridge would open in May.\",\"changed_span_before\":\"Mayor Xzqwtrlk said the new\",\"changed_span_after\":\"Mayor Xzqwtrlk said that the new\",\"rationale\":\"Adds a natural connecting word without changing the reported claim.\"},{\"id\":\"3\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"The mayor, Xzqwtrlk, said the new bridge would open in May.\",\"changed_span_before\":\"Mayor Xzqwtrlk said the new\",\"changed_span_after\":\"The mayor, Xzqwtrlk, said the new\",\"rationale\":\"Recasts the title and name as an appositive while preserving who made the statement.\"},{\"id\":\"4\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Xzqwtrlk, the mayor, said the new bridge would open in May.\",\"changed_span_before\":\"Mayor Xzqwtrlk said the new\",\"changed_span_after\":\"Xzqwtrlk, the mayor, said the new\",\"rationale\":\"Reorders the name and title in a natural spoken construction, retaining both details.\"},{\"id\":\"5\",\"rewrite_type\":\"short_phrase_rewrite\",\"rewritten_segment\":\"Mayor Xzqwtrlk noted that the new bridge would open in May.\",\"changed_span_before\":\"Mayor Xzqwtrlk said the new\",\"changed_span_after\":\"Mayor Xzqwtrlk noted that the new\",\"rationale\":\"Uses a natural reporting phrase that preserves the stated opening date.\"}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_0bac9b1d4d00cb47006ad11a03ca6487d08c5a4de491280693",
+    "_prompt": "Segment role: Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)\n\nFull segment (contains the problem span):\n\"Mayor Xzqwtrlk said the new bridge would open in May.\"\n\nProblem span (a speech recognizer repeatedly mis-transcribes this as ['xquatlix'] instead of ['xzqwtrlk']):\n\"mayor xzqwtrlk said the new\"\n\nPropose the candidates as described in the system instructions. Return the JSON object."
+  },
+  "qa": {
+    "evaluations": [
+      {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Stated” preserves the claim that the mayor said the bridge would open in May."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short narrator remark recapping the announcement."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains usable as a recap."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural, slightly more formal way to report what the mayor said."
+        }
+      },
+      {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "Adding “that” does not change the reported claim."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short narrator remark recapping the announcement."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains usable as a recap."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a common and natural spoken construction."
+        }
+      },
+      {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "The appositive identifies Xzqwtrlk as the mayor without changing the claim."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short narrator remark recapping the announcement."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains usable as a recap."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural way to identify the mayor by name."
+        }
+      },
+      {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "The appositive identifies Xzqwtrlk as the mayor without changing the claim."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short narrator remark recapping the announcement."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains usable as a recap."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural spoken way to give the person’s name and role."
+        }
+      },
+      {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Noted that” still reports the mayor saying the bridge would open in May, with only a slight change in reporting nuance."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short narrator remark recapping the announcement."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains usable as a recap."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural, common way to report a statement in narration."
+        }
+      }
+    ],
+    "_raw_model_response_text": "{\"evaluations\":[{\"candidate_id\":\"1\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Stated” preserves the claim that the mayor said the bridge would open in May.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a short narrator remark recapping the announcement.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with the original claim.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence remains usable as a recap.\"},\"natural_english\":{\"pass\":true,\"reason\":\"This is a natural, slightly more formal way to report what the mayor said.\"}},{\"candidate_id\":\"2\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"Adding “that” does not change the reported claim.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a short narrator remark recapping the announcement.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with the original claim.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence remains usable as a recap.\"},\"natural_english\":{\"pass\":true,\"reason\":\"This is a common and natural spoken construction.\"}},{\"candidate_id\":\"3\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"The appositive identifies Xzqwtrlk as the mayor without changing the claim.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a short narrator remark recapping the announcement.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with the original claim.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence remains usable as a recap.\"},\"natural_english\":{\"pass\":true,\"reason\":\"This is a natural way to identify the mayor by name.\"}},{\"candidate_id\":\"4\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"The appositive identifies Xzqwtrlk as the mayor without changing the claim.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a short narrator remark recapping the announcement.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with the original claim.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence remains usable as a recap.\"},\"natural_english\":{\"pass\":true,\"reason\":\"This is a natural spoken way to give the person’s name and role.\"}},{\"candidate_id\":\"5\",\"meaning_preserved\":{\"pass\":true,\"reason\":\"“Noted that” still reports the mayor saying the bridge would open in May, with only a slight change in reporting nuance.\"},\"role_preserved\":{\"pass\":true,\"reason\":\"It remains a short narrator remark recapping the announcement.\"},\"fact_non_contradiction\":{\"pass\":true,\"reason\":\"It does not conflict with the original claim.\"},\"context_connection\":{\"pass\":true,\"reason\":\"No surrounding context was provided, and the sentence remains usable as a recap.\"},\"natural_english\":{\"pass\":true,\"reason\":\"This is a natural, common way to report a statement in narration.\"}}]}",
+    "_model_id": "gpt-6-luna",
+    "_response_id": "resp_0080e0484f9a5007006ad11a2aaec487d091823354ca594095",
+    "_prompt": "Segment role: Comment (a short narrator remark that recaps the story and bridges to the closing 'In One Line' summary)\n\nORIGINAL segment:\n\"Mayor Xzqwtrlk said the new bridge would open in May.\"\n\nCandidates to evaluate:\n- candidate_id='1': \"Mayor Xzqwtrlk stated the new bridge would open in May.\"\n- candidate_id='2': \"Mayor Xzqwtrlk said that the new bridge would open in May.\"\n- candidate_id='3': \"The mayor, Xzqwtrlk, said the new bridge would open in May.\"\n- candidate_id='4': \"Xzqwtrlk, the mayor, said the new bridge would open in May.\"\n- candidate_id='5': \"Mayor Xzqwtrlk noted that the new bridge would open in May.\"\n\nEvaluate all 5 gates for every candidate and return the JSON object described in the system instructions."
+  },
+  "candidates": [
+    {
+      "id": "1",
+      "rewrite_type": "single_word_swap",
+      "rewritten_segment": "Mayor Xzqwtrlk stated the new bridge would open in May.",
+      "changed_span_before": "Mayor Xzqwtrlk said the new",
+      "changed_span_after": "Mayor Xzqwtrlk stated the new",
+      "rationale": "Swaps in a natural, neutral reporting verb while keeping the statement’s meaning.",
+      "qa_llm": {
+        "candidate_id": "1",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Stated” preserves the claim that the mayor said the bridge would open in May."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short narrator remark recapping the announcement."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains usable as a recap."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural, slightly more formal way to report what the mayor said."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0377,
+        "orig_coverage": 0.9,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          2,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "2",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Mayor Xzqwtrlk said that the new bridge would open in May.",
+      "changed_span_before": "Mayor Xzqwtrlk said the new",
+      "changed_span_after": "Mayor Xzqwtrlk said that the new",
+      "rationale": "Adds a natural connecting word without changing the reported claim.",
+      "qa_llm": {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "Adding “that” does not change the reported claim."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short narrator remark recapping the announcement."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains usable as a recap."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a common and natural spoken construction."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0943,
+        "orig_coverage": 1.0,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          3,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 1.0
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "3",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "The mayor, Xzqwtrlk, said the new bridge would open in May.",
+      "changed_span_before": "Mayor Xzqwtrlk said the new",
+      "changed_span_after": "The mayor, Xzqwtrlk, said the new",
+      "rationale": "Recasts the title and name as an appositive while preserving who made the statement.",
+      "qa_llm": {
+        "candidate_id": "3",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "The appositive identifies Xzqwtrlk as the mayor without changing the claim."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short narrator remark recapping the announcement."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains usable as a recap."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural way to identify the mayor by name."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.1132,
+        "orig_coverage": 1.0,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          0,
+          0
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 1.0
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "4",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Xzqwtrlk, the mayor, said the new bridge would open in May.",
+      "changed_span_before": "Mayor Xzqwtrlk said the new",
+      "changed_span_after": "Xzqwtrlk, the mayor, said the new",
+      "rationale": "Reorders the name and title in a natural spoken construction, retaining both details.",
+      "qa_llm": {
+        "candidate_id": "4",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "The appositive identifies Xzqwtrlk as the mayor without changing the claim."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short narrator remark recapping the announcement."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains usable as a recap."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural spoken way to give the person’s name and role."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.1132,
+        "orig_coverage": 0.9,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          0,
+          2
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    {
+      "id": "5",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Mayor Xzqwtrlk noted that the new bridge would open in May.",
+      "changed_span_before": "Mayor Xzqwtrlk said the new",
+      "changed_span_after": "Mayor Xzqwtrlk noted that the new",
+      "rationale": "Uses a natural reporting phrase that preserves the stated opening date.",
+      "qa_llm": {
+        "candidate_id": "5",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "“Noted that” still reports the mayor saying the bridge would open in May, with only a slight change in reporting nuance."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short narrator remark recapping the announcement."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains usable as a recap."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a natural, common way to report a statement in narration."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.1132,
+        "orig_coverage": 0.9,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          2,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 0.9
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    }
+  ],
+  "selection": {
+    "selected": {
+      "id": "2",
+      "rewrite_type": "short_phrase_rewrite",
+      "rewritten_segment": "Mayor Xzqwtrlk said that the new bridge would open in May.",
+      "changed_span_before": "Mayor Xzqwtrlk said the new",
+      "changed_span_after": "Mayor Xzqwtrlk said that the new",
+      "rationale": "Adds a natural connecting word without changing the reported claim.",
+      "qa_llm": {
+        "candidate_id": "2",
+        "meaning_preserved": {
+          "pass": true,
+          "reason": "Adding “that” does not change the reported claim."
+        },
+        "role_preserved": {
+          "pass": true,
+          "reason": "It remains a short narrator remark recapping the announcement."
+        },
+        "fact_non_contradiction": {
+          "pass": true,
+          "reason": "It does not conflict with the original claim."
+        },
+        "context_connection": {
+          "pass": true,
+          "reason": "No surrounding context was provided, and the sentence remains usable as a recap."
+        },
+        "natural_english": {
+          "pass": true,
+          "reason": "This is a common and natural spoken construction."
+        }
+      },
+      "is_full_segment_format_valid": true,
+      "full_segment_check": {
+        "ok": true,
+        "reason": "FULL_SEGMENT_OK",
+        "length_ratio": 1.0943,
+        "orig_coverage": 1.0,
+        "span_check": "SPAN_CONSISTENT"
+      },
+      "locality_check": {
+        "criterion6_localized_to_problem_span": true,
+        "criterion6_diff_token_range": [
+          3,
+          3
+        ],
+        "criterion6_allowed_window": [
+          0,
+          5
+        ],
+        "criterion7_not_full_rewrite": true,
+        "unchanged_ratio": 1.0
+      },
+      "seven_gates": {
+        "1_meaning_preserved": true,
+        "2_role_preserved": true,
+        "3_fact_non_contradiction": true,
+        "4_context_connection": true,
+        "5_natural_english_gate": true,
+        "6_localized_minimal_change": true,
+        "7_not_full_rewrite": true
+      },
+      "all_seven_gates_pass": true
+    },
+    "status": "SELECTED",
+    "selection_rationale": "全7 Gate PASSの候補は5件(['1', '2', '3', '4', '5'])。unchanged_ratio=1.0(最小限の変更)が最大の'2'を採用。Natural English Gate理由: This is a common and natural spoken construction.",
+    "all_passing_candidate_ids": [
+      "1",
+      "2",
+      "3",
+      "4",
+      "5"
+    ]
+  },
+  "retts_result": {
+    "status": "STOPPED",
+    "reason": "1回試行してもASR検証に合格しませんでした",
+    "attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "asr_text": "Mayor Exequiel Ley said that the new bridge would open in May.",
+        "asr_judgement": {
+          "state": "NG_SECONDARY_UNAVAILABLE",
+          "reason_code": "secondary_circuit_open",
+          "slot": 1,
+          "script_version": "v1",
+          "role": "COMMENT",
+          "lang": "en",
+          "segment_key": "comment_1",
+          "audio_sha256": "d9219abe2716394e82fa13ff99acc04274fd07c25740ceed388ebd9d752e242e",
+          "primary": {
+            "text": "Mayor Exequiel Ley said that the new bridge would open in May.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": "circuit_breaker_open",
+            "unavailable": true
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": {
+            "type": "SECONDARY_CIRCUIT_OPEN",
+            "restartable": true,
+            "approval_required": false
+          },
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "comment_1",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 9,
+              "hits": 0
+            }
+          }
+        },
+        "instruction_type": "english_style_prefix",
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "semantic_equivalence": {
+          "tier_applied": "none",
+          "sub_reason": "entity_only",
+          "corroborated_by": [],
+          "warning": false,
+          "role": "COMMENT",
+          "diff_spans": null
+        },
+        "length_ok": true,
+        "verified": false,
+        "trim_info": {
+          "raw_duration_seconds": 3.96,
+          "raw_leading_silence_seconds": 0.26,
+          "raw_trailing_silence_seconds": 0.42,
+          "trimmed_duration_seconds": 3.89,
+          "leading_margin_retained_seconds": 0.26,
+          "trailing_margin_retained_seconds": 0.35
+        },
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "attempt_audio_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06e/tstop/run/b1b/narration/attempts/comment_1_attempt4_englishstyleprefix.wav"
+      }
+    ],
+    "en_pronunciation_resolver_info": null,
+    "cooldown_events": []
+  },
+  "status": "HUMAN_REVIEW_LOCKED_RETTS_FAILED"
+}

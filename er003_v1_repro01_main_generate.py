@@ -36,6 +36,7 @@ import er007_ja_secondary_asr_01 as ja_secondary
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 import er011_open121_repetition_qa_production_01 as repetition_qa
+import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
 # PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2)
 import er025_entity_pronunciation_resolver_core_01 as pron_resolver_core
 
@@ -257,6 +258,11 @@ def generate_narration_snippet_verified_strict(
     # (既定0/None=従来どおりcool-downなし、他の全呼び出し元は無変更)。
     prior_generations: int = 0,
     cooldown_total_budget: int | None = None,
+    # AUW 委任_05(既定0/None=この呼出のmax_attempts回がsegmentの全slot): 統一judge adapterへ渡すattempt_ctxの
+    # slot通算。標準経路(後段にfallbackがある)・KP 4回構成の前半は呼び出し側が total_slots を通算上限で渡すことで、
+    # 「後続slotが残るNG」ではHR queueへ投入されず、最終slotのNGのみ投入される(er078_asr_unified_attempt_ctx_01)。
+    slot_offset: int = 0,
+    total_slots: int | None = None,
 ) -> dict:
     # ER-006-POOL-BENCHES-LUNA-AUDIO-VALIDATION-01: 英語(language=="en")は、
     # 単純substring一致に代えて正規化+6分類のvalidatorを使う(数字・否定・
@@ -354,7 +360,9 @@ def generate_narration_snippet_verified_strict(
                 detail_out=cascade_detail,
                 # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(修正1回目):
                 # segment_id=None(既定)の既存呼び出し元は無変更のまま。
-                segment_id=segment_id)
+                segment_id=segment_id,
+                attempt_ctx=attempt_ctx_mod.build_attempt_ctx(
+                    attempt, max_attempts, slot_offset=slot_offset, total_slots=total_slots))  # AUW 委任_05
             verified = verified_content and length_ok
             gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
             verified = gate["verified"]
@@ -373,7 +381,10 @@ def generate_narration_snippet_verified_strict(
             # 固有名詞らしさ・読みをopcode単位で個別に判定する)。
             verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
                 text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
-                expected_readings=expected_readings, length_ok=length_ok)
+                expected_readings=expected_readings, length_ok=length_ok,
+                attempt_ctx=attempt_ctx_mod.build_attempt_ctx(
+                    attempt, max_attempts, slot_offset=slot_offset, total_slots=total_slots),  # AUW 委任_05
+                detail_out=cascade_detail)  # AUW 委任_04: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
             verified = verified_content and length_ok
             audio_classification = cls.classification
             substring_ok = None  # 旧フィールド、新方式では使わない(下の記録用に残すだけ)
@@ -408,6 +419,8 @@ def generate_narration_snippet_verified_strict(
                 style_prefix_override if style_prefix_override is not None else p9a.ENGLISH_STYLE_PREFIX)
                 if language == "en" else None),
             "cascade_steps": cascade_detail.get("steps") if language == "en" else None,
+            # AUW 委任_03/04(additive): 統一judgeの監査record(EN/JA共通)。
+            "asr_judgement": cascade_detail.get("asr_judgement"),
         })
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する
@@ -452,7 +465,9 @@ def generate_narration_snippet_verified_strict(
                     "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
                     "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
                     "repetition_qa_checked": rep_gate["repetition_qa_checked"] if language == "en" else False,
-                    "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence") if language == "en" else None}
+                    "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence") if language == "en" else None,
+                    # AUW 委任_03/04(additive、EN/JA共通)
+                    "asr_judgement": cascade_detail.get("asr_judgement")}
         if stop_retrying:
             return {**r, "status": "ASR_VALIDATION_UNCERTAIN", "asr_verified": False, "asr_text": asr_text,
                     "attempts_log": attempts_log,
@@ -795,7 +810,9 @@ def generate_key_phrase_component_verified(text: str, out_path: str,
         style_prefix_override=KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX,
         # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01(適用範囲:
         # 英語Key Phrase Component経路のみ、この関数だけが明示的に渡す)。
-        asr_prompt=KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True, tts_backend=tts_backend)
+        asr_prompt=KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True, tts_backend=tts_backend,
+        # AUW 委任_05: KP 4回構成の前半。後段(English Lock 2回)が残るため、ここのNGはHR queueへ投入しない。
+        slot_offset=0, total_slots=KEY_PHRASE_TOTAL_MAX_ATTEMPTS)
     if primary.get("status") == "OK":
         primary["fallback_used"] = False
         primary["primary_instruction_type"] = "MINIMAL"
@@ -805,7 +822,9 @@ def generate_key_phrase_component_verified(text: str, out_path: str,
         text, "en", out_path, text, max_extra_chars=10, max_attempts=KEY_PHRASE_ENGLISH_LOCK_MAX_ATTEMPTS,
         safety_margin_seconds=KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=disfluency_qa,
         style_prefix_override=KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION,
-        asr_prompt=KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True, tts_backend=tts_backend)
+        asr_prompt=KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True, tts_backend=tts_backend,
+        # AUW 委任_05: KP 4回構成の後半(最終slot=通算4)。ここのNGのみHR queue対象。
+        slot_offset=KEY_PHRASE_MINIMAL_MAX_ATTEMPTS, total_slots=KEY_PHRASE_TOTAL_MAX_ATTEMPTS)
     fallback["fallback_used"] = True
     fallback["primary_instruction_type"] = "ENGLISH_LOCK" if fallback.get("status") == "OK" else "MINIMAL_AND_ENGLISH_LOCK_BOTH_FAILED"
     # record_outcome()のcumulative_tts_attempts集計は

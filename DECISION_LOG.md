@@ -34,6 +34,8 @@
 
 **追記索引(2026-10-15、Std KP日本語Style Trial第2弾)**: `STANDARD-KP-JA-TTS-STYLE-TRIAL-02`委任_01(7 Style x 5 Phrase、新規25 call、JPY約1.05、Status USER_DECISION_REQUIRED[ユーザー試聴待ち]、Production無変更、OPEN-367)は本ファイル末尾`## STANDARD-KP-JA-TTS-STYLE-TRIAL-02 委任_01`節。
 
+**追記索引(2026-10-16、AUW 統一ASR判定・全Section Production Wiring、委任_07 Closeout準備)**: `ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01`(ユーザー正式決定2026-10-15=`APPROVED_FOR_PRODUCTION`・branch `feat/auw-unified-asr-01`で実装済み・main merge待ち・`PRODUCTION_WIRED`未宣言)のユーザー原文の決定部分(逐語)・Fable採用の技術決定・Opus条件A/C所見の採否・費用実績・事故記録は本ファイル末尾`## ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01`節。
+
 **履歴全文(直前の記録・その前の記録、以下さらに前の記録、合計12件、原文のまま移動): `DECISION_LOG_HISTORY.md`の`## ER-PM-001_CHAIN`節参照**
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
 (番組の聞こえ方・記事の作られ方そのものに関わるもの)と「Implementation
@@ -21407,3 +21409,166 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 - **PRODUCTION_WIRED**: **未達**(ユーザー原文§8「再盲検に不合格ならPRODUCTION_WIREDと判断しない」)。
 - **ユーザー判断待ち**: REGISTER #80(本ラウンド最終扱い)・#81(次の一手B1/B2/B3、Fable推奨B1)・#82(v3欠陥提案①〜⑥採用)。追加Trialは自動で行わない。#72(Day5〜6)は保留・開始禁止継続。
 - 費用: 実請求なし(定価換算USD 6.42+採点未計測)、実支出JPY0。
+
+## ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 統一ASR判定・数値保護是正・全Section Production Wiring(2026-10-15ユーザー正式決定、実装2026-10-15〜16、委任_07でSSOT草案)
+
+管理ID: `ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01`(AUW)。Status: ユーザー正式決定=`APPROVED_FOR_PRODUCTION`(2026-10-15)。実装=branch `feat/auw-unified-asr-01`で**実装済み・main merge待ち**。**`PRODUCTION_WIRED`は宣言しない**(ユーザー原文§9「1項目でも未確認であればPRODUCTION_WIREDと報告しない」。15条件の最終表=`er058_output/unified_all_roles_production_wiring_01/CLOSEOUT_PLAN_07.md`§4)。mainへのmergeは**ユーザーGo待ち**(REGISTER #87)。正式仕様=`CURRENT_SPEC.md`「統一ASR判定仕様」節。
+
+**ユーザー決定(原文・逐語。出典=`docs/pm/delegation_log/2026-10-15_ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01_01.md` L27〜L98[§1目的・§2基本フロー・§3数値保護]、L143〜L166[§5 Section固有例外・§6 LR/HR]、L197〜L234[§9必須受入条件・§10 STOP条件]。全文は同ファイル)**:
+
+> ### 1. 目的
+>
+> 2026年10月12日の `ASR-TTS-CROSS-LANGUAGE-RECONCILIATION-01` で作成した統一設計を基礎として、今回ユーザーが正式決定した仕様をProductionへ反映する。
+>
+> **英語・日本語、全Family・全Sectionで、ASRの誤認に起因する不要なTTS再生成を減らし、数値・否定などの重要な内容を保護しながら、自動量産できる統一音声検証基盤を完成させる。**
+>
+> 既存技術を最大限再利用し、重複実装・無用なTrial・無益なAPI消費を避ける。
+>
+> ### 2. ユーザー承認済みの基本フロー
+>
+> 各音声Sectionで以下を共通化する。
+>
+> **TTS生成① → Primary ASR → NGならSecondary ASR**
+>
+> 両方NGの場合：
+>
+> **TTS再生成② → Primary ASR → NGならSecondary ASR**
+>
+> 両方NGの場合：
+>
+> **TTS再生成③ → Primary ASR → NGならSecondary ASR**
+>
+> 3回とも不合格の場合、既存の安全条件に従いLocal RewriteまたはHuman Reviewへ進む。
+>
+> 必須条件：
+>
+> - Primary PASSなら、その時点でASR合格。Secondaryは不要。
+> - Primary NGなら、不一致の種類によらず原則Secondaryを実行する。
+> - Primary NG・Secondary PASSなら、**PASS_WITH_WARNINGとして採用**する。
+> - PASS_WITH_WARNINGはユーザーの事前承認を求めず、自動採用する。
+> - WARNING音声はユーザーが事後試聴できるリストへ自動登録する。
+> - Primary・Secondary両方NGなら次のTTS再生成へ進む。
+> - Secondaryが障害・利用不能の場合、PASS扱いせず、既存の安全な障害処理へ進む。
+> - 同じ音声に対するSecondaryの重複API呼び出しを防ぐ。
+> - 各TTS再生成では、原則として原稿・Prompt・モデル・Voice・速度を維持する。
+> - 既存の無音・反復・言語違い・異常長・発音品質等の独立QAは維持する。
+> - 既存のHuman Review Lock、承認・停止・予算上限は維持する。
+>
+> ### 3. 数値保護の設計是正
+>
+> 10月12日設計のS1には、漢数字の見逃しと表記差の誤検出が残っている。
+>
+> **表記ではなく、数値の値と単位で比較できる仕組みに是正する。**
+>
+> 必須の正例・負例：
+>
+> | 原稿 | ASR | 期待判定 |
+> |---|---|---|
+> | 三人 | 3人 | 同値として許容 |
+> | 三人 | 四人 | 異値として不許容 |
+> | 三十人 | 30人 | 同値として許容 |
+> | 三十人 | 40人 | 異値として不許容 |
+> | 十分（10分の意味） | 10分 | 文脈上同値の場合のみ許容 |
+> | 100円 | 百円 | 同値として許容 |
+> | 20% | 20 percent | 同値として許容 |
+> | 20% | 30% | 異値として不許容 |
+> | 25% | 26% | 異値として不許容 |
+>
+> 既存の英語Tier1数値等価・日本語表記ゆれ正規化・数値Validatorを優先的に再利用する。
+>
+> **重要な安全条件：**
+>
+> - 数値の異値を単純なSecondary文字起こし一致だけで誤PASSさせない。
+> - 否定の有無・意味の反転に対する既存の保護は維持する。
+> - 漢数字・算用数字・数詞・助数詞・単位・割合の値を比較する。
+> - 曖昧な読みの数値表現は、文脈を無視して機械的に同値化しない。
+> - 数値を含むだけでSecondaryを一律禁止する旧来の過剰制限は撤廃する。
+> - 既存の正規化仕様と競合・重複させない。
+> - 対象の初回・retry・fallback・regeneration経路で同じ判定を使用する。
+>
+> この安全条件と「Secondary PASSなら採用」の原則が競合する場合は、**数値・否定などの明確な重大内容差を誤採用しないことを優先**する。保護すべき差異を警告だけで無条件に解放する仕様にはしない。
+>
+>
+> **Section固有の既存例外は維持する。**
+>
+> 特に：
+>
+> 1. **Key Phrase**：学習対象の英語表現は変更しない。既存Minimal Prompt／English Language Lockとの整合を確認。全体のTTS3回仕様との競合は整理する。
+> 2. **日本語Local Rewrite**：現行の英語用機構を機械的に流用しない。安全な実装が成立していない場合はHuman Reviewへ進める。
+> 3. **見出し・短文**：独立したQA・意味保護を維持する。
+> 4. **A2の6%減速**：減速前後のASR検証・再生成回数・音声品質が整合すること。
+> 5. **Dialogue**：複数Voiceの区分・話者帰属・既存Segment構造を維持する。
+>
+> 新しいSection固有の例外を実装都合で勝手に増やさない。
+>
+> ### 6. Local Rewrite・Human Review
+>
+> TTS3回の不合格後は、既存のLocal Rewrite回復機構を利用する。
+>
+> - 英語：意味・Fact・role・前後文脈・局所性・全文性を保持できる場合のみLocal Rewriteを許容。
+> - 日本語：現時点では原則Human Review。
+> - Key Phrase：学習対象の表現を別表現に置き換えない。
+> - 原稿の問題ではなくASR誤認と推定される場合は、安易に原稿を書き換えない。
+> - Rewrite後は同じ統一ASR判定を適用。
+> - Rewriteの発火・再TTS回数を正しく計数し、累積上限を守る。
+>
+> 既存のHuman Review承認を回避・解除してはならない。
+>
+> ### 9. 必須受入条件
+>
+> 以下すべてを満たすこと。
+>
+> 1. ユーザー承認済みのASR判定仕様と実際のProduction動作が一致。
+> 2. 日本語・英語、すべてのProduction音声Sectionに適用。
+> 3. Primary NG→Secondary PASSがWARNING付きで採用される。
+> 4. Primary／Secondary両NGなら最大3回のTTS生成フローが成立。
+> 5. 数値の同値・異値を適切に判定し、否定保護を維持。
+> 6. Connected Speech／M1／F1の既存Regressionに悪化なし。
+> 7. 試聴リストへのWARNING連動が動作。
+> 8. Secondary二重呼び出し・予算超過・無限retryがない。
+> 9. Production正式pathのruntime evidenceがある。
+> 10. 必要なUnit／Regression／Integration testがPASS。
+> 11. CURRENT_SPEC／DECISION_LOG／OPEN_ITEMSに実態を反映。
+> 12. 必要なcommit／push／mergeを確認。
+> 13. Dangling Reference Checkで問題なし。
+> 14. 未解決USER_DECISION_REQUIRED・未配線APPROVED項目を明示。
+> 15. Fableがユーザー承認内容・実装・証跡を独立照合。
+>
+> **1項目でも未確認であればPRODUCTION_WIREDと報告しない。**
+>
+> ### 10. STOP条件と判断権限
+>
+> 既に承認済みの範囲では、実装・テスト・必要な技術的是正を継続してよい。
+>
+> ただし、次の場合はSTOPして報告する。
+>
+> - 新たなユーザー仕様判断が必要。
+> - 承認済み仕様との重大な競合が判明。
+> - 数値・否定などの重大な誤PASSが発生。
+> - 既存Production品質を大きく悪化させる。
+> - 予算・安全・権限・Human Review Lockに抵触。
+> - 全Section共通化に際して、承認済み範囲を超える例外が必要。
+>
+> Trial結果からClaude/Fableが独自に新仕様を正式採用してはならない。
+>
+> 新たなTrialが必要と判断した場合も、承認なしに開始しない。
+
+**Fable判断で採用した技術決定(ユーザー原文の範囲内。新仕様の追加ではない)**:
+1. **選択肢A(委任_03c、2026-10-15)**: 旧期待「通常の内容語差[cats/dogs等]ではSecondary不呼出→NG」を、原文L54「Primary NGなら、不一致の種類によらず原則Secondaryを実行する」・L55「Primary NG・Secondary PASSなら、PASS_WITH_WARNINGとして採用する」へ追随させた(既存test beta 9 idの期待値更新)。重大内容差[数値・否定]は値ガード/否定ゲートで別途担保(原文L97の優先規定)。**選択肢B[新ガード追加]は未承認仕様の追加になるため不採用**。誤受理0維持(Secondaryが同じ誤りならNG_BOTH、障害はNG_SECONDARY_UNAVAILABLE)。
+2. **OF-AUW-08 R+**: JA受理集合の縮小[旧`ASR_VALIDATION_UNCERTAIN`経由の受理経路を統一judgeのP3へ]を本節に記録。表記ゆれ確認`ORTHOGRAPHIC_VARIANT_CONFIRMED`は2エンジン(Primary+Secondary)確認で維持しtestで固定。
+3. **技術STOP≠Lock未適用(06c(A)の逸脱記録)**: Secondary障害のみの最終STOPPEDを技術STOP[`TECHNICAL_STOP_SECONDARY_UNAVAILABLE`、再実行で再開可、circuit breaker連続3障害]として扱い、runner層・adapter層ではLockを増やさない。ただしleaf内HR Lock(`record_outcome`、`er011_human_review_lock_01.py:357-410`)は「最終status!=OKなら理由を問わずHUMAN_REVIEW_REQUIRED」のため、Secondary障害のみで最終STOPPEDのclipがLockに入る。防ぐには`record_outcome`冒頭の約3行の早期return[Lockロジック変更]が要り、**ユーザー判断事項(U4=REGISTER #86)として未実施**。06d`tstop`で現行挙動を実測(Lock HUMAN_REVIEW_REQUIRED)。
+4. **再利用guard(06c(B))**: Master Store/Family X/Cの再利用時に保存転写のみ(API 0)を現行judgeへ通し、値DIFF/否定差、または一括再判定が付けた`reuse_blocked`markがあれば再利用せず再生成へ回す(旧音声は`audio/_reuse_blocked/`へ退避して保持)。results cacheのDIFF 16件は再利用時の動的guardで再生成へ回す現行実装を採用。判定器の偽陽性の可能性[いちばん/一番、装飾記号]はOPEN化[下記]。
+5. その他: Dialogue(Std)/Voices A2・narratorの減速後NGも通算TTS3回の外側ループへ統一(OF-AUW-C-08)/KP英語解説を2→3回(OF-AUW-12=R、Trial値の継承でありユーザー決定の逐語は無し)/KP英語phrase=4回構成は既存例外として維持/Z `kp_en`外側guardでKP4回構成統一(06e F1)/A2外側ループ最終NGのHR末端・`asr_judgement`更新(06e F3)/Z circuit-open KeyError是正(06e F2)/U1=True・U2=A2_ONLYは暫定現行維持。ロールアウトは作業branch+**単一merge(squash禁止)**でrevert単位=merge 1個(OF-AUW-02)。flag方式は採らない[承認済みのためProduction直配線、flag OFF相当は`cascade_enabled=False`/`FEATURE_FLAG_SECONDARY_ASR_ENABLED`の既存ロールバック経路で担保]。
+
+**Opus所見の採否**:
+- **条件A(新しい処理フロー、`OPUS_REVIEW_A_01_VERBATIM.md`、採否表=`DESIGN_02_ADDENDUM_01.md`§0)**: OF-AUW-01〜18のうち 採用14(01,02,03,04,05,07,08[R+],09,10,11,13,14[記録],15,17)/ユーザー判断1(06=U2)/確認済み→R 1(12)/記録のみ2(16,18)+U1(C-A5/A6、既存承認記載の矛盾、暫定=現行維持)。
+- **条件C(実装後の独立レビュー)**: OF-AUW-C-01〜C-14のFable採用分を委任_06c(`IMPLEMENTATION_06c.md`§1 (a)〜(k))で実装。非ラテンKP救済の退行[C-01 BLOCKER]・Secondary障害網羅[C-02]・再利用経路の値ガード[C-03]・技術STOP[C-06]・Dialogue/A2通算3回[C-08]・費用試算[C-10]・試聴リスト失敗表示[C-12]・死コード`_post_slowdown_cascade_rescue`撤去[C-13]・test決定化[C-14]。C-06のうちLock変更はU4へ。C-04/05/07/09/11の個別所見は委任_06c/06d文書を参照(本節には個別転記しない。必要ならFableが補完)。
+
+**費用実績(実請求ではなく推定含む。目標70円/記事セット[15-9]の追加増分試算は中央値0.55〜0.82円/セット)**: 委任_06 約9.9円/06b 約52.0円(推定含む)/06d 約23.8円(token実測)/06e 約3.5円(token実測)/委任_07 約0.6円(narrator A2外側ループ実音声の途中終了分。下記事故参照)。累計約90円。
+
+**事故・逸脱の記録**:
+- **03b Perplexity未確認**: 未mock testが最終slot HR package経路[`er006_secondary_asr_01.py:960-962`→`er006_pronunciation_research_01.py:101` `requests.post`]から実request(Perplexity sonar)を最大2回出した可能性。cost logger未初期化で記録が残らず**実額未確認**(推定数円未満)。Perplexity管理画面での確認が必要。再発防止=該当testのmock化+通信遮断plugin付き実行。
+- **06d再起動5.4円**: 委任_06dの有料runを再起動(約JPY5.4)。以後の有料runは再起動を委任文が明示許可した回数のみ(PM_GOVERNANCE 26節)。
+- **委任_07 narrator A2外側ループ実音声**: 自分の`timeout 590`で、通算3回目TTS直前の既存cooldown[`er020_tts_retry_local_rewrite_01.py:56 COOLDOWN_SECONDS=600`、Connected Speech有効role`full_story_*`のみ。`:76-78`のsleep]中にprocessを終了させた[2 TTS・約JPY0.57]。原因は設定ミス[clip idがFULL_STORY役にマッチ]で、再起動はしていない。
+
+**旧記述の注記(Dangling Reference Check、2026-10-16 委任_07。既存行は書換え・削除しない)**: 本ファイル内の次の記述は、撤去された旧機構[`_post_slowdown_cascade_rescue`/Primary#2/Secondary#2/4段尽き→`stop_retrying`+HR直行]を前提とする。**旧記述(2026-10-16 AUWで撤去済み、現行は統一judge)**。行番号は本追記前(委任_07開始時)の値で、冒頭の索引1行追記により実際は+2行ずれる: L8045・L8047・L9762・L20548(`stop_retrying`によるretry policy)/L8117(Secondary#1/#2)/L9547(Cascade1回一致の無条件PASS・中間ASR結果[Primary#2/Secondary#1/#2])/L20604・L20649・L20662・L20663・L20711(Family X Coffee final audio assembly: 減速後`_post_slowdown_cascade_rescue`・Primary#2/Secondary x2/Tier3)。これらは**当時の判断・観測の履歴としてそのまま有効**(その時点の実装の記録)。現行の仕様は`CURRENT_SPEC.md`「統一ASR判定仕様」節。対応表の全体=`er058_output/unified_all_roles_production_wiring_01/CLOSEOUT_PLAN_07.md`§3。

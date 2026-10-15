@@ -1,0 +1,122 @@
+{
+  "attempt_number": 1,
+  "route": "custom_942f25cd",
+  "segment_id": "full_story_part1_c1",
+  "theme_id": "run",
+  "level": "a2",
+  "source_out_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/zep2/run/a2/narration/full_story_part1_c1.wav",
+  "saved_at": "2026-10-16T01:04:55",
+  "sha256": "1879c8a963557b8259d6eeb558ca284dff5aa6127259bd253f02a5bd3e480496",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "A cheerful, kind storyteller sharing a true story at a pace a little slower than usual. Bring each sentence to its natural close, then go directly on to the next, including where the story takes a turn.",
+  "asr_text": "Mello said the shop kept his price.",
+  "audio_classification": "CONNECTED_SPEECH_ACCEPT",
+  "length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 3.57,
+    "method_a_ngram": {
+      "matches": [],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 7,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9794,
+          "time_a_seconds": 1.22,
+          "time_b_seconds": 2.66,
+          "lag_seconds": 1.44,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9786,
+          "time_a_seconds": 0.16,
+          "time_b_seconds": 2.0,
+          "lag_seconds": 1.84,
+          "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+          "similarity": 0.9782,
+          "time_a_seconds": 0.22,
+          "time_b_seconds": 2.05,
+          "lag_seconds": 1.83,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9744,
+          "time_a_seconds": 0.05,
+          "time_b_seconds": 2.66,
+          "lag_seconds": 2.61
+        },
+        {
+          "similarity": 0.9724,
+          "time_a_seconds": 0.15,
+          "time_b_seconds": 1.25,
+          "lag_seconds": 1.1
+        }
+      ],
+      "best_run_length_seconds": 0.02,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.17,
+      "time_a": 0.06,
+      "lag": 1.1,
+      "similarity_at_start": 0.7431,
+      "best_run_length_seconds": 0.17,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Mello said the shop kept his price.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "entity_like_source": [
+        "capitalized"
+      ]
+    },
+    {
+      "step": "secondary_1",
+      "provider": "azure",
+      "text": "Melo said the shop kept its price.",
+      "classification": "CONNECTED_SPEECH_ACCEPT",
+      "phrase_list_used": true,
+      "cached": false,
+      "unified_judge_state": "PASS_WITH_WARNING",
+      "entity_like_source": []
+    }
+  ]
+}

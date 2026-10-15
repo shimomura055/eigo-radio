@@ -26,88 +26,85 @@ def test_non_entity_mismatch_does_not_trigger_cascade():
     print("PASS: test_non_entity_mismatch_does_not_trigger_cascade")
 
 
-def test_entity_like_mismatch_triggers_primary_2():
+# AUW 委任_04(α更新): Primary#2(同一音声のOpenAI再転写)/Secondary#2/4段尽きHR直行は統一判定で廃止(DESIGN_01 §4-9)。
+# 旧3件(Primary#2起動・Primary#2救済・4段尽きHR)は、「Primary NG -> Secondary 1回 -> 両NGなら次の再生成(HRは最終slotのみ)」
+# の新フローを固定する形に置換した。誤PASS防止(Secondaryが依然不一致ならNG、障害ならPASS不可)の安全側assertは維持。
+def _mock_secondary(text, calls):
+    def fake(wav_path, language="ja-JP", timeout_seconds=90.0):
+        calls["azure"] = calls.get("azure", 0) + 1
+        return text, None
+    return fake
+
+
+def _forbid_primary_2():
     import er006_asr_provider_routing_01 as routing
+    calls = {"p2": 0}
     orig = routing._transcribe_openai_mini
-    calls = {"n": 0}
 
     def fake(*a, **k):
-        calls["n"] += 1
-        return "解約を難しくする壁は、「スラッシ」と考えられます。", None  # 依然不一致
-
+        calls["p2"] += 1
+        return "SHOULD NOT BE CALLED", None
     routing._transcribe_openai_mini = fake
+    return calls, lambda: setattr(routing, "_transcribe_openai_mini", orig)
+
+
+def test_entity_like_mismatch_triggers_secondary_once_without_primary_2():
+    calls, restore = _forbid_primary_2()
+    orig_az = ja_secondary._azure_stt_strict
+    ja_secondary._azure_stt_strict = _mock_secondary("解約を難しくする壁は、「スラッシ」と考えられます。", calls)  # 依然不一致
     try:
         canon = "解約を難しくする壁は、「スラッジ」と考えられます。"
         asr = "解約を難しくする壁は、「スラッシ」と考えられます。"
         r = ja_secondary.evaluate_attempt_ja_with_cascade_detail(canon, asr, "dummy.wav", cascade_enabled=True)
         assert r["cascade_invoked"] is True
-        assert calls["n"] == 1, "Primary#2が1回呼ばれるはず"
-        assert any(s["step"] == "primary_2" for s in r["steps"])
+        assert calls["p2"] == 0, "Primary#2(同一音声のOpenAI再転写)は廃止"
+        assert calls["azure"] == 1, "Secondaryは1回のみ"
+        assert [s["step"] for s in r["steps"]] == ["primary_1", "secondary_1"]
+        assert r["verified"] is False and r["stop_retrying"] is False
     finally:
-        routing._transcribe_openai_mini = orig
-    print("PASS: test_entity_like_mismatch_triggers_primary_2")
+        restore()
+        ja_secondary._azure_stt_strict = orig_az
+    print("PASS: test_entity_like_mismatch_triggers_secondary_once_without_primary_2")
 
 
-def test_primary_2_pass_stops_cascade_before_secondary():
-    import er006_asr_provider_routing_01 as routing
-    import er003_b1_p4_audio as p4
-    orig_openai = routing._transcribe_openai_mini
-    orig_azure = p4.get_full_text_via_azure_stt_continuous
-    calls = {"azure": 0}
-
-    def fake_openai(*a, **k):
-        return "解約を難しくする壁は、「スラッジ」と考えられます。", None  # Primary#2で正しく認識
-
-    def fake_azure(*a, **k):
-        calls["azure"] += 1
-        return "SHOULD NOT BE CALLED", None
-
-    routing._transcribe_openai_mini = fake_openai
-    p4.get_full_text_via_azure_stt_continuous = fake_azure
+def test_secondary_exact_confirms_uncertain_entity_as_pass_with_warning():
+    calls, restore = _forbid_primary_2()
+    orig_az = ja_secondary._azure_stt_strict
+    canon = "解約を難しくする壁は、「スラッジ」と考えられます。"
+    ja_secondary._azure_stt_strict = _mock_secondary(canon, calls)  # Secondaryは原稿と一致
     try:
-        canon = "解約を難しくする壁は、「スラッジ」と考えられます。"
         asr = "解約を難しくする壁は、「スラッシ」と考えられます。"
         r = ja_secondary.evaluate_attempt_ja_with_cascade_detail(canon, asr, "dummy.wav", cascade_enabled=True)
         assert r["verified"] is True
-        assert calls["azure"] == 0, "Primary#2でPASSしたらAzureは呼ばれないはず"
+        assert calls["azure"] == 1 and calls["p2"] == 0
+        assert r["asr_judgement"]["state"] == "PASS_WITH_WARNING"
+        assert "SECONDARY_CONFIRMED" in r["asr_judgement"]["warnings"]
     finally:
-        routing._transcribe_openai_mini = orig_openai
-        p4.get_full_text_via_azure_stt_continuous = orig_azure
-    print("PASS: test_primary_2_pass_stops_cascade_before_secondary")
+        restore()
+        ja_secondary._azure_stt_strict = orig_az
+    print("PASS: test_secondary_exact_confirms_uncertain_entity_as_pass_with_warning")
 
 
-def test_full_cascade_all_fail_routes_to_human_review():
-    import er006_asr_provider_routing_01 as routing
-    import er003_b1_p4_audio as p4
-    orig_openai = routing._transcribe_openai_mini
-    orig_azure = p4.get_full_text_via_azure_stt_continuous
-    calls = {"openai": 0, "azure": 0}
-
-    def fake_openai(*a, **k):
-        calls["openai"] += 1
-        return "解約を難しくする壁は、「スラッシ」と考えられます。", None
-
-    def fake_azure(*a, **k):
-        calls["azure"] += 1
-        return "解約を難しくする壁は、「スラツジ」と考えられます。", None  # 依然不一致(固有名詞のみ)
-
-    routing._transcribe_openai_mini = fake_openai
-    p4.get_full_text_via_azure_stt_continuous = fake_azure
+def test_both_ng_goes_to_next_regeneration_and_hr_only_at_last_slot():
+    calls, restore = _forbid_primary_2()
+    orig_az = ja_secondary._azure_stt_strict
+    ja_secondary._azure_stt_strict = _mock_secondary("解約を難しくする壁は、「スラツジ」と考えられます。", calls)  # 依然不一致
     try:
         canon = "解約を難しくする壁は、「スラッジ」と考えられます。"
         asr = "解約を難しくする壁は、「スラッシ」と考えられます。"
         r = ja_secondary.evaluate_attempt_ja_with_cascade_detail(canon, asr, "dummy.wav", cascade_enabled=True)
-        assert calls["openai"] == 1, "Primary#2は1回のみ"
-        assert calls["azure"] == 2, "Secondary#1・#2の2回呼ばれるはず"
-        assert r["human_review_required"] is True
-        assert r["verified"] is False
+        assert calls["p2"] == 0 and calls["azure"] == 1
+        assert r["verified"] is False and r["stop_retrying"] is False, "両NG -> 次のTTS再生成(同一音声のASR再試行/尽きでの打切りは廃止)"
+        assert r["human_review_required"] is False, "HR queueは最終slot NGのみ"
         assert r["final_status"] == "ASR_VALIDATION_UNCERTAIN"
-        step_names = [s["step"] for s in r["steps"]]
-        assert step_names == ["primary_1", "primary_2", "secondary_1", "secondary_2"]
+        assert [s["step"] for s in r["steps"]] == ["primary_1", "secondary_1"]
+        last = ja_secondary.evaluate_attempt_ja_with_cascade_detail(
+            canon, asr, "dummy.wav", cascade_enabled=True, attempt_ctx={"is_last_slot": True})
+        assert last["human_review_required"] is True and last["verified"] is False
     finally:
-        routing._transcribe_openai_mini = orig_openai
-        p4.get_full_text_via_azure_stt_continuous = orig_azure
-    print("PASS: test_full_cascade_all_fail_routes_to_human_review")
+        restore()
+        ja_secondary._azure_stt_strict = orig_az
+    print("PASS: test_both_ng_goes_to_next_regeneration_and_hr_only_at_last_slot")
 
 
 def test_true_content_mismatch_never_rescued_by_cascade():
@@ -179,16 +176,14 @@ def test_unrelated_kanji_reading_not_confirmed():
 # 正しく転送されることの確認(単なる転送だが、Primary#1以外のステップで
 # 抜け落ちていないかを直接検証する)。
 # ============================================================
-def test_expected_readings_forwarded_to_primary_2_step():
-    """Primary#1は辞書登録トークン(Meta->メタ)が正しく、無関係な
-    entity_like差(スラッジ->スラッシ)だけでCascadeが起動する。Primary#2で
-    辞書トークンが「メタン」に化けた場合、expected_readingsが転送されて
-    いれば直ちにTRUE_CONTENT_MISMATCHと判定されるはず(転送されていなければ
-    従来通りentity_like扱いのままになる)。"""
-    import er006_asr_provider_routing_01 as routing
-    orig = routing._transcribe_openai_mini
-    p2_text = "スラッシについて、メタンが説明しました。"
-    routing._transcribe_openai_mini = lambda *a, **k: (p2_text, None)
+def test_expected_readings_forwarded_to_secondary_step():
+    """AUW 委任_04(α更新): Primary#2廃止に伴い、expected_readingsの転送先をSecondary判定(secondary_1)で固定する。
+    Primary#1は辞書登録トークン(Meta->メタ)が正しく、無関係なentity_like差(スラッジ->スラッシ)だけでUNCERTAIN。
+    Secondaryで辞書トークンが「メタン」に化けた場合、expected_readingsが転送されていれば当該stepはTRUE_CONTENT_MISMATCH
+    (転送されていなければ従来どおりentity_like扱い)。"""
+    calls = {}
+    orig_az = ja_secondary._azure_stt_strict
+    ja_secondary._azure_stt_strict = _mock_secondary("スラッシについて、メタンが説明しました。", calls)
     try:
         canon = "スラッジについて、Metaが説明しました。"
         asr1 = "スラッシについて、メタが説明しました。"
@@ -196,34 +191,31 @@ def test_expected_readings_forwarded_to_primary_2_step():
             canon, asr1, "dummy.wav", cascade_enabled=True, expected_readings={"meta": "メタ"})
         r_without = ja_secondary.evaluate_attempt_ja_with_cascade_detail(
             canon, asr1, "dummy.wav", cascade_enabled=True)
-        p2_step_with = next(s for s in r_with["steps"] if s["step"] == "primary_2")
-        p2_step_without = next(s for s in r_without["steps"] if s["step"] == "primary_2")
-        assert p2_step_with["classification"] == "TRUE_CONTENT_MISMATCH", p2_step_with
-        assert p2_step_without["classification"] != "TRUE_CONTENT_MISMATCH", p2_step_without
+        s_with = next(s for s in r_with["steps"] if s["step"] == "secondary_1")
+        s_without = next(s for s in r_without["steps"] if s["step"] == "secondary_1")
+        assert s_with["classification"] == "TRUE_CONTENT_MISMATCH", s_with
+        assert s_without["classification"] != "TRUE_CONTENT_MISMATCH", s_without
+        assert r_with["verified"] is False and r_without["verified"] is False
     finally:
-        routing._transcribe_openai_mini = orig
-    print("PASS: test_expected_readings_forwarded_to_primary_2_step")
+        ja_secondary._azure_stt_strict = orig_az
+    print("PASS: test_expected_readings_forwarded_to_secondary_step")
 
 
-def test_expected_readings_none_is_fully_backward_compatible():
-    """expected_readings未指定(既定None)時、Meta->メタンのentity_like
-    Cascade偶然一致挙動が変わらないこと(recon_reading_validation_
-    wiring_01.md 1.2節の再現、既存artifactの挙動を壊さないことの確認)。"""
-    import er006_asr_provider_routing_01 as routing
-    orig = routing._transcribe_openai_mini
-    # Primary#2が読みの完全一致する表記を返せば、従来どおり無条件PASS
-    # (TTSの内容自体は変わらないため辞書チェック抜きでは救済されてしまう、
-    # という既存の欠落挙動そのものを回帰確認する)。
-    routing._transcribe_openai_mini = lambda *a, **k: ("メタが説明しました。", None)
+def test_expected_readings_none_secondary_not_exact_is_not_auto_pass():
+    """AUW 委任_04(α更新): 旧test(Primary#2が読み一致を返せば無条件PASS=偶然一致PASSの欠落挙動)は、Primary#2廃止で前提が消えた。
+    新フローでは expected_readings 未指定でも、Secondary(独立エンジン)が原稿とEXACT/NORMALIZEDで一致しなければPASSしない
+    (Meta->メタン のentity_like差は、Secondaryも『メタン』なら誤PASSしない=偶然一致PASSの穴が塞がる)。"""
+    calls = {}
+    orig_az = ja_secondary._azure_stt_strict
+    ja_secondary._azure_stt_strict = _mock_secondary("メタンが説明しました。", calls)
     try:
-        canon = "Metaが説明しました。"
-        asr1 = "メタンが説明しました。"
         r = ja_secondary.evaluate_attempt_ja_with_cascade_detail(
-            canon, asr1, "dummy.wav", cascade_enabled=True)  # expected_readings渡さない
-        assert r["verified"] is True, "expected_readings未指定時は既存の挙動(偶然一致PASS)を変えない"
+            "Metaが説明しました。", "メタンが説明しました。", "dummy.wav", cascade_enabled=True)
+        assert r["verified"] is False, "Secondaryも原稿と不一致ならPASSしない"
+        assert calls.get("azure", 0) <= 1
     finally:
-        routing._transcribe_openai_mini = orig
-    print("PASS: test_expected_readings_none_is_fully_backward_compatible")
+        ja_secondary._azure_stt_strict = orig_az
+    print("PASS: test_expected_readings_none_secondary_not_exact_is_not_auto_pass")
 
 
 def test_single_engine_repetition_does_not_confirm_orthographic_variant():
@@ -257,13 +249,13 @@ def test_single_engine_repetition_does_not_confirm_orthographic_variant():
 if __name__ == "__main__":
     test_cascade_disabled_matches_plain_classify()
     test_non_entity_mismatch_does_not_trigger_cascade()
-    test_entity_like_mismatch_triggers_primary_2()
-    test_primary_2_pass_stops_cascade_before_secondary()
-    test_full_cascade_all_fail_routes_to_human_review()
+    test_entity_like_mismatch_triggers_secondary_once_without_primary_2()
+    test_secondary_exact_confirms_uncertain_entity_as_pass_with_warning()
+    test_both_ng_goes_to_next_regeneration_and_hr_only_at_last_slot()
     test_true_content_mismatch_never_rescued_by_cascade()
     test_koro_kanji_variant_confirmed_by_reading_candidates()
     test_unrelated_kanji_reading_not_confirmed()
     test_single_engine_repetition_does_not_confirm_orthographic_variant()
-    test_expected_readings_forwarded_to_primary_2_step()
-    test_expected_readings_none_is_fully_backward_compatible()
+    test_expected_readings_forwarded_to_secondary_step()
+    test_expected_readings_none_secondary_not_exact_is_not_auto_pass()
     print("ALL TESTS PASSED")

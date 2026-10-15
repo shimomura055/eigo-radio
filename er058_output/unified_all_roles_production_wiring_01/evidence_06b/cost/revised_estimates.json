@@ -1,0 +1,80 @@
+{
+ "zep": {
+  "clips": 23,
+  "mean_clip_seconds": 4.31,
+  "n_tts_calls": 23,
+  "n_asr_calls": 27,
+  "revised_tts_jpy": 2.409,
+  "revised_asr_jpy": 0.547,
+  "azure_jpy_measured": 0.0,
+  "revised_est_jpy": 2.956,
+  "basis": "TTS=n_calls x mean_clip_s x 0.0243 JPY/s, ASR=n_calls x mean_clip_s x 0.0047 JPY/s (校正元=xrun raw_usage_log token実測), Azure=秒数実測x0.0444"
+ },
+ "lega": {
+  "clips": 41,
+  "mean_clip_seconds": 4.21,
+  "n_tts_calls": 32,
+  "n_asr_calls": 39,
+  "revised_tts_jpy": 3.271,
+  "revised_asr_jpy": 0.771,
+  "azure_jpy_measured": 0.754,
+  "revised_est_jpy": 4.796,
+  "basis": "TTS=n_calls x mean_clip_s x 0.0243 JPY/s, ASR=n_calls x mean_clip_s x 0.0047 JPY/s (校正元=xrun raw_usage_log token実測), Azure=秒数実測x0.0444"
+ },
+ "head": {
+  "clips": 3,
+  "mean_clip_seconds": 4.25,
+  "n_tts_calls": 5,
+  "n_asr_calls": 5,
+  "revised_tts_jpy": 0.516,
+  "revised_asr_jpy": 0.1,
+  "azure_jpy_measured": 0.868,
+  "revised_est_jpy": 1.485,
+  "basis": "TTS=n_calls x mean_clip_s x 0.0243 JPY/s, ASR=n_calls x mean_clip_s x 0.0047 JPY/s (校正元=xrun raw_usage_log token実測), Azure=秒数実測x0.0444"
+ },
+ "ja_hr": {
+  "clips": 1,
+  "mean_clip_seconds": 5.92,
+  "n_tts_calls": 3,
+  "n_asr_calls": 3,
+  "revised_tts_jpy": 0.432,
+  "revised_asr_jpy": 0.083,
+  "azure_jpy_measured": 0.433,
+  "revised_est_jpy": 0.948,
+  "basis": "TTS=n_calls x mean_clip_s x 0.0243 JPY/s, ASR=n_calls x mean_clip_s x 0.0047 JPY/s (校正元=xrun raw_usage_log token実測), Azure=秒数実測x0.0444"
+ },
+ "lr_en": {
+  "revised_est_jpy": 3.719,
+  "revised_tts_jpy": 1.044,
+  "revised_asr_jpy": 0.202,
+  "azure_jpy_measured": 1.512,
+  "luna_8calls_est_jpy": 0.96,
+  "basis": "TTS=(Azure送信秒合計+最終wav秒)x0.0243, ASR=同秒数x0.0047, Azure=秒数実測x0.0444, LR の gpt-6-luna(candidate+QA x 入れ子LR4回=8 call)は wrapper 未計測のため1 call 約0.12 JPY(1500in/1200out token, pricing_snapshot gpt-6-luna 0.1/0.5 USD per M)で推定"
+ },
+ "xrun": {
+  "revised_est_jpy": 16.134,
+  "by_provider": {
+   "gemini": 12.59,
+   "openai_asr": 3.28,
+   "azure": 0.23,
+   "openai": 0.03
+  },
+  "basis": "Production cost logger(raw_usage_log / er005_cost_log, token実測×pricing_snapshot, USD_JPY=160)=er019.compute_cost_jpy_so_far"
+ },
+ "brun": {
+  "revised_est_jpy": 8.838,
+  "by_provider": {
+   "gemini": 8.15,
+   "openai_asr": 0.69
+  },
+  "basis": "Production cost logger(raw_usage_log / er005_cost_log, token実測×pricing_snapshot, USD_JPY=160)=er019.compute_cost_jpy_so_far"
+ },
+ "crun": {
+  "revised_est_jpy": 0.953,
+  "by_provider": {
+   "gemini": 0.88,
+   "openai_asr": 0.08
+  },
+  "basis": "Production cost logger(raw_usage_log / er005_cost_log, token実測×pricing_snapshot, USD_JPY=160)=er019.compute_cost_jpy_so_far"
+ }
+}

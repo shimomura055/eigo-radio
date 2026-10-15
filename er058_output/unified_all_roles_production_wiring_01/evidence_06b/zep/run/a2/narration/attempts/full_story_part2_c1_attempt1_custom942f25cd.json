@@ -1,0 +1,110 @@
+{
+  "attempt_number": 1,
+  "route": "custom_942f25cd",
+  "segment_id": "full_story_part2_c1",
+  "theme_id": "run",
+  "level": "a2",
+  "source_out_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/zep/run/a2/narration/full_story_part2_c1.wav",
+  "saved_at": "2026-10-16T00:51:43",
+  "sha256": "1ee5b5f2b8f00dea243480d674d4cb0d93d2504c527dae860fa7a5ddc648203b",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "A cheerful, kind storyteller sharing a true story at a pace a little slower than usual. Bring each sentence to its natural close, then go directly on to the next, including where the story takes a turn.",
+  "asr_text": "A price index fell 8.7 percent from the previous month, a report said.",
+  "audio_classification": "NUMERIC_EQUIVALENCE_MATCH",
+  "length_ok": true,
+  "verified": true,
+  "disfluency_checked": false,
+  "disfluency_evidence": null,
+  "repetition_qa_checked": true,
+  "repetition_qa_evidence": {
+    "flagged": false,
+    "duration_seconds": 5.73,
+    "method_a_ngram": {
+      "matches": [],
+      "flagged": false,
+      "flagged_matches": [],
+      "word_count": 14,
+      "canonical_known": true,
+      "min_words": 3
+    },
+    "method_d_spectral_long_lag": {
+      "top_matches": [
+        {
+          "similarity": 0.9814,
+          "time_a_seconds": 0.86,
+          "time_b_seconds": 3.43,
+          "lag_seconds": 2.57,
+          "run_length_seconds_at_thresh_0.85": 0.03
+        },
+        {
+          "similarity": 0.9739,
+          "time_a_seconds": 0.91,
+          "time_b_seconds": 4.25,
+          "lag_seconds": 3.34,
+          "run_length_seconds_at_thresh_0.85": 0.02
+        },
+        {
+          "similarity": 0.973,
+          "time_a_seconds": 4.28,
+          "time_b_seconds": 5.33,
+          "lag_seconds": 1.05,
+          "run_length_seconds_at_thresh_0.85": 0.01
+        },
+        {
+          "similarity": 0.9726,
+          "time_a_seconds": 4.07,
+          "time_b_seconds": 5.33,
+          "lag_seconds": 1.26
+        },
+        {
+          "similarity": 0.9705,
+          "time_a_seconds": 1.98,
+          "time_b_seconds": 4.31,
+          "lag_seconds": 2.33
+        }
+      ],
+      "best_run_length_seconds": 0.03,
+      "min_lag_seconds": 1.0,
+      "sim_threshold": 0.85,
+      "decision_threshold_seconds": 0.12,
+      "acoustic_flagged": false,
+      "local_asr_confirmation": null,
+      "flagged": false
+    },
+    "method_d_prime_spectral_short_lag": {
+      "run_length_seconds": 0.17,
+      "time_a": 2.46,
+      "lag": 0.5,
+      "similarity_at_start": 0.8024,
+      "best_run_length_seconds": 0.17,
+      "lag_range_seconds": [
+        0.5,
+        2.0
+      ],
+      "sim_threshold": 0.7,
+      "decision_threshold_seconds": 0.6,
+      "flagged": false
+    },
+    "method_c_v2_window_check": null
+  },
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": false,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "A price index fell 8.7 percent from the previous month, a report said.",
+      "classification": "NUMERIC_EQUIVALENCE_MATCH",
+      "entity_like_source": []
+    }
+  ]
+}

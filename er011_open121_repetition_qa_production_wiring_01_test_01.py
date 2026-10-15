@@ -861,6 +861,7 @@ class NarrationSnippetVerifiedStrictRepetitionQaScopeTests(unittest.TestCase):
                           cascade_enabled=None, force_secondary=False,
                           enable_non_latin_cascade=False,
                           enable_connected_speech_equivalence_layer=False, detail_out=None,
+                          attempt_ctx=None,   # AUW 委任_05(mock署名追随: leafがattempt_ctxを渡す)
                           # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(修正1回目):
                           # generate_narration_snippet_verified_strict()の標準呼び出しが
                           # 新たにsegment_idを転送するようになったための後方互換パラメータ。
@@ -924,7 +925,9 @@ class NarrationSnippetVerifiedStrictRepetitionQaScopeTests(unittest.TestCase):
         repetition_qa.evaluate_repetition_qa = tracking_evaluate
         orig_ja_cascade = repro01.ja_secondary.evaluate_attempt_ja_with_cascade
 
-        def fake_ja_cascade(text, asr_text, out_path, cascade_enabled=None, expected_readings=None, length_ok=True):
+        def fake_ja_cascade(text, asr_text, out_path, cascade_enabled=None, expected_readings=None, length_ok=True,
+                            attempt_ctx=None, detail_out=None):
+            # AUW 委任_04(α更新): JA leafが統一judgeの監査record用にdetail_outを転送するようになったため、mockも受け取る。
             # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: repro01のja分岐が
             # expected_readings(既定None)を転送するようになったため、この
             # mockのシグネチャも受け取れるようにする(値自体はこのテストの

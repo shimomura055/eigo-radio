@@ -33,6 +33,7 @@ import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
+import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
 
 AOEDE = "Aoede"
 SAFETY_MARGIN = 0.35
@@ -123,13 +124,15 @@ def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTIO
         # Protected Check+retry guardrail方式へ切り替え。
         length_ok = asr_text is not None and len(asr_text) <= max_len
         ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
+        _aj = {}  # AUW 委任_03: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
             text, asr_text, classification_history, out_path, language="en-US",
-            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED)
+            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED, detail_out=_aj,
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts))  # AUW 委任_05
         verified = verified_content and length_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]
-        attempts_log.append({"attempt": attempt, "asr_text": asr_text, "audio_classification": cls.classification,
+        attempts_log.append({"attempt": attempt, "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"), "audio_classification": cls.classification,
                               "length_ok": length_ok, "verified": verified, "instruction_type": instruction_type,
                               "disfluency_checked": gate["disfluency_checked"],
                               "disfluency_evidence": gate.get("disfluency_evidence")})
@@ -147,7 +150,7 @@ def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTIO
         attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
         print(f"    attempt {attempt} ({instruction_type}): asr={asr_text!r} classification={cls.classification} length_ok={length_ok}")
         if verified:
-            return {"status": "OK", "text": text, "path": out_path, "voice": AOEDE, "asr_verified": True,
+            return {"status": "OK", "text": text, "path": out_path, "voice": AOEDE, "asr_verified": True, "asr_judgement": _aj.get("asr_judgement"),
                     "asr_text": asr_text, "attempts_log": attempts_log, "instruction_type": instruction_type,
                     "max_len": max_len,
                     # ER-008-N8-FINAL-QA-HARDENING-21 Item 1: top-levelへ昇格。

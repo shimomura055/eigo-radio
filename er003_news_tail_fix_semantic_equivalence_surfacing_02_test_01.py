@@ -54,12 +54,18 @@ class FullStoryNewsTailFixSemanticEquivalenceSurfacingTest(unittest.TestCase):
             self.np.zeros(sr, dtype=self.np.float32), {"raw_duration_seconds": 1.0})
         news_tail_fix.safety.detect_duration_anomaly = lambda *a, **k: {"is_anomaly": False}
         news_tail_fix.routing.transcribe = lambda *a, **k: (self.ASR_NUMERIC_EQUIVALENT, None)
+        # 委任_06c(OF-AUW-C-02): cost logger未初期化等の設定不備(init_logger未呼出)は握りつぶさず再送出する方針になったため、
+        # Primary NG経路でSecondary(Azure)へ到達するこのtestは、実Azure SDKを呼ばないようmock(API 0を担保。旧=SDK呼出後にcost logger
+        # RuntimeErrorが障害として握りつぶされて通っていた)。Secondaryは取得不能として扱う(主題のPrimary判定・キー昇格は不変)。
+        self.orig_azure_stt = news_tail_fix.secondary_asr.get_full_text_via_azure_stt_with_phrase_list
+        news_tail_fix.secondary_asr.get_full_text_via_azure_stt_with_phrase_list = lambda *a, **k: (None, "mock: Secondary unavailable (API 0)")
 
     def tearDown(self):
         news_tail_fix.common._call_tts_with_retry = self.orig_call_tts
         news_tail_fix.p3u.trim_english_keyword_silence = self.orig_trim
         news_tail_fix.safety.detect_duration_anomaly = self.orig_anomaly
         news_tail_fix.routing.transcribe = self.orig_transcribe
+        news_tail_fix.secondary_asr.get_full_text_via_azure_stt_with_phrase_list = self.orig_azure_stt
         shutil.rmtree(self.tmp_dir, ignore_errors=True)
 
     def test_full_story_part1_semantic_equivalence_info_surfaced_top_level_and_attempts_log(self):

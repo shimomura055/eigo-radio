@@ -43,6 +43,8 @@ os.environ["TTS_EXECUTION_MODE"] = "STANDARD"
 import hashlib
 
 import audio_review_player as player_common
+import er078_secondary_run_scope_01 as secondary_run_scope  # AUW 委任_05
+import er078_pass_with_warning_registry_01 as pww_registry  # AUW 委任_05: PASS_WITH_WARNING 事後試聴リスト
 import er002_common as common
 import er003_b1_p9a_audio as p9a
 import er003_v1_b1_scaffold_01_generate as b1s
@@ -304,6 +306,7 @@ def run_scaffold(parts: dict, article_text: str, sections: dict, ledger_text: st
 # ============================================================
 # Step 4: TTS(既存Production関数 + 新規Voice A/B関数)
 # ============================================================
+@secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 def run_tts(parts: dict, support_texts: dict, voice_a: str, voice_b: str) -> dict:
     shared_narration.ensure_all_shared_narration_b1(NARRATION_DIR)  # Production、無変更(Master Audio Store経由)
 
@@ -396,6 +399,7 @@ def finalize_tts_results(new_results: dict) -> dict:
             "ja_charon": {"status": "OK", "reused_from": "Key Phrase reuse (Phase 1対象外、現状維持)"},
         }
     save_json(f"{OUT_B1_DIR}/audit/tts_generation_results.json", data)
+    pww_registry.write_listening_list_safe(os.path.dirname(os.path.dirname(f"{OUT_B1_DIR}/audit/tts_generation_results.json")), standalone_html=True)  # AUW 委任_05: 事後試聴リスト(0件でも節を出す・例外を投げない)
     all_status = {k: v.get("status") for k, v in new_results.items()}
     save_json(f"{OUT_B1_DIR}/run_summary_tts.json", {"segment_status": all_status})
     print(f"[B-FAMILY-PROD-RUNNER] TTS完了。segment_status={all_status}")
@@ -827,6 +831,7 @@ def finalize_tts_results_3v(new_results: dict) -> dict:
             "ja_charon": {"status": "OK", "reused_from": "Key Phrase reuse (3V Audio Trial-01出力の再利用)"},
         }
     save_json(f"{OUT_B1_DIR_3V}/audit/tts_generation_results.json", data)
+    pww_registry.write_listening_list_safe(os.path.dirname(os.path.dirname(f"{OUT_B1_DIR_3V}/audit/tts_generation_results.json")), standalone_html=True)  # AUW 委任_05: 事後試聴リスト(0件でも節を出す・例外を投げない)
     all_status = {k: v.get("status") for k, v in new_results.items()}
     save_json(f"{OUT_B1_DIR_3V}/run_summary_tts.json", {"segment_status": all_status})
     print(f"[B-FAMILY-VOICES-3V-PROD-RUNNER] TTS完了。segment_status={all_status}")
@@ -1449,6 +1454,7 @@ def reuse_approved_a2_assets(article_text: str) -> dict:
     return reuse_report
 
 
+@secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 def run_tts_a2(parts: dict, voice_a: str, voice_b: str) -> dict:
     """Voice A/B本文(point_one/point_two)のみ実際に新規TTSを発火する
     (Gate 3 item1の中心対象=Voice A/B slowdown付きTTSのProduction wiring
@@ -1490,6 +1496,7 @@ def finalize_tts_results_a2(new_results: dict, reuse_report: dict) -> dict:
 
     data = {"segments": segments, "key_phrases": key_phrases}
     save_json(f"{A2_AUDIT_DIR}/tts_generation_results.json", data)
+    pww_registry.write_listening_list_safe(os.path.dirname(os.path.dirname(f"{A2_AUDIT_DIR}/tts_generation_results.json")), standalone_html=True)  # AUW 委任_05: 事後試聴リスト(0件でも節を出す・例外を投げない)
     all_status = {k: v.get("status") for k, v in segments.items()}
     save_json(f"{A2_A2_DIR}/run_summary_tts.json", {"segment_status": all_status})
 
@@ -1695,6 +1702,7 @@ def main_a2() -> None:
 #   3. 日本語タイトル: theme_moduleがconfig(`JAPANESE_TITLE_A2`)として直接
 #      供給する(固定辞書登録は不要)。
 # ============================================================
+@secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 def run_tts_a2_2v_new_topic(parts: dict, voice_a: str, voice_b: str, narration_dir: str) -> dict:
     """新規topic A2の全segment(Voice A/B本文以外も含む)を実際に新規TTSで
     生成する(free_address経路[reuse_approved_a2_assets]と異なり、承認済み
@@ -1772,6 +1780,7 @@ def finalize_tts_results_a2_2v_new_topic(new_results: dict, out_dir_base: str, a
         rank = item["rank"]
         data["key_phrases"][str(rank)] = {"en": {"status": "OK"}, "ja_aoede": {"status": "OK"}}
     save_json(f"{audit_dir}/tts_generation_results.json", data)
+    pww_registry.write_listening_list_safe(os.path.dirname(os.path.dirname(f"{audit_dir}/tts_generation_results.json")), standalone_html=True)  # AUW 委任_05: 事後試聴リスト(0件でも節を出す・例外を投げない)
     all_status = {k: v.get("status") for k, v in new_results.items()}
     save_json(f"{out_dir_base}/run_summary_tts.json", {"segment_status": all_status})
     completeness = a2prod.check_required_segments_completeness(all_status, voice_a, voice_b)

@@ -695,11 +695,13 @@ def run_key_phrases_a2_from_own_text(article_text: str, kp_dir: str, narration_d
 # ============================================================
 def generate_voice_body_wide_margin_with_a2_slowdown(name: str, tts_input: str, out_path: str,
                                                        voice_name: str) -> dict:
-    result = b1prod.generate_voice_body_wide_margin(
-        tts_input, out_path, voice_name,
-        style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER,
-        enable_connected_speech_equivalence_layer=True, enable_repetition_qa=True)
-    return n3_tts.apply_a2_slowdown_postprocess(name, out_path.rsplit("/", 1)[0], tts_input, result)
+    # 委任_06c(OF-AUW-C-08): 減速後NGでも通算TTS3回の残予算で取り直す外側ループ(旧: 減速後NGは再生成せずSTOPPED)。
+    return n3_tts.generate_with_a2_slowdown_outer_loop(
+        name, tts_input, out_path,
+        lambda max_attempts: b1prod.generate_voice_body_wide_margin(
+            tts_input, out_path, voice_name, max_attempts=max_attempts,
+            style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER,
+            enable_connected_speech_equivalence_layer=True, enable_repetition_qa=True))
 
 
 # ============================================================
@@ -745,11 +747,13 @@ def generate_narration_wide_margin_with_a2_slowdown(name: str, tts_input: str, o
                                                       disfluency_qa: bool = False,
                                                       enable_connected_speech_equivalence_layer: bool = False,
                                                       enable_repetition_qa: bool = False) -> dict:
-    result = news_tail_fix.generate_news_narration_wide_margin(
-        tts_input, out_path, disfluency_qa=disfluency_qa,
-        enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-        enable_repetition_qa=enable_repetition_qa)
-    return n3_tts.apply_a2_slowdown_postprocess(name, out_path.rsplit("/", 1)[0], tts_input, result)
+    # 委任_06c(OF-AUW-C-08): 同上(通算TTS3回の外側ループ)。
+    return n3_tts.generate_with_a2_slowdown_outer_loop(
+        name, tts_input, out_path,
+        lambda max_attempts: news_tail_fix.generate_news_narration_wide_margin(
+            tts_input, out_path, max_attempts=max_attempts, disfluency_qa=disfluency_qa,
+            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
+            enable_repetition_qa=enable_repetition_qa))
 
 
 # ============================================================

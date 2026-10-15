@@ -1,0 +1,271 @@
+{
+  "full_story_part1_c1": {
+    "state": "HUMAN_REVIEW_REQUIRED",
+    "canonical_text_sha256": "608acbae6150be1f6fac1ce148db525d9cb926a24410994dbb19fb2d4f4d5a7c",
+    "language": "en",
+    "theme_id": "run",
+    "level": "a2",
+    "segment_id": "full_story_part1_c1",
+    "updated_at": "2026-10-16T01:22:37",
+    "reason": "最終status=STOPPED。標準経路2回+fallback経路1回(合計上限3回)とも不合格",
+    "final_status": "STOPPED",
+    "wav_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/a2_fail/run/a2/narration/full_story_part1_c1.wav",
+    "cumulative_tts_attempts": 3,
+    "cumulative_asr_calls": 3,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 4.65,
+        "asr_text": "Mayor Chris McKick said the old bridge would close in June.",
+        "asr_text_length": 59,
+        "max_len": 114,
+        "substring_ok": null,
+        "length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 202,
+          "sha256": "d1956c91c925d197e27cf1204d7ed17248a96bef096b082fb1bd0846106a0477",
+          "head200": "A cheerful, kind storyteller sharing a true story at a pace a little slower than usual. Bring each sentence to its natural close, then go directly on to the next, including where the story takes a tur"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Mayor Chris McKick said the old bridge would close in June.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Mayor Quivers Mackick said the old bridge would close in June.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": false,
+            "cached": false,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part1_c1",
+          "audio_sha256": "b1d3e72437e2f82f56788aeebb06a7859851b2d4fca5241d806a5c8f7e72136a",
+          "primary": {
+            "text": "Mayor Chris McKick said the old bridge would close in June.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Mayor Quivers Mackick said the old bridge would close in June.",
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 4.65,
+            "est_jpy": 0.2222,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 1629,
+            "secondary_ms": 1625
+          },
+          "technical_stop": null,
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part1_c1",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/a2_fail/run/a2/narration/attempts/full_story_part1_c1_attempt1_custom942f25cd.wav"
+      },
+      {
+        "attempt": 2,
+        "status": "OK",
+        "duration_seconds": 4.36,
+        "asr_text": "Mayor Quibza-Mc said the old bridge would close in June.",
+        "asr_text_length": 56,
+        "max_len": 114,
+        "substring_ok": null,
+        "length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "ASR_VALIDATION_UNCERTAIN",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": false,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": false,
+        "repetition_qa_evidence": null,
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 202,
+          "sha256": "d1956c91c925d197e27cf1204d7ed17248a96bef096b082fb1bd0846106a0477",
+          "head200": "A cheerful, kind storyteller sharing a true story at a pace a little slower than usual. Bring each sentence to its natural close, then go directly on to the next, including where the story takes a tur"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Mayor Quibza-Mc said the old bridge would close in June.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Mayor Quivza Mick said the old bridge would close in June.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": false,
+            "cached": false,
+            "unified_judge_state": "NG_BOTH",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          }
+        ],
+        "asr_judgement": {
+          "state": "NG_BOTH",
+          "reason_code": "secondary_not_accepted",
+          "slot": 2,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part1_c1",
+          "audio_sha256": "32569b08bbdd51673c19b682177ed264e0e547459fc1063894d0df3385b2af64",
+          "primary": {
+            "text": "Mayor Quibza-Mc said the old bridge would close in June.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": true,
+            "cached": false,
+            "engine": "azure",
+            "text": "Mayor Quivza Mick said the old bridge would close in June.",
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "accepted": false,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 1,
+            "azure_seconds": 4.36,
+            "est_jpy": 0.2222,
+            "est_jpy_known": true
+          },
+          "timing": {
+            "total_ms": 1047,
+            "secondary_ms": 1043
+          },
+          "technical_stop": null,
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part1_c1",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 4,
+              "hits": 0
+            }
+          }
+        },
+        "attempt_audio_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06b/a2_fail/run/a2/narration/attempts/full_story_part1_c1_attempt2_custom942f25cd.wav"
+      }
+    ]
+  }
+}

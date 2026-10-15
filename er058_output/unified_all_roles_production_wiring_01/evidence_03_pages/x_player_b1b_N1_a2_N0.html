@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01 player(evidence_demo)</title>
+<style>
+body { font-family: "Meiryo","Hiragino Kaku Gothic ProN",sans-serif; max-width: 1080px; margin: 2em auto; line-height:1.55; color:#111; }
+h1 { font-size: 1.3em; }
+h2 { border-bottom: 2px solid #333; padding-bottom:4px; margin-top:1.8em; }
+h3 { margin-top:1.6em; border-left:6px solid #888; padding-left:8px; }
+table.timeline { border-collapse: collapse; width: 100%; margin: 10px 0 22px 0; font-size: 0.9em; }
+table.timeline th, table.timeline td { border: 1px solid #ccc; padding: 6px 8px; vertical-align: top; text-align:left; }
+table.timeline th { background:#f0f0f0; }
+table.timeline th:nth-child(1), table.timeline td:nth-child(1) { width: 100px; }
+table.timeline th:nth-child(2), table.timeline td:nth-child(2) { width: 190px; }
+table.timeline th:nth-child(4), table.timeline td:nth-child(4) { width: 400px; }
+table.timeline td.txt { white-space: pre-wrap; }
+button.seek { cursor:pointer; font-family:monospace; font-size:0.92em; padding:2px 6px; }
+table.timeline audio { width: 100%; min-width: 360px; height: 32px; }
+.missing { color:#a33; font-style:italic; }
+.note { background:#fffbe6; border:1px solid #e0d080; padding:8px 12px; font-size:0.88em; margin:10px 0; }
+audio.main { width:100%; max-width:640px; display:block; margin:8px 0; }
+table.kp { border-collapse: collapse; width: 100%; margin: 10px 0 22px 0; font-size: 0.9em; }
+table.kp th, table.kp td { border: 1px solid #ccc; padding: 6px 8px; vertical-align: top; text-align:left; }
+table.kp th { background:#f0f0f0; }
+</style>
+<script>
+function seekTarget(sec, targetId) {
+  var id = targetId || 'episode_audio';
+  var a = document.getElementById(id);
+  if (!a) return;
+  a.currentTime = parseFloat(sec);
+  a.play();
+}
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("button.seek").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      seekTarget(btn.getAttribute("data-sec"), btn.getAttribute("data-target"));
+    });
+  });
+});
+</script>
+</head><body>
+<h1>NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01(evidence_demo)</h1>
+<p class="note">Family X(Entertainment News)音声構造Stage 3a runtime。
+Comment1→本文1→Comment2→本文2→Comment3→本文3→Comment4→In One Line(Point構造なし)。</p>
+<h2>Advanced(B1)</h2><p style="color:#b00">status=NOT_ASSEMBLED</p>
+<h2>Standard(A2)</h2><p style="color:#b00">status=NOT_ASSEMBLED</p>
+<h3>Advanced(B1)</h3><section id="pass-with-warning-listening-list"><h2>事後試聴リスト(PASS_WITH_WARNING) WARNING音声 試聴リスト(自動採用・事後確認用)</h2>
+<p>1件。公開をブロックしません。事後に試聴して確認してください。</p><table border="1"><tr><th>segment</th><th>role</th><th>warning</th><th>原稿</th><th>Primary転写</th><th>Secondary転写</th><th>値ガードkind</th><th>理由</th><th>音声</th></tr>
+<tr><td>preview</td><td>preview</td><td>SECONDARY_CONFIRMED</td><td>Ottoni and colleagues published a study.</td><td>A Tony and colleagues published a study.</td><td>Ottoni and colleagues published a study.</td><td>NO_VALUES/NO_VALUES</td><td>secondary_confirmed</td><td><audio controls preload="none" src="file:///C:/Users/tensh/eigo-radio/narration/preview.wav"></audio> <a href="file:///C:/Users/tensh/eigo-radio/narration/preview.wav">mp3</a></td></tr>
+</table></section>
+<h3>Standard(A2)</h3><section id="pass-with-warning-listening-list"><h2>事後試聴リスト(PASS_WITH_WARNING) WARNING音声 試聴リスト(自動採用・事後確認用)</h2>
+<p>0件(該当なし: PASS_WITH_WARNINGの採用音声はありません)</p></section>
+</body></html>

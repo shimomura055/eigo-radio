@@ -1,0 +1,194 @@
+{
+  "full_story_part1_c3": {
+    "state": "HUMAN_REVIEW_REQUIRED",
+    "canonical_text_sha256": "afd586a6c22cd5a7433fdadbe984aa0e12e77b93629540ab28480129a8b849f5",
+    "language": "en",
+    "theme_id": "run",
+    "level": "a2",
+    "segment_id": "full_story_part1_c3",
+    "updated_at": "2026-10-16T04:48:39",
+    "reason": "最終status=STOPPED。post-process(6%減速)後の音声がASR再検証で不一致: classification=TTS_FAILURE",
+    "final_status": "STOPPED",
+    "wav_path": "er058_output/unified_all_roles_production_wiring_01/evidence_07/narr_cap3/run/a2/narration/full_story_part1_c3.wav",
+    "cumulative_tts_attempts": 3,
+    "cumulative_asr_calls": 3,
+    "budget_guard_triggered": false,
+    "last_attempts_log": [
+      {
+        "attempt": 1,
+        "status": "OK",
+        "duration_seconds": 2.96,
+        "asr_text": "I did not see a lower price today.",
+        "asr_text_length": 34,
+        "max_len": 94,
+        "substring_ok": null,
+        "length_ok": true,
+        "phonetic_verdict": null,
+        "audio_classification": "EXACT_MATCH",
+        "connected_speech_info": null,
+        "reading_resolver_info": null,
+        "scg_info": null,
+        "verified": true,
+        "disfluency_checked": false,
+        "disfluency_evidence": null,
+        "repetition_qa_checked": true,
+        "repetition_qa_evidence": {
+          "flagged": false,
+          "duration_seconds": 2.96,
+          "method_a_ngram": {
+            "matches": [],
+            "flagged": false,
+            "flagged_matches": [],
+            "word_count": 8,
+            "canonical_known": true,
+            "min_words": 3
+          },
+          "method_d_spectral_long_lag": {
+            "top_matches": [
+              {
+                "similarity": 0.9452,
+                "time_a_seconds": 0.52,
+                "time_b_seconds": 2.38,
+                "lag_seconds": 1.86,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9342,
+                "time_a_seconds": 0.77,
+                "time_b_seconds": 1.94,
+                "lag_seconds": 1.17,
+                "run_length_seconds_at_thresh_0.85": 0.01
+              },
+              {
+                "similarity": 0.9313,
+                "time_a_seconds": 1.14,
+                "time_b_seconds": 2.15,
+                "lag_seconds": 1.01,
+                "run_length_seconds_at_thresh_0.85": 0.06
+              },
+              {
+                "similarity": 0.928,
+                "time_a_seconds": 0.63,
+                "time_b_seconds": 2.38,
+                "lag_seconds": 1.75
+              },
+              {
+                "similarity": 0.9206,
+                "time_a_seconds": 1.35,
+                "time_b_seconds": 2.42,
+                "lag_seconds": 1.07
+              }
+            ],
+            "best_run_length_seconds": 0.06,
+            "min_lag_seconds": 1.0,
+            "sim_threshold": 0.85,
+            "decision_threshold_seconds": 0.12,
+            "acoustic_flagged": false,
+            "local_asr_confirmation": null,
+            "flagged": false
+          },
+          "method_d_prime_spectral_short_lag": {
+            "run_length_seconds": 0.19,
+            "time_a": 1.92,
+            "lag": 0.57,
+            "similarity_at_start": 0.7365,
+            "best_run_length_seconds": 0.19,
+            "lag_range_seconds": [
+              0.5,
+              2.0
+            ],
+            "sim_threshold": 0.7,
+            "decision_threshold_seconds": 0.6,
+            "flagged": false
+          },
+          "method_c_v2_window_check": null
+        },
+        "asr_prompt_applied": false,
+        "non_latin_cascade_enabled": false,
+        "non_latin_cascade_invoked": false,
+        "style_prefix": {
+          "len": 202,
+          "sha256": "d1956c91c925d197e27cf1204d7ed17248a96bef096b082fb1bd0846106a0477",
+          "head200": "A cheerful, kind storyteller sharing a true story at a pace a little slower than usual. Bring each sentence to its natural close, then go directly on to the next, including where the story takes a tur"
+        },
+        "cascade_steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "I did not see a lower price today.",
+            "classification": "EXACT_MATCH",
+            "entity_like_source": []
+          }
+        ],
+        "asr_judgement": {
+          "state": "PASS",
+          "reason_code": "primary_pass",
+          "slot": 3,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part1_c3",
+          "audio_sha256": "8a77b82960684eaad1d7e57f7632d9649543097852d1f2b92d4b0f3b65c95ecf",
+          "primary": {
+            "text": "I did not see a lower price today.",
+            "passed": true,
+            "label": "EXACT_MATCH",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": false,
+            "engine": "azure",
+            "text": null,
+            "label": "",
+            "accepted": null,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 0,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "adapter": {
+            "layers": [],
+            "azure_real_calls": 0,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part1_c3",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 2,
+              "hits": 1
+            }
+          }
+        },
+        "attempt_audio_path": "er058_output/unified_all_roles_production_wiring_01/evidence_07/narr_cap3/run/a2/narration/attempts/full_story_part1_c3_attempt3_custom942f25cd.wav"
+      }
+    ]
+  }
+}
