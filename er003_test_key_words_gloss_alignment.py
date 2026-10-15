@@ -628,6 +628,16 @@ class PromptCorrected(unittest.TestCase):
         self.assertIn('"added_content_words": [\n      "interviews"', msg)
         self.assertIn("インタビューをもとにした", msg)                              # 判定例
 
+    def test_message_has_no_unnecessary_rewrite_instruction(self):  # KGDC 委任_03: 整合済みglossの不要書換え抑止
+        t = [_t(2, "fall into", "fall into", "～に落ちる")]
+        msg = ga.build_user_message_corrected(t, "ART")
+        self.assertIn("より自然・より適切と思える言い換えがあっても書き換えず、current_japanese_glossをそのまま返してください", msg)
+        self.assertIn("書き換えるのは、key_phraseの語の意味が欠けている・誤っている場合だけです", msg)
+        self.assertIn("key_phrase「fall into」にcurrent「～に落ちる」: 意味は表れているので一致です", msg)
+        self.assertNotIn("スロット語がある場合に限り", msg)
+        # legacy課題指示文は無変更(この追記文を含まない)
+        self.assertNotIn("書き換えるのは、key_phraseの語の意味が欠けている", ga.build_user_message(t, "ART"))
+
     def test_schema_requires_mappings(self):
         sch = ga.GLOSS_ALIGNMENT_JSON_SCHEMA_CORRECTED["schema"]["properties"]["items"]["items"]
         self.assertIn("added_word_mappings", sch["required"])

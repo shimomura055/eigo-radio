@@ -21046,3 +21046,7 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 実装: `er003_key_words_gloss_alignment.py`の既定を"0"へ(明示ON=`EIGO_KP_GLOSS_ALIGNMENT=1`または`enabled=True`引数)。ロジック・Prompt・Gate・Lock無変更。証跡: er071_output/m2p0_n01_production_wiring_01/gloss_alignment_default_off_01/VALIDATION_OFF_01.md(test 76 pass、Family X実runner KP段 fresh JPY1.83でalignment呼出0、Z mock、Regression新規failure 0)。Status: evidence取得済み・PRODUCTION_WIRED判定待ち。
 - 委任_03(2026-10-15): Z正式runner KP段の実LLM evidence(Production既定kp_fn=`w62.run_kp_with_outer_retry`、flag未設定でgloss_alignment_status=DISABLED・alignmentタグ0件・JPY1.12)取得(commitは`git log`で特定)。flagを唯一のkill switchへ一元化(mode=correctedでも`EIGO_KP_GLOSS_ALIGNMENT=1`の明示ONが無ければ実行しない)。PRODUCTION_WIRED判定はFable。工程自体は未採用。
 - 委任_04: Fable判定 PRODUCTION_WIRED(既定OFF安全措置のみ)。
+
+## KP-GLOSS-ALIGNMENT-DESIGN-CORRECTION-TRIAL-01 委任_03(2026-10-15、Trial、JPY1.60、Production既定OFF維持)
+- 2026-10-15 ユーザー決定(KGDC): ①修正Trialの停止方式=既存status返却+Audio Validation Gate+FamilyZE2EStop+B1解説整合(A')を設計承認(Production採用ではない)。②整合済みglossの不要書換えはユーザー判断事項ではなく開発側で自律改善(課題指示文改善+P2/P3/P7再Trial)。③終了条件5点をFableが確認しREJECTED/VALIDATED/UDRに分類、VALIDATED時に初めてProduction採用をユーザーへ諮る。既定OFF維持。
+- 委任_03結果: Status=VALIDATED(Sonnet提案、Fable最終判定待ち)。原因=LLMが不一致と判定して書換え(機械チェックの穴ではない)、correctedの指示2へ不要書換え抑止文+判定例1行追加。P3書換4/16→0/16、P2 0/4、P7 0/12、P1/P4 12/12反映、T2 12/12検出、T3 27/27、新規failure 0、費用JPY1.60(累計4.10/5)。未確認: `fall into`は例示、実LLMretry未発火。工程自体はProduction未採用。証跡: er071_output/m2p0_n01_production_wiring_01/gloss_alignment_correction_01/VALIDATION_03.md。commitはgit logで特定。

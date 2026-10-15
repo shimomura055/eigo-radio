@@ -1,0 +1,2007 @@
+{
+ "managed_id": "KP-GLOSS-ALIGNMENT-DESIGN-CORRECTION-TRIAL-01",
+ "delegation": "03",
+ "mode": "corrected",
+ "patterns": [
+  "T2"
+ ],
+ "reps": 1,
+ "model_requested": "gpt-6-luna",
+ "models_returned": [
+  "gpt-6-luna"
+ ],
+ "reasoning_effort": "high",
+ "rules_sha256": "447e07cb8b9a30850a8dc75b6c3cce48c53d99b5f1fafa88d19b778d9155949b",
+ "n_batches": 3,
+ "n_api_calls": 3,
+ "total_cost_jpy": 0.3589,
+ "budget_jpy": 0.4,
+ "elapsed_sec": 19.3,
+ "usage_total": {
+  "input_tokens": 4813,
+  "output_tokens": 3523,
+  "cached_input_tokens": 0
+ },
+ "mapping_gate": false,
+ "summary": {
+  "T2": {
+   "n_evals": 12,
+   "first_attempt_invalid": 0,
+   "unresolved_after_2": 0,
+   "first_attempt_invalid_rate": 0.0,
+   "unresolved_rate": 0.0,
+   "unresolved_rate_upper95": 0.2209,
+   "expected_ok_auto": 12,
+   "expected_evaluated": 12,
+   "false_pass_llm_said_consistent_or_unchanged": 0,
+   "final_missing_keyword_auto": 0,
+   "gate_would_catch_but_record_only_adopted": 0
+  }
+ },
+ "batches": [
+  {
+   "batch": 1,
+   "cost_jpy": 0.1482,
+   "n_calls": 1,
+   "elapsed_sec": 19.1,
+   "attempts": [
+    {
+     "attempt": 1,
+     "target_ranks": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "model": "gpt-6-luna",
+     "response_id": "resp_0a0694c67b593e42006ad048980cbc87d0bc46be4663d43545",
+     "usage": {
+      "input_tokens": 1732,
+      "output_tokens": 1506,
+      "cached_input_tokens": 0
+     },
+     "cost_jpy": 0.1482,
+     "status": "ALIGN_PASS",
+     "n_valid": 5,
+     "n_items": 5
+    }
+   ],
+   "rows": [
+    {
+     "batch": 1,
+     "pattern": "T2",
+     "rep": 1,
+     "display": "based on",
+     "kp": "based on interviews",
+     "gloss_before": "ニュースをもとにした",
+     "expect": "MUST_CHANGE",
+     "note": "span(ニュース)は存在するが別語",
+     "unresolved": false,
+     "first_attempt_verdict": "VALID",
+     "first_attempt_reasons": [],
+     "attempts_used": 1,
+     "final_gloss": "インタビューをもとにした",
+     "llm_current_consistent": false,
+     "changed": true,
+     "kw_hit": true,
+     "expected_ok_auto": true,
+     "machine_check_pass_gate": true,
+     "machine_check": {
+      "required_words": [
+       "interviews"
+      ],
+      "covered": {
+       "interviews": "インタビュー"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "added_word_mappings": [
+      {
+       "english_word": "interviews",
+       "japanese_span": "インタビュー"
+      }
+     ],
+     "reasoning": "「ニュース」は「インタビュー」と異なり、interviewsの意味が表れていません。",
+     "attempt_log": [
+      {
+       "attempt": 1,
+       "verdict": "VALID",
+       "reasons": [],
+       "proposed_gloss": "インタビューをもとにした",
+       "current_gloss_consistent": false,
+       "qa": "PASS",
+       "reasoning": "「ニュース」は「インタビュー」と異なり、interviewsの意味が表れていません。",
+       "added_word_mappings": [
+        {
+         "english_word": "interviews",
+         "japanese_span": "インタビュー"
+        }
+       ],
+       "machine_check": {
+        "required_words": [
+         "interviews"
+        ],
+        "covered": {
+         "interviews": "インタビュー"
+        },
+        "uncovered": [],
+        "span_not_in_gloss": [],
+        "symbol_only_spans": [],
+        "malformed_mappings": 0,
+        "pass": true
+       },
+       "batch_status": null,
+       "batch_cost_jpy": 0.1482,
+       "model": "gpt-6-luna"
+      }
+     ]
+    },
+    {
+     "batch": 1,
+     "pattern": "T2",
+     "rep": 1,
+     "display": "raw-bean",
+     "kp": "raw-bean prices",
+     "gloss_before": "焙煎前のコーヒー豆の量",
+     "expect": "MUST_CHANGE",
+     "note": "pricesを量と誤訳",
+     "unresolved": false,
+     "first_attempt_verdict": "VALID",
+     "first_attempt_reasons": [],
+     "attempts_used": 1,
+     "final_gloss": "焙煎前のコーヒー豆の価格",
+     "llm_current_consistent": false,
+     "changed": true,
+     "kw_hit": true,
+     "expected_ok_auto": true,
+     "machine_check_pass_gate": true,
+     "machine_check": {
+      "required_words": [
+       "prices"
+      ],
+      "covered": {
+       "prices": "価格"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "added_word_mappings": [
+      {
+       "english_word": "prices",
+       "japanese_span": "価格"
+      }
+     ],
+     "reasoning": "current glossの「量」はpricesの意味と異なるため、「価格」に直しました。",
+     "attempt_log": [
+      {
+       "attempt": 1,
+       "verdict": "VALID",
+       "reasons": [],
+       "proposed_gloss": "焙煎前のコーヒー豆の価格",
+       "current_gloss_consistent": false,
+       "qa": "PASS",
+       "reasoning": "current glossの「量」はpricesの意味と異なるため、「価格」に直しました。",
+       "added_word_mappings": [
+        {
+         "english_word": "prices",
+         "japanese_span": "価格"
+        }
+       ],
+       "machine_check": {
+        "required_words": [
+         "prices"
+        ],
+        "covered": {
+         "prices": "価格"
+        },
+        "uncovered": [],
+        "span_not_in_gloss": [],
+        "symbol_only_spans": [],
+        "malformed_mappings": 0,
+        "pass": true
+       },
+       "batch_status": null,
+       "batch_cost_jpy": 0.1482,
+       "model": "gpt-6-luna"
+      }
+     ]
+    },
+    {
+     "batch": 1,
+     "pattern": "T2",
+     "rep": 1,
+     "display": "close around",
+     "kp": "close around me",
+     "gloss_before": "彼らの周りから迫ってくる",
+     "expect": "MUST_CHANGE",
+     "note": "me->彼ら",
+     "unresolved": false,
+     "first_attempt_verdict": "VALID",
+     "first_attempt_reasons": [],
+     "attempts_used": 1,
+     "final_gloss": "私を取り囲むように迫ってくる",
+     "llm_current_consistent": false,
+     "changed": true,
+     "kw_hit": true,
+     "expected_ok_auto": true,
+     "machine_check_pass_gate": true,
+     "machine_check": {
+      "required_words": [
+       "me"
+      ],
+      "covered": {
+       "me": "私を"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "added_word_mappings": [
+      {
+       "english_word": "me",
+       "japanese_span": "私を"
+      }
+     ],
+     "reasoning": "「彼らの周り」ではなく、meにあたる「私」を取り囲むように迫る意味です。",
+     "attempt_log": [
+      {
+       "attempt": 1,
+       "verdict": "VALID",
+       "reasons": [],
+       "proposed_gloss": "私を取り囲むように迫ってくる",
+       "current_gloss_consistent": false,
+       "qa": "PASS",
+       "reasoning": "「彼らの周り」ではなく、meにあたる「私」を取り囲むように迫る意味です。",
+       "added_word_mappings": [
+        {
+         "english_word": "me",
+         "japanese_span": "私を"
+        }
+       ],
+       "machine_check": {
+        "required_words": [
+         "me"
+        ],
+        "covered": {
+         "me": "私を"
+        },
+        "uncovered": [],
+        "span_not_in_gloss": [],
+        "symbol_only_spans": [],
+        "malformed_mappings": 0,
+        "pass": true
+       },
+       "batch_status": null,
+       "batch_cost_jpy": 0.1482,
+       "model": "gpt-6-luna"
+      }
+     ]
+    },
+    {
+     "batch": 1,
+     "pattern": "T2",
+     "rep": 1,
+     "display": "bring in",
+     "kp": "bring in a human helper",
+     "gloss_before": "機械の助けを借りる",
+     "expect": "MUST_CHANGE",
+     "note": "human->機械",
+     "unresolved": false,
+     "first_attempt_verdict": "VALID",
+     "first_attempt_reasons": [],
+     "attempts_used": 1,
+     "final_gloss": "人間の助っ人を呼ぶ",
+     "llm_current_consistent": false,
+     "changed": true,
+     "kw_hit": true,
+     "expected_ok_auto": true,
+     "machine_check_pass_gate": true,
+     "machine_check": {
+      "required_words": [
+       "human",
+       "helper"
+      ],
+      "covered": {
+       "human": "人間",
+       "helper": "助っ人"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "added_word_mappings": [
+      {
+       "english_word": "human",
+       "japanese_span": "人間"
+      },
+      {
+       "english_word": "helper",
+       "japanese_span": "助っ人"
+      }
+     ],
+     "reasoning": "current glossは「機械」の助けとしており、human helperの意味と異なります。",
+     "attempt_log": [
+      {
+       "attempt": 1,
+       "verdict": "VALID",
+       "reasons": [],
+       "proposed_gloss": "人間の助っ人を呼ぶ",
+       "current_gloss_consistent": false,
+       "qa": "PASS",
+       "reasoning": "current glossは「機械」の助けとしており、human helperの意味と異なります。",
+       "added_word_mappings": [
+        {
+         "english_word": "human",
+         "japanese_span": "人間"
+        },
+        {
+         "english_word": "helper",
+         "japanese_span": "助っ人"
+        }
+       ],
+       "machine_check": {
+        "required_words": [
+         "human",
+         "helper"
+        ],
+        "covered": {
+         "human": "人間",
+         "helper": "助っ人"
+        },
+        "uncovered": [],
+        "span_not_in_gloss": [],
+        "symbol_only_spans": [],
+        "malformed_mappings": 0,
+        "pass": true
+       },
+       "batch_status": null,
+       "batch_cost_jpy": 0.1482,
+       "model": "gpt-6-luna"
+      }
+     ]
+    },
+    {
+     "batch": 1,
+     "pattern": "T2",
+     "rep": 1,
+     "display": "lead to",
+     "kp": "lead to higher costs",
+     "gloss_before": "利益の増加につながる",
+     "expect": "MUST_CHANGE",
+     "note": "costs->利益",
+     "unresolved": false,
+     "first_attempt_verdict": "VALID",
+     "first_attempt_reasons": [],
+     "attempts_used": 1,
+     "final_gloss": "費用の増加につながる",
+     "llm_current_consistent": false,
+     "changed": true,
+     "kw_hit": true,
+     "expected_ok_auto": true,
+     "machine_check_pass_gate": true,
+     "machine_check": {
+      "required_words": [
+       "higher",
+       "costs"
+      ],
+      "covered": {
+       "higher": "増加",
+       "costs": "費用"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "added_word_mappings": [
+      {
+       "english_word": "higher",
+       "japanese_span": "増加"
+      },
+      {
+       "english_word": "costs",
+       "japanese_span": "費用"
+      }
+     ],
+     "reasoning": "「利益の増加」ではなく、higher costsは費用の増加を表します。",
+     "attempt_log": [
+      {
+       "attempt": 1,
+       "verdict": "VALID",
+       "reasons": [],
+       "proposed_gloss": "費用の増加につながる",
+       "current_gloss_consistent": false,
+       "qa": "PASS",
+       "reasoning": "「利益の増加」ではなく、higher costsは費用の増加を表します。",
+       "added_word_mappings": [
+        {
+         "english_word": "higher",
+         "japanese_span": "増加"
+        },
+        {
+         "english_word": "costs",
+         "japanese_span": "費用"
+        }
+       ],
+       "machine_check": {
+        "required_words": [
+         "higher",
+         "costs"
+        ],
+        "covered": {
+         "higher": "増加",
+         "costs": "費用"
+        },
+        "uncovered": [],
+        "span_not_in_gloss": [],
+        "symbol_only_spans": [],
+        "malformed_mappings": 0,
+        "pass": true
+       },
+       "batch_status": null,
+       "batch_cost_jpy": 0.1482,
+       "model": "gpt-6-luna"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "batch": 2,
+   "cost_jpy": 0.1496,
+   "n_calls": 1,
+   "elapsed_sec": 19.3,
+   "attempts": [
+    {
+     "attempt": 1,
+     "target_ranks": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "model": "gpt-6-luna",
+     "response_id": "resp_0ccde0c4f84ce652006ad04897171087d08f422a4bc758040d",
+     "usage": {
+      "input_tokens": 1690,
+      "output_tokens": 1532,
+      "cached_input_tokens": 0
+     },
+     "cost_jpy": 0.1496,
+     "status": "ALIGN_PASS",
+     "n_valid": 5,
+     "n_items": 5
+    }
+   ],
+   "rows": [
+    {
+     "batch": 2,
+     "pattern": "T2",
+     "rep": 1,
+     "display": "put pressure on",
+     "kp": "put pressure on small firms",
+     "gloss_before": "大企業に圧力をかける",
+     "expect": "MUST_CHANGE",
+     "note": "small->大",
+     "unresolved": false,
+     "first_attempt_verdict": "VALID",
+     "first_attempt_reasons": [],
+     "attempts_used": 1,
+     "final_gloss": "小さな会社に圧力をかける",
+     "llm_current_consistent": false,
+     "changed": true,
+     "kw_hit": true,
+     "expected_ok_auto": true,
+     "machine_check_pass_gate": true,
+     "machine_check": {
+      "required_words": [
+       "small",
+       "firms"
+      ],
+      "covered": {
+       "small": "小さな",
+       "firms": "会社"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "added_word_mappings": [
+      {
+       "english_word": "small",
+       "japanese_span": "小さな"
+      },
+      {
+       "english_word": "firms",
+       "japanese_span": "会社"
+      }
+     ],
+     "reasoning": "「大企業」はsmall firmsの意味と異なるため、「小さな会社」に修正しました。",
+     "attempt_log": [
+      {
+       "attempt": 1,
+       "verdict": "VALID",
+       "reasons": [],
+       "proposed_gloss": "小さな会社に圧力をかける",
+       "current_gloss_consistent": false,
+       "qa": "PASS",
+       "reasoning": "「大企業」はsmall firmsの意味と異なるため、「小さな会社」に修正しました。",
+       "added_word_mappings": [
+        {
+         "english_word": "small",
+         "japanese_span": "小さな"
+        },
+        {
+         "english_word": "firms",
+         "japanese_span": "会社"
+        }
+       ],
+       "machine_check": {
+        "required_words": [
+         "small",
+         "firms"
+        ],
+        "covered": {
+         "small": "小さな",
+         "firms": "会社"
+        },
+        "uncovered": [],
+        "span_not_in_gloss": [],
+        "symbol_only_spans": [],
+        "malformed_mappings": 0,
+        "pass": true
+       },
+       "batch_status": null,
+       "batch_cost_jpy": 0.1496,
+       "model": "gpt-6-luna"
+      }
+     ]
+    },
+    {
+     "batch": 2,
+     "pattern": "T2",
+     "rep": 1,
+     "display": "point to",
+     "kp": "point to the cause",
+     "gloss_before": "結果を示す",
+     "expect": "MUST_CHANGE",
+     "note": "cause->結果",
+     "unresolved": false,
+     "first_attempt_verdict": "VALID",
+     "first_attempt_reasons": [],
+     "attempts_used": 1,
+     "final_gloss": "原因を示す",
+     "llm_current_consistent": false,
+     "changed": true,
+     "kw_hit": true,
+     "expected_ok_auto": true,
+     "machine_check_pass_gate": true,
+     "machine_check": {
+      "required_words": [
+       "cause"
+      ],
+      "covered": {
+       "cause": "原因"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "added_word_mappings": [
+      {
+       "english_word": "cause",
+       "japanese_span": "原因"
+      }
+     ],
+     "reasoning": "the causeは「結果」ではなく「原因」を表します。",
+     "attempt_log": [
+      {
+       "attempt": 1,
+       "verdict": "VALID",
+       "reasons": [],
+       "proposed_gloss": "原因を示す",
+       "current_gloss_consistent": false,
+       "qa": "PASS",
+       "reasoning": "the causeは「結果」ではなく「原因」を表します。",
+       "added_word_mappings": [
+        {
+         "english_word": "cause",
+         "japanese_span": "原因"
+        }
+       ],
+       "machine_check": {
+        "required_words": [
+         "cause"
+        ],
+        "covered": {
+         "cause": "原因"
+        },
+        "uncovered": [],
+        "span_not_in_gloss": [],
+        "symbol_only_spans": [],
+        "malformed_mappings": 0,
+        "pass": true
+       },
+       "batch_status": null,
+       "batch_cost_jpy": 0.1496,
+       "model": "gpt-6-luna"
+      }
+     ]
+    },
+    {
+     "batch": 2,
+     "pattern": "T2",
+     "rep": 1,
+     "display": "rely on",
+     "kp": "rely on local farmers",
+     "gloss_before": "外国の農家に頼る",
+     "expect": "MUST_CHANGE",
+     "note": "local->外国",
+     "unresolved": false,
+     "first_attempt_verdict": "VALID",
+     "first_attempt_reasons": [],
+     "attempts_used": 1,
+     "final_gloss": "地元の農家に頼る",
+     "llm_current_consistent": false,
+     "changed": true,
+     "kw_hit": true,
+     "expected_ok_auto": true,
+     "machine_check_pass_gate": true,
+     "machine_check": {
+      "required_words": [
+       "local",
+       "farmers"
+      ],
+      "covered": {
+       "local": "地元の",
+       "farmers": "農家"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "added_word_mappings": [
+      {
+       "english_word": "local",
+       "japanese_span": "地元の"
+      },
+      {
+       "english_word": "farmers",
+       "japanese_span": "農家"
+      }
+     ],
+     "reasoning": "localは「外国の」ではなく「地元の」を表します。",
+     "attempt_log": [
+      {
+       "attempt": 1,
+       "verdict": "VALID",
+       "reasons": [],
+       "proposed_gloss": "地元の農家に頼る",
+       "current_gloss_consistent": false,
+       "qa": "PASS",
+       "reasoning": "localは「外国の」ではなく「地元の」を表します。",
+       "added_word_mappings": [
+        {
+         "english_word": "local",
+         "japanese_span": "地元の"
+        },
+        {
+         "english_word": "farmers",
+         "japanese_span": "農家"
+        }
+       ],
+       "machine_check": {
+        "required_words": [
+         "local",
+         "farmers"
+        ],
+        "covered": {
+         "local": "地元の",
+         "farmers": "農家"
+        },
+        "uncovered": [],
+        "span_not_in_gloss": [],
+        "symbol_only_spans": [],
+        "malformed_mappings": 0,
+        "pass": true
+       },
+       "batch_status": null,
+       "batch_cost_jpy": 0.1496,
+       "model": "gpt-6-luna"
+      }
+     ]
+    },
+    {
+     "batch": 2,
+     "pattern": "T2",
+     "rep": 1,
+     "display": "run out of",
+     "kp": "run out of fresh water",
+     "gloss_before": "塩水を使い果たす",
+     "expect": "MUST_CHANGE",
+     "note": "fresh->塩",
+     "unresolved": false,
+     "first_attempt_verdict": "VALID",
+     "first_attempt_reasons": [],
+     "attempts_used": 1,
+     "final_gloss": "真水が尽きる",
+     "llm_current_consistent": false,
+     "changed": true,
+     "kw_hit": true,
+     "expected_ok_auto": true,
+     "machine_check_pass_gate": true,
+     "machine_check": {
+      "required_words": [
+       "fresh",
+       "water"
+      ],
+      "covered": {
+       "fresh": "真水",
+       "water": "真水"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "added_word_mappings": [
+      {
+       "english_word": "fresh",
+       "japanese_span": "真水"
+      },
+      {
+       "english_word": "water",
+       "japanese_span": "真水"
+      }
+     ],
+     "reasoning": "fresh waterは「塩水」ではなく「真水」を表します。",
+     "attempt_log": [
+      {
+       "attempt": 1,
+       "verdict": "VALID",
+       "reasons": [],
+       "proposed_gloss": "真水が尽きる",
+       "current_gloss_consistent": false,
+       "qa": "PASS",
+       "reasoning": "fresh waterは「塩水」ではなく「真水」を表します。",
+       "added_word_mappings": [
+        {
+         "english_word": "fresh",
+         "japanese_span": "真水"
+        },
+        {
+         "english_word": "water",
+         "japanese_span": "真水"
+        }
+       ],
+       "machine_check": {
+        "required_words": [
+         "fresh",
+         "water"
+        ],
+        "covered": {
+         "fresh": "真水",
+         "water": "真水"
+        },
+        "uncovered": [],
+        "span_not_in_gloss": [],
+        "symbol_only_spans": [],
+        "malformed_mappings": 0,
+        "pass": true
+       },
+       "batch_status": null,
+       "batch_cost_jpy": 0.1496,
+       "model": "gpt-6-luna"
+      }
+     ]
+    },
+    {
+     "batch": 2,
+     "pattern": "T2",
+     "rep": 1,
+     "display": "take",
+     "kp": "take one's time",
+     "gloss_before": "すぐに取る",
+     "expect": "MUST_CHANGE",
+     "note": "意味反転",
+     "unresolved": false,
+     "first_attempt_verdict": "VALID",
+     "first_attempt_reasons": [],
+     "attempts_used": 1,
+     "final_gloss": "時間をかける",
+     "llm_current_consistent": false,
+     "changed": true,
+     "kw_hit": true,
+     "expected_ok_auto": true,
+     "machine_check_pass_gate": true,
+     "machine_check": {
+      "required_words": [
+       "time"
+      ],
+      "covered": {
+       "time": "時間"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "added_word_mappings": [
+      {
+       "english_word": "time",
+       "japanese_span": "時間"
+      }
+     ],
+     "reasoning": "take one's timeは急いで何かを取ることではなく、時間をかけることを表します。",
+     "attempt_log": [
+      {
+       "attempt": 1,
+       "verdict": "VALID",
+       "reasons": [],
+       "proposed_gloss": "時間をかける",
+       "current_gloss_consistent": false,
+       "qa": "PASS",
+       "reasoning": "take one's timeは急いで何かを取ることではなく、時間をかけることを表します。",
+       "added_word_mappings": [
+        {
+         "english_word": "time",
+         "japanese_span": "時間"
+        }
+       ],
+       "machine_check": {
+        "required_words": [
+         "time"
+        ],
+        "covered": {
+         "time": "時間"
+        },
+        "uncovered": [],
+        "span_not_in_gloss": [],
+        "symbol_only_spans": [],
+        "malformed_mappings": 0,
+        "pass": true
+       },
+       "batch_status": null,
+       "batch_cost_jpy": 0.1496,
+       "model": "gpt-6-luna"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "batch": 3,
+   "cost_jpy": 0.0611,
+   "n_calls": 1,
+   "elapsed_sec": 9.1,
+   "attempts": [
+    {
+     "attempt": 1,
+     "target_ranks": [
+      1,
+      2
+     ],
+     "model": "gpt-6-luna",
+     "response_id": "resp_0e1e10c5b39616e9006ad04897145487d09ba9282047090140",
+     "usage": {
+      "input_tokens": 1391,
+      "output_tokens": 485,
+      "cached_input_tokens": 0
+     },
+     "cost_jpy": 0.0611,
+     "status": "ALIGN_PASS",
+     "n_valid": 2,
+     "n_items": 2
+    }
+   ],
+   "rows": [
+    {
+     "batch": 3,
+     "pattern": "T2",
+     "rep": 1,
+     "display": "spill",
+     "kp": "spill the beans",
+     "gloss_before": "豆をこぼす",
+     "expect": "MUST_CHANGE",
+     "note": "直訳(慣用句の意味喪失)",
+     "unresolved": false,
+     "first_attempt_verdict": "VALID",
+     "first_attempt_reasons": [],
+     "attempts_used": 1,
+     "final_gloss": "秘密を漏らす",
+     "llm_current_consistent": false,
+     "changed": true,
+     "kw_hit": true,
+     "expected_ok_auto": true,
+     "machine_check_pass_gate": true,
+     "machine_check": {
+      "required_words": [
+       "beans"
+      ],
+      "covered": {
+       "beans": "秘密"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "added_word_mappings": [
+      {
+       "english_word": "beans",
+       "japanese_span": "秘密"
+      }
+     ],
+     "reasoning": "「spill the beans」は「豆をこぼす」ではなく「秘密を漏らす」という意味です。",
+     "attempt_log": [
+      {
+       "attempt": 1,
+       "verdict": "VALID",
+       "reasons": [],
+       "proposed_gloss": "秘密を漏らす",
+       "current_gloss_consistent": false,
+       "qa": "PASS",
+       "reasoning": "「spill the beans」は「豆をこぼす」ではなく「秘密を漏らす」という意味です。",
+       "added_word_mappings": [
+        {
+         "english_word": "beans",
+         "japanese_span": "秘密"
+        }
+       ],
+       "machine_check": {
+        "required_words": [
+         "beans"
+        ],
+        "covered": {
+         "beans": "秘密"
+        },
+        "uncovered": [],
+        "span_not_in_gloss": [],
+        "symbol_only_spans": [],
+        "malformed_mappings": 0,
+        "pass": true
+       },
+       "batch_status": null,
+       "batch_cost_jpy": 0.0611,
+       "model": "gpt-6-luna"
+      }
+     ]
+    },
+    {
+     "batch": 3,
+     "pattern": "T2",
+     "rep": 1,
+     "display": "break",
+     "kp": "break the ice",
+     "gloss_before": "氷を割る",
+     "expect": "MUST_CHANGE",
+     "note": "直訳(慣用句の意味喪失)",
+     "unresolved": false,
+     "first_attempt_verdict": "VALID",
+     "first_attempt_reasons": [],
+     "attempts_used": 1,
+     "final_gloss": "緊張をほぐす",
+     "llm_current_consistent": false,
+     "changed": true,
+     "kw_hit": true,
+     "expected_ok_auto": true,
+     "machine_check_pass_gate": true,
+     "machine_check": {
+      "required_words": [
+       "ice"
+      ],
+      "covered": {
+       "ice": "緊張"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "added_word_mappings": [
+      {
+       "english_word": "ice",
+       "japanese_span": "緊張"
+      }
+     ],
+     "reasoning": "「break the ice」は「氷を割る」ではなく、場の緊張をほぐすという意味です。",
+     "attempt_log": [
+      {
+       "attempt": 1,
+       "verdict": "VALID",
+       "reasons": [],
+       "proposed_gloss": "緊張をほぐす",
+       "current_gloss_consistent": false,
+       "qa": "PASS",
+       "reasoning": "「break the ice」は「氷を割る」ではなく、場の緊張をほぐすという意味です。",
+       "added_word_mappings": [
+        {
+         "english_word": "ice",
+         "japanese_span": "緊張"
+        }
+       ],
+       "machine_check": {
+        "required_words": [
+         "ice"
+        ],
+        "covered": {
+         "ice": "緊張"
+        },
+        "uncovered": [],
+        "span_not_in_gloss": [],
+        "symbol_only_spans": [],
+        "malformed_mappings": 0,
+        "pass": true
+       },
+       "batch_status": null,
+       "batch_cost_jpy": 0.0611,
+       "model": "gpt-6-luna"
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "rows": [
+  {
+   "batch": 1,
+   "pattern": "T2",
+   "rep": 1,
+   "display": "based on",
+   "kp": "based on interviews",
+   "gloss_before": "ニュースをもとにした",
+   "expect": "MUST_CHANGE",
+   "note": "span(ニュース)は存在するが別語",
+   "unresolved": false,
+   "first_attempt_verdict": "VALID",
+   "first_attempt_reasons": [],
+   "attempts_used": 1,
+   "final_gloss": "インタビューをもとにした",
+   "llm_current_consistent": false,
+   "changed": true,
+   "kw_hit": true,
+   "expected_ok_auto": true,
+   "machine_check_pass_gate": true,
+   "machine_check": {
+    "required_words": [
+     "interviews"
+    ],
+    "covered": {
+     "interviews": "インタビュー"
+    },
+    "uncovered": [],
+    "span_not_in_gloss": [],
+    "symbol_only_spans": [],
+    "malformed_mappings": 0,
+    "pass": true
+   },
+   "added_word_mappings": [
+    {
+     "english_word": "interviews",
+     "japanese_span": "インタビュー"
+    }
+   ],
+   "reasoning": "「ニュース」は「インタビュー」と異なり、interviewsの意味が表れていません。",
+   "attempt_log": [
+    {
+     "attempt": 1,
+     "verdict": "VALID",
+     "reasons": [],
+     "proposed_gloss": "インタビューをもとにした",
+     "current_gloss_consistent": false,
+     "qa": "PASS",
+     "reasoning": "「ニュース」は「インタビュー」と異なり、interviewsの意味が表れていません。",
+     "added_word_mappings": [
+      {
+       "english_word": "interviews",
+       "japanese_span": "インタビュー"
+      }
+     ],
+     "machine_check": {
+      "required_words": [
+       "interviews"
+      ],
+      "covered": {
+       "interviews": "インタビュー"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "batch_status": null,
+     "batch_cost_jpy": 0.1482,
+     "model": "gpt-6-luna"
+    }
+   ]
+  },
+  {
+   "batch": 1,
+   "pattern": "T2",
+   "rep": 1,
+   "display": "raw-bean",
+   "kp": "raw-bean prices",
+   "gloss_before": "焙煎前のコーヒー豆の量",
+   "expect": "MUST_CHANGE",
+   "note": "pricesを量と誤訳",
+   "unresolved": false,
+   "first_attempt_verdict": "VALID",
+   "first_attempt_reasons": [],
+   "attempts_used": 1,
+   "final_gloss": "焙煎前のコーヒー豆の価格",
+   "llm_current_consistent": false,
+   "changed": true,
+   "kw_hit": true,
+   "expected_ok_auto": true,
+   "machine_check_pass_gate": true,
+   "machine_check": {
+    "required_words": [
+     "prices"
+    ],
+    "covered": {
+     "prices": "価格"
+    },
+    "uncovered": [],
+    "span_not_in_gloss": [],
+    "symbol_only_spans": [],
+    "malformed_mappings": 0,
+    "pass": true
+   },
+   "added_word_mappings": [
+    {
+     "english_word": "prices",
+     "japanese_span": "価格"
+    }
+   ],
+   "reasoning": "current glossの「量」はpricesの意味と異なるため、「価格」に直しました。",
+   "attempt_log": [
+    {
+     "attempt": 1,
+     "verdict": "VALID",
+     "reasons": [],
+     "proposed_gloss": "焙煎前のコーヒー豆の価格",
+     "current_gloss_consistent": false,
+     "qa": "PASS",
+     "reasoning": "current glossの「量」はpricesの意味と異なるため、「価格」に直しました。",
+     "added_word_mappings": [
+      {
+       "english_word": "prices",
+       "japanese_span": "価格"
+      }
+     ],
+     "machine_check": {
+      "required_words": [
+       "prices"
+      ],
+      "covered": {
+       "prices": "価格"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "batch_status": null,
+     "batch_cost_jpy": 0.1482,
+     "model": "gpt-6-luna"
+    }
+   ]
+  },
+  {
+   "batch": 1,
+   "pattern": "T2",
+   "rep": 1,
+   "display": "close around",
+   "kp": "close around me",
+   "gloss_before": "彼らの周りから迫ってくる",
+   "expect": "MUST_CHANGE",
+   "note": "me->彼ら",
+   "unresolved": false,
+   "first_attempt_verdict": "VALID",
+   "first_attempt_reasons": [],
+   "attempts_used": 1,
+   "final_gloss": "私を取り囲むように迫ってくる",
+   "llm_current_consistent": false,
+   "changed": true,
+   "kw_hit": true,
+   "expected_ok_auto": true,
+   "machine_check_pass_gate": true,
+   "machine_check": {
+    "required_words": [
+     "me"
+    ],
+    "covered": {
+     "me": "私を"
+    },
+    "uncovered": [],
+    "span_not_in_gloss": [],
+    "symbol_only_spans": [],
+    "malformed_mappings": 0,
+    "pass": true
+   },
+   "added_word_mappings": [
+    {
+     "english_word": "me",
+     "japanese_span": "私を"
+    }
+   ],
+   "reasoning": "「彼らの周り」ではなく、meにあたる「私」を取り囲むように迫る意味です。",
+   "attempt_log": [
+    {
+     "attempt": 1,
+     "verdict": "VALID",
+     "reasons": [],
+     "proposed_gloss": "私を取り囲むように迫ってくる",
+     "current_gloss_consistent": false,
+     "qa": "PASS",
+     "reasoning": "「彼らの周り」ではなく、meにあたる「私」を取り囲むように迫る意味です。",
+     "added_word_mappings": [
+      {
+       "english_word": "me",
+       "japanese_span": "私を"
+      }
+     ],
+     "machine_check": {
+      "required_words": [
+       "me"
+      ],
+      "covered": {
+       "me": "私を"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "batch_status": null,
+     "batch_cost_jpy": 0.1482,
+     "model": "gpt-6-luna"
+    }
+   ]
+  },
+  {
+   "batch": 1,
+   "pattern": "T2",
+   "rep": 1,
+   "display": "bring in",
+   "kp": "bring in a human helper",
+   "gloss_before": "機械の助けを借りる",
+   "expect": "MUST_CHANGE",
+   "note": "human->機械",
+   "unresolved": false,
+   "first_attempt_verdict": "VALID",
+   "first_attempt_reasons": [],
+   "attempts_used": 1,
+   "final_gloss": "人間の助っ人を呼ぶ",
+   "llm_current_consistent": false,
+   "changed": true,
+   "kw_hit": true,
+   "expected_ok_auto": true,
+   "machine_check_pass_gate": true,
+   "machine_check": {
+    "required_words": [
+     "human",
+     "helper"
+    ],
+    "covered": {
+     "human": "人間",
+     "helper": "助っ人"
+    },
+    "uncovered": [],
+    "span_not_in_gloss": [],
+    "symbol_only_spans": [],
+    "malformed_mappings": 0,
+    "pass": true
+   },
+   "added_word_mappings": [
+    {
+     "english_word": "human",
+     "japanese_span": "人間"
+    },
+    {
+     "english_word": "helper",
+     "japanese_span": "助っ人"
+    }
+   ],
+   "reasoning": "current glossは「機械」の助けとしており、human helperの意味と異なります。",
+   "attempt_log": [
+    {
+     "attempt": 1,
+     "verdict": "VALID",
+     "reasons": [],
+     "proposed_gloss": "人間の助っ人を呼ぶ",
+     "current_gloss_consistent": false,
+     "qa": "PASS",
+     "reasoning": "current glossは「機械」の助けとしており、human helperの意味と異なります。",
+     "added_word_mappings": [
+      {
+       "english_word": "human",
+       "japanese_span": "人間"
+      },
+      {
+       "english_word": "helper",
+       "japanese_span": "助っ人"
+      }
+     ],
+     "machine_check": {
+      "required_words": [
+       "human",
+       "helper"
+      ],
+      "covered": {
+       "human": "人間",
+       "helper": "助っ人"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "batch_status": null,
+     "batch_cost_jpy": 0.1482,
+     "model": "gpt-6-luna"
+    }
+   ]
+  },
+  {
+   "batch": 1,
+   "pattern": "T2",
+   "rep": 1,
+   "display": "lead to",
+   "kp": "lead to higher costs",
+   "gloss_before": "利益の増加につながる",
+   "expect": "MUST_CHANGE",
+   "note": "costs->利益",
+   "unresolved": false,
+   "first_attempt_verdict": "VALID",
+   "first_attempt_reasons": [],
+   "attempts_used": 1,
+   "final_gloss": "費用の増加につながる",
+   "llm_current_consistent": false,
+   "changed": true,
+   "kw_hit": true,
+   "expected_ok_auto": true,
+   "machine_check_pass_gate": true,
+   "machine_check": {
+    "required_words": [
+     "higher",
+     "costs"
+    ],
+    "covered": {
+     "higher": "増加",
+     "costs": "費用"
+    },
+    "uncovered": [],
+    "span_not_in_gloss": [],
+    "symbol_only_spans": [],
+    "malformed_mappings": 0,
+    "pass": true
+   },
+   "added_word_mappings": [
+    {
+     "english_word": "higher",
+     "japanese_span": "増加"
+    },
+    {
+     "english_word": "costs",
+     "japanese_span": "費用"
+    }
+   ],
+   "reasoning": "「利益の増加」ではなく、higher costsは費用の増加を表します。",
+   "attempt_log": [
+    {
+     "attempt": 1,
+     "verdict": "VALID",
+     "reasons": [],
+     "proposed_gloss": "費用の増加につながる",
+     "current_gloss_consistent": false,
+     "qa": "PASS",
+     "reasoning": "「利益の増加」ではなく、higher costsは費用の増加を表します。",
+     "added_word_mappings": [
+      {
+       "english_word": "higher",
+       "japanese_span": "増加"
+      },
+      {
+       "english_word": "costs",
+       "japanese_span": "費用"
+      }
+     ],
+     "machine_check": {
+      "required_words": [
+       "higher",
+       "costs"
+      ],
+      "covered": {
+       "higher": "増加",
+       "costs": "費用"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "batch_status": null,
+     "batch_cost_jpy": 0.1482,
+     "model": "gpt-6-luna"
+    }
+   ]
+  },
+  {
+   "batch": 2,
+   "pattern": "T2",
+   "rep": 1,
+   "display": "put pressure on",
+   "kp": "put pressure on small firms",
+   "gloss_before": "大企業に圧力をかける",
+   "expect": "MUST_CHANGE",
+   "note": "small->大",
+   "unresolved": false,
+   "first_attempt_verdict": "VALID",
+   "first_attempt_reasons": [],
+   "attempts_used": 1,
+   "final_gloss": "小さな会社に圧力をかける",
+   "llm_current_consistent": false,
+   "changed": true,
+   "kw_hit": true,
+   "expected_ok_auto": true,
+   "machine_check_pass_gate": true,
+   "machine_check": {
+    "required_words": [
+     "small",
+     "firms"
+    ],
+    "covered": {
+     "small": "小さな",
+     "firms": "会社"
+    },
+    "uncovered": [],
+    "span_not_in_gloss": [],
+    "symbol_only_spans": [],
+    "malformed_mappings": 0,
+    "pass": true
+   },
+   "added_word_mappings": [
+    {
+     "english_word": "small",
+     "japanese_span": "小さな"
+    },
+    {
+     "english_word": "firms",
+     "japanese_span": "会社"
+    }
+   ],
+   "reasoning": "「大企業」はsmall firmsの意味と異なるため、「小さな会社」に修正しました。",
+   "attempt_log": [
+    {
+     "attempt": 1,
+     "verdict": "VALID",
+     "reasons": [],
+     "proposed_gloss": "小さな会社に圧力をかける",
+     "current_gloss_consistent": false,
+     "qa": "PASS",
+     "reasoning": "「大企業」はsmall firmsの意味と異なるため、「小さな会社」に修正しました。",
+     "added_word_mappings": [
+      {
+       "english_word": "small",
+       "japanese_span": "小さな"
+      },
+      {
+       "english_word": "firms",
+       "japanese_span": "会社"
+      }
+     ],
+     "machine_check": {
+      "required_words": [
+       "small",
+       "firms"
+      ],
+      "covered": {
+       "small": "小さな",
+       "firms": "会社"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "batch_status": null,
+     "batch_cost_jpy": 0.1496,
+     "model": "gpt-6-luna"
+    }
+   ]
+  },
+  {
+   "batch": 2,
+   "pattern": "T2",
+   "rep": 1,
+   "display": "point to",
+   "kp": "point to the cause",
+   "gloss_before": "結果を示す",
+   "expect": "MUST_CHANGE",
+   "note": "cause->結果",
+   "unresolved": false,
+   "first_attempt_verdict": "VALID",
+   "first_attempt_reasons": [],
+   "attempts_used": 1,
+   "final_gloss": "原因を示す",
+   "llm_current_consistent": false,
+   "changed": true,
+   "kw_hit": true,
+   "expected_ok_auto": true,
+   "machine_check_pass_gate": true,
+   "machine_check": {
+    "required_words": [
+     "cause"
+    ],
+    "covered": {
+     "cause": "原因"
+    },
+    "uncovered": [],
+    "span_not_in_gloss": [],
+    "symbol_only_spans": [],
+    "malformed_mappings": 0,
+    "pass": true
+   },
+   "added_word_mappings": [
+    {
+     "english_word": "cause",
+     "japanese_span": "原因"
+    }
+   ],
+   "reasoning": "the causeは「結果」ではなく「原因」を表します。",
+   "attempt_log": [
+    {
+     "attempt": 1,
+     "verdict": "VALID",
+     "reasons": [],
+     "proposed_gloss": "原因を示す",
+     "current_gloss_consistent": false,
+     "qa": "PASS",
+     "reasoning": "the causeは「結果」ではなく「原因」を表します。",
+     "added_word_mappings": [
+      {
+       "english_word": "cause",
+       "japanese_span": "原因"
+      }
+     ],
+     "machine_check": {
+      "required_words": [
+       "cause"
+      ],
+      "covered": {
+       "cause": "原因"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "batch_status": null,
+     "batch_cost_jpy": 0.1496,
+     "model": "gpt-6-luna"
+    }
+   ]
+  },
+  {
+   "batch": 2,
+   "pattern": "T2",
+   "rep": 1,
+   "display": "rely on",
+   "kp": "rely on local farmers",
+   "gloss_before": "外国の農家に頼る",
+   "expect": "MUST_CHANGE",
+   "note": "local->外国",
+   "unresolved": false,
+   "first_attempt_verdict": "VALID",
+   "first_attempt_reasons": [],
+   "attempts_used": 1,
+   "final_gloss": "地元の農家に頼る",
+   "llm_current_consistent": false,
+   "changed": true,
+   "kw_hit": true,
+   "expected_ok_auto": true,
+   "machine_check_pass_gate": true,
+   "machine_check": {
+    "required_words": [
+     "local",
+     "farmers"
+    ],
+    "covered": {
+     "local": "地元の",
+     "farmers": "農家"
+    },
+    "uncovered": [],
+    "span_not_in_gloss": [],
+    "symbol_only_spans": [],
+    "malformed_mappings": 0,
+    "pass": true
+   },
+   "added_word_mappings": [
+    {
+     "english_word": "local",
+     "japanese_span": "地元の"
+    },
+    {
+     "english_word": "farmers",
+     "japanese_span": "農家"
+    }
+   ],
+   "reasoning": "localは「外国の」ではなく「地元の」を表します。",
+   "attempt_log": [
+    {
+     "attempt": 1,
+     "verdict": "VALID",
+     "reasons": [],
+     "proposed_gloss": "地元の農家に頼る",
+     "current_gloss_consistent": false,
+     "qa": "PASS",
+     "reasoning": "localは「外国の」ではなく「地元の」を表します。",
+     "added_word_mappings": [
+      {
+       "english_word": "local",
+       "japanese_span": "地元の"
+      },
+      {
+       "english_word": "farmers",
+       "japanese_span": "農家"
+      }
+     ],
+     "machine_check": {
+      "required_words": [
+       "local",
+       "farmers"
+      ],
+      "covered": {
+       "local": "地元の",
+       "farmers": "農家"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "batch_status": null,
+     "batch_cost_jpy": 0.1496,
+     "model": "gpt-6-luna"
+    }
+   ]
+  },
+  {
+   "batch": 2,
+   "pattern": "T2",
+   "rep": 1,
+   "display": "run out of",
+   "kp": "run out of fresh water",
+   "gloss_before": "塩水を使い果たす",
+   "expect": "MUST_CHANGE",
+   "note": "fresh->塩",
+   "unresolved": false,
+   "first_attempt_verdict": "VALID",
+   "first_attempt_reasons": [],
+   "attempts_used": 1,
+   "final_gloss": "真水が尽きる",
+   "llm_current_consistent": false,
+   "changed": true,
+   "kw_hit": true,
+   "expected_ok_auto": true,
+   "machine_check_pass_gate": true,
+   "machine_check": {
+    "required_words": [
+     "fresh",
+     "water"
+    ],
+    "covered": {
+     "fresh": "真水",
+     "water": "真水"
+    },
+    "uncovered": [],
+    "span_not_in_gloss": [],
+    "symbol_only_spans": [],
+    "malformed_mappings": 0,
+    "pass": true
+   },
+   "added_word_mappings": [
+    {
+     "english_word": "fresh",
+     "japanese_span": "真水"
+    },
+    {
+     "english_word": "water",
+     "japanese_span": "真水"
+    }
+   ],
+   "reasoning": "fresh waterは「塩水」ではなく「真水」を表します。",
+   "attempt_log": [
+    {
+     "attempt": 1,
+     "verdict": "VALID",
+     "reasons": [],
+     "proposed_gloss": "真水が尽きる",
+     "current_gloss_consistent": false,
+     "qa": "PASS",
+     "reasoning": "fresh waterは「塩水」ではなく「真水」を表します。",
+     "added_word_mappings": [
+      {
+       "english_word": "fresh",
+       "japanese_span": "真水"
+      },
+      {
+       "english_word": "water",
+       "japanese_span": "真水"
+      }
+     ],
+     "machine_check": {
+      "required_words": [
+       "fresh",
+       "water"
+      ],
+      "covered": {
+       "fresh": "真水",
+       "water": "真水"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "batch_status": null,
+     "batch_cost_jpy": 0.1496,
+     "model": "gpt-6-luna"
+    }
+   ]
+  },
+  {
+   "batch": 2,
+   "pattern": "T2",
+   "rep": 1,
+   "display": "take",
+   "kp": "take one's time",
+   "gloss_before": "すぐに取る",
+   "expect": "MUST_CHANGE",
+   "note": "意味反転",
+   "unresolved": false,
+   "first_attempt_verdict": "VALID",
+   "first_attempt_reasons": [],
+   "attempts_used": 1,
+   "final_gloss": "時間をかける",
+   "llm_current_consistent": false,
+   "changed": true,
+   "kw_hit": true,
+   "expected_ok_auto": true,
+   "machine_check_pass_gate": true,
+   "machine_check": {
+    "required_words": [
+     "time"
+    ],
+    "covered": {
+     "time": "時間"
+    },
+    "uncovered": [],
+    "span_not_in_gloss": [],
+    "symbol_only_spans": [],
+    "malformed_mappings": 0,
+    "pass": true
+   },
+   "added_word_mappings": [
+    {
+     "english_word": "time",
+     "japanese_span": "時間"
+    }
+   ],
+   "reasoning": "take one's timeは急いで何かを取ることではなく、時間をかけることを表します。",
+   "attempt_log": [
+    {
+     "attempt": 1,
+     "verdict": "VALID",
+     "reasons": [],
+     "proposed_gloss": "時間をかける",
+     "current_gloss_consistent": false,
+     "qa": "PASS",
+     "reasoning": "take one's timeは急いで何かを取ることではなく、時間をかけることを表します。",
+     "added_word_mappings": [
+      {
+       "english_word": "time",
+       "japanese_span": "時間"
+      }
+     ],
+     "machine_check": {
+      "required_words": [
+       "time"
+      ],
+      "covered": {
+       "time": "時間"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "batch_status": null,
+     "batch_cost_jpy": 0.1496,
+     "model": "gpt-6-luna"
+    }
+   ]
+  },
+  {
+   "batch": 3,
+   "pattern": "T2",
+   "rep": 1,
+   "display": "spill",
+   "kp": "spill the beans",
+   "gloss_before": "豆をこぼす",
+   "expect": "MUST_CHANGE",
+   "note": "直訳(慣用句の意味喪失)",
+   "unresolved": false,
+   "first_attempt_verdict": "VALID",
+   "first_attempt_reasons": [],
+   "attempts_used": 1,
+   "final_gloss": "秘密を漏らす",
+   "llm_current_consistent": false,
+   "changed": true,
+   "kw_hit": true,
+   "expected_ok_auto": true,
+   "machine_check_pass_gate": true,
+   "machine_check": {
+    "required_words": [
+     "beans"
+    ],
+    "covered": {
+     "beans": "秘密"
+    },
+    "uncovered": [],
+    "span_not_in_gloss": [],
+    "symbol_only_spans": [],
+    "malformed_mappings": 0,
+    "pass": true
+   },
+   "added_word_mappings": [
+    {
+     "english_word": "beans",
+     "japanese_span": "秘密"
+    }
+   ],
+   "reasoning": "「spill the beans」は「豆をこぼす」ではなく「秘密を漏らす」という意味です。",
+   "attempt_log": [
+    {
+     "attempt": 1,
+     "verdict": "VALID",
+     "reasons": [],
+     "proposed_gloss": "秘密を漏らす",
+     "current_gloss_consistent": false,
+     "qa": "PASS",
+     "reasoning": "「spill the beans」は「豆をこぼす」ではなく「秘密を漏らす」という意味です。",
+     "added_word_mappings": [
+      {
+       "english_word": "beans",
+       "japanese_span": "秘密"
+      }
+     ],
+     "machine_check": {
+      "required_words": [
+       "beans"
+      ],
+      "covered": {
+       "beans": "秘密"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "batch_status": null,
+     "batch_cost_jpy": 0.0611,
+     "model": "gpt-6-luna"
+    }
+   ]
+  },
+  {
+   "batch": 3,
+   "pattern": "T2",
+   "rep": 1,
+   "display": "break",
+   "kp": "break the ice",
+   "gloss_before": "氷を割る",
+   "expect": "MUST_CHANGE",
+   "note": "直訳(慣用句の意味喪失)",
+   "unresolved": false,
+   "first_attempt_verdict": "VALID",
+   "first_attempt_reasons": [],
+   "attempts_used": 1,
+   "final_gloss": "緊張をほぐす",
+   "llm_current_consistent": false,
+   "changed": true,
+   "kw_hit": true,
+   "expected_ok_auto": true,
+   "machine_check_pass_gate": true,
+   "machine_check": {
+    "required_words": [
+     "ice"
+    ],
+    "covered": {
+     "ice": "緊張"
+    },
+    "uncovered": [],
+    "span_not_in_gloss": [],
+    "symbol_only_spans": [],
+    "malformed_mappings": 0,
+    "pass": true
+   },
+   "added_word_mappings": [
+    {
+     "english_word": "ice",
+     "japanese_span": "緊張"
+    }
+   ],
+   "reasoning": "「break the ice」は「氷を割る」ではなく、場の緊張をほぐすという意味です。",
+   "attempt_log": [
+    {
+     "attempt": 1,
+     "verdict": "VALID",
+     "reasons": [],
+     "proposed_gloss": "緊張をほぐす",
+     "current_gloss_consistent": false,
+     "qa": "PASS",
+     "reasoning": "「break the ice」は「氷を割る」ではなく、場の緊張をほぐすという意味です。",
+     "added_word_mappings": [
+      {
+       "english_word": "ice",
+       "japanese_span": "緊張"
+      }
+     ],
+     "machine_check": {
+      "required_words": [
+       "ice"
+      ],
+      "covered": {
+       "ice": "緊張"
+      },
+      "uncovered": [],
+      "span_not_in_gloss": [],
+      "symbol_only_spans": [],
+      "malformed_mappings": 0,
+      "pass": true
+     },
+     "batch_status": null,
+     "batch_cost_jpy": 0.0611,
+     "model": "gpt-6-luna"
+    }
+   ]
+  }
+ ]
+}

@@ -273,7 +273,7 @@ def main():
         for a_ in r.get("attempts", []):
             for k in usage_tot:
                 usage_tot[k] += (a_.get("usage") or {}).get(k) or 0
-    doc = {"managed_id": MANAGED_ID, "delegation": "02", "mode": a.mode, "patterns": patterns, "reps": a.reps,
+    doc = {"managed_id": MANAGED_ID, "delegation": "03", "mode": a.mode, "patterns": patterns, "reps": a.reps,
            "model_requested": model, "models_returned": models, "reasoning_effort": "high", "rules_sha256": pf["sha256"],
            "n_batches": len(batches), "n_api_calls": state["calls"], "total_cost_jpy": round(state["cost"], 4),
            "budget_jpy": a.budget_jpy, "elapsed_sec": round(time.time() - t0, 1), "usage_total": usage_tot,
