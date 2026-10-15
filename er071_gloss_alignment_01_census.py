@@ -2,6 +2,8 @@
 """KP-GLOSS-ALIGNMENT-PRODUCTION-01 OF-231/234(b): 記録済みkeywords_canonicalized.jsonから再整合対象を集計(API 0円)。
 出力: er071_output/m2p0_n01_production_wiring_01/gloss_alignment_01/census_01.json
 usage: PYTHONUTF8=1 .venv/Scripts/python.exe er071_gloss_alignment_01_census.py"""
+# KGCPW 委任_02 (OF-KGCPW-13): 撤去済みlegacy方式に依存する過去証跡script。冒頭で停止する(有料APIを叩く前に落とす)。
+raise SystemExit("HISTORICAL: 過去証跡(KP-GLOSS-ALIGNMENT Trial/census/replay)の再現用scriptです。KGCPW(2026-10-15)でlegacy方式(slot/fallback/mode)を撤去し修正版が唯一の方式になったため再実行不能・実行すると有料APIを叩く前に停止します(OF-KGCPW-13)。")
 import glob, json, sys, os
 sys.stdout.reconfigure(encoding="utf-8")
 import er003_key_words_gloss_alignment as ga

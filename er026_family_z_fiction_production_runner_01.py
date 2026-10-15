@@ -924,9 +924,6 @@ class E2EContext:
     only_clips: object = None
     regenerate_stage: object = None
     mock_api: object = None                     # mock時のみ: API境界(guard+呼出カウンタ)
-    # KP-GLOSS-ALIGNMENT-DESIGN-CORRECTION-TRIAL-01 委任_02: gloss再整合のmode。既定"legacy"=現行挙動そのまま。
-    # "corrected"はTrial専用(明示設定時のみ。Production runner[build_real_context等]は設定しない)。
-    gloss_alignment_mode: str = "legacy"
 
     @property
     def out_dir(self) -> str:
@@ -1162,17 +1159,12 @@ def install_kp_assets(ctx, level: str) -> str:
 
 
 def _kp_fn_for_ctx(ctx):
-    """legacy: 従来どおり(hook or w62.run_kp_with_outer_retry)。corrected: canonicalizationにmodeを明示して渡す(Trial専用)。"""
+    """hook or w62.run_kp_with_outer_retry。canonicalization(canon_fn既定=sc.run_key_phrase_canonicalization)の中で
+    gloss再整合が既定ON・無条件で走る(KGCPW)。"""
     fn = ctx.hooks.get("kp_fn")
     if fn:
         return fn
-    w62 = _m().w62
-    if ctx.gloss_alignment_mode == "corrected":
-        import functools
-        import er003_v1_n3_01_scaffold_generate as sc
-        canon = functools.partial(sc.run_key_phrase_canonicalization, gloss_alignment_mode="corrected")
-        return functools.partial(w62.run_kp_with_outer_retry, canon_fn=canon)
-    return w62.run_kp_with_outer_retry
+    return _m().w62.run_kp_with_outer_retry
 
 
 _GLOSS_HR_SNAPSHOT = "gloss_alignment_pending_result.json"
@@ -1196,9 +1188,16 @@ def _load_gloss_hr_resume(ctx, lv: str, text: str):
     return res
 
 
-def _gloss_hr_gate(ctx, lv: str, text: str, res: dict) -> None:
-    """corrected専用: artifact(最終)にHR待ちitemが残るなら、HR報告書(再読検証つき)・run-level event・snapshotを書き、
-    既存FamilyZE2EStopでstageを停止する。報告の書込失敗は例外(fail-closed)。"""
+def _gloss_unevaluated_stop_message(lv: str, ranks: list) -> str:
+    import er003_key_words_gloss_alignment as ga
+    return (f"FAMILY_Z_KP_GLOSS_ALIGNMENT_UNEVALUATED({lv}): rank={ranks} {ga.UNEVALUATED_REASON}"
+            f" [--regenerate-stage kp_{lv}]")
+
+
+def _gloss_hr_gate(ctx, lv: str, text: str, res: dict, prov=None) -> None:
+    """artifact(最終)にHR待ちitemが残るなら、HR報告書(再読検証つき)・run-level event・snapshotを書き、
+    既存FamilyZE2EStopでstageを停止する。報告の書込失敗は例外(fail-closed)。
+    OF-KGCPW-09: raise前にinstall_kp_assets(旧artifactを残さない)+mark_stale_descendants(下流のstale化)を行う。"""
     import er003_key_words_gloss_alignment as ga
     m = _m()
     kp_dir = f"{ctx.out_dir}/key_phrases/{lv}"
@@ -1214,6 +1213,10 @@ def _gloss_hr_gate(ctx, lv: str, text: str, res: dict) -> None:
     prev = [e for e in prev if e.get("level") != lv] + [event]
     with open(ev_path, "w", encoding="utf-8") as f:
         json.dump(prev, f, ensure_ascii=False, indent=2)
+    install_kp_assets(ctx, lv)   # インストール済みの旧(ON化前)assetを残すと--stage tts_*単独起動で旧glossが通るため上書きする
+    if prov is not None:
+        prov.mark_stale_descendants(f"kp_{lv}")
+        prov.save()
     raise FamilyZE2EStop(
         f"FAMILY_Z_KP_GLOSS_ALIGNMENT_HUMAN_REVIEW_REQUIRED({lv}): rank={event['ranks']} 報告書={event['report_md']} "
         "(gloss再整合が成立せず自動採用しない・TTS/完成へ進まない。resolve_gloss後に同じstageを再実行すると選定は再実行されない)")
@@ -1222,6 +1225,8 @@ def _gloss_hr_gate(ctx, lv: str, text: str, res: dict) -> None:
 def stage_kp(ctx) -> dict:
     m = _m()
     st, w62 = m.st, m.w62
+    import er003_key_words_gloss_alignment as ga
+    ga.preflight()   # OF-229(Zはrun_key_phrasesを通らないため): gloss規則の抽出失敗は最初の対象alignの前(run開始時)に停止する
     prov = _prov(ctx)
     summary = {}
     for lv in ("b1b", "a2"):
@@ -1231,8 +1236,9 @@ def stage_kp(ctx) -> dict:
             _guard(ctx, f"kp_{lv}", E2E_STAGE_EST_JPY["kp"] / 2)
             # 委任_10: Z限定・暫定の外側retry(OPEN-310回避、共有module無改変、canonicalization INVALID時のみ通算3回)。
             res = None
-            if ctx.gloss_alignment_mode == "corrected" and ctx.regenerate_stage != f"kp_{lv}":
-                res = _load_gloss_hr_resume(ctx, lv, text)   # HR解消後の再開は選定を再実行しない
+            # OF-KGCPW-09: 未消費のHR snapshotがあれば--regenerate-stage kp_*指定時でも優先復元する
+            # (人間の確定値を捨てて選定をやり直さない)。snapshotはHR停止時にだけ作られ、再開成功後に消費済みへ改名される。
+            res = _load_gloss_hr_resume(ctx, lv, text)   # HR解消後の再開は選定を再実行しない
             if res is None:
                 res = w62.run_kp_stage(lv, text, ctx.out_dir, ctx.slug, kp_fn=_kp_fn_for_ctx(ctx))
             canon_status = (res.get("canonicalization") or {}).get("status")
@@ -1240,25 +1246,35 @@ def stage_kp(ctx) -> dict:
                     or canon_status not in ("CANONICALIZATION_PASS", "CANONICALIZATION_REVIEW_REQUIRED")):
                 raise FamilyZE2EStop(f"FAMILY_Z_KP_NOT_PASSED({lv}): status={res.get('status')} "
                                      f"canonicalization={bool(res.get('canonicalization'))}(自動採用しない)")
-            if ctx.gloss_alignment_mode == "corrected":
-                _gloss_hr_gate(ctx, lv, text, res)
+            _gloss_hr_gate(ctx, lv, text, res, prov=prov)
             return st.dumps(res), {}
 
         r = w62.ensure_stage(prov, f"kp_{lv}", _sha(text), f"{ctx.out_dir}/key_phrases/{lv}_result.json", runner,
                              regenerate=ctx.regenerate_stage == f"kp_{lv}")
-        if ctx.gloss_alignment_mode == "corrected":   # 再開に使ったHR snapshotは消費済みにする(再利用しない)
-            _snap = f"{ctx.out_dir}/key_phrases/{lv}/{_GLOSS_HR_SNAPSHOT}"
-            if os.path.exists(_snap):
-                os.replace(_snap, _snap.replace(".json", ".consumed.json"))
+        # 再開に使ったHR snapshotは消費済みにする(再利用しない)
+        _snap = f"{ctx.out_dir}/key_phrases/{lv}/{_GLOSS_HR_SNAPSHOT}"
+        if os.path.exists(_snap):
+            os.replace(_snap, _snap.replace(".json", ".consumed.json"))
+        # OF-KGCPW-08: ON化前・未評価のKP stageを(再利用で)通さない。対象なのにstatus無しならSTOPして再生成を要求する。
+        _uneval = ga.collect_unevaluated(w62.rj(f"{ctx.out_dir}/key_phrases/{lv}/keywords_canonicalized.json"))
+        if _uneval:
+            raise FamilyZE2EStop(_gloss_unevaluated_stop_message(lv, [x.get("rank") for x in _uneval]))
         dst = install_kp_assets(ctx, lv)
-        summary[lv] = {"status": r["status"], "assets": dst}
+        # OF-KGCPW-16: 監視指標(記録のみ)。再利用でも保存済みresultから読む。
+        _res_doc = w62.rj(f"{ctx.out_dir}/key_phrases/{lv}_result.json")
+        _canon_doc = _res_doc.get("canonicalization") or {}
+        summary[lv] = {"status": r["status"], "assets": dst,
+                       "gloss_alignment_status": _canon_doc.get("gloss_alignment_status"),
+                       "gloss_alignment_metrics": _canon_doc.get("gloss_alignment_metrics"),
+                       "gloss_alignment_flag": ga.flag_effective()}
     # 方針6: Adv KP第3segment=英語解説(Coffee最終v3 Adv / X B1と同一構成)。
     kp = w62.rj(f"{_kp_assets_dir(ctx, 'b1b')}/keywords_canonicalized.json")
     items = sorted(kp["items"], key=lambda x: x["rank"])
     sig_payload = [it["display_phrase"] for it in items]
-    if ctx.gloss_alignment_mode == "corrected":
-        # 委任_02(Opus (d)): 解説の入力にglossを含むため、gloss確定後に旧gloss入力の解説が再利用されないようsigへglossを含める。
-        # legacyのsig(=display_phraseのみ)は不変=既存Melos完成物のprovenance互換を壊さない。
+    if any(it.get("gloss_alignment_status") for it in items):
+        # 委任_02(Opus (d)) / OF-KGCPW-07: 解説の入力にglossを含むため、gloss再整合のstatusを持つitemがあれば、gloss確定後に
+        # 旧gloss入力の解説が再利用されないようsigへglossを含める。status無し(ON化前/対象0件)は従来sig(=display_phraseのみ)
+        # =既存Melos完成物のprovenance互換を壊さない。
         sig_payload = {"display": sig_payload, "gloss": [it.get("japanese_gloss", "") for it in items]}
     sig = _sha(json.dumps(sig_payload, ensure_ascii=False))
     ex_path = f"{ctx.out_dir}/key_phrases/b1b/kp_explanations.json"
@@ -1290,10 +1306,13 @@ def load_level_inputs(ctx, level: str) -> dict:
     support = w62.rj(f"{out}/support/{level}_support.json")
     kp = w62.rj(f"{_kp_assets_dir(ctx, level)}/keywords_canonicalized.json")
     import er003_key_words_gloss_alignment as _ga
-    _hr = _ga.collect_unresolved(kp)   # 委任_02(関所): HR待ちglossのKPはTTS/Gate/Assemblyの共有入力にしない(legacyでは常に[])
+    _hr = _ga.collect_unresolved(kp)   # 委任_02(関所): HR待ちglossのKPはTTS/Gate/Assemblyの共有入力にしない
     if _hr:
         raise FamilyZE2EStop(f"FAMILY_Z_KP_GLOSS_ALIGNMENT_HUMAN_REVIEW_REQUIRED({level}): rank={[x.get('rank') for x in _hr]} "
                              "(TTS/Gate/Assemblyへ進まない。resolve_gloss後に再実行)")
+    _uneval = _ga.collect_unevaluated(kp)   # OF-KGCPW-08: ON化前・未評価のKP成果物も共有入力にしない
+    if _uneval:
+        raise FamilyZE2EStop(_gloss_unevaluated_stop_message(level, [x.get("rank") for x in _uneval]))
     items = sorted(kp["items"], key=lambda x: x["rank"])
     kp_items = [{"rank": it["rank"], "used_form": it["used_form"], "japanese_gloss": it.get("japanese_gloss", ""),
                  "display_phrase": it["display_phrase"]} for it in items]
@@ -1815,8 +1834,15 @@ def main(argv=None):
         else:
             ctx = build_real_context(args)
         ctx.only_clips, ctx.regenerate_stage = only, args.regenerate_stage
+        # OF-KGCPW-11: gloss再整合の実効flag(ON/OFFと取得元)をrun開始時にstdout+runディレクトリ+summaryへ記録する。
+        import er003_key_words_gloss_alignment as _ga_flag
+        _flag_eff = _ga_flag.announce_flag()
+        os.makedirs(ctx.out_dir, exist_ok=True)
+        with open(f"{ctx.out_dir}/gloss_alignment_flag.json", "w", encoding="utf-8") as _ff:
+            json.dump(_flag_eff, _ff, ensure_ascii=False, indent=2)
         results = run_stages(ctx, stages)
         summary = {"management_id": E2E_MANAGEMENT_ID, "mode": ctx.mode, "stages": list(results),
+                   "gloss_alignment_flag": _flag_eff,
                    "spent_jpy": round(ctx.budget.spent(), 4) if ctx.budget is not None else None}
         print(json.dumps(summary, ensure_ascii=False))
         return 0

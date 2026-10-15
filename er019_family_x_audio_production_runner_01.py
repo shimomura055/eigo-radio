@@ -342,7 +342,7 @@ def _kp_already_generated(kp_dir: str) -> list[str]:
 
 def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
                         scaffold_only: str | None = None, budget_check=None,
-                        kp_backend: str = "db_hybrid", *, gloss_alignment_mode: str = "legacy") -> dict:
+                        kp_backend: str = "db_hybrid") -> dict:
     """既存sc.run_key_phrases()(選定+canonicalization+redundancy QA)を
     Family X本文へそのまま適用する(記事冒頭Key Phrasesは既存Family A
     既定構成をそのまま再利用する、本委任文の前提どおり)。
@@ -401,10 +401,8 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
         # (下は変更なし: kp_dir定義は上へ移動済み)
         article_id = f"FAMILY_X_AUDIO_{os.path.basename(out_dir)}_{level}"
         kp_process = "B1_SUPPORT" if level == "b1b" else "A2_SUPPORT"
-        # 委任_02: gloss再整合のmode。既定legacyでは従来のcall形のまま(Production無変更)。correctedはTrial専用で明示時のみ。
-        _gm_kwargs = {} if gloss_alignment_mode == "legacy" else {"gloss_alignment_mode": gloss_alignment_mode}
         kp = sc.run_key_phrases(article_text, kp_dir, article_id, level, process=kp_process,
-                                 kp_backend=kp_backend, **_gm_kwargs)
+                                 kp_backend=kp_backend)
         kp_status = (kp["canonicalization"] or {}).get("status") if kp["canonicalization"] else kp["selection"]["status"]
         print(f"[FAMILY-X-AUDIO-SCAFFOLD] {level}: key phrase status={kp_status}")
 
@@ -421,9 +419,15 @@ def run_theme_scaffold(client, source_dir: str, out_dir: str, levels: list[str],
                           "m2_fallback_events": _fb_events}
         if _fb_events:
             print(sc.format_m2_fallback_stdout(_fb_events))
-        if "gloss_alignment_human_review_events" in kp:   # correctedモードのみ(legacyでは出ない=summary形不変)
-            result[level]["gloss_alignment_human_review_events"] = kp["gloss_alignment_human_review_events"]
-            result[level]["gloss_alignment_mode"] = gloss_alignment_mode
+        # KGCPW(OF-KGCPW-04/11/16): gloss再整合は無条件。KP段のtop-level status(kp_run_status)と
+        # gloss停止(gloss_alignment_run_status)は別キーで記録する(NG_REVIEW_REQUIREDとHRが重なっても隠れない)。
+        _canon = kp.get("canonicalization") or {}
+        result[level]["gloss_alignment_human_review_events"] = kp.get("gloss_alignment_human_review_events") or []
+        result[level]["kp_run_status"] = kp.get("status")
+        result[level]["gloss_alignment_run_status"] = kp.get("gloss_alignment_run_status")
+        result[level]["gloss_alignment_status"] = _canon.get("gloss_alignment_status")
+        result[level]["gloss_alignment_flag"] = _gloss_align_mod().flag_effective()
+        result[level]["gloss_alignment_metrics"] = _canon.get("gloss_alignment_metrics")
         if scaffold_only:
             result[level]["scaffold_only"] = scaffold_only
         if budget_check is not None:
@@ -514,12 +518,41 @@ def _only_segments_skip(label: str):
     return None
 
 
-def _gloss_alignment_hr_unresolved(kp):
-    """KP-GLOSS-ALIGNMENT-DESIGN-CORRECTION-TRIAL-01 委任_02(関所): artifactにHuman Review待ち(correctedモードが書く
-    gloss_alignment_status=FAILED_HUMAN_REVIEW_REQUIRED)のitemがあれば、そのitem一覧を返す。legacy artifactは常に[]
-    (=Production既定の挙動は無変更)。HR解消(resolve_gloss)後はHUMAN_RESOLVEDになり通過する。"""
+def _gloss_align_mod():
     import er003_key_words_gloss_alignment as _ga
-    return _ga.collect_unresolved(kp)
+    return _ga
+
+
+def _gloss_alignment_hr_unresolved(kp):
+    """関所: artifactにHuman Review待ち(gloss_alignment_status=FAILED_HUMAN_REVIEW_REQUIRED、旧版の"FAILED"含む)の
+    itemがあれば、そのitem一覧を返す。さらに(OF-KGCPW-08)再整合の対象なのにgloss_alignment_statusが無い=ON化前・未評価の
+    itemも、`_unevaluated=True`付きで返す(決定論・LLM 0。対象0件の成果物は通過)。HR解消(resolve_gloss)後は
+    HUMAN_RESOLVEDになり通過する。"""
+    _ga = _gloss_align_mod()
+    out = list(_ga.collect_unresolved(kp))
+    out += [{**it, "_unevaluated": True} for it in _ga.collect_unevaluated(kp)]
+    return out
+
+
+def _gloss_hr_levels_from_artifacts(out_dir: str, levels: list | None = None) -> dict:
+    """OF-KGCPW-05: 最終行/rc判定の基準=ディスク上のartifactのcollect_unresolved(報告書ファイルの有無ではない)。
+    戻り値 {level: [rank,...]}(HR待ちのlevelのみ)。"""
+    import glob as _glob
+    _ga = _gloss_align_mod()
+    res = {}
+    for pth in sorted(_glob.glob(f"{out_dir}/*/key_phrases/keywords_canonicalized.json")):
+        lv = os.path.basename(os.path.dirname(os.path.dirname(pth)))
+        if levels is not None and lv not in levels:
+            continue
+        try:
+            with open(pth, encoding="utf-8") as _f:
+                doc = json.load(_f)
+        except (OSError, ValueError):
+            continue
+        un = _ga.collect_unresolved(doc)
+        if un:
+            res[lv] = [it.get("rank") for it in un]
+    return res
 
 
 def _gloss_alignment_stopped_entry(unresolved: list, role: str) -> dict:
@@ -527,11 +560,14 @@ def _gloss_alignment_stopped_entry(unresolved: list, role: str) -> dict:
     UNVALIDATED扱い(record_human_approvalの承認対象にも含まれない)にし、assemblyを拒否する。"""
     import er003_key_words_gloss_alignment as _ga
     ranks = [it.get("rank") for it in unresolved]
-    return {"status": _ga.STOPPED_STATUS,
-            "reason": (f"KP日本語glossの再整合が成立せずHuman Review待ち(rank={ranks})のため、このlevelのKP segment"
-                       f"({role})はTTS/LLMを実行しません(0 API call)。GLOSS_ALIGNMENT_HUMAN_REVIEW_01.md参照。"
-                       "resolve_gloss後に再実行してください。"),
-            "gloss_alignment_ranks": ranks}
+    if any(it.get("_unevaluated") for it in unresolved):
+        reason = (f"{_ga.UNEVALUATED_REASON}(rank={ranks})のため、このlevelのKP segment({role})はTTS/LLMを"
+                  "実行しません(0 API call)。")
+    else:
+        reason = (f"KP日本語glossの再整合が成立せずHuman Review待ち(rank={ranks})のため、このlevelのKP segment"
+                  f"({role})はTTS/LLMを実行しません(0 API call)。GLOSS_ALIGNMENT_HUMAN_REVIEW_01.md参照。"
+                  "resolve_gloss後に再実行してください。")
+    return {"status": _ga.STOPPED_STATUS, "reason": reason, "gloss_alignment_ranks": ranks}
 
 
 def _gloss_alignment_stopped_kp_results(kp_items: list, unresolved: list, roles: tuple) -> dict:
@@ -919,8 +955,14 @@ def _resolve_kp_explanations_text(kp_items: list, cached: dict | None) -> dict:
     でも変化していれば5件まとめて再生成する(部分reuseはしない、5件
     バッチ生成という性質上)。"""
     signature = [it["display_phrase"] for it in kp_items]
+    # OF-KGCPW-06: glossは解説LLMの入力。gloss_alignment_status付きitemが1件でもあれば、gloss_signature
+    # (display_phrase/key_phrase/glossの並び)の一致を必須にする(欠落も不一致=再生成)。status無しartifact
+    # (ON化前/対象0件)は従来署名で互換。
+    gloss_signature = [[it["display_phrase"], it.get("key_phrase"), it.get("japanese_gloss", "")] for it in kp_items]
+    _has_status = any(it.get("gloss_alignment_status") for it in kp_items)
     cached_bundle = (cached or {}).get("key_phrase_explanations_text")
-    if cached_bundle and cached_bundle.get("phrases_signature") == signature:
+    if (cached_bundle and cached_bundle.get("phrases_signature") == signature
+            and (not _has_status or cached_bundle.get("gloss_signature") == gloss_signature)):
         reused = dict(cached_bundle)
         reused["reused_from_previous_run"] = True
         return reused
@@ -929,6 +971,7 @@ def _resolve_kp_explanations_text(kp_items: list, cached: dict | None) -> dict:
                     "japanese_gloss": it.get("japanese_gloss", "")} for it in kp_items]
     result = kp_explanation_gen.generate_kp_explanations(input_items)
     result["phrases_signature"] = signature
+    result["gloss_signature"] = gloss_signature
     result["reused_from_previous_run"] = False
     return result
 
@@ -1551,7 +1594,7 @@ def _style_profile_gate_blocked_summary(theme_out_dir: str, out_dir: str, level:
 def _assert_no_gloss_alignment_hr(level_out_dir: str, level: str) -> None:
     """委任_02(関所・assembly前): keywords_canonicalized.jsonにgloss Human Review待ちitemが残っていれば、
     tts_generation_results.jsonの有無に関わらず(Gateはresultsが無いと即returnするため)assemblyを拒否する。
-    legacy artifactでは何も起きない。"""
+    HR待ちに加え、ON化前・未評価itemも拒否する(OF-KGCPW-08)。"""
     import json as _json
     kp_path = f"{level_out_dir}/key_phrases/keywords_canonicalized.json"
     with open(kp_path, encoding="utf-8") as _f:
@@ -1560,7 +1603,8 @@ def _assert_no_gloss_alignment_hr(level_out_dir: str, level: str) -> None:
         raise RuntimeError(
             f"EPISODE_BLOCKED_BY_GLOSS_ALIGNMENT: {level}のepisode assemblyを中止しました。KP日本語glossの再整合が成立せず"
             f"Human Review待ちのitemがあります(rank={[x.get('rank') for x in _hr]})。"
-            "resolve_gloss(HR_RESOLVE_PROCEDURE_01.md)で確定するかKPを再生成してから、TTS段を再実行してください。")
+            f"resolve_gloss({_gloss_align_mod().HR_RESOLVE_RUNBOOK})で確定するかKPを再生成してから、TTS段を再実行してください。"
+            + (f"(未評価: {_gloss_align_mod().UNEVALUATED_REASON})" if any(x.get("_unevaluated") for x in _hr) else ""))
 
 
 def stage_assemble_family_x_b1(theme_out_dir: str, theme_id: str, source_dir: str | None = None) -> dict:
@@ -2339,12 +2383,15 @@ def print_m2_fallback_final_line(out_dir: str) -> str:
     return line
 
 
-def print_gloss_hr_final_line(out_dir: str) -> str:
+def print_gloss_hr_final_line(out_dir: str, levels: list | None = None) -> str:
     """委任_02(「届いた」条件③): runner終了時の最終stdoutに、gloss再整合のHuman Review待ちを専用1行で明示する。
-    scaffold_run_summary.jsonのlevel別eventまたはlevel別HR報告書があるときのみ出力(legacy/正常時は何も出さず空文字=
-    既存の出力は不変)。"""
+    判定基準=ディスク上のartifactのcollect_unresolved(OF-KGCPW-05。報告書ファイルの有無ではない=resolve後に誤報しない)。
+    HR待ちが無ければ何も出さず空文字。報告書pathは履歴として併記。"""
     import glob as _glob
-    import er003_key_words_gloss_alignment as _ga
+    _ga = _gloss_align_mod()
+    hr_levels = _gloss_hr_levels_from_artifacts(out_dir, levels)
+    if not hr_levels:
+        return ""
     events = []
     _sum_path = f"{out_dir}/scaffold_run_summary.json"
     if os.path.exists(_sum_path):
@@ -2353,9 +2400,7 @@ def print_gloss_hr_final_line(out_dir: str) -> str:
         events = [ev for lv in _sum.values() if isinstance(lv, dict)
                   for ev in (lv.get("gloss_alignment_human_review_events") or [])]
     reports = sorted(_glob.glob(f"{out_dir}/*/key_phrases/{_ga.HR_REPORT_MD}"))
-    if not events and not reports:
-        return ""
-    line = (f"[GLOSS-ALIGN][HUMAN-REVIEW-REQUIRED][FINAL] events={len(events)} reports={reports} "
+    line = (f"[GLOSS-ALIGN][HUMAN-REVIEW-REQUIRED][FINAL] levels={hr_levels} events={len(events)} reports={reports} "
             "gloss再整合が成立せず対象levelのKP segment/完成を停止中です。ユーザーへ必ず報告してください。")
     print(line)
     return line
@@ -2419,7 +2464,10 @@ def main() -> None:
               f"(source_dir={source_dir}/ja_writer 不在)。A2のJapanese title segmentは"
               f"英語placeholderのまま生成されるため、実行前に要確認。")
 
+    # OF-KGCPW-11: gloss再整合の実効flag(ON/OFFと取得元)をrun開始時にstdoutとentry_point/summaryへ記録する。
+    _gloss_flag_effective = _gloss_align_mod().announce_flag()
     save_json(f"{out_dir}/entry_point.json", {
+        "gloss_alignment_flag": _gloss_flag_effective,
         "runner": "er019_family_x_audio_production_runner_01.py",
         "management_id": MANAGEMENT_ID, "slug": args.slug, "run": args.run,
         "source_dir": source_dir, "levels": levels, "stage": args.stage, "dry_run": args.dry_run,
@@ -2453,74 +2501,89 @@ def main() -> None:
     # 呼び出さない。Stage 2以降で本CLIから--stage scaffold等を実行する)。
     # cost loggerのinstall/raw_usage_log.jsonl作成もこの分岐以降のみ行う
     # (--dry-run/--stage planは常に¥0・副作用ゼロを維持する既存契約を保つ)。
-    cl.install(f"{out_dir}/raw_usage_log.jsonl")
-    import er003_v1_en_direct_vfl_01_generate as vfl01
-    client = vfl01.get_client()
+    try:
+        cl.install(f"{out_dir}/raw_usage_log.jsonl")
+        import er003_v1_en_direct_vfl_01_generate as vfl01
+        client = vfl01.get_client()
 
-    if args.stage in ("scaffold", "all"):
-        with cl.logging_context(args.slug, "scaffold"):
-            scaffold_result = run_theme_scaffold(
-                client, source_dir, out_dir, levels, scaffold_only=args.scaffold_only,
-                budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
-        assert_budget_ok(out_dir, args.budget_jpy, "after scaffold")
-        # 修正1回目(Opus L2所見B2、2026-09-27): scaffold完了後、
-        # entry_point.jsonへlevelごとのkp_backend_usedを追記する
-        # (per-article traceability、既存フィールドは保持したまま追加)。
-        entry_point_path = f"{out_dir}/entry_point.json"
-        if os.path.exists(entry_point_path):
-            with open(entry_point_path, encoding="utf-8") as f:
-                entry_point = json.load(f)
-            entry_point["kp_backend_used_by_level"] = {
-                level: (scaffold_result.get(level) or {}).get("kp_backend_used") for level in levels
-            }
-            entry_point["m2_fallback_by_level"] = {
-                level: (scaffold_result.get(level) or {}).get("m2_fallback") for level in levels
-            }
-            save_json(entry_point_path, entry_point)
+        if args.stage in ("scaffold", "all"):
+            with cl.logging_context(args.slug, "scaffold"):
+                scaffold_result = run_theme_scaffold(
+                    client, source_dir, out_dir, levels, scaffold_only=args.scaffold_only,
+                    budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
+            assert_budget_ok(out_dir, args.budget_jpy, "after scaffold")
+            # 修正1回目(Opus L2所見B2、2026-09-27): scaffold完了後、
+            # entry_point.jsonへlevelごとのkp_backend_usedを追記する
+            # (per-article traceability、既存フィールドは保持したまま追加)。
+            entry_point_path = f"{out_dir}/entry_point.json"
+            if os.path.exists(entry_point_path):
+                with open(entry_point_path, encoding="utf-8") as f:
+                    entry_point = json.load(f)
+                entry_point["kp_backend_used_by_level"] = {
+                    level: (scaffold_result.get(level) or {}).get("kp_backend_used") for level in levels
+                }
+                entry_point["m2_fallback_by_level"] = {
+                    level: (scaffold_result.get(level) or {}).get("m2_fallback") for level in levels
+                }
+                save_json(entry_point_path, entry_point)
 
-    if args.stage in ("tts", "all"):
-        # W5(Opus L2所見MAJOR-3是正): 課金が発生するTTS呼び出し(下の
-        # generate_family_x_*_segments())の直前でbackendをfail-fastする。
-        assert_production_tts_backend(args.tts_backend, args.allow_legacy_backend)
-        # C3-1: TTS直前のRisk Flagger保険(三者sha照合。`--stage tts`単独でも抜けない)。RFは
-        # cl.logging_contextの外で呼ぶ契約(RF moduleが条件ごとに自前でstage tagを張る)。
-        # 非Blocking: RF_UNAVAILABLE/PARTIAL/Queue保存失敗でもTTSへ進む。
-        for level in levels:
-            ensure_rf_record(source_dir, out_dir, level, args.budget_jpy)
-        with cl.logging_context(args.slug, "tts"):
+        if args.stage in ("tts", "all"):
+            # W5(Opus L2所見MAJOR-3是正): 課金が発生するTTS呼び出し(下の
+            # generate_family_x_*_segments())の直前でbackendをfail-fastする。
+            assert_production_tts_backend(args.tts_backend, args.allow_legacy_backend)
+            # C3-1: TTS直前のRisk Flagger保険(三者sha照合。`--stage tts`単独でも抜けない)。RFは
+            # cl.logging_contextの外で呼ぶ契約(RF moduleが条件ごとに自前でstage tagを張る)。
+            # 非Blocking: RF_UNAVAILABLE/PARTIAL/Queue保存失敗でもTTSへ進む。
             for level in levels:
-                if level == "b1b":
-                    generate_family_x_b1_segments(out_dir, tts_backend=args.tts_backend, style_profile=_profile_id)
-                else:
-                    # 日本語titleは実行時に決定したja_title_info(ja_writer正式path
-                    # 由来)を使う(以前はa2/article.mdの英語titleをそのまま渡す
-                    # placeholderだった、Stage 3aで判明したbugの最小修正)。
-                    generate_family_x_a2_segments(
-                        out_dir, japanese_title=japanese_title or "(japanese title unavailable)",
-                        tts_backend=args.tts_backend, style_profile=_profile_id)
-                # Opus必須9: 全stage累計(KP/TTS/ASR/Azure、raw_usage_log.jsonlの全provider)をlevelごとにも確認する
-                # (既存の上限・Guardの意味は変えず、チェック頻度のみ増やす)。
-                assert_budget_ok(out_dir, args.budget_jpy, f"after tts {level}")
-        assert_budget_ok(out_dir, args.budget_jpy, "after tts")
+                ensure_rf_record(source_dir, out_dir, level, args.budget_jpy)
+            with cl.logging_context(args.slug, "tts"):
+                for level in levels:
+                    if level == "b1b":
+                        generate_family_x_b1_segments(out_dir, tts_backend=args.tts_backend, style_profile=_profile_id)
+                    else:
+                        # 日本語titleは実行時に決定したja_title_info(ja_writer正式path
+                        # 由来)を使う(以前はa2/article.mdの英語titleをそのまま渡す
+                        # placeholderだった、Stage 3aで判明したbugの最小修正)。
+                        generate_family_x_a2_segments(
+                            out_dir, japanese_title=japanese_title or "(japanese title unavailable)",
+                            tts_backend=args.tts_backend, style_profile=_profile_id)
+                    # Opus必須9: 全stage累計(KP/TTS/ASR/Azure、raw_usage_log.jsonlの全provider)をlevelごとにも確認する
+                    # (既存の上限・Guardの意味は変えず、チェック頻度のみ増やす)。
+                    assert_budget_ok(out_dir, args.budget_jpy, f"after tts {level}")
+            assert_budget_ok(out_dir, args.budget_jpy, "after tts")
 
-    if args.stage in ("assemble", "all"):
-        for level in levels:
-            if level == "b1b":
-                stage_assemble_family_x_b1(out_dir, args.slug, source_dir=source_dir)
-            else:
-                stage_assemble_family_x_a2(out_dir, args.slug, source_dir=source_dir)
+        if args.stage in ("assemble", "all"):
+            for level in levels:
+                # OF-KGCPW-19: gloss停止(EPISODE_BLOCKED_BY_GLOSS_ALIGNMENT)はlevel単位で捕捉し、健全なlevelは続行する。
+                # HR levelはrun_summary_assemble.jsonへBLOCKED記録(既存のEPISODE_BLOCKED_BY_*形式)。rcは末尾で2。
+                try:
+                    if level == "b1b":
+                        stage_assemble_family_x_b1(out_dir, args.slug, source_dir=source_dir)
+                    else:
+                        stage_assemble_family_x_a2(out_dir, args.slug, source_dir=source_dir)
+                except RuntimeError as exc:
+                    if not str(exc).startswith("EPISODE_BLOCKED_BY_GLOSS_ALIGNMENT"):
+                        raise
+                    save_json(f"{out_dir}/{level}/run_summary_assemble.json",
+                              {"status": "EPISODE_BLOCKED_BY_GLOSS_ALIGNMENT", "reason": str(exc)})
+                    print(f"[FAMILY-X-AUDIO-RUNNER][BLOCKED] {level}: {exc}")
 
-    if args.stage in ("player", "all"):
-        player_path = build_player_html(out_dir, args.slug, japanese_title)
-        print(f"[FAMILY-X-AUDIO-RUNNER] player.html: {os.path.abspath(player_path)}")
+        if args.stage in ("player", "all"):
+            player_path = build_player_html(out_dir, args.slug, japanese_title)
+            print(f"[FAMILY-X-AUDIO-RUNNER] player.html: {os.path.abspath(player_path)}")
 
-    # 委任_03(2026-10-13): M2→Strategy L Fallbackの必須ユーザー報告。runner終了時の標準出力に常に明示する
-    # (stage問わず。noticeがあれば存在とpathを示す)。Fallback成功をM2P0正常動作と誤認させない。
-    print_m2_fallback_final_line(out_dir)
-    print_gloss_hr_final_line(out_dir)
+    finally:
+        # 委任_03(2026-10-13): M2→Strategy L Fallbackの必須ユーザー報告。runner終了時の標準出力に常に明示する
+        # (stage問わず。noticeがあれば存在とpathを示す)。Fallback成功をM2P0正常動作と誤認させない。
+        print_m2_fallback_final_line(out_dir)
+        # OF-KGCPW-03: 例外(--stage allのEPISODE_BLOCKED等)で途中終了しても最終stdoutの1行を必ず出す(try/finally)。
+        print_gloss_hr_final_line(out_dir, levels)
     final_jpy, by_provider = compute_cost_jpy_so_far(f"{out_dir}/raw_usage_log.jsonl")
     print(f"[FAMILY-X-AUDIO-RUNNER] stage={args.stage} 完了。out_dir={out_dir} "
           f"累計費用(JPY)={final_jpy:.2f} by_provider={by_provider}")
+    # OF-KGCPW-04: いずれかのlevelにgloss HR未解決が残っていればrc=2(Zと一致)。
+    if _gloss_hr_levels_from_artifacts(out_dir, levels):
+        sys.exit(2)
 
 
 if __name__ == "__main__":

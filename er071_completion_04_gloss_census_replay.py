@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """委任_04: 記録済みの『KPが候補より伸びたitem』(全records)へgloss再整合を適用(実API少額、記事ごとに1呼出)。
 Before/After(gloss)と、既に整合しているitemを不必要に書き換えないか(over-rewrite)を確認する。"""
+# KGCPW 委任_02 (OF-KGCPW-13): 撤去済みlegacy方式に依存する過去証跡script。冒頭で停止する(有料APIを叩く前に落とす)。
+raise SystemExit("HISTORICAL: 過去証跡(KP-GLOSS-ALIGNMENT Trial/census/replay)の再現用scriptです。KGCPW(2026-10-15)でlegacy方式(slot/fallback/mode)を撤去し修正版が唯一の方式になったため再実行不能・実行すると有料APIを叩く前に停止します(OF-KGCPW-13)。")
 import glob, json, sys, collections
 sys.stdout.reconfigure(encoding="utf-8")
 import er003_key_words_gloss_alignment as ga

@@ -1,4 +1,5 @@
-# KP-GLOSS-ALIGNMENT-01 テスト(API不要、mock)
+# KP-GLOSS-ALIGNMENT-01 テスト(API不要、mock)。
+# KGCPW 委任_02(2026-10-15): 修正版(corrected)が唯一の方式。旧版(legacy)のtest(約26件)は撤去/書換済み。
 import json
 import os
 import tempfile
@@ -9,8 +10,8 @@ import er003_key_words_gloss_alignment as ga
 
 
 def _explicit_on(cls):
-    """2026-10-15 既定OFF化(KP-GLOSS-ALIGNMENT-PRODUCTION-01 委任_02): 既存testは『明示ON』経路を検証するため、
-    各testでモジュールflagを明示的にONにする(終了時に元へ戻す)。既定OFFそのものはDefaultOffIsolation classで検証する。"""
+    """各testでモジュールflagを明示的にONにする(終了時に元へ戻す。環境変数でOFFにされた環境でも決定論にするため)。
+    既定ON/kill switchそのものはDefaultOnKillSwitch classで検証する。"""
     orig = cls.setUp if "setUp" in cls.__dict__ else None
 
     def setUp(self):
@@ -120,65 +121,12 @@ class Alignment(unittest.TestCase):
         self.assertEqual(r["status"], "ALIGN_PASS")
         self.assertEqual(r["merged"]["items"][1]["japanese_gloss"], "インタビューをもとにした")
 
-    def test_fallback_default_keeps_kp_and_marks_failed(self):
-        """OF-227/228: 既定(ii)=最終KP維持+FAILED記録+通知。KPは戻さない。"""
-        fn = FakeFn([_resp([(2, False, "x", "FAIL")]), RuntimeError("boom")])
-        r = ga.align_glosses(self.m, "art", lambda msg: fn, article_id="ART1")
-        self.assertEqual(fn.calls, ga.MAX_GLOSS_ALIGNMENT_ATTEMPTS)
-        self.assertEqual(r["status"], "ALIGN_FAILED")
-        it = r["merged"]["items"][1]
-        self.assertEqual(it["key_phrase"], "based on interviews")
-        self.assertEqual(it["japanese_gloss"], "～をもとにした")
-        self.assertTrue(it["gloss_review_hint"])
-        self.assertEqual(it["gloss_alignment_status"], "FAILED")
-        self.assertEqual(it["gloss_alignment"]["status"], "GLOSS_ALIGNMENT_FAILED_KP_KEPT")
-        self.assertEqual(r["merged"]["gloss_alignment_failed"][0]["rank"], 2)
-        ev = r["fallback_event"]
-        self.assertEqual(ev["reason_code"], "GLOSS_ALIGNMENT_FAILED")
-        self.assertEqual(ev["article"], "ART1")
-        # 対象外itemは無変更
-        self.assertEqual(r["merged"]["items"][0], self.m["items"][0])
-
-    def test_fallback_revert_mode_reverts_when_safe_and_invalidates_qa(self):
-        m = _merged([dict(_item(2, "right away", "right away now", "すぐに今", beyond=True),
-                          source_span="do it right away now", normalization_reason="restore_semantic_complement",
-                          reasoning="r", qa={"a": "PASS"}, qa_overall_status="PASS", canonicalization_source_span="zzz")])
-        fn = FakeFn([_resp([(2, False, "x", "FAIL")]), _resp([(2, False, "x", "FAIL")])])
-        r = ga.align_glosses(m, "art", lambda msg: fn, fallback_mode=ga.FALLBACK_REVERT_IF_SAFE)
-        it = r["merged"]["items"][0]
-        self.assertEqual(it["key_phrase"], "right away")
-        self.assertEqual(it["used_form"], "right away")
-        self.assertEqual(it["normalization_reason"], "none")
-        self.assertEqual(it["qa"], {"a": "INVALIDATED_BY_GLOSS_REVERT"})
-        self.assertNotIn("canonicalization_source_span", it)
-        self.assertTrue(it["gloss_review_hint"])
-        self.assertEqual(it["gloss_alignment_status"], "FAILED")
-        self.assertEqual(it["gloss_alignment"]["status"], "FALLBACK_KP_REVERTED_TO_DISPLAY_PHRASE")
-
-    def test_fallback_revert_mode_blocked_by_dangling_tail_and_span(self):
-        ok, why = ga.revert_to_candidate_allowed({"display_phrase": "based on", "source_span": "based on interviews"})
-        self.assertFalse(ok)
-        self.assertIn("末尾機能語", why)
-        ok, why = ga.revert_to_candidate_allowed({"display_phrase": "take a player off", "source_span": "took off players"})
-        self.assertFalse(ok)
-        ok, why = ga.revert_to_candidate_allowed({"display_phrase": "right away", "source_span": "do it right away now"})
-        self.assertTrue(ok)
-        # revertモードでも不可のitemは(ii)で処理(KP維持)
-        fn = FakeFn([_resp([(2, False, "x", "FAIL")]), _resp([(2, False, "x", "FAIL")])])
-        r = ga.align_glosses(self.m, "art", lambda msg: fn, fallback_mode=ga.FALLBACK_REVERT_IF_SAFE)
-        it = r["merged"]["items"][1]
-        self.assertEqual(it["key_phrase"], "based on interviews")
-        self.assertEqual(it["gloss_alignment"]["status"], "GLOSS_ALIGNMENT_FAILED_KP_KEPT")
-
     def test_flag_off_no_api_no_change(self):
         fn = FakeFn([])
         r = ga.align_glosses(self.m, "art", lambda msg: fn, enabled=False)
         self.assertEqual(r["status"], "DISABLED")
         self.assertIs(r["merged"], self.m)
         self.assertEqual(fn.calls, 0)
-
-    def test_default_mode_keep(self):
-        self.assertEqual(ga.GLOSS_ALIGNMENT_FALLBACK_MODE, ga.FALLBACK_KEEP_KP)
 
     def test_usage_cost_recorded_in_attempts(self):
         class U(FakeFn):
@@ -194,32 +142,7 @@ class Alignment(unittest.TestCase):
     def test_rank_mismatch_invalid(self):
         fn = FakeFn([_resp([(9, False, "a", "PASS")]), _resp([(9, False, "a", "PASS")])])
         r = ga.align_glosses(self.m, "art", lambda msg: fn)
-        self.assertEqual(r["status"], "ALIGN_FAILED")
-
-    def test_digit_and_paren_rejected(self):
-        for bad in ("2つの", "インタビュー(取材)をもとにした", "インタビュー…をもとにした"):
-            v = ga.validate_alignment_response(_resp([(2, False, bad, "PASS")]), [self.m["items"][1]])
-            self.assertFalse(v["ok"], bad)
-
-    def test_slot_tilde_allowed_only_when_kp_has_slot_word(self):
-        t = [_item(2, "take someone's", "take someone's place", "～の代わりをする", beyond=True)]
-        v = ga.validate_alignment_response(_resp([(2, False, "～の代わりをする", "PASS")]), t)
-        self.assertTrue(v["ok"], v["reasons"])
-        # KPにスロット語なし -> 「～」が残ればFAIL(LLMがPASSを自己申告しても)
-        v = ga.validate_alignment_response(_resp([(2, False, "～をもとにした", "PASS")]), [self.m["items"][1]])
-        self.assertFalse(v["ok"])
-        self.assertTrue(any("スロット" in r for r in v["reasons"]))
-        for ch in ("〜", "~"):
-            self.assertTrue(ga.gloss_has_unjustified_slot("based on interviews", ch + "をもとにした"))
-        self.assertFalse(ga.gloss_has_unjustified_slot("based on interviews", "インタビューをもとにした"))
-        self.assertFalse(ga.gloss_has_unjustified_slot("pull oneself together", "～を落ち着かせる"))
-
-    def test_already_consistent_with_stale_slot_gloss_is_rejected(self):
-        """OF-230(b): GLOSS_ALREADY_CONSISTENT申告でも旧glossがスロット付き(KPにスロット語なし)ならFAIL->retry->fallback。"""
-        fn = FakeFn([_resp([(2, True, "～をもとにした", "PASS")]), _resp([(2, True, "～をもとにした", "PASS")])])
-        r = ga.align_glosses(self.m, "art", lambda msg: fn)
-        self.assertEqual(r["status"], "ALIGN_FAILED")
-        self.assertEqual(fn.calls, 2)
+        self.assertEqual(r["status"], "ALIGN_FAILED_HUMAN_REVIEW_REQUIRED")
 
     def test_writes_audit_files(self):
         fn = FakeFn([_resp([(2, False, "インタビューをもとにした", "PASS")])])
@@ -235,7 +158,7 @@ class PromptReuse(unittest.TestCase):
         rules = ga.load_approved_gloss_rules()
         self.assertIn("括弧", rules)
         self.assertIn("漢数字", rules)
-        msg = ga.build_user_message([_item(2, "based on", "based on interviews", "～をもとにした", True)], "ART")
+        msg = ga.build_user_message_corrected([_item(2, "based on", "based on interviews", "～をもとにした", True)], "ART")
         self.assertIn(rules, msg)
         self.assertIn("based on interviews", msg)
 
@@ -309,16 +232,15 @@ class ScaffoldIntegration(unittest.TestCase):
         self.assertEqual(fake.calls, 0)
         self.assertEqual(saved["items"][1]["japanese_gloss"], "～をもとにした")
 
-    def test_failed_alignment_keeps_kp_flags_failed_not_human_review(self):
+    def test_failed_alignment_keeps_kp_and_marks_human_review(self):
         fake = FakeFn([_resp([(2, False, "x", "FAIL")]), _resp([(2, False, "x", "FAIL")])])
         res, saved = self._run("based on interviews", fake)
         self.assertEqual(res["status"], "CANONICALIZATION_PASS")
         self.assertEqual(saved["items"][1]["key_phrase"], "based on interviews")
         self.assertEqual(saved["items"][1]["japanese_gloss"], "～をもとにした")
-        self.assertEqual(saved["items"][1]["gloss_alignment_status"], "FAILED")
+        self.assertEqual(saved["items"][1]["gloss_alignment_status"], ga.STATUS_HR_REQUIRED)
         self.assertTrue(saved["items"][1]["gloss_review_hint"])
-        self.assertEqual(res["gloss_alignment_status"], "ALIGN_FAILED")
-        self.assertEqual(res["gloss_alignment_fallback"]["reason_code"], "GLOSS_ALIGNMENT_FAILED")
+        self.assertEqual(res["gloss_alignment_status"], "ALIGN_FAILED_HUMAN_REVIEW_REQUIRED")
 
 
 @_explicit_on
@@ -357,17 +279,6 @@ class RulesExtraction(unittest.TestCase):
         self.assertEqual(meta["rules_sha256"], self.EXPECTED_SHA256)
 
 
-class NoticeFiles(unittest.TestCase):
-    def test_notice_written_and_stdout(self):
-        ev = ga.build_gloss_alignment_fallback_record(
-            "ART", [{"rank": 2, "key_phrase": "k", "japanese_gloss": "g", "action": "a"}], "m")
-        with tempfile.TemporaryDirectory() as d:
-            p = ga.write_failed_notice(d, [ev])
-            self.assertTrue(os.path.exists(p))
-            self.assertIsNone(ga.write_failed_notice(d, []))
-        self.assertIn("ユーザーへ必ず報告", ga.format_failed_stdout([ev]))
-
-
 # ============================================================
 # 委任_02 (KP-GLOSS-ALIGNMENT-DESIGN-CORRECTION-TRIAL-01): mode="corrected"(Trial専用)のunit test(API不要、mock)
 # legacy(既定)のtestは上で無変更。ここでは「～」条件撤回・追加内容語span対応(record-only/gate)・item単位retry・
@@ -392,45 +303,6 @@ def _factory(payloads):
         msgs.append(msg)
         return fn
     return fn, make, msgs
-
-
-@_explicit_on
-class ModeSeparation(unittest.TestCase):
-    def test_default_mode_is_legacy_and_env_not_used(self):
-        self.assertEqual(ga.GLOSS_ALIGNMENT_MODE, "legacy")
-        self.assertEqual(ga.resolve_mode(None), "legacy")
-        self.assertEqual(ga.resolve_mode("corrected"), "corrected")
-        with self.assertRaises(ValueError):
-            ga.resolve_mode("CORRECTED")
-
-    def test_default_align_glosses_is_legacy_behavior(self):
-        m = _merged([_t(2, "based on", "based on interviews", "～をもとにした")])
-        fn = FakeFn([_resp([(2, False, "x", "FAIL")]), _resp([(2, False, "x", "FAIL")])])
-        r = ga.align_glosses(m, "art", lambda msg: fn)       # mode未指定=legacy: 従来のFAILED(素通り)形が出る
-        it = r["merged"]["items"][0]
-        self.assertEqual(it["gloss_alignment_status"], "FAILED")
-        self.assertIsNotNone(r["fallback_event"])
-        self.assertEqual(ga.collect_unresolved(r["merged"]), [])   # legacy FAILEDは新関所の対象ではない(挙動不変)
-
-    def test_production_runners_do_not_pass_mode(self):
-        import inspect
-        import er019_family_x_audio_production_runner_01 as x
-        src = inspect.getsource(x.run_theme_scaffold)
-        self.assertIn('*, gloss_alignment_mode: str = "legacy"', src)
-        self.assertIn('if gloss_alignment_mode == "legacy" else', src)   # legacyでは従来のcall形
-        import er026_family_z_fiction_production_runner_01 as z
-        self.assertEqual(z.E2EContext().gloss_alignment_mode, "legacy")
-
-    def test_evidence_scripts_still_resolve_legacy_symbols(self):
-        """証跡スクリプト(replay/census/offline_audit)が参照するlegacy記号が残っている(import破綻なし)。"""
-        import re as _re
-        names = set()
-        for f in ("er071_gloss_alignment_01_replay.py", "er071_gloss_alignment_01_census.py",
-                  "er071_gloss_alignment_correction_01_offline_audit.py"):
-            names |= set(_re.findall(r"\bga\.([A-Za-z_][A-Za-z0-9_]*)", open(f, encoding="utf-8").read()))
-        self.assertTrue(names)
-        for n in names:
-            self.assertTrue(hasattr(ga, n), n)
 
 
 class AddedWordsAndMappings(unittest.TestCase):
@@ -546,7 +418,7 @@ class ItemLevelRetryAndFailure(unittest.TestCase):
                     (3, False, "x", [], "FAIL")]),
             _cresp([(3, False, "生豆の値段", [("raw-bean", "生豆"), ("prices", "値段")], "PASS")]),
         ])
-        r = ga.align_glosses(self.m, "art", make, mode="corrected", enabled=True)
+        r = ga.align_glosses(self.m, "art", make, enabled=True)
         self.assertEqual(fn.calls, 2)
         self.assertEqual(r["status"], "ALIGN_PASS")
         self.assertIn('"rank": 2', msgs[0])
@@ -562,7 +434,7 @@ class ItemLevelRetryAndFailure(unittest.TestCase):
     def test_two_failures_mark_item_hr_required_and_keep_kp_and_gloss(self):
         bad = _cresp([(2, False, "x", [], "FAIL"), (3, False, "生豆の値段", [("raw-bean", "生豆"), ("prices", "値段")], "PASS")])
         fn, make, msgs = _factory([bad, _cresp([(2, False, "y", [], "FAIL")])])
-        r = ga.align_glosses(self.m, "art", make, mode="corrected", enabled=True, article_id="A")
+        r = ga.align_glosses(self.m, "art", make, enabled=True, article_id="A")
         self.assertEqual(r["status"], "ALIGN_PARTIAL_HUMAN_REVIEW_REQUIRED")
         self.assertEqual(fn.calls, 2)
         it2, it3 = r["merged"]["items"][1], r["merged"]["items"][2]
@@ -577,7 +449,7 @@ class ItemLevelRetryAndFailure(unittest.TestCase):
 
     def test_technical_and_parse_failures_consume_attempts_and_end_in_hr(self):
         fn, make, msgs = _factory([RuntimeError("boom"), "not json"])
-        r = ga.align_glosses(self.m, "art", make, mode="corrected", enabled=True)
+        r = ga.align_glosses(self.m, "art", make, enabled=True)
         self.assertEqual(fn.calls, 2)
         self.assertEqual(r["status"], "ALIGN_FAILED_HUMAN_REVIEW_REQUIRED")
         self.assertEqual(sorted(x["rank"] for x in ga.collect_unresolved(r["merged"])), [2, 3])
@@ -587,10 +459,10 @@ class ItemLevelRetryAndFailure(unittest.TestCase):
     def test_no_targets_and_disabled_make_no_api_call(self):
         m = _merged([_item(1, "right away", "right away", "すぐに")])
         calls = []
-        r = ga.align_glosses(m, "art", lambda msg: calls.append(1), mode="corrected", enabled=True)
+        r = ga.align_glosses(m, "art", lambda msg: calls.append(1), enabled=True)
         self.assertEqual(r["status"], "NO_TARGETS")
         self.assertIs(r["merged"], m)
-        r = ga.align_glosses(self.m, "art", lambda msg: calls.append(1), mode="corrected", enabled=False)
+        r = ga.align_glosses(self.m, "art", lambda msg: calls.append(1), enabled=False)
         self.assertEqual(r["status"], "DISABLED")
         self.assertFalse(calls)
 
@@ -598,7 +470,7 @@ class ItemLevelRetryAndFailure(unittest.TestCase):
         """legacyのfallback(i)相当(display_phraseへ戻す)は、correctedでは存在しない。"""
         m = _merged([_t(2, "right away", "right away now", "すぐに今")])
         fn, make, _ = _factory([_cresp([(2, False, "x", [], "FAIL")]), _cresp([(2, False, "y", [], "FAIL")])])
-        r = ga.align_glosses(m, "art", make, mode="corrected", enabled=True)
+        r = ga.align_glosses(m, "art", make, enabled=True)
         self.assertEqual(r["merged"]["items"][0]["key_phrase"], "right away now")
 
     def test_audit_files_and_cost(self):
@@ -609,9 +481,10 @@ class ItemLevelRetryAndFailure(unittest.TestCase):
         fn = U([_cresp([(2, False, "インタビューをもとにした", [("interviews", "インタビュー")], "PASS"),
                         (3, False, "生豆の値段", [("raw-bean", "生豆"), ("prices", "値段")], "PASS")])])
         with tempfile.TemporaryDirectory() as d:
-            r = ga.align_glosses(self.m, "art", lambda msg: fn, mode="corrected", enabled=True, out_dir=d, article_id="A")
+            r = ga.align_glosses(self.m, "art", lambda msg: fn, enabled=True, out_dir=d, article_id="A")
             meta = json.load(open(os.path.join(d, "gloss_alignment_runtime_metadata.json"), encoding="utf-8"))
-        self.assertEqual(meta["mode"], "corrected")
+        self.assertNotIn("mode", meta)                                       # OF-KGCPW-02: modeフィールド撤去
+        self.assertEqual(meta["version"], "ER-003-KP-GLOSS-ALIGN-02")
         self.assertEqual(meta["rules_sha256"], RulesExtraction.EXPECTED_SHA256)
         self.assertIsNotNone(r["cost_jpy"])
         self.assertEqual(r["attempts"][0]["usage"]["input_tokens"], 1000)
@@ -635,14 +508,11 @@ class PromptCorrected(unittest.TestCase):
         self.assertIn("書き換えるのは、key_phraseの語の意味が欠けている・誤っている場合だけです", msg)
         self.assertIn("key_phrase「fall into」にcurrent「～に落ちる」: 意味は表れているので一致です", msg)
         self.assertNotIn("スロット語がある場合に限り", msg)
-        # legacy課題指示文は無変更(この追記文を含まない)
-        self.assertNotIn("書き換えるのは、key_phraseの語の意味が欠けている", ga.build_user_message(t, "ART"))
 
     def test_schema_requires_mappings(self):
-        sch = ga.GLOSS_ALIGNMENT_JSON_SCHEMA_CORRECTED["schema"]["properties"]["items"]["items"]
+        sch = ga.GLOSS_ALIGNMENT_JSON_SCHEMA["schema"]["properties"]["items"]["items"]
         self.assertIn("added_word_mappings", sch["required"])
-        self.assertNotIn("added_word_mappings", ga.GLOSS_ALIGNMENT_JSON_SCHEMA["schema"]["properties"]["items"]["items"]["properties"])
-        self.assertTrue(ga.GLOSS_ALIGNMENT_JSON_SCHEMA_CORRECTED["strict"])
+        self.assertTrue(ga.GLOSS_ALIGNMENT_JSON_SCHEMA["strict"])
 
     def test_make_alignment_fn_uses_given_schema(self):
         seen = {}
@@ -656,7 +526,7 @@ class PromptCorrected(unittest.TestCase):
                 def create(**k):
                     seen.update(k)
                     return R()
-        fn = ga.make_alignment_fn("m", client=C(), model="gpt-6-luna", schema=ga.GLOSS_ALIGNMENT_JSON_SCHEMA_CORRECTED)
+        fn = ga.make_alignment_fn("m", client=C(), model="gpt-6-luna")      # schema既定=修正版(唯一)
         fn()
         self.assertEqual(seen["text"]["format"]["name"], "key_phrase_gloss_alignment_corrected")
 
@@ -664,7 +534,7 @@ class PromptCorrected(unittest.TestCase):
 def _hr_merged():
     fn, make, _ = _factory([_cresp([(2, False, "x", [], "FAIL")]), _cresp([(2, False, "y", [], "FAIL")])])
     m = _merged([_item(1, "right away", "right away", "すぐに"), _t(2, "based on", "based on interviews", "～をもとにした")])
-    return ga.align_glosses(m, "art", make, mode="corrected", enabled=True)["merged"]
+    return ga.align_glosses(m, "art", make, enabled=True)["merged"]
 
 
 class HumanReviewReport(unittest.TestCase):
@@ -775,7 +645,7 @@ class ResolveGloss(unittest.TestCase):
 
 @_explicit_on
 class ScaffoldCorrected(unittest.TestCase):
-    def _canon(self, fake, mode):
+    def _canon(self, fake):
         import unittest.mock as mock
         import er003_v1_n3_01_scaffold_generate as sc
         originals = [
@@ -795,191 +665,220 @@ class ScaffoldCorrected(unittest.TestCase):
                 mock.patch.object(sc.kc, "run_canonicalization_gate",
                                   return_value=(parsed, "CANONICALIZATION_PASS", [], "gpt-6-luna", "resp")), \
                 mock.patch.object(sc.gloss_align, "make_alignment_fn", return_value=fake) as mk:
-            kw = {} if mode is None else {"gloss_alignment_mode": mode}
-            res = sc.run_key_phrase_canonicalization("ART", originals, d, "A", process="A2_SUPPORT", **kw)
+            res = sc.run_key_phrase_canonicalization("ART", originals, d, "A", process="A2_SUPPORT")
             saved = json.load(open(os.path.join(d, "keywords_canonicalized.json"), encoding="utf-8"))
         return res, saved, mk
 
-    def test_corrected_success_and_schema_passed(self):
+    def test_success_and_default_schema_used(self):
         fake = FakeFn([_cresp([(2, False, "インタビューをもとにした", [("interviews", "インタビュー")], "PASS")])])
-        res, saved, mk = self._canon(fake, "corrected")
+        res, saved, mk = self._canon(fake)
         self.assertEqual(res["gloss_alignment_status"], "ALIGN_PASS")
         self.assertEqual(saved["items"][1]["japanese_gloss"], "インタビューをもとにした")
-        self.assertIs(mk.call_args.kwargs.get("schema"), ga.GLOSS_ALIGNMENT_JSON_SCHEMA_CORRECTED)
+        self.assertNotIn("schema", mk.call_args.kwargs)     # schemaは唯一(make_alignment_fnの既定=修正版)
+        self.assertEqual(ga.GLOSS_ALIGNMENT_JSON_SCHEMA["name"], "key_phrase_gloss_alignment_corrected")
+        m = res["gloss_alignment_metrics"]                  # OF-KGCPW-16: 監視指標(記録のみ)
+        self.assertEqual((m["targets"], m["items"], m["attempts_max"], m["status"]), (1, 2, 1, "ALIGN_PASS"))
+        self.assertIn("elapsed_sec", m)
+        self.assertIn("cost_jpy", m)
 
-    def test_corrected_failure_persists_hr_status_not_legacy_failed(self):
+    def test_failure_persists_hr_status(self):
         fake = FakeFn([_cresp([(2, False, "x", [], "FAIL")]), _cresp([(2, False, "y", [], "FAIL")])])
-        res, saved, _ = self._canon(fake, "corrected")
+        res, saved, _ = self._canon(fake)
         self.assertEqual(res["status"], "CANONICALIZATION_PASS")
         self.assertEqual(saved["items"][1]["gloss_alignment_status"], ga.STATUS_HR_REQUIRED)
         self.assertEqual(saved["items"][1]["key_phrase"], "based on interviews")
-        self.assertIsNone(res["gloss_alignment_fallback"])
+        self.assertNotIn("gloss_alignment_fallback", res)     # 旧fallback(KP維持FAILED)記録は撤去
         self.assertEqual(res["gloss_alignment_unresolved_ranks"], [2])
 
-    def test_default_mode_unchanged_legacy_and_no_schema_kwarg(self):
-        fake = FakeFn([_resp([(2, False, "インタビューをもとにした", "PASS")])])
-        res, saved, mk = self._canon(fake, None)
-        self.assertEqual(res["gloss_alignment_status"], "ALIGN_PASS")
-        self.assertNotIn("schema", mk.call_args.kwargs)
-        self.assertNotIn("gloss_alignment_unresolved_ranks", res)
-
-    def test_run_key_phrases_corrected_emits_one_event_on_final_artifact_only(self):
+    def _run_key_phrases(self, impl_ret, disk_merged):
         import unittest.mock as mock
         import er003_v1_n3_01_scaffold_generate as sc
+        out = []
+        with tempfile.TemporaryDirectory() as d:
+            if disk_merged is not None:
+                json.dump(disk_merged, open(os.path.join(d, "keywords_canonicalized.json"), "w", encoding="utf-8"),
+                          ensure_ascii=False)
+            with mock.patch.object(sc, "_run_key_phrases_impl", return_value=dict(impl_ret)) as impl, \
+                    mock.patch("builtins.print", side_effect=lambda *a, **k: out.append(" ".join(map(str, a)))):
+                res = sc.run_key_phrases("ART", d, "AID", "A2")
+            has_report = os.path.exists(os.path.join(d, ga.HR_REPORT_JSON))
+        return res, impl, out, has_report
+
+    def test_run_key_phrases_emits_one_event_from_disk_artifact(self):
         merged = _hr_merged()
         impl_ret = {"selection": {"status": "KEY_WORDS_STRUCTURE_PASS"},
                     "canonicalization": {"status": "CANONICALIZATION_PASS", "merged": merged}, "redundancy_qa": {}}
-        out = []
-        with tempfile.TemporaryDirectory() as d, \
-                mock.patch.object(sc, "_run_key_phrases_impl", return_value=dict(impl_ret)) as impl, \
-                mock.patch("builtins.print", side_effect=lambda *a, **k: out.append(" ".join(map(str, a)))):
-            res = sc.run_key_phrases("ART", d, "AID", "A2", gloss_alignment_mode="corrected")
-            self.assertTrue(os.path.exists(os.path.join(d, ga.HR_REPORT_JSON)))
+        res, impl, out, has_report = self._run_key_phrases(impl_ret, merged)
+        self.assertTrue(has_report)
         self.assertEqual(len(res["gloss_alignment_human_review_events"]), 1)
         self.assertEqual(res["status"], ga.STOPPED_STATUS)
-        self.assertEqual(impl.call_args.kwargs["gloss_alignment_mode"], "corrected")
+        self.assertEqual(res["gloss_alignment_run_status"], ga.STOPPED_STATUS)
+        self.assertNotIn("gloss_alignment_mode", impl.call_args.kwargs)
         self.assertEqual(len([o for o in out if "[GLOSS-ALIGN][HUMAN-REVIEW-REQUIRED]" in o]), 1)
 
-    def test_run_key_phrases_legacy_call_shape_unchanged(self):
-        import unittest.mock as mock
+    def test_hr_reported_from_disk_when_final_attempt_has_no_merged(self):
+        """OF-KGCPW-03(M4): attempt0でHR artifactがdiskに残り、次attemptでcanonicalization非PASS(final_merged無し)でも
+        報告書・event・stdoutが出る。既存status(NG_REVIEW_REQUIRED)は上書きせず、別キーでgloss停止を示す(OF-KGCPW-04)。"""
+        impl_ret = {"selection": {"status": "KEY_WORDS_STRUCTURE_PASS"}, "canonicalization": None, "redundancy_qa": None,
+                    "status": "NG_REVIEW_REQUIRED"}
+        res, _, out, has_report = self._run_key_phrases(impl_ret, _hr_merged())
+        self.assertTrue(has_report)
+        self.assertEqual(len(res["gloss_alignment_human_review_events"]), 1)
+        self.assertEqual(res["status"], "NG_REVIEW_REQUIRED")                # 既存statusは保持
+        self.assertEqual(res["gloss_alignment_run_status"], ga.STOPPED_STATUS)   # gloss停止は別キーで隠れない
+        self.assertEqual(len([o for o in out if "[GLOSS-ALIGN][HUMAN-REVIEW-REQUIRED]" in o]), 1)
+
+    def test_no_artifact_no_report_and_clean_artifact_no_event(self):
+        impl_ret = {"selection": {}, "canonicalization": None, "redundancy_qa": None}
+        res, _, _, has_report = self._run_key_phrases(impl_ret, None)
+        self.assertFalse(has_report)
+        self.assertEqual(res["gloss_alignment_human_review_events"], [])
+        self.assertIsNone(res["gloss_alignment_run_status"])
+        self.assertNotIn("status", res)
+        res, _, _, has_report = self._run_key_phrases(impl_ret, _merged([_item(1, "right away", "right away", "すぐに")]))
+        self.assertFalse(has_report)
+        self.assertEqual(res["gloss_alignment_human_review_events"], [])
+
+    def test_no_mode_argument_anywhere(self):
+        import inspect
         import er003_v1_n3_01_scaffold_generate as sc
-        impl_ret = {"selection": {}, "canonicalization": {"status": "CANONICALIZATION_PASS", "merged": _hr_merged()},
-                    "redundancy_qa": {}}
-        with tempfile.TemporaryDirectory() as d, mock.patch.object(sc, "_run_key_phrases_impl", return_value=dict(impl_ret)) as impl:
-            res = sc.run_key_phrases("ART", d, "AID", "A2")
-            self.assertNotIn("gloss_alignment_mode", impl.call_args.kwargs)
-            self.assertNotIn("gloss_alignment_human_review_events", res)
-            self.assertFalse(os.path.exists(os.path.join(d, ga.HR_REPORT_JSON)))
+        for fn in (sc.run_key_phrases, sc._run_key_phrases_impl, sc.run_key_phrase_canonicalization, ga.align_glosses):
+            self.assertNotIn("gloss_alignment_mode", inspect.signature(fn).parameters, fn.__name__)
+            self.assertNotIn("mode", inspect.signature(fn).parameters, fn.__name__)
+        self.assertFalse(hasattr(ga, "GLOSS_ALIGNMENT_MODE"))
+        self.assertFalse(hasattr(ga, "resolve_mode"))
+
+    def test_production_callers_never_pass_mapping_gate(self):
+        """付随事項1(record-only): Productionの呼出元はmapping_gate=Trueを渡さない(既定Falseのまま)。"""
+        import inspect
+        self.assertFalse(inspect.signature(ga.align_glosses).parameters["mapping_gate"].default)
+        for f in ("er003_v1_n3_01_scaffold_generate.py", "er019_family_x_audio_production_runner_01.py",
+                  "er026_family_z_fiction_production_runner_01.py", "er062_family_z_writer_01.py"):
+            self.assertNotIn("mapping_gate", open(f, encoding="utf-8").read(), f)
 
 
-class DefaultOffIsolation(unittest.TestCase):
-    """2026-10-15 ユーザー承認(案a): flag既定OFF。明示ONしない限りgloss再整合は実行されない(追加API呼出0・gloss不変・HR成果物なし)。"""
+class DefaultOnKillSwitch(unittest.TestCase):
+    """2026-10-15 ユーザー正式採用(corrected): flag既定ON。kill switchはプロセス環境変数のみ(0/false/off/noでOFF)。"""
 
     @staticmethod
-    def _fresh_flag(env_value):
+    def _fresh(env_value, expr="g.GLOSS_ALIGNMENT_ENABLED"):
         import subprocess
         import sys
         env = {k: v for k, v in os.environ.items() if k != "EIGO_KP_GLOSS_ALIGNMENT"}
         if env_value is not None:
             env["EIGO_KP_GLOSS_ALIGNMENT"] = env_value
-        out = subprocess.run([sys.executable, "-c", "import er003_key_words_gloss_alignment as g;print(g.GLOSS_ALIGNMENT_ENABLED)"],
+        out = subprocess.run([sys.executable, "-c", f"import er003_key_words_gloss_alignment as g;print({expr})"],
                              capture_output=True, text=True, env=env, cwd=os.path.dirname(os.path.abspath(__file__)))
         return out.stdout.strip()
 
-    def test_env_unset_is_off_and_explicit_values(self):
-        self.assertEqual(self._fresh_flag(None), "False")
-        self.assertEqual(self._fresh_flag("0"), "False")
-        self.assertEqual(self._fresh_flag(""), "False")
-        self.assertEqual(self._fresh_flag("1"), "True")
-        self.assertEqual(self._fresh_flag("true"), "True")
+    def test_env_unset_is_on_and_only_off_values_disable(self):
+        self.assertEqual(self._fresh(None), "True")
+        for v in ("0", "false", "off", "no", " OFF ", "False"):
+            self.assertEqual(self._fresh(v), "False", v)
+        for v in ("1", "true", "on", "yes", "", "flase"):    # typo等はON(承認済み仕様が動く側)
+            self.assertEqual(self._fresh(v), "True", repr(v))
 
-    def test_default_noop_legacy_and_corrected(self):
-        old = ga.GLOSS_ALIGNMENT_ENABLED
-        ga.GLOSS_ALIGNMENT_ENABLED = False   # 既定(env未設定)と同じ状態
-        try:
-            m = _merged([_item(2, "based on", "based on interviews", "～をもとにした", beyond=True)])
-            for mode in (None, "legacy", "corrected"):
-                fn = FakeFn([])
-                with tempfile.TemporaryDirectory() as d:
-                    r = ga.align_glosses(m, "art", lambda msg: fn, out_dir=d, article_id="a", mode=mode)
-                    self.assertEqual(os.listdir(d), [])   # artifact/HR報告書なし
-                self.assertEqual(r["status"], "DISABLED")
-                self.assertIs(r["merged"], m)
-                self.assertEqual(r["attempts"], [])
-                self.assertEqual(fn.calls, 0)
-            self.assertIsNone(ga.preflight())          # 承認規則の抽出も走らない
-        finally:
-            ga.GLOSS_ALIGNMENT_ENABLED = old
+    def test_flag_effective_records_value_and_source(self):
+        """OF-KGCPW-11: 実効値(ON/OFF)と取得元。"""
+        self.assertEqual(self._fresh(None, "g.flag_effective()"), "{'enabled': True, 'raw': None, 'source': 'default'}")
+        self.assertEqual(self._fresh("0", "g.flag_effective()"), "{'enabled': False, 'raw': '0', 'source': 'env'}")
+        self.assertEqual(self._fresh("1", "g.flag_effective()"), "{'enabled': True, 'raw': '1', 'source': 'env'}")
 
-    def test_scaffold_default_off_makes_no_alignment_call(self):
-        import unittest.mock as mock
-        import er003_v1_n3_01_scaffold_generate as sc
-        old = ga.GLOSS_ALIGNMENT_ENABLED
-        ga.GLOSS_ALIGNMENT_ENABLED = False
-        try:
-            m = _merged([_item(2, "based on", "based on interviews", "～をもとにした", beyond=True)])
-            with mock.patch.object(ga, "make_alignment_fn", side_effect=AssertionError("alignment API must not be created")):
-                r = ga.align_glosses(m, "art", lambda msg: (_ for _ in ()).throw(AssertionError("no api")))
-            self.assertEqual(r["status"], "DISABLED")
-            self.assertTrue(hasattr(sc, "run_key_phrase_canonicalization"))
-        finally:
-            ga.GLOSS_ALIGNMENT_ENABLED = old
+    def test_announce_flag_on_and_off_warning(self):
+        old = (ga.GLOSS_ALIGNMENT_ENABLED, ga._FLAG_RAW, ga._FLAG_SOURCE)
+        self.addCleanup(lambda: (setattr(ga, "GLOSS_ALIGNMENT_ENABLED", old[0]), setattr(ga, "_FLAG_RAW", old[1]),
+                                 setattr(ga, "_FLAG_SOURCE", old[2])))
+        lines = []
+        ga.GLOSS_ALIGNMENT_ENABLED, ga._FLAG_RAW, ga._FLAG_SOURCE = True, None, "default"
+        eff = ga.announce_flag(lines.append)
+        self.assertTrue(eff["enabled"])
+        self.assertIn("実効flag=ON", lines[-1])
+        ga.GLOSS_ALIGNMENT_ENABLED, ga._FLAG_RAW, ga._FLAG_SOURCE = False, "0", "env"
+        eff = ga.announce_flag(lines.append)
+        self.assertFalse(eff["enabled"])
+        self.assertIn("[GLOSS-ALIGN][WARN] DISABLED by EIGO_KP_GLOSS_ALIGNMENT=0 (承認済み仕様の無効化)", lines[-1])
 
-    def test_scaffold_canonicalization_default_off_no_call_no_change_no_files(self):
-        """Production関数sc.run_key_phrase_canonicalization(X/Z共通の到達点)を通しても、既定OFFならAPI呼出0・gloss不変・追加成果物なし。"""
-        import unittest.mock as mock
-        import er003_v1_n3_01_scaffold_generate as sc
+    def test_disabled_noop(self):
         old = ga.GLOSS_ALIGNMENT_ENABLED
         ga.GLOSS_ALIGNMENT_ENABLED = False
-        try:
-            originals = [{"rank": 2, "display_phrase": "based on", "source_span": "based on",
-                          "source_sentence": "It is an estimate based on interviews with sellers.", "ja_gloss": "～をもとにした",
-                          "source_reference_contract": "X"}]
-            qa = {f: "PASS" for f in kc.QA_FIELDS}
-            parsed = {"items": [{"rank": 2, "key_phrase": "based on interviews", "changed_from_display_phrase": True,
-                                 "normalization_reason": "restore_semantic_complement", "reasoning": "r", **qa}]}
-            fake = FakeFn([])
-            for mode in (None, "legacy"):
-                with tempfile.TemporaryDirectory() as d,                         mock.patch.object(sc.kc, "run_canonicalization_gate",
-                                          return_value=(parsed, "CANONICALIZATION_PASS", [], "m", "resp")),                         mock.patch.object(sc.gloss_align, "make_alignment_fn", return_value=fake) as mk:
-                    res = sc.run_key_phrase_canonicalization("ART", originals, d, "A", process="A2_SUPPORT",
-                                                             **({} if mode is None else {"gloss_alignment_mode": mode}))
-                    saved = json.load(open(os.path.join(d, "keywords_canonicalized.json"), encoding="utf-8"))
-                    files = sorted(os.listdir(d))
-                self.assertEqual(res["gloss_alignment_status"], "DISABLED")
-                self.assertEqual(fake.calls, 0)
-                self.assertEqual(mk.call_count, 0)
-                self.assertEqual(saved["items"][0]["japanese_gloss"], "～をもとにした")
-                self.assertNotIn("gloss_alignment_status", saved["items"][0])
-                self.assertFalse([f for f in files if "GLOSS" in f.upper() or "HUMAN_REVIEW" in f.upper()])
-        finally:
-            ga.GLOSS_ALIGNMENT_ENABLED = old
+        self.addCleanup(setattr, ga, "GLOSS_ALIGNMENT_ENABLED", old)
+        m = _merged([_item(2, "based on", "based on interviews", "～をもとにした", beyond=True)])
+        fn = FakeFn([])
+        with tempfile.TemporaryDirectory() as d:
+            r = ga.align_glosses(m, "art", lambda msg: fn, out_dir=d, article_id="a")
+            self.assertEqual(os.listdir(d), [])   # artifact/HR報告書なし
+        self.assertEqual(r["status"], "DISABLED")
+        self.assertIs(r["merged"], m)
+        self.assertEqual((r["attempts"], fn.calls), ([], 0))
+        self.assertIsNone(ga.preflight())          # 承認規則の抽出も走らない
+        self.assertEqual(ga.collect_unevaluated(m), [])   # OFF時は未評価検出も対象外
 
-    def _corrected_canon(self, flag):
-        import unittest.mock as mock
-        import er003_v1_n3_01_scaffold_generate as sc
+    def test_default_on_runs_without_explicit_enabled(self):
         old = ga.GLOSS_ALIGNMENT_ENABLED
-        ga.GLOSS_ALIGNMENT_ENABLED = flag
-        try:
-            originals = [{"rank": 2, "display_phrase": "based on", "source_span": "based on",
-                          "source_sentence": "It is an estimate based on interviews with sellers.", "ja_gloss": "～をもとにした",
-                          "source_reference_contract": "X"}]
-            qa = {f: "PASS" for f in kc.QA_FIELDS}
-            parsed = {"items": [{"rank": 2, "key_phrase": "based on interviews", "changed_from_display_phrase": True,
-                                 "normalization_reason": "restore_semantic_complement", "reasoning": "r", **qa}]}
-            fake = FakeFn([_cresp([(2, False, "インタビューをもとにした", [], "PASS")])])
-            with tempfile.TemporaryDirectory() as d, mock.patch.object(sc.kc, "run_canonicalization_gate",
-                                          return_value=(parsed, "CANONICALIZATION_PASS", [], "m", "resp")),                     mock.patch.object(sc.gloss_align, "make_alignment_fn", return_value=fake) as mk:
-                res = sc.run_key_phrase_canonicalization("ART", originals, d, "A", process="A2_SUPPORT",
-                                                         gloss_alignment_mode="corrected")
-                files = sorted(os.listdir(d))
-            return res, fake, mk, files
-        finally:
-            ga.GLOSS_ALIGNMENT_ENABLED = old
-
-    def test_corrected_mode_without_flag_is_disabled_no_call(self):
-        """委任_03: flagが唯一のkill switch。mode=correctedでもflag未設定ならDISABLED・API 0・HR成果物なし。"""
-        res, fake, mk, files = self._corrected_canon(False)
-        self.assertEqual(res["gloss_alignment_status"], "DISABLED")
-        self.assertEqual(fake.calls, 0)
-        self.assertEqual(mk.call_count, 0)
-        self.assertFalse([f for f in files if "GLOSS" in f.upper() or "HUMAN_REVIEW" in f.upper()])
-
-    def test_corrected_mode_with_flag_runs(self):
-        res, fake, mk, files = self._corrected_canon(True)
-        self.assertNotEqual(res["gloss_alignment_status"], "DISABLED")
-        self.assertGreaterEqual(fake.calls, 1)
-        self.assertTrue(ga.flag_enabled() is False)   # 復元済み(既定OFF)
-
-    def test_explicit_on_still_works(self):
+        ga.GLOSS_ALIGNMENT_ENABLED = True
+        self.addCleanup(setattr, ga, "GLOSS_ALIGNMENT_ENABLED", old)
         m = _merged([_item(2, "based on", "based on interviews", "～をもとにした", beyond=True)])
         fn = FakeFn([_resp([(2, False, "インタビューをもとにした", "PASS")])])
-        r = ga.align_glosses(m, "art", lambda msg: fn, enabled=True)
-        self.assertEqual(fn.calls, 1)
-        self.assertNotEqual(r["status"], "DISABLED")
+        r = ga.align_glosses(m, "art", lambda msg: fn)       # enabled未指定=既定ON
+        self.assertEqual((fn.calls, r["status"]), (1, "ALIGN_PASS"))
+        self.assertNotIn("mode", r)
+        self.assertNotIn("mode", r["merged"]["items"][0]["gloss_alignment"])      # OF-KGCPW-02
+        self.assertEqual(r["merged"]["items"][0]["gloss_alignment"]["version"], "ER-003-KP-GLOSS-ALIGN-02")
 
-    def test_mode_default_still_legacy(self):
-        self.assertEqual(ga.GLOSS_ALIGNMENT_MODE, "legacy")
+    def test_canonicalization_disabled_makes_no_call(self):
+        import unittest.mock as mock
+        import er003_v1_n3_01_scaffold_generate as sc
+        old = ga.GLOSS_ALIGNMENT_ENABLED
+        ga.GLOSS_ALIGNMENT_ENABLED = False
+        self.addCleanup(setattr, ga, "GLOSS_ALIGNMENT_ENABLED", old)
+        originals = [{"rank": 2, "display_phrase": "based on", "source_span": "based on",
+                      "source_sentence": "It is an estimate based on interviews with sellers.", "ja_gloss": "～をもとにした",
+                      "source_reference_contract": "X"}]
+        qa = {f: "PASS" for f in kc.QA_FIELDS}
+        parsed = {"items": [{"rank": 2, "key_phrase": "based on interviews", "changed_from_display_phrase": True,
+                             "normalization_reason": "restore_semantic_complement", "reasoning": "r", **qa}]}
+        fake = FakeFn([])
+        with tempfile.TemporaryDirectory() as d, mock.patch.object(
+                sc.kc, "run_canonicalization_gate", return_value=(parsed, "CANONICALIZATION_PASS", [], "m", "resp")), \
+                mock.patch.object(sc.gloss_align, "make_alignment_fn", return_value=fake) as mk:
+            res = sc.run_key_phrase_canonicalization("ART", originals, d, "A", process="A2_SUPPORT")
+            saved = json.load(open(os.path.join(d, "keywords_canonicalized.json"), encoding="utf-8"))
+            files = sorted(os.listdir(d))
+        self.assertEqual(res["gloss_alignment_status"], "DISABLED")
+        self.assertEqual((fake.calls, mk.call_count), (0, 0))
+        self.assertEqual(saved["items"][0]["japanese_gloss"], "～をもとにした")
+        self.assertNotIn("gloss_alignment_status", saved["items"][0])
+        self.assertFalse([f for f in files if "GLOSS" in f.upper() or "HUMAN_REVIEW" in f.upper()])
+
+
+@_explicit_on
+class OldFailedAndUnevaluated(unittest.TestCase):
+    """OF-KGCPW-14(旧版"FAILED"の認識)・OF-KGCPW-08(ON化前・未評価の決定論検出)。"""
+
+    def test_old_failed_status_is_unresolved_and_resolvable(self):
+        doc = _merged([_item(1, "right away", "right away", "すぐに"),
+                       dict(_item(2, "based on", "based on interviews", "～をもとにした", beyond=True),
+                            gloss_alignment_status="FAILED")])
+        self.assertEqual([x["rank"] for x in ga.collect_unresolved(doc)], [2])    # 旧版FAILEDを検出して停止
+        with tempfile.TemporaryDirectory() as d:
+            p = os.path.join(d, "keywords_canonicalized.json")
+            json.dump(doc, open(p, "w", encoding="utf-8"), ensure_ascii=False)
+            ga.resolve_gloss(p, 2, "インタビューをもとにした", "tester")
+            self.assertEqual(ga.collect_unresolved(json.load(open(p, encoding="utf-8"))), [])
+
+    def test_unevaluated_targets_without_status_are_detected(self):
+        doc = _merged([_item(1, "right away", "right away", "すぐに"),
+                       _item(2, "based on", "based on interviews", "～をもとにした", beyond=True)])
+        self.assertEqual([x["rank"] for x in ga.collect_unevaluated(doc)], [2])
+        self.assertEqual([x["rank"] for x in ga.collect_unevaluated(doc["items"])], [2])   # listでも可
+
+    def test_zero_targets_and_evaluated_pass(self):
+        self.assertEqual(ga.collect_unevaluated(_merged([_item(1, "right away", "right away", "すぐに")])), [])
+        for st in (ga.STATUS_ALIGNED, ga.STATUS_HUMAN_RESOLVED, ga.STATUS_HR_REQUIRED):
+            doc = _merged([dict(_item(2, "based on", "based on interviews", "x", beyond=True), gloss_alignment_status=st)])
+            self.assertEqual(ga.collect_unevaluated(doc), [], st)
+        self.assertEqual(ga.collect_unevaluated(None), [])
+        self.assertEqual(ga.collect_unevaluated({"items": "x"}), [])
 
 
 if __name__ == "__main__":

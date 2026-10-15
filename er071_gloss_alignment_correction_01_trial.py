@@ -8,6 +8,8 @@ usage: .venv/Scripts/python.exe er071_gloss_alignment_correction_01_trial.py --m
        .venv/Scripts/python.exe er071_gloss_alignment_correction_01_trial.py --mode corrected --plan <TRIAL_PLAN_02.md> --patterns T2 --reps 2 --budget-jpy 10 --out <dir>
 (P6はKP短縮/一般化=対象外でAPIに乗らないため、O1でオフライン検証済み。指定されても実行対象は空)
 """
+# KGCPW 委任_02 (OF-KGCPW-13): 撤去済みlegacy方式に依存する過去証跡script。冒頭で停止する(有料APIを叩く前に落とす)。
+raise SystemExit("HISTORICAL: 過去証跡(KP-GLOSS-ALIGNMENT Trial/census/replay)の再現用scriptです。KGCPW(2026-10-15)でlegacy方式(slot/fallback/mode)を撤去し修正版が唯一の方式になったため再実行不能・実行すると有料APIを叩く前に停止します(OF-KGCPW-13)。")
 import argparse
 import concurrent.futures as cf
 import json

@@ -6,6 +6,8 @@
 reasoning effortを引数で切替(high=現行 / medium=比較)。切替提案はしない(結果報告のみ)。
 usage: PYTHONUTF8=1 .venv/Scripts/python.exe er071_gloss_alignment_01_replay.py <effort> <out_json> [budget_jpy]
 """
+# KGCPW 委任_02 (OF-KGCPW-13): 撤去済みlegacy方式に依存する過去証跡script。冒頭で停止する(有料APIを叩く前に落とす)。
+raise SystemExit("HISTORICAL: 過去証跡(KP-GLOSS-ALIGNMENT Trial/census/replay)の再現用scriptです。KGCPW(2026-10-15)でlegacy方式(slot/fallback/mode)を撤去し修正版が唯一の方式になったため再実行不能・実行すると有料APIを叩く前に停止します(OF-KGCPW-13)。")
 import glob
 import json
 import os
