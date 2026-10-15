@@ -412,3 +412,9 @@ Production コード変更は **E の 1 箇所のみ**(`er003_v1_n3_01_tts_gener
 - 満たす材料: 条件 3・5・6・7・8・10 は充足。条件 1・2・4・9 は前進(残は C JA の到達不能[F4]、B A2 narrator 一部、F1〜F3)。06d の実音声 54 TTS で誤受理 0・数値/否定の誤 PASS 0・旧 PASS→新 NG 0(候補 1 件は旧も NG)・Secondary 重複 0。E は実 clip で費用記録を確認。
 - 満たしていない材料: 条件 11・12(merge)・13・15、F1〜F3 の Production 動作の不整合(誤受理ではないが「1 項目でも未確認」の判断材料)。
 - 費用: 06d 約 JPY 23.83(token 実測、上限 45 内)、06+06b+06d ≒ 85.7。
+
+## 13-13. commit 後の確認
+- commit: ea72fa482 (branch feat/auw-unified-asr-01、e81696197..ea72fa482 push 済み、main 無変更)
+- `secret_scan_01 --staged`: hits=0 (391 files、`.wav`/`.mp3`/Master Store 複製/reuse_src は commit 対象外)
+- commit 後 `er019_family_x_pointless_01_test_01.py::FamilyAUnchangedTest` を含め 10 passed(E の未 commit 差分による失敗が解消)
+- 有料 API: JPY 23.83(06d 単体)
