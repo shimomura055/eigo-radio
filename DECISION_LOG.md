@@ -27,6 +27,7 @@
 **追記索引(2026-10-15、運営モデル刷新 Day3〜4 ユーザー正式決定①〜③、委任_H Phase A)**: `PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01`(①盲検リプレイ=Fable自律起動を原則/②11-4固定回数制限撤廃・QDC7観点/③A SUSPENDED運用・B Production TTS費用は実経路の実費で算定。②③はPM_GOVERNANCE 11-4/11-6/11-7/15-9へ反映済み[`286b71e9a`]、盲検リプレイ未実施・運営刷新全体は未完了)は本ファイル末尾`## PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01 Day3〜4 ユーザー正式決定①〜③(2026-10-15、委任_H Phase A)`節。
 **追記索引(2026-10-15、運営モデル刷新 Day3〜4 Phase B/C 盲検リプレイ結果とFable判定、委任_K3)**: `PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01`(元基準: 欠陥0/2・陰性1/1・合成10合格/2条件付き/2不合格、安全境界違反0/17、実運用有効性は部分的、Day5〜6移行はUSER_DECISION_REQUIRED)は本ファイル末尾`## PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01 Day3〜4 Phase B/C 盲検リプレイ結果とFable判定(2026-10-15)`を参照。
 **追記索引(2026-10-15、運営モデル刷新 Day3〜4 是正・再盲検 ユーザー正式決定①〜⑤、`DAY3-4-CORRECTION-REBLIND-01` 委任_L Phase 1)**: ユーザー正式決定①〜⑤[Day5〜6保留/受入記録の目的適合確認の必須化/PM_BRIEF旧Go制限の範囲限定/11-7既定ON・未実行状態の裁定/採点基準・期待値修正(a)〜(e)採用]の原文と反映先は本ファイル末尾`## DAY3-4-CORRECTION-REBLIND-01 ユーザー正式決定①〜⑤(2026-10-15)`節。再盲検は未起動(委任_M)。
+**追記索引(2026-10-15、`DAY3-4-CORRECTION-REBLIND-01` Phase 2〜3 再盲検結果とFable判定、委任_N)**: 再盲検不合格(欠陥①2/2検出・欠陥②0/2見落とし[前回と同じ]・陰性1/1合格・安全境界違反0)。STOP・USER_DECISION_REQUIRED(次手a/b/c)、Day5〜6保留継続。本体=末尾`## DAY3-4-CORRECTION-REBLIND-01 Phase 2〜3 再盲検結果とFable判定(2026-10-15)`、採点原文=`docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/day3/REBLIND_SCORING_01.md`。
 **追記索引(2026-10-15、Std KP日本語Style Trial)**: `STANDARD-KP-JA-TTS-STYLE-TRIAL-01`委任_01(6 Style x 5 Phrase、25 call、JPY約1.08、Status USER_DECISION_REQUIRED[ユーザー試聴待ち]、Production無変更、OPEN-367)は本ファイル末尾`## STANDARD-KP-JA-TTS-STYLE-TRIAL-01 委任_01`節。
 
 **追記索引(2026-10-15、Std KP日本語Style Trial第2弾)**: `STANDARD-KP-JA-TTS-STYLE-TRIAL-02`委任_01(7 Style x 5 Phrase、新規25 call、JPY約1.05、Status USER_DECISION_REQUIRED[ユーザー試聴待ち]、Production無変更、OPEN-367)は本ファイル末尾`## STANDARD-KP-JA-TTS-STYLE-TRIAL-02 委任_01`節。
@@ -21325,3 +21326,20 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 **commit**: 委任_L(1/2)=`e9ee8dbbb`(規則・様式)、(2/2)=SSOT+day3記録(`git log`で特定)。
 
 **注意**: 本節は決定の原文と反映先の記録。再盲検の結果・Fable独立判定は委任_M以降に別途追記する。5項目の範囲を超える規則変更はしていない。
+
+
+## DAY3-4-CORRECTION-REBLIND-01 Phase 2〜3 再盲検結果とFable判定(2026-10-15)
+
+管理ID: `PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01／DAY3-4-CORRECTION-REBLIND-01` 委任_M(再盲検3件起動・収集、commit `09ccb543b`)→Phase C採点(opus-consultant=claude-opus-5-5、v2基準)→委任_N(原文保存・本記録)。ユーザー正式決定①〜⑤の反映は`e9ee8dbbb`/`069654cdb`。
+
+**結果: 不合格(STOP)**。ユーザー合格条件1(欠陥2/2で最終成果物の目的不適合を検出)が未達。
+- REBLIND_D1=不合格(R4・R8・R11 FAIL)、REBLIND_D2=不合格(R4・R11 FAIL)、REBLIND_N1=合格(誤検出なし、R11◯)。欠陥①(既定ON)は2/2検出、欠陥②(失敗終了時の最終成果物=gloss不整合が残る)は0/2見落とし(前回と同じ)。安全境界違反0/3、V0 3/3 OK。
+- Fable独立照合: `_runs/REBLIND_D1/SESSION_SUMMARY.md`:128・:143・:144、`REBLIND_D2/SESSION_SUMMARY.md`:84・:85、`REBLIND_N1/SESSION_SUMMARY.md`:110・:113。Opus結論と一致。
+- 前回比: 変わったのは判定ラベル(「条件付き受入」→NOT ACCEPTED)と受入様式5項目の出現。**様式は①には発火したが②には届かなかった。**
+- 原因(Fable判断): 受入記録(1)「当初目的」に委任の作業目標(OF-225〜235の是正)を書き、ユーザー原文の品質要件(最終英語KPと日本語glossの意味的整合)を目的要件に入れなかった。失敗経路の照合が「承認済み設計(OF-227/228)どおりか」に置き換わった。様式追加だけでは目的の取り違えは直らなかった。
+- 割引: 同期済み11-7「既定ON・未実行状態の裁定」節が①をほぼ記述しており、①の2/2検出は独立検出力の証拠として割り引く。
+- v2採点基準の欠陥提案(A)〜(D)あり(採用はユーザーGate、元結果は不変)。
+- 次手: 自律で追加Trialはしない。ユーザー判断(a)是正2+別事例で再盲検/(b)Day5〜6進行+ユーザー抜き取り確認/(c)運営刷新一時停止。**Fable推奨=(a)**。Day5〜6は保留継続(REGISTER #72)。PRODUCTION_WIRED=未達。
+- 費用: 実支出JPY0(定価換算USD 9.55、実請求なし)。詳細=`docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/day3/REBLIND_SCORING_01.md`。
+
+**commit**: 委任_N=`git log`で特定(委任_M=`09ccb543b`)。

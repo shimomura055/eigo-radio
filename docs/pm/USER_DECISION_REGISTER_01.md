@@ -93,6 +93,8 @@
 | 74 | (Fable経由) **11-7曖昧点の裁定**: 既定ON+Production経路無条件呼出+未実行を「受入前検出(違反でない)」と「(b)有効配線=REVOKED」のどちらで扱うか | **判断済み**(2026-10-15ユーザー正式決定④: 有効配線は実行履歴がなくても違反状態/発火も違反状態/違反はREVOKED/ただしFableが受入前に検出し直ちに差戻して採用を阻止した場合はSUSPENDEDとして裁定を求める/不明な状態を根拠なしに安全・無害と断定しない。反映=`docs/pm/PM_GOVERNANCE.md` 11-7『既定ON・未実行状態の裁定』、`e9ee8dbbb`。元の状態『USER_DECISION_REQUIRED』) | いいえ | `day3/BLIND_REPLAY_SCORING_01.md` §E-3 U-b、OPEN-365 |
 | 75 | (Fable経由) **採点基準修正提案(a)〜(e)の採用**(次回再盲検用。今回結果へは遡及適用しない) | **判断済み**(2026-10-15ユーザー正式決定⑤、(a)〜(e)を次回以降の採点基準として採用・今回結果へ遡及適用しない。反映=Repo外`RUBRIC_R1_R10_v2.md`+`EXPECTED_SC_v2.md`、記録=`day3/CRB_PHASE1_APPLIED_01.md`。元の状態『USER_DECISION_REQUIRED[次回用]』) | いいえ | `day3/BLIND_REPLAY_SCORING_01.md` §E-1、OPEN-368 |
 | 76 | (Fable経由) **欠陥②対策の規則強化案**: 受入記録の必須項目に「失敗終了時の最終成果物=目的要件を満たすか(ファイル:行+観測値)」を追加し、満たさなければ受入不可(既存文言は変えず様式で強制)。規則変更のためユーザー承認が必要 | **判断済み**(2026-10-15ユーザー正式決定②、受入記録の必須化[当初目的/最終成果物/証拠/一致・不一致/判定と理由、失敗終了時の最終成果物を含む]を採用。反映=`.claude/agents/sandwich-pm.md` 手順4-2、`docs/pm/PM_GOVERNANCE.md` Gate 7・9-0、テンプレ、`e9ee8dbbb`。元の状態『USER_DECISION_REQUIRED』) | いいえ | `day3/BLIND_REPLAY_SCORING_01.md` §E-3 U-e、OPEN-369 |
+| 77 | (Fable経由) **再盲検不合格後の次手(a)/(b)/(c)**: 再盲検で欠陥①2/2検出・欠陥②0/2見落とし(前回同様)。(a)是正2[受入記録(1)にユーザー原文の目的・品質要件の逐語引用を必須化+承認済み設計どおりを目的適合の根拠にしない旨を4-2へ追加]→別の未使用欠陥事例で再盲検(定価換算USD 5〜10) (b)有効性『部分的』のままDay5〜6へ進み、失敗経路の受入判定を当面ユーザーが抜き取り確認 (c)運営刷新を一時停止。**Fable推奨=(a)**(原因特定済み・修正小、同一事例は学習バイアスで証明力弱) | **USER_DECISION_REQUIRED**(2026-10-15 委任_N起票。追加Trialは自律でしない) | はい(#72と連動) | `docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/day3/REBLIND_SCORING_01.md` §4、OPEN-363/369 |
+| 78 | (Fable経由) **採点基準v2の欠陥提案(A)〜(D)の採用**: (A)陰性R3で11-7(c)該当/非該当の明示必須 (B)R11は項目単位評価 (C)R11(1)当初目的にユーザー原文の目的・品質要件引用必須 (D)見出し語は実質判定。次回再盲検用(今回結果へは遡及適用しない) | **USER_DECISION_REQUIRED**(2026-10-15 委任_N起票) | いいえ | `docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/day3/REBLIND_SCORING_01.md` §3、OPEN-368 |
 
 ## 区分別集計(2026-10-13更新・51件(#51追加: FAMILY-Z-PREVIEW-COMMENT1-DUAL-TRIAL-01)。#45を判断済み化[Strategy L維持・移行案REJECTED、FAMILY-Z-KP-STRATEGY-L-DECISION-CLOSEOUT-01]。#49・#50追加・#46判断済み化・#45はTrial承認済み/移行方式採用判断のみ未決[FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 委任_03]。#48追加[Comment参照条件Trial、USER_DECISION_REQUIRED]。#45〜#47追加[M2P0/N01 Production配線、USER_DECISION_REQUIRED]。#44追加[3 take比較、USER_DECISION_REQUIRED]。#43追加[分割Trial R1判断、USER_DECISION_REQUIRED]。#41はOpus条件A後にUSER_DECISION_REQUIRED化。#42追加[FAMILY-Z-STANDARD-PREVIEW-X-ALIGNMENT-01、USER_DECISION_REQUIRED]。#41追加[ASR-PHONETIC-EQUIVALENCE-GENERALIZATION-01、調査・Trial中]。#39・#40追加。#10は判断済みへ、#14と#23は判断保留へ、#36追加)
 
@@ -136,3 +138,8 @@
 ### 2026-10-15 委任_K3 Phase C追記(#72〜#76追加。上表の数値は書き換えず追記のみ)
 - #72〜#76はいずれも**USER_DECISION_REQUIRED**として新規追加(Phase B/C盲検リプレイ結果)。ブロックするのは#72(Day5〜6移行)のみで、他の作業は止めない。#73・#74・#75・#76は規則側の未決/次回用。
 - 本追記後の#56〜#76内訳: 判断済み 7(58, 60, 62, 63, 65, 66, 71)/判断不要 1(57)/USER_DECISION_REQUIRED 11(56, 59, 61, 68, 69, 70, 72, 73, 74, 75, 76)/Deferred・Non-blocking 2(64, 67)/合計21。全件数は76件(#1〜#55との合算)。
+
+### 2026-10-15 委任_N追記(再盲検結果。上表の既存行は書き換えず追記のみ)
+- #72: 再盲検不合格(欠陥②0/2)によりDay5〜6**保留・開始禁止を継続**(判断済み状態は不変、移行判断は#77の結論後にユーザーが改めて行う)。
+- #76: 規則は**反映済みだが有効性未実証**(再盲検で様式は①に発火、②には届かず)。是正2案は#77(a)。
+- #77(次手a/b/c、推奨a)・#78(v2欠陥提案A〜D採用)を**USER_DECISION_REQUIRED**として新規追加。件数集計: #56〜#76の内訳に#77・#78(いずれもUSER_DECISION_REQUIRED)を加え、全件数は78件。
