@@ -26,6 +26,7 @@
 
 **追記索引(2026-10-15、運営モデル刷新 Day3〜4 ユーザー正式決定①〜③、委任_H Phase A)**: `PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01`(①盲検リプレイ=Fable自律起動を原則/②11-4固定回数制限撤廃・QDC7観点/③A SUSPENDED運用・B Production TTS費用は実経路の実費で算定。②③はPM_GOVERNANCE 11-4/11-6/11-7/15-9へ反映済み[`286b71e9a`]、盲検リプレイ未実施・運営刷新全体は未完了)は本ファイル末尾`## PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01 Day3〜4 ユーザー正式決定①〜③(2026-10-15、委任_H Phase A)`節。
 **追記索引(2026-10-15、運営モデル刷新 Day3〜4 Phase B/C 盲検リプレイ結果とFable判定、委任_K3)**: `PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01`(元基準: 欠陥0/2・陰性1/1・合成10合格/2条件付き/2不合格、安全境界違反0/17、実運用有効性は部分的、Day5〜6移行はUSER_DECISION_REQUIRED)は本ファイル末尾`## PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01 Day3〜4 Phase B/C 盲検リプレイ結果とFable判定(2026-10-15)`を参照。
+**追記索引(2026-10-15、運営モデル刷新 Day3〜4 是正・再盲検 ユーザー正式決定①〜⑤、`DAY3-4-CORRECTION-REBLIND-01` 委任_L Phase 1)**: ユーザー正式決定①〜⑤[Day5〜6保留/受入記録の目的適合確認の必須化/PM_BRIEF旧Go制限の範囲限定/11-7既定ON・未実行状態の裁定/採点基準・期待値修正(a)〜(e)採用]の原文と反映先は本ファイル末尾`## DAY3-4-CORRECTION-REBLIND-01 ユーザー正式決定①〜⑤(2026-10-15)`節。再盲検は未起動(委任_M)。
 **追記索引(2026-10-15、Std KP日本語Style Trial)**: `STANDARD-KP-JA-TTS-STYLE-TRIAL-01`委任_01(6 Style x 5 Phrase、25 call、JPY約1.08、Status USER_DECISION_REQUIRED[ユーザー試聴待ち]、Production無変更、OPEN-367)は本ファイル末尾`## STANDARD-KP-JA-TTS-STYLE-TRIAL-01 委任_01`節。
 
 **追記索引(2026-10-15、Std KP日本語Style Trial第2弾)**: `STANDARD-KP-JA-TTS-STYLE-TRIAL-02`委任_01(7 Style x 5 Phrase、新規25 call、JPY約1.05、Status USER_DECISION_REQUIRED[ユーザー試聴待ち]、Production無変更、OPEN-367)は本ファイル末尾`## STANDARD-KP-JA-TTS-STYLE-TRIAL-02 委任_01`節。
@@ -21238,3 +21239,89 @@ Day 2 Phase AのOpusレビューで発見・修正した6件の安全・承認�
 **費用**: Day3〜4 実支出JPY0。subscription定価換算 USD 25.69(Phase B-0 1.12+Phase B 24.57、実請求なし)。Phase C採点は定価換算未計測。
 
 **記録先**: `docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/day3/BLIND_REPLAY_SCORING_01.md`(採点原文逐語・集計・修正提案)、`DAY3_ACCEPTANCE_EVIDENCE_01.md`(受入条件9項目の充足状況)、OPEN-363/365/366/368/369、REGISTER #72〜#76。**未充足(完了扱いしない)**: OPEN-365 flag突合test、OPEN-366 70円ベースライン実測。
+
+## DAY3-4-CORRECTION-REBLIND-01 ユーザー正式決定①〜⑤(2026-10-15)
+
+管理ID: `PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01／DAY3-4-CORRECTION-REBLIND-01` 委任_L(Phase 1: 規則・受入様式・採点基準・SSOT反映+盲検パッケージ再同期。再盲検の起動は委任_M)。Status: 今回の5項目=`APPROVED_FOR_PRODUCTION`(2026-10-15ユーザー正式決定)。到達上限=`CRB_RULES_REFLECTED`。**PRODUCTION_WIREDは未判定**(再盲検・Fable独立判定後にFableが判定。文書修正済み・採点済みを根拠にしない)。**Day 5〜6は保留・開始禁止**(再盲検に合格しても自動移行しない)。費用JPY0(有料API 0)。
+
+**ユーザー正式決定(原文・逐語。出典=`docs/pm/delegation_log/2026-10-15_DAY3-4-CORRECTION-REBLIND-01_L.md` §2)**:
+
+### 2. ユーザー正式決定（5項目）
+
+#### 決定①：Day 5〜6移行保留（REGISTER #72）
+
+Day 5〜6へは進まない。
+
+今回の是正・再盲検結果をFableが独立評価し、ユーザーが改めて移行を決定する。
+
+再盲検合格をもって自動的にDay 5〜6を開始してはならない。
+
+#### 決定②：成果物の目的適合性確認を受入必須項目化（REGISTER #76）
+
+Fableの正式な受入記録に、次の確認を必須化する。
+
+**「失敗終了時の最終成果物は、当初の目的・ユーザー要求・受入条件を満たしているか」**
+
+最低限、以下を記録する。
+
+- 当初目的・要求された最終状態
+- 実際に生成・残存した最終成果物
+- ファイル・行番号・観測値等の具体的証拠
+- 目的要件との一致／不一致
+- 最終受入判定とその理由
+
+要求を満たさない成果物が残っている場合、技術的処理が設計どおり動いていてもACCEPTEDと判定しない。
+
+証拠がない場合もACCEPTEDとしない。
+
+既存のCharter・Gate 7等の原則を置き換えず、**受入様式によって確認漏れを防ぐ**こと。
+
+成功終了時の成果物についても、当初目的との照合を省略しない。
+
+#### 決定③：PM_BRIEFの旧Go制限を範囲限定（REGISTER #73）
+
+旧記述「明確なGo指示があるまで委任を一切出さない」を、次の運用に整合させる。
+
+- 新規案件の開始：ユーザーGoが必要
+- ユーザー承認済み案件内の再委任・必要な検証・是正・SSOT記録：承認範囲内でFableが自律実行可能
+- 新しい仕様採用・Production採用・予算上限変更・Human Gate越え：従来どおりユーザー判断が必要
+- USER_DECISION_REQUIRED発生時：承認範囲を超えて進まずSTOP
+- 明示的なSTOP指示：常に優先
+
+PM_BRIEF、PM_GOVERNANCE、Charter等に矛盾した有効指示を残さない。
+
+#### 決定④：11-7の既定ON・未実行状態の裁定（REGISTER #74）
+
+以下の基準を正式採用する。
+
+- 未承認機能がProduction正式経路に有効配線されている場合、実行履歴がなくても違反状態と判定する。
+- 未承認機能の実際の発火が確認された場合も違反状態と判定する。
+- 違反が有効配線または発火として確認された場合は、既存11-7の分類に従いREVOKEDを適用する。
+- **ただし、Fableが受入前に問題を検出し、直ちに差し戻してProduction採用を阻止した場合はSUSPENDEDとして裁定を求める。**
+- 不明な状態を根拠なしに安全・無害と断定しない。
+
+この例外は、検出者を不当に罰しないための運用であり、未承認のProduction有効化を容認するものではない。
+
+#### 決定⑤：採点基準・期待値修正5件を採用（REGISTER #75）
+
+Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次回以降の採点基準として正式採用**する。
+
+実施条件：
+
+- 元のOpus提案(a)〜(e)を正確に確認して反映
+- 規則11-1／21節／Charter確認事項との整合を確保
+- 「承認範囲内で解決を追求すること」と「ユーザー判断が必要な境界」を正しく区別
+- 合成workdirのルール・SSOTを最新版へ同期
+- 今回のDay 3〜4結果には遡及適用しない
+- 元の不合格・条件付き評価は履歴として保持
+
+**反映先(ファイル:節)**:
+- 決定①(REGISTER #72): `docs/pm/ACTIVE_TASK.md` ROLLOUT行=『CRB Phase1規則反映完了・再盲検(委任_M)待ち・Day5〜6保留』。Day5〜6の開始はユーザーの別途正式判断が必要。
+- 決定②(REGISTER #76): `.claude/agents/sandwich-pm.md` 手順4-2(受入記録の必須5項目・判定規則・3行要約の目的適合)と手順6(代替案比較・目的適合の判定はFable自身)/`docs/pm/PM_GOVERNANCE.md` Gate 7(2節、『受入記録の必須5項目』段落)と9-0第1節/`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`(受入記録ブロックとチェックリスト)/`.claude/agents/sonnet-worker.md` 報告節(失敗終了時の最終成果物のpathと要約)。Charter・Gate 7の原則は置換せず、受入様式で確認漏れを防ぐ追加。
+- 決定③(REGISTER #73): `docs/pm/PM_BRIEF.md`:305(新5点)・:306(改定前の履歴1行)。PM_GOVERNANCE・CLAUDE.md・Agent定義・テンプレに同趣旨の旧記述の残存なしをGrepで確認(履歴引用のみ残存)。
+- 決定④(REGISTER #74): `docs/pm/PM_GOVERNANCE.md` 11-7『既定ON・未実行状態の裁定』小節(ユーザー原文5点+検出者を不当に罰しない旨を逐語)。既存文『受入前の検出は違反ではない』を『受入前の検出(2026-10-15決定④で整合改定)』へ整合(旧文は同段落内に履歴として保持)、`SUSPENDED`定義と検出と通報義務の1文に決定④を追記。
+- 決定⑤(REGISTER #75): Repo外 `C:\Users\tensh\eigo-radio-replay\rubric\RUBRIC_R1_R10_v2.md`(v1無変更)・`synthetic\_scorer_only\EXPECTED_SC_v2.md`(v1無変更)。(a)〜(e)+新R11。今回のDay 3〜4結果には遡及適用しない(元の評価は`day3/BLIND_REPLAY_SCORING_01*.md`に履歴保持)。合成workdirのルール・SSOTを最新版へ同期(SC-D3用wdのU3'状態行=SUSPENDED)。詳細=`docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/day3/CRB_PHASE1_APPLIED_01.md`。
+
+**commit**: 委任_L(1/2)=`e9ee8dbbb`(規則・様式)、(2/2)=SSOT+day3記録(`git log`で特定)。
+
+**注意**: 本節は決定の原文と反映先の記録。再盲検の結果・Fable独立判定は委任_M以降に別途追記する。5項目の範囲を超える規則変更はしていない。

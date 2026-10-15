@@ -50,3 +50,7 @@ archive展開で除外したもの: `*.mp3 *.wav *.png *.m4a *.mp4 *.ogg *.zip`(
 ## 5. `claude -p`の可否
 - `claude --version` = `2.1.300 (Claude Code)`。`claude -p --help`で`-p/--print`、`--agent`、`--settings`、`--allowedTools`、`--disallowedTools`、`--permission-mode`、`--output-format`(stream-json、`--verbose`併用)、`--max-budget-usd`、`--model`、`--no-session-persistence`を確認(help出力のみ。**実起動は未実施**)。
 - 判断: 起動引数としては実行可能。ただし`sandwich-pm`のtoolsは`Agent`/`Read`/`Grep`/`Glob`のみで、検証委任(sonnet-worker経由のBash等)は非対話では権限承認できず拒否される可能性が高い。Fable単独の読取照合で成立するシナリオ(SC-*、UC1、受入判定)は`-p`で可能と見込むが、欠陥ケース/陰性対照は**対話起動を推奨**(D1検証委任が使えるため実運用に近い)。`-p`の実動作は初回に確認する(**未確認**)。
+
+
+## 追記(2026-10-15、CRB委任_L)
+再盲検以降の採点は`RUBRIC_R1_R10_v2.md`と`EXPECTED_SC_v2.md`を使用する(v1は本書時点の履歴。今回のDay 3〜4結果には遡及適用しない)。被験パッケージは規則最新版へ再同期済み。詳細=`CRB_PHASE1_APPLIED_01.md`。
