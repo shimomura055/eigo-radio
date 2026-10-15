@@ -19,6 +19,7 @@
 
 **追記索引(2026-10-13、M1/F1 Production配線 委任_03)**: `ASR-PHONETIC-EQUIVALENCE-M1-F1-PRODUCTION-WIRING-01`委任_03(F1是正をProduction実装[`WIRED_PENDING_RUNTIME_EVIDENCE`]、M1は未配線[OOV UDR-1待ち]、census PASS→非PASS0、UDR #52〜55)。詳細は本ファイル末尾`## ASR-PHONETIC-EQUIVALENCE-M1-F1-PRODUCTION-WIRING-01 委任_03`節参照。
 **追記索引(2026-10-15、KP gloss再整合 設計是正Trial)**: `KP-GLOSS-ALIGNMENT-DESIGN-CORRECTION-TRIAL-01`委任_02(Opus条件A反映・mode=corrected Trial実装・Production既定legacy)のユーザー判断A〜D/Fable判断は本ファイル末尾`## KP-GLOSS-ALIGNMENT-DESIGN-CORRECTION-TRIAL-01 委任_02`節。
+**追記索引(2026-10-15、KP gloss再整合 Production正式採用)**: `KP-GLOSS-ALIGNMENT-CORRECTED-PRODUCTION-WIRING-01`委任_01(ユーザー正式決定: 修正版corrected gloss再整合工程を`APPROVED_FOR_PRODUCTION`・付随事項3件・legacy撤去・到達目標`PRODUCTION_WIRED`の10条件)は本ファイル末尾`## KP-GLOSS-ALIGNMENT-CORRECTED-PRODUCTION-WIRING-01 委任_01`節。配線は委任_02以降(本記録時点ではコード無変更・既定OFF継続)。
 
 **履歴全文(直前の記録・その前の記録、以下さらに前の記録、合計12件、原文のまま移動): `DECISION_LOG_HISTORY.md`の`## ER-PM-001_CHAIN`節参照**
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
@@ -21050,3 +21051,7 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 ## KP-GLOSS-ALIGNMENT-DESIGN-CORRECTION-TRIAL-01 委任_03(2026-10-15、Trial、JPY1.60、Production既定OFF維持)
 - 2026-10-15 ユーザー決定(KGDC): ①修正Trialの停止方式=既存status返却+Audio Validation Gate+FamilyZE2EStop+B1解説整合(A')を設計承認(Production採用ではない)。②整合済みglossの不要書換えはユーザー判断事項ではなく開発側で自律改善(課題指示文改善+P2/P3/P7再Trial)。③終了条件5点をFableが確認しREJECTED/VALIDATED/UDRに分類、VALIDATED時に初めてProduction採用をユーザーへ諮る。既定OFF維持。
 - 委任_03結果: Status=VALIDATED(Sonnet提案、Fable最終判定待ち)。原因=LLMが不一致と判定して書換え(機械チェックの穴ではない)、correctedの指示2へ不要書換え抑止文+判定例1行追加。P3書換4/16→0/16、P2 0/4、P7 0/12、P1/P4 12/12反映、T2 12/12検出、T3 27/27、新規failure 0、費用JPY1.60(累計4.10/5)。未確認: `fall into`は例示、実LLMretry未発火。工程自体はProduction未採用。証跡: er071_output/m2p0_n01_production_wiring_01/gloss_alignment_correction_01/VALIDATION_03.md。commitはgit logで特定。
+
+## KP-GLOSS-ALIGNMENT-CORRECTED-PRODUCTION-WIRING-01 委任_01(2026-10-15、設計+SSOT記録のみ、JPY0、コード/Prompt/flag無変更)
+- 2026-10-15 | KP-GLOSS-ALIGNMENT-CORRECTED-PRODUCTION-WIRING-01 | ユーザー正式決定: 修正版(corrected)KP gloss再整合工程を正式Production仕様として採用(`APPROVED_FOR_PRODUCTION`)。付随事項3件を承認: (1)追加語→日本語span機械検査は強制NG Gateにせず記録・観測のみ継続 (2)Human Review例外の通知先はHR報告書・run summary event・最終stdout・runのSTOP status(既存音声Human Review queueへ混在させない) (3)規則15行型(数値穴埋め句)の検出責任は従来どおりKP選定段、再整合工程へ重複実装しない。採用対象はcorrectedであり旧legacyではない(legacy撤去)。Production既定ONへ切替・Family X/Z・Standard/Advanced配線・retry/fallback/regeneration/cache再利用/HR再開の整合・異常時完成禁止(Audio Validation Gate/FamilyZE2EStop/B1解説・ページ流出防止)を到達目標`PRODUCTION_WIRED`の条件(10条件)とする。配線前にOpus条件C(実装安全性)レビュー必須。OPEN-359未解決でFamily Xから不整合KPが完成版へ流出しうる場合はPRODUCTION_WIREDを宣言しない。Status: APPROVED_FOR_PRODUCTION(配線中、本エントリ時点ではコード無変更・既定OFF継続)。出典: ユーザー指示原文(`docs/pm/delegation_log/2026-10-15_KP-GLOSS-ALIGNMENT-CORRECTED-PRODUCTION-WIRING-01_01.md`「ユーザー指示(原文)」)。
+- 委任_01(設計): `er071_output/m2p0_n01_production_wiring_01/gloss_alignment_production_wiring_01/PRODUCTION_WIRING_DESIGN_01.md`。入口は`sc.run_key_phrase_canonicalization`の1か所、完成禁止の消費側は実装済み(corrected時のみ動作)。OPEN-359は事実(Family X runnerが`NG_REVIEW_REQUIRED`を参照しない)だが、gloss HRの完成禁止Gateは迂回しない(artifact直読み)とコード読取で判断(testで固定は委任_02)。Opus条件Cレビューは委任_02の前にFableが依頼。

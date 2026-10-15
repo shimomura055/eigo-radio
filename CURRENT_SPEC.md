@@ -2634,6 +2634,8 @@ OPEN-178/179・既存Topic Discovery Trial結果を上書きしない。
 
 **【2026-10-15追記(KP-GLOSS-ALIGNMENT-PRODUCTION-01 委任_02)】KP gloss再整合段は`GLOSS_ALIGNMENT_ENABLED`既定OFF(ユーザー承認の安全措置)。明示ON(`EIGO_KP_GLOSS_ALIGNMENT=1`)のDEV/Trialのみ動作する。工程自体の採用は未承認(`APPROVED_FOR_PRODUCTION`ではない)。既定OFFはevidence取得済み・PRODUCTION_WIRED判定待ち。詳細はOPEN-356/DECISION_LOG/er071_output/m2p0_n01_production_wiring_01/gloss_alignment_default_off_01/VALIDATION_OFF_01.md。** gloss再整合は`EIGO_KP_GLOSS_ALIGNMENT=1`の明示ONが必須(mode指定のみでは実行されない。委任_03)。 Status: 既定OFF=PRODUCTION_WIRED(2026-10-15)。工程採用は未承認。
 
+**【2026-10-15追記(KGCPW 委任_01)】修正版(corrected)gloss再整合工程はユーザー正式採用`APPROVED_FOR_PRODUCTION`(付随事項3件: 機械検査=記録のみ/HR通知先=報告書+run summary+stdout+STOP status、音声HR queue不使用/規則15行型=選定段責務)。配線は委任_02以降。本行時点ではProduction既定OFF・legacy既定のまま(未配線)。**
+
 ## 記事構成・Family X選定方式(2026-10-12ユーザー正式決定、`TOPIC-SELECTION-FORM-AND-FAMILY-MIX-20261012-01`、運用方針の記録のみ・Production/Prompt/Routing変更なし)
 
 2026-10-12ユーザー正式決定(`TOPIC-SELECTION-FORM-AND-FAMILY-MIX-20261012-01`):
