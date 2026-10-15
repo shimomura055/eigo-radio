@@ -1,3 +1,7 @@
+# [2026-10-16 AUW 委任_07 注記: 撤去済み関数参照・履歴保存]
+# 本scriptが呼ぶ er003_v1_n3_01_tts_generate._post_slowdown_cascade_rescue は 委任_06c(OF-AUW-C-13)で撤去済み。
+# 現行の減速後判定は統一ASR judge(apply_a2_slowdown_postprocess -> _post_slowdown_unified_judge)。
+# よって本scriptは現行コードでは実行不能(AttributeError)。当時の再評価手順と結果(同ディレクトリの *.json)を残す履歴保存のみ。
 """FAMILY-Z-MELOS-PROPER-NOUN-ASR-ROOT-CAUSE-01 委任_01 runtime evidence。
 run_e2e_02の既存wav(read-only)に対し、是正A(減速後再検証への共有Cascade配線)後の判定を再評価する。
 TTS再生成なし。ASR(OpenAI/Azure)のみ。単発実行(ラッパ/ループ無し)。

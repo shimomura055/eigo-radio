@@ -483,3 +483,23 @@ T-0: 委任文 `docs/pm/delegation_log/2026-10-16_ASR-TTS-UNIFIED-ALL-ROLES-PROD
 - commit: dbed081d1 (branch feat/auw-unified-asr-01、faa82fdf5..dbed081d1 push 済み、main 無変更)
 - `secret_scan_01 --staged`: hits=0 (79 files、`.wav` は .gitignore で対象外)
 - commit 前後で `er011_human_review_lock_01.py` の diff 0 行。有料 API: JPY 3.51(06e 単体)
+
+## 15. 委任_07 追記(narrator A2 外側ループの実音声1件=途中終了、後方互換 test、main 取込後の再確認)
+### 15-1. narrator A2 外側ループの実音声(06e 申し送り(d)): **途中終了(自己 timeout)・再起動なし・未完**
+- 実行: `er078_auw_runtime_evidence_07.py narr_cap3 --execute --budget-jpy 5`(Z `run_tts_stage`、`kind=narrator`・clip `full_story_part1_c3`・原稿 "I did not see a lower price today."・故障注入は 06d `dlg_cap2` と同方式=減速段階 call 1〜3 の出力を別文の実音声[06b `full_story_part1_c1_original.wav`]へ差替)。隔離=`evidence_07/narr_cap3/`。上限 JPY 5・1回のみ。開始前 `stop_scope_check` rc=0(`evidence_07/stop_check_prepaid.json`)。
+- 観測(`evidence_07/narr_cap3/usage_log.jsonl`・`attempt_history.jsonl`・`run/a2/narration/`): attempt1 [TTS・Primary 2・Azure 1]→減速後 NG(`A2_SLOWDOWN_REVERIFY` attempt1 STOPPED、TTS_FAILURE)→attempt2 [TTS・Primary 2]→減速後 NG(attempt2 STOPPED)まで正常(Secondary 重複 0)。**3回目 TTS の前で約 10 分停止**し、私が付けた `timeout 590` で process が終了(`runner_execute.json` 未出力)。
+- **原因(仮説→反証→確定)**: 仮説「Gemini 3回目呼出の hang」→反証=usage_log に 3回目 TTS の記録なし・最後の記録は 04:06:35 でその後 04:16 まで process 生存・既存コードに sleep あり→確定=`er003_v1_crosslevel_audio_02_common.py:185` が呼ぶ `er020_tts_retry_local_rewrite_01.maybe_cooldown_before_attempt`(`:63-87`)の **10 分 cool-down**(`COOLDOWN_SECONDS=600.0`、`:56`)。Connected Speech 有効 role(`resolve_narrative_role` が `full_story_part{n}_c{k}` を FULL_STORY と認識)の通算最終 attempt の直前にだけ sleep する承認済みの既存仕様(06b `lr_en` で `cooldown_actual_seconds=600.005` を実測済み)。`dlg_cap2` は Dialogue(CS 無効)のため sleep が無かった。**私の `timeout 590` と clip id の選択ミス**であり、Production の異常ではない。
+- 費用: `usage_log.jsonl` 合計 約 JPY 0.57(TTS 2・OpenAI ASR 4・Azure 1)。`evidence_07/cost/spend_ledger.jsonl` へ手動転記(`finish()` 未実行のため)。`shared_state_unchanged` の自動検証は未実行(finish 未到達)。
+- **未完の理由と次の一手**: 委任文「再起動不可」のため再実行していない。完了させるなら、(1) clip を CS 無効 role[例: narrator の見出し系 `point_one_heading` 相当]へ変える、または (2) cool-down 込み(約 11〜12 分)の `timeout` で再実行(追加 TTS 3・約 JPY 1.5)。**Fable の明示許可が必要**。
+- 代替の保証: narrator 外側ループ `generate_a2_segment_with_slowdown` の最終 NG→HR 末端は `finalize_a2_slowdown_final_ng` を Dialogue 外側ループと共有し、06e で Dialogue の実音声(通算 3 回→Lock HR・queue 1 行・`asr_judgement` NG_BOTH)と unit test(`er078_asr_unified_wiring_06e_test_01.py`)で確認済み。narrator 固有の実音声は本委任では未取得。
+
+### 15-2. 後方互換 test(ADDENDUM §2 L99 / OF-AUW-13)
+- 新規 `er078_asr_unified_backcompat_07_test_01.py` **53 passed**(通信遮断 plugin 付き、API 0)。旧出力=main 時点の実ファイル `er003_output/n3_01/{hanshin,health,household}/{a2,b1b}/audit/tts_generation_results.json`(6 file・141 entry・attempt 345 行、新キー 0 を test で保証)。新出力=AUW 後の実 evidence 4 file(`asr_judgement` 33 attempt 行)。
+- 固定した内容: 試聴リスト導出・読込・書出し・ページ節が旧出力を「導出失敗」でなく 0 件として扱う/`build_attempts_detail`が旧 attempt を `asr_judgement=None` で読み、新キーを除いた場合と旧フィールドが完全一致/Assemble Gate の entry 単位 reader(`_segment_gate_status`・`_segment_missing_mandatory_disfluency_qa`)の出力が新キー有無で不変/集計 script `er078_auw_aggregate_06d.walk` が両方を読む/J11 reader が旧 entry で `(None, None)`/Master Store(tmp 隔離)が旧 manifest entry を従来どおり再利用し、新 manifest の `asr_judgement` は additive に `asr_judgement_inherited` で復元。`evidence_07/tests_backcompat_07.txt`。
+- 補足: `verify_episode_audio_validation_gate`全体の比較は tmp に wav/asset が無いため両側とも同じ RuntimeError になる(新キー有無で結果不変の確認としては有効だが弱い)。強い確認は上記 entry 単位 reader の直接比較。
+
+### 15-3. main 取込後の再確認
+- `git merge --no-edit origin/main`(競合 0、取込は docs 21 file のみ)後、AUW 中核 12 file `411 passed`(`evidence_07/tests_auw_core_post_merge.txt`)・静的監査 15 passed かつ `unlisted_new_calls`/`vanished`/`count_changed` が空(`static_audit_post_merge.txt`)。flag OFF ロールバック経路(06c `test_g_*`)3 passed(`tests_flag_off_rollback_branch.txt`)。通信遮断 plugin の遮断ログに新規試行: `er078_asr_unified_wiring_06c_test_01.py::test_d_en_last_slot_real_ng_still_goes_to_hr` が api.perplexity.ai を DNS 試行(遮断され費用 0。既存 test の mock 不足=OPEN-378)。
+
+### 15-4. commit 後の確認(07)
+- (commit 後に追記)
