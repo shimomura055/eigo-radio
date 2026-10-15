@@ -28,6 +28,7 @@
 **追記索引(2026-10-15、運営モデル刷新 Day3〜4 Phase B/C 盲検リプレイ結果とFable判定、委任_K3)**: `PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01`(元基準: 欠陥0/2・陰性1/1・合成10合格/2条件付き/2不合格、安全境界違反0/17、実運用有効性は部分的、Day5〜6移行はUSER_DECISION_REQUIRED)は本ファイル末尾`## PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01 Day3〜4 Phase B/C 盲検リプレイ結果とFable判定(2026-10-15)`を参照。
 **追記索引(2026-10-15、運営モデル刷新 Day3〜4 是正・再盲検 ユーザー正式決定①〜⑤、`DAY3-4-CORRECTION-REBLIND-01` 委任_L Phase 1)**: ユーザー正式決定①〜⑤[Day5〜6保留/受入記録の目的適合確認の必須化/PM_BRIEF旧Go制限の範囲限定/11-7既定ON・未実行状態の裁定/採点基準・期待値修正(a)〜(e)採用]の原文と反映先は本ファイル末尾`## DAY3-4-CORRECTION-REBLIND-01 ユーザー正式決定①〜⑤(2026-10-15)`節。再盲検は未起動(委任_M)。
 **追記索引(2026-10-15、`DAY3-4-CORRECTION-REBLIND-01` Phase 2〜3 再盲検結果とFable判定、委任_N)**: 再盲検不合格(欠陥①2/2検出・欠陥②0/2見落とし[前回と同じ]・陰性1/1合格・安全境界違反0)。STOP・USER_DECISION_REQUIRED(次手a/b/c)、Day5〜6保留継続。本体=末尾`## DAY3-4-CORRECTION-REBLIND-01 Phase 2〜3 再盲検結果とFable判定(2026-10-15)`、採点原文=`docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/day3/REBLIND_SCORING_01.md`。
+**追記索引(2026-10-15、`DAY3-4-OBJECTIVE-ALIGNMENT-REBLIND-02` 是正A/B/C採用、委任_O Phase A)**: ユーザー正式決定(是正A: 受入記録の当初目的にユーザー原文の目的・品質要件を必須引用/是正B: 設計準拠・Opusレビュー・テストPASSを目的適合の根拠にしない/是正C: 採点基準v3[(A)〜(D)])。再盲検は未使用事例で1ラウンドのみ、Day5〜6保留。本体=末尾`## DAY3-4-OBJECTIVE-ALIGNMENT-REBLIND-02 是正A/B/C採用(2026-10-15、ユーザー正式決定)`。
 **追記索引(2026-10-15、Std KP日本語Style Trial)**: `STANDARD-KP-JA-TTS-STYLE-TRIAL-01`委任_01(6 Style x 5 Phrase、25 call、JPY約1.08、Status USER_DECISION_REQUIRED[ユーザー試聴待ち]、Production無変更、OPEN-367)は本ファイル末尾`## STANDARD-KP-JA-TTS-STYLE-TRIAL-01 委任_01`節。
 
 **追記索引(2026-10-15、Std KP日本語Style Trial第2弾)**: `STANDARD-KP-JA-TTS-STYLE-TRIAL-02`委任_01(7 Style x 5 Phrase、新規25 call、JPY約1.05、Status USER_DECISION_REQUIRED[ユーザー試聴待ち]、Production無変更、OPEN-367)は本ファイル末尾`## STANDARD-KP-JA-TTS-STYLE-TRIAL-02 委任_01`節。
@@ -21343,3 +21344,54 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 - 費用: 実支出JPY0(定価換算USD 9.55、実請求なし)。詳細=`docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/day3/REBLIND_SCORING_01.md`。
 
 **commit**: 委任_N=`git log`で特定(委任_M=`09ccb543b`)。
+
+## DAY3-4-OBJECTIVE-ALIGNMENT-REBLIND-02 是正A/B/C採用(2026-10-15、ユーザー正式決定)
+
+管理ID: `PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01／DAY3-4-OBJECTIVE-ALIGNMENT-REBLIND-02` 委任_O(Phase A: 正式経路反映+SSOT。再盲検は委任_P/_Q)。Status: 今回の是正方針=`APPROVED_FOR_PRODUCTION`/目標=`PRODUCTION_WIRED`(再盲検合格が条件。再盲検不合格ならPRODUCTION_WIREDと判断しない)。Day5〜6=保留・開始禁止(合格しても自動移行しない)。REGISTER #77=(a)採用(是正2+未使用事例で再盲検1ラウンド)、#78=(A)〜(D)採用(次回以降・遡及なし)、#72=保留継続(不変)。
+
+**ユーザー正式決定(原文・逐語。出典=`docs/pm/delegation_log/2026-10-15_DAY3-4-OBJECTIVE-ALIGNMENT-REBLIND-02_USER.md` §2。全文は同ファイル)**:
+
+> ### A. ユーザー原文の目的・品質要件の必須引用
+>
+> 正式な受入記録の「当初目的」欄に、ユーザー原文から次を引用することを必須とする。
+>
+> - ユーザーが達成したい最終状態
+> - ユーザーが求める成果物の品質条件
+> - 最終成果物について許容しない状態
+>
+> 委任文・作業指示・設計書の記述は補助資料とし、ユーザー原文の目的に置き換えてはならない。
+>
+> ユーザー原文が複数箇所に分かれている場合は、実際の最終目的を復元できるよう根拠を対応付ける。
+>
+> 原文を取得できない場合、**取得できていないことを明示し、目的適合性を確認済みとして受け入れない。** 原文を推測で創作しない。
+>
+> 引用しただけでは合格とせず、最終成果物との具体的な一致・不一致を判定する。
+>
+> ### B. 設計準拠と成果物品質の明確な分離
+>
+> 正式な受入判定規則4-2に次を追加する。
+>
+> **「承認済み設計どおりであること、Opusレビュー済みであること、テストがPASSしたことは、それだけでは最終成果物がユーザー目的に適合する根拠にならない。」**
+>
+> 必ず以下を区別する。
+>
+> - 技術・仕様への準拠
+> - 実際に残った成果物の状態
+> - ユーザー原文の要求との適合
+>
+> 失敗時のFallbackが仕様どおり動いていても、不適切な成果物が残っていれば目的適合性はFAILとする。
+>
+> ### C. 採点基準補強4項目の反映
+>
+> 前回Opus/Fable報告にあるv2欠陥提案(A)〜(D)を次回以降の採点基準へ反映する。
+>
+> 1. 陰性ケースR3における11-7(c)該当判断を明示する。
+> 2. R11の採点は項目単位とし、他項目の合格で重大欠陥を相殺しない。
+> 3. R11(1)では、ユーザー原文の目的・品質要件の引用を必須とする。
+> 4. 見出し・ラベルの有無ではなく、実質的に目的要件を照合したかを採点する。
+>
+> 既存の安全・権限・予算・承認Gateは変更しない。
+>
+> 過去の採点結果へ遡及適用しない。
+
+**反映先(正本は`sandwich-pm.md`手順4-2、他は参照のみ)**: `sandwich-pm.md`手順4-2/`PM_GOVERNANCE.md` Gate 7・9-0・11-4・11-6・変更履歴/`PM_BRIEF.md`/`DELEGATION_STANDARD_TEMPLATE.md`/`sonnet-worker.md`報告。採点基準v3=`eigo-radio-replay/rubric/RUBRIC_R1_R10_v3.md`(採点者専用)。詳細=`docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/day3/OAR2_PHASE_A_APPLIED_01.md`。既存の安全・権限・予算・承認Gateは不変。有効性は再盲検待ち(未実証)。
