@@ -1,0 +1,101 @@
+{
+  "article_id": "FAMILY_X_AUDIO_out_a2",
+  "version": "ER-003-KP-GLOSS-ALIGN-02",
+  "final_status": "ALIGN_PASS",
+  "targets": [
+    2,
+    4
+  ],
+  "unresolved_ranks": [],
+  "mapping_gate": false,
+  "rules_sha256": "447e07cb8b9a30850a8dc75b6c3cce48c53d99b5f1fafa88d19b778d9155949b",
+  "cost_jpy": 0.0295,
+  "attempts_detail": [
+    {
+      "attempt": 1,
+      "target_ranks": [
+        2,
+        4
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_08fe79530dab8435006ad07bbd56bc87d089ada36247e6f44d",
+      "usage": {
+        "input_tokens": 1435,
+        "output_tokens": 339,
+        "cached_input_tokens": 1432
+      },
+      "cost_jpy": 0.0295,
+      "status": "ALIGN_PASS",
+      "n_valid": 2,
+      "n_items": 2
+    }
+  ],
+  "item_log": {
+    "2": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "インタビューをもとにした",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "現在のグロスには「interviews」の意味が含まれていません。修正後は「based on」と「interviews」の意味が表れています。",
+        "added_word_mappings": [
+          {
+            "english_word": "interviews",
+            "japanese_span": "インタビュー"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "interviews"
+          ],
+          "covered": {
+            "interviews": "インタビュー"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.0295,
+        "model": "gpt-6-luna"
+      }
+    ],
+    "4": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "簡単にあきらめる",
+        "current_gloss_consistent": true,
+        "qa": "PASS",
+        "reasoning": "「簡単にあきらめる」で「give up」と「easily」の意味が表れているため、現在のグロスのままで一致しています。",
+        "added_word_mappings": [
+          {
+            "english_word": "easily",
+            "japanese_span": "簡単に"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "easily"
+          ],
+          "covered": {
+            "easily": "簡単に"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.0295,
+        "model": "gpt-6-luna"
+      }
+    ]
+  }
+}

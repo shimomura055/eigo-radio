@@ -1,0 +1,3 @@
+import順(-X importtime, er019 import): dotenv(行125-128) -> er003_v1_en_direct_vfl_01_generate(行1908; ソース:er003_v1_en_direct_vfl_01_generate.py:39でモジュール直下load_dotenv()) -> er003_key_words_gloss_alignment(行2193, 初回import)。
+=> Xでは gloss_alignment のflag評価(import時1回)より前に vfl01 が load_dotenv() を実行済み(.envのEIGO_KP_GLOSS_ALIGNMENT=0は評価時に環境変数として見える可能性が高い)。委任_02の「効かない可能性」推定とは逆の順序。ただし .env 現物に当該キーは無く、.envは変更していないため実適用は未実測(推定)。
+env未設定でga import後: flag_effective = {'enabled': True, 'raw': None, 'source': 'default'}

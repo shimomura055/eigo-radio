@@ -1,0 +1,95 @@
+{
+  "article_id": "family_z_melos_a2",
+  "version": "ER-003-KP-GLOSS-ALIGN-02",
+  "final_status": "ALIGN_FAILED_HUMAN_REVIEW_REQUIRED",
+  "targets": [
+    2
+  ],
+  "unresolved_ranks": [
+    2
+  ],
+  "mapping_gate": false,
+  "rules_sha256": "447e07cb8b9a30850a8dc75b6c3cce48c53d99b5f1fafa88d19b778d9155949b",
+  "cost_jpy": 0,
+  "attempts_detail": [
+    {
+      "attempt": 1,
+      "target_ranks": [
+        2
+      ],
+      "model": "synthetic-model",
+      "response_id": "resp_inject_1",
+      "usage": {
+        "input_tokens": 1,
+        "output_tokens": 1,
+        "cached_input_tokens": 0
+      },
+      "cost_jpy": null,
+      "status": "PARSE_FAILED",
+      "error": "Expecting value: line 1 column 1 (char 0)"
+    },
+    {
+      "attempt": 2,
+      "target_ranks": [
+        2
+      ],
+      "model": "synthetic-model",
+      "response_id": "resp_inject_2",
+      "usage": {
+        "input_tokens": 1,
+        "output_tokens": 1,
+        "cached_input_tokens": 0
+      },
+      "cost_jpy": null,
+      "extra_ranks_ignored": [
+        4
+      ],
+      "status": "ALIGN_INVALID",
+      "n_valid": 0,
+      "n_items": 1
+    }
+  ],
+  "item_log": {
+    "2": [
+      {
+        "attempt": 1,
+        "verdict": "PARSE_FAILED",
+        "reasons": [
+          "JSON不正: Expecting value: line 1 column 1 (char 0)"
+        ],
+        "proposed_gloss": null,
+        "batch_status": "PARSE_FAILED",
+        "batch_cost_jpy": null,
+        "model": "synthetic-model"
+      },
+      {
+        "attempt": 2,
+        "verdict": "INVALID",
+        "reasons": [
+          "qa_reflects_all_key_phrase_words!=PASS"
+        ],
+        "proposed_gloss": "x",
+        "current_gloss_consistent": false,
+        "qa": "FAIL",
+        "reasoning": "injected",
+        "added_word_mappings": [],
+        "machine_check": {
+          "required_words": [
+            "road"
+          ],
+          "covered": {},
+          "uncovered": [
+            "road"
+          ],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": false
+        },
+        "batch_status": null,
+        "batch_cost_jpy": null,
+        "model": "synthetic-model"
+      }
+    ]
+  }
+}

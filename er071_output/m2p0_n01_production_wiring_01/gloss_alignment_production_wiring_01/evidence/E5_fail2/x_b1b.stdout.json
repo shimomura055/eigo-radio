@@ -1,0 +1,65 @@
+[GLOSS-ALIGN] 実効flag=ON (source=default, EIGO_KP_GLOSS_ALIGNMENT=None)
+{
+ "scenario": "x_b1b",
+ "align_mode": "fail2",
+ "elapsed_sec": 0.62,
+ "summary": {
+  "key_phrases_status": "CANONICALIZATION_PASS",
+  "kp_run_status": "STOPPED_GLOSS_ALIGNMENT_FAILED",
+  "gloss_alignment_run_status": "STOPPED_GLOSS_ALIGNMENT_FAILED",
+  "gloss_alignment_status": "ALIGN_PARTIAL_HUMAN_REVIEW_REQUIRED",
+  "gloss_alignment_flag": {
+   "enabled": true,
+   "raw": null,
+   "source": "default"
+  },
+  "gloss_alignment_metrics": {
+   "targets": 2,
+   "items": 5,
+   "attempts_max": 2,
+   "status": "ALIGN_PARTIAL_HUMAN_REVIEW_REQUIRED",
+   "cost_jpy": 0.0002,
+   "elapsed_sec": 0.003
+  }
+ },
+ "events": [
+  {
+   "article": "FAMILY_X_AUDIO_out_b1b",
+   "level": "b1b",
+   "stage": "kp_gloss_alignment",
+   "reason_code": "GLOSS_ALIGNMENT_HUMAN_REVIEW_REQUIRED",
+   "reason": "gloss再整合がitem単位の上限2回で成立しなかった(rank=[2])。KPは維持・短い候補へ戻していない",
+   "ranks": [
+    2
+   ],
+   "report_json": "er071_output/m2p0_n01_production_wiring_01/gloss_alignment_production_wiring_01/evidence/E5_fail2/x_b1b\\out/b1b/key_phrases\\GLOSS_ALIGNMENT_HUMAN_REVIEW_01.json",
+   "report_md": "er071_output/m2p0_n01_production_wiring_01/gloss_alignment_production_wiring_01/evidence/E5_fail2/x_b1b\\out/b1b/key_phrases\\GLOSS_ALIGNMENT_HUMAN_REVIEW_01.md",
+   "report_sha256": "56911a579474bc6c618b1a27a4018ce36aab0987f365ab9bfdbb54323b7b560e",
+   "report_schema_validated": true,
+   "downstream": "当該levelのKP segmentはTTS保留(0 API call、status=STOPPED_GLOSS_ALIGNMENT_FAILED)。Gateはassemblyを拒否。ZはFamilyZE2EStopでstage停止",
+   "queue_used": false,
+   "human_review_lock_used": false
+  }
+ ],
+ "unresolved_ranks": [
+  2
+ ],
+ "control_item_rank4_gloss": "簡単にあきらめる",
+ "rank2_gloss": "～をもとにした",
+ "stdout_hr_line": [
+  "[GLOSS-ALIGN][HUMAN-REVIEW-REQUIRED] article=FAMILY_X_AUDIO_out_b1b level=b1b ranks=[2] gloss再整合が成立せず対象KP segmentのTTS/完成を停止します。報告書=er071_output/m2p0_n01_production_wiring_01/gloss_alignment_production_wiring_01/evidence/E5_fail2/x_b1b\\out/b1b/key_phrases\\GLOSS_ALIGNMENT_HUMAN_REVIEW_01.md (ユーザーへ必ず報告してください)"
+ ],
+ "api_calls_by_fake_client": 2,
+ "out_dir": "er071_output/m2p0_n01_production_wiring_01/gloss_alignment_production_wiring_01/evidence/E5_fail2/x_b1b\\out",
+ "downstream": {
+  "downstream_calls": {
+   "tts": 0,
+   "expl_llm": 0
+  },
+  "segment_statuses": [
+   "STOPPED_GLOSS_ALIGNMENT_FAILED"
+  ],
+  "assemble_blocked": true,
+  "final_line": "[GLOSS-ALIGN][HUMAN-REVIEW-REQUIRED][FINAL] levels={'b1b': [2]} events=1 reports=['er071_output/m2p0_n01_production_wiring_01/gloss_alignment_production_wiring_"
+ }
+}

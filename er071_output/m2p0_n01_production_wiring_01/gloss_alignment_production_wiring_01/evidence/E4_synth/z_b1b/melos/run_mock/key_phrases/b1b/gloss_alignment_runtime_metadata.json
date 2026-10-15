@@ -1,0 +1,66 @@
+{
+  "article_id": "family_z_melos_b1b",
+  "version": "ER-003-KP-GLOSS-ALIGN-02",
+  "final_status": "ALIGN_PASS",
+  "targets": [
+    2
+  ],
+  "unresolved_ranks": [],
+  "mapping_gate": false,
+  "rules_sha256": "447e07cb8b9a30850a8dc75b6c3cce48c53d99b5f1fafa88d19b778d9155949b",
+  "cost_jpy": 0.0488,
+  "attempts_detail": [
+    {
+      "attempt": 1,
+      "target_ranks": [
+        2
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_008c854e9d418f77006ad07ca6094887d0b820795646aef054",
+      "usage": {
+        "input_tokens": 1766,
+        "output_tokens": 257,
+        "cached_input_tokens": 0
+      },
+      "cost_jpy": 0.0488,
+      "status": "ALIGN_PASS",
+      "n_valid": 1,
+      "n_items": 1
+    }
+  ],
+  "item_log": {
+    "2": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "三人の男が道をふさいだ",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "「ふさぐ」だけでは、三人の男が道をふさいだことと、ふさがれた対象の道が表れていません。",
+        "added_word_mappings": [
+          {
+            "english_word": "road",
+            "japanese_span": "道"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "road"
+          ],
+          "covered": {
+            "road": "道"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.0488,
+        "model": "gpt-6-luna"
+      }
+    ]
+  }
+}

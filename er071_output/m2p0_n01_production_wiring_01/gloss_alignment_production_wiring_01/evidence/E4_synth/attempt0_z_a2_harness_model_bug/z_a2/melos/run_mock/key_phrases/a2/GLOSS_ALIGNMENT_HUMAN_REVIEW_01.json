@@ -1,0 +1,57 @@
+{
+  "report_version": "ER-003-KP-GLOSS-ALIGN-HR-01",
+  "article": "family_z_melos_a2",
+  "level": "a2",
+  "generated_at": "2026-10-15T07:07:46+00:00",
+  "entries": [
+    {
+      "article": "family_z_melos_a2",
+      "level": "a2",
+      "rank": 2,
+      "key_phrase_en": "Three men blocked the road",
+      "current_japanese_gloss": "意味2",
+      "added_content_words": [
+        "road"
+      ],
+      "failure_reasons": [
+        "attempt1: NotFoundError: Error code: 404 - {'error': {'message': 'The model `synthetic-model` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}",
+        "attempt2: NotFoundError: Error code: 404 - {'error': {'message': 'The model `synthetic-model` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}"
+      ],
+      "attempts": [
+        {
+          "attempt": 1,
+          "verdict": "TECHNICAL_FAILED",
+          "reasons": [
+            "NotFoundError: Error code: 404 - {'error': {'message': 'The model `synthetic-model` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}"
+          ],
+          "proposed_gloss": null,
+          "batch_status": "TECHNICAL_FAILED",
+          "batch_cost_jpy": null
+        },
+        {
+          "attempt": 2,
+          "verdict": "TECHNICAL_FAILED",
+          "reasons": [
+            "NotFoundError: Error code: 404 - {'error': {'message': 'The model `synthetic-model` does not exist or you do not have access to it.', 'type': 'invalid_request_error', 'param': None, 'code': 'model_not_found'}}"
+          ],
+          "proposed_gloss": null,
+          "batch_status": "TECHNICAL_FAILED",
+          "batch_cost_jpy": null
+        }
+      ],
+      "regeneration_candidates": {
+        "proposed_glosses": [],
+        "missing_words": [
+          "road"
+        ],
+        "reference_candidate": {
+          "display_phrase": "Three men blocked the",
+          "old_gloss": "意味2",
+          "caution": "KPを短くすると意味が失われる、人間判断でのみ採用"
+        },
+        "kp_regeneration": "既存経路でKey Phraseを再生成する(1レベル1回の運用上限に注意)。人間判断のみ。"
+      },
+      "resolution_how_to": "resolve_gloss(kp_json_path, rank, gloss, resolved_by) を実行(docs/pm/runbooks/KP_GLOSS_ALIGNMENT_HR_RESOLVE_01.md)"
+    }
+  ]
+}

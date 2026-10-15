@@ -1,0 +1,66 @@
+{
+  "article_id": "FAMILY_X_AUDIO_E1_x_a2_a2",
+  "version": "ER-003-KP-GLOSS-ALIGN-02",
+  "final_status": "ALIGN_PASS",
+  "targets": [
+    2
+  ],
+  "unresolved_ranks": [],
+  "mapping_gate": false,
+  "rules_sha256": "447e07cb8b9a30850a8dc75b6c3cce48c53d99b5f1fafa88d19b778d9155949b",
+  "cost_jpy": 0.0558,
+  "attempts_detail": [
+    {
+      "attempt": 1,
+      "target_ranks": [
+        2
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_05dcc6daa0da1afd006ad07b567c7887d099be4547f0af9aca",
+      "usage": {
+        "input_tokens": 1840,
+        "output_tokens": 330,
+        "cached_input_tokens": 0
+      },
+      "cost_jpy": 0.0558,
+      "status": "ALIGN_PASS",
+      "n_valid": 1,
+      "n_items": 1
+    }
+  ],
+  "item_log": {
+    "2": [
+      {
+        "attempt": 1,
+        "verdict": "VALID",
+        "reasons": [],
+        "proposed_gloss": "焙煎前のコーヒー豆の価格",
+        "current_gloss_consistent": false,
+        "qa": "PASS",
+        "reasoning": "「焙煎前のコーヒー豆」はraw-beanの意味を表していますが、pricesの「価格」が欠けています。",
+        "added_word_mappings": [
+          {
+            "english_word": "prices",
+            "japanese_span": "価格"
+          }
+        ],
+        "machine_check": {
+          "required_words": [
+            "prices"
+          ],
+          "covered": {
+            "prices": "価格"
+          },
+          "uncovered": [],
+          "span_not_in_gloss": [],
+          "symbol_only_spans": [],
+          "malformed_mappings": 0,
+          "pass": true
+        },
+        "batch_status": null,
+        "batch_cost_jpy": 0.0558,
+        "model": "gpt-6-luna"
+      }
+    ]
+  }
+}

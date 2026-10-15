@@ -1,0 +1,145 @@
+{
+ "model_routing": {
+  "A2_SUPPORT": "gpt-6-luna",
+  "B1_SUPPORT": "gpt-6-luna",
+  "source": "er006_model_routing_contract_01.require_model(process, SUPPORT_MODEL)",
+  "latest_model_note": "Production line(評価Trialではない)のためDEV-EVAL最新モデル原則の対象外。モデル選定は別判断(PM_GOVERNANCE 25節)。使用モデル名=gpt-6-luna、最新性の再確認は未実施"
+ },
+ "align_calls": {
+  "E1_x_a2": {
+   "final_status": "ALIGN_PASS",
+   "targets": [
+    2
+   ],
+   "attempts": 1,
+   "model": "gpt-6-luna",
+   "response_id": "resp_05dcc6daa0da1afd006ad07b567c7887d099be4547f0af9aca",
+   "usage": {
+    "input_tokens": 1840,
+    "output_tokens": 330,
+    "cached_input_tokens": 0
+   },
+   "cost_jpy": 0.0558,
+   "version": "ER-003-KP-GLOSS-ALIGN-02",
+   "mapping_gate": false
+  },
+  "E4_x_a2": {
+   "final_status": "ALIGN_PASS",
+   "targets": [
+    2,
+    4
+   ],
+   "attempts": 1,
+   "model": "gpt-6-luna",
+   "response_id": "resp_08fe79530dab8435006ad07bbd56bc87d089ada36247e6f44d",
+   "usage": {
+    "input_tokens": 1435,
+    "output_tokens": 339,
+    "cached_input_tokens": 1432
+   },
+   "cost_jpy": 0.0295,
+   "version": "ER-003-KP-GLOSS-ALIGN-02",
+   "mapping_gate": false
+  },
+  "E4_x_b1b": {
+   "final_status": "ALIGN_PASS",
+   "targets": [
+    2,
+    4
+   ],
+   "attempts": 1,
+   "model": "gpt-6-luna",
+   "response_id": "resp_065855e143c50576006ad07bbd2c4487d0b452b9dc58b3e436",
+   "usage": {
+    "input_tokens": 1435,
+    "output_tokens": 329,
+    "cached_input_tokens": 0
+   },
+   "cost_jpy": 0.0493,
+   "version": "ER-003-KP-GLOSS-ALIGN-02",
+   "mapping_gate": false
+  },
+  "E4_z_a2": {
+   "final_status": "ALIGN_PASS",
+   "targets": [
+    2
+   ],
+   "attempts": 1,
+   "model": "gpt-6-luna",
+   "response_id": "resp_07d88c8fdf09a3e5006ad07c86444087d0a4816b819e6d41c8",
+   "usage": {
+    "input_tokens": 1833,
+    "output_tokens": 224,
+    "cached_input_tokens": 0
+   },
+   "cost_jpy": 0.0472,
+   "version": "ER-003-KP-GLOSS-ALIGN-02",
+   "mapping_gate": false
+  },
+  "E4_z_b1b": {
+   "final_status": "ALIGN_PASS",
+   "targets": [
+    2
+   ],
+   "attempts": 1,
+   "model": "gpt-6-luna",
+   "response_id": "resp_008c854e9d418f77006ad07ca6094887d0b820795646aef054",
+   "usage": {
+    "input_tokens": 1766,
+    "output_tokens": 257,
+    "cached_input_tokens": 0
+   },
+   "cost_jpy": 0.0488,
+   "version": "ER-003-KP-GLOSS-ALIGN-02",
+   "mapping_gate": false
+  }
+ },
+ "natural_E1_metrics": {
+  "targets": 1,
+  "items": 5,
+  "attempts_max": 1,
+  "status": "ALIGN_PASS",
+  "cost_jpy": 0.0558,
+  "elapsed_sec": 3.877
+ },
+ "natural_E2_metrics": {
+  "targets": 0,
+  "items": 5,
+  "attempts_max": 0,
+  "status": "NO_TARGETS",
+  "cost_jpy": null,
+  "elapsed_sec": 0.0
+ },
+ "E10": {
+  "align_cost_per_call_jpy": {
+   "natural_E1": 0.0558,
+   "synthetic_E4_mean": 0.0437
+  },
+  "natural_article_set_extra_cost_jpy_E1_plus_E2": 0.0558,
+  "trial_estimate_range_jpy": [
+   0.014,
+   0.08
+  ],
+  "within_trial_range": true,
+  "pct_of_70jpy_target": 0.08,
+  "align_elapsed_sec": {
+   "E1_a2": 3.877,
+   "E4_x_a2": 6.727,
+   "E4_x_b1b": 5.835
+  },
+  "hr_count_natural": 0
+ },
+ "run_costs_jpy": {
+  "E1": 1.14,
+  "E2": 0.84,
+  "E3_z_total_a_b_c": 1.9855,
+  "E4_total": 0.1748,
+  "E5": 0.0,
+  "E6_x": 0.06,
+  "E7_x_a2": 0.32,
+  "E7_x_b1b_synth": 2.71,
+  "E7_x_b1b_nat": 1.12,
+  "E8": 0.0,
+  "total": 8.3503
+ }
+}

@@ -1,0 +1,17 @@
+[FAMILY-X-AUDIO-RUNNER][WARN] japanese_titleが取得できませんでした(source_dir=er019_output/coffee_prices/kgcpw_e1_a2/ja_writer 不在)。A2のJapanese title segmentは英語placeholderのまま生成されるため、実行前に要確認。
+[GLOSS-ALIGN] 実効flag=ON (source=default, EIGO_KP_GLOSS_ALIGNMENT=None)
+[M2-FALLBACK] 発生なし(M2P0はFallbackなしで完了)
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 2590, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 2511, in main
+    scaffold_result = run_theme_scaffold(
+        client, source_dir, out_dir, levels, scaffold_only=args.scaffold_only,
+        budget_check=lambda note: assert_budget_ok(out_dir, args.budget_jpy, note))
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 368, in run_theme_scaffold
+    article_text = load_text(article_path)
+  File "C:\Users\tensh\eigo-radio\er019_family_x_audio_production_runner_01.py", line 95, in load_text
+    with open(path, encoding="utf-8") as f:
+         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'er019_output/coffee_prices/kgcpw_e1_a2/a2/article.md'

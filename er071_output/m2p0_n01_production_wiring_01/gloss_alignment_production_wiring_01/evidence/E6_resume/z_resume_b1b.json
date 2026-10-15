@@ -1,0 +1,89 @@
+{
+ "level": "b1b",
+ "snapshot_before": true,
+ "unresolved_before": [
+  2
+ ],
+ "resolve": {
+  "rank": 2,
+  "source_span": "Three men blocked the road",
+  "source_sentence": "Three men blocked the road",
+  "display_phrase": "Three men blocked the",
+  "key_phrase": "Three men blocked the road",
+  "used_form": "Three men blocked the road",
+  "japanese_gloss": "道をふさぐ",
+  "japanese_gloss_tts": "道をふさぐ",
+  "kp_extends_beyond_candidate": true,
+  "gloss_review_hint": false,
+  "gloss_alignment": {
+   "version": "ER-003-KP-GLOSS-ALIGN-02",
+   "status": "GLOSS_HUMAN_RESOLVED",
+   "original_japanese_gloss": "意味2",
+   "key_phrase_kept": "Three men blocked the road",
+   "failure": {
+    "attempts": [
+     {
+      "attempt": 1,
+      "verdict": "PARSE_FAILED",
+      "reasons": [
+       "JSON不正: Expecting value: line 1 column 1 (char 0)"
+      ],
+      "proposed_gloss": null,
+      "batch_status": "PARSE_FAILED",
+      "batch_cost_jpy": null,
+      "model": "synthetic-model"
+     },
+     {
+      "attempt": 2,
+      "verdict": "INVALID",
+      "reasons": [
+       "qa_reflects_all_key_phrase_words!=PASS"
+      ],
+      "proposed_gloss": "x",
+      "current_gloss_consistent": false,
+      "qa": "FAIL",
+      "reasoning": "injected",
+      "added_word_mappings": [],
+      "machine_check": {
+       "required_words": [
+        "road"
+       ],
+       "covered": {},
+       "uncovered": [
+        "road"
+       ],
+       "span_not_in_gloss": [],
+       "symbol_only_spans": [],
+       "malformed_mappings": 0,
+       "pass": false
+      },
+      "batch_status": null,
+      "batch_cost_jpy": null,
+      "model": "synthetic-model"
+     }
+    ],
+    "attempts_count": 2
+   }
+  },
+  "gloss_alignment_status": "HUMAN_RESOLVED",
+  "gloss_alignment_human_resolution": {
+   "resolved_by": "KGCPW-E6-evidence",
+   "resolved_at": "2026-10-15T07:16:11+00:00",
+   "previous_gloss": "意味2"
+  }
+ },
+ "stage_kp": "OK",
+ "kp_fn_calls_after_resolve_for_HR_level": 0,
+ "other_level_first_selection_calls": [
+  "A2"
+ ],
+ "snapshot_after": false,
+ "consumed_exists": true,
+ "deployed_rank2": {
+  "key_phrase": "Three men blocked the road",
+  "japanese_gloss": "道をふさぐ",
+  "gloss_alignment_status": "HUMAN_RESOLVED"
+ },
+ "unresolved_after": [],
+ "tts_stage": "OK(mock TTS)"
+}

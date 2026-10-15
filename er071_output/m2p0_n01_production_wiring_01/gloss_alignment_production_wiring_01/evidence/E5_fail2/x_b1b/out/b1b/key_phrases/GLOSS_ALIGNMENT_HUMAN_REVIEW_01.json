@@ -1,0 +1,84 @@
+{
+  "report_version": "ER-003-KP-GLOSS-ALIGN-HR-01",
+  "article": "FAMILY_X_AUDIO_out_b1b",
+  "level": "b1b",
+  "generated_at": "2026-10-15T07:11:57+00:00",
+  "entries": [
+    {
+      "article": "FAMILY_X_AUDIO_out_b1b",
+      "level": "b1b",
+      "rank": 2,
+      "key_phrase_en": "based on interviews",
+      "current_japanese_gloss": "～をもとにした",
+      "added_content_words": [
+        "interviews"
+      ],
+      "failure_reasons": [
+        "attempt1: JSON不正: Expecting value: line 1 column 1 (char 0)",
+        "attempt2: qa_reflects_all_key_phrase_words!=PASS"
+      ],
+      "attempts": [
+        {
+          "attempt": 1,
+          "verdict": "PARSE_FAILED",
+          "reasons": [
+            "JSON不正: Expecting value: line 1 column 1 (char 0)"
+          ],
+          "proposed_gloss": null,
+          "batch_status": "PARSE_FAILED",
+          "batch_cost_jpy": 0.0001,
+          "model": "gpt-6-luna"
+        },
+        {
+          "attempt": 2,
+          "verdict": "INVALID",
+          "reasons": [
+            "qa_reflects_all_key_phrase_words!=PASS"
+          ],
+          "proposed_gloss": "x",
+          "current_gloss_consistent": false,
+          "qa": "FAIL",
+          "reasoning": "injected",
+          "added_word_mappings": [],
+          "machine_check": {
+            "required_words": [
+              "interviews"
+            ],
+            "covered": {},
+            "uncovered": [
+              "interviews"
+            ],
+            "span_not_in_gloss": [],
+            "symbol_only_spans": [],
+            "malformed_mappings": 0,
+            "pass": false
+          },
+          "batch_status": null,
+          "batch_cost_jpy": 0.0001,
+          "model": "gpt-6-luna"
+        }
+      ],
+      "regeneration_candidates": {
+        "proposed_glosses": [
+          {
+            "attempt": 2,
+            "proposed_gloss": "x",
+            "violations": [
+              "qa_reflects_all_key_phrase_words!=PASS"
+            ]
+          }
+        ],
+        "missing_words": [
+          "interviews"
+        ],
+        "reference_candidate": {
+          "display_phrase": "based on",
+          "old_gloss": "～をもとにした",
+          "caution": "KPを短くすると意味が失われる、人間判断でのみ採用"
+        },
+        "kp_regeneration": "既存経路でKey Phraseを再生成する(1レベル1回の運用上限に注意)。人間判断のみ。"
+      },
+      "resolution_how_to": "resolve_gloss(kp_json_path, rank, gloss, resolved_by) を実行(docs/pm/runbooks/KP_GLOSS_ALIGNMENT_HR_RESOLVE_01.md)"
+    }
+  ]
+}

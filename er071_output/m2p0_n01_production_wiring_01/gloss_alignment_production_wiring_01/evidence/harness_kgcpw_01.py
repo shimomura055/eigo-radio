@@ -197,6 +197,19 @@ def x_downstream_checks(level, out):
 
 
 # ------------------------------------------------------------ Z
+def _z_gloss(rank, align_mode):
+    # [KGCPW 委任_03 harness修正] real時のみrank2に実在語の不足glossを与える(fail2時は従来どおり「意味N」)
+    return "ふさぐ" if (align_mode == "real" and rank == 2) else f"意味{rank}"
+
+
+def _z_model(align_mode, source_level):
+    # [KGCPW 委任_03 harness修正] real時は本番と同じrouting(require_model)のモデルを使う(旧: 'synthetic-model'固定でreal時404)
+    if align_mode != "real":
+        return "synthetic-model"
+    proc = "B1_SUPPORT" if str(source_level).upper().startswith("B1") else "A2_SUPPORT"
+    return sc.routing.require_model(proc, sc.routing.SUPPORT_MODEL)
+
+
 def run_z(level, align_mode, base):
     """Z: mock context(TTS等はmock=API 0)。kp_fn hookでselection/canonicalizationを録画固定し、alignはga.align_glosses+B'(本物
     make_alignment_fn+fake client)。stage_kp(正式stage関数)でFamilyZE2EStop・HR報告・assets配備・TTS段の拒否を確認する。"""
@@ -211,12 +224,12 @@ def run_z(level, align_mode, base):
         for i, s in enumerate(spans, 1):
             disp = " ".join(s.split()[:-1]) if (i == 2 and source_level.upper() == {"a2": "A2", "b1b": "B1"}[level]) else s
             items.append({"rank": i, "source_span": s, "source_sentence": s, "display_phrase": disp, "key_phrase": s,
-                          "used_form": s, "japanese_gloss": f"意味{i}", "japanese_gloss_tts": f"意味{i}",
+                          "used_form": s, "japanese_gloss": _z_gloss(i, align_mode), "japanese_gloss_tts": _z_gloss(i, align_mode),
                           "kp_extends_beyond_candidate": disp != s, "gloss_review_hint": False})
         merged = {"items": items, "overall_status": "CANONICALIZATION_PASS", "article_id": article_id,
                   "canonicalization_version": "synthetic", "source_level": source_level}
         w = wrapped_make_alignment_fn(align_mode)
-        aligned = ga.align_glosses(merged, text, lambda msg: w(msg, model="synthetic-model"), out_dir=kp_dir,
+        aligned = ga.align_glosses(merged, text, lambda msg: w(msg, model=_z_model(align_mode, source_level)), out_dir=kp_dir,
                                    article_id=article_id, enabled=True)
         os.makedirs(kp_dir, exist_ok=True)
         json.dump(aligned["merged"], open(f"{kp_dir}/keywords_canonicalized.json", "w", encoding="utf-8"), ensure_ascii=False, indent=2)
