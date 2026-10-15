@@ -124,4 +124,8 @@ test: `test_every_production_runner_tts_entry_is_run_scoped`(10関数)、`test_r
 - 委任_07: SSOT(CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS)、Gate 3/4/7、main merge、旧規則の整理(§6-4)。
 
 ## 8. commit後の確認
-(commit hash・secret_scan・push結果は本節に追記)
+- commit: 4019b5fe10e35c937d3c0091a1b8769defe70ba6 (branch feat/auw-unified-asr-01, 961d5b360..4019b5fe1 push済み、main無変更)
+- secret_scan_01 --staged: hits=0 (41 files)
+- 有料API: 0 / JPY 0 (netguardで外部試行0)
+- commit後gamma再確認(er019 FamilyAUnchanged / er020 ProductionModuleUnchanged / er064 ProductionUnchanged系): 14 passed, 1 failed。
+  失敗1件は er064_kp_int_03 AssetsUnchanged::test_state_guard_if_present で、patch_04/test_post_04.json のbaselineにも同一failとして存在(共有state hash driftの既存失敗、本委任起因ではない)。新規failure 0。
