@@ -1,7 +1,7 @@
 {
-  "phase": "pre_wiring",
+  "phase": "post_wiring_en",
   "managed_id": "ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01",
-  "generated_by": "delegation_02b",
+  "generated_by": "delegation_03",
   "entrypoints": [
     "er019_family_x_audio_production_runner_01.py",
     "er063_family_z_audio_01.py",
@@ -21,7 +21,8 @@
       "callee": "routing.transcribe",
       "count": 1,
       "judgement_point": "J3",
-      "reason": "判定点J3: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
+      "category": "primary_acquisition"
     },
     {
       "module": "er003_v1_crosslevel_audio_02_common",
@@ -29,7 +30,8 @@
       "callee": "secondary_asr.evaluate_attempt_with_cascade",
       "count": 1,
       "judgement_point": "J3",
-      "reason": "判定点J3: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
     },
     {
       "module": "er003_v1_n3_01_tts_generate",
@@ -37,7 +39,8 @@
       "callee": "secondary_asr.evaluate_attempt_with_cascade_detail",
       "count": 1,
       "judgement_point": "J7",
-      "reason": "判定点J7: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
     },
     {
       "module": "er003_v1_n3_01_tts_generate",
@@ -45,7 +48,8 @@
       "callee": "en_validator.classify_asr_match",
       "count": 1,
       "judgement_point": "J7",
-      "reason": "判定点J7: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "A2 6%減速後の再検証(直接classify_asr_match)。減速前後を同一judgeにする汎化は委任_05",
+      "category": "a2_slowdown_deferred_delegation_05"
     },
     {
       "module": "er003_v1_n3_01_tts_generate",
@@ -53,7 +57,8 @@
       "callee": "routing.transcribe",
       "count": 1,
       "judgement_point": "J7",
-      "reason": "判定点J7: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "A2 6%減速後の再検証(直接classify_asr_match)。減速前後を同一judgeにする汎化は委任_05",
+      "category": "a2_slowdown_deferred_delegation_05"
     },
     {
       "module": "er003_v1_n3_01_tts_generate",
@@ -61,7 +66,8 @@
       "callee": "ja_secondary.evaluate_attempt_ja_with_cascade",
       "count": 1,
       "judgement_point": "J8",
-      "reason": "判定点J8: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "JA判定(SCG/JA cascade)。統一judgeへの配線は委任_04(本委任では未配線)",
+      "category": "ja_unwired_delegation_04"
     },
     {
       "module": "er003_v1_n3_01_tts_generate",
@@ -69,7 +75,8 @@
       "callee": "routing.transcribe",
       "count": 1,
       "judgement_point": "J8",
-      "reason": "判定点J8: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "JA leafのPrimary転写取得(JA判定とセット)。委任_04",
+      "category": "ja_unwired_delegation_04"
     },
     {
       "module": "er003_v1_repro01_main_generate",
@@ -77,7 +84,8 @@
       "callee": "ja_secondary.evaluate_attempt_ja_with_cascade",
       "count": 1,
       "judgement_point": "J5",
-      "reason": "判定点J5: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "JA判定(SCG/JA cascade)。統一judgeへの配線は委任_04(本委任では未配線)",
+      "category": "ja_unwired_delegation_04"
     },
     {
       "module": "er003_v1_repro01_main_generate",
@@ -85,7 +93,8 @@
       "callee": "routing.transcribe",
       "count": 1,
       "judgement_point": "J5",
-      "reason": "判定点J5: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
+      "category": "primary_acquisition"
     },
     {
       "module": "er003_v1_repro01_main_generate",
@@ -93,7 +102,8 @@
       "callee": "secondary_asr.evaluate_attempt_with_cascade",
       "count": 1,
       "judgement_point": "J5",
-      "reason": "判定点J5: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
     },
     {
       "module": "er003_v1_sing01_news_tail_fix",
@@ -101,7 +111,8 @@
       "callee": "routing.transcribe",
       "count": 1,
       "judgement_point": "J2",
-      "reason": "判定点J2: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
+      "category": "primary_acquisition"
     },
     {
       "module": "er003_v1_sing01_news_tail_fix",
@@ -109,7 +120,8 @@
       "callee": "secondary_asr.evaluate_attempt_with_cascade",
       "count": 1,
       "judgement_point": "J2",
-      "reason": "判定点J2: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
     },
     {
       "module": "er003_v1_sing01_point_headings_aoede",
@@ -117,7 +129,8 @@
       "callee": "routing.transcribe",
       "count": 1,
       "judgement_point": "J6",
-      "reason": "判定点J6: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
+      "category": "primary_acquisition"
     },
     {
       "module": "er003_v1_sing01_point_headings_aoede",
@@ -125,7 +138,8 @@
       "callee": "secondary_asr.evaluate_attempt_with_cascade",
       "count": 1,
       "judgement_point": "J6",
-      "reason": "判定点J6: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
     },
     {
       "module": "er003_v1_sing01_voice01_generate",
@@ -133,7 +147,8 @@
       "callee": "routing.transcribe",
       "count": 1,
       "judgement_point": "J1",
-      "reason": "判定点J1: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
+      "category": "primary_acquisition"
     },
     {
       "module": "er003_v1_sing01_voice01_generate",
@@ -141,7 +156,8 @@
       "callee": "secondary_asr.evaluate_attempt_with_cascade",
       "count": 1,
       "judgement_point": "J1",
-      "reason": "判定点J1: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
     },
     {
       "module": "er003_v1_sing01_voice01_generate",
@@ -149,7 +165,8 @@
       "callee": "ja_secondary.evaluate_attempt_ja_with_cascade",
       "count": 2,
       "judgement_point": "J9,J10",
-      "reason": "判定点J9,J10: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "JA判定(SCG/JA cascade)。統一judgeへの配線は委任_04(本委任では未配線)",
+      "category": "ja_unwired_delegation_04"
     },
     {
       "module": "er003_v1_sing01_voice01_generate",
@@ -157,7 +174,8 @@
       "callee": "routing.transcribe",
       "count": 2,
       "judgement_point": "J9,J10",
-      "reason": "判定点J9,J10: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "JA leafのPrimary転写取得(JA判定とセット)。委任_04",
+      "category": "ja_unwired_delegation_04"
     },
     {
       "module": "er006_preprod_hardening_01_validation",
@@ -165,7 +183,8 @@
       "callee": "classify_asr_match",
       "count": 1,
       "judgement_point": "",
-      "reason": "EN検証ライブラリ内部の呼出(classify_asr_match/evaluate_attempt。既存Primary側P-chain)。adapter化の対象外・値ガード接続点"
+      "reason": "EN検証library内部の呼出(Primary P-chain本体)。adapter(evaluate_attempt_with_cascade_detail)経由でのみ判定に使われる",
+      "category": "library_internal"
     },
     {
       "module": "er006_preprod_hardening_01_validation",
@@ -173,7 +192,8 @@
       "callee": "classify_asr_match",
       "count": 1,
       "judgement_point": "",
-      "reason": "EN検証ライブラリ内部の呼出(classify_asr_match/evaluate_attempt。既存Primary側P-chain)。adapter化の対象外・値ガード接続点"
+      "reason": "EN検証library内部の呼出(Primary P-chain本体)。adapter(evaluate_attempt_with_cascade_detail)経由でのみ判定に使われる",
+      "category": "library_internal"
     },
     {
       "module": "er006_secondary_asr_01",
@@ -181,31 +201,35 @@
       "callee": "evaluate_attempt_with_cascade_detail",
       "count": 1,
       "judgement_point": "",
-      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
-    },
-    {
-      "module": "er006_secondary_asr_01",
-      "function": "evaluate_attempt_with_cascade_detail",
-      "callee": "routing.transcribe",
-      "count": 1,
-      "judgement_point": "",
-      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
+      "reason": "EN統一judge adapter本体(AUW 委任_03): Primary P-chain([val.evaluate_attempt/classify_asr_match])とjudge呼出。判定は全てunified_judge経由",
+      "category": "adapter_internal"
     },
     {
       "module": "er006_secondary_asr_01",
       "function": "evaluate_attempt_with_cascade_detail",
       "callee": "val.classify_asr_match",
-      "count": 5,
+      "count": 1,
       "judgement_point": "",
-      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
+      "reason": "EN統一judge adapter本体(AUW 委任_03): Primary P-chain([val.evaluate_attempt/classify_asr_match])とjudge呼出。判定は全てunified_judge経由",
+      "category": "adapter_internal"
     },
     {
       "module": "er006_secondary_asr_01",
       "function": "evaluate_attempt_with_cascade_detail",
       "callee": "val.evaluate_attempt",
+      "count": 2,
+      "judgement_point": "",
+      "reason": "EN統一judge adapter本体(AUW 委任_03): Primary P-chain([val.evaluate_attempt/classify_asr_match])とjudge呼出。判定は全てunified_judge経由",
+      "category": "adapter_internal"
+    },
+    {
+      "module": "er006_secondary_asr_01",
+      "function": "evaluate_attempt_with_cascade_detail._secondary_accept",
+      "callee": "val.classify_asr_match",
       "count": 1,
       "judgement_point": "",
-      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
+      "reason": "EN統一judge adapter本体(AUW 委任_03): Primary P-chain([val.evaluate_attempt/classify_asr_match])とjudge呼出。判定は全てunified_judge経由",
+      "category": "adapter_internal"
     },
     {
       "module": "er007_ja_secondary_asr_01",
@@ -213,7 +237,8 @@
       "callee": "javal.classify_ja_asr_match",
       "count": 1,
       "judgement_point": "",
-      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
+      "reason": "JA判定(SCG/JA cascade)。統一judgeへの配線は委任_04(本委任では未配線)",
+      "category": "ja_unwired_delegation_04"
     },
     {
       "module": "er007_ja_secondary_asr_01",
@@ -221,7 +246,8 @@
       "callee": "evaluate_attempt_ja_with_cascade_detail",
       "count": 1,
       "judgement_point": "",
-      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
+      "reason": "JA判定(SCG/JA cascade)。統一judgeへの配線は委任_04(本委任では未配線)",
+      "category": "ja_unwired_delegation_04"
     },
     {
       "module": "er007_ja_secondary_asr_01",
@@ -229,7 +255,8 @@
       "callee": "javal.classify_ja_asr_match",
       "count": 4,
       "judgement_point": "",
-      "reason": "既存Cascade/SCG実装本体(委任_03/04でadapter化し内部をunified_judge委譲へ)。configは現状Production経路"
+      "reason": "JA判定(SCG/JA cascade)。統一judgeへの配線は委任_04(本委任では未配線)",
+      "category": "ja_unwired_delegation_04"
     },
     {
       "module": "er008_disfluency_qa_18",
@@ -237,7 +264,8 @@
       "callee": "model.transcribe",
       "count": 1,
       "judgement_point": "",
-      "reason": "Safety QA用の転写(disfluency/repetition)。内容一致の判定点ではない=統一judge対象外(最後にANDされる既存構造は不変)"
+      "reason": "Safety QA用の転写(disfluency/repetition)。内容一致の判定点ではない(最後にANDされる既存構造は不変)",
+      "category": "safety_qa"
     },
     {
       "module": "er011_open121_repetition_qa_production_01",
@@ -245,7 +273,8 @@
       "callee": "asr_routing.transcribe",
       "count": 1,
       "judgement_point": "",
-      "reason": "Safety QA用の転写(disfluency/repetition)。内容一致の判定点ではない=統一judge対象外(最後にANDされる既存構造は不変)"
+      "reason": "Safety QA用の転写(disfluency/repetition)。内容一致の判定点ではない(最後にANDされる既存構造は不変)",
+      "category": "safety_qa"
     },
     {
       "module": "er012_b_family_voices_production_01",
@@ -253,7 +282,8 @@
       "callee": "asr_routing.transcribe",
       "count": 1,
       "judgement_point": "J4",
-      "reason": "判定点J4: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
+      "category": "primary_acquisition"
     },
     {
       "module": "er012_b_family_voices_production_01",
@@ -261,7 +291,8 @@
       "callee": "secondary_asr.evaluate_attempt_with_cascade",
       "count": 1,
       "judgement_point": "J4",
-      "reason": "判定点J4: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
     },
     {
       "module": "er013_family_c_production_runner_01",
@@ -269,7 +300,8 @@
       "callee": "asr_routing.transcribe",
       "count": 1,
       "judgement_point": "",
-      "reason": "Family C(legacy)の診断用ASR(get_or_run_asr)。DESIGN J1-J11に未列挙。委任_04で採用判定に使われていないことを確認すること(未確認)"
+      "reason": "Family C(legacy)の診断用ASR(get_or_run_asr)。判定に使われているか未確認(委任_04で確認)",
+      "category": "diagnostic_unconfirmed"
     },
     {
       "module": "er019_family_x_validation_inheritance_01",
@@ -277,7 +309,8 @@
       "callee": "en_validator.classify_asr_match",
       "count": 1,
       "judgement_point": "J11",
-      "reason": "判定点J11: leaf内のPrimary転写+判定呼出(委任_03/04でunified_judge経由へ)"
+      "reason": "J11 引継ぎ・再利用の再判定(保存転写に対するAPI 0再判定)。統一判定の入口への置換は委任_04",
+      "category": "j11_deferred_delegation_04"
     }
   ]
 }

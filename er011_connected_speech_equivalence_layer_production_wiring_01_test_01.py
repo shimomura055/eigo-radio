@@ -120,7 +120,13 @@ def test_disabled_by_default_no_new_asr_calls_and_no_classification_change():
             canonical, primary, [], "dummy.wav", cascade_enabled=True)
         assert r["classification"].classification == "TRUE_CONTENT_MISMATCH"
         assert r["connected_speech_equivalence_layer_invoked"] is False
-        assert calls == {"secondary": 0, "local": 0}
+        # AUW 委任_03b: DESIGN_01 §4-9 / ユーザー原文「Primary NG→原則Secondary」に追随
+        # (旧: calls == {"secondary": 0, "local": 0} = 通常の内容語差ではSecondaryを一切呼ばない)。
+        # 新設計: 判定(分類=TRUE_CONTENT_MISMATCH・Eq層不発動)は不変。Eq層(既定OFF)由来の追加ASR(Secondary/local)は0。
+        # Primary NGなので統一judgeがSecondaryを1回だけ呼ぶ(Eq層経由ではない)。localは0のまま。
+        assert calls == {"secondary": 1, "local": 0}
+        assert "cs_equivalence" not in r["asr_judgement"]["adapter"]["layers"]
+        assert r["verified"] is False, "Secondary(mock)がNGを返すのでPASSしない"
     finally:
         secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
         disfluency_qa.transcribe_verbatim = orig_local_fn
@@ -152,7 +158,12 @@ def test_enabled_but_no_category_match_skips_asr_calls():
             [], "dummy.wav", cascade_enabled=True, enable_connected_speech_equivalence_layer=True)
         assert r["classification"].classification == "TRUE_CONTENT_MISMATCH"
         assert r["connected_speech_equivalence_layer_invoked"] is False
-        assert calls == {"secondary": 0, "local": 0}
+        # AUW 委任_03b: DESIGN_01 §4-9 / ユーザー原文「Primary NG→原則Secondary」「重複呼出防止」に追随
+        # (旧: calls == {"secondary": 0, "local": 0})。新設計: Eq層のコストガード(音韻環境カテゴリ不該当ならEq層由来の
+        # Secondary/local呼出なし)は不変=localは0・Eq層不発動。Secondaryは統一judgeの1回のみ(Eq層との重複呼出なし)。
+        assert calls == {"secondary": 1, "local": 0}
+        assert "cs_equivalence" not in r["asr_judgement"]["adapter"]["layers"]
+        assert r["verified"] is False
     finally:
         secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
         disfluency_qa.transcribe_verbatim = orig_local_fn
@@ -185,6 +196,8 @@ def test_enabled_accepts_with_secondary_and_local_corroboration():
 
 
 def test_enabled_mixed_evidence_does_not_accept_but_records_diagnostic():
+    # AUW 委任_03c(選択肢A): ユーザー原文L54-55「Primary NG→原則Secondary/Secondary PASS→PASS_WITH_WARNING採用」に追随。layer判定は不変(旧: verified False)。 補足: Eq層のMIXED判定(診断記録・Eq層による受理なし)は不変。最終判定は、独立Secondaryがcanonicalを
+    # 支持した場合のみ secondary_confirmed(PASS_WITH_WARNING)。Secondaryも支持しなければNGのまま。
     orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
     orig_local_fn = disfluency_qa.transcribe_verbatim
     canonical = "The cars turned back before reaching the bridge."
@@ -197,14 +210,23 @@ def test_enabled_mixed_evidence_does_not_accept_but_records_diagnostic():
         r = secondary.evaluate_attempt_with_cascade_detail(
             canonical, primary, [], "dummy.wav", cascade_enabled=True,
             enable_connected_speech_equivalence_layer=True)
-        assert r["verified"] is False
-        assert r["classification"].classification == "TRUE_CONTENT_MISMATCH"
-        assert r["classification"].should_pass is False
+        aj = r["asr_judgement"]
+        assert aj["primary"]["passed"] is False and aj["primary"]["label"] == "TRUE_CONTENT_MISMATCH"
         assert r["connected_speech_equivalence_layer_invoked"] is True
-        # false positive疑いの事後監査用に診断情報が付与されていること
-        info = r["classification"].connected_speech_info
+        eq_steps = [s for s in r["steps"] if s["step"] in ("connected_speech_equivalence_secondary", "connected_speech_equivalence_local")]
+        assert eq_steps and all(s["layer_judgment"] == "EQUIVALENCE_LAYER_MIXED_EVIDENCE_INSUFFICIENT" for s in eq_steps)
+        assert r["verified"] is False or (aj["reason_code"] == "secondary_confirmed" and aj["state"] == "PASS_WITH_WARNING")
+        # Secondaryも支持しない(primaryと同じ"turn")ならNGのまま(旧期待を維持)
+        secondary.get_full_text_via_azure_stt_with_phrase_list = lambda *a, **k: (primary, None)
+        r2 = secondary.evaluate_attempt_with_cascade_detail(
+            canonical, primary, [], "dummy2.wav", cascade_enabled=True,
+            enable_connected_speech_equivalence_layer=True)
+        assert r2["verified"] is False
+        assert r2["classification"].classification == "TRUE_CONTENT_MISMATCH"
+        assert r2["classification"].should_pass is False
+        info = r2["classification"].connected_speech_info
         assert info is not None
-        assert info["layer_judgment"] == "EQUIVALENCE_LAYER_MIXED_EVIDENCE_INSUFFICIENT"
+        assert info["layer_judgment"] not in cs_equiv.ACCEPT_JUDGMENTS  # Secondaryが支持しない場合のEq層判定(INSUFFICIENT_EVIDENCE)も非受理
     finally:
         secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
         disfluency_qa.transcribe_verbatim = orig_local_fn

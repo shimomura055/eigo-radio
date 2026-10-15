@@ -585,6 +585,8 @@ def generate_or_reuse_z(cached_entry: dict | None, spec: ClipSpec, wav_path: str
         if recorded is None or _sha_file(wav_path) == recorded:
             reused = dict(cached_entry)
             reused["reused_from_previous_run"] = True
+            if "asr_judgement" in reused:   # AUW 委任_03: 再利用音声の元のWARNINGを継承(asr_judgement_inherited)
+                reused["asr_judgement_inherited"] = reused.pop("asr_judgement")
             return reused
     return generate_fn()
 
@@ -816,6 +818,8 @@ def build_entry(spec: ClipSpec, out_path: str, result: dict, *, human_approved: 
         "cooldown_occurred": bool(stop_events), "cooldown_events": stop_events,
         "audio_text_deviation": deviation,
         "tts_generations_used": result.get("tts_generations_used"),
+        # AUW 委任_03(additive): 統一ASR判定の監査record(PASS_WITH_WARNING等)。事後試聴リストの入力。
+        "asr_judgement": result.get("asr_judgement"),
     }
     if os.path.exists(out_path):
         try:
@@ -974,6 +978,10 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
            "style_version": FAMILY_Z_ROLE_STYLE_VERSION, "management_id": MANAGEMENT_ID, "level": level}
     with open(results_path, "w", encoding="utf-8") as f:
         json.dump(doc, f, ensure_ascii=False, indent=2)
+    # AUW 委任_03: 生成完了hook。results確定直後に事後試聴リスト(PASS_WITH_WARNING)を再導出して
+    # audit/pass_with_warning_listening_list.jsonへ出力(失敗しても生成は失敗させない、非ブロッキング)。
+    import er078_pass_with_warning_registry_01 as _pww
+    _pww.write_listening_list_safe(level_dir)
     if os.path.exists(_checkpoint_path(level_dir)):
         os.remove(_checkpoint_path(level_dir))        # 最終results確定後は途中経過を残さない(古い内容で上書きされない)
     ev_path = f"{level_dir}/audit/runtime_evidence_{SUB_TASK_ID}.json"
@@ -1310,7 +1318,8 @@ def _esc(s) -> str:
 
 
 def build_listening_page_html(level_label: str, rows: list, kp_rows: list, full_audio_rel: str, duration: float,
-                              tts_mode: str = "Standard同期(TTS_EXECUTION_MODE=STANDARD)") -> str:
+                              tts_mode: str = "Standard同期(TTS_EXECUTION_MODE=STANDARD)",
+                              warn_section_html: str = "") -> str:
     """rows=[{part,start,dur,file,voice,style,script,notes[]}]。level_labelは'Standard'/'Advanced'のみ。"""
     trs = []
     for i, r in enumerate(rows):
@@ -1334,6 +1343,7 @@ def build_listening_page_html(level_label: str, rows: list, kp_rows: list, full_
             f"<h2>Key Phrases</h2>{kp}"
             "<table><thead><tr><th>パート</th><th>音声</th><th>Voice・Style・Script</th></tr></thead><tbody>"
             + "".join(trs) + "</tbody></table>"
+            + warn_section_html +
             "<script>document.querySelectorAll('button.jump').forEach(b=>b.onclick=()=>{const a=document.getElementById('main');"
             "a.currentTime=parseFloat(b.dataset.t);a.play();});</script></body></html>")
 
@@ -1379,7 +1389,7 @@ def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_d
         sf.write(f"{audio_out_dir}/{fn}", x[int(round(s * sr)): int(round((s + d) * sr))], sr, format="MP3")
         cid = part_to_clip_id(part)
         entry = _lookup_entry(data, cid) if cid else None
-        row = {"part": part, "start": s, "dur": d, "file": f"{audio_rel_prefix}{fn}", "voice": "-", "style": "-",
+        row = {"part": part, "clip_id": cid, "start": s, "dur": d, "file": f"{audio_rel_prefix}{fn}", "voice": "-", "style": "-",
                "script": "(音楽・通知音。読み上げなし)" if part.startswith(("Intro", "Outro", "Notification")) else "未取得", "notes": []}
         if entry:
             row["voice"] = entry.get("voice", "-")
@@ -1406,10 +1416,19 @@ def build_pages(run_dir: str, pages_dir: str = PAGES_DIR) -> dict:
     """user_test/family_z_melos_01/{index,standard,advanced}.html を生成する(静的ファイルのみ)。"""
     os.makedirs(pages_dir, exist_ok=True)
     out = {}
+    warn_sections = []
     for level, fname, label in (("a2", "standard.html", "Standard"), ("b1b", "advanced.html", "Advanced")):
         audio_dir = f"{pages_dir}/audio_{label.lower()}"
         rows, kp_rows, full, dur = build_page_rows(run_dir, level, f"audio_{label.lower()}/", audio_dir)
-        html_text = build_listening_page_html(label, rows, kp_rows, f"audio_{label.lower()}/{full}", dur)
+        # AUW 委任_03: 事後試聴リスト(PASS_WITH_WARNING)節(0件でも節を出す)。mp3リンクは当該partの試聴ページ内mp3。
+        import er078_pass_with_warning_registry_01 as _pww
+        warn_entries = _pww.load_listening_list(f"{run_dir}/{level}")
+        clip_to_file = {r.get("clip_id"): r["file"] for r in rows if r.get("clip_id")}
+        warn_html = _pww.render_html_section(
+            warn_entries, href_fn=lambda e: clip_to_file.get(_warn_entry_to_clip_id(e.get("entry_key", "")), ""))
+        warn_sections.append((label, warn_html))
+        html_text = build_listening_page_html(label, rows, kp_rows, f"audio_{label.lower()}/{full}", dur,
+                                              warn_section_html=warn_html)
         lint = lint_page_html(html_text)
         if any(lint.values()):
             raise FamilyZAudioStop(f"試聴ページlint NG ({label}): {lint}")
@@ -1417,14 +1436,27 @@ def build_pages(run_dir: str, pages_dir: str = PAGES_DIR) -> dict:
             f.write(html_text)
         out[label] = {"page": f"{pages_dir}/{fname}", "rows": len(rows), "kp_rows": len(kp_rows), "lint": lint}
     with open(f"{pages_dir}/index.html", "w", encoding="utf-8") as f:
-        f.write(build_index_html())
+        f.write(build_index_html(warn_sections))
     return out
 
 
-def build_index_html() -> str:
+def _warn_entry_to_clip_id(entry_key: str):
+    """事後試聴リストのentry_key(tts_generation_results.json内のpath)をtimeline rowのclip_idへ対応づける。
+    対応するrow(mp3)が無いものはNone(リンクなし表示)。"""
+    parts = entry_key.split("/")
+    if len(parts) == 2 and parts[0] == "segments":
+        return parts[1]
+    if len(parts) == 3 and parts[0] == "key_phrases" and parts[2] == "english":
+        return f"kp{parts[1]}_en"
+    return None
+
+
+def build_index_html(warn_sections=None) -> str:
+    """warn_sections=[(level_label, section_html)]: AUW 委任_03の『事後試聴リスト(PASS_WITH_WARNING)』節(0件でも節を出す)。"""
+    extra = "".join(f"<h2>{_esc(lbl)}</h2>{sec_html}" for lbl, sec_html in (warn_sections or []))
     return ("<!doctype html><html lang='ja'><head><meta charset='utf-8'><title>走れメロス 試聴</title></head><body>"
             "<h1>走れメロス 試聴</h1><ul><li><a href='standard.html'>Standard</a></li>"
-            "<li><a href='advanced.html'>Advanced</a></li></ul></body></html>")
+            "<li><a href='advanced.html'>Advanced</a></li></ul>" + extra + "</body></html>")
 
 
 def lint_page_html(html_text: str) -> dict:

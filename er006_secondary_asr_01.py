@@ -389,7 +389,7 @@ def _connected_speech_equivalence_local_asr_text(wav_path: str) -> str | None:
 
 def _connected_speech_equivalence_layer_attempt(
         canonical_text: str, asr_text: Optional[str], wav_path: str, language: str,
-        ledger_phrases: Optional[list[str]]) -> Optional[dict]:
+        ledger_phrases: Optional[list[str]], azure_fn=None) -> Optional[dict]:
     """TRUE_CONTENT_MISMATCH(かつprotected_check通過済み、既存3パターン
     UNCLASSIFIED)のfallthrough時のみ呼ばれる。まずSecondary/local ASRを
     呼ばずに音韻環境カテゴリの該当有無だけを確認し(追加課金なし)、
@@ -402,8 +402,13 @@ def _connected_speech_equivalence_layer_attempt(
     if cheap_check["layer_judgment"] in cs_equivalence.NEVER_ELIGIBLE_JUDGMENTS:
         return None
 
-    secondary_text, secondary_err = get_full_text_via_azure_stt_with_phrase_list(
-        wav_path, language=language, phrases=ledger_phrases)
+    # AUW 委任_03: azure_fn(共有SecondaryCache経由の(text, err))が渡されれば同一wavのAzure重複呼出を防ぐ。
+    # 未指定(直接呼出)は従来どおり直接呼出。
+    if azure_fn is not None:
+        secondary_text, secondary_err = azure_fn()
+    else:
+        secondary_text, secondary_err = get_full_text_via_azure_stt_with_phrase_list(
+            wav_path, language=language, phrases=ledger_phrases)
     local_text = _connected_speech_equivalence_local_asr_text(wav_path)
 
     final = cs_equivalence.classify_connected_speech_equivalence(
@@ -425,6 +430,8 @@ def evaluate_attempt_with_cascade(
     # evaluate_attempt_with_cascade_detail()へそのまま転送する。
     segment_id: Optional[str] = None,
     m1_enabled: bool = True,
+    # AUW 委任_03(既定None): 統一judgeのattempt文脈(slot/script_version/is_last_slot等)。
+    attempt_ctx: Optional[dict] = None,
 ) -> tuple[bool, bool, "val.ClassificationResult"]:
     """Production retry loop向けのdrop-in互換ラッパー。val.evaluate_attempt()
     と同じ(verified, stop_retrying, classification)のタプルを返す
@@ -468,7 +475,7 @@ def evaluate_attempt_with_cascade(
         cascade_enabled=cascade_enabled, force_secondary=force_secondary,
         enable_non_latin_cascade=enable_non_latin_cascade,
         enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-        segment_id=segment_id, m1_enabled=m1_enabled)
+        segment_id=segment_id, m1_enabled=m1_enabled, attempt_ctx=attempt_ctx)
     if detail["human_review_required"]:
         _log_human_review(detail)
     if detail_out is not None:
@@ -532,6 +539,119 @@ def _unresolved_entity_spans(cls_step: "val.ClassificationResult") -> list[str]:
     return spans
 
 
+# ============================================================
+# ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 (AUW) 委任_03: EN統一judge adapter
+# ============================================================
+# evaluate_attempt_with_cascade_detail は**署名・戻り値dict・呼出元**を維持したまま、内部を統一判定
+# (er078_asr_unified_judge_01.unified_judge)へ委譲するadapterに置換された(DESIGN_01 §4-1/§4-3/§4-9、
+# DESIGN_02_ADDENDUM_01 §1/§4)。構造:
+#   [Primary P-chain = 既存層を現行順のまま] val.evaluate_attempt(Tier1[5role]+baseline+contraction+B1 CS)
+#       -> CS Equivalence層[flag] -> Tier3 -> 非ラテンKP -> CMU Case A/homophone -> M1(Primary)
+#       ※これらのAzure補強は全て同一wavの共有SecondaryCache経由(重複呼出なし)。
+#   [統一judge] Primary PASS -> 最終ANDゲート(値DIFF/否定差) / Primary NG -> P1保護差・P2除外・P3 Secondary 1回。
+#       Secondary許容集合は既存should_pass集合([Secondary転写をclassify_asr_match]+CMU Case A/homophone+M1)を
+#       `secondary_accept_fn`として注入(judgeへ再実装しない)。Secondary PASS -> PASS_WITH_WARNING(自動採用)。
+# 廃止(DESIGN_01 §4-9、C-C(i)): Primary#2(同一音声のOpenAI再転写) / Secondary#2 / 4段尽き->stop_retrying+HR直行。
+# 後方互換: cascade_enabled=False は従来どおりval.evaluate_attempt()と完全に同じ(統一judgeを通らない)。
+import hashlib as _hashlib
+
+import er078_asr_unified_judge_01 as unified_judge_mod
+
+# Secondary重複呼出防止: 同一wav(sha256)+engine+lang+phrase_hash のAzure呼出を1回にする(成功のみcache、失敗はcacheしない)。
+# 既定は**呼出単位のcache**(P-chainの補強層[CS Equivalence/Tier3/非ラテンKP/force_secondary]とjudgeのSecondaryが同一wavで
+# 1回に収束する。process内の別呼出・別testへ結果を持ち越さない)。run単位の共有cache+circuit breaker/技術STOP記録は
+# `begin_secondary_run()`を呼んだ場合のみ有効(opt-in。runner導入は委任_05/06で判断)。
+_RUN_CACHE: Optional["unified_judge_mod.SecondaryCache"] = None
+_SECONDARY_CACHE_MAX_ENTRIES = 512
+_RUN_STATE: Optional["unified_judge_mod.RunState"] = None
+
+
+def begin_secondary_run(circuit_breaker_threshold: int = unified_judge_mod.CIRCUIT_BREAKER_THRESHOLD) -> "unified_judge_mod.RunState":
+    """run開始時にrun単位のRunState(circuit breaker・技術STOP記録・Secondary費用集計)と共有SecondaryCacheを導入する(opt-in)。"""
+    global _RUN_STATE, _RUN_CACHE
+    _RUN_STATE = unified_judge_mod.RunState(circuit_breaker_threshold=circuit_breaker_threshold)
+    _RUN_CACHE = unified_judge_mod.SecondaryCache()
+    return _RUN_STATE
+
+
+def end_secondary_run() -> None:
+    """run単位の状態を破棄する(既定の呼出単位cacheへ戻る)。"""
+    global _RUN_STATE, _RUN_CACHE
+    _RUN_STATE, _RUN_CACHE = None, None
+
+
+def reset_secondary_cache() -> None:
+    end_secondary_run()
+
+
+def _wav_sha256(path: Optional[str]) -> Optional[str]:
+    try:
+        if path and os.path.isfile(path):
+            h = _hashlib.sha256()
+            with open(path, "rb") as f:
+                for chunk in iter(lambda: f.read(1 << 20), b""):
+                    h.update(chunk)
+            return h.hexdigest()
+    except OSError:
+        pass
+    return None
+
+
+def _phrase_hash(phrases: Optional[list]) -> str:
+    return _hashlib.sha1("\n".join(sorted(phrases or [])).encode("utf-8")).hexdigest()[:12]
+
+
+# Primary classificationラベル -> warningラベル(自動採用+事後試聴リスト対象)。ACCEPT系/完全一致系は警告なし。
+_PRIMARY_WARNING_BY_CLASSIFICATION = {
+    "CONNECTED_SPEECH_PASS_WITH_WARNING": "CONNECTED_SPEECH",
+    "CONNECTED_SPEECH_EQUIVALENCE_PASS_WITH_WARNING": "CS_EQUIVALENCE",
+    "SECONDARY_ASR_CORROBORATED_MATCH": "SECONDARY_CORROBORATED",
+}
+
+
+def _equivalence_basis_of(cls: "val.ClassificationResult") -> Optional[str]:
+    """承認済みequivalence(最終ANDゲートが再否定しない根拠)を、classificationから導出する。"""
+    if cls.classification == "HOMOPHONE_MATCH_NUMBER_EXCEPTION":
+        return "HOMOPHONE_MATCH_NUMBER_EXCEPTION"
+    if cls.classification == "NUMERIC_EQUIVALENCE_MATCH":
+        info = cls.semantic_equivalence_info or {}
+        spans = info.get("diff_spans") or {}
+        return "TIER1_DIFF_ANCHORED" if (isinstance(spans, dict) and spans.get("diff_anchored")) else "TIER1_NUMERIC_EQUIVALENCE"
+    return None
+
+
+class _AzureShared:
+    """同一wavに対するAzure(Phrase List付き)呼出を共有cache経由に一本化する(P-chainの補強層とjudgeのSecondaryで共有)。"""
+
+    def __init__(self, wav_path, language, phrases, sha, cache):
+        self.wav_path, self.language, self.phrases = wav_path, language, phrases
+        self.sha, self.cache = sha, cache
+        self.real_calls = 0
+        self.cost_guard_triggered = False
+        # judgeのSecondaryCacheキー(sha256, engine, lang, phrase_hash)と同一にする(P-chain補強層で取得済みのAzure結果を
+        # judgeのSecondaryが再利用でき、監査recordのsecondary.cachedが実態を表す)。
+        self.key = (sha, "azure", "ja" if str(language).lower().startswith("ja") else "en", _phrase_hash(phrases))
+
+    def _call(self):
+        dur = _wav_duration_seconds(self.wav_path)
+        if dur is not None and (dur / 3600.0 * unified_judge_mod.AZURE_USD_PER_HOUR) > COST_GUARD_MAX_USD_PER_SEGMENT:
+            # COST_GUARD($0.05/segment)を実費(秒数ベース)で等価適用: 1回分の見積が上限超ならSecondaryを呼ばずfail-closed。
+            self.cost_guard_triggered = True
+            return unified_judge_mod.SecondaryOutcome(None, error="cost_guard_exceeded")
+        self.real_calls += 1
+        text, err = get_full_text_via_azure_stt_with_phrase_list(self.wav_path, language=self.language, phrases=self.phrases)
+        return unified_judge_mod.SecondaryOutcome(text, error=err)
+
+    def outcome(self) -> "unified_judge_mod.SecondaryOutcome":
+        out, _hit = self.cache.get_or_call(self.key, self._call)
+        return out
+
+    def text(self):
+        """(text, err): 従来のget_full_text_via_azure_stt_with_phrase_list()と同じ形(空文字は空文字のまま返す)。"""
+        out = self.outcome()
+        return out.text, out.error
+
+
 def evaluate_attempt_with_cascade_detail(
     canonical_text: str, asr_text: Optional[str], prior_results: list,
     wav_path: str, language: str = "en-US", ledger_phrases: Optional[list[str]] = None,
@@ -544,61 +664,43 @@ def evaluate_attempt_with_cascade_detail(
     segment_id: Optional[str] = None,
     # ASR-M1-OOV-MULTI-PRONUNCIATION-PRODUCTION-01: 既定True(全英語ASR経路、KP含む)。
     m1_enabled: bool = True,
+    # AUW 委任_03(既定None=slot1/script v0/最終slotでない): 統一judgeのattempt文脈。
+    # dict: slot / script_version('v0'|'v1') / is_last_slot / length_ok / run_state / cache。
+    attempt_ctx: Optional[dict] = None,
 ) -> dict:
-    """既存のval.evaluate_attempt()(Primary ASR 1回分の判定)をラップし、
-    その結果が「固有名詞由来のASR_VALIDATION_UNCERTAIN」であれば、TTSを
-    再生成せず同じ音声に対してCascade(Primary#2 -> Secondary#1 ->
-    Secondary#2)を追加実行する。cascade_enabled=Falseなら既存のval.
-    evaluate_attempt()と完全に同じ挙動(後方互換、Production既定)。
+    """統一ASR判定のEN adapter(AUW 委任_03)。署名と戻り値dictのキーは従来どおり(additiveで`asr_judgement`
+    を追加)。cascade_enabled=Falseなら従来のval.evaluate_attempt()と完全に同じ(後方互換、統一judgeを通らない)。
 
-    force_secondary=Trueの場合、Primaryが最初からPASSしたケースでも
-    (is_entity_like_mismatch判定を経由せず)Secondary ASRを1回だけ
-    追加で呼び、両方が一致した場合のみ最終的にverified=Trueとする
-    (Part C参照)。既存のcascade_enabled/entity-like判定によるルート
-    (Primary不一致時の4-step cascade)には一切影響しない。
+    Primary P-chain(既存層を現行順で維持): Tier1[5role]+baseline+contraction+B1 CS -> CS Equivalence層
+    (enable_connected_speech_equivalence_layer、A2/B1本文限定) -> Tier3 -> 非ラテンKP(enable_non_latin_cascade)
+    -> CMU Case A/homophone -> M1。その後に統一judge: Primary PASSは最終ANDゲート(値DIFF/否定差)を通してPASS/
+    PASS_WITH_WARNING、Primary NGは保護差(値DIFF/否定差)ならNG_PROTECTED(Secondary不呼出)、length NG等の除外表に
+    該当すればNG_EXCLUDED、それ以外はAzure Secondaryを**1回**(同一wav+engine+lang+phrase_hashはSecondaryCacheで重複
+    呼出なし)。Secondary許容集合PASSならPASS_WITH_WARNING(SECONDARY_CONFIRMED、自動採用+事後試聴リスト)、取得不能
+    (例外/空転写/timeout/cost guard)はPASS不可のNG_SECONDARY_UNAVAILABLE(技術STOP記録)。
 
-    enable_non_latin_cascade(KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-
-    PROD-WIRING-01で追加、既定False): Trueの場合のみ、Primary ASR出力が
-    「非ラテン文字主体」(non_latin_dominance_info、CJK比率>=
-    NON_LATIN_DOMINANT_THRESHOLD)かつ不合格(verified=False)であれば、
-    既存のentity_like/homophone_candidate判定([is_entity_like_mismatch]/
-    [is_homophone_candidate_mismatch]、下記cascade_eligible)とは独立に、
-    Secondary ASR(Azure、get_full_text_via_azure_stt_with_phrase_list、
-    既存関数をそのまま再利用)を1回呼び、その結果をclassify_asr_matchで
-    再判定する(KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-TRIAL-01の条件
-    (a)をそのまま移植)。Secondaryでも不一致ならreject維持(以降の既存
-    cascade_eligible判定へそのまま処理を継続する。数字ゲート・否定ゲート・
-    homophone/entity_like判定・Connected Speech Validatorの判定順序・
-    基準は一切変更しない)。既定False(呼び出し元が明示的にTrueを渡さない
-    限り本ブロックは実行されない、適用範囲は英語Key Phrase Component
-    経路限定)。
+    force_secondary(既定False): Trueの場合、Primary PASSでもSecondaryの許容集合PASSを必須にする(従来の保護を維持)。
+    Secondaryが同意しなければNG(従来のHR直行ではなく次attempt/slotへ)。
 
-    enable_connected_speech_equivalence_layer(OPEN-122-CONNECTED-SPEECH-
-    EQUIVALENCE-LAYER-PRODUCTION-WIRING-01で追加、既定False): Trueの
-    場合のみ、Primary#1の時点でclassify_asr_matchの判定が
-    TRUE_CONTENT_MISMATCHかつprotected_check自体は通過済み(=数字/否定
-    不一致ではなく、既存3パターン[csv3.classify_connected_speech]が
-    UNCLASSIFIED_FALLS_THROUGH_TO_EXISTINGだったことによるfallthrough)
-    である場合のみ、その後段としてConnected Speech Equivalence Layer
-    (ARPAbetカテゴリA〜G+Secondary/local ASR corroboration、Trial-01/02
-    でVALIDATED)を追加で試みる。protected_check不合格(数字・否定の
-    真の不一致)には絶対に発火しない(既存のprotected_check gateを
-    一切迂回・変更しない)。音韻環境カテゴリに該当しない場合は追加ASR
-    呼び出し自体を行わない(_connected_speech_equivalence_layer_attempt
-    のNEVER_ELIGIBLE_JUDGMENTS事前チェック、コスト増はfallthrough時
-    かつカテゴリ候補時のみ)。ACCEPT/PASS_WITH_WARNINGに到達しなかった
-    場合もclassification自体は元のTRUE_CONTENT_MISMATCHのまま(既存の
-    blind TTS retryへ委ねる、既存のCascade eligibility判定
-    [is_entity_like_mismatch/is_homophone_candidate_mismatch]には一切
-    影響しない)。診断内容(secondary/local transcript・category・
-    corroboration有無)は、accept有無に関わらずcls.connected_speech_info
-    へ記録する(false positive疑いの事後監査用)。既定False(呼び出し元が
-    明示的にTrueを渡さない限り本ブロックは実行されない、適用範囲は
-    A2/B1英語本文segment限定)。
-
-    戻り値のdictには、Human Review用に全stepのtranscriptを保持する
-    (canonical_text/TTS audioパス/Primary#1-2/Secondary#1-2の書き起こし)。
+    戻り値の差分(DESIGN_01 §4-2/§4-9): stop_retrying=False固定(同一signature打切りは通算上限と重複)、
+    Primary#2/Secondary#2/4段尽き->HR直行は廃止。human_review_required=Trueになるのは attempt_ctx.is_last_slot が
+    Trueでかつ最終NGの場合のみ(leafが最終slotを伝えない間はFalse。最終STOPPEDは従来どおりleaf側のHR Lock経路)。
     """
+    if not cascade_enabled:
+        verified, stop_retrying, cls = val.evaluate_attempt(
+            canonical_text, asr_text, prior_results, max_same_signature=max_same_signature, segment_id=segment_id)
+        return {
+            "verified": verified, "stop_retrying": stop_retrying, "classification": cls,
+            "cascade_invoked": False,
+            "steps": [{"step": "primary_1", "provider": "openai_asr", "text": asr_text,
+                       "classification": cls.classification,
+                       "entity_like_source": val.aggregate_entity_like_sources(cls.protected.content_word_diffs)}],
+            "final_status": cls.classification, "human_review_required": False, "canonical_text": canonical_text,
+            "wav_path": wav_path, "cost_guard_triggered": False, "non_latin_cascade_invoked": False,
+            "connected_speech_equivalence_layer_invoked": False}
+
+    actx = dict(attempt_ctx or {})
+    lang = "ja" if str(language).lower().startswith("ja") else "en"
     verified, stop_retrying, cls = val.evaluate_attempt(
         canonical_text, asr_text, prior_results, max_same_signature=max_same_signature,
         segment_id=segment_id)
@@ -607,30 +709,33 @@ def evaluate_attempt_with_cascade_detail(
               "classification": cls.classification,
               # S3(additive、修正1回目): entity_like判定の根拠カテゴリ。
               "entity_like_source": val.aggregate_entity_like_sources(cls.protected.content_word_diffs)}]
-    cumulative_cost_usd = 0.0
-    # M1: segment単位の凍結(最初の呼出時のみ生成、以降は再利用)。cascade_enabled=False/en-US以外は不発。
-    _m1_frozen = _m1_frozen_for(canonical_text) if (m1_enabled and cascade_enabled and language == "en-US") else None
+    # M1: segment単位の凍結(最初の呼出時のみ生成、以降は再利用)。en-US以外は不発。
+    _m1_frozen = _m1_frozen_for(canonical_text) if (m1_enabled and language == "en-US") else None
 
     result = {
-        "verified": verified, "stop_retrying": stop_retrying, "classification": cls,
+        "verified": verified, "stop_retrying": False, "classification": cls,
         "cascade_invoked": False, "steps": steps, "final_status": cls.classification,
         "human_review_required": False, "canonical_text": canonical_text, "wav_path": wav_path,
         "cost_guard_triggered": False, "non_latin_cascade_invoked": False,
         "connected_speech_equivalence_layer_invoked": False,
     }
 
-    if (not verified and cascade_enabled and enable_connected_speech_equivalence_layer
+    sha = _wav_sha256(wav_path)
+    cache = actx.get("cache") or (_RUN_CACHE if (_RUN_CACHE is not None and sha) else unified_judge_mod.SecondaryCache())
+    if cache is _RUN_CACHE and len(cache._store) > _SECONDARY_CACHE_MAX_ENTRIES:
+        cache._store.clear()
+    az = _AzureShared(wav_path, language, ledger_phrases, sha or f"nosha:{id(result)}", cache)
+    primary_warnings: list = []
+    layers: list = []
+
+    if (not verified and enable_connected_speech_equivalence_layer
             and cls.classification == "TRUE_CONTENT_MISMATCH" and cls.protected.passed):
-        # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01:
-        # 既存3パターン(csv3.classify_connected_speech)のUNCLASSIFIED
-        # fallthrough後段。protected.passed=Trueは「数字/否定の真の不一致
-        # ではない」ことを保証する(protected.passed=Falseのケースは
-        # classify_asr_match内で既にTRUE_CONTENT_MISMATCHとして早期return
-        # 済みで、その場合はここへ到達しない)。
+        # OPEN-122-CONNECTED-SPEECH-EQUIVALENCE-LAYER-PRODUCTION-WIRING-01(無変更の判定、Azureのみ共有cache経由)。
         eq_result = _connected_speech_equivalence_layer_attempt(
-            canonical_text, asr_text, wav_path, language, ledger_phrases)
+            canonical_text, asr_text, wav_path, language, ledger_phrases, azure_fn=az.text)
         if eq_result is not None:
             result["connected_speech_equivalence_layer_invoked"] = True
+            layers.append("cs_equivalence")
             steps.append({
                 "step": "connected_speech_equivalence_secondary", "provider": "azure",
                 "text": eq_result.get("secondary_asr_text"),
@@ -653,37 +758,20 @@ def evaluate_attempt_with_cascade_detail(
                            f"info={eq_result.get('equivalence_layer_info')}",
                     connected_speech_info=eq_result)
                 verified = True
-                stop_retrying = False
                 result["verified"] = True
-                result["stop_retrying"] = False
                 result["final_status"] = cls.classification
                 result["classification"] = cls
             else:
-                # accept未達(INSUFFICIENT_EVIDENCE/MIXED_EVIDENCE/
-                # NO_KNOWN_CATEGORY_MATCH等): 既存判定(TRUE_CONTENT_
-                # MISMATCH、should_pass=False/should_retry=True)は変えず、
-                # 診断情報だけをconnected_speech_infoへ付与する(false
-                # positive疑いの事後監査・Runtime evidence用)。
+                # accept未達: 既存判定は変えず、診断情報だけをconnected_speech_infoへ付与する。
                 cls = val.ClassificationResult(
                     cls.classification, cls.normalized_ratio, cls.protected,
                     should_pass=cls.should_pass, should_retry=cls.should_retry,
                     reason=cls.reason, connected_speech_info=eq_result)
                 result["classification"] = cls
 
-    if (not verified and cascade_enabled and segment_id is not None
-            and cls.classification == "ASR_VALIDATION_UNCERTAIN"):
-        # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase B、
-        # APPROVED_FOR_PRODUCTION 2026-09-27): Tier 3(規則的複数形・
-        # 固有名詞ASR表記差のcorroboration付き救済)。既存Connected Speech
-        # Equivalence Layerの後段に配置する(上記ブロックのfall-through、
-        # または元々そちらの対象外[protected.passed=False等]だった場合も
-        # ここへ到達する)。対象はPrimary#1時点でASR_VALIDATION_UNCERTAIN
-        # かつ diffがちょうど1トークンの規則的複数形/固有名詞差のみの
-        # ケース(entity_only_diffs自体は既存のis_entity_like_mismatch経由の
-        # cascade[下記]でも別途扱われるが、そちらはCMU辞書ARPAbet完全一致
-        # のみをPASS対象とする設計のため、本Tier3は「独立ASRの
-        # corroboration」という別の根拠で救済する、経路として重複しない)。
-        # role gatingはval側と同じSSOT(resolve_narrative_role)を再利用する。
+    if (not verified and segment_id is not None and cls.classification == "ASR_VALIDATION_UNCERTAIN"):
+        # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(Phase B、APPROVED_FOR_PRODUCTION 2026-09-27): Tier 3
+        # (判定は無変更。Azureのみ共有cache経由=Secondary重複呼出なし)。
         import er020_tts_retry_local_rewrite_01 as _role_gate
         resolved_role = _role_gate.resolve_narrative_role(segment_id)
         if resolved_role in semantic_equivalence.FIVE_ROLES_APPLICABLE:
@@ -697,9 +785,8 @@ def evaluate_attempt_with_cascade_detail(
                 canon_tokens=canon_tokens, asr_tokens=asr_tokens)
             if sub_reason in ("plural_only", "entity_only") and diff_loc:
                 result["cascade_invoked"] = True
-                text_corr, err_corr = get_full_text_via_azure_stt_with_phrase_list(
-                    wav_path, language=language, phrases=ledger_phrases)
-                cumulative_cost_usd += 0.00001  # Azure概算単価(既存cascadeと同じ見積もり)
+                layers.append("tier3")
+                text_corr, err_corr = az.text()
                 steps.append({"step": "tier3_corroboration_secondary", "provider": "azure",
                                "text": text_corr, "sub_reason": sub_reason,
                                "entity_like_source": val.aggregate_entity_like_sources(
@@ -723,16 +810,10 @@ def evaluate_attempt_with_cascade_detail(
                                 f"diff位置でcanonical語'{diff_loc['canonical_word']}'を支持"),
                         semantic_equivalence_info=semantic_equivalence_record)
                     verified = True
-                    stop_retrying = False
                     result["verified"] = True
-                    result["stop_retrying"] = False
                     result["final_status"] = cls.classification
                     result["classification"] = cls
                 else:
-                    # 救済不可(独立ASRが支持しない、またはASR取得失敗) ->
-                    # 既存判定(should_pass/should_retryとも元のまま)は変えず、
-                    # 診断情報だけをsemantic_equivalence_infoへ付与する
-                    # (false accept 0を維持する安全側フォールバック)。
                     cls = val.ClassificationResult(
                         cls.classification, cls.normalized_ratio, cls.protected,
                         should_pass=cls.should_pass, should_retry=cls.should_retry,
@@ -745,20 +826,18 @@ def evaluate_attempt_with_cascade_detail(
                         "classification": cls.classification, "sub_reason": sub_reason,
                         "diff_span": diff_loc, "corroborated_by": corroborated_by,
                         "step": "tier3_corroboration",
-                        # S3(additive): PRONUNCIATION-RESOLUTION-PHASE-4-A2-
-                        # FALLBACK-WIRING-AND-ASR-ENTITY-LIKE-01 修正1回目。
                         "entity_like_source": val.aggregate_entity_like_sources(
                             cls.protected.content_word_diffs),
                     })
                 except OSError:
                     pass  # telemetry書き込み失敗は判定・retry挙動に影響させない(安全側)
 
-    if not verified and cascade_enabled and enable_non_latin_cascade and is_non_latin_dominant_mismatch(asr_text):
-        # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01 対策(a)。
+    if not verified and enable_non_latin_cascade and is_non_latin_dominant_mismatch(asr_text):
+        # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01 対策(a)(判定は無変更、Azureは共有cache経由)。
         result["cascade_invoked"] = True
         result["non_latin_cascade_invoked"] = True
-        text_nl, err_nl = get_full_text_via_azure_stt_with_phrase_list(
-            wav_path, language=language, phrases=ledger_phrases)
+        layers.append("non_latin")
+        text_nl, err_nl = az.text()
         cls_nl = val.classify_asr_match(canonical_text, text_nl, segment_id=segment_id) if text_nl is not None else None
         steps.append({"step": "non_latin_secondary", "provider": "azure", "text": text_nl,
                        "classification": cls_nl.classification if cls_nl else "TTS_FAILURE",
@@ -768,213 +847,131 @@ def evaluate_attempt_with_cascade_detail(
                                                if cls_nl else [])})
         if cls_nl is not None and cls_nl.should_pass:
             result["verified"] = True
-            result["stop_retrying"] = False
             result["final_status"] = cls_nl.classification
             result["classification"] = cls_nl
             verified = True
             cls = cls_nl
-        # Secondaryでも不一致ならreject維持(clsはPrimary#1の元の分類のまま、
-        # 以降のcascade_eligible判定へそのまま処理を継続する)。
+            primary_warnings.append(unified_judge_mod.W_SECONDARY_CONFIRMED)  # Secondaryが救済した=事後試聴対象
 
-    if verified and force_secondary:
-        # ER-008-FALLBACK-TRIGGER-MITIGATION-AND-EVIDENCE-COMPRESSION-AB-04
-        # Part C: fallback経由の音声はPrimaryがPASSしても無条件でSecondary
-        # を1回追加実行し、両方が一致した場合のみ最終的にPASSとする。
+    if not verified:
+        cascade_eligible = is_entity_like_mismatch(cls) or is_homophone_candidate_mismatch(cls)
+        if cascade_eligible:
+            # 追加ASR無しで判定できる層(CMU辞書Case A/homophone、M1)。コストゼロ。
+            immediate_label = _step_alternate_pass(cls)
+            if immediate_label:
+                verified = True
+                result["verified"] = True
+                result["final_status"] = immediate_label
+                layers.append("cmu_alternate")
+            else:
+                _ok, _au = _m1_try(canonical_text, asr_text, cls, _m1_frozen, language=language,
+                                   m1_enabled=m1_enabled, secondary_text=None, step_name="primary_1")
+                if _ok:
+                    verified = True
+                    _m1_accept(result, steps, _au, cls)
+                    primary_warnings.append("M1_MULTI_CANDIDATE")
+                    layers.append("m1_primary")
+                else:
+                    _m1_note_reject(result, _au)
+
+    # ---- 統一judge ----
+    if verified and cls.classification in _PRIMARY_WARNING_BY_CLASSIFICATION:
+        primary_warnings.append(_PRIMARY_WARNING_BY_CLASSIFICATION[cls.classification])
+    signals = {"c1_proper_noun_diff": bool(is_entity_like_mismatch(cls)),
+               "c2_homophone_candidate": bool(is_homophone_candidate_mismatch(cls)),
+               "similarity": cls.normalized_ratio}
+    primary = unified_judge_mod.PrimaryResult(
+        passed=bool(verified), text=asr_text, label=str(result.get("final_status") or cls.classification),
+        equivalence_basis=_equivalence_basis_of(cls) if verified else None,
+        warning_labels=tuple(dict.fromkeys(primary_warnings)), signals=signals)
+    ctx = unified_judge_mod.AttemptCtx(
+        canonical_text=canonical_text, wav_path=wav_path, wav_sha256=az.sha, audio_seconds=_wav_duration_seconds(wav_path),
+        segment_key=segment_id or "", script_version=actx.get("script_version", "v0"), slot=int(actx.get("slot", 1)),
+        is_last_slot=bool(actx.get("is_last_slot", False)), length_ok=bool(actx.get("length_ok", True)),
+        force_secondary=bool(force_secondary), engine="azure", phrase_list_hash=_phrase_hash(ledger_phrases),
+        cache=cache, run_state=actx.get("run_state") or _RUN_STATE)
+    try:
+        import er020_tts_retry_local_rewrite_01 as _rg
+        judge_role = _rg.resolve_narrative_role(segment_id)
+    except Exception:
+        judge_role = None
+    captured: dict = {}
+    # 従来のstep名を維持(audit/HR packageの互換): force_secondary経路="secondary_forced"、通常="secondary_1"。
+    _sec_step_name = "secondary_forced" if (force_secondary and verified) else "secondary_1"
+
+    def _secondary_fn(_ctx):
+        return az.outcome()
+
+    def _secondary_accept(canon, stext):
+        """既存のSecondary許容集合(should_pass+CMU Case A/homophone+M1[Secondary転写])。judgeへ再実装しない。"""
+        cls_s = val.classify_asr_match(canon, stext, segment_id=segment_id)
+        captured["cls_s"] = cls_s
+        if cls_s.should_pass:
+            return True, cls_s.classification
+        label = _step_alternate_pass(cls_s)
+        if label:
+            captured["alt_label"] = label
+            return True, label
+        _ok2, _au2 = _m1_try(canon, stext, cls_s, _m1_frozen, language=language, m1_enabled=m1_enabled,
+                             secondary_text=asr_text, step_name=_sec_step_name)
+        if _ok2:
+            captured["m1_audit"] = _au2
+            return True, "M1_MULTI_CANDIDATE"
+        _m1_note_reject(result, _au2)
+        return False, cls_s.classification
+
+    jr = unified_judge_mod.unified_judge(ctx, primary, _secondary_fn, lang=lang, role=judge_role,
+                                         secondary_accept_fn=_secondary_accept)
+    audit = jr.audit_record
+    sec = audit.get("secondary") or {}
+    secondary_ran = bool(sec.get("called") or sec.get("cached") or sec.get("error"))
+    if secondary_ran:
         result["cascade_invoked"] = True
-        text_s_forced, err_s_forced = get_full_text_via_azure_stt_with_phrase_list(
-            wav_path, language=language, phrases=ledger_phrases)
-        cls_s_forced = val.classify_asr_match(canonical_text, text_s_forced, segment_id=segment_id) if text_s_forced is not None else None
-        steps.append({"step": "secondary_forced", "provider": "azure", "text": text_s_forced,
-                       "classification": cls_s_forced.classification if cls_s_forced else "TTS_FAILURE",
-                       "phrase_list_used": bool(ledger_phrases),
-                       "entity_like_source": (val.aggregate_entity_like_sources(cls_s_forced.protected.content_word_diffs)
-                                               if cls_s_forced else [])})
-        if cls_s_forced is not None and cls_s_forced.should_pass:
-            # Primary/Secondaryが一致 -> 従来どおりPASS
-            return result
-        if cls_s_forced is not None:
-            _ok, _au = _m1_try(canonical_text, text_s_forced, cls_s_forced, _m1_frozen, language=language,
-                               m1_enabled=m1_enabled, secondary_text=asr_text, step_name="secondary_forced")
-            if _ok:
-                # Primaryは既にPASS済み。SecondaryもM1(矛盾なし)で説明できる -> PASS維持
-                result["m1_multi_candidate"] = _au
-                steps.append({**_au, "step": "m1_multi_candidate", "provider": "local", "at_step": _au.get("step")})
-                return result
-            _m1_note_reject(result, _au)
-        # SecondaryがPrimaryのPASS判定に同意しない -> 無条件PASSさせない
-        result["verified"] = False
-        result["stop_retrying"] = False
-        result["human_review_required"] = True
-        result["final_status"] = cls_s_forced.classification if cls_s_forced else "TTS_FAILURE"
-        result["classification"] = cls_s_forced if cls_s_forced else cls
-        return result
-
-    cascade_eligible = is_entity_like_mismatch(cls) or is_homophone_candidate_mismatch(cls)
-    if verified or not cascade_enabled or not cascade_eligible:
-        # 固有名詞由来・homophone由来でない不一致(数字・否定・通常内容語の
-        # 差等)は、既存のblind TTS retryへ委ねる(Cascadeの対象外、§8の
-        # 限定条件を守る)。
-        return result
-
-    # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15: Primary#1の時点で既に
-    # homophone/固有名詞Case Aが判定できる場合、追加のASR呼び出し無しで
-    # PASSする(canonical綴りとASR綴りをCMU辞書経由で直接比較する強い
-    # 根拠のため、複数ステップの収束を待つ必要が無い。コストゼロ)。
-    immediate_label = _step_alternate_pass(cls)
-    if immediate_label:
-        result["verified"] = True
-        result["stop_retrying"] = False
-        result["final_status"] = immediate_label
-        return result
-
-    _ok, _au = _m1_try(canonical_text, asr_text, cls, _m1_frozen, language=language,
-                       m1_enabled=m1_enabled, secondary_text=None, step_name="primary_1")
-    if _ok:
-        return _m1_accept(result, steps, _au, cls)
-    _m1_note_reject(result, _au)
-
-    result["cascade_invoked"] = True
-
-    # --- Primary #2(同じ音声、TTSは再生成しない) ---
-    text_p2, err_p2 = routing.transcribe(wav_path, language=language)
-    cost_guess = 0.000002  # OpenAI mini ASRの概算単価(1呼び出しあたり数十秒の音声で1円未満)
-    cumulative_cost_usd += cost_guess
-    cls_p2 = val.classify_asr_match(canonical_text, text_p2, segment_id=segment_id) if text_p2 is not None else None
-    steps.append({"step": "primary_2", "provider": "openai_asr", "text": text_p2,
-                   "classification": cls_p2.classification if cls_p2 else "TTS_FAILURE",
-                   "entity_like_source": (val.aggregate_entity_like_sources(cls_p2.protected.content_word_diffs)
-                                           if cls_p2 else [])})
-    if cls_p2 is not None and cls_p2.should_pass:
-        result["verified"] = True
-        result["stop_retrying"] = False
-        result["final_status"] = cls_p2.classification
-        result["classification"] = cls_p2
-        return result
-    if cls_p2 is not None:
-        label = _step_alternate_pass(cls_p2)
-        if label:
-            result["verified"] = True
-            result["stop_retrying"] = False
-            result["final_status"] = label
-            result["classification"] = cls_p2
-            return result
-
-    if cls_p2 is not None:
-        _ok, _au = _m1_try(canonical_text, text_p2, cls_p2, _m1_frozen, language=language,
-                           m1_enabled=m1_enabled, secondary_text=None, step_name="primary_2")
-        if _ok:
-            return _m1_accept(result, steps, _au, cls_p2)
-        _m1_note_reject(result, _au)
-
-    if cumulative_cost_usd > COST_GUARD_MAX_USD_PER_SEGMENT:
+        cls_s = captured.get("cls_s")
+        # 従来のstep名を維持: force_secondary経路は"secondary_forced"、通常のSecondaryは"secondary_1"(audit/HR packageの互換)。
+        steps.append({"step": _sec_step_name,
+                       "provider": "azure", "text": sec.get("text"),
+                       "classification": cls_s.classification if cls_s else ("TTS_FAILURE" if not sec.get("text") else sec.get("label")),
+                       "phrase_list_used": bool(ledger_phrases), "cached": bool(sec.get("cached")),
+                       "unified_judge_state": jr.state,
+                       "entity_like_source": (val.aggregate_entity_like_sources(cls_s.protected.content_word_diffs) if cls_s else [])})
+    if az.cost_guard_triggered:
         result["cost_guard_triggered"] = True
-        result["human_review_required"] = True
-        result["final_status"] = "ASR_VALIDATION_UNCERTAIN"
-        return result
 
-    # --- Secondary #1(Azure + Phrase List) ---
-    text_s1, err_s1 = get_full_text_via_azure_stt_with_phrase_list(
-        wav_path, language=language, phrases=ledger_phrases)
-    cumulative_cost_usd += 0.00001  # Azure概算単価(1秒あたり約$0.00028、数十秒想定)
-    cls_s1 = val.classify_asr_match(canonical_text, text_s1, segment_id=segment_id) if text_s1 is not None else None
-    steps.append({"step": "secondary_1", "provider": "azure", "text": text_s1,
-                   "classification": cls_s1.classification if cls_s1 else "TTS_FAILURE",
-                   "phrase_list_used": bool(ledger_phrases),
-                   "entity_like_source": (val.aggregate_entity_like_sources(cls_s1.protected.content_word_diffs)
-                                           if cls_s1 else [])})
-    if cls_s1 is not None and cls_s1.should_pass:
-        result["verified"] = True
-        result["stop_retrying"] = False
-        result["final_status"] = cls_s1.classification
-        result["classification"] = cls_s1
-        return result
-    if cls_s1 is not None:
-        label = _step_alternate_pass(cls_s1)
-        if label:
-            result["verified"] = True
-            result["stop_retrying"] = False
-            result["final_status"] = label
-            result["classification"] = cls_s1
-            return result
-
-    if cls_s1 is not None:
-        _ok, _au = _m1_try(canonical_text, text_s1, cls_s1, _m1_frozen, language=language,
-                           m1_enabled=m1_enabled, secondary_text=asr_text, step_name="secondary_1")
-        if _ok:
-            return _m1_accept(result, steps, _au, cls_s1)
-        _m1_note_reject(result, _au)
-
-    if cumulative_cost_usd > COST_GUARD_MAX_USD_PER_SEGMENT:
-        result["cost_guard_triggered"] = True
-        result["human_review_required"] = True
-        result["final_status"] = "ASR_VALIDATION_UNCERTAIN"
-        return result
-
-    # --- Secondary #2(Azure + Phrase List、同じ音声を再度) ---
-    text_s2, err_s2 = get_full_text_via_azure_stt_with_phrase_list(
-        wav_path, language=language, phrases=ledger_phrases)
-    cumulative_cost_usd += 0.00001
-    cls_s2 = val.classify_asr_match(canonical_text, text_s2, segment_id=segment_id) if text_s2 is not None else None
-    steps.append({"step": "secondary_2", "provider": "azure", "text": text_s2,
-                   "classification": cls_s2.classification if cls_s2 else "TTS_FAILURE",
-                   "phrase_list_used": bool(ledger_phrases),
-                   "entity_like_source": (val.aggregate_entity_like_sources(cls_s2.protected.content_word_diffs)
-                                           if cls_s2 else [])})
-    if cls_s2 is not None and cls_s2.should_pass:
-        result["verified"] = True
-        result["stop_retrying"] = False
-        result["final_status"] = cls_s2.classification
-        result["classification"] = cls_s2
-        return result
-    if cls_s2 is not None:
-        label = _step_alternate_pass(cls_s2)
-        if label:
-            result["verified"] = True
-            result["stop_retrying"] = False
-            result["final_status"] = label
-            result["classification"] = cls_s2
-            return result
-
-    if cls_s2 is not None:
-        _ok, _au = _m1_try(canonical_text, text_s2, cls_s2, _m1_frozen, language=language,
-                           m1_enabled=m1_enabled, secondary_text=text_s1 if text_s1 is not None else asr_text, step_name="secondary_2")
-        if _ok:
-            return _m1_accept(result, steps, _au, cls_s2)
-        _m1_note_reject(result, _au)
-
-    # --- 4 step全て不一致 -> Human Review(TTSは再生成しない、§9の通り
-    # 固有名詞だけの表記差ではretryしない) ---
-    result["human_review_required"] = True
-    result["stop_retrying"] = True
-    result["final_status"] = "ASR_VALIDATION_UNCERTAIN"
-
-    # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 D-2'(B): CMU辞書で解決
-    # できなかったentity_like固有名詞spanについて、Human Reviewパッケージ
-    # (Part K)を充実させるためだけにPronunciation Ledgerをlookup/research
-    # する(自動PASSの根拠には使わない。lookup失敗時も追加のTTS/ASR呼び
-    # 出しは一切発生しない)。is_entity_like_mismatch(cls)は最初のPrimary
-    # #1時点の判定を使う(canonical_textは全stepで共通のため、spanの
-    # 特定はPrimary#1の差分で十分)。
-    if is_entity_like_mismatch(cls):
-        unresolved_spans = _unresolved_entity_spans(cls)
-        pronunciation_lookups = {}
-        for span in unresolved_spans:
-            info = _resolve_unresolved_entity_for_review(span)
-            # ER-008-N8-FINAL-PRODUCTION-HARDENING-23: lookup/research失敗時に
-            # spanをそのまま省略すると、Human Reviewパッケージにその固有名詞の
-            # 発音情報が一切表示されない(「調べたが分からなかった」のか
-            # 「調べていない」のか区別がつかない)。ユーザーの新運用ルール
-            # (固有名詞のHuman Review依頼には必ずIPA/pronunciation guide/
-            # source/confidenceを添付し、確定不能ならその旨を明記する)に
-            # 従い、失敗時も明示的なunconfirmed markerを必ず残す。
-            pronunciation_lookups[span] = info if info is not None else {
-                "expected_pronunciation_ipa": "", "pronunciation_hint": "",
-                "confidence": "unconfirmed",
-                "ambiguity_note": (
-                    "Pronunciation Ledger lookupおよびresearch_pronunciations()が"
-                    "いずれも情報を返さなかった(ネットワーク不可またはresearch結果0件)。"
-                    "IPA/pronunciation guideは確定できていません。"),
-                "sources": [],
-            }
-        result["pronunciation_lookups"] = pronunciation_lookups
+    result["verified"] = bool(jr.verified)
+    result["stop_retrying"] = False
+    if jr.verified:
+        if "m1_audit" in captured:
+            _m1_accept(result, steps, captured["m1_audit"], captured.get("cls_s"))
+        elif "alt_label" in captured:
+            result["final_status"] = captured["alt_label"]
+            result["classification"] = captured["cls_s"]
+        elif "cls_s" in captured and not primary.passed:
+            result["final_status"] = captured["cls_s"].classification
+            result["classification"] = captured["cls_s"]
+    else:
+        result["final_status"] = cls.classification
+        result["classification"] = cls
+        if audit.get("technical_stop") or jr.secondary_unavailable:
+            result["technical_stop"] = audit.get("technical_stop")
+        if bool(actx.get("is_last_slot", False)):
+            result["human_review_required"] = True
+            if is_entity_like_mismatch(cls):
+                pronunciation_lookups = {}
+                for span in _unresolved_entity_spans(cls):
+                    info = _resolve_unresolved_entity_for_review(span)
+                    pronunciation_lookups[span] = info if info is not None else {
+                        "expected_pronunciation_ipa": "", "pronunciation_hint": "",
+                        "confidence": "unconfirmed",
+                        "ambiguity_note": (
+                            "Pronunciation Ledger lookupおよびresearch_pronunciations()が"
+                            "いずれも情報を返さなかった(ネットワーク不可またはresearch結果0件)。"
+                            "IPA/pronunciation guideは確定できていません。"),
+                        "sources": [],
+                    }
+                result["pronunciation_lookups"] = pronunciation_lookups
+    audit["adapter"] = {"layers": layers, "azure_real_calls": az.real_calls, "cost_guard_triggered": az.cost_guard_triggered,
+                        "language": language, "segment_id": segment_id, "asr_text_present": asr_text is not None,
+                        "cache": {"calls": cache.calls, "hits": cache.hits}}
+    result["asr_judgement"] = audit
     return result

@@ -68,8 +68,13 @@ U2_FORCE_SECONDARY_SCOPE = "A2_ONLY"           # LR後v1のSecondary必須化の
 # ---- 費用(秒数ベース。SCGと同じ式: er007_ja_secondary_asr_01.py:309-311、単価 SCG_AZURE_USD_PER_HOUR/SCG_JPY_PER_USD と同値。parity testで突合) ----
 AZURE_USD_PER_HOUR = 1.0
 JPY_PER_USD = 160.0
-# COST_GUARD($0.05/segment, er006_secondary_asr_01.py:243)は本unified_judgeでは適用しない(既存adapter側に残置。再校正/無効の明記はIMPLEMENTATION_02b.md §未実装)。
-COST_GUARD_IN_UNIFIED_JUDGE = "NOT_APPLIED_02B"
+# COST_GUARD($0.05/segment, er006_secondary_asr_01.COST_GUARD_MAX_USD_PER_SEGMENT)の結論(委任_03確定、IMPLEMENTATION_03.md §4):
+#   旧Cascadeの累積は固定概算定数(0.000002+0.00001x2)で最大でも約$0.000022のため、$0.05には構造上到達しない「実質無効」だった。
+#   統一判定ではSecondaryがwav(sha256)あたり最大1回(SecondaryCache)かつcircuit breakerで有界。そこで**実費(秒数ベース、本module
+#   の`AZURE_USD_PER_HOUR`)で等価に適用**する: adapter(er006_secondary_asr_01)のsecondary_fnが、Secondary呼出前に
+#   「1回分の見積費用 > COST_GUARD_MAX_USD_PER_SEGMENT(= $0.05 = 音声180秒超)」を検査し、超過ならSecondaryを呼ばずfail-closed
+#   (NG_SECONDARY_UNAVAILABLE相当、cost_guard_triggered=True)にする。judge本体は純粋(API/費用判断を持たない)ため適用点はadapter。
+COST_GUARD_IN_UNIFIED_JUDGE = "APPLIED_AT_ADAPTER_SECONDARY_FN_ACTUAL_SECONDS_03"
 
 CIRCUIT_BREAKER_THRESHOLD = 3  # run単位。連続Secondary障害がこの回数でそのrunのSecondary呼出を止める
 
@@ -243,7 +248,13 @@ def negation_diff(canonical: str, text: str, lang: str) -> bool:
         return bool(_safety._has_negation_ja(canonical or "")) != bool(_safety._has_negation_ja(text or ""))
 
     def neg_count(t: str) -> Counter:
-        toks = [w.replace("'", "") for w in re.findall(r"[a-z']+", unicodedata.normalize("NFKC", t or "").lower().replace("’", "'"))]
+        # 委任_03(統合で判明した偽否定の是正): 承認済みの標準contraction展開(TRANSCRIPT_STYLE_NORMALIZED_MATCH: do not/don't,
+        # will not/won't, is not/isn't, cannot/can't)と「can not」=cannotを、否定語の数える前に正規化する。展開しないと
+        # 『否定語の語形が違う』だけで承認済み等価(否定保持)をNG_PROTECTEDにしてしまう。否定の有無が反転する差
+        # (can/can't, is/isn't)は展開後も差として残る(安全側は不変)。
+        t = _val.expand_standard_contractions(t or "")
+        t = re.sub(r"\bcan\s+not\b", "cannot", unicodedata.normalize("NFKC", t).lower().replace("’", "'"))
+        toks = [w.replace("'", "") for w in re.findall(r"[a-z']+", t)]
         return Counter(w for w in toks if w in _val._NEGATION_WORDS)
 
     return neg_count(canonical) != neg_count(text)
@@ -305,6 +316,8 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         "timing": {"total_ms": 0, "secondary_ms": 0},
         "technical_stop": None,
     }
+    if ctx.wav_sha256:
+        audit["audio_sha256"] = ctx.wav_sha256  # 委任_03: Primary PASS(Secondary不呼出)でも採用音声のsha256を記録(registryが突合に使う)
 
     def done(state, reason, warnings=(), unavailable=False) -> JudgeResult:
         audit["state"], audit["reason_code"] = state, reason
@@ -440,4 +453,8 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         return done(NG_BOTH, "secondary_not_accepted", warnings)
     if final_and_gate:
         audit["final_gate"] = {"applied": True, "target": "secondary", "value_guard": svg.kind, "negation_diff": sneg}
+    if primary_ng_reason == "force_secondary":
+        # 委任_03: Primary PASS + force_secondary(minimal fallback/LR後v1)でSecondaryも許容集合PASS = 両エンジン合意。
+        # 従来(er006 force_secondary)もPASS扱い(警告なし)だったため、SECONDARY_CONFIRMED警告は付けない(LR後v1はdone()がLR_REWRITTENを付与)。
+        return done(PASS, "force_secondary_agreed", warnings + list(svg.warnings))
     return done(PASS_WITH_WARNING, "secondary_confirmed", warnings + [W_SECONDARY_CONFIRMED] + list(svg.warnings))

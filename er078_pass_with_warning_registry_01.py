@@ -1,28 +1,38 @@
 # ============================================================
-# ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 (AUW) 委任_02b
+# ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 (AUW) 委任_02b/03
 # PASS_WITH_WARNING 試聴リスト(registry)。tts_generation_results.json から**再導出**する純関数(別store・二重管理なし・冪等)。
-# 状態: 作業branch feat/auw-unified-asr-01 上の新規moduleのみ。Production未配線(ページ節への組込みは委任_03)。
+# 状態: 作業branch feat/auw-unified-asr-01。委任_03でEN配線(adapter)・生成完了hook・X/Z/legacyページ節に接続済み。
 # 入力の約束: 各セグメントdictが additive キー `asr_judgement` (= er078_asr_unified_judge_01.JudgeResult.audit_record) を持つ。
 #   継承(既存音声の引継ぎ/再利用)は `asr_judgement_inherited` を同じ形で持つ(OF-AUW-15: 元のWARNINGを継承して表示)。
-# ページは非ブロッキング(Assembly Gate・公開可否・HR queueに影響しない)。
+# ページは非ブロッキング(Assembly Gate・公開可否・HR queueに影響しない)。deriveの失敗は生成を失敗させない
+# (`write_listening_list_safe`はwarningログを出して握りつぶす)。
 # ============================================================
 from __future__ import annotations
 
 import html
 import json
 import os
+import sys
 
 PASSING = ("PASS_WITH_WARNING",)
 LIST_FILENAME = "pass_with_warning_listening_list.json"
+STANDALONE_FILENAME = "pass_with_warning_listening_list.html"
+SECTION_ID = "pass-with-warning-listening-list"
+SECTION_TITLE = "事後試聴リスト(PASS_WITH_WARNING)"
+
+
+# attempt単位のログ(試行途中のasr_judgement)は「採用音声」ではないため走査しない(採用はsegment最上位のasr_judgementのみ)。
+_SKIP_KEYS = ("asr_judgement", "asr_judgement_inherited", "attempts_log", "standard_attempts_log", "fallback_attempts_log",
+              "attempts", "cascade_steps", "post_slowdown_cascade", "local_rewrite_recovery")
 
 
 def _walk(node, path):
-    """asr_judgement(またはasr_judgement_inherited)を持つdictを再帰的に列挙する。"""
+    """asr_judgement(またはasr_judgement_inherited)を持つdictを再帰的に列挙する(attempt logの中は見ない)。"""
     if isinstance(node, dict):
         if "asr_judgement" in node or "asr_judgement_inherited" in node:
             yield path, node
         for k, v in node.items():
-            if k in ("asr_judgement", "asr_judgement_inherited"):
+            if k in _SKIP_KEYS:
                 continue
             if isinstance(v, (dict, list)):
                 yield from _walk(v, path + [str(k)])
@@ -32,12 +42,19 @@ def _walk(node, path):
                 yield from _walk(v, path + [str(i)])
 
 
+def _vg_kind(judgement, which):
+    vg = judgement.get("value_guard") or {}
+    sub = vg.get(which) or {}
+    return sub.get("kind") if isinstance(sub, dict) else None
+
+
 def _entry(path, node, judgement, inherited):
     sec = judgement.get("secondary") or {}
     prim = judgement.get("primary") or {}
     seg_id = node.get("segment_id") or "/".join(p for p in path if p not in ("segments",))
     return {
         "segment_id": seg_id,
+        "entry_key": "/".join(path),
         "role": node.get("role") or judgement.get("role") or (path[-1] if path else ""),
         "level": node.get("level") or judgement.get("level") or "",
         "lang": node.get("language") or judgement.get("lang") or "",
@@ -48,6 +65,8 @@ def _entry(path, node, judgement, inherited):
         "canonical_text": node.get("text") or node.get("canonical_text") or "",
         "primary_text": prim.get("text"),
         "secondary_text": sec.get("text"),
+        "value_guard_kind_primary": _vg_kind(judgement, "primary"),
+        "value_guard_kind_secondary": _vg_kind(judgement, "secondary"),
         "reason": judgement.get("reason_code") or "",
         "slot": judgement.get("slot"),
         "script_version": judgement.get("script_version"),
@@ -94,28 +113,68 @@ def write_listening_list(run_dir: str) -> str:
     return dst
 
 
-def render_html_section(entries: list) -> str:
-    """X/Zページの『WARNING音声 試聴リスト(自動採用・事後確認用)』節。"""
+def load_listening_list(run_dir: str) -> list:
+    """<run_dir>/audit/tts_generation_results.json から直接導出して返す(ページ生成用。ファイルを書かない・失敗は[]+warning)。"""
+    src = os.path.join(run_dir, "audit", "tts_generation_results.json")
+    try:
+        if not os.path.exists(src):
+            return []
+        with open(src, encoding="utf-8") as f:
+            return derive_listening_list(json.load(f))
+    except Exception as exc:  # 非ブロッキング: ページ生成を失敗させない
+        print(f"[WARN][pass_with_warning_registry] 試聴リスト導出に失敗(無視して0件扱い): {run_dir}: {type(exc).__name__}: {exc}",
+              file=sys.stderr)
+        return []
+
+
+def write_listening_list_safe(run_dir: str, standalone_html: bool = False) -> dict:
+    """生成完了hook用。**例外を投げない**(deriveの失敗は生成を失敗させない: warningログ+戻り値のerrorで報告)。
+    standalone_html=Trueならlegacy(Family A/B/C)向けに`audit/pass_with_warning_listening_list.html`も書く(0件でも節を出す)。"""
+    rep = {"run_dir": run_dir, "json": None, "html": None, "count": None, "error": None}
+    try:
+        rep["json"] = write_listening_list(run_dir)
+        with open(rep["json"], encoding="utf-8") as f:
+            data = json.load(f)
+        rep["count"] = data["count"]
+        if standalone_html:
+            p = os.path.join(run_dir, "audit", STANDALONE_FILENAME)
+            with open(p, "w", encoding="utf-8") as f:
+                f.write(render_standalone_html(data["entries"]))
+            rep["html"] = p
+    except Exception as exc:
+        rep["error"] = f"{type(exc).__name__}: {exc}"
+        print(f"[WARN][pass_with_warning_registry] 試聴リスト出力に失敗(生成は継続): {run_dir}: {rep['error']}", file=sys.stderr)
+    return rep
+
+
+def render_html_section(entries: list, href_fn=None) -> str:
+    """X/Zページ・legacy単独ページの『事後試聴リスト(PASS_WITH_WARNING)』節。0件のときも節を出す(「0件」と明記)。
+
+    href_fn(entry)->str: 音声リンク(相対/URL)を返す関数。未指定は entry["audio_path"]。空文字ならリンク無し。"""
     e_ = html.escape
-    parts = ['<section id="pass-with-warning-listening-list"><h2>WARNING音声 試聴リスト(自動採用・事後確認用)</h2>']
+    parts = [f'<section id="{SECTION_ID}"><h2>{SECTION_TITLE} WARNING音声 試聴リスト(自動採用・事後確認用)</h2>']
     if not entries:
-        parts.append("<p>該当なし(PASS_WITH_WARNINGの採用音声はありません)</p></section>")
+        parts.append("<p>0件(該当なし: PASS_WITH_WARNINGの採用音声はありません)</p></section>")
         return "\n".join(parts)
     parts.append(f"<p>{len(entries)}件。公開をブロックしません。事後に試聴して確認してください。</p><table border=\"1\"><tr>"
-                 "<th>segment</th><th>role</th><th>warning</th><th>原稿</th><th>Primary転写</th><th>Secondary転写</th><th>理由</th><th>音声</th></tr>")
+                 "<th>segment</th><th>role</th><th>warning</th><th>原稿</th><th>Primary転写</th><th>Secondary転写</th>"
+                 "<th>値ガードkind</th><th>理由</th><th>音声</th></tr>")
     for e in entries:
-        audio = (f'<audio controls preload="none" src="{e_(e["audio_path"])}"></audio>' if e["audio_path"] else "")
+        href = href_fn(e) if href_fn is not None else e.get("audio_path", "")
+        audio = (f'<audio controls preload="none" src="{e_(str(href))}"></audio> <a href="{e_(str(href))}">mp3</a>' if href
+                 else "(音声リンクなし)")
         tag = " (引継ぎ)" if e.get("inherited") else ""
+        vgk = "/".join(str(k) for k in (e.get("value_guard_kind_primary"), e.get("value_guard_kind_secondary")) if k) or "-"
         parts.append(
-            "<tr><td>%s%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
+            "<tr><td>%s%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (
                 e_(str(e["segment_id"])), tag, e_(str(e["role"])), e_(", ".join(e["warning_labels"])),
                 e_(str(e["canonical_text"])), e_(str(e["primary_text"] or "")), e_(str(e["secondary_text"] or "")),
-                e_(str(e["reason"])), audio))
+                e_(vgk), e_(str(e["reason"])), audio))
     parts.append("</table></section>")
     return "\n".join(parts)
 
 
-def render_standalone_html(entries: list) -> str:
+def render_standalone_html(entries: list, href_fn=None) -> str:
     """legacy(Family A/B/C)用の単独HTML。"""
     return ('<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><title>PASS_WITH_WARNING 試聴リスト</title></head><body>'
-            + render_html_section(entries) + "</body></html>")
+            + render_html_section(entries, href_fn) + "</body></html>")

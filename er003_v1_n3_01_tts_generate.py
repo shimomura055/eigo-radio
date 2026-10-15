@@ -35,6 +35,7 @@ import er003_v1_n3_01_articles_generate as gen
 import er003_v1_repro01_main_generate as repro01
 import er003_v1_sing01_news_tail_fix as news_tail_fix
 import er011_human_review_lock_01 as review_lock
+import er078_pass_with_warning_registry_01 as pww_registry  # AUW 委任_03: PASS_WITH_WARNING 事後試聴リスト
 import er003_v1_sing01_point_headings_aoede as point_headings
 import er003_v1_sing01_voice01_generate as voice01
 import er005_cost_logger as cl
@@ -162,7 +163,13 @@ def _post_slowdown_cascade_rescue(result: dict, tts_input_text: str, asr_text: s
         "verified": bool(detail.get("verified")),
         "final_status": detail.get("final_status"), "steps": detail.get("steps"),
         "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None) if cls is not None else None,
+        "asr_judgement": detail.get("asr_judgement"),   # AUW 委任_03(additive): 減速後wavに対する統一judgeの監査record
     }
+    if detail.get("verified") and detail.get("asr_judgement") is not None:
+        # 最終採用音声(減速後wav)の統一判定recordを最上位へ。減速前(内側)のrecordは asr_judgement_pre_slowdown へ退避。
+        if result.get("asr_judgement") is not None:
+            result["asr_judgement_pre_slowdown"] = result.get("asr_judgement")
+        result["asr_judgement"] = detail["asr_judgement"]
     return bool(detail.get("verified"))
 
 
@@ -1083,6 +1090,9 @@ def generate_b1_segments(theme: dict) -> dict:
     review_lock.archive_prior_tts_results(f"{out_dir}/audit/tts_generation_results.json")
     with open(f"{out_dir}/audit/tts_generation_results.json", "w", encoding="utf-8") as f:
         json.dump({"segments": results, "key_phrases": kp_results}, f, ensure_ascii=False, indent=2, default=str)
+    # AUW 委任_03: 生成完了hook(legacy Family A)。事後試聴リスト(PASS_WITH_WARNING)を再導出してaudit/へ出力
+    # (JSON+単独HTML、0件でも節を出す)。失敗しても生成は失敗させない(非ブロッキング)。
+    pww_registry.write_listening_list_safe(out_dir, standalone_html=True)
     with open(f"{out_dir}/run_summary_tts.json", "w", encoding="utf-8") as f:
         json.dump({"segment_status": all_status, "key_phrase_status": kp_status}, f, ensure_ascii=False, indent=2)
     print(f"[N3-TTS][{theme_id}/b1b] 完了。segment_status={all_status} kp_status={kp_status}")
@@ -1229,6 +1239,9 @@ def generate_a2_segments(theme: dict) -> dict:
     review_lock.archive_prior_tts_results(f"{out_dir}/audit/tts_generation_results.json")
     with open(f"{out_dir}/audit/tts_generation_results.json", "w", encoding="utf-8") as f:
         json.dump({"segments": results, "key_phrases": kp_results}, f, ensure_ascii=False, indent=2, default=str)
+    # AUW 委任_03: 生成完了hook(legacy Family A)。事後試聴リスト(PASS_WITH_WARNING)を再導出してaudit/へ出力
+    # (JSON+単独HTML、0件でも節を出す)。失敗しても生成は失敗させない(非ブロッキング)。
+    pww_registry.write_listening_list_safe(out_dir, standalone_html=True)
     with open(f"{out_dir}/run_summary_tts.json", "w", encoding="utf-8") as f:
         json.dump({"segment_status": all_status, "key_phrase_status": kp_status}, f, ensure_ascii=False, indent=2)
     print(f"[N3-TTS][{theme_id}/a2] 完了。segment_status={all_status} kp_status={kp_status}")

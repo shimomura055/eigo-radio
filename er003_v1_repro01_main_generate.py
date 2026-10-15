@@ -408,6 +408,8 @@ def generate_narration_snippet_verified_strict(
                 style_prefix_override if style_prefix_override is not None else p9a.ENGLISH_STYLE_PREFIX)
                 if language == "en" else None),
             "cascade_steps": cascade_detail.get("steps") if language == "en" else None,
+            # AUW 委任_03(additive): 統一judgeの監査record(ENのみ。JAは委任_04で配線)。
+            "asr_judgement": cascade_detail.get("asr_judgement") if language == "en" else None,
         })
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
         # out_pathへ実際に書き込まれた音声を、上書きせず個別保存する
@@ -452,7 +454,9 @@ def generate_narration_snippet_verified_strict(
                     "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
                     "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
                     "repetition_qa_checked": rep_gate["repetition_qa_checked"] if language == "en" else False,
-                    "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence") if language == "en" else None}
+                    "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence") if language == "en" else None,
+                    # AUW 委任_03(additive、ENのみ。JAは委任_04で配線)
+                    "asr_judgement": cascade_detail.get("asr_judgement") if language == "en" else None}
         if stop_retrying:
             return {**r, "status": "ASR_VALIDATION_UNCERTAIN", "asr_verified": False, "asr_text": asr_text,
                     "attempts_log": attempts_log,

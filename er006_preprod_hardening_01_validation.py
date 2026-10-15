@@ -619,8 +619,16 @@ _STOPWORDS = {
 }
 
 
+# ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 委任_03(DESIGN_02_ADDENDUM_01 §2、配線と同一commit):
+# normalize_numeric()が%/$/小数点/指数を英数字のみのマーカー(xpercentx/xdollarx/xdecimalpointx/xexpx/xexpnegx)へ
+# 変換した後のtoken(例: "25xpercentx"/"5xdollarx"/"3xdecimalpointx5"/"10xexpnegx16")は、従来`isdigit()`が偽で数値扱い
+# されず、"25%"->"26%"がnumber_mismatchesに掛からず内容語差分へ流れていた(DESIGN_01 §3 穴)。マーカー付きtokenも数値として
+# 認識する。純粋な数字tokenの判定(isdigit)は従来どおり。序数(28th)は別tokenのまま(28との差は従来どおり検出)。
+_MARKED_NUMBER_RE = re.compile(r"^\d+(?:x(?:decimalpoint|exp|expneg)x\d+)*(?:x(?:percent|dollar)x)?$")
+
+
 def _is_number(tok: str) -> bool:
-    return tok.isdigit()
+    return tok.isdigit() or bool(_MARKED_NUMBER_RE.match(tok))
 
 
 def _singularize_simple(word: str) -> str | None:

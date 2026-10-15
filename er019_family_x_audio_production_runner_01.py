@@ -51,6 +51,7 @@ import er003_v1_sing01_point_headings_aoede as point_headings
 import er003_v1_sing01_voice01_generate as voice01
 import er005_cost_logger as cl
 import er011_human_review_lock_01 as review_lock
+import er078_pass_with_warning_registry_01 as pww_registry  # AUW 委任_03: PASS_WITH_WARNING 事後試聴リスト
 import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er006_model_routing_contract_01 as routing
 import er019_family_x_audio_plan_01 as plan
@@ -593,6 +594,13 @@ def _with_recorded_sha256(generate_fn):
     return wrapped
 
 
+def _mark_asr_judgement_inherited(reused: dict) -> None:
+    """AUW 委任_03(additive): 前回runの音声を再利用する場合、元の`asr_judgement`(PASS_WITH_WARNING等)を
+    `asr_judgement_inherited`へ移し、事後試聴リストが再利用音声の元のWARNINGを継承して表示できるようにする。"""
+    if "asr_judgement" in reused:
+        reused["asr_judgement_inherited"] = reused.pop("asr_judgement")
+
+
 def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_fn, expected_text: str | None = None):
     generate_fn = _with_recorded_sha256(generate_fn)
     """前回run(同一out_dir)のOK segmentを再利用する。Stage 3c(見出し
@@ -630,6 +638,7 @@ def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_f
             return generate_fn()
         reused = dict(cached_result)
         reused["reused_from_previous_run"] = True
+        _mark_asr_judgement_inherited(reused)
         return reused
     return generate_fn()
 
@@ -672,6 +681,7 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
             return generate_fn()
         reused = dict(cached_result)
         reused["reused_from_previous_run"] = True
+        _mark_asr_judgement_inherited(reused)
         return reused
     return generate_fn()
 
@@ -934,6 +944,9 @@ def generate_family_x_b1_segments(
                # MAJOR-3是正): 可変segment reuse判定用のcache version guard。
                "style_version": FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
                **({"only_segments": sorted(_ONLY_SEGMENTS)} if _ONLY_SEGMENTS is not None else {})})
+    # AUW 委任_03: 生成完了hook。tts_generation_results.json確定直後に事後試聴リスト(PASS_WITH_WARNING)を再導出して
+    # audit/pass_with_warning_listening_list.jsonへ出力する。失敗しても生成は失敗させない(warningログのみ、非ブロッキング)。
+    pww_registry.write_listening_list_safe(out_dir)
     save_json(f"{out_dir}/run_summary_tts.json",
               {"segment_status": all_status, "key_phrase_status": kp_status,
                "shared_narration_status": {k: v["status"] for k, v in shared_narration_status.items()},
@@ -1294,6 +1307,9 @@ def generate_family_x_a2_segments(
                # MAJOR-3是正): 可変segment reuse判定用のcache version guard。
                "style_version": FAMILY_X_VARIABLE_ROLE_STYLE_VERSION,
                **({"only_segments": sorted(_ONLY_SEGMENTS)} if _ONLY_SEGMENTS is not None else {})})
+    # AUW 委任_03: 生成完了hook。tts_generation_results.json確定直後に事後試聴リスト(PASS_WITH_WARNING)を再導出して
+    # audit/pass_with_warning_listening_list.jsonへ出力する。失敗しても生成は失敗させない(warningログのみ、非ブロッキング)。
+    pww_registry.write_listening_list_safe(out_dir)
     save_json(f"{out_dir}/run_summary_tts.json",
               {"segment_status": all_status, "key_phrase_status": kp_status,
                "shared_narration_status": {k: v["status"] for k, v in shared_narration_status.items()},
@@ -2115,6 +2131,12 @@ def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | N
                           f'peak={a2_summary["peak"]} clipping={a2_summary["clipping_detected"]}</p>'
                           f'{a2_table}')
 
+    # AUW 委任_03: 事後試聴リスト(PASS_WITH_WARNING)節。0件でも節を出す(「0件」と明記)。非ブロッキング。
+    pww_sections_html = chr(10).join(
+        f"<h3>{lvl_label}</h3>" + pww_registry.render_html_section(
+            pww_registry.load_listening_list(f"{theme_out_dir}/{lvl_dir}"), href_fn=lambda e: abs_url(e["audio_path"]) if e.get("audio_path") else "")
+        for lvl_dir, lvl_label in (("b1b", "Advanced(B1)"), ("a2", "Standard(A2)")))
+
     html = f"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <title>{MANAGEMENT_ID} player({theme_id})</title>
@@ -2130,6 +2152,7 @@ def build_player_html(theme_out_dir: str, theme_id: str, japanese_title: str | N
 Comment1→本文1→Comment2→本文2→Comment3→本文3→Comment4→In One Line(Point構造なし)。</p>
 {b1b_audio_html}
 {a2_audio_html}
+{pww_sections_html}
 </body></html>
 """
     out_path = f"{theme_out_dir}/player.html"

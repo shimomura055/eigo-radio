@@ -69,12 +69,20 @@ def test_audit_has_traceability_fields(monkeypatch):
 
 
 def test_primary2_fires(monkeypatch):
+    # AUW 委任_03b: DESIGN_01 §4-9 / ユーザー原文「Primary NG→原則Secondary」に追随(旧: Primary#2(同一音声のOpenAI再転写)で
+    # M1が受理され step=primary_2 でPASS)。新設計: Primary#2は廃止(routing.transcribeは呼ばれない)。
+    # 安全側の意図(M1受理は独立した転写でのみ起きる/Primary不受理をPrimary再転写でPASSにしない)は、
+    # 「Primary#2相当の転写があっても使わない」「Secondary転写がHITなら secondary_1 でM1受理」で残す。
     c = Calls(monkeypatch, p2=HIT)
     d = run(MISS)
-    assert d["verified"] and d["m1_multi_candidate"]["step"] == "primary_2"
-    assert c.n_p2 == 1 and c.n_az == 0
+    assert c.n_p2 == 0, "Primary#2は廃止"
+    assert not d["verified"] and d["asr_judgement"]["state"] == "NG_SECONDARY_UNAVAILABLE"  # Secondary未取得=PASS不可
     assert d["m1_multi_candidate_rejected"][0]["step"] == "primary_1"  # 不受理も到達証跡
     assert d["m1_multi_candidate_rejected"][0]["m1_layer_invoked"] is True
+    c2 = Calls(monkeypatch, p2=HIT, s=[HIT])
+    d2 = run(MISS)
+    assert d2["verified"] and d2["m1_multi_candidate"]["step"] == "secondary_1"
+    assert c2.n_p2 == 0 and c2.n_az == 1
 
 
 def test_secondary1_fires_with_other_transcript(monkeypatch):
@@ -94,18 +102,30 @@ def test_secondary1_fires_with_other_transcript(monkeypatch):
 
 
 def test_secondary2_fires(monkeypatch):
+    # AUW 委任_03b: DESIGN_01 §4-9 / ユーザー原文「重複呼出防止」に追随(旧: Secondary#1がMISSならSecondary#2を呼びM1受理 step=secondary_2)。
+    # 新設計: Secondaryは1回のみ(#2廃止)。Secondary#1がMISSならNG(次slotで再生成)。#2のHITは消費されない。
     c = Calls(monkeypatch, p2=MISS, s=[MISS, HIT])
     d = run(MISS)
-    assert d["verified"] and d["m1_multi_candidate"]["step"] == "secondary_2"
-    assert c.n_az == 2
+    assert not d["verified"]
+    assert c.n_az == 1, "Secondaryは1回のみ"
+    assert c.n_p2 == 0
+    assert "m1_multi_candidate" not in d
 
 
 def test_all_miss_goes_to_human_review_unchanged(monkeypatch):
+    # AUW 委任_03b: DESIGN_01 §4-3/§4-9 / ユーザー原文「両NGで再生成→3回NGでLR/HR」に追随
+    # (旧: 4 step全MISSで即HR+stop_retrying、M1到達4 step)。新設計: Primary+Secondary 1回の2 stepでM1到達、
+    # 途中slotはHR/stop_retryingにせず次slotで再生成、最終slot NGのみHR(安全側の最終出口は維持)。
+    monkeypatch.setattr(sec, "_resolve_unresolved_entity_for_review", lambda span: None)  # Ledger/Perplexity実呼出を防ぐ
     Calls(monkeypatch, p2=MISS, s=[MISS, MISS])
     d = run(MISS)
-    assert not d["verified"] and d["human_review_required"] and d["stop_retrying"]
+    assert not d["verified"] and not d["human_review_required"] and not d["stop_retrying"]
     assert d["final_status"] == "ASR_VALIDATION_UNCERTAIN"
-    assert len(d["m1_multi_candidate_rejected"]) == 4  # 4 step全てでM1到達
+    assert len(d["m1_multi_candidate_rejected"]) == 2  # primary_1 + secondary_1 でM1到達
+    Calls(monkeypatch, p2=MISS, s=[MISS, MISS])
+    d3 = run(MISS, attempt_ctx={"slot": 3, "is_last_slot": True})
+    assert not d3["verified"] and d3["human_review_required"]
+    assert d3["final_status"] == "ASR_VALIDATION_UNCERTAIN"
 
 
 def test_forced_secondary_m1_keeps_pass(monkeypatch):
@@ -117,9 +137,15 @@ def test_forced_secondary_m1_keeps_pass(monkeypatch):
 
 
 def test_forced_secondary_unexplained_still_hr(monkeypatch):
+    # AUW 委任_03b: DESIGN_01 §4-7に追随(旧: Secondary不同意で即HR)。新設計: HRは最終slot NGのみ(途中slotは次slotで再生成)。
+    # 説明できないSecondary転写をPASS扱いしない安全側は不変。
+    monkeypatch.setattr(sec, "_resolve_unresolved_entity_for_review", lambda span: None)
     Calls(monkeypatch, s=[MISS])
     d = run("Melos said.", force_secondary=True)
-    assert not d["verified"] and d["human_review_required"]
+    assert not d["verified"] and not d["human_review_required"]
+    Calls(monkeypatch, s=[MISS])
+    d3 = run("Melos said.", force_secondary=True, attempt_ctx={"slot": 3, "is_last_slot": True})
+    assert not d3["verified"] and d3["human_review_required"]
 
 
 def test_forced_secondary_contradiction_rejects(monkeypatch):
@@ -133,10 +159,15 @@ def test_forced_secondary_contradiction_rejects(monkeypatch):
         return r
 
     monkeypatch.setattr(sec.m1_multi, "m1_multi_candidate_judge", contra)
+    monkeypatch.setattr(sec, "_resolve_unresolved_entity_for_review", lambda span: None)
     Calls(monkeypatch, s=[HIT])
     d = run("Melos said.", force_secondary=True)
-    assert not d["verified"] and d["human_review_required"]
+    # AUW 委任_03b: DESIGN_01 §4-7に追随(旧: ここで即human_review_required)。新設計: HRは最終slot NGのみ。矛盾拒否(誤受理0)は不変。
+    assert not d["verified"] and not d["human_review_required"]
     assert d["m1_multi_candidate_rejected"][0]["reason"] == M.R_SECONDARY_CONTRADICTION
+    Calls(monkeypatch, s=[HIT])
+    d3 = run("Melos said.", force_secondary=True, attempt_ctx={"slot": 3, "is_last_slot": True})
+    assert not d3["verified"] and d3["human_review_required"]
 
 
 def test_cascade_disabled_never_fires(monkeypatch):
@@ -148,9 +179,16 @@ def test_cascade_disabled_never_fires(monkeypatch):
 
 
 def test_m1_enabled_false_restores_legacy(monkeypatch):
-    Calls(monkeypatch, p2=HIT, s=[HIT, HIT])
+    # AUW 委任_03b: DESIGN_01 §4-9に追随(旧: m1_enabled=Falseで4 step消費後に即HR)。新設計: m1_enabled=FalseでもM1経路は不発
+    # (m1_multi_candidate無し・M1でPASSしない)、Secondaryは1回のみ。HRは最終slot NGのみ。
+    monkeypatch.setattr(sec, "_resolve_unresolved_entity_for_review", lambda span: None)
+    c = Calls(monkeypatch, p2=HIT, s=[HIT, HIT])
     d = run(HIT, m1_enabled=False)
-    assert not d["verified"] and d["human_review_required"] and "m1_multi_candidate" not in d
+    assert not d["verified"] and not d["human_review_required"] and "m1_multi_candidate" not in d
+    assert c.n_p2 == 0 and c.n_az == 1
+    Calls(monkeypatch, p2=HIT, s=[HIT, HIT])
+    d3 = run(HIT, m1_enabled=False, attempt_ctx={"slot": 3, "is_last_slot": True})
+    assert not d3["verified"] and d3["human_review_required"] and "m1_multi_candidate" not in d3
 
 
 def test_non_en_us_never_fires(monkeypatch):

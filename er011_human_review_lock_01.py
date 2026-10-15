@@ -230,6 +230,8 @@ def build_attempts_detail(result: dict) -> list:
                 "style_prefix": a.get("style_prefix"),
                 "instruction_label": a.get("instruction_label"),
                 "cascade_steps": a.get("cascade_steps"),
+                # AUW 委任_03(additive): 統一ASR判定の監査record(state/primary/secondary/value_guard/cost等)
+                "asr_judgement": a.get("asr_judgement"),
             })
     return detail
 

@@ -215,6 +215,7 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
                                    "en_pronunciation_resolver_info": r.get("en_pronunciation_resolver_info"),
                                    # 委任_04A(記録欠落是正、additive、OPEN-277)
                                    "cascade_steps": outcome.get("cascade_steps"),
+                                   "asr_judgement": outcome.get("asr_judgement"),
                                    "style_prefix": r.get("style_prefix"),
                                    "instruction_label": r.get("instruction_label")})
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
@@ -234,6 +235,7 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
         if verified:
             r["asr_verified"] = True
             r["asr_text"] = asr_text
+            r["asr_judgement"] = outcome.get("asr_judgement")  # AUW 委任_03(additive)
             r["fallback_used"] = True
             r["standard_attempts_log"] = standard.get("attempts_log")
             r["fallback_attempts_log"] = fallback_attempts
@@ -304,7 +306,11 @@ def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
                                       disfluency_qa: bool, enable_repetition_qa: bool,
                                       # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01
                                       # (既定"structured_separation"で既存挙動とbyte-identical)。
-                                      tts_backend: str = "structured_separation") -> dict:
+                                      tts_backend: str = "structured_separation",
+                                      # AUW 委任_03(既定None): 統一judgeのattempt文脈。fallback(minimal)は最終slot扱い
+                                      # (is_last_slot=True、従来のcascade由来HR queue記録と同等)。LR後v1の再TTSは
+                                      # script_version="v1"(LR_REWRITTENをPASS_WITH_WARNINGとして必ず付与)を渡す。
+                                      attempt_ctx: dict | None = None) -> dict:
     """generate_english_segment_with_fallback()のfallback(minimal
     instruction)経路、1 attempt分の本体。通常のfallbackループと、Local
     Rewrite回復の再TTS(retts_fn、下記)の両方から呼ぶ共通処理として抽出
@@ -350,7 +356,8 @@ def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
         ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
         force_secondary=True,
         enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-        segment_id=segment_id, detail_out=cascade_detail)
+        segment_id=segment_id, detail_out=cascade_detail,
+        attempt_ctx=(attempt_ctx if attempt_ctx is not None else {"is_last_slot": True}))
     verified = verified_content and length_ok
     gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
     verified = gate["verified"]
@@ -363,7 +370,8 @@ def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
     return {"ok": True, "result": r, "verified": verified, "stop_retrying": stop_retrying,
             "asr_text": asr_text, "classification": cls, "length_ok": length_ok,
             "disfluency_gate": gate, "repetition_gate": rep_gate,
-            "cascade_steps": cascade_detail.get("steps")}
+            "cascade_steps": cascade_detail.get("steps"),
+            "asr_judgement": cascade_detail.get("asr_judgement")}
 
 
 def _local_rewrite_recovery_for_english_segment_with_fallback(
@@ -394,10 +402,12 @@ def _local_rewrite_recovery_for_english_segment_with_fallback(
         outcome = _run_a2_minimal_fallback_attempt(
             rewritten_text, out_path, retts_max_len, retts_classification_history,
             enable_connected_speech_equivalence_layer, disfluency_qa, enable_repetition_qa,
-            tts_backend=tts_backend)
+            tts_backend=tts_backend,
+            attempt_ctx={"script_version": "v1", "is_last_slot": True})  # AUW 委任_03: LR後v1=LR_REWRITTEN警告
         r = dict(outcome["result"])
         if not outcome["ok"]:
             return r
+        r["asr_judgement"] = outcome.get("asr_judgement")
         r["asr_text"] = outcome["asr_text"]
         r["audio_classification"] = outcome["classification"].classification
         r["asr_verified"] = outcome["verified"]

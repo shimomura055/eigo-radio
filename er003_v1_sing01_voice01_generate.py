@@ -235,6 +235,7 @@ def generate_charon_english(text: str, out_path: str,
         # signature retry guardrail方式へ切り替える。
         length_ok = asr_text is not None and len(asr_text) <= max_len
         ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
+        _aj = {}  # AUW 委任_03: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
             text, asr_text, classification_history, out_path, language="en-US",
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
@@ -245,11 +246,11 @@ def generate_charon_english(text: str, out_path: str,
             # 「事実1」)。呼び出し側がconnected_speech_enabled_for()で
             # 判定した値をそのまま転送する。
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-            segment_id=segment_id)
+            segment_id=segment_id, detail_out=_aj)
         verified = verified_content and length_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]
-        attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
+        attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
                               "instruction_type": instruction_type, "audio_classification": cls.classification,
                               "connected_speech_info": getattr(cls, "connected_speech_info", None),
                               "semantic_equivalence": getattr(cls, "semantic_equivalence_info", None),
@@ -270,7 +271,7 @@ def generate_charon_english(text: str, out_path: str,
         attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
             metrics = common.measure_metrics(trimmed, common.SAMPLE_RATE)
-            return {"status": "OK", "text": text, "path": out_path, "voice": CHARON,
+            return {"status": "OK", "text": text, "path": out_path, "voice": CHARON, "asr_judgement": _aj.get("asr_judgement"),
                     "asr_verified": True, "asr_text": asr_text, "attempts_log": attempts_log,
                     "instruction_type": instruction_type, "trim_info": trim_info,
                     "clipping_detected": metrics["clipping_detected"],

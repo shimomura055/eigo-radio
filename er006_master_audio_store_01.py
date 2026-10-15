@@ -132,6 +132,10 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
         # 資産まで「証跡が無い」としてblockしてしまう(No.8 kp2の恒久修正
         # 作業中に発見)。manifestに保存したqa_evidenceをここで復元する。
         result.update(entry.get("qa_evidence") or {})
+        # AUW 委任_03(additive): 生成時の統一ASR判定record(PASS_WITH_WARNING等)を、再利用音声でも
+        # `asr_judgement_inherited`として復元する(元のWARNINGを試聴リストへ継承。OF-AUW-15)。
+        if entry.get("asr_judgement") is not None:
+            result["asr_judgement_inherited"] = entry["asr_judgement"]
         _log_telemetry({
             "event": "reused", "master_audio_id": master_id, "out_path": out_path,
             "key": key.as_dict(),
@@ -159,6 +163,8 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
         # OPEN-258 SCG(Opus推奨7): 追加のみ(既存キー不変)。SCG PASS(Primary不一致をSecondaryで
         # 救済)したmasterを後から識別できるようにする。SCG非関与(英語等)はNone。
         manifest[master_id]["audio_classification"] = r.get("audio_classification")
+        # AUW 委任_03(additive): 統一ASR判定のaudit record。再利用時に`asr_judgement_inherited`として復元する。
+        manifest[master_id]["asr_judgement"] = r.get("asr_judgement")
         _scg = r.get("scg_info")
         manifest[master_id]["scg_result"] = _scg.get("scg_result") if isinstance(_scg, dict) else None
         _save_manifest(manifest)

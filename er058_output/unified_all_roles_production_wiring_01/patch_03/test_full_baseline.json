@@ -1,0 +1,1819 @@
+{
+ "auto001_test_ci_runner.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...........................                                              [100%]\n"
+ },
+ "auto001_test_controller_block_writer.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED auto001_test_controller_block_writer.py::AddAndVerifySubprocessTests::test_add_succeeds_but_blocked_absent_after_refetch",
+   "FAILED auto001_test_controller_block_writer.py::AddAndVerifySubprocessTests::test_add_then_verify_success",
+   "FAILED auto001_test_controller_block_writer.py::CheckPlanSubprocessTests::test_errors_mismatch_with_direct_validator_is_rejected",
+   "FAILED auto001_test_controller_block_writer.py::CheckPlanSubprocessTests::test_missing_ready_label_is_rejected",
+   "FAILED auto001_test_controller_block_writer.py::CheckPlanSubprocessTests::test_ready_with_valid_passing_body_is_rejected",
+   "FAILED auto001_test_controller_block_writer.py::CheckPlanSubprocessTests::test_ready_with_valid_violation_body_passes",
+   "FAILED auto001_test_controller_block_writer.py::CheckRepoLabelSubprocessTests::test_label_exists_passes",
+   "FAILED auto001_test_controller_block_writer.py::CheckRepoLabelSubprocessTests::test_label_missing_fails",
+   "FAILED auto001_test_controller_block_writer.py::CheckStateUnchangedSubprocessTests::test_10_matches_to_none_is_state_changed",
+   "FAILED auto001_test_controller_block_writer.py::CheckStateUnchangedSubprocessTests::test_11_matches_to_different_comment_id_is_state_changed",
+   "FAILED auto001_test_controller_block_writer.py::CheckStateUnchangedSubprocessTests::test_12_stale_to_matches_is_state_changed",
+   "FAILED auto001_test_controller_block_writer.py::CheckStateUnchangedSubprocessTests::test_13_duplicate_appearing_before_write_fails",
+   "FAILED auto001_test_controller_block_writer.py::CheckStateUnchangedSubprocessTests::test_14_ownership_mismatch_appearing_before_write_fails",
+   "FAILED auto001_test_controller_block_writer.py::CheckStateUnchangedSubprocessTests::test_1_ready_only_none_to_none_passes_with_create_action",
+   "FAILED auto001_test_controller_block_writer.py::CheckStateUnchangedSubprocessTests::test_2_ready_only_matches_to_matches_passes_with_noop_action",
+   "FAILED auto001_test_controller_block_writer.py::CheckStateUnchangedSubprocessTests::test_3_ready_only_stale_to_stale_passes_with_update_action",
+   "FAILED auto001_test_controller_block_writer.py::CheckStateUnchangedSubprocessTests::test_9_none_to_matches_is_state_changed",
+   "FAILED auto001_test_controller_block_writer.py::CheckStateUnchangedSubprocessTests::test_comment_update_required_still_stale_passes_with_update_action",
+   "FAILED auto001_test_controller_block_writer.py::CheckStateUnchangedSubprocessTests::test_needs_write_label_state_changed_fails",
+   "FAILED auto001_test_controller_block_writer.py::CommentWriteSubprocessTests::test_4_noop_never_calls_post",
+   "FAILED auto001_test_controller_block_writer.py::CommentWriteSubprocessTests::test_5_noop_never_calls_patch",
+   "FAILED auto001_test_controller_block_writer.py::CommentWriteSubprocessTests::test_7_noop_final_comment_count_is_one",
+   "FAILED auto001_test_controller_block_writer.py::CommentWriteSubprocessTests::test_8_noop_keeps_same_comment_id",
+   "FAILED auto001_test_controller_block_writer.py::CommentWriteSubprocessTests::test_create_http_failure",
+   "FAILED auto001_test_controller_block_writer.py::CommentWriteSubprocessTests::test_create_reports_write_api_executed",
+   "FAILED auto001_test_controller_block_writer.py::CommentWriteSubprocessTests::test_create_then_verify_success",
+   "FAILED auto001_test_controller_block_writer.py::CommentWriteSubprocessTests::test_noop_reports_write_api_skipped",
+   "FAILED auto001_test_controller_block_writer.py::CommentWriteSubprocessTests::test_noop_with_comment_now_missing_fails_final_verification",
+   "FAILED auto001_test_controller_block_writer.py::CommentWriteSubprocessTests::test_update_http_failure",
+   "FAILED auto001_test_controller_block_writer.py::CommentWriteSubprocessTests::test_update_reports_write_api_executed",
+   "FAILED auto001_test_controller_block_writer.py::CommentWriteSubprocessTests::test_update_then_verify_success",
+   "FAILED auto001_test_controller_block_writer.py::CommentWriteSubprocessTests::test_write_succeeds_but_verification_fails",
+   "FAILED auto001_test_controller_block_writer.py::EvaluateFinalSubprocessTests::test_comment_update_required_success",
+   "FAILED auto001_test_controller_block_writer.py::EvaluateFinalSubprocessTests::test_needs_write_partial_when_ready_remains",
+   "FAILED auto001_test_controller_block_writer.py::EvaluateFinalSubprocessTests::test_needs_write_success",
+   "FAILED auto001_test_controller_block_writer.py::PreconditionSubprocessTests::test_blocked_with_body_now_passing_is_preflight_now_passes",
+   "FAILED auto001_test_controller_block_writer.py::PreconditionSubprocessTests::test_blocked_with_matching_comment_is_noop",
+   "FAILED auto001_test_controller_block_writer.py::PreconditionSubprocessTests::test_ready_and_blocked_is_partial_state",
+   "FAILED auto001_test_controller_block_writer.py::PreconditionSubprocessTests::test_ready_only_needs_write",
+   "FAILED auto001_test_controller_block_writer.py::RemoveLabelSubprocessTests::test_200_passes",
+   "FAILED auto001_test_controller_block_writer.py::RemoveLabelSubprocessTests::test_403_is_write_partial",
+   "FAILED auto001_test_controller_block_writer.py::RemoveLabelSubprocessTests::test_404_passes"
+  ],
+  "summary": "oller_block_writer.py::EvaluateFinalSubprocessTests::test_needs_write_partial_when_ready_remains\nFAILED auto001_test_controller_block_writer.py::EvaluateFinalSubprocessTests::test_needs_write_success\n"
+ },
+ "auto001_test_controller_integrated.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED auto001_test_controller_integrated.py::ClassifyStepFixtureTests::test_exact_would_block_preflight_yields_writer_action_block",
+   "FAILED auto001_test_controller_integrated.py::ClassifyStepFixtureTests::test_exact_would_start_yields_writer_action_start",
+   "FAILED auto001_test_controller_integrated.py::ClassifyStepFixtureTests::test_internal_error_yields_writer_action_none_and_step_failure",
+   "FAILED auto001_test_controller_integrated.py::ClassifyStepFixtureTests::test_not_applicable_yields_writer_action_none_and_success",
+   "FAILED auto001_test_controller_integrated.py::ClassifyStepFixtureTests::test_unknown_decision_string_is_a_failure",
+   "FAILED auto001_test_controller_integrated.py::ClassifyStepFixtureTests::test_would_block_preflight_missing_add_label_is_a_failure",
+   "FAILED auto001_test_controller_integrated.py::ClassifyStepFixtureTests::test_would_block_preflight_with_zero_errors_is_a_failure",
+   "FAILED auto001_test_controller_integrated.py::ClassifyStepFixtureTests::test_would_block_state_yields_writer_action_none_and_success",
+   "FAILED auto001_test_controller_integrated.py::ClassifyStepFixtureTests::test_would_start_with_extra_planned_label_is_a_failure",
+   "FAILED auto001_test_controller_integrated.py::EventGateEndToEndTests::test_agent_blocked_label_is_not_applicable",
+   "FAILED auto001_test_controller_integrated.py::EventGateEndToEndTests::test_agent_ready_double_invocation_blocks_state_not_write",
+   "FAILED auto001_test_controller_integrated.py::EventGateEndToEndTests::test_agent_ready_label_with_invalid_body_blocks",
+   "FAILED auto001_test_controller_integrated.py::EventGateEndToEndTests::test_agent_ready_label_with_valid_body_starts",
+   "FAILED auto001_test_controller_integrated.py::EventGateEndToEndTests::test_agent_ready_on_closed_issue_blocks_state_not_write",
+   "FAILED auto001_test_controller_integrated.py::EventGateEndToEndTests::test_agent_working_label_is_not_applicable",
+   "FAILED auto001_test_controller_integrated.py::EventGateEndToEndTests::test_pull_request_with_agent_ready_label_is_not_applicable",
+   "FAILED auto001_test_controller_integrated.py::EventGateEndToEndTests::test_unrelated_label_is_not_applicable",
+   "FAILED auto001_test_controller_integrated.py::IssueNumberTypeContractTests::test_10_block_action_matches_only_writer_block_gate",
+   "FAILED auto001_test_controller_integrated.py::IssueNumberTypeContractTests::test_11_none_decision_and_bad_issue_number_failure_trigger_neither_writer",
+   "FAILED auto001_test_controller_integrated.py::IssueNumberTypeContractTests::test_1_valid_issue_number_reaches_03a_as_number_12",
+   "FAILED auto001_test_controller_integrated.py::IssueNumberTypeContractTests::test_2_valid_issue_number_reaches_03b_as_number_12",
+   "FAILED auto001_test_controller_integrated.py::IssueNumberTypeContractTests::test_8_contract_version_literal_unchanged_by_this_fix",
+   "FAILED auto001_test_controller_integrated.py::IssueNumberTypeContractTests::test_9_start_action_matches_only_writer_start_gate"
+  ],
+  "summary": "ted.py::EventGateEndToEndTests::test_pull_request_with_agent_ready_label_is_not_applicable\nFAILED auto001_test_controller_integrated.py::EventGateEndToEndTests::test_unrelated_label_is_not_applicable\n"
+ },
+ "auto001_test_controller_label_writer.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED auto001_test_controller_label_writer.py::AddAndVerifySubprocessTests::test_add_http_failure",
+   "FAILED auto001_test_controller_label_writer.py::AddAndVerifySubprocessTests::test_add_succeeds_but_refetch_network_fails",
+   "FAILED auto001_test_controller_label_writer.py::AddAndVerifySubprocessTests::test_add_succeeds_but_working_absent_after_refetch",
+   "FAILED auto001_test_controller_label_writer.py::AddAndVerifySubprocessTests::test_add_then_verify_success",
+   "FAILED auto001_test_controller_label_writer.py::CheckPlanSubprocessTests::test_conflicting_state_label_is_rejected",
+   "FAILED auto001_test_controller_label_writer.py::CheckPlanSubprocessTests::test_missing_ready_label_is_rejected",
+   "FAILED auto001_test_controller_label_writer.py::CheckPlanSubprocessTests::test_preflight_violation_is_rejected",
+   "FAILED auto001_test_controller_label_writer.py::CheckPlanSubprocessTests::test_ready_with_valid_preflight_body_passes",
+   "FAILED auto001_test_controller_label_writer.py::CheckRepoLabelSubprocessTests::test_label_exists_passes",
+   "FAILED auto001_test_controller_label_writer.py::CheckRepoLabelSubprocessTests::test_label_missing_fails",
+   "FAILED auto001_test_controller_label_writer.py::CheckStateUnchangedSubprocessTests::test_changed_state_fails",
+   "FAILED auto001_test_controller_label_writer.py::CheckStateUnchangedSubprocessTests::test_unchanged_state_passes",
+   "FAILED auto001_test_controller_label_writer.py::EvaluateFinalSubprocessTests::test_partial_final_state",
+   "FAILED auto001_test_controller_label_writer.py::EvaluateFinalSubprocessTests::test_success_final_state",
+   "FAILED auto001_test_controller_label_writer.py::EvaluateFinalSubprocessTests::test_unrelated_label_lost_is_partial",
+   "FAILED auto001_test_controller_label_writer.py::PreconditionSubprocessTests::test_ready_and_working_is_partial_state",
+   "FAILED auto001_test_controller_label_writer.py::PreconditionSubprocessTests::test_ready_only_needs_write",
+   "FAILED auto001_test_controller_label_writer.py::PreconditionSubprocessTests::test_working_only_is_noop",
+   "FAILED auto001_test_controller_label_writer.py::RemoveLabelSubprocessTests::test_200_passes",
+   "FAILED auto001_test_controller_label_writer.py::RemoveLabelSubprocessTests::test_403_is_write_partial",
+   "FAILED auto001_test_controller_label_writer.py::RemoveLabelSubprocessTests::test_404_passes"
+  ],
+  "summary": "t_controller_label_writer.py::EvaluateFinalSubprocessTests::test_success_final_state\nFAILED auto001_test_controller_label_writer.py::EvaluateFinalSubprocessTests::test_unrelated_label_lost_is_partial\n"
+ },
+ "auto001_test_controller_token_check.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED auto001_test_controller_token_check.py::ConfigCheckFailFastSubprocessTests::test_both_missing_reports_client_id_first",
+   "FAILED auto001_test_controller_token_check.py::ConfigCheckFailFastSubprocessTests::test_both_present_passes",
+   "FAILED auto001_test_controller_token_check.py::ConfigCheckFailFastSubprocessTests::test_missing_client_id_saves_reason_code_and_fails",
+   "FAILED auto001_test_controller_token_check.py::ConfigCheckFailFastSubprocessTests::test_missing_private_key_saves_reason_code_and_fails",
+   "FAILED auto001_test_controller_token_check.py::IssueReadFailFastSubprocessTests::test_issue_number_mismatch_saves_reason_code",
+   "FAILED auto001_test_controller_token_check.py::IssueReadFailFastSubprocessTests::test_matching_issue_number_passes",
+   "FAILED auto001_test_controller_token_check.py::RepoScopeFailFastSubprocessTests::test_matching_repository_passes",
+   "FAILED auto001_test_controller_token_check.py::RepoScopeFailFastSubprocessTests::test_multiple_repositories_saves_mismatch_reason_code",
+   "FAILED auto001_test_controller_token_check.py::RepoScopeFailFastSubprocessTests::test_repository_mismatch_saves_mismatch_reason_code",
+   "FAILED auto001_test_controller_token_check.py::RepoScopeFailFastSubprocessTests::test_valid_json_with_wrong_structure_saves_response_validation_failed",
+   "FAILED auto001_test_controller_token_check.py::RepoScopeFailFastSubprocessTests::test_zero_repositories_saves_mismatch_reason_code"
+  ],
+  "summary": "k.py::IssueReadFailFastSubprocessTests::test_issue_number_mismatch_saves_reason_code\nFAILED auto001_test_controller_token_check.py::IssueReadFailFastSubprocessTests::test_matching_issue_number_passes\n"
+ },
+ "auto001_test_implementer_connection_contract.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................................................................ [ 94%]\n....                                                                     [100%]\n"
+ },
+ "auto001_test_implementer_launcher.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED auto001_test_implementer_launcher.py::BuildBundleStepSubprocessTests::test_29_build_bundle_produces_deterministic_schema",
+   "FAILED auto001_test_implementer_launcher.py::ClassifyStepIssuesLabeledSubprocessTests::test_9_wrong_label_is_not_applicable",
+   "FAILED auto001_test_implementer_launcher.py::ClassifyStepIssuesLabeledSubprocessTests::test_correct_label_would_launch",
+   "FAILED auto001_test_implementer_launcher.py::ClassifyStepSubprocessTests::test_would_block_state_end_to_end_via_step_script",
+   "FAILED auto001_test_implementer_launcher.py::ClassifyStepSubprocessTests::test_would_launch_end_to_end_via_step_script",
+   "FAILED auto001_test_implementer_launcher.py::FetchIssueStepSubprocessTests::test_success_sets_outputs",
+   "FAILED auto001_test_implementer_launcher.py::RefetchAndRecheckStepSubprocessTests::test_23_body_changed_before_output_fails",
+   "FAILED auto001_test_implementer_launcher.py::RefetchAndRecheckStepSubprocessTests::test_24_state_changed_before_output_fails",
+   "FAILED auto001_test_implementer_launcher.py::RefetchAndRecheckStepSubprocessTests::test_25_labels_changed_before_output_fails",
+   "FAILED auto001_test_implementer_launcher.py::RefetchAndRecheckStepSubprocessTests::test_26_updated_at_changed_before_output_fails",
+   "FAILED auto001_test_implementer_launcher.py::RefetchAndRecheckStepSubprocessTests::test_no_change_passes",
+   "FAILED auto001_test_implementer_launcher.py::ValidateIssueNumberStepSubprocessTests::test_1_positive_integer_passes"
+  ],
+  "summary": "auncher.py::RefetchAndRecheckStepSubprocessTests::test_no_change_passes\nFAILED auto001_test_implementer_launcher.py::BuildBundleStepSubprocessTests::test_29_build_bundle_produces_deterministic_schema\n"
+ },
+ "auto001_test_issue_agent_planner.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................................................................................................ [ 99%]\n.                                                                        [100%]\n"
+ },
+ "auto001_test_issue_preflight_validator.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "......................................................... [ 60%]\n......................................                                   [100%]\n"
+ },
+ "er002_test_common.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................................................................ [ 72%]\n...........................                                              [100%]\n"
+ },
+ "er002_test_editorial.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er002_test_editorial_v1_1b.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".......................                                                  [100%]\n"
+ },
+ "er002_test_ja_article_generation.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................................                                 [100%]\n"
+ },
+ "er002_test_ja_free_markdown_restore.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".................................                                        [100%]\n"
+ },
+ "er002_test_ja_free_markdown_restore_r2.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...............................                                          [100%]\n"
+ },
+ "er002_test_ja_master_imitation.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...............................                                          [100%]\n"
+ },
+ "er002_test_ja_web_research_r3.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...................................................                      [100%]\n"
+ },
+ "er002_test_ja_web_research_r4.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................................................................ [100%]\n"
+ },
+ "er002_test_v1_2m_d1.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...........................                                              [100%]\n"
+ },
+ "er003_discovery_focus_staged_production_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................                                                 [100%]\n"
+ },
+ "er003_news_tail_fix_semantic_equivalence_surfacing_02_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er003_test_audio_tts_asr_safety.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".............................................................. [ 59%]\n..........................................                               [100%]\n"
+ },
+ "er003_test_b1_article.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...........................................                              [100%]\n"
+ },
+ "er003_test_b1_p2.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..................................................                       [100%]\n"
+ },
+ "er003_test_b1_p3r_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..................                                                       [100%]\n"
+ },
+ "er003_test_b1_p3s_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..................                                                       [100%]\n"
+ },
+ "er003_test_b1_p3t_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "....................                                                     [100%]\n"
+ },
+ "er003_test_b1_p3u_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "......................                                                   [100%]\n"
+ },
+ "er003_test_b1_p3v_capability.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er003_test_b1_p3w_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "............................                                             [100%]\n"
+ },
+ "er003_test_b1_p3y_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................                                                 [100%]\n"
+ },
+ "er003_test_b1_p3z_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...............                                                          [100%]\n"
+ },
+ "er003_test_b1_p4_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".............................                                            [100%]\n"
+ },
+ "er003_test_b1_p4a_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".............                                                            [100%]\n"
+ },
+ "er003_test_b1_p4b_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "....................                                                     [100%]\n"
+ },
+ "er003_test_b1_p4c_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er003_test_b1_p4d_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".............................                                            [100%]\n"
+ },
+ "er003_test_b1_p5a_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "............                                                             [100%]\n"
+ },
+ "er003_test_b1_p5b_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...........                                                              [100%]\n"
+ },
+ "er003_test_b1_p5c_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...........                                                              [100%]\n"
+ },
+ "er003_test_b1_p6a_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "....................                                                     [100%]\n"
+ },
+ "er003_test_b1_p6b_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...........                                                              [100%]\n"
+ },
+ "er003_test_b1_p7a_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er003_test_b1_p7c_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er003_test_b1_p8a_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "ng: overflow encountered in square\n    z = np.array([np.mean(y[s:s + block] ** 2) for s in range(0, len(y) - block + 1, hop)])\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er003_test_b1_p9a_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er003_test_b1_p9a_r1_audio.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er003_test_b1_scaffold_audio_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er003_test_b2_adapter.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..........................................                               [100%]\n"
+ },
+ "er003_test_b2_key_words.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................................................................ [ 92%]\n......                                                                   [100%]\n"
+ },
+ "er003_test_b2_summary.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................................................................ [100%]\n"
+ },
+ "er003_test_b2_summary_p2c.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".........................                                                [100%]\n"
+ },
+ "er003_test_ja_to_en_translation.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................................................................ [ 97%]\n..                                                                       [100%]\n"
+ },
+ "er003_test_ja_to_en_translation_p1b.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..................................................                       [100%]\n"
+ },
+ "er003_test_key_phrase_source_gate_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er003_test_key_words_canonicalization.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..................................................................   [100%]\n"
+ },
+ "er003_test_key_words_canonicalization_dangling_span.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "................................                                         [100%]\n"
+ },
+ "er003_test_key_words_gloss_alignment.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "......................................................................   [100%]\n"
+ },
+ "er003_test_key_words_min_unit.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................................................................ [ 92%]\n......                                                                   [100%]\n"
+ },
+ "er003_test_key_words_min_unit_4plus1_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...........................                                              [100%]\n"
+ },
+ "er003_test_key_words_research10.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....................................................................    [100%]\n"
+ },
+ "er003_test_key_words_strategy_compare.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "............................................................             [100%]\n"
+ },
+ "er003_test_kp_gloss_alignment_stop_paths.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er003_test_kp_gloss_alignment_wiring.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er003_test_natural_source.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "............                                                             [100%]\n"
+ },
+ "er003_test_p2h_analyze_user_scores.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".......................................                                  [100%]\n"
+ },
+ "er003_test_p2i_production.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..................................................................       [100%]\n"
+ },
+ "er003_test_p2j_investigate.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er003_test_p2j_investigate.py::CollectionCountTests::test_combined_equals_sum_of_er002_and_er003",
+   "FAILED er003_test_p2j_investigate.py::PerFileCountsTests::test_per_file_counts_sum_matches_pattern_discovery",
+   "FAILED er003_test_p2j_investigate.py::ReconciliationArithmeticTests::test_p2h_reported_count_matches_er002_plus_er003_at_that_time",
+   "FAILED er003_test_p2j_investigate.py::ReconciliationArithmeticTests::test_p2i_reported_count_matches_er003_at_p2i_era"
+  ],
+  "summary": "ionArithmeticTests::test_p2h_reported_count_matches_er002_plus_er003_at_that_time\nFAILED er003_test_p2j_investigate.py::ReconciliationArithmeticTests::test_p2i_reported_count_matches_er003_at_p2i_era\n"
+ },
+ "er003_test_p2k_regression_entry.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er003_test_v1_n3_01_tts_generate.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er003_v1_en_direct_vfl_01_generate_deviation_v2_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "......                                                                   [100%]\n"
+ },
+ "er003_v1_en_direct_vfl_01_generate_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".........                                                                [100%]\n"
+ },
+ "er003_v1_n3_01_advanced_adaptation_generate_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "............................                                             [100%]\n"
+ },
+ "er003_v1_n3_01_standard_a2_generate_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...........................                                              [100%]\n"
+ },
+ "er006_asr_provider_routing_01_test.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er006_asr_provider_routing_01_test.py::test_japanese_routes_to_azure",
+   "FAILED er006_asr_provider_routing_01_test.py::test_transcribe_dispatches_to_azure_for_japanese_no_openai_call"
+  ],
+  "summary": "=============\nFAILED er006_asr_provider_routing_01_test.py::test_japanese_routes_to_azure\nFAILED er006_asr_provider_routing_01_test.py::test_transcribe_dispatches_to_azure_for_japanese_no_openai_call\n"
+ },
+ "er006_audio_cost_pilot_02_shared_narration_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er006_batch_tts_wiring_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er006_kp5_canonical_bug_01_test.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er006_kp5_canonical_bug_01_test.py::test_generate_charon_japanese_gate_allows_leading_tilde_after_strip",
+   "FAILED er006_kp5_canonical_bug_01_test.py::test_generate_charon_japanese_gate_allows_normal_gloss_through",
+   "FAILED er006_kp5_canonical_bug_01_test.py::test_generate_charon_japanese_gate_blocks_before_tts_call",
+   "FAILED er006_kp5_canonical_bug_01_test.py::test_tts_safe_ja_strips_both_tilde_variants_when_leading"
+  ],
+  "summary": "canonical_bug_01_test.py::test_generate_charon_japanese_gate_allows_normal_gloss_through\nFAILED er006_kp5_canonical_bug_01_test.py::test_generate_charon_japanese_gate_allows_leading_tilde_after_strip\n"
+ },
+ "er006_m1_multi_candidate_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "....................................................................     [100%]\n"
+ },
+ "er006_master_audio_store_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".......                                                                  [100%]\n"
+ },
+ "er006_model_routing_contract_01_boundary_test.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "\n"
+ },
+ "er006_model_routing_contract_01_test.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "\n"
+ },
+ "er006_model_routing_gpt6_wiring_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".........                                                                [100%]\n"
+ },
+ "er006_model_routing_pricing_coverage_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er006_model_routing_pricing_coverage_test_01.py::PricingCoverageTest::test_flagger_design_models_registered"
+  ],
+  "summary": "html\n=========================== short test summary info ===========================\nFAILED er006_model_routing_pricing_coverage_test_01.py::PricingCoverageTest::test_flagger_design_models_registered\n"
+ },
+ "er006_pool_benches_luna_audio_wiring_test.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "\n"
+ },
+ "er006_pool_pilot_01_ledger_test.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "\n"
+ },
+ "er006_preprod_hardening_01_validation_test.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "\n"
+ },
+ "er006_pronunciation_ledger_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..........                                                               [100%]\n"
+ },
+ "er006_pronunciation_phase4_entity_like_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".......................                                                  [100%]\n"
+ },
+ "er006_pronunciation_tts_injection_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".......                                                                  [100%]\n"
+ },
+ "er006_secondary_asr_01_m1_wiring_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er006_secondary_asr_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".............................                                            [100%]\n"
+ },
+ "er007_en_blindspot_test_01.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "\n"
+ },
+ "er007_ja_asr_validator_01_test.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "\n"
+ },
+ "er007_ja_blindspot_test_01.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er007_ja_scg_c2_neg_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".................                                                        [100%]\n"
+ },
+ "er007_ja_scg_phase0_regression_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "............                                                             [100%]\n"
+ },
+ "er007_ja_scg_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er007_ja_secondary_asr_01_test.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er007_ja_secondary_asr_01_test.py::test_koro_kanji_variant_confirmed_by_reading_candidates",
+   "FAILED er007_ja_secondary_asr_01_test.py::test_single_engine_repetition_does_not_confirm_orthographic_variant"
+  ],
+  "summary": "r007_ja_secondary_asr_01_test.py::test_koro_kanji_variant_confirmed_by_reading_candidates\nFAILED er007_ja_secondary_asr_01_test.py::test_single_engine_repetition_does_not_confirm_orthographic_variant\n"
+ },
+ "er007_ja_tts_retry_path_fix_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er007_openai_ja_asr_quality_test_01.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er007_openai_ja_asr_quality_test_02.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er007_reading_validation_wiring_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er008_a2_postprocess_slowdown_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....                                                                  [100%]\n"
+ },
+ "er008_a2_slowdown_invariant_19_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er008_asr_variant_hardening_15_homophone_en_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "......                                                                   [100%]\n"
+ },
+ "er008_audio_validation_gate_05_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er008_crosslevel_audio_02_tts_cap_25_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er008_directional_fact_precheck_08_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".......................                                                [100%]\n"
+ },
+ "er008_disfluency_qa_18_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".........                                                                [100%]\n"
+ },
+ "er008_internal_label_gate_18_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "....                                                                     [100%]\n"
+ },
+ "er008_listening_artifact_script_standard_25_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".......                                                                  [100%]\n"
+ },
+ "er008_n3_01_point_qa_wiring_19_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....                                                                    [100%]\n"
+ },
+ "er008_n8_a2_slowdown_sha256_refresh_22_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er008_n8_cost_compute_pricing_fix_24_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er008_n8_cost_compute_pricing_fix_24_test_01.py::TestCostComputePricingFix24::test_missing_model_id_falls_back_to_sol_for_legacy_records",
+   "FAILED er008_n8_cost_compute_pricing_fix_24_test_01.py::TestCostComputePricingFix24::test_sol_model_pricing_unchanged_for_backward_compatibility"
+  ],
+  "summary": "_missing_model_id_falls_back_to_sol_for_legacy_records\nFAILED er008_n8_cost_compute_pricing_fix_24_test_01.py::TestCostComputePricingFix24::test_sol_model_pricing_unchanged_for_backward_compatibility\n"
+ },
+ "er008_n8_cost_jpy_reporting_25_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "....                                                                     [100%]\n"
+ },
+ "er008_n8_evidence_compression_dates_22_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...                                                                      [100%]\n"
+ },
+ "er008_n8_evidence_compression_locations_23_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "....                                                                     [100%]\n"
+ },
+ "er008_n8_fact_check_retry_cap_25_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "....                                                                     [100%]\n"
+ },
+ "er008_n8_point_overlap_article_retry_22_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..                                                                       [100%]\n"
+ },
+ "er008_n8_point_prompt_strengthen_24_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........                                                                 [100%]\n"
+ },
+ "er008_n8_qa_hardening_21_gate_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er008_n8_reicher_pronunciation_22_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er008_point_blueprint_validator_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..................                                                       [100%]\n"
+ },
+ "er008_point_overlap_qa_18_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....                                                                    [100%]\n"
+ },
+ "er008_point_regenerate_19_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........                                                                 [100%]\n"
+ },
+ "er009_ja_foreign_token_gate_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er009_ledger_deviation_recalibration_02_test.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "\n"
+ },
+ "er009_n1_diagnostic_full_retry_integration_test_13.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...                                                                      [100%]\n"
+ },
+ "er009_n1_regression_test_14.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er009_n1_routing_governance_10_legacy_scan_test.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "\n"
+ },
+ "er009_n1_routing_governance_10_pricing_table_open251_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....                                                                    [100%]\n"
+ },
+ "er010_entity_phonetic_corroboration_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "......................                                                [100%]\n"
+ },
+ "er010_n9_production_integration_09_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".................................                                        [100%]\n"
+ },
+ "er010_no9_factcheck_policy_and_point_compression_diagnostic_12_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "....                                                                     [100%]\n"
+ },
+ "er010_no9_function_word_reduction_production_wiring_27_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er010_open141_diff_qa_production_wiring_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er010_open141_target_sentence_matching_diff_qa_b_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "......................                                        [100%]\n"
+ },
+ "er011_assembly_headroom_safety_valve_production_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er011_b1_connected_speech_validator_01_f1_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".......................................                                  [100%]\n"
+ },
+ "er011_connected_speech_equivalence_layer_production_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er011_discovery_focus_s2_full_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er011_ending_clarity_fallback_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er011_human_review_lock_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er011_keyphrase_en_asr_false_rejection_cascade_prod_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er011_no18_connected_speech_reading_resolver_wiring_08_test.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er011_no18_evidence_compression_a_precision_21r_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".........                                                                [100%]\n"
+ },
+ "er011_no18_tight_speech_and_trim030_production_wiring_23_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er011_open112_diagnostic_retry_point_body_regression_fix_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "......                                                                   [100%]\n"
+ },
+ "er011_open112_trend_synthesis_mode_production_wiring_01_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er011_open112_trend_synthesis_mode_production_wiring_01_test_01.py::TestBuildCommonBlockDefaultByteParity::test_default_matches_pre_wiring_baseline",
+   "FAILED er011_open112_trend_synthesis_mode_production_wiring_01_test_01.py::TestBuildCommonBlockDefaultByteParity::test_default_with_evidence_compression_matches_pre_wiring_baseline",
+   "FAILED er011_open112_trend_synthesis_mode_production_wiring_01_test_01.py::TestBuildCommonBlockDefaultByteParity::test_default_with_shared_point_blueprint_block_matches_pre_wiring_baseline"
+  ],
+  "summary": "g_baseline\nFAILED er011_open112_trend_synthesis_mode_production_wiring_01_test_01.py::TestBuildCommonBlockDefaultByteParity::test_default_with_shared_point_blueprint_block_matches_pre_wiring_baseline\n"
+ },
+ "er011_open121_repetition_qa_production_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er011_open128_method_d_local_asr_confirm_production_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".........                                                                [100%]\n"
+ },
+ "er011_open129_structural_completeness_production_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er011_open146_ledger_canonical_en_spelling_production_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................                                                 [100%]\n"
+ },
+ "er011_point_role_planning_focus_connection_trial_04_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "......                                                                   [100%]\n"
+ },
+ "er011_test_key_phrase_set_redundancy_qa_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...........                                                              [100%]\n"
+ },
+ "er011_test_point_role_value_planning_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".........                                                                [100%]\n"
+ },
+ "er011_transcript_style_normalization_production_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...................                                                      [100%]\n"
+ },
+ "er011_tts_attempt_audio_retention_wiring_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er011_tts_cooldown_observation_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........                                                                 [100%]\n"
+ },
+ "er011_tts_execution_mode_switch_wiring_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er012_b_family_voices_a2_new_topic_production_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er012_b_family_voices_variable_voice_count_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er012_b_family_voices_writer_generic_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er012_b_voices_3v_a2_user_test_01.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er012_e_family_entertainment_two_level_runner_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er012_editorial_b_family_production_phase1_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er012_editorial_b_family_voices_3v_production_wiring_phase1_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er012_open131_fact_attribution_production_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er013_family_c_episode_trial_09_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er013_family_c_episode_trial_09b_b1_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er013_family_c_episode_trial_09b_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er013_family_c_episode_trial_10_memory_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er013_family_c_episode_trial_10_twins_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er013_family_c_episode_trial_11_memory_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er013_family_c_episode_trial_12_memory_b1_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er013_family_c_episode_trial_12_twins_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er013_family_c_future_qa_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "......................                                                   [100%]\n"
+ },
+ "er013_family_c_future_qa_test_02.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................                                                 [100%]\n"
+ },
+ "er013_family_c_future_qa_test_03.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....................                                                    [100%]\n"
+ },
+ "er013_family_c_future_qa_test_05.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".......                                                                  [100%]\n"
+ },
+ "er013_family_c_future_qa_test_06.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..............                                                           [100%]\n"
+ },
+ "er013_family_c_future_qa_test_07.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..............                                                           [100%]\n"
+ },
+ "er013_family_c_future_qa_test_08.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...................                                                      [100%]\n"
+ },
+ "er013_family_c_production_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er015_standard_a2_6000_generation_first_trial_01_test_01.py": {
+  "rc": 2,
+  "fails": [],
+  "summary": "\n!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n"
+ },
+ "er015_vocab_band_6000_10000_14000_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "....................                                                     [100%]\n"
+ },
+ "er017_news_entertainment_production_line_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..................                                                       [100%]\n"
+ },
+ "er018_fiction_real_story_and_true_crime_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....                                                                    [100%]\n"
+ },
+ "er019_family_x_audio_production_runner_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_family_x_b3_production_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_family_x_clobber_restore_03_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_family_x_concreteness_an3_t0_production_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_family_x_entertainment_production_runner_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_family_x_flash_lite_role_style_wiring_02_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_family_x_ja_recheck_retry_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_family_x_ja_writer_o_r1_r2_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".......                                                                  [100%]\n"
+ },
+ "er019_family_x_kp_structure_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_family_x_new_structure_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_family_x_opus_l2_fixes_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_family_x_pointless_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_family_x_section_segmentation_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...............                                                          [100%]\n"
+ },
+ "er019_family_x_style_profile_01_n01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_family_x_style_profile_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_family_x_style_profile_migration_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...............                                                          [100%]\n"
+ },
+ "er019_family_x_variable_role_style_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_test_family_x_completion_02_integration.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_test_family_x_validation_inheritance_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er019_writer_run_summary_reconstruction_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er020_tts_cooldown_local_rewrite_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er020_tts_local_rewrite_natural_english_qa_trial_02_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er020_tts_retry_local_rewrite_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er020_tts_retry_local_rewrite_fullseg_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er020_tts_retry_local_rewrite_fullseg_test_01.py::RegressionCorpusTest::test_recorded_candidates"
+  ],
+  "summary": "         [100%]\n=========================== short test summary info ===========================\nFAILED er020_tts_retry_local_rewrite_fullseg_test_01.py::RegressionCorpusTest::test_recorded_candidates\n"
+ },
+ "er021_en_asr_semantic_equivalence_production_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er021_en_asr_semantic_equivalence_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................................                                 [100%]\n"
+ },
+ "er022_tts_gemini_3_8_flash_lite_ab_trial_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er023_key_phrase_db_trial_tests.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".............                                                            [100%]\n"
+ },
+ "er025_entity_pronunciation_resolver_core_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..................                                                       [100%]\n"
+ },
+ "er025_phase4_s1_offline_reclassification_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "......                                                                   [100%]\n"
+ },
+ "er025_pronunciation_resolution_phase3_b1b_en_wiring_01_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er025_pronunciation_resolution_phase3_b1b_en_wiring_01_test_01.py::FamilyXRunnerKwargWiringTests::test_b1_segments_pass_enable_pronunciation_resolver_true"
+  ],
+  "summary": "mary info ===========================\nFAILED er025_pronunciation_resolution_phase3_b1b_en_wiring_01_test_01.py::FamilyXRunnerKwargWiringTests::test_b1_segments_pass_enable_pronunciation_resolver_true\n"
+ },
+ "er026_cs_audit_regression_01_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er026_cs_audit_regression_01_test_01.py::EquivalenceLayerGatingTests::test_layer_not_invoked_for_entity_only_uncertain_melos_said",
+   "FAILED er026_cs_audit_regression_01_test_01.py::EquivalenceLayerGatingTests::test_secondary_spelling_exact_stem_is_rescued_by_pattern_a_in_cascade",
+   "FAILED er026_cs_audit_regression_01_test_01.py::PostSlowdownPatternATests::test_characterization_post_slowdown_unrescuable_ends_stopped_not_hr_open320",
+   "FAILED er026_cs_audit_regression_01_test_01.py::PostSlowdownPatternATests::test_post_slowdown_rescue_accepts_when_secondary_exact_stem"
+  ],
+  "summary": "terization_post_slowdown_unrescuable_ends_stopped_not_hr_open320\nFAILED er026_cs_audit_regression_01_test_01.py::PostSlowdownPatternATests::test_post_slowdown_rescue_accepts_when_secondary_exact_stem\n"
+ },
+ "er026_family_z_e2e_integration_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er026_family_z_e2e_integration_test_01.py::MockFullPipelineTest::test_shared_state_files_unchanged_by_mock_run"
+  ],
+  "summary": "l\n=========================== short test summary info ===========================\nFAILED er026_family_z_e2e_integration_test_01.py::MockFullPipelineTest::test_shared_state_files_unchanged_by_mock_run\n"
+ },
+ "er026_family_z_fiction_production_runner_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....................                                                    [100%]\n"
+ },
+ "er026_family_z_stop_sentinel_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er026_post_slowdown_cascade_rescue_01_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er026_post_slowdown_cascade_rescue_01_test_01.py::OuterLoopIntegrationTests::test_no_rescue_consumes_budget_as_before",
+   "FAILED er026_post_slowdown_cascade_rescue_01_test_01.py::PostSlowdownCascadeRescueTests::test_final_classification_top_level_field",
+   "FAILED er026_post_slowdown_cascade_rescue_01_test_01.py::PostSlowdownCascadeRescueTests::test_no_rescue_when_secondary_also_misspells"
+  ],
+  "summary": "stSlowdownCascadeRescueTests::test_no_rescue_when_secondary_also_misspells\nFAILED er026_post_slowdown_cascade_rescue_01_test_01.py::OuterLoopIntegrationTests::test_no_rescue_consumes_budget_as_before\n"
+ },
+ "er027_key_phrase_db_hybrid_trial_02_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....................                                                    [100%]\n"
+ },
+ "er028_key_phrase_db_hybrid_trial_03_run_02_user_test_0918.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "\n"
+ },
+ "er028_key_phrase_db_hybrid_trial_03_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..............................                                           [100%]\n"
+ },
+ "er029_key_phrase_db_hybrid_trial_04_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..................                                                       [100%]\n"
+ },
+ "er030_key_phrase_db_hybrid_family_x_production_wiring_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er030_key_phrase_db_hybrid_m2_fallback_notice_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er030_key_phrase_db_hybrid_m2_supply_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er030_key_phrase_db_hybrid_source_reference_contract_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".......................................                                  [100%]\n"
+ },
+ "er031_key_phrase_db_hybrid_family_z_trial_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...........                                                              [100%]\n"
+ },
+ "er032_key_phrase_db_hybrid_core_v2_trial_05_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "......................                                                   [100%]\n"
+ },
+ "er033_tts_flash_lite_backend_wiring_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er033_tts_flash_lite_family_x_styles_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er033_tts_flash_lite_family_x_wiring_phase1_regression_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er034_key_phrase_db_hybrid_source_reference_contract_trial_06_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....................                                                    [100%]\n"
+ },
+ "er036_family_y_voice_structure_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er037_family_xy_concreteness_control_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er038_tts_all_spoken_role_style_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er039_family_xy_concreteness_control_trial_02_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er040_tts_fixed_shell_master_champion_trial_01_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er040_tts_fixed_shell_master_champion_trial_01_test_01.py::MasterAudioKeyDistinguishesStyleVersionsTest::test_master_audio_key_distinguishes_style_versions"
+  ],
+  "summary": "ary info ===========================\nFAILED er040_tts_fixed_shell_master_champion_trial_01_test_01.py::MasterAudioKeyDistinguishesStyleVersionsTest::test_master_audio_key_distinguishes_style_versions\n"
+ },
+ "er041_key_phrase_advanced_english_explanation_trial_02_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".............                                                            [100%]\n"
+ },
+ "er042_key_phrase_advanced_english_explanation_audio_style_trial_03_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "................                                                         [100%]\n"
+ },
+ "er043_tts_fixed_shell_master_champion_trial_02_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er043_tts_fixed_shell_master_champion_trial_02_test_01.py::MasterAudioKeyDistinguishesGroupsAndCandidatesTest::test_new_candidate_keys_differ_from_production_key"
+  ],
+  "summary": "fo ===========================\nFAILED er043_tts_fixed_shell_master_champion_trial_02_test_01.py::MasterAudioKeyDistinguishesGroupsAndCandidatesTest::test_new_candidate_keys_differ_from_production_key\n"
+ },
+ "er044_tts_variable_spoken_role_style_trial_02_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er045_family_x_no_heading_segmentation_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er046_key_phrase_advanced_english_explanation_audio_style_trial_04_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....................                                                    [100%]\n"
+ },
+ "er047_tts_fixed_shell_number_three_five_retrial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er048_fixed_shell_champion_master_registration_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er050_gpt6_checker_comparison_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..............                                                           [100%]\n"
+ },
+ "er051_open233_checker_trial_variant_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....................................                                    [100%]\n"
+ },
+ "er052_all6_writer_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....                                                                    [100%]\n"
+ },
+ "er052_factlock_astra_e2e_runner_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er052_factlock_sweep_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..................................                                       [100%]\n"
+ },
+ "er052_factlock_writer_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...............................                                          [100%]\n"
+ },
+ "er052_gpt6_wiring_probe_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...                                                                      [100%]\n"
+ },
+ "er052_open233_checker_action_policy_stage2_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..........................................................               [100%]\n"
+ },
+ "er052_open233_checker_action_policy_stage2_v3_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".............................                                            [100%]\n"
+ },
+ "er052_open233_checker_floor_prod_wiring_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...........................................................              [100%]\n"
+ },
+ "er052_open233_directional_trial_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........                                                  [100%]\n"
+ },
+ "er052_open233_directional_trial_02_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "............                                                             [100%]\n"
+ },
+ "er052_open233_directional_trial_03_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...................                                                      [100%]\n"
+ },
+ "er052_open233_e2e_acceptance_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".......                                                                  [100%]\n"
+ },
+ "er052_open233_open238_precheck_strict_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "............                                                             [100%]\n"
+ },
+ "er052_open233_recheck_coverage_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".................                                                        [100%]\n"
+ },
+ "er052_open233_self_recovery_flow_runner_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "................................ [ 87%]\n........................................................................ [ 97%]\n.....................                                                    [100%]\n"
+ },
+ "er052_open233_self_recovery_precheck_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".......................                                                  [100%]\n"
+ },
+ "er052_open233_self_recovery_s1d_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...........                                                              [100%]\n"
+ },
+ "er052_open233_self_recovery_stage2_production_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..........                                                               [100%]\n"
+ },
+ "er052_open233_stage1_coverage_checker_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................................................................ [ 96%]\n...                                                                      [100%]\n"
+ },
+ "er052_open233_stage2_w1w2_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...........                                                              [100%]\n"
+ },
+ "er052_open243_m123_trial_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er053_b3_annotation_contract_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".................................                                        [100%]\n"
+ },
+ "er053_b3_deterministic_producer_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "......................                                                   [100%]\n"
+ },
+ "er053_c2_old_checker_removal_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er053_c2_old_checker_removal_test_01.py::OldCheckerNotReachableStaticTests::test_dangling_residual_words_all_classified_none_orphaned"
+  ],
+  "summary": "====== short test summary info ===========================\nFAILED er053_c2_old_checker_removal_test_01.py::OldCheckerNotReachableStaticTests::test_dangling_residual_words_all_classified_none_orphaned\n"
+ },
+ "er053_c2_wiring_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er053_c3_audio_guard_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er053_c4_wiring_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er053_c5_review_fixes_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er053_cost_aggregate_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er053_dangling_reference_check_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "....                                                                     [100%]\n"
+ },
+ "er053_en_sentence_splitter_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "....................                                                     [100%]\n"
+ },
+ "er053_family_x_factlock_ja_writer_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....................................                                    [100%]\n"
+ },
+ "er053_review_queue_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..............                                                           [100%]\n"
+ },
+ "er053_risk_flagger_production_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er054_family_z_story_pool_trial_02_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er054_family_z_story_pool_trial_02_test_01.py::T::test_production_keys_unchanged",
+   "FAILED er054_family_z_story_pool_trial_02_test_01.py::T::test_real_refused_without_budget"
+  ],
+  "summary": "=====================\nFAILED er054_family_z_story_pool_trial_02_test_01.py::T::test_production_keys_unchanged\nFAILED er054_family_z_story_pool_trial_02_test_01.py::T::test_real_refused_without_budget\n"
+ },
+ "er054_family_z_story_quality_model_comparison_trial_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "........................                                                 [100%]\n"
+ },
+ "er055_family_z_d_predictive_validation_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...........                                                              [100%]\n"
+ },
+ "er058_asr_tts_prodfix_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er060_family_z_foundation_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".........                                                                [100%]\n"
+ },
+ "er061_family_z_semantic_validator_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "......................................................                   [100%]\n"
+ },
+ "er062_family_z_writer_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "................................................................         [100%]\n"
+ },
+ "er063_family_z_audio_01_n01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er063_family_z_audio_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er064_kp_idiom_priority_abc_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....                                                                    [100%]\n"
+ },
+ "er064_kp_idiom_trial_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..................................................                       [100%]\n"
+ },
+ "er064_kp_int_01_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er064_kp_int_01_test_01.py::PromptRules::test_tokens_not_above_current"
+  ],
+  "summary": "                                   [100%]\n=========================== short test summary info ===========================\nFAILED er064_kp_int_01_test_01.py::PromptRules::test_tokens_not_above_current\n"
+ },
+ "er064_kp_int_02_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er064_kp_int_02_test_01.py::P5Rules::test_tokens_vs_p0"
+  ],
+  "summary": "                                [100%]\n=========================== short test summary info ===========================\nFAILED er064_kp_int_02_test_01.py::P5Rules::test_tokens_vs_p0 - ModuleNotFoun...\n"
+ },
+ "er064_kp_int_03_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er064_kp_int_03_test_01.py::AssetsUnchanged::test_state_guard_if_present"
+  ],
+  "summary": "                                 [100%]\n=========================== short test summary info ===========================\nFAILED er064_kp_int_03_test_01.py::AssetsUnchanged::test_state_guard_if_present\n"
+ },
+ "er064_kp_noway_01_test.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er064_kp_noway_01_test.py::RunnerSafety::test_cap_above_authorization_refused",
+   "FAILED er064_kp_noway_01_test.py::RunnerSafety::test_paid_run_refused_without_authorization"
+  ],
+  "summary": "======================\nFAILED er064_kp_noway_01_test.py::RunnerSafety::test_cap_above_authorization_refused\nFAILED er064_kp_noway_01_test.py::RunnerSafety::test_paid_run_refused_without_authorization\n"
+ },
+ "er064_kp_opt_01_fix_test_02.py": {
+  "rc": 3,
+  "fails": [],
+  "summary": "INTERNALERROR>   File \"C:\\Users\\tensh\\eigo-radio\\er064_kp_opt_01_fix_test_02.py\", line 118, in <module>"
+ },
+ "er064_kp_opt_01_prompt_test.py": {
+  "rc": 3,
+  "fails": [],
+  "summary": "INTERNALERROR>   File \"C:\\Users\\tensh\\eigo-radio\\er064_kp_opt_01_prompt_test.py\", line 49, in <module>"
+ },
+ "er064_kp_opt_01_upstream_test_01.py": {
+  "rc": 3,
+  "fails": [],
+  "summary": "INTERNALERROR>   File \"C:\\Users\\tensh\\eigo-radio\\er064_kp_opt_01_upstream_test_01.py\", line 106, in <module>"
+ },
+ "er065_short_clip_asr_context_trial_01_regression_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er066_ja_asr_orthographic_equivalence_01_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er066_ja_asr_orthographic_equivalence_01_test_01.py::TestExistingSpecClosedCounterList::test_production_does_not_import_trial"
+  ],
+  "summary": "============== short test summary info ===========================\nFAILED er066_ja_asr_orthographic_equivalence_01_test_01.py::TestExistingSpecClosedCounterList::test_production_does_not_import_trial\n"
+ },
+ "er066_ja_asr_orthographic_equivalence_01_test_02.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "...............................                                          [100%]\n"
+ },
+ "er068_asr_phonetic_equivalence_generalization_01_test_01.py": {
+  "rc": 1,
+  "fails": [
+   "FAILED er068_asr_phonetic_equivalence_generalization_01_test_01.py::NoHardcodeAndIsolation::test_not_imported_by_production_files",
+   "FAILED er068_asr_phonetic_equivalence_generalization_01_test_01.py::ProductionCharacterization::test_existing_pattern_a_first_diff_only_hole_is_recorded"
+  ],
+  "summary": "cterization::test_existing_pattern_a_first_diff_only_hole_is_recorded\nFAILED er068_asr_phonetic_equivalence_generalization_01_test_01.py::NoHardcodeAndIsolation::test_not_imported_by_production_files\n"
+ },
+ "er069_attribution_clip_split_trial_01_test_01.py": {
+  "rc": 3,
+  "fails": [],
+  "summary": "INTERNALERROR>   File \"C:\\Users\\tensh\\eigo-radio\\er069_attribution_clip_split_trial_01_test_01.py\", line 64, in <module>"
+ },
+ "er070_family_z_std_preview_x_alignment_01_test_01.py": {
+  "rc": 3,
+  "fails": [],
+  "summary": "INTERNALERROR>   File \"C:\\Users\\tensh\\eigo-radio\\er070_family_z_std_preview_x_alignment_01_test_01.py\", line 77, in <module>"
+ },
+ "er072_melos_preview_std_adv_3take_01_test_01.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "\n"
+ },
+ "er073_family_z_kp_db_hybrid_m2p0_migration_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".....                                                                    [100%]\n"
+ },
+ "er074_family_z_std_preview_comment_dependency_01_test_01.py": {
+  "rc": 3,
+  "fails": [],
+  "summary": "INTERNALERROR>   File \"C:\\Users\\tensh\\eigo-radio\\er074_family_z_std_preview_comment_dependency_01_test_01.py\", line 49, in <module>"
+ },
+ "er077_m1_oov_multi_pronunciation_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "..............                                                           [100%]\n"
+ },
+ "er078_asr_unified_judge_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".............................................                            [100%]\n"
+ },
+ "er078_asr_value_guard_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "er078_pass_with_warning_registry_01_test_01.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": ".........                                                                [100%]\n"
+ },
+ "er_secret_mask_01_test.py": {
+  "rc": 0,
+  "fails": [],
+  "summary": "....                                                                     [100%]\n"
+ },
+ "generate_test.py": {
+  "rc": 3,
+  "fails": [],
+  "summary": "INTERNALERROR>   File \"C:\\Users\\tensh\\eigo-radio\\generate_test.py\", line 61, in <module>"
+ },
+ "run_coverage_gate_backtest.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "test_api.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "\n"
+ },
+ "test_writer_api.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "\n"
+ },
+ "tts_style_test.py": {
+  "rc": 5,
+  "fails": [],
+  "summary": "s deprecated and slated for removal in Python 3.17\n    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n"
+ },
+ "tts_test.py": {
+  "rc": 3,
+  "fails": [],
+  "summary": "INTERNALERROR>   File \"C:\\Users\\tensh\\eigo-radio\\tts_test.py\", line 26, in <module>"
+ },
+ "tts_test_azure.py": {
+  "rc": 2,
+  "fails": [],
+  "summary": "\n!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n"
+ },
+ "tts_test_openai.py": {
+  "rc": 2,
+  "fails": [],
+  "summary": "\n!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n"
+ }
+}

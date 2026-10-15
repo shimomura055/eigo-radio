@@ -546,10 +546,11 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
         asr_text, asr_err = asr_routing.transcribe(out_path, language="en-US")
         length_ok = asr_text is not None and len(asr_text) <= max_len
         ledger_phrases = [h["canonical_spelling"] for h in pronun_ledger.get_hint_for_text(text, min_confidence="low")]
+        _aj = {}  # AUW 委任_03: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
             text, asr_text, classification_history, out_path, language="en-US",
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
-            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer)
+            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer, detail_out=_aj)
         verified = verified_content and length_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=False)
         verified = gate["verified"]
@@ -559,7 +560,7 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
         rep_gate = repetition_qa.apply_repetition_qa_gate(
             verified, out_path, text, language="en", enabled=enable_repetition_qa)
         verified = rep_gate["verified"]
-        attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
+        attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
                               "instruction_type": instruction_type, "audio_classification": cls.classification,
                               "connected_speech_info": getattr(cls, "connected_speech_info", None),
                               "length_ok": length_ok, "verified": verified,
@@ -581,7 +582,7 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
         attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
             metrics = common.measure_metrics(common.read_wav_float(out_path)[0], common.SAMPLE_RATE)
-            return {"status": "OK", "text": text, "path": out_path, "voice": voice_name, "asr_verified": True,
+            return {"status": "OK", "text": text, "path": out_path, "voice": voice_name, "asr_verified": True, "asr_judgement": _aj.get("asr_judgement"),
                     "asr_text": asr_text, "attempts_log": attempts_log, "instruction_type": instruction_type,
                     "trim_info": trim_info, "safety_margin_seconds": news_tail_fix.LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS,
                     "clipping_detected": metrics["clipping_detected"], "audio_classification": cls.classification,

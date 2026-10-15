@@ -199,11 +199,12 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
         segment_id = None
         if review_lock._has_valid_narration_layout(out_path):
             _, _, segment_id = review_lock.derive_segment_key(out_path)
+        _aj = {}  # AUW 委任_03: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
             text, asr_text, classification_history, out_path, language="en-US",
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-            segment_id=segment_id)
+            segment_id=segment_id, detail_out=_aj)
         verified = verified_content and length_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]
@@ -213,7 +214,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
         rep_gate = repetition_qa.apply_repetition_qa_gate(
             verified, out_path, text, language="en", enabled=enable_repetition_qa)
         verified = rep_gate["verified"]
-        attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
+        attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
                               "instruction_type": instruction_type, "audio_classification": cls.classification,
                               "connected_speech_info": getattr(cls, "connected_speech_info", None),
                               # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02
@@ -252,7 +253,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
         attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
             metrics = common.measure_metrics(common.read_wav_float(out_path)[0], common.SAMPLE_RATE)
-            return {"status": "OK", "text": text, "path": out_path, "asr_verified": True, "asr_text": asr_text,
+            return {"status": "OK", "text": text, "path": out_path, "asr_verified": True, "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
                     "attempts_log": attempts_log, "instruction_type": instruction_type,
                     "trim_info": trim_info, "safety_margin_seconds": LONG_FORM_TRIM_SAFETY_MARGIN_SECONDS,
                     "clipping_detected": metrics["clipping_detected"],

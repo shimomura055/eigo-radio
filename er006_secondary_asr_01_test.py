@@ -47,14 +47,23 @@ def test_non_entity_mismatch_does_not_trigger_cascade():
 
 
 def test_entity_like_mismatch_triggers_primary_2():
+    # AUW 委任_03b: DESIGN_01 §4-9 / ユーザー原文「Primary NG→原則Secondary」に追随(旧: entity-like不一致でPrimary#2(同一音声の
+    # OpenAI再転写)が1回呼ばれる。Primary#2は廃止=統一フローはPrimary 1回+Secondary 1回)。
+    # 安全側の意図(Primary不一致をPASS扱いしない)は、Secondaryも不一致ならNGのまま、で残す。
     orig_transcribe = routing.transcribe
-    calls = {"n": 0}
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+    calls = {"n": 0, "secondary": 0}
 
     def fake_transcribe(wav_path, language="en-US", timeout_seconds=90.0):
         calls["n"] += 1
-        return "A Tony and colleagues published a study.", None  # 依然不一致
+        return "A Tony and colleagues published a study.", None
+
+    def fake_secondary(wav_path, language="en-US", phrases=None, timeout_seconds=90.0):
+        calls["secondary"] += 1
+        return "A Tony and colleagues published a study.", None  # Secondaryも不一致
 
     routing.transcribe = fake_transcribe
+    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
     try:
         canon = "Ottoni and colleagues published a study."
         asr = "A Tony and colleagues published a study."  # 固有名詞のみの差
@@ -62,24 +71,32 @@ def test_entity_like_mismatch_triggers_primary_2():
         r = secondary.evaluate_attempt_with_cascade_detail(
             canon, asr, prior, "dummy.wav", cascade_enabled=True)
         assert r["cascade_invoked"] is True
-        assert calls["n"] == 1, "Primary#2が1回呼ばれるはず"
-        assert any(s["step"] == "primary_2" for s in r["steps"])
+        assert calls["n"] == 0, "Primary#2(同一音声のOpenAI再転写)は廃止: routing.transcribeは呼ばれない"
+        assert calls["secondary"] == 1, "Primary NGは原則Secondary 1回"
+        assert not any(s["step"] == "primary_2" for s in r["steps"])
+        assert [s["step"] for s in r["steps"]] == ["primary_1", "secondary_1"]
+        assert r["verified"] is False, "両エンジン不一致をPASS扱いしない"
+        assert r["asr_judgement"]["state"] == "NG_BOTH"
     finally:
         routing.transcribe = orig_transcribe
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
     print("PASS: test_entity_like_mismatch_triggers_primary_2")
 
 
 def test_primary_2_pass_stops_cascade_before_secondary():
+    # AUW 委任_03b: DESIGN_01 §4-9 / ユーザー原文「Primary NG→原則Secondary」に追随(旧: Primary#2でPASSしたらSecondaryを呼ばない)。
+    # 新設計: Primary#2は無い。Primary NG後はSecondaryが1回呼ばれ、Secondary許容集合PASSなら自動採用(PASS_WITH_WARNING)。
     orig_transcribe = routing.transcribe
     orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
-    calls = {"secondary": 0}
+    calls = {"primary2": 0, "secondary": 0}
 
     def fake_transcribe(wav_path, language="en-US", timeout_seconds=90.0):
-        return "Ottoni and colleagues published a study.", None  # Primary#2で正しく認識
+        calls["primary2"] += 1
+        return "Ottoni and colleagues published a study.", None
 
     def fake_secondary(*a, **k):
         calls["secondary"] += 1
-        return "SHOULD NOT BE CALLED", None
+        return "Ottoni and colleagues published a study.", None  # Secondaryで正しく認識
 
     routing.transcribe = fake_transcribe
     secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
@@ -90,7 +107,9 @@ def test_primary_2_pass_stops_cascade_before_secondary():
         r = secondary.evaluate_attempt_with_cascade_detail(
             canon, asr, prior, "dummy.wav", cascade_enabled=True)
         assert r["verified"] is True
-        assert calls["secondary"] == 0, "Primary#2でPASSしたらSecondaryは呼ばれないはず"
+        assert calls["primary2"] == 0, "Primary#2は廃止"
+        assert calls["secondary"] == 1, "Primary NGなのでSecondaryが1回呼ばれる"
+        assert r["asr_judgement"]["state"] == "PASS_WITH_WARNING"
     finally:
         routing.transcribe = orig_transcribe
         secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
@@ -98,8 +117,13 @@ def test_primary_2_pass_stops_cascade_before_secondary():
 
 
 def test_full_cascade_all_fail_routes_to_human_review():
+    # AUW 委任_03b: DESIGN_01 §4-9 / ユーザー原文「Primary NG→原則Secondary」「両NGで再生成→3回NGでLR/HR」に追随
+    # (旧: Primary#2 1回+Secondary#1・#2の2回+cascade尽きでHR直行・stop_retrying)。
+    # 新設計: Primary 1回+Secondary 1回。両NGは次slot(再生成)へ。HRは最終slot(3回目)NGのみ。
     orig_transcribe = routing.transcribe
     orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+    orig_resolve = secondary._resolve_unresolved_entity_for_review  # AUW 委任_03b: 最終slot HR packageのLedger/Perplexity実呼出を防ぐ
+    secondary._resolve_unresolved_entity_for_review = lambda span: None
     calls = {"primary": 0, "secondary": 0}
 
     def fake_transcribe(wav_path, language="en-US", timeout_seconds=90.0):
@@ -116,16 +140,26 @@ def test_full_cascade_all_fail_routes_to_human_review():
         canon = "Ottoni and colleagues published a study."
         asr = "A Tony and colleagues published a study."
         prior = []
-        r = secondary.evaluate_attempt_with_cascade_detail(
-            canon, asr, prior, "dummy.wav", ledger_phrases=["Ottoni"], cascade_enabled=True)
-        assert calls["primary"] == 1, "Primary#2は1回のみ"
-        assert calls["secondary"] == 2, "Secondary#1・#2の2回呼ばれるはず"
-        assert r["human_review_required"] is True
-        assert r["verified"] is False
-        assert r["final_status"] == "ASR_VALIDATION_UNCERTAIN"
-        step_names = [s["step"] for s in r["steps"]]
-        assert step_names == ["primary_1", "primary_2", "secondary_1", "secondary_2"]
+        # 途中slot(slot 1): 両NGでも再生成へ(HR直行・stop_retryingにしない)
+        r1 = secondary.evaluate_attempt_with_cascade_detail(
+            canon, asr, prior, "dummy.wav", ledger_phrases=["Ottoni"], cascade_enabled=True,
+            attempt_ctx={"slot": 1, "is_last_slot": False})
+        assert calls["primary"] == 0, "Primary#2は廃止"
+        assert calls["secondary"] == 1, "Secondaryは1回のみ(#2廃止)"
+        assert r1["verified"] is False
+        assert r1["stop_retrying"] is False
+        assert r1["human_review_required"] is False, "最終slotでなければHR直行しない(次slotで再生成)"
+        assert r1["final_status"] == "ASR_VALIDATION_UNCERTAIN"
+        assert [s["step"] for s in r1["steps"]] == ["primary_1", "secondary_1"]
+        assert r1["asr_judgement"]["state"] == "NG_BOTH"
+        # 最終slot(slot 3): 初めてHuman Reviewへ(安全側の最終出口を維持)
+        r3 = secondary.evaluate_attempt_with_cascade_detail(
+            canon, asr, prior, "dummy.wav", ledger_phrases=["Ottoni"], cascade_enabled=True,
+            attempt_ctx={"slot": 3, "is_last_slot": True})
+        assert r3["verified"] is False
+        assert r3["human_review_required"] is True
     finally:
+        secondary._resolve_unresolved_entity_for_review = orig_resolve
         routing.transcribe = orig_transcribe
         secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
     print("PASS: test_full_cascade_all_fail_routes_to_human_review")
@@ -236,7 +270,14 @@ def test_force_secondary_true_primary_pass_secondary_mismatch_not_auto_passed():
         r = secondary.evaluate_attempt_with_cascade_detail(
             canon, asr, [], "dummy.wav", cascade_enabled=True, force_secondary=True)
         assert r["verified"] is False, "SecondaryがPrimaryのPASSに同意しない場合、自動PASSしてはならない"
-        assert r["human_review_required"] is True
+        # AUW 委任_03b: DESIGN_01 §4-9 / §4-7に追随(旧: ここで即human_review_required=True)。
+        # 新設計: HRは最終slotのNGのみ。途中slotは次slotで再生成(同意しないSecondaryをPASS扱いしない安全側は不変)。
+        assert r["human_review_required"] is False
+        r_last = secondary.evaluate_attempt_with_cascade_detail(
+            canon, asr, [], "dummy.wav", cascade_enabled=True, force_secondary=True,
+            attempt_ctx={"slot": 3, "is_last_slot": True})
+        assert r_last["verified"] is False
+        assert r_last["human_review_required"] is True, "最終slotでSecondary不同意ならHRへ"
     finally:
         secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
     print("PASS: test_force_secondary_true_primary_pass_secondary_mismatch_not_auto_passed")
@@ -245,23 +286,36 @@ def test_force_secondary_true_primary_pass_secondary_mismatch_not_auto_passed():
 def test_force_secondary_true_primary_mismatch_preserves_existing_cascade():
     # fallback + Primary mismatch(entity-like)-> 既存のCascade安全性を維持
     # (force_secondary=Trueであっても、Primary不一致時の分岐は変更しない、C-3 #4)。
+    # AUW 委任_03b: DESIGN_01 §4-9 / ユーザー原文「Primary NG→原則Secondary」に追随(旧: Primary#2経路("primary_2"step)を通る)。
+    # 新設計: Primary#2は無い。Primary NGならforce_secondaryでも通常のSecondary("secondary_1")1回(secondary_forcedはPrimary PASS時のみ)。
     orig_transcribe = routing.transcribe
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+    calls = {"primary2": 0, "secondary": 0}
 
     def fake_transcribe(wav_path, language="en-US", timeout_seconds=90.0):
-        return "A Tony and colleagues published a study.", None  # Primary#2でも不一致のまま
+        calls["primary2"] += 1
+        return "A Tony and colleagues published a study.", None
+
+    def fake_secondary(*a, **k):
+        calls["secondary"] += 1
+        return "A Tony and colleagues published a study.", None
 
     routing.transcribe = fake_transcribe
+    secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
     try:
         canon = "Ottoni and colleagues published a study."
         asr = "A Tony and colleagues published a study."  # 固有名詞のみの差、Primaryはmismatch
         r = secondary.evaluate_attempt_with_cascade_detail(
             canon, asr, [], "dummy.wav", cascade_enabled=True, force_secondary=True)
         assert r["cascade_invoked"] is True
-        assert any(s["step"] == "primary_2" for s in r["steps"]), \
-            "force_secondary=TrueでもPrimary不一致時は既存のPrimary#2経路を通るはず"
+        assert calls["primary2"] == 0 and calls["secondary"] == 1
+        assert not any(s["step"] == "primary_2" for s in r["steps"])
+        assert any(s["step"] == "secondary_1" for s in r["steps"])
         assert not any(s["step"] == "secondary_forced" for s in r["steps"])
+        assert r["verified"] is False
     finally:
         routing.transcribe = orig_transcribe
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
     print("PASS: test_force_secondary_true_primary_mismatch_preserves_existing_cascade")
 
 
@@ -297,6 +351,8 @@ def test_tuple_wrapper_matches_val_evaluate_attempt_shape_and_logs_human_review(
         os.remove(tmp_log)
     orig_transcribe = routing.transcribe
     orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+    orig_resolve = secondary._resolve_unresolved_entity_for_review  # AUW 委任_03b: Ledger/Perplexity実呼出を防ぐ
+    secondary._resolve_unresolved_entity_for_review = lambda span: None
 
     def fake_transcribe(wav_path, language="en-US", timeout_seconds=90.0):
         return "A Tony and colleagues published a study.", None
@@ -310,18 +366,27 @@ def test_tuple_wrapper_matches_val_evaluate_attempt_shape_and_logs_human_review(
         canon = "Ottoni and colleagues published a study."
         asr = "A Tony and colleagues published a study."
         prior = []
+        # AUW 委任_03b: DESIGN_01 §4-9 / §4-7に追随(旧: cascade尽きで stop_retrying=True・HR queueへ4step記録)。
+        # 新設計: stop_retrying=False固定(次slotで再生成)。HR queueへの記録は最終slotのNGのみ、stepsはprimary_1+secondary_1の2件。
         verified, stop_retrying, cls = secondary.evaluate_attempt_with_cascade(
             canon, asr, prior, "dummy.wav", ledger_phrases=["Ottoni"], cascade_enabled=True)
         assert verified is False
-        assert stop_retrying is True
+        assert stop_retrying is False
         assert cls.classification == "ASR_VALIDATION_UNCERTAIN"
-        assert os.path.exists(tmp_log), "Human Review queueへログが書かれるはず"
+        assert not os.path.exists(tmp_log), "途中slotではHuman Review queueへ書かない(次slotで再生成)"
+        verified, stop_retrying, cls = secondary.evaluate_attempt_with_cascade(
+            canon, asr, prior, "dummy.wav", ledger_phrases=["Ottoni"], cascade_enabled=True,
+            attempt_ctx={"slot": 3, "is_last_slot": True})
+        assert verified is False
+        assert cls.classification == "ASR_VALIDATION_UNCERTAIN"
+        assert os.path.exists(tmp_log), "最終slot NGではHuman Review queueへログが書かれるはず"
         with open(tmp_log, encoding="utf-8") as f:
             import json
             record = json.loads(f.readline())
         assert record["canonical_text"] == canon
-        assert len(record["steps"]) == 4
+        assert len(record["steps"]) == 2
     finally:
+        secondary._resolve_unresolved_entity_for_review = orig_resolve
         routing.transcribe = orig_transcribe
         secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
         secondary.HUMAN_REVIEW_LOG_PATH = orig_log_path
@@ -367,14 +432,25 @@ def test_homophone_wait_weight_passes_without_human_review():
 
 def test_homophone_requires_arpabet_match_not_string_similarity():
     # "wet"は"wait"と綴りは近いが発音が異なる(EY/EH)ため、homophone_
-    # candidateにならず、固有名詞由来でもないので即TRUE_CONTENT_MISMATCH
-    # (blind TTS retry対象)のまま、Cascade自体が起動しないこと。
-    canon = "A small wait can protect against a big fear."
-    asr = "A small wet can protect against a big fear."
-    cls = val.classify_asr_match(canon, asr)
-    assert cls.classification == "TRUE_CONTENT_MISMATCH"
-    r = secondary.evaluate_attempt_with_cascade_detail(canon, asr, [], "dummy.wav", cascade_enabled=True)
-    assert r["cascade_invoked"] is False
+    # candidateにならず、CMU Case A/homophoneの救済対象外(TRUE_CONTENT_MISMATCHのまま)。
+    # AUW 委任_03b: DESIGN_01 §4-9 / ユーザー原文「Primary NG→原則Secondary」に追随(旧: Cascade自体が起動しない=
+    # 通常の内容語差はSecondary不呼出でblind retry)。新設計: Primary NGは原則Secondary 1回。ただし救済(PASS)は
+    # Secondary転写が一致した場合のみで、Secondaryも"wet"なら不一致のまま(綴り類似度では絶対にPASSしない=安全側を維持)。
+    orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
+    secondary.get_full_text_via_azure_stt_with_phrase_list = (
+        lambda *a, **k: ("A small wet can protect against a big fear.", None))
+    try:
+        canon = "A small wait can protect against a big fear."
+        asr = "A small wet can protect against a big fear."
+        cls = val.classify_asr_match(canon, asr)
+        assert cls.classification == "TRUE_CONTENT_MISMATCH"
+        assert secondary.is_homophone_candidate_mismatch(cls) is False
+        r = secondary.evaluate_attempt_with_cascade_detail(canon, asr, [], "dummy.wav", cascade_enabled=True)
+        assert r["verified"] is False, "wet/waitは同音ではない: 綴り類似度ではPASSしない"
+        assert r["final_status"] == "TRUE_CONTENT_MISMATCH"
+        assert r["asr_judgement"]["state"] == "NG_BOTH"
+    finally:
+        secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
     print("PASS: test_homophone_requires_arpabet_match_not_string_similarity")
 
 
@@ -418,7 +494,8 @@ def test_case_a_entity_arpabet_match_passes_without_ledger_call():
 def test_case_b_unresolved_entity_does_not_auto_pass_and_enriches_review():
     # "Tse"のようにCMU辞書だけでは安全に比較できない固有名詞は、Ledgerの
     # 情報を蓄積してもPASSさせない(D-2'(B))。ASR結果同士がどれだけ収束
-    # していても(4ステップとも同じ誤認識)、Human Reviewへ進む。
+    # していても(Primary/Secondaryとも同じ誤認識)、Human Reviewへ進む。
+    # AUW 委任_03b: DESIGN_01 §4-9 / §4-7に追随(旧: 4ステップ尽きで即HR。新: HRは最終slot(attempt_ctx.is_last_slot)のNGのみ)。
     orig_transcribe = routing.transcribe
     orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
     orig_resolve = secondary._resolve_unresolved_entity_for_review
@@ -441,7 +518,11 @@ def test_case_b_unresolved_entity_does_not_auto_pass_and_enriches_review():
     try:
         canon = "Kristie Tse links the behavior to anxiety."
         asr = "Christy Tay links the behavior to anxiety."
-        r = secondary.evaluate_attempt_with_cascade_detail(canon, asr, [], "dummy.wav", cascade_enabled=True)
+        r_mid = secondary.evaluate_attempt_with_cascade_detail(canon, asr, [], "dummy.wav", cascade_enabled=True)
+        assert r_mid["verified"] is False, "ASR結果同士の収束だけでは絶対にPASSしない"
+        assert r_mid["human_review_required"] is False, "途中slotは次slotで再生成(HRは最終slotのみ)"
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            canon, asr, [], "dummy.wav", cascade_enabled=True, attempt_ctx={"slot": 3, "is_last_slot": True})
         assert r["verified"] is False, "ASR結果同士の収束だけでは絶対にPASSしない"
         assert r["human_review_required"] is True
         assert "kristie tse" in r.get("pronunciation_lookups", {})
@@ -459,6 +540,7 @@ def test_case_b_unresolved_entity_research_failure_still_reports_unconfirmed():
     # パッケージから黙って省略してはならない。「調べたが確定できなかった」
     # ことを明示するunconfirmed markerを必ず残す(ユーザーの新運用ルール:
     # IPAが確定不能ならその旨を必ず表示する)。
+    # AUW 委任_03b: DESIGN_01 §4-7に追随(HR packageは最終slot NGのときに作る: attempt_ctx.is_last_slot=True)。
     orig_transcribe = routing.transcribe
     orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
     orig_resolve = secondary._resolve_unresolved_entity_for_review
@@ -478,7 +560,8 @@ def test_case_b_unresolved_entity_research_failure_still_reports_unconfirmed():
     try:
         canon = "Kristie Tse links the behavior to anxiety."
         asr = "Christy Tay links the behavior to anxiety."
-        r = secondary.evaluate_attempt_with_cascade_detail(canon, asr, [], "dummy.wav", cascade_enabled=True)
+        r = secondary.evaluate_attempt_with_cascade_detail(
+            canon, asr, [], "dummy.wav", cascade_enabled=True, attempt_ctx={"slot": 3, "is_last_slot": True})
         assert r["human_review_required"] is True
         assert "kristie tse" in r.get("pronunciation_lookups", {}), \
             "research失敗でもspanのentryを省略してはならない"
@@ -525,22 +608,31 @@ def test_non_latin_dominance_info_threshold_boundary():
 
 
 def test_non_latin_cascade_disabled_by_default_even_if_non_latin_and_mismatch():
-    # enable_non_latin_cascade既定False(呼び出し元が渡さない限り)なら、
-    # ASR出力が非ラテン文字主体の不一致でもSecondaryは一切呼ばれず、
-    # rejectのまま(本文segment等、他の全既存呼び出し元と同じ挙動)。
+    # enable_non_latin_cascade既定False(呼び出し元が渡さない限り)なら、非ラテン専用層(non_latin_cascade)は発動しない。
+    # AUW 委任_03b: DESIGN_01 §4-9 / ユーザー原文「Primary NG→原則Secondary」に追随(旧: Secondaryは一切呼ばれずrejectのまま)。
+    # 新設計: 非ラテン専用層は不発動(non_latin_cascade_invoked=False)のまま、Primary NGの一般規則で統一judgeがSecondaryを
+    # 1回呼ぶ。Secondaryが一致すれば自動採用(PASS_WITH_WARNING)、一致しなければrejectのまま(false acceptなし=安全側を維持)。
     orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
     calls = {"secondary": 0}
+    ret = {"text": "new normal"}
 
     def fake_secondary(*a, **k):
         calls["secondary"] += 1
-        return "new normal", None  # Secondaryを呼べばPASSしてしまうはずの値
+        return ret["text"], None
     secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
     try:
         r = secondary.evaluate_attempt_with_cascade_detail(
             "new normal", "新常態", [], "dummy.wav", cascade_enabled=True)
-        assert r["verified"] is False
         assert r["non_latin_cascade_invoked"] is False
-        assert calls["secondary"] == 0, "enable_non_latin_cascade既定Falseの経路でSecondaryを呼んではならない"
+        assert calls["secondary"] == 1, "Primary NGの一般規則でSecondary 1回(非ラテン専用層経由ではない)"
+        assert "non_latin" not in r["asr_judgement"]["adapter"]["layers"]
+        assert r["verified"] is True and r["asr_judgement"]["state"] == "PASS_WITH_WARNING"
+        # 安全側: Secondaryも不一致ならrejectのまま
+        ret["text"] = "Xinjio Tai."
+        r2 = secondary.evaluate_attempt_with_cascade_detail(
+            "new normal", "新常態", [], "dummy.wav", cascade_enabled=True)
+        assert r2["verified"] is False
+        assert r2["non_latin_cascade_invoked"] is False
     finally:
         secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
     print("PASS: test_non_latin_cascade_disabled_by_default_even_if_non_latin_and_mismatch")
@@ -596,7 +688,9 @@ def test_non_latin_cascade_reject_maintained_when_secondary_also_mismatches():
 def test_non_latin_cascade_not_triggered_for_garbled_latin_mismatch():
     # cashless("Kaslis"のようなラテン文字だが誤表記)は非ラテン文字主体
     # 判定の対象外(Trial §4の既知の限界、バグではなく設計上のスコープ)。
-    # enable_non_latin_cascade=TrueでもSecondaryは呼ばれない。
+    # enable_non_latin_cascade=Trueでも非ラテン専用層(non_latin_cascade)は不発動。
+    # AUW 委任_03b: DESIGN_01 §4-9 / ユーザー原文「Primary NG→原則Secondary」に追随(旧: Secondaryは一切呼ばれない)。
+    # 新設計: 非ラテン専用層は不発動のままだが、Primary NGの一般規則で統一judgeがSecondaryを1回呼ぶ。
     orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
     calls = {"secondary": 0}
 
@@ -609,7 +703,9 @@ def test_non_latin_cascade_not_triggered_for_garbled_latin_mismatch():
             "cashless", "Kaslis", [], "dummy.wav", cascade_enabled=True,
             enable_non_latin_cascade=True)
         assert r["non_latin_cascade_invoked"] is False
-        assert calls["secondary"] == 0
+        assert "non_latin" not in r["asr_judgement"]["adapter"]["layers"]
+        assert not any(s["step"] == "non_latin_secondary" for s in r["steps"])
+        assert calls["secondary"] == 1, "Secondaryは統一judgeの1回のみ(非ラテン層との重複呼出なし)"
     finally:
         secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
     print("PASS: test_non_latin_cascade_not_triggered_for_garbled_latin_mismatch")
@@ -641,14 +737,16 @@ def test_negative_fixture_ja_default_no_false_accept():
 def test_negative_fixture_new_formal_not_non_latin_no_secondary_call():
     # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-TRIAL-01陰性対照iiの
     # 実raw出力をfixture化(英語TTSで別の語「new formal」、canonical=
-    # new normal)。ラテン文字のみのためnon_latin cascadeは不発動のまま
-    # reject維持(既存TRUE_CONTENT_MISMATCH経由のblind retryへ委ねる)。
+    # new normal)。ラテン文字のみのためnon_latin cascadeは不発動。
+    # AUW 委任_03b: DESIGN_01 §4-9 / ユーザー原文「Primary NG→原則Secondary」に追随(旧: Secondaryを一切呼ばずreject維持)。
+    # 新設計: 非ラテン専用層は不発動のまま、統一judgeがSecondaryを1回呼ぶ。Secondaryも"new formal"(陰性対照の
+    # 実発話どおり)ならreject維持=false acceptしない(安全側を維持)。
     orig_secondary_fn = secondary.get_full_text_via_azure_stt_with_phrase_list
     calls = {"secondary": 0}
 
     def fake_secondary(*a, **k):
         calls["secondary"] += 1
-        return "new normal", None  # 呼ばれればfalse acceptしてしまうはずの値
+        return "new formal", None  # 実発話は"new formal"のため、独立ASRも同じ別語を返す
     secondary.get_full_text_via_azure_stt_with_phrase_list = fake_secondary
     try:
         r = secondary.evaluate_attempt_with_cascade_detail(
@@ -656,7 +754,8 @@ def test_negative_fixture_new_formal_not_non_latin_no_secondary_call():
             enable_non_latin_cascade=True)
         assert r["verified"] is False
         assert r["non_latin_cascade_invoked"] is False
-        assert calls["secondary"] == 0, "ラテン文字のみのmismatchでnon_latin cascadeを発動してはならない"
+        assert calls["secondary"] == 1, "統一judgeのSecondary 1回のみ(非ラテン層は発動しない)"
+        assert r["asr_judgement"]["state"] == "NG_BOTH"
     finally:
         secondary.get_full_text_via_azure_stt_with_phrase_list = orig_secondary_fn
     print("PASS: test_negative_fixture_new_formal_not_non_latin_no_secondary_call")
