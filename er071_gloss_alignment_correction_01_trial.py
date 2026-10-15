@@ -19,6 +19,10 @@ import threading
 import time
 
 sys.stdout.reconfigure(encoding="utf-8")
+# KP-GLOSS-ALIGNMENT-PRODUCTION-01 委任_03: gloss再整合は既定OFF。DEV/Trialは明示ON(flagが唯一のkill switch。import前に設定)。
+os.environ["EIGO_KP_GLOSS_ALIGNMENT"] = "1"
+print("Trial: gloss alignment explicitly ON (EIGO_KP_GLOSS_ALIGNMENT=1)")
+
 import er003_key_words_gloss_alignment as ga  # noqa: E402
 import er006_model_routing_contract_01 as routing  # noqa: E402
 

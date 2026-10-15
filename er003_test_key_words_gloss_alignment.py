@@ -925,6 +925,42 @@ class DefaultOffIsolation(unittest.TestCase):
         finally:
             ga.GLOSS_ALIGNMENT_ENABLED = old
 
+    def _corrected_canon(self, flag):
+        import unittest.mock as mock
+        import er003_v1_n3_01_scaffold_generate as sc
+        old = ga.GLOSS_ALIGNMENT_ENABLED
+        ga.GLOSS_ALIGNMENT_ENABLED = flag
+        try:
+            originals = [{"rank": 2, "display_phrase": "based on", "source_span": "based on",
+                          "source_sentence": "It is an estimate based on interviews with sellers.", "ja_gloss": "～をもとにした",
+                          "source_reference_contract": "X"}]
+            qa = {f: "PASS" for f in kc.QA_FIELDS}
+            parsed = {"items": [{"rank": 2, "key_phrase": "based on interviews", "changed_from_display_phrase": True,
+                                 "normalization_reason": "restore_semantic_complement", "reasoning": "r", **qa}]}
+            fake = FakeFn([_cresp([(2, False, "インタビューをもとにした", [], "PASS")])])
+            with tempfile.TemporaryDirectory() as d, mock.patch.object(sc.kc, "run_canonicalization_gate",
+                                          return_value=(parsed, "CANONICALIZATION_PASS", [], "m", "resp")),                     mock.patch.object(sc.gloss_align, "make_alignment_fn", return_value=fake) as mk:
+                res = sc.run_key_phrase_canonicalization("ART", originals, d, "A", process="A2_SUPPORT",
+                                                         gloss_alignment_mode="corrected")
+                files = sorted(os.listdir(d))
+            return res, fake, mk, files
+        finally:
+            ga.GLOSS_ALIGNMENT_ENABLED = old
+
+    def test_corrected_mode_without_flag_is_disabled_no_call(self):
+        """委任_03: flagが唯一のkill switch。mode=correctedでもflag未設定ならDISABLED・API 0・HR成果物なし。"""
+        res, fake, mk, files = self._corrected_canon(False)
+        self.assertEqual(res["gloss_alignment_status"], "DISABLED")
+        self.assertEqual(fake.calls, 0)
+        self.assertEqual(mk.call_count, 0)
+        self.assertFalse([f for f in files if "GLOSS" in f.upper() or "HUMAN_REVIEW" in f.upper()])
+
+    def test_corrected_mode_with_flag_runs(self):
+        res, fake, mk, files = self._corrected_canon(True)
+        self.assertNotEqual(res["gloss_alignment_status"], "DISABLED")
+        self.assertGreaterEqual(fake.calls, 1)
+        self.assertTrue(ga.flag_enabled() is False)   # 復元済み(既定OFF)
+
     def test_explicit_on_still_works(self):
         m = _merged([_item(2, "based on", "based on interviews", "～をもとにした", beyond=True)])
         fn = FakeFn([_resp([(2, False, "インタビューをもとにした", "PASS")])])

@@ -61,3 +61,21 @@ JPY1.83(Family X KP段 fresh run のみ。KPのみ上限JPY3以内)。Z mock=0�
 - `PRODUCTION_WIRED`宣言(evidence取得済み・判定待ち)。
 - 旧`enabled`未指定の証跡script(`er071_completion_04_gloss_realign.py`/`_census_replay.py`)を再実行する場合は`EIGO_KP_GLOSS_ALIGNMENT=1`が必要になった(運用メモ)。
 - corrected modeは`enabled=True`をscaffold内で明示する既存設計(上記注意)。flagと独立にcorrectedを動かせるのは、Python引数で`gloss_alignment_mode="corrected"`を明示した場合のみ。flag必須にする追加変更は本委任の範囲外のため行っていない(必要ならFable判断)。
+
+## 6'. (委任_03追記)Family Z 正式runner 実LLM evidence: **fresh**(Production既定kp_fn、実LLM)、KP段のみ、E2E自己確認=No
+- 使用モデル: Production既定のKP routing(`gpt-6-luna`、cost_log.jsonlのmodel_id)。評価Trialではない(Production line、モデル選定は別判断)。TTS実行なし(`--stage kp`で停止、`TTS_EXECUTION_MODE=STANDARD`)。
+- 入力: Melos `run_e2e_02` を **コピー** した新規run `er026_output/family_z_production_e2e_01/melos/run_kga3_off_z_01`(wav・cost_log・stage_log・launch_log・sentinel logは除外してコピー。`run_e2e_01`/`run_e2e_02`は一切未編集。runnerはout_dir固定規約のためこの場所に生成され、証跡を `evidence_z_real/run_off_z_01/` へ複写)。
+- 事前STOP確認: `tools/stop_scope_check_01.py --managed-id KP-GLOSS-ALIGNMENT-PRODUCTION-01 --run-dir <上記run>` -> rc=0(stop=false。2026-10-12 Melos STOP_NOTICEは旧書式で対象run限定のため非適用)。`STOP`/`STOP_ALL`なし。結果: `evidence_z_real/run_off_z_01/stop_scope_check_z_real.json`。
+- コマンド(1回のみ起動、rc=0): `env -u EIGO_KP_GLOSS_ALIGNMENT TTS_EXECUTION_MODE=STANDARD .venv/Scripts/python.exe er026_family_z_fiction_production_runner_01.py --story melos --slug melos --run run_kga3_off_z_01 --mode real --stage kp --regenerate-stage kp_a2 --approved-budget-jpy 6 --tts-execution-mode STANDARD`(PowerShell相当: `$env:TTS_EXECUTION_MODE="STANDARD"; Remove-Item Env:EIGO_KP_GLOSS_ALIGNMENT -ErrorAction SilentlyContinue; ...`)。`--approved-budget-jpy 6`はrunner内部のstage見積guard(kp/2=JPY5)を通すための値で、実費用Guardrailは委任のJPY3(実績JPY1.1191)。b1bはprovenance sha一致でcache再利用(API 0)、a2のみ`--regenerate-stage kp_a2`で実LLM再生成。
+- 実kp_fn=Production既定と同一の根拠: real contextは`hooks`を設定しない(`build_real_context`)ため`_kp_fn_for_ctx`(runner:1164〜1175)は`ctx.hooks.get("kp_fn")`=None、`gloss_alignment_mode`既定legacy -> `w62.run_kp_with_outer_retry`(素のProduction既定)を返す。`stage_kp`(runner:1222〜)がそれを`w62.run_kp_stage(..., kp_fn=_kp_fn_for_ctx(ctx))`で実行。
+- 結果: rc=0、`spent_jpy=1.1191`(stdout: `runner_z_stdout.log`)。`cost_log.jsonl` 3件は全て stage=`kp`(selection/canonicalization/redundancy QA、gpt-6-luna)で、`kp_gloss_alignment`タグ **0件**(run dir全体を`grep -rl kp_gloss_alignment`でも0件)。`a2_result.json`に`gloss_alignment_status: "DISABLED"`、`gloss_alignment_cost_jpy: null`、`gloss_alignment_fallback: null` -> 再整合関数は呼ばれたがflag OFFでno-op(Zの正式経路が`align_glosses`呼出箇所を通過したことの直接証拠)。gloss/HUMAN_REVIEW/NOTICE名のartifact **0件**。
+- provenance区分: runner summaryは`gloss_alignment_mode`を記録しない(既存仕様、追加せず)。legacy既定は`E2EContext.gloss_alignment_mode="legacy"`(コード既定)とstatus=DISABLEDで示す。flag状態はenv未設定(`env -u`)+DISABLED結果による。
+- 限界: a2のみ実LLM(b1bはcache)。TTS以降は未実行(E2E自己確認=No)。
+
+## 7'. (委任_03追記)flag一元化(唯一のkill switch)
+- 変更: `er003_key_words_gloss_alignment.py`に`flag_enabled()`を新設(`GLOSS_ALIGNMENT_ENABLED`を返す)。`er003_v1_n3_01_scaffold_generate.py:734`のcorrected分岐の`enabled=True`直書きを`enabled=gloss_align.flag_enabled()`へ置換。これで`gloss_alignment_mode="corrected"`でも`EIGO_KP_GLOSS_ALIGNMENT=1`が無ければ`status=DISABLED`・API 0・artifact不変。legacy挙動・再整合ロジックは無変更。
+- Trial側: `er071_gloss_alignment_correction_01_trial.py`/`_t3_mock.py`の先頭(import前)で`os.environ["EIGO_KP_GLOSS_ALIGNMENT"]="1"`を明示設定し「Trial: gloss alignment explicitly ON」を出力(setdefaultではない)。
+- test: `DefaultOffIsolation`に2件追加(`test_corrected_mode_without_flag_is_disabled_no_call`=mode=corrected+flag OFF -> DISABLED・fake fn 0 call・make_alignment_fn 0 call・GLOSS/HUMAN_REVIEW file 0、`test_corrected_mode_with_flag_runs`=flag ON -> 実行)。`pytest er003_test_key_words_gloss_alignment.py` 78 passed。
+- T3 mock再実行(JPY0、`gloss_alignment_correction_01/trial_t3_rerun_01/`): 27/27 PASS。
+- Regression(`regression/reg3_*.txt`): er003* 1667件/1663 pass/3 fail+1 error(既存集合と同一: `er003_test_bad`fixture意図fail+`er003_test_p2j_investigate`4件)、er026* 86件/79 pass/7 fail(既存7件=cs_audit 4+post_slowdown 3と同一)、er019* 421/421。新規failure 0。
+- 費用: Z KP a2 JPY1.1191のみ(上限3内)。TTS 0。

@@ -43,6 +43,12 @@ APPROVED_GLOSS_RULES_TEMPLATE_PATH = "er003_v1_translator_briefs/b1_p2_keywords_
 # 意図せず実行されないよう、flagの既定値をOFFへ変更した(安全措置のみ。工程自体のProduction採用ではない)。
 # 明示ON: 環境変数EIGO_KP_GLOSS_ALIGNMENT=1(true/on/yes可)、または align_glosses(enabled=True)/preflight(True)の明示引数(DEV/Trial)。
 GLOSS_ALIGNMENT_ENABLED = os.environ.get("EIGO_KP_GLOSS_ALIGNMENT", "0").strip().lower() in ("1", "true", "on", "yes")
+
+
+def flag_enabled() -> bool:
+    """唯一のkill switch(KP-GLOSS-ALIGNMENT-PRODUCTION-01 委任_03、2026-10-15): EIGO_KP_GLOSS_ALIGNMENT明示ONの判定。
+    gloss_alignment_mode="corrected"の指定だけでは再整合は実行されない(flag OFFならmode無関係にDISABLED・API 0)。"""
+    return bool(GLOSS_ALIGNMENT_ENABLED)
 # OF-227/228: fallback方式。"KEEP_KP_FLAG_FAILED"=(ii)既定 / "REVERT_TO_CANDIDATE_IF_SAFE"=(i)(条件付き)。Q2判断後に確定。
 FALLBACK_KEEP_KP = "KEEP_KP_FLAG_FAILED"
 FALLBACK_REVERT_IF_SAFE = "REVERT_TO_CANDIDATE_IF_SAFE"

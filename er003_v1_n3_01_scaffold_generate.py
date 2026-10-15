@@ -731,7 +731,8 @@ def run_key_phrase_canonicalization(article_text: str, original_items: list, out
     with _cl.logging_context(article_id or "unknown_article", "kp_gloss_alignment"):
         if gloss_alignment_mode == gloss_align.GLOSS_ALIGNMENT_MODE_CORRECTED:
             aligned = gloss_align.align_glosses(merged, article_text, _align_factory, out_dir=out_dir,
-                                                article_id=article_id, enabled=True, mode=gloss_alignment_mode)
+                                                article_id=article_id, enabled=gloss_align.flag_enabled(),
+                                                mode=gloss_alignment_mode)   # flagが唯一のkill switch(mode指定のみでは実行しない)
         else:
             aligned = gloss_align.align_glosses(merged, article_text, _align_factory, out_dir=out_dir,
                                                 article_id=article_id)
