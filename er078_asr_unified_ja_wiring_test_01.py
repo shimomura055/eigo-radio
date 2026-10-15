@@ -94,7 +94,8 @@ def test_secondary_also_ng_is_ng_both_and_next_regeneration(monkeypatch):
     assert d["asr_judgement"]["state"] == uj.NG_BOTH and d["human_review_required"] is False
 
 
-@pytest.mark.parametrize("az", [Az((None, "boom")), Az(("", None)), Az(raises=RuntimeError("down"))])
+# 委任_10 R2: Az(("", None))[エラーなし完了の空転写]は障害ではなくNG_BOTH(tests: er078_asr_unified_wiring_10_test_01.py)。
+@pytest.mark.parametrize("az", [Az((None, "boom")), Az(raises=RuntimeError("down"))])
 def test_secondary_unavailable_is_never_pass(az, monkeypatch):
     d = run(CANON, PRIMARY_NG, az, monkeypatch)
     assert d["verified"] is False
@@ -204,10 +205,14 @@ def test_irregular_numeric_reading_is_warning(monkeypatch):
 # 3. 既存の除外(U1現行維持 / C2 / length / SCG flag / COST_GUARD)
 # ============================================================
 def test_u1_constants_unchanged():
-    assert uj.U1_KEEP_C1_SIMILARITY_EXCLUSIONS is True and uj.U2_FORCE_SECONDARY_SCOPE == "A2_ONLY"
+    # 委任_10: s1条件付きSTOPにより既定は暫定True(旧挙動)。Fable判断で解放(False)する際は judge定数と、このassertと
+    # er078_asr_unified_wiring_10_test_01.py::test_u1_default_state_documented の2箇所だけを更新する。
+    # U2死定数は撤去(呼出点は静的testで固定: er078_asr_unified_wiring_10_test_01.py)
+    assert uj.U1_KEEP_C1_SIMILARITY_EXCLUSIONS is True and not hasattr(uj, "U2_FORCE_SECONDARY_SCOPE")
 
 
 def test_c1_proper_noun_and_low_similarity_excluded_u1_current(monkeypatch):
+    monkeypatch.setattr(uj, "U1_KEEP_C1_SIMILARITY_EXCLUSIONS", True)   # 委任_10: 既定値に依存せず旧挙動を固定
     canon = "解約を難しくする壁は、「スラッジ」と考えられます。"      # UNCERTAIN(entity_like)ではなくTCM側のC1: Latin含む原稿差
     az = Az((canon, None))
     d = run("Metaが説明しました。今日は晴れです。", "Beta が説明しました。今日は晴れです。", az, monkeypatch)
@@ -221,7 +226,7 @@ def test_c1_proper_noun_and_low_similarity_excluded_u1_current(monkeypatch):
 
 
 def test_u1_release_flag_changes_behavior_only_via_constant(monkeypatch):
-    # U1を解放した場合のみ類似度<0.4でもSecondaryを呼ぶ(暫定は現行維持=Trueのまま)
+    # U1を解放した場合のみ類似度<0.4でもSecondaryを呼ぶ(委任_10: 既定は暫定True)
     monkeypatch.setattr(uj, "U1_KEEP_C1_SIMILARITY_EXCLUSIONS", False)
     az = Az(("あ" * 30, None))
     d = run("あ" * 30, "ん" * 30, az, monkeypatch)

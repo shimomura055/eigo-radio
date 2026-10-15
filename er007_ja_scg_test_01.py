@@ -119,8 +119,10 @@ class ScgJudgementTests(_Base):
         self.assertIn("negation_mismatch", d["scg_info"]["exclusion_reason"])
 
     def test_e_similarity_below_0_4_not_executed(self):
+        # 委任_10: 旧挙動(U1=True)を明示固定(解放後=Falseは er078_asr_unified_wiring_10_test_01.py で固定)。
         self.mock_azure.return_value = ("湿度", None)
-        d = self.detail("湿度", "死図塔")
+        with mock.patch.object(ja_secondary.unified_judge_mod, "U1_KEEP_C1_SIMILARITY_EXCLUSIONS", True):
+            d = self.detail("湿度", "死図塔")
         self.assertEqual(self.mock_azure.call_count, 0)
         self.assertFalse(d["verified"])
         self.assertIn("similarity_lt_0.4", d["scg_info"]["exclusion_reason"])
@@ -136,12 +138,21 @@ class ScgJudgementTests(_Base):
         self.assertIn("boom", d["scg_info"]["error"])
 
     def test_f_azure_none_and_empty_fall_back_to_legacy(self):
-        for ret in [(None, "timeout"), ("", None), ("   ", None)]:
+        for ret in [(None, "timeout")]:
             self.mock_azure.return_value = ret
             d = self.detail(CANON, PRIMARY_NG)
             self.assertFalse(d["verified"], ret)
             self.assertEqual(d["scg_result"], "UNAVAILABLE", ret)
             self.assertFalse(d["stop_retrying"], ret)
+        # 委任_10 R2: エラーなし完了の空転写は障害ではなくNG(NG_BOTH)。技術STOPへ流さない。
+        for ret in [("", None), ("   ", None)]:
+            self.mock_azure.return_value = ret
+            d = self.detail(CANON, PRIMARY_NG)
+            self.assertFalse(d["verified"], ret)
+            self.assertEqual(d["scg_result"], "NG", ret)
+            self.assertEqual(d["asr_judgement"]["state"], "NG_BOTH", ret)
+            self.assertFalse(d["stop_retrying"], ret)
+            self.assertNotIn("technical_stop_status", d, ret)
 
     def test_flag_off_is_identical_to_legacy(self):
         self.mock_azure.return_value = (CANON, None)
@@ -395,9 +406,11 @@ class ScgSafetyConstantsTests(unittest.TestCase):
 class OpusReviewFixTests(_Base):
     def test_c1_entity_like_diff_in_mixed_diffs_not_executed(self):
         # 「ガス」->「カス」(カタカナ同士=entity_like)を含む混在差分(漢字差も同時にある)
+        # 委任_10: 旧挙動(U1=True)を明示固定する。
         canon, primary = "熟すと出るガス", "じくすと出るカス。"
         self.mock_azure.return_value = (canon, None)
-        d = self.detail(canon, primary)
+        with mock.patch.object(ja_secondary.unified_judge_mod, "U1_KEEP_C1_SIMILARITY_EXCLUSIONS", True):
+            d = self.detail(canon, primary)
         self.assertEqual(self.mock_azure.call_count, 0)
         self.assertEqual(d["scg_result"], "NOT_APPLIED")
         self.assertIn("entity_like_diff", d["scg_info"]["exclusion_reason"])

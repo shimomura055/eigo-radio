@@ -1,0 +1,287 @@
+{
+ "part": "neg_control",
+ "execute": true,
+ "budget_jpy": 12.0,
+ "t2_check": {
+  "diff_regen_possible": "N/A(新規synthetic文面のみ。既存wavの差分再生成対象なし)",
+  "audio_cache": "なし(synthetic誤文面は再利用元が存在しない)",
+  "budget_flag": "--budget-jpy 12.0",
+  "unexpected_full_regen": "なし(8 clip x TTS 1回、再試行なし)"
+ },
+ "cases": [
+  {
+   "id": "N1_gas_to_kasu",
+   "canon": "ガス会社に連絡してください。",
+   "spoken": "カス会社に連絡してください。",
+   "expected_readings": null,
+   "aim": "カタカナ1字(ガス→カス)=entity_like解放クラス"
+  },
+  {
+   "id": "N2_meta_spelled",
+   "canon": "Metaが新しい発表をしました。",
+   "spoken": "エムイーティーエーが新しい発表をしました。",
+   "expected_readings": {
+    "meta": "メタ"
+   },
+   "aim": "辞書登録Latin語の綴り読み=A7"
+  },
+  {
+   "id": "N3_meta_methane",
+   "canon": "Metaが新しい発表をしました。",
+   "spoken": "メタンが新しい発表をしました。",
+   "expected_readings": {
+    "meta": "メタ"
+   },
+   "aim": "辞書登録Latin語の別語=A7"
+  },
+  {
+   "id": "N4_short_word",
+   "canon": "橋を渡ります。",
+   "spoken": "箸を渡ります。",
+   "expected_readings": null,
+   "aim": "短語の別語(同音異義の別語)"
+  },
+  {
+   "id": "N5_name_one_char",
+   "canon": "走れメロス",
+   "spoken": "走れメロン",
+   "expected_readings": null,
+   "aim": "固有名詞の一文字違い"
+  },
+  {
+   "id": "N6_person_name",
+   "canon": "山田太郎さんが来ました。",
+   "spoken": "山田次郎さんが来ました。",
+   "expected_readings": null,
+   "aim": "人名の一文字違い"
+  },
+  {
+   "id": "N7_number",
+   "canon": "店は午後三時に開きます。",
+   "spoken": "店は午後五時に開きます。",
+   "expected_readings": null,
+   "aim": "数値差=P1維持の確認"
+  },
+  {
+   "id": "N8_negation",
+   "canon": "これは安全ではありません。",
+   "spoken": "これは安全です。",
+   "expected_readings": null,
+   "aim": "否定差=P1維持の確認"
+  }
+ ],
+ "rows": [
+  {
+   "id": "N1_gas_to_kasu",
+   "canon": "ガス会社に連絡してください。",
+   "spoken": "カス会社に連絡してください。",
+   "aim": "カタカナ1字(ガス→カス)=entity_like解放クラス",
+   "wav_sec": 2.48,
+   "wav_sha256": "80bf7dbe277e46497ce4db10c5a7f6a75efb8f94f3230ba720d32baf71d09e40",
+   "primary_text": "ガス会社に連絡してください。",
+   "primary_error": null,
+   "after": {
+    "state": "PASS",
+    "reason_code": "primary_pass",
+    "exclusion_rule": null,
+    "verified": true,
+    "warnings": [],
+    "secondary_called": false,
+    "secondary_text": null,
+    "secondary_label": "",
+    "secondary_error": null,
+    "technical_stop": null,
+    "scg_result": null,
+    "azure_real_calls": 0,
+    "final_status": "EXACT_MATCH"
+   },
+   "false_accept": true
+  },
+  {
+   "id": "N2_meta_spelled",
+   "canon": "Metaが新しい発表をしました。",
+   "spoken": "エムイーティーエーが新しい発表をしました。",
+   "aim": "辞書登録Latin語の綴り読み=A7",
+   "wav_sec": 3.64,
+   "wav_sha256": "36480f0456bff4c334d31ed1368fb817e6e94a173699e3159c6179d3a37b4f48",
+   "primary_text": "METAが新しい発表をしました。",
+   "primary_error": null,
+   "after": {
+    "state": "PASS",
+    "reason_code": "primary_pass",
+    "exclusion_rule": null,
+    "verified": true,
+    "warnings": [],
+    "secondary_called": false,
+    "secondary_text": null,
+    "secondary_label": "",
+    "secondary_error": null,
+    "technical_stop": null,
+    "scg_result": null,
+    "azure_real_calls": 0,
+    "final_status": "NORMALIZED_MATCH"
+   },
+   "false_accept": true
+  },
+  {
+   "id": "N3_meta_methane",
+   "canon": "Metaが新しい発表をしました。",
+   "spoken": "メタンが新しい発表をしました。",
+   "aim": "辞書登録Latin語の別語=A7",
+   "wav_sec": 2.96,
+   "wav_sha256": "803d9348f5ee5e181ef451cb59aa1105d14fa67f44da74f23afcc549c0b46c1c",
+   "primary_text": "メタンが新しい発表をしました。",
+   "primary_error": null,
+   "after": {
+    "state": "NG_EXCLUDED",
+    "reason_code": "p2_exclusion:A7_READING_DICT_MISMATCH",
+    "exclusion_rule": "A7_READING_DICT_MISMATCH",
+    "verified": false,
+    "warnings": [],
+    "secondary_called": false,
+    "secondary_text": null,
+    "secondary_label": "",
+    "secondary_error": null,
+    "technical_stop": null,
+    "scg_result": "NOT_APPLIED",
+    "azure_real_calls": 0,
+    "final_status": "TRUE_CONTENT_MISMATCH"
+   },
+   "false_accept": false
+  },
+  {
+   "id": "N4_short_word",
+   "canon": "橋を渡ります。",
+   "spoken": "箸を渡ります。",
+   "aim": "短語の別語(同音異義の別語)",
+   "wav_sec": 1.76,
+   "wav_sha256": "2d9b911c4836f4f77dc1e1baf9a7dcf49487d3cbddfb2f157ca2c783a4465170",
+   "primary_text": "橋を渡ります。",
+   "primary_error": null,
+   "after": {
+    "state": "PASS",
+    "reason_code": "primary_pass",
+    "exclusion_rule": null,
+    "verified": true,
+    "warnings": [],
+    "secondary_called": false,
+    "secondary_text": null,
+    "secondary_label": "",
+    "secondary_error": null,
+    "technical_stop": null,
+    "scg_result": null,
+    "azure_real_calls": 0,
+    "final_status": "EXACT_MATCH"
+   },
+   "false_accept": true
+  },
+  {
+   "id": "N5_name_one_char",
+   "canon": "走れメロス",
+   "spoken": "走れメロン",
+   "aim": "固有名詞の一文字違い",
+   "wav_sec": 1.84,
+   "wav_sha256": "fec49aa9d383d2b9e674ff06633e335906bdfd843fb34106a39f286bd98bc81a",
+   "primary_text": "走れ、メロン。",
+   "primary_error": null,
+   "after": {
+    "state": "NG_BOTH",
+    "reason_code": "secondary_not_accepted",
+    "exclusion_rule": null,
+    "verified": false,
+    "warnings": [],
+    "secondary_called": true,
+    "secondary_text": "走れ。メロン。",
+    "secondary_label": "ASR_VALIDATION_UNCERTAIN",
+    "secondary_error": null,
+    "technical_stop": null,
+    "scg_result": null,
+    "azure_real_calls": 1,
+    "final_status": "ASR_VALIDATION_UNCERTAIN"
+   },
+   "false_accept": false
+  },
+  {
+   "id": "N6_person_name",
+   "canon": "山田太郎さんが来ました。",
+   "spoken": "山田次郎さんが来ました。",
+   "aim": "人名の一文字違い",
+   "wav_sec": 2.4,
+   "wav_sha256": "2a9b747b02ebfa11405b28b72453fe2529532748ada869b7726067e7abb24c65",
+   "primary_text": "山田次郎さんが来ました。",
+   "primary_error": null,
+   "after": {
+    "state": "NG_BOTH",
+    "reason_code": "secondary_not_accepted",
+    "exclusion_rule": null,
+    "verified": false,
+    "warnings": [],
+    "secondary_called": true,
+    "secondary_text": "山田二郎さんが来ました。",
+    "secondary_label": "TRUE_CONTENT_MISMATCH",
+    "secondary_error": null,
+    "technical_stop": null,
+    "scg_result": "NG",
+    "azure_real_calls": 1,
+    "final_status": "TRUE_CONTENT_MISMATCH"
+   },
+   "false_accept": false
+  },
+  {
+   "id": "N7_number",
+   "canon": "店は午後三時に開きます。",
+   "spoken": "店は午後五時に開きます。",
+   "aim": "数値差=P1維持の確認",
+   "wav_sec": 3.0,
+   "wav_sha256": "0dddba53ca133aa540779c53a24ed2efb2ea90ba2d37f430a425beaa47786c0e",
+   "primary_text": "店は午後5時に開きます。",
+   "primary_error": null,
+   "after": {
+    "state": "NG_PROTECTED",
+    "reason_code": "p1_value_diff",
+    "exclusion_rule": null,
+    "verified": false,
+    "warnings": [],
+    "secondary_called": false,
+    "secondary_text": null,
+    "secondary_label": "",
+    "secondary_error": null,
+    "technical_stop": null,
+    "scg_result": "NOT_APPLIED",
+    "azure_real_calls": 0,
+    "final_status": "TRUE_CONTENT_MISMATCH"
+   },
+   "false_accept": false
+  },
+  {
+   "id": "N8_negation",
+   "canon": "これは安全ではありません。",
+   "spoken": "これは安全です。",
+   "aim": "否定差=P1維持の確認",
+   "wav_sec": 1.72,
+   "wav_sha256": "411c13d72eb303247477a00df39675c266cf0e1c3f052304ed0c44e9b9489fb0",
+   "primary_text": "これは安全です。",
+   "primary_error": null,
+   "after": {
+    "state": "NG_PROTECTED",
+    "reason_code": "p1_protected_diff:negation_marker_diff:'はありません'->'す'",
+    "exclusion_rule": null,
+    "verified": false,
+    "warnings": [],
+    "secondary_called": false,
+    "secondary_text": null,
+    "secondary_label": "",
+    "secondary_error": null,
+    "technical_stop": null,
+    "scg_result": "NOT_APPLIED",
+    "azure_real_calls": 0,
+    "final_status": "TRUE_CONTENT_MISMATCH"
+   },
+   "false_accept": false
+  }
+ ],
+ "false_accept_count": 3,
+ "spend_jpy": 0.8942,
+ "shared_state_diff": {},
+ "stop_file_present": false
+}

@@ -186,17 +186,32 @@ def _scg_heterophone_candidate(diff: dict) -> bool:
 
 
 def _scg_exclusion_reason(cls: "javal.ClassificationResultJA", canonical_text: Optional[str] = None,
-                          primary_text: Optional[str] = None) -> Optional[str]:
+                          primary_text: Optional[str] = None, *, u1_released: bool = False) -> Optional[str]:
     """SCGを実行しない理由を返す。実行してよければNone。
     既存の重大差分除外(数字/否定/類似度0.4未満)に加え、Opus独立レビュー必須1(C1)として
     固有名詞・略語系の差分(entity_like、辞書読み不一致、原稿側のラテン文字差分)が1件でも
-    あれば除外する(Azureが正しい固有名詞読みと偶然一致して誤PASSするのを防ぐ)。"""
+    あれば除外する(Azureが正しい固有名詞読みと偶然一致して誤PASSするのを防ぐ)。
+    u1_released=True(委任_10 U1解放後の診断用。統一judgeのA5/A6撤廃と同じ範囲): 類似度<0.4とC1(entity_like・Latin語)は除外理由にせず、
+    残る除外(登録読み辞書不一致=A7→C2同形異音=A4)を先に判定する(U1R-09: 解放後にA4除外のclipがC1表示にならないよう順序を変える)。
+    既定(False)は旧SCG経路(evaluate_attempt_ja_with_scg等)と既存testのための旧挙動。"""
     if cls.classification != "TRUE_CONTENT_MISMATCH":
         return "not_true_content_mismatch"
     if cls.protected.number_mismatches:
         return f"number_mismatch:{cls.protected.number_mismatches}"
     if cls.protected.negation_mismatches:
         return f"negation_mismatch:{cls.protected.negation_mismatches}"
+    if u1_released:
+        for d in (cls.protected.content_diffs or []):
+            if d.get("reading_dictionary_mismatch"):
+                return f"reading_dictionary_mismatch:{d.get('reading_dictionary_token')}"
+        for d in (cls.protected.content_diffs or []):
+            if _scg_heterophone_candidate(d):
+                return f"heterophone_reading_candidate:{d.get('canonical')}->{d.get('asr')}"
+        if canonical_text is not None and primary_text is not None:
+            neg = _scg_negation_marker_diff(canonical_text, primary_text)
+            if neg:
+                return f"negation_marker_diff:{neg}"
+        return None
     if cls.similarity_ratio < SCG_MIN_SIMILARITY:
         return f"similarity_lt_{SCG_MIN_SIMILARITY}:{round(cls.similarity_ratio, 3)}"
     for d in (cls.protected.content_diffs or []):
@@ -391,7 +406,7 @@ def _apply_variant_layer_voicing_upgrade(canonical_text: str, asr_text: Optional
 #       かつ数値表記を値トークンへ置換した残りが一致のときだけ。DESIGN_01 §5-2) -> 統一judge。
 #   Primary PASS -> 最終ANDゲート(値DIFF/否定差。READING_MATCH等の承認済み根拠は再否定しない)。
 #   Primary NG   -> P1 保護差(値DIFF・否定差・既存の per-span 否定/数字不一致・fugashi否定マーカー差) -> NG_PROTECTED[Secondary不呼出]
-#                   P2 除外表(length NG / C2同形異音 / [U1現行維持]類似度<0.4・C1固有名詞差) -> NG_EXCLUDED[Secondary不呼出]
+#                   P2 除外表(length NG / C2同形異音 / 登録読み辞書不一致[A7=登録読み保護] / [U1: U1_KEEP_C1_SIMILARITY_EXCLUSIONS=False(解放実装済み、既定は暫定True)のときA5類似度<0.4・A6 C1固有名詞差は除外しない]) -> NG_EXCLUDED[Secondary不呼出]
 #                   P3 それ以外 -> Azure Secondary 1回(SecondaryCache共有: 同一wav+engine+lang+phrase_hashで重複呼出なし)。
 #                   Secondary許容集合 = EXACT/NORMALIZED(SCG承認済み集合=JAは10/11承認の2ラベル、DESIGN_01 §4-3c)
 #                                     + ORTHOGRAPHIC_VARIANT_CONFIRMED(Primary#1+Secondary#1の2エンジン確認、追補§6 OF-AUW-08)。
@@ -444,7 +459,7 @@ def _cost_guard_max_usd() -> float:
 
 
 def _scg_c1_reason(cls: "javal.ClassificationResultJA") -> Optional[str]:
-    """U1(C1固有名詞差)に該当する理由(_scg_exclusion_reasonの該当部分と同一判定)。該当なしはNone。"""
+    """C1固有名詞差(reading_dictionary_mismatch・entity_like・Latin語)に該当する理由。該当なしはNone。U1_KEEP_C1_SIMILARITY_EXCLUSIONS=FalseのときA6は無効。"""
     for d in (cls.protected.content_diffs or []):
         if d.get("reading_dictionary_mismatch"):
             return f"reading_dictionary_mismatch:{d.get('reading_dictionary_token')}"
@@ -452,6 +467,18 @@ def _scg_c1_reason(cls: "javal.ClassificationResultJA") -> Optional[str]:
             return f"entity_like_diff:{d.get('canonical')}->{d.get('asr')}"
         if _has_latin(d.get("canonical", "")):
             return f"latin_in_canonical_diff:{d.get('canonical')}"
+    return None
+
+
+NO_SPEECH_SENTINEL = "[NO_SPEECH]"  # Azure正常完了の空転写を表すsentinel(数値・否定を含まない固定文字列)
+
+
+def _scg_reading_dict_reason(cls: "javal.ClassificationResultJA") -> Optional[str]:
+    """A7(登録読み保護、委任_10 R1/U1R-01): Primaryが登録読み辞書expected_readingsとの不一致を具体的に示した場合の理由。なければNone。
+    Secondaryの表層EXACT/NORMALIZED一致は読みの正しさを証明しないため、U1解放後もSecondaryへ回さない(2026-10-11安全条件)。"""
+    for d in (cls.protected.content_diffs or []):
+        if d.get("reading_dictionary_mismatch"):
+            return f"reading_dictionary_mismatch:{d.get('reading_dictionary_token')}"
     return None
 
 
@@ -550,7 +577,10 @@ def evaluate_attempt_ja_with_cascade_detail(
         signals["similarity"] = cls.similarity_ratio
         c1 = _scg_c1_reason(cls)
         if c1:
-            signals["c1_proper_noun_diff"] = c1
+            signals["c1_proper_noun_diff"] = c1  # A6(U1_KEEP_C1_SIMILARITY_EXCLUSIONS=True時のみ有効)
+        rd = _scg_reading_dict_reason(cls)
+        if rd:
+            signals["reading_dictionary_mismatch"] = rd  # A7(登録読み保護): U1解放後も事前除外
         if _scg_c2_candidate(cls):
             signals["c2_homophone_candidate"] = True
         pd = None
@@ -599,6 +629,11 @@ def evaluate_attempt_ja_with_cascade_detail(
         t0 = time.time()
         text, err = _azure_stt_strict(wav_path, language="ja-JP", timeout_seconds=SCG_AZURE_TIMEOUT_SECONDS)
         state["wall_seconds"] = round(time.time() - t0, 2)
+        if err is None and text is not None and not str(text).strip():
+            # 委任_10 R2(U1R-02): Azureが「エラーなしで完了したが無音/雑音で空転写」は障害ではなく「原稿を支持しない」結果。
+            # NG_SECONDARY_UNAVAILABLE(連続失敗カウント・circuit breaker・最終slotの技術STOP)へ流さず、NG_BOTHへ回す。JA限定(ENは不変)。
+            state["no_speech"] = True
+            return unified_judge_mod.SecondaryOutcome(NO_SPEECH_SENTINEL, accepted=False, label="NO_SPEECH")
         return unified_judge_mod.SecondaryOutcome(text, error=err)
 
     def _secondary_accept(canon, stext):
@@ -624,7 +659,8 @@ def evaluate_attempt_ja_with_cascade_detail(
     scg_info = None
     if is_tcm:
         # 除外理由は従来のSCG表記(_scg_exclusion_reason / length_not_ok)を診断用に維持し、統一judgeの理由は別キーで併記する。
-        legacy_reason = _scg_exclusion_reason(cls, canonical_text, primary_asr_text)
+        legacy_reason = _scg_exclusion_reason(cls, canonical_text, primary_asr_text,
+                                              u1_released=not unified_judge_mod.U1_KEEP_C1_SIMILARITY_EXCLUSIONS)
         if legacy_reason is None and not length_ok:
             legacy_reason = "length_not_ok(呼出元の長さ判定が不合格、SCG PASSでも不合格になるため不実行)"
         scg_info = {"scg_applied": False, "scg_result": "NOT_APPLIED", "exclusion_reason": legacy_reason or jr.reason_code,

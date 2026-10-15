@@ -61,9 +61,16 @@ APPROVED_EQUIVALENCE_BASES = frozenset({
     "READING_MATCH",                      # er007 読み一致(JA)
 })
 
-# ---- U1 / U2 待ち(ユーザー判断前=暫定は現行維持。DESIGN_02_ADDENDUM_01 §11) ----
-U1_KEEP_C1_SIMILARITY_EXCLUSIONS = True        # True=現行維持(C1固有名詞差・類似度<0.4をP2除外のまま)。承認後は1行でFalse
-U2_FORCE_SECONDARY_SCOPE = "A2_ONLY"           # LR後v1のSecondary必須化の範囲。暫定=ctx.force_secondaryを呼出側(A2のみ)が指定
+# ---- U1(委任_10、2026-10-16ユーザー指示A-2/A-3「承認済み仕様への実装修正」。解放実装・Regression済み。既定は条件付きSTOP s1により暫定True) ----
+# 既定の経緯: live負例対照でPrimary PASS 3件(Secondary不呼出=U1と無関係)が出たためs1に従いTrueのままcommit。Fableが採否判断し1行でFalse化する。
+# False=JAの類似度<0.4(A5)・C1固有名詞差(A6: entity_like・辞書未登録Latin語)のP2事前除外を撤廃し、Primary NGなら原則Secondaryへ回す。
+# True=旧挙動(A5/A6をP2除外のまま。ロールバック用。unit testでmonkeypatchして固定)。
+# 例外として残す除外: A1/A2(P1 数値DIFF・否定差)、A3(length NG。Primary転写由来で「独立QA」ではない→OPEN起票済み)、
+#   A4(C2同形異音候補、2026-10-11ユーザー逐語採用)、A7(登録読み辞書不一致=登録読み保護。Secondaryの表層一致は読みの正しさを
+#   証明しないため、2026-10-11安全条件[読みでの受理禁止]に従い事前除外のまま。U1フラグの対象外)。
+# U2(force_secondary)の死定数U2_FORCE_SECONDARY_SCOPEは委任_10で撤去(どこからも参照されていなかった。実体は呼出側の
+#   er003_v1_crosslevel_audio_02_common.py `_run_a2_minimal_fallback_attempt` の force_secondary=True 1箇所のみ。静的testで固定)。
+U1_KEEP_C1_SIMILARITY_EXCLUSIONS = True   # 委任_10 s1条件付きSTOPにより暫定True(実装・Regressionは完了。Fableの採否判断で1行False化)
 
 # ---- 費用(秒数ベース。SCGと同じ式: er007_ja_secondary_asr_01.py:309-311、単価 SCG_AZURE_USD_PER_HOUR/SCG_JPY_PER_USD と同値。parity testで突合) ----
 AZURE_USD_PER_HOUR = 1.0
@@ -105,7 +112,7 @@ class ExclusionRule:
     stage: str          # "P1"(保護差) / "P2"(除外)
     langs: tuple
     signal: str         # primary_result.signals / ctx のキー
-    u1_gated: bool = False   # U1待ち=現行維持フラグ(U1_KEEP_C1_SIMILARITY_EXCLUSIONSがTrueの間のみ有効)
+    u1_gated: bool = False   # U1_KEEP_C1_SIMILARITY_EXCLUSIONSがTrueの間のみ有効(旧挙動ロールバック用)
 
 
 SCG_EXCLUSIONS = (
@@ -113,8 +120,9 @@ SCG_EXCLUSIONS = (
     ExclusionRule("A2_NEGATION_DIFF", "否定差/JA否定マーカー差(既存保護の維持)", "P1", ("en", "ja"), "negation_diff"),
     ExclusionRule("A3_LENGTH_NG", "length NG(Secondaryで救えてもlength ANDで不合格)", "P2", ("en", "ja"), "length_ok=False"),
     ExclusionRule("A4_C2_HOMOGRAPH", "C2同形異音候補(Azureが原稿の漢字表記と一致しても読み違いを区別できない)", "P2", ("ja",), "c2_homophone_candidate"),
-    ExclusionRule("A5_SIMILARITY_LT_0_4", "類似度<0.4(現行維持。U1待ち)", "P2", ("ja",), "similarity<0.4", u1_gated=True),
-    ExclusionRule("A6_C1_PROPER_NOUN_DIFF", "C1固有名詞差(現行維持。U1待ち)", "P2", ("ja",), "c1_proper_noun_diff", u1_gated=True),
+    ExclusionRule("A5_SIMILARITY_LT_0_4", "類似度<0.4(U1フラグがTrueの間のみ有効)", "P2", ("ja",), "similarity<0.4", u1_gated=True),
+    ExclusionRule("A6_C1_PROPER_NOUN_DIFF", "C1固有名詞差(U1フラグがTrueの間のみ有効)", "P2", ("ja",), "c1_proper_noun_diff", u1_gated=True),
+    ExclusionRule("A7_READING_DICT_MISMATCH", "登録読み保護: Primaryが登録読み辞書expected_readingsとの不一致を具体的に示した(Secondaryの表層一致は読みの正しさを証明しない。2026-10-11安全条件)", "P2", ("ja",), "reading_dictionary_mismatch"),
 )
 SCG_MIN_SIMILARITY = 0.4  # er007_ja_secondary_asr_01.SCG_MIN_SIMILARITY と同値(parity testで突合)
 
@@ -136,6 +144,8 @@ def _exclusion_hit(ctx: "AttemptCtx", primary: "PrimaryResult", lang: str):
             if sim is not None and sim < SCG_MIN_SIMILARITY:
                 return rule.rule_id
         if rule.rule_id == "A6_C1_PROPER_NOUN_DIFF" and sig.get("c1_proper_noun_diff"):
+            return rule.rule_id
+        if rule.rule_id == "A7_READING_DICT_MISMATCH" and sig.get("reading_dictionary_mismatch"):
             return rule.rule_id
     return None
 

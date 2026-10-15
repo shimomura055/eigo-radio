@@ -516,3 +516,49 @@ T-0: 委任文 `docs/pm/delegation_log/2026-10-16_ASR-TTS-UNIFIED-ALL-ROLES-PROD
 
 
 **注記(2026-10-16 FCJ 委任_02、Dangling Reference Check。既存行は書換えない)**: 本ファイルL370付近の「C runnerから統一ASR判定に到達しない」「JA新規TTS不能(en固定)」は、FAMILY-C-JA-TTS-PRODUCTION-FIX-01で言語経路を修正した後は、C runnerからJA Section(Comment・japanese_title・preview_ja)でも`generate_narration_snippet_verified_strict(...,"ja")`経由の統一判定に到達する設計になった(test/0円検査まで。**有料の実音声evidenceは条件付きSTOP(b)で未取得**。`er079_output/family_c_ja_tts_production_fix_01/EVIDENCE_02.md`)。reuse_from旧音声紐づけも由来照合で是正済み。
+
+
+## 16. 委任_10 U1是正Regression(2026-10-16 JST。追記のみ)
+
+実装: `er078_asr_unified_judge_01.py`(A7新設・`U2_FORCE_SECONDARY_SCOPE`撤去)・`er007_ja_secondary_asr_01.py`(空転写NO_SPEECH・A7 signal・診断順)。**既定値は条件付きSTOP s1により `U1_KEEP_C1_SIMILARITY_EXCLUSIONS=True`(旧挙動)のまま**(下記§16-3)。harness=`er078_auw_runtime_evidence_10.py`、証跡=`evidence_10/`。
+
+### 16-1. frozen replay 25行(API 0、`evidence_10/frozen_replay_10.txt`)
+
+U1=True(旧)→U1=False(解放)で判定が変わるのは25行中2行のみ: g8_kp4_ja_charon_a1(NG_EXCLUDED[A6]→PASS_WITH_WARNING)、g7_meaning_4_a1(NG_EXCLUDED[A5]→PASS_WITH_WARNING)。verified 13→15、Azure呼出 21→23。誤PASS用C群5行(g12/g3/g4/g5/g6)は解放後もNG(誤受理0)。※frozenに解放クラスの負例は無いため、誤受理の検証は§16-3のlive負例対照で行う。
+
+### 16-2. 保存wav x live Azure 8本(reuse wav + 保存Primary転写 + fresh Azure。`evidence_10/saved_azure/result.json`、実費 JPY 1.3333)
+
+| clip | U1作用 | 保存時 | 新state / reason | Secondary(Azure)転写 / label | NG_EXCLUDED→NG_SECONDARY_UNAVAILABLE |
+|---|---|---|---|---|---|
+| S1_melos_title_hangul_a3 | A5 | NG_EXCLUDED(similarity_lt_0.4:0.0) | PASS_WITH_WARNING / secondary_confirmed | 走れ。メロス。 / NORMALIZED_MATCH | False |
+| S2_melos_title_hangul_c5bk | A5 | NG_EXCLUDED(similarity_lt_0.4:0.0) | PASS_WITH_WARNING / secondary_confirmed | 走れ。メロス。 / NORMALIZED_MATCH | False |
+| S3_akb48_title | A6 | NG_EXCLUDED(A6_C1_PROPER_NOUN_DIFF) | NG_BOTH / secondary_not_accepted | Akbフォーティーエイトの新曲スキッシュ。伊藤評価が二作連続センター、近藤ウサギが初選抜。 / TRUE_CONTENT_MISMATCH | False |
+| S4_hr_comment1_minfb_a3 | A6 | NG_EXCLUDED(A6_C1_PROPER_NOUN_DIFF entity_like) | NG_BOTH / secondary_not_accepted | 合言葉はブルルクルクロルックブンムプヌクです。 / TRUE_CONTENT_MISMATCH | False |
+| S5_hr_comment1_a1 | - | ASR_VALIDATION_UNCERTAIN(Primary NG, P3 Secondary) | NG_BOTH / secondary_not_accepted | 合言葉はプルルクルグロルプ文ムプヌクです。 / TRUE_CONTENT_MISMATCH | False |
+| S6_hr_comment1_a2 | - | ASR_VALIDATION_UNCERTAIN(Primary NG, P3 Secondary) | NG_BOTH / secondary_not_accepted | 合言葉はブルルクルクルプンムプヌクです。 / TRUE_CONTENT_MISMATCH | False |
+| S7_melos_title_pass_a2 | - | PASS(Primary EXACT) | PASS / primary_pass | None /  | False |
+| S8_melos_title_c5bk_a2 | - | PHONETIC_MATCH(Primary PASS) | PASS / primary_pass_approved_equivalence:READING_MATCH | None /  | False |
+
+遷移件数(NG_EXCLUDED→NG_SECONDARY_UNAVAILABLE)= **0**。shared_state差分=空、STOPファイル有無=False。
+
+**Melos japanese_title(Hangul転写、s2切り分け)**: S1/S2はPrimary(OpenAI、language=ja固定)がHangul(`시리에 매우스`/`가시 레메로스`)を返したclip。Azure(ja-JP)は`走れ。メロス。`(NORMALIZED_MATCH)を返し、解放後はPASS_WITH_WARNING(SECONDARY_CONFIRMED=事後試聴リスト入り)。判定: Hangul転写はPrimaryの音声認識の書記体系誤り(音が`はしれ メロス`に近いHangul読み、clip長1.5秒で正常attempt 1.5〜1.6秒と同等)と整合し、「TTSが日本語でない音声」の証拠は得られなかった。ただしASR転写だけで音声言語を証明はできない → **s2は非該当(確定ではなく、事後試聴リストでの人間確認が最終担保)**。言語判定QAは新仕様のため実装していない。
+
+### 16-3. live負例対照(synthetic誤文面TTS + fresh Primary/Azure。`evidence_10/neg_control/result.json`、実費 JPY 0.8942)
+
+T-2確認: (1)差分再生成=N/A(新規synthetic文面のみ) (2)音声キャッシュ=なし (3)`--budget-jpy 12`明示 (4)想定外の全再生成=なし(8 clip x TTS 1回)。TTS=`TTS_EXECUTION_MODE=STANDARD`、Production JA方式(speech_metadata_flash_lite、Aoede)。
+
+| id | 原稿(正) | TTSへ渡した誤文面 | Primary転写(live) | Azure転写 | 判定 state / reason | PASS系 |
+|---|---|---|---|---|---|---|
+| N1_gas_to_kasu | ガス会社に連絡してください。 | カス会社に連絡してください。 | ガス会社に連絡してください。 | None | PASS / primary_pass | True |
+| N2_meta_spelled | Metaが新しい発表をしました。 | エムイーティーエーが新しい発表をしました。 | METAが新しい発表をしました。 | None | PASS / primary_pass | True |
+| N3_meta_methane | Metaが新しい発表をしました。 | メタンが新しい発表をしました。 | メタンが新しい発表をしました。 | None | NG_EXCLUDED / p2_exclusion:A7_READING_DICT_MISMATCH | False |
+| N4_short_word | 橋を渡ります。 | 箸を渡ります。 | 橋を渡ります。 | None | PASS / primary_pass | True |
+| N5_name_one_char | 走れメロス | 走れメロン | 走れ、メロン。 | 走れ。メロン。 | NG_BOTH / secondary_not_accepted | False |
+| N6_person_name | 山田太郎さんが来ました。 | 山田次郎さんが来ました。 | 山田次郎さんが来ました。 | 山田二郎さんが来ました。 | NG_BOTH / secondary_not_accepted | False |
+| N7_number | 店は午後三時に開きます。 | 店は午後五時に開きます。 | 店は午後5時に開きます。 | None | NG_PROTECTED / p1_value_diff | False |
+| N8_negation | これは安全ではありません。 | これは安全です。 | これは安全です。 | None | NG_PROTECTED / p1_protected_diff:negation_marker_diff:'はありません'->'す' | False |
+
+PASS/PASS_WITH_WARNING = **3件**(N1/N2/N4)。**3件とも `primary_pass`(Primary ASRがTTS音声を原稿どおりに認識、Secondary不呼出)で、U1解放の有無と無関係**(`evidence_10/neg_control/attribution_replay_U1_true_vs_false.txt`: U1=True/FalseでN1/N2/N4は同一のPASS)。Secondaryまで到達したN5(メロス→メロン)・N6(太郎→次郎)は解放後もNG_BOTH、N3は辞書登録語としてA7除外、N7/N8はP1(数値・否定)でNG_PROTECTED。**解放経路(Secondary経由)の誤受理は0/2**。ただしdelegation条件付きSTOP s1(「1件でもPASS/PASS_WITHWARNING」)に文言上該当するため、定数を`True`のままcommitし報告(1行でFalse化可能)。N1/N2/N4でTTSが実際に誤読したか(Primaryが誤読を補正して認識したか)は音声を聴いていないため未確認。N2のPrimary転写は`META`(綴り読みをPrimaryがラテン文字化)で、登録読み辞書の不一致信号(A7)はPrimary PASS時には発火しない既存のPrimary層の特性(U1と無関係)。shared_state差分=空、STOPファイル有無=False。
+
+### 16-4. 費用meter
+実費(自作ledger見積、`evidence_10/*/cost/spend_ledger.jsonl`): 保存wav x Azure JPY 1.3333 + live負例 JPY 0.8942 = **JPY 2.2275**(見積6・Guardrail12内)。Azure公式usage_log=`evidence_10/*/cost/usage_log.jsonl`。

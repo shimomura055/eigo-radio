@@ -107,7 +107,7 @@ def test_p1_negation_diff_never_calls_secondary(lang, canon, hyp):
     assert r.state == uj.NG_PROTECTED and sec.calls == 0 and r.reason_code == "p1_negation_diff"
 
 
-def test_p2_exclusions_table():
+def test_p2_exclusions_table(monkeypatch):
     sec = MockSecondary("x")
     # A3 length NG (en/ja共通)
     r = unified_judge(ctx_("Hello there friend.", length_ok=False), PrimaryResult(False, "Hello their friend."), sec, lang="en", role="x")
@@ -115,16 +115,21 @@ def test_p2_exclusions_table():
     # A4 C2 同形異音 (ja)
     r = unified_judge(ctx_("今日は晴れ。"), PrimaryResult(False, "今日は晴れ", signals={"c2_homophone_candidate": True}), sec, lang="ja", role="x")
     assert r.state == uj.NG_EXCLUDED and r.audit_record["exclusion_rule"] == "A4_C2_HOMOGRAPH"
-    # A5 類似度<0.4 / A6 C1 (U1待ち=現行維持)
+    # A5 類似度<0.4 / A6 C1 (委任_10: 既定は解放済み。旧挙動はU1=Trueのロールバック時のみ)
+    monkeypatch.setattr(uj, "U1_KEEP_C1_SIMILARITY_EXCLUSIONS", True)
     r = unified_judge(ctx_("今日は晴れ。"), PrimaryResult(False, "全然違う", signals={"similarity": 0.2}), sec, lang="ja", role="x")
     assert r.state == uj.NG_EXCLUDED and r.audit_record["exclusion_rule"] == "A5_SIMILARITY_LT_0_4"
     r = unified_judge(ctx_("今日は晴れ。"), PrimaryResult(False, "今日は晴れ", signals={"c1_proper_noun_diff": True}), sec, lang="ja", role="x")
     assert r.state == uj.NG_EXCLUDED and r.audit_record["exclusion_rule"] == "A6_C1_PROPER_NOUN_DIFF"
     assert sec.calls == 0
+    # A7 登録読み保護(U1に関係なく除外)
+    monkeypatch.setattr(uj, "U1_KEEP_C1_SIMILARITY_EXCLUSIONS", False)
+    r = unified_judge(ctx_("今日は晴れ。"), PrimaryResult(False, "今日は晴れ", signals={"reading_dictionary_mismatch": "x"}), sec, lang="ja", role="x")
+    assert r.state == uj.NG_EXCLUDED and r.audit_record["exclusion_rule"] == "A7_READING_DICT_MISMATCH" and sec.calls == 0
 
 
 def test_u1_flag_releases_a5_a6_in_one_line(monkeypatch):
-    assert uj.U1_KEEP_C1_SIMILARITY_EXCLUSIONS is True  # 暫定=現行維持
+    assert uj.U1_KEEP_C1_SIMILARITY_EXCLUSIONS is True  # 委任_10: s1条件付きSTOPにより暫定True(Fable判断で解放)
     monkeypatch.setattr(uj, "U1_KEEP_C1_SIMILARITY_EXCLUSIONS", False)
     sec = MockSecondary("今日は晴れ。")
     r = unified_judge(ctx_("今日は晴れ。"), PrimaryResult(False, "全然違う", signals={"similarity": 0.2}), sec, lang="ja", role="x")
@@ -136,7 +141,7 @@ def test_u1_flag_releases_a5_a6_in_one_line(monkeypatch):
 
 def test_exclusion_table_is_data_with_expected_ids():
     ids = [x.rule_id for x in uj.SCG_EXCLUSIONS]
-    assert ids == ["A1_NUMBER_DIFF", "A2_NEGATION_DIFF", "A3_LENGTH_NG", "A4_C2_HOMOGRAPH", "A5_SIMILARITY_LT_0_4", "A6_C1_PROPER_NOUN_DIFF"]
+    assert ids == ["A1_NUMBER_DIFF", "A2_NEGATION_DIFF", "A3_LENGTH_NG", "A4_C2_HOMOGRAPH", "A5_SIMILARITY_LT_0_4", "A6_C1_PROPER_NOUN_DIFF", "A7_READING_DICT_MISMATCH"]
     assert {x.rule_id for x in uj.SCG_EXCLUSIONS if x.u1_gated} == {"A5_SIMILARITY_LT_0_4", "A6_C1_PROPER_NOUN_DIFF"}
 
 

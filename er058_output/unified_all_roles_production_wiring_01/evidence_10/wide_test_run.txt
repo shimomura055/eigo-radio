@@ -1,0 +1,299 @@
+........................................................................ [ 11%]
+.........F...F............................................... [ 21%]
+.................................................. [ 29%]
+........................................................................ [ 41%]
+..................F.............F.......................F............... [ 52%]
+........................................................................ [ 64%]
+........................................................................ [ 76%]
+........................................................................ [ 87%]
+........................................................................ [ 99%]
+....                                                                     [100%]
+================================== FAILURES ===================================
+___________ test_koro_kanji_variant_confirmed_by_reading_candidates ___________
+
+    def test_koro_kanji_variant_confirmed_by_reading_candidates():
+        # No.8実例: canonical「ころ」/ASR「頃」。「頃」の辞書上の正当な読み
+        # 候補に「ころ」が含まれ、かつOpenAI(Primary)・Azure(Secondary)の
+        # 異なる2エンジンがこの状態に到達するため、ORTHOGRAPHIC_VARIANT_
+        # CONFIRMEDとしてPASSする(単なる「4回とも同じ表記だった」という
+        # 文字列収束ではなく、読み候補の照合が根拠であることが核心)。
+        import er006_asr_provider_routing_01 as routing
+        import er003_b1_p4_audio as p4
+        orig_openai = routing._transcribe_openai_mini
+        orig_azure = p4.get_full_text_via_azure_stt_continuous
+    
+        canon = "聞き終えるころには、変化が始まっているのかが分かります。"
+        asr_text = "聞き終える頃には、変化が始まっているのかがわかります。"
+    
+        routing._transcribe_openai_mini = lambda *a, **k: (asr_text, None)
+        p4.get_full_text_via_azure_stt_continuous = lambda *a, **k: (asr_text, None)
+        try:
+            r = ja_secondary.evaluate_attempt_ja_with_cascade_detail(canon, asr_text, "dummy.wav", cascade_enabled=True)
+            assert r["verified"] is True
+>           assert r["final_status"] == ja_secondary.ORTHOGRAPHIC_VARIANT_CONFIRMED
+E           AssertionError: assert 'PHONETIC_MATCH' == 'ORTHOGRAPHIC...ANT_CONFIRMED'
+E             
+E             - ORTHOGRAPHIC_VARIANT_CONFIRMED
+E             + PHONETIC_MATCH
+
+er007_ja_secondary_asr_01_test.py:153: AssertionError
+_____ test_single_engine_repetition_does_not_confirm_orthographic_variant _____
+
+    def test_single_engine_repetition_does_not_confirm_orthographic_variant():
+        # 「同一エンジンが同じ表記を繰り返しただけ」では確定させない
+        # (少なくとも2つの異なるエンジンでの裏付けを要求する)。OpenAI
+        # (Primary#1・#2)だけが読み候補を満たし、Azure(Secondary)が
+        # 無関係な内容誤り(TRUE_CONTENT_MISMATCH相当の差)を返す場合は
+        # Human Reviewのままになることを確認する。
+        import er006_asr_provider_routing_01 as routing
+        import er003_b1_p4_audio as p4
+        orig_openai = routing._transcribe_openai_mini
+        orig_azure = p4.get_full_text_via_azure_stt_continuous
+    
+        canon = "聞き終えるころには、変化が始まっているのかが分かります。"
+        openai_text = "聞き終える頃には、変化が始まっているのかがわかります。"
+        azure_text = "聞き終える頃には、別の内容が始まっているのかがわかります。"  # 無関係な内容差
+    
+        routing._transcribe_openai_mini = lambda *a, **k: (openai_text, None)
+        p4.get_full_text_via_azure_stt_continuous = lambda *a, **k: (azure_text, None)
+        try:
+            r = ja_secondary.evaluate_attempt_ja_with_cascade_detail(canon, openai_text, "dummy.wav", cascade_enabled=True)
+>           assert r["verified"] is False
+E           assert True is False
+
+er007_ja_secondary_asr_01_test.py:240: AssertionError
+_ ProductionModuleUnchangedTest.test_production_modules_have_no_uncommitted_diff_caused_by_this_trial _
+
+self = <er020_tts_cooldown_local_rewrite_trial_01_test_01.ProductionModuleUnchangedTest testMethod=test_production_modules_have_no_uncommitted_diff_caused_by_this_trial>
+
+    def test_production_modules_have_no_uncommitted_diff_caused_by_this_trial(self):
+        protected_paths = [
+            "er003_v1_sing01_voice01_generate.py",
+            "er011_human_review_lock_01.py",
+            "er007_ja_secondary_asr_01.py",
+            "er019_family_x_pointless_tts_01.py",
+        ]
+        result = subprocess.run(
+            ["git", "diff", "--stat", "--"] + protected_paths,
+            cwd=os.path.dirname(os.path.abspath(__file__)) or ".",
+            capture_output=True, text=True, check=False,
+        )
+>       self.assertEqual(result.stdout.strip(), "",
+                          f"Production module差分が検出されました: {result.stdout}")
+E       AssertionError: 'er007_ja_secondary_asr_01.py | 48 +++++++[84 chars]s(-)' != ''
+E       - er007_ja_secondary_asr_01.py | 48 ++++++++++++++++++++++++++++++++++++++------
+E       -  1 file changed, 42 insertions(+), 6 deletions(-)
+E        : Production module差分が検出されました:  er007_ja_secondary_asr_01.py | 48 ++++++++++++++++++++++++++++++++++++++------
+E        1 file changed, 42 insertions(+), 6 deletions(-)
+
+er020_tts_cooldown_local_rewrite_trial_01_test_01.py:254: AssertionError
+_ ProductionModuleUnchangedTest.test_production_modules_have_no_uncommitted_diff_caused_by_this_trial _
+
+self = <er020_tts_local_rewrite_natural_english_qa_trial_02_test_01.ProductionModuleUnchangedTest testMethod=test_production_modules_have_no_uncommitted_diff_caused_by_this_trial>
+
+    def test_production_modules_have_no_uncommitted_diff_caused_by_this_trial(self):
+        protected_paths = [
+            "er003_v1_sing01_voice01_generate.py",
+            "er011_human_review_lock_01.py",
+            "er007_ja_secondary_asr_01.py",
+            "er019_family_x_pointless_tts_01.py",
+            "er020_tts_cooldown_local_rewrite_trial_01.py",
+        ]
+        result = subprocess.run(
+            ["git", "diff", "--stat", "--"] + protected_paths,
+            cwd=os.path.dirname(os.path.abspath(__file__)) or ".",
+            capture_output=True, text=True, check=False,
+        )
+>       self.assertEqual(result.stdout.strip(), "",
+                          f"Production/前回Trial module差分が検出されました: {result.stdout}")
+E       AssertionError: 'er007_ja_secondary_asr_01.py | 48 +++++++[84 chars]s(-)' != ''
+E       - er007_ja_secondary_asr_01.py | 48 ++++++++++++++++++++++++++++++++++++++------
+E       -  1 file changed, 42 insertions(+), 6 deletions(-)
+E        : Production/前回Trial module差分が検出されました:  er007_ja_secondary_asr_01.py | 48 ++++++++++++++++++++++++++++++++++++++------
+E        1 file changed, 42 insertions(+), 6 deletions(-)
+
+er020_tts_local_rewrite_natural_english_qa_trial_02_test_01.py:250: AssertionError
+_ FamilyXRunnerKwargWiringTests.test_b1_segments_pass_enable_pronunciation_resolver_true _
+
+self = <er025_pronunciation_resolution_phase3_b1b_en_wiring_01_test_01.FamilyXRunnerKwargWiringTests testMethod=test_b1_segments_pass_enable_pronunciation_resolver_true>
+
+    def test_b1_segments_pass_enable_pronunciation_resolver_true(self):
+        import os
+        import shutil
+        import tempfile
+    
+        import er019_family_x_audio_production_runner_01 as runner
+    
+        tmpdir = tempfile.mkdtemp(prefix="family_x_b1_resolver_wiring_")
+        try:
+            parts = {
+                "title": "Sample Title", "part1": "Part one text.",
+                "heading1": "Heading One.", "body2": "Body two text.",
+                "heading2": "Heading Two.", "body3": "Body three text.",
+                "in_one_line": "In one line text.",
+            }
+            support = {"preview": "Preview.", "comment_1": "C1.", "comment_2": "C2.",
+                       "comment_3": "C3.", "comment_4": "C4."}
+            b1b_dir = os.path.join(tmpdir, "b1b")
+            os.makedirs(b1b_dir, exist_ok=True)
+            with open(os.path.join(b1b_dir, "parts.json"), "w", encoding="utf-8") as f:
+                runner.json.dump(parts, f)
+            with open(os.path.join(b1b_dir, "b1_support_texts.json"), "w", encoding="utf-8") as f:
+                runner.json.dump(support, f)
+    
+            def _ok(*_a, **_kw):
+                return {"status": "OK", "canonical_text": "x"}
+    
+            with mock.patch.object(runner.shared_narration, "ensure_all_shared_narration_b1"), \
+                 mock.patch.object(runner.voice01, "generate_charon_english", side_effect=_ok) as charon_mock, \
+                 mock.patch.object(runner.news_tail_fix, "generate_news_narration_wide_margin",
+                                    side_effect=_ok) as wide_margin_mock, \
+                 mock.patch.object(runner.point_headings, "generate", side_effect=_ok):
+>               runner.generate_family_x_b1_segments(tmpdir)
+
+er025_pronunciation_resolution_phase3_b1b_en_wiring_01_test_01.py:688: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+er078_secondary_run_scope_01.py:68: in wrapper
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+theme_out_dir = 'C:\\Users\\tensh\\AppData\\Local\\Temp\\family_x_b1_resolver_wiring_d2n8kr3u'
+tts_backend = 'structured_separation', style_profile = 'default'
+
+    @secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
+    def generate_family_x_b1_segments(
+            theme_out_dir: str,
+            # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27、
+            # 既定"structured_separation"で既存挙動とbyte-identical): このrunnerが
+            # 唯一、明示的に"speech_metadata_flash_lite"を渡せる呼び出し元
+            # (Dangling Reference Check、設計書§(d))。主記事12segment
+            # (topic_intro/preview/comment_1-4/full_story_part1-3[+heading]/
+            # in_one_line)が対象。
+            # FAMILY-X-02(2026-09-28、ユーザー確定仕様C): Key Phrase
+            # (shared_narration経由のMaster Audio Store)も含め、Family X
+            # ではFlash-Liteへ原則統一する。tts_backendを
+            # `_generate_key_phrase_segments_b1`/`shared_narration.
+            # ensure_all_shared_narration_b1`へそのまま転送する(Master
+            # Audio Keyは`tts_model_id`を含むため、Flash-Lite分は既存
+            # Structured Separation資産と衝突せず別キーで保存される、
+            # 設計はer006_audio_cost_pilot_02_shared_narration.py参照)。
+            tts_backend: str = "structured_separation",
+            # FAMILY-X-COFFEE-P8-FINAL-AUDIO-AND-PRODUCTION-WIRING-01 委任_02
+            # (OPEN-300): "default"は現行とバイト同一。"coffee_p8"はCoffee Full Story限定の
+            # Style置換(runnerはresolve_run_profile経由の値だけを渡す)。
+            style_profile: str = "default") -> dict:
+        """既存Production低レベル関数(voice01.generate_charon_english/
+        news_tail_fix.generate_news_narration_wide_margin)をそのまま呼ぶ。
+        Comment/Preview=Charon英語、本文/In One Line=Aoede(News本文)、
+        Key Phrase=既存Master Audio Store経由(shared_narration)。"""
+        import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+    
+        # M5: profile != defaultでlegacy backendなら課金前にSTOP(P8が黙って落ちるのを防ぐ)。
+        style_profile_mod.assert_profile_backend(style_profile, tts_backend)
+    
+        def _base_role_style(role: str) -> str | None:
+            # Family Xランナーのみがrole別style定数を参照する(Dangling
+            # Reference Check、設計書§(d))。既定backendではNoneを返し、
+            # 各下位関数のstyle_prefix_override=Noneと同じ(既存挙動)。
+            if tts_backend != "speech_metadata_flash_lite":
+                return None
+            return fl_styles.FAMILY_X_ROLE_STYLE_EN.get(role)
+    
+        def _role_style(role: str) -> str | None:
+            # 単一解決関数経由(defaultはbase_getter素通し=バイト同一)。
+            return style_profile_mod.resolve_role_style(style_profile, role, "b1b", _base_role_style)
+    
+        out_dir = f"{theme_out_dir}/b1b"
+        narration_dir = f"{out_dir}/narration"
+        os.makedirs(narration_dir, exist_ok=True)
+    
+        parts = load_json(f"{out_dir}/parts.json")
+        support = load_json(f"{out_dir}/b1_support_texts.json")
+        kp_path = f"{out_dir}/key_phrases/keywords_canonicalized.json"
+        # small_bag run_02(Stage 3c実行時)で発見: Key Phrase選定が構造Gate
+        # (KEY_WORDS_STRUCTURE_INVALID等)でSTOPし、keywords_canonicalized.json
+        # 自体が書かれないケースがある(既存Key Phrase Gateの正常動作、Gateを
+        # 回避・再試行はしない)。そのままload_jsonすると未処理の
+        # FileNotFoundErrorでtts stage全体がクラッシュし、full_story等の
+        # 他segmentの結果すら得られなくなるため、無い場合はkp=Noneとして
+        # Key Phrase生成のみ明示的にスキップし、他segmentは生成を継続する。
+        kp = load_json(kp_path) if os.path.exists(kp_path) else None
+    
+        shared_narration_raw_b1 = ({} if _ONLY_SEGMENTS is not None else
+                                   shared_narration.ensure_all_shared_narration_b1(narration_dir, tts_backend=tts_backend))
+        shared_narration_status = _summarize_shared_narration(shared_narration_raw_b1)
+        _cached = _load_cached_tts_results(out_dir)
+    
+        results = {}
+        topic_intro_text = f"Today's topic is {parts['title']}."
+        with cl.segment_context("topic_intro"):
+            results["topic_intro"] = _generate_or_reuse(
+                _cached, "topic_intro", f"{narration_dir}/topic_intro.wav", lambda: voice01.generate_charon_english(
+                    n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(topic_intro_text)),
+                    f"{narration_dir}/topic_intro.wav",
+                    enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(
+                        "topic_intro"),
+                    # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-
+                    # VALIDATOR-PUNCT-01(OPEN-197是正): Family X runnerのみが
+                    # 明示的にTrueを渡す(Family A/B/C legacy呼び出し元は無変更)。
+                    enable_pronunciation_resolver=True,
+                    style_prefix_override=_role_style("TOPIC_INTRO"),
+                    tts_backend=tts_backend), expected_text=topic_intro_text)
+        results["topic_intro"]["canonical_text"] = topic_intro_text
+    
+        for name in ("preview", "comment_1", "comment_2", "comment_3", "comment_4"):
+            text = support[name]
+            with cl.segment_context(name):
+                results[name] = _generate_or_reuse(
+                    _cached, name, f"{narration_dir}/{name}.wav", lambda text=text, name=name: voice01.generate_charon_english(
+                        n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(text)), f"{narration_dir}/{name}.wav",
+                        # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: 既定
+                        # backendでは_role_style()がNoneを返すため、既存のB1_PREVIEW_
+                        # STYLE_PREFIX_CALMのまま(byte-identical)。flash-lite backend
+                        # 選択時のみTrial実測済みの短いrole style("calm, conversational")
+                        # を優先する。
+                        style_prefix_override=(_role_style("PREVIEW" if name == "preview" else "COMMENT")
+                                                or n3_tts.B1_PREVIEW_STYLE_PREFIX_CALM),
+                        disfluency_qa=True,
+                        enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
+                        # PRONUNCIATION-RESOLUTION-PHASE-3-B1B-EN-WIRING-AND-JA-
+                        # VALIDATOR-PUNCT-01(OPEN-197是正): Family X runnerのみ。
+                        enable_pronunciation_resolver=True, tts_backend=tts_backend),
+                    expected_text=text)
+            results[name]["canonical_text"] = text
+            # 委任_03(OF-Y8): Adv Preview(E1)のM4記録。profileにPREVIEW overrideがあるときだけ付く
+            # (default/他profileは何も書かない=バイト同一)。Comment 1～4は対象外。
+            if name == "preview" and not validation_inheritance.is_untouched_entry(results[name]):
+                style_profile_mod.attach_segment_profile_record(
+                    results[name], style_profile, style_profile_mod.ROLE_PREVIEW, _role_style("PREVIEW"))
+    
+        # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W1、2026-09-29): Heading
+        # Readout撤去(旧Stage 3cのfull_story_part2_heading/full_story_part3_
+        # headingサブsegment生成を削除)。新構造は本文が段落境界で決定論的に
+        # part1/part2/part3へ3分割済み(見出し文が存在しない)ため、本文3
+        # segmentすべてを同一loop・同一TTS呼び出し(news_tail_fix.generate_
+        # news_narration_wide_margin、既存関数無変更)で生成する。
+        for name, text in (
+>           ("full_story_part1", parts["part1"]), ("full_story_part2", parts["part2"]),
+                                                                       ^^^^^^^^^^^^^^
+            ("full_story_part3", parts["part3"]), ("in_one_line", parts["in_one_line"]),
+        ):
+E       KeyError: 'part2'
+
+er019_family_x_audio_production_runner_01.py:925: KeyError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\google\genai\types.py:42
+  C:\Users\tensh\eigo-radio\.venv\Lib\site-packages\google\genai\types.py:42: DeprecationWarning: '_UnionGenericAlias' is deprecated and slated for removal in Python 3.17
+    VersionedUnionType = Union[builtin_types.UnionType, _UnionGenericAlias]
+
+er078_asr_unified_wiring_10_test_01.py::test_force_secondary_true_call_sites_are_exactly_one_production_site
+  <unknown>:6: SyntaxWarning: "\S" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\S"? A raw string is also an option.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED er007_ja_secondary_asr_01_test.py::test_koro_kanji_variant_confirmed_by_reading_candidates
+FAILED er007_ja_secondary_asr_01_test.py::test_single_engine_repetition_does_not_confirm_orthographic_variant
+FAILED er020_tts_cooldown_local_rewrite_trial_01_test_01.py::ProductionModuleUnchangedTest::test_production_modules_have_no_uncommitted_diff_caused_by_this_trial
+FAILED er020_tts_local_rewrite_natural_english_qa_trial_02_test_01.py::ProductionModuleUnchangedTest::test_production_modules_have_no_uncommitted_diff_caused_by_this_trial
+FAILED er025_pronunciation_resolution_phase3_b1b_en_wiring_01_test_01.py::FamilyXRunnerKwargWiringTests::test_b1_segments_pass_enable_pronunciation_resolver_true
