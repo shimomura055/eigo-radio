@@ -506,3 +506,10 @@ T-0: 委任文 `docs/pm/delegation_log/2026-10-16_ASR-TTS-UNIFIED-ALL-ROLES-PROD
 - `secret_scan_01 --staged`: hits=0(33 files、`.wav` は .gitignore で対象外)
 - `git worktree list` に予行 worktree なし。`stop_scope_check` 開始 rc=0・有料 run 前 rc=0・終了 rc=0(`stop_check_07.json`・`evidence_07/stop_check_prepaid.json`・`stop_check_07_end.json`)
 - `er011_human_review_lock_01.py` の本委任での diff 0 行(`origin/main...HEAD` 全体では `asr_judgement` additive 2 行のみ)。有料 API: 約 JPY 0.57(07 単体)
+
+## 15-5. 委任_07b: narrator A2 外側ループの実音声 再実行(cool-down 込み・timeout 20 分)= **完了**
+- 実行: `timeout 1200 er078_auw_runtime_evidence_07.py narr_cap3 --execute --budget-jpy 3`(1回のみ・再起動なし・rc=0)。cool-down(`er020:56 COOLDOWN_SECONDS=600`)は無効化・短縮なし。clip=`full_story_part1_c3`(CS 有効 role のため cool-down 対象=今回は対象のまま完走させた)。開始前 `stop_scope_check` rc=0(`evidence_07/stop_check_prepaid_07b.json`)。前回の途中終了分は `evidence_07/narr_cap3_aborted_first/`(及び `..._stdout.txt`)へ保全。
+- 観測(`evidence_07/narr_cap3/runner_execute.json`・`usage_log.jsonl`): TTS 3・OpenAI ASR 6・Azure 1。attempt1→減速後 NG→attempt2→減速後 NG→**cool-down `cooldown_actual_seconds=600.004`**→attempt3→減速後 NG→`finalize_a2_slowdown_final_ng`。entry: `status=STOPPED`・`tts_generations_used=3`・`asr_judgement.state=NG_BOTH`・`slowdown_applied=true`。Lock `full_story_part1_c3`=`HUMAN_REVIEW_REQUIRED`(`cumulative_tts_attempts=3`・`cumulative_asr_calls=3`・`budget_guard_triggered=false`)。HR queue(隔離)=1 行。Secondary(Azure)重複 wav=0(呼出 1)。`runner_execute.json` 出力済み、`shared_state_unchanged=true`、`shared_files_changed_outside_evidence=[]`、`ja_queue_lines_unchanged=true`(`finish()` 到達で自動検証)。
+- 注: 期待観測の「減速後 NG」は統一 judge の `NG_BOTH`(Primary・Secondary とも不一致)として記録された。委任_07 の想定と矛盾なし。
+- 費用: 本 run 約 JPY 0.72(ledger 0.573→1.2935、委任_07 + 07b 合計 約 1.29、委任 07b 上限 3 内)。
+- 結果: 15-1 の「未完」は解消。narrator `generate_a2_segment_with_slowdown` の通算 3 回→HR 末端を実音声で確認。

@@ -1,23 +1,23 @@
 {
   "full_story_part1_c3": {
-    "state": "RESOLVED",
+    "state": "HUMAN_REVIEW_REQUIRED",
     "canonical_text_sha256": "afd586a6c22cd5a7433fdadbe984aa0e12e77b93629540ab28480129a8b849f5",
     "language": "en",
     "theme_id": "run",
     "level": "a2",
     "segment_id": "full_story_part1_c3",
-    "updated_at": "2026-10-16T04:06:32",
-    "reason": "status=OKで確定しました。",
-    "final_status": "OK",
+    "updated_at": "2026-10-16T04:48:39",
+    "reason": "最終status=STOPPED。post-process(6%減速)後の音声がASR再検証で不一致: classification=TTS_FAILURE",
+    "final_status": "STOPPED",
     "wav_path": "er058_output/unified_all_roles_production_wiring_01/evidence_07/narr_cap3/run/a2/narration/full_story_part1_c3.wav",
-    "cumulative_tts_attempts": 2,
-    "cumulative_asr_calls": 2,
+    "cumulative_tts_attempts": 3,
+    "cumulative_asr_calls": 3,
     "budget_guard_triggered": false,
     "last_attempts_log": [
       {
         "attempt": 1,
         "status": "OK",
-        "duration_seconds": 2.76,
+        "duration_seconds": 2.96,
         "asr_text": "I did not see a lower price today.",
         "asr_text_length": 34,
         "max_len": 94,
@@ -34,7 +34,7 @@
         "repetition_qa_checked": true,
         "repetition_qa_evidence": {
           "flagged": false,
-          "duration_seconds": 2.76,
+          "duration_seconds": 2.96,
           "method_a_ngram": {
             "matches": [],
             "flagged": false,
@@ -46,40 +46,40 @@
           "method_d_spectral_long_lag": {
             "top_matches": [
               {
-                "similarity": 0.9879,
-                "time_a_seconds": 0.03,
-                "time_b_seconds": 2.71,
-                "lag_seconds": 2.68,
+                "similarity": 0.9452,
+                "time_a_seconds": 0.52,
+                "time_b_seconds": 2.38,
+                "lag_seconds": 1.86,
+                "run_length_seconds_at_thresh_0.85": 0.03
+              },
+              {
+                "similarity": 0.9342,
+                "time_a_seconds": 0.77,
+                "time_b_seconds": 1.94,
+                "lag_seconds": 1.17,
                 "run_length_seconds_at_thresh_0.85": 0.01
               },
               {
-                "similarity": 0.9855,
-                "time_a_seconds": 0.1,
-                "time_b_seconds": 2.56,
-                "lag_seconds": 2.46,
-                "run_length_seconds_at_thresh_0.85": 0.01
+                "similarity": 0.9313,
+                "time_a_seconds": 1.14,
+                "time_b_seconds": 2.15,
+                "lag_seconds": 1.01,
+                "run_length_seconds_at_thresh_0.85": 0.06
               },
               {
-                "similarity": 0.9627,
-                "time_a_seconds": 0.25,
-                "time_b_seconds": 2.56,
-                "lag_seconds": 2.31,
-                "run_length_seconds_at_thresh_0.85": 0.01
+                "similarity": 0.928,
+                "time_a_seconds": 0.63,
+                "time_b_seconds": 2.38,
+                "lag_seconds": 1.75
               },
               {
-                "similarity": 0.954,
-                "time_a_seconds": 0.53,
-                "time_b_seconds": 2.52,
-                "lag_seconds": 1.99
-              },
-              {
-                "similarity": 0.9539,
-                "time_a_seconds": 0.28,
-                "time_b_seconds": 2.7,
-                "lag_seconds": 2.42
+                "similarity": 0.9206,
+                "time_a_seconds": 1.35,
+                "time_b_seconds": 2.42,
+                "lag_seconds": 1.07
               }
             ],
-            "best_run_length_seconds": 0.01,
+            "best_run_length_seconds": 0.06,
             "min_lag_seconds": 1.0,
             "sim_threshold": 0.85,
             "decision_threshold_seconds": 0.12,
@@ -88,11 +88,11 @@
             "flagged": false
           },
           "method_d_prime_spectral_short_lag": {
-            "run_length_seconds": 0.24,
-            "time_a": 0.32,
-            "lag": 1.99,
-            "similarity_at_start": 0.7263,
-            "best_run_length_seconds": 0.24,
+            "run_length_seconds": 0.19,
+            "time_a": 1.92,
+            "lag": 0.57,
+            "similarity_at_start": 0.7365,
+            "best_run_length_seconds": 0.19,
             "lag_range_seconds": [
               0.5,
               2.0
@@ -123,12 +123,12 @@
         "asr_judgement": {
           "state": "PASS",
           "reason_code": "primary_pass",
-          "slot": 2,
+          "slot": 3,
           "script_version": "v0",
           "role": "FULL_STORY",
           "lang": "en",
           "segment_key": "full_story_part1_c3",
-          "audio_sha256": "597e6e0ddfde0fb100714b5d1db554ff07af620be1aba46b6ccdd226c880bed7",
+          "audio_sha256": "8a77b82960684eaad1d7e57f7632d9649543097852d1f2b92d4b0f3b65c95ecf",
           "primary": {
             "text": "I did not see a lower price today.",
             "passed": true,
@@ -183,11 +183,11 @@
             "asr_text_present": true,
             "cache": {
               "calls": 2,
-              "hits": 0
+              "hits": 1
             }
           }
         },
-        "attempt_audio_path": "er058_output/unified_all_roles_production_wiring_01/evidence_07/narr_cap3/run/a2/narration/attempts/full_story_part1_c3_attempt2_custom942f25cd.wav"
+        "attempt_audio_path": "er058_output/unified_all_roles_production_wiring_01/evidence_07/narr_cap3/run/a2/narration/attempts/full_story_part1_c3_attempt3_custom942f25cd.wav"
       }
     ]
   }

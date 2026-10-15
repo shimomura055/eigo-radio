@@ -52,14 +52,14 @@
 ## 4. 15条件の最終充足表(2026-10-16 委任_07時点)
 | # | 条件 | 判定 | 根拠・残 |
 |---|---|---|---|
-| 1 | ASR判定仕様と実際のProduction動作が一致 | **一部** | 全状態機械・値ガード・Secondary 1回・試聴・LR/HR末端の実音声を取得(`RUNTIME_EVIDENCE_06.md`§1〜§14)。残=Family C JAの新規生成到達不能(F4=OPEN-372)、Family B A2 narrator見出し/Hook/Tension/Closing・narrator外側ループ最終NGの実音声(§15-1: 07で試行したがcool-down中に自己timeoutで未完) |
+| 1 | ASR判定仕様と実際のProduction動作が一致 | **一部** | 全状態機械・値ガード・Secondary 1回・試聴・LR/HR末端の実音声を取得(`RUNTIME_EVIDENCE_06.md`§1〜§14)。残=Family C JAの新規生成到達不能(F4=OPEN-372)、Family B A2 narrator見出し/Hook/Tension/Closing・(narrator外側ループ最終NGは07b §15-5で実音声取得済み) |
 | 2 | 日本語・英語、全Production音声Sectionに適用 | **一部** | 43行マトリクス中37行を実音声、5行は再利用・複製で判定なしが仕様どおり、Y-00 N/A(§13-10)。未充足=C JA新規生成(F4)とB A2 narrator一部 |
 | 3 | Primary NG→Secondary PASSがWARNING付きで採用 | **充足** | 06b/06d/06e(`xkp`/`nlkp`/`nlneg`ほか)。取込後も中核test 411 passed |
-| 4 | 両NGなら最大3回のTTS生成フロー成立 | **一部** | Dialogue通算3回(`dlg_cap2`)・KP英語4回(`kp4`)・Z `kp_en`・A2減速後NGのHR末端を実音声で確認。残=narrator `generate_a2_segment_with_slowdown`の実音声(finalizeはDialogueと共有・unit test済み)、C JA新規生成(F4) |
+| 4 | 両NGなら最大3回のTTS生成フロー成立 | **充足(一部残: C JA新規生成F4)** | Dialogue通算3回(`dlg_cap2`)・KP英語4回(`kp4`)・Z `kp_en`・A2減速後NGのHR末端に加え、07b(`RUNTIME_EVIDENCE_06.md` §15-5)でnarrator `generate_a2_segment_with_slowdown`の通算3回(cool-down 600.004秒込み)→`NG_BOTH`→Lock HR(cumulative 3)・HR queue 1行・Secondary重複0・shared_state不変を実音声で確認。残=C JA新規生成(F4)のみ |
 | 5 | 数値の同値・異値判定と否定保護 | **充足** | 9例test(`er078_asr_value_guard_01_test_01.py` 58)・`nlneg`・集計oracle 0 |
 | 6 | Connected Speech／M1／F1の既存Regressionに悪化なし | **充足** | 取込後の中核test 411 passed。Melos regression(06・06b)。旧test 83 fileの本予行はmainと同一outcome。ただしCS MIXED時のSecondary単独採用は**意図した挙動変化**(CURRENT_SPEC記載) |
 | 7 | 試聴リストへのWARNING連動 | **充足** | 06b/06d(最終ページ節・導出失敗表示)。後方互換test 53 passed |
-| 8 | Secondary二重呼出・予算超過・無限retryなし | **充足** | 06〜06eの全run重複0(06d 18呼出、06e circuit異常終了F2解消)。07のnarrator途中終了分も重複0(Azure 1)。費用累計 約90円(各上限内) |
+| 8 | Secondary二重呼出・予算超過・無限retryなし | **充足** | 06〜06eの全run重複0(06d 18呼出、06e circuit異常終了F2解消)。07のnarrator途中終了分・07bの完走分とも重複0(Azure 各1)。費用累計 約91円(各上限内) |
 | 9 | Production正式pathのruntime evidence | **一部** | X/B/legacy A/Z/Cの各入口で実音声。残=C JA(F4)・B A2 narrator一部(条件1・2と同じ) |
 | 10 | 必要なUnit／Regression／Integration testがPASS | **充足** | 取込後 中核12 file 411 passed・静的監査15 passed(差分空)・後方互換53 passed・flag OFF経路3 passed。全suiteのper-fileは06eで新規失敗0。既存の失敗(main時点148件等)は同一でAUW起因ではない |
 | 11 | CURRENT_SPEC／DECISION_LOG／OPEN_ITEMSに実態を反映 | **一部(branch上に草案を追記済み。main反映はmerge時)** | `CURRENT_SPEC.md`統一ASR判定仕様節・`DECISION_LOG.md`末尾節+索引・`OPEN_ITEMS.md` OPEN-370〜380・`USER_DECISION_REGISTER_01.md` #83〜#87・`REPORT_LEDGER.md`。**注**: 委任文の「OPEN-356更新」はKGCPW(別項目)の番号のため、OPEN-370を置き場とした |
