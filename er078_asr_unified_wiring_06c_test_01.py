@@ -539,7 +539,7 @@ def test_g_dead_rescue_function_removed():
 def test_h_outer_loop_regenerates_after_slowdown_ng_within_total_budget_3(tmp_path, monkeypatch):
     seq = []
 
-    def fake_post(name, nd, text, result, is_last_slot=True):
+    def fake_post(name, nd, text, result, is_last_slot=True, **kw):
         seq.append(is_last_slot)
         return dict(result, status="OK" if len(seq) == 2 else "STOPPED")      # 1回目の減速後NG、2回目OK
     monkeypatch.setattr(n3_tts, "apply_a2_slowdown_postprocess", fake_post)
@@ -557,7 +557,7 @@ def test_h_outer_loop_regenerates_after_slowdown_ng_within_total_budget_3(tmp_pa
 def test_h_outer_loop_caps_at_total_3_and_last_slot_flag(tmp_path, monkeypatch):
     seq = []
 
-    def fake_post(name, nd, text, result, is_last_slot=True):
+    def fake_post(name, nd, text, result, is_last_slot=True, **kw):
         seq.append(is_last_slot)
         return dict(result, status="STOPPED")
     monkeypatch.setattr(n3_tts, "apply_a2_slowdown_postprocess", fake_post)
@@ -592,7 +592,7 @@ def test_h_dialogue_std_and_voices_a2_use_outer_loop_with_prompt_unchanged(tmp_p
         return {"status": "OK", "attempts_log": [{"a": 1}]}
     monkeypatch.setattr(bvoices, "generate_voice_body_wide_margin", fake_body)
     monkeypatch.setattr(n3_tts, "apply_a2_slowdown_postprocess",
-                        lambda name, nd, text, result, is_last_slot=True: dict(result, status="OK"))
+                        lambda name, nd, text, result, is_last_slot=True, **kw: dict(result, status="OK"))
     monkeypatch.setattr(n3_tts.review_lock, "append_attempt_history_event", lambda *a, **k: None)
     a2prod.generate_voice_body_wide_margin_with_a2_slowdown("point_one", "t", str(tmp_path / "x.wav"), "Puck")
     gens = z_audio.real_generators()

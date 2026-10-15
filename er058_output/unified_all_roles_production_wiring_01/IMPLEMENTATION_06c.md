@@ -63,3 +63,19 @@ T-0: 委任文保存 `docs/pm/delegation_log/2026-10-16_ASR-TTS-UNIFIED-ALL-ROLE
 - commit: e040a86fd (branch feat/auw-unified-asr-01, 5bacf9b47..e040a86fd push済み、main無変更)
 - secret_scan_01 --staged: hits=0 (46 files)
 - 有料API: 0 / JPY 0
+
+
+## 8. 委任_06e 是正(06d `RUNTIME_EVIDENCE_06.md` §13-7 の F1〜F3)
+JPY 3.51(再実 run tstop/kp4/dlg_cap2 各 1 回、token 実測、`evidence_06e/`、詳細は `RUNTIME_EVIDENCE_06.md` §14)。main 無変更。HR Lock(`er011_human_review_lock_01.py`)の git diff 0 行、U1=True・U2=A2_ONLY(`er078_asr_unified_judge_01.py:65-66`)無変更、Prompt/Voice/6% 減速/閾値/判定器 無変更。T-0: `docs/pm/delegation_log/2026-10-16_..._06e.md`(+`_06e_check.json`、FAIL・非ブロッキング)。
+| 項目 | 変更ファイル:関数 | test | 実 run | 一致 |
+|---|---|---|---|---|
+| F2 Z `run_tts_stage` circuit-open 後の `KeyError: 'style'` | `er063_family_z_audio_01.py` `normalize_technical_stop_entry`(新)を `run_tts_stage` の `_store` 前に呼ぶ(技術 STOP entry を `build_entry` へ通す。固有 key 保持、sha256/duration=None) | `er078_asr_unified_wiring_06e_test_01.py::test_f2_*`(run_tts_stage 水準) | `tstop`: 異常終了なし、comment_2/3 に技術 STOP entry、TTS 0、`[TECHNICAL_STOP]` 報告、結果 JSON・evidence 生成 | 一致 |
+| F1 Z `kp_en` の 2 段呼出に外側 guard | `er063` `real_generators` の `kp_en` → `@review_lock.guarded_generate("en")` 付き `_kp_en_two_stage`(legacy `generate_key_phrase_component_verified` と同形・同会計) | `test_f1_*`(是正前の再現を含む 5 本) | `kp4`: TTS 4・Secondary 4・Lock は 4 回後に HR・queue 1 行 | 一致 |
+| F3 A2 外側ループの最終 NG | `er003_v1_n3_01_tts_generate.py` `finalize_a2_slowdown_final_ng`(新)、`generate_with_a2_slowdown_outer_loop`/`generate_a2_segment_with_slowdown` の末尾、`apply_a2_slowdown_postprocess`/`_post_slowdown_unified_judge` に additive `log_human_review`(既定 False) | `test_f3_*`(6 本) | `dlg_cap2`: entry NG_BOTH、Lock HR、queue 1 行、通算 TTS 3 | 一致(narrator 側は unit のみ) |
+- 影響範囲: Production の narrator A2 外側ループ(`generate_a2_segment_with_slowdown`)も同形のため同じ是正が入る(意図)。最終 NG の segment は同一文面の再 run が承認まで `HUMAN_REVIEW_LOCKED`。
+- 撤去・残置: 撤去した規則・検査・test なし。既存 test の double 3 file(05・06c・prodfix)に additive `**kw` のみ追随(期待値不変)。残置: `if stop_retrying:` 8 箇所(flag OFF ロールバック経路)・U1/U2・F5(未変更)。
+- 影響 suite: main 101 file 1,853/27、extra 113 file 2,578/9、rest 102 file 2,868/29(baseline=06c と失敗 id 同一、新規失敗 0)。静的監査 15 passed・CLI 差分 0。
+- 委任_07 申し送り: (a) F4(C の JA 新規 TTS・reuse_from の meta 非複製)、(b) F5/U4(Secondary 障害のみの最終 STOPPED を Lock/LR より前に止めるか。ユーザー判断)、(c) Z entry に `asr_judgement_pre_slowdown` を載せるか、(d) narrator A2 外側ループの実音声 evidence、(e) 偽陽性側の reuse guard(06c(B))、(f) 既存 test が本番 attempt_history/telemetry へ追記する副作用の隔離。
+
+## 9. commit 後の確認(06e)
+(commit 後に追記)

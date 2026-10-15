@@ -118,7 +118,7 @@ A2_SLOWDOWN_TARGET_SEGMENTS = (
 
 
 def _post_slowdown_unified_judge(result: dict, tts_input_text: str, asr_text: str, out_path: str,
-                                 segment_id: str, is_last_slot: bool) -> dict:
+                                 segment_id: str, is_last_slot: bool, log_human_review: bool = False) -> dict:
     """AUW 委任_05(J7): 6%減速後のwavを**統一judge(EN adapter)**で判定する。旧実装は直接
     `en_validator.classify_asr_match`+homophone+UNCERTAIN限定の共有Cascadeだった。
 
@@ -153,6 +153,10 @@ def _post_slowdown_unified_judge(result: dict, tts_input_text: str, asr_text: st
                                            "error": f"{type(exc).__name__}: {exc}"}
         return {"verified": False, "aborted_by_exception": True}
     cls = detail.get("classification")
+    if log_human_review and is_last_slot and detail.get("human_review_required"):
+        # AUW 委任_06e(F3): 外側ループ(通算TTS3回)の最終slotで減速後NG(Primary・Secondary両NG、技術STOPを除く)なら、
+        # 通常経路(evaluate_attempt_with_cascade)と同じ既存の_log_human_reviewでHR queueへ1行(重複は既存の重複抑止)。
+        secondary_asr._log_human_review(detail)
     if detail.get("cascade_invoked") or ledger_error:
         # Secondary/補強層が走った場合のみ従来どおり post_slowdown_cascade を残す(Primary単独PASS/NGでは付けない)。
         result["post_slowdown_cascade"] = {
@@ -175,7 +179,7 @@ def _post_slowdown_unified_judge(result: dict, tts_input_text: str, asr_text: st
 
 
 def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text: str, result: dict,
-                                  is_last_slot: bool = True) -> dict:
+                                  is_last_slot: bool = True, log_human_review: bool = False) -> dict:
     """generate_english_segment_with_fallback()が返した通常ペースの
     結果(status=="OK")に対し、6% time-stretchを適用し、post-process後の
     音声を実際にASRで再検証した上でresultを更新する。post-process後の
@@ -206,7 +210,8 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
     # AUW 委任_05(J7): 旧=直接classify_asr_match+homophone+UNCERTAIN限定の共有Cascade。新=統一judge(EN adapter)。
     # nameは既にこのsegmentのsegment_id(A2_SLOWDOWN_TARGET_SEGMENTS、narration/{name}.wavのbasename)そのもの
     # なのでrole gatingへそのまま渡す(EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01と同じ)。
-    detail = _post_slowdown_unified_judge(result, tts_input_text, asr_text, out_path, name, is_last_slot)
+    detail = _post_slowdown_unified_judge(result, tts_input_text, asr_text, out_path, name, is_last_slot,
+                                          log_human_review=log_human_review)
     _steps = detail.get("steps") or []
     _primary_label = (_steps[0].get("classification") if _steps else None) or "ASR_VALIDATION_UNCERTAIN"
     _cls = detail.get("classification")
@@ -272,6 +277,28 @@ def count_tts_generations_in_result(result: dict) -> int:
     return max(n, 1)
 
 
+def finalize_a2_slowdown_final_ng(out_path: str, tts_input: str, result: dict, language: str = "en") -> dict:
+    """AUW 委任_06e(F3、ユーザー原文L39-49「3回NGでLR/HR」の末端): A2外側ループが通算TTS予算(3回)または周回上限を使い切り、
+    最終周回の**減速後再検証がNG**で終わったときだけ呼ぶ(内側が失敗した場合は内側のguarded_generateが既に
+    STOPPEDをLockへ記録済みのため呼ばない)。内側のguarded関数は減速**前**の生成にOKを返してLockをRESOLVEDにするため、
+    減速後NGの最終STOPPEDがLock/entryに反映されなかった。
+      (i) entryの`asr_judgement`を減速後NGの判定recordへ更新(減速前PASSのstale recordを最上位に残さない)。
+          減速前recordは`asr_judgement_pre_slowdown`へ退避(減速後NG recordが無い[ASR取得失敗等]場合は`asr_judgement`=None)。
+      (ii) 既存`review_lock.record_outcome`へSTOPPEDとして渡す(Lockロジックは無変更。内側の呼出で記録済みのTTS試行を
+          二重計上しないよう`attempts_log`は空で渡す)。→ Lock=HUMAN_REVIEW_REQUIRED。HR queueへの1行は
+          `_post_slowdown_unified_judge(log_human_review=True)`が最終slotの減速後NGで既に書いている。
+      (iii) Local Rewrite(LR)は本関数では新設・変更しない: A2外側ループ内にはLR配線が無く(06d `dlg_cap2`でもLLM呼出0)、
+          status!=OKのentryは従来どおりrunner側の既存処理に渡る。"""
+    pre = result.get("asr_judgement")
+    if pre is not None and "asr_judgement_pre_slowdown" not in result:
+        result["asr_judgement_pre_slowdown"] = pre
+    result["asr_judgement"] = result.get("asr_judgement_post_slowdown_ng")
+    result["human_review_required"] = True
+    lock_result = {"status": "STOPPED", "reason": result.get("reason"), "attempts_log": []}
+    result["review_lock_state_final"] = review_lock.record_outcome(out_path, tts_input, language, lock_result).get("state")
+    return result
+
+
 def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_substring: str,
                                         max_extra_chars: int = 60, max_slowdown_attempts: int = 3,
                                         style_prefix_override: str = None,
@@ -332,10 +359,12 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
     # 取り直さず、減速後NGのSTOPPED結果をそのまま返す(既存STOPPED/Human Review経路)。
     total_budget = review_lock.PRODUCTION_MAX_TTS_ATTEMPTS
     generations_used = 0
+    final_post_slowdown_ng = False
     for attempt in range(1, max_slowdown_attempts + 1):
         remaining = total_budget - generations_used
         if remaining <= 0:
             break
+        final_post_slowdown_ng = False
         result = c.generate_english_segment_with_fallback(
             tts_input, out_path, expected_substring, max_extra_chars=max_extra_chars,
             max_attempts=remaining,
@@ -350,7 +379,9 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
         # AUW 委任_05: 通算TTS予算(または外側ループ上限)が尽きている場合のみ、減速後NGは最終slot(HR対象)。
         result = apply_a2_slowdown_postprocess(
             name, narration_dir, tts_input, result,
-            is_last_slot=(generations_used >= total_budget or attempt >= max_slowdown_attempts))
+            is_last_slot=(generations_used >= total_budget or attempt >= max_slowdown_attempts),
+            log_human_review=True)
+        final_post_slowdown_ng = result.get("status") != "OK"
         slowdown_attempts_log.append({
             "attempt": attempt, "status": result.get("status"),
             "post_slowdown_classification": result.get("post_slowdown_classification"),
@@ -367,6 +398,8 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
         result["tts_generation_cap_reached"] = True
     result["tts_generations_used"] = generations_used
     result["slowdown_attempts_log"] = slowdown_attempts_log
+    if final_post_slowdown_ng:
+        finalize_a2_slowdown_final_ng(out_path, tts_input, result)
     return result
 
 def generate_with_a2_slowdown_outer_loop(name: str, tts_input: str, out_path: str, gen_fn,
@@ -382,17 +415,21 @@ def generate_with_a2_slowdown_outer_loop(name: str, tts_input: str, out_path: st
     generations_used = 0
     slowdown_attempts_log = []
     result = None
+    final_post_slowdown_ng = False
     for attempt in range(1, max_slowdown_attempts + 1):
         remaining = total_budget - generations_used
         if remaining <= 0:
             break
+        final_post_slowdown_ng = False
         result = gen_fn(remaining)
         generations_used += count_tts_generations_in_result(result)
         if result.get("status") != "OK":
             break  # 通常ペース自体が失敗(内側のstandard/fallback exhausted。既存のSTOPPED/Human Review経路)
         result = apply_a2_slowdown_postprocess(
             name, narration_dir, tts_input, result,
-            is_last_slot=(generations_used >= total_budget or attempt >= max_slowdown_attempts))
+            is_last_slot=(generations_used >= total_budget or attempt >= max_slowdown_attempts),
+            log_human_review=True)
+        final_post_slowdown_ng = result.get("status") != "OK"
         slowdown_attempts_log.append({
             "attempt": attempt, "status": result.get("status"),
             "post_slowdown_classification": result.get("post_slowdown_classification"),
@@ -408,6 +445,8 @@ def generate_with_a2_slowdown_outer_loop(name: str, tts_input: str, out_path: st
     if result is not None:
         result["tts_generations_used"] = generations_used
         result["slowdown_attempts_log"] = slowdown_attempts_log
+        if final_post_slowdown_ng:
+            finalize_a2_slowdown_final_ng(out_path, tts_input, result)
     return result
 
 

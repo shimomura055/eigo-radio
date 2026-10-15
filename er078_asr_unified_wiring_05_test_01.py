@@ -180,7 +180,7 @@ def test_j7_is_last_slot_passed_to_adapter_by_outer_loop_budget(tmp_path, monkey
     import er003_v1_n3_01_tts_generate as tg
     seen = []
 
-    def spy_pp(name, narration_dir, text, result, is_last_slot=True):
+    def spy_pp(name, narration_dir, text, result, is_last_slot=True, **kw):
         seen.append(is_last_slot)
         return {"status": "STOPPED", "reason": "x"}
 

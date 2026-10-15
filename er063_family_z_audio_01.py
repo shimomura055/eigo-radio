@@ -626,6 +626,7 @@ def real_generators() -> dict:
     import er003_v1_repro01_main_generate as repro01
     import er012_b_family_voices_production_01 as bvoices
     import er020_tts_retry_local_rewrite_01 as retry_primitive
+    import er011_human_review_lock_01 as review_lock
 
     def cs(spec):
         return retry_primitive.connected_speech_enabled_for(spec.clip_id)
@@ -679,7 +680,15 @@ def real_generators() -> dict:
         return charon_en(spec, out_path) if spec.level == "b1b" else ja_simple(spec, out_path)
 
     def kp_en(spec, out_path):
-        text = _norm_for_tts(spec)
+        # AUW 委任_06e(F1): legacy/X入口(`generate_key_phrase_component_verified`、@guarded_generate("en"))と同じく、
+        # 2段呼出(MINIMAL×2 → ENGLISH_LOCK×2、2026-09-01ユーザー決定の4回構成)を**外側guard1つ**で包む。
+        # 外側guardが無いと1段目の最終STOPPEDを内側guardがLockへ記録し、2段目がHUMAN_REVIEW_LOCKEDで0 APIになり
+        # 4回構成が2回で止まった(06d `kp4`)。内側は同一out_pathのreentrancy guardでcheck/recordを行わず、record_outcomeは
+        # 最終結果で1回だけ発火する(Lockロジックは無変更)。
+        return _kp_en_two_stage(_norm_for_tts(spec), out_path, spec)
+
+    @review_lock.guarded_generate("en")
+    def _kp_en_two_stage(text, out_path, spec):
         primary = repro01.generate_narration_snippet_verified_strict(
             text, "en", out_path, text, max_extra_chars=10, max_attempts=repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS,
             safety_margin_seconds=repro01.KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=True,
@@ -698,6 +707,11 @@ def real_generators() -> dict:
             slot_offset=repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS,
             total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS)  # AUW 委任_05: 4回構成の後半(最終slot)
         fb["fallback_used"] = True
+        # legacy `generate_key_phrase_component_verified`と同じ会計: record_outcomeの実TTS試行数(=4)のため、1段目の
+        # attempts_logをfallback_attempts_logへ載せる(監査用の別名も同じ)。
+        fb["fallback_attempts_log"] = primary.get("attempts_log")
+        fb["minimal_attempts_log"] = primary.get("attempts_log")
+        fb["english_lock_attempts_log"] = fb.get("attempts_log")
         return fb
 
     def kp_expl_en(spec, out_path):
@@ -982,6 +996,7 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
                 _handle_local_rewrite(entry, spec, article_text, revalidate_fn, story_key, level, run_dir)
             except FamilyZLocalRewriteStop as e:
                 deferred_stop = e  # 監査記録を書き終えてからSTOPする(実費をかけた生成結果を失わない)
+        entry = normalize_technical_stop_entry(spec, out_path, entry)
         _store(segments, key_phrases, spec, entry)
         evidence.append(_evidence_row(spec, out_path, entry))
         save_checkpoint(level_dir, segments, key_phrases)
@@ -1007,6 +1022,22 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
         raise deferred_stop
     return {"dry_run": False, "planned": planned, "results_path": results_path, "evidence_path": ev_path,
             "statuses": {r["clip_id"]: r["status"] for r in evidence}}
+
+
+def normalize_technical_stop_entry(spec: ClipSpec, out_path: str, entry: dict) -> dict:
+    """AUW 委任_06e(F2): circuit open時に`guard_generate`が返す技術STOP entry(`technical_stop=True`、`style`等を持たない最小dict)を、
+    通常entryと同じ形(`build_entry`)にして返す。06dの`tstop`ではこのentryが`build_entry`を通らず`_evidence_row`が
+    `KeyError: 'style'`で`run_tts_stage`を異常終了させた。status/technical_stop/restartable/approval_required/
+    human_review_required/reason/events等の技術STOP固有keyは保持する。音声は生成していないため`sha256`/`duration_seconds`は
+    None(前回の残存wavを今回の結果として記録しない)。通常entry(`style`あり)はそのまま返す。"""
+    if not (isinstance(entry, dict) and entry.get("technical_stop") is True and "style" not in entry):
+        return entry
+    base = build_entry(spec, out_path, {"status": entry.get("status")})
+    base.update(entry)
+    base["sha256"] = None
+    base["duration_seconds"] = None
+    base["z_adoption"] = "failed"
+    return base
 
 
 def _store(segments: dict, key_phrases: dict, spec: ClipSpec, entry: dict) -> None:

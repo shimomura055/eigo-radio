@@ -418,3 +418,66 @@ Production コード変更は **E の 1 箇所のみ**(`er003_v1_n3_01_tts_gener
 - `secret_scan_01 --staged`: hits=0 (391 files、`.wav`/`.mp3`/Master Store 複製/reuse_src は commit 対象外)
 - commit 後 `er019_family_x_pointless_01_test_01.py::FamilyAUnchangedTest` を含め 10 passed(E の未 commit 差分による失敗が解消)
 - 有料 API: JPY 23.83(06d 単体)
+
+
+---
+
+# 委任_06e 追記(2026-10-16): 06d で判明した実 run 不整合 F1〜F3 の是正と再実 run
+
+## 14-1. 当初目的(ユーザー原文の逐語。`docs/pm/delegation_log/2026-10-15_ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01_01.md`)
+- L58「Primary・Secondary両方NGなら次のTTS再生成へ進む。」
+- L39-49(3 回 NG で LR/HR): 同原文の該当節(06c §0 / 本書 §13-1 と同じ。HR Lock・LR は既存仕様の末端)。
+- DESIGN_01.md:73(KP 英語 phrase の 4 回構成 = 2026-09-01 ユーザー決定)は既存例外として維持。
+T-0: 委任文 `docs/pm/delegation_log/2026-10-16_ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01_06e.md`、checker=`_06e_check.json`(FAIL: 標準テンプレ見出し欠落、非ブロッキング)。stop_scope_check: T-0 と各 run 前(`evidence_06e/stop_check_T0.json`・`evidence_06e/<run>/stop_check_pre.json`)すべて rc=0。有料 run の再起動なし(3 run 各 1 回)。
+
+使用モデル(最新か): 06d と同じ Production 現行構成(Primary ASR=gpt-4o-mini-transcribe、Secondary=Azure Speech、TTS=gemini-3.8-flash-lite-tts、LR の LLM=gpt-6-luna)。評価用に選んだモデルではなく Production 経路そのもの(§0 と同じ)。
+
+## 14-2. 実行 run と費用(`evidence_06e/cost/spend_ledger.jsonl`、合計 **JPY 3.51**、上限 10 の 35%、token 実測 `basis=token_actual`)
+| run | 内容(Production 入口 `Z.run_tts_stage`、故障注入は 06d と同一) | TTS | Primary ASR | Azure(呼出/同一 wav 重複) | LLM | JPY |
+|---|---|---|---|---|---|---|
+| `tstop` | b1b comment×3、Secondary のみ mock 障害 | 4 | 4 | 0(mock) | 4(Luna、LR) | 1.3719 |
+| `kp4` | a2 `kp_en` "Xzqwtrlk wrangle"(Z 入口) | 4 | 4 | 4 / 0 | 0 | 0.6467 |
+| `dlg_cap2` | a2 Dialogue(Std)、減速段階の出力を別文の実音声へ 3 回差替 | 3 | 6 | 1 / 0 | 0 | 1.4922 |
+06d 比: tstop 1.6239→1.3719、kp4 0.3364→0.6467(TTS 2→4 回=是正で 4 回構成が成立した分)、dlg_cap2 1.5022→1.4922。各 run の `shared_state_unchanged=true`・`shared_files_changed_outside_evidence=[]`・JA queue 2 ファイル行数不変(`runner_execute.json`)。隔離 HR queue/Lock/attempt_history は `evidence_06e/<run>/`。
+
+## 14-3. F2 `tstop`(Z `run_tts_stage` の circuit-open 後)
+- 是正: `er063_family_z_audio_01.py` `normalize_technical_stop_entry`(新)を `run_tts_stage` の `_store`/`_evidence_row` の前に挿入。技術 STOP entry を `build_entry` で通常 entry 形にし、技術 STOP 固有 key(status/technical_stop/restartable/approval_required/human_review_required/reason/events)は保持、`sha256`/`duration_seconds`=None(残存 wav を今回の結果として記録しない)。
+- 実測(`tstop/runner_execute.json`、`tstop/stdout.log`): **`stage_exception=null`(06d: `KeyError: 'style'`)**。`stage_result.statuses`={comment_1: STOPPED, comment_2/comment_3: `TECHNICAL_STOP_SECONDARY_UNAVAILABLE`}。結果 JSON・`runtime_evidence_04C.json` ともに生成(`results_json_exists=true`/`evidence_json_exists=true`、06d は未生成)。comment_2/3 は TTS 0・attempts 0(`clip_table.md`/`clip_rows`)、entry は `technical_stop=true, restartable=true, approval_required=false, human_review_required=false`。stdout に `[TECHNICAL_STOP] Secondary ASR障害: events=4 circuit_open=True types=['SECONDARY_CIRCUIT_OPEN','SECONDARY_UNAVAILABLE']。Human Review Lock非投入・承認不要・再実行で再開可。`。HR queue ファイルは作られず(技術 STOP は queue 対象外)。
+- 06d からの差分: 異常終了 → 正常終了+技術 STOP entry 記録+evidence 出力。**変わらないもの**(F5/U4・変更しない): comment_1 は 3 attempt すべて `NG_SECONDARY_UNAVAILABLE` で最終 `STOPPED`、leaf 内 Review Lock は `HUMAN_REVIEW_REQUIRED`(`tstop/runner_execute.json: review_lock_state.comment_1`、cumulative_tts_attempts=3)、b1b comment は LR(Luna 4 call+TTS 1)まで進んだ。
+
+## 14-4. F1 `kp4`(Z `kp_en` 4 回構成)
+- 是正: `er063` `real_generators()` の `kp_en` を、legacy/X 入口 `generate_key_phrase_component_verified`(`@guarded_generate("en")`)と同形の外側 guard 付き `_kp_en_two_stage(text, out_path, spec)` に変更。1 段目 MINIMAL×2→2 段目 ENGLISH_LOCK×2(slot_offset 0/2、total 4)の呼出・Prompt・閾値は不変。legacy と同じ会計(`fallback_attempts_log`=1 段目の attempts_log)。HR Lock ロジックは無変更。
+- 実測(`kp4/runner_execute.json`、`kp4/attempt_history.jsonl`): **TTS 4・Secondary 4(同一 wav 重複 0)**(06d: TTS 2・Secondary 2・`HUMAN_REVIEW_LOCKED`)。`attempts_detail` の `asr_judgement.slot` は MINIMAL 1・2、ENGLISH_LOCK 3・4。Lock は 1 段目 STOPPED では立たず、4 回目の最終 NG 後に **`HUMAN_REVIEW_REQUIRED`(cumulative_tts_attempts=4)**。**HR queue は 1 行**(最終 slot のみ。06d: 0 行で Lock だけ立った)。mainにも同構造があった既存事象を AUW の全 Family 統一の範囲で是正。legacy 入口 `kp4_leaf`(06d)と同じ 4 回/queue 1 行。
+
+## 14-5. F3 `dlg_cap2`(Dialogue/Voices A2 外側ループの通算 3 回目 NG)
+- 是正: `er003_v1_n3_01_tts_generate.py` に `finalize_a2_slowdown_final_ng`(新)。外側ループ(`generate_with_a2_slowdown_outer_loop`=Dialogue/Voices A2、および同構造の narrator `generate_a2_segment_with_slowdown`)で、最終周回の減速後再検証が NG のときだけ呼ぶ(内側が失敗した場合は内側 guard が STOPPED を記録済みのため呼ばない)。(i) entry の `asr_judgement`=減速後 NG の判定 record、減速前 record は `asr_judgement_pre_slowdown` へ退避(減速後 NG record が無ければ None)。(ii) 既存 `review_lock.record_outcome` へ STOPPED として渡す(内側が記録済みの TTS 試行を二重計上しないよう `attempts_log` 空)。HR queue 1 行は `apply_a2_slowdown_postprocess(log_human_review=True)`→`_post_slowdown_unified_judge` が最終 slot の減速後 NG でだけ既存 `_log_human_review` を呼ぶ(既定 False=他の直接呼出は無変化)。(iii) LR は新設せず(A2 外側ループ内に LR 配線は元々無い)。
+- 実測(`dlg_cap2/runner_execute.json`): TTS 3(通算 3 回で打切り、4 回目なし)・Secondary 1(同一 wav 重複 0)・entry status `STOPPED`、**entry `asr_judgement.state=NG_BOTH`(primary.label=TTS_FAILURE。06d: 減速前の PASS のまま)**、Lock **`HUMAN_REVIEW_REQUIRED`**(`final_status=STOPPED`、cumulative_tts_attempts=3。06d: `RESOLVED`)、**HR queue 1 行**(`final_status=TTS_FAILURE`。06d: 0 行)。`attempt_history` の PROCEED 行は OK/RESOLVED ×3 の後に `STOPPED/HUMAN_REVIEW_REQUIRED(tts_this_call=0、二重計上なし)`。
+- 観測(未変更): Z の entry は `build_entry` が `asr_judgement_pre_slowdown` を持ち込まないため `tts_generation_results.json` には退避 PASS record は出ない(leaf result と attempt_history の PASS 行には残る。委任_07 で Z entry へ additive に載せるか判断)。減速後判定の record の `slot` は `attempt_ctx={"slot":1}` 固定で 1 のまま(既存、変更せず)。narrator 側は実音声未取得(unit test のみ)。
+
+## 14-6. test(通信遮断 plugin `netguard` 付き、API 0)
+- 新規 `er078_asr_unified_wiring_06e_test_01.py` **11 passed**(F2 run_tts_stage 水準 circuit-open[技術 STOP entry が結果 JSON に載る・残 clip TTS 0・`[TECHNICAL_STOP]` 報告・異常終了なし]/F1[是正前の再現=2 段目が `HUMAN_REVIEW_LOCKED`、4 回構成、1 段目 STOPPED で Lock 先立ちなし、1 段目 OK は 2 段目へ行かない]/F3[通算 3 回 NG で asr_judgement 更新・Lock HR・queue 1 行・二重計上なし、再取り直し成功時は finalize しない、内側失敗時は二重記録しない、narrator 同形、直接呼出は queue 非書込])。
+- 既存 test の追随(α類: `apply_a2_slowdown_postprocess` の test double に additive kwarg `log_human_review` を受ける `**kw` を追加): `er078_asr_unified_wiring_05_test_01.py`(spy_pp)、`er078_asr_unified_wiring_06c_test_01.py`(fake_post×2・lambda)、`er058_asr_tts_prodfix_01_test_01.py`(`_stopped_slowdown`・`ok_slowdown`)。期待値の変更なし。
+- 影響 suite per-file(`patch_06e/test_post_06e_{main,extra,rest}.json`+`test_fix_rerun.json`、`patch_06e/summary_06e.json`): main 101 file 1,853 passed/27 failed(baseline=06c 100 file 1,840/29)、extra 113 file 2,578/9(同一)、rest 102 file 2,868/29(同一)。**06c baseline の失敗 id に無い新規失敗 0**(初回に出た新規 8 件=05 の spy 1・prodfix の double 7 は上記追随で解消)。main の baseline 失敗のうち 2 件(`ProductionModuleUnchangedTest` ×2)は 06e 時点で通過。AUW 中核 file(06e 11・06c 44・05 50・prodfix 27・er063 47 ほか)は全 passed。静的監査 `er078_asr_unified_wiring_static_audit_01.py` 15 passed、CLI 差分(`evidence_06e/static_audit_diff_06e.json`)=`unlisted_new_calls:[] / vanished:[] / count_changed:[]`(06c snapshot と一致)。`er011_human_review_lock_01.py` と `er078_asr_unified_judge_01.py`(U1=True・U2=A2_ONLY)の git diff は 0 行。
+
+## 14-7. 15 必須受入条件の差分(06d 後 → 06e 後。変化のあるもののみ)
+| # | 06d 後 | 06e 後 | 根拠 |
+|---|---|---|---|
+| 4 両 NG→最大 3 回の TTS 生成フロー | 一部充足(Z KP 英語は F1 で 2 回止まり、A2 減速後 NG の HR 末端は F3) | **充足に近づく(F1・F3 は実音声で解消。残は C の JA 新規生成 F4 のみ)** | `kp4`: TTS 4・queue 1・Lock 4 回後。`dlg_cap2`: 通算 3 回・entry NG・Lock HR・queue 1 |
+| 8 Secondary 二重呼出・予算・無限 retry なし | 充足(circuit 異常終了 F2 は別途) | **充足(F2 解消)** | `tstop`: 異常終了なし・技術 STOP entry・`[TECHNICAL_STOP]`・残 clip TTS 0。06e 全 run 重複 0 |
+| 1 / 2 / 9 | 一部充足 | 一部充足(F1〜F3 の不整合は解消。残は F4=C の JA 新規生成と B の A2 narrator 実音声) | 変化なし(F4 は本委任の対象外) |
+| 3 / 5 / 6 / 7 / 10 | 充足 | 充足 | 06e の ASR 判定コード変更なし(判定器・閾値・Prompt・Voice・速度は不変) |
+| 11 / 12(merge)/ 13 / 15 | 未充足 | 未充足 | 委任_07 / Fable |
+| 14 | 一部充足 | 一部充足 | 下記 F5・観測を追加 |
+
+## 14-8. 逸脱・発見(正直な記録)
+- **F5(変更しない・U4 と同根)**: Secondary 障害のみの最終 STOPPED が leaf 内 Lock に入り(`tstop` comment_1)、Local Rewrite まで進む件は、依頼どおり未変更。
+- **Production 動作の変化(意図)**: A2 外側ループ(narrator `generate_a2_segment_with_slowdown`・Dialogue/Voices A2)の通算 3 回目の減速後 NG は、これまでの `RESOLVED`+STOPPED から **`HUMAN_REVIEW_REQUIRED` Lock+HR queue 1 行** になる(原文 L39-49 の末端)。同一 segment・同一文面の再 run は承認(`approve_regenerate`)まで `HUMAN_REVIEW_LOCKED` で 0 API になる。
+- 06d の逸脱(b)の再発防止: 有料 run 3 本は suite と並行させず、suite は有料 run の完了後に実行した。ただし既存 test(ProductionModuleUnchanged 系ほか)が本番 `er011_output/attempt_history.jsonl`・telemetry 等の tracked ファイルへ追記する副作用(ProductionModuleUnchanged 系に限らない既存 test 全般)は 06d と同じく発生した(`md5sum` 前後で attempt_history 変化を確認)。これらは作業ツリーで既に差分ありのため stage していない。evidence run 自身の隔離は `shared_state_unchanged=true`。
+- 新規仕様候補: なし(承認済み設計・既存原文の末端の是正)。
+
+## 14-9. 判定材料(宣言しない)
+- 満たす材料: F1・F2・F3 は Production 入口の実音声で期待どおり(誤受理 0・数値/否定の誤 PASS 0・新規失敗 0・Secondary 重複 0・Lock ロジック/U1/U2 無変更)。06e 実費 JPY 3.51、06+06b+06d+06e ≒ 89.2。
+- 満たしていない材料: F4(C の JA 新規生成・reuse_from の meta)、F5/U4(ユーザー判断)、条件 11・12(merge)・13・15。
+
+## 14-10. commit 後の確認
+(commit 後に追記)
