@@ -106,4 +106,4 @@ TTS 40 call(失敗0、再試行0)、Primary ASR 40 call、Secondary 0。実費(�
 
 ## 11. Gate 7 URL確認
 
-(push後に記入)
+push(commit bed33b370、main反映済み)後、2026-10-16 08:24(JST)にGitHub Pages反映を確認: index.html = HTTP 200、audio/p1_kp1.mp3 = HTTP 200(約2分で反映)。
