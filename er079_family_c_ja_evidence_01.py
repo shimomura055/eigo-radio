@@ -63,12 +63,12 @@ def _comment_texts(md_path, comments_cfg):
     return out
 
 
-def clip_inventory(level_cfg, reuse_from):
+def clip_inventory(level_cfg, reuse_from, comments_dir=None):
     """reuse_from先を使う場合に、runnerが採用判定にかける(clip名, 現行text)の一覧(runner本体と同じ導出)。"""
     R = _runner()
     segs, _ = R.build_segments_for_level(level_cfg)
     clips = [(f"{s['id']}.wav", s["tts_text"]) for s in segs]
-    md = f"{reuse_from}/comments_ja.md"
+    md = f"{comments_dir or reuse_from}/comments_ja.md"
     if level_cfg.get("comments") and os.path.exists(md):
         for n, t in sorted(_comment_texts(md, level_cfg["comments"]).items()):
             clips.append((f"comment_{n}_ja.wav", t))
@@ -236,12 +236,126 @@ def cmd_run_c_prime(reuse_from, out):
     _write(f"{out}/run_c_prime.json", res)
     print(json.dumps({k: res[k] for k in ("phase1_n_clips", "phase1_n_adopted", "phase1_false_negatives", "phase2_outcome")}, ensure_ascii=False))
 
+# ---------------------------------------------------------------- 有料: Run A / Run B (委任_03)
+EV3 = "er079_output/family_c_ja_tts_production_fix_01/evidence_03"
+RUN_A_ALLOWED_REGEN = {"story_001.wav", "story_002.wav", "story_003.wav", "story_004.wav", "story_006.wav", "story_007.wav",
+                       "comment_1_ja.wav", "comment_2_ja.wav", "comment_3_ja.wav", "japanese_title.wav", "preview_ja.wav"}
+RUN_B_ALLOWED_REGEN = {"comment_1_ja.wav"}
+RUN_B_FIXTURE_OLD = "レナは小さな銀色の箱を両手で持っています。"
+RUN_B_FIXTURE_NEW = "レナは小さな銀色の箱を、そっと両手で持っています。"
+
+
+def _norm(p):
+    return os.path.normcase(os.path.abspath(p))
+
+
+def assert_not_approved_asset(path):
+    """承認済み資産dir配下への書込禁止ガード(出力pathがreuse_from=承認済みdir配下なら例外)。"""
+    for d in APPROVED_EPISODE_DIRS:
+        nd = _norm(d)
+        np_ = _norm(path)
+        if np_ == nd or np_.startswith(nd + os.sep):
+            raise RuntimeError(f"[GUARD] write target is inside approved asset dir: {path} (approved={d})")
+
+
+def _clip_detail_rows(audit_path):
+    d = json.load(open(audit_path, encoding="utf-8")) if os.path.exists(audit_path) else {}
+    return {k: v for k, v in (d.get("segments") or {}).items() if isinstance(v, dict)}
+
+
+def cmd_run_paid(kind, a):
+    import er078_auw_runtime_evidence_06d as d6
+    b.EV, b.LEDGER, b.CAP_JPY = EV3, f"{EV3}/cost/spend_ledger.jsonl", 14.0
+    out_rel = a.out.replace("\\", "/").rstrip("/")
+    part = os.path.basename(out_rel)
+    if out_rel != f"{EV3}/{part}":
+        raise SystemExit(f"--out must be {EV3}/<part>: {out_rel}")
+    assert_not_approved_asset(out_rel)
+    if not a.reuse_from:
+        raise SystemExit("--reuse-from required")
+    out, r77, before, snap0, res, meter, ok = b.begin(part, a.budget_jpy, a.execute, copy_master=True)
+    os.environ["TTS_EXECUTION_MODE"] = "STANDARD"
+    cfg = json.load(open(a.article_config or MEMORY_CFG, encoding="utf-8"))
+    cfg["levels"] = {"a2": cfg["levels"]["a2"]}
+    lv = cfg["levels"]["a2"]
+    out_a2 = f"{out}/a2"
+    os.makedirs(out_a2, exist_ok=True)
+    if kind == "run_a":
+        rf = f"{out}/reuse_src"   # read-onlyで参照する承認済みdirの『複製』。title/previewのwavだけ除き、JA 5 clipを新規生成対象にする
+        if not os.path.exists(rf):
+            shutil.copytree(a.reuse_from, rf, ignore=shutil.ignore_patterns("japanese_title*", "preview_ja*", "web", "assembled"))
+        allowed = RUN_A_ALLOWED_REGEN
+        comments_dir = rf
+    else:
+        rf = a.reuse_from.replace("\\", "/")
+        md_new = f"{out_a2}/comments_ja.md"
+        if not os.path.exists(md_new):
+            t = open(f"{rf}/comments_ja.md", encoding="utf-8").read()
+            assert RUN_B_FIXTURE_OLD in t
+            open(md_new, "w", encoding="utf-8").write(t.replace(RUN_B_FIXTURE_OLD, RUN_B_FIXTURE_NEW, 1))
+        res["test_fixture"] = "test fixture(Comment Contract未経由): Comment 1の文面を出力dir側のcomments_ja.mdだけ手で変更。reuse_src側は無変更"
+        allowed = RUN_B_ALLOWED_REGEN
+        comments_dir = out_a2
+    if kind == "run_a" and a.fixture_colon_fix:
+        # 発見(委任_03 attempt0, API 0): story_001のtts_textに本文中コロン('too many times: rain')があり、Layer-4記号Gate
+        # (RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL)がTTS前にSTOP。Gateは迂回しない。入力を隔離dirの複製記事でコロン→カンマに変えたtest fixtureで実行。
+        src_art = lv["article_path"]
+        fx_dir = f"{out}/fixture"
+        os.makedirs(fx_dir, exist_ok=True)
+        t = open(src_art, encoding="utf-8").read()
+        old, new = "too many times: rain", "too many times, rain"
+        assert t.count(old) == 1
+        open(f"{fx_dir}/reader_facing_article.txt", "w", encoding="utf-8").write(t.replace(old, new))
+        lv["article_path"] = f"{fx_dir}/reader_facing_article.txt"
+        res["test_fixture_article"] = {"source": src_art, "fixture": lv["article_path"], "change": f"{old!r} -> {new!r}(story_001のみ)"}
+    lv["reuse_from"] = rf
+    res["reuse_from_used"] = rf
+    res["reuse_from_arg"] = a.reuse_from
+    # T-2(1)(2)(4)自動記録: 差分再生成可否・再利用候補の有無・想定外の全再生成でないこと
+    rows = _classify_dir_with(rf, lv, comments_dir)
+    regen = sorted(r["clip"] for r in rows if r["new_rule"] == "regenerate")
+    res["t2_precheck"] = {"n_clips": len(rows), "reuse": sorted(r["clip"] for r in rows if r["new_rule"] == "reuse"),
+                          "regenerate": regen, "allowed_regenerate": sorted(allowed),
+                          "unexpected_regenerate": sorted(set(regen) - allowed),
+                          "diff_regen_possible": True, "master_store_copied": True,
+                          "budget_jpy": a.budget_jpy, "runner_internal_budget": 25}
+    if res["t2_precheck"]["unexpected_regenerate"]:
+        ok = False
+        res["aborted"] = "T-2(4): unexpected regenerate set; no API call"
+    cfg_path = f"{out}/article_config.json"
+    json.dump(cfg, open(cfg_path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    import er013_family_c_production_runner_01 as C
+    if ok:
+        sys.argv = ["er013_family_c_production_runner_01.py", "--config", cfg_path, "--level", "a2", "--budget-jpy", "25"]
+        try:
+            C.main()
+            res["stage_result"] = {"main": "OK"}
+        except SystemExit as e_:
+            res["stage_result"] = {"main": f"SystemExit({e_.code})"}
+        except Exception as e_:  # noqa: BLE001
+            d6._tb(res, "exception", e_)
+            res["stage_result"] = {"main": f"{type(e_).__name__}: {str(e_)[:500]}"}
+        res["clip_rows"] = d6._clip_rows(f"{out_a2}/audit/tts_generation_results.json")
+    b.finish(out, r77, before, snap0, res, meter, extra_print=("exception", "aborted"))
+
+
+def _classify_dir_with(reuse_from, level_cfg, comments_dir):
+    R = _runner()
+    rows = []
+    for name, text in clip_inventory(level_cfg, reuse_from, comments_dir=comments_dir):
+        sha = hashlib.sha256(text.encode("utf-8")).hexdigest()
+        chk = R.reuse_provenance_check(reuse_from, name, sha)
+        rows.append({"clip": name, "new_rule": "reuse" if chk["ok"] else "regenerate", "basis": chk["basis"], "reason": chk["reason"]})
+    return rows
+
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd", choices=["symbol_gate_check", "reuse_plan_dryrun", "run_c_prime", "run_a", "run_b"])
     ap.add_argument("--out", required=True)
     ap.add_argument("--reuse-from")
+    ap.add_argument("--article-config")
+    ap.add_argument("--fixture-colon-fix", action="store_true")
     ap.add_argument("--tts-raise", action="store_true")
     ap.add_argument("--execute", action="store_true")
     ap.add_argument("--budget-jpy", type=float, default=11.0)
@@ -255,7 +369,7 @@ def main():
             raise SystemExit("run_c_primeは--tts-raise必須(API 0)")
         cmd_run_c_prime(a.reuse_from, a.out)
     else:
-        raise SystemExit("run_a/run_bは本版では未実装(条件付きSTOP判定後に追加)")
+        cmd_run_paid(a.cmd, a)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,82 @@
+{
+  "tts_text_sha256": "022c200f08e2a71fe4029500c42e6d8b8dd6742517835067d06270f2455b1ad8",
+  "wav_sha256": "c6cc1f4b755b6614d37f40c9a46f29ba8129cac3424f9e522cbe3087250f3951",
+  "asr_judgement": {
+    "state": "PASS",
+    "reason_code": "primary_pass_approved_equivalence:READING_MATCH",
+    "slot": 1,
+    "script_version": "v0",
+    "role": null,
+    "lang": "ja",
+    "segment_key": "",
+    "audio_sha256": "c6cc1f4b755b6614d37f40c9a46f29ba8129cac3424f9e522cbe3087250f3951",
+    "primary": {
+      "text": "レナが記憶を箱に預けてから五年が経ちました。五年後の冷たい朝、台所にいたレナのもとへ箱からその記憶が戻ってきます。その中では、兄の最後の言葉も蘇ります。",
+      "passed": true,
+      "label": "PHONETIC_MATCH",
+      "equivalence_basis": "READING_MATCH",
+      "warning_labels": []
+    },
+    "secondary": {
+      "called": false,
+      "cached": false,
+      "engine": "azure",
+      "text": null,
+      "label": "",
+      "accepted": null,
+      "error": null,
+      "unavailable": false
+    },
+    "value_guard": {
+      "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+          {
+            "src": "五年",
+            "hyp": "五年",
+            "verdict": "EQUAL",
+            "reason": "same_surface"
+          },
+          {
+            "src": "五年",
+            "hyp": "五年",
+            "verdict": "EQUAL",
+            "reason": "same_surface"
+          }
+        ],
+        "reasons": [],
+        "warnings": []
+      }
+    },
+    "negation_guard": {
+      "primary": false
+    },
+    "final_gate": {
+      "applied": false,
+      "skipped": "approved_equivalence:READING_MATCH"
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+      "azure_calls": 0,
+      "azure_seconds": null,
+      "est_jpy": 0.0
+    },
+    "timing": {
+      "total_ms": 0,
+      "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "adapter": {
+      "layers": [],
+      "azure_real_calls": 0,
+      "cost_guard_triggered": false,
+      "language": "ja-JP",
+      "asr_text_present": true,
+      "cache": {
+        "calls": 0,
+        "hits": 0
+      }
+    }
+  }
+}

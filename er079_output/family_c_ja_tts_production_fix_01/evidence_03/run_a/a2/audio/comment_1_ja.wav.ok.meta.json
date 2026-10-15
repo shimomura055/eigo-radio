@@ -1,0 +1,83 @@
+{
+  "tts_text_sha256": "6bb625fa59b91c8ffdd21fc73601d67dd992f3353d78f8f5ef14487756c465f5",
+  "wav_sha256": "3117d973cf0ebc4823dc749c42f0c01126e242292ae381c2088f00c7e0ec759b",
+  "asr_judgement": {
+    "state": "PASS",
+    "reason_code": "primary_pass",
+    "slot": 1,
+    "script_version": "v0",
+    "role": null,
+    "lang": "ja",
+    "segment_key": "",
+    "audio_sha256": "3117d973cf0ebc4823dc749c42f0c01126e242292ae381c2088f00c7e0ec759b",
+    "primary": {
+      "text": "レナは小さな銀色の箱を両手で持っています。その箱の中には、亡くなった兄との最後の記憶が一つだけ入っています。しかし、レナはその記憶をまだ一度も開けていません。",
+      "passed": true,
+      "label": "EXACT_MATCH",
+      "equivalence_basis": null,
+      "warning_labels": []
+    },
+    "secondary": {
+      "called": false,
+      "cached": false,
+      "engine": "azure",
+      "text": null,
+      "label": "",
+      "accepted": null,
+      "error": null,
+      "unavailable": false
+    },
+    "value_guard": {
+      "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+          {
+            "src": "一つ",
+            "hyp": "一つ",
+            "verdict": "EQUAL",
+            "reason": "same_surface"
+          },
+          {
+            "src": "一度",
+            "hyp": "一度",
+            "verdict": "EQUAL",
+            "reason": "same_surface"
+          }
+        ],
+        "reasons": [],
+        "warnings": []
+      }
+    },
+    "negation_guard": {
+      "primary": false
+    },
+    "final_gate": {
+      "applied": true,
+      "value_guard": "EQUAL",
+      "negation_diff": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+      "azure_calls": 0,
+      "azure_seconds": null,
+      "est_jpy": 0.0
+    },
+    "timing": {
+      "total_ms": 0,
+      "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "adapter": {
+      "layers": [],
+      "azure_real_calls": 0,
+      "cost_guard_triggered": false,
+      "language": "ja-JP",
+      "asr_text_present": true,
+      "cache": {
+        "calls": 0,
+        "hits": 0
+      }
+    }
+  }
+}

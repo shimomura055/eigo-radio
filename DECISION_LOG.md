@@ -21584,3 +21584,9 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 - Opus条件A(2026-10-16)指摘FCJ-01〜11: Fable全件採用、本委任で反映(対応表`IMPLEMENTATION_02.md`、原文`er079_output/family_c_ja_tts_production_fix_01/OPUS_REVIEW_A_01_VERBATIM.md`、台帳`docs/pm/OPUS_FINDINGS_LEDGER.md` OF-FCJ-01〜11)。INVESTIGATION 5-4の「cool-down適用」は誤りと訂正(FCJ-05)。
 - evidence結果(`er079_output/family_c_ja_tts_production_fix_01/EVIDENCE_02.md`): 新規test 21+既存39=60 passed、静的監査・06d/06c/05=113 passed・監査差分空。記号Gate事前検査 5文面0件。reuse plan dry-run/Run C'(API 0): ユーザー試聴承認済みTrial-11 Memory A2(`CURRENT_SPEC.md:1049-1050,1129-1130`)をreuse_fromとすると16clip中9clip(Story 6+Comment 3)が由来不明で再生成対象(Trial-11 auditは`reused:true`・meta無しで、リポジトリ内に新規生成記録が存在しない)。**条件付きSTOP(b)に該当、有料Run A/B未実施**(費用JPY0)。
 - Status: `FIX_IMPLEMENTED_EVIDENCE_PENDING_FABLE`(実装済み・有料evidence未取得)。`PRODUCTION_WIRED`ではない。Family C全体のStatusは`APPROVED_FOR_PRODUCTION / WIRING_INCOMPLETE`のまま不変。後続判断: 承認済み資産の扱い(sha固定のユーザー承認済み資産マニフェスト案を推奨)をFable判断→必要ならユーザー確認。
+
+### FAMILY-C-JA-TTS-PRODUCTION-FIX-01 委任_03(2026-10-16): 有料evidence Run A/B
+- Fable判断: 条件付きSTOP(b)の趣旨は「ユーザー試聴承認済み音声を差し替えない」こと。Run A/Bは隔離dirで実行し承認済み資産(Trial-11/12等)は変更しないため、有料evidenceは進めてよい(ユーザー判断ではなくFable判断の範囲)。承認済み資産の将来の再利用保証(sha固定マニフェスト案1)はOPEN-385としてユーザー判断(非ブロッキング)に残す。
+- 結果: Run A(Production正式entry)でJA 5 clip(Comment1-3・japanese_title・preview_ja)がlanguage=jaで新規TTS成功・JA ASR PASS(Secondary 0)、Story 6 clip新規PASS、episode完走(audio_validation PASS、313.97秒)。Run B(Comment1の文面のみ変更、test fixture)は変更1 clipのみ再生成、他15 clip再利用。承認済み資産138 fileのsha256は実行前後完全一致。実費JPY 12.65(Run A 11.00+Run B 1.65、見積8超過・Guardrail14内)。
+- 逸脱: story_001のtts_text本文コロンが記号Gateで止まる(API 0)ため、隔離dirの複製記事で当該コロンのみカンマに変えたtest fixtureで実行(Gate迂回なし)。Memory記事の全面再実行不能の発見をOPEN-387に記録。
+- Status: `FIX_EVIDENCED_PENDING_FABLE`。`PRODUCTION_WIRED`ではない。証跡: `er079_output/family_c_ja_tts_production_fix_01/EVIDENCE_02.md`§6。

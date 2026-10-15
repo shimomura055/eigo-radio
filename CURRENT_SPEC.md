@@ -1148,6 +1148,7 @@ Twins A2「The door opened.」(3語segment、Voice境界+scene boundary保持
 のための意図的単独segment)は2026-09-16ユーザー正式決定により現状維持で
 採用(追加再TTS・Comment位置変更なし)。
 追記(2026-10-16 `FAMILY-C-JA-TTS-PRODUCTION-FIX-01`): 日本語Section(Comment1〜3・japanese_title・preview_ja)のTTSは`generate_narration_snippet_verified_strict(text,"ja",...)`(Voice=`p9a.VOICE_NAME`、Trial-11/12で試聴OK済みの既存呼出)で生成し、JA ASR Validator経由。reuse_fromは由来照合(text sha256+wav sha256、legacy-upgraded meta・`reused` auditは由来証拠にしない)を通過した場合のみ再利用。Family C全体のStatusは不変(`APPROVED_FOR_PRODUCTION / WIRING_INCOMPLETE`)。本是正はユーザー2026-10-16明示承認によるLegacy Family Cへの例外的是正(Family体系の条件1・3は引き続き有効、tts_safe_ja・cool-down・N1再生成対象拡張は持ち込まない)。証跡=er079_output/family_c_ja_tts_production_fix_01/。**実装・test・0円検査は完了、有料実音声Run A/Bは条件付きSTOP(b)[承認済みTrial-11 Memory A2の9 clipが新ルールで再生成対象]により未実施。`PRODUCTION_WIRED`ではない。**
+evidence(委任_03、2026-10-16): Production正式entryで日本語Section 5 clip(Comment1-3・japanese_title・preview_ja)が`language="ja"`で新規TTS成功・JA ASR PASS、Story 6 clip新規PASS、episode完走、原稿変更時は変更1 clipのみ再生成(隔離dir、承認済み資産sha256不変、実費JPY12.65)。story_001の本文コロンは記号Gateで止まるためtest fixtureで実行(OPEN-387)。Status=`FIX_EVIDENCED_PENDING_FABLE`、`PRODUCTION_WIRED`ではない。詳細`er079_output/family_c_ja_tts_production_fix_01/EVIDENCE_02.md`§6。
 
 日付: 2026-09-16。
 

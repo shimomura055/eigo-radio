@@ -1,0 +1,77 @@
+{
+  "tts_text_sha256": "478d4f7a31599b20bf0d14a082b62ec31ee83bb0e2802dfc548e3db6e9b1571a",
+  "wav_sha256": "67de9e7e3f41238a835bd089adac0d6437fa9dc996a858aabc8643aeb0d25bc4",
+  "asr_judgement": {
+    "state": "PASS",
+    "reason_code": "primary_pass",
+    "slot": 1,
+    "script_version": "v0",
+    "role": null,
+    "lang": "ja",
+    "segment_key": "",
+    "audio_sha256": "67de9e7e3f41238a835bd089adac0d6437fa9dc996a858aabc8643aeb0d25bc4",
+    "primary": {
+      "text": "記憶を取り戻したレナは、記憶をもう一度箱へ戻せるよう、箱に手を伸ばしたまま迷っています。記憶を箱へ戻して先送りするか、それとも今ここで記憶を受け止めるか、その選択が問題になっています。",
+      "passed": true,
+      "label": "EXACT_MATCH",
+      "equivalence_basis": null,
+      "warning_labels": []
+    },
+    "secondary": {
+      "called": false,
+      "cached": false,
+      "engine": "azure",
+      "text": null,
+      "label": "",
+      "accepted": null,
+      "error": null,
+      "unavailable": false
+    },
+    "value_guard": {
+      "primary": {
+        "kind": "EQUAL",
+        "pairs": [
+          {
+            "src": "一度",
+            "hyp": "一度",
+            "verdict": "EQUAL",
+            "reason": "same_surface"
+          }
+        ],
+        "reasons": [],
+        "warnings": []
+      }
+    },
+    "negation_guard": {
+      "primary": false
+    },
+    "final_gate": {
+      "applied": true,
+      "value_guard": "EQUAL",
+      "negation_diff": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+      "azure_calls": 0,
+      "azure_seconds": null,
+      "est_jpy": 0.0
+    },
+    "timing": {
+      "total_ms": 0,
+      "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "adapter": {
+      "layers": [],
+      "azure_real_calls": 0,
+      "cost_guard_triggered": false,
+      "language": "ja-JP",
+      "asr_text_present": true,
+      "cache": {
+        "calls": 0,
+        "hits": 0
+      }
+    }
+  }
+}

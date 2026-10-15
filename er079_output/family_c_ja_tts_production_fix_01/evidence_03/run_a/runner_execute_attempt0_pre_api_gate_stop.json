@@ -1,0 +1,88 @@
+{
+ "part": "run_a",
+ "mode": "execute",
+ "stop_files_present": [],
+ "isolation": {
+  "human_review_queue": "er079_output/family_c_ja_tts_production_fix_01/evidence_03/run_a/human_review_queue.jsonl",
+  "attempt_history": "er079_output/family_c_ja_tts_production_fix_01/evidence_03/run_a/attempt_history.jsonl",
+  "master_audio_store": "er079_output/family_c_ja_tts_production_fix_01/evidence_03/run_a/master_audio_store",
+  "reuse_telemetry": "er079_output/family_c_ja_tts_production_fix_01/evidence_03/run_a/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er079_output/family_c_ja_tts_production_fix_01/evidence_03/run_a/er021_telemetry.jsonl",
+  "er025_telemetry": "er079_output/family_c_ja_tts_production_fix_01/evidence_03/run_a/er025_telemetry.jsonl",
+  "cost_log": "er079_output/family_c_ja_tts_production_fix_01/evidence_03/run_a/cost_log.jsonl",
+  "ledger_snapshot": "er079_output/family_c_ja_tts_production_fix_01/evidence_03/run_a/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)",
+  "foreign_token_hr_queue": "er079_output/family_c_ja_tts_production_fix_01/evidence_03/run_a/foreign_token_hr_queue.jsonl",
+  "human_review_queue_ja": "er079_output/family_c_ja_tts_production_fix_01/evidence_03/run_a/human_review_queue_ja.jsonl"
+ },
+ "budget_jpy": 14.0,
+ "ledger_before": 0.0,
+ "cap_remaining": 14.0,
+ "reuse_from_used": "er079_output/family_c_ja_tts_production_fix_01/evidence_03/run_a/reuse_src",
+ "reuse_from_arg": "er013_output/family_c_episode_trial_11/memory_a2",
+ "t2_precheck": {
+  "n_clips": 16,
+  "reuse": [
+   "story_005.wav",
+   "story_008.wav",
+   "story_009.wav",
+   "story_010.wav",
+   "topic_intro_en.wav"
+  ],
+  "regenerate": [
+   "comment_1_ja.wav",
+   "comment_2_ja.wav",
+   "comment_3_ja.wav",
+   "japanese_title.wav",
+   "preview_ja.wav",
+   "story_001.wav",
+   "story_002.wav",
+   "story_003.wav",
+   "story_004.wav",
+   "story_006.wav",
+   "story_007.wav"
+  ],
+  "allowed_regenerate": [
+   "comment_1_ja.wav",
+   "comment_2_ja.wav",
+   "comment_3_ja.wav",
+   "japanese_title.wav",
+   "preview_ja.wav",
+   "story_001.wav",
+   "story_002.wav",
+   "story_003.wav",
+   "story_004.wav",
+   "story_006.wav",
+   "story_007.wav"
+  ],
+  "unexpected_regenerate": [],
+  "diff_regen_possible": true,
+  "master_store_copied": true,
+  "budget_jpy": 14.0,
+  "runner_internal_budget": 25
+ },
+ "exception": "RuntimeError: STORY_TTS_FAILED(story_001): {'status': 'STOPPED', 'reason': 'canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL::', 'canonical_text': \"Lena held the small silver box in both hands. Inside it was one memory. She did not open the box. She had already seen the memory too many times: rain on the window, a hospital bed, her brother's hand going still. The memory-storage screen asked,\", 'symbol_findings': [{'token': ':', 'category': 'RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL', 'reason': \"未変換のplaceholder/ポーズ記号が残っています: ':'。波ダッシュ・三点リーダー・コロン・セミコロンは使わないでください。\"}]}",
+ "exception_traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\tensh\\eigo-radio\\er079_family_c_ja_evidence_01.py\", line 319, in cmd_run_paid\n    C.main()\n    ~~~~~~^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er013_family_c_production_runner_01.py\", line 1171, in main\n    run_full_generation(config, args.level, out_dir, args.budget_jpy, args.only_segments, args.resume)\n    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\tensh\\eigo-radio\\er078_secondary_run_scope_01.py\", line 68, in wrapper\n    return fn(*args, **kwargs)\n  File \"C:\\Users\\tensh\\eigo-radio\\er013_family_c_production_runner_01.py\", line 829, in run_full_generation\n    raise RuntimeError(f\"STORY_TTS_FAILED({seg['id']}): {r}\")\nRuntimeError: STORY_TTS_FAILED(story_001): {'status': 'STOPPED', 'reason': 'canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL::', 'canonical_text': \"Lena held the small silver box in both hands. Inside it was one memory. She did not open the box. She had already seen the memory too many times: rain on the window, a hospital bed, her brother's hand going still. The memory-storage screen asked,\", 'symbol_findings': [{'token': ':', 'category': 'RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL', 'reason': \"未変換のplaceholder/ポーズ記号が残っています: ':'。波ダッシュ・三点リーダー・コロン・セミコロンは使わないでください。\"}]}\n",
+ "stage_result": {
+  "main": "RuntimeError: STORY_TTS_FAILED(story_001): {'status': 'STOPPED', 'reason': 'canonical textに音声化禁止記号が残っています(Normalizer通過後の残存): RESIDUAL_PLACEHOLDER_OR_PAUSE_SYMBOL::', 'canonical_text': \"Lena held the small silver box in both hands. Inside it was one memory. She did not open the box. She had already seen the memory too many times: rain on the window, a hospital bed, her brother's hand going still. The memory-storage screen asked,\", 'symbol_findings': [{'token': ':', 'category': 'RESIDUAL_PLACEHOLDER_OR_PAUSE_SY"
+ },
+ "clip_rows": [],
+ "shared_state_unchanged": true,
+ "shared_files_changed_outside_evidence": [
+  "er079_output/family_c_ja_tts_production_fix_01/evidence_03/run_a/a2/audio/story_001.wav.debug.json",
+  "er079_output/family_c_ja_tts_production_fix_01/evidence_03/run_a/a2/audit/er005_cost_log.jsonl",
+  "er079_output/family_c_ja_tts_production_fix_01/evidence_03/run_a/a2/raw_usage_log.jsonl",
+  "er079_output/family_c_ja_tts_production_fix_01/evidence_03/run_a/usage_log.jsonl"
+ ],
+ "cost": {
+  "est_total_jpy": 0.0,
+  "n_tts": 0,
+  "n_openai_asr": 0,
+  "n_azure": 0,
+  "azure_seconds": 0.0,
+  "n_text_llm": 0,
+  "azure_duplicate_wavs": 0
+ },
+ "ledger_after": 0.0
+}
