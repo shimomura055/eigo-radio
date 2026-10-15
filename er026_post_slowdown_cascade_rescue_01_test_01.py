@@ -78,11 +78,20 @@ class PostSlowdownCascadeRescueTests(unittest.TestCase):
         self.assertEqual(out["status"], "STOPPED")
 
     def test_no_rescue_for_content_word_error(self):
-        # 非固有名詞の内容語誤り(TRUE_CONTENT_MISMATCH)はCascade対象外 -> Azureを呼ばない
+        # AUW 委任_05(J7、委任_03cの選択肢Aと同じ根拠=ユーザー原文L54「Primary NGなら不一致の種類によらず原則Secondary」・
+        # L55「Secondary PASSならPASS_WITH_WARNING」に追随): 旧=非固有名詞の内容語誤り(TRUE_CONTENT_MISMATCH)はCascade対象外で
+        # Azureを呼ばずSTOPPED。新=減速後wavにSecondaryを1回呼び、Secondaryが原稿全文を支持すればPASS_WITH_WARNING。
+        # 独立証拠なし(Secondaryも同じ誤り)なら従来どおりSTOPPED(誤受理0の安全側は維持)。
         out, calls = self._run("He drank water slowly.", "He dropped water slowly.", "He drank water slowly.")
-        self.assertEqual(out["status"], "STOPPED")
-        self.assertEqual(calls, [])
-        self.assertNotIn("post_slowdown_cascade", out)
+        self.assertEqual(out["status"], "OK")
+        self.assertEqual(len(calls), 1)                                   # Secondary 1回のみ
+        self.assertEqual(out["post_slowdown_classification"], "TRUE_CONTENT_MISMATCH")   # Primary層の判定は不変
+        self.assertEqual(out["asr_judgement"]["state"], "PASS_WITH_WARNING")
+        self.assertEqual(out["asr_judgement"]["reason_code"], "secondary_confirmed")
+        out2, calls2 = self._run("He drank water slowly.", "He dropped water slowly.", "He dropped water slowly.")
+        self.assertEqual(out2["status"], "STOPPED")
+        self.assertEqual(len(calls2), 1)
+        self.assertFalse(out2["asr_verified"])
 
     def test_no_rescue_for_number_error(self):
         out, calls = self._run("Melos waited three days.", "Melos waited five days.", "Melos waited three days.")
@@ -150,7 +159,9 @@ class PostSlowdownCascadeRescueTests(unittest.TestCase):
         # CMU辞書上の発音完全一致(Kristie/Christy)はPrimary#1の時点で追加ASRなしにPASS(Case A)
         out, calls = self._run("Kristie called across the hall,", "Christy called across the hall.", None)
         self.assertEqual(out["status"], "OK")
-        self.assertEqual(calls, [])
+        # AUW 委任_05(J7): 統一judgeのEN adapterは他leafと同順序(Tier3 corroboration[Azure,共有cache]→CMU Case A)。減速後wavへの
+        # Azureは最大1回(Tier3の試行のみ。Secondaryとして再呼出しない)。Case Aの受理判定自体は不変。
+        self.assertLessEqual(len(calls), 1)
         self.assertTrue(out["post_slowdown_homophone_accepted"])
         self.assertIn(out["post_slowdown_final_classification"],
                       ("PROPER_NOUN_ENTITY_ARPABET_CONFIRMED", "HOMOPHONE_EQUIVALENT"))

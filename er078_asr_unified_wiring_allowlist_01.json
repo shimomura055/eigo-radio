@@ -44,12 +44,12 @@
     },
     {
       "module": "er003_v1_n3_01_tts_generate",
-      "function": "apply_a2_slowdown_postprocess",
-      "callee": "en_validator.classify_asr_match",
+      "function": "_post_slowdown_unified_judge",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade_detail",
       "count": 1,
       "judgement_point": "J7",
-      "reason": "A2 6%減速後の再検証(直接classify_asr_match/transcribe)。減速前後を同一judgeにする汎化は委任_05(未実装=明示の残存例外)",
-      "category": "a2_slowdown_pending_delegation_05"
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
     },
     {
       "module": "er003_v1_n3_01_tts_generate",
@@ -57,8 +57,8 @@
       "callee": "routing.transcribe",
       "count": 1,
       "judgement_point": "J7",
-      "reason": "A2 6%減速後の再検証(直接classify_asr_match/transcribe)。減速前後を同一judgeにする汎化は委任_05(未実装=明示の残存例外)",
-      "category": "a2_slowdown_pending_delegation_05"
+      "reason": "A2 6%減速後wavのPrimary ASR転写の取得(AUW 委任_05)。判定は_post_slowdown_unified_judge経由(統一judge)",
+      "category": "primary_acquisition"
     },
     {
       "module": "er003_v1_n3_01_tts_generate",

@@ -40,6 +40,7 @@ import json
 import os
 
 import audio_review_player as player_common
+import er078_secondary_run_scope_01 as secondary_run_scope  # AUW 委任_05
 import er003_v1_b1_scaffold_01_generate as b1s
 import er003_v1_crosslevel_audio_02_common as crosslevel_common
 import er003_v1_iran01_a2_generate as a2gen
@@ -697,6 +698,9 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
 # er003_v1_n3_01_tts_generate.pyは無変更のまま維持する、
 # er019_family_x_pointless_01_test_01.FamilyAUnchangedTestが同ファイルの
 # working tree diff=0を機械的に強制しているため)。
+KP_EXPLANATION_MAX_ATTEMPTS = 3   # AUW 委任_05(OF-AUW-12): 旧2 -> 3。PRODUCTION_MAX_TTS_ATTEMPTS(=3)と同値
+
+
 def generate_key_phrase_explanation_en_verified(explanation_text: str, out_path: str,
                                                  style_prefix_override: str,
                                                  tts_backend: str = "structured_separation") -> dict:
@@ -704,7 +708,9 @@ def generate_key_phrase_explanation_en_verified(explanation_text: str, out_path:
     text = n3_tts.tts_safe_en(explanation_text)
     return repro01.generate_narration_snippet_verified_strict(
         text, "en", out_path, text,
-        max_extra_chars=max(20, len(text) // 2), max_attempts=2,
+        # AUW 委任_05(OF-AUW-12、DESIGN_02_ADDENDUM_01 §9): 統一フロー「TTS①②③、3回NGでLR/HR」に揃える
+        # (旧Trial値max_attempts=2の継承を3回へ。KP解説の回数変更はこの1点のみ。Prompt/閾値/他回数は不変)。
+        max_extra_chars=max(20, len(text) // 2), max_attempts=KP_EXPLANATION_MAX_ATTEMPTS,
         safety_margin_seconds=repro01.KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS,
         style_prefix_override=style_prefix_override, disfluency_qa=True,
         asr_prompt=repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT,
@@ -779,6 +785,7 @@ def _shared_narration_gate_blocked_summary(out_dir: str) -> dict | None:
     }
 
 
+@secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 def generate_family_x_b1_segments(
         theme_out_dir: str,
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27、
@@ -1097,6 +1104,7 @@ def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict 
     return kp_results, explanation_bundle
 
 
+@secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 def generate_family_x_a2_segments(
         theme_out_dir: str, japanese_title: str,
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01/02

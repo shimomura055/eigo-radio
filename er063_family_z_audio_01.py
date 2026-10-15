@@ -27,6 +27,7 @@ import os
 import re
 import shutil
 from dataclasses import dataclass, field
+import er078_secondary_run_scope_01 as secondary_run_scope  # AUW 委任_05
 
 MANAGEMENT_ID = "FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01"
 SUB_TASK_ID = "04C"
@@ -672,7 +673,8 @@ def real_generators() -> dict:
             text, "en", out_path, text, max_extra_chars=10, max_attempts=repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS,
             safety_margin_seconds=repro01.KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=True,
             style_prefix_override=style_text_for(spec), asr_prompt=repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT,
-            enable_non_latin_cascade=True, tts_backend=TTS_BACKEND)
+            enable_non_latin_cascade=True, tts_backend=TTS_BACKEND,
+            slot_offset=0, total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS)  # AUW 委任_05: 4回構成の前半(HR queue対象外)
         if primary.get("status") == "OK":
             primary["fallback_used"] = False
             return primary
@@ -681,7 +683,9 @@ def real_generators() -> dict:
             safety_margin_seconds=repro01.KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=True,
             style_prefix_override=repro01.KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION,
             asr_prompt=repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True,
-            tts_backend=TTS_BACKEND)
+            tts_backend=TTS_BACKEND,
+            slot_offset=repro01.KEY_PHRASE_MINIMAL_MAX_ATTEMPTS,
+            total_slots=repro01.KEY_PHRASE_TOTAL_MAX_ATTEMPTS)  # AUW 委任_05: 4回構成の後半(最終slot)
         fb["fallback_used"] = True
         return fb
 
@@ -916,6 +920,7 @@ def _cached_entry(cached: dict | None, spec: ClipSpec):
     return (cached.get("segments") or {}).get(spec.clip_id)
 
 
+@secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | None = None, dry_run: bool = False,
                   only_clips: set | None = None, revalidate_fn=None, article_text: str | None = None,
                   story_key: str = DEFAULT_SLUG) -> dict:

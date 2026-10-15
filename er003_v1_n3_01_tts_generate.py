@@ -26,6 +26,7 @@ import json
 import os
 import sys
 
+import er078_secondary_run_scope_01 as secondary_run_scope  # AUW 委任_05
 import er002_common as common
 import er003_audio_tts_asr_safety as safety
 import er003_key_words_canonicalization as kwc
@@ -36,6 +37,7 @@ import er003_v1_repro01_main_generate as repro01
 import er003_v1_sing01_news_tail_fix as news_tail_fix
 import er011_human_review_lock_01 as review_lock
 import er078_pass_with_warning_registry_01 as pww_registry  # AUW 委任_03: PASS_WITH_WARNING 事後試聴リスト
+import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
 import er003_v1_sing01_point_headings_aoede as point_headings
 import er003_v1_sing01_voice01_generate as voice01
 import er005_cost_logger as cl
@@ -173,13 +175,75 @@ def _post_slowdown_cascade_rescue(result: dict, tts_input_text: str, asr_text: s
     return bool(detail.get("verified"))
 
 
-def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text: str, result: dict) -> dict:
+def _post_slowdown_unified_judge(result: dict, tts_input_text: str, asr_text: str, out_path: str,
+                                 segment_id: str, is_last_slot: bool) -> dict:
+    """AUW 委任_05(J7): 6%減速後のwavを**統一judge(EN adapter)**で判定する。旧実装は直接
+    `en_validator.classify_asr_match`+homophone+UNCERTAIN限定の共有Cascadeだった。
+
+    統一フロー(原文: Primary PASSならSecondary不要 / Primary NGなら不一致の種類によらず原則Secondary 1回 /
+    Secondary PASSならPASS_WITH_WARNING / 値・否定の保護差は優先): Primary(既存P-chain: Tier1[5role]+baseline+
+    contraction+B1 CS+CMU Case A/homophone+M1)をそのまま維持し、その後段で統一judgeを通す。
+    減速後wavは減速前wavと別sha256のため、Secondaryは減速後wavに対して1回(同一wavはSecondaryCache共有で重複なし)。
+    enable_connected_speech_equivalence_layerは従来どおり渡さない(減速後再検証はもともと非適用=Primary層は不変)。
+    adapter例外は fail-closed(verified=False)。cost logger未初期化・単価未登録等の設定不備(init_logger/[STOP])は
+    握りつぶさず伝播する(旧_post_slowdown_cascade_rescueと同じ方針)。HR queueへは書かない(_detail版、Review Lock側の
+    既存経路に委ねる)。戻り値: adapterのdetail dict(例外時は {"verified": False, "aborted_by_exception": True})。"""
+    ledger_error = None
+    try:
+        import er006_pronunciation_ledger_01 as pronun_ledger
+        ledger_phrases = [h["canonical_spelling"]
+                          for h in pronun_ledger.get_hint_for_text(tts_input_text, min_confidence="low")]
+    except Exception as exc:  # Primary判定をledger障害で止めない(PhraseListなしで続行)。記録のみ。
+        ledger_phrases, ledger_error = [], f"{type(exc).__name__}: {exc}"
+    try:
+        detail = secondary_asr.evaluate_attempt_with_cascade_detail(
+            tts_input_text, asr_text, [], out_path, language="en-US", ledger_phrases=ledger_phrases,
+            cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED, segment_id=segment_id,
+            attempt_ctx={"slot": 1, "script_version": "v0", "is_last_slot": bool(is_last_slot)})
+    except RuntimeError as exc:
+        if "init_logger" in str(exc) or "[STOP]" in str(exc):
+            raise  # 設定不備(cost logger未初期化/単価未登録)は握りつぶさない
+        result["post_slowdown_cascade"] = {"invoked": True, "cascade_entered": True, "aborted_by_exception": True,
+                                           "error": f"{type(exc).__name__}: {exc}"}
+        return {"verified": False, "aborted_by_exception": True}
+    except Exception as exc:  # fail-closed: API呼出済みの可能性があるためinvoked=True
+        result["post_slowdown_cascade"] = {"invoked": True, "cascade_entered": True, "aborted_by_exception": True,
+                                           "error": f"{type(exc).__name__}: {exc}"}
+        return {"verified": False, "aborted_by_exception": True}
+    cls = detail.get("classification")
+    if detail.get("cascade_invoked") or ledger_error:
+        # Secondary/補強層が走った場合のみ従来どおり post_slowdown_cascade を残す(Primary単独PASS/NGでは付けない)。
+        result["post_slowdown_cascade"] = {
+            "invoked": bool(detail.get("cascade_invoked")), "cascade_entered": True,
+            "verified": bool(detail.get("verified")),
+            "final_status": detail.get("final_status"), "steps": detail.get("steps"),
+            "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None) if cls is not None else None,
+            "asr_judgement": detail.get("asr_judgement"),
+        }
+        if ledger_error:
+            result["post_slowdown_cascade"]["ledger_error"] = ledger_error
+    if detail.get("verified") and detail.get("asr_judgement") is not None:
+        # 最終採用音声(減速後wav)の統一判定recordを最上位へ。減速前(内側)のrecordは asr_judgement_pre_slowdown へ退避。
+        if result.get("asr_judgement") is not None:
+            result["asr_judgement_pre_slowdown"] = result.get("asr_judgement")
+        result["asr_judgement"] = detail["asr_judgement"]
+    elif detail.get("asr_judgement") is not None:
+        result["asr_judgement_post_slowdown_ng"] = detail["asr_judgement"]   # NG時の判定record(不採用音声の監査用)
+    return detail
+
+
+def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text: str, result: dict,
+                                  is_last_slot: bool = True) -> dict:
     """generate_english_segment_with_fallback()が返した通常ペースの
     結果(status=="OK")に対し、6% time-stretchを適用し、post-process後の
     音声を実際にASRで再検証した上でresultを更新する。post-process後の
     音声がASR不一致になった場合はstatus="STOPPED"とし、既存のAudio
     Validation Gateが正しくブロックできるようにする(未検証音声を
-    黙ってPASS扱いにしない、という既存方針を維持)。"""
+    黙ってPASS扱いにしない、という既存方針を維持)。
+
+    AUW 委任_05(J7): 再検証は統一judge(_post_slowdown_unified_judge)経由。Primary NGなら原則Secondary 1回→
+    PASS_WITH_WARNING。is_last_slot(既定True=外側ループのない呼出元[Dialogue/B Voices]は減速後NG=最終)は
+    generate_a2_segment_with_slowdownが「通算TTS予算が残っている間はFalse」を渡す(HR queueは最終slotのNGのみ)。"""
     if result.get("status") != "OK":
         return result  # 元々失敗している場合はslowdownを試みない
 
@@ -197,16 +261,19 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
         result["slowdown_info"] = stretch_info
         return result
 
-    # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01: nameは既にこの
-    # segmentのsegment_id(A2_SLOWDOWN_TARGET_SEGMENTS、narration/{name}.wav
-    # のbasename)そのものなので、追加の導出なしでそのままrole gatingへ渡す。
-    classification = en_validator.classify_asr_match(tts_input_text, asr_text, segment_id=name)
+    # AUW 委任_05(J7): 旧=直接classify_asr_match+homophone+UNCERTAIN限定の共有Cascade。新=統一judge(EN adapter)。
+    # nameは既にこのsegmentのsegment_id(A2_SLOWDOWN_TARGET_SEGMENTS、narration/{name}.wavのbasename)そのもの
+    # なのでrole gatingへそのまま渡す(EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01と同じ)。
+    detail = _post_slowdown_unified_judge(result, tts_input_text, asr_text, out_path, name, is_last_slot)
+    _steps = detail.get("steps") or []
+    _primary_label = (_steps[0].get("classification") if _steps else None) or "ASR_VALIDATION_UNCERTAIN"
+    _cls = detail.get("classification")
     result["original_path"] = original_path
     result["slowdown_applied"] = True
     result["slowdown_info"] = stretch_info
     result["post_slowdown_asr_text"] = asr_text
-    result["post_slowdown_classification"] = classification.classification
-    result["post_slowdown_semantic_equivalence"] = getattr(classification, "semantic_equivalence_info", None)
+    result["post_slowdown_classification"] = _primary_label   # Primary(減速後wavのOpenAI転写)の分類ラベル
+    result["post_slowdown_semantic_equivalence"] = getattr(_cls, "semantic_equivalence_info", None)
     # trim_info/duration_secondsはslowdown前の値のままだと実際の最終
     # 音声(narration/{name}.wav)の長さと食い違う(過去のtaskで発見・
     # 記録した既知のデータ不整合パターンを未然に防ぐ)。time-stretch比率
@@ -232,47 +299,23 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
     # ファイルでsha256を再計算する。
     if result.get("sha256") is not None:
         result["sha256"] = p9a.sha256_file(out_path)
-    # ER-008-N8-QA-CONTENT-SPEED-HARDENING-18: No.8 A2 point_one_headingの
-    # 修復作業中に発見。post-process後の再検証はここまで`classification.
-    # should_pass`のみで判定しており、ER-008-ASR-VARIANT-HARDENING-AND-
-    # RETRY-15で導入したhomophone等価判定(is_homophone_candidate_mismatch、
-    # 例: wait/weight)がこの経路には配線されていなかった(Cascade側には
-    # 配線済みだったが、こちらは独立した再検証コードパスだったため)。
-    # 同じ既存判定関数をそのまま再利用し、新規ロジックは追加しない。
-    homophone_accepted = secondary_asr.is_homophone_candidate_mismatch(classification)
-    # FAMILY-Z-MELOS-PROPER-NOUN-ASR-ROOT-CAUSE-01 委任_01(是正A): 承認済みの
-    # 固有名詞救済(Tier3 corroboration=SECONDARY_ASR_CORROBORATED_MATCH、
-    # CMU Case A)は、減速前の検証(共有Cascade)でのみ発火し、この減速後
-    # 再検証では未配線だった(減速前にcascadeでPASSした音声が、減速後に
-    # Primary1回だけで再判定されて全滅、OPEN-270記載のGap)。同じ既存
-    # 共有Cascade関数をそのまま再利用し、新規ロジックは追加しない。
-    cascade_accepted = False
-    if not (classification.should_pass or homophone_accepted):
-        cascade_accepted = _post_slowdown_cascade_rescue(
-            result, tts_input_text, asr_text, classification, out_path, name)
-    # top-level最終分類(委任_03): 減速後再検証の最終的な判定ラベル。cascadeが走った場合は
-    # その最終status(例: SECONDARY_ASR_CORROBORATED_MATCH)、そうでなければPrimary判定。
-    _pc = result.get("post_slowdown_cascade") or {}
-    if cascade_accepted and _pc.get("final_status"):
-        _final_cls = _pc["final_status"]
-    elif homophone_accepted and not classification.should_pass:
-        # homophone/固有名詞Case A(CMU辞書の発音完全一致)による単独PASS。ラベルは共有Cascadeと同じ関数で求める。
-        _final_cls = secondary_asr._step_alternate_pass(classification) or "HOMOPHONE_EQUIVALENT"
-    else:
-        _final_cls = classification.classification
-    result["post_slowdown_final_classification"] = _final_cls
-    if classification.should_pass or homophone_accepted or cascade_accepted:
+    # top-level最終分類(委任_03): 減速後再検証の最終的な判定ラベル(統一judge/adapterの最終status。
+    # 例: Primary PASSならそのラベル、Secondary救済ならSECONDARY_*/CMU Case A等)。
+    _verified = bool(detail.get("verified"))
+    result["post_slowdown_final_classification"] = detail.get("final_status") or _primary_label
+    if _verified:
         result["asr_verified"] = True
         result["asr_text"] = asr_text
-        if homophone_accepted:
+        _layers = ((detail.get("asr_judgement") or {}).get("adapter") or {}).get("layers") or []
+        if "cmu_alternate" in _layers:
             result["post_slowdown_homophone_accepted"] = True
-        if cascade_accepted:
+        if detail.get("cascade_invoked") or len(_steps) > 1:
             result["post_slowdown_cascade_accepted"] = True
     else:
         result["status"] = "STOPPED"
         result["asr_verified"] = False
         result["reason"] = (f"post-process(6%減速)後の音声がASR再検証で不一致: "
-                             f"classification={classification.classification}")
+                             f"classification={_primary_label}")
     return result
 
 
@@ -362,7 +405,10 @@ def generate_a2_segment_with_slowdown(tts_input: str, out_path: str, expected_su
         generations_used += count_tts_generations_in_result(result)
         if result.get("status") != "OK":
             break  # 通常ペース自体が失敗(既存のstandard/fallback両方exhausted)
-        result = apply_a2_slowdown_postprocess(name, narration_dir, tts_input, result)
+        # AUW 委任_05: 通算TTS予算(または外側ループ上限)が尽きている場合のみ、減速後NGは最終slot(HR対象)。
+        result = apply_a2_slowdown_postprocess(
+            name, narration_dir, tts_input, result,
+            is_last_slot=(generations_used >= total_budget or attempt >= max_slowdown_attempts))
         slowdown_attempts_log.append({
             "attempt": attempt, "status": result.get("status"),
             "post_slowdown_classification": result.get("post_slowdown_classification"),
@@ -631,7 +677,8 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
     standard = c.generate_narration_snippet_verified_strict(
         text, "ja", out_path, expected_substring, max_attempts=standard_attempts, max_extra_chars=max_extra_chars,
         expected_readings=expected_readings, tts_backend=tts_backend,
-        style_prefix_override=style_prefix_override)
+        style_prefix_override=style_prefix_override,
+        slot_offset=0, total_slots=max_attempts)  # AUW 委任_05: 標準経路は後段fallbackが残る間HR queue対象外
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard
@@ -658,7 +705,9 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
         _aj = {}  # AUW 委任_04: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
         verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
             text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
-            expected_readings=expected_readings, length_ok=length_ok, detail_out=_aj)
+            expected_readings=expected_readings, length_ok=length_ok, detail_out=_aj,
+            # AUW 委任_05: fallback(通算slot = 標準経路の消費分+この周)。通算上限(max_attempts)到達のNGのみHR queue対象。
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(len(standard.get("attempts_log") or []) + attempt, max_attempts))
         verified = verified_content and length_ok
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
                                    "audio_classification": cls.classification,
@@ -963,6 +1012,7 @@ def expected_substring_ja(text: str, n: int = 2) -> str:
 # ============================================================
 # B1 segment生成
 # ============================================================
+@secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 def generate_b1_segments(theme: dict) -> dict:
     theme_id = theme["theme_id"]
     out_dir = f"{theme['out_dir']}/b1b"
@@ -1104,6 +1154,7 @@ def generate_b1_segments(theme: dict) -> dict:
 # ============================================================
 # A2 segment生成
 # ============================================================
+@secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 def generate_a2_segments(theme: dict) -> dict:
     theme_id = theme["theme_id"]
     out_dir = f"{theme['out_dir']}/a2"

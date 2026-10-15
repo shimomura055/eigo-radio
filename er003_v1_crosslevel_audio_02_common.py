@@ -41,6 +41,7 @@ import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 import er011_open121_repetition_qa_production_01 as repetition_qa
 import er020_tts_retry_local_rewrite_01 as retry_primitive
+import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
 
 generate_narration_snippet_verified_strict = repro01.generate_narration_snippet_verified_strict
 generate_key_phrase_component_verified = repro01.generate_key_phrase_component_verified
@@ -148,7 +149,9 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
         style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
         enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
         enable_repetition_qa=enable_repetition_qa, segment_id=segment_id, tts_backend=tts_backend,
-        prior_generations=prior_generations, cooldown_total_budget=cooldown_total_budget)
+        prior_generations=prior_generations, cooldown_total_budget=cooldown_total_budget,
+        # AUW 委任_05: 標準経路は後段にfallbackが残る場合、通算上限(prior+max_attempts)を渡してHR queue対象外にする。
+        slot_offset=prior_generations, total_slots=prior_generations + max_attempts)
     if standard.get("status") == "OK":
         standard["fallback_used"] = False
         return standard
@@ -186,7 +189,11 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
         outcome = _run_a2_minimal_fallback_attempt(
             text, out_path, max_len, fallback_classification_history,
             enable_connected_speech_equivalence_layer, disfluency_qa, enable_repetition_qa,
-            tts_backend=tts_backend)
+            tts_backend=tts_backend,
+            # AUW 委任_05: slot = segment通算の生成番号(標準経路の消費分+この周)。通算上限に達したNGのみHR queue対象。
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(
+                len(standard.get("attempts_log") or []) + attempt, max_attempts,
+                slot_offset=prior_generations, total_slots=prior_generations + max_attempts))
         r = outcome["result"]
         if not outcome["ok"]:
             fallback_attempts.append({"attempt": attempt, "status": r.get("status"), "reason": r.get("reason"),

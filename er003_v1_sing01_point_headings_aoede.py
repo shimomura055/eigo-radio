@@ -33,6 +33,7 @@ import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
+import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
 
 AOEDE = "Aoede"
 SAFETY_MARGIN = 0.35
@@ -126,7 +127,8 @@ def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTIO
         _aj = {}  # AUW 委任_03: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
             text, asr_text, classification_history, out_path, language="en-US",
-            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED, detail_out=_aj)
+            ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED, detail_out=_aj,
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts))  # AUW 委任_05
         verified = verified_content and length_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]

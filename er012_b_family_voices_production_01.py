@@ -56,6 +56,7 @@ from __future__ import annotations
 
 import re
 
+import er078_secondary_run_scope_01 as secondary_run_scope  # AUW 委任_05
 import er002_common as common
 import er003_audio_tts_asr_safety as safety
 import er003_b1_p3u_audio as p3u
@@ -77,6 +78,7 @@ import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
+import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
 import er011_open121_repetition_qa_production_01 as repetition_qa
 import er012_b_family_editorial_type_registry_01 as registry
 
@@ -550,7 +552,8 @@ def generate_voice_body_wide_margin(text: str, out_path: str, voice_name: str,
         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
             text, asr_text, classification_history, out_path, language="en-US",
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
-            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer, detail_out=_aj)
+            enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer, detail_out=_aj,
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts))  # AUW 委任_05
         verified = verified_content and length_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=False)
         verified = gate["verified"]
@@ -827,6 +830,7 @@ def build_b1_voices_timeline_3v(parts: dict, voice_a: str, voice_b: str, voice_c
 # (Trial側のグローバル定数[NARRATION_DIR]をここでは引数化した)。出典:
 # er012_editorial_b_voices_3v_audio_trial_01.py::run_tts_3v()。
 # ============================================================
+@secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
 def run_tts_3v(parts: dict, support_texts: dict, voice_a: str, voice_b: str, voice_c: str,
                narration_dir: str, budget_check_fn=None) -> dict:
     """budget_check_fn: Fable修正指示3回目(Opus L2レビュー指摘E)。既定

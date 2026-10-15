@@ -36,6 +36,7 @@ import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
+import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
 import er011_open121_repetition_qa_production_01 as repetition_qa
 import er020_tts_retry_local_rewrite_01 as retry_primitive
 import er025_entity_pronunciation_resolver_core_01 as pron_resolver_core
@@ -100,7 +101,9 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                                          # を渡す。標準分岐・fallback(minimal instruction)分岐
                                          # (generate_english_component_minimal_instruction)の両方に
                                          # 転送する。
-                                         tts_backend: str = "structured_separation") -> dict:
+                                         tts_backend: str = "structured_separation",
+                                         # AUW 委任_05(既定"v0"): Local Rewrite後のv1再TTSのみ"v1"。
+                                         script_version: str = "v0") -> dict:
     """p9a.generate_narration_snippet(ENGLISH_STYLE_PREFIX経路)と同じ
     prompt/model/voiceを使うが、末尾trim安全マージンのみ0.35秒に広げる。
     失敗時はMINIMAL_INSTRUCTION経路(同じく広いマージン)へfallbackする。"""
@@ -204,7 +207,8 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             text, asr_text, classification_history, out_path, language="en-US",
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-            segment_id=segment_id, detail_out=_aj)
+            segment_id=segment_id, detail_out=_aj,
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts, script_version=script_version))  # AUW 委任_05
         verified = verified_content and length_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]
@@ -364,7 +368,8 @@ def _local_rewrite_recovery_for_news_narration(
             disfluency_qa=disfluency_qa,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
             enable_repetition_qa=enable_repetition_qa,
-            enable_pronunciation_resolver=enable_pronunciation_resolver, tts_backend=tts_backend)
+            enable_pronunciation_resolver=enable_pronunciation_resolver, tts_backend=tts_backend,
+            script_version="v1")  # AUW 委任_05: LR後v1
 
     recovery = retry_primitive.run_local_rewrite_recovery(
         segment_id=segment_id, canonical_text=text, last_asr_text=last_asr_text,

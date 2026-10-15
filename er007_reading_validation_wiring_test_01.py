@@ -137,6 +137,7 @@ class Repro01JaBranchExpectedReadingsForwardingTests(unittest.TestCase):
                               cascade_enabled=None, force_secondary=False,
                               enable_non_latin_cascade=False,
                               enable_connected_speech_equivalence_layer=False, detail_out=None,
+                          attempt_ctx=None,   # AUW 委任_05(mock署名追随: leafがattempt_ctxを渡す)
                               # EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01(修正1回目):
                               # generate_narration_snippet_verified_strict()の標準呼び出しが
                               # 新たにsegment_idを転送するようになったための後方互換パラメータ

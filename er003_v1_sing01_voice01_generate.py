@@ -34,6 +34,7 @@ import er006_pronunciation_ledger_01 as pronun_ledger
 import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
+import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
 import er020_tts_retry_local_rewrite_01 as retry_primitive
 import er025_entity_pronunciation_resolver_core_01 as pron_resolver_core
 
@@ -75,7 +76,10 @@ def generate_charon_english(text: str, out_path: str,
                              # "speech_metadata_flash_lite"を渡す(Family A/B/C
                              # [legacy]は無変更)。標準経路・minimal fallback経路・
                              # Local Rewrite回復経路のいずれにも転送する。
-                             tts_backend: str = "structured_separation") -> dict:
+                             tts_backend: str = "structured_separation",
+                             # AUW 委任_05(既定"v0"): Local Rewrite後のv1再TTS(_retts_fn)のみ"v1"を渡す
+                             # (統一judgeがLR_REWRITTENをPASS_WITH_WARNINGとして付与)。
+                             script_version: str = "v0") -> dict:
     """ENGLISH_STYLE_PREFIX主経路(voice=Charon)+MINIMAL_INSTRUCTION
     fallback。trim安全マージンはNOVEL-AUDIO-01のtail切れ修正と同じ
     0.35秒を使う。"""
@@ -246,7 +250,8 @@ def generate_charon_english(text: str, out_path: str,
             # 「事実1」)。呼び出し側がconnected_speech_enabled_for()で
             # 判定した値をそのまま転送する。
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-            segment_id=segment_id, detail_out=_aj)
+            segment_id=segment_id, detail_out=_aj,
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts, script_version=script_version))  # AUW 委任_05
         verified = verified_content and length_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]
@@ -355,7 +360,7 @@ def _local_rewrite_recovery_for_charon_english(
             rewritten_text, out_path, max_attempts=1,
             style_prefix_override=style_prefix_override, disfluency_qa=disfluency_qa,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
-            tts_backend=tts_backend)
+            tts_backend=tts_backend, script_version="v1")  # AUW 委任_05: LR後v1
 
     recovery = retry_primitive.run_local_rewrite_recovery(
         segment_id=segment_id, canonical_text=text, last_asr_text=last_asr_text,
@@ -516,7 +521,9 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
         _aj = {}  # AUW 委任_04: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
         verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
             text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
-            expected_readings=expected_readings, length_ok=length_ok, detail_out=_aj)
+            expected_readings=expected_readings, length_ok=length_ok, detail_out=_aj,
+            # AUW 委任_05: 標準経路。fallback予算が残る(max_attempts>standard_attempts)間はHR queue対象外。
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts))
         verified = verified_content and length_ok
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
                               "length_ok": length_ok, "audio_classification": cls.classification,
@@ -566,7 +573,9 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
         _aj = {}  # AUW 委任_04
         verified_content, stop_retrying, cls = ja_secondary.evaluate_attempt_ja_with_cascade(
             text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
-            expected_readings=expected_readings, length_ok=length_ok, detail_out=_aj)
+            expected_readings=expected_readings, length_ok=length_ok, detail_out=_aj,
+            # AUW 委任_05: fallback(通算slot = 標準経路の消費分+この周)。通算上限(max_attempts)到達のNGのみHR queue対象。
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(len(attempts_log) + attempt, max_attempts))
         verified = verified_content and length_ok
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
                                    "length_ok": length_ok, "audio_classification": cls.classification,
