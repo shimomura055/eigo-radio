@@ -1729,6 +1729,7 @@ comment_1〜4、および**japanese_title**(W3、Opus L2所見MAJOR-1是正で
 `APPROVED_FOR_PRODUCTION`と正式決定した(下記「Key Phrase 音声構造」節
 参照、`_role_style_ja()`と同一関数・同一backendゲート経由で配線済み)。
 固定Master phraseは引き続き対象外。
+(参考Trial・採用なし) 2026-10-15 STANDARD-KP-JA-TTS-STYLE-TRIAL-01/02でStyle候補P1〜P10を比較中(OPEN-367)。正式Style J3は無変更。
 EN=`FAMILY_X_ROLE_STYLE_EN`のTOPIC_INTRO/FULL_STORY/IN_ONE_LINEの3roleを
 E0からE2へ値更新(Role定数はlevel非依存のためStandard/Advanced両方のEN
 segmentへ適用される。PREVIEW/COMMENT/HEADING_READOUTはE2未検証のため不変
