@@ -1,0 +1,100 @@
+[run_project_regression] repo root: C:\Users\tensh\eigo-radio
+[run_project_regression] discovery pattern: er011*_test_*.py
+[run_project_regression] discovered 19 test file(s):
+  - er011_assembly_headroom_safety_valve_production_wiring_01_test_01.py
+  - er011_b1_connected_speech_validator_01_f1_test_01.py
+  - er011_connected_speech_equivalence_layer_production_wiring_01_test_01.py
+  - er011_discovery_focus_s2_full_trial_01_test_01.py
+  - er011_human_review_lock_01_test_01.py
+  - er011_keyphrase_en_asr_false_rejection_cascade_prod_wiring_01_test_01.py
+  - er011_no18_evidence_compression_a_precision_21r_test_01.py
+  - er011_no18_tight_speech_and_trim030_production_wiring_23_test_01.py
+  - er011_open112_diagnostic_retry_point_body_regression_fix_01_test_01.py
+  - er011_open112_trend_synthesis_mode_production_wiring_01_test_01.py
+  - er011_open121_repetition_qa_production_wiring_01_test_01.py
+  - er011_open128_method_d_local_asr_confirm_production_wiring_01_test_01.py
+  - er011_open129_structural_completeness_production_wiring_01_test_01.py
+  - er011_open146_ledger_canonical_en_spelling_production_wiring_01_test_01.py
+  - er011_point_role_planning_focus_connection_trial_04_test_01.py
+  - er011_test_key_phrase_set_redundancy_qa_01.py
+  - er011_test_point_role_value_planning_01.py
+  - er011_transcript_style_normalization_production_wiring_01_test_01.py
+  - er011_tts_cooldown_observation_01_test_01.py
+........................................................................................................FFF.........................................................................................................................................................................................
+======================================================================
+FAIL: test_default_matches_pre_wiring_baseline (er011_open112_trend_synthesis_mode_production_wiring_01_test_01.TestBuildCommonBlockDefaultByteParity.test_default_matches_pre_wiring_baseline)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er011_open112_trend_synthesis_mode_production_wiring_01_test_01.py", line 44, in test_default_matches_pre_wiring_baseline
+    self.assertEqual(out, expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: '以下は、[3393 chars]てください(例外: "11:04 a.m."のような時刻表記のコロンは使ってよい)。\n- [3425 chars]さい\n' != '以下は、[3393 chars]てください。\n- パーセント・ドル・円などの数値は、可能な限り記号(%、$、¥)ではなく自[3389 chars]さい\n'
+Diff is 7214 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_default_with_evidence_compression_matches_pre_wiring_baseline (er011_open112_trend_synthesis_mode_production_wiring_01_test_01.TestBuildCommonBlockDefaultByteParity.test_default_with_evidence_compression_matches_pre_wiring_baseline)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er011_open112_trend_synthesis_mode_production_wiring_01_test_01.py", line 55, in test_default_with_evidence_compression_matches_pre_wiring_baseline
+    self.assertEqual(out, expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: '以下は、[3393 chars]てください(例外: "11:04 a.m."のような時刻表記のコロンは使ってよい)。\n- [4997 chars]こと\n' != '以下は、[3393 chars]てください。\n- パーセント・ドル・円などの数値は、可能な限り記号(%、$、¥)ではなく自[4961 chars]こと\n'
+Diff is 8834 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_default_with_shared_point_blueprint_block_matches_pre_wiring_baseline (er011_open112_trend_synthesis_mode_production_wiring_01_test_01.TestBuildCommonBlockDefaultByteParity.test_default_with_shared_point_blueprint_block_matches_pre_wiring_baseline)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er011_open112_trend_synthesis_mode_production_wiring_01_test_01.py", line 50, in test_default_with_shared_point_blueprint_block_matches_pre_wiring_baseline
+    self.assertEqual(out, expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: '以下は、[3393 chars]てください(例外: "11:04 a.m."のような時刻表記のコロンは使ってよい)。\n- [3451 chars]LE\n' != '以下は、[3393 chars]てください。\n- パーセント・ドル・円などの数値は、可能な限り記号(%、$、¥)ではなく自[3415 chars]LE\n'
+Diff is 7242 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 292 tests in 165.068s
+
+FAILED (failures=3)
+[run_project_regression] collected 292 test(s)
+[discovery_focus_s2_full_trial_01][a2] status=OK fact_verdict=PASS ledger_status=LEDGER_COMPLIANT stage1_regen=1 stage2_3_retry=0 elapsed=0.72s
+[discovery_focus_s2_full_trial_01][a2] status=OK fact_verdict=PASS ledger_status=LEDGER_COMPLIANT stage1_regen=0 stage2_3_retry=0 elapsed=0.0s
+[discovery_focus_s2_full_trial_01][a2] status=OK fact_verdict=PASS ledger_status=LEDGER_COMPLIANT stage1_regen=1 stage2_3_retry=0 elapsed=0.0s
+[discovery_focus_s2_full_trial_01][a2] status=OK fact_verdict=PASS ledger_status=LEDGER_COMPLIANT stage1_regen=1 stage2_3_retry=0 elapsed=0.0s
+[N3-01][fixture_theme] A2: Point-Full Story/Point-Point重複QA開始(retry 0/2)...
+[N3-01][fixture_theme] A2: Point-Full Story重複QA完了(overlapなし、記事全体retry 0回で解消)。
+[N3-01][fixture_theme] A2: metrics={'word_count': 10, 'sentence_count': 1, 'avg_sentence_length': 10.0, 'max_sentence_length': 10} sections={'intro': 0, 'point_one': 0, 'point_two': 0, 'in_one_line': 0}
+[N3-01][fixture_theme] A2: fact checker呼び出し開始...
+[N3-01][fixture_theme] A2: fact_check status=FACT_CHECK_COMPLETED verdict=PASS
+[N3-01][fixture_theme] A2: ledger逸脱チェック開始(Hook-aware)...
+[N3-01][fixture_theme] A2: deviation overall_status=LEDGER_COMPLIANT deviations=0
+[N3-01][fixture_theme] A2: 比較方向Fact事前チェック(暫定、ER-008-DIRECTIONAL-FACT-PRECHECK-08)開始...
+[N3-01][fixture_theme] A2: 比較方向Fact事前チェック完了。overall_status=OK
+[N3-01][fixture_theme] A2: Point-Full Story/Point-Point重複QA開始(retry 0/2)...
+[N3-01][fixture_theme] A2: Point-Full Story重複QA完了(overlapなし、記事全体retry 0回で解消)。
+[N3-01][fixture_theme] A2: metrics={'word_count': 10, 'sentence_count': 1, 'avg_sentence_length': 10.0, 'max_sentence_length': 10} sections={'intro': 0, 'point_one': 0, 'point_two': 0, 'in_one_line': 0}
+[N3-01][fixture_theme] A2: fact checker呼び出し開始...
+[N3-01][fixture_theme] A2: fact_check status=FACT_CHECK_COMPLETED verdict=PASS
+[N3-01][fixture_theme] A2: ledger逸脱チェック開始(Hook-aware)...
+[N3-01][fixture_theme] A2: deviation overall_status=LEDGER_COMPLIANT deviations=0
+[N3-01][fixture_theme] A2: 比較方向Fact事前チェック(暫定、ER-008-DIRECTIONAL-FACT-PRECHECK-08)開始...
+[N3-01][fixture_theme] A2: 比較方向Fact事前チェック完了。overall_status=OK
+[N3-01][fixture_theme] A2: Point-Full Story/Point-Point重複QA開始(retry 0/2)...
+[N3-01][fixture_theme] A2: Point-Full Story重複QA完了(overlapなし、記事全体retry 0回で解消)。
+[N3-01][fixture_theme] A2: metrics={'word_count': 10, 'sentence_count': 1, 'avg_sentence_length': 10.0, 'max_sentence_length': 10} sections={'intro': 0, 'point_one': 0, 'point_two': 0, 'in_one_line': 0}
+[N3-01][fixture_theme] A2: fact checker呼び出し開始...
+[N3-01][fixture_theme] A2: fact_check status=FACT_CHECK_COMPLETED verdict=PASS
+[N3-01][fixture_theme] A2: ledger逸脱チェック開始(Hook-aware)...
+[N3-01][fixture_theme] A2: deviation overall_status=LEDGER_COMPLIANT deviations=0
+[N3-01][fixture_theme] A2: 比較方向Fact事前チェック(暫定、ER-008-DIRECTIONAL-FACT-PRECHECK-08)開始...
+[N3-01][fixture_theme] A2: 比較方向Fact事前チェック完了。overall_status=OK
+[N3-01][fixture_theme] A2: Point-Full Story/Point-Point重複QA開始(retry 0/2)...
+[N3-01][fixture_theme] A2: Point-Full Story重複QA完了(overlapなし、記事全体retry 0回で解消)。
+[N3-01][fixture_theme] A2: metrics={'word_count': 10, 'sentence_count': 1, 'avg_sentence_length': 10.0, 'max_sentence_length': 10} sections={'intro': 0, 'point_one': 0, 'point_two': 0, 'in_one_line': 0}
+[N3-01][fixture_theme] A2: fact checker呼び出し開始...
+[N3-01][fixture_theme] A2: fact_check status=FACT_CHECK_COMPLETED verdict=PASS
+[N3-01][fixture_theme] A2: ledger逸脱チェック開始(Hook-aware)...
+[N3-01][fixture_theme] A2: deviation overall_status=LEDGER_COMPLIANT deviations=0
+[N3-01][fixture_theme] A2: 比較方向Fact事前チェック(暫定、ER-008-DIRECTIONAL-FACT-PRECHECK-08)開始...
+[N3-01][fixture_theme] A2: 比較方向Fact事前チェック完了。overall_status=OK
+[run_project_regression] collected=292 passed=289 failed=3 errors=0 skipped=0
+[run_project_regression] summary written: er071_output/m2p0_n01_production_wiring_01/gloss_alignment_correction_01/regression/summary_er011.json
