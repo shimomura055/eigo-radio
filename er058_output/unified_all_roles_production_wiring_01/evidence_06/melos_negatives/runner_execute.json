@@ -1,0 +1,207 @@
+{
+ "mode": "execute",
+ "stop_files_present": [],
+ "plan": {
+  "n_cases": 7,
+  "est_jpy_max": 0.563
+ },
+ "rows": [
+  {
+   "case": "num_diff_six",
+   "wav": "er077_output/m1_oov_multi_pronunciation_01/evidence_01/gen/wav/neg_num_t1_raw.wav",
+   "actual_spoken_text": "Melos did not wait five days.",
+   "canonical_given": "Melos did not wait six days.",
+   "primary_asr": "Mellos did not wait five days.",
+   "verified": false,
+   "state": "NG_PROTECTED",
+   "reason": "p1_value_diff",
+   "final_status": "TRUE_CONTENT_MISMATCH",
+   "secondary_text": null,
+   "value_guard": {
+    "primary": {
+     "kind": "DIFF",
+     "pairs": [
+      {
+       "src": "6",
+       "hyp": "5",
+       "verdict": "DIFF",
+       "reason": "value_differs"
+      }
+     ],
+     "reasons": [
+      "DIFF:value_differs:'6'->'5'"
+     ],
+     "warnings": []
+    }
+   },
+   "azure_calls": 0
+  },
+  {
+   "case": "num_diff_fifteen",
+   "wav": "er077_output/m1_oov_multi_pronunciation_01/evidence_01/gen/wav/neg_num_t2_raw.wav",
+   "actual_spoken_text": "Melos did not wait five days.",
+   "canonical_given": "Melos did not wait fifteen days.",
+   "primary_asr": "Mellos did not wait five days.",
+   "verified": false,
+   "state": "NG_PROTECTED",
+   "reason": "p1_value_diff",
+   "final_status": "TRUE_CONTENT_MISMATCH",
+   "secondary_text": null,
+   "value_guard": {
+    "primary": {
+     "kind": "DIFF",
+     "pairs": [
+      {
+       "src": "15",
+       "hyp": "5",
+       "verdict": "DIFF",
+       "reason": "value_differs"
+      }
+     ],
+     "reasons": [
+      "DIFF:value_differs:'15'->'5'"
+     ],
+     "warnings": []
+    }
+   },
+   "azure_calls": 0
+  },
+  {
+   "case": "neg_removed",
+   "wav": "er077_output/m1_oov_multi_pronunciation_01/evidence_01/gen/wav/neg_num_t1_raw.wav",
+   "actual_spoken_text": "Melos did not wait five days.",
+   "canonical_given": "Melos did wait five days.",
+   "primary_asr": "Mellos did not wait five days.",
+   "verified": false,
+   "state": "NG_PROTECTED",
+   "reason": "p1_negation_diff",
+   "final_status": "TRUE_CONTENT_MISMATCH",
+   "secondary_text": null,
+   "value_guard": {
+    "primary": {
+     "kind": "EQUAL",
+     "pairs": [
+      {
+       "src": "5",
+       "hyp": "5",
+       "verdict": "EQUAL",
+       "reason": "same_surface"
+      }
+     ],
+     "reasons": [],
+     "warnings": []
+    }
+   },
+   "azure_calls": 0
+  },
+  {
+   "case": "neg_added_num_same",
+   "wav": "er077_output/m1_oov_multi_pronunciation_01/evidence_01/gen/wav/nonsib_left_t1_raw.wav",
+   "actual_spoken_text": "Melos left.",
+   "canonical_given": "Melos did not leave.",
+   "primary_asr": "Mellos left.",
+   "verified": false,
+   "state": "NG_PROTECTED",
+   "reason": "p1_negation_diff",
+   "final_status": "TRUE_CONTENT_MISMATCH",
+   "secondary_text": null,
+   "value_guard": {
+    "primary": {
+     "kind": "NO_VALUES",
+     "pairs": [],
+     "reasons": [],
+     "warnings": []
+    }
+   },
+   "azure_calls": 0
+  },
+  {
+   "case": "other_word",
+   "wav": "er077_output/m1_oov_multi_pronunciation_01/evidence_01/gen/wav/nonsib_left_t2_raw.wav",
+   "actual_spoken_text": "Melos left.",
+   "canonical_given": "Melos sat.",
+   "primary_asr": "Mellos left.",
+   "verified": false,
+   "state": "NG_BOTH",
+   "reason": "secondary_not_accepted",
+   "final_status": "TTS_FAILURE",
+   "secondary_text": "Melos left.",
+   "value_guard": {
+    "primary": {
+     "kind": "NO_VALUES",
+     "pairs": [],
+     "reasons": [],
+     "warnings": []
+    },
+    "secondary": {
+     "kind": "NO_VALUES",
+     "pairs": [],
+     "reasons": [],
+     "warnings": []
+    }
+   },
+   "azure_calls": 1
+  },
+  {
+   "case": "other_word2",
+   "wav": "er077_output/m1_oov_multi_pronunciation_01/evidence_01/gen/wav/nonsib_ran_t1_raw.wav",
+   "actual_spoken_text": "Melos ran.",
+   "canonical_given": "Melos won.",
+   "primary_asr": "Mellos ran.",
+   "verified": false,
+   "state": "NG_BOTH",
+   "reason": "secondary_not_accepted",
+   "final_status": "TTS_FAILURE",
+   "secondary_text": "Melos ran.",
+   "value_guard": {
+    "primary": {
+     "kind": "NO_VALUES",
+     "pairs": [],
+     "reasons": [],
+     "warnings": []
+    },
+    "secondary": {
+     "kind": "NO_VALUES",
+     "pairs": [],
+     "reasons": [],
+     "warnings": []
+    }
+   },
+   "azure_calls": 1
+  },
+  {
+   "case": "diff_name_sentence",
+   "wav": "er077_output/m1_oov_multi_pronunciation_01/evidence_01/gen/wav/repeat_t1_raw.wav",
+   "actual_spoken_text": "Melos said Melos left.",
+   "canonical_given": "Melos said Melos won.",
+   "primary_asr": "Mello said, Mello's left.",
+   "verified": false,
+   "state": "NG_BOTH",
+   "reason": "secondary_not_accepted",
+   "final_status": "TTS_FAILURE",
+   "secondary_text": "Melo said Melos left.",
+   "value_guard": {
+    "primary": {
+     "kind": "NO_VALUES",
+     "pairs": [],
+     "reasons": [],
+     "warnings": []
+    },
+    "secondary": {
+     "kind": "NO_VALUES",
+     "pairs": [],
+     "reasons": [],
+     "warnings": []
+    }
+   },
+   "azure_calls": 1
+  }
+ ],
+ "false_accepts": [],
+ "cost": {
+  "est_total_jpy": 0.3828,
+  "n_openai": 7,
+  "n_azure": 3
+ },
+ "shared_state_unchanged": true
+}

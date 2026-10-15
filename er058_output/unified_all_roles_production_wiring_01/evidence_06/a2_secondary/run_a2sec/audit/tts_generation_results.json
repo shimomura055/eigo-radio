@@ -1,0 +1,495 @@
+{
+  "segments": {
+    "S1_melos_primaryNG_secondaryPASS": {
+      "status": "OK",
+      "text": "Melos said.",
+      "language": "en",
+      "path": "er058_output/unified_all_roles_production_wiring_01/evidence_06/a2_secondary/narr_S1_melos_primaryNG_secondaryPASS/full_story_part1.wav",
+      "sha256": "ac06b6d88dc067776831baaf7deb03c2bff22589a8ced263d949b6812118c0a1",
+      "duration_seconds": 1.501,
+      "trim_info": null,
+      "post_slowdown_cascade": {
+        "invoked": true,
+        "cascade_entered": true,
+        "verified": true,
+        "final_status": "M1_MULTI_CANDIDATE_ACCEPT",
+        "steps": [
+          {
+            "step": "primary_1",
+            "provider": "openai_asr",
+            "text": "Mellos said.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "tier3_corroboration_secondary",
+            "provider": "azure",
+            "text": "Mello said.",
+            "sub_reason": "entity_only",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "step": "secondary_1",
+            "provider": "azure",
+            "text": "Mello said.",
+            "classification": "ASR_VALIDATION_UNCERTAIN",
+            "phrase_list_used": true,
+            "cached": true,
+            "unified_judge_state": "PASS_WITH_WARNING",
+            "entity_like_source": [
+              "capitalized"
+            ]
+          },
+          {
+            "m1_version": "M1-MULTI-2026-10-13",
+            "original_asr": "Mello said.",
+            "candidate_set_hash": "791d277362d45ca1",
+            "candidates_frozen": true,
+            "f1_residual_kind": "entity_or_homophone_only",
+            "normalized_asr": "Melo said.",
+            "acceptance_reason": "M1_MULTI_CANDIDATE_ACCEPT",
+            "subs": [
+              {
+                "rule": "drop_final_S_or_Z",
+                "source": "C2_ledger_alt",
+                "confidence": "low",
+                "pron": [
+                  "M",
+                  "EH",
+                  "L",
+                  "OW",
+                  "S"
+                ],
+                "ledger_key": "ec716e185835dba3",
+                "updated_at": "2026-10-12T13:17:58",
+                "ipa_raw": "ˈmɛloʊs",
+                "also_from": [],
+                "from": "mello",
+                "to": "melo",
+                "canonical_word": "melos",
+                "entity_like": true,
+                "all_matching_candidates": [
+                  {
+                    "rule": "drop_final_S_or_Z",
+                    "source": "C2_ledger_alt",
+                    "confidence": "low",
+                    "pron": [
+                      "M",
+                      "EH",
+                      "L",
+                      "OW",
+                      "S"
+                    ],
+                    "ledger_key": "ec716e185835dba3",
+                    "updated_at": "2026-10-12T13:17:58",
+                    "ipa_raw": "ˈmɛloʊs",
+                    "also_from": []
+                  }
+                ]
+              }
+            ],
+            "ledger_keys": [
+              "ec716e185835dba3"
+            ],
+            "f1_explained": [
+              {
+                "index": 0,
+                "canonical": "Melos",
+                "asr": "Melo",
+                "rule": "Pattern_A_sibilant_sequence",
+                "judgment": "CONNECTED_SPEECH_ACCEPT",
+                "expected_phoneme_boundary": "Melos/z/ + said/s/"
+              }
+            ],
+            "f1_version": "F1-2026-10-13",
+            "secondary_state": "uncertain_no_agreement",
+            "secondary_agree": false,
+            "step": "m1_multi_candidate",
+            "reason": "M1_MULTI_CANDIDATE_ACCEPT",
+            "m1_layer_invoked": true,
+            "accepted": true,
+            "provider": "local",
+            "at_step": "secondary_1"
+          }
+        ],
+        "semantic_equivalence_info": {
+          "tier_applied": "none",
+          "sub_reason": "entity_only",
+          "corroborated_by": [],
+          "warning": false,
+          "role": "FULL_STORY",
+          "diff_spans": {
+            "index": 0,
+            "canonical_word": "melos",
+            "asr_word": "mello"
+          }
+        },
+        "asr_judgement": {
+          "state": "PASS_WITH_WARNING",
+          "reason_code": "secondary_confirmed",
+          "slot": 1,
+          "script_version": "v0",
+          "role": "FULL_STORY",
+          "lang": "en",
+          "segment_key": "full_story_part1",
+          "audio_sha256": "ac06b6d88dc067776831baaf7deb03c2bff22589a8ced263d949b6812118c0a1",
+          "primary": {
+            "text": "Mellos said.",
+            "passed": false,
+            "label": "ASR_VALIDATION_UNCERTAIN",
+            "equivalence_basis": null,
+            "warning_labels": []
+          },
+          "secondary": {
+            "called": false,
+            "cached": true,
+            "engine": "azure",
+            "text": "Mello said.",
+            "label": "M1_MULTI_CANDIDATE",
+            "accepted": true,
+            "error": null,
+            "unavailable": false
+          },
+          "value_guard": {
+            "primary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            },
+            "secondary": {
+              "kind": "NO_VALUES",
+              "pairs": [],
+              "reasons": [],
+              "warnings": []
+            }
+          },
+          "negation_guard": {
+            "primary": false,
+            "secondary": false
+          },
+          "final_gate": {
+            "applied": true,
+            "target": "secondary",
+            "value_guard": "NO_VALUES",
+            "negation_diff": false
+          },
+          "warnings": [
+            "SECONDARY_CONFIRMED"
+          ],
+          "exclusion_rule": null,
+          "cost": {
+            "azure_calls": 0,
+            "azure_seconds": null,
+            "est_jpy": 0.0
+          },
+          "timing": {
+            "total_ms": 2,
+            "secondary_ms": 0
+          },
+          "technical_stop": null,
+          "p3_entry": "p3_primary_ng",
+          "adapter": {
+            "layers": [
+              "tier3"
+            ],
+            "azure_real_calls": 1,
+            "cost_guard_triggered": false,
+            "language": "en-US",
+            "segment_id": "full_story_part1",
+            "asr_text_present": true,
+            "cache": {
+              "calls": 1,
+              "hits": 1
+            }
+          }
+        }
+      },
+      "asr_judgement": {
+        "state": "PASS_WITH_WARNING",
+        "reason_code": "secondary_confirmed",
+        "slot": 1,
+        "script_version": "v0",
+        "role": "FULL_STORY",
+        "lang": "en",
+        "segment_key": "full_story_part1",
+        "audio_sha256": "ac06b6d88dc067776831baaf7deb03c2bff22589a8ced263d949b6812118c0a1",
+        "primary": {
+          "text": "Mellos said.",
+          "passed": false,
+          "label": "ASR_VALIDATION_UNCERTAIN",
+          "equivalence_basis": null,
+          "warning_labels": []
+        },
+        "secondary": {
+          "called": false,
+          "cached": true,
+          "engine": "azure",
+          "text": "Mello said.",
+          "label": "M1_MULTI_CANDIDATE",
+          "accepted": true,
+          "error": null,
+          "unavailable": false
+        },
+        "value_guard": {
+          "primary": {
+            "kind": "NO_VALUES",
+            "pairs": [],
+            "reasons": [],
+            "warnings": []
+          },
+          "secondary": {
+            "kind": "NO_VALUES",
+            "pairs": [],
+            "reasons": [],
+            "warnings": []
+          }
+        },
+        "negation_guard": {
+          "primary": false,
+          "secondary": false
+        },
+        "final_gate": {
+          "applied": true,
+          "target": "secondary",
+          "value_guard": "NO_VALUES",
+          "negation_diff": false
+        },
+        "warnings": [
+          "SECONDARY_CONFIRMED"
+        ],
+        "exclusion_rule": null,
+        "cost": {
+          "azure_calls": 0,
+          "azure_seconds": null,
+          "est_jpy": 0.0
+        },
+        "timing": {
+          "total_ms": 2,
+          "secondary_ms": 0
+        },
+        "technical_stop": null,
+        "p3_entry": "p3_primary_ng",
+        "adapter": {
+          "layers": [
+            "tier3"
+          ],
+          "azure_real_calls": 1,
+          "cost_guard_triggered": false,
+          "language": "en-US",
+          "segment_id": "full_story_part1",
+          "asr_text_present": true,
+          "cache": {
+            "calls": 1,
+            "hits": 1
+          }
+        }
+      },
+      "original_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06/a2_secondary/narr_S1_melos_primaryNG_secondaryPASS/full_story_part1_original.wav",
+      "slowdown_applied": true,
+      "slowdown_info": {
+        "slowdown_pct_target": 6.0,
+        "slowdown_pct_actual": 4.942,
+        "src_duration_seconds": 1.43,
+        "dst_duration_seconds": 1.501,
+        "src_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06/a2_secondary/narr_S1_melos_primaryNG_secondaryPASS/full_story_part1_original.wav",
+        "dst_path": "er058_output/unified_all_roles_production_wiring_01/evidence_06/a2_secondary/narr_S1_melos_primaryNG_secondaryPASS/full_story_part1.wav"
+      },
+      "post_slowdown_asr_text": "Mellos said.",
+      "post_slowdown_classification": "ASR_VALIDATION_UNCERTAIN",
+      "post_slowdown_semantic_equivalence": {
+        "tier_applied": "none",
+        "sub_reason": "entity_only",
+        "corroborated_by": [],
+        "warning": false,
+        "role": "FULL_STORY",
+        "diff_spans": {
+          "index": 0,
+          "canonical_word": "melos",
+          "asr_word": "mello"
+        }
+      },
+      "post_slowdown_final_classification": "M1_MULTI_CANDIDATE_ACCEPT",
+      "asr_verified": true,
+      "asr_text": "Mellos said.",
+      "post_slowdown_cascade_accepted": true
+    },
+    "ja_ai_factory_title_2tsu": {
+      "status": "OK",
+      "text": "AI工場の物語には、進み方の異なる2つの時計がある",
+      "language": "ja",
+      "path": "er011_output/family_a_trend_ai_manufacturing_prod_run_01/a2/narration/japanese_title.wav",
+      "sha256": "394270cc89dd3b4f8c569b6ff74ae5bd65f9f9f66be8475b0feb77754ab1e8e3",
+      "asr_judgement": {
+        "state": "PASS_WITH_WARNING",
+        "reason_code": "primary_pass",
+        "slot": 1,
+        "script_version": "v0",
+        "role": null,
+        "lang": "ja",
+        "segment_key": "ai_factory_title_2tsu",
+        "audio_sha256": "394270cc89dd3b4f8c569b6ff74ae5bd65f9f9f66be8475b0feb77754ab1e8e3",
+        "primary": {
+          "text": "AI工場の物語には、進み方の異なる二つの時計がある。",
+          "passed": true,
+          "label": "NORMALIZED_MATCH",
+          "equivalence_basis": null,
+          "warning_labels": []
+        },
+        "secondary": {
+          "called": false,
+          "cached": false,
+          "engine": "azure",
+          "text": null,
+          "label": "",
+          "accepted": null,
+          "error": null,
+          "unavailable": false
+        },
+        "value_guard": {
+          "primary": {
+            "kind": "EQUAL",
+            "pairs": [
+              {
+                "src": "2つ",
+                "hyp": "二つ",
+                "verdict": "EQUAL",
+                "reason": "same_value_unit"
+              }
+            ],
+            "reasons": [],
+            "warnings": [
+              "JA_NUMERIC_IRREGULAR_READING"
+            ]
+          }
+        },
+        "negation_guard": {
+          "primary": false
+        },
+        "final_gate": {
+          "applied": true,
+          "value_guard": "EQUAL",
+          "negation_diff": false
+        },
+        "warnings": [
+          "JA_NUMERIC_IRREGULAR_READING"
+        ],
+        "exclusion_rule": null,
+        "cost": {
+          "azure_calls": 0,
+          "azure_seconds": null,
+          "est_jpy": 0.0
+        },
+        "timing": {
+          "total_ms": 0,
+          "secondary_ms": 0
+        },
+        "technical_stop": null,
+        "adapter": {
+          "layers": [],
+          "azure_real_calls": 0,
+          "cost_guard_triggered": false,
+          "language": "ja-JP",
+          "asr_text_present": true,
+          "cache": {
+            "calls": 2,
+            "hits": 0
+          }
+        }
+      },
+      "segment_id": "ai_factory_title_2tsu",
+      "role": "JAPANESE_TITLE"
+    },
+    "ja_household_title2_2tsu": {
+      "status": "OK",
+      "text": "冷蔵庫の野菜室、2つの設定を使い分けると食品が長持ちする",
+      "language": "ja",
+      "path": "er011_output/household_unified_final_candidate_01/a2/narration/japanese_title.wav",
+      "sha256": "5383a2abb10d67bfc657c9c82766afcb4d8e58441674bd83445b0365828b7132",
+      "asr_judgement": {
+        "state": "PASS_WITH_WARNING",
+        "reason_code": "primary_pass",
+        "slot": 1,
+        "script_version": "v0",
+        "role": null,
+        "lang": "ja",
+        "segment_key": "household_title2_2tsu",
+        "audio_sha256": "5383a2abb10d67bfc657c9c82766afcb4d8e58441674bd83445b0365828b7132",
+        "primary": {
+          "text": "冷蔵庫の野菜室、二つの設定を使い分けると、食品が長持ちする。",
+          "passed": true,
+          "label": "NORMALIZED_MATCH",
+          "equivalence_basis": null,
+          "warning_labels": []
+        },
+        "secondary": {
+          "called": false,
+          "cached": false,
+          "engine": "azure",
+          "text": null,
+          "label": "",
+          "accepted": null,
+          "error": null,
+          "unavailable": false
+        },
+        "value_guard": {
+          "primary": {
+            "kind": "EQUAL",
+            "pairs": [
+              {
+                "src": "2つ",
+                "hyp": "二つ",
+                "verdict": "EQUAL",
+                "reason": "same_value_unit"
+              }
+            ],
+            "reasons": [],
+            "warnings": [
+              "JA_NUMERIC_IRREGULAR_READING"
+            ]
+          }
+        },
+        "negation_guard": {
+          "primary": false
+        },
+        "final_gate": {
+          "applied": true,
+          "value_guard": "EQUAL",
+          "negation_diff": false
+        },
+        "warnings": [
+          "JA_NUMERIC_IRREGULAR_READING"
+        ],
+        "exclusion_rule": null,
+        "cost": {
+          "azure_calls": 0,
+          "azure_seconds": null,
+          "est_jpy": 0.0
+        },
+        "timing": {
+          "total_ms": 0,
+          "secondary_ms": 0
+        },
+        "technical_stop": null,
+        "adapter": {
+          "layers": [],
+          "azure_real_calls": 0,
+          "cost_guard_triggered": false,
+          "language": "ja-JP",
+          "asr_text_present": true,
+          "cache": {
+            "calls": 2,
+            "hits": 0
+          }
+        }
+      },
+      "segment_id": "household_title2_2tsu",
+      "role": "JAPANESE_TITLE"
+    }
+  },
+  "key_phrases": {}
+}

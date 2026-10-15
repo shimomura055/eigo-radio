@@ -1,0 +1,334 @@
+{
+  "phase": "post_wiring",
+  "managed_id": "ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01",
+  "generated_by": "delegation_05",
+  "entrypoints": [
+    "er019_family_x_audio_production_runner_01.py",
+    "er063_family_z_audio_01.py",
+    "er026_family_z_fiction_production_runner_01.py",
+    "er012_b_family_voices_a2_production_01.py",
+    "er012_b_family_voices_production_01.py",
+    "er013_family_c_production_runner_01.py",
+    "er012_e_family_entertainment_two_level_runner_01.py",
+    "er003_v1_n3_01_tts_generate.py"
+  ],
+  "callee_pattern": "^(transcribe|classify_asr_match|classify_ja_asr_match|evaluate_attempt\\w*)$",
+  "entry_count": 35,
+  "entries": [
+    {
+      "module": "er003_v1_crosslevel_audio_02_common",
+      "function": "_run_a2_minimal_fallback_attempt",
+      "callee": "routing.transcribe",
+      "count": 1,
+      "judgement_point": "J3",
+      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
+      "category": "primary_acquisition"
+    },
+    {
+      "module": "er003_v1_crosslevel_audio_02_common",
+      "function": "_run_a2_minimal_fallback_attempt",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade",
+      "count": 1,
+      "judgement_point": "J3",
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
+    },
+    {
+      "module": "er003_v1_n3_01_tts_generate",
+      "function": "_post_slowdown_cascade_rescue",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade_detail",
+      "count": 1,
+      "judgement_point": "J7",
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
+    },
+    {
+      "module": "er003_v1_n3_01_tts_generate",
+      "function": "_post_slowdown_unified_judge",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade_detail",
+      "count": 1,
+      "judgement_point": "J7",
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
+    },
+    {
+      "module": "er003_v1_n3_01_tts_generate",
+      "function": "apply_a2_slowdown_postprocess",
+      "callee": "routing.transcribe",
+      "count": 1,
+      "judgement_point": "J7",
+      "reason": "A2 6%減速後wavのPrimary ASR転写の取得(AUW 委任_05)。判定は_post_slowdown_unified_judge経由(統一judge)",
+      "category": "primary_acquisition"
+    },
+    {
+      "module": "er003_v1_n3_01_tts_generate",
+      "function": "generate_a2_japanese_with_fallback",
+      "callee": "ja_secondary.evaluate_attempt_ja_with_cascade",
+      "count": 1,
+      "judgement_point": "J8",
+      "reason": "JA判定点(leaf)からJA adapter(er007_ja_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "ja_adapter_entry"
+    },
+    {
+      "module": "er003_v1_n3_01_tts_generate",
+      "function": "generate_a2_japanese_with_fallback",
+      "callee": "routing.transcribe",
+      "count": 1,
+      "judgement_point": "J8",
+      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
+      "category": "primary_acquisition"
+    },
+    {
+      "module": "er003_v1_repro01_main_generate",
+      "function": "generate_narration_snippet_verified_strict",
+      "callee": "ja_secondary.evaluate_attempt_ja_with_cascade",
+      "count": 1,
+      "judgement_point": "J5",
+      "reason": "JA判定点(leaf)からJA adapter(er007_ja_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "ja_adapter_entry"
+    },
+    {
+      "module": "er003_v1_repro01_main_generate",
+      "function": "generate_narration_snippet_verified_strict",
+      "callee": "routing.transcribe",
+      "count": 1,
+      "judgement_point": "J5",
+      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
+      "category": "primary_acquisition"
+    },
+    {
+      "module": "er003_v1_repro01_main_generate",
+      "function": "generate_narration_snippet_verified_strict",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade",
+      "count": 1,
+      "judgement_point": "J5",
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
+    },
+    {
+      "module": "er003_v1_sing01_news_tail_fix",
+      "function": "generate_news_narration_wide_margin",
+      "callee": "routing.transcribe",
+      "count": 1,
+      "judgement_point": "J2",
+      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
+      "category": "primary_acquisition"
+    },
+    {
+      "module": "er003_v1_sing01_news_tail_fix",
+      "function": "generate_news_narration_wide_margin",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade",
+      "count": 1,
+      "judgement_point": "J2",
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
+    },
+    {
+      "module": "er003_v1_sing01_point_headings_aoede",
+      "function": "generate",
+      "callee": "routing.transcribe",
+      "count": 1,
+      "judgement_point": "J6",
+      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
+      "category": "primary_acquisition"
+    },
+    {
+      "module": "er003_v1_sing01_point_headings_aoede",
+      "function": "generate",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade",
+      "count": 1,
+      "judgement_point": "J6",
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
+    },
+    {
+      "module": "er003_v1_sing01_voice01_generate",
+      "function": "generate_charon_english",
+      "callee": "routing.transcribe",
+      "count": 1,
+      "judgement_point": "J1",
+      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
+      "category": "primary_acquisition"
+    },
+    {
+      "module": "er003_v1_sing01_voice01_generate",
+      "function": "generate_charon_english",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade",
+      "count": 1,
+      "judgement_point": "J1",
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
+    },
+    {
+      "module": "er003_v1_sing01_voice01_generate",
+      "function": "generate_charon_japanese",
+      "callee": "ja_secondary.evaluate_attempt_ja_with_cascade",
+      "count": 2,
+      "judgement_point": "J9,J10",
+      "reason": "JA判定点(leaf)からJA adapter(er007_ja_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "ja_adapter_entry"
+    },
+    {
+      "module": "er003_v1_sing01_voice01_generate",
+      "function": "generate_charon_japanese",
+      "callee": "routing.transcribe",
+      "count": 2,
+      "judgement_point": "J9,J10",
+      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
+      "category": "primary_acquisition"
+    },
+    {
+      "module": "er006_preprod_hardening_01_validation",
+      "function": "aggregate_entity_only_phonetic_corroboration",
+      "callee": "classify_asr_match",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "EN検証library内部の呼出(Primary P-chain本体)。adapter(evaluate_attempt_with_cascade_detail)経由でのみ判定に使われる",
+      "category": "library_internal"
+    },
+    {
+      "module": "er006_preprod_hardening_01_validation",
+      "function": "evaluate_attempt",
+      "callee": "classify_asr_match",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "EN検証library内部の呼出(Primary P-chain本体)。adapter(evaluate_attempt_with_cascade_detail)経由でのみ判定に使われる",
+      "category": "library_internal"
+    },
+    {
+      "module": "er006_secondary_asr_01",
+      "function": "evaluate_attempt_with_cascade",
+      "callee": "evaluate_attempt_with_cascade_detail",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "EN統一judge adapter本体(AUW 委任_03): Primary P-chain([val.evaluate_attempt/classify_asr_match])とjudge呼出。判定は全てunified_judge経由",
+      "category": "adapter_internal"
+    },
+    {
+      "module": "er006_secondary_asr_01",
+      "function": "evaluate_attempt_with_cascade_detail",
+      "callee": "val.classify_asr_match",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "EN統一judge adapter本体(AUW 委任_03): Primary P-chain([val.evaluate_attempt/classify_asr_match])とjudge呼出。判定は全てunified_judge経由",
+      "category": "adapter_internal"
+    },
+    {
+      "module": "er006_secondary_asr_01",
+      "function": "evaluate_attempt_with_cascade_detail",
+      "callee": "val.evaluate_attempt",
+      "count": 2,
+      "judgement_point": "",
+      "reason": "EN統一judge adapter本体(AUW 委任_03): Primary P-chain([val.evaluate_attempt/classify_asr_match])とjudge呼出。判定は全てunified_judge経由",
+      "category": "adapter_internal"
+    },
+    {
+      "module": "er006_secondary_asr_01",
+      "function": "evaluate_attempt_with_cascade_detail._secondary_accept",
+      "callee": "val.classify_asr_match",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "EN統一judge adapter本体(AUW 委任_03): Primary P-chain([val.evaluate_attempt/classify_asr_match])とjudge呼出。判定は全てunified_judge経由",
+      "category": "adapter_internal"
+    },
+    {
+      "module": "er007_ja_secondary_asr_01",
+      "function": "_run_scg_secondary_confirm",
+      "callee": "javal.classify_ja_asr_match",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "JA統一judge adapter本体(AUW 委任_04): Primary(classify_ja_asr_match)とSecondary許容集合判定。判定は全てunified_judge経由",
+      "category": "adapter_internal"
+    },
+    {
+      "module": "er007_ja_secondary_asr_01",
+      "function": "evaluate_attempt_ja_with_cascade",
+      "callee": "evaluate_attempt_ja_with_cascade_detail",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "JA統一judge adapter本体(AUW 委任_04): Primary(classify_ja_asr_match)とSecondary許容集合判定。判定は全てunified_judge経由",
+      "category": "adapter_internal"
+    },
+    {
+      "module": "er007_ja_secondary_asr_01",
+      "function": "evaluate_attempt_ja_with_cascade_detail",
+      "callee": "javal.classify_ja_asr_match",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "JA統一judge adapter本体(AUW 委任_04): Primary(classify_ja_asr_match)とSecondary許容集合判定。判定は全てunified_judge経由",
+      "category": "adapter_internal"
+    },
+    {
+      "module": "er007_ja_secondary_asr_01",
+      "function": "evaluate_attempt_ja_with_cascade_detail._secondary_accept",
+      "callee": "javal.classify_ja_asr_match",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "JA統一judge adapter本体(AUW 委任_04): Primary(classify_ja_asr_match)とSecondary許容集合判定。判定は全てunified_judge経由",
+      "category": "adapter_internal"
+    },
+    {
+      "module": "er008_disfluency_qa_18",
+      "function": "transcribe_verbatim",
+      "callee": "model.transcribe",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "Safety QA用の転写(disfluency/repetition)。内容一致の判定点ではない(最後にANDされる既存構造は不変)",
+      "category": "safety_qa"
+    },
+    {
+      "module": "er011_open121_repetition_qa_production_01",
+      "function": "run_method_c_v2_window_check",
+      "callee": "asr_routing.transcribe",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "Safety QA用の転写(disfluency/repetition)。内容一致の判定点ではない(最後にANDされる既存構造は不変)",
+      "category": "safety_qa"
+    },
+    {
+      "module": "er012_b_family_voices_production_01",
+      "function": "generate_voice_body_wide_margin",
+      "callee": "asr_routing.transcribe",
+      "count": 1,
+      "judgement_point": "J4",
+      "reason": "Primary ASR転写の取得(統一judgeの入力側。EN leaf/EN+JA共用関数)",
+      "category": "primary_acquisition"
+    },
+    {
+      "module": "er012_b_family_voices_production_01",
+      "function": "generate_voice_body_wide_margin",
+      "callee": "secondary_asr.evaluate_attempt_with_cascade",
+      "count": 1,
+      "judgement_point": "J4",
+      "reason": "EN判定点(leaf)からadapter(er006_secondary_asr_01)への入口呼出=統一judge経由",
+      "category": "en_adapter_entry"
+    },
+    {
+      "module": "er013_family_c_production_runner_01",
+      "function": "get_or_run_asr",
+      "callee": "asr_routing.transcribe",
+      "count": 1,
+      "judgement_point": "",
+      "reason": "Family C(legacy)の診断用ASR(get_or_run_asr)。確認済み(委任_04): 結果はaudit asr_text/comment_consistency.jsonの記録のみで採用判定に使われない",
+      "category": "diagnostic_not_judgement"
+    },
+    {
+      "module": "er019_family_x_validation_inheritance_01",
+      "function": "rejudge_with_current_judge",
+      "callee": "en_validator.classify_asr_match",
+      "count": 1,
+      "judgement_point": "J11",
+      "reason": "J11 引継ぎ・再利用の再判定(AUW 委任_04): 保存転写のPrimary再導出後にunified_judge(最終ANDゲート)を通す。API 0・Secondary新規呼出なし",
+      "category": "j11_unified_judge_entry"
+    },
+    {
+      "module": "er019_family_x_validation_inheritance_01",
+      "function": "rejudge_with_current_judge.accept_fn",
+      "callee": "en_validator.classify_asr_match",
+      "count": 1,
+      "judgement_point": "J11",
+      "reason": "J11 引継ぎ・再利用の再判定(AUW 委任_04): 保存転写のPrimary再導出後にunified_judge(最終ANDゲート)を通す。API 0・Secondary新規呼出なし",
+      "category": "j11_unified_judge_entry"
+    }
+  ]
+}

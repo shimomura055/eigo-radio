@@ -1,0 +1,1221 @@
+{
+ "mode": "execute",
+ "stop_files_present": [],
+ "plan": {
+  "n_cases": 10,
+  "est_jpy_max": 5.422
+ },
+ "isolation": {
+  "human_review_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_06/ja/human_review_queue.jsonl",
+  "attempt_history": "er058_output/unified_all_roles_production_wiring_01/evidence_06/ja/attempt_history.jsonl",
+  "master_audio_store": "er058_output/unified_all_roles_production_wiring_01/evidence_06/ja/master_audio_store",
+  "reuse_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06/ja/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06/ja/er021_telemetry.jsonl",
+  "er025_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_06/ja/er025_telemetry.jsonl",
+  "cost_log": "er058_output/unified_all_roles_production_wiring_01/evidence_06/ja/cost_log.jsonl",
+  "ledger_snapshot": "er058_output/unified_all_roles_production_wiring_01/evidence_06/ja/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)"
+ },
+ "rows": [
+  {
+   "case": "household_title_2tsu",
+   "kind": "positive",
+   "source_run": "er003_output/n3_01/household/a2",
+   "segment": "japanese_title",
+   "wav": "er003_output/n3_01/household/a2/narration/japanese_title.wav",
+   "tts_canonical_text": "冷蔵庫の野菜室、2つの設定を使い分けると食品が長持ちする",
+   "canonical_given": "冷蔵庫の野菜室、2つの設定を使い分けると食品が長持ちする",
+   "primary_asr": "冷蔵庫の野菜室、2つの設定を使い分けると食品が長持ちする。",
+   "primary_err": null,
+   "stored_asr_text": "冷蔵庫の野菜室。二つの設定を使い分けると食品が長持ちする。インワン、ランドン。",
+   "verified": true,
+   "state": "PASS",
+   "reason": "primary_pass",
+   "final_status": "NORMALIZED_MATCH",
+   "warnings": [],
+   "secondary_text": null,
+   "value_guard": {
+    "primary": {
+     "kind": "EQUAL",
+     "pairs": [
+      {
+       "src": "2つ",
+       "hyp": "2つ",
+       "verdict": "EQUAL",
+       "reason": "same_surface"
+      }
+     ],
+     "reasons": [],
+     "warnings": []
+    }
+   },
+   "azure_calls": 0,
+   "asr_judgement": {
+    "state": "PASS",
+    "reason_code": "primary_pass",
+    "slot": 1,
+    "script_version": "v0",
+    "role": null,
+    "lang": "ja",
+    "segment_key": "household_title_2tsu",
+    "audio_sha256": "72874050be5465569704b625b0d74b5f6a5cd466b10371479b8d7e193a978aa6",
+    "primary": {
+     "text": "冷蔵庫の野菜室、2つの設定を使い分けると食品が長持ちする。",
+     "passed": true,
+     "label": "NORMALIZED_MATCH",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": false,
+     "cached": false,
+     "engine": "azure",
+     "text": null,
+     "label": "",
+     "accepted": null,
+     "error": null,
+     "unavailable": false
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "EQUAL",
+      "pairs": [
+       {
+        "src": "2つ",
+        "hyp": "2つ",
+        "verdict": "EQUAL",
+        "reason": "same_surface"
+       }
+      ],
+      "reasons": [],
+      "warnings": []
+     }
+    },
+    "negation_guard": {
+     "primary": false
+    },
+    "final_gate": {
+     "applied": true,
+     "value_guard": "EQUAL",
+     "negation_diff": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "timing": {
+     "total_ms": 0,
+     "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "adapter": {
+     "layers": [],
+     "azure_real_calls": 0,
+     "cost_guard_triggered": false,
+     "language": "ja-JP",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 0,
+      "hits": 0
+     }
+    }
+   }
+  },
+  {
+   "case": "akb48_comment2_2saku",
+   "kind": "positive",
+   "source_run": "er005_output/cost_baseline_01/akb48/a2",
+   "segment": "comment_2",
+   "wav": "er005_output/cost_baseline_01/akb48/a2/narration/comment_2.wav",
+   "tts_canonical_text": "伊藤百花さんは、2作続けてセンターを務めます。では、今回初めて表題曲のメンバーに選ばれた若いメンバーは、どんな人なのでしょうか。",
+   "canonical_given": "伊藤百花さんは、2作続けてセンターを務めます。では、今回初めて表題曲のメンバーに選ばれた若いメンバーは、どんな人なのでしょうか。",
+   "primary_asr": "伊藤ひょうかさんは2作続けてセンターを務めます。では、今回初めて表題曲のメンバーに選ばれた若いメンバーはどんな人なのでしょうか。",
+   "primary_err": null,
+   "stored_asr_text": "伊藤評価さんは、二作続けてセンターを務めます。では、今回初めて表題曲のメンバーに選ばれた若いメンバーはどんな人なのでしょうか？",
+   "verified": false,
+   "state": "NG_BOTH",
+   "reason": "secondary_not_accepted",
+   "final_status": "TRUE_CONTENT_MISMATCH",
+   "warnings": [],
+   "secondary_text": "伊藤評価さんは、二作続けてセンターを務めます。では、今回初めて表題曲のメンバーに選ばれた若いメンバーはどんな人なのでしょうか？",
+   "value_guard": {
+    "primary": {
+     "kind": "EQUAL",
+     "pairs": [
+      {
+       "src": "2",
+       "hyp": "2",
+       "verdict": "EQUAL",
+       "reason": "same_surface"
+      }
+     ],
+     "reasons": [],
+     "warnings": []
+    },
+    "secondary": {
+     "kind": "UNKNOWN",
+     "pairs": [
+      {
+       "src": "2",
+       "hyp": null,
+       "verdict": "UNKNOWN",
+       "reason": "src_drop_but_partner_region_has_numeral_like_text"
+      }
+     ],
+     "reasons": [
+      "UNKNOWN:src_drop_but_partner_region_has_numeral_like_text:'2'->None"
+     ],
+     "warnings": []
+    }
+   },
+   "azure_calls": 1,
+   "asr_judgement": {
+    "state": "NG_BOTH",
+    "reason_code": "secondary_not_accepted",
+    "slot": 1,
+    "script_version": "v0",
+    "role": null,
+    "lang": "ja",
+    "segment_key": "akb48_comment2_2saku",
+    "audio_sha256": "2cb0b51f4d1ed564749516572f46315cc00b3a3281be90a781120ff254a6de31",
+    "primary": {
+     "text": "伊藤ひょうかさんは2作続けてセンターを務めます。では、今回初めて表題曲のメンバーに選ばれた若いメンバーはどんな人なのでしょうか。",
+     "passed": false,
+     "label": "TRUE_CONTENT_MISMATCH",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": true,
+     "cached": false,
+     "engine": "azure",
+     "text": "伊藤評価さんは、二作続けてセンターを務めます。では、今回初めて表題曲のメンバーに選ばれた若いメンバーはどんな人なのでしょうか？",
+     "label": "TRUE_CONTENT_MISMATCH",
+     "accepted": false,
+     "error": null,
+     "unavailable": false
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "EQUAL",
+      "pairs": [
+       {
+        "src": "2",
+        "hyp": "2",
+        "verdict": "EQUAL",
+        "reason": "same_surface"
+       }
+      ],
+      "reasons": [],
+      "warnings": []
+     },
+     "secondary": {
+      "kind": "UNKNOWN",
+      "pairs": [
+       {
+        "src": "2",
+        "hyp": null,
+        "verdict": "UNKNOWN",
+        "reason": "src_drop_but_partner_region_has_numeral_like_text"
+       }
+      ],
+      "reasons": [
+       "UNKNOWN:src_drop_but_partner_region_has_numeral_like_text:'2'->None"
+      ],
+      "warnings": []
+     }
+    },
+    "negation_guard": {
+     "primary": false,
+     "secondary": false
+    },
+    "final_gate": {
+     "applied": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+     "azure_calls": 1,
+     "azure_seconds": 11.22,
+     "est_jpy": 0.5333,
+     "est_jpy_known": true
+    },
+    "timing": {
+     "total_ms": 3639,
+     "secondary_ms": 3632
+    },
+    "technical_stop": null,
+    "p3_entry": "p3_primary_ng",
+    "adapter": {
+     "layers": [],
+     "azure_real_calls": 1,
+     "cost_guard_triggered": false,
+     "language": "ja-JP",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 1,
+      "hits": 0
+     }
+    }
+   }
+  },
+  {
+   "case": "akb48_comment3_2saku",
+   "kind": "positive",
+   "source_run": "er005_output/cost_baseline_01/akb48/a2",
+   "segment": "comment_3",
+   "wav": "er005_output/cost_baseline_01/akb48/a2/narration/comment_3.wav",
+   "tts_canonical_text": "今回のニュースでは、伊藤百花さんが2作続けてセンターを務め、近藤沙樹さんが初めてメインのメンバーに加わります。まず、曲のタイトルが表す、まだはっきりしない気持ちに注目します。次に、二つの新しい世代がどうつながるのかを見ていきます。",
+   "canonical_given": "今回のニュースでは、伊藤百花さんが2作続けてセンターを務め、近藤沙樹さんが初めてメインのメンバーに加わります。まず、曲のタイトルが表す、まだはっきりしない気持ちに注目します。次に、二つの新しい世代がどうつながるのかを見ていきます。",
+   "primary_asr": "今回のニュースでは、伊藤評価さんが2作続けてセンターを務め、近藤咲さんが初めてメインのメンバーに加わります。まず、曲のタイトルが表す、まだはっきりしない気持ちに注目します。 次に、2つの新しい世代がどうつながるのかを見ていきます。",
+   "primary_err": null,
+   "stored_asr_text": "今回のニュースでは、伊藤京香さんが二作続けてセンターを務め、近藤作さんが初めてメインのメンバーに加わります。まず、曲のタイトルが表すまだはっきりしない気持ちに注目します。次に、二つの新しい世代がどうつながるのかを見ていきます。",
+   "verified": false,
+   "state": "NG_BOTH",
+   "reason": "secondary_not_accepted",
+   "final_status": "TRUE_CONTENT_MISMATCH",
+   "warnings": [
+    "JA_NUMERIC_IRREGULAR_READING"
+   ],
+   "secondary_text": "今回のニュースでは、伊藤京香さんが二作続けてセンターを務め、近藤作さんが初めてメインのメンバーに加わります。まず、曲のタイトルが表すまだはっきりしない気持ちに注目します。次に、二つの新しい世代がどうつながるのかを見ていきます。",
+   "value_guard": {
+    "primary": {
+     "kind": "EQUAL",
+     "pairs": [
+      {
+       "src": "2",
+       "hyp": "2",
+       "verdict": "EQUAL",
+       "reason": "same_surface"
+      },
+      {
+       "src": "二つ",
+       "hyp": "2つ",
+       "verdict": "EQUAL",
+       "reason": "same_value_unit"
+      }
+     ],
+     "reasons": [],
+     "warnings": [
+      "JA_NUMERIC_IRREGULAR_READING"
+     ]
+    },
+    "secondary": {
+     "kind": "UNKNOWN",
+     "pairs": [
+      {
+       "src": "2",
+       "hyp": null,
+       "verdict": "UNKNOWN",
+       "reason": "src_drop_but_partner_region_has_numeral_like_text"
+      },
+      {
+       "src": "二つ",
+       "hyp": "二つ",
+       "verdict": "EQUAL",
+       "reason": "same_surface"
+      }
+     ],
+     "reasons": [
+      "UNKNOWN:src_drop_but_partner_region_has_numeral_like_text:'2'->None"
+     ],
+     "warnings": []
+    }
+   },
+   "azure_calls": 1,
+   "asr_judgement": {
+    "state": "NG_BOTH",
+    "reason_code": "secondary_not_accepted",
+    "slot": 1,
+    "script_version": "v0",
+    "role": null,
+    "lang": "ja",
+    "segment_key": "akb48_comment3_2saku",
+    "audio_sha256": "72a166b933673b216ed61d50579cd6635c0d336a2c54d57b325e585a92e323eb",
+    "primary": {
+     "text": "今回のニュースでは、伊藤評価さんが2作続けてセンターを務め、近藤咲さんが初めてメインのメンバーに加わります。まず、曲のタイトルが表す、まだはっきりしない気持ちに注目します。 次に、2つの新しい世代がどうつながるのかを見ていきます。",
+     "passed": false,
+     "label": "TRUE_CONTENT_MISMATCH",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": true,
+     "cached": false,
+     "engine": "azure",
+     "text": "今回のニュースでは、伊藤京香さんが二作続けてセンターを務め、近藤作さんが初めてメインのメンバーに加わります。まず、曲のタイトルが表すまだはっきりしない気持ちに注目します。次に、二つの新しい世代がどうつながるのかを見ていきます。",
+     "label": "TRUE_CONTENT_MISMATCH",
+     "accepted": false,
+     "error": null,
+     "unavailable": false
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "EQUAL",
+      "pairs": [
+       {
+        "src": "2",
+        "hyp": "2",
+        "verdict": "EQUAL",
+        "reason": "same_surface"
+       },
+       {
+        "src": "二つ",
+        "hyp": "2つ",
+        "verdict": "EQUAL",
+        "reason": "same_value_unit"
+       }
+      ],
+      "reasons": [],
+      "warnings": [
+       "JA_NUMERIC_IRREGULAR_READING"
+      ]
+     },
+     "secondary": {
+      "kind": "UNKNOWN",
+      "pairs": [
+       {
+        "src": "2",
+        "hyp": null,
+        "verdict": "UNKNOWN",
+        "reason": "src_drop_but_partner_region_has_numeral_like_text"
+       },
+       {
+        "src": "二つ",
+        "hyp": "二つ",
+        "verdict": "EQUAL",
+        "reason": "same_surface"
+       }
+      ],
+      "reasons": [
+       "UNKNOWN:src_drop_but_partner_region_has_numeral_like_text:'2'->None"
+      ],
+      "warnings": []
+     }
+    },
+    "negation_guard": {
+     "primary": false,
+     "secondary": false
+    },
+    "final_gate": {
+     "applied": false
+    },
+    "warnings": [
+     "JA_NUMERIC_IRREGULAR_READING"
+    ],
+    "exclusion_rule": null,
+    "cost": {
+     "azure_calls": 1,
+     "azure_seconds": 22.12,
+     "est_jpy": 1.0222,
+     "est_jpy_known": true
+    },
+    "timing": {
+     "total_ms": 9069,
+     "secondary_ms": 9057
+    },
+    "technical_stop": null,
+    "p3_entry": "p3_primary_ng",
+    "adapter": {
+     "layers": [],
+     "azure_real_calls": 1,
+     "cost_guard_triggered": false,
+     "language": "ja-JP",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 2,
+      "hits": 0
+     }
+    }
+   }
+  },
+  {
+   "case": "ai_factory_title_2tsu",
+   "kind": "positive",
+   "source_run": "er011_output/family_a_trend_ai_manufacturing_prod_run_01/a2",
+   "segment": "japanese_title",
+   "wav": "er011_output/family_a_trend_ai_manufacturing_prod_run_01/a2/narration/japanese_title.wav",
+   "tts_canonical_text": "AI工場の物語には、進み方の異なる2つの時計がある",
+   "canonical_given": "AI工場の物語には、進み方の異なる2つの時計がある",
+   "primary_asr": "AI工場の物語には、進み方の異なる二つの時計がある。",
+   "primary_err": null,
+   "stored_asr_text": "AI工場の物語には、進み方の異なる二つの時計がある。",
+   "verified": true,
+   "state": "PASS_WITH_WARNING",
+   "reason": "primary_pass",
+   "final_status": "NORMALIZED_MATCH",
+   "warnings": [
+    "JA_NUMERIC_IRREGULAR_READING"
+   ],
+   "secondary_text": null,
+   "value_guard": {
+    "primary": {
+     "kind": "EQUAL",
+     "pairs": [
+      {
+       "src": "2つ",
+       "hyp": "二つ",
+       "verdict": "EQUAL",
+       "reason": "same_value_unit"
+      }
+     ],
+     "reasons": [],
+     "warnings": [
+      "JA_NUMERIC_IRREGULAR_READING"
+     ]
+    }
+   },
+   "azure_calls": 0,
+   "asr_judgement": {
+    "state": "PASS_WITH_WARNING",
+    "reason_code": "primary_pass",
+    "slot": 1,
+    "script_version": "v0",
+    "role": null,
+    "lang": "ja",
+    "segment_key": "ai_factory_title_2tsu",
+    "audio_sha256": "394270cc89dd3b4f8c569b6ff74ae5bd65f9f9f66be8475b0feb77754ab1e8e3",
+    "primary": {
+     "text": "AI工場の物語には、進み方の異なる二つの時計がある。",
+     "passed": true,
+     "label": "NORMALIZED_MATCH",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": false,
+     "cached": false,
+     "engine": "azure",
+     "text": null,
+     "label": "",
+     "accepted": null,
+     "error": null,
+     "unavailable": false
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "EQUAL",
+      "pairs": [
+       {
+        "src": "2つ",
+        "hyp": "二つ",
+        "verdict": "EQUAL",
+        "reason": "same_value_unit"
+       }
+      ],
+      "reasons": [],
+      "warnings": [
+       "JA_NUMERIC_IRREGULAR_READING"
+      ]
+     }
+    },
+    "negation_guard": {
+     "primary": false
+    },
+    "final_gate": {
+     "applied": true,
+     "value_guard": "EQUAL",
+     "negation_diff": false
+    },
+    "warnings": [
+     "JA_NUMERIC_IRREGULAR_READING"
+    ],
+    "exclusion_rule": null,
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "timing": {
+     "total_ms": 0,
+     "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "adapter": {
+     "layers": [],
+     "azure_real_calls": 0,
+     "cost_guard_triggered": false,
+     "language": "ja-JP",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 2,
+      "hits": 0
+     }
+    }
+   }
+  },
+  {
+   "case": "household_title2_2tsu",
+   "kind": "positive",
+   "source_run": "er011_output/household_unified_final_candidate_01/a2",
+   "segment": "japanese_title",
+   "wav": "er011_output/household_unified_final_candidate_01/a2/narration/japanese_title.wav",
+   "tts_canonical_text": "冷蔵庫の野菜室、2つの設定を使い分けると食品が長持ちする",
+   "canonical_given": "冷蔵庫の野菜室、2つの設定を使い分けると食品が長持ちする",
+   "primary_asr": "冷蔵庫の野菜室、二つの設定を使い分けると、食品が長持ちする。",
+   "primary_err": null,
+   "stored_asr_text": "冷蔵庫の野菜室、二つの設定を使い分けると食品が長持ちする。",
+   "verified": true,
+   "state": "PASS_WITH_WARNING",
+   "reason": "primary_pass",
+   "final_status": "NORMALIZED_MATCH",
+   "warnings": [
+    "JA_NUMERIC_IRREGULAR_READING"
+   ],
+   "secondary_text": null,
+   "value_guard": {
+    "primary": {
+     "kind": "EQUAL",
+     "pairs": [
+      {
+       "src": "2つ",
+       "hyp": "二つ",
+       "verdict": "EQUAL",
+       "reason": "same_value_unit"
+      }
+     ],
+     "reasons": [],
+     "warnings": [
+      "JA_NUMERIC_IRREGULAR_READING"
+     ]
+    }
+   },
+   "azure_calls": 0,
+   "asr_judgement": {
+    "state": "PASS_WITH_WARNING",
+    "reason_code": "primary_pass",
+    "slot": 1,
+    "script_version": "v0",
+    "role": null,
+    "lang": "ja",
+    "segment_key": "household_title2_2tsu",
+    "audio_sha256": "5383a2abb10d67bfc657c9c82766afcb4d8e58441674bd83445b0365828b7132",
+    "primary": {
+     "text": "冷蔵庫の野菜室、二つの設定を使い分けると、食品が長持ちする。",
+     "passed": true,
+     "label": "NORMALIZED_MATCH",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": false,
+     "cached": false,
+     "engine": "azure",
+     "text": null,
+     "label": "",
+     "accepted": null,
+     "error": null,
+     "unavailable": false
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "EQUAL",
+      "pairs": [
+       {
+        "src": "2つ",
+        "hyp": "二つ",
+        "verdict": "EQUAL",
+        "reason": "same_value_unit"
+       }
+      ],
+      "reasons": [],
+      "warnings": [
+       "JA_NUMERIC_IRREGULAR_READING"
+      ]
+     }
+    },
+    "negation_guard": {
+     "primary": false
+    },
+    "final_gate": {
+     "applied": true,
+     "value_guard": "EQUAL",
+     "negation_diff": false
+    },
+    "warnings": [
+     "JA_NUMERIC_IRREGULAR_READING"
+    ],
+    "exclusion_rule": null,
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "timing": {
+     "total_ms": 0,
+     "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "adapter": {
+     "layers": [],
+     "azure_real_calls": 0,
+     "cost_guard_triggered": false,
+     "language": "ja-JP",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 2,
+      "hits": 0
+     }
+    }
+   }
+  },
+  {
+   "case": "akb48_title_AKB48_2saku",
+   "kind": "positive",
+   "source_run": "er005_output/cost_baseline_01/akb48/a2",
+   "segment": "japanese_title",
+   "wav": "er005_output/cost_baseline_01/akb48/a2/narration/japanese_title.wav",
+   "tts_canonical_text": "AKB48の新曲『好きish』、伊藤百花が2作連続センター、近藤沙樹が初選抜",
+   "canonical_given": "AKB48の新曲『好きish』、伊藤百花が2作連続センター、近藤沙樹が初選抜",
+   "primary_asr": "AKB48の新曲「月光シッシュ」伊藤ひょうかが2作連続センター。近藤さやかが初選抜。",
+   "primary_err": null,
+   "stored_asr_text": "Akbフォーティーエイトの新曲スキッシュ。伊藤評価が二作連続センター、近藤ウサギが初選抜。",
+   "verified": false,
+   "state": "NG_EXCLUDED",
+   "reason": "p2_exclusion:A6_C1_PROPER_NOUN_DIFF",
+   "final_status": "TRUE_CONTENT_MISMATCH",
+   "warnings": [],
+   "secondary_text": null,
+   "value_guard": {
+    "primary": {
+     "kind": "EQUAL",
+     "pairs": [
+      {
+       "src": "2",
+       "hyp": "2",
+       "verdict": "EQUAL",
+       "reason": "same_surface"
+      }
+     ],
+     "reasons": [],
+     "warnings": []
+    }
+   },
+   "azure_calls": 0,
+   "asr_judgement": {
+    "state": "NG_EXCLUDED",
+    "reason_code": "p2_exclusion:A6_C1_PROPER_NOUN_DIFF",
+    "slot": 1,
+    "script_version": "v0",
+    "role": null,
+    "lang": "ja",
+    "segment_key": "akb48_title_AKB48_2saku",
+    "audio_sha256": "b859d3ebacc52155e8ce6b3ebf36a4d7de0e6ab27855db08247079b25cf9ff7d",
+    "primary": {
+     "text": "AKB48の新曲「月光シッシュ」伊藤ひょうかが2作連続センター。近藤さやかが初選抜。",
+     "passed": false,
+     "label": "TRUE_CONTENT_MISMATCH",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": false,
+     "cached": false,
+     "engine": "azure",
+     "text": null,
+     "label": "",
+     "accepted": null,
+     "error": null,
+     "unavailable": false
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "EQUAL",
+      "pairs": [
+       {
+        "src": "2",
+        "hyp": "2",
+        "verdict": "EQUAL",
+        "reason": "same_surface"
+       }
+      ],
+      "reasons": [],
+      "warnings": []
+     }
+    },
+    "negation_guard": {
+     "primary": false
+    },
+    "final_gate": {
+     "applied": false
+    },
+    "warnings": [],
+    "exclusion_rule": "A6_C1_PROPER_NOUN_DIFF",
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "timing": {
+     "total_ms": 0,
+     "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "adapter": {
+     "layers": [],
+     "azure_real_calls": 0,
+     "cost_guard_triggered": false,
+     "language": "ja-JP",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 2,
+      "hits": 0
+     }
+    }
+   }
+  },
+  {
+   "case": "neg_household_3tsu",
+   "kind": "numeric_diff",
+   "source_run": "er011_output/household_unified_final_candidate_01/a2",
+   "segment": "japanese_title",
+   "wav": "er011_output/household_unified_final_candidate_01/a2/narration/japanese_title.wav",
+   "tts_canonical_text": "冷蔵庫の野菜室、2つの設定を使い分けると食品が長持ちする",
+   "canonical_given": "冷蔵庫の野菜室、3つの設定を使い分けると食品が長持ちする",
+   "primary_asr": "冷蔵庫の野菜室、二つの設定を使い分けると食品が長持ちする。",
+   "primary_err": null,
+   "stored_asr_text": "冷蔵庫の野菜室、二つの設定を使い分けると食品が長持ちする。",
+   "verified": false,
+   "state": "NG_PROTECTED",
+   "reason": "p1_value_diff",
+   "final_status": "TRUE_CONTENT_MISMATCH",
+   "warnings": [],
+   "secondary_text": null,
+   "value_guard": {
+    "primary": {
+     "kind": "DIFF",
+     "pairs": [
+      {
+       "src": "3つ",
+       "hyp": "二つ",
+       "verdict": "DIFF",
+       "reason": "value_differs"
+      }
+     ],
+     "reasons": [
+      "DIFF:value_differs:'3つ'->'二つ'"
+     ],
+     "warnings": []
+    }
+   },
+   "azure_calls": 0,
+   "asr_judgement": {
+    "state": "NG_PROTECTED",
+    "reason_code": "p1_value_diff",
+    "slot": 1,
+    "script_version": "v0",
+    "role": null,
+    "lang": "ja",
+    "segment_key": "neg_household_3tsu",
+    "audio_sha256": "5383a2abb10d67bfc657c9c82766afcb4d8e58441674bd83445b0365828b7132",
+    "primary": {
+     "text": "冷蔵庫の野菜室、二つの設定を使い分けると食品が長持ちする。",
+     "passed": false,
+     "label": "TRUE_CONTENT_MISMATCH",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": false,
+     "cached": false,
+     "engine": "azure",
+     "text": null,
+     "label": "",
+     "accepted": null,
+     "error": null,
+     "unavailable": false
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "DIFF",
+      "pairs": [
+       {
+        "src": "3つ",
+        "hyp": "二つ",
+        "verdict": "DIFF",
+        "reason": "value_differs"
+       }
+      ],
+      "reasons": [
+       "DIFF:value_differs:'3つ'->'二つ'"
+      ],
+      "warnings": []
+     }
+    },
+    "negation_guard": {
+     "primary": false
+    },
+    "final_gate": {
+     "applied": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "timing": {
+     "total_ms": 0,
+     "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "adapter": {
+     "layers": [],
+     "azure_real_calls": 0,
+     "cost_guard_triggered": false,
+     "language": "ja-JP",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 2,
+      "hits": 0
+     }
+    }
+   }
+  },
+  {
+   "case": "neg_ai_factory_3tsu",
+   "kind": "numeric_diff",
+   "source_run": "er011_output/family_a_trend_ai_manufacturing_prod_run_01/a2",
+   "segment": "japanese_title",
+   "wav": "er011_output/family_a_trend_ai_manufacturing_prod_run_01/a2/narration/japanese_title.wav",
+   "tts_canonical_text": "AI工場の物語には、進み方の異なる2つの時計がある",
+   "canonical_given": "AI工場の物語には、進み方の異なる3つの時計がある",
+   "primary_asr": "AI工場の物語には、進み方の異なる二つの時計がある。",
+   "primary_err": null,
+   "stored_asr_text": "AI工場の物語には、進み方の異なる二つの時計がある。",
+   "verified": false,
+   "state": "NG_PROTECTED",
+   "reason": "p1_value_diff",
+   "final_status": "TRUE_CONTENT_MISMATCH",
+   "warnings": [],
+   "secondary_text": null,
+   "value_guard": {
+    "primary": {
+     "kind": "DIFF",
+     "pairs": [
+      {
+       "src": "3つ",
+       "hyp": "二つ",
+       "verdict": "DIFF",
+       "reason": "value_differs"
+      }
+     ],
+     "reasons": [
+      "DIFF:value_differs:'3つ'->'二つ'"
+     ],
+     "warnings": []
+    }
+   },
+   "azure_calls": 0,
+   "asr_judgement": {
+    "state": "NG_PROTECTED",
+    "reason_code": "p1_value_diff",
+    "slot": 1,
+    "script_version": "v0",
+    "role": null,
+    "lang": "ja",
+    "segment_key": "neg_ai_factory_3tsu",
+    "audio_sha256": "394270cc89dd3b4f8c569b6ff74ae5bd65f9f9f66be8475b0feb77754ab1e8e3",
+    "primary": {
+     "text": "AI工場の物語には、進み方の異なる二つの時計がある。",
+     "passed": false,
+     "label": "TRUE_CONTENT_MISMATCH",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": false,
+     "cached": false,
+     "engine": "azure",
+     "text": null,
+     "label": "",
+     "accepted": null,
+     "error": null,
+     "unavailable": false
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "DIFF",
+      "pairs": [
+       {
+        "src": "3つ",
+        "hyp": "二つ",
+        "verdict": "DIFF",
+        "reason": "value_differs"
+       }
+      ],
+      "reasons": [
+       "DIFF:value_differs:'3つ'->'二つ'"
+      ],
+      "warnings": []
+     }
+    },
+    "negation_guard": {
+     "primary": false
+    },
+    "final_gate": {
+     "applied": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "timing": {
+     "total_ms": 0,
+     "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "adapter": {
+     "layers": [],
+     "azure_real_calls": 0,
+     "cost_guard_triggered": false,
+     "language": "ja-JP",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 2,
+      "hits": 0
+     }
+    }
+   }
+  },
+  {
+   "case": "neg_akb48_comment2_3saku",
+   "kind": "numeric_diff",
+   "source_run": "er005_output/cost_baseline_01/akb48/a2",
+   "segment": "comment_2",
+   "wav": "er005_output/cost_baseline_01/akb48/a2/narration/comment_2.wav",
+   "tts_canonical_text": "伊藤百花さんは、2作続けてセンターを務めます。では、今回初めて表題曲のメンバーに選ばれた若いメンバーは、どんな人なのでしょうか。",
+   "canonical_given": "伊藤百花さんは、3作続けてセンターを務めます。では、今回初めて表題曲のメンバーに選ばれた若いメンバーは、どんな人なのでしょうか。",
+   "primary_asr": "伊藤評価さんは2作続けてセンターを務めます。では、今回初めて表題曲のメンバーに選ばれた若いメンバーはどんな人なのでしょうか?",
+   "primary_err": null,
+   "stored_asr_text": "伊藤評価さんは、二作続けてセンターを務めます。では、今回初めて表題曲のメンバーに選ばれた若いメンバーはどんな人なのでしょうか？",
+   "verified": false,
+   "state": "NG_PROTECTED",
+   "reason": "p1_value_diff",
+   "final_status": "TRUE_CONTENT_MISMATCH",
+   "warnings": [],
+   "secondary_text": null,
+   "value_guard": {
+    "primary": {
+     "kind": "DIFF",
+     "pairs": [
+      {
+       "src": "3",
+       "hyp": "2",
+       "verdict": "DIFF",
+       "reason": "value_differs"
+      }
+     ],
+     "reasons": [
+      "DIFF:value_differs:'3'->'2'"
+     ],
+     "warnings": []
+    }
+   },
+   "azure_calls": 0,
+   "asr_judgement": {
+    "state": "NG_PROTECTED",
+    "reason_code": "p1_value_diff",
+    "slot": 1,
+    "script_version": "v0",
+    "role": null,
+    "lang": "ja",
+    "segment_key": "neg_akb48_comment2_3saku",
+    "audio_sha256": "2cb0b51f4d1ed564749516572f46315cc00b3a3281be90a781120ff254a6de31",
+    "primary": {
+     "text": "伊藤評価さんは2作続けてセンターを務めます。では、今回初めて表題曲のメンバーに選ばれた若いメンバーはどんな人なのでしょうか?",
+     "passed": false,
+     "label": "TRUE_CONTENT_MISMATCH",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": false,
+     "cached": false,
+     "engine": "azure",
+     "text": null,
+     "label": "",
+     "accepted": null,
+     "error": null,
+     "unavailable": false
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "DIFF",
+      "pairs": [
+       {
+        "src": "3",
+        "hyp": "2",
+        "verdict": "DIFF",
+        "reason": "value_differs"
+       }
+      ],
+      "reasons": [
+       "DIFF:value_differs:'3'->'2'"
+      ],
+      "warnings": []
+     }
+    },
+    "negation_guard": {
+     "primary": false
+    },
+    "final_gate": {
+     "applied": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "timing": {
+     "total_ms": 0,
+     "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "adapter": {
+     "layers": [],
+     "azure_real_calls": 0,
+     "cost_guard_triggered": false,
+     "language": "ja-JP",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 2,
+      "hits": 0
+     }
+    }
+   }
+  },
+  {
+   "case": "neg_household_negation",
+   "kind": "negation_diff",
+   "source_run": "er011_output/household_unified_final_candidate_01/a2",
+   "segment": "japanese_title",
+   "wav": "er011_output/household_unified_final_candidate_01/a2/narration/japanese_title.wav",
+   "tts_canonical_text": "冷蔵庫の野菜室、2つの設定を使い分けると食品が長持ちする",
+   "canonical_given": "冷蔵庫の野菜室、2つの設定を使い分けても食品は長持ちしない",
+   "primary_asr": "冷蔵庫の野菜室、二つの設定を使い分けると、食品が長持ちする。",
+   "primary_err": null,
+   "stored_asr_text": "冷蔵庫の野菜室、二つの設定を使い分けると食品が長持ちする。",
+   "verified": false,
+   "state": "NG_PROTECTED",
+   "reason": "p1_negation_diff",
+   "final_status": "TRUE_CONTENT_MISMATCH",
+   "warnings": [],
+   "secondary_text": null,
+   "value_guard": {
+    "primary": {
+     "kind": "EQUAL",
+     "pairs": [
+      {
+       "src": "2つ",
+       "hyp": "二つ",
+       "verdict": "EQUAL",
+       "reason": "same_value_unit"
+      }
+     ],
+     "reasons": [],
+     "warnings": [
+      "JA_NUMERIC_IRREGULAR_READING"
+     ]
+    }
+   },
+   "azure_calls": 0,
+   "asr_judgement": {
+    "state": "NG_PROTECTED",
+    "reason_code": "p1_negation_diff",
+    "slot": 1,
+    "script_version": "v0",
+    "role": null,
+    "lang": "ja",
+    "segment_key": "neg_household_negation",
+    "audio_sha256": "5383a2abb10d67bfc657c9c82766afcb4d8e58441674bd83445b0365828b7132",
+    "primary": {
+     "text": "冷蔵庫の野菜室、二つの設定を使い分けると、食品が長持ちする。",
+     "passed": false,
+     "label": "TRUE_CONTENT_MISMATCH",
+     "equivalence_basis": null,
+     "warning_labels": []
+    },
+    "secondary": {
+     "called": false,
+     "cached": false,
+     "engine": "azure",
+     "text": null,
+     "label": "",
+     "accepted": null,
+     "error": null,
+     "unavailable": false
+    },
+    "value_guard": {
+     "primary": {
+      "kind": "EQUAL",
+      "pairs": [
+       {
+        "src": "2つ",
+        "hyp": "二つ",
+        "verdict": "EQUAL",
+        "reason": "same_value_unit"
+       }
+      ],
+      "reasons": [],
+      "warnings": [
+       "JA_NUMERIC_IRREGULAR_READING"
+      ]
+     }
+    },
+    "negation_guard": {
+     "primary": true
+    },
+    "final_gate": {
+     "applied": false
+    },
+    "warnings": [],
+    "exclusion_rule": null,
+    "cost": {
+     "azure_calls": 0,
+     "azure_seconds": null,
+     "est_jpy": 0.0
+    },
+    "timing": {
+     "total_ms": 0,
+     "secondary_ms": 0
+    },
+    "technical_stop": null,
+    "adapter": {
+     "layers": [],
+     "azure_real_calls": 0,
+     "cost_guard_triggered": false,
+     "language": "ja-JP",
+     "asr_text_present": true,
+     "cache": {
+      "calls": 2,
+      "hits": 0
+     }
+    }
+   }
+  }
+ ],
+ "false_accepts": [],
+ "positive_rejected": [
+  "akb48_comment2_2saku",
+  "akb48_comment3_2saku",
+  "akb48_title_AKB48_2saku"
+ ],
+ "cost": {
+  "est_total_jpy": 1.5743,
+  "n_openai": 10,
+  "n_azure": 2,
+  "azure_duplicate_wavs": 0
+ },
+ "shared_state_unchanged": true
+}
