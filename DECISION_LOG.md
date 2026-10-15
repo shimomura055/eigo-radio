@@ -23,6 +23,8 @@
 
 **追記索引(2026-10-15、KGCPW 委任_04/05 Fable判定)**: `KP-GLOSS-ALIGNMENT-CORRECTED-PRODUCTION-WIRING-01`委任_04(Z正式CLI evidence、`ccc774f14`)・委任_05のFable判定(Status=`APPROVED_FOR_PRODUCTION`・配線済み・`PRODUCTION_WIRED`判定保留、Z E2E完成は音声HR 3 clip再生成承認待ち=REGISTER #70)は本ファイル末尾`## KP-GLOSS-ALIGNMENT-CORRECTED-PRODUCTION-WIRING-01 委任_04/05`節。
 **追記索引(2026-10-15、運営モデル刷新 Day3〜4 ユーザー判断U1〜U6)**: `PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01`(U1 Charter案A/U2 回数制不採用・QDC管理/U3 Agent役割案A/U3' 5条件既定OFF一般例外+違反時廃止/U4/U5 量産費70円・日次1,000円/U6 Open Item、F2 `a342f7b52`・F1 `71baeb78f`で規則・Agent定義を実装、Status=Day3〜4実装完了・初期検証未実施・Day5〜6未・運営刷新全体は未完了、未決U2-Q1 UDR・U2-Q2 Deferred、OPEN-363〜366)は本ファイル末尾`## PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01 Day3〜4 ユーザー正式判断U1〜U6(2026-10-15)`節。
+
+**追記索引(2026-10-15、運営モデル刷新 Day3〜4 ユーザー正式決定①〜③、委任_H Phase A)**: `PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01`(①盲検リプレイ=Fable自律起動を原則/②11-4固定回数制限撤廃・QDC7観点/③A SUSPENDED運用・B Production TTS費用は実経路の実費で算定。②③はPM_GOVERNANCE 11-4/11-6/11-7/15-9へ反映済み[`286b71e9a`]、盲検リプレイ未実施・運営刷新全体は未完了)は本ファイル末尾`## PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01 Day3〜4 ユーザー正式決定①〜③(2026-10-15、委任_H Phase A)`節。
 **追記索引(2026-10-15、Std KP日本語Style Trial)**: `STANDARD-KP-JA-TTS-STYLE-TRIAL-01`委任_01(6 Style x 5 Phrase、25 call、JPY約1.08、Status USER_DECISION_REQUIRED[ユーザー試聴待ち]、Production無変更、OPEN-367)は本ファイル末尾`## STANDARD-KP-JA-TTS-STYLE-TRIAL-01 委任_01`節。
 
 **追記索引(2026-10-15、Std KP日本語Style Trial第2弾)**: `STANDARD-KP-JA-TTS-STYLE-TRIAL-02`委任_01(7 Style x 5 Phrase、新規25 call、JPY約1.05、Status USER_DECISION_REQUIRED[ユーザー試聴待ち]、Production無変更、OPEN-367)は本ファイル末尾`## STANDARD-KP-JA-TTS-STYLE-TRIAL-02 委任_01`節。
@@ -21109,3 +21111,109 @@ Day 2 Phase AのOpusレビューで発見・修正した6件の安全・承認�
 ## KP-GLOSS-ALIGNMENT-CORRECTED-PRODUCTION-WIRING-01 委任_04/05 Fable判定(2026-10-15、SSOT記録のみ、JPY0、コード/Production無変更)
 - 2026-10-15 | KP-GLOSS-ALIGNMENT-CORRECTED-PRODUCTION-WIRING-01 委任_04/05 | Fable判定(委任_05、2026-10-15): Status=`APPROVED_FOR_PRODUCTION`(Production正式runnerへ配線済み・既定ON・legacy撤去済み)。**`PRODUCTION_WIRED`は宣言しない(判定保留)**。理由=ユーザー指示『一つでも未確認なら`APPROVED_FOR_PRODUCTION`のまま管理し、未完了項目と理由を報告する』。10条件: Family X=10条件すべて確認済み(委任_03 E1〜E10)。Family Z=条件1は注入で確認(自然発火は未観測)・条件4はZ正式CLIのHR停止確認済みだがZ E2E完成(gate〜page_verify)未確認・条件6はa2再開確認済みだがb1bのgloss HR未実施。条件2/3/5/7/8/9/10は確認済み。Z E2E未完の原因=音声HR Lock(`approve_regenerate`は人間承認が必要な既存安全装置のためFableは承認せず)→USER_DECISION_REQUIRED(非ブロッキング、REGISTER #70: 承認すれば再生成約JPY5〜10+gate〜page_verifyでZ E2E完成evidenceを取得。承認しなければZ E2E完成は未確認のままAPPROVED_FOR_PRODUCTION維持)。費用: 委任_03 JPY8.35+委任_04 JPY38.74=KGCPW合計約JPY47.09(委任_01/02は0)。量産単価影響+JPY0.056/記事セット(委任_03実測、70円の約0.08%)。当日累計約JPY60/1,000。既知の軽微逸脱(事実のみ): 委任_04の最初の2起動が12秒差(RESTART_STORM閾値未満・発動なし)、初回`--approved-budget-jpy 3`で見積guard停止→25で再実行(費用0)。 Z側evidenceは部分確認、完成は音声HR承認の人間判断後。 | Z正式CLI evidence(委任_04、commit `ccc774f14`、run `run_kgcpw_z_e2e_01`、実費約JPY38.74): E11a KP自然発火はNO_TARGETS(a2/b1b。Z自然発火は未観測)。E11b注入HR(`_kp_fn_for_ctx`のみmock、Production差分0)で`FamilyZE2EStop...HUMAN_REVIEW_REQUIRED(a2)` rc=2・API0。E11c `--stage tts_a2`はrc=2でTTS/Gate/Assemblyへ進まずcost_log不変。E11d `resolve_gloss`→`--stage kp --regenerate-stage kp_a2` rc=0・API0・`gloss_alignment_pending_result.consumed.json`・a2 TTSのkp2_jaがresolve値。E11e tts_a2 rc=0(29/29 OK)、tts_b1bは既存音声Human Review Lock(`er011_human_review_lock_01`: kp1_en=ASR TRUE_CONTENT_MISMATCH / kp3_en=TTS_FAILURE×2 / full_story_part1_c5=ASR_VALIDATION_UNCERTAIN「Melos said.」→「Nello said.」)でrc=2停止(gloss整合とは無関係)。gate/assemble/pages/page_verify未実行=Z E2E完成は未確認。詳細=er071_output/m2p0_n01_production_wiring_01/gloss_alignment_production_wiring_01/VALIDATION_WIRING_04.md + evidence/E11_z_e2e/。
 - ユーザー原文(逐語、委任_01保存ファイル`docs/pm/delegation_log/2026-10-15_KP-GLOSS-ALIGNMENT-CORRECTED-PRODUCTION-WIRING-01_01.md`参照): 「一つでも未確認なら`APPROVED_FOR_PRODUCTION`のまま管理し、未完了項目と理由を報告する」「OPEN-359が未解決のまま、Family Xで不整合KPが完成版に流出しうる場合、PRODUCTION_WIREDを宣言しない」。
+
+
+## PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01 Day3〜4 ユーザー正式決定①〜③(2026-10-15、委任_H Phase A)
+
+**Status**: 決定①〜③のうち②③はPM_GOVERNANCEへ反映済み(commit `286b71e9a`)、①は運用資料(BLIND_REPLAY_RUNBOOK_01 §2)へ反映済み。盲検リプレイ(Phase B/C)は別委任で未実施=**運営刷新全体は未完了**。本記録は文書反映であり、実運用での有効性検証は未了。Day5〜6へ自動移行しない(ユーザー指示)。
+
+**ユーザー原文(逐語、`docs/pm/delegation_log/2026-10-15_PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01_D3H.md`にも全文保存)**:
+
+### 決定① 盲検リプレイ：Fableによる自律起動を原則とする
+
+**承認。**
+
+盲検リプレイは、原則としてFable自身が隔離環境から被験セッションを起動し、独立したOpusに採点させる。
+
+役割分担：
+
+- Fable：安全確認、被験セッションの起動・管理、結果収集、採点依頼、最終受入評価
+- 被験セッション：新運営ルールに従い、与えられた課題へ対応
+- Opus：独立した採点者として、事前定義済み基準に基づき評価
+
+ユーザーによるPowerShell操作や新規セッション起動は、原則として要求しない。
+
+ただし、まず以下を確認すること。
+
+- `claude -p`等の実際の起動可否
+- Fable／Sonnet／Opusの実際のモデル・ルーティング
+- 課金経路と費用上限
+- ツール権限・委任機能の動作
+- 被験者と採点者の独立性
+- 期待値・採点基準の漏洩がないこと
+- 元のProduction Repoや秘密情報へアクセスできないこと
+
+安全性が確保できる方法をFableが選択してよい。
+
+`claude -p`で必要な検証委任ができない場合は、対話セッションの自律起動等、実運用に近い代替方法を検討する。
+
+権限不足や環境制約を理由に、直ちにユーザーの手作業へ戻さず、まず自律的に解決可能な方法を調査すること。
+
+ただし、既存の安全Gate・承認Gateを迂回してはならない。
+
+### 決定② PM_GOVERNANCE 11-4：固定回数制限を撤廃
+
+**正式承認。**
+
+従来の「自律対応3回、4回目以降は毎回ユーザー判断」という回数基準は撤廃する。
+
+今後は以下の観点で、自律対応の継続・再計画・Opus相談・STOPを判断する。
+
+- 品質への影響
+- 納期への影響
+- 費用と残予算
+- 問題解決の進捗
+- 次の対応による改善見込み
+- 同じ試行の無益な反復になっていないか
+- 安全性・副作用・既存仕様との整合
+
+**委任回数が増えたことだけを理由に、USER_DECISION_REQUIREDへ移行しない。**
+
+11-4をこの方針へ変更し、既に改定した11-6と整合させること。
+
+関連するAgent定義、Charter、テンプレート等に旧回数基準が残っていないか確認する。
+
+一方、予算承認・仕様採用・Production採用・安全STOP・Human Review等の既存Gateは維持する。
+
+回数制限の撤廃は、無制限のTrialや予算超過を許可するものではない。
+
+### 決定③ SUSPENDED運用・Production TTS費用算定
+
+**両方とも正式承認。**
+
+**A. SUSPENDED運用**
+
+未承認Trial機能の既定OFF例外について、状態を次のように運用する。
+
+- ACTIVE：例外制度を利用可能
+- SUSPENDED：違反の合理的な疑いがあり、一時停止・調査中
+- REVOKED：違反確定により例外制度を廃止
+
+違反の疑いが生じた場合、対象の利用を安全側に停止し、速やかに調査する。
+
+違反確定時は、以前のユーザー決定どおり例外制度を直ちに廃止する。
+
+疑いの段階で停止を緩めたり、調査中に未承認機能を有効化したりしてはならない。
+
+**B. Production TTS費用算定**
+
+量産原価目標70円／記事セットは、実際にProductionで利用する経路の費用を基準として評価する。
+
+- 通常実行なら通常実行の実費
+- 正式なBatch経路ならBatch実費
+- Batch換算値は参考情報として区別して表示
+
+未導入の割引や仮想的な経路の費用を、現在のProduction実費として扱わない。
+
+70円は改善目標であり、それ自体を機械的なSTOP条件にはしない。
+
+(原文ここまで。Phase B/C・受入条件・STOP条件・最終報告形式の原文は上記delegation_logに全文保存。)
+
+**反映先(ファイル:節)**:
+- 決定②: `docs/pm/PM_GOVERNANCE.md` 11-4(固定回数制限撤廃・7観点・11-6を正本・L3診断後Human Gate/構造的問題のSTOP条件は維持=U2-Q2 Deferred)、11-6(維持する境界・他規定との関係の11-4記述を整合)、`docs/pm/PM_BRIEF.md`「問題解決運用」節。CLAUDE.md・`.claude/agents/*`・`docs/pm/templates/*`は旧回数基準の残存なし(Grep済み。条件B『3回目パッチ前』・Opus利用枠・26-2は撤廃対象外として維持)。
+- 決定③A: `docs/pm/PM_GOVERNANCE.md` 11-7「状態運用の正式化」(既存の3状態定義を弱めず追記)。
+- 決定③B: `docs/pm/PM_GOVERNANCE.md` 15-9「Production TTS費用の算定基準」(既存『判定値』と矛盾なし)。
+- 決定①: `docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/day3/BLIND_REPLAY_RUNBOOK_01.md` §2(原則Fable自律起動・事前確認7項目)。
+- 反映commit: (1/2) `286b71e9a`(非SSOT)、(2/2)=本SSOT記録commit(git logで特定)。反映一覧=`docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/day3/DAY3_PHASE_A_APPLIED_01.md`。
+
+**関連記録**: OPEN-363/365/366(追記更新)、`docs/pm/USER_DECISION_REGISTER_01.md` #63/#65/#66(判断済み/承認)・#71(新規、決定①)。**未充足(完了扱いしない)**: 盲検リプレイ実施(Phase B/C)・OPEN-365のflag突合test・OPEN-366の量産原価ベースライン・U2-Q2(L3診断後Human Gate、Deferred)。
