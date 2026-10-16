@@ -602,3 +602,37 @@ PASS/PASS_WITH_WARNING = **3件**(N1/N2/N4)。**3件とも `primary_pass`(Primar
 
 ### 17-6. 費用総括(ledger `evidence_11/cost/spend_ledger.jsonl`)
 bnarr 16.1253 + xkp_miss 0.0633 + ja_fresh 21.4688(うち0はTTS) = **JPY 37.6574**(委任文の見積約8、Guardrail16を超過。超過内訳: bnarrのPro TTS単価前提誤り、ja_freshの想定外web lookup)。単価の出典=各runの`usage_log.jsonl`(`basis=token_actual`)。
+
+
+## 18. 委任_12 B-A2-01 narrator全体(Hook/Tension/Closing含む)+ fresh JA正例(2026-10-16、`er078_auw_runtime_evidence_11.py`、証跡=`evidence_12/`)
+**事前dry-run(API 0、`socket.connect`遮断下)**: `evidence_12/bnarr_full/dryrun.json`・`evidence_12/ja_fresh2/dryrun.json`とも `pass:true`。narrator=必須キー欠落0、共有narration 10件がnetwork遮断下で全Store hit(新規TTS不要)、見積nominal 12.97〜18.03・+retry1回24.37(上限30以内)・+retry2回30.71。単価=`evidence_11/bnarr/usage_log.jsonl`(token_actual: point_one 490字=JPY1.82、point_two 544字attempt1=4.62)。fresh JA=Latin文字(A-Za-z0-9)0個、`classify_foreign_tokens_in_japanese_text`の未知Latin token 0=er025 web lookup予測0、worst-case見積2.18(上限4以内)。有料実行は`dryrun.json`の`pass:true`が無いと起動しない実装(`main`)。T-2追記: (1)新規topicで差分再生成の余地なし(9 segment全て新規) (2)共有narrationはStore hit確認済み (3)`--budget-jpy`30/4明示・meter hard stop (4)想定外の全再生成なし。
+
+### 18-1. narrator全体(`bnarr_full`、`run_tts_a2_2v_new_topic`そのまま・monkeypatchなし・parts=`er012_output/b_family_a2_new_topic_production_01/personalized_news_2v_a2/parts.json`の隔離複製[無改変]、theme=`auw12_personalized_news_a2`、Voice A=Algieba/Voice B=Erinome[`voice_resolution.json`])
+**結果: 9 clip全てPASS・正常終了(rc=0、所要285秒)**。`finalize_tts_results_a2_2v_new_topic`も成功。
+
+| clip | role | state(試行) | Primary | Secondary | model/voice | 費用JPY(TTS) | 備考 |
+|---|---|---|---|---|---|---|---|
+| topic_intro | TOPIC_INTRO | PASS(1) | NORMALIZED_MATCH | 不呼出 | gemini-2.5-pro-preview-tts/Charon | 0.50 | |
+| point_one_heading | 見出し | PASS(1) | NORMALIZED_MATCH | 不呼出 | 同/Aoede・減速あり | 0.46 | |
+| point_two_heading | 見出し | PASS(1) | NORMALIZED_MATCH | 不呼出 | 同/Aoede・減速あり | 0.45 | |
+| point_one | Voice A | attempt1 NG_BOTH(`secondary_not_accepted`)→attempt2 PASS | TRUE_CONTENT_MISMATCH(`first`欠落)→NORMALIZED_MATCH | attempt1のみ呼出(Azure 36.5秒、`opened`等で不許容) | 同/Algieba・減速あり | 3.02+2.98 | 標準3回枠内の正当な再生成(誤受理なし) |
+| point_two | Voice B | PASS(1) | NUMERIC_EQUIVALENCE_MATCH(`primary_pass_approved_equivalence:TIER1_NUMERIC_EQUIVALENCE`) | 不呼出 | 同/Erinome・減速あり | 3.81 | |
+| **full_story_part1(Hook)** | FULL_STORY | **PASS(1)** | NORMALIZED_MATCH | 不呼出 | 同/Aoede・減速あり・CS層+Repetition QA適用 | 0.98 | |
+| **full_story_part2(Hook続き)** | FULL_STORY | **PASS(1)** | NUMERIC_EQUIVALENCE_MATCH(`TIER1_DIFF_ANCHORED`) | 不呼出 | 同/Aoede・減速あり | 1.15 | |
+| **tension_reflection(Tension)** | 解説 | **PASS(1)** | NORMALIZED_MATCH | 不呼出 | 同/Aoede・減速あり | 2.56 | segment名は本番定数`EXTRA_SEGMENT_NAME`=`tension_reflection` |
+| **in_one_line(Closing)** | 解説 | **PASS(1)** | EXACT_MATCH | 不呼出 | 同/Aoede・減速あり・disfluency_qa適用 | 1.66 | |
+- 全clipに`asr_judgement`(統一judge)が記録され、HR到達0、`attempt_history.jsonl`は隔離(`evidence_12/bnarr_full/attempt_history.jsonl`、共有`er011_output/attempt_history.jsonl`は不変=`shared_state_unchanged=true`、`shared_files_changed_outside_evidence=[]`)。Master Store manifestのsha前後一致(新規segmentはStore対象外)。
+- **Q5(a)〜(f)全充足**: (a)runner側`@with_secondary_run` (b)前処理=runner内蔵 (c)出力パス`…/auw12_personalized_news_a2/a2/narration/<name>.wav` (d)monkeypatch/`tts_backend`渡しなし (e)前後差分=共有state不変 (f)**`audit/tts_generation_results.json`(9 segment)と事後試聴リスト(`audit/pass_with_warning_listening_list.html`/`.json`、count=0=PASS_WITH_WARNING該当なし)が導出された**(委任_11で未充足だった項目を充足)。`required_segments_completeness.json`は`complete:false`(9/15。不足は`japanese_title`/`preview`/`comment_1-4`=JA Section。本runのscope外でFamily B JA経路は別行で実音声済み)。
+- 費用: **JPY 20.8216**(Gemini TTS 10回、OpenAI ASR 18回、Azure 1回36.54秒)。見積nominal_high 18.03+retry1回24.37の範囲内。
+- Hook/Tension/Closingはいずれも1回目でPrimary PASS(Secondary不呼出)=統一judge下のPrimary経路の実音声証拠。Secondary経路の実音声証拠はpoint_one attempt1(NG_BOTH)・fresh JA(下記)。
+
+### 18-2. fresh JA(`ja_fresh2`、Latin文字を含まない既存原稿のみ、Production JA経路`generate_a2_japanese_with_reading_safety`)
+- 原稿(変更なし): jf2=`合言葉はブルルクル、グロルプ、ヴンムプ、フヌクです。`(06b ja_hrと同一)、jf3=`熟すと出るガス`(Phase 0 fixture g8と同一)。U1定数 `U1_KEEP_C1_SIMILARITY_EXCLUSIONS=False`(U1発効)。
+- **web lookup発火0**(usage_logに`web_search`/高額text呼出なし。text LLM 1回は`gpt-6-luna` in257/out19=JPY0.0056=Luna判定の小呼出でlookupではない)。
+- **jf3(熟すと出るガス): PASS_WITH_WARNING(`secondary_confirmed`)**。Primary=TRUE_CONTENT_MISMATCH(`じくすと出るガス。`)→Secondary(Azure)呼出=`熟すと出るガス。`でaccepted→`SECONDARY_CONFIRMED`警告。Phase 0のg8救済例(旧C1 entity_like除外で対象外だった型)が**fresh TTSで実際に発生し、U1発効後にSecondary呼出・採用された実音声証拠**。n_attempts=1。
+- **jf2(合言葉…): STOPPED(HR到達)**。3回のTTS全てでPrimary不一致(`ブンムプ`等)かつAzureも不一致(`ブルルクルグロルプ文むっぷ吹抜く`/`…グローブ。文府。腑貫`/`…ブンムプヌク`[`フ`脱落])→NG_BOTH×3→人手確認キュー(隔離`evidence_12/ja_fresh2/human_review_queue_ja.jsonl`)。**誤受理なし(Secondaryが保護)**。正例ではなく負例側の実音声証拠。
+- 結論: 「Secondary実呼出」の正例は1 clip(jf3)取得。計画の「正例2 clip」は1正例+1保護(NG)。再実行は禁止事項(再起動不可)のためFableへ報告。費用 **JPY 3.3991**(TTS 4回gemini-3.1-flash-tts-preview、ASR 4、Azure 4回24.09秒、text 1)。
+- shared_state_unchanged=true、`shared_files_changed_outside_evidence=[]`。
+
+### 18-3. 費用総括(`evidence_12/cost/spend_ledger.jsonl`、basis=token_actual)
+narrator 20.8216 + fresh JA 3.3991 = **JPY 24.2207**(Guardrail 34以内、暴走・STOPなし、`stop_check`rc=0)。委任_11のbnarr 16.13(5 segment)に対し、本runは9 segment+retry1回で20.82(単価実測を見積に使った効果で見積範囲内)。使用モデル: 評価用ではなくProduction正式path(TTS: gemini-2.5-pro-preview-tts[narrator/Voice A/B]・gemini-3.1-flash-tts-preview[JA]、ASR: gpt-4o-mini-transcribe、Secondary: Azure)をそのまま実行(最新モデル原則25節は本番ライン選定外)。

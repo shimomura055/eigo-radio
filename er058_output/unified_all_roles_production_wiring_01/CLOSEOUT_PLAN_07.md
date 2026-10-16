@@ -104,3 +104,16 @@
 | 12 | commit/push/merge | **充足見込み(本commit後に確認)** | mainへ反映(`crbn`でff)。merge自体は#87 Go・委任_08で完了済み |
 | 15 | Fableの独立照合 | **未充足** | Fableの工程 |
 → 未取得evidence(条件1・2・9の一部)があるため`PRODUCTION_WIRED`とは報告しない。
+
+## 4-c. 15条件の充足表(2026-10-16 委任_12時点。§4・§4-bの再掲更新。既存表は不変)
+| # | 条件 | 委任_12時点 | 根拠・残 |
+|---|---|---|---|
+| 1 | ASR判定仕様と実際のProduction動作が一致 | **一部(残=A3のみ)** | narrator全Section(Hook/Tension/Closing含む)とfresh JA Secondary呼出の実音声を取得(`RUNTIME_EVIDENCE_06.md`§18)。残=A3(length)未是正(s4保留、OPEN-388、Opus D1レビュー・是正は別委任) |
+| 2 | JA・EN、全Production音声Sectionに適用 | **一部(残=A3のみ)** | 43行最終: 実音声38(B-A2-01を区分1へ)・再利用4・N/A 1。実音声で未確認のSectionは残っていない(A3は判定仕様の長さ条件であり音声Sectionではない) |
+| 4 | 両NGなら最大3回のTTS生成フロー成立 | **充足** | 委任_11(point_two)に加え、委任_12でもpoint_one attempt1 NG_BOTH→attempt2 PASS、fresh JA jf2は3回NG_BOTH→HR(誤受理なし)を実音声で確認 |
+| 9 | Production正式pathのruntime evidence | **一部(残=A3のみ)** | Family B入口`run_tts_a2_2v_new_topic`の9 segment全て(Hook=full_story_part1/2、Tension=tension_reflection、Closing=in_one_line含む)+`tts_generation_results.json`+試聴リスト導出まで取得。fresh JAもSecondary実呼出1正例(jf3)取得 |
+| 11 | SSOTに実態を反映 | **充足(本commitで反映)** | CURRENT_SPEC・DECISION_LOG・OPEN-395/396・REPORT_LEDGER・Opus台帳(OF-AUW-U1R-08→EVIDENCED) |
+| 12 | commit/push/merge | **充足見込み(本commit後に確認)** | mainへ反映(`crbn`でff) |
+| 13 | Dangling Reference Check | **充足(変更なし)** | §3。本委任はProduction無編集 |
+| 15 | Fableの独立照合 | **未充足** | Fableの工程 |
+→ 条件1・2・9の残はA3(OPEN-388、別委任)のみ。`PRODUCTION_WIRED`は宣言しない(到達上限=`AUW_EVIDENCE_COMPLETE_PENDING_FABLE_15`)。

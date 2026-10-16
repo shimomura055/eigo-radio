@@ -1,0 +1,69 @@
+{
+ "label": "bnarr_full",
+ "mode": "dry-run",
+ "api_calls": 0,
+ "network_blocked": true,
+ "parts_source": "er012_output/b_family_a2_new_topic_production_01/personalized_news_2v_a2/parts.json",
+ "required_keys": [
+  "title",
+  "point_one_heading",
+  "point_two_heading",
+  "point_one_body",
+  "point_two_body",
+  "part1",
+  "part2",
+  "tension_body",
+  "in_one_line"
+ ],
+ "missing_keys": [],
+ "chars_per_segment": {
+  "topic_intro": 55,
+  "point_one_heading": 49,
+  "point_two_heading": 54,
+  "point_one": 490,
+  "point_two": 544,
+  "full_story_part1": 166,
+  "full_story_part2": 181,
+  "tension_body": 427,
+  "in_one_line": 286
+ },
+ "latin_scan": {
+  "note": "narrator は英語TTS経路。er025 JA web lookup は JA経路(er003 L536/L825)のみで英語narratorでは呼ばれない(grep確認)",
+  "ja_lookup_path_in_narrator": false
+ },
+ "unit_costs": {
+  "ledger_total_bnarr": 16.1253,
+  "first5_no_retry_jpy": 8.5038,
+  "per_char_low": 0.003711,
+  "per_char_high": 0.008486,
+  "asr_per_char": 0.0005,
+  "retry_event_azure_jpy": 2.50331,
+  "basis": "evidence_11/bnarr/usage_log.jsonl (token_actual): point_one 490字=1.8184 / point_two 544字(attempt1)=4.6166"
+ },
+ "estimate_jpy": {
+  "nominal_low": 12.97,
+  "nominal_high": 18.03,
+  "one_retry_event": 6.34,
+  "high_plus_one_retry": 24.37,
+  "high_plus_two_retry": 30.71
+ },
+ "budget_jpy": 30.0,
+ "shared_narration_store_prediction": {
+  "all_hit_without_network": true,
+  "detail": {
+   "welcome": "OK",
+   "preview_intro": "OK",
+   "key_phrases_intro": "OK",
+   "full_story_intro": "OK",
+   "num_one": "OK",
+   "num_two": "OK",
+   "num_three": "OK",
+   "num_four": "OK",
+   "num_five": "OK",
+   "point_explanation": "OK"
+  }
+ },
+ "segment_store_prediction": "9 segment は新規topicのため全 miss(本番TTS生成)。既存 Store に当該 segment の Key は無い",
+ "pass": true,
+ "pass_rule": "必須キー欠落0 かつ 共有narration が network遮断下で全hit(API 0) かつ (nominal_high + 1 retry event) <= budget"
+}

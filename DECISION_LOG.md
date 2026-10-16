@@ -21614,3 +21614,9 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 - 実音声: X-B1-06 Store miss PASS(区分1へ)。narrator(B-A2-01)は部分取得(topic_intro/見出し2[数値入り]/Voice A,B)、Hook/Tension/Closingはparts.jsonに`tension_body`が無くKeyErrorで未生成(harnessの事前検査不足。修正済み・再起動は禁止事項のため未実施)。fresh JAは想定外のProduction JA Latin語web lookup(gpt-5.6-sol、1回JPY21.47)で累計Guardrailに達し遮断(OPEN-395)。
 - 費用: 実費JPY37.66(bnarr 16.13・xkp 0.06・ja_fresh 21.47)。見積約8・Guardrail16を超過。原因=Family B narrator/Voice本文のTTS単価前提(約1.5/clip)が`gemini-2.5-pro-preview-tts`の長尺で過小、およびJA Latin語web lookup費用の見積漏れ。
 - Status: `AUW_EVIDENCE_COMPLETE_PENDING_FABLE_15`には未到達(OPEN-396)。`PRODUCTION_WIRED`でも`APPROVED_FOR_PRODUCTION`でもない。
+
+
+### ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 委任_12(2026-10-16): B-A2-01 narrator全体の実音声+fresh JA正例(dry-run先行)
+- 決定(Fable許可の実施): 事前dry-run(API 0、network遮断)で入力検査・Latin token検査・Store hit予測・実測単価見積を行い、合格後に各run初回1回のみ実行。narrator(`bnarr_full`)は`run_tts_a2_2v_new_topic`をそのまま実行し9 segment全てPASS(Hook/Tension/Closing含む)、`tts_generation_results.json`・事後試聴リストも導出(Q5 a〜f全充足、JPY20.82)。fresh JA(`ja_fresh2`、Latin無し原稿)はjf3でSecondary呼出→PASS_WITH_WARNING(U1発効後の実音声正例)、jf2は3回NG_BOTH→HR(誤受理なし)。web lookup発火0。費用合計JPY24.22(Guardrail 34以内)。
+- 43行マトリクス: B-A2-01を区分1へ。最終=実音声38/再利用4/N/A 1。
+- Status: 条件1・2・9の残=A3(OPEN-388)のみ。`AUW_EVIDENCE_COMPLETE_PENDING_FABLE_15`相当(到達上限)。`PRODUCTION_WIRED`でも`APPROVED_FOR_PRODUCTION`でもない。証跡=`er058_output/unified_all_roles_production_wiring_01/RUNTIME_EVIDENCE_06.md`§18・`evidence_12/`。

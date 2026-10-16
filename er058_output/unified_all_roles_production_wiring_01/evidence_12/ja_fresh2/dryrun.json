@@ -1,0 +1,39 @@
+{
+ "label": "ja_fresh2",
+ "mode": "dry-run",
+ "api_calls": 0,
+ "network_blocked": true,
+ "candidates": [
+  {
+   "id": "jf2_hr_comment",
+   "text": "合言葉はブルルクル、グロルプ、ヴンムプ、フヌクです。",
+   "n_chars": 26,
+   "latin_tokens": [],
+   "foreign_token_findings": [],
+   "unknown_tokens_needing_lookup": [],
+   "predicted_lookup_call": false,
+   "expected_substring": "合言"
+  },
+  {
+   "id": "jf3_g8_gas",
+   "text": "熟すと出るガス",
+   "n_chars": 7,
+   "latin_tokens": [],
+   "foreign_token_findings": [],
+   "unknown_tokens_needing_lookup": [],
+   "predicted_lookup_call": false,
+   "expected_substring": "熟す"
+  }
+ ],
+ "latin_token_total": 0,
+ "predicted_lookup_calls": 0,
+ "est_audio_seconds_per_attempt": 9.9,
+ "estimate_jpy": {
+  "per_sec_all_in": 0.0734,
+  "worst_case_3_attempts_all_secondary": 2.18
+ },
+ "note": "text LLM(web lookup)は発火予測0のため見積に含めない(発火予測>0なら実行しない)。unit cost は U1_U2_SECTION_PLAN_09 §(e) の単価(JA clipの委任_11内実測は無い)",
+ "budget_jpy": 4.0,
+ "pass": true,
+ "pass_rule": "Latin token 0 かつ lookup発火予測0 かつ worst-case見積 <= budget"
+}
