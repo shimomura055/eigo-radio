@@ -39,6 +39,7 @@
 **追記索引(2026-10-16、FAMILY-C-JA-TTS-PRODUCTION-FIX-01 委任_02)**: ユーザー承認済み既存Production不具合是正(Family C日本語TTSの言語経路欠落+reuse_from旧音声紐づけ)。実装・test・0円検査まで完了、有料evidenceは条件付きSTOP(b)で未実施。本文は本ファイル末尾「## FAMILY-C-JA-TTS-PRODUCTION-FIX-01(2026-10-16)」。
 **追記索引(2026-10-16、FAMILY-X-COFFEE-KP-EN-EXPLANATION-PACING-TRIAL-01 委任_01)**: Coffee Advanced KP英語解説の速度/ポーズ改善Trial(固定8 Prompt x 5本=40音声、Trial専用dir、Production不変、VALIDATED+採否はUSER_DECISION_REQUIRED=ユーザー試聴待ち)の結果は本ファイル末尾`### FAMILY-X-COFFEE-KP-EN-EXPLANATION-PACING-TRIAL-01(2026-10-16)`節。
 **追記索引(2026-10-16、FAMILY-X-20261016-0900-USER-DECISION-RECORD-01)**: Family X最終ユーザー判断(2026-10-16 09:00 JST、Sol統一=`PRODUCTION_WIRED`維持、PD06/K2/P8[旧M2置換]/P7[旧P3置換]/M2P0/KP選定A方式/In One Line基本2文=`APPROVED_FOR_PRODUCTION`・未配線)の逐語記録は本ファイル末尾`## FAMILY-X-20261016-0900-USER-DECISION-RECORD-01`。
+**追記索引(2026-10-16、FAMILY-X-WRITER-TRIAL-ADOPTION-AND-PRODUCTION-GAP-AUDIT-01)**: Family X Writer採用漏れ/Production反映漏れ監査の統合報告(`AUDIT_COMPLETE`、Opusレビュー前、read-only・JPY0)。結論=Sol統一・Fact Lockは最新かつ配線済み、09:00承認6仕様は未配線、SSOT陳腐化あり。報告書=`docs/research/FAMILY-X-WRITER-TRIAL-ADOPTION-AND-PRODUCTION-GAP-AUDIT-01/AUDIT_REPORT_01.md`。本文は末尾の同名節参照。
 
 **履歴全文(直前の記録・その前の記録、以下さらに前の記録、合計12件、原文のまま移動): `DECISION_LOG_HISTORY.md`の`## ER-PM-001_CHAIN`節参照**
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
@@ -21661,3 +21662,10 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 - Prompt正本照合結果(詳細・逐語は`CURRENT_SPEC.md`「Family X 最終ユーザー判断(2026-10-16 09:00 JST…)」小節): PD06=`er057_output/pace_trial_02/prompts/prompts_pace_02.md:74-82`のPD6(sha一致、名称対応付け)/K2=`er057_tone_trial_kp_ja_gen_01.py:38-39`+B_GUARD`:33`/P8=`er057_std_kp_ja_style_trial_02.py:25`(sha一致)/P7=`er080_coffee_kp_pacing_trial_01.py:35`のp7(同名の別P7[`er057_output/kp_en_explanation_style_trial_01`]あり、最新Trialを正本候補としてFable確認要)/In One Line改修Prompt=正本未特定(未作成)/M2P0・A方式=Prompt文字列なし(正本=既存DECISION_LOG)。推測補完・改変なし。
 - 監査との関係: FXWA監査(`FAMILY-X-WRITER-TRIAL-ADOPTION-AND-PRODUCTION-GAP-AUDIT-01`)は本記録を最新承認基準として扱う。本記録だけで未実装仕様を`PRODUCTION_WIRED`と判定しない。記録完了後はSTOPし、FXWA結果と合わせてProduction Wiring前の未解決事項を整理する。
 - 範囲: 記録・管理状態の更新のみ。Production code/Prompt変更0、新規Trial・有料API 0(JPY0)、Coffee再生成なし、Open Item close 0件。
+
+## FAMILY-X-WRITER-TRIAL-ADOPTION-AND-PRODUCTION-GAP-AUDIT-01(2026-10-16)
+
+- Status: `AUDIT_COMPLETE`(Opus独立レビュー前、read-only監査・JPY0、委任_01A/01B/01C/02)。Production code/Prompt変更0、SSOT本体(CURRENT_SPEC/OPEN_ITEMS)編集0、Open Item close 0件、Coffee生成なし。
+- 結論(1段落): Family XのWriter仕様は「一部」最新。日本語B3→R0→R1→R2=`gpt-6.1-sol`とFact Lock構造は、コード・routing・実run(META run_sol61_01)の3点で一致し配線済み。一方、2026-10-16 09:00にユーザーが承認したPD06/K2/P8/P7/In One Line(基本2文)は`APPROVED_FOR_PRODUCTION`・Family X正式経路に未配線(In One Lineは今も`Exactly one sentence`)。CS:829-831/905/1169/2462等に置換済みの旧記述が注記なしで残り、AN3第1文はFact Lock数字規則(5)に置換されている。英語化はLuna据置。OPEN-237系・RF候補・代理指標・Pre-sorterは採否未提示(整理漏れ)。
+- 報告書: `docs/research/FAMILY-X-WRITER-TRIAL-ADOPTION-AND-PRODUCTION-GAP-AUDIT-01/AUDIT_REPORT_01.md`(Part A/B/C同フォルダ)。ユーザー判断事項は報告書§8(a)〜(i)、Coffee再制作前Blockingは§9。
+- SSOT是正(注記追加等)はユーザー報告後の別委任。本記録ではPRODUCTION_WIRED判定・Open Item closeをしていない。
