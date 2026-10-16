@@ -127,3 +127,22 @@
 | 12 | commit/push/merge | **充足見込み(本commit後に確認)** | mainへ`--no-ff` merge |
 | 15 | Fableの独立照合 | **未充足** | Fableの工程 |
 → 条件1・2の残なし(A3是正済み)。`PRODUCTION_WIRED`は宣言しない(到達上限=`A3_FIXED_PENDING_FABLE`)。
+
+## 4-e. Fable独立照合(条件15、2026-10-16、委任_14記録)
+A-7完了条件13項目の照合(Fableが現物確認した事実のみ。Sonnetは記録のみ)。
+| # | 条件 | 判定 | 根拠file |
+|---|---|---|---|
+| 1 | 正式初回経路に統一判定 | 充足 | X/Z/legacy A/B/C入口、静的監査allowlist |
+| 2 | retry/fallback/regeneration/LR後の整合 | 充足 | 06c〜07b、A2外側ループ、LR後v1、再利用guard |
+| 3 | U1是正 | 充足(発効済み) | 範囲限定A7=登録読み辞書不一致のみ事前除外維持。`er078_asr_unified_judge_01.py:73`(`U1_KEEP_C1_SIMILARITY_EXCLUSIONS = False`)、同`:125/:148`(A7) |
+| 4 | U2確認・整理 | 充足 | (i)維持、死定数撤去、呼出点1箇所を静的test固定 |
+| 5 | 全Section実音声 | 充足 | 43行: 実音声38・再利用4・N/A 1。narrator 9 segment、Family C JA 5 clip(`er079_output/.../EVIDENCE_02.md`§6)、X-B1-06 |
+| 6 | 数値/否定/CS/M1/F1 Regression | 充足 | 中核test、Melos 06/06b、値ガード9例。既存失敗2件(koro)はAUW前から |
+| 7 | WARNING試聴リスト機能 | 充足 | 06b/06d、委任_12導出、test_13 |
+| 8 | 二重Secondary/無限retryなし | 充足 | 全run重複0、circuit breaker、cap |
+| 9 | model_id/routing | 充足 | usage_log実測 |
+| 10 | SSOT更新 | 充足 | 本委任(委任_14)で最終記録 |
+| 11 | merge/push/merge後test | 充足 | `b010cb469`〜`9f3738334` |
+| 12 | Dangling Reference | 充足 | §3+各委任 |
+| 13 | Fable独立照合 | 充足(本記録) | Fableが現物確認: `er078_asr_unified_judge_01.py:73/:125/:148`、a3 worktree同file`:56/:95/:146/:437/:542/:558`(A3是正)、`CLOSEOUT_PLAN_07.md`§4-c/§4-d、`USER_DECISION_REGISTER_01.md:170-172`、`RUNTIME_EVIDENCE_06.md`§15〜§19要旨 |
+**Fable判定: `PRODUCTION_WIRED`(2026-10-16)**。付帯事項(宣言の条件ではなく開示): (a)A7範囲限定[ユーザー報告で明示。ユーザーが解放を望む場合は定数/規則1行で変更可] (b)独立OPEN: 371(U4現行許容)/373/374/375/377/378/379/380/381〜386(FCJ)/389/390/391/394(Primary層の弱点=ユーザー判断事項)/395(JA Latin語web lookup費用=ユーザー判断事項)/397/398 (c)`PRIMARY_LENGTH_EXCESS`は閾値なしで全件付与(試聴対象増は運用観察) (d)A4(C2)・P1は不変。

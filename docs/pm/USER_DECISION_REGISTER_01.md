@@ -188,3 +188,16 @@
 
 - Coffee制作の前提: Researchから音声完成まで全面新規生成(旧Coffee原稿・KP・音声は流用しない)。再生成はFXWA監査・Production Wiring完了後、別途指示。
 - 件数: 追加FXUD-1〜FXUD-8(並行委任との番号衝突回避のため連番#ではなくFXUD-N。本表の連番への正式採番はFableが行う)はすべて『判断済み』。既存の判断済み化は#68(全面)・#3(更新)・#69(a/b一部)。USER_DECISION_REQUIRED(#69の(b)是正範囲承認・(c)・(d))は残る。close 0件。
+
+### 2026-10-16 委任_14 AUW Closeout追記(Fable独立照合[条件15]=`PRODUCTION_WIRED`判定の記録。既存行は書き換えず追記のみ)
+- **Fable判定: `PRODUCTION_WIRED`(2026-10-16)**。出典=`er058_output/unified_all_roles_production_wiring_01/CLOSEOUT_PLAN_07.md`§4-e。
+- #83=**判断済み・実装・発効**(U1: `U1_KEEP_C1_SIMILARITY_EXCLUSIONS = False`、委任_11。付帯=A7登録読み保護は維持、新規UDR #95)。#84=**判断済み・整理済み**(U2: (i)維持、死定数撤去)。#86=**判断済み**(U4: 現行許容、OPEN-371で独立管理)。#87=**判断済み**(Go・merge済み、`b010cb469`)。#85(U3)は本追記では判断状態を変更しない(UDRのまま)。
+- #88(新規・USER_DECISION_REQUIRED) **DQI改善パッケージP(PM判断品質改善の規則文変更)の採用可否** 原文=`docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/dqi/DQI_PROPOSAL_01.md`§3・§7(1)。sandwich-pm.md/PM_GOVERNANCE/templatesの規則文変更=運用仕様の変更のため、ユーザー判断なしに適用しない。推奨=採用。理由=AUW #83〜#86型の『Sonnet草案がUDR化する/承認原文との不整合が見逃される』問題の再発防止(Opus Q1〜Q7を反映済み)。影響=PM層の運用負荷は条件付き展開・1行集約で最小化。 Blocking=いいえ。
+- #89(新規・USER_DECISION_REQUIRED) **重大NG 2軸定義の承認(パッケージPの一部)** 原文=`docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/dqi/DQI_PROPOSAL_01.md`§3・§7(2)・§9(#4,#5)。重大NGの定義を2軸(例示・過剰STOP歯止め付き)で固定。推奨=承認(Pの1項目として)。理由=ユーザーC-2提案①の文言が出所、D-9と整合。影響=成果物の無条件ACCEPTEDを防ぐ。 Blocking=いいえ。
+- #90(新規・USER_DECISION_REQUIRED) **遡及机上チェック(代替案(c))の実施可否** 原文=`docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/dqi/DQI_PROPOSAL_01.md`§4(c)・§7(3)。過去判断を机上で遡及点検する案。推奨=実施(JPY0、検証力は低いと明記)。影響=費用なし、新規API呼出なし。 Blocking=いいえ。
+- #91(新規・USER_DECISION_REQUIRED) **問題1の実例確認(非ブロッキング確認)** 原文=`docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/dqi/DQI_PROPOSAL_01.md`§7(4)。ユーザーが問題1として念頭に置く実例はAUW #83〜#86か、他か。推奨=#83〜#86と仮定して進行し、異なる場合のみユーザーが訂正。影響=提案書の根拠事例の確定のみ。 Blocking=いいえ。
+- #92(新規・USER_DECISION_REQUIRED) **Family C 承認済み音声の再利用保証(OPEN-385案1 wav sha256固定マニフェスト + OPEN-387 story_001コロン)** OPEN-385(承認済みTrial-11 Memory A2の9clipの出自をリポジトリ内で証明できない)とOPEN-387(story_001本文中コロンがGateで再生成をブロック)。推奨=案1(wav sha256固定マニフェスト)を採用。理由=原稿不変で両方を解決できる。影響=Family Cの承認済み音声が再利用でき、再生成費用が発生しない。Family C全体のStatusは不変。 Blocking=いいえ。
+- #93(新規・USER_DECISION_REQUIRED) **OPEN-394 Primary層の弱点(誤った文面でTTSした音声が原稿どおりPASSする)=仕様候補** OPEN-394(ガス→カス、Metaの綴り読み等)。仕様候補のためユーザー判断事項。推奨=次回Trial設計時に扱う(今は観察のみ、Production挙動は変更しない)。影響=現行Productionは不変。 Blocking=いいえ。
+- #94(新規・USER_DECISION_REQUIRED) **OPEN-395 JA Latin語web lookup費用(1回JPY21.47)の量産単価への影響評価と対処方針** OPEN-395(`er025`内蔵`ja_web_lookup_call`、AKB48/ishで1回JPY21.4688)。推奨=negative cache/Ledger保存の有無調査を先行(JPY0、コード読みのみ)してから対処方針を提示。影響=量産単価目標70円/記事セットに対する影響の有無を確定。 Blocking=いいえ。
+- #95(新規・USER_DECISION_REQUIRED) **A7範囲限定(登録読み辞書不一致のみSecondary事前除外)の是非** #83付帯。A7はSecondary事前除外として維持(Fable判断、2026-10-11安全条件の適用。`er078_asr_unified_judge_01.py:125/:148`)。推奨=維持(既定は維持のまま、ユーザーが異議あれば除外表1行で解放)。影響=解放すると登録読み辞書不一致でもSecondaryへ回る。 Blocking=いいえ。
+- 本追記後: 追加#88〜#95はすべてUSER_DECISION_REQUIRED(非ブロッキング)。全件数は95件(#1〜#87との合算)。#87は判断済みへ確定したため、ブロックするのは既存の#72・#81のみ。

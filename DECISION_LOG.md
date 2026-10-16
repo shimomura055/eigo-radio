@@ -35,6 +35,7 @@
 **追記索引(2026-10-15、Std KP日本語Style Trial第2弾)**: `STANDARD-KP-JA-TTS-STYLE-TRIAL-02`委任_01(7 Style x 5 Phrase、新規25 call、JPY約1.05、Status USER_DECISION_REQUIRED[ユーザー試聴待ち]、Production無変更、OPEN-367)は本ファイル末尾`## STANDARD-KP-JA-TTS-STYLE-TRIAL-02 委任_01`節。
 
 **追記索引(2026-10-16、AUW 統一ASR判定・全Section Production Wiring、委任_07 Closeout準備)**: `ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01`(ユーザー正式決定2026-10-15=`APPROVED_FOR_PRODUCTION`・branch `feat/auw-unified-asr-01`で実装済み・main merge待ち・`PRODUCTION_WIRED`未宣言)のユーザー原文の決定部分(逐語)・Fable採用の技術決定・Opus条件A/C所見の採否・費用実績・事故記録は本ファイル末尾`## ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01`節。
+**追記索引(2026-10-16、AUW 委任_14 Closeout)**: `ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01`のFable独立照合(条件15)=`PRODUCTION_WIRED`判定の記録・付帯事項・費用通算約JPY156は本ファイル末尾`## ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01`節の`### ... 委任_14`を参照。
 **追記索引(2026-10-16、FAMILY-C-JA-TTS-PRODUCTION-FIX-01 委任_02)**: ユーザー承認済み既存Production不具合是正(Family C日本語TTSの言語経路欠落+reuse_from旧音声紐づけ)。実装・test・0円検査まで完了、有料evidenceは条件付きSTOP(b)で未実施。本文は本ファイル末尾「## FAMILY-C-JA-TTS-PRODUCTION-FIX-01(2026-10-16)」。
 **追記索引(2026-10-16、FAMILY-X-COFFEE-KP-EN-EXPLANATION-PACING-TRIAL-01 委任_01)**: Coffee Advanced KP英語解説の速度/ポーズ改善Trial(固定8 Prompt x 5本=40音声、Trial専用dir、Production不変、VALIDATED+採否はUSER_DECISION_REQUIRED=ユーザー試聴待ち)の結果は本ファイル末尾`### FAMILY-X-COFFEE-KP-EN-EXPLANATION-PACING-TRIAL-01(2026-10-16)`節。
 **追記索引(2026-10-16、FAMILY-X-20261016-0900-USER-DECISION-RECORD-01)**: Family X最終ユーザー判断(2026-10-16 09:00 JST、Sol統一=`PRODUCTION_WIRED`維持、PD06/K2/P8[旧M2置換]/P7[旧P3置換]/M2P0/KP選定A方式/In One Line基本2文=`APPROVED_FOR_PRODUCTION`・未配線)の逐語記録は本ファイル末尾`## FAMILY-X-20261016-0900-USER-DECISION-RECORD-01`。
@@ -21627,6 +21628,14 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 - 変更しないもの: 数値・否定の重大差(P1/最終gate)、A4・A7、disfluency/repetition gateのAND順、HR Lock、A-6(Secondary障害)挙動、length閾値の意味(正規化長への切替・新gate・音声長/文字数比gateなし)。`PRIMARY_LENGTH_EXCESS`は閾値なしのadditive警告。
 - 実音声(Azure STTのみ、TTS 0): EN正例=Primary水増し+Secondary救済でPASS_WITH_WARNING(adopted_from=secondary)、JA正例=同、EN負例(2clip連結)=NG_BOTH。JA正例は1回目の2clipが送り仮名差でJA許容集合外(長さ無関係)、clip差替で取得。費用JPY 1.42(Guardrail 2以内、Azure 5回)。
 - Status: `A3_FIXED_PENDING_FABLE`。`PRODUCTION_WIRED`でも`APPROVED_FOR_PRODUCTION`でもない。証跡=`er058_output/unified_all_roles_production_wiring_01/IMPLEMENTATION_13.md`・`RUNTIME_EVIDENCE_06.md`§19・`evidence_13/`。OPEN候補=OPEN-397/398。
+
+### ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 委任_14(2026-10-16): Fable独立照合(条件15)=PRODUCTION_WIRED判定の記録
+- 決定(Fable判定の記録。Sonnetは記録のみ): **`PRODUCTION_WIRED`**(2026-10-16)。ユーザー指示A-7「すべて満たした場合のみPRODUCTION_WIRED。未充足があれば、達成済み事項と未達事項を区別して報告する。」の完了条件13項目を照合し全項目充足(表=`er058_output/unified_all_roles_production_wiring_01/CLOSEOUT_PLAN_07.md`§4-e)。main merge `b010cb469`、U1発効 委任_11(`41adb2064`)、A3是正 `9f3738334`。
+- 付帯事項(開示): (a)A7範囲限定(登録読み辞書不一致のみSecondary事前除外維持。Fable判断・2026-10-11安全条件の適用。解放は`er078_asr_unified_judge_01.py`の除外表1行) (b)独立OPEN 371/373〜375/377〜386/389〜391/394/395/397/398 (c)`PRIMARY_LENGTH_EXCESS`は閾値なし全件付与(運用観察) (d)A4(C2)・P1不変。
+- REGISTER: #83(判断済み・実装・発効、A7付帯)/#84(判断済み・整理済み)/#86(判断済み・現行許容、OPEN-371)/#87(判断済み・Go・merge済み)を確定。新規UDR(DQI改善パッケージP/重大NG 2軸/遡及机上チェック/問題1実例/Family C再利用保証[OPEN-385,387]/OPEN-394/OPEN-395/A7範囲限定)を追加(番号=`docs/pm/USER_DECISION_REGISTER_01.md`の委任_14追記を参照)。DQI提案書=`docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/dqi/DQI_PROPOSAL_01.md`(commit `fd0a317e2`、運用仕様は未変更・ユーザー判断待ち)。
+- OPEN: OPEN-370(AUW親)=Fable判定PRODUCTION_WIREDで到達・独立OPENへ分離、OPEN-392・OPEN-396=close、OPEN-388=是正済み・Fable判定済みを追記。他はcloseしない。
+- 費用(出典付き再計算、AUW通算): 委任_06 約9.9(再推定)+06b 52.0+06d 23.83+06e 3.51+07/07b 約1.29=約90.5(`RUNTIME_EVIDENCE_06.md`L173/L334/L435/L514)。委任_08〜09=0、委任_10=2.23、委任_11=37.66、委任_12=24.22、委任_13=1.42(各RESULT_PACKET/`evidence_*/cost/spend_ledger.jsonl`)=約65.5。**通算約JPY156**(委任_14=0)。委任_11はGuardrail超過を記録済み。
+- Status: `PRODUCTION_WIRED`(Fable判定)。到達上限の変更なし。
 
 ## FAMILY-X-20261016-0900-USER-DECISION-RECORD-01(2026-10-16 09:00 JST ユーザー最終判断、SSOT記録のみ。Status=`RECORDED`、新規採用=`APPROVED_FOR_PRODUCTION`・未配線、Sol統一=既存`PRODUCTION_WIRED`維持)
 
