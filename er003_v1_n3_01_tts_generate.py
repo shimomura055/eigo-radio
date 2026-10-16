@@ -38,6 +38,7 @@ import er003_v1_sing01_news_tail_fix as news_tail_fix
 import er011_human_review_lock_01 as review_lock
 import er078_pass_with_warning_registry_01 as pww_registry  # AUW 委任_03: PASS_WITH_WARNING 事後試聴リスト
 import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
+import er078_asr_unified_judge_01 as unified_judge_mod  # AUW 委任_13: final_length_ok(A3是正)
 import er003_v1_sing01_point_headings_aoede as point_headings
 import er003_v1_sing01_voice01_generate as voice01
 import er005_cost_logger as cl
@@ -730,8 +731,9 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
             text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
             expected_readings=expected_readings, length_ok=length_ok, detail_out=_aj,
             # AUW 委任_05: fallback(通算slot = 標準経路の消費分+この周)。通算上限(max_attempts)到達のNGのみHR queue対象。
-            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(len(standard.get("attempts_log") or []) + attempt, max_attempts))
-        verified = verified_content and length_ok
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(len(standard.get("attempts_log") or []) + attempt, max_attempts, max_len=max_len))  # AUW 委任_13
+        final_len_ok = unified_judge_mod.final_length_ok(length_ok, _aj)  # AUW 委任_13(A3是正)
+        verified = verified_content and final_len_ok
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
                                    "audio_classification": cls.classification,
                                    "reading_resolver_info": getattr(cls, "reading_resolver_info", None),
@@ -745,7 +747,7 @@ def generate_a2_japanese_with_fallback(text: str, out_path: str, expected_substr
             "model": flw.resolve_actual_model_name(p9a.JAPANESE_MODEL_NAME, tts_backend), "voice": p9a.VOICE_NAME,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(), "tts_backend": tts_backend,
             "asr_text": asr_text, "audio_classification": cls.classification,
-            "length_ok": length_ok, "verified": verified,
+            "length_ok": length_ok, "final_length_ok": final_len_ok, "verified": verified,
             "reading_resolver_info": getattr(cls, "reading_resolver_info", None),
             "scg_info": getattr(cls, "scg_info", None),
         })

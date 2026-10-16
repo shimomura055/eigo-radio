@@ -21620,3 +21620,9 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 - 決定(Fable許可の実施): 事前dry-run(API 0、network遮断)で入力検査・Latin token検査・Store hit予測・実測単価見積を行い、合格後に各run初回1回のみ実行。narrator(`bnarr_full`)は`run_tts_a2_2v_new_topic`をそのまま実行し9 segment全てPASS(Hook/Tension/Closing含む)、`tts_generation_results.json`・事後試聴リストも導出(Q5 a〜f全充足、JPY20.82)。fresh JA(`ja_fresh2`、Latin無し原稿)はjf3でSecondary呼出→PASS_WITH_WARNING(U1発効後の実音声正例)、jf2は3回NG_BOTH→HR(誤受理なし)。web lookup発火0。費用合計JPY24.22(Guardrail 34以内)。
 - 43行マトリクス: B-A2-01を区分1へ。最終=実音声38/再利用4/N/A 1。
 - Status: 条件1・2・9の残=A3(OPEN-388)のみ。`AUW_EVIDENCE_COMPLETE_PENDING_FABLE_15`相当(到達上限)。`PRODUCTION_WIRED`でも`APPROVED_FOR_PRODUCTION`でもない。証跡=`er058_output/unified_all_roles_production_wiring_01/RUNTIME_EVIDENCE_06.md`§18・`evidence_12/`。
+
+### ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01 委任_13(2026-10-16): A3[length NG]是正(Opus条件A A3R-01〜09全件採用)
+- 決定(Fable判断の実施): ユーザー指示A-2「Primaryの差が大きいという理由だけでSecondaryを省略したり、Secondaryの正当なPASSを拒否したりしない」に合わせ、length判定をSecondary採用転写で再評価。`max_len`を渡す呼出元10箇所(EN6/JA4)のみ有効化し、judgeはPrimary NG+length NGをSecondaryへ回し、Primary PASS+length NGはP3へ降格(`primary_length_ng`)。Secondary受理時は採用転写(Secondary)の長さで再評価(超過=NG_BOTH `secondary_length_ng`)。最終ANDは`final_length_ok`(fail-closed)。rollbackはmodule定数`A3_SECONDARY_LENGTH_REEVAL`。(c)案(judgeでTrue上書き)は不採用。
+- 変更しないもの: 数値・否定の重大差(P1/最終gate)、A4・A7、disfluency/repetition gateのAND順、HR Lock、A-6(Secondary障害)挙動、length閾値の意味(正規化長への切替・新gate・音声長/文字数比gateなし)。`PRIMARY_LENGTH_EXCESS`は閾値なしのadditive警告。
+- 実音声(Azure STTのみ、TTS 0): EN正例=Primary水増し+Secondary救済でPASS_WITH_WARNING(adopted_from=secondary)、JA正例=同、EN負例(2clip連結)=NG_BOTH。JA正例は1回目の2clipが送り仮名差でJA許容集合外(長さ無関係)、clip差替で取得。費用JPY 1.42(Guardrail 2以内、Azure 5回)。
+- Status: `A3_FIXED_PENDING_FABLE`。`PRODUCTION_WIRED`でも`APPROVED_FOR_PRODUCTION`でもない。証跡=`er058_output/unified_all_roles_production_wiring_01/IMPLEMENTATION_13.md`・`RUNTIME_EVIDENCE_06.md`§19・`evidence_13/`。OPEN候補=OPEN-397/398。

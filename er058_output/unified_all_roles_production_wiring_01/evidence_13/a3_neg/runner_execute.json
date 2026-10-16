@@ -1,0 +1,88 @@
+{
+ "part": "a3_neg",
+ "mode": "execute",
+ "stop_files_present": [],
+ "isolation": {
+  "human_review_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_neg/human_review_queue.jsonl",
+  "attempt_history": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_neg/attempt_history.jsonl",
+  "master_audio_store": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_neg/master_audio_store",
+  "reuse_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_neg/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_neg/er021_telemetry.jsonl",
+  "er025_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_neg/er025_telemetry.jsonl",
+  "cost_log": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_neg/cost_log.jsonl",
+  "ledger_snapshot": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_neg/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)",
+  "foreign_token_hr_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_neg/foreign_token_hr_queue.jsonl",
+  "human_review_queue_ja": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_neg/human_review_queue_ja.jsonl"
+ },
+ "budget_jpy": 1.0,
+ "ledger_before": 0.7225,
+ "cap_remaining": 1.2775,
+ "a3_reeval_const": true,
+ "plan": [
+  {
+   "id": "en_neg",
+   "lang": "en",
+   "canonical": "Why prices change slowly",
+   "wav": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_neg/input/en_neg_concat.wav",
+   "primary_mock": "Today's topic is Cheaper Beans, Same Price Tag. Why prices change slowly",
+   "primary_len": 72,
+   "max_len": 39
+  }
+ ],
+ "stage_result": {
+  "a3_neg": "OK"
+ },
+ "rows": [
+  {
+   "verified": false,
+   "state": "NG_BOTH",
+   "reason": "secondary_not_accepted",
+   "warnings": [],
+   "length": {
+    "applied": true,
+    "primary_len": 72,
+    "secondary_len": 73,
+    "max_len": 39,
+    "adopted_from": "primary",
+    "adopted_ok": false,
+    "surface_len": 58,
+    "primary_ok": false
+   },
+   "primary_text": "Today's topic is Cheaper Beans, Same Price Tag. Why prices change slowly",
+   "secondary_called": true,
+   "secondary_text": "Today's topic is cheaper beans, same price tag. Why prices change slowly?",
+   "secondary_accepted": false,
+   "exclusion_rule": null,
+   "final_length_ok": false,
+   "cost": {
+    "azure_calls": 1,
+    "azure_seconds": 7.766,
+    "est_jpy": 0.3556,
+    "est_jpy_known": true
+   },
+   "id": "en_neg",
+   "lang": "en",
+   "caller_primary_length_ok": false,
+   "max_len": 39,
+   "caller_verified_after_and": false
+  }
+ ],
+ "shared_state_unchanged": true,
+ "shared_files_changed_outside_evidence": [
+  "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_neg/cost_log.jsonl",
+  "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_neg/human_review_queue.jsonl",
+  "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_neg/usage_log.jsonl"
+ ],
+ "cost": {
+  "est_total_jpy": 0.3448,
+  "n_tts": 0,
+  "n_openai_asr": 0,
+  "n_azure": 1,
+  "azure_seconds": 7.77,
+  "n_text_llm": 0,
+  "azure_duplicate_wavs": 0
+ },
+ "ledger_after": 1.0673
+}

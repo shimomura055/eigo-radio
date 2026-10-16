@@ -536,6 +536,9 @@ def evaluate_attempt_ja_with_cascade_detail(
     # NEWS-E2E-PRE-KEYPHRASE-CLOSEOUT-02 Phase 3b: 既定None(後方互換)。辞書登録トークンの確定読み(小文字キー、カタカナ値)。
     expected_readings: dict | None = None,
     # OPEN-258 SCG 推奨6: 呼出元で長さ超過(length_ok=False)なら、Azureを無駄に呼ばない。既定True=後方互換。
+    # ただし AUW 委任_13(A3是正)以降: attempt_ctx["max_len"]を渡す呼出元では、Primary転写のlength NGでもSecondaryへ回し
+    # (Secondary受理時は採用転写[Secondary]の長さで再評価)、最終ANDは呼出元が`unified_judge.final_length_ok`で行う。
+    # max_len未指定の呼出元は従来どおり(length_ok=FalseはA3としてSecondary不呼出)。
     length_ok: bool = True,
     # AUW 委任_04(既定None=slot1/script v0/最終slotでない): 統一judgeのattempt文脈。
     # dict: slot / script_version('v0'|'v1') / is_last_slot / segment_key / run_state / cache。
@@ -610,6 +613,7 @@ def evaluate_attempt_ja_with_cascade_detail(
         audio_seconds=_wav_duration_seconds(wav_path), segment_key=str(actx.get("segment_key", "")),
         script_version=actx.get("script_version", "v0"), slot=int(actx.get("slot", 1)),
         is_last_slot=bool(actx.get("is_last_slot", False)), length_ok=bool(length_ok),
+        max_len=actx.get("max_len"),  # AUW 委任_13(A3R-01/03): 呼出元のmax_len。None=従来挙動(安全ラッチ)
         force_secondary=False, engine="azure", phrase_list_hash="",
         cache=cache, run_state=actx.get("run_state") or run_state)
 
@@ -661,8 +665,9 @@ def evaluate_attempt_ja_with_cascade_detail(
         # 除外理由は従来のSCG表記(_scg_exclusion_reason / length_not_ok)を診断用に維持し、統一judgeの理由は別キーで併記する。
         legacy_reason = _scg_exclusion_reason(cls, canonical_text, primary_asr_text,
                                               u1_released=not unified_judge_mod.U1_KEEP_C1_SIMILARITY_EXCLUSIONS)
-        if legacy_reason is None and not length_ok:
-            legacy_reason = "length_not_ok(呼出元の長さ判定が不合格、SCG PASSでも不合格になるため不実行)"
+        if legacy_reason is None and not length_ok and not unified_judge_mod._a3_reeval_active(ctx):
+            # 委任_13(A3R-05): この診断文はmax_len未指定の呼出元(安全ラッチ=旧挙動)だけに出る。max_len指定時はjudgeの実理由(jr.reason_code)を使う。
+            legacy_reason = "length_not_ok(呼出元の長さ判定が不合格、SCG PASSでも不合格になるため不実行。max_len未指定の旧挙動)"
         scg_info = {"scg_applied": False, "scg_result": "NOT_APPLIED", "exclusion_reason": legacy_reason or jr.reason_code,
                     "primary_text": primary_asr_text, "unified_judge_state": jr.state, "unified_reason_code": jr.reason_code}
         if secondary_ran:

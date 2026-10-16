@@ -34,6 +34,7 @@ import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
+import er078_asr_unified_judge_01 as unified_judge_mod  # AUW 委任_13: final_length_ok(A3是正)
 
 AOEDE = "Aoede"
 SAFETY_MARGIN = 0.35
@@ -128,12 +129,13 @@ def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTIO
         verified_content, stop_retrying, cls = secondary_asr.evaluate_attempt_with_cascade(
             text, asr_text, classification_history, out_path, language="en-US",
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED, detail_out=_aj,
-            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts))  # AUW 委任_05
-        verified = verified_content and length_ok
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts, max_len=max_len))  # AUW 委任_05/13
+        final_len_ok = unified_judge_mod.final_length_ok(length_ok, _aj)  # AUW 委任_13(A3是正)
+        verified = verified_content and final_len_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]
         attempts_log.append({"attempt": attempt, "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"), "audio_classification": cls.classification,
-                              "length_ok": length_ok, "verified": verified, "instruction_type": instruction_type,
+                              "length_ok": length_ok, "final_length_ok": final_len_ok, "verified": verified, "instruction_type": instruction_type,
                               "disfluency_checked": gate["disfluency_checked"],
                               "disfluency_evidence": gate.get("disfluency_evidence")})
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
@@ -143,7 +145,7 @@ def generate(text: str, out_path: str, max_attempts: int = review_lock.PRODUCTIO
             "model": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend), "voice": AOEDE,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(), "tts_backend": tts_backend,
             "asr_text": asr_text, "audio_classification": cls.classification,
-            "length_ok": length_ok, "verified": verified,
+            "length_ok": length_ok, "final_length_ok": final_len_ok, "verified": verified,
             "disfluency_checked": gate["disfluency_checked"],
             "disfluency_evidence": gate.get("disfluency_evidence"),
         })

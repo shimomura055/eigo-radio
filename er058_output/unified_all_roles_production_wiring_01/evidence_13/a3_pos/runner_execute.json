@@ -1,0 +1,133 @@
+{
+ "part": "a3_pos",
+ "mode": "execute",
+ "stop_files_present": [],
+ "isolation": {
+  "human_review_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_pos/human_review_queue.jsonl",
+  "attempt_history": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_pos/attempt_history.jsonl",
+  "master_audio_store": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_pos/master_audio_store",
+  "reuse_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_pos/master_audio_store/reuse_telemetry.jsonl",
+  "er021_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_pos/er021_telemetry.jsonl",
+  "er025_telemetry": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_pos/er025_telemetry.jsonl",
+  "cost_log": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_pos/cost_log.jsonl",
+  "ledger_snapshot": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_pos/ledger_snapshot.json",
+  "tier3_research": "disabled(stub)",
+  "ledger_upsert": "disabled(no-op)",
+  "foreign_token_hr_queue": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_pos/foreign_token_hr_queue.jsonl",
+  "human_review_queue_ja": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_pos/human_review_queue_ja.jsonl"
+ },
+ "budget_jpy": 2.0,
+ "ledger_before": 0.0,
+ "cap_remaining": 2.0,
+ "a3_reeval_const": true,
+ "plan": [
+  {
+   "id": "en_pos",
+   "lang": "en",
+   "canonical": "Why did you wait twenty minutes?",
+   "wav": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_pos/input/en_pos.wav",
+   "primary_mock": "Why did you wait twenty minutes? and so on and so forth and so on and so forth",
+   "primary_len": 78,
+   "max_len": 47
+  },
+  {
+   "id": "ja_pos",
+   "lang": "ja",
+   "canonical": "コーヒー豆の値段が下がっても、お店の値札は9か月ほど変わらないかもしれません。",
+   "wav": "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_pos/input/ja_pos.wav",
+   "primary_mock": "コーヒー豆の値段が下がっても、お店の値札は9か月ほど変わらないかもしれません。そしてさらにまたまたたくさんの余計なことばが続きます",
+   "primary_len": 65,
+   "max_len": 54
+  }
+ ],
+ "stage_result": {
+  "a3_pos": "OK"
+ },
+ "rows": [
+  {
+   "verified": true,
+   "state": "PASS_WITH_WARNING",
+   "reason": "secondary_confirmed",
+   "warnings": [
+    "PRIMARY_LENGTH_EXCESS",
+    "SECONDARY_CONFIRMED"
+   ],
+   "length": {
+    "applied": true,
+    "primary_len": 78,
+    "secondary_len": 28,
+    "max_len": 47,
+    "adopted_from": "secondary",
+    "adopted_ok": true,
+    "surface_len": 22,
+    "primary_ok": false
+   },
+   "primary_text": "Why did you wait twenty minutes? and so on and so forth and so on and so forth",
+   "secondary_called": true,
+   "secondary_text": "Why did you wait 20 minutes?",
+   "secondary_accepted": true,
+   "exclusion_rule": null,
+   "final_length_ok": true,
+   "cost": {
+    "azure_calls": 1,
+    "azure_seconds": 3.05,
+    "est_jpy": 0.1778,
+    "est_jpy_known": true
+   },
+   "id": "en_pos",
+   "lang": "en",
+   "caller_primary_length_ok": false,
+   "max_len": 47,
+   "caller_verified_after_and": true
+  },
+  {
+   "verified": false,
+   "state": "NG_BOTH",
+   "reason": "secondary_not_accepted",
+   "warnings": [],
+   "length": {
+    "applied": true,
+    "primary_len": 65,
+    "secondary_len": 39,
+    "max_len": 54,
+    "adopted_from": "primary",
+    "adopted_ok": false,
+    "surface_len": 37,
+    "primary_ok": false
+   },
+   "primary_text": "コーヒー豆の値段が下がっても、お店の値札は9か月ほど変わらないかもしれません。そしてさらにまたまたたくさんの余計なことばが続きます",
+   "secondary_called": true,
+   "secondary_text": "コーヒー豆の値段が下がっても、お店の値札は9カ月ほど変わらないかもしれません。",
+   "secondary_accepted": false,
+   "exclusion_rule": null,
+   "final_length_ok": false,
+   "cost": {
+    "azure_calls": 1,
+    "azure_seconds": 6.29,
+    "est_jpy": 0.3111,
+    "est_jpy_known": true
+   },
+   "id": "ja_pos",
+   "lang": "ja",
+   "caller_primary_length_ok": false,
+   "max_len": 54,
+   "caller_verified_after_and": false
+  }
+ ],
+ "shared_state_unchanged": true,
+ "shared_files_changed_outside_evidence": [
+  "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_pos/cost_log.jsonl",
+  "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_pos/human_review_queue_ja.jsonl",
+  "er058_output/unified_all_roles_production_wiring_01/evidence_13/a3_pos/usage_log.jsonl"
+ ],
+ "cost": {
+  "est_total_jpy": 0.43,
+  "n_tts": 0,
+  "n_openai_asr": 0,
+  "n_azure": 2,
+  "azure_seconds": 9.34,
+  "n_text_llm": 2,
+  "azure_duplicate_wavs": 0
+ },
+ "ledger_after": 0.43
+}

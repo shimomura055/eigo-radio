@@ -20,6 +20,8 @@
 #          許容集合PASS かつ 最終ANDゲートOK                 -> PASS_WITH_WARNING(SECONDARY_CONFIRMED。値AMBIGUOUS時は
 #                                                              Secondary転写が原稿と同一表層の場合のみNUMERIC_AMBIGUOUS_SURFACE)
 #          それ以外                                          -> NG_BOTH
+# 委任_13(A3是正): ctx.max_len指定時のみ、Primary NG+length NGもP3へ回し、Primary PASS+length NGはP3へ降格する。Secondary受理時は採用転写(Secondary)の
+#   長さで再評価(超過=NG_BOTH `secondary_length_ng`)。呼出元の最終ANDは `final_length_ok`(fail-closed)。ロールバック=module定数 A3_SECONDARY_LENGTH_REEVAL。
 # 言語別Secondary許容集合は本module内に再実装しない。`secondary_fn`の戻り値(accepted)または`secondary_accept_fn`(注入callable)で受ける。
 # ============================================================
 from __future__ import annotations
@@ -51,6 +53,7 @@ PASSING_STATES = (PASS, PASS_WITH_WARNING)
 W_SECONDARY_CONFIRMED = "SECONDARY_CONFIRMED"
 W_NUMERIC_AMBIGUOUS_SURFACE = "NUMERIC_AMBIGUOUS_SURFACE"
 W_LR_REWRITTEN = "LR_REWRITTEN"
+W_PRIMARY_LENGTH_EXCESS = "PRIMARY_LENGTH_EXCESS"  # 委任_13(A3R-07): Primary転写がmax_lenを超えたがSecondary転写(採用転写)で長さOKだった=事後試聴対象(受理条件は不変)
 W_JA_NUMERIC_IRREGULAR_READING = vg.WARN_IRREGULAR_READING
 
 # ---- 最終ANDゲートが再否定しない承認済みequivalence根拠(ctx/primary_resultの`equivalence_basis`で受け取る) ----
@@ -65,7 +68,7 @@ APPROVED_EQUIVALENCE_BASES = frozenset({
 # 既定の経緯: live負例対照でPrimary PASS 3件(Secondary不呼出=U1と無関係)が出たためs1に従いTrueのままcommit。Fableが採否判断し1行でFalse化する。
 # False=JAの類似度<0.4(A5)・C1固有名詞差(A6: entity_like・辞書未登録Latin語)のP2事前除外を撤廃し、Primary NGなら原則Secondaryへ回す。
 # True=旧挙動(A5/A6をP2除外のまま。ロールバック用。unit testでmonkeypatchして固定)。
-# 例外として残す除外: A1/A2(P1 数値DIFF・否定差)、A3(length NG。Primary転写由来で「独立QA」ではない→OPEN起票済み)、
+# 例外として残す除外: A1/A2(P1 数値DIFF・否定差)、A3(length NG。委任_13で是正済み: max_len指定の呼出元はP2除外から外れSecondary転写で再評価。max_len未指定=旧挙動のP2除外)、
 #   A4(C2同形異音候補、2026-10-11ユーザー逐語採用)、A7(登録読み辞書不一致=登録読み保護。Secondaryの表層一致は読みの正しさを
 #   証明しないため、2026-10-11安全条件[読みでの受理禁止]に従い事前除外のまま。U1フラグの対象外)。
 # U2(force_secondary)の死定数U2_FORCE_SECONDARY_SCOPEは委任_10で撤去(どこからも参照されていなかった。実体は呼出側の
@@ -82,6 +85,14 @@ JPY_PER_USD = 160.0
 #   「1回分の見積費用 > COST_GUARD_MAX_USD_PER_SEGMENT(= $0.05 = 音声180秒超)」を検査し、超過ならSecondaryを呼ばずfail-closed
 #   (NG_SECONDARY_UNAVAILABLE相当、cost_guard_triggered=True)にする。judge本体は純粋(API/費用判断を持たない)ため適用点はadapter。
 COST_GUARD_IN_UNIFIED_JUDGE = "APPLIED_AT_ADAPTER_SECONDARY_FN_ACTUAL_SECONDS_03"
+
+# ---- A3是正(委任_13、2026-10-16、ユーザー指示A-2「Primaryの差が大きいという理由だけでSecondaryを省略したり、Secondaryの正当なPASSを拒否したりしない」の実装修正) ----
+# True : 呼出元がattempt_ctxで`max_len`を渡したとき(ctx.max_len is not None)に限り、length判定をPrimary転写由来のP2事前除外(A3)から外し、
+#        (1) Primary NGでもSecondaryへ回す (2) Primary PASSでもPrimary転写がmax_lenを超えていればP3へ降格しSecondaryへ回す
+#        (3) Secondary受理時は採用転写(Secondary)の長さで再評価(超過ならNG_BOTH `secondary_length_ng`) (4) 最終ANDは呼出元が`final_length_ok`で行う。
+#        max_len未指定の呼出元(安全ラッチ)は従来挙動(JA=A3事前除外/EN=従来)。
+# False: ロールバック用(module定数。env/flagではない)。A3を従来どおり表に残し、max_lenがあっても旧挙動に戻す。
+A3_SECONDARY_LENGTH_REEVAL = True
 
 CIRCUIT_BREAKER_THRESHOLD = 3  # run単位。連続Secondary障害がこの回数でそのrunのSecondary呼出を止める
 
@@ -118,13 +129,36 @@ class ExclusionRule:
 SCG_EXCLUSIONS = (
     ExclusionRule("A1_NUMBER_DIFF", "数字差は『値DIFF』のみ除外(表記差は除外しない=旧過剰制限の撤廃)", "P1", ("en", "ja"), "value_guard=DIFF"),
     ExclusionRule("A2_NEGATION_DIFF", "否定差/JA否定マーカー差(既存保護の維持)", "P1", ("en", "ja"), "negation_diff"),
-    ExclusionRule("A3_LENGTH_NG", "length NG(Secondaryで救えてもlength ANDで不合格)", "P2", ("en", "ja"), "length_ok=False"),
+    ExclusionRule("A3_LENGTH_NG", "length NG(Secondaryで救えてもlength ANDで不合格)。委任_13: ctx.max_len指定時(かつA3_SECONDARY_LENGTH_REEVAL=True)は無効化し、Secondary転写で再評価", "P2", ("en", "ja"), "length_ok=False"),
     ExclusionRule("A4_C2_HOMOGRAPH", "C2同形異音候補(Azureが原稿の漢字表記と一致しても読み違いを区別できない)", "P2", ("ja",), "c2_homophone_candidate"),
     ExclusionRule("A5_SIMILARITY_LT_0_4", "類似度<0.4(U1フラグがTrueの間のみ有効)", "P2", ("ja",), "similarity<0.4", u1_gated=True),
     ExclusionRule("A6_C1_PROPER_NOUN_DIFF", "C1固有名詞差(U1フラグがTrueの間のみ有効)", "P2", ("ja",), "c1_proper_noun_diff", u1_gated=True),
     ExclusionRule("A7_READING_DICT_MISMATCH", "登録読み保護: Primaryが登録読み辞書expected_readingsとの不一致を具体的に示した(Secondaryの表層一致は読みの正しさを証明しない。2026-10-11安全条件)", "P2", ("ja",), "reading_dictionary_mismatch"),
 )
 SCG_MIN_SIMILARITY = 0.4  # er007_ja_secondary_asr_01.SCG_MIN_SIMILARITY と同値(parity testで突合)
+
+
+def _a3_reeval_active(ctx: "AttemptCtx") -> bool:
+    """委任_13(A3R-03 安全ラッチ): max_lenを渡した呼出元だけがA3是正の対象。max_len未指定は従来挙動。"""
+    return bool(A3_SECONDARY_LENGTH_REEVAL) and getattr(ctx, "max_len", None) is not None
+
+
+def final_length_ok(length_ok_primary, detail) -> bool:
+    """委任_13(A3R-03): 呼出元の最終AND用helper(fail-closed)。`detail`はcascade/adapterのdetail dict(`asr_judgement`キー)または
+    asr_judgement自体。Primaryのlength_okを置換するのは次の全条件を満たすときだけ:
+      asr_judgementが存在 ∧ state∈PASSING ∧ audit["length"]["adopted_from"]=="secondary" ∧ audit["length"]["adopted_ok"] is True。
+    それ以外(キー欠落・型不正・NG・Primary採用・例外)は常にPrimary由来のlength_okを返す(=従来と同じ)。"""
+    primary = bool(length_ok_primary)
+    try:
+        aj = detail.get("asr_judgement", detail) if isinstance(detail, dict) else None
+        if not isinstance(aj, dict) or aj.get("state") not in PASSING_STATES:
+            return primary
+        ln = aj.get("length")
+        if isinstance(ln, dict) and ln.get("adopted_from") == "secondary" and ln.get("adopted_ok") is True:
+            return True
+    except Exception:
+        return primary
+    return primary
 
 
 def _exclusion_hit(ctx: "AttemptCtx", primary: "PrimaryResult", lang: str):
@@ -135,7 +169,7 @@ def _exclusion_hit(ctx: "AttemptCtx", primary: "PrimaryResult", lang: str):
             continue
         if rule.u1_gated and not U1_KEEP_C1_SIMILARITY_EXCLUSIONS:
             continue
-        if rule.rule_id == "A3_LENGTH_NG" and not ctx.length_ok:
+        if rule.rule_id == "A3_LENGTH_NG" and not ctx.length_ok and not _a3_reeval_active(ctx):
             return rule.rule_id
         if rule.rule_id == "A4_C2_HOMOGRAPH" and sig.get("c2_homophone_candidate"):
             return rule.rule_id
@@ -220,6 +254,8 @@ class AttemptCtx:
     slot: int = 1
     is_last_slot: bool = False
     length_ok: bool = True
+    # 委任_13(A3R-01/03): 呼出元のmax_len(余裕文字数は呼出元ごとに異なる。judge内で固定再計算しない)。None=従来挙動(安全ラッチ)。
+    max_len: int | None = None
     force_secondary: bool = False
     engine: str = "azure"
     phrase_list_hash: str = ""
@@ -339,7 +375,11 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         "cost": {"azure_calls": 0, "azure_seconds": None, "est_jpy": 0.0},
         "timing": {"total_ms": 0, "secondary_ms": 0},
         "technical_stop": None,
+        # 委任_13(A3R-06): length監査。applied=A3是正が有効(max_len指定∧定数True)か。
+        "length": {"applied": _a3_reeval_active(ctx), "primary_len": None, "secondary_len": None, "max_len": ctx.max_len,
+                   "adopted_from": "primary", "adopted_ok": None, "surface_len": None, "primary_ok": None},
     }
+    a3 = _a3_reeval_active(ctx)
     if ctx.wav_sha256:
         audit["audio_sha256"] = ctx.wav_sha256  # 委任_03: Primary PASS(Secondary不呼出)でも採用音声のsha256を記録(registryが突合に使う)
 
@@ -371,6 +411,12 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         audit["value_guard"]["gate_target"] = "adopted_text"
     warnings = list(pr.warning_labels) + list(pvg.warnings)
     primary_ng_reason = None
+    # 委任_13(A3R-02): Primary length計測はgate_text(採用転写)基準。ctx.length_ok(呼出元がPrimary転写で計算)もANDし、fail-closedにする。
+    plen_ok = True
+    if a3:
+        plen = len(gate_text)
+        plen_ok = (plen <= int(ctx.max_len)) and bool(ctx.length_ok)
+        audit["length"].update(primary_len=plen, primary_ok=plen_ok, adopted_ok=plen_ok)
 
     # ---- Primary PASS -> 最終ANDゲート ----
     if pr.passed:
@@ -386,6 +432,9 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
             if pvg.kind == vg.AMBIGUOUS:
                 # 根拠のない曖昧表層(10分/十分)はPrimary転写のままPASSさせない -> P3(Secondary)へ降格
                 primary_ng_reason = "primary_pass_demoted_ambiguous_value"
+        if primary_ng_reason is None and not plen_ok:
+            # 委任_13(A3R-02): Primary内容PASS+length NGはAMBIGUOUS降格と同形でP3(Secondary)へ降格する。
+            primary_ng_reason = "primary_length_ng"
         if primary_ng_reason is None and not ctx.force_secondary:
             return done(PASS, "primary_pass" if not approved else f"primary_pass_approved_equivalence:{pr.equivalence_basis}", warnings)
         if primary_ng_reason is None:
@@ -479,6 +528,18 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         label = label or "EXACT_SURFACE"
     audit["secondary"].update(accepted=bool(accepted), label=label)
 
+    if a3:
+        # 委任_13(A3R-01/02/06): Secondary受理時は採用転写(Secondary)の長さで再評価する(max_lenは呼出元の値)。
+        slen = len(stext)
+        sok = slen <= int(ctx.max_len)
+        audit["length"].update(secondary_len=slen, surface_len=len(_surface_key(stext)))
+        if accepted and not sok:
+            audit["length"].update(adopted_from="secondary", adopted_ok=False)
+            return done(NG_BOTH, "secondary_length_ng", warnings)
+        if accepted:
+            audit["length"].update(adopted_from="secondary", adopted_ok=True)
+            if not plen_ok:
+                warnings = warnings + [W_PRIMARY_LENGTH_EXCESS]  # A3R-07: additive(受理条件は不変)
     ambiguous_primary = pvg.kind == vg.AMBIGUOUS
     if svg.kind == vg.AMBIGUOUS and not same_surface(canon, stext):
         return done(NG_BOTH, "secondary_ambiguous_value_not_same_surface", warnings)
@@ -494,4 +555,5 @@ def unified_judge(ctx: AttemptCtx, primary_result, secondary_fn, *, lang: str, r
         # 委任_03: Primary PASS + force_secondary(minimal fallback/LR後v1)でSecondaryも許容集合PASS = 両エンジン合意。
         # 従来(er006 force_secondary)もPASS扱い(警告なし)だったため、SECONDARY_CONFIRMED警告は付けない(LR後v1はdone()がLR_REWRITTENを付与)。
         return done(PASS, "force_secondary_agreed", warnings + list(svg.warnings))
-    return done(PASS_WITH_WARNING, "secondary_confirmed", warnings + [W_SECONDARY_CONFIRMED] + list(svg.warnings))
+    return done(PASS_WITH_WARNING, "secondary_confirmed" if primary_ng_reason != "primary_length_ng" else "secondary_confirmed_primary_length_ng",
+                warnings + [W_SECONDARY_CONFIRMED] + list(svg.warnings))
