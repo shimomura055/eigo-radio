@@ -138,3 +138,12 @@ TTS_EXECUTION_MODE=STANDARD .venv/Scripts/python.exe er019_family_x_entertainmen
 ### (e) 7-7・日次1,000円との関係
 - 日次1,000円(7-9): 最悪でも約290円で**超過見込みなし**(残約710円以上)。事前承認の対象外。
 - 7-7(見積100円超=ユーザー判断): 期待96は100円以下だが**最悪162は100円超** → Fableが実走前にユーザー費用承認を取る(判断候補、区分A: 7-7の既判断ルール適用)。承認前に有料runを開始しない。
+
+
+## §実走記録(委任_06、2026-10-16、Mandatory STOP解除後の音声工程S6〜S11。事実のみ)
+
+- 実行: S6 plan(CLI Style/Prompt/backend指定なし、profile fx_20261016・source=default_new_run_fx_20261016・backend=speech_metadata_flash_lite・6 role sha全一致)→S7 scaffold(rc0、KP M2P0+A、m2_fallback=null、gloss NO_TARGETS)→S8 TTS Adv(rc0)→S9 TTS Std(rc0)→S10 assemble(rc0、style_profile_gate両level PASS)→S11 player。各stage前にstop_scope_check rc=0。再起動なし(各stage1回)。
+- 出力dir: `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01`(実行前に非存在確認)。試聴ページ: https://shimomura055.github.io/eigo-radio/user_test/coffee_fxpw_e2e_01/index.html(commit bb22ab0af、HTTP 200確認=初回200は3分後、Playwright実再生: audio 51/51再生OK・seek OK・console error 0・全編秒数一致[Adv 306.63 / Std 327.29]。証拠=`er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/audit/pages_play_evidence_06.json`)。Landing(articles_2026_0918.html)は20記事一覧で既存Coffee試聴ページも未掲載のため更新せず(既存方式踏襲)。
+- 全segment Style適用表: `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/audit/e2e_segment_style_table.json`(Adv: FULL_STORY x3 3a680861e4d9/PREVIEW 8862317ff766/KP_EN 9d905cfe6c04 x10/KP_EXPLANATION_EN 0518000694e3 x5。Std: FULL_STORY x3/SUPPORT_JA 625826c1187b x5/KP_EN x5[うち2件は同run内Adv生成音声のStore共用]/KP_JA_MEANING b12c8721eab8 x5)。K2 fallback 0件。
+- 費用: `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/audit/cost_by_stage_e2e_06.json`(集計script `er019_coffee_fxpw_cost_06.py`)。
+- 非STOPの確認事項: PASS_WITH_WARNING 事後試聴リスト3件(Adv KP3英語[一次ASR "Character-driven." / 二次 "Tariff driven." で確定]/KP3解説[一次 "caused by terrorists." / 二次 "Caused by tariffs." 確定]/KP5解説、全てSECONDARY_CONFIRMED。segment表上はKP3 phrase_repeatも同warningで計4 component)は聞き取り対象として試聴ページ末尾に列挙。OPEN-401(derived_from_advanced_sha CRLF偽陽性warning、観測のみ)を新規登録。
