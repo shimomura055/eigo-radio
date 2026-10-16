@@ -21712,3 +21712,9 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 - test: 新規93件+結合3件(er081 test 24件)。全体回帰(37ファイル)=956 PASS/6 FAIL(いずれも本件非起因: er020 fullseg `RegressionCorpusTest::test_recorded_candidates`=HEADでも失敗、er026 4件=未commit `er006_output/pronunciation_ledger_01/ledger.json`依存[HEAD ledgerではPASS]、er078 06c 1件=作業ツリーの未commit状態依存[HEAD worktreeではPASS])。詳細=`docs/pm/RESULT_PACKET_FXPW4.md`。
 - Status: `PHASE2_WIRED_CODE_COMMITTED_RUNTIME_EVIDENCE_PENDING`。`PRODUCTION_WIRED`ではない(Coffee正式実走のruntime evidence=ユーザー受入条件4・5・7が未取得、実走前にユーザーへ費用提示)。
 
+
+## 2026-10-16 FAMILY-X-COFFEE-E2E-COST-AND-DQI-FOLLOWUP-01 委任_05(Coffee正式E2E text工程実走+Open Item登録+DQI前向き観察台帳)
+- ユーザー原文保存: `docs/pm/delegation_log/2026-10-16_FAMILY-X-COFFEE-E2E-COST-AND-DQI-FOLLOWUP-01_USER.md`(7,671文字+見出し1行)。判断記録: Coffee E2E最大JPY205承認(原文§3)、K2代替音声=Coffee制作から切り分けOpen Item管理(原文§4、OPEN-399)、DQI今後10件前向き観察(原文§5、台帳`docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/dqi/DQI_PROSPECTIVE_OBS_01.md`)、Day 5・6保留維持(原文§6)。
+- Open Item登録(closeなし): OPEN-399(K2-FALLBACK-AUDIO-USER-REPORT-NOT-GUARANTEED-01)・OPEN-400(ER078-06C-TEST-DIRTY-TREE-DEPENDENCY-AND-LIVE-RESEARCH-CALL-01)。
+- Coffee正式E2E text工程を新out_dir `er019_output/coffee_prices/run_fxpw_01` で実走(Production正式runner `er019_family_x_entertainment_production_runner_01.py`、`--stage research`→`storyline_b3`→`writer`→`advanced`→`standard`、`--budget-jpy 100`、`TTS_EXECUTION_MODE=STANDARD`)。全stage retry/fallback発火0、IOL(Adv/Std)=2文・spec_ok、B3/R0/R1/R2=`gpt-6.1-sol`・chain_method=W-1。構造的Mandatory STOP(Standard生成直後、ERにscaffold/tts/assemble/playerなし)に到達して停止。text工程実費JPY72.64(cap 100内)。Review Queue: b1b/a2とも候補2件(非Blocking、Human Review待ち)。
+- Status: `COFFEE_E2E_TEXT_STAGE_DONE_MANDATORY_STOP`。TTS以降は未実施。`PRODUCTION_WIRED`ではない(音声・Assembly・試聴ページ・K2代替音声件数等のruntime evidence未取得)。詳細=`docs/pm/RESULT_PACKET_CEC5.md`。

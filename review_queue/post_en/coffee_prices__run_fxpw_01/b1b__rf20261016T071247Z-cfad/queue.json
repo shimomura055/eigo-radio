@@ -1,0 +1,250 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "coffee_prices__run_fxpw_01",
+  "article_level": "b1b",
+  "article_sha256": "4f13cbba34ccf6b68df6ce0c3136af2a137636e3afc61c6812afe146dc8eae99",
+  "ledger_sha256": "1e4c771ecb8d579d0ae45512fa3536ea1a7d13c2a001c38f55991e4dfa6946c9",
+  "run_id": "rf20261016T071247Z-cfad",
+  "timestamp": "2026-10-16T07:12:47+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "FXPW-COFFEE-E2E-01",
+  "sentence_count": 41,
+  "fact_count": 17,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6603,
+      "output_tokens": 878,
+      "cached_tokens": 0,
+      "cost_jpy": 0.175888,
+      "flag_count": 1,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6753,
+      "output_tokens": 550,
+      "cached_tokens": 0,
+      "cost_jpy": 0.152048,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6201,
+      "output_tokens": 96,
+      "cached_tokens": 0,
+      "cost_jpy": 0.336048,
+      "flag_count": 1,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6321,
+      "output_tokens": 96,
+      "cached_tokens": 0,
+      "cost_jpy": 0.341808,
+      "flag_count": 1,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "coffee_prices__run_fxpw_01__b1b__4f13cbba__rf20261016T071247Z-cfad__s18",
+      "article_id": "coffee_prices__run_fxpw_01",
+      "article_level": "b1b",
+      "article_sha256": "4f13cbba34ccf6b68df6ce0c3136af2a137636e3afc61c6812afe146dc8eae99",
+      "run_id": "rf20261016T071247Z-cfad",
+      "timestamp": "2026-10-16T07:12:47+00:00",
+      "sentence_id": "s18",
+      "sentence_text": "Before thinking about how to brew them, the question was whether there would be beans to brew at all.",
+      "context": {
+        "before": [
+          "Hopes that the next harvest would recover had also faded.",
+          "“Will there be enough beans?”"
+        ],
+        "after": [
+          "Turn the pages of the record, and we find that in February, before summer, the futures price for Arabica coffee in New York reached an all-time high.",
+          "This was not the price of ground coffee in stores, but the market price for trading coffee beans."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F07"
+      ],
+      "facts": [
+        {
+          "fact_id": "F07",
+          "text": "2024年のブラジルの干ばつは次期作の回復見通しを弱め、ブラジル産コーヒーの供給懸念を強めたとReutersは報じた。Reuters記事は、ベトナムの生産や輸出見通しにも懸念があると伝えた。\n  scope: ブラジル（主にアラビカ供給国）およびベトナム（ロブスタ主要生産国）\n  conditions: 市場参加者・ディーラーの見通しを含む報道\n  date_or_period: 2024年の天候と2025年作柄見通し\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  ambiguity_note: 天候が各品種の世界価格に与えた寄与率は示されていない。\n  notes_for_writer: 気象要因を供給懸念の一要素として記述し、価格上昇の唯一の原因とはしない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "不在断定",
+          "question": "“whether there would be beans to brew at all” は、台帳の供給懸念を超えて豆がまったく得られない可能性を示す表現ではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.32,
+          "type": "不在断定",
+          "fact_ids": [
+            "F07"
+          ],
+          "question": "“whether there would be beans to brew at all” は、台帳の供給懸念を超えて豆がまったく得られない可能性を示す表現ではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        }
+      ],
+      "confidence": 0.32
+    },
+    {
+      "issue_id": "coffee_prices__run_fxpw_01__b1b__4f13cbba__rf20261016T071247Z-cfad__s19",
+      "article_id": "coffee_prices__run_fxpw_01",
+      "article_level": "b1b",
+      "article_sha256": "4f13cbba34ccf6b68df6ce0c3136af2a137636e3afc61c6812afe146dc8eae99",
+      "run_id": "rf20261016T071247Z-cfad",
+      "timestamp": "2026-10-16T07:12:47+00:00",
+      "sentence_id": "s19",
+      "sentence_text": "Turn the pages of the record, and we find that in February, before summer, the futures price for Arabica coffee in New York reached an all-time high.",
+      "context": {
+        "before": [
+          "“Will there be enough beans?”",
+          "Before thinking about how to brew them, the question was whether there would be beans to brew at all."
+        ],
+        "after": [
+          "This was not the price of ground coffee in stores, but the market price for trading coffee beans.",
+          "The market alarm had already sounded."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F02"
+      ],
+      "facts": [
+        {
+          "fact_id": "F02",
+          "text": "2025年2月、ニューヨークのアラビカ先物は1ポンド当たり4.30米ドルを超える史上最高値を記録した。\n  scope: ICEニューヨーク市場のアラビカ先物\n  conditions: 先物価格の高値。小売価格ではない\n  numeric_value: 4.30米ドル/ポンド超 (numeric_scope: 2025年2月10日のニューヨーク市場アラビカ先物)\n  date_or_period: 2025年2月10日\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 「4.30米ドル超」は先物価格。記事は供給の限られた状況や市場参加者の見方も報じているが、この価格記録自体から単一原因を断定しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "数量時系列",
+          "question": "F02では「2025年2月10日」とされているニューヨークのアラビカ先物の史上最高値の記録時期について、s19では「2月に、夏前に」と表現されていますが、時期の認識に齟齬はありませんか。"
+        },
+        {
+          "type": "数量時系列",
+          "question": "F02では2025年2月にニューヨークのアラビカ先物が史上最高値を記録したとありますが、s19の「before summer」という表現は時期の順序として正確ですか？"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "gemini35fl",
+          "model_id": "gemini-3.5-flash-lite",
+          "condition": "A3",
+          "confidence": 0.3,
+          "type": "数量時系列",
+          "fact_ids": [
+            "F02"
+          ],
+          "question": "F02では「2025年2月10日」とされているニューヨークのアラビカ先物の史上最高値の記録時期について、s19では「2月に、夏前に」と表現されていますが、時期の認識に齟齬はありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/gemini35fl_A3.jsonl"
+        },
+        {
+          "model_key": "gemini35fl",
+          "model_id": "gemini-3.5-flash-lite",
+          "condition": "A4",
+          "confidence": 0.3,
+          "type": "数量時系列",
+          "fact_ids": [
+            "F02"
+          ],
+          "question": "F02では2025年2月にニューヨークのアラビカ先物が史上最高値を記録したとありますが、s19の「before summer」という表現は時期の順序として正確ですか？",
+          "severity": "重大",
+          "raw_flag_source": "raw/gemini35fl_A4.jsonl"
+        }
+      ],
+      "confidence": 0.3
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 13356,
+      "output_tokens": 1428,
+      "cost_jpy": 0.327936,
+      "a3_flag_count": 1,
+      "a4_flag_count": 0,
+      "unique_issue": 1,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "b1b",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 12522,
+      "output_tokens": 192,
+      "cost_jpy": 0.677856,
+      "a3_flag_count": 1,
+      "a4_flag_count": 1,
+      "unique_issue": 1,
+      "overlap_a3_a4": 1,
+      "zero_flag_article": 0
+    },
+    "_all": {
+      "article_level": "b1b",
+      "article_status": "OK",
+      "unique_issue": 2,
+      "cost_jpy": 1.005792,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}

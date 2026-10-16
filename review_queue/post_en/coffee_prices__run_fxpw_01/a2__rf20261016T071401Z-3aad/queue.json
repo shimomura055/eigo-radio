@@ -1,0 +1,250 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "coffee_prices__run_fxpw_01",
+  "article_level": "a2",
+  "article_sha256": "b836713dd23a67a658078abfdcc486f8f0ff8664e45676b5ac44a684a2a89ba4",
+  "ledger_sha256": "1e4c771ecb8d579d0ae45512fa3536ea1a7d13c2a001c38f55991e4dfa6946c9",
+  "run_id": "rf20261016T071401Z-3aad",
+  "timestamp": "2026-10-16T07:14:01+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "FXPW-COFFEE-E2E-01",
+  "sentence_count": 49,
+  "fact_count": 17,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6752,
+      "output_tokens": 1062,
+      "cached_tokens": 0,
+      "cost_jpy": 0.192992,
+      "flag_count": 1,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6902,
+      "output_tokens": 1352,
+      "cached_tokens": 0,
+      "cost_jpy": 0.218592,
+      "flag_count": 1,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6360,
+      "output_tokens": 84,
+      "cached_tokens": 4072,
+      "cost_jpy": 0.16297,
+      "flag_count": 1,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 6480,
+      "output_tokens": 4,
+      "cached_tokens": 4072,
+      "cost_jpy": 0.13673,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "coffee_prices__run_fxpw_01__a2__b836713d__rf20261016T071401Z-3aad__s18",
+      "article_id": "coffee_prices__run_fxpw_01",
+      "article_level": "a2",
+      "article_sha256": "b836713dd23a67a658078abfdcc486f8f0ff8664e45676b5ac44a684a2a89ba4",
+      "run_id": "rf20261016T071401Z-3aad",
+      "timestamp": "2026-10-16T07:14:01+00:00",
+      "sentence_id": "s18",
+      "sentence_text": "People had also stopped hoping that the next harvest would be better.",
+      "context": {
+        "before": [
+          "The investigation leads us to Brazil.",
+          "A drought was happening there."
+        ],
+        "after": [
+          "“Will there be enough beans?”",
+          "Before we think about how to brew them, we must ask if there will be any beans to brew at all."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F07"
+      ],
+      "facts": [
+        {
+          "fact_id": "F07",
+          "text": "2024年のブラジルの干ばつは次期作の回復見通しを弱め、ブラジル産コーヒーの供給懸念を強めたとReutersは報じた。Reuters記事は、ベトナムの生産や輸出見通しにも懸念があると伝えた。\n  scope: ブラジル（主にアラビカ供給国）およびベトナム（ロブスタ主要生産国）\n  conditions: 市場参加者・ディーラーの見通しを含む報道\n  date_or_period: 2024年の天候と2025年作柄見通し\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  ambiguity_note: 天候が各品種の世界価格に与えた寄与率は示されていない。\n  notes_for_writer: 気象要因を供給懸念の一要素として記述し、価格上昇の唯一の原因とはしない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「people had also stopped hoping」は、台帳の「次期作の回復見通しを弱め、供給懸念を強めた」より強い断定ではありませんか。"
+        },
+        {
+          "type": "その他",
+          "question": "「people had stopped hoping」と、Factの「次期作の回復見通しを弱めた」では、人々の期待についての断定の強さが異なるのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.36,
+          "type": "その他",
+          "fact_ids": [
+            "F07"
+          ],
+          "question": "「people had also stopped hoping」は、台帳の「次期作の回復見通しを弱め、供給懸念を強めた」より強い断定ではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        },
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.34,
+          "type": "その他",
+          "fact_ids": [
+            "F07"
+          ],
+          "question": "「people had stopped hoping」と、Factの「次期作の回復見通しを弱めた」では、人々の期待についての断定の強さが異なるのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.36
+    },
+    {
+      "issue_id": "coffee_prices__run_fxpw_01__a2__b836713d__rf20261016T071401Z-3aad__s29",
+      "article_id": "coffee_prices__run_fxpw_01",
+      "article_level": "a2",
+      "article_sha256": "b836713dd23a67a658078abfdcc486f8f0ff8664e45676b5ac44a684a2a89ba4",
+      "run_id": "rf20261016T071401Z-3aad",
+      "timestamp": "2026-10-16T07:14:01+00:00",
+      "sentence_id": "s29",
+      "sentence_text": "Reuters also reported that U.S. tariffs put in place during summer raised the price of the beans themselves.",
+      "context": {
+        "before": [
+          "No.",
+          "That would be deciding too soon, too."
+        ],
+        "after": [
+          "They did play a part.",
+          "But we must put events in the right order."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F09"
+      ],
+      "facts": [
+        {
+          "fact_id": "F09",
+          "text": "Reutersは、2025年夏に米国がコーヒー生産国を含む輸入品に課した関税が原料豆価格を押し上げたと報じた。同社記事によると、米国の小売コーヒー価格上昇の大部分は、それ以前の供給不足と生豆価格上昇によるもので、関税の影響は当時まだ供給網を通じて消費者に十分反映されていなかった。\n  scope: 米国の輸入コーヒーおよび米国消費者向け価格\n  conditions: 2025年12月19日付Reuters報道時点の評価。関税の市場影響と小売への転嫁時期を区別\n  date_or_period: 2025年夏～2025年12月の報道時点\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: Reutersが報じた専門家・業界関係者の評価。関税を小売価格上昇の唯一または主因と断定しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "Reutersが報じたのは「輸入品に課した関税が原料豆価格を押し上げた」ことですが、「beans themselves」の価格を直接引き上げたとする点や文脈がFactと一致しているか確認できませんか？"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "gemini35fl",
+          "model_id": "gemini-3.5-flash-lite",
+          "condition": "A3",
+          "confidence": 0.7,
+          "type": "その他",
+          "fact_ids": [
+            "F09"
+          ],
+          "question": "Reutersが報じたのは「輸入品に課した関税が原料豆価格を押し上げた」ことですが、「beans themselves」の価格を直接引き上げたとする点や文脈がFactと一致しているか確認できませんか？",
+          "severity": "重大",
+          "raw_flag_source": "raw/gemini35fl_A3.jsonl"
+        }
+      ],
+      "confidence": 0.7
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "a2",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 13654,
+      "output_tokens": 2414,
+      "cost_jpy": 0.411584,
+      "a3_flag_count": 1,
+      "a4_flag_count": 1,
+      "unique_issue": 1,
+      "overlap_a3_a4": 1,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "a2",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 12840,
+      "output_tokens": 88,
+      "cost_jpy": 0.2997,
+      "a3_flag_count": 1,
+      "a4_flag_count": 0,
+      "unique_issue": 1,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 0
+    },
+    "_all": {
+      "article_level": "a2",
+      "article_status": "OK",
+      "unique_issue": 2,
+      "cost_jpy": 0.711284,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}

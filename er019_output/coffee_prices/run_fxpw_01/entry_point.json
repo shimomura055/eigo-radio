@@ -1,0 +1,71 @@
+{
+  "runner": "er019_family_x_entertainment_production_runner_01.py",
+  "management_id": "NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01",
+  "runner_sha256": "6bcc8e4be62376fd70814e25dc519ed36733c589533b698cd66fdef9420a355b",
+  "b3_module_sha256": "93d0e31e735057ae874bbf27be48449fdd5bd5188e535b0a280eada9d314b758",
+  "ja_writer_module_sha256": "a81bf9ae1a20214bb50bcbbac8619fe4aa8c05520d83add13113752dcc36944e",
+  "annotation_contract_module_sha256": "5f4c725e0b332e028b8285389532dedc28e067f29caf6c63863b0be4f0017885",
+  "annotation_producer_module_sha256": "8899d0fa4a9b2274fcd79165b447ab02988d40f799cbca01e06df51a6f7155f2",
+  "risk_flagger_module_sha256": "ed3555c9da56ed651892858bdddef3624dd375bf9f0035bc1e10996604784810",
+  "review_queue_module_sha256": "ebe746f11181888ed286f05db17d40141c60aa6fca0b163f47fcd60c0aa3f7ed",
+  "args": {
+    "theme": "Current news/lifestyle topic: why coffee prices have risen so sharply and why a cup of coffee now costs more. Using only facts confirmed by web search (International Coffee Organization, USDA reports, Reuters/AP/Bloomberg-level reporting, company announcements), cover recent coffee bean price levels and changes (with dates, and whether arabica or robusta), the reported causes (weather and harvest conditions in producing countries, currency, supply and demand, tariffs if reported), and the reported effect on retail or cafe prices for consumers. Separate confirmed facts from forecasts, and do not present one cause as the only cause unless the source says so. Do not invent details and do not use the assistant's own prior knowledge.",
+    "slug": "coffee_prices",
+    "out_dir": "er019_output/coffee_prices/run_fxpw_01",
+    "source_note": "",
+    "run_label": "FXPW-COFFEE-E2E-01",
+    "budget_jpy": 100.0,
+    "stage": "standard",
+    "regenerate_stage": null,
+    "stop_after": "standard"
+  },
+  "timestamp": "2026-10-16T16:13:20",
+  "risk_flagger": {
+    "a2": {
+      "status": "OK",
+      "reason": null,
+      "rf_run_id": "rf20261016T071401Z-3aad",
+      "article_sha256": "b836713dd23a67a658078abfdcc486f8f0ff8664e45676b5ac44a684a2a89ba4",
+      "ledger_sha256": "1e4c771ecb8d579d0ae45512fa3536ea1a7d13c2a001c38f55991e4dfa6946c9",
+      "splitter_version": "en_split_v1",
+      "timestamp": "2026-10-16T07:14:01+00:00",
+      "producer": "deterministic_v2",
+      "run_label": "FXPW-COFFEE-E2E-01",
+      "issue_count": 2,
+      "conditions": [
+        {
+          "model_key": "luna",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.192992
+        },
+        {
+          "model_key": "luna",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.218592
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.16297
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 0,
+          "cost_jpy": 0.13673
+        }
+      ]
+    }
+  }
+}
