@@ -21727,3 +21727,6 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 
 ## 2026-10-16 FXPW 委任_07(Fable判定 PRODUCTION_WIRED)
 - 2026-10-16 FXPW 委任_07: Fable判定 PRODUCTION_WIRED(付帯a〜e: Coffee記事USER_LISTENING_PENDING・N1 Prompt SHA未記録[OPEN-402]・IOL Writer段STOP/K2 fallback/Std fallback分岐はtest evidenceのみ・OPEN-399/401非Blocking継続・原価超過[94.025/Batch換算87.497、70円+17.5]記録)。Opus条件Cは条件Aレビュー(OF-FXPW-R-01〜12)再利用(11-3 K、内容不変)。ユーザー試聴は未(PASS扱いしない)。判定整合: 重大NG=なし / 主因=なし / 是正対象=なし / STOP理由=なし / 提示=可(ユーザー試聴依頼)。詳細は`CURRENT_SPEC.md`の同日Fable判定行参照。
+
+## 2026-10-16 FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-ANALYSIS-01 委任_01/_02
+- 2026-10-16 FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-ANALYSIS-01 委任_01/_02: ユーザー指示(原文=docs/pm/delegation_log/2026-10-16_FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-ANALYSIS-01_USER.md、sha256 1a58d4d7…)によるread-only費用構造調査(JPY0)。Coffee run_fxpw_01のResearch 19.85/Ledger 25.14のうち88.9%(JPY40.00)がweb_search呼出手数料(25回×JPY1.6、token代4.98)。Ledger>Researchの主因=検索+3回、うち記事未採用F16/F17への反復検索11/24クエリ。案1(Fact単位探索上限+出典ロケータ引継ぎ、Ledger-5.1〜7.2)・案2(Select-then-Verify、純削減12.1〜19.2、構造変更・Opus条件A見込み)・案3(検索基盤置換、算出不可・推奨せず)。試算はmanual_substitution。採用はユーザー判断(D区分2件)。提案書=docs/research/FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-ANALYSIS-01/ANALYSIS_REPORT_01.md。実装・Trialなし。

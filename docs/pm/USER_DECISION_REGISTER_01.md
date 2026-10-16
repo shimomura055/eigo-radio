@@ -238,3 +238,8 @@
 
 - 2026-10-16 FXPW 委任_07: FXUD-1〜FXUD-8のStatus=配線実装済み・runtime evidence取得済み・**PRODUCTION_WIRED(Fable判定2026-10-16)**(旧『判断済み・未配線』『配線実装済み・runtime evidence待ち』の記述は履歴として保持。判定本文=`CURRENT_SPEC.md`同日Fable判定行)。
 - 未回答報告(2026-10-16 FXPW 委任_07、新規UDRではない・既定次工程): Coffee run_fxpw_01 `USER_LISTENING_PENDING`。試聴ページ=https://shimomura055.github.io/eigo-radio/user_test/coffee_fxpw_e2e_01/index.html (#std/#adv)。重点確認=Std Full Story体感速度(PD06+6%減速)/Adv Full Story速度/K2語頭語尾/P8日本語意味/P7英語解説/PASS_WITH_WARNING 3件(Adv KP3英語・KP3解説・KP5解説)。ユーザー試聴評価は未実施でありPASS扱いしない。
+
+### 2026-10-16 RLCO 委任_02追記(`FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-ANALYSIS-01`、UDR deferred・非Blocking。既存行は書き換えず追記のみ)
+
+- #101(新規・UDR deferred・非Blocking) 案1(Fact単位探索上限+出典ロケータ引継ぎ)を検証Trialへ進めるか — D区分、推奨=Fable所見は報告で提示、Trial約JPY150〜200(出典=docs/research/FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-ANALYSIS-01/ANALYSIS_REPORT_01.md §9、OPEN-403)。
+- #102(新規・UDR deferred・非Blocking) 案2(Select-then-Verify)を検証Trial・設計へ進めるか — D区分、構造変更、Trial約JPY55〜60+実装別途+Opus条件A(11-3)。出典=同上、OPEN-403。

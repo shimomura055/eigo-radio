@@ -1,0 +1,223 @@
+{
+  "assumptions": {
+    "usd_jpy": 160.0,
+    "prices_usd_per_1M": {
+      "gpt-6-luna.input": 0.1,
+      "gpt-6-luna.cached": 0.01,
+      "gpt-6-luna.output": 0.5,
+      "web_search_per_1000_calls": 10.0
+    }
+  },
+  "rows": [
+    {
+      "stage": "research",
+      "model_id": "gpt-6-luna",
+      "attempt_number": 1,
+      "success": true,
+      "web_search_call_count": 11,
+      "input_tokens": 92865,
+      "output_tokens": 9518,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 2924,
+      "jpy_input": 1.48584,
+      "jpy_output": 0.76144,
+      "jpy_web_search": 17.6,
+      "jpy_total": 19.84728
+    },
+    {
+      "stage": "ledger",
+      "model_id": "gpt-6-luna",
+      "attempt_number": 1,
+      "success": true,
+      "web_search_call_count": 14,
+      "input_tokens": 131645,
+      "output_tokens": 7857,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 5728,
+      "jpy_input": 2.10632,
+      "jpy_output": 0.62856,
+      "jpy_web_search": 22.400000000000002,
+      "jpy_total": 25.134880000000003
+    }
+  ],
+  "summary": {
+    "research": {
+      "web_search_call_count": 11,
+      "input_tokens": 92865,
+      "output_tokens": 9518,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 2924,
+      "jpy_input": 1.48584,
+      "jpy_output": 0.76144,
+      "jpy_web_search": 17.6,
+      "jpy_total": 19.84728,
+      "n_api_calls": 1,
+      "models": [
+        "gpt-6-luna"
+      ],
+      "cost_json_jpy": 19.847,
+      "diff_vs_cost_json": 0.0003,
+      "web_search_share": 0.8867713863058313,
+      "token_share": 0.11322861369416866
+    },
+    "ledger": {
+      "web_search_call_count": 14,
+      "input_tokens": 131645,
+      "output_tokens": 7857,
+      "cached_input_tokens": 0,
+      "reasoning_tokens": 5728,
+      "jpy_input": 2.10632,
+      "jpy_output": 0.62856,
+      "jpy_web_search": 22.400000000000002,
+      "jpy_total": 25.134880000000003,
+      "n_api_calls": 1,
+      "models": [
+        "gpt-6-luna"
+      ],
+      "cost_json_jpy": 25.135,
+      "diff_vs_cost_json": -0.0001,
+      "web_search_share": 0.8911918417752541,
+      "token_share": 0.10880815822474586
+    }
+  },
+  "total_research_plus_ledger": {
+    "jpy_total": 44.98216000000001,
+    "jpy_web_search": 40.0,
+    "jpy_input": 3.5921600000000002,
+    "jpy_output": 1.3900000000000001,
+    "web_search_call_count": 25,
+    "web_search_share": 0.8892414237110888,
+    "unit_fee_per_call_jpy": 1.6
+  },
+  "ledger_minus_research_jpy": 5.287600000000001,
+  "this_run_selection": {
+    "full_ledger_facts": 17,
+    "selected_facts": 4,
+    "selected_ids": [
+      "F02",
+      "F07",
+      "F09",
+      "F11"
+    ],
+    "verdict_counts": {
+      "VERIFIED": 13,
+      "AMBIGUOUS": 4,
+      "REJECTED": 0
+    },
+    "research_n_queries_logged": 16,
+    "research_prompt_chars": 1855,
+    "ledger_n_queries_logged": 24,
+    "ledger_prompt_chars": 15815
+  },
+  "compare_runs": {
+    "er019_output/coffee_prices/run_l3_01": {
+      "rows": [
+        {
+          "stage": "research",
+          "model_id": "gpt-6-luna",
+          "web_search_call_count": 12,
+          "input_tokens": 108496,
+          "output_tokens": 12806,
+          "jpy_web_search": 19.2,
+          "jpy_total": 21.960416000000002
+        },
+        {
+          "stage": "ledger",
+          "model_id": "gpt-6-luna",
+          "web_search_call_count": 14,
+          "input_tokens": 125972,
+          "output_tokens": 5804,
+          "jpy_web_search": 22.400000000000002,
+          "jpy_total": 24.879872
+        }
+      ],
+      "selection": {
+        "full_ledger_facts": 19,
+        "selected_facts": 5,
+        "selected_ids": [
+          "COFFEE-003",
+          "COFFEE-009",
+          "COFFEE-010",
+          "COFFEE-014",
+          "COFFEE-015"
+        ],
+        "verdict_counts": {
+          "VERIFIED": 18,
+          "AMBIGUOUS": 1,
+          "REJECTED": 0
+        },
+        "research_n_queries_logged": 15,
+        "research_prompt_chars": 1855,
+        "ledger_n_queries_logged": 20,
+        "ledger_prompt_chars": 18395
+      }
+    },
+    "er019_output/family_x_b3_production_wiring_01/run_01": {
+      "rows": [
+        {
+          "stage": "research",
+          "model_id": "gpt-5.6-luna",
+          "web_search_call_count": 7,
+          "input_tokens": 51175,
+          "output_tokens": 8520,
+          "jpy_web_search": 11.200000000000001,
+          "jpy_total": 14.473440000000002
+        },
+        {
+          "stage": "ledger",
+          "model_id": "gpt-5.6-luna",
+          "web_search_call_count": 7,
+          "input_tokens": 62012,
+          "output_tokens": 5635,
+          "jpy_web_search": 11.200000000000001,
+          "jpy_total": 14.266304000000002
+        }
+      ],
+      "selection": {
+        "full_ledger_facts": 15,
+        "selected_facts": 3,
+        "selected_ids": [
+          "MUSE-HC-006",
+          "MUSE-HC-010",
+          "MUSE-HC-012"
+        ],
+        "verdict_counts": {
+          "VERIFIED": 15,
+          "AMBIGUOUS": 0,
+          "REJECTED": 0
+        },
+        "research_n_queries_logged": 11,
+        "research_prompt_chars": 1146,
+        "ledger_n_queries_logged": 6,
+        "ledger_prompt_chars": 15406
+      }
+    },
+    "er019_output/meta/run_sol61_01": {
+      "rows": [],
+      "selection": {
+        "full_ledger_facts": 15,
+        "selected_facts": 3,
+        "selected_ids": [
+          "MUSE-HC-006",
+          "MUSE-HC-010",
+          "MUSE-HC-012"
+        ],
+        "verdict_counts": {
+          "VERIFIED": 15,
+          "AMBIGUOUS": 0,
+          "REJECTED": 0
+        },
+        "research_n_queries_logged": 11,
+        "research_prompt_chars": 1146,
+        "ledger_n_queries_logged": 6,
+        "ledger_prompt_chars": 15406
+      }
+    }
+  },
+  "ledger_minus_research_decomposition_jpy": {
+    "web_search_fee": 4.800000000000001,
+    "input_tokens": 0.6204800000000001,
+    "output_tokens": -0.13288,
+    "total": 5.287600000000001
+  }
+}
