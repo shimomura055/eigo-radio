@@ -37,6 +37,7 @@
 **追記索引(2026-10-16、AUW 統一ASR判定・全Section Production Wiring、委任_07 Closeout準備)**: `ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01`(ユーザー正式決定2026-10-15=`APPROVED_FOR_PRODUCTION`・branch `feat/auw-unified-asr-01`で実装済み・main merge待ち・`PRODUCTION_WIRED`未宣言)のユーザー原文の決定部分(逐語)・Fable採用の技術決定・Opus条件A/C所見の採否・費用実績・事故記録は本ファイル末尾`## ASR-TTS-UNIFIED-ALL-ROLES-PRODUCTION-WIRING-01`節。
 **追記索引(2026-10-16、FAMILY-C-JA-TTS-PRODUCTION-FIX-01 委任_02)**: ユーザー承認済み既存Production不具合是正(Family C日本語TTSの言語経路欠落+reuse_from旧音声紐づけ)。実装・test・0円検査まで完了、有料evidenceは条件付きSTOP(b)で未実施。本文は本ファイル末尾「## FAMILY-C-JA-TTS-PRODUCTION-FIX-01(2026-10-16)」。
 **追記索引(2026-10-16、FAMILY-X-COFFEE-KP-EN-EXPLANATION-PACING-TRIAL-01 委任_01)**: Coffee Advanced KP英語解説の速度/ポーズ改善Trial(固定8 Prompt x 5本=40音声、Trial専用dir、Production不変、VALIDATED+採否はUSER_DECISION_REQUIRED=ユーザー試聴待ち)の結果は本ファイル末尾`### FAMILY-X-COFFEE-KP-EN-EXPLANATION-PACING-TRIAL-01(2026-10-16)`節。
+**追記索引(2026-10-16、FAMILY-X-20261016-0900-USER-DECISION-RECORD-01)**: Family X最終ユーザー判断(2026-10-16 09:00 JST、Sol統一=`PRODUCTION_WIRED`維持、PD06/K2/P8[旧M2置換]/P7[旧P3置換]/M2P0/KP選定A方式/In One Line基本2文=`APPROVED_FOR_PRODUCTION`・未配線)の逐語記録は本ファイル末尾`## FAMILY-X-20261016-0900-USER-DECISION-RECORD-01`。
 
 **履歴全文(直前の記録・その前の記録、以下さらに前の記録、合計12件、原文のまま移動): `DECISION_LOG_HISTORY.md`の`## ER-PM-001_CHAIN`節参照**
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
@@ -21626,3 +21627,28 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 - 変更しないもの: 数値・否定の重大差(P1/最終gate)、A4・A7、disfluency/repetition gateのAND順、HR Lock、A-6(Secondary障害)挙動、length閾値の意味(正規化長への切替・新gate・音声長/文字数比gateなし)。`PRIMARY_LENGTH_EXCESS`は閾値なしのadditive警告。
 - 実音声(Azure STTのみ、TTS 0): EN正例=Primary水増し+Secondary救済でPASS_WITH_WARNING(adopted_from=secondary)、JA正例=同、EN負例(2clip連結)=NG_BOTH。JA正例は1回目の2clipが送り仮名差でJA許容集合外(長さ無関係)、clip差替で取得。費用JPY 1.42(Guardrail 2以内、Azure 5回)。
 - Status: `A3_FIXED_PENDING_FABLE`。`PRODUCTION_WIRED`でも`APPROVED_FOR_PRODUCTION`でもない。証跡=`er058_output/unified_all_roles_production_wiring_01/IMPLEMENTATION_13.md`・`RUNTIME_EVIDENCE_06.md`§19・`evidence_13/`。OPEN候補=OPEN-397/398。
+
+## FAMILY-X-20261016-0900-USER-DECISION-RECORD-01(2026-10-16 09:00 JST ユーザー最終判断、SSOT記録のみ。Status=`RECORDED`、新規採用=`APPROVED_FOR_PRODUCTION`・未配線、Sol統一=既存`PRODUCTION_WIRED`維持)
+
+- 出典(逐語): `docs/pm/delegation_log/2026-10-16_FAMILY-X-20261016-0900-USER-DECISION-RECORD-01_USER.md`(ユーザー指示原文)。委任文=同`_01.md`。以下は原文§1〜§4の逐語抜粋。
+- 目的(§1逐語): 「以下を**2026-10-16 09:00 JST時点の最終ユーザー判断**として正式記録する。これはCoffeeを代表記事として、Family X全体のProduction仕様を確定するための判断であり、Coffee限定仕様ではない。過去のTrial記録や旧決定と矛盾する場合は、承認の履歴を残しつつ、今回の判断を最新版として明確に管理する。」
+- 正式採用仕様(§2逐語):
+
+| 対象 | 最終ユーザー判断 |
+|---|---|
+| B3・日本語Writer R0→R1→R2 | すべて `gpt-6.1-sol`。既存`PRODUCTION_WIRED`を維持 |
+| Full Story TTS（Std／Adv） | **PD06** |
+| Key Phrase英語音声（Std／Adv） | **K2** |
+| Key Phrase日本語意味（Std） | **P8**。旧M2を置換 |
+| Key Phrase英語解説（Adv） | **P7**。旧P3を置換 |
+| KP候補供給 | **M2P0** |
+| KP選定優先順位 | **A方式（現行）を正式採用**。B／C方式は不採用 |
+| In One Line（Std／Adv） | **基本2文、必要な場合のみ3文**。旧1文Promptを改修する |
+
+  「これらは採用判断済みであり、再度ユーザーへ採否を求めない。」
+- 適用範囲(§3逐語): 対象Family=**Family X全体**/代表検証記事=Coffee/Coffeeはテーマのみ維持し、**Researchから音声完成まで全面新規生成**/旧Coffee記事の原稿・KP・音声を完成品として流用する前提にはしない/Family Zなど他Familyへの自動展開は対象外。
+- Status管理(§4逐語): 「既にWired済みのB3→R2 Sol統一：`PRODUCTION_WIRED`を維持。ただし実装・runtime証拠との整合を監査する。/新規採用・変更した仕様：`APPROVED_FOR_PRODUCTION`。/`PRODUCTION_WIRED`への変更は、正式初回経路・retry／fallback／regeneration・runtime evidence・test・SSOT・Git反映の全項目を確認した後のみ。/旧仕様は履歴として保持し、現行仕様と取り違えないようにする。」
+- 旧決定との関係(置換/維持/履歴): (1)Sol統一=維持(既存`PRODUCTION_WIRED`、監査中)。(2)Full Story: PD8→P8(Coffee限定、2026-10-12、`FAMILY-X-COFFEE-P8-FINAL-AUDIO-AND-PRODUCTION-WIRING-01`)は履歴化し、最新承認=PD06(Family X全体・Std/Adv)。(3)KP英語音声K2: Coffee限定承認(2026-10-12)の対象をFamily X全体へ拡大、未配線。(4)KP日本語意味: 旧M2(Coffee限定承認)を**置換**、新=P8(`STANDARD-KP-JA-TTS-STYLE-TRIAL-02`のP8、UDR #68/OPEN-367の採否=本判断で判断済み)。(5)Adv KP英語解説: 旧P3(2026-10-12ユーザー決定、OPEN-317/UDR #3)を**置換**、新=P7(`FAMILY-X-COFFEE-KP-EN-EXPLANATION-PACING-TRIAL-01`のp7)。(6)M2P0=2026-10-13決定の維持・対象明確化。(7)KP選定優先順位: A=現行維持を正式採用、B/C不採用(`FAMILY-X-KP-IDIOM-PRIORITY-ABC-TRIAL-01`の「最終判断はユーザー」を解消)。(8)In One Line: 旧1文Prompt(`er003_v1_n3_01_advanced_adaptation_generate.py:558`)と、既存DECIDED(CURRENT_SPEC「中心1文+補足2文程度」)・OPEN-299(未仕様化)に対し、本判断=基本2文(必要時のみ3文)として改修を承認。Coffee監査(UDR #69)の(a)は本判断で「B相当(2文方針を正式化)」の方向で判断済みとして扱う(厳密な(a)選択肢との対応は、ユーザー原文に選択肢記号がないためFable確認)。
+- Prompt正本照合結果(詳細・逐語は`CURRENT_SPEC.md`「Family X 最終ユーザー判断(2026-10-16 09:00 JST…)」小節): PD06=`er057_output/pace_trial_02/prompts/prompts_pace_02.md:74-82`のPD6(sha一致、名称対応付け)/K2=`er057_tone_trial_kp_ja_gen_01.py:38-39`+B_GUARD`:33`/P8=`er057_std_kp_ja_style_trial_02.py:25`(sha一致)/P7=`er080_coffee_kp_pacing_trial_01.py:35`のp7(同名の別P7[`er057_output/kp_en_explanation_style_trial_01`]あり、最新Trialを正本候補としてFable確認要)/In One Line改修Prompt=正本未特定(未作成)/M2P0・A方式=Prompt文字列なし(正本=既存DECISION_LOG)。推測補完・改変なし。
+- 監査との関係: FXWA監査(`FAMILY-X-WRITER-TRIAL-ADOPTION-AND-PRODUCTION-GAP-AUDIT-01`)は本記録を最新承認基準として扱う。本記録だけで未実装仕様を`PRODUCTION_WIRED`と判定しない。記録完了後はSTOPし、FXWA結果と合わせてProduction Wiring前の未解決事項を整理する。
+- 範囲: 記録・管理状態の更新のみ。Production code/Prompt変更0、新規Trial・有料API 0(JPY0)、Coffee再生成なし、Open Item close 0件。
