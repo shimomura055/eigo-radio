@@ -91,3 +91,49 @@
 **なし。** 根拠: (1)P7/PD06の正本(#96)、IOL文面(#97)、Hook廃止(#98)、一括整理(#99)、E1/R2既定化(#100)は2026-10-16ユーザー指示で判断済み。(2)Prompt正本はPD06/P7/P8-KP/K2/E1/R2すべて特定でき、sha256を再計算して突合済み。(3)ユーザーが明示deferした§7-A項目は含めていない。(4)IOL文面は既存承認仕様(2文基本/必要時3文)の実装で、新しい編集方針は不要と判断した(WIRING_DESIGN §C。ただし3文基準の具体文はFable確認事項)。(5)OPEN-343関連の既存UDR(OPEN-349/352/353)は判断済みで、Coffee実走で再発した場合のみ「同じ原因の失敗が再発」STOP(指示§10)。
 
 **Fableへの確認事項(UDRではない)**: IOL文数Validatorを警告のみとするか(推奨)、IOLのみ1回再生成するか(新retryのため非推奨)。Local Rewriteのラベル改修か構造保証+文数不変検査か(後者推奨、共有moduleへの影響が小さい)。いずれもWIRING_DESIGN §Cに比較を記載。
+
+
+## 4. 実走結果(委任_06、2026-10-16、⑩列の音声工程分。事実のみ・PRODUCTION_WIRED判定はFable)
+
+run=`er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01`(audio)+`er019_output/coffee_prices/run_fxpw_01`(text)。text工程(X01〜X10,X33)は委任_05の証拠を再測定せず引用(reuse)。音声工程(X11〜X32)は本委任の正式Production経路での実走値。
+
+| 行 | ⑩ 結果 | 証拠path |
+|---|---|---|
+| X01 | PASS(委任_05、reuse) | `er019_output/coffee_prices/run_fxpw_01/research_ledger/runtime_evidence.json` |
+| X02 | PASS(委任_05、reuse) | `er019_output/coffee_prices/run_fxpw_01/research_ledger/` |
+| X03 | PASS(委任_05、reuse。RF b1b/a2の4条件ずつ実行、cost.json risk_flag.*) | `er019_output/coffee_prices/run_fxpw_01/cost.json` |
+| X04 | PASS(委任_05、reuse。model gpt-6.1-sol) | `er019_output/coffee_prices/run_fxpw_01/storyline_b3/runtime_evidence.json` |
+| X05 | PASS(委任_05、reuse) | `er019_output/coffee_prices/run_fxpw_01/storyline_b3/` |
+| X06 | PASS(委任_05、reuse。R0 gpt-6.1-sol、chain_method=W-1) | `er019_output/coffee_prices/run_fxpw_01/ja_writer/runtime_evidence.json` |
+| X07 | PASS(委任_05、reuse。R1/R2 gpt-6.1-sol) | `er019_output/coffee_prices/run_fxpw_01/ja_writer/runtime_evidence.json` |
+| X08 | PASS(委任_05、reuse) | `er019_output/coffee_prices/run_fxpw_01/ja_writer/` |
+| X09 | PASS(委任_05、reuse。model gpt-6-luna) | `er019_output/coffee_prices/run_fxpw_01/writer_run_summary.json advanced` |
+| X10 | PASS(委任_05、reuse。model gpt-6-luna)。注: a2 derived_from_advanced_sha256 は text-hash(LF)とfile-hash(CRLF)の不一致で観測のみwarning発火(下記N-A) | `er019_output/coffee_prices/run_fxpw_01/a2/audit/derived_from_advanced_sha256.json` |
+| X11 | PASS(Adv 2文/Std 2文、spec_ok=true。音声in_one_line両level ASR PASS) | `er019_output/coffee_prices/run_fxpw_01/writer_run_summary.json、er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/*/parts.json` |
+| X12 | PASS(kp_supply=m2、m2_fallback=null、両level KP5件) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/*/key_phrases/key_phrases_db_hybrid/m2_supply_report.json、scaffold_run_summary.json` |
+| X13 | PASS(A方式=M2P0供給からの選定、5件ずつ) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/*/key_phrases/key_phrases_db_hybrid/m2_supply_report.json selected_rows` |
+| X14 | PASS(gloss_alignment_status=NO_TARGETS、HRなし、flag=ON) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/scaffold_run_summary.json` |
+| X15 | PASS(Adv KP解説5件、各15語以内・1文、qa.passed=true) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/b1b/audit/tts_generation_results.json key_phrase_explanations_text` |
+| X16 | PASS(Preview/Comment1-4 text生成OK。Std Comment4は『最後に』2文) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/*/b1_support_texts.json、a2_support_texts.json` |
+| X17 | PASS(Std japanese_title segment OK: 『コーヒー値上がり事件、値札の時計を巻き戻せ！』) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/a2/audit/tts_generation_results.json segments.japanese_title` |
+| X18 | PASS(Hook Side Output segment/出力なし) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/*/segment_plan.json` |
+| X19 | PASS(CLI指定なしでprofile fx_20261016、source=default_new_run_fx_20261016、backend=speech_metadata_flash_lite) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/audit/style_profile.json、entry_point.json` |
+| X20 | PASS(両level FULL_STORY x3 base_sha 3a680861e4d9=PD06、expected==style_base) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/audit/e2e_segment_style_table.json` |
+| X21 | PASS(Std Full Story slowdown_pct_actual 5.977/5.988/5.981、dst/src≒1.0596、減速後ASR PASS) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/a2/audit/tts_generation_results.json` |
+| X22 | PASS(KP_EN base_sha 9d905cfe6c04、K2 Store key v2_margin030+k2.9d905cfe6c04、fallback_used全False、instruction_path=primary x15) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/*/audit/tts_generation_results.json` |
+| X23 | PASS(Std KP日本語意味5件 KP_JA_MEANING base_sha b12c8721eab8) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/audit/e2e_segment_style_table.json` |
+| X24 | PASS(Adv KP解説5件 KP_EXPLANATION_EN base_sha 0518000694e3=P7) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/audit/e2e_segment_style_table.json` |
+| X25 | PASS(Adv preview PREVIEW base_sha 8862317ff766=E1) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/audit/e2e_segment_style_table.json` |
+| X26 | PASS(Std preview+comment1-4 SUPPORT_JA base_sha 625826c1187b=R2) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/audit/e2e_segment_style_table.json` |
+| X27 | PASS(全segment asr_judgement state付き。PASS_WITH_WARNING 4件=SECONDARY_CONFIRMED、NG/HR 0) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/*/audit/pass_with_warning_listening_list.json` |
+| X28 | PASS(retry: Adv Full Story part1 1回[TRUE_CONTENT_MISMATCH→PASS]のみ。Local Rewrite/minimal_fallback 0、review_lock RESOLVED) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/b1b/audit/tts_generation_results.json、review_lock_state.json` |
+| X29 | PASS(shell 9+1音声Store再利用[固定音声のみ]、KP英語は新規生成+同run内Std/Adv共用2件[bean shortages/shock your wallet、旧run音声ではない]、Full Story等はStore不使用) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/*/audit/tts_generation_results.json shared_narration/key_phrases` |
+| X30 | PASS(style_profile_gate両level PASS・blocked[]・human_approved[]、assemble OK) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/*/audit/style_profile_gate.json、run_summary_assemble.json` |
+| X31 | PASS(player生成+Pages公開HTTP 200・実再生確認は下記実行記録参照) | `https://shimomura055.github.io/eigo-radio/user_test/coffee_fxpw_e2e_01/index.html` |
+| X32 | PASS(構造: text Mandatory STOP→ユーザー承認で解除。audio budget 100円内[実費21.383]、STOP sentinel なし) | `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/audit/cost_by_stage_e2e_06.json` |
+| X33 | PASS(委任_05 reuse。B3/R0/R1/R2 model_id=gpt-6.1-sol、W-1) | `er019_output/coffee_prices/run_fxpw_01/ja_writer/runtime_evidence.json、storyline_b3/runtime_evidence.json` |
+
+集計: PASS 33 / FAIL 0 / 未取得 0(ただしX31の実再生確認とPASS以外の事項は下記・RESULT_PACKET_FXPW6を参照。ユーザー試聴評価は未実施でPASS扱いしない)。
+
+注記:
+- N-A(新規観測、改修なし): `a2/audit/derived_from_advanced_sha256.json`(`er012`のsha256_text=LF正規化text hash)と`er019_family_x_audio_production_runner_01.py:2398-2413 _derived_sha_warning`(file_sha256=Windows CRLF書込みbytes hash)の比較不一致により、観測のみwarning `a2_derived_from_advanced_sha_mismatch` が発火。LF正規化後のb1b/article.md sha(2e58952f33a3…)は記録値と一致=偽陽性。判定・STOPには不使用(コード上『観測のみ』)。OPEN-401として登録。

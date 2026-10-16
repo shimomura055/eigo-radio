@@ -21718,3 +21718,9 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 - Open Item登録(closeなし): OPEN-399(K2-FALLBACK-AUDIO-USER-REPORT-NOT-GUARANTEED-01)・OPEN-400(ER078-06C-TEST-DIRTY-TREE-DEPENDENCY-AND-LIVE-RESEARCH-CALL-01)。
 - Coffee正式E2E text工程を新out_dir `er019_output/coffee_prices/run_fxpw_01` で実走(Production正式runner `er019_family_x_entertainment_production_runner_01.py`、`--stage research`→`storyline_b3`→`writer`→`advanced`→`standard`、`--budget-jpy 100`、`TTS_EXECUTION_MODE=STANDARD`)。全stage retry/fallback発火0、IOL(Adv/Std)=2文・spec_ok、B3/R0/R1/R2=`gpt-6.1-sol`・chain_method=W-1。構造的Mandatory STOP(Standard生成直後、ERにscaffold/tts/assemble/playerなし)に到達して停止。text工程実費JPY72.64(cap 100内)。Review Queue: b1b/a2とも候補2件(非Blocking、Human Review待ち)。
 - Status: `COFFEE_E2E_TEXT_STAGE_DONE_MANDATORY_STOP`。TTS以降は未実施。`PRODUCTION_WIRED`ではない(音声・Assembly・試聴ページ・K2代替音声件数等のruntime evidence未取得)。詳細=`docs/pm/RESULT_PACKET_CEC5.md`。
+
+
+## 2026-10-16 FXPW 委任_06(Coffee正式E2E 音声工程実走)
+- ユーザー正式判断: Coffee `er019_output/coffee_prices/run_fxpw_01` のMandatory STOP解除・音声化進行を承認(原文=`docs/pm/delegation_log/2026-10-16_FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01_AUDIO-RESUME_USER.md`、sha256 16e3f1c9443d45597e9c92168e880fd973dbe11a12c741cd63da1f1b0015381f)。承認は既存記事の音声化のみで、新仕様・改善Trialの採用を含まない。ResearchからStandard調整までの既存成果は再生成しない。
+- 実走結果(S6〜S11): 既定profile fx_20261016がCLI指定なしで自動適用→scaffold(KP M2P0+A方式、m2_fallback=null、gloss HRなし)→TTS Adv→TTS Std→assemble(M3/Audio Validation Gate PASS)→player。全Section Style適用PASS・K2代替音声0件・IOL 2文/2文・AUW NG 0件。費用=text 72.642+audio 21.383=94.025円(承認205円内)。試聴ページ=https://shimomura055.github.io/eigo-radio/user_test/coffee_fxpw_e2e_01/index.html。
+- `PRODUCTION_WIRED`判定はFableが行う(本記録は事実のみ)。ユーザー試聴評価は未実施・PASS扱いしない。詳細=`docs/research/FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01/COFFEE_E2E_PLAN_01.md`末尾「§実走記録(委任_06)」・`docs/research/FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01/SPEC_WIRING_MATRIX_01.md` §4。

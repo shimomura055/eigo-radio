@@ -1,0 +1,57 @@
+{
+  "attempt_number": 1,
+  "route": "custom_7f3c0b8a",
+  "segment_id": "kp3_explanation_en",
+  "theme_id": "coffee_prices__run_fxpw_01",
+  "level": "b1b",
+  "source_out_path": "er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/b1b/narration/kp3_explanation_en.wav",
+  "saved_at": "2026-10-16T17:37:22",
+  "sha256": "f1db436d7a97267b7e5895654b9f9c506016da9d618857fd3180875037009a13",
+  "loop_attempt_index": 1,
+  "max_attempts": 3,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "Speak clearly at a slightly relaxed, natural pace. Keep a steady rhythm, with brief transitions between phrases and no drawn-out pauses.",
+  "asr_text": "caused by terrorists.",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": true,
+  "disfluency_evidence": {
+    "flagged": false,
+    "repeats": [],
+    "word_count": 3,
+    "transcript": "Caused  by  tariffs.",
+    "method": "faster_whisper_small_local_verbatim"
+  },
+  "repetition_qa_checked": false,
+  "repetition_qa_evidence": null,
+  "scg_info": null,
+  "asr_prompt_applied": true,
+  "non_latin_cascade_enabled": true,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "caused by terrorists.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "entity_like_source": []
+    },
+    {
+      "step": "secondary_1",
+      "provider": "azure",
+      "text": "Caused by tariffs.",
+      "classification": "NORMALIZED_MATCH",
+      "phrase_list_used": false,
+      "cached": false,
+      "unified_judge_state": "PASS_WITH_WARNING",
+      "entity_like_source": []
+    }
+  ]
+}

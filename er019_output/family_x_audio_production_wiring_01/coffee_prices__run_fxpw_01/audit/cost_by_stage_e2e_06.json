@@ -1,0 +1,66 @@
+{
+ "usd_jpy": 160.0,
+ "audio_stages": {
+  "S7_scaffold(KP LLM/gloss/explanation/support text) | LLM(openai luna)": {
+   "jpy": 2.358,
+   "batch_equiv_jpy": 2.358,
+   "calls": 16
+  },
+  "S8_tts_adv(b1b) | ASR(azure secondary)": {
+   "jpy": 2.32,
+   "batch_equiv_jpy": 2.32,
+   "calls": 4
+  },
+  "S8_tts_adv(b1b) | ASR(openai)": {
+   "jpy": 1.487,
+   "batch_equiv_jpy": 1.487,
+   "calls": 21
+  },
+  "S8_tts_adv(b1b) | LLM(openai luna)": {
+   "jpy": 0.026,
+   "batch_equiv_jpy": 0.026,
+   "calls": 1
+  },
+  "S8_tts_adv(b1b) | TTS(gemini)": {
+   "jpy": 7.005,
+   "batch_equiv_jpy": 3.503,
+   "calls": 21
+  },
+  "S9_tts_std(a2) | ASR(openai)": {
+   "jpy": 2.137,
+   "batch_equiv_jpy": 2.137,
+   "calls": 23
+  },
+  "S9_tts_std(a2) | TTS(gemini)": {
+   "jpy": 6.05,
+   "batch_equiv_jpy": 3.025,
+   "calls": 19
+  }
+ },
+ "audio_total_jpy": 21.383,
+ "audio_total_batch_equiv_jpy": 14.855,
+ "text_total_jpy": 72.642,
+ "text_by_stage_jpy": {
+  "research": 19.847,
+  "ledger": 25.135,
+  "storyline_b3": 10.937,
+  "w1_r0": 6.841,
+  "w1_astra_r1": 3.175,
+  "w1_astra_r2": 3.837,
+  "advanced": 0.326,
+  "risk_flag.luna.A3.b1b": 0.176,
+  "risk_flag.luna.A4.b1b": 0.152,
+  "risk_flag.gemini35fl.A3.b1b": 0.336,
+  "risk_flag.gemini35fl.A4.b1b": 0.342,
+  "standard": 0.476,
+  "risk_flag.luna.A3.a2": 0.193,
+  "risk_flag.luna.A4.a2": 0.219,
+  "risk_flag.gemini35fl.A3.a2": 0.339,
+  "risk_flag.gemini35fl.A4.a2": 0.313
+ },
+ "e2e_total_jpy": 94.025,
+ "e2e_total_batch_equiv_jpy": 87.497,
+ "approved_cap_jpy": 205,
+ "remaining_vs_cap_jpy": 110.975,
+ "batch_basis": "Gemini TTS token量 x pricing_snapshot.json Batch tier(gemini-3.8-flash-lite-tts input 0.25/output 3.0 USD per Mtok, Standard比50%)。ASR/OpenAI LLM/Azure/Research等は正式Batch単価なし=実測のまま。manual_substitution(計算値)"
+}
