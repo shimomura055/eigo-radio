@@ -29,7 +29,8 @@ APPROVED_FOR_PRODUCTION/PRODUCTION_WIRED/USER_DECISION_REQUIRED等]、
 当初目的・要求された最終状態/実際に生成・残存した最終成果物(失敗終了時の最終
 成果物を含む)/証拠(ファイル:行・観測値)/目的要件との一致・不一致(項目ごと)/
 最終受入判定と理由。要求を満たさない成果物が残存、または証拠なしならACCEPTED
-不可。2026-10-15決定②、REGISTER #76]を1ブロックで冒頭に記す
+不可。2026-10-15決定②、REGISTER #76。直後に判定整合行[重大NG/主因/是正対象/
+STOP理由/提示、PM_GOVERNANCE 27-1]を1行]を1ブロックで冒頭に記す
 [PM_GOVERNANCE 11-6]。**
 **費用/日次: 当日(JST)既使用JPY<y>(出典: RESULT_PACKET|LEDGER|script)/
 残JPY<1,000-y>/本委任見積JPY<e>(根拠: call数×単価、上限=Guardrail)/
@@ -105,6 +106,8 @@ import実行される事故防止(CONSOLIDATION-124)。)
 
 (RESULT_PACKETへ記載すべき項目を列挙する。)
 
+Sonnetはユーザー判断の候補を`判断候補`と表記する(`USER_DECISION_REQUIRED`の
+ラベルはFableだけが付ける。PM_GOVERNANCE 27-3)。
 ユーザー向け最終報告は固定5節順(PM_GOVERNANCE 9-0、2026-10-05): 1結論(完了/
 停止/Production反映状況/次へ進める条件)、2ユーザー判断が必要なこと(決めること/
 背景/選択肢と影響/推奨と根拠、通常の技術作業は上げない)、3重要な問題・残作業

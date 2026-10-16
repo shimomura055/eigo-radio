@@ -21688,3 +21688,19 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 - 成果物(`docs/research/FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01/`): `SPEC_WIRING_MATRIX_01.md`(33行×10列、FXWA既知10件+新規N1〜N8、新規UDR候補なし)/`VALIDATED_TRIAGE_01.md`(A=3[deferred]・B=12・C=11)/`WIRING_DESIGN_01.md`(新profile`fx_20261016`・K2用Store key[`key_phrase_english_component_k2`+version`v2_margin030+k2.9d905cfe6c04`]・IOL新Prompt文面と3文基準・M3/M4のKP拡張・Hook廃止はSSOTのみ・test計画・変更ファイル約+320/-35行)/`COFFEE_E2E_PLAN_01.md`(12工程→S0〜S11+CP-A〜F、費用期待約JPY96/最悪約162)。
 - 新規発見(開発側設計事項・ユーザー判断不要): N1 英語化/IOL/Stdの送信Prompt shaが未記録(IOL evidence破棄)/N2 `ER:98`は既存Ledgerを黙って再利用(新out_dir必須)/N3 M3/M4はKP roleを走査しない/N4 `generate_key_phrase_component_verified`にstyle引数なし/N5 Store keyにsha無し・`qa_evidence`に`fallback_used`無し/N6 M3違反名がP8固定/N7 legacy backendでprofile未記録/N8 Local Rewriteの局所性検査はtoken比較で句読点のみの文結合を検出しない。
 - 次: Fable照合→Opus条件A独立レビュー→Phase 2実装→test全PASS→費用承認(見積100円超は7-7でユーザー判断)→Coffee E2E(CP-A〜F)。
+
+## PM-20261016-AUW-CLOSEOUT-DQI-PRODUCTION-01 委任_01(2026-10-16): ユーザー最終判断の保存・DQIパッケージP実装・机上評価(JPY0、LLM呼出0)
+
+- ユーザー指示原文: `docs/pm/delegation_log/2026-10-16_PM-20261016-AUW-CLOSEOUT-DQI-PRODUCTION-01_USER.md`(11,076文字)。委任文=同`_01.md`(+`_01_check.json`: check_delegation_prompt=FAIL[理由=『事前指定Grep一覧+追記位置・更新位置の手順』見出し欠落のみ。記録のみ]。固定ブロックE-1/D-1/G-1/F-1は検出)。
+- ユーザー判断(2026-10-16、既存REGISTER/決定の重複登録なし): (A)AUW=`PRODUCTION_WIRED`正式承認、再Trial・再実装・追加改修なし、Family Yは将来/(B)Family Z 3件の予防対応不要/(C)開発対象はX・Z・将来Yのみ、A/B/C開発停止/(2)DQIパッケージP=`APPROVED_FOR_PRODUCTION`(REGISTER #88〜#91は判断済み=採用。#80〜#82も統合済みで同扱い)。#85・#93〜#95は記録のみ(§1-A/§7、Fable読み取り)、#92はFamily C開発停止で判断不要(§1-C)。
+- 実装(未commit、Fable受入・commit待ち): `docs/pm/PM_GOVERNANCE.md`27節新設+12-13(09-27)/12-13(10-12)へ参照追記+変更履歴/`.claude/agents/sandwich-pm.md`手順4-2へ判定整合行・UDR仕分け・Family制限/`.claude/agents/sonnet-worker.md`(判断候補表記・判定整合行・Family制限)/`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`(2か所)/`docs/pm/tools/check_decision_quality.py`+`check_decision_quality_test_01.py`(17 test PASS)。提案書からの設計差分=下記。
+- 提案書(`DQI_PROPOSAL_01.md`§3・§9)からの差分: (1)P2の統合記載先は12-13重複2節の統合ではなく新設27-3を正本とし、12-13の2節には参照のみ追記(番号付け替えが既存参照を壊すため)/(2)P3の「提示」4値と例外K1〜K6はPM_GOVERNANCE 27-4へ集約/(3)P4のValidatorは提案書の『既存check_delegation_prompt.pyへの別関数追加を先に再検討』に対し、責務・既存testへの影響から新規1本とした(INVENTORY§5の結論どおり)。(4)`OPUS_INDEPENDENT_REVIEW_BLOCK.md`への1行追加(P5)は本委任では未実施(27-6に記載のみ。Fable判断)。
+- 机上評価: `docs/research/PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01/dqi/DQI_DESK_EVAL_01.md`。評価対象1〜6すべて机上基準を満たす(E5=8/10、498本のRESULT_PACKETでwarn 10本=2.0%)。ただし基準は結果閲覧後に文書化、Validator検出語を誤検出観測に基づき1回調整、正解を知る評価者による机上評価で未知ケースの有効性は未実証。不合格なし、追加Trial・追加改修なし。未知ケース評価は案a(JPY0前向き観察)/案b(有料)を提示のみ。Day 5〜6の保留は維持。
+- Status: `DQI_P_IMPLEMENTED_DESK_EVALUATED`。`PRODUCTION_WIRED`はFable独立受入後。AUW Closeout=`PRODUCTION_WIRED`(ユーザー正式承認)はCURRENT_SPECへ追記(本管理ID委任_02適用)。
+
+## PM-20261016-AUW-CLOSEOUT-DQI-PRODUCTION-01 委任_02(2026-10-16): SSOT適用・commit・push(JPY0、LLM呼出0)
+
+- 委任_01のFable受入=`CONDITIONALLY_ACCEPTED`(判定整合: 重大NG=なし)。本委任でSSOT_APPEND_DRAFT_01の全項目を追記のみで適用(CURRENT_SPEC 2か所/DECISION_LOG/OPEN_ITEMS 9行行内追記/USER_DECISION_REGISTER 1ブロック+#72・#81備考/REPORT_LEDGER 1行)。既存行の削除・書換え0。
+- Fable確認2点の確定: (1)OPEN-389=A2/B1 crosslevel経路(Family A/B系)のため27-7により凍結(closeではない、拡大判断の再提示もしない)。(2)REGISTER #72=変更なし(原文§3『Day 5〜6の保留は維持する』を備考へ追記のみ)。#81=`| 81 |`表行は無く、#80〜#82の箇条書き行(#81)に「#88へ統合・判断済み」を行内追記。
+- 未実証事項(開示): 未知ケースに対するDQIの有効性、運用コスト。次=案a(JPY0の前向き観察)の提案のみ(実施はFable/ユーザー判断)。
+- Status: `DQI_P_SSOT_APPLIED_COMMITTED`(到達上限)。`PRODUCTION_WIRED`の判定はFable独立受入後であり本委任では記載しない。
