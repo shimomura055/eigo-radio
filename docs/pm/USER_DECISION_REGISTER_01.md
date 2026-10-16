@@ -213,3 +213,15 @@
 - #100(新規・USER_DECISION_REQUIRED) **E1/R2のFamily X既定化** E1(Adv Preview音声Style)とR2(Std日本語Preview/Comment音声Style)を、Coffee限定承認(OPEN-298/300)からFamily X全体の既定へ拡げるか。推奨=既定化(ただしユーザー原文に無いため要確認)。理由=09:00の表にE1・R2は無く、CS:1244の拡大文は記録者の解釈。要約で承認範囲を拡げない。影響=Family X共通仕様の完成・取り違え防止。 Blocking=いいえ(Coffee再制作はCoffee限定承認のまま可)。
 - 備考: FXUD-1〜8は「判断済み・未配線」のまま。配線Blocking最終版=`docs/research/FAMILY-X-WRITER-TRIAL-ADOPTION-AND-PRODUCTION-GAP-AUDIT-01/AUDIT_REPORT_01.md`§14-6(IOL 2文化[Prompt承認→Adv/Std/Local Rewriteラベル改修/文数保持test]/PD06・K2・P8・P7配線[Master Store新style id・version、P8名称衝突回避]/既定profile化[4仕様のみ]/OPEN-343 triage/実走Gate項目)。Std 6%減速併用の既定慣行採用・PD06等の既定profile化はFable判断(B)。
 - 本追記後: 追加#96〜#100はすべてUSER_DECISION_REQUIRED。ブロックするのは#96・#97(配線前/設計後)と既存の#72・#81。全件数は100件。
+
+### 2026-10-16 FXPW 委任_01 判断反映(`FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01`、ユーザー正式指示。#96〜#100を判断済みへ。既存行は書き換えず追記のみ)
+
+原文(全文)=`docs/pm/delegation_log/2026-10-16_FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01_USER.md`。全件ユーザー本人の原文に基づく(Fableの推奨による代理判断ではない)。
+
+- #96 **判断済み(Yes)**: P7の正本=`er080_coffee_kp_pacing_trial_01.py`のp7、PD06=Pace Trial-02の`PD6`。原文『P7＝`er080_coffee_kp_pacing_trial_01.py`のp7』『PD06＝`er057_output/pace_trial_02/prompts/prompts_pace_02.md`のPD6』(併せて表『Full Story TTS（Std／Adv） | **PD06**：聞き手への語りかけ＋落ち着き』『KP英語解説（Adv） | **P7**：速度・リズムのバランス型。旧P3を置換』)。
+- #97 **ユーザー承認不要・設計して報告(判断済み)**: In One Line 2文Prompt文面の承認は不要。原文『具体的Prompt文面と3文にする基準は設計して報告する。これは既存承認仕様の実装であり、文数方針を再度Trialに戻さない。』『ただし、新しい編集方針を追加する必要が生じた場合は、ユーザー判断を要する。』設計案=`docs/research/FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01/WIRING_DESIGN_01.md`§C(新編集方針が必要と判断した箇所なし、Fable確認事項3点)。
+- #98 **判断済み=廃止**: Hook Side Output。原文『Hook Side Output | **廃止**。R2 Titleを正式表示する仕様は維持』『Hook Side Outputはユーザー正式判断により廃止し、OPEN-176等を更新する。』
+- #99 **判断済み=今回は個別採否を行わず、A/B/C分類でSSOT記録。Aはdeferred**: 原文『今回、ユーザーは**個別の採否判断を行わない**と明示した。』『したがって、Aはdeferredとして管理し、今回のProduction作業を妨げない。ただし、勝手に採用・不採用へ変更しない。』『この整理のための追加Trial・個別質問は禁止。』分類結果=`docs/research/FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01/VALIDATED_TRIAGE_01.md`(A=3[OPEN-56/59、OPEN-243 M1(b)、OPEN-316(c)]/B=12/C=11)。
+- #100 **判断済み=採用**: E1/R2のFamily X既定化。原文『Advanced Preview音声 | **E1**』『Standard日本語Preview／Comment音声 | **R2**』『**適用範囲：Family X全体。Family Z等への拡大は対象外。**』
+- 備考(FXUD-1〜FXUD-8): Status『判断済み・未配線』を維持。本管理ID`FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01`で配線する(設計=`docs/research/FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01/WIRING_DESIGN_01.md`、Opus条件Aレビュー前)。付随判断: 『Standard Full Storyの既存6%減速は維持し、PD06との併用を実証する。』
+- 本追記後: #96〜#100はすべて判断済み。ブロックするのは既存の#72・#81のみ(#96・#97のBlockingは解消)。新規USER_DECISION_REQUIRED=0件(`docs/research/FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01/SPEC_WIRING_MATRIX_01.md`§3)。
