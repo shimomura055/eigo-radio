@@ -96,7 +96,60 @@ E1_TEXT = "calm, composed news anchor; steady and unhurried, clear and natural."
 E1_SHA256 = "8862317ff76693ff519ddfa956260a8cce2d540763333b54096b63161d84f641"
 E1_LENGTH = 68
 
+# ------------------------------------------------------------
+# FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01 委任_02A(2026-10-16、ユーザー正式承認済み6仕様の既定化)
+# 新既定profile "fx_20261016" 用の4定数。全て承認済み正本からの逐語コピー(定数とsha/長さは_verify_constantsがimport時に検証、
+# さらにソース突合testが正本ファイルと逐語比較する)。数値WPM・速度倍率を含まない。
+# ------------------------------------------------------------
+# PD06(Full Story narration[Std/Adv part1-3]、ユーザー承認済み): 177文字。
+# 正本: er057_output/pace_trial_02/prompts/prompts_pace_02.md "## PD6" 節コードブロック。
+# Stdも逐語(A2減速instruction非連結、std_append_slower_instruction=False)+生成後6%減速(共有module側、既存維持)。
+PD06_TEXT = (
+    "Speak directly to one listener with warmth and a smile in your voice; calm, steady and reassuring, "
+    "like a favorite morning radio host, while keeping the news clear and credible."
+)
+PD06_SHA256 = "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d"
+PD06_LENGTH = 177
+
+# P7(Adv KP英語解説音声、#96判断済み・ユーザー承認): 136文字。正本: er080_coffee_kp_pacing_trial_01.py:35 "p7"。
+# 旧P3(Coffee限定profile用)とは別定数・別sha(P3は不変)。
+P7_TEXT = (
+    "Speak clearly at a slightly relaxed, natural pace. Keep a steady rhythm, with brief transitions "
+    "between phrases and no drawn-out pauses."
+)
+P7_SHA256 = "0518000694e31ef7de6602401b7fa9abd3beb45654e95714817930582020b9fc"
+P7_LENGTH = 136
+
+# K2(KP英語音声[Std/Adv]、ユーザー承認済み): 332文字 = K2文 + 共通guard(B_GUARD)。
+# 正本: er057_tone_trial_kp_ja_gen_01.py:38-39 B_SPECS["K2"] + :33 B_GUARD。Family Z `_K2`(er063:120)と同一。
+K2_TEXT = (
+    "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and "
+    "are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Say only "
+    "this phrase, exactly once, without adding, omitting, or changing any words, and make sure the final "
+    "sound is actually spoken."
+)
+K2_SHA256 = "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42"
+K2_LENGTH = 332
+
+# P8-KP(Std KP日本語意味、ユーザー承認済み): 93文字。正本: er057_std_kp_ja_style_trial_02.py:25 PROMPTS["P8"]。
+# 注意: 既存の`P8_TEXT`(上、402文字)は「Full Story旧候補P8」(Aoede Trial-03、coffee_p8/coffee_final_v5の固定記録が参照)で
+# 全く別物。本定数は別名`P8_KP_JA_TEXT`・別role`KP_JA_MEANING`で明確に分離する(同名P8の混同防止、ユーザー指示§4)。
+P8_KP_JA_TEXT = (
+    "落ち着いたニュースキャスターのように、明瞭で安定した声で読み上げてください。自然な抑揚を保ちながら、"
+    "短い言葉の意味を端的に伝えてください。大げさな強調や演技的な感情表現は避けてください。"
+)
+P8_KP_JA_SHA256 = "b12c8721eab8434b78d129c93491c0a826f229f4528e024d58de960e1ad191e7"
+P8_KP_JA_LENGTH = 93
+
+# Master Audio Store上のKP英語(K2)keyの識別子(旧`key_phrase_english_component`[MINIMAL style]とは別id)。
+# keyの`style_instruction_version`は"{trim_policy}+k2.{K2 sha12}"(primary)/"{trim_policy}+lock.{ENGLISH_LOCK sha12}"(fallback)、
+# `instruction_path`は"primary"/"english_lock_fallback"。M3はこのkeyでK2由来音声かどうかを判定する。
+KP_EN_STORE_STYLE_ID = "key_phrase_english_component_k2"
+KP_EN_STORE_PATH_PRIMARY = "primary"
+KP_EN_STORE_PATH_FALLBACK = "english_lock_fallback"
+
 PROFILE_DEFAULT = "default"
+# 非推奨(2026-10-16以降、新規runの既定はfx_20261016): 以下の旧profileは既存out_dirの固定記録検証(resume)のため残置する。
 PROFILE_COFFEE_P8 = "coffee_p8"
 PROFILE_COFFEE_FINAL_V5 = "coffee_final_v5"
 # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01: N01(Full Story)。新規out_dir(記録なし・CLI指定なし・run stateなし)の
@@ -107,12 +160,20 @@ PROFILE_COFFEE_N01_R2_P3 = "coffee_n01_r2_p3"
 # 委任_03(OF-Y8): coffee_n01_r2_p3 + Adv Preview=E1。既存profileは不変(上位集合として新設)。
 PROFILE_COFFEE_N01_R2_P3_E1 = "coffee_n01_r2_p3_e1"
 # `resolve_run_profile`が「記録なし・CLI指定なし・run stateなし」の新規out_dirへ解決するprofile。
-DEFAULT_NEW_RUN_PROFILE = PROFILE_N01
+# 委任_02A(2026-10-16): 新規run既定をfx_20261016へ切替(ユーザー指示§4「6仕様をFamily Xの既定profileとして適用する。
+# CLIによる特別指定を忘れた場合でも、承認済みStyleが自動適用されるようにする」)。
+PROFILE_FX_20261016 = "fx_20261016"
+DEFAULT_NEW_RUN_PROFILE = PROFILE_FX_20261016
 
 # role名(Std JA Preview/Comment1〜4、Adv KP英英解説)
 ROLE_SUPPORT_JA = "SUPPORT_JA"
 ROLE_KP_EXPLANATION_EN = "KP_EXPLANATION_EN"
 ROLE_PREVIEW = "PREVIEW"  # Adv(b1b)のPreview(英語)のみ。Comment 1〜4は対象外(Style正本は未決)。
+# 委任_02A: KP音声のrole(segmentでなくkey_phrases[rank]配下)。KP_JA_MEANINGは旧Full Story候補P8とは別role/別定数。
+ROLE_KP_EN = "KP_EN"                  # KP英語音声(Std/Adv)。Master Audio Store keyで識別(K2 2段key)。
+ROLE_KP_JA_MEANING = "KP_JA_MEANING"  # Std KP日本語意味(P8-KP)。
+# roleごとのkey_phrases[rank]内の結果キー。
+ROLE_KP_RESULT_KEY = {ROLE_KP_EN: "english", ROLE_KP_JA_MEANING: "japanese_meaning", ROLE_KP_EXPLANATION_EN: "explanation"}
 
 # 上書き対象role -> そのroleに対応するsegment名(runner側のsegment名)。
 ROLE_SEGMENTS = {
@@ -127,6 +188,8 @@ ROLE_LEVELS = {
     ROLE_SUPPORT_JA: ("a2",),
     ROLE_KP_EXPLANATION_EN: ("b1b",),
     ROLE_PREVIEW: ("b1b",),
+    ROLE_KP_EN: ("a2", "b1b"),
+    ROLE_KP_JA_MEANING: ("a2",),
 }
 
 _FULL_STORY_OVERRIDE = {
@@ -174,8 +237,23 @@ STYLE_PROFILES = {
     },
 }
 
+# 委任_02A: 新既定profile。Full Story=PD06 + Std Preview/Comment1〜4=R2 + Adv Preview=E1 + Adv KP英語解説=P7 + KP英語=K2 + Std KP日本語意味=P8-KP。
+# (FAMILY_X_VARIABLE_ROLE_STYLE_VERSIONはbumpしない[R-12]: 旧profileのcache-version guardを変えず、新profileの区別は
+#  style_profile.json固定記録[M2/M3]とMaster Audio Store key[K2 id/version]で行うため。)
+STYLE_PROFILES[PROFILE_FX_20261016] = {
+    "overrides": {
+        "FULL_STORY": {"text": PD06_TEXT, "sha256": PD06_SHA256, "std_append_slower_instruction": False},
+        ROLE_SUPPORT_JA: {"text": R2_TEXT, "sha256": R2_SHA256},
+        ROLE_PREVIEW: {"text": E1_TEXT, "sha256": E1_SHA256},
+        ROLE_KP_EXPLANATION_EN: {"text": P7_TEXT, "sha256": P7_SHA256},
+        ROLE_KP_EN: {"text": K2_TEXT, "sha256": K2_SHA256},
+        ROLE_KP_JA_MEANING: {"text": P8_KP_JA_TEXT, "sha256": P8_KP_JA_SHA256},
+    },
+}
+
 # roleごとのlevel情報を記録へ含めるprofile(V5以降の複数role profile)。
-_PROFILES_RECORDING_LEVELS = (PROFILE_COFFEE_FINAL_V5, PROFILE_COFFEE_N01_R2_P3, PROFILE_COFFEE_N01_R2_P3_E1)
+_PROFILES_RECORDING_LEVELS = (PROFILE_COFFEE_FINAL_V5, PROFILE_COFFEE_N01_R2_P3, PROFILE_COFFEE_N01_R2_P3_E1,
+                              PROFILE_FX_20261016)
 
 PROFILE_RECORD_RELPATH = "audit/style_profile.json"
 APPROVED_BACKEND = "speech_metadata_flash_lite"
@@ -197,7 +275,10 @@ def _verify_constants() -> None:
     import er002_common as common
     for label, text, sha, length in (("P8", P8_TEXT, P8_SHA256, P8_LENGTH), ("R2", R2_TEXT, R2_SHA256, R2_LENGTH),
                                      ("P3", P3_TEXT, P3_SHA256, P3_LENGTH), ("N01", N01_TEXT, N01_SHA256, N01_LENGTH),
-                                     ("E1", E1_TEXT, E1_SHA256, E1_LENGTH)):
+                                     ("E1", E1_TEXT, E1_SHA256, E1_LENGTH),
+                                     ("PD06", PD06_TEXT, PD06_SHA256, PD06_LENGTH), ("P7", P7_TEXT, P7_SHA256, P7_LENGTH),
+                                     ("K2", K2_TEXT, K2_SHA256, K2_LENGTH),
+                                     ("P8_KP_JA", P8_KP_JA_TEXT, P8_KP_JA_SHA256, P8_KP_JA_LENGTH)):
         if sha256_text(text) != sha or len(text) != length:
             raise StyleProfileStop(
                 f"[STOP][STYLE-PROFILE] {label}定数のsha256/長さが原典と一致しません"
@@ -247,6 +328,27 @@ def resolve_role_style(profile_id: str, role: str, level: str, base_getter):
     if sha256_text(text) != override["sha256"]:
         raise StyleProfileStop(f"[STOP][STYLE-PROFILE] profile={profile_id} role={role} のsha256不一致")
     return text
+
+
+def has_role_override(profile_id: str, role: str, level: str) -> bool:
+    """profileにそのroleのoverrideがあり、かつlevelに適用されるか(KP音声の分岐用。runnerが
+    「K2経路[Store 2段key]を使うか/従来経路か」を決めるのに使う。default・旧profileでは常にFalse)。"""
+    if role not in get_profile(profile_id)["overrides"]:
+        return False
+    return level in ROLE_LEVELS.get(role, ("a2", "b1b"))
+
+
+def profile_resolution_warning(profile_id: str, source: str) -> str | None:
+    """R-07: CLI未指定時の「旧profileで動いている/新profileが適用されていない」ことを目立たせる[WARN]文(任意・非機能)。
+    - source=="record"かつprofile!=DEFAULT_NEW_RUN_PROFILE: 旧profileでresume中(記録が正、黙って新profileへ切替わらない)。
+    - source=="default_no_record_legacy_backend": legacy backendのため承認済み新profileは適用不可(tts stageは課金前STOP)。"""
+    if source == "record" and profile_id != DEFAULT_NEW_RUN_PROFILE:
+        return (f"[WARN][STYLE-PROFILE] 旧profileでresume中(profile={profile_id!r}、新規run既定={DEFAULT_NEW_RUN_PROFILE!r}ではありません)。"
+                "固定記録(audit/style_profile.json)が正のため旧Styleのまま継続します。承認済みの新Styleを使う場合は新しいout_dirで実行してください。")
+    if source == "default_no_record_legacy_backend":
+        return (f"[WARN][STYLE-PROFILE] tts_backendがlegacyのため承認済みprofile({DEFAULT_NEW_RUN_PROFILE!r})を適用していません"
+                f"(profile=default)。--tts-backend {APPROVED_BACKEND} を指定してください(tts stageはlegacy backendでは課金前にSTOPします)。")
+    return None
 
 
 def assert_profile_backend(profile_id: str, tts_backend: str) -> None:
@@ -328,7 +430,7 @@ def resolve_run_profile(out_dir: str, cli_profile: str | None, write: bool = Tru
     - 記録が無い場合:
         * CLI `default`(明示): 従来どおりdefault(新規file/keyは書かない、S3)。既存run(記録なし)のresume用。
         * CLI未指定(FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01、必須5 B'): run stateが無い新規out_dirは
-          N01 profileへ解決し固定記録を作成する(Family Xの既定Full Story style=N01)。
+          DEFAULT_NEW_RUN_PROFILE(2026-10-16以降fx_20261016)へ解決し固定記録を作成する(Family Xの承認済み6仕様の既定)。
           既存run state(Review Lock/人間承認/TTS結果)があるout_dirは、Style混在を防ぐため課金前にSTOPする
           (`--style-profile default`を明示してresume)。tts_backendがspeech_metadata_flash_lite以外
           (legacy backend、Trial/regression用)の場合は従来どおりdefault(M5によりN01は適用できない)。
@@ -356,7 +458,7 @@ def resolve_run_profile(out_dir: str, cli_profile: str | None, write: bool = Tru
                 f"text shaのみで照合されStyleを区別しないため、既存runへの途中適用はStyle混在を招きます)。"
                 f"既存の記録: {existing}。従来のstyleでresumeする場合は`--style-profile default`を明示してください。"
                 f"style_profile.jsonは作成していません。")
-        profile_id, source = DEFAULT_NEW_RUN_PROFILE, "default_new_run_n01"
+        profile_id, source = DEFAULT_NEW_RUN_PROFILE, f"default_new_run_{DEFAULT_NEW_RUN_PROFILE}"
     else:
         if existing:
             raise StyleProfileStop(
@@ -426,9 +528,19 @@ def evaluate_segment_evidence(entry: dict, level: str, profile_id: str = PROFILE
     base_ok = prof.get("style_base_sha256") == exp_sha
     if not base_ok:
         reasons.append("STYLE_BASE_SHA_MISMATCH_OR_MISSING")
-    if role == ROLE_SUPPORT_JA:
+    if role in (ROLE_SUPPORT_JA, ROLE_KP_JA_MEANING):
+        # 日本語role(R2/P8-KP)は発音hint追記が無くattempt側のstyle記録も無いため、base shaのみで判定する。
+        # 既知制約(R-09): 日本語roleのM4は「意図したsha」の確認のみで、最終送信styleの実測はraw_usage_log/attemptsの
+        # instruction_textで別途行う(将来migrate設計の条件)。
         return {"pass": base_ok and not reasons, "base_sha_ok": base_ok, "hint_applied": False,
                 "cache_hits": [], "final_style_record": None, "reasons": reasons}
+    if role == ROLE_KP_EN:
+        # 再利用entry(Master Audio Store hit)は生成時のattempt styleを持たない(qa_evidenceのみ復元)ため、最終style判定は
+        # 「今回新規生成かつ非fallback」のときだけ行う。再利用entryの正当性はStore key(kp_en_store_key_check)で判定する。
+        if entry.get("reused") is True or entry.get("fallback_used") is True:
+            return {"pass": base_ok and not reasons, "base_sha_ok": base_ok, "hint_applied": False,
+                    "cache_hits": [], "final_style_record": None, "reasons": reasons,
+                    "final_style_checked": False}
     info = entry.get("en_pronunciation_resolver_info") or {}
     hint_applied = bool(info.get("hints_applied"))
     cache_hits = [h.get("surface", h) if isinstance(h, dict) else h for h in (info.get("cache_hits") or [])]
@@ -449,6 +561,35 @@ def evaluate_segment_evidence(entry: dict, level: str, profile_id: str = PROFILE
             "cache_hits": cache_hits, "final_style_record": final, "reasons": reasons}
 
 
+def kp_en_store_key_check(entry: dict, profile_id: str) -> dict:
+    """KP_EN(K2)のMaster Audio Store key判定(R-01/R-02)。entry["master_audio_key"]で:
+      - style_instruction_idがK2用id(KP_EN_STORE_STYLE_ID)であること(旧`key_phrase_english_component`=MINIMAL style由来は不可)
+      - instruction_path=="primary"の場合: style_instruction_versionに`+k2.<K2 sha12>`を含むこと(K2文が変われば不一致)
+      - instruction_path=="english_lock_fallback"の場合: 承認済み4回構成の後半(ENGLISH_LOCK)で生成された音声=WARNING(非ブロッキング)
+      - それ以外のpath/key欠落は違反
+    戻り値: {"violations": [...], "warnings": [...]}。"""
+    exp_sha = get_profile(profile_id)["overrides"][ROLE_KP_EN]["sha256"]
+    key = entry.get("master_audio_key")
+    violations, warnings = [], []
+    if not isinstance(key, dict):
+        violations.append("KP_EN_STORE_KEY_MISSING")
+        return {"violations": violations, "warnings": warnings}
+    if key.get("style_instruction_id") != KP_EN_STORE_STYLE_ID:
+        violations.append("KP_EN_STORE_KEY_ID_MISMATCH")
+    path = key.get("instruction_path")
+    if path == KP_EN_STORE_PATH_PRIMARY:
+        if f"+k2.{exp_sha[:12]}" not in str(key.get("style_instruction_version") or ""):
+            violations.append("KP_EN_STORE_KEY_VERSION_MISMATCH")
+    elif path == KP_EN_STORE_PATH_FALLBACK:
+        warnings.append("KP_EN_ENGLISH_LOCK_FALLBACK_AUDIO_NOT_K2")
+    else:
+        violations.append("KP_EN_STORE_KEY_PATH_INVALID")
+    if entry.get("fallback_used") is True and path != KP_EN_STORE_PATH_FALLBACK:
+        # 新規生成でfallback_used=Trueなのにkeyがfallback pathでない=Store keyの付け間違い(K2 primary扱いにしてはならない)
+        violations.append("KP_EN_FALLBACK_USED_BUT_KEY_NOT_FALLBACK_PATH")
+    return {"violations": violations, "warnings": warnings}
+
+
 # ------------------------------------------------------------
 # M3: Assembly前Gate(Family X runnerのstage_assemble内でのみ呼ぶ。共有assembleは不変)
 # ------------------------------------------------------------
@@ -467,12 +608,15 @@ def _gate_targets(profile_id: str, level: str, results: dict) -> list[tuple[str,
     for role in overridden_roles(profile_id):
         if level not in ROLE_LEVELS.get(role, ("a2", "b1b")):
             continue
-        if role == ROLE_KP_EXPLANATION_EN:
+        if role in ROLE_KP_RESULT_KEY:
+            # KP系role(KP_EXPLANATION_EN/KP_EN/KP_JA_MEANING)はsegmentsでなくkey_phrases[rank][結果キー]から取る。
+            rkey = ROLE_KP_RESULT_KEY[role]
             kps = (results or {}).get("key_phrases") or {}
             if not kps:
-                targets.append(("kp_explanation(no key_phrases record)", role, None))
+                label = "kp_explanation" if role == ROLE_KP_EXPLANATION_EN else f"kp_{rkey}"
+                targets.append((f"{label}(no key_phrases record)", role, None))
             for rank in sorted(kps, key=lambda k: int(k)):
-                targets.append((f"kp{rank}_explanation", role, (kps[rank] or {}).get("explanation")))
+                targets.append((f"kp{rank}_{rkey}", role, (kps[rank] or {}).get(rkey)))
             continue
         for name in ROLE_SEGMENTS.get(role, ()):
             targets.append((name, role, segments.get(name)))
@@ -491,7 +635,7 @@ def m3_assembly_gate(profile_id: str, level: str, results: dict, approvals: dict
     profile==default なら何もしない(PASS)。"""
     if profile_id == PROFILE_DEFAULT:
         return {"status": "PASS", "profile_id": profile_id, "checked": [], "blocked": [], "human_approved": []}
-    checked, blocked, human_approved = [], [], []
+    checked, blocked, human_approved, warnings = [], [], [], []
     for name, role, entry in _gate_targets(profile_id, level, results):
         violations = []
         if entry is None:
@@ -506,7 +650,7 @@ def m3_assembly_gate(profile_id: str, level: str, results: dict, approvals: dict
                 if level == "b1b":
                     sp = entry.get("style_prefix")
                     if not (isinstance(sp, str) and sp.startswith(exp_text)):
-                        violations.append("ADV_STYLE_PREFIX_NOT_P8_PREFIXED")
+                        violations.append("ADV_STYLE_PREFIX_NOT_PROFILE_PREFIXED")
                     if entry.get("instruction_type") == "minimal_fallback":
                         violations.append("ADV_MINIMAL_FALLBACK")
                 else:
@@ -515,6 +659,20 @@ def m3_assembly_gate(profile_id: str, level: str, results: dict, approvals: dict
             elif role == ROLE_SUPPORT_JA:
                 if entry.get("fallback_used") is not False:
                     violations.append("JA_FALLBACK_USED_OR_UNKNOWN")
+            elif role == ROLE_KP_JA_MEANING:
+                # P8-KP(Std KP日本語意味): SUPPORT_JAと同等。fallback_used is False必須(JAのfallbackはroleのStyleを落とす)。
+                if entry.get("fallback_used") is not False:
+                    violations.append("KP_JA_MEANING_FALLBACK_USED_OR_UNKNOWN")
+                if entry.get("status") not in (None, "OK"):
+                    violations.append("KP_JA_MEANING_STATUS_NOT_OK")
+            elif role == ROLE_KP_EN:
+                # K2: base sha(上のevaluate_segment_evidence)+Store key判定。新規生成かつ非fallbackのときだけ最終style判定も行われる。
+                if entry.get("status") not in (None, "OK"):
+                    violations.append("KP_EN_STATUS_NOT_OK")
+                kc = kp_en_store_key_check(entry, profile_id)
+                violations.extend(kc["violations"])
+                for w in kc["warnings"]:
+                    warnings.append({"segment": name, "warning": w})
             elif role == ROLE_PREVIEW:
                 # Adv Preview(E1): 実送信styleがE1で始まる/minimal_fallback(E1を落とす)でない。
                 sp = entry.get("style_prefix")
@@ -530,8 +688,9 @@ def m3_assembly_gate(profile_id: str, level: str, results: dict, approvals: dict
                 human_approved.append({"segment": name, "violations": violations})
             else:
                 blocked.append({"segment": name, "violations": violations})
+    # warnings: 非ブロッキング(承認済み4回構成のfallback音声など)。runnerがstdoutとgate出力に列挙する。
     return {"status": "BLOCK" if blocked else "PASS", "profile_id": profile_id, "level": level,
-            "checked": checked, "blocked": blocked, "human_approved": human_approved}
+            "checked": checked, "blocked": blocked, "human_approved": human_approved, "warnings": warnings}
 
 
 
@@ -595,6 +754,8 @@ def migrate_record(out_dir: str, from_profile: str, to_profile: str, reason: str
 # S2: plan段階のPronunciation Ledger hit計算(読み取りのみ、web lookup無効、課金0)
 # ------------------------------------------------------------
 def compute_ledger_hits(parts: dict, tts_safe_fn=None, full_story_text: str = P8_TEXT) -> dict:
+    # 注: 既定引数のP8_TEXT・戻り値の`augmented_startswith_p8`/`p8_len`は「Full Story旧候補P8」(402文字)の互換キー。
+    # 現行profile(N01/PD06等)ではrunnerが適用中profileのFull Story textを`full_story_text`で渡す(KP日本語意味のP8-KPとは無関係)。
     """Full Story各part(part1..3)について、現行Pronunciation Ledger(cache)のhintが
     P8へ追記されるかを事前計算する。augment_style_prefix_with_pronunciation を直接呼ぶ
     (resolve_and_augment_en_style_prefixの第1段と同一。低confidence再research[web]は呼ばない)。"""

@@ -108,3 +108,33 @@
 - Advの速度変化(PD06に速度語なし)は試聴確認項目(FXWA §14-4)。ユーザー試聴で遅すぎ/速すぎが出た場合は新Trial(STOP→報告)。
 - `file:///`と`raw.githubusercontent.com`は試聴配布に使わない。GitHub Pages反映遅延(deploy数分+Cache-Control 600秒)を見込み、headless取得でHTTP 200を確認してから「提示した」と扱う。
 - 本計画は**Coffee生成を伴わない**。実行は設計書のOpus条件Aレビュー→Phase 2実装→test全PASS→費用承認の後。
+
+- 【委任_02A R-11】Std Full StoryはPD06を逐語(A2減速instruction非連結、`std_append_slower_instruction=False`)で用い、生成後6%減速(既存)を維持する。Stdの遅さは6%減速のみ(PD06に速度語なし)。**試聴確認項目**: Std Full Storyの体感速度(6%減速+PD06の併用が遅すぎ/速すぎないか)、Adv Full Storyの速度(PD06のみ)、KP英語(K2)の語頭語尾、Std KP日本語意味(P8-KP)、Adv KP英語解説(P7)。ユーザー試聴で問題が出た場合は新Trial(STOP→報告)。
+
+## §実行直前チェック(委任_04時点、2026-10-16、実行はしていない・JPY0)
+
+**状態**: Phase 2配線はcommit済み(本commit=メッセージ冒頭『FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01 委任_02A/02B/04』)。Coffee正式実走は**未実施**。`PRODUCTION_WIRED`ではない(runtime evidence待ち)。実走は、Fableがユーザーへ費用を提示し承認を得た後の別委任で行う。
+
+### (a) stage(a) text の実行コマンド全文(S1: Research新規+Verified Fact Ledger新規)
+新out_dir `er019_output/coffee_prices/run_fxpw_01`(既存run_l3_01等のResearch/Ledger再利用を防ぐため必ず新規dir)。テーマ文字列は既存Coffee実走のものを使う(新規記事テーマ選定ではなくCoffee再実走、ユーザー指示§5。出典=`er019_output/coffee_prices/run_l3_01/entry_point.json`の`theme`)。
+
+```
+TTS_EXECUTION_MODE=STANDARD .venv/Scripts/python.exe er019_family_x_entertainment_production_runner_01.py --theme "<run_l3_01/entry_point.json の theme 文字列をそのまま>" --slug coffee_prices --out-dir er019_output/coffee_prices/run_fxpw_01 --run-label FXPW-COFFEE-E2E-01 --budget-jpy 120 --stage research
+```
+(STAGE(a)自体はTTSを含まないが、全stageで`TTS_EXECUTION_MODE=STANDARD`を明示する運用(T-2)に揃える。実走前に`tools/stop_scope_check_01.py --managed-id <新ID> --run-dir er019_output/coffee_prices/run_fxpw_01`を実行しrc=3なら中止。) 以降のS2〜S11は本書§1の表のコマンドに従う(音声stageは`--tts-backend`省略でも既定=`speech_metadata_flash_lite`、明示してもよい)。
+
+### (b) 前提条件
+1. `er019_output/coffee_prices/run_fxpw_01`が**存在しない**こと(`verified_fact_ledger.txt`・`research_ledger/`の既存再利用防止。新out_dirでは`runtime_evidence.json`の`reused:false`をX01で確認)。
+2. 音声stage前に`--stage plan`(API0)で`audit/style_profile.json`の`profile_id==fx_20261016`・`style_profile_source==default_new_run_fx_20261016`を確認(委任_04でrun_l3_01を入力とするdry-runにて確認済み: 6 role sha=FULL_STORY 3a680861e4d9d1bc… / SUPPORT_JA 625826c1187b6381… / PREVIEW 8862317ff76693ff… / KP_EXPLANATION_EN 0518000694e31ef7… / KP_EN 9d905cfe6c040cd0… / KP_JA_MEANING b12c8721eab8434b…)。
+3. 実装commit・Opus条件Aレビュー反映済み・回帰test PASS(委任_04: 37ファイル956 PASS、6 FAILは全件本件非起因=`docs/pm/RESULT_PACKET_FXPW4.md`)。
+4. 追跡済み出力ファイル(`er011_output/attempt_history.jsonl`等)の既存dirty変更はstageしない。
+
+### (c) 費用見積(再掲、出典=本書§5表)
+期待 約JPY96 / 最悪 約JPY162(text小計 68.4/95、audio小計 27.8/67)。偶発リスク(合計に含めない): OPEN-395 JA Latin語web lookup +21〜43。Cap提案=text stage `--budget-jpy 120`、audio stage `--budget-jpy 100`。
+
+### (d) 本日累計(JST 2026-10-16)の再計算
+`docs/pm/REPORT_LEDGER.md` 2026-10-16行の費用記載を再合算: L325 約0.57 + L327 12.65 + L328 2.86 + L329 37.66 + L330 24.22 + L331 1.42 = **約79.4円**(本書§6と同値。FXPW委任_01/02A/02B/04・DQI等はJPY0行)。なお委任_04の回帰でer078 06c testが作業ツリー状態依存でPerplexity researchを実呼出した疑いがあり(推定数円以下、未計上・log未取得)、保守的に**約80〜85円**とみなす。E2E加算後: 期待で約176〜181円、最悪(+偶発43含む)で約285〜290円。
+
+### (e) 7-7・日次1,000円との関係
+- 日次1,000円(7-9): 最悪でも約290円で**超過見込みなし**(残約710円以上)。事前承認の対象外。
+- 7-7(見積100円超=ユーザー判断): 期待96は100円以下だが**最悪162は100円超** → Fableが実走前にユーザー費用承認を取る(判断候補、区分A: 7-7の既判断ルール適用)。承認前に有料runを開始しない。

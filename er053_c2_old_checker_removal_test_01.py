@@ -181,7 +181,7 @@ class EfamRetryPathNoCheckerTests(unittest.TestCase):
                                   fallback_detected=True, structure_status="STRUCTURE_PASS", elapsed_seconds=0.1)
             ok = SimpleNamespace(**{**few.__dict__, "body": "p1.\n\np2.\n\np3."})
             with mock.patch.object(efam.adv_gen, "generate_family_x_faithful_translation", side_effect=[few, ok]), \
-                    mock.patch.object(efam.adv_gen, "generate_family_x_in_one_line", return_value={"text": "x"}), \
+                    mock.patch.object(efam.adv_gen, "generate_family_x_in_one_line", return_value={"text": "First. Second."}), \
                     mock.patch.object(efam.vfl01, "run_deviation_check", side_effect=_boom), \
                     mock.patch.object(efam, "assert_budget_ok", return_value=0.0):
                 ev = efam.run_writer_stage(object(), theme, "JA", "L", 300.0, only="advanced")

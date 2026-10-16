@@ -57,6 +57,8 @@ import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er006_model_routing_contract_01 as routing
 import er019_family_x_audio_plan_01 as plan
 import er019_family_x_kp_explanation_01 as kp_explanation_gen
+import er019_family_x_kp_en_k2_store_01 as kp_en_k2_store  # 委任_02A: KP英語K2の2段key(Family X専用module)
+import er081_family_x_in_one_line_01 as fx_iol  # FXPW 委任_04: In One Line scope(Family X専用)
 import er019_family_x_style_profile_01 as style_profile_mod
 import er019_family_x_validation_inheritance_01 as validation_inheritance
 import er020_tts_retry_local_rewrite_01 as retry_primitive
@@ -64,6 +66,9 @@ import er053_review_queue_01 as rq
 import er053_risk_flagger_production_01 as rf
 
 MANAGEMENT_ID = "NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01"
+
+# 承認済みの正式TTS backend(Family X、flash-lite統一)。`--tts-backend`の既定値・tts stageのfail-fast Gateが参照する。
+FAMILY_X_APPROVED_PRODUCTION_TTS_BACKEND = "speech_metadata_flash_lite"
 
 # 要件3の確認結果(コードで確認、STOP不要): full_story_part1/2/3は
 # er020_tts_retry_local_rewrite_01.resolve_narrative_role()に既に
@@ -235,11 +240,11 @@ def run_plan_stage(source_dir: str, out_dir: str, levels: list[str], style_profi
         result[level] = {"status": "OK", "article_path": article_path,
                           "article_sha256": sha256_text(article_text), "segment_plan": segment_plan}
         if style_profile != style_profile_mod.PROFILE_DEFAULT:
-            # OPEN-300 S2: 非defaultのときだけ、Full StoryのStyle(P8)と現行Pronunciation Ledger hit
+            # OPEN-300 S2: 非defaultのときだけ、Full StoryのStyle(適用中profileの値。旧候補P8/N01/PD06)と現行Pronunciation Ledger hit
             # (hint追記有無)をplan段階で記録する(読み取りのみ、web lookup無効、課金0)。
             # defaultではkeyを追加しない(バイト同一)。
             import er025_entity_pronunciation_resolver_core_01 as pron_core
-            # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01: Full Story styleは適用中profileの値(P8またはN01)で記録・判定する。
+            # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01: Full Story styleは適用中profileの値(旧候補P8/N01/PD06)で記録・判定する。`P8_TEXT`フォールバックは「Full Story旧候補P8」で、KP日本語意味のP8-KP[P8_KP_JA_TEXT]とは別物。
             _fs = style_profile_mod.get_profile(style_profile)["overrides"].get("FULL_STORY")
             _fs_text = _fs["text"] if _fs else style_profile_mod.P8_TEXT
             _fs_sha = _fs["sha256"] if _fs else style_profile_mod.P8_SHA256
@@ -809,6 +814,7 @@ def _shared_narration_gate_blocked_summary(out_dir: str) -> dict | None:
 
 
 @secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
+@fx_iol.family_x_in_one_line_scope()  # FXPW 委任_04: LR gate 8_sentence_count_unchanged をFamily X TTS段のみで有効化
 def generate_family_x_b1_segments(
         theme_out_dir: str,
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27、
@@ -1019,6 +1025,22 @@ def _resolve_kp_explanations_text(kp_items: list, cached: dict | None) -> dict:
     return result
 
 
+def _kp_english_generate_fn(style_profile: str, level: str, tts_backend: str, used_form: str, wav_path: str):
+    """KP英語音声の生成closureと適用Style(K2またはNone)を返す。
+    委任_02A(Opus条件A R-01): profileにKP_EN overrideがある(fx_20261016)ときだけ、承認済みK2をMaster Audio Storeの
+    2段key(kp_en_k2_store.ensure_key_phrase_english_component_styled)経由で生成する。default・旧profileは従来の
+    ensure_key_phrase_english_component(旧key・MINIMAL style)のまま=バイト同一。
+    戻り値: (generate_fn, k2_style_text_or_None)。"""
+    k2 = style_profile_mod.resolve_role_style(style_profile, style_profile_mod.ROLE_KP_EN, level, lambda _r: None)
+    safe = n3_tts.tts_safe_kp_en(used_form)
+    if k2 is None:
+        return (lambda: shared_narration.ensure_key_phrase_english_component(
+            safe, wav_path, tts_backend=tts_backend)), None
+    return (lambda: kp_en_k2_store.ensure_key_phrase_english_component_styled(
+        safe, wav_path, style_text=k2, style_id=style_profile_mod.KP_EN_STORE_STYLE_ID, style_tag="k2",
+        tts_backend=tts_backend)), k2
+
+
 def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict | None = None,
                                       tts_backend: str = "structured_separation",
                                       style_profile: str = "default") -> dict:
@@ -1062,15 +1084,20 @@ def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict 
     for item in kp_items:
         rank = item["rank"]
         used_form = item["used_form"]
+        # 委任_02A: fx_20261016ではK2(2段key)、それ以外は従来経路(バイト同一)。
+        _kp_en_fn, _kp_en_k2 = _kp_english_generate_fn(
+            style_profile, "b1b", tts_backend, used_form, f"{narration_dir}/kp{rank}_en.wav")
         with cl.segment_context(f"kp{rank}_english"):
             en_r = _generate_or_reuse_kp(
                 cached, rank, "english", f"{narration_dir}/kp{rank}_en.wav",
-                lambda used_form=used_form, rank=rank: shared_narration.ensure_key_phrase_english_component(
-                    n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav", tts_backend=tts_backend),
+                _kp_en_fn,
                 # W5(Opus L2所見MAJOR-1、english role text guard): used_form
                 # が変わった場合に古い音声を誤ってreuseしないようにする。
                 expected_text=used_form)
         en_r["canonical_text"] = used_form
+        # M4/S3: KP_EN overrideがあるprofileのときだけ、hint追記前のStyle sha(K2)を記録する(default/旧profileは新keyなし)。
+        if not validation_inheritance.is_untouched_entry(en_r):
+            style_profile_mod.attach_segment_profile_record(en_r, style_profile, style_profile_mod.ROLE_KP_EN, _kp_en_k2)
 
         explanation_row = explanation_by_rank.get(rank) or explanation_by_rank.get(str(rank)) or {}
         explanation_text = explanation_row.get("english_explanation") or ""
@@ -1128,6 +1155,7 @@ def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict 
 
 
 @secondary_run_scope.with_secondary_run  # AUW 委任_05: run単位SecondaryCache+circuit breaker
+@fx_iol.family_x_in_one_line_scope()  # FXPW 委任_04: LR gate 8_sentence_count_unchanged をFamily X TTS段のみで有効化
 def generate_family_x_a2_segments(
         theme_out_dir: str, japanese_title: str,
         # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01/02
@@ -1324,7 +1352,8 @@ def generate_family_x_a2_segments(
                                                              _role_style_slower(_seg_role))
 
     kp_results = _generate_key_phrase_segments_a2(kp, narration_dir, _cached,
-                                                   tts_backend=tts_backend) if kp is not None else {}
+                                                   tts_backend=tts_backend,
+                                                   style_profile=style_profile) if kp is not None else {}
     kp_scaffold_status = "OK" if kp is not None else "KP_SCAFFOLD_JSON_MISSING(upstream key phrase Gateで未生成)"
 
     all_status = {k: v.get("status") for k, v in results.items()}
@@ -1353,7 +1382,8 @@ def generate_family_x_a2_segments(
 
 
 def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str, cached: dict | None = None,
-                                      tts_backend: str = "structured_separation") -> dict:
+                                      tts_backend: str = "structured_separation",
+                                      style_profile: str = "default") -> dict:
     # W5(2026-09-29ユーザー正式決定APPROVED_FOR_PRODUCTION、Standard KP
     # 日本語意味へのJ3配線): japanese_title/preview/comment_1-4と同一の
     # _role_style_ja()(同一関数ロジック・同一backendゲート)をStandard KP
@@ -1367,6 +1397,12 @@ def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str, cached: dict 
             return None
         return fl_styles.FAMILY_X_ROLE_STYLE_JA
 
+    def _role_style_ja_kp_meaning() -> str | None:
+        # 委任_02A: Std KP日本語意味。fx_20261016ではP8-KP(別role KP_JA_MEANING、旧Full Story候補P8とは別物)。
+        # default・旧profileはbase(_role_style_ja=J3)素通し=バイト同一。
+        return style_profile_mod.resolve_role_style(
+            style_profile, style_profile_mod.ROLE_KP_JA_MEANING, "a2", lambda _r: _role_style_ja())
+
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
     # 委任_02(関所): gloss再整合がHuman Review待ちのlevelは、KP segment全体のTTSを実行しない(0 API call)。
     _gloss_hr = _gloss_alignment_hr_unresolved(kp)
@@ -1379,14 +1415,18 @@ def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str, cached: dict 
         rank = item["rank"]
         used_form = item["used_form"]
         ja_gloss_tts, ja_gloss_tts_fallback = n3_tts.resolve_key_phrase_ja_gloss_tts(item)
+        # 委任_02A: fx_20261016ではK2(2段key)、それ以外は従来経路(バイト同一)。
+        _kp_en_fn, _kp_en_k2 = _kp_english_generate_fn(
+            style_profile, "a2", tts_backend, used_form, f"{narration_dir}/kp{rank}_en.wav")
         with cl.segment_context(f"kp{rank}_english"):
             en_r = _generate_or_reuse_kp(
                 cached, rank, "english", f"{narration_dir}/kp{rank}_en.wav",
-                lambda used_form=used_form, rank=rank: shared_narration.ensure_key_phrase_english_component(
-                    n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav", tts_backend=tts_backend),
+                _kp_en_fn,
                 # W5(Opus L2所見MAJOR-1、english role text guard)。
                 expected_text=used_form)
         en_r["canonical_text"] = used_form
+        if not validation_inheritance.is_untouched_entry(en_r):
+            style_profile_mod.attach_segment_profile_record(en_r, style_profile, style_profile_mod.ROLE_KP_EN, _kp_en_k2)
         with cl.segment_context(f"kp{rank}_japanese_meaning"):
             ja_r = _generate_or_reuse_kp(
                 cached, rank, "japanese_meaning", f"{narration_dir}/meaning_{i}.wav",
@@ -1394,11 +1434,15 @@ def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str, cached: dict 
                 i=i: n3_tts.generate_a2_japanese_with_reading_safety(
                     ja_gloss_tts, f"{narration_dir}/meaning_{i}.wav", n3_tts.expected_substring_ja(ja_gloss_tts),
                     max_extra_chars=30, known_key_phrase_terms=[used_form],
-                    style_prefix_override=_role_style_ja(), tts_backend=tts_backend),
+                    style_prefix_override=_role_style_ja_kp_meaning(), tts_backend=tts_backend),
                 # W5(J3配線に伴うMAJOR-1系guard、Standard KP日本語意味に
                 # もtext guard+style_version guardを適用する)。
                 expected_text=ja_gloss_tts, require_style_version=True)
         ja_r["canonical_text"] = ja_gloss_tts
+        # M4/S3: KP_JA_MEANING overrideがあるprofile(fx_20261016のP8-KP)のときだけ記録(default/旧profileは新keyなし)。
+        if not validation_inheritance.is_untouched_entry(ja_r):
+            style_profile_mod.attach_segment_profile_record(
+                ja_r, style_profile, style_profile_mod.ROLE_KP_JA_MEANING, _role_style_ja_kp_meaning())
         ja_r["display_gloss"] = item["japanese_gloss"]
         ja_r["japanese_gloss_tts_fallback_derived"] = ja_gloss_tts_fallback
         kp_results[rank] = {"english": en_r, "japanese_meaning": ja_r}
@@ -1616,8 +1660,8 @@ def build_family_x_b1_timeline(parts: dict) -> list:
 def _style_profile_gate_blocked_summary(theme_out_dir: str, out_dir: str, level: str) -> dict | None:
     """OPEN-300 M3(Opus条件Aレビュー反映): Assembly前のStyle profile Gate。Family X runnerの
     stage_assemble内でのみ呼ぶ(共有assembleは不変)。固定記録(audit/style_profile.json)が
-    無い/defaultなら何もしない(Noneを返す=既存挙動とバイト同一)。非defaultのとき、P8対象
-    segmentがP8で生成されていない(minimal_fallback/Local Rewrite回復/Std fallback等)場合は、
+    無い/defaultなら何もしない(Noneを返す=既存挙動とバイト同一)。非defaultのとき、profile対象
+    segmentがprofileのStyleで生成されていない(minimal_fallback/local_rewrite_recovery/Std fallback等)場合は、
     record_human_approvalによる人間承認が無い限りBLOCKする。"""
     record = style_profile_mod.read_record(theme_out_dir)
     if record is None:
@@ -1631,10 +1675,15 @@ def _style_profile_gate_blocked_summary(theme_out_dir: str, out_dir: str, level:
     approvals = load_json(approvals_path) if os.path.exists(approvals_path) else {}
     gate = style_profile_mod.m3_assembly_gate(profile_id, level, results, approvals)
     save_json(f"{out_dir}/audit/style_profile_gate.json", gate)
+    # 非ブロッキングwarning(例: KP英語がK2でなく承認済み4回構成のENGLISH_LOCK fallbackで生成された)は
+    # 最終報告で見落とされないようstdoutへ列挙する(Gate判定は変えない)。
+    for _w in gate.get("warnings") or []:
+        print(f"[WARN][STYLE-PROFILE][M3] {level} {_w['segment']}: {_w['warning']}")
     if gate["status"] == "PASS":
         return None
     return {"status": "BLOCKED_STYLE_PROFILE_GATE", "profile_id": profile_id, "blocked": gate["blocked"],
-            "reason": "P8対象segmentがP8で生成されていません(M3 Gate)。人間承認(record_human_approval)が"
+            "warnings": gate.get("warnings") or [],
+            "reason": "profile対象segmentが承認済みprofileのStyleで生成されていません(M3 Gate)。人間承認(record_human_approval)が"
                       "無い限りAssemblyを拒否します。本runnerはこのGateを回避しません。"}
 
 
@@ -2216,10 +2265,15 @@ def build_arg_parser() -> argparse.ArgumentParser:
     # 2026-09-28)のため、speech_metadata_flash_lite指定時は実際に
     # Flash-Liteで生成される(Gate 3の16項目は全16件完了済み、
     # `PRODUCTION_WIRED`化はOpus L2レビュー後にFableが判定)。
-    parser.add_argument("--tts-backend", default="structured_separation",
+    # 委任_02A(Opus条件A R-07、2026-10-16): Family Xの承認済みbackend(flash-lite統一)を既定にする。
+    # 既定がlegacyだと、CLI指定忘れで承認済みprofile(fx_20261016)が適用されず(source=default_no_record_legacy_backend)
+    # tts stageは課金前STOPになる、という「指定忘れ」事故を構造的に防ぐ(ユーザー指示§4)。legacy backend(Trial/regression)は
+    # `--tts-backend structured_separation --allow-legacy-backend`の明示指定が必要。assert_production_tts_backend等のfail-closedは不変。
+    parser.add_argument("--tts-backend", default=FAMILY_X_APPROVED_PRODUCTION_TTS_BACKEND,
                          choices=("structured_separation", "speech_metadata_flash_lite"),
-                         help="既定structured_separation(現行gemini-2.5-pro-preview-tts/"
-                              "3.1-flash-tts-preview)。speech_metadata_flash_lite指定時は"
+                         help="既定speech_metadata_flash_lite(承認済み正式backend、2026-10-16以降)。"
+                              "structured_separation(旧gemini-2.5-pro-preview-tts/3.1-flash-tts-preview、Trial/regression用)は"
+                              "--allow-legacy-backendとの併用が必要。speech_metadata_flash_lite指定時は"
                               "gemini-3.8-flash-lite-ttsのspeech_metadata方式(Family X、"
                               "主記事segment+Key Phrase[共有narration含む]の両方が対象、"
                               "FAMILY-X-02のユーザー確定仕様CでKey Phraseも統一)。")
@@ -2240,7 +2294,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     # (M2)、speech_metadata_flash_lite backend必須(M5)。
     parser.add_argument("--style-profile", default=None, choices=tuple(style_profile_mod.STYLE_PROFILES),
                          help="Style profile。未指定: 記録があれば記録を採用(resume)、記録も既存run stateもない新規out_dirは"
-                              "n01(Full Story narration=N01、FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01)、既存run stateがある"
+                              "fx_20261016(承認済み6仕様: Full Story=PD06/Std Preview・Comment=R2/Adv Preview=E1/Adv KP解説=P7/"
+                              "KP英語=K2/Std KP日本語意味=P8-KP、2026-10-16以降の既定)、既存run stateがある"
                               "out_dirは課金前にSTOP(従来styleでresumeするなら`--style-profile default`を明示)。"
                               "coffee_p8=Coffee限定P8置換、coffee_n01_r2_p3=N01+R2+P3(Coffee用)。")
     # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01(Opus Q5): KPだけを再生成する最小CLI。--stage scaffold専用。
@@ -2257,7 +2312,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
 
 # W5(Opus L2所見MAJOR-3是正): tts stage開始前のbackend fail-fast Gate。
-FAMILY_X_APPROVED_PRODUCTION_TTS_BACKEND = "speech_metadata_flash_lite"
+# (定数本体はbuild_arg_parserが既定値に使うため、上方[ファイル前方]で定義済み)
 
 
 def assert_production_tts_backend(tts_backend: str, allow_legacy_backend: bool) -> None:
@@ -2507,6 +2562,10 @@ def main() -> None:
     style_profile_mod.assert_profile_backend(_profile_id, args.tts_backend)
     _profile_id, _profile_source = style_profile_mod.resolve_run_profile(
         out_dir, args.style_profile, write=True, tts_backend=args.tts_backend)
+    # R-07: 旧profileでresume中/legacy backendで承認済みprofile未適用、を目立たせる(CLI指定を忘れた場合の気付き用、非機能)。
+    _profile_warn = style_profile_mod.profile_resolution_warning(_profile_id, _profile_source)
+    if _profile_warn:
+        print(_profile_warn)
     os.makedirs(out_dir, exist_ok=True)
 
     levels = ["a2", "b1b"] if args.level == "both" else [args.level]

@@ -248,7 +248,8 @@ class RunnerCaptureTests(unittest.TestCase):
         """grep型: runnerのstyle解決(_role_style/_role_style_slower)は全てresolve_role_styleを経由する。"""
         src = open("er019_family_x_audio_production_runner_01.py", encoding="utf-8").read()
         # b1 / a2 / a2 slower / a2 support_ja(V5, R2) / b1 KP explanation(V5, P3)
-        self.assertEqual(src.count("style_profile_mod.resolve_role_style("), 5)
+        # + 委任_02A: KP英語(K2、_kp_english_generate_fn) / Std KP日本語意味(P8-KP、_role_style_ja_kp_meaning)
+        self.assertEqual(src.count("style_profile_mod.resolve_role_style("), 7)
         self.assertEqual(src.count("fl_styles.FAMILY_X_ROLE_STYLE_EN.get("), 2)  # 各_base_role_style内のみ
         self.assertEqual(src.count("def _base_role_style("), 2)
         # 非resolver経由の旧定義が残っていない
@@ -270,8 +271,9 @@ class RunProfileResolutionTests(unittest.TestCase):
         # 2026-10-13 FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01(Opus必須5 B'): 期待値を意図的に更新。
         # 旧: CLI未指定・記録なし -> default(何も書かない)。新: 新規out_dirはN01 profileへ解決し固定記録を作る。
         # `--style-profile default`を明示した場合は従来どおりdefault(何も書かない)。
+        # 2026-10-16 委任_02A: 新規out_dirの既定はfx_20261016へ更新(ユーザー指示§4)。
         pid, src = sp.resolve_run_profile(self.out, None, write=False)
-        self.assertEqual((pid, src), ("n01", "default_new_run_n01"))
+        self.assertEqual((pid, src), ("fx_20261016", "default_new_run_fx_20261016"))
         self.assertFalse(os.path.exists(self.out))  # write=Falseでは書かない
         pid, _ = sp.resolve_run_profile(self.out, "default")
         self.assertEqual(pid, "default")
@@ -405,7 +407,7 @@ class M3GateTests(unittest.TestCase):
     def test_block_conditions(self):
         cases = [
             ("b1b", lambda e: e.update(instruction_type="minimal_fallback"), "ADV_MINIMAL_FALLBACK"),
-            ("b1b", lambda e: e.update(style_prefix="<default:ENGLISH_STYLE_PREFIX>"), "ADV_STYLE_PREFIX_NOT_P8_PREFIXED"),
+            ("b1b", lambda e: e.update(style_prefix="<default:ENGLISH_STYLE_PREFIX>"), "ADV_STYLE_PREFIX_NOT_PROFILE_PREFIXED"),
             ("b1b", lambda e: e.update(local_rewrite_recovery={"x": 1}), "LOCAL_REWRITE_RECOVERY"),
             ("b1b", lambda e: e["style_profile"].update(style_base_sha256="0" * 64), "STYLE_BASE_SHA_MISMATCH_OR_MISSING"),
             ("a2", lambda e: e.update(fallback_used=True), "STD_FALLBACK_USED_OR_UNKNOWN"),

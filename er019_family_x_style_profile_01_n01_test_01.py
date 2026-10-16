@@ -119,19 +119,26 @@ class N01ProfileDefinitionTests(unittest.TestCase):
 class ResolveRunProfileTests(unittest.TestCase):
     FL = "speech_metadata_flash_lite"
 
-    def test_new_out_dir_resolves_to_n01_and_records(self):  # N-4(期待値を意図的に更新: 新規out_dirの既定=N01)
+    def test_new_out_dir_resolves_to_default_new_run_profile_and_records(self):
+        # N-4(期待値を意図的に更新): 2026-10-16 委任_02Aで新規out_dirの既定はN01からfx_20261016へ。N01自体は
+        # 明示指定[--style-profile n01]・既存記録のresumeで引き続き使える(下のtestで確認)。
         with tempfile.TemporaryDirectory() as d:
             out = f"{d}/new_run"
             pid, src = sp.resolve_run_profile(out, None, write=False, tts_backend=self.FL)
-            self.assertEqual((pid, src), (sp.PROFILE_N01, "default_new_run_n01"))
+            self.assertEqual((pid, src), (sp.PROFILE_FX_20261016, "default_new_run_fx_20261016"))
             self.assertFalse(os.path.exists(sp.record_path(out)))  # write=Falseでは書かない
             pid, src = sp.resolve_run_profile(out, None, write=True, tts_backend=self.FL)
-            self.assertEqual(pid, sp.PROFILE_N01)
+            self.assertEqual(pid, sp.PROFILE_FX_20261016)
             rec = sp.read_record(out)
-            self.assertEqual(rec["profile_id"], sp.PROFILE_N01)
-            self.assertEqual(rec["roles"]["FULL_STORY"]["sha256"], N01_SHA)
+            self.assertEqual(rec["profile_id"], sp.PROFILE_FX_20261016)
+            self.assertEqual(rec["roles"]["FULL_STORY"]["sha256"], sp.PD06_SHA256)
             # 2回目(resume)は記録を採用
-            self.assertEqual(sp.resolve_run_profile(out, None, tts_backend=self.FL), (sp.PROFILE_N01, "record"))
+            self.assertEqual(sp.resolve_run_profile(out, None, tts_backend=self.FL), (sp.PROFILE_FX_20261016, "record"))
+            # N01は明示指定で従来どおり新規作成できる(旧profileは残置)
+            out2 = f"{d}/n01_run"
+            pid2, src2 = sp.resolve_run_profile(out2, sp.PROFILE_N01, write=True, tts_backend=self.FL)
+            self.assertEqual((pid2, src2), (sp.PROFILE_N01, "cli_new_record"))
+            self.assertEqual(sp.read_record(out2)["roles"]["FULL_STORY"]["sha256"], N01_SHA)
 
     def test_legacy_backend_new_dir_stays_default_no_record(self):
         with tempfile.TemporaryDirectory() as d:

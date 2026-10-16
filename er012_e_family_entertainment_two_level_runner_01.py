@@ -61,6 +61,7 @@ import er003_v1_n3_01_scaffold_generate as sc
 import er003_v1_n3_01_standard_a2_generate as std_gen
 import er003_v1_n3_01_tts_generate as tts_gen
 import er005_cost_logger as cl
+import er081_family_x_in_one_line_01 as fx_iol  # FXPW 委任_02B: In One Line文数カウンタ(中立module)
 from er006_model_routing_contract_01 import PricingNotFoundError
 
 PRICING_SNAPSHOT_PATH = "er005_output/cost_baseline_01/pricing_snapshot.json"
@@ -324,6 +325,39 @@ _FAMILY_X_PARAGRAPH_RETRY_MUST_FIX = [{
 }]
 
 
+def _in_one_line_evidence(in_one_line_text: str, *, model_id_actual, response_id, prompt_sha256, usage) -> dict:
+    """FXPW 委任_02B(N1/N2解消): In One Line生成のevidence。文数は実際にarticle.md/parts.jsonへ入る本文で数える。
+    spec_ok = 文数が{2,3}(「基本2文、必要な場合のみ3文」、1文を許容する旧経路を残さない)。"""
+    n = fx_iol.count_in_one_line_sentences(in_one_line_text)
+    return {"sentence_count": n, "spec_ok": n in fx_iol.IN_ONE_LINE_SPEC_COUNTS,
+            "model_id_actual": model_id_actual, "response_id": response_id,
+            "prompt_sha256": prompt_sha256, "usage": usage}
+
+
+def _persist_writer_summary(out_dir: str, evidence: dict) -> None:
+    """writer_run_summary.jsonへ既存内容とmergeして保存する(STOP前のevidence保全にも使う)。"""
+    existing_summary = {}
+    if os.path.exists(f"{out_dir}/writer_run_summary.json"):
+        existing_summary = load_json(f"{out_dir}/writer_run_summary.json")
+    save_json(f"{out_dir}/writer_run_summary.json", {**existing_summary, **evidence})
+
+
+def _stop_on_in_one_line_spec_violation(out_dir: str, evidence: dict, label: str, iol_ev: dict, rejected_text: str,
+                                        rejected_path: str) -> None:
+    """FXPW 委任_02B(Fable決定R-03): 文数が{2,3}以外ならTTS前に既存の[STOP]機構(RuntimeError("[STOP] ..."),
+    `_family_x_ensure_split_or_paragraph_retry`と同型)で停止する。自動再生成はしない(新retry機構を作らない)。
+    article.md/parts.jsonは書かず(以後のstageが仕様違反の本文を消費しない)、本文は別名で保全する。解除=人間判断後の再実行
+    (`--regenerate-stage advanced|standard`)。"""
+    if iol_ev["spec_ok"]:
+        return
+    save_text(rejected_path, rejected_text)
+    _persist_writer_summary(out_dir, evidence)
+    raise RuntimeError(
+        f"[STOP] Family X {label} IN_ONE_LINE_SPEC: In One Lineが{iol_ev['sentence_count']}文です"
+        "(仕様=基本2文、必要な場合のみ3文)。自動再生成せずTTS前にSTOPします。"
+        f"本文は{rejected_path}に保全済み。人間判断後に--regenerate-stageで再実行してください。")
+
+
 def _advanced_in_one_line(client, title: str, body: str, ja_text: str, ledger_text: str) -> dict:
     """Advancedの「In one line」生成(M1(a)、Advanced限定の意図的Level非対称、ユーザー正式採用2026-10-10)。
     生成入力へ日本語R2本文(W-1最終文)とLedgerを**常に**加える(環境変数・runtime switchなし)。
@@ -361,6 +395,8 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
         adv_result = adv_gen.generate_family_x_faithful_translation(ja_text, client=client)
         advanced_title, advanced_body = adv_result.title, adv_result.body
 
+        iol_holder = {}
+
         def _advanced_paragraph_retry_regen(client=client, ja_text=ja_text):
             retry_result = adv_gen.generate_family_x_faithful_translation(
                 ja_text, client=client, must_fix=_FAMILY_X_PARAGRAPH_RETRY_MUST_FIX)
@@ -368,9 +404,11 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
             adv_result = retry_result
             advanced_title, advanced_body = retry_result.title, retry_result.body
             iol = _advanced_in_one_line(client, advanced_title, advanced_body, ja_text, ledger_text)
+            iol_holder["result"] = iol
             return f"# {advanced_title}\n\n{advanced_body}\n\n## In one line\n{iol['text']}"
 
         iol_result = _advanced_in_one_line(client, advanced_title, advanced_body, ja_text, ledger_text)
+        iol_holder["result"] = iol_result
         advanced_text = f"# {advanced_title}\n\n{advanced_body}\n\n## In one line\n{iol_result['text']}"
         para_outcome = _family_x_ensure_split_or_paragraph_retry(
             advanced_text, _advanced_paragraph_retry_regen, "Advanced")
@@ -378,8 +416,12 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
         advanced_split = para_outcome["split"]
         paragraph_retried_advanced = para_outcome["paragraph_retried"]
 
-        save_text(f"{b1b_dir}/article.md", advanced_text)
-        save_json(f"{b1b_dir}/parts.json", advanced_split)
+        final_iol = iol_holder["result"]    # 最終採用されたIn One Line生成(段落retry時は再生成分)
+        adv_iol_ev = _in_one_line_evidence(
+            advanced_split.get("in_one_line", ""), model_id_actual=final_iol.get("model"),
+            response_id=final_iol.get("response_id"),
+            prompt_sha256=hashlib.sha256((final_iol.get("prompt") or "").encode("utf-8")).hexdigest(),
+            usage=final_iol.get("usage"))
         evidence["advanced"] = {
             "process_label": "FAMILY_X_FAITHFUL_TRANSLATION",
             "model_id_requested": adv_result.model_id_requested,
@@ -395,7 +437,12 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
             "cost_jpy": adv_result.cost_jpy,
             "elapsed_seconds": adv_result.elapsed_seconds,
             "title": advanced_title,
+            "in_one_line": adv_iol_ev,
         }
+        _stop_on_in_one_line_spec_violation(out_dir, evidence, "Advanced", adv_iol_ev, advanced_text,
+                                            f"{b1b_dir}/rejected_in_one_line_spec_article.md")
+        save_text(f"{b1b_dir}/article.md", advanced_text)
+        save_json(f"{b1b_dir}/parts.json", advanced_split)
         assert_budget_ok(out_dir, budget_jpy, "after advanced writer")
 
     if only in (None, "standard"):
@@ -418,6 +465,26 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
         standard_split = para_outcome["split"]
         paragraph_retried_standard = para_outcome["paragraph_retried"]
 
+        std_prompt_sha256 = hashlib.sha256(std_gen.build_family_x_no_heading_prompt(
+            advanced_text, must_fix=(_FAMILY_X_PARAGRAPH_RETRY_MUST_FIX if paragraph_retried_standard else None)
+        ).encode("utf-8")).hexdigest()
+        std_iol_ev = _in_one_line_evidence(
+            standard_split.get("in_one_line", ""), model_id_actual=std_result.model_id_actual,
+            response_id=std_result.response_id, prompt_sha256=std_prompt_sha256, usage=std_result.usage)
+        adv_iol_count = fx_iol.count_in_one_line_sentences(
+            (sc.split_family_x_article_text_v2(advanced_text) or {}).get("in_one_line", ""))
+        if (std_iol_ev["spec_ok"] and adv_iol_count in fx_iol.IN_ONE_LINE_SPEC_COUNTS
+                and adv_iol_count != std_iol_ev["sentence_count"]):
+            # AdvとStdの文数不一致(2 vs 3等)はSTOPしない(両方が仕様内)。警告のみ。
+            print(f"[WARN][IOL-SPEC] Family X: Advanced In One Line={adv_iol_count}文 / "
+                  f"Standard={std_iol_ev['sentence_count']}文(どちらも仕様内[2〜3文]のためSTOPしません)。")
+        if not std_iol_ev["spec_ok"]:
+            evidence["standard"] = {"process_label": "FAMILY_X_STANDARD_A2_NO_HEADING",
+                                    "model_id_actual": std_result.model_id_actual, "response_id": std_result.response_id,
+                                    "usage": std_result.usage, "cost_jpy": std_result.cost_jpy,
+                                    "paragraph_retried": paragraph_retried_standard, "in_one_line": std_iol_ev}
+            _stop_on_in_one_line_spec_violation(out_dir, evidence, "Standard", std_iol_ev, standard_text,
+                                                f"{a2_dir}/rejected_in_one_line_spec_article.md")
         save_text(f"{a2_dir}/article.md", standard_text)
         save_json(f"{a2_dir}/parts.json", standard_split)
         # S3-2(観測のみ、判定・STOPには使わない): StandardがどのAdvanced英文(sha256)から派生したかを記録する。
@@ -445,6 +512,7 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
             "checks": std_result.checks,
             "title": standard_split.get("title"),
             "derived_from_advanced_sha256": derived_from_advanced_sha256,
+            "in_one_line": std_iol_ev,
         }
         assert_budget_ok(out_dir, budget_jpy, "after standard writer")
 
@@ -454,11 +522,7 @@ def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
     # standardで再実行する等)では、旧実装(evidenceのみをそのまま上書き保存)だと
     # 既存stageのevidenceキーが消える。既存ファイルとマージして保存する
     # (呼び出し元への戻り値evidenceは従来通りそのstage分のみで変更しない)。
-    existing_summary = {}
-    if os.path.exists(f"{out_dir}/writer_run_summary.json"):
-        existing_summary = load_json(f"{out_dir}/writer_run_summary.json")
-    merged_summary = {**existing_summary, **evidence}
-    save_json(f"{out_dir}/writer_run_summary.json", merged_summary)
+    _persist_writer_summary(out_dir, evidence)
     return evidence
 
 

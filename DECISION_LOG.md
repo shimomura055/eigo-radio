@@ -21704,3 +21704,11 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 - Fable確認2点の確定: (1)OPEN-389=A2/B1 crosslevel経路(Family A/B系)のため27-7により凍結(closeではない、拡大判断の再提示もしない)。(2)REGISTER #72=変更なし(原文§3『Day 5〜6の保留は維持する』を備考へ追記のみ)。#81=`| 81 |`表行は無く、#80〜#82の箇条書き行(#81)に「#88へ統合・判断済み」を行内追記。
 - 未実証事項(開示): 未知ケースに対するDQIの有効性、運用コスト。次=案a(JPY0の前向き観察)の提案のみ(実施はFable/ユーザー判断)。
 - Status: `DQI_P_SSOT_APPLIED_COMMITTED`(到達上限)。`PRODUCTION_WIRED`の判定はFable独立受入後であり本委任では記載しない。
+
+### FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01 委任_02A/02B/04(2026-10-16、Phase 2配線: 実装・統合・回帰・SSOT)
+- 決定: ユーザー正式承認済みFamily X仕様(原文=`docs/pm/delegation_log/2026-10-16_FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01_USER.md`)をProductionコードへ配線した。トラックA(02A)=新既定profile `fx_20261016`・K2 2段key・P8-KP role分離・M3/M4 role別判定・`--tts-backend`既定flash-lite(新規72 test)。トラックB(02B)=In One Line新Prompt・Std継承1文・Writer段fail-closed STOP・Local Rewrite文数gate(Family X scope限定)・evidence(新規21 test)。委任_04=audio runnerのb1/a2 segment生成を`family_x_in_one_line_scope()`で囲む結合(2箇所)+結合test 3件+全体回帰+CLI未指定dry-run(API0)+SSOT追記。
+- Opus条件A(R-01〜R-12)採否: R-01,R-02,R-06,R-07,R-08,R-10,R-11,R-12=採用(実装)、R-03〜R-05=トラックB側で処理(設計書§K)、R-09=既知制約として記録のみ(日本語roleのM4は意図base shaのみ)。
+- 設計逸脱: 設計§B-3のSN/repro01追加は、Family A guard test(SN差分0)を緩めず新module `er019_family_x_kp_en_k2_store_01.py`へ隔離。Store `qa_evidence.fallback_used`追加は、key Bの`instruction_path`で識別できるため不要。K2 fallbackのBLOCK化は新Blocking QA条件のため非採用(非ブロッキングwarning、Coffee E2E観測後に扱う=区分C)。02BのT-0要約保存は逸脱(記録済み)。
+- test: 新規93件+結合3件(er081 test 24件)。全体回帰(37ファイル)=956 PASS/6 FAIL(いずれも本件非起因: er020 fullseg `RegressionCorpusTest::test_recorded_candidates`=HEADでも失敗、er026 4件=未commit `er006_output/pronunciation_ledger_01/ledger.json`依存[HEAD ledgerではPASS]、er078 06c 1件=作業ツリーの未commit状態依存[HEAD worktreeではPASS])。詳細=`docs/pm/RESULT_PACKET_FXPW4.md`。
+- Status: `PHASE2_WIRED_CODE_COMMITTED_RUNTIME_EVIDENCE_PENDING`。`PRODUCTION_WIRED`ではない(Coffee正式実走のruntime evidence=ユーザー受入条件4・5・7が未取得、実走前にユーザーへ費用提示)。
+

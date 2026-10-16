@@ -47,6 +47,7 @@ from datetime import datetime, timezone
 import er003_v1_b1_scaffold_01_generate as b1s
 import er006_preprod_hardening_01_validation as asr_validation
 import er011_human_review_lock_01 as review_lock
+import er081_family_x_in_one_line_01 as fx_iol  # FXPW 委任_02B: 中立module(他moduleをimportしない)
 
 MANAGEMENT_ID = "TTS-LOCAL-REWRITE-CONNECTED-SPEECH-PRODUCTION-WIRING-01"
 
@@ -626,8 +627,24 @@ def call_luna_local_qa(client, segment_role_label: str, canonical_text: str, can
     return parsed
 
 
+def check_in_one_line_sentence_count_unchanged(segment_id: str | None, canonical_text: str,
+                                               rewritten_segment: str) -> dict:
+    """FXPW 委任_02B(Family X In One Line「基本2文、必要な場合のみ3文」の全経路適用、案L1)。
+    句読点のみの変更(「. 」→「, 」等)でIn One Lineの文数が変わる候補は、tokenizeがpunctuationを落とすため
+    局所性検査(criterion6/7)をすり抜ける。ここで文数不変を別gate(`8_sentence_count_unchanged`)として検査する。
+    有効条件=Family Xスコープ(fx_iol.family_x_in_one_line_scope()内)かつ role==IN_ONE_LINE。
+    それ以外(Family A/B/C/Z等、scope外)は常にpass(不発、`applicable=False`)。"""
+    applicable = (fx_iol.is_family_x_in_one_line_scope()
+                  and resolve_narrative_role(segment_id) == "IN_ONE_LINE")
+    if not applicable:
+        return {"applicable": False, "pass": True, "before": None, "after": None}
+    before = fx_iol.count_in_one_line_sentences(canonical_text)
+    after = fx_iol.count_in_one_line_sentences(rewritten_segment)
+    return {"applicable": True, "pass": before == after, "before": before, "after": after}
+
+
 def build_full_candidate_records(canonical_text: str, candidates: list, qa_evaluations: list,
-                                  problem_span_range: dict) -> list:
+                                  problem_span_range: dict, segment_id: str | None = None) -> list:
     qa_by_id = {e["candidate_id"]: e for e in qa_evaluations}
     records = []
     for c in candidates:
@@ -657,12 +674,17 @@ def build_full_candidate_records(canonical_text: str, candidates: list, qa_evalu
         record["locality_check"] = locality
         record["seven_gates"] = gates
         record["all_seven_gates_pass"] = all_pass
+        # FXPW 委任_02B: 別集計の追加gate(seven_gatesの名前・件数・意味は不変)。scope外では常にTrue。
+        sc_check = check_in_one_line_sentence_count_unchanged(segment_id, canonical_text, c["rewritten_segment"])
+        record["sentence_count_check"] = sc_check
+        record["8_sentence_count_unchanged"] = sc_check["pass"]
+        record["adoptable"] = all_pass and sc_check["pass"]
         records.append(record)
     return records
 
 
 def select_final_candidate(records: list) -> dict:
-    passing = [r for r in records if r["all_seven_gates_pass"]]
+    passing = [r for r in records if r.get("adoptable", r["all_seven_gates_pass"])]
     if not passing:
         return {"selected": None, "status": "NO_CANDIDATE_PASSED_ALL_SEVEN_GATES",
                 "selection_rationale": "全候補が7 Gateのいずれかで不合格だったため、採用候補なし。"}
@@ -729,7 +751,8 @@ def run_local_rewrite_recovery(*, segment_id: str, canonical_text: str, last_asr
                              context_before_text, context_after_text)
     result["qa"] = qa
 
-    records = build_full_candidate_records(canonical_text, candidates, qa["evaluations"], problem_span_range)
+    records = build_full_candidate_records(canonical_text, candidates, qa["evaluations"], problem_span_range,
+                                           segment_id=segment_id)
     result["candidates"] = records
 
     selection = select_final_candidate(records)

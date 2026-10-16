@@ -175,12 +175,12 @@ class _FakeFaithfulTranslationResult:
 # 3段落以上にする。
 ADVANCED_BODY = "Body paragraph one.\n\nBody paragraph two.\n\nBody paragraph three."
 ADVANCED_TITLE = "Advanced Title"
-ADVANCED_IN_ONE_LINE = "One closing sentence."
+ADVANCED_IN_ONE_LINE = "First closing sentence. Second closing sentence."  # FXPW 02B: 仕様は基本2文(1文はWriter段でSTOP)
 ADVANCED_TEXT = f"# {ADVANCED_TITLE}\n\n{ADVANCED_BODY}\n\n## In one line\n{ADVANCED_IN_ONE_LINE}"
 
 STANDARD_TEXT = (
     "# Standard Title\n\nSimple body one.\n\nSimple body two.\n\nSimple body three.\n\n"
-    "## In one line\nOne closing sentence."
+    "## In one line\nFirst closing sentence. Second closing sentence."
 )
 
 

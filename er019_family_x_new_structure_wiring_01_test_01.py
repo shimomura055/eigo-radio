@@ -36,9 +36,13 @@ class PromptVerbatimTranscriptionTests(unittest.TestCase):
         self.assertEqual(_sha(adv_gen.FAMILY_X_FAITHFUL_TRANSLATION_INSTRUCTION),
                           _sha(trial.TRIAL_FAITHFUL_TRANSLATION_INSTRUCTION))
 
-    def test_in_one_line_instruction_matches_er045_v2(self):
-        self.assertEqual(_sha(adv_gen.FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE),
-                          _sha(trial.TRIAL_IN_ONE_LINE_V2_INSTRUCTION_TEMPLATE))
+    def test_in_one_line_instruction_supersedes_er045_v2_one_sentence_trial(self):
+        """FXPW 委任_02B: Production In One Lineは「基本2文、必要な場合のみ3文」(2026-10-16承認)へ置換済み。
+        旧Trial(er045 v2、Exactly one sentence)とは意図的に逐語一致しない。Trial moduleは無変更(1文のまま)。"""
+        self.assertNotEqual(_sha(adv_gen.FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE),
+                            _sha(trial.TRIAL_IN_ONE_LINE_V2_INSTRUCTION_TEMPLATE))
+        self.assertIn("Exactly one sentence", trial.TRIAL_IN_ONE_LINE_V2_INSTRUCTION_TEMPLATE)
+        self.assertNotIn("Exactly one sentence", adv_gen.FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE)
 
     def test_translator_developer_message_matches_er045(self):
         self.assertEqual(_sha(adv_gen.FAMILY_X_TRANSLATOR_DEVELOPER),
@@ -260,8 +264,8 @@ class ConnectedSpeechRoleRecognitionTests(unittest.TestCase):
 # ============================================================
 class InOneLineNoHardWordLimitTests(unittest.TestCase):
     def test_generate_in_one_line_prompt_uses_rough_guide_wording_not_strict_rule(self):
-        self.assertIn("Trial-only guidance, not a strict rule",
-                      adv_gen.FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE)
+        self.assertIn("(not a strict rule)", adv_gen.FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE)
+        self.assertNotIn("Trial-only", adv_gen.FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE)
 
     def test_split_v2_does_not_validate_in_one_line_word_count(self):
         """split_family_x_article_text_v2()はin_one_lineの語数を検証・

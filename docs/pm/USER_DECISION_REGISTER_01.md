@@ -231,3 +231,4 @@
 - #92(Family C 再利用保証 OPEN-385/387)=**判断不要・作業禁止**(Family C開発停止): 原文§1-C『Family A・B・Cは開発停止とする。』。OPEN-385/386/387は凍結(closeではない)。
 - AUW=**`PRODUCTION_WIRED`ユーザー正式承認**(新規UDRではなく記録): 原文§1-A『**ユーザーが`PRODUCTION_WIRED`を正式承認。**』。#83・#84・#86・#87の既存「判断済み」は不変。
 - 本追記後: 本管理IDによる新規USER_DECISION_REQUIREDは0件。#80〜#95のUSER_DECISION_REQUIRED残は0件。ブロックする既存UDR(#72等)の現状はFableがREGISTER本体で照合して確定する(本委任ではREGISTER編集禁止のため#72・#81の最終状態を未確認。#81は#88〜#91へ統合として扱う)。
+- 2026-10-16 FXPW 委任_04: FXUD-1〜FXUD-8の備考=配線実装済み(本commit=メッセージ冒頭『FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01 委任_02A/02B/04』)・runtime evidence(Coffee正式実走)待ち。`PRODUCTION_WIRED`ではない。#97=設計報告済み(Prompt全文=`docs/research/FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01/WIRING_DESIGN_01.md`§K-1、ユーザー承認不要)。#98(Hook Side Output廃止)=コードにHook stage無し・SSOT反映済み。新規USER_DECISION_REQUIRED=0件(判断候補: Coffee実走の費用承認=見積最悪約162円>100円、7-7)。

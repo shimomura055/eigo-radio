@@ -519,7 +519,7 @@ Keep every fact exactly as it is: names, numbers, who did what, cause and effect
 
 The result must still sound natural when read aloud. Do not write like a children's book, and do not write a flat list of short sentences.
 
-Keep the same Markdown structure (the "# " title, and the final "## In one line" section); do not add or remove sections.
+Keep the same Markdown structure (the "# " title, and the final "## In one line" section); do not add or remove sections. Keep the "In one line" section at the same number of sentences as in the article below (normally two), each as a short A2 sentence; do not merge it into one sentence.
 """ + FAMILY_X_STANDARD_A2_NO_HEADING_PRESERVE_SENTENCE + """
 
 Output only the English title and the English body.

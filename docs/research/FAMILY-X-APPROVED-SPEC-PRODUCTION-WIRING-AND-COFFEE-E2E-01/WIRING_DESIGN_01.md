@@ -256,3 +256,120 @@ M4(evidence)判定にKP role追加: `evaluate_segment_evidence`をKP roleでも�
 3. 共有moduleの追加引数(`primary_style_override`)が A/B/C を変えないこと。
 4. IOL文面(§C-1)、「12-22 words」目安、3文基準、Std 1文追加(§C-2)、LR L1(§C-4)、非ブロッキングValidator(§C-5)。
 5. M3/M4のKP拡張(N3)で、新roleがGateの検査対象から漏れないこと。
+
+---
+
+## §K 委任_02B実装記録(In One Line「基本2文・必要時のみ3文」全経路適用、2026-10-16、API 0・JPY0)
+
+到達Status: `TRACK_B_IMPLEMENTED_TESTS_PASS`(PRODUCTION_WIRED判定ではない)。Opus条件A反映(Fable決定1〜7)。
+
+### K-1. 最終Prompt(Adv、`ADV FAMILY_X_IN_ONE_LINE_INSTRUCTION_TEMPLATE`、`er003_v1_n3_01_advanced_adaptation_generate.py:551`〜)
+```
+Below is a finished English news feature article (already translated from Japanese, no section headings). Write the closing "In one line" summary of the story: normally TWO short, natural sentences, in a way a listener can understand by hearing them just once.
+
+Requirements:
+- Normally exactly two sentences. Sentence 1 states the core of the story (what happened, or the surprising point). Sentence 2 gives its meaning or why it matters, as the article states it, and closes the summary naturally, using only what the article already says.
+- Use a third sentence only when it is needed: only when the article states an important condition, limit, or hedge (for example "may", "not always", "at least") or a second essential point that cannot be added to sentence 1 or 2 without making it hard to follow by listening once. Never write more than three sentences, and never add a third sentence just to add detail.
+- Each sentence must be understandable on a single listen: one main idea per sentence, short and natural.
+- Do not add any new fact, conclusion, or lesson that is not already stated in the article below.
+
+As a rough guide only (not a strict rule): aim for one main clause with at most one subordinate clause in each sentence, roughly 12-22 words per sentence.
+
+Output only the sentences themselves, one after another on a single line, nothing else (no quotation marks, no numbering, no label like "In one line:", no Markdown heading markup).
+
+[Article]
+{article_text}
+```
+`_M1_REQ_ANCHOR`(「- Do not add any new fact, conclusion, or lesson ...」)は一字不変、`assert TEMPLATE_M1 != TEMPLATE`維持。Std追加1文(`std_gen` no-heading prompt、`Keep the same Markdown structure (...); do not add or remove sections.`の直後): `Keep the "In one line" section at the same number of sentences as in the article below (normally two), each as a short A2 sentence; do not merge it into one sentence.`
+
+### K-2. 3文にする基準(理由条件、数値閾値ではない)
+(a)記事が重要な条件・限定・hedge(may / not always / at least等)を述べ、1〜2文目に入れると聞き取りが困難になる場合、または(b)記事の核心が2つあり1文に押し込めない場合に限る。上限3文。詳細を足すためだけの3文目は禁止。2文目は「記事が述べる意味・なぜ重要か」(二人称の助言・教訓を誘発しない中立表現、R-05)。
+
+### K-3. 実装箇所
+- 文数カウンタ中立module: `er081_family_x_in_one_line_01.py`(`count_in_one_line_sentences`、`IN_ONE_LINE_SPEC_COUNTS={2,3}`、`family_x_in_one_line_scope()`[context manager、contextvar]、`is_family_x_in_one_line_scope()`)。他moduleをimportしない。
+- Writer段(`er012_e_family_entertainment_two_level_runner_01.py`): `_in_one_line_evidence`/`_persist_writer_summary`/`_stop_on_in_one_line_spec_violation`(新規helper)、`_run_writer_stage_once`内でAdv(article.md/parts.json保存の**前**)・Std(同)に呼出。STOP=既存パターン`RuntimeError("[STOP] ...")`(`_family_x_ensure_split_or_paragraph_retry`と同型、新sentinelなし)。STOP時は`article.md`/`parts.json`を書かず、`b1b|a2/rejected_in_one_line_spec_article.md`へ本文保全、evidenceを`writer_run_summary.json`へ先に保存。自動再生成なし。解除=人間判断後の`--regenerate-stage advanced|standard`。Adv/Std不一致(2 vs 3)は`[WARN][IOL-SPEC]`のみ。evidence=`advanced.in_one_line`/`standard.in_one_line`={sentence_count, spec_ok, model_id_actual, response_id, prompt_sha256, usage}(AdvのpromptはM1で常に返る実送信文字列のsha、Stdは`build_family_x_no_heading_prompt`[must-fix使用時は同条件]のsha)。
+- Local Rewrite(`er020_tts_retry_local_rewrite_01.py`): `check_in_one_line_sentence_count_unchanged`新設、`build_full_candidate_records(..., segment_id=None)`に引数追加(既定None=従来互換)、候補recordに`8_sentence_count_unchanged`/`sentence_count_check`/`adoptable`を追加、`select_final_candidate`は`adoptable`(無ければ従来の`all_seven_gates_pass`)で採否。`seven_gates`の7キー・`all_seven_gates_pass`の意味は不変。`run_local_rewrite_recovery`が`segment_id`を渡す。`LR:158`ラベル不変。
+- 有効条件: `is_family_x_in_one_line_scope()` かつ `resolve_narrative_role(segment_id)=="IN_ONE_LINE"`。scope外は常にTrue(不発)。
+
+### K-4. test(新規`er081_family_x_in_one_line_01_test_01.py`ほか)
+template(旧語句撤去・anchor保持・M1)/カウンタ(2,3,1,4文・略語・引用符・数値・$・改行)/scope/Std Prompt追加1文/Writer段(fake client: evidence保存・1文Adv STOP・4文STOP・1文Std STOP・Adv2/Std3 WARNのみ・3文通過・parts.json複数文OK)/`generate_family_x_in_one_line`の送信Prompt/LR(scope内で2文→1文候補が不採用・7 gateキー不変・scope外不発かつ既存gate結果同一・他role不発・segment_id省略互換)。既存testの改訂: `er019_family_x_new_structure_wiring_01_test_01.py`の2件(旧「Trial v2とsha一致」「Trial-only文言」assertは旧仕様の固定であり撤去・新仕様assertへ置換)。
+
+### K-5. 統合委任_04へ残す1行
+`er019_family_x_audio_production_runner_01.py`の`generate_family_x_b1_segments`(`:814`の`@secondary_run_scope.with_secondary_run`行の直下)と`generate_family_x_a2_segments`(`:1154`同)の両方に`@fx_iol.family_x_in_one_line_scope()`を追加(+`import er081_family_x_in_one_line_01 as fx_iol`)。`contextlib.contextmanager`はデコレータとして使える。これでLocal Rewrite(`generate_charon_english`等がTTS段内で`run_local_rewrite_recovery`を呼ぶ経路)がFamily X scope内で動く。※行番号は委任_02Aの編集で前後するためGrepで再特定すること。
+
+
+---
+
+## §J 委任_02A実装記録(Opus条件反映、2026-10-16、トラックA、JPY0、未commit)
+
+**到達Status**: `TRACK_A_IMPLEMENTED_TESTS_PASS`(PRODUCTION_WIRED判定はしない)。以下は§A/§B/§D/§F/§Gの**訂正・上書き**を含む(本セクションが優先。上位セクションは追記のみ方針[並行委任との同時編集回避]のため原文のまま残す)。
+
+### J-1. 設計からの変更点(重要)
+
+1. **新moduleへ隔離(§B-3の訂正)**: 設計書§B-3は`er006_audio_cost_pilot_02_shared_narration.py`(SN)へ`ensure_key_phrase_english_component_styled`を追加し、`er003_v1_repro01_main_generate.py`へ`primary_style_override`を追加する案だった。実装中、既存の機械的guard `er019_family_x_pointless_01_test_01.py::FamilyAUnchangedTest`(SNを含む「Family A共有ファイルの未commit差分=0」を強制)に抵触することを確認した(SNへ追記→当該testがFAIL→SNを`git checkout`で元へ戻した)。このguardは緩和せず、Family X専用の**新module `er019_family_x_kp_en_k2_store_01.py`**に2段key経路を置いた。結果、**SN・`er006_master_audio_store_01.py`・`er003_v1_repro01_main_generate.py`・`er063_family_z_audio_01.py`は全て無変更**(`git status --porcelain`で差分0)。`primary_style_override`追加も不要(Family Zの`_kp_en_two_stage`と同じ構成でstrict関数を直接呼ぶ=Fable決定1の優先案)。
+2. **`qa_evidence.fallback_used`のStore追加は不採用**(§B-2の対策案を不採用): key Bの`instruction_path="english_lock_fallback"`でfallback entryを識別できるため、`er006_master_audio_store_01.py:177`の変更は不要になった(Opus R-01の代替案を採用)。→ `fallback_used` consumerのGrep結果(後述J-5)でも副作用なし。
+
+### J-2. R-01〜R-12の採否と実装箇所
+
+| ID | 採否 | 実装箇所(file:行) | 内容/テスト |
+|---|---|---|---|
+| R-01 K2 fallback key分離 | **採用** | `er019_family_x_kp_en_k2_store_01.py:36-106` | key A(primary, id`key_phrase_english_component_k2`, version`v2_margin030+k2.9d905cfe6c04`)/key B(english_lock_fallback, version`v2_margin030+lock.dcd08dcae5b0`)。K2 primary 2回→NGでkey B(ENGLISH_LOCK 2回)。fallback音声はkey Aへ保存しない。test: `StoreTwoStageKeyTests`(9件、mutationで検出力確認済み) |
+| R-02 M3/M4 role別判定 | **採用** | `er019_family_x_style_profile_01.py:518-562(M4)/564-602(kp_en_store_key_check)/604-695(_gate_targets, m3)` | 判定表はJ-3。test: `M3M4RoleTests`(19件) |
+| R-03 IOL | 本委任対象外(トラックB) | - | - |
+| R-04/R-05 | 本委任対象外(設計書§Cに関わるためB側) | - | - |
+| R-06 Z smoke | **採用** | test `FamilyZIsolationTests`(5件) | x_runnerのlazy importと`generate_key_phrase_explanation_en_verified`のmock呼出smoke。`sp._verify_constants()`(新4定数)を明示実行。§A-4の根拠記述訂正はJ-4 |
+| R-07 CLI未指定警告・backend既定 | **採用(両方)** | `style_profile.py:341-351(profile_resolution_warning)`、`runner:2563-2565(main)`、`runner:70,2269(--tts-backend既定)` | 旧profileでresume中/legacy backendで新profile未適用を`[WARN][STYLE-PROFILE]`で出力。`--tts-backend`既定を`speech_metadata_flash_lite`へ(理由はJ-6) |
+| R-08 test追加(8項目) | **採用** | `er019_family_x_fx_20261016_wiring_01_test_01.py`(72件) | (1)`MainCliTests` (2)`test_main_resume_with_old_n01_record_...`+`RunnerKpWiringTests.test_default_and_old_profiles_keep_legacy_kp_path_byte_identical` (3)`test_only_segments_regeneration_uses_same_profile_style_and_same_key` (4)`test_a2_style_profile_argument_is_threaded_...` (5)`M3M4RoleTests`/`StoreTwoStageKeyTests` (6)`FamilyZIsolationTests` (7)`test_fallback_used_consumers_do_not_read_kp_english_entries` (8)`AbcGoldenTests` |
+| R-09 日本語role M4は意図shaのみ | **採用(既知制約として記録)** | `style_profile.py` `evaluate_segment_evidence`コメント | SUPPORT_JA(R2)/KP_JA_MEANING(P8-KP)のM4は「意図したbase sha」のみ検証。最終送信styleの実測はraw_usage_log/attemptsの`instruction_text`で別途行う。**将来`migrate`設計の条件**: 日本語roleのprofile移行を許すなら、移行前後で最終送信styleのsha実測を必須とする |
+| R-10 P8名称分離 | **採用** | `style_profile.py:137-143(P8_KP_JA_*)`、`:174(ROLE_KP_JA_MEANING)`、runner BLOCK文言 | 別定数・別role。BLOCK文言「P8対象segmentがP8で…」→「profile対象segmentが承認済みprofileのStyleで生成されていません」。`ADV_STYLE_PREFIX_NOT_P8_PREFIXED`→`..._NOT_PROFILE_PREFIXED`(任意項目、実施)。`compute_ledger_hits`既定値/`augmented_startswith_p8`互換キーは残置しコメントで「Full Story旧候補P8」と明記 |
+| R-11 Std PD06方式 | **採用** | `style_profile.py:243-`(`std_append_slower_instruction=False`) | Std Full StoryはPD06を逐語(A2減速instruction非連結)+生成後6%減速(既存、共有module側無変更)を維持。COFFEE_E2E_PLAN §8にも追記 |
+| R-12 `FAMILY_X_VARIABLE_ROLE_STYLE_VERSION`をbumpしない | **採用** | 無変更(`v3_j3_kp_meaning_and_explanation_guard`のまま、testで固定) | 理由: profileは1 out_dirにつき固定記録で不変(混在不可)。旧profile out_dirのcache-version guardを変えず、新profileの区別は固定記録(M2/M3)とStore key(K2 id/version)で行うため。bumpすると旧n01等のresume時にKP解説/日本語意味の検証済みcacheが無効化され不要な再生成費用が出る |
+
+### J-3. M3/M4 role別判定表(最終)
+
+| role(対象level) | 対象entry | base sha(M4 `style_base_sha256`==role原文sha) | 追加条件(M3 violation) | 最終送信style(M4 final) | warning(非ブロッキング) |
+|---|---|---|---|---|---|
+| FULL_STORY(a2,b1b) | `segments.full_story_part1-3` | 必須 | Adv: `style_prefix`がPD06で始まる(`ADV_STYLE_PREFIX_NOT_PROFILE_PREFIXED`)・`instruction_type!=minimal_fallback`。Std: `fallback_used is False`。`local_rewrite_recovery`なし | hintなし→sha一致/hintあり→head200 startswith(従来) | - |
+| SUPPORT_JA(a2) | `segments.preview,comment_1-4` | 必須 | `fallback_used is False`(`JA_FALLBACK_USED_OR_UNKNOWN`) | 判定しない(R-09) | - |
+| PREVIEW(b1b) | `segments.preview` | 必須 | `style_prefix`がE1で始まる・`!=minimal_fallback` | 従来 | - |
+| KP_EXPLANATION_EN(b1b) P7 | `key_phrases[rank].explanation` | 必須 | `status OK`(`KP_EXPLANATION_STATUS_NOT_OK`) | 従来(旧P3と同じ。hint有無で判定) | - |
+| **KP_EN**(a2,b1b) K2 | `key_phrases[rank].english` | 必須 | `status OK`(`KP_EN_STATUS_NOT_OK`)。`master_audio_key`必須(`KP_EN_STORE_KEY_MISSING`)、`style_instruction_id==key_phrase_english_component_k2`(`..._ID_MISMATCH`)、`instruction_path=="primary"`なら`version`に`+k2.<K2 sha12>`を含む(`..._VERSION_MISMATCH`)、path不正(`..._PATH_INVALID`)、`fallback_used is True`なのにkeyがfallback pathでない(`KP_EN_FALLBACK_USED_BUT_KEY_NOT_FALLBACK_PATH`) | **新規生成かつ非fallbackのときのみ**判定(Store再利用entryは生成時attemptを持たないためkeyで判定) | `instruction_path=="english_lock_fallback"`(新規生成/Store再利用とも): `KP_EN_ENGLISH_LOCK_FALLBACK_AUDIO_NOT_K2`(gate出力`warnings`+stdout`[WARN][STYLE-PROFILE][M3]`) |
+| **KP_JA_MEANING**(a2) P8-KP | `key_phrases[rank].japanese_meaning` | 必須(旧Full Story候補P8のshaは不可) | `fallback_used is False`必須(`KP_JA_MEANING_FALLBACK_USED_OR_UNKNOWN`)、`status OK` | 判定しない(R-09) | - |
+
+M3戻り値に`warnings`(list of {segment, warning})を追加。runner `_style_profile_gate_blocked_summary`(`runner:1657-`)は`warnings`をstdoutへ列挙し、BLOCK時のsummaryにも含める。Gate判定(PASS/BLOCK)は変えない。人間承認(`record_human_approval`, canonical text sha一致)でのbypassは従来どおり(KP_ENにも適用、test済み)。
+
+### J-4. §A-4(Family Z非影響)の訂正(R-06)
+
+設計書§A-4は「Zが使うXコードは`generate_key_phrase_explanation_en_verified`のみ」と書いたが、**x_runner(`er019_family_x_audio_production_runner_01.py`)をZがlazy importするため、x_runnerの先頭importが`er019_family_x_style_profile_01`のimport(=import時`_verify_constants()`実行)を推移的に引き起こす**。よって新4定数(PD06/P7/K2/P8_KP)のsha・長さ検証もZのimport時に走り、不一致なら即STOPする(Zの副次的な安全ガード)。Z本体(`er063_family_z_audio_01.py`)は無変更で、`er019_family_x_style_profile_01`を直接importしない(AST testで固定)。smoke: x_runnerのimport+当該関数のmock呼出が成功(`FamilyZIsolationTests::test_z_lazy_import_of_x_runner_and_mock_call_succeed`)。
+
+### J-5. `fallback_used` consumer Grep(Fable決定5-7)
+
+`*.py`(test以外)で`fallback_used`を含むのは約30ファイル。読み取りconsumerは`er019_family_x_style_profile_01.py`(M3)、`er063_family_z_audio_01.py`(Z自身のresult加工)、`er019_family_x_kp_en_k2_store_01.py`(本件)のみで、`er003_v1_n3_01_tts_generate.py`/`er003_v1_crosslevel_audio_02_common.py`/`er003_v1_sing01_voice01_generate.py`は自分のresultへ**書く**側。`er006_master_audio_store_01.py`は`fallback_used`を保存・復元しない(本委任でも不変)ので、KP英語の再利用entryを`fallback_used`で読むconsumerは存在しない。→ additive変更自体が不要になり副作用なし。testで固定(`AbcGoldenTests::test_fallback_used_consumers_do_not_read_kp_english_entries`)。
+
+### J-6. `--tts-backend`既定の変更(R-07/Fable決定4)
+
+**採用**: Family X audio runnerの`--tts-backend`既定を`speech_metadata_flash_lite`(承認済み正式backend)へ。理由: 既定が旧backendだと、指定忘れで承認済みprofileが適用されず(`default_no_record_legacy_backend`)tts stageが課金前STOPするという「指定忘れ」事故を構造的に防げる(ユーザー§4)。条件確認: (a)既存testは全て`--tts-backend`を明示しており影響なし(全PASS)、(b)Family X runner専用の引数で非Family X経路は無関係、(c)`assert_production_tts_backend`/`assert_profile_backend`(M5)のfail-closedは不変(`structured_separation`は`--allow-legacy-backend`+明示が必要)。副作用: legacy backendでTrialを回す運用者は`--tts-backend structured_separation --allow-legacy-backend`の明示が必要になる(旧運用手順書に既定依存の記述がないことをGrepで確認)。
+
+### J-7. 事実の明記: K2が通らないときの音声
+
+KP英語のK2 primary(最大2回)が2回とも非OKの場合、**従来のMINIMAL+ENGLISH_LOCK**(`KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION`、承認済み2026-09-01の4回構成の後半)で代替生成される。この音声はK2ではなく**旧style**で、key B(`english_lock_fallback`)に保存され、M3で`KP_EN_ENGLISH_LOCK_FALLBACK_AUDIO_NOT_K2`のwarning(非ブロッキング)として列挙される。K2通過率が低い場合の実際の混入率はCoffee E2E(委任_04以降)で観測する。BLOCK化はユーザー判断事項(新Blocking QA条件)のため本実装は非ブロッキング。
+
+### J-8. テスト結果
+
+- 新規: `er019_family_x_fx_20261016_wiring_01_test_01.py` 72件PASS。
+- 期待値の意図的更新(既存test): `er019_family_x_style_profile_01_test_01.py`(`resolve_role_style`呼出数5→7[KP_EN/KP_JA_MEANING追加]、既定profile`n01`→`fx_20261016`、violation名`ADV_STYLE_PREFIX_NOT_P8_PREFIXED`→`..._PROFILE_PREFIXED`)、`er019_family_x_style_profile_01_n01_test_01.py`(新規out_dir既定をfxへ、N01は明示指定で引き続き可)。
+- 回帰: 24ファイル(下記コマンド)で658 PASS、1 FAIL(`er078_asr_unified_wiring_06c_test_01.py::test_d_en_last_slot_real_ng_still_goes_to_hr`=作業ツリーの未commit `er006_output/pronunciation_ledger_01/ledger.json`[04:03更新、本委任以前]によりpronunciation research経路へ入り`init_logger()`未呼出で失敗。HEAD worktreeでは単独PASS。本委任の変更とは無関係。コードの問題ではなくledger状態依存)。
+- 副産物: 既存`er053_c2_old_checker_removal_test_01.py::test_dangling_residual_words_all_classified_none_orphaned`がruntime BLOCK文言のdocstring行(`Local Rewrite回復`)でorphan判定されていたため、同行を`local_rewrite_recovery`表記へ(意味不変)。
+
+### J-9. 撤去・残置Grep(Charter原則8)
+
+- 撤去: `P8対象segmentがP8で生成されていません`(runner BLOCK文言)、`ADV_STYLE_PREFIX_NOT_P8_PREFIXED`、`default_new_run_n01`固定文字列(`f"default_new_run_{DEFAULT_NEW_RUN_PROFILE}"`へ)。
+- 残置(意図的): N01/P3/P8(旧Full Story候補)等の旧profile定数と`coffee_*`/`n01`/`coffee_n01_r2_p3*` profile(既存out_dirのresume検証に必要。`# 非推奨(2026-10-16以降)`コメント追記)、`compute_ledger_hits`の`P8_TEXT`既定値・`augmented_startswith_p8`・`p8_len`互換キー(コメントで明記)、`_role_style_ja()`(KP日本語意味以外のStd JA role[comment等]でdefault/旧profileの基準として使用)。
+- 検査はtest側 `ConstantsAndSourceTests`/`M3M4RoleTests::test_violation_rename_has_no_old_name_left`に固定。
+
+### J-10. 採らなかった選択肢
+
+- SN/repro01への追加(guard抵触のため新moduleへ)。`primary_style_override`追加。Storeの`qa_evidence.fallback_used`追加。
+- fallbackをBLOCK化(ユーザー判断事項のため非採用)。
+- `FAMILY_X_VARIABLE_ROLE_STYLE_VERSION`のbump(R-12)。
+- 日本語roleのM4で最終送信styleを判定する拡張(R-09、既知制約として記録)。
