@@ -18,7 +18,7 @@
 | 1 | PM-20261016-AUW-CLOSEOUT-DQI-PRODUCTION-01 委任_02 | 重大NG=なし | 判断候補なし(0/0/0/0) | 0 | status OK / warn 0 / info 0(`RESULT_PACKET_DQIP2.md`、2026-10-16実走) | なし | 観察範囲で0(未知NGは未検証) | DQI実装案件自体。Validator parsedは判定整合行を検出 |
 | 2 | FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01 委任_02A/02B | 重大NG=なし | 判断候補1件[K2 fallback BLOCK化] = 区分C(現依頼と独立)1件 | 1(ユーザーへ未提示。本日ユーザーが原文§4で同趣旨を判断=Open Item管理、OPEN-399) | 02A: OK/warn0(判定整合行検出)、02B: OK/warn0(判定整合行は未検出=パケット書式差、info/warnなし) | なし | 観察範囲で0 | 抑制成功例: C区分を未提示とした判断が、後日のユーザー判断(Open Item管理)と整合 |
 | 3 | 同 委任_04 | 重大NG=なし / 提示=証拠のみ | 判断候補1件[7-7費用承認] = 区分A(既判断規則の適用)1件 | 0(1問のみ提示。区分Aだが費用承認手続としてFableが提示) | OK/warn0。ただしparsed.judgment_line=null(パケットに判定整合行が機械検出できる形で無い)。warn/infoは出ていないため誤警告0・真陽性0 | なし | 観察範囲で0 | 7-7費用承認はユーザーが本日JPY205で承認(原文§3) |
-| 4 | FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01 委任_06 | 重大NG=なし | 判断候補なし(0/0/0/0) | 0 | status OK / warn 0 / info 0(`RESULT_PACKET_FXPW6.md`、2026-10-16実走、判定整合行を検出[judgment_line parsed]) | Fable記入待ち | Fable記入待ち | Sonnet骨格のみ。Fable判定列は空欄 |
+| 4 | FAMILY-X-APPROVED-SPEC-PRODUCTION-WIRING-AND-COFFEE-E2E-01 委任_06 | 重大NG=なし | 判断候補なし(0/0/0/0) | 0 | status OK / warn 0 / info 0(`RESULT_PACKET_FXPW6.md`、2026-10-16実走、判定整合行を検出[judgment_line parsed]) | 0(Fable記入) | 0(Fable記入) | Fable記入(2026-10-16 委任_07): 重大NG被覆漏れ=0/再質問=0/誤警告=0(Validator warn0、`validator_fxpw6_fable.json` status OK)/P1判定整合行あり/P2仕分け=判断候補なし(Sonnet)→Fable提示=可(試聴依頼のみ)/P3=ユーザー判断事項0件(試聴は既定次工程)/P4=Validator OK。Fable判定=PRODUCTION_WIRED |
 | 5 | | | | | | | | |
 | 6 | | | | | | | | |
 | 7 | | | | | | | | |

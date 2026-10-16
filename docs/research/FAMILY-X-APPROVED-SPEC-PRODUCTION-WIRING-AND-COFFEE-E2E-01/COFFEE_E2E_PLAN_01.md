@@ -147,3 +147,8 @@ TTS_EXECUTION_MODE=STANDARD .venv/Scripts/python.exe er019_family_x_entertainmen
 - 全segment Style適用表: `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/audit/e2e_segment_style_table.json`(Adv: FULL_STORY x3 3a680861e4d9/PREVIEW 8862317ff766/KP_EN 9d905cfe6c04 x10/KP_EXPLANATION_EN 0518000694e3 x5。Std: FULL_STORY x3/SUPPORT_JA 625826c1187b x5/KP_EN x5[うち2件は同run内Adv生成音声のStore共用]/KP_JA_MEANING b12c8721eab8 x5)。K2 fallback 0件。
 - 費用: `er019_output/family_x_audio_production_wiring_01/coffee_prices__run_fxpw_01/audit/cost_by_stage_e2e_06.json`(集計script `er019_coffee_fxpw_cost_06.py`)。
 - 非STOPの確認事項: PASS_WITH_WARNING 事後試聴リスト3件(Adv KP3英語[一次ASR "Character-driven." / 二次 "Tariff driven." で確定]/KP3解説[一次 "caused by terrorists." / 二次 "Caused by tariffs." 確定]/KP5解説、全てSECONDARY_CONFIRMED。segment表上はKP3 phrase_repeatも同warningで計4 component)は聞き取り対象として試聴ページ末尾に列挙。OPEN-401(derived_from_advanced_sha CRLF偽陽性warning、観測のみ)を新規登録。
+
+
+## §Fable判定(委任_07、2026-10-16)
+- 判定: Family X承認仕様の正式Production配線=**PRODUCTION_WIRED**(Fable判定。ユーザー原指示§6確認項目10件を委任_06のruntime evidence・test・SSOT・commitで照合し全件充足)。Opus条件Cは条件Aレビュー(OF-FXPW-R-01〜12)再利用(11-3 K)。正本=`CURRENT_SPEC.md`同日Fable判定行。
+- 付帯(範囲限定、未達ではない): (a)Coffee記事run_fxpw_01=`USER_LISTENING_PENDING`(試聴未実施・PASS扱いしない) (b)Adv/Std英語本文の送信Prompt SHA記録は未実装(N1、OPEN-402) (c)IOL Writer段STOP・K2 fallback・Std fallback分岐はtest evidenceのみ (d)OPEN-399/401は非Blocking継続 (e)量産原価94.025/Batch換算87.497で70円目標+17.5超過(別途`FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-ANALYSIS-01`で分析中、STOP条件ではない)。
