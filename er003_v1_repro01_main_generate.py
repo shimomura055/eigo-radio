@@ -37,6 +37,7 @@ import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 import er011_open121_repetition_qa_production_01 as repetition_qa
 import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
+import er078_asr_unified_judge_01 as unified_judge_mod  # AUW 委任_13: final_length_ok(A3是正)
 # PRONUNCIATION-RESOLUTION-ALL-ACTIVE-FAMILIES-PRODUCTION-01(Phase 2)
 import er025_entity_pronunciation_resolver_core_01 as pron_resolver_core
 
@@ -362,8 +363,9 @@ def generate_narration_snippet_verified_strict(
                 # segment_id=None(既定)の既存呼び出し元は無変更のまま。
                 segment_id=segment_id,
                 attempt_ctx=attempt_ctx_mod.build_attempt_ctx(
-                    attempt, max_attempts, slot_offset=slot_offset, total_slots=total_slots))  # AUW 委任_05
-            verified = verified_content and length_ok
+                    attempt, max_attempts, slot_offset=slot_offset, total_slots=total_slots, max_len=max_len))  # AUW 委任_05/13
+            final_len_ok = unified_judge_mod.final_length_ok(length_ok, cascade_detail)  # AUW 委任_13(A3是正)
+            verified = verified_content and final_len_ok
             gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
             verified = gate["verified"]
             # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 既存disfluency
@@ -383,15 +385,16 @@ def generate_narration_snippet_verified_strict(
                 text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
                 expected_readings=expected_readings, length_ok=length_ok,
                 attempt_ctx=attempt_ctx_mod.build_attempt_ctx(
-                    attempt, max_attempts, slot_offset=slot_offset, total_slots=total_slots),  # AUW 委任_05
+                    attempt, max_attempts, slot_offset=slot_offset, total_slots=total_slots, max_len=max_len),  # AUW 委任_05/13
                 detail_out=cascade_detail)  # AUW 委任_04: 統一judgeの監査record(asr_judgement)をadditiveに受け取る
-            verified = verified_content and length_ok
+            final_len_ok = unified_judge_mod.final_length_ok(length_ok, cascade_detail)  # AUW 委任_13(A3是正)
+            verified = verified_content and final_len_ok
             audio_classification = cls.classification
             substring_ok = None  # 旧フィールド、新方式では使わない(下の記録用に残すだけ)
         attempts_log.append({
             "attempt": attempt, "status": "OK", "duration_seconds": r["duration_seconds"],
             "asr_text": asr_text, "asr_text_length": len(asr_text) if asr_text else None,
-            "max_len": max_len, "substring_ok": substring_ok, "length_ok": length_ok,
+            "max_len": max_len, "substring_ok": substring_ok, "length_ok": length_ok, "final_length_ok": final_len_ok,
             "phonetic_verdict": phonetic_verdict, "audio_classification": audio_classification,
             "connected_speech_info": getattr(cls, "connected_speech_info", None) if language == "en" else None,
             "reading_resolver_info": getattr(cls, "reading_resolver_info", None) if language == "ja" else None,
@@ -433,7 +436,7 @@ def generate_narration_snippet_verified_strict(
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
             "instruction_text": style_prefix_override,
             "asr_text": asr_text, "audio_classification": audio_classification,
-            "length_ok": length_ok, "verified": verified,
+            "length_ok": length_ok, "final_length_ok": final_len_ok, "verified": verified,
             "disfluency_checked": gate["disfluency_checked"] if language == "en" else False,
             "disfluency_evidence": gate.get("disfluency_evidence") if language == "en" else None,
             "repetition_qa_checked": rep_gate["repetition_qa_checked"] if language == "en" else False,

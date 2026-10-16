@@ -42,6 +42,7 @@ import er011_human_review_lock_01 as review_lock
 import er011_open121_repetition_qa_production_01 as repetition_qa
 import er020_tts_retry_local_rewrite_01 as retry_primitive
 import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
+import er078_asr_unified_judge_01 as unified_judge_mod  # AUW 委任_13: final_length_ok(A3是正)
 
 generate_narration_snippet_verified_strict = repro01.generate_narration_snippet_verified_strict
 generate_key_phrase_component_verified = repro01.generate_key_phrase_component_verified
@@ -232,7 +233,7 @@ def generate_english_segment_with_fallback(text: str, out_path: str, expected_su
             "model": p9a.ENGLISH_MODEL_NAME, "voice": p9a.VOICE_NAME,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(),
             "asr_text": asr_text, "audio_classification": cls.classification,
-            "length_ok": outcome["length_ok"], "verified": verified,
+            "length_ok": outcome["length_ok"], "final_length_ok": outcome.get("final_length_ok"), "verified": verified,
             "disfluency_checked": gate["disfluency_checked"],
             "disfluency_evidence": gate.get("disfluency_evidence"),
             "repetition_qa_checked": rep_gate["repetition_qa_checked"],
@@ -364,8 +365,9 @@ def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
         force_secondary=True,
         enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
         segment_id=segment_id, detail_out=cascade_detail,
-        attempt_ctx=(attempt_ctx if attempt_ctx is not None else {"is_last_slot": True}))
-    verified = verified_content and length_ok
+        attempt_ctx=dict(attempt_ctx if attempt_ctx is not None else {"is_last_slot": True}, max_len=max_len))  # AUW 委任_13(A3R-01): 呼出元のmax_len(LR後v1はretts_max_len)
+    final_len_ok = unified_judge_mod.final_length_ok(length_ok, cascade_detail)  # AUW 委任_13(A3是正)
+    verified = verified_content and final_len_ok
     gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
     verified = gate["verified"]
     # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 既存disfluency
@@ -375,7 +377,7 @@ def _run_a2_minimal_fallback_attempt(text: str, out_path: str, max_len: int,
         verified, out_path, text, language="en", enabled=enable_repetition_qa)
     verified = rep_gate["verified"]
     return {"ok": True, "result": r, "verified": verified, "stop_retrying": stop_retrying,
-            "asr_text": asr_text, "classification": cls, "length_ok": length_ok,
+            "asr_text": asr_text, "classification": cls, "length_ok": length_ok, "final_length_ok": final_len_ok,
             "disfluency_gate": gate, "repetition_gate": rep_gate,
             "cascade_steps": cascade_detail.get("steps"),
             "asr_judgement": cascade_detail.get("asr_judgement")}

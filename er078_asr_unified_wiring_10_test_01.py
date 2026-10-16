@@ -56,7 +56,7 @@ def test_protected_diffs_and_length_still_excluded(monkeypatch):
     az = Az(("これは問題ではありません。", None))
     d = run("これは問題ではありません。", "これは問題です。", az, monkeypatch)
     assert d["verified"] is False and az.calls == 0 and d["asr_judgement"]["state"] == uj.NG_PROTECTED
-    # A3 length NGは維持(本委任ではA3を変えない。是正はOPEN起票)
+    # A3 length NGは維持: max_len未指定の呼出元=安全ラッチ(旧挙動)。max_len指定時の是正は委任_13 test(er078_asr_unified_wiring_13_test_01.py)
     az = Az((AZURE_OK, None))
     d = run(CANON, PRIMARY_NG, az, monkeypatch, length_ok=False)
     assert d["verified"] is False and az.calls == 0 and d["asr_judgement"]["exclusion_rule"] == "A3_LENGTH_NG"

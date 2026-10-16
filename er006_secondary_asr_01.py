@@ -918,6 +918,7 @@ def evaluate_attempt_with_cascade_detail(
         canonical_text=canonical_text, wav_path=wav_path, wav_sha256=az.sha, audio_seconds=_wav_duration_seconds(wav_path),
         segment_key=segment_id or "", script_version=actx.get("script_version", "v0"), slot=int(actx.get("slot", 1)),
         is_last_slot=bool(actx.get("is_last_slot", False)), length_ok=bool(actx.get("length_ok", True)),
+        max_len=actx.get("max_len"),  # AUW 委任_13(A3R-01/03): 呼出元のmax_len。None=従来挙動(安全ラッチ)
         force_secondary=bool(force_secondary), engine="azure", phrase_list_hash=_phrase_hash(ledger_phrases),
         cache=cache, run_state=actx.get("run_state") or _RUN_STATE)
     try:

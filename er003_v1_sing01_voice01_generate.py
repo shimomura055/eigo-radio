@@ -35,6 +35,7 @@ import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
+import er078_asr_unified_judge_01 as unified_judge_mod  # AUW 委任_13: final_length_ok(A3是正)
 import er020_tts_retry_local_rewrite_01 as retry_primitive
 import er025_entity_pronunciation_resolver_core_01 as pron_resolver_core
 
@@ -251,15 +252,16 @@ def generate_charon_english(text: str, out_path: str,
             # 判定した値をそのまま転送する。
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
             segment_id=segment_id, detail_out=_aj,
-            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts, script_version=script_version))  # AUW 委任_05
-        verified = verified_content and length_ok
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts, script_version=script_version, max_len=max_len))  # AUW 委任_05/13
+        final_len_ok = unified_judge_mod.final_length_ok(length_ok, _aj)  # AUW 委任_13(A3是正)
+        verified = verified_content and final_len_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
                               "instruction_type": instruction_type, "audio_classification": cls.classification,
                               "connected_speech_info": getattr(cls, "connected_speech_info", None),
                               "semantic_equivalence": getattr(cls, "semantic_equivalence_info", None),
-                              "length_ok": length_ok, "verified": verified, "trim_info": trim_info,
+                              "length_ok": length_ok, "final_length_ok": final_len_ok, "verified": verified, "trim_info": trim_info,
                               "disfluency_checked": gate["disfluency_checked"],
                               "disfluency_evidence": gate.get("disfluency_evidence")})
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
@@ -269,7 +271,7 @@ def generate_charon_english(text: str, out_path: str,
             "model": flw.resolve_actual_model_name(common.MODEL_NAME, tts_backend), "voice": CHARON,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(), "tts_backend": tts_backend,
             "asr_text": asr_text, "audio_classification": cls.classification,
-            "length_ok": length_ok, "verified": verified,
+            "length_ok": length_ok, "final_length_ok": final_len_ok, "verified": verified,
             "disfluency_checked": gate["disfluency_checked"],
             "disfluency_evidence": gate.get("disfluency_evidence"),
         })
@@ -523,10 +525,11 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
             text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
             expected_readings=expected_readings, length_ok=length_ok, detail_out=_aj,
             # AUW 委任_05: 標準経路。fallback予算が残る(max_attempts>standard_attempts)間はHR queue対象外。
-            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts))
-        verified = verified_content and length_ok
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts, max_len=max_len))  # AUW 委任_13
+        final_len_ok = unified_judge_mod.final_length_ok(length_ok, _aj)  # AUW 委任_13(A3是正)
+        verified = verified_content and final_len_ok
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
-                              "length_ok": length_ok, "audio_classification": cls.classification,
+                              "length_ok": length_ok, "final_length_ok": final_len_ok, "audio_classification": cls.classification,
                               # OPEN-258 SCG証跡(TRUE_CONTENT_MISMATCH時のみ非None)
                               "scg_info": getattr(cls, "scg_info", None),
                               "verified": verified, "trim_info": trim_info})
@@ -537,7 +540,7 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
             "model": flw.resolve_actual_model_name(p9a.JAPANESE_MODEL_NAME, tts_backend), "voice": CHARON,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(), "tts_backend": tts_backend,
             "asr_text": asr_text, "audio_classification": cls.classification,
-            "length_ok": length_ok, "verified": verified,
+            "length_ok": length_ok, "final_length_ok": final_len_ok, "verified": verified,
             "scg_info": getattr(cls, "scg_info", None),
         })
         attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
@@ -575,10 +578,11 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
             text, asr_text, out_path, cascade_enabled=ja_secondary.FEATURE_FLAG_JA_PRIMARY_OPENAI,
             expected_readings=expected_readings, length_ok=length_ok, detail_out=_aj,
             # AUW 委任_05: fallback(通算slot = 標準経路の消費分+この周)。通算上限(max_attempts)到達のNGのみHR queue対象。
-            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(len(attempts_log) + attempt, max_attempts))
-        verified = verified_content and length_ok
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(len(attempts_log) + attempt, max_attempts, max_len=max_len))  # AUW 委任_13
+        final_len_ok = unified_judge_mod.final_length_ok(length_ok, _aj)  # AUW 委任_13(A3是正)
+        verified = verified_content and final_len_ok
         fallback_attempts.append({"attempt": attempt, "status": "OK", "asr_text": asr_text, "asr_judgement": _aj.get("asr_judgement"),
-                                   "length_ok": length_ok, "audio_classification": cls.classification,
+                                   "length_ok": length_ok, "final_length_ok": final_len_ok, "audio_classification": cls.classification,
                                    "scg_info": getattr(cls, "scg_info", None),
                                    "verified": verified})
         # ER-011-TTS-ATTEMPT-AUDIO-RETENTION-PRODUCTION-WIRING-01: このattemptで
@@ -588,7 +592,7 @@ def generate_charon_japanese(text: str, out_path: str, expected_substring: str,
             "model": flw.resolve_actual_model_name(p9a.JAPANESE_MODEL_NAME, tts_backend), "voice": CHARON,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(), "tts_backend": tts_backend,
             "asr_text": asr_text, "audio_classification": cls.classification,
-            "length_ok": length_ok, "verified": verified,
+            "length_ok": length_ok, "final_length_ok": final_len_ok, "verified": verified,
             "scg_info": getattr(cls, "scg_info", None),
         })
         fallback_attempts[-1]["attempt_audio_path"] = _attempt_audio_path

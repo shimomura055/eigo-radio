@@ -117,3 +117,13 @@
 | 13 | Dangling Reference Check | **充足(変更なし)** | §3。本委任はProduction無編集 |
 | 15 | Fableの独立照合 | **未充足** | Fableの工程 |
 → 条件1・2・9の残はA3(OPEN-388、別委任)のみ。`PRODUCTION_WIRED`は宣言しない(到達上限=`AUW_EVIDENCE_COMPLETE_PENDING_FABLE_15`)。
+
+## 4-d. 15条件の充足表(2026-10-16 委任_13時点。§4・§4-b・§4-cの再掲更新。既存表は不変)
+| # | 条件 | 委任_13時点 | 根拠・残 |
+|---|---|---|---|
+| 1 | ASR判定仕様と実際のProduction動作が一致 | **充足(残なし、A3是正済み)** | A3(length)をSecondary採用転写で再評価する実装を反映(`IMPLEMENTATION_13.md`)。実音声(Azure)でEN/JA正例・EN負例(`RUNTIME_EVIDENCE_06.md`§19)。Fable判定待ち(`A3_FIXED_PENDING_FABLE`) |
+| 2 | JA・EN、全Production音声Sectionに適用 | **充足(残なし)** | 43行最終=実音声38・再利用4・N/A 1(委任_12から不変)。A3は呼出元10箇所(EN6/JA4)が`max_len`を渡して適用 |
+| 11 | SSOTに実態を反映 | **充足(本commitで反映)** | CURRENT_SPEC・DECISION_LOG・OPEN-388追記/OPEN-397/398・REPORT_LEDGER・Opus台帳(OF-AUW-A3R-01〜09) |
+| 12 | commit/push/merge | **充足見込み(本commit後に確認)** | mainへ`--no-ff` merge |
+| 15 | Fableの独立照合 | **未充足** | Fableの工程 |
+→ 条件1・2の残なし(A3是正済み)。`PRODUCTION_WIRED`は宣言しない(到達上限=`A3_FIXED_PENDING_FABLE`)。

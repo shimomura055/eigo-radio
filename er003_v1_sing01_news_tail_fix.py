@@ -37,6 +37,7 @@ import er006_secondary_asr_01 as secondary_asr
 import er008_disfluency_qa_18 as dq18
 import er011_human_review_lock_01 as review_lock
 import er078_asr_unified_attempt_ctx_01 as attempt_ctx_mod  # AUW 委任_05
+import er078_asr_unified_judge_01 as unified_judge_mod  # AUW 委任_13: final_length_ok(A3是正)
 import er011_open121_repetition_qa_production_01 as repetition_qa
 import er020_tts_retry_local_rewrite_01 as retry_primitive
 import er025_entity_pronunciation_resolver_core_01 as pron_resolver_core
@@ -208,8 +209,9 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
             segment_id=segment_id, detail_out=_aj,
-            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts, script_version=script_version))  # AUW 委任_05
-        verified = verified_content and length_ok
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts, script_version=script_version, max_len=max_len))  # AUW 委任_05/13
+        final_len_ok = unified_judge_mod.final_length_ok(length_ok, _aj)  # AUW 委任_13(A3是正)
+        verified = verified_content and final_len_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
         verified = gate["verified"]
         # OPEN-121-TTS-REPETITION-QA-PRODUCTION-WIRING-01: 既存disfluency
@@ -235,7 +237,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                               # 種別(connected_speech_info等)と同じ昇格パターンで
                               # 追加する(判定ロジック自体は無変更)。
                               "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None),
-                              "length_ok": length_ok, "verified": verified,
+                              "length_ok": length_ok, "final_length_ok": final_len_ok, "verified": verified,
                               "trim_info": trim_info, "disfluency_checked": gate["disfluency_checked"],
                               "disfluency_evidence": gate.get("disfluency_evidence"),
                               "repetition_qa_checked": rep_gate["repetition_qa_checked"],
@@ -247,7 +249,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             "model": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend), "voice": p9a.VOICE_NAME,
             "tts_execution_mode": batch_wiring.resolve_tts_execution_mode(), "tts_backend": tts_backend,
             "asr_text": asr_text, "audio_classification": cls.classification,
-            "length_ok": length_ok, "verified": verified,
+            "length_ok": length_ok, "final_length_ok": final_len_ok, "verified": verified,
             "disfluency_checked": gate["disfluency_checked"],
             "disfluency_evidence": gate.get("disfluency_evidence"),
             "repetition_qa_checked": rep_gate["repetition_qa_checked"],
