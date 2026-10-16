@@ -311,3 +311,114 @@ Trial成果のうち「良いのに反映が無い」ことが確定している
 10. unit testの再実行(本監査では実施せず)。
 
 **Opusレビューに回すべき論点(候補)**: ①IOL 2文Prompt作成の方式(条件A: 新しい構造/処理フロー)と、Comment4・Std継承・retryの一貫性。②「全Style共通定数 vs profile既定化」の設計(OPEN-300/313、Family Xへの拡大)。③AN3第1文置換を「意図的」とするSSOT記述の是正方針(CS:905/1169)。④OPEN-237系・RF候補を一括SUPERSEDEDとする妥当性。⑤P1/P2の分類(SSOT注記是正をユーザー判断不要とした根拠)。
+
+---
+
+## §14 Opusレビュー反映(2026-10-16)とFable決定(委任_03で追補)
+
+既存§1〜§13は書換えず、本節で訂正を列挙する(旧記述は履歴)。Opus原文: `OPUS_REVIEW_01_VERBATIM.md`(同フォルダ、jsonlから機械抽出、sha256 `cac680438bf8dc1a2a931b5a829f611d6e1c5ffb5dee6c5a366f936625d1dfb1`、8,292文字)。Fable決定=Opus指摘の採否は全件採用。到達Status=`AUDIT_COMPLETE_REVIEWED`。台帳=`docs/pm/OPUS_FINDINGS_LEDGER.md` OF-FXWA-R-01〜12。
+
+### 14-1 指摘一覧(R-01〜R-12)と採否・訂正箇所
+
+| ID | 重大度 | 指摘 | Fable採否 | 報告書の訂正箇所(14-2) |
+|---|---|---|---|---|
+| R-01 | 中 | 「Prompt sha不変=問題なし」は定数shaにすぎない | 採用 | §1表2行目 |
+| R-02 | 低 | Comment4とIOL生成は矛盾しない(audio_plan:201-203/234-236は文数に依存せず。引用206-208も誤り) | 採用 | §2 #5、§7 P1-1、§9 Blocking 1 |
+| R-03 | 中 | §2末尾「問題なし」にP3(09:00でP7へ置換済み)が残る | 採用 | §2末尾 |
+| R-04 | 中 | CS:1236「現行Full Story=P8」は誤り(実際はN01)。N01→PD06の置換が記載漏れ | 採用 | CS注記(14-8) |
+| R-05 | 高 | (i)にCoffee限定承認のE1/R2が混入。CS:1244の拡大文も同じ | 採用 | §8(i)、§9 Blocking 3、CS:1244注記 |
+| R-06 | 高 | Local Rewrite(`er020_tts_retry_local_rewrite_01.py:158`「the closing one-line summary」)で2文が1文に戻るおそれ | 採用 | §9 Blocking 1に追加 |
+| R-07 | 中 | Master Audio Storeの`style_instruction_id`/`version`未更新だと旧音声を再利用(`er006_master_audio_store_01.py:37,48-49,141`。既定は`"default"`/`"v1"`) | 採用 | §9 Blocking 2に追加 |
+| R-08 | 中 | `P8_TEXT`名称衝突(`er019_family_x_style_profile_01.py:48`はFull Story P8。KP日本語意味P8は別定数名・別role) | 採用 | §9 Blocking 2に追加 |
+| R-09 | 中 | Research/Fact Ledger段のTrialが範囲外 | 採用 | §15で補完 |
+| R-10 | 低〜中 | Title/Preview/KP解説文/MAQ等の行がない | 採用 | §15で補完 |
+| R-11 | 中 | (e)AN3第1文置換とP1-3(R0規則7)は承認Trialと同一でA。追認不要 | 採用 | §7 P1-3、§8(e)、§12 |
+| R-12 | 低 | (d)英語化モデルは判断7(DL:20263)でカバー済み。独立改善候補(C)へ | 採用 | §8(d)、§12 |
+
+### 14-2 訂正一覧(旧記述は残す。以下が現行)
+
+1. **§1表2行目(Fact Lock構造・Prompt sha不変=Yes)**: 「コード定数レベルでは一致(`verbatim_shas()`)。実際に送信された文は保存されておらず**未確認**」。「問題なし」とは書かない(R-01)。
+2. **§2末尾「配線済み・問題なし」**: 「KP解説(P3)」を除外する。P3は09:00にP7へ置換済み(§2 #4)。text仕様(`explanation_en`)の配線は有効だが、音声Style側のP3は陳腐化(R-03)。
+3. **§2 #5と§7 P1-1の「Comment4がIOL生成と矛盾」**: 撤回。Comment4はB1(audio_plan:201-203)もA2(:234-236)も「1文とは限りません」と指示し、文数に依存しない。2文化後もそのまま整合する。Comment4の改修はBlockingから外す。引用行206-208も誤り(R-02)。
+4. **§7 P1-3(R0規則7)**: **A(対応不要)**。承認Trial `er052_factlock_writer_trial_01_run.py:51,82,100,111`に同じ規則7があり、承認済みPromptの一部。削除すると承認済みPromptが変わる。OI注記のみ(OPEN-233行へ注記済み、14-8)。ユーザー判断から外す(R-11)。
+5. **§8(d)英語化モデル**: 撤回。判断7(DL:20263)でカバー済みのため、USER_DECISION_REQUIREDにしない(**独立改善候補C**、14-5)(R-12)。
+6. **§8(e)AN3第1文置換の追認**: 撤回。承認Trial(`er052…:104-111`)と同一置換で**承認済み(A)**。追認不要、SSOT記述の是正のみ(CS:905/1169に注記済み)(R-11)。
+7. **§8(f)OPEN-243**: (h)一括整理に統合(独立UDRにしない)。
+8. **§8(i)既定profile化**: 分割。PD06/K2/P8/P7の既定profile化は**Fable判断可(B)**(根拠=FX記録§1/§3「Family X全体」)。E1/R2のFamily X既定化は**新規ユーザー判断(D)**(09:00の表に無く、Coffee限定承認。Coffee再制作ではCoffee限定承認のまま使えるためCoffeeのBlockingではない)(R-05)。
+9. **§8(a)(b)**: 1問(Yes/No)に統合。(b)「Std同一文適用」は承認済み(原文「Full Story TTS(Std／Adv)=PD06」)。(b)「Std 6%減速併用」はB(Fable判断、14-4)。
+10. **§9 Blocking**: 14-6の最終版へ置換。
+11. **§12 A表**: (d)(e)(i前半)をA/B/C側へ移し、ユーザー判断は14-3の5件のみ。
+12. **§13 未確認4(Local RewriteがIOL文数を保つ検査の有無)**: Local Rewriteは役割ラベルとして「the closing one-line summary」と記述(`er020…:158`)。文数保持を検査する仕組みは確認できない(Opus確認)。Blocking 1に含める。
+
+### 14-3 ユーザー判断事項(最終・5件)
+
+REGISTER番号は`docs/pm/USER_DECISION_REGISTER_01.md`の新規#96〜#100。全件`USER_DECISION_REQUIRED`。
+
+| # | 判断事項 | 推奨 | 理由 | 影響 | Blocking |
+|---|---|---|---|---|---|
+| ① #96 | **(a)+(b)P7の正本とPD06の名称対応(Yes/No 1問)**: 「P7=`er080_coffee_kp_pacing_trial_01.py:35`のp7(速度・リズムのバランス型)」「PD06=Pace Trial-02の`PD6`」で追認するか | 追認(Yes) | 同名の別P7がCS:1239に実在。FX記録§3が「要確認」と自記。er080側はユーザー指示原文(`..._PACING-TRIAL-01_USER.md:85-88`)と逐語一致。PD06の表記は09:00文書以外に存在しない | KP英語解説(Adv)とFull Story TTS(Std/Adv)の全記事。誤ると別Promptが配線される | **Yes**(配線前) |
+| ② #97 | **(c)In One Line 2文Promptの文面承認**(基本2文・必要時のみ3文の基準を含む) | 配線設計時に文面案+offline出力サンプル少数を添え、1回で承認 | 改修自体は判断済み。承認が要るのは文面と「必要時3文」の基準のみ。案作成まで判断不要 | 全記事のIn One Line(Adv生成・Std継承・Local Rewrite) | **Yes**(設計後) |
+| ③ #98 | **(g)Hook Side output(R2完成後にLunaでHook1本)の扱い** | 廃止(R2 Title表示のみ維持) | 現Family X runnerにstage無し。比較観測用で品質に直結しない。後続仕様で失われた過去決定に該当するため廃止にはユーザー判断が要る | 比較観測の継続可否のみ | No |
+| ④ #99 | **(h)+(f)一括整理**: OPEN-237系・RF候補(a)(b)(c)・代理指標・Pre-sorter・OPEN-243(守り撤去後の継続/close)。§15で判明したOPEN-56/59(Evidence Compression B版、旧B1/A2 Writer Prompt対象、PRE_USER_VALIDATION・棚卸し未実施)を同じ一括整理の候補に追加 | §3の推奨のとおり一括提示(継続/廃止) | 個別に問い直すより一括整理が現実的(PB§6-3)。R22/R23の結果記録はB(Fable判断) | OI整理のみ | No |
+| ⑤ #100 | **E1/R2のFamily X既定化**: E1(Adv Preview音声Style)とR2(Std日本語Preview/Comment音声Style)を、Coffee限定承認(OPEN-298/300)からFamily X全体の既定へ拡げるか | 既定化(ただしユーザー原文に無いため要確認) | 09:00の表にE1・R2は無い。CS:1244の拡大文は記録者の解釈で、原文「Coffee限定仕様ではない」は表の項目に限られる。要約で承認範囲を拡げない | Family X共通仕様の完成。取り違え防止 | No(Coffee再制作はCoffee限定承認のまま可) |
+
+**ユーザー判断にしないもの**: (d)英語化モデル(C)、(e)AN3第1文置換(A)、P1-3(A)、(f)単独(④に統合)。FXUD-1〜8は「判断済み・未配線」のまま(REGISTER備考に14-6を参照)。
+
+### 14-4 Fable判断で進める事項(ユーザー判断不要)
+
+| 事項 | 区分 | 内容 |
+|---|---|---|
+| PD06/K2/P8/P7の既定profile化 | B | 根拠=FX記録§1/§3「Family X全体」。E1/R2は含めない(⑤の回答まで) |
+| Std 6%減速併用 | B | **Family X Stdの既定慣行(逐語+生成後6%減速)を採る**。P8はS1例外(`er019_family_x_style_profile_01.py:20-28`)、N01は2026-10-13決定(:81-82,140)と同方式。報告では「採った方式」として明示し、問いにはしない。PD06にはN01の「a little slower」相当の速度語が無いため、**Advの速度変化はCoffee試聴で確認する項目**とする |
+| SSOT注記是正(P2) | B | 14-8で実施済み(追記のみ) |
+| OI注記 | B | 14-8で実施済み(closeせず) |
+| R22/R23結果記録 | B | 一括整理(④)とは別に結果のみ記録 |
+| 送信Prompt sha記録 | B | Coffee実走1本分のevidenceとして記録(09:00§4のruntime evidence要件の範囲内)。恒久機能・blocking QAにするなら仕様追加(ユーザー判断) |
+
+### 14-5 独立改善候補(UDRにしない)
+
+1. 英語化(Advanced/Standard)のWriterモデル(現行Luna。判断7[DL:20263]でカバー済み。Sol化を望むなら別途比較Trialを起票)。
+2. Dangling検査のSCOPE拡大。
+3. IOL Validator(文数検査)。
+4. 恒久的な送信Prompt全文保存(仕様追加のため、採用するならユーザー判断)。
+
+### 14-6 Blocking最終版(CoffeeをResearchから再制作する前)
+
+1. **IOL 2文化**: ②(#97)のPrompt承認、Adv英語生成(`er003_v1_n3_01_advanced_adaptation_generate.py:558,551-615`)、Std継承(継承test)、**Local Rewrite経路のラベル改修(`er020_tts_retry_local_rewrite_01.py:158`)+文数保持test**(R-06。関連: OPEN-312)、runtime evidence。Comment4整合は不要(R-02)。
+2. **PD06/K2/P8/P7配線**: 前提=①(#96)。**Master Audio Storeの新`style_instruction_id`/`version`を割り当て、testで固定**(R-07)。**P8の名称衝突回避**(KP日本語意味のP8は別定数名・別role。`ROLE_SEGMENTS`[`er019_family_x_style_profile_01.py:118`〜]に別roleとして追加し、混同防止testを置く)(R-08)。Std 6%減速併用は14-4のとおり。
+3. **既定profile化(4仕様のみ)**: `DEFAULT_NEW_RUN_PROFILE`(`er019_family_x_style_profile_01.py:110`、現行N01)を、PD06/K2/P8/P7を含む新profileへ。E1/R2は⑤の回答まで含めない。
+4. **OPEN-343 triage**: 着手前に実施し、Std Coffeeで発火しうるものだけをBlockingにする。
+5. **実走Gate項目**(再制作そのもののGate): model_id/`chain_method=W-1`/retry発火時の再確認、送信Prompt sha記録(1本分)、Advの速度変化のCoffee試聴確認。MAQ_TRIAL_W-1の再利用は不可。
+
+### 14-7 §1結論の更新
+
+結論は「一部」で変わらない(Opusも一致)。ユーザー判断が必要な事項は9件(a〜i)から**5件**へ減った。Blockingは14-6の5件。
+
+### 14-8 P2 SSOT注記是正の実施記録(2026-10-16 委任_03、すべて追記のみ)
+
+`CURRENT_SPEC.md`の580・583・829〜831・905・1169・1236・1244・2462・2501・2519の各行に「注記/訂正/置換注記」を追記し、`OPEN_ITEMS.md`のOPEN-299・248・243・238・233の行末に追記した(行番号は編集後の位置と数行ずれる。一覧は`docs/pm/RESULT_PACKET_FXWA3.md`の4)。既存の記述・Statusタグは変更していない。
+
+---
+
+## §15 補完sweep(Research/Fact Ledger段・Title/Preview/Comment/KP解説文/Std KP日本語意味文面/MAQ・USER指示総当たり)
+
+調査基準=2026-10-16 / read-only・JPY0。探索範囲: (1)`docs/pm/delegation_log/2026-10-*_USER.md`の全ファイル名(4本)、(2)同ログ`2026-10-*.md`のうち名称にRESEARCH/EVIDENCE/LEDGER/TITLE/PREVIEW/COMMENT/EXPLANATION/MAQ/KP-/WRITER/FAMILY-X/COFFEE/FACTLOCK等を含む287ファイルの「性質/到達上限Status」節を機械走査(`USER_DECISION_REQUIRED`/`VALIDATED`を含む管理IDを抽出)、(3)`docs/pm/REPORT_LEDGER.md`の同キーワードGrep、(4)`DECISION_LOG.md`見出し(2026-09/10)の同キーワードGrep、(5)OIのOPEN-56/59/221/242ほか。ユーザー判断は逐語出典を示し、無ければ「判断証拠なし」とする。
+
+| # | 補完対象(R-09/R-10) | Trial/仕様 | ユーザー判断(出典) | Production実装 | 判定 |
+|---|---|---|---|---|---|
+| S1 | Research段(web_search→vfl01標準経路、facts下書き) | 2026-09-17の再Research(Family B/A2、DL:8392)。Family X固有のResearch Prompt Trialは、ログ名称・DL見出しに**該当なし** | 判断証拠なし(Family X固有のTrial自体が無い) | Coffee実走L3でResearch〜Queueは成功(REPORT_LEDGER 2026-10-10 RISK-FLAGGER 委任_13行) | 該当なし(探索範囲は上記(1)〜(4))。「良好かつ未承認」なし |
+| S2 | Researchのweb_search課金計上 | `OPEN-242-BUDGET-GUARD-WEB-SEARCH-COST-GAP-FIX-01`(2026-10-08、DL:20315) | OPEN-242は`POST_USER_VALIDATION`(ユーザー検証待ち) | 予算ガードにweb_search課金を計上する修正は実装済み(DL:20315) | 配線済み。記事品質に直結しない(予算ガード) |
+| S3 | Fact Ledger構築(多義語Note・明確化) | OPEN-237系 | Part B R06〜R09で既掲 | Part B参照 | 既掲(再掲しない) |
+| S4 | Evidence Compression(聞かせる部分のEvidence detail圧縮) | `ER-007-SPOKEN-EVIDENCE-DENSITY-AB-01`(2026-08-24、OPEN-56/59。B版: Fact Check FAIL 0・Ledger外claim 0) | OPEN-56は採否未提示(`PRE_USER_VALIDATION`・棚卸し未実施。全面採用/一部/再調整/現状維持のいずれかを要判断) | 未反映。対象は旧B1/A2 Writer Prompt。Family XのW-1/R0は別構造 | **採否未提示の成果**。Family Xの現行Writerでは別構造のため直接のProductionギャップではない。**④(#99)の一括整理候補に追加**(新規UDRにしない) |
+| S5 | `PM-S1-SECOND-OPINION-FACT-CHECK-01`(2026-10-06) | JPY0の事実確認(Trialではない) | 該当なし | 該当なし | 該当なし |
+| S6 | Title生成 | R2 Titleを正式表示、Luna Hook Side output(`NEWS-HOOK-POLICY-DECISION-01`、2026-09-24、DL:9418、OI:357) | ユーザー決定(DL:9418) | R2 Titleは配線済み。Hook Side outputはProductionにstage無し(§2 #8) | R2 Titleは問題なし。Hookは③(#98) |
+| S7 | Preview/Comment1〜3文面(Family X Std) | 基準=`er003_v1_iran01_a2_generate.py::PREVIEW_ROLE`(Family X Standard。DL:20927(a)でFamily Zが基準に統一) | 既存Production文面。Family X固有の新Trialは**該当なし**。`FAMILY-Z-*`のPreview/Comment Trialは対象外(Family Z。OPEN-338は別系統) | Std Preview/Comment1〜4の**音声Style**=R2(Coffee限定profile、`er019_family_x_style_profile_01.py:105,149,158`) | 文面Trial: 該当なし。Style側の既定化は⑤(#100) |
+| S8 | Comment4文面 | `COMMENT4-SHORT-BRIDGE-RETRIAL-02`/`MINIMAL-PROMPT-TRIAL-03`/`STD-COMMENT4-BRIDGE-PROMPT-TRIAL-01`(2026-10-12)、2026-10-12ユーザー正式決定(A)(CS:2677) | CS:2677(A) | Std側は`audio_plan:234-236`。Adv(B1)側は未展開(§2 #10) | 配線済み(Std)。B1展開は既掲#10 |
+| S9 | KP解説文(`explanation_en`)の生成Prompt | `KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02`のB候補を2026-09-28に`APPROVED_FOR_PRODUCTION`(CS:1940)。仕様文は`KEY-PHRASE-LEVEL-SPEC-TRIAL-01`を逐語再利用 | CS:1940(2026-09-29配線完了の追記あり) | 配線済み(`er019_family_x_kp_explanation_01.py`) | 配線済み(text)。音声Style P3→P7は§2 #4 |
+| S10 | Std KP日本語意味の文面(gloss) | `KP-GLOSS-ALIGNMENT-CORRECTED-PRODUCTION-WIRING-01`(2026-10-15、X/Z無条件配線・既定ON)。M2P0/N01(2026-10-13) | REPORT_LEDGER 2026-10-15行(ユーザー正式採用) | `PRODUCTION_WIRED`(KP-GLOSS)。M2P0は配線済み・未完了(OPEN-343) | 配線済み(text)。音声Style M2→P8は§2 #3。OPEN-343はBlocking 4 |
+| S11 | MAQ_TRIAL_W-1(現行Coffee記事の出所) | `er052_output/ja_article_quality_model_allocation_trial_01/maq_driver_01.py`/`_02.py`のE案マスター(chain_method=`MAQ_TRIAL_W-1`) | FX記録§3「旧Coffee記事を完成品として流用しない」(Coffee全面再制作、DL:21640節) | 正式W-1実走は未取得(PA§5) | 既掲(§1表4行目、§9-5)。再制作で正式runner実走に置換される |
+| S12 | Standard語彙段落(6,000語Band) | `NEWS-VOCAB-LEVEL-PRODUCTION-WIRING-01`(2026-09-27、REPORT_LEDGER:65) | REPORT_LEDGER:65(Stage 2配線、Fable Gate 3判定) | `PRODUCTION_WIRED`(Std。観察=OPEN-190) | 配線済み。問題なし |
+| S13 | `_USER.md`総当たり(10/1〜10/16) | 4本: `2026-10-15_DAY3-4-OBJECTIVE-ALIGNMENT-REBLIND-02_USER.md`(PM運用評価。Family X Writerと無関係)、`2026-10-16_FAMILY-X-20261016-0900-USER-DECISION-RECORD-01_USER.md`(09:00判断。本監査の正本)、`..._FAMILY-X-COFFEE-KP-EN-EXPLANATION-PACING-TRIAL-01_USER.md`(P7、09:00で採用)、`..._FAMILY-X-WRITER-TRIAL-ADOPTION-AND-PRODUCTION-GAP-AUDIT-01_USER.md`(本監査) | 各ファイル原文 | 各項目は§2〜§4に既掲 | 新規の「良好かつ未承認」: **なし** |
+| S14 | 「性質/到達上限Status」機械走査で`USER_DECISION_REQUIRED`/`VALIDATED`を含む管理ID | 18件: OPEN-233系5(Part B R22〜R25既掲)、FACTLOCK-WRITER-REDESIGN-TRIAL-01・ALL-6-LUNA-WRITER-REDESIGN-NECESSITY-TRIAL-01(R11/R29既掲)、FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01(OPEN-343)、FAMILY-Z-*(5件、Family Z対象)、KP-GLOSS-ALIGNMENT-DESIGN-CORRECTION-TRIAL-01(S10で配線済み)、STANDARD-KP-JA-TTS-STYLE-TRIAL-01/02(09:00でP8採用)、FAMILY-X-COFFEE-KP-EN-EXPLANATION-PACING-TRIAL-01(09:00でP7採用)、本監査 | 09:00記録/既掲 | 既掲 | 新規の「良好かつ未承認」: **なし**(S4のOPEN-56/59のみ④へ追加) |
+
+**sweep結果**: 14行。「良好かつ未承認」で新たにユーザー判断事項へ追加したもの=**S4(OPEN-56/59 Evidence Compression)を④(#99)の一括整理候補に追加**した1件のみ(新規UDRなし)。それ以外は該当なし/既掲/配線済み。探索の限界: チャット原文そのもの(Repo外)と、委任ログ本文の「ユーザー指示(原文)」節の全文精読は未実施(状態節の機械走査とDL見出しGrepによる)。名称にTRIALを含まないユーザー個別指示の拾い漏れは完全には排除できない(Opusも同旨)。

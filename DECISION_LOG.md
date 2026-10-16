@@ -21669,3 +21669,13 @@ Day 3〜4のOpus独立採点で指摘された修正提案(a)〜(e)を、**次�
 - 結論(1段落): Family XのWriter仕様は「一部」最新。日本語B3→R0→R1→R2=`gpt-6.1-sol`とFact Lock構造は、コード・routing・実run(META run_sol61_01)の3点で一致し配線済み。一方、2026-10-16 09:00にユーザーが承認したPD06/K2/P8/P7/In One Line(基本2文)は`APPROVED_FOR_PRODUCTION`・Family X正式経路に未配線(In One Lineは今も`Exactly one sentence`)。CS:829-831/905/1169/2462等に置換済みの旧記述が注記なしで残り、AN3第1文はFact Lock数字規則(5)に置換されている。英語化はLuna据置。OPEN-237系・RF候補・代理指標・Pre-sorterは採否未提示(整理漏れ)。
 - 報告書: `docs/research/FAMILY-X-WRITER-TRIAL-ADOPTION-AND-PRODUCTION-GAP-AUDIT-01/AUDIT_REPORT_01.md`(Part A/B/C同フォルダ)。ユーザー判断事項は報告書§8(a)〜(i)、Coffee再制作前Blockingは§9。
 - SSOT是正(注記追加等)はユーザー報告後の別委任。本記録ではPRODUCTION_WIRED判定・Open Item closeをしていない。
+
+### FAMILY-X-WRITER-TRIAL-ADOPTION-AND-PRODUCTION-GAP-AUDIT-01 委任_03(2026-10-16、Opusレビュー反映・補完sweep・SSOT注記是正、JPY0)
+
+- Status: `AUDIT_COMPLETE_REVIEWED`。Production code/Prompt変更0、有料API 0、Open Item close 0件、Coffee生成なし。
+- Opusレビュー(任意2回目、claude-opus系独立レビュー)指摘FXWA-R-01〜12をFableが全件採用。原文=`docs/research/FAMILY-X-WRITER-TRIAL-ADOPTION-AND-PRODUCTION-GAP-AUDIT-01/OPUS_REVIEW_01_VERBATIM.md`(sha256 `cac680438bf8dc1a2a931b5a829f611d6e1c5ffb5dee6c5a366f936625d1dfb1`)。台帳=`docs/pm/OPUS_FINDINGS_LEDGER.md` OF-FXWA-R-01〜12。
+- 報告書追補: `AUDIT_REPORT_01.md`§14(訂正一覧・ユーザー判断事項最終5件・Fable判断事項・独立改善候補・Blocking最終版)、§15(補完sweep14行。新規の「良好かつ未承認」なし。OPEN-56/59のEvidence Compression B版のみ一括整理候補に追加)。既存§1〜§13は書換えず訂正を追記。
+- ユーザー判断事項(最終、REGISTER #96〜#100): ①(a)+(b)P7正本・PD06名称対応のYes/No1問 ②IOL 2文Prompt文面承認(設計時、案+offline出力サンプル) ③Hook Side output(推奨=廃止) ④(h)+(f)一括整理(OPEN-243含む、OPEN-56/59追加) ⑤E1/R2のFamily X既定化(09:00の表に無くCoffee限定承認のため要確認)。
+- Fable判断(B): PD06/K2/P8/P7の既定profile化、Std 6%減速併用はFamily X Std既定慣行を採用(Advの速度変化はCoffee試聴で確認)、SSOT注記是正、OI注記、R22/R23結果記録、Coffee実走1本分の送信Prompt sha記録。承認済み(A): (e)AN3第1文置換(承認Trial `er052_factlock_writer_trial_01_run.py:104-111`と同一)、P1-3(R0規則7)。独立改善候補(C): (d)英語化モデル(判断7=DL:20263でカバー済み)、Dangling検査SCOPE拡大、IOL Validator、恒久的送信Prompt保存。
+- SSOT注記是正(追記のみ・既存行の記述とStatusタグは不変): `CURRENT_SPEC.md` 580・583(Family XはIOL基本2文が最新)、829〜831(現行W-1への置換注記)、905・1169(AN3定数保持・R0に実送信されるのは第2文+Fact Lock数字規則5)、1169(B3/R0/R1/R2=gpt-6.1-sol)、1236(訂正: 現行Full StoryはN01でありP8ではない。Family XでN01→PD06、Family ZはN01維持)、1244(E1/R2のFamily X既定化は要ユーザー確認=#100。確定範囲は原文表の8項目のみ)、2462・2501・2519(OPEN-233 Self-Recovery系は2026-10-10 SUPERSEDED)。`OPEN_ITEMS.md` OPEN-299(approved-unwired)・248(旧見出しStatus陳腐化)・243(守り撤去はRF配線の帰結、継続/closeは#99)・238(Family Xから到達経路なし)・233(R0規則7=承認Trialと同一)。
+- 配線Blocking最終版: IOL 2文化(Prompt承認→Adv/Std/Local Rewriteラベル改修[`er020_tts_retry_local_rewrite_01.py:158`]+文数保持test)/PD06・K2・P8・P7配線(Master Store新style id・version、P8名称衝突回避)/既定profile化(4仕様のみ)/OPEN-343 triage/実走Gate項目。Comment4整合はBlockingから除外。

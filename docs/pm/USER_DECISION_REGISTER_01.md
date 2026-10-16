@@ -201,3 +201,15 @@
 - #94(新規・USER_DECISION_REQUIRED) **OPEN-395 JA Latin語web lookup費用(1回JPY21.47)の量産単価への影響評価と対処方針** OPEN-395(`er025`内蔵`ja_web_lookup_call`、AKB48/ishで1回JPY21.4688)。推奨=negative cache/Ledger保存の有無調査を先行(JPY0、コード読みのみ)してから対処方針を提示。影響=量産単価目標70円/記事セットに対する影響の有無を確定。 Blocking=いいえ。
 - #95(新規・USER_DECISION_REQUIRED) **A7範囲限定(登録読み辞書不一致のみSecondary事前除外)の是非** #83付帯。A7はSecondary事前除外として維持(Fable判断、2026-10-11安全条件の適用。`er078_asr_unified_judge_01.py:125/:148`)。推奨=維持(既定は維持のまま、ユーザーが異議あれば除外表1行で解放)。影響=解放すると登録読み辞書不一致でもSecondaryへ回る。 Blocking=いいえ。
 - 本追記後: 追加#88〜#95はすべてUSER_DECISION_REQUIRED(非ブロッキング)。全件数は95件(#1〜#87との合算)。#87は判断済みへ確定したため、ブロックするのは既存の#72・#81のみ。
+
+### FXWA監査 Fable最終(2026-10-16、FAMILY-X-WRITER-TRIAL-ADOPTION-AND-PRODUCTION-GAP-AUDIT-01 委任_03、Opus FXWA-R-01〜12全件採用)
+
+原文・詳細=`docs/research/FAMILY-X-WRITER-TRIAL-ADOPTION-AND-PRODUCTION-GAP-AUDIT-01/AUDIT_REPORT_01.md`§14。全件`USER_DECISION_REQUIRED`。(d)英語化モデルと(e)AN3第1文置換、P1-3(R0規則7)はUDRにしない((d)=独立改善候補C、(e)(P1-3)=承認Trialと同一でA)。
+
+- #96(新規・USER_DECISION_REQUIRED) **(a)+(b)P7の正本とPD06の名称対応(Yes/No 1問)** 「P7=`er080_coffee_kp_pacing_trial_01.py:35`のp7(速度・リズムのバランス型)」「PD06=Pace Trial-02の`PD6`」で追認するか。推奨=追認。理由=同名の別P7がCS:1239に実在し、FX記録§3が要確認と自記。er080側はユーザー指示原文と逐語一致。PD06表記は09:00文書以外に無い。影響=KP英語解説(Adv)とFull Story TTS(Std/Adv)の全記事。 Blocking=はい(配線前)。
+- #97(新規・USER_DECISION_REQUIRED) **(c)In One Line 2文Promptの文面承認(基本2文・必要時のみ3文の基準を含む)** 推奨=配線設計時に文面案+offline出力サンプル少数を添え、1回で承認。理由=改修自体は判断済みで、承認が要るのは文面と「必要時3文」の基準のみ。影響=全記事のIn One Line(Adv生成・Std継承・Local Rewrite経路)。 Blocking=はい(設計後)。
+- #98(新規・USER_DECISION_REQUIRED) **(g)Hook Side output(R2完成後にLunaでHook1本)の扱い** 推奨=廃止(R2 Title表示のみ維持)。理由=現Family X runnerにstageが無く、比較観測用で品質に直結しない。後続仕様で失われた過去決定に該当するため廃止にはユーザー判断が要る。影響=比較観測の継続可否のみ。 Blocking=いいえ。
+- #99(新規・USER_DECISION_REQUIRED) **(h)+(f)一括整理**: OPEN-237系・RF候補(a)(b)(c)・代理指標・Pre-sorter・OPEN-243(守り撤去後の継続/close)。補完sweepで判明したOPEN-56/59(Evidence Compression B版、旧B1/A2 Writer Prompt対象、PRE_USER_VALIDATION)も候補に追加。推奨=報告書§3のとおり一括提示(継続/廃止)。理由=個別に問い直すより一括整理が現実的。影響=OI整理のみ。 Blocking=いいえ。
+- #100(新規・USER_DECISION_REQUIRED) **E1/R2のFamily X既定化** E1(Adv Preview音声Style)とR2(Std日本語Preview/Comment音声Style)を、Coffee限定承認(OPEN-298/300)からFamily X全体の既定へ拡げるか。推奨=既定化(ただしユーザー原文に無いため要確認)。理由=09:00の表にE1・R2は無く、CS:1244の拡大文は記録者の解釈。要約で承認範囲を拡げない。影響=Family X共通仕様の完成・取り違え防止。 Blocking=いいえ(Coffee再制作はCoffee限定承認のまま可)。
+- 備考: FXUD-1〜8は「判断済み・未配線」のまま。配線Blocking最終版=`docs/research/FAMILY-X-WRITER-TRIAL-ADOPTION-AND-PRODUCTION-GAP-AUDIT-01/AUDIT_REPORT_01.md`§14-6(IOL 2文化[Prompt承認→Adv/Std/Local Rewriteラベル改修/文数保持test]/PD06・K2・P8・P7配線[Master Store新style id・version、P8名称衝突回避]/既定profile化[4仕様のみ]/OPEN-343 triage/実走Gate項目)。Std 6%減速併用の既定慣行採用・PD06等の既定profile化はFable判断(B)。
+- 本追記後: 追加#96〜#100はすべてUSER_DECISION_REQUIRED。ブロックするのは#96・#97(配線前/設計後)と既存の#72・#81。全件数は100件。
