@@ -1,0 +1,307 @@
+{
+  "article": "inbound_tourism",
+  "method": "M2c",
+  "stage": "1a",
+  "dry_run": true,
+  "started_at": "2026-10-17T06:04:13.582374+00:00",
+  "usage_basis": "SYNTHETIC_DRYRUN_STUB",
+  "corrected_from": "M2",
+  "correct_source_root": "er082_output/rlct_trial_01",
+  "reused_initial_b3_sha256": "1b25162b5d7c73875452742800ffd984dcbfedd5d5071e0b777c9d280f4aee10",
+  "reused_verdict_ids": [
+    "F01",
+    "F02",
+    "F04",
+    "F05"
+  ],
+  "pre_correction_selected_fact_ids": [
+    "F01",
+    "F02",
+    "F04",
+    "F05"
+  ],
+  "pre_correction_storyline_sha256": "943d383860cb5865068cf04926316e8a5d63b67aaa522440f1a45c9d1e47e4da",
+  "pre_correction_brief_sha256": "f7fd05dbea2eb0c00eac6f88199164f52715c3d0f480b984e1c0245cbd41ec86",
+  "pre_correction_cost_total_jpy": 17.778,
+  "pre_correction_basis": "OFFICIAL_API_RESPONSE",
+  "reselect": {
+    "status": "COMPLETED",
+    "rounds": [
+      {
+        "round": 0,
+        "trigger": "RESUMED_FROM_SOURCE_FINAL",
+        "b3_label": "initial",
+        "selected_fact_ids": [
+          "F01",
+          "F02",
+          "F04",
+          "F05"
+        ],
+        "verified_now": [],
+        "reused_verdicts": [
+          "F01",
+          "F02",
+          "F04",
+          "F05"
+        ],
+        "rejected": [],
+        "ambiguous_selected": [
+          "F05"
+        ],
+        "ambiguous_unseen": [
+          "F05"
+        ],
+        "ambiguous_visible_to_b3": false,
+        "confirm_pass": "REQUIRED",
+        "rejected_reselect_attempts_detected": 0
+      },
+      {
+        "round": 1,
+        "trigger": "CONFIRM_AMBIGUOUS",
+        "b3_label": "confirm1",
+        "selected_fact_ids": [
+          "F01",
+          "F02",
+          "F03",
+          "F06"
+        ],
+        "verified_now": [
+          "F03",
+          "F06"
+        ],
+        "reused_verdicts": [
+          "F01",
+          "F02"
+        ],
+        "verify_record": {
+          "label": "r1",
+          "cap_prompt": false,
+          "fact_ids": [
+            "F03",
+            "F06"
+          ],
+          "model": "gpt-6-luna",
+          "response_id": "stub_resp_2",
+          "latency_seconds": 0.0010356903076171875,
+          "web_search_call_count": 2,
+          "action_type_counts": {
+            "search": 2
+          },
+          "query_count": 2,
+          "calls_per_fact_avg": 1.0,
+          "exceeds_soft_cap_estimate": false,
+          "prompt_sha256": "b763834a9805fdfaaeae9f536662611cb542b4f563c9c463621ae2fdf42c3fae"
+        },
+        "rejected": [],
+        "ambiguous_selected": [
+          "F06"
+        ],
+        "ambiguous_unseen": [
+          "F06"
+        ],
+        "ambiguous_visible_to_b3": false,
+        "confirm_pass": "REQUIRED",
+        "rejected_reselect_attempts_detected": 0
+      },
+      {
+        "round": 2,
+        "trigger": "CONFIRM_AMBIGUOUS",
+        "b3_label": "confirm2",
+        "selected_fact_ids": [
+          "F01",
+          "F02",
+          "F03",
+          "F06"
+        ],
+        "verified_now": [],
+        "reused_verdicts": [
+          "F01",
+          "F02",
+          "F03",
+          "F06"
+        ],
+        "rejected": [],
+        "ambiguous_selected": [
+          "F06"
+        ],
+        "ambiguous_unseen": [],
+        "ambiguous_visible_to_b3": true,
+        "confirm_pass": "NOT_NEEDED_AMBIGUOUS_ALREADY_VISIBLE"
+      }
+    ],
+    "reselect_count": 0,
+    "confirm_pass_count": 2,
+    "b3_calls_after_initial": 2,
+    "b3_calls_before_this_run": 0,
+    "final_confirm_pass": "NOT_NEEDED_AMBIGUOUS_ALREADY_VISIBLE",
+    "unmet": null
+  },
+  "shared_initial_b3_from": null,
+  "status": "COMPLETED",
+  "selected_fact_ids": [
+    "F01",
+    "F02",
+    "F03",
+    "F06"
+  ],
+  "selected_storyline": "2026年8月の訪日外客数は前年同月を下回り、年初来累計も前年同期比減となった一方、8月単月は2019年水準を上回っており、コロナ禍前を超える年間水準と直近の減速が併存している。",
+  "b3_model": "gpt-6.1-sol",
+  "b3_attempts": 1,
+  "ambiguous_central": {
+    "central_fact_ids": [
+      "F01",
+      "F02",
+      "F03",
+      "F04",
+      "F06",
+      "F07",
+      "F08",
+      "F09",
+      "F10",
+      "F11",
+      "F13",
+      "F14"
+    ],
+    "ambiguous_central_fact_ids": [
+      "F06"
+    ],
+    "count": 1,
+    "note": "候補件数(機械抽出)。『断定しているか』の最終判定はSonnet+Fable独立判定(R-07、測定のみ)"
+  },
+  "known_defect_status": {
+    "F05": "c_not_selected",
+    "F12": "c_not_selected"
+  },
+  "verdict_transitions": {
+    "counts": {
+      "VERIFIED->VERIFIED": 3,
+      "AMBIGUOUS->VERIFIED": 1,
+      "REJECTED->AMBIGUOUS": 1,
+      "AMBIGUOUS->AMBIGUOUS": 1
+    },
+    "promotions_to_verified_or_up": [
+      "F04",
+      "F05"
+    ],
+    "demotions_from_verified": []
+  },
+  "final_verdicts": {
+    "F01": {
+      "verdict": "VERIFIED"
+    },
+    "F02": {
+      "verdict": "VERIFIED"
+    },
+    "F04": {
+      "verdict": "VERIFIED"
+    },
+    "F05": {
+      "verdict": "AMBIGUOUS"
+    },
+    "F03": {
+      "verdict": "VERIFIED"
+    },
+    "F06": {
+      "verdict": "AMBIGUOUS"
+    }
+  },
+  "verifier_models": [
+    "gpt-6-luna"
+  ],
+  "verifier_model_matches_m0": true,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 2,
+    "by_action_type": {
+      "search": 2
+    },
+    "query_count": 2
+  },
+  "verify_requests": [
+    {
+      "label": "r1",
+      "cap_prompt": false,
+      "fact_ids": [
+        "F03",
+        "F06"
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "stub_resp_2",
+      "latency_seconds": 0.0010356903076171875,
+      "web_search_call_count": 2,
+      "action_type_counts": {
+        "search": 2
+      },
+      "query_count": 2,
+      "calls_per_fact_avg": 1.0,
+      "exceeds_soft_cap_estimate": false,
+      "prompt_sha256": "b763834a9805fdfaaeae9f536662611cb542b4f563c9c463621ae2fdf42c3fae"
+    }
+  ],
+  "cost": {
+    "by_step": {
+      "b3_confirm1": {
+        "llm_jpy": 4.683,
+        "web_search_jpy": 0.0,
+        "calls": 1,
+        "web_search_calls": 0,
+        "input_tokens": 5634,
+        "output_tokens": 1800,
+        "total_jpy": 4.683
+      },
+      "verify_sel_r1": {
+        "llm_jpy": 0.543,
+        "web_search_jpy": 3.2,
+        "calls": 1,
+        "web_search_calls": 2,
+        "input_tokens": 28948,
+        "output_tokens": 1000,
+        "total_jpy": 3.743
+      },
+      "b3_confirm2": {
+        "llm_jpy": 4.768,
+        "web_search_jpy": 0.0,
+        "calls": 1,
+        "web_search_calls": 0,
+        "input_tokens": 5901,
+        "output_tokens": 1800,
+        "total_jpy": 4.768
+      }
+    },
+    "total": {
+      "llm_jpy": 9.994,
+      "web_search_jpy": 3.2,
+      "total_jpy": 13.194,
+      "calls": 3,
+      "web_search_calls": 2
+    }
+  },
+  "contract": {
+    "method_dir": "er082_output/rlct_trial_01/_dryrun_07/inbound_tourism/M2c",
+    "producer": {
+      "status": "FAIL",
+      "error": "AnnotationProducerError: [STOP] ANNOTATION_PRODUCER_FAILED: internal check d_tags: [\"non-standard number marks: ['【2019年【周辺数値】']\"]"
+    },
+    "validate": null,
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 4
+    },
+    "all_pass": false
+  },
+  "finished_at": "2026-10-17T06:04:13.642082+00:00",
+  "cost_correction_only": {
+    "llm_jpy": 9.994,
+    "web_search_jpy": 3.2,
+    "total_jpy": 13.194,
+    "calls": 3,
+    "web_search_calls": 2
+  },
+  "cost_production_equivalent": {
+    "source_method_total_jpy": 17.778,
+    "correction_total_jpy": 13.194,
+    "total_jpy": 30.972,
+    "note": "補正元method実測(Trial費用)+補正費用。共有初回B3(M3c)の帰属はaggregateで加算"
+  },
+  "brief_changed_vs_pre_correction": true
+}

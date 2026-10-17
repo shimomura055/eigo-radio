@@ -622,25 +622,82 @@ def build_reselect_note(rejected: list, verdicts: dict, draft: dict, unverified_
     return "\n".join(lines)
 
 
+CONFIRM_CONSTRAINT = ("このFactを使う場合、Storyline・Briefでは不確実性・留保条件を明示し、"
+                      "無条件の断定をしてはならない")
+
+
+def build_confirm_note(rejected: list, ambiguous_new: list, verdicts: dict, draft: dict, unverified_ids: list) -> str:
+    """委任_07 D2: 最終B3確認パス用note。REJECTEDのみの場合は既存build_reselect_noteと同一文面(挙動不変)。
+    AMBIGUOUS(B3が検証結果を見ずに選んだもの)がある場合は、REJECTED/AMBIGUOUS各ID+理由+使用上の制約、
+    検証済み他Factの判定、未検証候補、Storyline再評価の指示を含める。"""
+    if rejected and not ambiguous_new:
+        return build_reselect_note(rejected, verdicts, draft, unverified_ids)
+    lines = ["\n\n【最終確認の指示(Trial)】前回選んだFactの独立検証が終わりました。検証結果を踏まえ、"
+             "Storylineの構成を再評価し、必要ならFactを選び直してください。"
+             "REJECTEDのFactは選定してはいけません(選定禁止)。AMBIGUOUSのFactは無条件に断定してはいけません。"]
+    for rid in rejected:
+        lines.append(f"- REJECTED {rid}: {verdicts[rid].get('verification_notes', '')}"
+                     "(候補一覧から外しました。選定禁止)")
+    for aid in ambiguous_new:
+        lines.append(f"- AMBIGUOUS {aid}: {verdicts[aid].get('verification_notes', '')[:600]}"
+                     f" / 使用上の制約: {CONFIRM_CONSTRAINT}")
+    others = [i for i, v in verdicts.items() if v["verdict"] != "REJECTED" and i not in set(ambiguous_new)]
+    if others:
+        lines.append("【検証済みの他のFactの判定】")
+        for i in others:
+            lines.append(f"- {i}: {verdicts[i]['verdict']} / {verdicts[i].get('verification_notes', '')[:300]}")
+    if unverified_ids:
+        lines.append("【未検証の候補】" + ", ".join(unverified_ids)
+                     + " (新たに選んだFactだけを選定後に独立検証します)")
+    lines.append("Storylineの構成を再評価し、必要ならFactを選び直してください。")
+    return "\n".join(lines)
+
+
+def _ambiguous_unseen(sel_ids: list, verdicts: dict, sel_visible: dict) -> list:
+    """D1(ii): 選定FactのうちAMBIGUOUSで、sel生成B3呼出の候補Ledgerに[AMBIGUOUS]として見えていなかったもの。"""
+    return [i for i in sel_ids if verdicts[i]["verdict"] == "AMBIGUOUS"
+            and (sel_visible.get(i) or {}).get("verdict") != "AMBIGUOUS"]
+
+
 def select_then_verify(client, topic: str, draft: dict, *, work_dir: str, stage_prefix: str, budget: Budget,
                        cap: bool, max_reselect: int = 2, shared_initial: dict | None = None,
-                       est_verify_jpy: float = EST_VERIFY_SEL_JPY, est_b3_jpy: float = EST_B3_JPY) -> dict:
-    """戻り値 status=COMPLETED | UNRESOLVED。UNRESOLVEDでは確定ledger/briefを返さない。"""
+                       est_verify_jpy: float = EST_VERIFY_SEL_JPY, est_b3_jpy: float = EST_B3_JPY,
+                       resume: dict | None = None) -> dict:
+    """戻り値 status=COMPLETED | UNRESOLVED。UNRESOLVEDでは確定ledger/briefを返さない。
+    委任_07(ユーザー#107): 選定Factの検証後、(i)REJECTEDなし かつ (ii)AMBIGUOUSは全て選定B3呼出の候補Ledgerで
+    既に提示済み、の両方を満たすときだけ確定する。満たさなければ検証結果をB3へ返す(再選定/確認パス)。
+    初回B3後のB3呼出は再選定と確認パスを合算して max_reselect(=2)回まで。
+    resume(1a補正用)={"sel","verdicts","sel_visible","sel_label","b3_used"}: 既存methodの最終sel・検証結果から再開。"""
     all_ids = [f["fact_id"] for f in draft["facts"]]
-    verdicts: dict = {}
     rounds: list = []
-    candidate = render_candidate_ledger(draft, verdicts)
-    if shared_initial is not None:
-        sel = shared_initial
+    n_reselect = n_confirm = 0
+    if resume is None:
+        verdicts: dict = {}
+        if shared_initial is not None:
+            sel = shared_initial
+        else:
+            sel = select_b3_trial(client, topic, render_candidate_ledger(draft, verdicts), work_dir=work_dir,
+                                  label="initial", stage_tag=f"{stage_prefix}|b3_initial", budget=budget,
+                                  allow_unverified=True, est_jpy=est_b3_jpy)
+            save_json(f"{work_dir}/initial_b3.json", sel)
+        sel_visible, sel_label, trigger, b3_used = {}, "initial", "INITIAL", 0
     else:
-        sel = select_b3_trial(client, topic, candidate, work_dir=work_dir, label="initial",
-                              stage_tag=f"{stage_prefix}|b3_initial", budget=budget, allow_unverified=True,
-                              est_jpy=est_b3_jpy)
-        save_json(f"{work_dir}/initial_b3.json", sel)
-    for r in range(max_reselect + 1):
+        verdicts = copy.deepcopy(resume["verdicts"])
+        sel, sel_visible = resume["sel"], copy.deepcopy(resume["sel_visible"])
+        sel_label, trigger, b3_used = resume["sel_label"], "RESUMED_FROM_SOURCE_FINAL", resume["b3_used"]
+    b3_before = b3_used
+    shared_flag = shared_initial is not None
+
+    def _counts():
+        return {"reselect_count": n_reselect, "confirm_pass_count": n_confirm,
+                "b3_calls_after_initial": b3_used, "b3_calls_before_this_run": b3_before}
+
+    while True:
+        r = len(rounds)
         sel_ids = list(sel["parsed"]["selected_fact_ids"])
         to_verify = [i for i in all_ids if i in sel_ids and i not in verdicts]   # 検証済みは再利用
-        rnd = {"round": r, "selected_fact_ids": sel_ids, "verified_now": to_verify,
+        rnd = {"round": r, "trigger": trigger, "b3_label": sel_label, "selected_fact_ids": sel_ids,
+               "verified_now": to_verify,
                "reused_verdicts": [i for i in sel_ids if i in verdicts and i not in to_verify]}
         if to_verify:
             vres = verify_facts_trial(client, topic, draft, to_verify, cap=cap, work_dir=work_dir,
@@ -655,47 +712,77 @@ def select_then_verify(client, topic: str, draft: dict, *, work_dir: str, stage_
                 verdicts[i] = {"verdict": v["verdict"], "verification_notes": v["verification_notes"], "round": r}
             rnd["verify_record"] = vres["record"]
         rejected = [i for i in sel_ids if verdicts[i]["verdict"] == "REJECTED"]
-        rnd["rejected"] = rejected
+        ambiguous = [i for i in sel_ids if verdicts[i]["verdict"] == "AMBIGUOUS"]
+        amb_unseen = _ambiguous_unseen(sel_ids, verdicts, sel_visible)
+        if rejected or amb_unseen:
+            confirm = "REQUIRED"
+        elif not ambiguous:
+            confirm = "NOT_NEEDED_ALL_VERIFIED"
+        else:
+            confirm = "NOT_NEEDED_AMBIGUOUS_ALREADY_VISIBLE"
+        rnd.update({"rejected": rejected, "ambiguous_selected": ambiguous, "ambiguous_unseen": amb_unseen,
+                    "ambiguous_visible_to_b3": not amb_unseen, "confirm_pass": confirm})
         rounds.append(rnd)
-        if not rejected:
-            return _finalize_sel(draft, sel, sel_ids, verdicts, rounds, shared_initial is not None)
-        if r == max_reselect:
+        if confirm != "REQUIRED":
+            return _finalize_sel(draft, sel, sel_ids, verdicts, rounds, shared_flag, sel_visible, _counts())
+        if b3_used >= max_reselect:
+            unmet = (["REJECTED_SELECTED"] if rejected else []) + (["AMBIGUOUS_NOT_CONFIRMED"] if amb_unseen else [])
             res = {"status": "UNRESOLVED", "reason": "RESELECT_LIMIT_REACHED", "max_reselect": max_reselect,
-                   "rejected_at_limit": rejected, "rounds": rounds, "verdicts": verdicts}
+                   "unmet": unmet, "rejected_at_limit": rejected, "ambiguous_unconfirmed_at_limit": amb_unseen,
+                   "rounds": rounds, "verdicts": verdicts, **_counts()}
             save_json(f"{work_dir}/unresolved.json", res)
             return res
         unverified = [i for i in all_ids if i not in verdicts]
-        note = build_reselect_note(rejected, verdicts, draft, unverified)
+        note = build_confirm_note(rejected, amb_unseen, verdicts, draft, unverified)
         candidate = render_candidate_ledger(draft, verdicts)
+        if rejected:
+            kind, trigger = "reselect", ("RESELECT_REJECTED+CONFIRM_AMBIGUOUS" if amb_unseen else "RESELECT_REJECTED")
+        else:
+            kind, trigger = "confirm", "CONFIRM_AMBIGUOUS"
+        label = f"{kind}{b3_used + 1}"
+        visible_now = copy.deepcopy(verdicts)           # この呼出の候補Ledgerに見えている判定
         try:
-            sel = select_b3_trial(client, topic, candidate, work_dir=work_dir, label=f"reselect{r + 1}",
-                                  stage_tag=f"{stage_prefix}|b3_reselect{r + 1}", budget=budget,
+            sel = select_b3_trial(client, topic, candidate, work_dir=work_dir, label=label,
+                                  stage_tag=f"{stage_prefix}|b3_{label}", budget=budget,
                                   extra_note=note, allow_unverified=True, est_jpy=est_b3_jpy)
         except B3TechnicalFailure as exc:
+            b3_used += 1
             rej_picked = any("UNKNOWN_FACT_ID" in str(a) and any(x in str(a) for x in rejected)
                              for a in exc.attempts_log)
             res = {"status": "UNRESOLVED",
                    "reason": "B3_TECHNICAL_FAILURE" + ("_REJECTED_ID_RESELECTED" if rej_picked else ""),
                    "rejected_reselected_detected": rej_picked, "attempts_log": exc.attempts_log,
-                   "rounds": rounds, "verdicts": verdicts}
+                   "rounds": rounds, "verdicts": verdicts, **_counts()}
             save_json(f"{work_dir}/unresolved.json", res)
             return res
+        b3_used += 1
+        if kind == "reselect":
+            n_reselect += 1
+        else:
+            n_confirm += 1
+        sel_visible, sel_label = visible_now, label
         # REJECTED IDを選び直そうとして(技術retryで)修正された場合も痕跡として記録
         rej_try = [a for a in sel["attempts_log"] if any("UNKNOWN_FACT_ID" in str(e) and any(x in str(e) for x in rejected)
                                                          for e in a.get("validation_errors", []))]
         rounds[-1]["rejected_reselect_attempts_detected"] = len(rej_try)
-    raise AssertionError("unreachable")
 
 
-def _finalize_sel(draft, sel, sel_ids, verdicts, rounds, shared) -> dict:
+def _finalize_sel(draft, sel, sel_ids, verdicts, rounds, shared, sel_visible=None, counts=None) -> dict:
+    # 防御: REJECTED混入・AMBIGUOUS未提示のままの確定は構造上起こさない(起きたら実装バグとして停止)
+    if any(verdicts[i]["verdict"] == "REJECTED" for i in sel_ids):
+        raise AssertionError("REJECTED selected at finalize")
+    if sel_visible is not None and _ambiguous_unseen(sel_ids, verdicts, sel_visible):
+        raise AssertionError("AMBIGUOUS finalized without being shown to B3")
     facts = [f for f in draft["facts"] if f["fact_id"] in set(sel_ids)]
-    ledger_text, counts, kept = vfl01.build_verified_ledger_text(
+    ledger_text, counts_v, kept = vfl01.build_verified_ledger_text(
         {"facts": facts}, {"verifications": [{"fact_id": f["fact_id"], "verdict": verdicts[f["fact_id"]]["verdict"],
                                               "verification_notes": verdicts[f["fact_id"]]["verification_notes"]}
                                              for f in facts]})
+    counts = counts or {"reselect_count": len(rounds) - 1, "confirm_pass_count": 0,
+                        "b3_calls_after_initial": len(rounds) - 1, "b3_calls_before_this_run": 0}
     return {"status": "COMPLETED", "selection": sel, "selected_fact_ids": sel_ids, "verdicts": verdicts,
-            "ledger_text": ledger_text, "verdict_counts": counts, "rounds": rounds,
-            "reselect_count": len(rounds) - 1, "shared_initial_b3": shared}
+            "ledger_text": ledger_text, "verdict_counts": counts_v, "rounds": rounds,
+            "shared_initial_b3": shared, "final_confirm_pass": rounds[-1]["confirm_pass"], **counts}
 
 
 # ------------------------------------------------------------
@@ -830,6 +917,7 @@ class StubClient:
         self.log = stub_usage_log
         self.n = 0
         self.calls = 0
+        self.b3_n = 0
         self.responses = SimpleNamespace(create=self._create)
 
     # -- helpers
@@ -890,6 +978,10 @@ class StubClient:
         stored = list(self.sc["m0_evidence"]["selected_fact_ids"])
         story = self.sc["m0_evidence"]["selected_storyline"]
         forced = self.sc.get("b3_force_ids")
+        script = self.sc.get("b3_script")          # 委任_07: B3呼出順に返すFact ID列(確認パス再現用)
+        if script is not None and self.b3_n < len(script):
+            forced = script[self.b3_n]
+        self.b3_n += 1
         if forced is not None:
             sel = [i for i in forced if i in ids] if not self.sc.get("b3_force_allow_unknown") else list(forced)
         else:

@@ -321,6 +321,175 @@ class RlctTrialTests(unittest.TestCase):
         unv = lib.build_user_prompt_trial("t", "[VERIFIED] F1: a\n", True)
         self.assertEqual(unv.replace(lib.UNVERIFIED_PHRASE, lib.VERIFIED_PHRASE), plain)
 
+    # ------------------------------------------------------------------
+    # 委任_07 (ユーザー#107): 最終B3確認パス test_r1〜r7
+    # ------------------------------------------------------------------
+    def _stv(self, name, verdicts, selected, script=None, n=8):
+        draft = _mini_draft(n)
+        sc = _scenario(draft, verdicts, selected)
+        for k in sc["m0_verdicts"]:
+            sc["m0_verdicts"][k]["verification_notes"] = f"notes-{k}-{verdicts[k]}"
+        if script is not None:
+            sc["b3_script"] = script
+        d, log, budget = self._budget(name)
+        client = lib.StubClient(sc, log)
+        res = lib.select_then_verify(client, "t", draft, work_dir=f"{d}/w", stage_prefix="1a|a|M2", budget=budget, cap=False)
+        return d, client, res
+
+    @staticmethod
+    def _all_verified(n=8, **over):
+        v = {f"F{i}": "VERIFIED" for i in range(1, n + 1)}
+        v.update(over)
+        return v
+
+    # test_r1: 全VERIFIED→B3追加呼出0・confirm_pass NOT_NEEDED
+    def test_r1_all_verified_no_extra_b3(self):
+        d, client, res = self._stv("r1", self._all_verified(), ["F1", "F2", "F3"])
+        self.assertEqual(res["status"], "COMPLETED")
+        self.assertEqual(client.b3_n, 1)                              # 初回B3のみ
+        self.assertEqual(res["b3_calls_after_initial"], 0)
+        self.assertEqual(res["final_confirm_pass"], "NOT_NEEDED_ALL_VERIFIED")
+        self.assertEqual(res["rounds"][0]["trigger"], "INITIAL")
+        self.assertEqual(res["rounds"][0]["ambiguous_selected"], [])
+
+    # test_r2: AMBIGUOUSのみ→確認パス1回・noteにID+notes+制約文・同じ集合なら確定・ambiguous_visible_to_b3=True
+    def test_r2_ambiguous_only_one_confirm_pass(self):
+        d, client, res = self._stv("r2", self._all_verified(F2="AMBIGUOUS"), ["F1", "F2", "F3"])
+        self.assertEqual(res["status"], "COMPLETED")
+        self.assertEqual((res["reselect_count"], res["confirm_pass_count"], res["b3_calls_after_initial"]), (0, 1, 1))
+        r0, r1 = res["rounds"]
+        self.assertEqual(r0["confirm_pass"], "REQUIRED")
+        self.assertFalse(r0["ambiguous_visible_to_b3"])               # 初回B3は検証前=AMBIGUOUSを知らない
+        self.assertEqual(r0["ambiguous_unseen"], ["F2"])
+        self.assertEqual(r1["trigger"], "CONFIRM_AMBIGUOUS")
+        self.assertTrue(r1["ambiguous_visible_to_b3"])
+        self.assertEqual(r1["confirm_pass"], "NOT_NEEDED_AMBIGUOUS_ALREADY_VISIBLE")
+        self.assertEqual(client.b3_n, 2)
+        p = lib.load_json(f"{d}/w/b3_confirm1.json")["user_prompt"]     # B3へ実際に渡したprompt
+        self.assertIn("AMBIGUOUS F2", p)
+        self.assertIn("notes-F2-AMBIGUOUS", p)
+        self.assertIn(lib.CONFIRM_CONSTRAINT, p)
+        self.assertIn("Storylineの構成を再評価", p)
+        self.assertIn("[AMBIGUOUS", p.split("【最終確認の指示")[0])        # 候補LedgerにAMBIGUOUSタグ
+        self.assertIn("[UNVERIFIED] F4:", p)                            # 未検証候補は未検証のまま
+        self.assertIn("新たに選んだFactだけを選定後に独立検証", p)
+        self.assertEqual(res["rounds"][1]["verified_now"], [])          # 検証済みは再利用(再検証しない)
+
+    # test_r3: 確認パスで新規未検証Factが選ばれ検証でAMBIGUOUS→2回目の確認パス→確定
+    def test_r3_new_fact_ambiguous_second_confirm(self):
+        d, client, res = self._stv("r3", self._all_verified(F2="AMBIGUOUS", F4="AMBIGUOUS"), ["F1", "F2"],
+                                   script=[["F1", "F2"], ["F1", "F4"], ["F1", "F4"]])
+        self.assertEqual(res["status"], "COMPLETED")
+        self.assertEqual((res["reselect_count"], res["confirm_pass_count"], res["b3_calls_after_initial"]), (0, 2, 2))
+        self.assertEqual(res["rounds"][1]["verified_now"], ["F4"])       # 新規Factだけ検証
+        self.assertEqual(res["rounds"][1]["reused_verdicts"], ["F1"])
+        self.assertEqual(res["rounds"][1]["confirm_pass"], "REQUIRED")  # F4は選定時に未検証だった
+        self.assertEqual(res["rounds"][2]["confirm_pass"], "NOT_NEEDED_AMBIGUOUS_ALREADY_VISIBLE")
+        self.assertEqual(res["selected_fact_ids"], ["F1", "F4"])
+        self.assertNotIn("F2:", res["ledger_text"])
+
+    # test_r4: 確認パス2回で未達→UNRESOLVED、確定ファイル無し
+    def test_r4_confirm_limit_unresolved(self):
+        d, client, res = self._stv("r4", self._all_verified(F2="AMBIGUOUS", F3="AMBIGUOUS", F4="AMBIGUOUS"),
+                                   ["F1", "F2"], script=[["F1", "F2"], ["F1", "F3"], ["F1", "F4"]])
+        self.assertEqual(res["status"], "UNRESOLVED")
+        self.assertEqual(res["reason"], "RESELECT_LIMIT_REACHED")
+        self.assertEqual(res["unmet"], ["AMBIGUOUS_NOT_CONFIRMED"])
+        self.assertEqual(res["b3_calls_after_initial"], 2)
+        self.assertEqual(client.b3_n, 3)                                 # 初回+追加2回=3回で止まる
+        self.assertNotIn("ledger_text", res)
+        self.assertNotIn("selection", res)
+        self.assertTrue(os.path.isfile(f"{d}/w/unresolved.json"))
+        self.assertFalse(os.path.exists(f"{d}/w/research_ledger"))
+
+    # test_r5: REJECTED+AMBIGUOUS混在→1回のnoteに両方、合算回数が2上限
+    def test_r5_mixed_rejected_and_ambiguous(self):
+        v = self._all_verified(F2="REJECTED", F3="AMBIGUOUS")
+        d, client, res = self._stv("r5", v, ["F1", "F2", "F3"], script=[["F1", "F2", "F3"], ["F1", "F3", "F4"]])
+        self.assertEqual(res["status"], "COMPLETED")
+        self.assertEqual(res["b3_calls_after_initial"], 1)
+        self.assertEqual(res["rounds"][1]["trigger"], "RESELECT_REJECTED+CONFIRM_AMBIGUOUS")
+        p = lib.load_json(f"{d}/w/b3_reselect1.json")["user_prompt"]
+        self.assertIn("REJECTED F2", p)
+        self.assertIn("選定禁止", p)
+        self.assertIn("AMBIGUOUS F3", p)
+        self.assertIn(lib.CONFIRM_CONSTRAINT, p)
+        self.assertNotIn("F2:", p.split("【最終確認の指示")[0])           # REJECTEDは候補本文から外れる
+        self.assertNotIn("F2", res["selected_fact_ids"])
+        # 合算上限: 再選定+確認パスで2回使い切っても未達ならUNRESOLVED(3回目のB3は呼ばない)
+        v2 = self._all_verified(F2="REJECTED", F3="AMBIGUOUS", F5="AMBIGUOUS", F6="AMBIGUOUS")
+        d2, c2, res2 = self._stv("r5b", v2, ["F1", "F2", "F3"],
+                                 script=[["F1", "F2", "F3"], ["F1", "F3", "F5"], ["F1", "F5", "F6"], ["F1", "F6"]])
+        self.assertEqual(res2["status"], "UNRESOLVED")
+        self.assertEqual(res2["b3_calls_after_initial"], 2)
+        self.assertEqual(c2.b3_n, 3)
+        self.assertEqual((res2["reselect_count"], res2["confirm_pass_count"]), (1, 1))   # 1回目=REJECTED起因、2回目=確認のみ
+        self.assertEqual(res2["unmet"], ["AMBIGUOUS_NOT_CONFIRMED"])
+
+    # test_r6: --correct-from は元M2を変更せずM2cへ出力、再利用初回B3のshaが一致
+    def test_r6_correct_from_does_not_touch_source(self):
+        out = f"{TMP_ROOT}/r6"
+        self.assertEqual(run.main(["--dry-run", "--article", "inbound_tourism", "--method", "M2,M3", "--out", out]), 0)
+        before = lib.tree_listing(f"{out}/inbound_tourism/M2"), lib.tree_listing(f"{out}/inbound_tourism/M3")
+        self.assertEqual(run.main(["--dry-run", "--article", "inbound_tourism", "--correct-from", "M2,M3", "--out", out]), 0)
+        after = lib.tree_listing(f"{out}/inbound_tourism/M2"), lib.tree_listing(f"{out}/inbound_tourism/M3")
+        self.assertEqual(before, after)                                  # 元M2/M3のsha不変
+        init_sha = lib.sha256_file(f"{out}/inbound_tourism/M2/_work/initial_b3.json")
+        for m, mc in (("M2", "M2c"), ("M3", "M3c")):
+            r = lib.load_json(f"{out}/inbound_tourism/{mc}/result.json")
+            self.assertEqual(r["method"], mc)
+            self.assertEqual(r["corrected_from"], m)
+            self.assertEqual(r["reused_initial_b3_sha256"], init_sha)      # M3cもM2の初回B3を共有
+            self.assertTrue(r["reused_verdict_ids"])
+            self.assertIn("cost_correction_only", r)
+            self.assertAlmostEqual(r["cost_production_equivalent"]["total_jpy"],
+                                   r["pre_correction_cost_total_jpy"] + r["cost_correction_only"]["total_jpy"], places=2)
+            src_r = lib.load_json(f"{out}/inbound_tourism/{m}/result.json")
+            self.assertEqual(r["reselect"]["b3_calls_before_this_run"], len(src_r["reselect"]["rounds"]) - 1)   # 元の追加B3呼出は上限に合算
+            self.assertLessEqual(r["reselect"]["b3_calls_after_initial"], 2)
+            self.assertTrue(r["stage"] == "1a")
+            self.assertTrue(all(k.startswith(("b3_confirm", "b3_reselect", "verify_sel")) for k in r["cost"]["by_step"]))
+        # 実測dirを読み取り専用で参照(書込みなし)。元の判定(F05=AMBIGUOUS)から確認パスが発火する
+        real = "er082_output/rlct_trial_01"
+        if os.path.isfile(f"{real}/inbound_tourism/M2/result.json"):
+            rb = lib.tree_listing(f"{real}/inbound_tourism")
+            out2 = f"{TMP_ROOT}/r6b"
+            self.assertEqual(run.main(["--dry-run", "--article", "inbound_tourism", "--correct-from", "M2",
+                                       "--correct-source-root", real, "--out", out2]), 0)
+            self.assertEqual(lib.tree_listing(f"{real}/inbound_tourism"), rb)
+            r = lib.load_json(f"{out2}/inbound_tourism/M2c/result.json")
+            self.assertEqual(r["reselect"]["rounds"][0]["trigger"], "RESUMED_FROM_SOURCE_FINAL")
+            self.assertEqual(r["reselect"]["rounds"][0]["ambiguous_unseen"], ["F05"])
+            self.assertEqual(r["reselect"]["rounds"][0]["confirm_pass"], "REQUIRED")
+            self.assertGreaterEqual(r["reselect"]["b3_calls_after_initial"], 1)
+            self.assertEqual(r["pre_correction_selected_fact_ids"], ["F01", "F02", "F04", "F05"])
+        # 復元不能ならSTOP(推測で補わない)
+        with self.assertRaises(RuntimeError):
+            run._restore_source(f"{TMP_ROOT}/nonexistent", "inbound_tourism", "M2")
+
+    # test_r7: conform_checkが既存1a実測に対し inbound M2/M3=FAIL(F05)、M0/M0b/M0p/M1=N/A、Coffee M2/M3は実測どおり
+    def test_r7_conform_check_on_stage1a_results(self):
+        import er082_rlct_trial_01_conform_check as cc
+        real = "er082_output/rlct_trial_01"
+        if not os.path.isfile(f"{real}/inbound_tourism/M2/result.json"):
+            self.skipTest("Stage 1a実測が無い環境")
+        rows = {(r["article"], r["method"]): r for r in (cc.check_method(real, a, m)
+                for a in cc.ARTICLES_1A for m in lib.METHODS)}
+        self.assertEqual(len(rows), 12)
+        for a in cc.ARTICLES_1A:
+            for m in ("M0", "M0b", "M0p", "M1"):
+                self.assertEqual(rows[(a, m)]["conform_d1"], "N/A")
+        for m in ("M2", "M3"):
+            r = rows[("inbound_tourism", m)]
+            self.assertEqual(r["conform_d1"], "FAIL")
+            self.assertEqual(r["ambiguous_unseen_by_b3"], ["F05"])
+            self.assertTrue(r["prompt_evidence"]["agrees_with_rounds"])   # 保存B3 promptの裏取りと一致
+        for m in ("M2", "M3"):                                           # Coffeeは選定Fact全てVERIFIED(実測値どおりPASS)
+            r = rows[("coffee_prices", m)]
+            self.assertEqual(r["conform_d1"], "PASS")
+            self.assertEqual(r["ambiguous_selected"], [])
+            self.assertEqual(r["rejected_selected"], [])
+
 
 if __name__ == "__main__":
     unittest.main()

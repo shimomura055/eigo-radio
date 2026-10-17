@@ -15,6 +15,18 @@ import er082_rlct_trial_01_lib as lib
 from er082_rlct_trial_01_lib import ARTICLES, METHODS, OUT_ROOT, load_json, save_json, save_text
 
 
+CORRECTED = ["M2c", "M3c"]      # 委任_07 D6: 最終B3確認パス追加後(Stage 1a補正)
+LABELS = {"M0": "従来(M0)", "M0b": "従来再実行(M0b)", "M0p": "同日再検証のみ(M0p)", "M1": "案1",
+          "M2": "案2", "M3": "案1+2", "M2c": "案2(確認パス後)", "M3c": "案1+2(確認パス後)"}
+
+
+def method_label(method: str, present: set) -> str:
+    """M2c/M3cがある記事では、修正前のM2/M3を『(修正前・参考)』として併記する。"""
+    if method in ("M2", "M3") and f"{method}c" in present:
+        return LABELS[method] + "(修正前・参考)"
+    return LABELS[method]
+
+
 def _baseline_costs(out_root: str, article: str) -> dict:
     """既存run(複製)の raw_usage_log から Research/Ledger/B3 の実測費用を取る(stage tag別)。"""
     p = f"{out_root}/{article}/_inputs/raw_usage_log.jsonl"
@@ -45,6 +57,10 @@ def production_equivalent(out_root: str, article: str, method: str, res: dict, m
     if method == "M3":
         shared = _step_total(m2_res, "b3_initial") if m2_res else 0.0
         return round(r + _step_total(res, "verify_sel", "b3") + shared, 3)
+    if method in CORRECTED:     # 補正元実測+補正費用(res["cost_production_equivalent"])を使う
+        cpe = res["cost_production_equivalent"]["total_jpy"]
+        shared = _step_total(m2_res, "b3_initial") if (method == "M3c" and m2_res) else 0.0
+        return round(r + cpe + shared, 3)
     return None        # M0p はLedgerのみの統制(本番換算対象外)
 
 
@@ -52,7 +68,7 @@ def collect(out_root: str) -> dict:
     table = {}
     for art in ARTICLES:
         table[art] = {}
-        for m in METHODS:
+        for m in METHODS + CORRECTED:
             p = f"{out_root}/{art}/{m}/result.json"
             if os.path.isfile(p):
                 table[art][m] = load_json(p)
@@ -61,13 +77,14 @@ def collect(out_root: str) -> dict:
         m0 = ms.get("M0")
         m0_ids = (m0 or {}).get("selected_fact_ids") or []
         m0_eq = production_equivalent(out_root, art, "M0", m0, None) if m0 else None
+        present = set(ms)
         for m, res in ms.items():
             eq = production_equivalent(out_root, art, m, res, ms.get("M2")) if res.get("status") == "COMPLETED" else None
             tot = res["cost"]["total"]
             ws = res["web_search_calls"]
             tr = res.get("verdict_transitions") or {}
             rows.append({
-                "article": art, "method": m, "status": res["status"], "basis": res["usage_basis"],
+                "article": art, "method": m, "label": method_label(m, present), "status": res["status"], "basis": res["usage_basis"],
                 "dry_run": res.get("dry_run"),
                 "trial_llm_jpy": tot["llm_jpy"], "trial_web_search_jpy": tot["web_search_jpy"],
                 "trial_total_jpy": tot["total_jpy"],
@@ -76,6 +93,10 @@ def collect(out_root: str) -> dict:
                 "selected_fact_ids": res.get("selected_fact_ids"),
                 "jaccard_vs_M0": lib.jaccard(res.get("selected_fact_ids") or [], m0_ids) if m != "M0" else 1.0,
                 "reselect_count": (res.get("reselect") or {}).get("reselect_count"),
+                "confirm_pass_count": (res.get("reselect") or {}).get("confirm_pass_count"),
+                "b3_reselect_jpy": _step_total(res, "b3_reselect"), "b3_confirm_jpy": _step_total(res, "b3_confirm"),
+                "corrected_from": res.get("corrected_from"),
+                "cost_correction_only_jpy": (res.get("cost_correction_only") or {}).get("total_jpy"),
                 "demotions_from_verified": tr.get("demotions_from_verified"),
                 "promotions": tr.get("promotions_to_verified_or_up"),
                 "ambiguous_central_count": (res.get("ambiguous_central") or {}).get("count"),
@@ -105,13 +126,13 @@ def _note(rows: list) -> str:
 
 def to_markdown(agg: dict, title: str) -> str:
     L = [f"# {title}", "", agg["note"], "",
-         "| 記事 | 方式 | status | Trial費用JPY(LLM/検索/計) | 検索呼出(種別) | クエリ | 選定Fact | Jaccard | 再選定 | 降格 | 昇格 | 中心AMBIG | 契約 | 本番換算JPY | 削減JPY | 削減% |",
-         "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
+         "| 記事 | 方式 | status | Trial費用JPY(LLM/検索/計) | 検索呼出(種別) | クエリ | 選定Fact | Jaccard | 再選定/確認パス | 再選定B3/確認B3 JPY | 降格 | 昇格 | 中心AMBIG | 契約 | 本番換算JPY | 削減JPY | 削減% |",
+         "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for r in agg["rows"]:
-        L.append("| {a} | {m} | {s} | {l}/{w}/{t} | {c} {bt} | {q} | {sel} | {j} | {rs} | {dm} | {pr} | {ac} | {ct} | {eq} | {sv} | {sp} |".format(
-            a=r["article"], m=r["method"], s=r["status"], l=r["trial_llm_jpy"], w=r["trial_web_search_jpy"],
+        L.append("| {a} | {m} | {s} | {l}/{w}/{t} | {c} {bt} | {q} | {sel} | {j} | {rs}/{cf} | {rj}/{cj} | {dm} | {pr} | {ac} | {ct} | {eq} | {sv} | {sp} |".format(
+            a=r["article"], m=r["label"], s=r["status"], l=r["trial_llm_jpy"], w=r["trial_web_search_jpy"],
             t=r["trial_total_jpy"], c=r["web_search_calls"], bt=r["by_action_type"], q=r["query_count"],
-            sel=",".join(r["selected_fact_ids"] or []), j=r["jaccard_vs_M0"], rs=r["reselect_count"],
+            sel=",".join(r["selected_fact_ids"] or []), j=r["jaccard_vs_M0"], rs=r["reselect_count"], cf=r["confirm_pass_count"], rj=r["b3_reselect_jpy"], cj=r["b3_confirm_jpy"],
             dm=",".join(r["demotions_from_verified"] or []), pr=",".join(r["promotions"] or []),
             ac=r["ambiguous_central_count"], ct=r["contract_all_pass"], eq=r["production_equivalent_jpy"],
             sv=r["saving_vs_M0_jpy"], sp=r["saving_vs_M0_pct"]))

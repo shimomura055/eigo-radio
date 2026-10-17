@@ -1,0 +1,238 @@
+{
+  "article": "coffee_prices",
+  "method": "M2",
+  "stage": "1a",
+  "dry_run": true,
+  "started_at": "2026-10-17T06:03:06.308545+00:00",
+  "usage_basis": "SYNTHETIC_DRYRUN_STUB",
+  "reselect": {
+    "status": "COMPLETED",
+    "rounds": [
+      {
+        "round": 0,
+        "trigger": "INITIAL",
+        "b3_label": "initial",
+        "selected_fact_ids": [
+          "F02",
+          "F07",
+          "F09",
+          "F11"
+        ],
+        "verified_now": [
+          "F02",
+          "F07",
+          "F09",
+          "F11"
+        ],
+        "reused_verdicts": [],
+        "verify_record": {
+          "label": "r0",
+          "cap_prompt": false,
+          "fact_ids": [
+            "F02",
+            "F07",
+            "F09",
+            "F11"
+          ],
+          "model": "gpt-6-luna",
+          "response_id": "stub_resp_2",
+          "latency_seconds": 0.0011954307556152344,
+          "web_search_call_count": 4,
+          "action_type_counts": {
+            "search": 4
+          },
+          "query_count": 4,
+          "calls_per_fact_avg": 1.0,
+          "exceeds_soft_cap_estimate": false,
+          "prompt_sha256": "402af4db28dc8c03d50a9952355d25339a60bed7f8252eb24a5e8ad83c6615e4"
+        },
+        "rejected": [],
+        "ambiguous_selected": [
+          "F07"
+        ],
+        "ambiguous_unseen": [
+          "F07"
+        ],
+        "ambiguous_visible_to_b3": false,
+        "confirm_pass": "REQUIRED",
+        "rejected_reselect_attempts_detected": 0
+      },
+      {
+        "round": 1,
+        "trigger": "CONFIRM_AMBIGUOUS",
+        "b3_label": "confirm1",
+        "selected_fact_ids": [
+          "F02",
+          "F07",
+          "F09",
+          "F11"
+        ],
+        "verified_now": [],
+        "reused_verdicts": [
+          "F02",
+          "F07",
+          "F09",
+          "F11"
+        ],
+        "rejected": [],
+        "ambiguous_selected": [
+          "F07"
+        ],
+        "ambiguous_unseen": [],
+        "ambiguous_visible_to_b3": true,
+        "confirm_pass": "NOT_NEEDED_AMBIGUOUS_ALREADY_VISIBLE"
+      }
+    ],
+    "reselect_count": 0,
+    "confirm_pass_count": 1,
+    "b3_calls_after_initial": 1,
+    "b3_calls_before_this_run": 0,
+    "final_confirm_pass": "NOT_NEEDED_AMBIGUOUS_ALREADY_VISIBLE",
+    "unmet": null
+  },
+  "shared_initial_b3_from": null,
+  "status": "COMPLETED",
+  "selected_fact_ids": [
+    "F02",
+    "F07",
+    "F09",
+    "F11"
+  ],
+  "selected_storyline": "天候による供給懸念とアラビカ相場の記録的高騰を背景に、2025年の米国では挽いたコーヒーが値上がりし、小売価格上昇の大部分は夏の関税以前からの供給不足と生豆高によるものと報じられた。",
+  "b3_model": "gpt-6.1-sol",
+  "b3_attempts": 1,
+  "ambiguous_central": {
+    "central_fact_ids": [
+      "F02",
+      "F06",
+      "F08",
+      "F09",
+      "F10",
+      "F11",
+      "F12",
+      "F14",
+      "F15"
+    ],
+    "ambiguous_central_fact_ids": [],
+    "count": 0,
+    "note": "候補件数(機械抽出)。『断定しているか』の最終判定はSonnet+Fable独立判定(R-07、測定のみ)"
+  },
+  "known_defect_status": {
+    "F12": "c_not_selected",
+    "F07": "a_selected_detected",
+    "F16": "c_not_selected",
+    "F17": "c_not_selected"
+  },
+  "verdict_transitions": {
+    "counts": {
+      "VERIFIED->VERIFIED": 3,
+      "AMBIGUOUS->AMBIGUOUS": 1
+    },
+    "promotions_to_verified_or_up": [],
+    "demotions_from_verified": []
+  },
+  "final_verdicts": {
+    "F02": {
+      "verdict": "VERIFIED"
+    },
+    "F07": {
+      "verdict": "AMBIGUOUS"
+    },
+    "F09": {
+      "verdict": "VERIFIED"
+    },
+    "F11": {
+      "verdict": "VERIFIED"
+    }
+  },
+  "verifier_models": [
+    "gpt-6-luna"
+  ],
+  "verifier_model_matches_m0": true,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 4,
+    "by_action_type": {
+      "search": 4
+    },
+    "query_count": 4
+  },
+  "verify_requests": [
+    {
+      "label": "r0",
+      "cap_prompt": false,
+      "fact_ids": [
+        "F02",
+        "F07",
+        "F09",
+        "F11"
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "stub_resp_2",
+      "latency_seconds": 0.0011954307556152344,
+      "web_search_call_count": 4,
+      "action_type_counts": {
+        "search": 4
+      },
+      "query_count": 4,
+      "calls_per_fact_avg": 1.0,
+      "exceeds_soft_cap_estimate": false,
+      "prompt_sha256": "402af4db28dc8c03d50a9952355d25339a60bed7f8252eb24a5e8ad83c6615e4"
+    }
+  ],
+  "cost": {
+    "by_step": {
+      "b3_initial": {
+        "llm_jpy": 4.432,
+        "web_search_jpy": 0.0,
+        "calls": 1,
+        "web_search_calls": 0,
+        "input_tokens": 4849,
+        "output_tokens": 1800,
+        "total_jpy": 4.432
+      },
+      "verify_sel_r0": {
+        "llm_jpy": 0.721,
+        "web_search_jpy": 6.4,
+        "calls": 1,
+        "web_search_calls": 4,
+        "input_tokens": 37547,
+        "output_tokens": 1500,
+        "total_jpy": 7.121
+      },
+      "b3_confirm1": {
+        "llm_jpy": 4.614,
+        "web_search_jpy": 0.0,
+        "calls": 1,
+        "web_search_calls": 0,
+        "input_tokens": 5418,
+        "output_tokens": 1800,
+        "total_jpy": 4.614
+      }
+    },
+    "total": {
+      "llm_jpy": 9.767,
+      "web_search_jpy": 6.4,
+      "total_jpy": 16.167,
+      "calls": 3,
+      "web_search_calls": 4
+    }
+  },
+  "contract": {
+    "method_dir": "er082_output/rlct_trial_01/_dryrun_07/coffee_prices/M2",
+    "producer": {
+      "status": "PASS",
+      "n_facts": 4,
+      "llm_calls": 0
+    },
+    "validate": {
+      "status": "PASS"
+    },
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 4
+    },
+    "all_pass": true
+  },
+  "finished_at": "2026-10-17T06:03:06.391951+00:00"
+}

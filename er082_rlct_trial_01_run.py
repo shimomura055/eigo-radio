@@ -11,7 +11,9 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import glob
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -118,8 +120,7 @@ def run_method(article: str, method: str, stage: str, client, budget: Budget, ou
             shared = load_json(p)
         sv = lib.select_then_verify(client, topic, draft, work_dir=work, stage_prefix=prefix, budget=budget,
                                     cap=(method == "M3"), shared_initial=shared)
-        res["reselect"] = {"status": sv["status"], "rounds": sv["rounds"],
-                           "reselect_count": sv.get("reselect_count", len(sv["rounds"]) - 1)}
+        res["reselect"] = _reselect_summary(sv)
         for r in sv["rounds"]:
             if r.get("verify_record"):
                 verify_records.append(r["verify_record"])
@@ -144,6 +145,134 @@ def run_method(article: str, method: str, stage: str, client, budget: Budget, ou
     res["status"] = "COMPLETED"
     return _finish(res, mdir, work, usage_log, prefix, verify_records, models, article, data, selection,
                    final_verdicts, contract)
+
+
+CORRECTABLE = {"M2": "M2c", "M3": "M3c"}      # --correct-from → 出力method名(委任_07 D6)
+
+
+def _restore_source(src_root: str, article: str, method: str) -> dict:
+    """補正元method(読み取り専用)から、最終sel・検証結果(notes込み)・初回B3を復元する。
+    復元できなければSTOP(推測で補わない)。"""
+    sdir = f"{src_root}/{article}/{method}"
+    rp = f"{sdir}/result.json"
+    if not os.path.isfile(rp):
+        raise RuntimeError(f"[STOP] 補正元のresult.jsonが無い: {rp}")
+    src = load_json(rp)
+    if src.get("status") != "COMPLETED":
+        raise RuntimeError(f"[STOP] 補正元がCOMPLETEDでない({src.get('status')}): {rp}")
+    rounds = src["reselect"]["rounds"]
+    # 検証結果: _work/verify_r*.json の parsed から notes ごと復元(round はファイル名の番号)
+    verdicts = {}
+    files = sorted(glob.glob(f"{sdir}/_work/verify_r*.json"), key=lambda p: int(re.search(r"verify_r(\d+)\.json$", p).group(1)))
+    for p in files:
+        rnum = int(re.search(r"verify_r(\d+)\.json$", p).group(1))
+        for v in load_json(p)["parsed"]["verifications"]:
+            verdicts[v["fact_id"]] = {"verdict": v["verdict"], "verification_notes": v["verification_notes"], "round": rnum}
+    # 欠落(検証結果なし=安全側AMBIGUOUS)はrounds[*].missing_verificationに記録済み → その旨でnotesを再現
+    for rd in rounds:
+        for i in rd.get("missing_verification", []):
+            verdicts.setdefault(i, {"verdict": "AMBIGUOUS", "verification_notes": "(検証結果なし、安全側でAMBIGUOUS扱い)",
+                                    "round": rd["round"]})
+    fv = {k: v["verdict"] for k, v in src["final_verdicts"].items()}
+    got = {k: v["verdict"] for k, v in verdicts.items()}
+    if fv != got:
+        raise RuntimeError(f"[STOP] verify_*.jsonから復元した判定がresult.jsonのfinal_verdictsと一致しない: {fv} vs {got}")
+    r_last = len(rounds) - 1
+    # 最終selを生成したB3呼出の保存物
+    init_p = f"{src_root}/{article}/M2/_work/initial_b3.json"      # M3もM2の初回B3を共有(設計4-1)
+    if r_last == 0:
+        sel_p, sel_label = init_p, "initial"
+    else:
+        sel_label = rounds[-1].get("b3_label") or f"reselect{r_last}"
+        sel_p = f"{sdir}/_work/b3_{sel_label}.json"
+    for p in (init_p, sel_p):
+        if not os.path.isfile(p):
+            raise RuntimeError(f"[STOP] 補正元のB3保存物が無い: {p}")
+    sel = load_json(sel_p)
+    if list(sel["parsed"]["selected_fact_ids"]) != list(src["selected_fact_ids"]):
+        raise RuntimeError(f"[STOP] 復元したselと補正元result.jsonの選定Factが一致しない: {sel_p}")
+    sel_visible = {i: v for i, v in verdicts.items() if v["round"] < r_last}   # sel生成B3呼出の候補Ledgerに見えていた判定
+    brief_p = f"{sdir}/storyline_b3/selected_brief.md"
+    return {"src": src, "sdir": sdir, "verdicts": verdicts, "sel": sel, "sel_label": sel_label,
+            "sel_visible": sel_visible, "b3_used": r_last, "init_path": init_p,
+            "init_sha256": lib.sha256_file(init_p),
+            "brief_sha256": lib.sha256_file(brief_p) if os.path.isfile(brief_p) else None}
+
+
+def run_correction(article: str, from_method: str, stage: str, client, budget: Budget, out_root: str,
+                   usage_log: str, dry_run: bool, src_root: str) -> dict:
+    """委任_07 D6: 既存M2/M3を変更せず、<method>c を新規作成して最終B3確認パスだけを実行する。"""
+    if from_method not in CORRECTABLE:
+        raise SystemExit(f"--correct-from は {sorted(CORRECTABLE)} のみ")
+    method = CORRECTABLE[from_method]
+    inputs_dir = lib.copy_inputs(article, out_root)
+    data = lib.load_article_inputs(inputs_dir)
+    topic, draft = data["topic"], data["draft"]
+    mdir = f"{out_root}/{article}/{method}"
+    work = f"{mdir}/_work"
+    lib.assert_under_out_root(mdir, out_root)
+    if os.path.abspath(mdir).startswith(os.path.abspath(f"{src_root}/{article}/{from_method}") + os.sep) \
+            or os.path.abspath(mdir) == os.path.abspath(f"{src_root}/{article}/{from_method}"):
+        raise RuntimeError("[STOP] 補正出力先が補正元と重なる")
+    if os.path.exists(mdir):
+        if not dry_run:
+            raise RuntimeError(f"[STOP] {mdir} は既に存在する(有料runの二重実行防止)。")
+        shutil.rmtree(mdir)
+    os.makedirs(work, exist_ok=True)
+    rs = _restore_source(src_root, article, from_method)
+    prefix = f"{stage}|{article}|{method}"
+    src = rs["src"]
+    res = {"article": article, "method": method, "stage": stage, "dry_run": dry_run,
+           "started_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+           "usage_basis": "SYNTHETIC_DRYRUN_STUB" if dry_run else "OFFICIAL_API_RESPONSE",
+           "corrected_from": from_method, "correct_source_root": src_root,
+           "reused_initial_b3_sha256": rs["init_sha256"], "reused_verdict_ids": sorted(rs["verdicts"]),
+           "pre_correction_selected_fact_ids": src.get("selected_fact_ids"),
+           "pre_correction_storyline_sha256": lib.sha256_bytes((src.get("selected_storyline") or "").encode("utf-8")),
+           "pre_correction_brief_sha256": rs["brief_sha256"],
+           "pre_correction_cost_total_jpy": src["cost"]["total"]["total_jpy"],
+           "pre_correction_basis": src.get("usage_basis")}
+    verify_records = []
+    resume = {"sel": rs["sel"], "verdicts": rs["verdicts"], "sel_visible": rs["sel_visible"],
+              "sel_label": rs["sel_label"], "b3_used": rs["b3_used"]}
+    sv = lib.select_then_verify(client, topic, draft, work_dir=work, stage_prefix=prefix, budget=budget,
+                                cap=(from_method == "M3"), resume=resume,
+                                shared_initial=(load_json(rs["init_path"]) if from_method == "M3" else None))
+    res["reselect"] = _reselect_summary(sv)
+    for r in sv["rounds"]:
+        if r.get("verify_record"):
+            verify_records.append(r["verify_record"])
+    if sv["status"] != "COMPLETED":
+        res.update({"status": "UNRESOLVED", "unresolved": {k: sv[k] for k in sv if k not in ("rounds",)},
+                    "selected_fact_ids": None})
+        out = _finish(res, mdir, work, usage_log, prefix, verify_records, {}, article, data, None, {})
+    else:
+        selection, ledger_text, final_verdicts = sv["selection"], sv["ledger_text"], sv["verdicts"]
+        res["shared_initial_b3_from"] = f"{stage}|{article}|M2|b3_initial" if from_method == "M3" else None
+        lib.write_run_layout(mdir, topic, ledger_text, selection, {"method": method, "corrected_from": from_method})
+        contract = lib.contract_check(mdir, out_root)
+        res["status"] = "COMPLETED"
+        out = _finish(res, mdir, work, usage_log, prefix, verify_records, {}, article, data, selection,
+                      final_verdicts, contract)
+    corr = out["cost"]["total"]
+    out["cost_correction_only"] = corr
+    out["cost_production_equivalent"] = {
+        "source_method_total_jpy": src["cost"]["total"]["total_jpy"], "correction_total_jpy": corr["total_jpy"],
+        "total_jpy": round(src["cost"]["total"]["total_jpy"] + corr["total_jpy"], 3),
+        "note": "補正元method実測(Trial費用)+補正費用。共有初回B3(M3c)の帰属はaggregateで加算"}
+    out["brief_changed_vs_pre_correction"] = (
+        (lib.sha256_file(f"{mdir}/storyline_b3/selected_brief.md") != rs["brief_sha256"])
+        if out["status"] == "COMPLETED" and rs["brief_sha256"] else None)
+    save_json(f"{mdir}/result.json", out)
+    return out
+
+
+def _reselect_summary(sv: dict) -> dict:
+    return {"status": sv["status"], "rounds": sv["rounds"], "reselect_count": sv.get("reselect_count", 0),
+            "confirm_pass_count": sv.get("confirm_pass_count", 0),
+            "b3_calls_after_initial": sv.get("b3_calls_after_initial", 0),
+            "b3_calls_before_this_run": sv.get("b3_calls_before_this_run", 0),
+            "final_confirm_pass": sv.get("final_confirm_pass"), "unmet": sv.get("unmet")}
 
 
 def _finish(res, mdir, work, usage_log, prefix, verify_records, models, article, data, selection, final_verdicts,
@@ -175,6 +304,18 @@ def _finish(res, mdir, work, usage_log, prefix, verify_records, models, article,
 
 
 def jobs_from_args(a) -> list:
+    if a.correct_from:
+        arts = [x for x in (a.article or "").split(",") if x]
+        meths = [x for x in a.correct_from.split(",") if x]
+        if not arts:
+            raise SystemExit("--correct-from には --article が必要")
+        for m in meths:
+            if m not in CORRECTABLE:
+                raise SystemExit(f"--correct-from は {sorted(CORRECTABLE)} のみ")
+        for art in arts:
+            if art not in ARTICLES:
+                raise SystemExit(f"unknown article {art}")
+        return [(art, CORRECTABLE[m], a.stage or "1a") for art in arts for m in meths]     # Budget stage=1a
     if a.plan:
         return [(art, m, a.plan) for art, m in lib.PLAN[a.plan]]
     arts = list(ARTICLES) if a.all_articles else [x for x in (a.article or "").split(",") if x]
@@ -202,6 +343,8 @@ def main(argv=None) -> int:
     ap.add_argument("--stage", choices=list(lib.STAGE_CAPS_JPY))
     ap.add_argument("--plan", choices=["1a", "1b"])
     ap.add_argument("--out", default=OUT_ROOT)
+    ap.add_argument("--correct-from", default=None, help="M2 / M3 / M2,M3: 最終B3確認パスのみ追加実行し M2c/M3c を新規作成")
+    ap.add_argument("--correct-source-root", default=None, help="補正元(既存M2/M3)のroot。読み取り専用。既定=--out")
     ap.add_argument("--other-spend-today-jpy", type=float, default=0.0)
     a = ap.parse_args(argv)
     if a.dry_run == bool(a.paid_confirm):
@@ -247,7 +390,12 @@ def main(argv=None) -> int:
             else:
                 client = clients.setdefault("real", lib.vfl01.get_client())
             print(f"[RLCT] {'DRYRUN' if a.dry_run else 'PAID'} stage={stage} {art} {m}")
-            r = run_method(art, m, stage, client, budgets[stage], out, usage_log, a.dry_run)
+            if a.correct_from:
+                src_from = [k for k, v in CORRECTABLE.items() if v == m][0]
+                r = run_correction(art, src_from, stage, client, budgets[stage], out, usage_log, a.dry_run,
+                                   a.correct_source_root or out)
+            else:
+                r = run_method(art, m, stage, client, budgets[stage], out, usage_log, a.dry_run)
             results.append({"article": art, "method": m, "status": r["status"],
                             "total_jpy": r["cost"]["total"]["total_jpy"],
                             "selected": r.get("selected_fact_ids")})

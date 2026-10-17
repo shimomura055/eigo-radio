@@ -1,0 +1,618 @@
+{
+ "code": {
+  "er019_family_x_entertainment_production_runner_01.py": "6bcc8e4be62376fd70814e25dc519ed36733c589533b698cd66fdef9420a355b",
+  "er012_e_family_entertainment_two_level_runner_01.py": "c7475da3e5ffe1d2b10e1a509cee638732a66d4a19d9f89cb67c47529c257076",
+  "er003_v1_en_direct_vfl_01_generate.py": "fb6622f7a1ac2d215b06715f512fb4948d54f7821a84db499c8e0cc642a9e58f",
+  "er019_family_x_storyline_b3_fact_selection_01.py": "93d0e31e735057ae874bbf27be48449fdd5bd5188e535b0a280eada9d314b758",
+  "er002_ja_web_research_r3.py": "5eb956c65810a1a622411944b804e5adf71898833e93a93735e18c9bbc0e58f1",
+  "er005_cost_logger.py": "44086eca7de6508ebd30079678ac6b20fb90c1689117ae6becc29dde0cfbe215",
+  "er006_model_routing_contract_01.py": "16d669d63ac4a3e3cffcdecb1e839de90a87ea95d6d0d0a32c01ad1ea83a55c1",
+  "er053_b3_deterministic_producer_01.py": "8899d0fa4a9b2274fcd79165b447ab02988d40f799cbca01e06df51a6f7155f2",
+  "er053_b3_annotation_contract_01.py": "5f4c725e0b332e028b8285389532dedc28e067f29caf6c63863b0be4f0017885",
+  "er053_risk_flagger_production_01.py": "ed3555c9da56ed651892858bdddef3624dd375bf9f0035bc1e10996604784810",
+  "er053_review_queue_01.py": "ebe746f11181888ed286f05db17d40141c60aa6fca0b163f47fcd60c0aa3f7ed",
+  "er053_family_x_factlock_ja_writer_01.py": "a81bf9ae1a20214bb50bcbbac8619fe4aa8c05520d83add13113752dcc36944e"
+ },
+ "reused_artifacts": {
+  "er019_output/coffee_prices/run_fxpw_01/research_ledger/fact_ledger_draft.json": "f0e35b6168f021eea37217401bc915ab01311a7a01922a8b1da417b48c213d3b",
+  "er019_output/coffee_prices/run_fxpw_01/research_ledger/fact_ledger_verification.json": "d809066de49e80a8f6eddc24bd5884d913ef83ef0c0db65e26812422a5d621f4",
+  "er019_output/coffee_prices/run_fxpw_01/research_ledger/verified_fact_ledger.txt": "1e4c771ecb8d579d0ae45512fa3536ea1a7d13c2a001c38f55991e4dfa6946c9",
+  "er019_output/coffee_prices/run_fxpw_01/research_ledger/verdict_counts.json": "71c92f4861fc0b8289415da3b97b9723154fd162e0ac022d8e4c4d0c833e7ddc",
+  "er019_output/coffee_prices/run_fxpw_01/research_ledger/runtime_evidence.json": "b4d87150c18eff9ec4062ea8f56fa902cced25f55059bef65336ba55aae29d06",
+  "er019_output/coffee_prices/run_fxpw_01/research_ledger/audit/verification_full_record.json": "f6871838960bce3668a67875d2342a749d73217871c7fef258521d7a28b9605a",
+  "er019_output/coffee_prices/run_fxpw_01/research_ledger/audit/researcher_full_record.json": "162946b95fbe05f983f2b068640f3d1b56035ac521883df4872ea64292b24a92",
+  "er019_output/coffee_prices/run_fxpw_01/storyline_b3/selected_brief.md": "efdbb98e135a7f9e47e37e81e0e8b316dc8826e853d490a9f68d50bd7b5110fc",
+  "er019_output/coffee_prices/run_fxpw_01/storyline_b3/fact_selection_evidence.json": "4f431803254a828456c88b6f2002c791f197354dc30ff919792a9c66a8bf281f",
+  "er019_output/coffee_prices/run_fxpw_01/storyline_b3/full_ledger.json": "0488be3118430b7b7b56783d8420fc8896a6788ea1ebd1017eba80e9c19f530b",
+  "er019_output/coffee_prices/run_fxpw_01/storyline_b3/runtime_evidence.json": "321cde4b64ef53327cdb3ec4c3cbdd36b89f399648162a1ff025f969b06f8b73",
+  "er019_output/coffee_prices/run_fxpw_01/raw_usage_log.jsonl": "654a5005f1625ab7438a15e0a5ae0f9e85b149fba201e3d783e029a3e10db687",
+  "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/research_ledger/fact_ledger_draft.json": "e2d0e2798262c1e83ec3fa2615c785c86dcfb0e69613e594c6d393ef8a47687b",
+  "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/research_ledger/fact_ledger_verification.json": "d0678c90ab5e41476154bf6e5624a1ea848dcf255e4deba78dd7319b0c76cc9f",
+  "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/research_ledger/verified_fact_ledger.txt": "ddf3553ff2a0078f75e79aeaee020c0291018c1c357fcfc880f56788e665eb87",
+  "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/research_ledger/verdict_counts.json": "dd64a0d5a8ac99d55ab5a189ed2835b470ba2610c2265c5965b5823ee8969a0a",
+  "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/research_ledger/runtime_evidence.json": "27427e393efaa541b022149687d19449f4748d120db4a2649d35e9dd8f0e1a3e",
+  "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/research_ledger/audit/verification_full_record.json": "b833265f257880c6048dfd58f047900e3e4003fdc65500661bacdf414375062f",
+  "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/research_ledger/audit/researcher_full_record.json": "15ecda8de43a79e505778964810174e66dad0574909db43e4680acac6d6a2db0",
+  "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/storyline_b3/selected_brief.md": "0bdfa5688ce2f50b0b5f56a6c044dfa72ebeef691d09e39c3cbfb2d2989844a3",
+  "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/storyline_b3/fact_selection_evidence.json": "704156fc6b23dfcd57c13db93abcd14893f50f8e1d841b895acf854edbffeea3",
+  "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/storyline_b3/full_ledger.json": "36bff40d398c220db2f0c12cf9d965f16069e19cc9263359020241bcfb660f82",
+  "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/storyline_b3/runtime_evidence.json": "9b81666309897d466e712274dac5a95838635b2db39b03d88dbe5bc1bdfef6d5",
+  "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/raw_usage_log.jsonl": "ef790caa28ee86b51aa152ddf6ee03dabc6df781178800c24f54454f47a79bdf"
+ },
+ "src_trees": {
+  "er019_output/coffee_prices/run_fxpw_01": {
+   "er019_output/coffee_prices/run_fxpw_01/cost.json": [
+    1028,
+    1792134870819206400
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/entry_point.json": [
+    3281,
+    1792134870803417700
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/raw_usage_log.jsonl": [
+    9195,
+    1792134870787398000
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/writer_run_summary.json": [
+    2987,
+    1792134841786943500
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/a2/article.md": [
+    2771,
+    1792134841770887600
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/a2/parts.json": [
+    3035,
+    1792134841770887600
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/a2/audit/derived_from_advanced_sha256.json": [
+    277,
+    1792134841770887600
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/b1b/article.md": [
+    2873,
+    1792134767655494400
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/b1b/parts.json": [
+    3137,
+    1792134767655494400
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/ja_writer/original.md": [
+    2448,
+    1792134722418493300
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/ja_writer/revision1.md": [
+    3044,
+    1792134722419752500
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/ja_writer/revision2.md": [
+    2655,
+    1792134722421861300
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/ja_writer/runtime_evidence.json": [
+    5262,
+    1792134722420770200
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/ja_writer/factlock/r0.md": [
+    2448,
+    1792134640695126600
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/ja_writer/factlock/r0_meta.json": [
+    928,
+    1792134640697135800
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/ja_writer/factlock/r0_with_tags.md": [
+    2606,
+    1792134640695126600
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/ja_writer/factlock/r1.p1.md": [
+    3044,
+    1792134679577009600
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/ja_writer/factlock/r1.raw.md": [
+    3045,
+    1792134679577009600
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/ja_writer/factlock/r1.response.json": [
+    475,
+    1792134679577009600
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/ja_writer/factlock/r2.raw.md": [
+    2662,
+    1792134722415484300
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/ja_writer/factlock/r2.response.json": [
+    474,
+    1792134722416488900
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/research_ledger/fact_ledger_draft.json": [
+    22584,
+    1792134251249806400
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/research_ledger/fact_ledger_verification.json": [
+    8669,
+    1792134367158614400
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/research_ledger/runtime_evidence.json": [
+    463,
+    1792134367166351200
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/research_ledger/verdict_counts.json": [
+    59,
+    1792134367166351200
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/research_ledger/verified_fact_ledger.txt": [
+    13876,
+    1792134367166351200
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/research_ledger/audit/researcher_full_record.json": [
+    28545,
+    1792134251249806400
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/research_ledger/audit/verification_full_record.json": [
+    35780,
+    1792134367158614400
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/storyline_b3/annotation.json": [
+    3020,
+    1792134800938207500
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/storyline_b3/annotation_manifest.json": [
+    1764,
+    1792134800944561000
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/storyline_b3/fact_selection_evidence.json": [
+    14904,
+    1792134800944561000
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/storyline_b3/full_ledger.json": [
+    14881,
+    1792134554759613100
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/storyline_b3/runtime_evidence.json": [
+    624,
+    1792134554762314100
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/storyline_b3/selected_brief.md": [
+    1788,
+    1792134554759613100
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/storyline_b3/selected_brief_annotated.md": [
+    2375,
+    1792134800938207500
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/storyline_b3/writer_constraints.txt": [
+    784,
+    1792134800938207500
+   ],
+   "er019_output/coffee_prices/run_fxpw_01/storyline_b3/audit/annotation_producer_evidence.json": [
+    6674,
+    1792134800946128900
+   ]
+  },
+  "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism": {
+   "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/cost.json": [
+    128,
+    1791502914390762500
+   ],
+   "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/entry_point.json": [
+    1317,
+    1791502858517670600
+   ],
+   "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/raw_usage_log.jsonl": [
+    1652,
+    1791502914379689900
+   ],
+   "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/stdout.log": [
+    1760,
+    1791502915038225600
+   ],
+   "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/research_ledger/fact_ledger_draft.json": [
+    20256,
+    1791502473937768900
+   ],
+   "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/research_ledger/fact_ledger_verification.json": [
+    6930,
+    1791502556026102900
+   ],
+   "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/research_ledger/runtime_evidence.json": [
+    463,
+    1791502556029154500
+   ],
+   "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/research_ledger/verdict_counts.json": [
+    59,
+    1791502556028135200
+   ],
+   "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/research_ledger/verified_fact_ledger.txt": [
+    11523,
+    1791502556028135200
+   ],
+   "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/research_ledger/audit/researcher_full_record.json": [
+    26771,
+    1791502473939243600
+   ],
+   "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/research_ledger/audit/verification_full_record.json": [
+    31261,
+    1791502556027116400
+   ],
+   "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/storyline_b3/fact_selection_evidence.json": [
+    6761,
+    1791502914382705200
+   ],
+   "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/storyline_b3/full_ledger.json": [
+    12297,
+    1791502914380693800
+   ],
+   "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/storyline_b3/runtime_evidence.json": [
+    624,
+    1791502914383707700
+   ],
+   "er052_output/factlock_astra_e2e_trial_01/stage_r/inbound_tourism/storyline_b3/selected_brief.md": [
+    927,
+    1791502914381695800
+   ]
+  }
+ },
+ "shared_review_queue_tree": {
+  "review_queue/post_en/index.jsonl": [
+   5328,
+   1792134870813448900
+  ],
+  "review_queue/post_en/README.md": [
+   3255,
+   1791620517542594000
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/a2__rf20261016T071401Z-3aad/queue.json": [
+   10010,
+   1792134870803417700
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/a2__rf20261016T071401Z-3aad/queue.md": [
+   4035,
+   1792134870807439300
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/a2__rf20261016T071401Z-3aad/inputs/ledger.txt": [
+   13876,
+   1792134870809442600
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/a2__rf20261016T071401Z-3aad/inputs/sentences.json": [
+   4743,
+   1792134870807439300
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/a2__rf20261016T071401Z-3aad/raw/gemini35fl_A3.jsonl": [
+   846,
+   1792134870811445800
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/a2__rf20261016T071401Z-3aad/raw/gemini35fl_A4.jsonl": [
+   467,
+   1792134870813448900
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/a2__rf20261016T071401Z-3aad/raw/luna_A3.jsonl": [
+   756,
+   1792134870809442600
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/a2__rf20261016T071401Z-3aad/raw/luna_A4.jsonl": [
+   777,
+   1792134870811445800
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/b1b__rf20261016T071247Z-cfad/queue.json": [
+   10320,
+   1792134790253704800
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/b1b__rf20261016T071247Z-cfad/queue.md": [
+   4283,
+   1792134790253704800
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/b1b__rf20261016T071247Z-cfad/inputs/ledger.txt": [
+   13876,
+   1792134790253704800
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/b1b__rf20261016T071247Z-cfad/inputs/sentences.json": [
+   4517,
+   1792134790253704800
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/b1b__rf20261016T071247Z-cfad/raw/gemini35fl_A3.jsonl": [
+   853,
+   1792134790267633900
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/b1b__rf20261016T071247Z-cfad/raw/gemini35fl_A4.jsonl": [
+   826,
+   1792134790269377700
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/b1b__rf20261016T071247Z-cfad/raw/luna_A3.jsonl": [
+   777,
+   1792134790266621000
+  ],
+  "review_queue/post_en/coffee_prices__run_fxpw_01/b1b__rf20261016T071247Z-cfad/raw/luna_A4.jsonl": [
+   468,
+   1792134790267633900
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/a2__rf20261010T125728Z-ea2b/queue.json": [
+   23989,
+   1791637081658711700
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/a2__rf20261010T125728Z-ea2b/queue.md": [
+   11483,
+   1791637081659714400
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/a2__rf20261010T125728Z-ea2b/inputs/ledger.txt": [
+   16927,
+   1791637081661826600
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/a2__rf20261010T125728Z-ea2b/inputs/sentences.json": [
+   4596,
+   1791637081660797100
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/a2__rf20261010T125728Z-ea2b/raw/gemini35fl_A3.jsonl": [
+   864,
+   1791637081664941200
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/a2__rf20261010T125728Z-ea2b/raw/gemini35fl_A4.jsonl": [
+   786,
+   1791637081665947500
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/a2__rf20261010T125728Z-ea2b/raw/luna_A3.jsonl": [
+   1535,
+   1791637081662829600
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/a2__rf20261010T125728Z-ea2b/raw/luna_A4.jsonl": [
+   2166,
+   1791637081663832000
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/b1b__rf20261010T125626Z-f4c2/queue.json": [
+   16532,
+   1791637018708822700
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/b1b__rf20261010T125626Z-f4c2/queue.md": [
+   7608,
+   1791637018709919700
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/b1b__rf20261010T125626Z-f4c2/inputs/ledger.txt": [
+   16927,
+   1791637018711405700
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/b1b__rf20261010T125626Z-f4c2/inputs/sentences.json": [
+   4375,
+   1791637018709919700
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/b1b__rf20261010T125626Z-f4c2/raw/gemini35fl_A3.jsonl": [
+   463,
+   1791637018714447000
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/b1b__rf20261010T125626Z-f4c2/raw/gemini35fl_A4.jsonl": [
+   474,
+   1791637018715794800
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/b1b__rf20261010T125626Z-f4c2/raw/luna_A3.jsonl": [
+   1227,
+   1791637018712417400
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01/b1b__rf20261010T125626Z-f4c2/raw/luna_A4.jsonl": [
+   1713,
+   1791637018713428500
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01_stdregen/a2__rf20261010T132737Z-8da1/queue.json": [
+   18695,
+   1791638888961371100
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01_stdregen/a2__rf20261010T132737Z-8da1/queue.md": [
+   8996,
+   1791638888963472500
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01_stdregen/a2__rf20261010T132737Z-8da1/inputs/ledger.txt": [
+   16927,
+   1791638888965483300
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01_stdregen/a2__rf20261010T132737Z-8da1/inputs/sentences.json": [
+   4546,
+   1791638888964477400
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01_stdregen/a2__rf20261010T132737Z-8da1/raw/gemini35fl_A3.jsonl": [
+   876,
+   1791638888968520600
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01_stdregen/a2__rf20261010T132737Z-8da1/raw/gemini35fl_A4.jsonl": [
+   941,
+   1791638888969526600
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01_stdregen/a2__rf20261010T132737Z-8da1/raw/luna_A3.jsonl": [
+   841,
+   1791638888966488800
+  ],
+  "review_queue/post_en/coffee_prices__run_l3_01_stdregen/a2__rf20261010T132737Z-8da1/raw/luna_A4.jsonl": [
+   1562,
+   1791638888967494400
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/a2__rf20261012T120926Z-4cef/queue.json": [
+   17598,
+   1791807003274205600
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/a2__rf20261012T120926Z-4cef/queue.md": [
+   8919,
+   1791807003276387800
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/a2__rf20261012T120926Z-4cef/inputs/ledger.txt": [
+   16927,
+   1791807003277820800
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/a2__rf20261012T120926Z-4cef/inputs/sentences.json": [
+   4072,
+   1791807003276387800
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/a2__rf20261012T120926Z-4cef/raw/gemini35fl_A3.jsonl": [
+   784,
+   1791807003280980600
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/a2__rf20261012T120926Z-4cef/raw/gemini35fl_A4.jsonl": [
+   805,
+   1791807003282349500
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/a2__rf20261012T120926Z-4cef/raw/luna_A3.jsonl": [
+   456,
+   1791807003278910900
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/a2__rf20261012T120926Z-4cef/raw/luna_A4.jsonl": [
+   1400,
+   1791807003279918300
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/b1b__rf20261012T122527Z-5ff3/queue.json": [
+   20928,
+   1791807968925143900
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/b1b__rf20261012T122527Z-5ff3/queue.md": [
+   10433,
+   1791807968926302400
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/b1b__rf20261012T122527Z-5ff3/inputs/ledger.txt": [
+   16927,
+   1791807968928409700
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/b1b__rf20261012T122527Z-5ff3/inputs/sentences.json": [
+   3976,
+   1791807968927349200
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/b1b__rf20261012T122527Z-5ff3/raw/gemini35fl_A3.jsonl": [
+   473,
+   1791807968931563100
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/b1b__rf20261012T122527Z-5ff3/raw/gemini35fl_A4.jsonl": [
+   849,
+   1791807968932565700
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/b1b__rf20261012T122527Z-5ff3/raw/luna_A3.jsonl": [
+   908,
+   1791807968929557700
+  ],
+  "review_queue/post_en/coffee_prices__run_v5_ms_01/b1b__rf20261012T122527Z-5ff3/raw/luna_A4.jsonl": [
+   1713,
+   1791807968930560400
+  ],
+  "review_queue/post_en/meta__run_regen_01/a2__rf20261010T153335Z-8c45/queue.json": [
+   19278,
+   1791646446411007900
+  ],
+  "review_queue/post_en/meta__run_regen_01/a2__rf20261010T153335Z-8c45/queue.md": [
+   8790,
+   1791646446412012800
+  ],
+  "review_queue/post_en/meta__run_regen_01/a2__rf20261010T153335Z-8c45/inputs/ledger.txt": [
+   11252,
+   1791646446414200500
+  ],
+  "review_queue/post_en/meta__run_regen_01/a2__rf20261010T153335Z-8c45/inputs/sentences.json": [
+   4145,
+   1791646446413141400
+  ],
+  "review_queue/post_en/meta__run_regen_01/a2__rf20261010T153335Z-8c45/raw/gemini35fl_A3.jsonl": [
+   474,
+   1791646446417346100
+  ],
+  "review_queue/post_en/meta__run_regen_01/a2__rf20261010T153335Z-8c45/raw/gemini35fl_A4.jsonl": [
+   463,
+   1791646446418488600
+  ],
+  "review_queue/post_en/meta__run_regen_01/a2__rf20261010T153335Z-8c45/raw/luna_A3.jsonl": [
+   815,
+   1791646446415246100
+  ],
+  "review_queue/post_en/meta__run_regen_01/a2__rf20261010T153335Z-8c45/raw/luna_A4.jsonl": [
+   2281,
+   1791646446416274000
+  ],
+  "review_queue/post_en/meta__run_regen_01/b1b__rf20261010T153209Z-bdfa/queue.json": [
+   16399,
+   1791646363387626100
+  ],
+  "review_queue/post_en/meta__run_regen_01/b1b__rf20261010T153209Z-bdfa/queue.md": [
+   7206,
+   1791646363388627100
+  ],
+  "review_queue/post_en/meta__run_regen_01/b1b__rf20261010T153209Z-bdfa/inputs/ledger.txt": [
+   11252,
+   1791646363390886200
+  ],
+  "review_queue/post_en/meta__run_regen_01/b1b__rf20261010T153209Z-bdfa/inputs/sentences.json": [
+   3953,
+   1791646363389865000
+  ],
+  "review_queue/post_en/meta__run_regen_01/b1b__rf20261010T153209Z-bdfa/raw/gemini35fl_A3.jsonl": [
+   463,
+   1791646363395410500
+  ],
+  "review_queue/post_en/meta__run_regen_01/b1b__rf20261010T153209Z-bdfa/raw/gemini35fl_A4.jsonl": [
+   474,
+   1791646363396476400
+  ],
+  "review_queue/post_en/meta__run_regen_01/b1b__rf20261010T153209Z-bdfa/raw/luna_A3.jsonl": [
+   1218,
+   1791646363392296500
+  ],
+  "review_queue/post_en/meta__run_regen_01/b1b__rf20261010T153209Z-bdfa/raw/luna_A4.jsonl": [
+   1825,
+   1791646363393340700
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/a2__rf20261010T122643Z-f5e7/queue.json": [
+   7191,
+   1791635374404375800
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/a2__rf20261010T122643Z-f5e7/queue.md": [
+   2408,
+   1791635374405378800
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/a2__rf20261010T122643Z-f5e7/inputs/ledger.txt": [
+   4214,
+   1791635374403371400
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/a2__rf20261010T122643Z-f5e7/inputs/sentences.json": [
+   4993,
+   1791635374404375800
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/a2__rf20261010T122643Z-f5e7/raw/gemini35fl_A3.jsonl": [
+   475,
+   1791635374406382500
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/a2__rf20261010T122643Z-f5e7/raw/gemini35fl_A4.jsonl": [
+   464,
+   1791635374407403300
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/a2__rf20261010T122643Z-f5e7/raw/luna_A3.jsonl": [
+   783,
+   1791635374407403300
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/a2__rf20261010T122643Z-f5e7/raw/luna_A4.jsonl": [
+   745,
+   1791635374408406700
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/b1b__rf20261010T122606Z-eb83/queue.json": [
+   6706,
+   1791635374411428300
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/b1b__rf20261010T122606Z-eb83/queue.md": [
+   2480,
+   1791635374411428300
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/b1b__rf20261010T122606Z-eb83/inputs/ledger.txt": [
+   4214,
+   1791635374409411800
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/b1b__rf20261010T122606Z-eb83/inputs/sentences.json": [
+   4767,
+   1791635374410422200
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/b1b__rf20261010T122606Z-eb83/raw/gemini35fl_A3.jsonl": [
+   475,
+   1791635374412432600
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/b1b__rf20261010T122606Z-eb83/raw/gemini35fl_A4.jsonl": [
+   475,
+   1791635374413433200
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/b1b__rf20261010T122606Z-eb83/raw/luna_A3.jsonl": [
+   457,
+   1791635374413938800
+  ],
+  "review_queue/post_en/semiconductor_earnings__run_devconfirm_01/b1b__rf20261010T122606Z-eb83/raw/luna_A4.jsonl": [
+   760,
+   1791635374414943500
+  ]
+ }
+}
