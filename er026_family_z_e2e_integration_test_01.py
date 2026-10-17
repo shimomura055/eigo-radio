@@ -35,7 +35,7 @@ MONITORED_FILES = [
     "er005_output/cost_baseline_01/cost_summary.json",
 ]
 MONITORED_DIRS = ["er026_output/family_z_production_e2e_01", "er011_output/local_rewrite_recovery",
-                  "user_test/family_z_melos_01"]
+                  "user_test/family_z_melos_01", "user_test/family_z_melos_02"]
 PRE_STAGES = ["seed_check", "writer", "std_adjust", "plan", "support", "kp"]
 
 
@@ -216,6 +216,7 @@ class MockFullPipelineTest(unittest.TestCase):
         self.assertEqual(after["files"], self.before["files"])
         self.assertEqual(after["dirs"]["er011_output/local_rewrite_recovery"], self.before["dirs"]["er011_output/local_rewrite_recovery"])
         self.assertEqual(after["dirs"]["user_test/family_z_melos_01"], self.before["dirs"]["user_test/family_z_melos_01"])
+        self.assertEqual(after["dirs"]["user_test/family_z_melos_02"], self.before["dirs"]["user_test/family_z_melos_02"])
         self.assertEqual(after["dirs"]["er026_output/family_z_production_e2e_01"],
                          self.before["dirs"]["er026_output/family_z_production_e2e_01"])
 

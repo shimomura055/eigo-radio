@@ -75,3 +75,8 @@ run_e2e_01配下は削除・編集していない。
 - 引き続き禁止: `run_e2e_01`/`run_e2e_02`の`--mode real`再起動。`run_e2e_01`配下の`STOP`センチネルは触らない。
 - 26節の実行層ルール(26-2 (a)〜(d)、26-5)は維持。
 - 注記(委任_16実行層): 本ファイルに構造化欄`status`は無く、tools/stop_scope_check_01.pyは「本文に自管理IDあり」(rule b)で適用判定のため、本追記後も同checkerはrun_e2e_03でrc=3(stop=true)を返す(結果は委任_16 RESULT_PACKET_FZ16.mdに記録)。機械的解除(status欄追加またはchecker改修)はFable判断。
+- 構造化欄追記(Fable決定B1案1、委任_17、2026-10-17。既存本文は削除していない):
+  - status: RELEASED
+  - issuer: Fable
+  - scope: run:run_e2e_03
+- 併せて `run_e2e_02/STOP` を設置(reason=SUPERSEDED_BY_run_e2e_03、RUN_CLOSEDではない)。`run_e2e_01/STOP`は既存のまま。

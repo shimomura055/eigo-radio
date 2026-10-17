@@ -814,7 +814,7 @@ import types
 E2E_MANAGEMENT_ID = "FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01"
 E2E_THEME_TAG = "FAMILY_Z_MELOS_SOL_PRODUCTION_E2E_01"
 E2E_RUN_ROOT = "er026_output/family_z_production_e2e_01"
-E2E_PAGES_DIR = "user_test/family_z_melos_01"
+E2E_PAGES_DIR = "user_test/family_z_melos_02"   # 委任_17 Fable決定B2: run_e2e_02の試聴ページ(melos_01)を上書きしない
 E2E_APPROVED_BUDGET_MAX_JPY = 300.0     # 方針8: --approved-budget-jpy 300
 E2E_WARN_THRESHOLD_JPY = 200.0          # 方針8: 警告閾値(超過見込みで新規API呼出前にSTOP)
 E2E_DEFAULT_RUN = "run_e2e_01"
@@ -1547,7 +1547,7 @@ _STAGE_PLAN_INFO = {
     "provision_shell": ("API 0 (既存共有shell資産の読取コピー)", ["{b1b,a2}/narration/*shell"], "-"),
     "gate": ("API 0 (M2->M1->品質->既存Gate)", ["{b1b,a2}/audit/gate_result_04C.json"], "b1b/audit/gate_result_04C.json"),
     "assemble": ("API 0 (assembly)", ["{b1b,a2}/assembly/"], "b1b/assembly/timeline.json"),
-    "pages": ("API 0 (user_test/family_z_melos_01/)", ["pages_dir"], "-"),
+    "pages": ("API 0 (user_test/family_z_melos_02/)", ["pages_dir"], "-"),
     "page_verify": ("API 0 (Playwright --local)", ["page_verify_local.json"], "page_verify_local.json"),
 }
 
