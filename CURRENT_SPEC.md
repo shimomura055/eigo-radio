@@ -1657,23 +1657,24 @@ Story"専用設計であり、In One Line相当のsegmentがFamily Cに存在し
 
 | 仕様 | 区分 | Family X Status(出典) | Family Z Status(出典) | Family Y |
 |---|---|---|---|---|
-| PD06(Full Story Narrator) | 共通 | `PRODUCTION_WIRED`(CURRENT_SPEC:1254-1266、2026-10-16/17) | `APPROVED_FOR_PRODUCTION`(2026-10-17、旧N01から変更、**未配線**、OPEN-412) | 未着手(Y化時に最初から配線対象) |
-| S3(Std日本語Preview・Comment) | 共通 | `PRODUCTION_WIRED`(同:1254-1266、S3W Fable 2026-10-17) | `APPROVED_FOR_PRODUCTION`(2026-10-17、旧R2から変更、**未配線**、OPEN-412) | 未着手 |
-| E1(Advanced英語Preview) | 共通 | `PRODUCTION_WIRED`(同:1251-1266) | `APPROVED_FOR_PRODUCTION`(2026-10-17)。Phase 1調査=差分なし(既存Zで同等)だが**`PRODUCTION_WIRED`判定はPhase 2のruntime evidence後** | 未着手 |
-| K2(Key Phrase英語) | 共通 | `PRODUCTION_WIRED`(同:1254-1266) | `APPROVED_FOR_PRODUCTION`(2026-10-17)。Phase 1調査=差分なし(既存Zで同等)だが**`PRODUCTION_WIRED`判定はPhase 2のruntime evidence後** | 未着手 |
-| P8-KP(Std KP日本語意味) | 共通 | `PRODUCTION_WIRED`(同:1254-1266) | `APPROVED_FOR_PRODUCTION`(2026-10-17、**未配線**、OPEN-412) | 未着手 |
-| P7(Adv KP英語解説) | 共通 | `PRODUCTION_WIRED`(同:1251-1266) | `APPROVED_FOR_PRODUCTION`(2026-10-17、**未配線**、OPEN-412) | 未着手 |
+| PD06(Full Story Narrator) | 共通 | `PRODUCTION_WIRED`(CURRENT_SPEC:1254-1266、2026-10-16/17) | `APPROVED_FOR_PRODUCTION`・**コード配線済み(委任_15)・runtime evidence待ち**(2026-10-17、旧N01から変更。er063がX定数`PD06_TEXT`を参照・Z側sha固定・drift test。`PRODUCTION_WIRED`ではない、Phase 3でruntime evidence、OPEN-412) | 未着手(Y化時に最初から配線対象) |
+| S3(Std日本語Preview・Comment) | 共通 | `PRODUCTION_WIRED`(同:1254-1266、S3W Fable 2026-10-17) | `APPROVED_FOR_PRODUCTION`・**コード配線済み(委任_15)・runtime evidence待ち**(2026-10-17、旧R2から変更。X定数`SUPPORT_JA_STYLE_S3_20261017`を参照、OPEN-412) | 未着手 |
+| E1(Advanced英語Preview) | 共通 | `PRODUCTION_WIRED`(同:1251-1266) | `APPROVED_FOR_PRODUCTION`(2026-10-17)。Phase 1調査=差分なし(既存Zで同等)。委任_15でZのコピー定数を撤去しX定数`E1_TEXT`を参照(**コード配線済み(委任_15)・runtime evidence待ち**、**`PRODUCTION_WIRED`判定はPhase 3のruntime evidence後**) | 未着手 |
+| K2(Key Phrase英語) | 共通 | `PRODUCTION_WIRED`(同:1254-1266) | `APPROVED_FOR_PRODUCTION`(2026-10-17)。Phase 1調査=差分なし(既存Zで同等)。委任_15でZのコピー定数を撤去しX定数`K2_TEXT`を参照(**コード配線済み(委任_15)・runtime evidence待ち**、**`PRODUCTION_WIRED`判定はPhase 3のruntime evidence後**) | 未着手 |
+| P8-KP(Std KP日本語意味) | 共通 | `PRODUCTION_WIRED`(同:1254-1266) | `APPROVED_FOR_PRODUCTION`・**コード配線済み(委任_15)・runtime evidence待ち**(2026-10-17。X定数`P8_KP_JA_TEXT`を参照、OPEN-412) | 未着手 |
+| P7(Adv KP英語解説) | 共通 | `PRODUCTION_WIRED`(同:1251-1266) | `APPROVED_FOR_PRODUCTION`・**コード配線済み(委任_15)・runtime evidence待ち**(2026-10-17。X定数`P7_TEXT`を参照、旧`KEY_PHRASE_EXPLANATION_EN`コピーから置換、OPEN-412) | 未着手 |
 | Std Full Story 6%減速 | 共通 | `PRODUCTION_WIRED` | `APPROVED_FOR_PRODUCTION`(既存6%減速維持)。Phase 1調査=差分なし(既存Zで同等)だが**`PRODUCTION_WIRED`判定はPhase 2のruntime evidence後** | 未着手 |
 | AUW共通基盤(統一ASR・音声品質検証) | 共通 | `PRODUCTION_WIRED`(CURRENT_SPEC「統一ASR判定仕様」節) | `APPROVED_FOR_PRODUCTION`。Phase 1調査=差分なし(既存Zで同等)だが**`PRODUCTION_WIRED`判定はPhase 2のruntime evidence後** | 未着手 |
-| Source Reference Contract(候補ID方式、CURRENT_SPEC:1919) | 共通 | 配線済み(既存、CURRENT_SPEC:1919、FZ_COMPLETION_PLAN_01 §2表。Z=family_z NotImplementedError) | `APPROVED_FOR_PRODUCTION`(2026-10-17、**未配線**。Z=Strategy L[shortlistなし]のため適用方式=ユーザー判断#109待ち、OPEN-412) | 未着手 |
+| Source Reference Contract(候補ID方式、CURRENT_SPEC:1919) | 共通 | 配線済み(既存、CURRENT_SPEC:1919、FZ_COMPLETION_PLAN_01 §2表。Z=family_z NotImplementedError) | `APPROVED_FOR_PRODUCTION`・**方式#109待ち(未配線)**(2026-10-17。Z=Strategy L[shortlistなし]のため適用方式=ユーザー判断#109待ち。委任_15でOpus推奨のD1強化版`z_sentence_id_posthoc_v1`をオフラインdry-run[10/10解決・曖昧0]、Production実装なし、OPEN-412) | 未着手 |
 | M2P0 + 優先順位A方式(KP候補供給・選定) | X固有 | `PRODUCTION_WIRED`(CURRENT_SPEC:1254-1266) | **対象外**(ユーザー不採用: 品質悪化のTrial結果、REGISTER #45、2026-10-17再確認)。Z既存方式維持 | 未定 |
 | Risk Flagger | X固有(News/Fact Ledger) | `PRODUCTION_WIRED`(CURRENT_SPEC:1157節) | **対象外**(2026-10-17ユーザー決定。追加しない) | 未定 |
 | Strategy L KP(shortlistなし全文選定) | Z固有 | 対象外 | 維持(REGISTER #45、2026-10-17再確認) | 未定 |
-| Dialogue別Voice(登場人物セリフの別Voice) | Z固有 | 対象外 | 維持・Phase 2でNarrator/Dialogue切替・speaker割当・結合を検証(OPEN-412) | 未定 |
+| Dialogue別Voice(登場人物セリフの別Voice) | Z固有 | 対象外 | 維持。委任_15でDialogue Style/Voice/speaker割当/reuse_key不変を`er063_family_z_common_style_wiring_01_test_01`で固定(コード・test完了)。Narrator/Dialogue切替・結合のruntime検証はPhase 3(OPEN-412) | 未定 |
 | In One Line / Comment 4 | X固有 | 該当仕様あり(Family X節) | なし(2026-10-17ユーザー決定: 設けない) | 未定 |
 
 - 区分「共通」の行は、Family別に`APPROVED_FOR_PRODUCTION`→`PRODUCTION_WIRED`を追跡する(PM_GOVERNANCE 28-1運用2・4)。Z列の`PRODUCTION_WIRED`は、2026-10-17ユーザー指示§4の受入10条件を全て満たすまで宣言しない。
 - 「差分なし」は静的調査の結果であり、`PRODUCTION_WIRED`の根拠ではない(runtime evidenceが必要)。
+- **2026-10-17 委任_15(Phase 2a、JPY0)**: Z列の共通Style 6種(PD06/S3/E1/K2/P8-KP/P7)は`er063_family_z_audio_01.py`がXの承認済み定数を**定数参照**する形でコード配線済み(コピー撤去、Z側literal sha固定、`CROSS_FAMILY_COMMON_STYLE_MAP`+drift test、Xの`DEFAULT_NEW_RUN_PROFILE`には従属しない)。run dirは全Role Style記録(`audit/style_record.json`)で旧Style混在を課金前STOP。Z例外role=Adv Comment E2_UPBEAT/TOPIC_INTRO/J3/Dialogue/SHELL(`origin_kind=family_z_specific`)。Z新runのNarrator/Std JA Preview・Comment/Std KP日本語/Adv KP解説のStyleがPD06/S3/P8-KP/P7へ変わる(既存run・Dialogue・E1/K2は不変)。`PRODUCTION_WIRED`ではない(Phase 3でruntime evidence)。
 - 開発対象FamilyはX・Z・将来Yのみ(PM_GOVERNANCE 27-7)。
 
 ## Cross-level仕様(A2/B1/B2共通)

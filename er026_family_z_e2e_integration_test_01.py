@@ -552,10 +552,14 @@ class KpInstallTest(TmpMixin, unittest.TestCase):
 
 
 class Er063KpExplanationExtensionTest(unittest.TestCase):
-    def test_x_kp_explanation_style_is_verbatim_copy_and_x_unchanged(self):
+    def test_kp_explanation_style_is_x_p7_reference_and_x_unchanged(self):
+        # 2026-10-17 委任_15: 期待値を意図的に更新(旧: 旧KEY_PHRASE_EXPLANATION_EN逐語コピー。ユーザー承認§2B: Adv KP英語解説=P7=X共通定数参照)。
+        import er019_family_x_style_profile_01 as xs
         import er033_tts_flash_lite_family_x_styles_01 as fl
-        self.assertEqual(a63._X_KP_EXPLANATION_EN, fl.KEY_PHRASE_EXPLANATION_EN)
-        self.assertEqual(a63.FAMILY_Z_ROLE_STYLE["KP_EXPL_EN"]["text"], fl.KEY_PHRASE_EXPLANATION_EN)
+        self.assertIs(a63._STYLE_TEXT["P7"], xs.P7_TEXT)
+        self.assertEqual(a63.FAMILY_Z_ROLE_STYLE["KP_EXPL_EN"]["text"], xs.P7_TEXT)
+        self.assertEqual(a63.FAMILY_Z_ROLE_STYLE["KP_EXPL_EN"]["style_label"], "P7")
+        self.assertNotEqual(xs.P7_TEXT, fl.KEY_PHRASE_EXPLANATION_EN)   # 旧P0(KEY_PHRASE_EXPLANATION_EN)はX側で不変のまま、Zは使わない
         self.assertTrue(a63.assert_style_table_integrity())
 
     def test_plan_requires_explanation_text_for_adv_and_uses_explanation_ids(self):

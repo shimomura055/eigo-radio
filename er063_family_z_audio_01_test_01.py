@@ -71,9 +71,11 @@ def fake_generators(slow_std: bool = True, lr_clips=(), fail_clips=()):
 class StyleTableTest(unittest.TestCase):
     def test_integrity_and_pins(self):
         rep = z.assert_style_table_integrity()
-        self.assertEqual(rep["PD8"], "329ff46a5ec3877f7dc23375e14ee8a806efeff7cfe27963492a3cf95d182226")
-        self.assertEqual(rep["R2"], "625826c1187b6381fe36ff444f1f568fc1f68d639d6a6a8931e728463692252f")
-        self.assertEqual(rep["M2"], "e7617e15c29e43cb76668d77e6c7102671754aae810fb15cd9367294f71a228d")
+        # 2026-10-17 委任_15: 期待値を意図的に更新(旧: PD8/R2/M2、承認変更 N01->PD06 / R2->S3 / M2->P8-KP)。
+        self.assertEqual(rep["PD06"], "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d")
+        self.assertEqual(rep["S3"], "060c08fde003cf7c2d15c654da96d3f857b8e7a9bd79eac31814ceaf7c923f33")
+        self.assertEqual(rep["P8_KP"], "b12c8721eab8434b78d129c93491c0a826f229f4528e024d58de960e1ad191e7")
+        self.assertEqual(rep["P7"], "0518000694e31ef7de6602401b7fa9abd3beb45654e95714817930582020b9fc")
 
     def test_origin_verbatim(self):
         if not os.path.exists("er057_output/pace_trial_02/prompts/prompts_pace_02.md"):
@@ -82,12 +84,11 @@ class StyleTableTest(unittest.TestCase):
         for k, v in rep.items():
             self.assertTrue(v["verbatim_match"], k)
 
-    def test_std_narrator_is_n01_verbatim_without_a2_instruction(self):
-        # 2026-10-13 FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01: 期待値を意図的に更新(旧: PD8 / PD8+A2減速instruction連結)。
-        # N01(ユーザー正式決定APPROVED_FOR_PRODUCTION)は Std/Adv とも逐語(Std減速instruction非連結)。
+    def test_std_narrator_is_pd06_verbatim_without_a2_instruction(self):
+        # 2026-10-17 委任_15: 期待値を意図的に更新(旧: N01[2026-10-13]。ユーザー承認§2B: Narrator=PD06)。Std/Adv とも逐語(Std減速instruction非連結)。
         import er003_v1_n3_01_tts_generate as n3
-        self.assertEqual(z.FAMILY_Z_ROLE_STYLE["NARRATOR_FULL_STORY_STD"]["text"], z._N01)
-        self.assertEqual(z.FAMILY_Z_ROLE_STYLE["NARRATOR_FULL_STORY_ADV"]["text"], z._N01)
+        self.assertEqual(z.FAMILY_Z_ROLE_STYLE["NARRATOR_FULL_STORY_STD"]["text"], z._STYLE_TEXT["PD06"])
+        self.assertEqual(z.FAMILY_Z_ROLE_STYLE["NARRATOR_FULL_STORY_ADV"]["text"], z._STYLE_TEXT["PD06"])
         self.assertNotIn(n3.A2_SLOWER_PACE_INSTRUCTION.strip(), z.FAMILY_Z_ROLE_STYLE["NARRATOR_FULL_STORY_STD"]["text"])
 
     def test_x_constants_untouched_and_copies_match(self):
@@ -96,15 +97,15 @@ class StyleTableTest(unittest.TestCase):
         self.assertEqual(fl.FAMILY_X_ROLE_STYLE_JA, z._X_JA_J3)
         self.assertEqual(fl.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0], "natural, clear, conversational")
 
-    def test_pd8_not_mixed_into_dialogue(self):
+    def test_narrator_style_not_mixed_into_dialogue(self):
         for lvl in ("a2", "b1b"):
             plan, _, _ = make_plan(lvl)
             for s in plan:
                 st = z.style_text_for(s)
                 if s.kind == "dialogue":
-                    self.assertTrue(st is None or z._PD8 not in st, s.clip_id)
+                    self.assertTrue(st is None or z._STYLE_TEXT["PD06"] not in st, s.clip_id)
                 if s.kind in ("preview", "comment", "kp_en", "kp_ja", "topic_intro"):
-                    self.assertTrue(st is None or z._PD8 not in st)
+                    self.assertTrue(st is None or z._STYLE_TEXT["PD06"] not in st)
         adv_d = [s for s in make_plan("b1b")[0] if s.kind == "dialogue"][0]
         self.assertIsNone(z.style_text_for(adv_d))  # style_prefix_overrideを渡さない
 
@@ -112,12 +113,12 @@ class StyleTableTest(unittest.TestCase):
         std, _, _ = make_plan("a2")
         adv, _, _ = make_plan("b1b")
         sty = lambda plan, cid: next(z.FAMILY_Z_ROLE_STYLE[s.role_key]["style_label"] for s in plan if s.clip_id == cid)
-        self.assertEqual(sty(std, "preview"), "R2")
-        self.assertEqual(sty(std, "comment_2"), "R2")
+        self.assertEqual(sty(std, "preview"), "S3")   # 2026-10-17 委任_15: R2->S3(ユーザー承認§2B)
+        self.assertEqual(sty(std, "comment_2"), "S3")
         self.assertEqual(sty(adv, "preview"), "E1")
         self.assertEqual(sty(adv, "comment_1"), "E2_UPBEAT")
         self.assertEqual(sty(adv, "kp1_en"), "K2")
-        self.assertEqual(sty(adv, "kp1_ja"), "M2")
+        self.assertEqual(sty(adv, "kp1_ja"), "P8_KP")   # 2026-10-17 委任_15: M2->P8-KP
 
 
 class DialogueVoiceTest(unittest.TestCase):
@@ -376,6 +377,8 @@ class StageGateTest(unittest.TestCase):
         json.dump({}, open(f"{lvl}/audit/tts_generation_results.json", "w"))
         with self.assertRaises(z.FamilyZTtsResultsIncompleteStop):
             z.assert_tts_results_complete(lvl, ["preview"])  # 空dict
+        # 2026-10-17 委任_15: Style記録の無い既存結果ファイルがあるdirは課金前STOP(Opus R-C4)になったため、fixtureを撤去してから新規実行する。
+        os.remove(f"{lvl}/audit/tts_generation_results.json")
         plan, _, _, out = self._run_stage("a2")
         ids = [s.clip_id for s in plan]
         z.assert_tts_results_complete(lvl, ids)
@@ -575,13 +578,13 @@ class WiringTest(unittest.TestCase):
                 return s
         raise AssertionError((level, kind))
 
-    def test_adv_narrator_uses_x_b1_entry_with_n01(self):
+    def test_adv_narrator_uses_x_b1_entry_with_pd06(self):
         import er003_v1_sing01_news_tail_fix as ntf
         spec = self._spec("b1b", "narrator")
         with mock.patch.object(ntf, "generate_news_narration_wide_margin", return_value={"status": "OK"}) as m:
             z.real_generators()["narrator"](spec, "x/b1b/narration/full_story_part1_c1.wav")
         kw = m.call_args.kwargs
-        self.assertEqual(kw["style_prefix_override"], z._N01)  # 2026-10-13: PD8 -> N01(期待値を意図的に更新)
+        self.assertEqual(kw["style_prefix_override"], z._STYLE_TEXT["PD06"])  # 2026-10-17 委任_15: N01 -> PD06(期待値を意図的に更新)
         self.assertEqual(kw["tts_backend"], "speech_metadata_flash_lite")
         self.assertTrue(kw["enable_connected_speech_equivalence_layer"])
 
@@ -590,7 +593,7 @@ class WiringTest(unittest.TestCase):
         spec = self._spec("a2", "narrator")
         with mock.patch.object(n3, "generate_a2_segment_with_slowdown", return_value={"status": "OK"}) as m:
             z.real_generators()["narrator"](spec, "x/a2/narration/full_story_part1_c1.wav")
-        self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._N01)  # 2026-10-13: PD8_A2SLOW -> N01逐語(期待値を意図的に更新)
+        self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._STYLE_TEXT["PD06"])  # 2026-10-17 委任_15: N01 -> PD06逐語(期待値を意図的に更新)
 
     def test_adv_dialogue_has_no_style_override_and_right_voice(self):
         import er012_b_family_voices_production_01 as bv
@@ -609,7 +612,7 @@ class WiringTest(unittest.TestCase):
             r = z.real_generators()["dialogue"](spec, "x/a2/narration/full_story_part3_c1.wav")
         self.assertEqual(m.call_args.args[2], "Algieba")
         self.assertEqual(m.call_args.kwargs["style_prefix_override"], n3.A2_ENGLISH_STYLE_PREFIX_SLOWER)
-        self.assertNotIn(z._PD8, m.call_args.kwargs["style_prefix_override"])
+        self.assertNotIn(z._STYLE_TEXT["PD06"], m.call_args.kwargs["style_prefix_override"])
         pp.assert_called_once()
         self.assertTrue(r["slowdown_applied"])
 
@@ -618,18 +621,18 @@ class WiringTest(unittest.TestCase):
         import er003_v1_n3_01_tts_generate as n3
         with mock.patch.object(v1, "generate_charon_english", return_value={"status": "OK"}) as m:
             z.real_generators()["preview"](self._spec("b1b", "preview"), "x/b1b/narration/preview.wav")
-            self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._E1)
+            self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._STYLE_TEXT["E1"])
             z.real_generators()["comment"](self._spec("b1b", "comment"), "x/b1b/narration/comment_1.wav")
             self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._E2_UPBEAT)
         with mock.patch.object(n3, "generate_a2_japanese_with_reading_safety", return_value={"status": "OK"}) as m:
             z.real_generators()["preview"](self._spec("a2", "preview"), "x/a2/narration/preview.wav")
-            self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._R2)
+            self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._STYLE_TEXT["S3"])
             z.real_generators()["kp_ja"](self._spec("a2", "kp_ja"), "x/a2/narration/kp1_ja.wav")
-            self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._M2)
+            self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._STYLE_TEXT["P8_KP"])
         import er003_v1_repro01_main_generate as repro
         with mock.patch.object(repro, "generate_narration_snippet_verified_strict", return_value={"status": "OK"}) as m:
             z.real_generators()["kp_en"](self._spec("a2", "kp_en"), "x/a2/narration/kp1_en.wav")
-            self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._K2)
+            self.assertEqual(m.call_args.kwargs["style_prefix_override"], z._STYLE_TEXT["K2"])
         with mock.patch.object(repro, "generate_narration_snippet_verified_strict",
                                side_effect=[{"status": "STOPPED"}, {"status": "OK"}]) as m:
             r = z.real_generators()["kp_en"](self._spec("a2", "kp_en"), "x/a2/narration/kp1_en.wav")
@@ -678,7 +681,7 @@ class SequenceAndPageTest(unittest.TestCase):
         self.assertEqual(names_adv[-1], "Outro")
 
     def test_page_lint(self):
-        rows = [{"part": "Preview", "start": 1.0, "dur": 5.0, "file": "audio/a.mp3", "voice": "Aoede", "style": "R2", "script": "x"}]
+        rows = [{"part": "Preview", "start": 1.0, "dur": 5.0, "file": "audio/a.mp3", "voice": "Aoede", "style": "S3", "script": "x"}]
         html = z.build_listening_page_html("Standard", rows, [("run through", "走り抜ける")], "audio/full.mp3", 100.0)
         lint = z.lint_page_html(html)
         self.assertEqual(lint, {"file_scheme": False, "level_label_leak": False, "kp_label_leak": False})

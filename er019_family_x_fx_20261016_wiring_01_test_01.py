@@ -102,8 +102,9 @@ class ConstantsAndSourceTests(unittest.TestCase):
         self.assertEqual(sp.P8_KP_JA_TEXT, ns["PROMPTS"]["P8"])
 
     def test_k2_equals_family_z_k2(self):
-        ns = _eval_top_level("er063_family_z_audio_01.py", ["_K2"])
-        self.assertEqual(sp.K2_TEXT, ns["_K2"])
+        # 2026-10-17 委任_15: 期待値を意図的に更新(旧: Zの`_K2`コピー定数と一致。Zはコピーを撤去しXのK2_TEXTを定数参照するため、同一objectであることを確認)。
+        import er063_family_z_audio_01 as z
+        self.assertIs(z._STYLE_TEXT["K2"], sp.K2_TEXT)
 
     def test_p8_name_collision_is_separated(self):
         # 旧Full Story候補P8(402字)は不変、KP用は別定数・別role
@@ -949,8 +950,10 @@ class FamilyZIsolationTests(unittest.TestCase):
                 mods |= {a.name for a in n.names}
             elif isinstance(n, ast.ImportFrom) and n.module:
                 mods.add(n.module)
-        self.assertNotIn("er019_family_x_style_profile_01", mods)
-        self.assertEqual({m for m in mods if m.startswith("er019")}, {"er019_family_x_audio_production_runner_01"})
+        # 2026-10-17 委任_15: 期待値を意図的に更新(旧: Zはer019_family_x_style_profile_01を一切importしない)。承認§2BでZはXの承認済みStyle定数を
+        # 参照するためmodule importは許可するが、X既定profile・profile解決は使わない(別test[er063_family_z_audio_01_pd06_run_style_test_01]のAST検査で固定)。
+        self.assertEqual({m for m in mods if m.startswith("er019")},
+                         {"er019_family_x_audio_production_runner_01", "er019_family_x_style_profile_01"})
 
     def test_z_only_x_function_signature_unchanged(self):
         sig = inspect.signature(runner.generate_key_phrase_explanation_en_verified)
@@ -976,13 +979,20 @@ class FamilyZIsolationTests(unittest.TestCase):
         self.assertEqual(kw["tts_backend"], FL)
 
     def test_z_role_style_constants_unchanged(self):
+        # 2026-10-17 委任_15: 期待値を意図的に更新(旧: Zの_K2/_R2/_E1コピー定数のsha固定。ZはXの承認済み定数[K2/S3/E1]を参照する)。
         import er063_family_z_audio_01 as z
-        for name, sha in (("_K2", sp.K2_SHA256), ("_R2", sp.R2_SHA256), ("_E1", sp.E1_SHA256)):
-            self.assertEqual(_sha(getattr(z, name)), sha, name)
+        for label, sha in (("K2", sp.K2_SHA256), ("S3", sp.SUPPORT_JA_STYLE_S3_SHA256), ("E1", sp.E1_SHA256),
+                           ("PD06", sp.PD06_SHA256), ("P7", sp.P7_SHA256), ("P8_KP", sp.P8_KP_JA_SHA256)):
+            self.assertEqual(_sha(z._STYLE_TEXT[label]), sha, label)
+            self.assertEqual(z._STYLE_SHA256[label], sha, label)
 
-    def test_z_source_does_not_reference_new_x_constants_or_profile(self):
+    def test_z_source_references_x_constants_but_not_x_profile_machinery(self):
+        # 2026-10-17 委任_15: 期待値を意図的に更新(旧: ZはXの新定数・profileを一切参照しない。承認§2BでZはX共通定数を参照する)。
+        # ただしX既定profile(fx_20261016/17・DEFAULT_NEW_RUN_PROFILE)・profile解決・Master Store key系には従属しない(Opus R-C1)。
         src = open("er063_family_z_audio_01.py", encoding="utf-8").read()
-        for token in ("fx_20261016", "PD06_TEXT", "P8_KP_JA_TEXT", "KP_EN_STORE_STYLE_ID", "ensure_key_phrase_english_component_styled"):
+        for token in ("PD06_TEXT", "P8_KP_JA_TEXT", "P7_TEXT", "K2_TEXT", "E1_TEXT", "SUPPORT_JA_STYLE_S3_20261017"):
+            self.assertIn(token, src)
+        for token in ("fx_20261016", "KP_EN_STORE_STYLE_ID", "ensure_key_phrase_english_component_styled"):
             self.assertNotIn(token, src)
 
 

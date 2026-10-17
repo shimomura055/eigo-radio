@@ -13,6 +13,50 @@ import er003_v1_n3_01_tts_generate as tg
 import er006_secondary_asr_01 as sec
 
 
+# ============================================================
+# 委任_15 W6(Opus R-C6): M1(複数発音候補、2026-10-13ユーザー承認 ASR-M1-OOV-MULTI-PRONUNCIATION-PRODUCTION-01)のON/OFF 2系統。
+# 旧testはM1導入前(2026-10-12以前)の期待値で、かつPronunciation Ledgerの作業ツリー状態[er006_output/pronunciation_ledger_01/ledger.json
+# の未commit追記]に依存して結果が変わった(再現性なし)。そこでLedgerを固定fixtureにし、M1 OFF(_m1_frozen_forを無効化)が既定、
+# M1 ONは固定Ledger fixture(下記)を注入して明示的に検証する。監査: docs/research/FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01/M1_MELOS_SAID_AUDIT_01.md
+# ============================================================
+import contextlib as _contextlib
+
+_REAL_M1_FROZEN_FOR = sec._m1_frozen_for
+M1_LEDGER_FIXTURE = {
+    "ec716e185835dba3": {   # 実Ledger(2026-10-12 Production cascadeのpronunciation research由来、ASR転写由来ではない)のMelos entry相当
+        "surface": "melos", "entity_type": "cascade_unresolved_entity", "canonical_spelling": "Melos",
+        "expected_pronunciation_ipa": "/ˈmiː.lɑːs/（米国英語の暫定候補）; /ˈmiː.lɒs/（英国英語）",
+        "alternate_pronunciations": ["/ˈmɪlɒs/（英語での別読みとして提示される場合あり）",
+                                     "/ˈmɛlɒs/ または /ˈmɛloʊs/（音楽用語・一般名詞としての英語の別読み）"],
+        "confidence": "low", "sources": ["https://dictionary.cambridge.org/pronunciation/english/melos",
+                                         "https://en.wiktionary.org/wiki/melos", "https://www.dictionary.com/browse/melos"],
+        "updated_at": "2026-10-12T13:17:58"},
+}
+
+
+@_contextlib.contextmanager
+def m1_on(ledger=None):
+    """M1 ON: 固定Ledger fixtureを注入(作業ツリーのledger.jsonに依存しない)。ledger={}ならM1は有効だが候補なし(=OFF相当の結果)。"""
+    sec._reset_m1_freeze_cache()
+    with mock.patch.object(sec, "_m1_frozen_for", _REAL_M1_FROZEN_FOR), \
+         mock.patch.object(sec.pronun_ledger, "_load", return_value=(M1_LEDGER_FIXTURE if ledger is None else ledger)):
+        try:
+            yield
+        finally:
+            sec._reset_m1_freeze_cache()
+
+
+def _m1_off_setup_module():
+    """既定=M1 OFF(旧testの期待値=M1導入前の承認済み境界)。"""
+    patcher = mock.patch.object(sec, "_m1_frozen_for", return_value=None)
+    patcher.start()
+    unittest.addModuleCleanup(patcher.stop)
+
+
+def setUpModule():
+    _m1_off_setup_module()
+
+
 class PostSlowdownCascadeRescueTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.mkdtemp(prefix="er026_pscr_test_")
@@ -180,6 +224,24 @@ class PostSlowdownCascadeRescueTests(unittest.TestCase):
         self.assertEqual(out["status"], "STOPPED")
         self.assertEqual(calls, [])
 
+    # --- 委任_15 W6: M1 ON系統(固定Ledger fixture)。上のM1 OFF系統(既定)と対で期待値を固定する ---
+    def test_m1_on_melos_said_accepted_via_ledger_candidate_not_asr_derived(self):
+        """Primary=Mello / Azure=Mellow: 実Ledger由来のC2候補[melos ~ M EH L OW S、drop_final_S+次語頭S融合]でM1が受理する(PASS_WITH_WARNING)。"""
+        with m1_on():
+            out, calls = self._run("Melos said.", "Mello said.", "Mellow said.")
+        self.assertEqual(out["status"], "OK")
+        self.assertTrue(out["post_slowdown_cascade_accepted"])
+        self.assertEqual(out["post_slowdown_final_classification"], "M1_MULTI_CANDIDATE_ACCEPT")
+        dump = repr(out["post_slowdown_cascade"])
+        self.assertIn("ec716e185835dba3", dump)       # 受理に使われたLedger entry(監査でledger_key別に事後集計可能)
+        self.assertIn("C2_ledger_alt", dump)
+
+    def test_m1_on_with_empty_ledger_is_same_as_off_stopped(self):
+        with m1_on(ledger={}):
+            out, _ = self._run("Melos said.", "Mello said.", "Mellow said.")
+        self.assertEqual(out["status"], "STOPPED")
+        self.assertEqual(out["post_slowdown_final_classification"], "ASR_VALIDATION_UNCERTAIN")
+
 
 class OuterLoopIntegrationTests(unittest.TestCase):
     """generate_a2_segment_with_slowdown全体: 救済されれば1回のTTS生成で完了し、取り直しが発生しない。"""
@@ -219,6 +281,12 @@ class OuterLoopIntegrationTests(unittest.TestCase):
         self.assertEqual(r["status"], "STOPPED")
         self.assertEqual(calls["tts"], 3)            # 既存の通算3回上限(OPEN-270是正)は不変
         self.assertTrue(r["tts_generation_cap_reached"])
+
+    def test_m1_on_melos_said_does_not_consume_regeneration_budget(self):
+        with m1_on():
+            r, calls, _ = self._run("full_story_part1_c5", "Melos said.", "Mello said.", "Mellow said.", 1.5)
+        self.assertEqual(r["status"], "OK")
+        self.assertEqual(calls["tts"], 1)
 
 
 if __name__ == "__main__":

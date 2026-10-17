@@ -17,11 +17,53 @@ import er020_tts_retry_local_rewrite_01 as role_gate
 import er021_en_asr_semantic_equivalence_production_01 as _se
 
 
+# ============================================================
+# 委任_15 W6(Opus R-C6): M1(複数発音候補、2026-10-13ユーザー承認 ASR-M1-OOV-MULTI-PRONUNCIATION-PRODUCTION-01)のON/OFF 2系統。
+# 旧testはM1導入前(2026-10-12以前)の期待値で、かつPronunciation Ledgerの作業ツリー状態[er006_output/pronunciation_ledger_01/ledger.json
+# の未commit追記]に依存して結果が変わった(再現性なし)。そこでLedgerを固定fixtureにし、M1 OFF(_m1_frozen_forを無効化)が既定、
+# M1 ONは固定Ledger fixture(下記)を注入して明示的に検証する。監査: docs/research/FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01/M1_MELOS_SAID_AUDIT_01.md
+# ============================================================
+import contextlib as _contextlib
+
+_REAL_M1_FROZEN_FOR = sec._m1_frozen_for
+M1_LEDGER_FIXTURE = {
+    "ec716e185835dba3": {   # 実Ledger(2026-10-12 Production cascadeのpronunciation research由来、ASR転写由来ではない)のMelos entry相当
+        "surface": "melos", "entity_type": "cascade_unresolved_entity", "canonical_spelling": "Melos",
+        "expected_pronunciation_ipa": "/ˈmiː.lɑːs/（米国英語の暫定候補）; /ˈmiː.lɒs/（英国英語）",
+        "alternate_pronunciations": ["/ˈmɪlɒs/（英語での別読みとして提示される場合あり）",
+                                     "/ˈmɛlɒs/ または /ˈmɛloʊs/（音楽用語・一般名詞としての英語の別読み）"],
+        "confidence": "low", "sources": ["https://dictionary.cambridge.org/pronunciation/english/melos",
+                                         "https://en.wiktionary.org/wiki/melos", "https://www.dictionary.com/browse/melos"],
+        "updated_at": "2026-10-12T13:17:58"},
+}
+
+
+@_contextlib.contextmanager
+def m1_on(ledger=None):
+    """M1 ON: 固定Ledger fixtureを注入(作業ツリーのledger.jsonに依存しない)。ledger={}ならM1は有効だが候補なし(=OFF相当の結果)。"""
+    sec._reset_m1_freeze_cache()
+    with mock.patch.object(sec, "_m1_frozen_for", _REAL_M1_FROZEN_FOR), \
+         mock.patch.object(sec.pronun_ledger, "_load", return_value=(M1_LEDGER_FIXTURE if ledger is None else ledger)):
+        try:
+            yield
+        finally:
+            sec._reset_m1_freeze_cache()
+
+
+def _m1_off_setup_module():
+    """既定=M1 OFF(旧testの期待値=M1導入前の承認済み境界)。"""
+    patcher = mock.patch.object(sec, "_m1_frozen_for", return_value=None)
+    patcher.start()
+    unittest.addModuleCleanup(patcher.stop)
+
+
+
 def setUpModule():
     # classify_asr_match(role適用)は不合格時に共有telemetry.jsonlへ追記するため、このtestでは無効化する
     patcher = mock.patch.object(_se, "append_telemetry_log")
     patcher.start()
     unittest.addModuleCleanup(patcher.stop)
+    _m1_off_setup_module()   # 委任_15 W6: 既定=M1 OFF(M1導入前の承認済み境界の記録)
 
 SEG = "full_story_part1_c5"  # Family Zの実clip_id形式(FULL_STORY)
 # 固有名詞(-s/-es終わり)の一般集合。Melos固有ではない。
@@ -116,6 +158,21 @@ class EquivalenceLayerGatingTests(unittest.TestCase):
         self.assertTrue(d["verified"])
         self.assertEqual(d["final_status"], "CONNECTED_SPEECH_ACCEPT")
 
+    def test_m1_on_entity_only_uncertain_melos_said_accepted_by_m1_not_equivalence_layer(self):
+        """委任_15 W6 M1 ON系統: 同じ入力(Primary=Mello/Azure=Mellow)がM1(Ledger C2候補)で受理される。Equivalence Layerは呼ばれない。"""
+        with m1_on():
+            d, layer_calls = self._cascade("Melos said.", "Mello said.", "Mellow said.")
+        self.assertTrue(d["verified"])
+        self.assertEqual(d["final_status"], "M1_MULTI_CANDIDATE_ACCEPT")
+        self.assertEqual(layer_calls, [])
+        self.assertEqual(d["m1_multi_candidate"]["ledger_keys"], ["ec716e185835dba3"])
+
+    def test_m1_on_with_empty_ledger_keeps_uncertain(self):
+        with m1_on(ledger={}):
+            d, _ = self._cascade("Melos said.", "Mello said.", "Mellow said.")
+        self.assertFalse(d["verified"])
+        self.assertEqual(d["final_status"], "ASR_VALIDATION_UNCERTAIN")
+
 
 class PostSlowdownPatternATests(unittest.TestCase):
     def setUp(self):
@@ -163,6 +220,20 @@ class PostSlowdownPatternATests(unittest.TestCase):
         with mock.patch.object(sec, "evaluate_attempt_with_cascade_detail", side_effect=spy):
             self._run("Melos said.", "Mello said.", "Mellow said.")
         self.assertNotIn("enable_connected_speech_equivalence_layer", seen)
+
+    def test_m1_on_post_slowdown_unrescuable_input_is_accepted_by_m1(self):
+        """委任_15 W6 M1 ON系統: M1 OFFでSTOPPEDだった入力(Mello/Mellow)はM1 ONではPASS_WITH_WARNING(M1_MULTI_CANDIDATE_ACCEPT)で終わる。"""
+        with m1_on():
+            out = self._run("Melos said.", "Mello said.", "Mellow said.")
+        self.assertEqual(out["status"], "OK")
+        self.assertEqual(out["post_slowdown_final_classification"], "M1_MULTI_CANDIDATE_ACCEPT")
+
+    def test_m1_on_rescue_with_exact_stem_secondary(self):
+        with m1_on():
+            out = self._run("Melos said.", "Mello said.", "Melo said.")
+        self.assertEqual(out["status"], "OK")
+        self.assertTrue(out["post_slowdown_cascade_accepted"])
+        self.assertIn(out["post_slowdown_final_classification"], ("CONNECTED_SPEECH_ACCEPT", "M1_MULTI_CANDIDATE_ACCEPT"))
 
 
 if __name__ == "__main__":

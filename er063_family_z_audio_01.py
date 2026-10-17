@@ -28,10 +28,16 @@ import re
 import shutil
 from dataclasses import dataclass, field
 import er078_secondary_run_scope_01 as secondary_run_scope  # AUW 委任_05
+# 2026-10-17 委任_15: Xの承認済みStyle定数を**定数として**参照する(コピーしない)。DEFAULT_NEW_RUN_PROFILE・profile解決関数は
+# 参照しない(X既定の変更がZへ無言で波及しない。Opus R-C1)。er019のimportは標準ライブラリ+er002_commonのみで循環しない。
+import er019_family_x_style_profile_01 as _xs
 
 MANAGEMENT_ID = "FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01"
 SUB_TASK_ID = "04C"
 TTS_BACKEND = "speech_metadata_flash_lite"
+# 注意(委任_15、Opus R-C2): 下のversion文字列は歴史的名称で、現行の実Style(PD06/S3/E1/K2/P7/P8_KP)とは一致しない。bumpしない
+# (reuse_keyは実際に送るStyle文のsha[style_prefix_sha256]を含むため、Style変更したroleの旧clipは再利用されず、E1/K2/E2_UPBEAT/
+# Dialogueのkeyは不変)。実際のStyle labelは各entryのstyle_label/shaおよびrun dirのaudit/style_record.jsonを正とする。
 FAMILY_Z_ROLE_STYLE_VERSION = "z_v2_pd8_r2_e1_e2up_k2_m2_kpx_20261012"  # v2: Adv KP第3segment(英語解説)のStyle追加(委任_05)
 DEFAULT_SLUG = "melos"
 LEVEL_DIR = {"std": "a2", "adv": "b1b"}  # a2=Standard、b1b=Advanced(出力ディレクトリ名のみ。ページ表示にはラベルを出さない)
@@ -70,9 +76,13 @@ class FamilyZStyleIntegrityStop(FamilyZAudioStop):
     """Style定数のsha不一致(逐語一致が崩れた)。"""
 
 
-class FamilyZNarratorStyleMismatchStop(FamilyZAudioStop):
-    """run単位のnarrator style label記録と現行定義が食い違う(FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01 Opus必須7)。
-    既存Z run dir(Melos等)はPD8で生成済み。N01へ途中切替するとrun内でnarrator styleが混在するため課金前にSTOPする。"""
+class FamilyZRunStyleMismatchStop(FamilyZAudioStop):
+    """run単位の全Role Style記録(audit/style_record.json)と現行定義が食い違う、または記録が無いのに既存の結果ファイル
+    (tts_generation_results.json等)がある(委任_15、Opus R-C4。旧narrator記録[N01時代、FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01
+    Opus必須7]を全Roleへ一般化)。旧Style(PD8/N01/R2/M2等)で生成済みのrun dirへ新Styleが混在するのを課金前にSTOPする。"""
+
+
+FamilyZNarratorStyleMismatchStop = FamilyZRunStyleMismatchStop   # 互換alias(旧名)
 
 
 class FamilyZVoiceMappingStop(FamilyZAudioStop):
@@ -99,126 +109,146 @@ def _sha256_text(text: str) -> str:
 
 
 # ============================================================
-# 1. Z専用 Role -> Style 定数表(原典逐語、sha256で固定)
-#    X定数(FAMILY_X_ROLE_STYLE_*)は不変。runtimeはここ(Z定数自身)のshaをassertする。
-#    原典: PD8=er057_output/pace_trial_02/prompts/prompts_pace_02.md、R2=
-#    er057_output/ja_aoede_style_trial_02/prompts/prompts_R.md、
-#    A5/B5/E1/E2_UPBEAT=er057_output/coffee_final_listening_tone_trial_01/part_AEF/prompts/、
-#    K2/M2=同part_BCD/prompts/。
+# 1. Role -> Style 定数表(2026-10-17ユーザー承認 §2B: Family Xと共通のStyle仕様をZへ適用)
+#    共通role(Narrator Full Story=PD06 / Std JA Preview・Comment=S3 / Adv Preview=E1 / KP英語=K2 /
+#    Std KP日本語意味=P8-KP / Adv KP英語解説=P7)は、Xの承認済み定数(er019_family_x_style_profile_01)を
+#    **定数として参照**する(コピーしない=二重管理の解消、PM_GOVERNANCE 28節、Opus R-C1)。
+#    Xの`DEFAULT_NEW_RUN_PROFILE`・profile解決関数には**従属しない**(X既定の変更がZのProductionへ無言で波及しない。
+#    Zは下の`_STYLE_SHA256`にliteral shaを固定し、X定数が変わればimport時にSTOP)。
+#    Z専用の例外role(TOPIC_INTRO/J3/Adv Comment E2_UPBEAT/Dialogue/SHELL)は現状維持(origin_kind="family_z_specific")。
+#    原典: E2_UPBEAT/A5/B5=er057_output/coffee_final_listening_tone_trial_01/part_AEF/prompts/。
 # ============================================================
-_PD8 = ("Warm, bright, cozy storytelling in the manner of a well-loved radio feature: unhurried, "
-        "richly expressive, with full vowels and gentle emphasis, never flat or sleepy.")
-_A2_SLOW_INSTRUCTION = (
-    "Speak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery "
-    "smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.")
-_R2 = ("明るく、温かみのある話し方で。身近な人にちょっとした話題を教えてあげるように、自然な抑揚と軽やかなリズムをつけてください。"
-       "ニュース番組としての明瞭さは保ち、演技がかった話し方は避けてください。"
-       "句読点の記号そのものに反応して声の高さを変えないでください。"
-       "読点は短い息継ぎの間、句点はやや長めの間として、音程は変えずに自然に置いてください。")
-_E1 = "calm, composed news anchor; steady and unhurried, clear and natural."
+# --- Z専用(例外role)の定数 ---
 _E2_UPBEAT = ("warm, upbeat and engaging; friendly conversational delivery with lively but natural intonation.")
-_K2 = ("Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and "
-       "are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Say only "
-       "this phrase, exactly once, without adding, omitting, or changing any words, and make sure the final "
-       "sound is actually spoken.")
-_M2 = "一つの意味のまとまりとして、途切れさせずに滑らかに、ひと息で読んでください。単語ごとに区切らず、抑揚の上下も小さく自然にしてください。"
 # 参考(Zでは適用しない、shell/固定音声は既存Masterを使うため): Coffee Trial採用のA5/B5。原典照合のみ。
 _A5 = "warm greeting that lands gently; the show name finishes with a soft, natural falling close, not clipped or rushed at the end."
 _B5 = "friendly lead-in that lands gently; the last word settles with a soft, natural falling close, not clipped or rushed at the end."
-# X既存承認Role Style(Xで運用中のTOPIC_INTRO / 日本語J3)。Zはtopic_intro_en/japanese_titleに限りこれを使う。
+# X既存承認Role Style(Xで運用中のTOPIC_INTRO / 日本語J3)の逐語コピー。Zはtopic_intro_en/japanese_titleに限りこれを使う
+# (承認済みの共通Style表[PD06/S3/E1/K2/P7/P8-KP]に含まれない例外role。Xは不変)。
 _X_TOPIC_INTRO = ("brief, clear, engaging news topic introduction with natural emphasis on the topic; "
                   "not dramatic.")
 _X_JA_J3 = ("落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。"
             "演技がかった話し方は避けてください。")
 
-# 委任_05: Advanced KP第3segment(英語解説、Coffee最終v3 Advと同一構成)。X既存承認のKP解説Style
-# (er033 KEY_PHRASE_EXPLANATION_EN)の逐語コピー。Xは不変(一致をtestで固定)。
-_X_KP_EXPLANATION_EN = "clear, precise, at a measured pace, without dragging"
-
-# N01(ユーザー正式決定2026-10-13 APPROVED_FOR_PRODUCTION、FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01): Full Story narrationの
-# メイン音声Prompt。Xの`er019_family_x_style_profile_01.N01_TEXT`と同一文言の逐語copy(Xは不変・一致をtestで固定)。
-# Std/Adv共通、Stdも逐語(旧PD8_A2SLOWの減速instruction連結は廃止。生成後6%減速・減速後再検証は共有module側で無変更)。
-# 対象=narrator役のFull Story clip(短い帰属句narrator clipを含む)。Dialogue voices・Preview・Comment・KP等は対象外。
-# 「sharing a true story」はFiction(Family Z)と意味がずれる可能性があり、USER_DECISION_REQUIRED N-2(文言は変更しない)。
-_N01 = ("A cheerful, kind storyteller sharing a true story at a pace a little slower than usual. "
-        "Bring each sentence to its natural close, then go directly on to the next, including where the story takes a turn.")
-
-# 原典照合値(2026-10-12実装時に原典ファイルから抽出して一致確認済み。runtimeはTrialファイルへ依存しない)
+# 期待sha(literal固定)。共通label(PD06/S3/E1/K2/P7/P8_KP)のtextはXの承認済み定数を参照し、ここのshaと照合する
+# (X側が改変されたらassert_style_table_integrityがSTOP)。
 _STYLE_SHA256 = {
-    "N01": "d1956c91c925d197e27cf1204d7ed17248a96bef096b082fb1bd0846106a0477",
-    "PD8": "329ff46a5ec3877f7dc23375e14ee8a806efeff7cfe27963492a3cf95d182226",
-    "PD8_A2SLOW": "74b456cacf74af0ad08636776dc32fc35e041f869ecc7d60ecab190cf99a1f91",
-    "R2": "625826c1187b6381fe36ff444f1f568fc1f68d639d6a6a8931e728463692252f",
+    "PD06": "3a680861e4d9d1bc46ddba4dc1fc91f26c68f9f9c5e5e450a85fcba7fda43c2d",
+    "S3": "060c08fde003cf7c2d15c654da96d3f857b8e7a9bd79eac31814ceaf7c923f33",
     "E1": "8862317ff76693ff519ddfa956260a8cce2d540763333b54096b63161d84f641",
-    "E2_UPBEAT": "37c52d6ec2377109c4f960ac0f4693ec54f6ee1dcaf5a8fec42ad718e155553e",
     "K2": "9d905cfe6c040cd001c4e7877327044f540a72bd315776f2c297e0f58f7aea42",
-    "M2": "e7617e15c29e43cb76668d77e6c7102671754aae810fb15cd9367294f71a228d",
+    "P7": "0518000694e31ef7de6602401b7fa9abd3beb45654e95714817930582020b9fc",
+    "P8_KP": "b12c8721eab8434b78d129c93491c0a826f229f4528e024d58de960e1ad191e7",
+    # --- Z専用 ---
+    "E2_UPBEAT": "37c52d6ec2377109c4f960ac0f4693ec54f6ee1dcaf5a8fec42ad718e155553e",
+    "X_TOPIC_INTRO": "d16e099cb4f6fd7f87826e48f636c143c31f3c7ad4aaeea13dd3c9ae4a3f724b",
+    "X_J3": "ae68e3e6ac8e8dc29069666742ec04d64c823d4c7bdb6c0902797a2cc09fb69b",
     "A5": "2c530b21d351db177e1a808b328a0a5dbdd58850782074c5b611129b7dafdfc1",
     "B5": "5e28dd287f20588137aae35a058d4bf30da91c4bdf75bd07dd2a61d176d24989",
 }
+_COMMON_STYLE_LABELS = ("PD06", "S3", "E1", "K2", "P7", "P8_KP")   # Xと共通(定数参照)
 
 _STYLE_TEXT = {
-    "N01": _N01,
-    "PD8": _PD8,
-    "PD8_A2SLOW": _PD8 + "\n" + _A2_SLOW_INSTRUCTION,
-    "R2": _R2, "E1": _E1, "E2_UPBEAT": _E2_UPBEAT, "K2": _K2, "M2": _M2, "A5": _A5, "B5": _B5,
+    "PD06": _xs.PD06_TEXT, "S3": _xs.SUPPORT_JA_STYLE_S3_20261017, "E1": _xs.E1_TEXT,
+    "K2": _xs.K2_TEXT, "P7": _xs.P7_TEXT, "P8_KP": _xs.P8_KP_JA_TEXT,
+    "E2_UPBEAT": _E2_UPBEAT, "X_TOPIC_INTRO": _X_TOPIC_INTRO, "X_J3": _X_JA_J3, "A5": _A5, "B5": _B5,
 }
 
+_ORIGIN_COMMON = "X共通定数(er019_family_x_style_profile_01.{name})を参照(2026-10-17ユーザー承認§2B)"
+_ORIGIN_KIND_COMMON = "x_common_constant"
+_ORIGIN_KIND_Z = "family_z_specific"
+
 # role key -> 仕様。text=Noneは「Zで独自styleを渡さない(従来/既存Master)」。
+# origin_kind: "x_common_constant"=Xと共通(X定数参照) / "family_z_specific"=Z例外(現状維持)。
 FAMILY_Z_ROLE_STYLE = {
     "NARRATOR_FULL_STORY_ADV": {
-        "style_label": "N01", "text": _N01, "voice": "Aoede", "language": "en",
-        "origin": "er057_output/coffee_tts_style_h_speed_04/round5/prompts_r5.json candidates.N01.style(旧PD8から2026-10-13置換)",
+        "style_label": "PD06", "text": _STYLE_TEXT["PD06"], "voice": "Aoede", "language": "en",
+        "origin_kind": _ORIGIN_KIND_COMMON, "origin": _ORIGIN_COMMON.format(name="PD06_TEXT") + "(旧N01から2026-10-17置換)",
         "path": "news_tail_fix.generate_news_narration_wide_margin"},
     "NARRATOR_FULL_STORY_STD": {
-        "style_label": "N01", "text": _N01, "voice": "Aoede", "language": "en",
-        "origin": "N01逐語(Std減速instruction非連結。旧PD8_A2SLOW[PD8+A2減速instruction連結]から2026-10-13置換)",
+        "style_label": "PD06", "text": _STYLE_TEXT["PD06"], "voice": "Aoede", "language": "en",
+        "origin_kind": _ORIGIN_KIND_COMMON,
+        "origin": _ORIGIN_COMMON.format(name="PD06_TEXT") + "(Std逐語・減速instruction非連結+生成後6%減速。旧N01から置換)",
         "path": "n3_tts.generate_a2_segment_with_slowdown(6%減速)"},
     "DIALOGUE_ADV": {
         "style_label": "existing_dialogue_style(ENGLISH_STYLE_PREFIX)", "text": None, "voice": "per-speaker", "language": "en",
-        "origin": "er012 generate_voice_body_wide_margin 既定(style_prefix_override=None)。PD8は混入しない",
+        "origin_kind": _ORIGIN_KIND_Z,
+        "origin": "family_z_specific: er012 generate_voice_body_wide_margin 既定(style_prefix_override=None)。Narrator Styleは混入しない",
         "path": "er012.generate_voice_body_wide_margin"},
     "DIALOGUE_STD": {
         "style_label": "existing_dialogue_style+A2_SLOWER(n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER)", "text": None, "voice": "per-speaker",
-        "language": "en", "origin": "er012 Voice A/B Std既存仕様(A2_ENGLISH_STYLE_PREFIX_SLOWER+6%後処理)。PD8は混入しない",
+        "language": "en", "origin_kind": _ORIGIN_KIND_Z,
+        "origin": "family_z_specific: er012 Voice A/B Std既存仕様(A2_ENGLISH_STYLE_PREFIX_SLOWER+6%後処理)。Narrator Styleは混入しない",
         "path": "er012.generate_voice_body_wide_margin + n3_tts.apply_a2_slowdown_postprocess"},
-    "STD_JA_PREVIEW": {"style_label": "R2", "text": _R2, "voice": "Aoede", "language": "ja",
-                       "origin": "er057_output/ja_aoede_style_trial_02/prompts/prompts_R.md ## R2(OPEN-303: R2で確定)",
+    "STD_JA_PREVIEW": {"style_label": "S3", "text": _STYLE_TEXT["S3"], "voice": "Aoede", "language": "ja",
+                       "origin_kind": _ORIGIN_KIND_COMMON,
+                       "origin": _ORIGIN_COMMON.format(name="SUPPORT_JA_STYLE_S3_20261017") + "(旧R2から置換)",
                        "path": "n3_tts.generate_a2_japanese_with_reading_safety"},
-    "STD_JA_COMMENT": {"style_label": "R2", "text": _R2, "voice": "Aoede", "language": "ja",
-                       "origin": "同上", "path": "n3_tts.generate_a2_japanese_with_reading_safety"},
-    "ADV_EN_PREVIEW": {"style_label": "E1", "text": _E1, "voice": "Charon", "language": "en",
-                       "origin": "coffee_final_listening_tone_trial_01/part_AEF/prompts/prompts_E.md ## E1(Coffee Adv Preview採用)",
+    "STD_JA_COMMENT": {"style_label": "S3", "text": _STYLE_TEXT["S3"], "voice": "Aoede", "language": "ja",
+                       "origin_kind": _ORIGIN_KIND_COMMON, "origin": "同上(S3)",
+                       "path": "n3_tts.generate_a2_japanese_with_reading_safety"},
+    "ADV_EN_PREVIEW": {"style_label": "E1", "text": _STYLE_TEXT["E1"], "voice": "Charon", "language": "en",
+                       "origin_kind": _ORIGIN_KIND_COMMON, "origin": _ORIGIN_COMMON.format(name="E1_TEXT"),
                        "path": "voice01.generate_charon_english"},
-    "ADV_EN_COMMENT": {"style_label": "E2_UPBEAT", "text": _E2_UPBEAT, "voice": "Charon", "language": "en",
-                       "origin": "prompts_E.md Baseline = er057_tone_trial_tts_gen_01.EN_COMMENT_E2_UPBEAT(Coffee Adv Comment採用)",
+    "ADV_EN_COMMENT": {"style_label": "E2_UPBEAT", "text": _STYLE_TEXT["E2_UPBEAT"], "voice": "Charon", "language": "en",
+                       "origin_kind": _ORIGIN_KIND_Z,
+                       "origin": "family_z_specific: prompts_E.md Baseline = er057_tone_trial_tts_gen_01.EN_COMMENT_E2_UPBEAT(Coffee Adv Comment採用。"
+                                 "ユーザー§2B表に記載なし=現状維持の例外)",
                        "path": "voice01.generate_charon_english"},
-    "KP_EN": {"style_label": "K2", "text": _K2, "voice": "Aoede", "language": "en",
-              "origin": "coffee_final_listening_tone_trial_01/part_BCD/prompts/prompts_B.md ## K2",
+    "KP_EN": {"style_label": "K2", "text": _STYLE_TEXT["K2"], "voice": "Aoede", "language": "en",
+              "origin_kind": _ORIGIN_KIND_COMMON, "origin": _ORIGIN_COMMON.format(name="K2_TEXT"),
               "path": "repro01.generate_narration_snippet_verified_strict(K2 primary / 既存ENGLISH_LOCK fallback)"},
-    "KP_JA": {"style_label": "M2", "text": _M2, "voice": "Aoede", "language": "ja",
-              "origin": "coffee_final_listening_tone_trial_01/part_BCD/prompts/prompts_C.md ## M2",
+    "KP_JA": {"style_label": "P8_KP", "text": _STYLE_TEXT["P8_KP"], "voice": "Aoede", "language": "ja",
+              "origin_kind": _ORIGIN_KIND_COMMON, "origin": _ORIGIN_COMMON.format(name="P8_KP_JA_TEXT") + "(旧M2から置換)",
               "path": "n3_tts.generate_a2_japanese_with_reading_safety"},
-    "TOPIC_INTRO_EN": {"style_label": "X_TOPIC_INTRO(既存承認)", "text": _X_TOPIC_INTRO, "voice": "Aoede/Charon", "language": "en",
-                       "origin": "er033 FAMILY_X_ROLE_STYLE_EN['TOPIC_INTRO'] の逐語コピー(Xは不変)", "path": "crosslevel/voice01"},
-    "JAPANESE_TITLE": {"style_label": "X_J3(既存承認)", "text": _X_JA_J3, "voice": "Aoede", "language": "ja",
-                       "origin": "er033 FAMILY_X_ROLE_STYLE_JA(J3)の逐語コピー(Xは不変)", "path": "n3_tts.generate_a2_japanese_with_reading_safety"},
-    "KP_EXPL_EN": {"style_label": "X_KP_EXPLANATION_EN(既存承認)", "text": _X_KP_EXPLANATION_EN, "voice": "Aoede", "language": "en",
-                   "origin": "er033 KEY_PHRASE_EXPLANATION_EN の逐語コピー(Xは不変。Coffee最終v3 Advのkp解説は既存承認Style=Pと同一)",
+    "TOPIC_INTRO_EN": {"style_label": "X_TOPIC_INTRO", "text": _STYLE_TEXT["X_TOPIC_INTRO"], "voice": "Aoede/Charon", "language": "en",
+                       "origin_kind": _ORIGIN_KIND_Z,
+                       "origin": "family_z_specific: er033 FAMILY_X_ROLE_STYLE_EN['TOPIC_INTRO'] の逐語コピー(Xは不変・共通Style表の対象外)",
+                       "path": "crosslevel/voice01"},
+    "JAPANESE_TITLE": {"style_label": "X_J3", "text": _STYLE_TEXT["X_J3"], "voice": "Aoede", "language": "ja",
+                       "origin_kind": _ORIGIN_KIND_Z,
+                       "origin": "family_z_specific: er033 FAMILY_X_ROLE_STYLE_JA(J3)の逐語コピー(Xは不変・共通Style表の対象外)",
+                       "path": "n3_tts.generate_a2_japanese_with_reading_safety"},
+    "KP_EXPL_EN": {"style_label": "P7", "text": _STYLE_TEXT["P7"], "voice": "Aoede", "language": "en",
+                   "origin_kind": _ORIGIN_KIND_COMMON,
+                   "origin": _ORIGIN_COMMON.format(name="P7_TEXT") + "(旧KEY_PHRASE_EXPLANATION_EN逐語コピーから置換)",
                    "path": "er019.generate_key_phrase_explanation_en_verified"},
     "SHELL": {"style_label": "既存Master/共有Production資産(変更なし)", "text": None, "voice": "Charon", "language": "en",
-              "origin": "assemble_mod.B1_SHARED_SOURCE_DIR(読み取りコピーのみ、Master Store書込なし)", "path": "copy"},
+              "origin_kind": _ORIGIN_KIND_Z,
+              "origin": "family_z_specific: assemble_mod.B1_SHARED_SOURCE_DIR(読み取りコピーのみ、Master Store書込なし)", "path": "copy"},
 }
 
-# 実装時の原典ファイル照合対象 (key -> (relative path, heading))
+# Cross-Family共通Style対応表(drift test用、Opus R-C7)。role -> {X: Xの定数名|None, Z: Zのlabel|"EXCEPTION:<理由>"}。
+# X_profile_role/X_levelsはXのfx_20261017 profileでのrole名(drift testがX既定profileのshaと突き合わせる)。
+# 共通roleのX既定が変わったらdrift testがFAILし、Z配線(またはEXCEPTION登録)を強制する。Zの解決自体はXの既定に従属しない。
+CROSS_FAMILY_COMMON_STYLE_MAP = {
+    "NARRATOR_FULL_STORY_ADV": {"X": "PD06_TEXT", "X_profile_role": "FULL_STORY", "X_levels": ("b1b",), "Z": "PD06"},
+    "NARRATOR_FULL_STORY_STD": {"X": "PD06_TEXT", "X_profile_role": "FULL_STORY", "X_levels": ("a2",), "Z": "PD06"},
+    "STD_JA_PREVIEW": {"X": "SUPPORT_JA_STYLE_S3_20261017", "X_profile_role": "SUPPORT_JA", "X_levels": ("a2",), "Z": "S3"},
+    "STD_JA_COMMENT": {"X": "SUPPORT_JA_STYLE_S3_20261017", "X_profile_role": "SUPPORT_JA", "X_levels": ("a2",), "Z": "S3"},
+    "ADV_EN_PREVIEW": {"X": "E1_TEXT", "X_profile_role": "PREVIEW", "X_levels": ("b1b",), "Z": "E1"},
+    "KP_EN": {"X": "K2_TEXT", "X_profile_role": "KP_EN", "X_levels": ("a2", "b1b"), "Z": "K2"},
+    "KP_JA": {"X": "P8_KP_JA_TEXT", "X_profile_role": "KP_JA_MEANING", "X_levels": ("a2",), "Z": "P8_KP"},
+    "KP_EXPL_EN": {"X": "P7_TEXT", "X_profile_role": "KP_EXPLANATION_EN", "X_levels": ("b1b",), "Z": "P7"},
+    "ADV_EN_COMMENT": {"X": None, "Z": "EXCEPTION:E2_UPBEAT(ユーザー§2B表に記載なし・Coffee採用Styleを維持)"},
+    "TOPIC_INTRO_EN": {"X": None, "Z": "EXCEPTION:X既存承認TOPIC_INTRO逐語コピー(共通Style表の対象外)"},
+    "JAPANESE_TITLE": {"X": None, "Z": "EXCEPTION:X既存承認J3逐語コピー(共通Style表の対象外)"},
+    "DIALOGUE_ADV": {"X": None, "Z": "EXCEPTION:Dialogueは既存speaker assignment/Dialogue Style/Voiceを尊重(ユーザー§2B)"},
+    "DIALOGUE_STD": {"X": None, "Z": "EXCEPTION:Dialogueは既存speaker assignment/Dialogue Style/Voiceを尊重(ユーザー§2B)"},
+    "SHELL": {"X": None, "Z": "EXCEPTION:既存Master/共有資産(TTSなし)"},
+}
+
+# 実装時の原典ファイル照合対象 (label -> (relative path, locator))。locator: "## 見出し"=mdのコードブロック /
+# "py:<変数>:<key>[:<idx>]"=pyの辞書リテラル。runtimeでは呼ばない(verify_styles_against_origin専用)。
 _ORIGIN_FILES = {
-    "PD8": ("er057_output/pace_trial_02/prompts/prompts_pace_02.md", "## PD8"),
-    "R2": ("er057_output/ja_aoede_style_trial_02/prompts/prompts_R.md", "## R2"),
-    "A5": ("er057_output/coffee_final_listening_tone_trial_01/part_AEF/prompts/prompts_A.md", "## A5"),
-    "B5": ("er057_output/coffee_final_listening_tone_trial_01/part_AEF/prompts/prompts_B.md", "## B5"),
+    "PD06": ("er057_output/pace_trial_02/prompts/prompts_pace_02.md", "## PD6"),
+    "S3": ("er057_output/ja_support_calm_style_trial_04/PROMPTS_01.md", "## S3"),
     "E1": ("er057_output/coffee_final_listening_tone_trial_01/part_AEF/prompts/prompts_E.md", "## E1"),
     "K2": ("er057_output/coffee_final_listening_tone_trial_01/part_BCD/prompts/prompts_B.md", "## K2"),
-    "M2": ("er057_output/coffee_final_listening_tone_trial_01/part_BCD/prompts/prompts_C.md", "## M2"),
+    "P7": ("er080_coffee_kp_pacing_trial_01.py", "py:PROMPTS:p7:1"),
+    "P8_KP": ("er057_std_kp_ja_style_trial_02.py", "py:PROMPTS:P8"),
+    "A5": ("er057_output/coffee_final_listening_tone_trial_01/part_AEF/prompts/prompts_A.md", "## A5"),
+    "B5": ("er057_output/coffee_final_listening_tone_trial_01/part_AEF/prompts/prompts_B.md", "## B5"),
 }
 
 
@@ -227,7 +257,9 @@ def style_prefix_sha256(text) -> str | None:
 
 
 def assert_style_table_integrity() -> dict:
-    """runtime assert: Z定数自身のshaが記録値と一致すること(Trialファイルへのruntime依存なし)。"""
+    """runtime assert: (1)各label textのsha256がZ側literal固定値と一致(X共通定数が改変されたらSTOP) (2)全roleのtextが
+    自labelのtextと一致し、text有りのroleはlabelが固定sha表に存在 (3)共通labelのroleはorigin_kind=x_common_constant、
+    それ以外はfamily_z_specific。Trialファイルへのruntime依存なし。"""
     report = {}
     for key, text in _STYLE_TEXT.items():
         actual = _sha256_text(text)
@@ -235,8 +267,15 @@ def assert_style_table_integrity() -> dict:
             raise FamilyZStyleIntegrityStop(f"Z Style定数 {key} のsha256が記録値と不一致: {actual} != {_STYLE_SHA256[key]}")
         report[key] = actual
     for role, spec in FAMILY_Z_ROLE_STYLE.items():
-        if spec["text"] is not None and spec["style_label"] in _STYLE_SHA256 and _sha256_text(spec["text"]) != _STYLE_SHA256[spec["style_label"]]:
-            raise FamilyZStyleIntegrityStop(f"role {role} のtextがStyle {spec['style_label']} と一致しません")
+        if spec["text"] is not None:
+            if spec["style_label"] not in _STYLE_SHA256:
+                raise FamilyZStyleIntegrityStop(f"role {role} のstyle_label {spec['style_label']!r} が固定sha表にありません")
+            if _sha256_text(spec["text"]) != _STYLE_SHA256[spec["style_label"]]:
+                raise FamilyZStyleIntegrityStop(f"role {role} のtextがStyle {spec['style_label']} と一致しません")
+        common = spec["style_label"] in _COMMON_STYLE_LABELS
+        if (spec["origin_kind"] == _ORIGIN_KIND_COMMON) != common:
+            raise FamilyZStyleIntegrityStop(
+                f"role {role} のorigin_kind={spec['origin_kind']} がstyle_label {spec['style_label']} と整合しません")
     return report
 
 
@@ -251,15 +290,34 @@ def _extract_fenced_after(path: str, heading: str) -> str:
     return m.group(1)
 
 
+def _extract_py_dict_value(path: str, var: str, key: str, idx: int | None):
+    import ast
+    tree = ast.parse(_read_text(path))
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == var for t in node.targets):
+            d = ast.literal_eval(node.value)
+            v = d[key]
+            return v[idx] if idx is not None else v
+    raise KeyError(f"{path}: {var}[{key}] not found")
+
+
 def verify_styles_against_origin(repo_root: str = ".") -> dict:
     """実装時1回(および任意のevidence再生成)用: 原典ファイルから逐語抽出しsha256を照合する。
-    runtimeでは呼ばない(Trialファイルへのruntime依存を作らない)。"""
+    runtimeでは呼ばない(Trialファイルへのruntime依存を作らない)。原典照合先: PD06=pace_trial_02 ## PD6 /
+    S3=ja_support_calm_style_trial_04 ## S3 / E1,K2=coffee_final_listening_tone_trial_01 / P7=er080 PROMPTS['p7'][1] /
+    P8_KP=er057_std_kp_ja_style_trial_02 PROMPTS['P8']。"""
     out = {}
-    for key, (rel, heading) in _ORIGIN_FILES.items():
+    for key, (rel, loc) in _ORIGIN_FILES.items():
         p = os.path.join(repo_root, rel)
-        text = _extract_fenced_after(p, heading)
+        if loc.startswith("py:"):
+            parts = loc.split(":")
+            text = _extract_py_dict_value(p, parts[1], parts[2], int(parts[3]) if len(parts) > 3 else None)
+        else:
+            text = _extract_fenced_after(p, loc)
+            if key == "PD06":
+                text = text.strip()
         sha = _sha256_text(text)
-        out[key] = {"origin": rel, "heading": heading, "origin_sha256": sha, "z_sha256": _STYLE_SHA256[key],
+        out[key] = {"origin": rel, "locator": loc, "origin_sha256": sha, "z_sha256": _STYLE_SHA256[key],
                     "verbatim_match": sha == _STYLE_SHA256[key] and text == _STYLE_TEXT[key]}
     # E2_UPBEAT: prompts_E.md Baseline(1行コード)
     p = os.path.join(repo_root, "er057_output/coffee_final_listening_tone_trial_01/part_AEF/prompts/prompts_E.md")
@@ -501,56 +559,139 @@ def build_level_plan(level: str, story_clips: list, preview_text: str, comments:
 
 
 # ============================================================
-# 3-N. run単位のnarrator style label記録(Opus必須7): 既存Z run dir(PD8生成済み)へのN01混在を課金前にSTOP
+# 3-N. run単位の全Role Style記録(委任_15、Opus R-C4): 旧narrator記録(N01時代)を全Roleへ一般化。
+#      (a) run dirのaudit/style_record.jsonに全Role(Dialogue/SHELL含む)のstyle_label/style_prefix_sha256/origin_kindを記録し、
+#          既存recordと現行定義が不一致なら課金前にSTOP。
+#      (b) recordが無いのに既存の結果ファイル(tts_generation_results.json/tts_checkpoint.json/review_lock_state.json/
+#          human_approved_segments.json)が存在する場合も課金前にSTOP(Xの_RUN_STATE_FILES方式[er019:291-293]を踏襲)。
+#          Review Lock/人間承認はtext shaのみで照合されStyleを区別しないため、旧Style(PD8/N01/R2/M2等)のrunへ新Styleのclipを
+#          混在させたり、旧Styleの承認を新Styleの音声へ流用したりしない。
 # ============================================================
-NARRATOR_STYLE_RECORD_RELPATH = "audit/narrator_style_record.json"
+STYLE_RECORD_RELPATH = "audit/style_record.json"
+STYLE_RECORD_SCHEMA = "family_z_style_record_v1"
+LEGACY_NARRATOR_STYLE_RECORD_RELPATH = "audit/narrator_style_record.json"   # 旧(N01時代)。もう記録として扱わない
+RUN_STATE_FILES = ("tts_generation_results.json", "tts_checkpoint.json", "review_lock_state.json", "human_approved_segments.json")
 
 
-def expected_narrator_style(level: str) -> dict:
-    role_key = "NARRATOR_FULL_STORY_ADV" if level == "b1b" else "NARRATOR_FULL_STORY_STD"
-    spec = FAMILY_Z_ROLE_STYLE[role_key]
-    return {"role_style_key": role_key, "style_label": spec["style_label"],
-            "style_prefix_sha256": style_prefix_sha256(spec["text"])}
+def expected_style_record(level: str) -> dict:
+    """現行定義から期待する全Role Style記録(role -> label/sha/origin_kind)。Dialogue/SHELLはtext=Noneのためshaはnull。"""
+    roles = {}
+    for role, spec in FAMILY_Z_ROLE_STYLE.items():
+        roles[role] = {"style_label": spec["style_label"], "style_prefix_sha256": style_prefix_sha256(spec["text"]),
+                       "origin_kind": spec["origin_kind"]}
+    return {"schema": STYLE_RECORD_SCHEMA, "level": level, "roles": roles}
 
 
-def inspect_run_narrator_style(level_dir: str, level: str, cached: dict | None) -> dict:
-    """読み取りのみ。status: NEW_RUN / RECORD_MATCH / RECORD_MISMATCH / ENTRIES_MATCH_NO_RECORD /
-    LEGACY_NARRATOR_ENTRIES_MISMATCH。*_MISMATCHは呼び出し側でSTOPする。"""
-    exp = expected_narrator_style(level)
-    rec_path = f"{level_dir}/{NARRATOR_STYLE_RECORD_RELPATH}"
+def existing_run_state_files(level_dir: str) -> list:
+    return [f"{level_dir}/audit/{n}" for n in RUN_STATE_FILES if os.path.exists(f"{level_dir}/audit/{n}")]
+
+
+def inspect_run_style_record(level_dir: str, level: str) -> dict:
+    """読み取りのみ。status: NEW_RUN / RECORD_MATCH / RECORD_MISMATCH / RUN_STATE_WITHOUT_RECORD。
+    RECORD_MISMATCH・RUN_STATE_WITHOUT_RECORDは呼び出し側でSTOPする。"""
+    exp = expected_style_record(level)
+    rec_path = f"{level_dir}/{STYLE_RECORD_RELPATH}"
     if os.path.exists(rec_path):
         rec = _read_json(rec_path)
-        ok = (rec.get("style_label") == exp["style_label"]
-              and rec.get("style_prefix_sha256") == exp["style_prefix_sha256"])
-        return {"status": "RECORD_MATCH" if ok else "RECORD_MISMATCH", "expected": exp, "recorded": rec}
-    mismatches, seen = [], 0
-    for clip_id, e in ((cached or {}).get("segments") or {}).items():
-        if (e or {}).get("clip_kind") != "narrator" and not str((e or {}).get("role_style_key", "")).startswith("NARRATOR_"):
-            continue
-        seen += 1
-        st = (e or {}).get("style") or {}
-        if st.get("instruction_label") != exp["style_label"] or st.get("style_prefix_sha256") != exp["style_prefix_sha256"]:
-            mismatches.append({"clip_id": clip_id, "recorded_label": st.get("instruction_label"),
-                               "recorded_sha256": st.get("style_prefix_sha256")})
-    if mismatches:
-        return {"status": "LEGACY_NARRATOR_ENTRIES_MISMATCH", "expected": exp, "mismatches": mismatches}
-    return {"status": "ENTRIES_MATCH_NO_RECORD" if seen else "NEW_RUN", "expected": exp, "narrator_entries": seen}
+        diffs = []
+        rec_roles = rec.get("roles") or {}
+        for role in sorted(set(exp["roles"]) | set(rec_roles)):
+            e, r = exp["roles"].get(role), rec_roles.get(role)
+            if e is None or r is None or any(e.get(k) != r.get(k) for k in ("style_label", "style_prefix_sha256", "origin_kind")):
+                diffs.append({"role": role, "expected": e, "recorded": r})
+        return {"status": "RECORD_MATCH" if not diffs and rec.get("schema") == STYLE_RECORD_SCHEMA else "RECORD_MISMATCH",
+                "expected": exp, "recorded": rec, "diffs": diffs}
+    state = existing_run_state_files(level_dir)
+    if state:
+        return {"status": "RUN_STATE_WITHOUT_RECORD", "expected": exp, "run_state_files": state,
+                "legacy_narrator_record_exists": os.path.exists(f"{level_dir}/{LEGACY_NARRATOR_STYLE_RECORD_RELPATH}")}
+    return {"status": "NEW_RUN", "expected": exp}
 
 
-def assert_run_narrator_style(level_dir: str, level: str, cached: dict | None, *, write: bool = True) -> dict:
-    info = inspect_run_narrator_style(level_dir, level, cached)
-    if info["status"] in ("RECORD_MISMATCH", "LEGACY_NARRATOR_ENTRIES_MISMATCH"):
-        raise FamilyZNarratorStyleMismatchStop(
-            f"[STOP][N01] {level_dir} のnarrator styleが現行定義(N01)と一致しません: {info['status']} "
-            f"(期待={info['expected']['style_label']}/{info['expected']['style_prefix_sha256']}, "
-            f"{info.get('recorded') or info.get('mismatches')})。既存runはPD8等の旧styleで生成済みです。"
-            "run内でnarrator styleが混在するため、課金前にSTOPしました(新規run dirで実行してください。記録は変更していません)。")
-    if write and info["status"] in ("NEW_RUN", "ENTRIES_MATCH_NO_RECORD"):
+def assert_run_style_record(level_dir: str, level: str, *, write: bool = True) -> dict:
+    info = inspect_run_style_record(level_dir, level)
+    if info["status"] == "RECORD_MISMATCH":
+        raise FamilyZRunStyleMismatchStop(
+            f"[STOP][Z-STYLE] {level_dir} の全Role Style記録が現行定義と一致しません: {info['diffs']}。"
+            "run内でStyleが混在するため課金前にSTOPしました(新規run dirで実行してください。記録は変更していません)。")
+    if info["status"] == "RUN_STATE_WITHOUT_RECORD":
+        raise FamilyZRunStyleMismatchStop(
+            f"[STOP][Z-STYLE] {level_dir} にStyle記録({STYLE_RECORD_RELPATH})が無いのに既存の結果ファイルがあります: "
+            f"{info['run_state_files']}。旧Style(PD8/N01/R2/M2等)で生成済みのrunの可能性があり、Review Lock/人間承認はStyleを区別しないため、"
+            "課金前にSTOPしました(新規run dirで実行してください。結果ファイルは変更していません)。")
+    if write and info["status"] == "NEW_RUN":
         os.makedirs(f"{level_dir}/audit", exist_ok=True)
-        _write_json(f"{level_dir}/{NARRATOR_STYLE_RECORD_RELPATH}", {
-            **info["expected"], "level": level, "management_id": "FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01",
-            "n01_sha256": _STYLE_SHA256["N01"]})
+        _write_json(f"{level_dir}/{STYLE_RECORD_RELPATH}", {**info["expected"], "management_id": MANAGEMENT_ID,
+                                                           "role_style_version": FAMILY_Z_ROLE_STYLE_VERSION})
     return info
+
+
+# ============================================================
+# 3-C. 新runへの再利用copyの許可リスト(委任_15、Opus R-C4)。音声(wav)・tts結果・HR承認/Lock・audit・narration・assemblyは
+#      持ち込まない(新runで全Roleを再生成する。取り込み機構は作らない)。許可=テキスト系の確定成果物のみ。
+#      ルールはdeny優先 -> allow -> 既定deny。pathはrun dirからの相対path(posix区切り)。
+# ============================================================
+REUSE_ALLOW_PREFIXES = ("writer/", "support/", "key_phrases/")
+REUSE_ALLOW_PATTERNS = ("segment_plan_*.json", "dialogue_attribution_*.json", "speaker_table.md", "provenance.json")
+REUSE_DENY_DIR_SEGMENTS = ("audit", "narration", "assembly", "attempts")   # 任意の深さで拒否
+REUSE_DENY_TOP_DIRS = ("a2", "b1b")   # run直下のlevel dir(音声・audit・assembly・導入済みkp asset)は丸ごと持ち込まない
+REUSE_DENY_NAME_PATTERNS = ("tts_generation_results*.json", "tts_checkpoint*.json", "review_lock_state*.json",
+                            "human_approved_segments*.json", "*_pending_result.json", "*.consumed.json", "*.consumed",
+                            "STOP", "STOP_ALL", "audit_stop_sentinel.jsonl", "*.wav", "*.mp3", "cost_log.jsonl",
+                            "e2e_stage_log.jsonl", "run_launch_log.jsonl", "page_verify_local.json", "*snapshot*")
+
+
+def classify_reuse_path(rel_path: str) -> tuple:
+    """(\"ALLOW\"|\"DENY\", reason)。rel_pathはrun dirからの相対path。"""
+    import fnmatch
+    rel = rel_path.replace("\\", "/").lstrip("./")
+    parts = rel.split("/")
+    name = parts[-1]
+    if len(parts) > 1 and parts[0] in REUSE_DENY_TOP_DIRS:
+        return "DENY", f"deny_top_dir:{parts[0]}"
+    for seg in parts[:-1]:
+        if seg in REUSE_DENY_DIR_SEGMENTS:
+            return "DENY", f"deny_dir:{seg}"
+    for pat in REUSE_DENY_NAME_PATTERNS:
+        if fnmatch.fnmatch(name, pat):
+            return "DENY", f"deny_name:{pat}"
+    if any(rel.startswith(pref) for pref in REUSE_ALLOW_PREFIXES):
+        return "ALLOW", "allow_prefix"
+    for pat in REUSE_ALLOW_PATTERNS:
+        if fnmatch.fnmatch(name, pat) and len(parts) == 1:
+            return "ALLOW", f"allow_pattern:{pat}"
+    if rel == "writer/provenance.json":
+        return "ALLOW", "allow_provenance"
+    return "DENY", "default_deny"
+
+
+def plan_reusable_run_assets(src_run_dir: str) -> dict:
+    """読み取りのみ。src runの全fileを許可リストで分類する。"""
+    allow, deny = [], []
+    for root, _dirs, files in os.walk(src_run_dir):
+        for fn in files:
+            full = os.path.join(root, fn)
+            rel = os.path.relpath(full, src_run_dir).replace("\\", "/")
+            verdict, reason = classify_reuse_path(rel)
+            (allow if verdict == "ALLOW" else deny).append({"path": rel, "reason": reason})
+    return {"allow": sorted(allow, key=lambda d: d["path"]), "deny": sorted(deny, key=lambda d: d["path"])}
+
+
+def copy_reusable_run_assets(src_run_dir: str, dst_run_dir: str, *, dry_run: bool = True) -> dict:
+    """許可リストに該当するfileのみを新run dirへcopyする(dry_run既定True)。dstに既に結果ファイル/Style記録がある場合はSTOP。"""
+    if os.path.abspath(src_run_dir) == os.path.abspath(dst_run_dir):
+        raise FamilyZRunStyleMismatchStop("[STOP][Z-REUSE] src_run_dir と dst_run_dir が同一です")
+    for lv in ("a2", "b1b"):
+        if existing_run_state_files(f"{dst_run_dir}/{lv}"):
+            raise FamilyZRunStyleMismatchStop(f"[STOP][Z-REUSE] dstに既存の結果ファイルがあります: {dst_run_dir}/{lv}")
+    plan = plan_reusable_run_assets(src_run_dir)
+    if not dry_run:
+        for item in plan["allow"]:
+            dst = os.path.join(dst_run_dir, item["path"])
+            os.makedirs(os.path.dirname(dst), exist_ok=True)
+            shutil.copyfile(os.path.join(src_run_dir, item["path"]), dst)
+    return {"dry_run": dry_run, "copied" if not dry_run else "would_copy": len(plan["allow"]), "denied": len(plan["deny"]),
+            "plan": plan}
 
 
 # ============================================================
@@ -646,7 +787,7 @@ def real_generators() -> dict:
     def dialogue(spec, out_path):
         text = _norm_for_tts(spec)
         if spec.level == "a2":
-            # Std: 既存Voice A/B Std仕様(A2_ENGLISH_STYLE_PREFIX_SLOWER + 6%後処理)。PD8は渡さない。
+            # Std: 既存Voice A/B Std仕様(A2_ENGLISH_STYLE_PREFIX_SLOWER + 6%後処理)。Narrator Style(PD06)は渡さない。
             # 委任_06c(OF-AUW-C-08、原文L204「最大3回のTTS生成フロー」): 減速後NGでも通算TTS3回の残予算で取り直す外側ループ
             # (旧: 減速後NGは再生成せずSTOPPED)。Dialogue固有のPrompt(A2_ENGLISH_STYLE_PREFIX_SLOWER)・Voice・話者帰属は不変。
             return n3_tts.generate_with_a2_slowdown_outer_loop(
@@ -961,17 +1102,16 @@ def run_tts_stage(run_dir: str, level: str, plan: list, *, generators: dict | No
                 "style_label": FAMILY_Z_ROLE_STYLE[s.role_key]["style_label"], "out_path": f"{narr}/{s.wav_name()}",
                 "layout_valid": layout_is_valid(f"{narr}/{s.wav_name()}")} for s in plan]
     if dry_run:
-        _c = _merge_checkpoint(load_results(level_dir), load_checkpoint(level_dir))
         return {"dry_run": True, "planned": planned, "writes": 0,
-                "narrator_style_record": inspect_run_narrator_style(level_dir, level, _c)}
+                "style_record": inspect_run_style_record(level_dir, level)}
+    # 委任_15(Opus R-C4): 生成器(TTS client)を作る前・課金前に、run単位の全Role Style記録(不一致/記録なし+結果ファイル有り=STOP)を確認する。
+    assert_run_style_record(level_dir, level, write=False)
     cached = load_results(level_dir)
     cached = _merge_checkpoint(cached, load_checkpoint(level_dir))   # 委任_10: process中断時もOK clipを再利用(再課金しない)
-    # Opus必須7: 生成器(TTS client)を作る前・課金前に、run単位のnarrator style label記録を確認する。
-    assert_run_narrator_style(level_dir, level, cached, write=False)
     gens = generators or real_generators()
     os.makedirs(narr, exist_ok=True)
     os.makedirs(f"{level_dir}/audit", exist_ok=True)
-    assert_run_narrator_style(level_dir, level, cached, write=True)
+    assert_run_style_record(level_dir, level, write=True)
     segments, key_phrases, evidence = {}, {}, []
     deferred_stop = None
     import er005_cost_logger as cl
@@ -1454,7 +1594,7 @@ def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_d
             kp_rows.append((en, ja))
             row["script"] = f"{en} / {ja}"
             row["voice"] = "Aoede(KP) / Charon(番号)"
-            row["style"] = "K2 / M2"
+            row["style"] = "K2 / P7" if kp.get("explanation") else "K2 / P8-KP"   # KP英語=K2、第2要素=Adv英語解説P7 / Std日本語意味P8-KP(委任_15)
         rows.append(row)
     return rows, kp_rows, full_name, tl["duration_seconds"]
 

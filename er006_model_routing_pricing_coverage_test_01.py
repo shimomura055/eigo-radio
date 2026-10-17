@@ -110,9 +110,15 @@ class PricingCoverageTest(unittest.TestCase):
         self.assertEqual(pro, {"cached_input_tokens": 0.044, "input_tokens": 1.32, "output_tokens": 3.96})
         off = {p["meter"]: p["price"] for p in prices if p["model"] == "deepseek-v4-pro" and p["tier"] != "Standard"}
         self.assertEqual(off, {"cached_input_tokens": 0.022, "input_tokens": 0.66, "output_tokens": 1.98})
-        # SOL61 E案: gpt-6.1-solはFamily X日本語記事のB3/R0/R1/R2の3キーだけに割当(他キーへの混入禁止)
+        # SOL61 E案: gpt-6.1-solの割当は承認済みの許可集合だけ(他キーへの混入禁止)。
+        #  - Family X日本語記事のB3/R0/R1/R2の3キー(SOL61 E案)
+        #  - Family Z英語Fiction(Production用routing key追加、M7): Writer Sol R0->R1->R2とAdvanced->Standard難易度調整の4キー。
+        #    根拠(2026-10-17 委任_15で期待値を意図的に更新): ユーザー正式指示(2026-10-17 COMPLETION-AND-CROSS-FAMILY_USER.md:26「Writer：Sol R0→R1→R2」、
+        #    §2A「Advancedを自然な英語で作成し、そこからStandardへ難易度調整」)、既存CURRENT_SPEC Z記述「Sol R0->R1->R2(Adv新規)、Adv->Std難易度調整」(:1611)、
+        #    er006_model_routing_contract_01.py FAMILY_Z_WRITER_ADV_R0/R1/R2・FAMILY_Z_STD_ADJUST(APPROVED_FOR_PRODUCTION+Opus M7)。
         sol_keys = {k for k, v in routing.PROCESS_MODEL_MAP.items() if v == "gpt-6.1-sol"}
-        self.assertEqual(sol_keys, {"FAMILY_X_STORYLINE_B3", "FAMILY_X_FACTLOCK_R0", "FAMILY_X_FACTLOCK_REVISE"})
+        self.assertEqual(sol_keys, {"FAMILY_X_STORYLINE_B3", "FAMILY_X_FACTLOCK_R0", "FAMILY_X_FACTLOCK_REVISE",
+                                    "FAMILY_Z_WRITER_ADV_R0", "FAMILY_Z_WRITER_ADV_R1", "FAMILY_Z_WRITER_ADV_R2", "FAMILY_Z_STD_ADJUST"})
         self.assertNotIn("deepseek-v4-pro", set(routing.PROCESS_MODEL_MAP.values()))
 
     def test_deepseek_flash_prices_registered(self):

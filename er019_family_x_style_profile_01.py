@@ -121,7 +121,7 @@ P7_SHA256 = "0518000694e31ef7de6602401b7fa9abd3beb45654e95714817930582020b9fc"
 P7_LENGTH = 136
 
 # K2(KP英語音声[Std/Adv]、ユーザー承認済み): 332文字 = K2文 + 共通guard(B_GUARD)。
-# 正本: er057_tone_trial_kp_ja_gen_01.py:38-39 B_SPECS["K2"] + :33 B_GUARD。Family Z `_K2`(er063:120)と同一。
+# 正本: er057_tone_trial_kp_ja_gen_01.py:38-39 B_SPECS["K2"] + :33 B_GUARD。Family Z(er063)はこの`K2_TEXT`を定数参照する(2026-10-17委任_15、コピー定数は撤去)。
 K2_TEXT = (
     "Say the phrase as one single, smoothly connected chunk of meaning, as if the words belong together and "
     "are not read one by one. Keep the pitch movement small and continuous across the whole phrase. Say only "
