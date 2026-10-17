@@ -272,8 +272,9 @@ class RunProfileResolutionTests(unittest.TestCase):
         # 旧: CLI未指定・記録なし -> default(何も書かない)。新: 新規out_dirはN01 profileへ解決し固定記録を作る。
         # `--style-profile default`を明示した場合は従来どおりdefault(何も書かない)。
         # 2026-10-16 委任_02A: 新規out_dirの既定はfx_20261016へ更新(ユーザー指示§4)。
+        # 2026-10-17 委任_03 Phase B(S3正式採用): 既定はfx_20261017へ更新(fx_20261016はresume互換のみ)。
         pid, src = sp.resolve_run_profile(self.out, None, write=False)
-        self.assertEqual((pid, src), ("fx_20261016", "default_new_run_fx_20261016"))
+        self.assertEqual((pid, src), ("fx_20261017", "default_new_run_fx_20261017"))
         self.assertFalse(os.path.exists(self.out))  # write=Falseでは書かない
         pid, _ = sp.resolve_run_profile(self.out, "default")
         self.assertEqual(pid, "default")

@@ -254,3 +254,5 @@
 
 - #103(判断済み: S3選定、2026-10-17) Std日本語解説(Preview/Comment1〜4)Styleとして S3 を選定(原文=docs/pm/delegation_log/2026-10-17_FAMILY-X-STD-JA-S3-ADOPTION-AND-WIRING-01_USER.md)。
 - #105(新規・UDR-blocking・Phase B開始条件) S3をFamily X Std日本語解説の正式Styleとして採用するか(S3版試聴後) — D区分。S3版試聴ページ=https://shimomura055.github.io/eigo-radio/user_test/coffee_fxpw_e2e_01_s3/index.html(R2版と並列再生可)。採用時のみPhase B(Production配線)へ進む。Production不変・未承認。
+
+- #105(判断済み: S3を正式採用、2026-10-17) S3をFamily X全体のStd日本語解説(Preview/Comment1〜4)の正式Styleとして採用(APPROVED_FOR_PRODUCTION、旧R2)。原文=docs/pm/delegation_log/2026-10-17_FAMILY-X-STD-JA-S3-ADOPTION-AND-WIRING-01_PHASE-B_USER.md(sha256 2d79e61fd8dfc788168972f7ed906dd0fc7fdfd2e38ebc71f080bebdde010cec)。Phase B(委任_03)でProduction既定profile fx_20261017へ配線(コード・test済み、runtime evidence待ち)。PRODUCTION_WIRED判定はFable。

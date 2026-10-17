@@ -141,6 +141,24 @@ P8_KP_JA_TEXT = (
 P8_KP_JA_SHA256 = "b12c8721eab8434b78d129c93491c0a826f229f4528e024d58de960e1ad191e7"
 P8_KP_JA_LENGTH = 93
 
+# ------------------------------------------------------------
+# FAMILY-X-STD-JA-S3-ADOPTION-AND-WIRING-01 Phase B 委任_03(2026-10-17、ユーザー正式承認 APPROVED_FOR_PRODUCTION):
+# S3「親しみのあるニュースナレーター」を Family X全体のStandard日本語解説(Preview/Comment1〜4 = role SUPPORT_JA)の
+# 正式Styleとして採用(旧: R2)。共通指示込みStyle全文(199字、sha 060c08fd…)。逐語コピー(調整禁止)。
+# 正本: er057_output/ja_support_calm_style_trial_04/PROMPTS_01.md "## S3" 節コードブロック(Trial-04、共通指示84字込み)。
+# 定数とsha/長さは_verify_constantsがimport時に検証し、ソース突合testが正本ファイルと逐語比較する。
+# ------------------------------------------------------------
+SUPPORT_JA_STYLE_S3_20261017 = (
+    "温かみと親しみのあるニュースナレーターとして、落ち着いた、明瞭な声で伝えてください。"
+    "声の調子は安定させ、重要な言葉や対比にだけ控えめな抑揚をつけてください。"
+    "文末は軽く下げて自然に収め、聞き手が内容を追いやすい流れで読んでください。"
+    "句読点は自然な間として扱い、記号だけを理由に声の高さを変えないでください。"
+    "問いかけは穏やかに読み、語尾を大きく跳ね上げないでください。"
+    "演技がかった強調は避けてください。"
+)
+SUPPORT_JA_STYLE_S3_SHA256 = "060c08fde003cf7c2d15c654da96d3f857b8e7a9bd79eac31814ceaf7c923f33"
+SUPPORT_JA_STYLE_S3_LENGTH = 199
+
 # Master Audio Store上のKP英語(K2)keyの識別子(旧`key_phrase_english_component`[MINIMAL style]とは別id)。
 # keyの`style_instruction_version`は"{trim_policy}+k2.{K2 sha12}"(primary)/"{trim_policy}+lock.{ENGLISH_LOCK sha12}"(fallback)、
 # `instruction_path`は"primary"/"english_lock_fallback"。M3はこのkeyでK2由来音声かどうかを判定する。
@@ -163,7 +181,10 @@ PROFILE_COFFEE_N01_R2_P3_E1 = "coffee_n01_r2_p3_e1"
 # 委任_02A(2026-10-16): 新規run既定をfx_20261016へ切替(ユーザー指示§4「6仕様をFamily Xの既定profileとして適用する。
 # CLIによる特別指定を忘れた場合でも、承認済みStyleが自動適用されるようにする」)。
 PROFILE_FX_20261016 = "fx_20261016"
-DEFAULT_NEW_RUN_PROFILE = PROFILE_FX_20261016
+# 委任_03 Phase B(2026-10-17、ユーザー正式承認): 新規run既定をfx_20261017へ切替。fx_20261016からの差分はSUPPORT_JAのR2→S3のみ。
+# fx_20261016は既存out_dir(固定記録がfx_20261016のrun)のresume互換のためだけに残置する(新規runの既定ではない)。
+PROFILE_FX_20261017 = "fx_20261017"
+DEFAULT_NEW_RUN_PROFILE = PROFILE_FX_20261017
 
 # role名(Std JA Preview/Comment1〜4、Adv KP英英解説)
 ROLE_SUPPORT_JA = "SUPPORT_JA"
@@ -251,9 +272,18 @@ STYLE_PROFILES[PROFILE_FX_20261016] = {
     },
 }
 
+# 委任_03 Phase B: 新既定profile fx_20261017 = fx_20261016(FULL_STORY/PREVIEW/KP_EXPLANATION_EN/KP_EN/KP_JA_MEANINGは同一sha)
+# + SUPPORT_JAのみS3(R2を置換)。overrideのrole集合はfx_20261016と同一。
+STYLE_PROFILES[PROFILE_FX_20261017] = {
+    "overrides": {
+        **{role: dict(o) for role, o in STYLE_PROFILES[PROFILE_FX_20261016]["overrides"].items() if role != ROLE_SUPPORT_JA},
+        ROLE_SUPPORT_JA: {"text": SUPPORT_JA_STYLE_S3_20261017, "sha256": SUPPORT_JA_STYLE_S3_SHA256},
+    },
+}
+
 # roleごとのlevel情報を記録へ含めるprofile(V5以降の複数role profile)。
 _PROFILES_RECORDING_LEVELS = (PROFILE_COFFEE_FINAL_V5, PROFILE_COFFEE_N01_R2_P3, PROFILE_COFFEE_N01_R2_P3_E1,
-                              PROFILE_FX_20261016)
+                              PROFILE_FX_20261016, PROFILE_FX_20261017)
 
 PROFILE_RECORD_RELPATH = "audit/style_profile.json"
 APPROVED_BACKEND = "speech_metadata_flash_lite"
@@ -278,7 +308,9 @@ def _verify_constants() -> None:
                                      ("E1", E1_TEXT, E1_SHA256, E1_LENGTH),
                                      ("PD06", PD06_TEXT, PD06_SHA256, PD06_LENGTH), ("P7", P7_TEXT, P7_SHA256, P7_LENGTH),
                                      ("K2", K2_TEXT, K2_SHA256, K2_LENGTH),
-                                     ("P8_KP_JA", P8_KP_JA_TEXT, P8_KP_JA_SHA256, P8_KP_JA_LENGTH)):
+                                     ("P8_KP_JA", P8_KP_JA_TEXT, P8_KP_JA_SHA256, P8_KP_JA_LENGTH),
+                                     ("S3_SUPPORT_JA", SUPPORT_JA_STYLE_S3_20261017, SUPPORT_JA_STYLE_S3_SHA256,
+                                      SUPPORT_JA_STYLE_S3_LENGTH)):
         if sha256_text(text) != sha or len(text) != length:
             raise StyleProfileStop(
                 f"[STOP][STYLE-PROFILE] {label}定数のsha256/長さが原典と一致しません"
@@ -430,7 +462,7 @@ def resolve_run_profile(out_dir: str, cli_profile: str | None, write: bool = Tru
     - 記録が無い場合:
         * CLI `default`(明示): 従来どおりdefault(新規file/keyは書かない、S3)。既存run(記録なし)のresume用。
         * CLI未指定(FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01、必須5 B'): run stateが無い新規out_dirは
-          DEFAULT_NEW_RUN_PROFILE(2026-10-16以降fx_20261016)へ解決し固定記録を作成する(Family Xの承認済み6仕様の既定)。
+          DEFAULT_NEW_RUN_PROFILE(2026-10-17以降fx_20261017、2026-10-16はfx_20261016)へ解決し固定記録を作成する(Family Xの承認済み6仕様の既定)。
           既存run state(Review Lock/人間承認/TTS結果)があるout_dirは、Style混在を防ぐため課金前にSTOPする
           (`--style-profile default`を明示してresume)。tts_backendがspeech_metadata_flash_lite以外
           (legacy backend、Trial/regression用)の場合は従来どおりdefault(M5によりN01は適用できない)。

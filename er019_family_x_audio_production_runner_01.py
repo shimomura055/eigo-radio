@@ -2294,8 +2294,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     # (M2)、speech_metadata_flash_lite backend必須(M5)。
     parser.add_argument("--style-profile", default=None, choices=tuple(style_profile_mod.STYLE_PROFILES),
                          help="Style profile。未指定: 記録があれば記録を採用(resume)、記録も既存run stateもない新規out_dirは"
-                              "fx_20261016(承認済み6仕様: Full Story=PD06/Std Preview・Comment=R2/Adv Preview=E1/Adv KP解説=P7/"
-                              "KP英語=K2/Std KP日本語意味=P8-KP、2026-10-16以降の既定)、既存run stateがある"
+                              "fx_20261017(承認済み6仕様: Full Story=PD06/Std Preview・Comment=S3[2026-10-17正式採用、旧R2]/Adv Preview=E1/Adv KP解説=P7/"
+                              "KP英語=K2/Std KP日本語意味=P8-KP、2026-10-17以降の既定。fx_20261016[Std日本語=R2]は既存runのresume互換のみ)、既存run stateがある"
                               "out_dirは課金前にSTOP(従来styleでresumeするなら`--style-profile default`を明示)。"
                               "coffee_p8=Coffee限定P8置換、coffee_n01_r2_p3=N01+R2+P3(Coffee用)。")
     # FAMILY-XZ-M2P0-N01-PRODUCTION-WIRING-01(Opus Q5): KPだけを再生成する最小CLI。--stage scaffold専用。

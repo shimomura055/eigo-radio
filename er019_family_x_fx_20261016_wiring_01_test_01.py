@@ -28,7 +28,8 @@ import er019_family_x_audio_production_runner_01 as runner
 import er019_family_x_kp_en_k2_store_01 as k2s
 import er019_family_x_style_profile_01 as sp
 
-FX = sp.PROFILE_FX_20261016
+FX = sp.PROFILE_FX_20261016          # 旧既定(2026-10-16〜10-17)。委任_03 Phase B以降はresume互換のみ(SUPPORT_JA=R2)。
+FX_NEW = sp.PROFILE_FX_20261017      # 新規run既定(SUPPORT_JA=S3、他roleはFXと同一)
 FL = "speech_metadata_flash_lite"
 
 
@@ -137,8 +138,11 @@ class ConstantsAndSourceTests(unittest.TestCase):
 # ============================================================
 class ProfileDefinitionTests(unittest.TestCase):
     def test_default_new_run_profile_is_fx(self):
-        self.assertEqual(sp.DEFAULT_NEW_RUN_PROFILE, FX)
+        # 委任_03 Phase B(2026-10-17、S3正式採用): 新規run既定はfx_20261017。fx_20261016はresume互換のみ残置。
+        self.assertEqual(sp.DEFAULT_NEW_RUN_PROFILE, FX_NEW)
+        self.assertEqual(FX_NEW, "fx_20261017")
         self.assertEqual(FX, "fx_20261016")
+        self.assertIn(FX, sp.STYLE_PROFILES)
 
     def test_six_roles_and_levels(self):
         self.assertEqual(set(sp.overridden_roles(FX)),
@@ -208,8 +212,10 @@ class ProfileDefinitionTests(unittest.TestCase):
     def test_profile_resolution_warning_texts(self):
         w = sp.profile_resolution_warning("n01", "record")
         self.assertIn("[WARN][STYLE-PROFILE] 旧profileでresume中", w)
-        self.assertIsNone(sp.profile_resolution_warning(FX, "record"))
-        self.assertIsNone(sp.profile_resolution_warning(FX, "default_new_run_fx_20261016"))
+        self.assertIsNone(sp.profile_resolution_warning(FX_NEW, "record"))
+        self.assertIsNone(sp.profile_resolution_warning(FX_NEW, "default_new_run_fx_20261017"))
+        # 旧既定fx_20261016(R2)のrunをresumeする場合は旧profileとして警告(S3ではないことを目立たせる)
+        self.assertIn("[WARN][STYLE-PROFILE] 旧profileでresume中", sp.profile_resolution_warning(FX, "record"))
         self.assertIn("legacy", sp.profile_resolution_warning("default", "default_no_record_legacy_backend"))
 
 
@@ -841,13 +847,14 @@ class MainCliTests(unittest.TestCase):
             self._main(["--slug", self.SLUG, "--run", self.RUN, "--out-dir", out, "--stage", "plan",
                         "--tts-backend", FL, "--level", "a2"])
             ep = json.load(open(f"{out}/entry_point.json", encoding="utf-8"))
-            self.assertEqual(ep["style_profile"], FX)
-            self.assertEqual(ep["style_profile_source"], "default_new_run_fx_20261016")
+            self.assertEqual(ep["style_profile"], FX_NEW)
+            self.assertEqual(ep["style_profile_source"], "default_new_run_fx_20261017")
             rec = sp.read_record(out)
-            self.assertEqual(rec["profile_id"], FX)
-            self.assertEqual(set(rec["roles"]), set(sp.overridden_roles(FX)))
+            self.assertEqual(rec["profile_id"], FX_NEW)
+            self.assertEqual(set(rec["roles"]), set(sp.overridden_roles(FX_NEW)))
+            self.assertEqual(rec["roles"]["SUPPORT_JA"]["sha256"], sp.SUPPORT_JA_STYLE_S3_SHA256)
             plan = json.load(open(f"{out}/plan_run_result.json", encoding="utf-8"))["a2"]["style_profile_plan"]
-            self.assertEqual(plan["profile_id"], FX)
+            self.assertEqual(plan["profile_id"], FX_NEW)
             self.assertEqual(plan["roles_sha256"]["KP_EN"], sp.K2_SHA256)
             self.assertEqual(plan["roles_sha256"]["KP_JA_MEANING"], sp.P8_KP_JA_SHA256)
             self.assertEqual(plan["roles_sha256"]["FULL_STORY"], sp.PD06_SHA256)
@@ -859,7 +866,7 @@ class MainCliTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             out = f"{d}/o"
             self._main(["--slug", self.SLUG, "--run", self.RUN, "--out-dir", out, "--stage", "plan", "--level", "a2"])
-            self.assertEqual(json.load(open(f"{out}/entry_point.json", encoding="utf-8"))["style_profile"], FX)
+            self.assertEqual(json.load(open(f"{out}/entry_point.json", encoding="utf-8"))["style_profile"], FX_NEW)
 
     def test_main_resume_with_old_n01_record_keeps_old_profile_and_warns(self):
         for old in ("n01", "coffee_n01_r2_p3_e1"):
