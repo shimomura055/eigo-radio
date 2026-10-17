@@ -1,0 +1,162 @@
+{
+  "article": "streaming_price",
+  "method": "M1",
+  "stage": "1b",
+  "dry_run": true,
+  "started_at": "2026-10-17T03:51:41.702653+00:00",
+  "usage_basis": "SYNTHETIC_DRYRUN_STUB",
+  "verdict_counts": {
+    "VERIFIED": 4,
+    "AMBIGUOUS": 3,
+    "REJECTED": 0
+  },
+  "status": "COMPLETED",
+  "selected_fact_ids": [
+    "F01",
+    "F02",
+    "F03",
+    "F04",
+    "F06",
+    "F07"
+  ],
+  "selected_storyline": "2026年10月8日までに確認できた主要な米国向け改定のうち最新として選定されたDisney+の発表では、単体プラン3種の価格と適用時期が変更されたが、今回確認した資料ではDisneyが値上げ理由を明示したとは確認できない。",
+  "b3_model": "gpt-6.1-sol",
+  "b3_attempts": 1,
+  "ambiguous_central": {
+    "central_fact_ids": [
+      "F01",
+      "F02",
+      "F05",
+      "F06",
+      "F07"
+    ],
+    "ambiguous_central_fact_ids": [
+      "F01",
+      "F05",
+      "F07"
+    ],
+    "count": 3,
+    "note": "候補件数(機械抽出)。『断定しているか』の最終判定はSonnet+Fable独立判定(R-07、測定のみ)"
+  },
+  "known_defect_status": {
+    "F07": "a_selected_detected"
+  },
+  "verdict_transitions": {
+    "counts": {
+      "AMBIGUOUS->AMBIGUOUS": 2,
+      "VERIFIED->VERIFIED": 4,
+      "VERIFIED->AMBIGUOUS": 1
+    },
+    "promotions_to_verified_or_up": [],
+    "demotions_from_verified": [
+      "F05"
+    ]
+  },
+  "final_verdicts": {
+    "F01": {
+      "verdict": "AMBIGUOUS"
+    },
+    "F02": {
+      "verdict": "VERIFIED"
+    },
+    "F03": {
+      "verdict": "VERIFIED"
+    },
+    "F04": {
+      "verdict": "VERIFIED"
+    },
+    "F05": {
+      "verdict": "AMBIGUOUS"
+    },
+    "F06": {
+      "verdict": "VERIFIED"
+    },
+    "F07": {
+      "verdict": "AMBIGUOUS"
+    }
+  },
+  "verifier_models": [
+    "gpt-6-luna"
+  ],
+  "verifier_model_matches_m0": true,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 7,
+    "by_action_type": {
+      "search": 7
+    },
+    "query_count": 7
+  },
+  "verify_requests": [
+    {
+      "label": "full",
+      "cap_prompt": true,
+      "fact_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07"
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "stub_resp_4",
+      "latency_seconds": 0.00054931640625,
+      "web_search_call_count": 7,
+      "action_type_counts": {
+        "search": 7
+      },
+      "query_count": 7,
+      "calls_per_fact_avg": 1.0,
+      "exceeds_soft_cap_estimate": false,
+      "prompt_sha256": "b74aa5e9940cd48b8710f826573d7531a5876b0d5970242aa431049c0b7c2712"
+    }
+  ],
+  "cost": {
+    "by_step": {
+      "ledger": {
+        "llm_jpy": 0.99,
+        "web_search_jpy": 11.2,
+        "calls": 1,
+        "web_search_calls": 7,
+        "input_tokens": 50615,
+        "output_tokens": 2250,
+        "total_jpy": 12.19
+      },
+      "b3": {
+        "llm_jpy": 3.676,
+        "web_search_jpy": 0.0,
+        "calls": 1,
+        "web_search_calls": 0,
+        "input_tokens": 2487,
+        "output_tokens": 1800,
+        "total_jpy": 3.676
+      }
+    },
+    "total": {
+      "llm_jpy": 4.666,
+      "web_search_jpy": 11.2,
+      "total_jpy": 15.866,
+      "calls": 2,
+      "web_search_calls": 7
+    }
+  },
+  "contract": {
+    "method_dir": "er082_output/rlct_trial_01/_dryrun/streaming_price/M1",
+    "producer": {
+      "status": "PASS",
+      "n_facts": 6,
+      "llm_calls": 0
+    },
+    "validate": {
+      "status": "PASS"
+    },
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 7
+    },
+    "all_pass": true
+  },
+  "finished_at": "2026-10-17T03:51:41.757087+00:00"
+}

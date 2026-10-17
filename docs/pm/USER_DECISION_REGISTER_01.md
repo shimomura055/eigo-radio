@@ -256,3 +256,10 @@
 - #105(新規・UDR-blocking・Phase B開始条件) S3をFamily X Std日本語解説の正式Styleとして採用するか(S3版試聴後) — D区分。S3版試聴ページ=https://shimomura055.github.io/eigo-radio/user_test/coffee_fxpw_e2e_01_s3/index.html(R2版と並列再生可)。採用時のみPhase B(Production配線)へ進む。Production不変・未承認。
 
 - #105(判断済み: S3を正式採用、2026-10-17) S3をFamily X全体のStd日本語解説(Preview/Comment1〜4)の正式Styleとして採用(APPROVED_FOR_PRODUCTION、旧R2)。原文=docs/pm/delegation_log/2026-10-17_FAMILY-X-STD-JA-S3-ADOPTION-AND-WIRING-01_PHASE-B_USER.md(sha256 2d79e61fd8dfc788168972f7ed906dd0fc7fdfd2e38ebc71f080bebdde010cec)。Phase B(委任_03)でProduction既定profile fx_20261017へ配線(コード・test済み、runtime evidence待ち)。PRODUCTION_WIRED判定はFable。
+
+### 2026-10-17 S3W 委任_05 / RLCT 委任_05 / BAPE 委任_02追記(既存行は書き換えず追記のみ)
+
+- #105(判断済み+PRODUCTION_WIRED、2026-10-17 Fable判定) S3をFamily X Std日本語解説の正式Styleとして採用。Phase B配線・正式経路runtime evidenceをFableが受入。
+- #104(判断済み: 承認(b)+任意A、2026-10-17) RLCT有料実行の費用承認。累計上限JPY1,040、Stage 1a上限493。原文=docs/pm/delegation_log/2026-10-17_FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-TRIAL-01_APPROVAL_USER.md(sha256 b04eb8e1…)。
+- #106(新規・UDR-blocking・未回答) BAPE(FAMILY-X-BOREDOM-AGGRESSION-PRODUCTION-E2E-01)の費用上限(180円案)承認(7-7)。OPEN-408。回答まで有料実行は開始しない。
+- 未回答報告(ユーザー試聴待ち): Coffee S3正式版 試聴 https://shimomura055.github.io/eigo-radio/user_test/coffee_fxpw_e2e_01_s3prod/index.html

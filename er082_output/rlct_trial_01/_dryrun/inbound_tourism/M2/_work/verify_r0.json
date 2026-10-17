@@ -1,0 +1,52 @@
+{
+  "label": "r0",
+  "cap_prompt": false,
+  "fact_ids": [
+    "F01",
+    "F02",
+    "F03",
+    "F05",
+    "F06"
+  ],
+  "model": "gpt-6-luna",
+  "response_id": "stub_resp_7",
+  "latency_seconds": 0.0005350112915039062,
+  "web_search_call_count": 5,
+  "action_type_counts": {
+    "search": 5
+  },
+  "query_count": 5,
+  "calls_per_fact_avg": 1.0,
+  "exceeds_soft_cap_estimate": false,
+  "prompt_sha256": "3b6b20b4629a0db5894fe78402c84b0f83c8da8c1ef7ddec972c5269dde44f36",
+  "parsed": {
+    "verifications": [
+      {
+        "fact_id": "F01",
+        "verdict": "VERIFIED",
+        "verification_notes": "[stub:stored M0 verdict] JNTOの2026年9月16日発表は2026年8月を3,098,900人、前年同月比9.6％減とし、2025年8月の3,428,406人も掲載。2025年8月はJNTOが8月の過去最高を更新したと発表しているため、2026年8月が全国の8月記録を更新していないとの記述も整合する。2026年値は推計値。([jnto.go"
+      },
+      {
+        "fact_id": "F02",
+        "verdict": "VERIFIED",
+        "verification_notes": "[stub:stored M0 verdict] JNTOの添付表に2026年1～8月27,626,300人、2025年同期28,384,099人、前年同期比2.7％減と記載。注記上、2026年値は推計値、2025年値は確定値。([jnto.go.jp](https://www.jnto.go.jp/news/_files/20260916_1615.pdf))"
+      },
+      {
+        "fact_id": "F03",
+        "verdict": "VERIFIED",
+        "verification_notes": "[stub:stored M0 verdict] JNTOの確定統計表では2019年8月が2,520,134人、2026年8月推計は3,098,900人。差578,766人、2019年比約23.0％という計算も正しい。([jnto.go.jp](https://www.jnto.go.jp/statistics/data/_files/20260121_1615-4."
+      },
+      {
+        "fact_id": "F05",
+        "verdict": "REJECTED",
+        "verification_notes": "[stub:stored M0 verdict] 2026年1月21日のJNTO発表が42,683,600人を年間過去最多として公表した点は正しいが、これは2025年12月の推計発表であり、資料では当該値に推計を示す印が付いているため「確定発表」とするのは誤り。さらに2026年9月のJNTO表では2025年年間値が確定値として42,683,301人に更新されている。年"
+      },
+      {
+        "fact_id": "F06",
+        "verdict": "AMBIGUOUS",
+        "verification_notes": "[stub:stored M0 verdict] 2019年の確定年間値31,882,049人はJNTO統計で確認でき、2025年の年間値がこれを上回るという比較も正しい。ただし42,683,600人は2026年1月の推計発表値で、JNTOの2026年9月表では確定値42,683,301人に更新されている。2025年値を歴史的な発表値として述べるのか、最新の確定値とし"
+      }
+    ]
+  },
+  "prompt": "以下のFact Ledger下書きを、Ledger自身のsource_urlだけを鵜呑みにせず、\n独立してWeb検索により再照合してください。\n\n【対象テーマ】\nCurrent news topic: inbound foreign visitors to Japan reaching a record high. Using only facts confirmed by web search (Japan National Tourism Organization / Japan Tourism Agency figures, Reuters/AP/Nikkei-level reporting), cover the latest monthly and year-to-date visitor arrivals, how they compare with previous records and with the pre-pandemic level, the largest source countries or regions, and reported spending or capacity issues. Separate confirmed figures from forecasts. Do not invent details and do not use the assistant's own prior knowledge.\n\n【検証対象のFact Ledger下書き】\n{\n  \"facts\": [\n    {\n      \"fact_id\": \"F01\",\n      \"claim\": \"【最新月・公式推計】2026年8月の訪日外客数は3,098,900人で、前年同月比9.6％減。2025年8月の3,428,406人を下回り、8月全体の過去最高更新ではない。\",\n      \"subject\": \"日本の訪日外客数\",\n      \"date_or_period\": \"2026年8月（2026年9月16日発表）\",\n      \"scope\": \"日本全国。JNTO定義による訪日外客\",\n      \"conditions\": \"2026年の数値はJNTO推計値。前年同月の2025年値は確定値。\",\n      \"numeric_value\": \"2026年8月 3,098,900人、前年同月比 -9.6％。2025年8月 3,428,406人\",\n      \"numeric_scope\": \"各年8月の訪日外客総数\",\n      \"causal_strength\": \"OBSERVED_REPORTED\",\n      \"source_title\": \"訪日外客数（2026年8月推計値）\",\n      \"source_url\": \"https://www.jnto.go.jp/news/press/20260916_montly.html\",\n      \"source_type\": \"PRIMARY_GOVERNMENT_OR_REGULATOR\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": null,\n      \"notes_for_writer\": \"8月の全国総数は前年を下回る一方、14市場では8月として過去最高。市場別記録と全国総数の記録を混同しない。([jnto.go.jp](https://www.jnto.go.jp/news/press/20260916_montly.html))\"\n    },\n    {\n      \"fact_id\": \"F02\",\n      \"claim\": \"【年初来・公式推計】2026年1～8月の訪日外客数は27,626,300人で、2025年同期の28,384,099人から2.7％減。\",\n      \"subject\": \"日本の訪日外客数\",\n      \"date_or_period\": \"2026年1～8月（2026年9月16日発表）\",\n      \"scope\": \"日本全国。1月から8月までの累計\",\n      \"conditions\": \"2026年値はJNTO推計値。比較対象の2025年値は確定値。\",\n      \"numeric_value\": \"27,626,300人、前年同期比 -2.7％。2025年同期 28,384,099人\",\n      \"numeric_scope\": \"2026年1～8月累計の訪日外客数\",\n      \"causal_strength\": \"OBSERVED_REPORTED\",\n      \"source_title\": \"訪日外客数（2026年8月推計値）添付資料\",\n      \"source_url\": \"https://www.jnto.go.jp/news/_files/20260916_1615.pdf\",\n      \"source_type\": \"PRIMARY_GOVERNMENT_OR_REGULATOR\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": null,\n      \"notes_for_writer\": \"したがって、2026年8月までの累計は前年同期比で記録的な増加ではなく減少。([jnto.go.jp](https://www.jnto.go.jp/news/_files/20260916_1615.pdf))\"\n    },\n    {\n      \"fact_id\": \"F03\",\n      \"claim\": \"【2019年との比較・月】2026年8月の訪日外客数は、JNTOが公表した2019年8月の2,520,134人を上回った。両年の公表値の差は578,766人（約23％）。\",\n      \"subject\": \"日本の訪日外客数\",\n      \"date_or_period\": \"2019年8月と2026年8月\",\n      \"scope\": \"日本全国。各年8月の訪日外客数\",\n      \"conditions\": \"2026年値は推計値。2019年値はJNTOのアーカイブ資料掲載値。\",\n      \"numeric_value\": \"2019年 2,520,134人、2026年 3,098,900人、差 578,766人（約23％）\",\n      \"numeric_scope\": \"8月の訪日外客総数。差・比率は公表値からの計算\",\n      \"causal_strength\": \"OBSERVED_REPORTED\",\n      \"source_title\": \"訪日外客数（2026年8月推計値）添付資料／2019年8月 国・地域別・目的別訪日外客数\",\n      \"source_url\": \"https://www.jnto.go.jp/statistics/data/visitors-statistics/pdf/2019_august_zantei.pdf\",\n      \"source_type\": \"PRIMARY_GOVERNMENT_OR_REGULATOR\",\n      \"support_level\": \"INFERRED_FROM_SOURCE\",\n      \"ambiguity\": \"2019年資料の数値は当時の暫定値。2026年値は推計値であり、数値の公表時点・確定状況が異なる。\",\n      \"notes_for_writer\": \"差と比率は両年の公表値から算出。訪日外客には観光目的以外の入国者も含まれる。([jnto.go.jp](https://www.jnto.go.jp/news/_files/20260916_1615.pdf))\"\n    },\n    {\n      \"fact_id\": \"F05\",\n      \"claim\": \"【年間過去最多・確定発表】2025年の訪日外客数は42,683,600人で、JNTOは年間過去最多と発表した。発表資料は、従来の年間過去最多だった2024年の36,870,148人を上回ったとしている。\",\n      \"subject\": \"日本の年間訪日外客数\",\n      \"date_or_period\": \"2025年（2026年1月21日発表）\",\n      \"scope\": \"日本全国。暦年累計\",\n      \"conditions\": \"JNTOの年間発表値。2024年値は同発表資料が比較対象として記載。\",\n      \"numeric_value\": \"2025年 42,683,600人、2024年 36,870,148人\",\n      \"numeric_scope\": \"各暦年の訪日外客総数\",\n      \"causal_strength\": \"OBSERVED_REPORTED\",\n      \"source_title\": \"訪日外客数（2025年12月推計値）\",\n      \"source_url\": \"https://www.jnto.go.jp/news/press/20260121_monthly.html\",\n      \"source_type\": \"PRIMARY_GOVERNMENT_OR_REGULATOR\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": null,\n      \"notes_for_writer\": \"2025年の年間過去最多という記録と、2026年の最新年初来が前年同期比減という事実は、対象期間を分けて扱う。([jnto.go.jp](https://www.jnto.go.jp/news/press/20260121_monthly.html))\"\n    },\n    {\n      \"fact_id\": \"F06\",\n      \"claim\": \"【コロナ禍前との年間比較】JNTOが示す2019年の年間訪日外客数は31,882,049人。2025年の年間値42,683,600人はこれを上回る。\",\n      \"subject\": \"日本の年間訪日外客数\",\n      \"date_or_period\": \"2019年と2025年\",\n      \"scope\": \"日本全国。各暦年累計\",\n      \"conditions\": \"2019年値はJNTOの年間統計。2025年値はJNTOによる年間発表値。\",\n      \"numeric_value\": \"2019年 31,882,049人、2025年 42,683,600人\",\n      \"numeric_scope\": \"各暦年の訪日外客総数\",\n      \"causal_strength\": \"OBSERVED_REPORTED\",\n      \"source_title\": \"訪日外客数（2025年12月推計値）／2019年1～12月 国・地域別・目的別訪日外客数\",\n      \"source_url\": \"https://www.jnto.go.jp/statistics/data/visitors-statistics/pdf/2019_december_zantei.pdf\",\n      \"source_type\": \"PRIMARY_GOVERNMENT_OR_REGULATOR\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": null,\n      \"notes_for_writer\": \"2019年はコロナ禍前の年間比較基準として使用。2025年がこれを上回ったことは、2026年8月までの年初来が前年同期比減であることとは別の比較。([jnto.go.jp](https://www.jnto.go.jp/news/press/20260121_monthly.html))\"\n    }\n  ]\n}\n\n【検証観点】\n- FactがSourceに実際に存在するか\n- 数字のscopeが正しいか(母集団と個別条件を混同していないか)\n- 対象群と全体を混同していないか\n- 日付・時間帯が正しいか\n- 制度の適用範囲が正しいか(特に時間帯限定かどうか)\n- 条件が抜けていないか\n- 因果関係を過剰に強めていないか\n- Source間で矛盾していないか\n- 曖昧なFactを無理に確定していないか\n\n各fact_idについて、VERIFIED / AMBIGUOUS / REJECTEDのいずれかで判定し、\n判定理由をverification_notesへ記載してください。"
+}

@@ -1,0 +1,97 @@
+{
+  "selected_storyline": "USA TODAY Co.傘下の14法人・事業体が報道コンテンツの無断利用などを主張してOpenAIをニューヨーク南部地区連邦地方裁判所に提訴し、損害賠償などを求めたが、確認できるのは提訴段階で、侵害は裁判所に認定されておらず、Reuters報道時点でOpenAIは直ちにコメントしていない。",
+  "full_ledger_fact_ids": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8"
+  ],
+  "fact_tests": [
+    {
+      "fact_id": "F1",
+      "test1_answer": "YES",
+      "test2_answer": "YES",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "提訴と原告の概要はF2・F8で把握でき、F1の日付・提出事実もF8と重複するため除外する。"
+    },
+    {
+      "fact_id": "F2",
+      "test1_answer": "NO",
+      "test2_answer": "YES",
+      "test3_answer": "NO",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "訴えを起こした主体を特定するために必要。14という数や全社名の列挙自体が目的ではなく、USA TODAY Co., Inc.傘下の複数法人・事業体が原告である点を示す。原告の特定は「なぜ提訴したか」そのものの説明ではないが、記事の主体を明確にするため採用する。"
+    },
+    {
+      "fact_id": "F3",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "19出版物の個別列挙は具体的な補足であり、原告側の主張内容はF4で説明できる。出版物名の詳細がなくても中心Storylineは理解できる。"
+    },
+    {
+      "fact_id": "F4",
+      "test1_answer": "NO",
+      "test2_answer": "YES",
+      "test3_answer": "YES",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "原告らがなぜ提訴したのかを説明する中心Fact。訴状上の主張であることを明記し、侵害が確定した事実のように扱わない。"
+    },
+    {
+      "fact_id": "F5",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "請求原因の法的分類や3件という数は、中心となる主張を示すF4に加える必須情報ではない。請求が成立したとの誤解を避けるうえでも、訴状の主張と提訴段階であることを軸にする。"
+    },
+    {
+      "fact_id": "F6",
+      "test1_answer": "NO",
+      "test2_answer": "YES",
+      "test3_answer": "NO",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "訴状で原告らが何を求めているかを示すため採用する。損害賠償額や破棄請求は認容済みではなく、提訴に伴う請求として記す。これは「なぜ提訴したか」の説明そのものではないが、テーマで求められた救済内容を示す要素である。"
+    },
+    {
+      "fact_id": "F7",
+      "test1_answer": "NO",
+      "test2_answer": "YES",
+      "test3_answer": "NO",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "提訴後のOpenAIの対応状況を示すため採用する。Reuters報道時点でコメントに直ちには応じなかったという範囲に限定し、実体的な反論や法廷上の答弁があったとは述べない。中心的な「なぜ」の説明ではないが、求められた応答状況を伝えるため残す。"
+    },
+    {
+      "fact_id": "F8",
+      "test1_answer": "NO",
+      "test2_answer": "YES",
+      "test3_answer": "YES",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "提出先・日付と、確認できるのが提訴段階であることを示す中心的な手続Fact。裁判所による侵害認定や本案判断はないという区別に不可欠。"
+    }
+  ],
+  "selected_fact_ids": [
+    "F2",
+    "F4",
+    "F6",
+    "F7",
+    "F8"
+  ],
+  "selected_fact_brief_text": "Storyline: USA TODAY Co.傘下の14法人・事業体が報道コンテンツの無断利用などを主張してOpenAIをニューヨーク南部地区連邦地方裁判所に提訴し、損害賠償などを求めたが、確認できるのは提訴段階で、侵害は裁判所に認定されておらず、Reuters報道時点でOpenAIは直ちにコメントしていない。\n\n訴状に記載された原告は、USA TODAY Co., Inc.を含む傘下の14法人・事業体。訴状では、OpenAIが原告らの報道コンテンツを許可なく取得・複製してモデルの訓練に使い、モデル出力で複製または再構成したほか、著作権管理情報を除去したと主張している。これらは原告側の主張であり、確定した事実ではない。原告らは損害賠償額が2億5,000万ドルを超えるとする請求のほか、利益の返還、差止め、費用等や、原告らのコンテンツを組み込んだGPTなどのモデルおよび訓練セットの破棄を求めている。いずれも訴状上の請求で、認容済みではない。Reutersは2026年10月8日、OpenAIの広報担当者がコメント依頼に直ちには応じなかったと報じた。同日、事件番号1:26-cv-08892としてニューヨーク南部地区連邦地方裁判所に提出された新規訴訟であり、確認できるのは提訴段階で、裁判所による著作権侵害の認定や本案判断はない。",
+  "recheck_note": null,
+  "soft_warnings": []
+}

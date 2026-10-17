@@ -1,0 +1,185 @@
+{
+  "article": "openai_copyright",
+  "method": "M2",
+  "stage": "1b",
+  "dry_run": true,
+  "started_at": "2026-10-17T03:51:42.102191+00:00",
+  "usage_basis": "SYNTHETIC_DRYRUN_STUB",
+  "reselect": {
+    "status": "COMPLETED",
+    "rounds": [
+      {
+        "round": 0,
+        "selected_fact_ids": [
+          "F2",
+          "F4",
+          "F6",
+          "F7",
+          "F8"
+        ],
+        "verified_now": [
+          "F2",
+          "F4",
+          "F6",
+          "F7",
+          "F8"
+        ],
+        "reused_verdicts": [],
+        "verify_record": {
+          "label": "r0",
+          "cap_prompt": false,
+          "fact_ids": [
+            "F2",
+            "F4",
+            "F6",
+            "F7",
+            "F8"
+          ],
+          "model": "gpt-6-luna",
+          "response_id": "stub_resp_7",
+          "latency_seconds": 0.0005502700805664062,
+          "web_search_call_count": 5,
+          "action_type_counts": {
+            "search": 5
+          },
+          "query_count": 5,
+          "calls_per_fact_avg": 1.0,
+          "exceeds_soft_cap_estimate": false,
+          "prompt_sha256": "20d28e2e0e7dddd791c13908f62fdcc6af1570aec3259349969e0d27f37e6760"
+        },
+        "rejected": []
+      }
+    ],
+    "reselect_count": 0
+  },
+  "shared_initial_b3_from": null,
+  "status": "COMPLETED",
+  "selected_fact_ids": [
+    "F2",
+    "F4",
+    "F6",
+    "F7",
+    "F8"
+  ],
+  "selected_storyline": "USA TODAY Co.傘下の14法人・事業体が報道コンテンツの無断利用などを主張してOpenAIをニューヨーク南部地区連邦地方裁判所に提訴し、損害賠償などを求めたが、確認できるのは提訴段階で、侵害は裁判所に認定されておらず、Reuters報道時点でOpenAIは直ちにコメントしていない。",
+  "b3_model": "gpt-6.1-sol",
+  "b3_attempts": 1,
+  "ambiguous_central": {
+    "central_fact_ids": [
+      "F1",
+      "F2",
+      "F3",
+      "F8"
+    ],
+    "ambiguous_central_fact_ids": [],
+    "count": 0,
+    "note": "候補件数(機械抽出)。『断定しているか』の最終判定はSonnet+Fable独立判定(R-07、測定のみ)"
+  },
+  "known_defect_status": {},
+  "verdict_transitions": {
+    "counts": {
+      "VERIFIED->VERIFIED": 5
+    },
+    "promotions_to_verified_or_up": [],
+    "demotions_from_verified": []
+  },
+  "final_verdicts": {
+    "F2": {
+      "verdict": "VERIFIED"
+    },
+    "F4": {
+      "verdict": "VERIFIED"
+    },
+    "F6": {
+      "verdict": "VERIFIED"
+    },
+    "F7": {
+      "verdict": "VERIFIED"
+    },
+    "F8": {
+      "verdict": "VERIFIED"
+    }
+  },
+  "verifier_models": [
+    "gpt-6-luna"
+  ],
+  "verifier_model_matches_m0": true,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 5,
+    "by_action_type": {
+      "search": 5
+    },
+    "query_count": 5
+  },
+  "verify_requests": [
+    {
+      "label": "r0",
+      "cap_prompt": false,
+      "fact_ids": [
+        "F2",
+        "F4",
+        "F6",
+        "F7",
+        "F8"
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "stub_resp_7",
+      "latency_seconds": 0.0005502700805664062,
+      "web_search_call_count": 5,
+      "action_type_counts": {
+        "search": 5
+      },
+      "query_count": 5,
+      "calls_per_fact_avg": 1.0,
+      "exceeds_soft_cap_estimate": false,
+      "prompt_sha256": "20d28e2e0e7dddd791c13908f62fdcc6af1570aec3259349969e0d27f37e6760"
+    }
+  ],
+  "cost": {
+    "by_step": {
+      "b3_initial": {
+        "llm_jpy": 3.839,
+        "web_search_jpy": 0.0,
+        "calls": 1,
+        "web_search_calls": 0,
+        "input_tokens": 2998,
+        "output_tokens": 1800,
+        "total_jpy": 3.839
+      },
+      "verify_sel_r0": {
+        "llm_jpy": 0.814,
+        "web_search_jpy": 8.0,
+        "calls": 1,
+        "web_search_calls": 5,
+        "input_tokens": 42113,
+        "output_tokens": 1750,
+        "total_jpy": 8.814
+      }
+    },
+    "total": {
+      "llm_jpy": 4.653,
+      "web_search_jpy": 8.0,
+      "total_jpy": 12.653,
+      "calls": 2,
+      "web_search_calls": 5
+    }
+  },
+  "contract": {
+    "method_dir": "er082_output/rlct_trial_01/_dryrun/openai_copyright/M2",
+    "producer": {
+      "status": "PASS",
+      "n_facts": 5,
+      "llm_calls": 0
+    },
+    "validate": {
+      "status": "PASS"
+    },
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 5
+    },
+    "all_pass": true
+  },
+  "finished_at": "2026-10-17T03:51:42.158090+00:00"
+}

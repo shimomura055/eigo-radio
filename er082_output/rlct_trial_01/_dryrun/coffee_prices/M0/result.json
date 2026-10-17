@@ -1,0 +1,139 @@
+{
+  "article": "coffee_prices",
+  "method": "M0",
+  "stage": "1a",
+  "dry_run": true,
+  "started_at": "2026-10-17T03:51:40.871076+00:00",
+  "usage_basis": "SYNTHETIC_DRYRUN_STUB",
+  "status": "COMPLETED",
+  "selected_fact_ids": [
+    "F02",
+    "F07",
+    "F09",
+    "F11"
+  ],
+  "selected_storyline": "天候による供給懸念とアラビカ相場の記録的高騰を背景に、2025年の米国では挽いたコーヒーが値上がりし、小売価格上昇の大部分は夏の関税以前からの供給不足と生豆高によるものと報じられた。",
+  "b3_model": "gpt-6.1-sol",
+  "b3_attempts": 1,
+  "ambiguous_central": {
+    "central_fact_ids": [
+      "F02",
+      "F06",
+      "F08",
+      "F09",
+      "F10",
+      "F11",
+      "F12",
+      "F14",
+      "F15"
+    ],
+    "ambiguous_central_fact_ids": [
+      "F12"
+    ],
+    "count": 1,
+    "note": "候補件数(機械抽出)。『断定しているか』の最終判定はSonnet+Fable独立判定(R-07、測定のみ)"
+  },
+  "known_defect_status": {
+    "F12": "c_not_selected",
+    "F07": "a_selected_detected",
+    "F16": "c_not_selected",
+    "F17": "c_not_selected"
+  },
+  "verdict_transitions": {
+    "counts": {
+      "VERIFIED->VERIFIED": 13,
+      "AMBIGUOUS->AMBIGUOUS": 4
+    },
+    "promotions_to_verified_or_up": [],
+    "demotions_from_verified": []
+  },
+  "final_verdicts": {
+    "F01": {
+      "verdict": "VERIFIED"
+    },
+    "F02": {
+      "verdict": "VERIFIED"
+    },
+    "F03": {
+      "verdict": "VERIFIED"
+    },
+    "F04": {
+      "verdict": "VERIFIED"
+    },
+    "F05": {
+      "verdict": "VERIFIED"
+    },
+    "F06": {
+      "verdict": "VERIFIED"
+    },
+    "F07": {
+      "verdict": "AMBIGUOUS"
+    },
+    "F08": {
+      "verdict": "VERIFIED"
+    },
+    "F09": {
+      "verdict": "VERIFIED"
+    },
+    "F10": {
+      "verdict": "VERIFIED"
+    },
+    "F11": {
+      "verdict": "VERIFIED"
+    },
+    "F12": {
+      "verdict": "AMBIGUOUS"
+    },
+    "F13": {
+      "verdict": "VERIFIED"
+    },
+    "F14": {
+      "verdict": "VERIFIED"
+    },
+    "F15": {
+      "verdict": "VERIFIED"
+    },
+    "F16": {
+      "verdict": "AMBIGUOUS"
+    },
+    "F17": {
+      "verdict": "AMBIGUOUS"
+    }
+  },
+  "verifier_models": [],
+  "verifier_model_matches_m0": null,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 0,
+    "by_action_type": {},
+    "query_count": 0
+  },
+  "verify_requests": [],
+  "cost": {
+    "by_step": {},
+    "total": {
+      "llm_jpy": 0.0,
+      "web_search_jpy": 0.0,
+      "total_jpy": 0.0,
+      "calls": 0,
+      "web_search_calls": 0
+    }
+  },
+  "contract": {
+    "method_dir": "er082_output/rlct_trial_01/_dryrun/coffee_prices/M0",
+    "producer": {
+      "status": "PASS",
+      "n_facts": 4,
+      "llm_calls": 0
+    },
+    "validate": {
+      "status": "PASS"
+    },
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 17
+    },
+    "all_pass": true
+  },
+  "finished_at": "2026-10-17T03:51:40.929969+00:00"
+}

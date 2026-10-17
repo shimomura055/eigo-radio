@@ -1,0 +1,177 @@
+{
+  "article": "central_bank_mortgage",
+  "method": "M1",
+  "stage": "1b",
+  "dry_run": true,
+  "started_at": "2026-10-17T03:51:42.397097+00:00",
+  "usage_basis": "SYNTHETIC_DRYRUN_STUB",
+  "verdict_counts": {
+    "VERIFIED": 9,
+    "AMBIGUOUS": 2,
+    "REJECTED": 0
+  },
+  "status": "COMPLETED",
+  "selected_fact_ids": [
+    "F001",
+    "F002",
+    "F003",
+    "F007",
+    "F008",
+    "F010"
+  ],
+  "selected_storyline": "2026年10月8日時点で直近の完了済みFOMCは、インフレ高止まりへの対応として9月16日に25ベーシスポイント利上げした一方、住宅ローン金利は政策金利に自動連動せず、複数の市場要因で上昇しており、固定ローンの借り手には月額負担増が示されている。",
+  "b3_model": "gpt-6.1-sol",
+  "b3_attempts": 1,
+  "ambiguous_central": {
+    "central_fact_ids": [
+      "F001",
+      "F002",
+      "F005",
+      "F006",
+      "F007",
+      "F008",
+      "F009",
+      "F010"
+    ],
+    "ambiguous_central_fact_ids": [
+      "F002"
+    ],
+    "count": 1,
+    "note": "候補件数(機械抽出)。『断定しているか』の最終判定はSonnet+Fable独立判定(R-07、測定のみ)"
+  },
+  "known_defect_status": {},
+  "verdict_transitions": {
+    "counts": {
+      "VERIFIED->VERIFIED": 9,
+      "VERIFIED->AMBIGUOUS": 2
+    },
+    "promotions_to_verified_or_up": [],
+    "demotions_from_verified": [
+      "F002",
+      "F011"
+    ]
+  },
+  "final_verdicts": {
+    "F001": {
+      "verdict": "VERIFIED"
+    },
+    "F002": {
+      "verdict": "AMBIGUOUS"
+    },
+    "F003": {
+      "verdict": "VERIFIED"
+    },
+    "F004": {
+      "verdict": "VERIFIED"
+    },
+    "F005": {
+      "verdict": "VERIFIED"
+    },
+    "F006": {
+      "verdict": "VERIFIED"
+    },
+    "F007": {
+      "verdict": "VERIFIED"
+    },
+    "F008": {
+      "verdict": "VERIFIED"
+    },
+    "F009": {
+      "verdict": "VERIFIED"
+    },
+    "F010": {
+      "verdict": "VERIFIED"
+    },
+    "F011": {
+      "verdict": "AMBIGUOUS"
+    }
+  },
+  "verifier_models": [
+    "gpt-6-luna"
+  ],
+  "verifier_model_matches_m0": true,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 11,
+    "by_action_type": {
+      "search": 11
+    },
+    "query_count": 11
+  },
+  "verify_requests": [
+    {
+      "label": "full",
+      "cap_prompt": true,
+      "fact_ids": [
+        "F001",
+        "F002",
+        "F003",
+        "F004",
+        "F005",
+        "F006",
+        "F007",
+        "F008",
+        "F009",
+        "F010",
+        "F011"
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "stub_resp_4",
+      "latency_seconds": 0.0005743503570556641,
+      "web_search_call_count": 11,
+      "action_type_counts": {
+        "search": 11
+      },
+      "query_count": 11,
+      "calls_per_fact_avg": 1.0,
+      "exceeds_soft_cap_estimate": false,
+      "prompt_sha256": "7f8e5af40f28af8067ad9d224b0664ec6cdb82eb05bb0b31ebc276158c8e1b31"
+    }
+  ],
+  "cost": {
+    "by_step": {
+      "ledger": {
+        "llm_jpy": 1.342,
+        "web_search_jpy": 17.6,
+        "calls": 1,
+        "web_search_calls": 11,
+        "input_tokens": 67622,
+        "output_tokens": 3250,
+        "total_jpy": 18.942
+      },
+      "b3": {
+        "llm_jpy": 3.927,
+        "web_search_jpy": 0.0,
+        "calls": 1,
+        "web_search_calls": 0,
+        "input_tokens": 3272,
+        "output_tokens": 1800,
+        "total_jpy": 3.927
+      }
+    },
+    "total": {
+      "llm_jpy": 5.269,
+      "web_search_jpy": 17.6,
+      "total_jpy": 22.869,
+      "calls": 2,
+      "web_search_calls": 11
+    }
+  },
+  "contract": {
+    "method_dir": "er082_output/rlct_trial_01/_dryrun/central_bank_mortgage/M1",
+    "producer": {
+      "status": "PASS",
+      "n_facts": 6,
+      "llm_calls": 0
+    },
+    "validate": {
+      "status": "PASS"
+    },
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 11
+    },
+    "all_pass": true
+  },
+  "finished_at": "2026-10-17T03:51:42.463928+00:00"
+}
