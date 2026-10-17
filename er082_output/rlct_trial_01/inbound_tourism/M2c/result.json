@@ -1,0 +1,211 @@
+{
+  "article": "inbound_tourism",
+  "method": "M2c",
+  "stage": "1a",
+  "dry_run": false,
+  "started_at": "2026-10-17T06:19:50.518998+00:00",
+  "usage_basis": "OFFICIAL_API_RESPONSE",
+  "corrected_from": "M2",
+  "correct_source_root": "er082_output/rlct_trial_01",
+  "reused_initial_b3_sha256": "1b25162b5d7c73875452742800ffd984dcbfedd5d5071e0b777c9d280f4aee10",
+  "reused_verdict_ids": [
+    "F01",
+    "F02",
+    "F04",
+    "F05"
+  ],
+  "pre_correction_selected_fact_ids": [
+    "F01",
+    "F02",
+    "F04",
+    "F05"
+  ],
+  "pre_correction_storyline_sha256": "943d383860cb5865068cf04926316e8a5d63b67aaa522440f1a45c9d1e47e4da",
+  "pre_correction_brief_sha256": "f7fd05dbea2eb0c00eac6f88199164f52715c3d0f480b984e1c0245cbd41ec86",
+  "pre_correction_cost_total_jpy": 17.778,
+  "pre_correction_basis": "OFFICIAL_API_RESPONSE",
+  "reselect": {
+    "status": "COMPLETED",
+    "rounds": [
+      {
+        "round": 0,
+        "trigger": "RESUMED_FROM_SOURCE_FINAL",
+        "b3_label": "initial",
+        "selected_fact_ids": [
+          "F01",
+          "F02",
+          "F04",
+          "F05"
+        ],
+        "verified_now": [],
+        "reused_verdicts": [
+          "F01",
+          "F02",
+          "F04",
+          "F05"
+        ],
+        "rejected": [],
+        "ambiguous_selected": [
+          "F05"
+        ],
+        "ambiguous_unseen": [
+          "F05"
+        ],
+        "ambiguous_visible_to_b3": false,
+        "confirm_pass": "REQUIRED",
+        "rejected_reselect_attempts_detected": 0
+      },
+      {
+        "round": 1,
+        "trigger": "CONFIRM_AMBIGUOUS",
+        "b3_label": "confirm1",
+        "selected_fact_ids": [
+          "F01",
+          "F02",
+          "F04",
+          "F05"
+        ],
+        "verified_now": [],
+        "reused_verdicts": [
+          "F01",
+          "F02",
+          "F04",
+          "F05"
+        ],
+        "rejected": [],
+        "ambiguous_selected": [
+          "F05"
+        ],
+        "ambiguous_unseen": [],
+        "ambiguous_visible_to_b3": true,
+        "confirm_pass": "NOT_NEEDED_AMBIGUOUS_ALREADY_VISIBLE"
+      }
+    ],
+    "reselect_count": 0,
+    "confirm_pass_count": 1,
+    "b3_calls_after_initial": 1,
+    "b3_calls_before_this_run": 0,
+    "final_confirm_pass": "NOT_NEEDED_AMBIGUOUS_ALREADY_VISIBLE",
+    "unmet": null
+  },
+  "shared_initial_b3_from": null,
+  "status": "COMPLETED",
+  "selected_fact_ids": [
+    "F01",
+    "F02",
+    "F04",
+    "F05"
+  ],
+  "selected_storyline": "JNTOが2026年1月に2025年の年間最多を発表した一方（人数は後日資料と相違）、2026年8月と1～8月累計は前年を下回り、累計は2019年同期を上回る――記録と足元の動向は対象期間・比較基準を分けて捉える。",
+  "b3_model": "gpt-6.1-sol",
+  "b3_attempts": 1,
+  "ambiguous_central": {
+    "central_fact_ids": [
+      "F01",
+      "F02",
+      "F03",
+      "F04",
+      "F05",
+      "F06",
+      "F07",
+      "F08",
+      "F09",
+      "F10",
+      "F11",
+      "F13",
+      "F14"
+    ],
+    "ambiguous_central_fact_ids": [
+      "F05"
+    ],
+    "count": 1,
+    "note": "候補件数(機械抽出)。『断定しているか』の最終判定はSonnet+Fable独立判定(R-07、測定のみ)"
+  },
+  "known_defect_status": {
+    "F05": "a_selected_detected",
+    "F12": "c_not_selected"
+  },
+  "verdict_transitions": {
+    "counts": {
+      "VERIFIED->VERIFIED": 2,
+      "AMBIGUOUS->VERIFIED": 1,
+      "REJECTED->AMBIGUOUS": 1
+    },
+    "promotions_to_verified_or_up": [
+      "F04",
+      "F05"
+    ],
+    "demotions_from_verified": []
+  },
+  "final_verdicts": {
+    "F01": {
+      "verdict": "VERIFIED"
+    },
+    "F02": {
+      "verdict": "VERIFIED"
+    },
+    "F04": {
+      "verdict": "VERIFIED"
+    },
+    "F05": {
+      "verdict": "AMBIGUOUS"
+    }
+  },
+  "verifier_models": [],
+  "verifier_model_matches_m0": null,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 0,
+    "by_action_type": {},
+    "query_count": 0
+  },
+  "verify_requests": [],
+  "cost": {
+    "by_step": {
+      "b3_confirm1": {
+        "llm_jpy": 9.72,
+        "web_search_jpy": 0.0,
+        "calls": 1,
+        "web_search_calls": 0,
+        "input_tokens": 6370,
+        "output_tokens": 4801,
+        "total_jpy": 9.72
+      }
+    },
+    "total": {
+      "llm_jpy": 9.72,
+      "web_search_jpy": 0.0,
+      "total_jpy": 9.72,
+      "calls": 1,
+      "web_search_calls": 0
+    }
+  },
+  "contract": {
+    "method_dir": "er082_output/rlct_trial_01/inbound_tourism/M2c",
+    "producer": {
+      "status": "FAIL",
+      "error": "AnnotationProducerError: [STOP] ANNOTATION_PRODUCER_FAILED: internal check d_tags: [\"non-standard number marks: ['【2019年【周辺数値】']\"]"
+    },
+    "validate": null,
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 4
+    },
+    "all_pass": false
+  },
+  "finished_at": "2026-10-17T06:21:15.838228+00:00",
+  "cost_correction_only": {
+    "llm_jpy": 9.72,
+    "web_search_jpy": 0.0,
+    "total_jpy": 9.72,
+    "calls": 1,
+    "web_search_calls": 0
+  },
+  "cost_production_equivalent": {
+    "source_method_total_jpy": 17.778,
+    "correction_total_jpy": 9.72,
+    "total_jpy": 27.498,
+    "note": "補正元method実測(Trial費用)+補正費用。共有初回B3(M3c)の帰属はaggregateで加算"
+  },
+  "brief_changed_vs_pre_correction": true
+}

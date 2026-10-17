@@ -128,3 +128,12 @@ verification_notes根拠(抜粋、原文は`<article>/<method>/_work/verify_*.js
 3. Inbound M2/M3は、再選定が発生しない場合、検証前のBrief(「独立検証前の編集仮説」「[UNVERIFIED]」)が最終Briefとして残り、LedgerとBriefでF05のAMBIGUOUS情報が揃わない構造が観測された(Coffeeは再選定1回でBriefが更新された)。1bの他記事でも再選定が0回の場合は同様になり得る(仕様変更の要否は新仕様のためFable/ユーザー判断)。
 4. 機械抽出の「中心AMBIGUOUS件数」は原文判定と一致しない(過大計上)。1bでは原文判定が引き続き必要。
 5. 判断候補(提案のみ、実施せず): (a)Verifier再現性(Inbound F12等)を切り分けるには同条件の反復が要るが有料。(b)OPEN-407(d_tags `【2019年…】`)がInboundの契約検証FAIL原因で、Production化時のSTOP要因になり得る(RESULTS §6)。
+
+## 追補(委任_08): 評価手順の是正
+> 根拠: Opus独立レビュー_B(`OPUS_REVIEW_B_01_VERBATIM.md`、総合判定GO)R-B9-1/R-B1/R-B5/R-B2/R-B7。Fable採択。上記§1〜§7の既存判定は変更しない(1a初回実行の評価として残置)。本追補は**補正結果(M2c/M3c)の評価と1b評価に適用**する。
+
+1. **ラベルのマスク(R-B9-1)**: inbound M2/M3のStorylineは「【独立検証前の編集仮説】」で始まり(`inbound_tourism/M2/result.json`:62、M3:61)、selected_brief.mdにも1件ある(機械集計: 1a全12 methodのうちinbound M2/M3のみ各1件、Coffee M2/M3は0件)。上記§2のブラインド評価ではこのラベルが方式を識別させる手掛かりの一つだった(§1の「ブラインドの不完全性」(1)と同根)。今後は(a)ブラインド評価時にこのラベルを隠す(マスク)、(b)§4のR-07人手判定ではこのラベルを「Fact固有の留保」として数えない(上記§4のInbound M2/M3「留保は冒頭の包括注記のみ」判定と整合)、(c)ラベル出現件数を方式別に「方式固有の欠陥候補」として記録する。B3 Prompt文言は変更しない。
+2. **R-07の基準(R-B1)**: 全方式同一基準。文字列検査によるGateは追加しない。判定NG(確定条件は満たしたが断定が残った)は別集計とし、Trial後のユーザー判断事項(新仕様は入れない)。
+3. **M2c↔M3cの差(R-B5)**: 同じ選定・ほぼ同じ判定を入力にした独立2回のB3呼出であり、Brief差は「B3出力の揺らぎの標本」。案1上限の効果ではない。
+4. **未成立の内訳(R-B2)**: `unmet`(REJECTED_SELECTED / AMBIGUOUS_NOT_CONFIRMED)で分けて示す。「確定条件のもとでの成立率」は案2系のみの指標。上限到達Briefは成立扱いに戻さない。
+5. **集計列(R-B7)**: Coffee M2/M3+inbound M2c/M3c+1b新設計が新設計列。inbound旧M2/M3は「旧設計・参考」行のみ。

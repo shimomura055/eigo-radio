@@ -1,0 +1,275 @@
+{
+  "root": "er082_output/rlct_trial_01",
+  "rule": "D1: (i)REJECTED無し かつ (ii)AMBIGUOUSは全て生成B3呼出の候補Ledgerで提示済み",
+  "n_methods": 14,
+  "summary": {
+    "pass": [
+      "coffee_prices/M2",
+      "coffee_prices/M3",
+      "inbound_tourism/M2c",
+      "inbound_tourism/M3c"
+    ],
+    "fail": [
+      "inbound_tourism/M2",
+      "inbound_tourism/M3"
+    ],
+    "n_a": [
+      "coffee_prices/M0",
+      "coffee_prices/M0b",
+      "coffee_prices/M0p",
+      "coffee_prices/M1",
+      "inbound_tourism/M0",
+      "inbound_tourism/M0b",
+      "inbound_tourism/M0p",
+      "inbound_tourism/M1"
+    ]
+  },
+  "rows": [
+    {
+      "article": "coffee_prices",
+      "method": "M0",
+      "conform_d1": "N/A",
+      "reason": "全Fact検証後にB3を呼ぶ方式(候補Ledgerは検証済みタグ付き)。確認パスの対象外"
+    },
+    {
+      "article": "coffee_prices",
+      "method": "M0b",
+      "conform_d1": "N/A",
+      "reason": "全Fact検証後にB3を呼ぶ方式(候補Ledgerは検証済みタグ付き)。確認パスの対象外"
+    },
+    {
+      "article": "coffee_prices",
+      "method": "M0p",
+      "conform_d1": "N/A",
+      "reason": "全Fact検証後にB3を呼ぶ方式(候補Ledgerは検証済みタグ付き)。確認パスの対象外"
+    },
+    {
+      "article": "coffee_prices",
+      "method": "M1",
+      "conform_d1": "N/A",
+      "reason": "全Fact検証後にB3を呼ぶ方式(候補Ledgerは検証済みタグ付き)。確認パスの対象外"
+    },
+    {
+      "article": "coffee_prices",
+      "method": "M2",
+      "final_sel_equals_prev_minus_rejected": null,
+      "storyline_changed": null,
+      "conform_d1": "PASS",
+      "reason": "選定Factは全てVERIFIED(確認パス不要)",
+      "final_sel_b3_label": "reselect1",
+      "selected_fact_ids": [
+        "F01",
+        "F09",
+        "F15"
+      ],
+      "final_verdicts_of_selected": {
+        "F01": "VERIFIED",
+        "F09": "VERIFIED",
+        "F15": "VERIFIED"
+      },
+      "ambiguous_selected": [],
+      "ambiguous_unseen_by_b3": [],
+      "rejected_selected": [],
+      "prompt_evidence": {
+        "path": "er082_output/rlct_trial_01/coffee_prices/M2/_work/b3_reselect1.json",
+        "ambiguous_shown_in_b3_prompt": {},
+        "agrees_with_rounds": true
+      },
+      "action": "再生成不要"
+    },
+    {
+      "article": "coffee_prices",
+      "method": "M3",
+      "final_sel_equals_prev_minus_rejected": null,
+      "storyline_changed": null,
+      "conform_d1": "PASS",
+      "reason": "選定Factは全てVERIFIED(確認パス不要)",
+      "final_sel_b3_label": "reselect1",
+      "selected_fact_ids": [
+        "F01",
+        "F09",
+        "F10",
+        "F15"
+      ],
+      "final_verdicts_of_selected": {
+        "F01": "VERIFIED",
+        "F09": "VERIFIED",
+        "F10": "VERIFIED",
+        "F15": "VERIFIED"
+      },
+      "ambiguous_selected": [],
+      "ambiguous_unseen_by_b3": [],
+      "rejected_selected": [],
+      "prompt_evidence": {
+        "path": "er082_output/rlct_trial_01/coffee_prices/M3/_work/b3_reselect1.json",
+        "ambiguous_shown_in_b3_prompt": {},
+        "agrees_with_rounds": true
+      },
+      "action": "再生成不要"
+    },
+    {
+      "article": "inbound_tourism",
+      "method": "M0",
+      "conform_d1": "N/A",
+      "reason": "全Fact検証後にB3を呼ぶ方式(候補Ledgerは検証済みタグ付き)。確認パスの対象外"
+    },
+    {
+      "article": "inbound_tourism",
+      "method": "M0b",
+      "conform_d1": "N/A",
+      "reason": "全Fact検証後にB3を呼ぶ方式(候補Ledgerは検証済みタグ付き)。確認パスの対象外"
+    },
+    {
+      "article": "inbound_tourism",
+      "method": "M0p",
+      "conform_d1": "N/A",
+      "reason": "全Fact検証後にB3を呼ぶ方式(候補Ledgerは検証済みタグ付き)。確認パスの対象外"
+    },
+    {
+      "article": "inbound_tourism",
+      "method": "M1",
+      "conform_d1": "N/A",
+      "reason": "全Fact検証後にB3を呼ぶ方式(候補Ledgerは検証済みタグ付き)。確認パスの対象外"
+    },
+    {
+      "article": "inbound_tourism",
+      "method": "M2",
+      "final_sel_equals_prev_minus_rejected": null,
+      "storyline_changed": null,
+      "conform_d1": "FAIL",
+      "reason": "AMBIGUOUSだが、selを生成したB3呼出(initial)の候補Ledgerでは未検証[UNVERIFIED]として提示され、検証結果(AMBIGUOUS/notes)がB3へ返されていない: ['F05']",
+      "final_sel_b3_label": "initial",
+      "selected_fact_ids": [
+        "F01",
+        "F02",
+        "F04",
+        "F05"
+      ],
+      "final_verdicts_of_selected": {
+        "F01": "VERIFIED",
+        "F02": "VERIFIED",
+        "F04": "VERIFIED",
+        "F05": "AMBIGUOUS"
+      },
+      "ambiguous_selected": [
+        "F05"
+      ],
+      "ambiguous_unseen_by_b3": [
+        "F05"
+      ],
+      "rejected_selected": [],
+      "prompt_evidence": {
+        "path": "er082_output/rlct_trial_01/inbound_tourism/M2/_work/b3_initial.json",
+        "ambiguous_shown_in_b3_prompt": {
+          "F05": false
+        },
+        "agrees_with_rounds": true
+      },
+      "action": "補正対象(M2c/M3c: 確認パスのみ追加実行)"
+    },
+    {
+      "article": "inbound_tourism",
+      "method": "M3",
+      "final_sel_equals_prev_minus_rejected": null,
+      "storyline_changed": null,
+      "conform_d1": "FAIL",
+      "reason": "AMBIGUOUSだが、selを生成したB3呼出(initial)の候補Ledgerでは未検証[UNVERIFIED]として提示され、検証結果(AMBIGUOUS/notes)がB3へ返されていない: ['F05']",
+      "final_sel_b3_label": "initial",
+      "selected_fact_ids": [
+        "F01",
+        "F02",
+        "F04",
+        "F05"
+      ],
+      "final_verdicts_of_selected": {
+        "F01": "VERIFIED",
+        "F02": "VERIFIED",
+        "F04": "VERIFIED",
+        "F05": "AMBIGUOUS"
+      },
+      "ambiguous_selected": [
+        "F05"
+      ],
+      "ambiguous_unseen_by_b3": [
+        "F05"
+      ],
+      "rejected_selected": [],
+      "prompt_evidence": {
+        "path": "er082_output/rlct_trial_01/inbound_tourism/M2/_work/b3_initial.json",
+        "ambiguous_shown_in_b3_prompt": {
+          "F05": false
+        },
+        "agrees_with_rounds": true
+      },
+      "action": "補正対象(M2c/M3c: 確認パスのみ追加実行)"
+    },
+    {
+      "article": "inbound_tourism",
+      "method": "M2c",
+      "final_sel_equals_prev_minus_rejected": true,
+      "storyline_changed": true,
+      "conform_d1": "PASS",
+      "reason": "AMBIGUOUS ['F05'] は生成B3呼出(confirm1)の候補Ledgerに判定付きで提示済み",
+      "final_sel_b3_label": "confirm1",
+      "selected_fact_ids": [
+        "F01",
+        "F02",
+        "F04",
+        "F05"
+      ],
+      "final_verdicts_of_selected": {
+        "F01": "VERIFIED",
+        "F02": "VERIFIED",
+        "F04": "VERIFIED",
+        "F05": "AMBIGUOUS"
+      },
+      "ambiguous_selected": [
+        "F05"
+      ],
+      "ambiguous_unseen_by_b3": [],
+      "rejected_selected": [],
+      "prompt_evidence": {
+        "path": "er082_output/rlct_trial_01/inbound_tourism/M2c/_work/b3_confirm1.json",
+        "ambiguous_shown_in_b3_prompt": {
+          "F05": true
+        },
+        "agrees_with_rounds": true
+      },
+      "action": "再生成不要"
+    },
+    {
+      "article": "inbound_tourism",
+      "method": "M3c",
+      "final_sel_equals_prev_minus_rejected": true,
+      "storyline_changed": true,
+      "conform_d1": "PASS",
+      "reason": "AMBIGUOUS ['F05'] は生成B3呼出(confirm1)の候補Ledgerに判定付きで提示済み",
+      "final_sel_b3_label": "confirm1",
+      "selected_fact_ids": [
+        "F01",
+        "F02",
+        "F04",
+        "F05"
+      ],
+      "final_verdicts_of_selected": {
+        "F01": "VERIFIED",
+        "F02": "VERIFIED",
+        "F04": "VERIFIED",
+        "F05": "AMBIGUOUS"
+      },
+      "ambiguous_selected": [
+        "F05"
+      ],
+      "ambiguous_unseen_by_b3": [],
+      "rejected_selected": [],
+      "prompt_evidence": {
+        "path": "er082_output/rlct_trial_01/inbound_tourism/M3c/_work/b3_confirm1.json",
+        "ambiguous_shown_in_b3_prompt": {
+          "F05": true
+        },
+        "agrees_with_rounds": true
+      },
+      "action": "再生成不要"
+    }
+  ]
+}

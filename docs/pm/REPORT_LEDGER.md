@@ -357,3 +357,5 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-17 | FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-TRIAL-01 RLCT 委任_05 Step 2(Stage 1a実走: Coffee+inbound×6方式+任意A Coffee、JPY212.80+10.88、見積比0.795、retry 0、Production不変、Status=STAGE_1A_COMPLETE_PENDING_FABLE、1b/品質判定はFable)
 - 2026-10-17 | FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-TRIAL-01 RLCT 委任_06(Stage 1a人手評価: B3構成差ブラインド・品質一対比較・中心FactのAMBIGUOUS断定・Verifier再現性、JPY0、aggregateキャプション修正、Status=STAGE_1A_EVALUATED_PENDING_FABLE、1bは別日)
 - 2026-10-17 | FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-TRIAL-01 RLCT 委任_07(ユーザー#107承認(b): 案2/案1+2の最終B3確認パスのTrial harness是正+Stage 1a補正モード[--correct-from→M2c/M3c]+適合照合script+test r1〜r7[25件PASS]+dry-run+TRIAL_DESIGN_03、JPY0、Status=HARNESS_CORRECTED_DRYRUN_PASS_PENDING_OPUS_A、有料1a補正・1bはOpus条件A後)
+
+- 2026-10-17 | FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-TRIAL-01 RLCT 委任_08(Opus条件A_B GO逐語保存+評価手順是正[OP-1〜7]+Stage 1a補正 inbound M2c/M3c有料実行[実測JPY20.009、web_search 0、両COMPLETED、F05断定0件、ラベル0件、削減率 案2 29.0→14.1%/案1+2 26.4→10.7%]+STAGE_1A_CORRECTION_01+conform_check列追加+OPEN-411、Status=STAGE_1A_CORRECTED_PENDING_FABLE、1bは別日2026-10-18以降)

@@ -14,7 +14,7 @@
 ## 1. 設計差分 D1〜D5(`select_then_verify`、lib.py)
 **D1 確定条件**: 各roundで選定Factの検証後、次の両方を満たすときだけ`_finalize_sel`へ進む。
  (i) 選定FactにREJECTEDが無い。
- (ii) 選定FactのうちAMBIGUOUSの全てが、「そのselを生成したB3呼出」の候補Ledger上で既に`[AMBIGUOUS - 断定禁止…]`タグ+verification_notes付きで提示されていた(B3がAMBIGUOUSを知った上で選んだ)。
+ (ii) 選定FactのうちAMBIGUOUSの全てが、「そのselを生成したB3呼出」の候補Ledgerで既に`[AMBIGUOUS - 断定禁止…]`タグ付きで提示されていた(B3がAMBIGUOUSを知った上で選んだ)。**情報の渡し方(委任_08でOpus R-B4に従い文言修正。コード変更なし)**: Ledgerではタグ+notes(Researcherのambiguity欄があればそれを優先描画)、Verifierのverification_notesはextra_noteで渡す(確認対象AMBIGUOUSは600字、他の検証済みは300字で切り詰め)。
  選定Factが全てVERIFIEDなら(ii)は自動的に満たし、B3追加呼出なし(`confirm_pass="NOT_NEEDED_ALL_VERIFIED"`)。AMBIGUOUSが既提示なら`NOT_NEEDED_AMBIGUOUS_ALREADY_VISIBLE`。
  実装: `_ambiguous_unseen`(lib.py)と`select_then_verify`内の`confirm`判定。判定に使う「見えていた判定」は、B3呼出の直前に`copy.deepcopy(verdicts)`したスナップショット(`sel_visible`)。初回B3は検証前なので常に空。
  防御: `_finalize_sel`はREJECTED混入またはAMBIGUOUS未提示を検出したらAssertionError(構造上起きないはずの実装バグ検知)。
@@ -62,3 +62,14 @@
 4. 1a補正の再利用忠実性: verify_*.jsonから復元した判定をそのまま使い、B3はsel生成時と同一Prompt/modelか。再実行時のWeb更新・Verifierばらつきは扱わない(判定は再検証しない)。
 5. M3cがM2の初回B3を共有してよいか(M2cとM3cのB3確認は独立呼出になり、相関はM2の初回選定経由のみ)。
 6. 確認パスの介入自体がB3構成を変える(特に新規Fact選定)ため、構成差と品質低下を混同しない評価手順。
+
+## 8. 評価手順の是正(委任_08、Opusレビュー_B=GO反映。1a補正評価と**1b評価の双方に適用**)
+> 根拠: `OPUS_REVIEW_B_01_VERBATIM.md`(R-B1/R-B2/R-B5/R-B7/R-B9-1)。Prompt・コード・Gateは変更しない(測定手順と注記のみ)。
+1. **ラベルのマスク(R-B9-1)**: 案2系(`allow_unverified`)のB3がStoryline冒頭に付ける「【独立検証前の編集仮説】」(1a実測: inbound M2/M3の`result.json` selected_storyline、Coffee M2/M3は0件)は、(a)ブラインド評価では隠す、(b)R-07人手判定ではFact固有の留保として数えない、(c)ラベル出現件数を方式別に「方式固有の欠陥候補」として記録する。B3 Prompt文言(`UNVERIFIED_PHRASE`)は1aとの条件維持のため変更しない。除去の是非はProduction挙動変更=ユーザー判断(OPEN-411)。
+2. **R-07は全方式同一基準(R-B1)**: Storyline/Briefに留保表現があるかの機械的な文字列Gateは案2にだけ課さない(M0に無い条件になり不公平)。人手判定でNGの場合は「確定条件は満たしたが断定が残った」として別集計し、Trial後のユーザー判断事項とする(新仕様は入れない)。
+3. **M2c↔M3cの差の解釈(R-B5)**: M2cとM3cの確認B3は、同じ選定・ほぼ同じ判定を入力にした独立2回の呼出である。両者のBrief差は「B3出力の揺らぎの標本」であり、案1の上限(M3)の効果ではない。案1上限の効果は検索ツール呼出・LLM費用・verdict遷移で見る。
+4. **未成立の内訳(R-B2)**: UNRESOLVED(上限2回到達)は`unmet`の内訳(`REJECTED_SELECTED` / `AMBIGUOUS_NOT_CONFIRMED`)を分けて示す。「確定条件のもとでの成立率」は案2系(確認パスを持つ方式)のみの指標であり、M0/M0b/M0p/M1(全Fact検証後にB3)とは同列比較しない。上限到達時のBriefを成立扱いに戻さない。
+5. **5記事集計での方式列(R-B7)**: Coffee M2/M3(経路は新設計と同一、適合照合PASS=選定Fact全VERIFIED)+inbound M2c/M3c+1b新設計(M2/M3)を「新設計の方式列」とする。inbound旧M2/M3は「旧設計・参考」行のみで、新設計の成立率・削減率の母数に入れない。
+   注記文: 「Coffee M2/M3は選定Factが全てVERIFIEDであり確認パスが不要だったため、1a初回実行の結果が新設計(確認パス付き)の結果と同一経路である(適合照合 `_conform_check_1a_01.json`/`_02.json`)。inbound M2/M3はAMBIGUOUS未提示の断定が残ったため旧設計の参考行とし、確認パス後のM2c/M3cを新設計列に用いる。」
+6. **適合照合の追加列(R-B6、`_conform_check_1a_02.json`)**: 「最終選定=補正元の選定-REJECTEDの集合か(bool)」「Storyline変更あり(bool、sha比較)」。`_conform_check_1a_01.json`は残置。
+7. **1a補正の実測(委任_08)**: inbound M2c/M3c=COMPLETED、実費JPY20.009、F05断定0件(人手)、ラベル0件。詳細=`STAGE_1A_CORRECTION_01.md`。

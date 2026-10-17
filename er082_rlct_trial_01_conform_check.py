@@ -27,7 +27,7 @@ def _prompt_shows_ambiguous(prompt: str, fid: str) -> bool:
 
 def check_method(root: str, article: str, method: str) -> dict:
     row = {"article": article, "method": method}
-    if method not in ("M2", "M3"):
+    if method not in ("M2", "M3", "M2c", "M3c"):
         return {**row, "conform_d1": "N/A", "reason": NA_REASON}
     rp = f"{root}/{article}/{method}/result.json"
     if not os.path.isfile(rp):
@@ -46,6 +46,8 @@ def check_method(root: str, article: str, method: str) -> dict:
     rejected = [i for i in sel_ids if fv.get(i) == "REJECTED"]
     amb = [i for i in sel_ids if fv.get(i) == "AMBIGUOUS"]
     unseen = [i for i in amb if i not in visible]
+    if "ambiguous_unseen" in rounds[-1]:    # D4記録のある結果(M2c/M3c・新設計)は、最終sel生成B3呼出時点の記録を正とする
+        unseen = [i for i in amb if i in rounds[-1]["ambiguous_unseen"]]
     # (b) 保存済みB3 promptによる裏取り(あれば)
     wd = f"{root}/{article}/{method}/_work"
     label = rounds[-1].get("b3_label") or ("initial" if r_last == 0 else f"reselect{r_last}")
@@ -60,6 +62,14 @@ def check_method(root: str, article: str, method: str) -> dict:
         prompt_evidence = {"path": pp, "ambiguous_shown_in_b3_prompt": shown,
                            "agrees_with_rounds": all(shown[i] == (i not in unseen) for i in amb)}
     ok = not rejected and not unseen
+    # OP-5(Opus R-B6): 補正結果(M2c/M3c)のみ。補正元の選定に対し「最終選定=前回選定-REJECTED」か / Storylineが変わったか(sha比較)
+    ext = {"final_sel_equals_prev_minus_rejected": None, "storyline_changed": None}
+    if res.get("pre_correction_selected_fact_ids") is not None:
+        prev = list(res["pre_correction_selected_fact_ids"])
+        ext["final_sel_equals_prev_minus_rejected"] = bool(
+            set(sel_ids) == {i for i in prev if fv.get(i) != "REJECTED"})
+        cur = lib.sha256_bytes((res.get("selected_storyline") or "").encode("utf-8"))
+        ext["storyline_changed"] = bool(cur != res.get("pre_correction_storyline_sha256"))
     why = []
     if rejected:
         why.append(f"REJECTEDが最終選定に含まれる: {rejected}")
@@ -70,7 +80,7 @@ def check_method(root: str, article: str, method: str) -> dict:
         why.append("選定Factは全てVERIFIED(確認パス不要)")
     if ok and amb:
         why.append(f"AMBIGUOUS {amb} は生成B3呼出({label})の候補Ledgerに判定付きで提示済み")
-    return {**row, "conform_d1": "PASS" if ok else "FAIL", "reason": " / ".join(why),
+    return {**row, **ext, "conform_d1": "PASS" if ok else "FAIL", "reason": " / ".join(why),
             "final_sel_b3_label": label, "selected_fact_ids": sel_ids, "final_verdicts_of_selected":
             {i: fv.get(i) for i in sel_ids}, "ambiguous_selected": amb, "ambiguous_unseen_by_b3": unseen,
             "rejected_selected": rejected, "prompt_evidence": prompt_evidence,
@@ -83,7 +93,10 @@ def main(argv=None) -> int:
     ap.add_argument("--out", required=True)
     a = ap.parse_args(argv)
     lib.assert_under_out_root(a.out, OUT_ROOT)
-    rows = [check_method(a.root, art, m) for art in ARTICLES_1A for m in METHODS]
+    # 補正method(M2c/M3c)は result.json がある場合のみ追加照合する(委任_08 OP-5)
+    methods_ext = list(METHODS) + ["M2c", "M3c"]
+    rows = [check_method(a.root, art, m) for art in ARTICLES_1A for m in methods_ext
+            if m in METHODS or os.path.isfile(f"{a.root}/{art}/{m}/result.json")]
     summary = {"pass": [f"{r['article']}/{r['method']}" for r in rows if r["conform_d1"] == "PASS"],
                "fail": [f"{r['article']}/{r['method']}" for r in rows if r["conform_d1"] == "FAIL"],
                "n_a": [f"{r['article']}/{r['method']}" for r in rows if r["conform_d1"] == "N/A"]}
