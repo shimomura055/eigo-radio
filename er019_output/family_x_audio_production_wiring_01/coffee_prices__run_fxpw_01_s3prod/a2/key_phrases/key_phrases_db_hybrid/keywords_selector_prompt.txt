@@ -1,0 +1,117 @@
+以下のB1英語記事本文から、初回リスニングで意味を取れず、その後の理解を止める可能性が高い英語表現を、支援価値の高い順にちょうど5個選んでください。
+
+まず初回リスニングで難しい箇所を見つけ、その箇所をコピーするのではなく、学ぶべき最小の単語・句・コロケーションへ抽出してください。
+
+display_phraseは1〜5語にしてください。完全文、主語と有限動詞を持つ節、記事固有の長い説明は禁止です。
+
+動詞表現は本文の時制を残さず、原則として基本形へ直してください。受動表現を学ぶ価値がある場合は、be + past participleの見出し形を使用できます。
+
+文字で読み返したときではなく、音声で一度だけ聞いたときに意味を処理できるかを最優先してください。
+
+優先順位は、初回音声での処理困難、未知の可能性、瞬時の推測困難、本文の事実・感情・面白さへの影響、記事内重要度、汎用性の順です。
+
+未知単語、題材固有表現、短い複数語パターン、比喩・感情表現を同格の候補として扱ってください。構成語から意味を容易に推測できる透明表現は、記事上重要でも優先度を下げてください。
+
+「ソロ旅行を～％とする」のように、数値を補わないと意味が成立しない句・日本語グロス(数値の穴埋めを必要とする不完全な表現)は選ばないでください。それ単体で意味が成立する句・グロスを選んでください。
+
+選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。
+
+日本語グロスは、辞書的に正しいだけでなく、日本人の英語学習者が聞いてすぐ意味を理解できる、自然で平易な現代日本語にしてください。直訳調や、「常態」「是正」のような過度に硬い報道語・漢語、一般的な学習者には伝わりにくい表現は避けてください。
+
+日本語グロスには、括弧（　）を使って別の訳し方・専門用語・補足情報を書き添えないでください。音声だけで聞いてそのまま意味が伝わる、平易な言い換えだけの一文にしてください。
+
+日本語グロスは、辞書的な表記として自然な範囲であれば「～」「〜」を使ってもかまいません(例: 「～を示す」)。ただし「…」のようなプレースホルダー記号は使わないでください。日本語グロスに数字を含める場合は、算用数字(1、2、3…)ではなく漢数字(一、二、三…)で書いてください。
+
+5個のうち1個は、汎用性や一般的な学習重要度は必ずしも高くなくても、この記事に特有であり、事前に意味・用法・音を理解しておくことでこの記事の本文全体を追いやすくなる語または表現を選んでください(key_phrase_role="topic")。判断基準は「この語・表現を事前に理解していると、この記事の本文を明確に追いやすくなるか」です。人名・企業名・ブランド名・地名だから選ぶ、専門用語だから選ぶ、といった特定の種類を優先するルールではありません。該当する語・表現が見当たらない場合でも、topicの項目を空にせず、その記事の中で最も近いと考えられる候補を選んでください。残り4個は、上記の基準に従って選んでください(key_phrase_role="important")。このkey_phrase_roleは、候補の種類・区分とは独立した、選定後の役割ラベルです。
+
+【Topic】title: The Coffee Price Rise Case: Turn Back the Clock on the Price Tag!
+
+【重要な単語・単語群候補】
+- id: C18 | candidate: "ground coffee" | type: noun_phrase | occ: 4 | evidence: repeated_compound_noun | contained_in: C24 | sentence: S9
+- id: C19 | candidate: "price tag" | type: noun_phrase | occ: 8 | evidence: repeated_compound_noun | contained_in: C26 | sentence: S1
+- id: C20 | candidate: "store price" | type: noun_phrase | occ: 3 | evidence: repeated_compound_noun | contained_in: C26 | sentence: S13
+- id: C21 | candidate: "bean prices" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S13
+- id: C22 | candidate: "bean shortages" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | contains: C34 | sentence: S13
+- id: C23 | candidate: "coffee rose" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | contained_in: C24 | sentence: S9
+- id: C24 | candidate: "ground coffee rose" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | contains: C18,C23 | sentence: S9
+- id: C25 | candidate: "market price" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S25
+- id: C26 | candidate: "store price tag" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | contains: C19,C20 | sentence: S37
+- id: C27 | candidate: "year earlier" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S10
+- id: C28 | candidate: "detective work" | type: noun_phrase | occ: 1 | evidence: wiktionary_multiword | sentence: S47
+- id: C29 | candidate: "supply chain" | type: noun_phrase | occ: 1 | evidence: wiktionary_multiword | sentence: S35
+- id: C30 | candidate: "to blame" | type: noun_phrase | occ: 2 | evidence: wiktionary_multiword | sentence: S5
+- id: C31 | candidate: "want to" | type: noun_phrase | occ: 1 | evidence: wiktionary_multiword | sentence: S5
+- id: C32 | candidate: "sender" | type: important_word | occ: 1 | evidence: heuristic[rare_technical_single_word_heuristic] | sentence: S43
+- id: C33 | candidate: "tariff-caused" | type: important_word | occ: 1 | evidence: heuristic[rare_technical_single_word_heuristic] | sentence: S35
+
+【phrase / idiom / phrasal verb候補】
+- id: C1 | candidate: "at all" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S21
+- id: C2 | candidate: "based on" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S8
+- id: C3 | candidate: "came from" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb]+irregular_rescue | sentence: S13
+- id: C4 | candidate: "first thing" | type: phrase | occ: 1 | evidence: wiktionary[multiword_term] | sentence: S4
+- id: C5 | candidate: "go to" | type: phrasal_verb | occ: 1 | evidence: wiktionary[idiom,phrasal_verb] | sentence: S2
+- id: C6 | candidate: "Got it" | type: idiom | occ: 2 | evidence: wiktionary[idiom]+irregular_rescue | sentence: S37
+- id: C7 | candidate: "In other words" | type: idiom | occ: 2 | evidence: wiktionary[idiom] | sentence: S39
+- id: C8 | candidate: "jump up" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S37
+- id: C9 | candidate: "passed through" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S35
+- id: C10 | candidate: "play a part" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S32
+- id: C11 | candidate: "put in" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S31
+- id: C12 | candidate: "take time" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S38
+- id: C13 | candidate: "think about" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S21
+- id: C14 | candidate: "think of" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S4
+- id: C15 | candidate: "Turn Back" | type: phrasal_verb | occ: 4 | evidence: wiktionary[idiom,phrasal_verb] | contained_in: C16 | sentence: S1
+- id: C16 | candidate: "Turn Back the Clock" | type: idiom | occ: 4 | evidence: wiktionary[idiom] | contains: C15 | sentence: S1
+- id: C17 | candidate: "turn the pages" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S22
+- id: C39 | candidate: "shocks your wallet" | type: phrase | occ: 1 | evidence: rule_poss_pattern | contains: C35 | sentence: S12
+- id: C40 | candidate: "want our detective" | type: phrase | occ: 1 | evidence: rule_poss_pattern | sentence: S47
+- id: C41 | candidate: "buy your usual" | type: phrase | occ: 1 | evidence: rule_poss_pattern | sentence: S2
+
+【word候補】
+- id: C34 | candidate: "shortages" | type: word | occ: 2 | evidence: cefr_j+ngsl_family | contained_in: C22 | sentence: S13
+- id: C35 | candidate: "shocks" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | contained_in: C39 | sentence: S12
+- id: C36 | candidate: "shoppers" | type: word | occ: 2 | evidence: cefr_j+ngsl_family | sentence: S36
+- id: C37 | candidate: "scarce" | type: word | occ: 1 | evidence: ngsl_family | sentence: S51
+- id: C38 | candidate: "Tariffs" | type: word | occ: 5 | evidence: ngsl_family | sentence: S4
+
+【SENTENCE REFERENCE】(文脈参照専用。この表の文字列をそのままitemへ書かないでください)
+S1: "The Coffee Price Rise Case: Turn Back the Clock on the Price Tag"
+S2: "You go to buy your usual coffee, but then you stop"
+S4: "Tariffs are the first thing you think of"
+S5: "You want to say, "So, you're to blame"
+S8: "Reports based on government figures say the average U.S"
+S9: "price of ground coffee rose 41%"
+S10: "That was compared with the same month a year earlier"
+S12: "Before coffee wakes you up, its price shocks your wallet awake"
+S13: "But Reuters says most of the rise in store prices came from bean shortages and higher bean prices"
+S21: "Before we think about how to brew them, we must ask if there will be any beans to brew at all"
+S22: "We turn the pages of the record and find this"
+S25: "It was the market price for trading coffee beans"
+S31: "tariffs put in place during summer raised the price of the beans themselves"
+S32: "They did play a part"
+S35: "At the time of that report, the tariff-caused rise had not yet passed through the whole supply chain"
+S36: "It had not fully reached the prices shoppers paid"
+S37: "When bean costs rise, the store price tag does not jump up at once and say, "Got it"
+S38: "Price rises take time to appear"
+S39: "In other words, a price tag is not live news"
+S43: "If you look only at the latest headline, you may name the wrong sender"
+S47: "Coffee may taste bitter, but we want our detective work to be clear"
+S51: "price of ground coffee rose 41% from a year earlier, mostly because beans were scarce and cost more"
+
+【選定方針】
+- 最終的に選ぶ5件は、必ず下記の候補一覧の中から選んでください。候補に
+  無い新しい表現を作らないでください。
+- 5個のうち少なくとも1個は、[重要な単語・単語群候補]区分から選んで
+  ください(記事理解・再利用価値の高い重要な名詞・専門用語・複合語)。
+- 残りは、[phrase / idiom / phrasal verb候補]区分を優先してください。
+  良い候補が不足する場合のみ[word候補]区分で補ってください。
+- CEFR難易度・語彙レベルを主要な判断軸にしないでください。
+- 各itemのsource_candidate_idには、下記候補一覧の各行に付与されている
+  candidate ID(例: C7)のうち、実際に選んだ候補のIDを1つだけ指定して
+  ください。本文の文字列そのもの(元のsource_sentence/source_span相当の
+  自由記述)は一切書かないでください。
+- surface_echoには、選んだ候補が表す表現を短く(1〜6語程度)書いて
+  ください。これは内部確認用の参考情報であり、正誤判定には使用しません。
+- 上記5件とは別に、backup_itemとして、重要語・重要表現
+  (key_phrase_role="important")の予備候補を1件、上記5件とは異なる
+  candidate IDで選んでください。topicの候補が正しく選べた場合でも、
+  backup_itemは必ず1件返してください(その場合は採用されません)。
