@@ -156,3 +156,12 @@ AUW(統一ASR/音声品質、3回フロー: Primary ASR->Secondary ASR->Local Re
 
 ### 10-7 STOP条件(実走時)
 累計>JPY100見込み(`E2EBudget`がclip前/stage前に新規API呼出前STOP) / Human Review Lock発火 / Style sha不一致(`audit/style_record.json`・`FamilyZRunStyleMismatchStop`) / SRC STOP(`FAMILY_Z_SRC_UNRESOLVED`) / gloss HR / STOPセンチネル(`<run>/STOP`・`STOP_ALL`)・RESTART_STORM / 外部停止または原因不明rc!=0が2回(26-2 (a)) / stop_scope_check rc=3(現状)。
+
+## §11 委任_17 実走記録(2026-10-17、有料、事実のみ)
+- 実走前: B1(STOP_NOTICE構造化欄 status RELEASED/scope run:run_e2e_03、run_e2e_02/STOP設置)・B2(E2E_PAGES_DIR=family_z_melos_02)を commit fb01f125f で反映。stop_scope_check(run_e2e_03)=rc=0・stop=false(`run_e2e_03/stop_scope_check_17.json`、直前再確認`stop_scope_check_17_prerun.json`)。
+- 実走CLI(1回のみ起動、再起動0): `er026_family_z_fiction_production_runner_01.py --run run_e2e_03 --mode real --stage all --approved-budget-jpy 100 --tts-execution-mode STANDARD --regenerate-stage kp_expl_b1b`(`TTS_EXECUTION_MODE=STANDARD`)。rc=0、13 stage完走(seed_check/writer/std_adjust/plan/support/kp/tts_b1b/tts_a2/provision_shell/gate/assemble/pages/page_verify)。console=`run_e2e_03/run_17_console.log`。
+- 再利用: writer/std_adjust/plan/support/kp選定はcost_logにAPI呼出なし(reuse)、kp_expl_b1bのみ再生成(LLM gpt-6-luna 1呼出、JPY0.0326)。固定shell9 clip/levelはMaster Audio Store再利用(Charon)。
+- 実測費用: JPY36.3845/100(`audit/cost_by_stage_17.json`)。
+- 結果: run_e2e_03(2026-10-17、commit 43c75180f)は`--mode real --stage all --approved-budget-jpy 100 --regenerate-stage kp_expl_b1b`を1回起動しrc=0で13 stage全て完走(再起動0・STOP0・HR Lock発火0[review_lock全RESOLVED a2 39/b1b 40])。実測費用JPY36.3845/100(kp 0.0326[LLM gpt-6-luna 1呼出]/tts_b1b 13.8973/tts_a2 22.4546、TTS(gemini)20.099/ASR openai 3.9344/ASR azure 12.3132/web検索0、¥300枠[run_e2e_01 108.11/run_e2e_02 62.83]とは別枠・非合算)。Style runtime: 全97 clip中58 styled clipでexp_match 58/58(false 0、K2 fallback 0)、style_recordの共通label 16/16がX定数shaと一致、Narrator=gemini-3.8-flash-lite-tts、Dialogue 21clip=gemini-2.5-pro-preview-tts(speaker→Voice melos Algieba/selinuntius Erinome/dionysius Charonがrun_e2e_02と21/21同一、Dialogue clipへのPD06適用0)。SRC D1(z_sentence_id_posthoc_v1): a2 5/5・b1b 5/5解決、曖昧0・不一致0、引用符跨ぎtelemetry 1件(a2 rank2 S8)。Std 6%減速gate 23/23 ok(比1.046〜1.060)、Assembly a2 344.97秒/b1b 295.56秒、shared_gate PASS(両level)。PASS_WITH_WARNING a2 7件/b1b 6件(Std・Adv共にfull_story_part1_c5『Melos said.』=M1_MULTI_CANDIDATE)。公開Pages実再生: index 12/standard 51/advanced 50のaudio全て再生OK・console error 0・HTTP>=400 0。
+- 試聴URL: https://shimomura055.github.io/eigo-radio/user_test/family_z_melos_02/index.html(standard.html/advanced.html)。
+- 未宣言: PRODUCTION_WIRED、聴感PASS。
