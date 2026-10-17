@@ -1,0 +1,71 @@
+{
+  "runner": "er019_family_x_entertainment_production_runner_01.py",
+  "management_id": "NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01",
+  "runner_sha256": "6bcc8e4be62376fd70814e25dc519ed36733c589533b698cd66fdef9420a355b",
+  "b3_module_sha256": "93d0e31e735057ae874bbf27be48449fdd5bd5188e535b0a280eada9d314b758",
+  "ja_writer_module_sha256": "a81bf9ae1a20214bb50bcbbac8619fe4aa8c05520d83add13113752dcc36944e",
+  "annotation_contract_module_sha256": "5f4c725e0b332e028b8285389532dedc28e067f29caf6c63863b0be4f0017885",
+  "annotation_producer_module_sha256": "8899d0fa4a9b2274fcd79165b447ab02988d40f799cbca01e06df51a6f7155f2",
+  "risk_flagger_module_sha256": "ed3555c9da56ed651892858bdddef3624dd375bf9f0035bc1e10996604784810",
+  "review_queue_module_sha256": "ebe746f11181888ed286f05db17d40141c60aa6fca0b163f47fcd60c0aa3f7ed",
+  "args": {
+    "theme": "Boredom and Aggression (退屈と攻撃性): the relationship between feeling bored and aggressive behavior. Using only facts confirmed by web search (peer-reviewed studies, university or research-institution releases, and Reuters/AP/Bloomberg-level reporting), identify what research has actually been reported on boredom and aggression, including who the participants were, the experimental conditions, and the stated limitations. Separate confirmed facts from interpretation and forecasts, and do not present a correlation as causation unless the source establishes it. Do not invent details and do not use the assistant's own prior knowledge.",
+    "slug": "boredom_aggression",
+    "out_dir": "er019_output/boredom_aggression/run_bape_01",
+    "source_note": "",
+    "run_label": "BAPE-E2E-01",
+    "budget_jpy": 110.0,
+    "stage": "standard",
+    "regenerate_stage": null,
+    "stop_after": "standard"
+  },
+  "timestamp": "2026-10-17T16:07:20",
+  "risk_flagger": {
+    "a2": {
+      "status": "OK",
+      "reason": null,
+      "rf_run_id": "rf20261017T070800Z-4fd8",
+      "article_sha256": "d9552126bde988c668c549a2c3301aa50ba2bda52f774c7100c9decc49a0b87f",
+      "ledger_sha256": "701612d85b9a2a4eee67728abe4de3e85f0acabe28874826066b4df2d917b0ac",
+      "splitter_version": "en_split_v1",
+      "timestamp": "2026-10-17T07:08:00+00:00",
+      "producer": "deterministic_v2",
+      "run_label": "BAPE-E2E-01",
+      "issue_count": 4,
+      "conditions": [
+        {
+          "model_key": "luna",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.205712
+        },
+        {
+          "model_key": "luna",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 2,
+          "cost_jpy": 0.237152
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A3",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.160197
+        },
+        {
+          "model_key": "gemini35fl",
+          "condition": "A4",
+          "status": "OK",
+          "reason": null,
+          "flag_count": 1,
+          "cost_jpy": 0.170314
+        }
+      ]
+    }
+  }
+}

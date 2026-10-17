@@ -359,3 +359,5 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-17 | FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-TRIAL-01 RLCT 委任_07(ユーザー#107承認(b): 案2/案1+2の最終B3確認パスのTrial harness是正+Stage 1a補正モード[--correct-from→M2c/M3c]+適合照合script+test r1〜r7[25件PASS]+dry-run+TRIAL_DESIGN_03、JPY0、Status=HARNESS_CORRECTED_DRYRUN_PASS_PENDING_OPUS_A、有料1a補正・1bはOpus条件A後)
 
 - 2026-10-17 | FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-TRIAL-01 RLCT 委任_08(Opus条件A_B GO逐語保存+評価手順是正[OP-1〜7]+Stage 1a補正 inbound M2c/M3c有料実行[実測JPY20.009、web_search 0、両COMPLETED、F05断定0件、ラベル0件、削減率 案2 29.0→14.1%/案1+2 26.4→10.7%]+STAGE_1A_CORRECTION_01+conform_check列追加+OPEN-411、Status=STAGE_1A_CORRECTED_PENDING_FABLE、1bは別日2026-10-18以降)
+- 2026-10-17 | FAMILY-X-BOREDOM-AGGRESSION-PRODUCTION-E2E-01 BAPE 委任_03(ユーザー原文保存+#106判断済み反映+「退屈と攻撃性」正式Production E2E text工程S0〜S5実走[実測JPY66.677、Ledger V10/A1/R0、web_search 23回]+音声plan S6[fx_20261017確認]、Status=TEXT_STAGES_COMPLETE_AUDIO_PLAN_READY_PENDING_FABLE_CP、音声有料工程S7〜S11はFable CP後)
+- 2026-10-17 | FAMILY-X-STD-JA-S3-ADOPTION-AND-WIRING-01 close(ユーザー試聴PASS、Coffee S3正式版USER_LISTENING_PENDING→CLOSED、OPEN-405 CLOSED、追加調整・再生成なし、JPY0)
