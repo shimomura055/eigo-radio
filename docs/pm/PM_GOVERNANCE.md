@@ -3123,6 +3123,8 @@ runtime evidence・regression影響を確認したうえで決める。本原則
   (Ledger→A2 Writer直接生成)への統一を優先候補とする(詳細は
   `docs/pm/RESULT_PACKET_PN_A2_GAP_PHASE_A.md`)。
 
+→28節参照(2026-10-17、Cross-Family同時Production配線原則。本節の既存文は改変していない)。
+
 ## 19. 自明な修正・一般化の自律実施基準(2026-09-17新設、
 `PERSONALIZED-NEWS-A2-E2E-GAP-RESOLUTION-01-PHASE-B`、ユーザー正式決定)
 
@@ -3243,6 +3245,8 @@ Prior Trial Check Gate照合」へ接続)。
 **本質**: SSOTが存在していても実作業の入口で強制的に参照されていない。
 記録を増やすだけでなく、新規判断の前に既存資産照合を必須化する。
 
+→28節参照(2026-10-17、Cross-Family同時Production配線原則。本節の既存文は改変していない)。
+
 ## 22. ユーザー指示優先とTrial開始前/終了前チェック・次工程Gate
 (2026-09-30、OPEN-233の事故を契機にユーザー指示で新設)
 
@@ -3299,6 +3303,8 @@ STOPして報告する(広いTrialへは進まない。委任_16実例: Hook-awa
 **報告フォーマット**: 次回報告の冒頭に「前回ユーザー指示への対応表」
 (指示/反映先/実際の動作/Evidence/PASS・FAIL)を掲載する(12節の報告単位
 管理ルールと整合、追加のSSOTを新設しない)。
+
+→28節参照(2026-10-17、Cross-Family同時Production配線原則。本節の既存文は改変していない)。
 
 ## 23. Eigo Radio上位目的に照らしたPMレビュー基準(OPEN-233起点、Trial設計・指示・レビューに適用、2026-10-01新設)
 
@@ -3471,8 +3477,53 @@ Family Z runner(er026/er062/er063)に次を実装済み(課金0のmock/dry-run�
 - 適用: 本節は2026-10-16以降の受入・UDR発行に適用する。過去の受入記録・REGISTERへは遡及して書き換えない。
 - 実装とは別に、効果は未知ケースでは未実証(机上評価のみ。結果と限界は`DQI_DESK_EVAL_01.md`)。未知ケース評価は費用・範囲を提示してユーザー承認後にのみ実施する。Day 5〜6の保留は維持する。
 
+## 28. Cross-Family同時Production配線原則(2026-10-17ユーザー正式決定、`PM-CROSS-FAMILY-SIMULTANEOUS-PRODUCTION-WIRING-RULE-01`)
+
+個別Familyより上位の恒久的な開発・PM運用ルール。原文(ユーザー指示§5)は`docs/pm/delegation_log/2026-10-17_FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01_COMPLETION-AND-CROSS-FAMILY_USER.md`(sha256 a676e8be5f06aac1581a56d5896a0c7e1bfacf86a565a18b534d5ce9fb8e550c)。以下は§5の逐語引用。
+
+### 28-1. 基本原則・対象・運用(ユーザー原文§5の逐語引用)
+
+「**基本原則：Family固有ではない共通仕様は、あるFamilyでProduction配線する際、原則として他の対象Familyにも同時に配線する。**」
+
+「対象：
+
+- Family X
+- Family Z
+- 将来のFamily Y」
+
+「運用：
+
+1. 仕様変更時に、必ず「共通仕様／Family固有仕様」を分類する。
+2. 共通仕様としてユーザー承認されたものは、対象Familyごとに`APPROVED_FOR_PRODUCTION`として追跡する。
+3. あるFamilyでProduction配線する際、他の対象Familyでも原則同時に配線・テスト・runtime確認を行う。
+4. Family別に`PRODUCTION_WIRED`の成立を判定する。1つのFamilyでの成功を他Familyの証拠として代用しない。
+5. 同時配線が技術的・運用上困難な場合は、理由・未完了事項・解消予定をOpen Itemに記録し、無条件にタスクをcloseしない。
+6. Family固有仕様およびユーザーが明示的に不採用とした仕様は例外。
+7. 新規Family（将来のY等）をProduction化する際は、既存の共通承認仕様を最初から配線対象に含める。
+8. 今後の仕様変更・Production Wiring・新規Family記事E2Eの開始／終了チェックに、この原則を組み込む。」
+
+「**「Family Xで採用したがZには未反映」「Zで改善したがX／Yには未反映」という状態の放置を防止することが目的。**」
+
+「今回決定した共通仕様の対象範囲をCURRENT_SPEC・DECISION_LOGへ明記し、配線追跡をOPEN_ITEMSで管理する。」
+
+### 28-2. Fable運用補足(原文ではなく運用上の具体化。原文と矛盾する場合は原文が優先)
+
+1. 21節 Existing Spec / Prior Trial Check Gateの分類に「共通仕様 / Family固有仕様」欄を追加する(仕様変更・Trial提案時に必ず分類を記入)。
+2. 22節のTrial開始前/終了前チェック、および新規Family記事E2Eの開始/終了チェックに「他対象Familyへの配線状況確認」を追加する(共通仕様をいずれかのFamilyで配線する場合、他の対象Familyの配線Status・runtime確認の有無を確認)。
+3. 11-3 条件Aレビューの観点に「他Familyへの同時配線可否」を含める。
+4. Family別`PRODUCTION_WIRED`判定の記録先=`CURRENT_SPEC.md`の「共通仕様のFamily別配線Status表」(Family X/Z/Y列で個別に判定。別Familyの成功を代用しない)。
+5. 同時配線が困難な場合は、理由・未完了事項・解消予定を`OPEN_ITEMS.md`へ記録し、当該タスクを無条件にcloseしない(原則5)。
+6. 例外=Family固有仕様およびユーザーが明示的に不採用とした仕様(原則6)。ただし例外とした事実と根拠(ユーザー判断の出典)を上記Status表に残す。
+7. 追跡=OPEN-412(Family Z共通音声仕様・SRC配線)、OPEN-413(本原則の記録・チェック組込み)。
+
+### 28-3. 適用と範囲
+- 本節は2026-10-17以降の仕様変更・Production Wiring・新規Family記事E2Eに適用する。過去の受入記録は遡及して書き換えない。
+- 開発対象Familyは27-7(X・Z・将来Y)に従う。
+- 本節は既存節(18節Family横断共通化原則、21節、22節)の文言を改変せず、上位ルールとして重ねる。各節末尾の「→28節参照」は参照ポインタのみ。
+
 ## 変更履歴
 
+- 2026-10-17(`PM-CROSS-FAMILY-SIMULTANEOUS-PRODUCTION-WIRING-RULE-01`、`FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01`委任_14、ユーザー正式決定): 28節新設(Cross-Family同時Production配線原則[上位ルール]。共通仕様は原則全対象Family[X・Z・将来Y]へ同時配線、Family別PRODUCTION_WIRED判定、困難時はOpen Item記録、仕様変更・Wiring・E2E開始/終了チェックへ組込み。§5逐語引用+運用補足)。18/21/22節末尾へ参照ポインタのみ追記(既存文未変更)。文書編集のみ、コード・Prompt変更なし。
 - 2026-10-16(`PM-20261016-AUW-CLOSEOUT-DQI-PRODUCTION-01` 委任_01、ユーザー正式採用): 27節新設(DQIパッケージP: P1判定整合行・重大NG2軸・P2 UDR発行前4区分仕分け[正本]・P3提示前チェックとK1〜K6・P4非ブロッキングValidator・開発対象Family制限[A/B/C開発停止])。12-13(09-27)・12-13(10-12)・sandwich-pm.md手順4-2・sonnet-worker.mdに参照を追記(既存文言は不変)。
 
 - 2026-10-15(`PM-AUTONOMOUS-OPERATING-MODEL-ROLLOUT-01` Day3 Phase2 委任_F2、ユーザー正式判断U2/U3'/U5): 11-6(問題解決運用: QDC管理・再計画・STOP。11節冒頭の固定往復上限を置換)・11-7(未承認機能のProduction先行配置の限定例外と隔離違反時の廃止、3状態)・7-9(日次開発費原則1,000円/日)・15-9(量産単価70円/記事セットの対象範囲)を新設。1節の役割(Fable5責任)・2-0(4つのGateと既存Gate 1〜7の対応)・Gate 7(受領≠受入)・2-1/21節(旧検査撤去・矛盾確認)・11-3(再レビュー追加型・観点11周知)・11-5(原文保存)・9-0(受入記録・QDC経緯)を追記。固定回数・上限到達=UDRの記述を11-6参照へ置換(履歴記述・Opus利用枠・11-4・Production retry上限は不変)。STOP必須6条件・11-1 STOP(1)〜(5)・26-2・11-3条件A〜D・11-4は不変。副作用STOP(2026-09-09)は11-6で維持。Opus条件A所見OF-D3-01〜15を反映。詳細は`DECISION_LOG.md`同管理IDエントリ(別委任で記録)参照。

@@ -266,3 +266,6 @@
 - #106(判断済み 2026-10-17) BAPE E2E費用上限JPY180承認(期待約95、当該記事限定・別Trial流用不可)。原文=2026-10-17_FAMILY-X-BOREDOM-AGGRESSION-PRODUCTION-E2E-01_COST-APPROVAL-S3-PASS_USER.md。
 - #107(判断済み 2026-10-17) RLCT Stage 1b前の案2設計: 選択肢(b)最終B3確認パス追加を正式承認。Trial設計是正でありProduction採用ではない。原文=docs/pm/delegation_log/2026-10-17_FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-TRIAL-01_DESIGN-FIX-1B_USER.md(sha256 835f6972fde54f298a11b631446058750ac7e15be7b07affd2f23b22988a2cdb)。TRIAL_DESIGN_03.md。OPEN-410。
 - 未回答報告: なし(Coffee S3正式版はユーザー試聴PASSでclose、2026-10-17)。旧記載=Coffee S3正式版 試聴 https://shimomura055.github.io/eigo-radio/user_test/coffee_fxpw_e2e_01_s3prod/index.html
+- #48/#51(判断済み 2026-10-17 §2A) Family Z Preview/Comment 1の方式: 現行方式を維持、A/B Trialの新方式は不採用、Preview改善の追加Trialは行わない(#42/#44も同決定で整理)。OPEN-338 CLOSED。原文=docs/pm/delegation_log/2026-10-17_FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01_COMPLETION-AND-CROSS-FAMILY_USER.md。#23(Melos最終試聴・受入判断)は本決定と区別し判断保留のまま、新しい正式試聴ページ完成時に提示する。
+- #108(新規・UDR-blocking・未回答) Family Z Melos完成の追加費用: 別枠JPY100案(期待約45、再生成見積35〜50・最大約67)。¥300枠(CURRENT_SPEC.md:1608)の残(ledger基準66.5/KGCPW Z・AUW算入で約21)では今回のPD06/S3等の再生成に不足の見込み。回答まで有料実行なし。OPEN-412。
+- #109(新規・UDR-blocking・未回答) Source Reference ContractのFamily Z(Strategy L、shortlistなし)適用方式: D1事後決定論ID付与[prompt無変更・KP再利用可]/D2 promptへ文ID付与・LLMがID返却[契約に忠実・KP再選定要]/D3 Opusレビュー_Cの第3案。Fable推奨はOpus_C受領後に確定(暫定D1)。OPEN-412。
