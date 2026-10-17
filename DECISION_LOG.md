@@ -21800,3 +21800,18 @@ Fable決定: F1 STOP_NOTICE(2026-10-12)をrun_e2e_03限定で解除(run_e2e_01/0
 - **実走結果の事実**: run_e2e_03(2026-10-17、commit 43c75180f)は`--mode real --stage all --approved-budget-jpy 100 --regenerate-stage kp_expl_b1b`を1回起動しrc=0で13 stage全て完走(再起動0・STOP0・HR Lock発火0[review_lock全RESOLVED a2 39/b1b 40])。実測費用JPY36.3845/100(kp 0.0326[LLM gpt-6-luna 1呼出]/tts_b1b 13.8973/tts_a2 22.4546、TTS(gemini)20.099/ASR openai 3.9344/ASR azure 12.3132/web検索0、¥300枠[run_e2e_01 108.11/run_e2e_02 62.83]とは別枠・非合算)。Style runtime: 全97 clip中58 styled clipでexp_match 58/58(false 0、K2 fallback 0)、style_recordの共通label 16/16がX定数shaと一致、Narrator=gemini-3.8-flash-lite-tts、Dialogue 21clip=gemini-2.5-pro-preview-tts(speaker→Voice melos Algieba/selinuntius Erinome/dionysius Charonがrun_e2e_02と21/21同一、Dialogue clipへのPD06適用0)。SRC D1(z_sentence_id_posthoc_v1): a2 5/5・b1b 5/5解決、曖昧0・不一致0、引用符跨ぎtelemetry 1件(a2 rank2 S8)。Std 6%減速gate 23/23 ok(比1.046〜1.060)、Assembly a2 344.97秒/b1b 295.56秒、shared_gate PASS(両level)。PASS_WITH_WARNING a2 7件/b1b 6件(Std・Adv共にfull_story_part1_c5『Melos said.』=M1_MULTI_CANDIDATE)。公開Pages実再生: index 12/standard 51/advanced 50のaudio全て再生OK・console error 0・HTTP>=400 0。
 - **未宣言事項**: `PRODUCTION_WIRED`(Fableが受入10条件で判定)、聴感PASS(ユーザー試聴前)。VALIDATED等の格上げなし。
 - 回帰: 委任_16と同じtest群+pd06_run_style test 190 passed。X側wiring test(72 passed)に`er026_fz_style_table_17.py`を読取専用として許可集合へ登録。commit 43c75180f。
+
+## 2026-10-17 FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01 委任_18 Fable受入判定: Family Z PRODUCTION_WIRED(仕様別)
+- 判定: Family ZのPD06(Narrator)/S3(Std JA Preview・Comment)/E1(Adv Preview)/K2(KP英語)/P8-KP(Std KP JA)/P7(Adv KP解説)/SRC D1(`z_sentence_id_posthoc_v1`)/Dialogue別Voice(Z固有・維持)/6%減速/AUW = `PRODUCTION_WIRED`(2026-10-17 Fable、Family Z列、仕様ごとの判定。「Family Z全体」の宣言ではない)。Adv Comment E2_UPBEAT=Z固有・現状維持。Opusは条件Aレビュー_C(GO_WITH_FIXES)を再利用(11-3、内容不変)。ユーザー試聴PASS(REGISTER #23)は未・別扱い(判断済みにしない)。
+- 受入10条件の照合(ユーザー§6、Fable独立照合):
+  1. 正式Production初回経路への実装=充足(er063 Style X定数参照/er026 `stage_kp` `_src_gate`)
+  2. retry/fallback/regeneration/resume整合=充足(単一call site、reuse/regenerate test、実走で`--regenerate-stage kp_expl_b1b`経由を実発火)
+  3. Trial/DEV専用経路ではない=充足
+  4. 正式runtimeでの実発火証拠=充足(run_e2e_03 audit群)
+  5. actual model_id・Style SHA・Voice・routing一致=充足(exp_match 58/58、X定数sha一致16/16、Dialogue 21/21)
+  6. Regression/Validator/integration test PASS=充足(190+72+16、er020 1件は既存・別管理OPEN-414)
+  7. AUW/ASR・6%減速・Dialogue切替・Assembly=充足(PASS_WITH_WARNING 13件は事後試聴区分、HR Lock 0、6%減速23/23)
+  8. Dangling Reference Check=充足(定数残存0。残置のpages_dir既定値melos_01は委任_18 commit 2で整理)
+  9. CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS更新=委任_17で事実記録済み、委任_18で判定を記録
+  10. commit/push/merge=充足(fb01f125f/43c75180f/6a29bb3d3)
+- evidence: segment_style_table_17.json(58/0)、src_z_posthoc_01.json(10/10、STOP 0)、cost_by_stage_17.json(JPY36.3845/100)、pages_play_evidence_17.json(audio 12/51/50)。本委任はJPY0・有料API呼出0。

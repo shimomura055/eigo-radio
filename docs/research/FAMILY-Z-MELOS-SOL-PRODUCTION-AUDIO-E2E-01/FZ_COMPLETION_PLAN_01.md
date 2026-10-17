@@ -165,3 +165,10 @@ AUW(統一ASR/音声品質、3回フロー: Primary ASR->Secondary ASR->Local Re
 - 結果: run_e2e_03(2026-10-17、commit 43c75180f)は`--mode real --stage all --approved-budget-jpy 100 --regenerate-stage kp_expl_b1b`を1回起動しrc=0で13 stage全て完走(再起動0・STOP0・HR Lock発火0[review_lock全RESOLVED a2 39/b1b 40])。実測費用JPY36.3845/100(kp 0.0326[LLM gpt-6-luna 1呼出]/tts_b1b 13.8973/tts_a2 22.4546、TTS(gemini)20.099/ASR openai 3.9344/ASR azure 12.3132/web検索0、¥300枠[run_e2e_01 108.11/run_e2e_02 62.83]とは別枠・非合算)。Style runtime: 全97 clip中58 styled clipでexp_match 58/58(false 0、K2 fallback 0)、style_recordの共通label 16/16がX定数shaと一致、Narrator=gemini-3.8-flash-lite-tts、Dialogue 21clip=gemini-2.5-pro-preview-tts(speaker→Voice melos Algieba/selinuntius Erinome/dionysius Charonがrun_e2e_02と21/21同一、Dialogue clipへのPD06適用0)。SRC D1(z_sentence_id_posthoc_v1): a2 5/5・b1b 5/5解決、曖昧0・不一致0、引用符跨ぎtelemetry 1件(a2 rank2 S8)。Std 6%減速gate 23/23 ok(比1.046〜1.060)、Assembly a2 344.97秒/b1b 295.56秒、shared_gate PASS(両level)。PASS_WITH_WARNING a2 7件/b1b 6件(Std・Adv共にfull_story_part1_c5『Melos said.』=M1_MULTI_CANDIDATE)。公開Pages実再生: index 12/standard 51/advanced 50のaudio全て再生OK・console error 0・HTTP>=400 0。
 - 試聴URL: https://shimomura055.github.io/eigo-radio/user_test/family_z_melos_02/index.html(standard.html/advanced.html)。
 - 未宣言: PRODUCTION_WIRED、聴感PASS。
+
+## §12 Fable受入判定(委任_18)
+
+- 日付: 2026-10-17。判定: Family Zの PD06/S3/E1/K2/P8-KP/P7/SRC D1/Dialogue別Voice(Z固有・維持)/6%減速/AUW = `PRODUCTION_WIRED`(仕様別。「Family Z全体」ではない)。Adv Comment E2_UPBEATはZ固有・現状維持。Opusは条件Aレビュー_C再利用(11-3)。
+- 照合: 受入10条件(ユーザー§6)全て充足(詳細=DECISION_LOG 2026-10-17 委任_18、OPEN-412 受入記録)。evidence=run_e2e_03 audit群(segment_style_table_17 58/0、src_z_posthoc_01 10/10、cost_by_stage_17 JPY36.3845/100、pages_play_evidence_17)。
+- 未: ユーザー試聴PASS(REGISTER #23)は別扱い・未判断。§8 close候補はユーザー試聴後。
+- 残置整理: er063 `PAGES_DIR`既定値・`tools/build_family_z_hr_review_page.py` OUTのmelos_01をmelos_02へ一本化(委任_18 commit 2)。
