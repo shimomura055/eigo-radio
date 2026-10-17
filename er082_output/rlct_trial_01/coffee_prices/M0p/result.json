@@ -1,0 +1,162 @@
+{
+  "article": "coffee_prices",
+  "method": "M0p",
+  "stage": "1a",
+  "dry_run": false,
+  "started_at": "2026-10-17T04:13:47.551255+00:00",
+  "usage_basis": "OFFICIAL_API_RESPONSE",
+  "verdict_counts": {
+    "VERIFIED": 14,
+    "AMBIGUOUS": 3,
+    "REJECTED": 0
+  },
+  "status": "COMPLETED",
+  "selected_fact_ids": null,
+  "verdict_transitions": {
+    "counts": {
+      "VERIFIED->VERIFIED": 12,
+      "VERIFIED->AMBIGUOUS": 1,
+      "AMBIGUOUS->AMBIGUOUS": 2,
+      "AMBIGUOUS->VERIFIED": 2
+    },
+    "promotions_to_verified_or_up": [
+      "F12",
+      "F17"
+    ],
+    "demotions_from_verified": [
+      "F02"
+    ]
+  },
+  "final_verdicts": {
+    "F01": {
+      "verdict": "VERIFIED"
+    },
+    "F02": {
+      "verdict": "AMBIGUOUS"
+    },
+    "F03": {
+      "verdict": "VERIFIED"
+    },
+    "F04": {
+      "verdict": "VERIFIED"
+    },
+    "F05": {
+      "verdict": "VERIFIED"
+    },
+    "F06": {
+      "verdict": "VERIFIED"
+    },
+    "F07": {
+      "verdict": "AMBIGUOUS"
+    },
+    "F08": {
+      "verdict": "VERIFIED"
+    },
+    "F09": {
+      "verdict": "VERIFIED"
+    },
+    "F10": {
+      "verdict": "VERIFIED"
+    },
+    "F11": {
+      "verdict": "VERIFIED"
+    },
+    "F12": {
+      "verdict": "VERIFIED"
+    },
+    "F13": {
+      "verdict": "VERIFIED"
+    },
+    "F14": {
+      "verdict": "VERIFIED"
+    },
+    "F15": {
+      "verdict": "VERIFIED"
+    },
+    "F16": {
+      "verdict": "AMBIGUOUS"
+    },
+    "F17": {
+      "verdict": "VERIFIED"
+    }
+  },
+  "verifier_models": [
+    "gpt-6-luna"
+  ],
+  "verifier_model_matches_m0": true,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 10,
+    "by_action_type": {
+      "search": 4,
+      "open_page": 4,
+      "find_in_page": 2
+    },
+    "query_count": 16
+  },
+  "verify_requests": [
+    {
+      "label": "full",
+      "cap_prompt": false,
+      "fact_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "F13",
+        "F14",
+        "F15",
+        "F16",
+        "F17"
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_005182b6082cd7d9006ad2f5fbaf7487d092e0a5c8965f5f52",
+      "latency_seconds": 64.52106976509094,
+      "web_search_call_count": 10,
+      "action_type_counts": {
+        "search": 4,
+        "open_page": 4,
+        "find_in_page": 2
+      },
+      "query_count": 16,
+      "calls_per_fact_avg": 0.588,
+      "exceeds_soft_cap_estimate": false,
+      "prompt_sha256": "09d8e569d935746ae22553798ca278f30d3fc2084c720cb6bab0ae84442b7696"
+    }
+  ],
+  "cost": {
+    "by_step": {
+      "ledger": {
+        "llm_jpy": 1.996,
+        "web_search_jpy": 16.0,
+        "calls": 1,
+        "web_search_calls": 10,
+        "input_tokens": 95771,
+        "output_tokens": 5798,
+        "total_jpy": 17.996
+      }
+    },
+    "total": {
+      "llm_jpy": 1.996,
+      "web_search_jpy": 16.0,
+      "total_jpy": 17.996,
+      "calls": 1,
+      "web_search_calls": 10
+    }
+  },
+  "contract": {
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 17
+    }
+  },
+  "finished_at": "2026-10-17T04:14:52.100423+00:00"
+}

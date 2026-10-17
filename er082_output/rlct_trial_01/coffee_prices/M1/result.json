@@ -1,0 +1,212 @@
+{
+  "article": "coffee_prices",
+  "method": "M1",
+  "stage": "1a",
+  "dry_run": false,
+  "started_at": "2026-10-17T04:14:52.114998+00:00",
+  "usage_basis": "OFFICIAL_API_RESPONSE",
+  "verdict_counts": {
+    "VERIFIED": 16,
+    "AMBIGUOUS": 1,
+    "REJECTED": 0
+  },
+  "status": "COMPLETED",
+  "selected_fact_ids": [
+    "F02",
+    "F07",
+    "F09",
+    "F15"
+  ],
+  "selected_storyline": "ブラジルの干ばつなどを受けた供給懸念が強まる中、アラビカ先物は2025年2月に最高値となり、米国では主に供給不足と生豆高を背景に小売価格が上昇し、カフェでも仕入れ費と飲料価格の上昇が報告された。",
+  "b3_model": "gpt-6.1-sol",
+  "b3_attempts": 1,
+  "ambiguous_central": {
+    "central_fact_ids": [
+      "F02",
+      "F06",
+      "F07",
+      "F08",
+      "F09",
+      "F10",
+      "F11",
+      "F12",
+      "F14",
+      "F15"
+    ],
+    "ambiguous_central_fact_ids": [
+      "F07"
+    ],
+    "count": 1,
+    "note": "候補件数(機械抽出)。『断定しているか』の最終判定はSonnet+Fable独立判定(R-07、測定のみ)"
+  },
+  "known_defect_status": {
+    "F12": "c_not_selected",
+    "F07": "a_selected_detected",
+    "F16": "c_not_selected",
+    "F17": "c_not_selected"
+  },
+  "verdict_transitions": {
+    "counts": {
+      "VERIFIED->VERIFIED": 13,
+      "AMBIGUOUS->AMBIGUOUS": 1,
+      "AMBIGUOUS->VERIFIED": 3
+    },
+    "promotions_to_verified_or_up": [
+      "F12",
+      "F16",
+      "F17"
+    ],
+    "demotions_from_verified": []
+  },
+  "final_verdicts": {
+    "F01": {
+      "verdict": "VERIFIED"
+    },
+    "F02": {
+      "verdict": "VERIFIED"
+    },
+    "F03": {
+      "verdict": "VERIFIED"
+    },
+    "F04": {
+      "verdict": "VERIFIED"
+    },
+    "F05": {
+      "verdict": "VERIFIED"
+    },
+    "F06": {
+      "verdict": "VERIFIED"
+    },
+    "F07": {
+      "verdict": "AMBIGUOUS"
+    },
+    "F08": {
+      "verdict": "VERIFIED"
+    },
+    "F09": {
+      "verdict": "VERIFIED"
+    },
+    "F10": {
+      "verdict": "VERIFIED"
+    },
+    "F11": {
+      "verdict": "VERIFIED"
+    },
+    "F12": {
+      "verdict": "VERIFIED"
+    },
+    "F13": {
+      "verdict": "VERIFIED"
+    },
+    "F14": {
+      "verdict": "VERIFIED"
+    },
+    "F15": {
+      "verdict": "VERIFIED"
+    },
+    "F16": {
+      "verdict": "VERIFIED"
+    },
+    "F17": {
+      "verdict": "VERIFIED"
+    }
+  },
+  "verifier_models": [
+    "gpt-6-luna"
+  ],
+  "verifier_model_matches_m0": true,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 13,
+    "by_action_type": {
+      "search": 6,
+      "open_page": 6,
+      "find_in_page": 1
+    },
+    "query_count": 23
+  },
+  "verify_requests": [
+    {
+      "label": "full",
+      "cap_prompt": true,
+      "fact_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07",
+        "F08",
+        "F09",
+        "F10",
+        "F11",
+        "F12",
+        "F13",
+        "F14",
+        "F15",
+        "F16",
+        "F17"
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_08d85020867ad545006ad2f63c74e087d08119cc6241d40639",
+      "latency_seconds": 79.46594429016113,
+      "web_search_call_count": 13,
+      "action_type_counts": {
+        "search": 6,
+        "open_page": 6,
+        "find_in_page": 1
+      },
+      "query_count": 23,
+      "calls_per_fact_avg": 0.765,
+      "exceeds_soft_cap_estimate": false,
+      "prompt_sha256": "e63d5d28164263f2c24d9d38db36e2160ce1e79192122c6f911920f38a80e239"
+    }
+  ],
+  "cost": {
+    "by_step": {
+      "ledger": {
+        "llm_jpy": 2.515,
+        "web_search_jpy": 20.8,
+        "calls": 1,
+        "web_search_calls": 13,
+        "input_tokens": 123101,
+        "output_tokens": 6823,
+        "total_jpy": 23.315
+      },
+      "b3": {
+        "llm_jpy": 10.441,
+        "web_search_jpy": 0.0,
+        "calls": 1,
+        "web_search_calls": 0,
+        "input_tokens": 5209,
+        "output_tokens": 5484,
+        "total_jpy": 10.441
+      }
+    },
+    "total": {
+      "llm_jpy": 12.956,
+      "web_search_jpy": 20.8,
+      "total_jpy": 33.756,
+      "calls": 2,
+      "web_search_calls": 13
+    }
+  },
+  "contract": {
+    "method_dir": "er082_output/rlct_trial_01/coffee_prices/M1",
+    "producer": {
+      "status": "PASS",
+      "n_facts": 4,
+      "llm_calls": 0
+    },
+    "validate": {
+      "status": "PASS"
+    },
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 17
+    },
+    "all_pass": true
+  },
+  "finished_at": "2026-10-17T04:17:54.846340+00:00"
+}

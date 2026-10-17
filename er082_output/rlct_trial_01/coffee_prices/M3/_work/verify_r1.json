@@ -1,0 +1,28 @@
+{
+  "label": "r1",
+  "cap_prompt": true,
+  "fact_ids": [
+    "F10"
+  ],
+  "model": "gpt-6-luna",
+  "response_id": "resp_074f0df6a08d8a77006ad2f76d739887d0837de04d958764c6",
+  "latency_seconds": 8.267523527145386,
+  "web_search_call_count": 1,
+  "action_type_counts": {
+    "search": 1
+  },
+  "query_count": 3,
+  "calls_per_fact_avg": 1.0,
+  "exceeds_soft_cap_estimate": false,
+  "prompt_sha256": "4a37d32dddedb360c9863b08eda72d66d4a58152cf4a7b6e5f38cb8ab98bd255",
+  "parsed": {
+    "verifications": [
+      {
+        "fact_id": "F10",
+        "verdict": "VERIFIED",
+        "verification_notes": "Reutersの2025年12月19日付記事（Investing.com掲載は12月22日）は、Feran氏ら業界専門家の推定として、生豆価格が消費者に反映されるまで「少なくとも9か月」かかり得ると報じています。焙煎・包装や価格交渉が理由として挙げられており、米国の消費者価格への一律の実測期間ではなく、専門家による推定とするLedgerの条件づけも適切です。同じReuters記事の別掲載版でも内容を照合しました。([investing.com](https://www.investing.com/news/economic-indicators/us-coffee-drinkers-face-higher-prices-even-after-trumps-tariff-reset-4418417?utm_source=openai))"
+      }
+    ]
+  },
+  "prompt": "以下のFact Ledger下書きを、Ledger自身のsource_urlだけを鵜呑みにせず、\n独立してWeb検索により再照合してください。\n\n【対象テーマ】\nCurrent news/lifestyle topic: why coffee prices have risen so sharply and why a cup of coffee now costs more. Using only facts confirmed by web search (International Coffee Organization, USDA reports, Reuters/AP/Bloomberg-level reporting, company announcements), cover recent coffee bean price levels and changes (with dates, and whether arabica or robusta), the reported causes (weather and harvest conditions in producing countries, currency, supply and demand, tariffs if reported), and the reported effect on retail or cafe prices for consumers. Separate confirmed facts from forecasts, and do not present one cause as the only cause unless the source says so. Do not invent details and do not use the assistant's own prior knowledge.\n\n【検証対象のFact Ledger下書き】\n{\n  \"facts\": [\n    {\n      \"fact_id\": \"F10\",\n      \"claim\": \"Reutersは、2025年11月に米国がコーヒーなど一部輸入品の関税を撤回した後も、原料豆価格の変化が焙煎・包装・小売価格に反映されるまで時間がかかると報じた。専門家らは生豆価格の小売への伝達に少なくとも約9か月かかると推定した。\",\n      \"subject\": \"生豆価格から小売価格への転嫁\",\n      \"date_or_period\": \"2025年12月時点の報道\",\n      \"scope\": \"米国のコーヒー供給・小売価格\",\n      \"conditions\": \"業界専門家らの推定。企業や商品ごとの確定的な転嫁期間ではない\",\n      \"numeric_value\": \"少なくとも約9か月\",\n      \"numeric_scope\": \"生豆価格変化が米国の消費者価格に反映されるまでの推定期間\",\n      \"causal_strength\": \"CAUSAL_STATED_BY_SOURCE\",\n      \"source_title\": \"US coffee drinkers face higher prices even after Trump’s tariff reset (Reuters)\",\n      \"source_url\": \"https://www.investing.com/news/economic-indicators/us-coffee-drinkers-face-higher-prices-even-after-trumps-tariff-reset-4418417\",\n      \"source_type\": \"RELIABLE_SECONDARY_NEWS\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"記事中の専門家推定であり、全小売業者に一律に当てはまる実測値ではない。\",\n      \"notes_for_writer\": \"小売価格が国際相場の低下に即時追随しない理由の一つとしてのみ扱う。\"\n    }\n  ]\n}\n\n【検証観点】\n- FactがSourceに実際に存在するか\n- 数字のscopeが正しいか(母集団と個別条件を混同していないか)\n- 対象群と全体を混同していないか\n- 日付・時間帯が正しいか\n- 制度の適用範囲が正しいか(特に時間帯限定かどうか)\n- 条件が抜けていないか\n- 因果関係を過剰に強めていないか\n- Source間で矛盾していないか\n- 曖昧なFactを無理に確定していないか\n\n各fact_idについて、VERIFIED / AMBIGUOUS / REJECTEDのいずれかで判定し、\n判定理由をverification_notesへ記載してください。\n\n【検索回数の上限(Trial指示)】各Factの確認のためのweb_search呼出は、Fact1件あたり3回までとしてください。3回の検索で確認できなかった場合は、無理に確定せず、そのFactをAMBIGUOUSと判定し、確認できなかった理由をverification_notesへ記載してください。"
+}

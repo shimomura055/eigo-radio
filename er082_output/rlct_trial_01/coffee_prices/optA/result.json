@@ -1,0 +1,63 @@
+{
+  "article": "coffee_prices",
+  "dry_run": false,
+  "n_injected": 3,
+  "rows": [
+    {
+      "variant": "uncapped",
+      "injected_fact_id": "INJ_F02_numeric_1",
+      "orig_fact_id": "F02",
+      "kind": "numeric",
+      "verdict": "REJECTED",
+      "outcome": "detected"
+    },
+    {
+      "variant": "uncapped",
+      "injected_fact_id": "INJ_F07_date_2",
+      "orig_fact_id": "F07",
+      "kind": "date",
+      "verdict": "REJECTED",
+      "outcome": "detected"
+    },
+    {
+      "variant": "uncapped",
+      "injected_fact_id": "INJ_F09_direction_3",
+      "orig_fact_id": "F09",
+      "kind": "direction",
+      "verdict": "REJECTED",
+      "outcome": "detected"
+    },
+    {
+      "variant": "capped",
+      "injected_fact_id": "INJ_F02_numeric_1",
+      "orig_fact_id": "F02",
+      "kind": "numeric",
+      "verdict": "REJECTED",
+      "outcome": "detected"
+    },
+    {
+      "variant": "capped",
+      "injected_fact_id": "INJ_F07_date_2",
+      "orig_fact_id": "F07",
+      "kind": "date",
+      "verdict": "REJECTED",
+      "outcome": "detected"
+    },
+    {
+      "variant": "capped",
+      "injected_fact_id": "INJ_F09_direction_3",
+      "orig_fact_id": "F09",
+      "kind": "direction",
+      "verdict": "REJECTED",
+      "outcome": "detected"
+    }
+  ],
+  "missed_critical_ng": [],
+  "critical_ng": false,
+  "original_draft_unchanged": true,
+  "cost": {
+    "total_jpy": 10.882
+  },
+  "disclaimer": "故障注入の結果は通常記事における誤り検出率の保証ではない(ユーザー§5)",
+  "basis": "OFFICIAL_API_RESPONSE"
+}

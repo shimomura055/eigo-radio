@@ -1,0 +1,187 @@
+{
+  "article": "inbound_tourism",
+  "method": "M3",
+  "stage": "1a",
+  "dry_run": false,
+  "started_at": "2026-10-17T04:29:01.713392+00:00",
+  "usage_basis": "OFFICIAL_API_RESPONSE",
+  "reselect": {
+    "status": "COMPLETED",
+    "rounds": [
+      {
+        "round": 0,
+        "selected_fact_ids": [
+          "F01",
+          "F02",
+          "F04",
+          "F05"
+        ],
+        "verified_now": [
+          "F01",
+          "F02",
+          "F04",
+          "F05"
+        ],
+        "reused_verdicts": [],
+        "verify_record": {
+          "label": "r0",
+          "cap_prompt": true,
+          "fact_ids": [
+            "F01",
+            "F02",
+            "F04",
+            "F05"
+          ],
+          "model": "gpt-6-luna",
+          "response_id": "resp_0422d75c14423134006ad2f98e317887d0858894c0326399de",
+          "latency_seconds": 32.62003970146179,
+          "web_search_call_count": 5,
+          "action_type_counts": {
+            "search": 3,
+            "open_page": 2
+          },
+          "query_count": 9,
+          "calls_per_fact_avg": 1.25,
+          "exceeds_soft_cap_estimate": false,
+          "prompt_sha256": "5a1e8d340eb429318d3e7e0a78723521ac51e81ff76c913097537c638341e06f"
+        },
+        "rejected": []
+      }
+    ],
+    "reselect_count": 0
+  },
+  "shared_initial_b3_from": "1a|inbound_tourism|M2|b3_initial",
+  "status": "COMPLETED",
+  "selected_fact_ids": [
+    "F01",
+    "F02",
+    "F04",
+    "F05"
+  ],
+  "selected_storyline": "【独立検証前の編集仮説】訪日外客数は2025年に年間過去最多となった一方、2026年8月と1～8月累計は前年割れで、累計はコロナ禍前を上回る――年間記録と足元の動きを区別して伝える。",
+  "b3_model": "gpt-6.1-sol",
+  "b3_attempts": 1,
+  "ambiguous_central": {
+    "central_fact_ids": [
+      "F01",
+      "F02",
+      "F03",
+      "F04",
+      "F05",
+      "F06",
+      "F07",
+      "F08",
+      "F09",
+      "F10",
+      "F11",
+      "F13",
+      "F14"
+    ],
+    "ambiguous_central_fact_ids": [
+      "F05"
+    ],
+    "count": 1,
+    "note": "候補件数(機械抽出)。『断定しているか』の最終判定はSonnet+Fable独立判定(R-07、測定のみ)"
+  },
+  "known_defect_status": {
+    "F05": "a_selected_detected",
+    "F12": "c_not_selected"
+  },
+  "verdict_transitions": {
+    "counts": {
+      "VERIFIED->VERIFIED": 2,
+      "AMBIGUOUS->VERIFIED": 1,
+      "REJECTED->AMBIGUOUS": 1
+    },
+    "promotions_to_verified_or_up": [
+      "F04",
+      "F05"
+    ],
+    "demotions_from_verified": []
+  },
+  "final_verdicts": {
+    "F01": {
+      "verdict": "VERIFIED"
+    },
+    "F02": {
+      "verdict": "VERIFIED"
+    },
+    "F04": {
+      "verdict": "VERIFIED"
+    },
+    "F05": {
+      "verdict": "AMBIGUOUS"
+    }
+  },
+  "verifier_models": [
+    "gpt-6-luna"
+  ],
+  "verifier_model_matches_m0": true,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 5,
+    "by_action_type": {
+      "search": 3,
+      "open_page": 2
+    },
+    "query_count": 9
+  },
+  "verify_requests": [
+    {
+      "label": "r0",
+      "cap_prompt": true,
+      "fact_ids": [
+        "F01",
+        "F02",
+        "F04",
+        "F05"
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_0422d75c14423134006ad2f98e317887d0858894c0326399de",
+      "latency_seconds": 32.62003970146179,
+      "web_search_call_count": 5,
+      "action_type_counts": {
+        "search": 3,
+        "open_page": 2
+      },
+      "query_count": 9,
+      "calls_per_fact_avg": 1.25,
+      "exceeds_soft_cap_estimate": false,
+      "prompt_sha256": "5a1e8d340eb429318d3e7e0a78723521ac51e81ff76c913097537c638341e06f"
+    }
+  ],
+  "cost": {
+    "by_step": {
+      "verify_sel_r0": {
+        "llm_jpy": 1.001,
+        "web_search_jpy": 8.0,
+        "calls": 1,
+        "web_search_calls": 5,
+        "input_tokens": 45646,
+        "output_tokens": 3385,
+        "total_jpy": 9.001
+      }
+    },
+    "total": {
+      "llm_jpy": 1.001,
+      "web_search_jpy": 8.0,
+      "total_jpy": 9.001,
+      "calls": 1,
+      "web_search_calls": 5
+    }
+  },
+  "contract": {
+    "method_dir": "er082_output/rlct_trial_01/inbound_tourism/M3",
+    "producer": {
+      "status": "FAIL",
+      "error": "AnnotationProducerError: [STOP] ANNOTATION_PRODUCER_FAILED: internal check d_tags: [\"non-standard number marks: ['【2019年【周辺数値】']\"]"
+    },
+    "validate": null,
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 4
+    },
+    "all_pass": false
+  },
+  "finished_at": "2026-10-17T04:29:34.416344+00:00"
+}
