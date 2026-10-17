@@ -159,3 +159,29 @@ STOP: ユーザー§11(S3未達/Mandatory HR/Production不具合/重大なFact�
 - OPEN-406副作用: 本run内の`key_phrase_source_gate.json` keywords_path絶対化のみ。他run差分は着手前から存在した既存M(coffee_fxpw key_phrase_source_gate/coffee_m2p0_n01 raw_usage_log)で本委任起因ではない(復元・stageせず)。
 - Master Audio Store: 固定shell等のreused 20件/generated 9件(reuse_telemetry bape行)。manifest.json/reuse_telemetry.jsonlは着手前から大量の他差分があるためstageしない。
 
+
+
+## 14. ユーザー受入記録(2026-10-17、委任_05、JPY0)
+
+- **ユーザー試聴PASS**: 「退屈と攻撃性」正式Production版をStandard/Advancedともに試聴し、両レベルとも分かりやすく面白くまとまっておりPASS。追加修正・再生成は不要、`USER_LISTENING_PENDING`をclose、ユーザー受入完了として扱ってよい(追加Trial・仕様変更は不要)。原文(逐語)=`docs/pm/delegation_log/2026-10-17_FAMILY-X-BOREDOM-AGGRESSION-PRODUCTION-E2E-01_LISTENING-PASS_USER.md`(226字、ファイルsha256 `0dc5e25813721faf4279f6e9555803c104fc8c86c743223bdbd1460e470e5266`)。
+- **受入**: 完了(OPEN-408 CLOSED・USER_ACCEPTED、REGISTER #110、DECISION_LOG 2026-10-17 委任_05)。新たなProduction採用判断ではなく、配線済み仕様のStatusは不変。
+- **E2E最終費用表**(§12/§13から転記。出典 `er019_output/family_x_audio_production_wiring_01/boredom_aggression__run_bape_01/audit/cost_by_stage_e2e_04.json`。区分: 実測=usage x pricing_snapshot計算値。推定・未取得の項目なし):
+
+| 区分 | 項目 | JPY | 区分 |
+|---|---|---|---|
+| text | Research(gpt-6-luna、web_search 9回) | 16.354 | 実測 |
+| text | Ledger(Verification、web_search 14回) | 24.961 | 実測 |
+| text | B3 Storyline(gpt-6.1-sol) | 7.936 | 実測 |
+| text | Writer R0/R1/R2 | 8.440/2.997/3.105 | 実測 |
+| text | Advanced(+IOL)/Standard A2 | 0.408/0.367 | 実測 |
+| text | Risk Flagger b1b/a2 | 0.983/0.773 | 実測 |
+| text小計 | | 66.677 | 実測(runner cost.json基準) |
+| audio | S7 scaffold(luna 20 calls) | 4.289 | 実測 |
+| audio | S8 TTS Adv(TTS 6.794+ASR 0.922+1.376+LLM 0.041) | 9.133 | 実測 |
+| audio | S9 TTS Std(TTS 6.583+ASR 0.960+2.258) | 9.801 | 実測 |
+| audio小計 | | 23.223(上限70内、Batch換算16.534) | 実測 |
+| **E2E総額** | | **89.900**(上限180、残90.1) | 実測 |
+| Batch換算総額 | | 83.211 | 実測(Gemini TTSのみBatch tier換算、他は正規単価のまま) |
+| 70円目標との差 | | 実測+19.9/Batch換算+13.2 | 算出 |
+
+- **残課題**(いずれも非blocking): (1) Review Queue RF候補6件(b1b 2/a2 4)はHuman Review側の候補一覧で合否判定ではない。(2) Landing(公開一覧)はユーザー指示がないため未更新(Coffee S3試聴PASS時もLanding更新の記録なし、同扱い)。(3) Std comment_3の数字表記差(PASS_WITH_WARNING)は事後試聴リストのまま。(4) 70円目標との差(実測+19.9)の単価改善は別管理。

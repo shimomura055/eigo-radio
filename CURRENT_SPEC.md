@@ -1266,7 +1266,7 @@ Family X Production正式経路(初回path+retry/fallback/regeneration/resume)�
 - 判定整合: 重大NG=なし / 主因=なし / 是正対象=なし / STOP理由=なし / 提示=可(試聴依頼)。
 - Status: S3W = `PRODUCTION_WIRED`(2026-10-17 Fable)+Coffee S3正式版 `USER_LISTENING_PENDING`。後続タスク(BAPE)の開始条件「S3 PRODUCTION_WIRED」は充足。
 - 2026-10-17 ユーザー試聴PASS(Coffee S3正式版、原文=docs/pm/delegation_log/2026-10-17_FAMILY-X-BOREDOM-AGGRESSION-PRODUCTION-E2E-01_COST-APPROVAL-S3-PASS_USER.md sha256 0cbf10d5dfac452ec9ee32234b431387df66ee73f143508929b726b11e5815c4): `USER_LISTENING_PENDING`→CLOSED。追加Style調整・再生成なし。S3=Family X Std日本語解説の正式Style維持、PRODUCTION_WIRED判定不変。
-- 2026-10-17 FAMILY-X-BOREDOM-AGGRESSION-PRODUCTION-E2E-01: 新規記事の正式Production E2E完走(text JPY66.68+audio 23.22=89.90/上限180、Batch換算83.21、profile fx_20261017自動適用、Style 37/37一致、K2 fallback 0、S3x5、AUW NG/HR 0)。Fable判定=AUDIO_E2E_COMPLETE(2026-10-17)、記事=USER_LISTENING_PENDING(https://shimomura055.github.io/eigo-radio/user_test/boredom_aggression_bape_e2e_01/index.html)。
+- 2026-10-17 FAMILY-X-BOREDOM-AGGRESSION-PRODUCTION-E2E-01: 新規記事の正式Production E2E完走(text JPY66.68+audio 23.22=89.90/上限180、Batch換算83.21、profile fx_20261017自動適用、Style 37/37一致、K2 fallback 0、S3x5、AUW NG/HR 0)。Fable判定=AUDIO_E2E_COMPLETE(2026-10-17)、記事=USER_LISTENING_PENDING(https://shimomura055.github.io/eigo-radio/user_test/boredom_aggression_bape_e2e_01/index.html)。 2026-10-17 ユーザー試聴PASS(Standard/Advanced両レベル、原文=docs/pm/delegation_log/2026-10-17_FAMILY-X-BOREDOM-AGGRESSION-PRODUCTION-E2E-01_LISTENING-PASS_USER.md sha256 0dc5e25813721faf4279f6e9555803c104fc8c86c743223bdbd1460e470e5266)=ユーザー受入完了、`USER_LISTENING_PENDING`→CLOSED(OPEN-408)。追加修正・再生成・追加Trial・仕様変更なし。Status変更なし(配線済み仕様はPRODUCTION_WIREDのまま、新規採用なし)。
 
 
 
