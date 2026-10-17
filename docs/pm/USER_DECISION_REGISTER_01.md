@@ -248,3 +248,9 @@
 ### 2026-10-17 SJS4 委任_01追記(`FAMILY-X-COFFEE-STANDARD-JA-SUPPORT-CALM-STYLE-TRIAL-04`、既存行は書き換えず追記のみ)
 
 - #103(新規・未回答報告・ユーザー試聴待ち) Std日本語解説(Preview/Comment1〜4)Style選定(試聴後) — 基準P2/R2+S1〜S8を各2 Takeで比較、2 Takeとも許容範囲か確認の上で選定。試聴ページ=https://shimomura055.github.io/eigo-radio/user_test/coffee_ja_style_trial_04/index.html。選定後に別タスクでProduction反映(OPEN-404)。
+
+
+### 2026-10-17 S3W 委任_02追記(`FAMILY-X-STD-JA-S3-ADOPTION-AND-WIRING-01`、既存行は書き換えず追記のみ)
+
+- #103(判断済み: S3選定、2026-10-17) Std日本語解説(Preview/Comment1〜4)Styleとして S3 を選定(原文=docs/pm/delegation_log/2026-10-17_FAMILY-X-STD-JA-S3-ADOPTION-AND-WIRING-01_USER.md)。
+- #105(新規・UDR-blocking・Phase B開始条件) S3をFamily X Std日本語解説の正式Styleとして採用するか(S3版試聴後) — D区分。S3版試聴ページ=https://shimomura055.github.io/eigo-radio/user_test/coffee_fxpw_e2e_01_s3/index.html(R2版と並列再生可)。採用時のみPhase B(Production配線)へ進む。Production不変・未承認。
