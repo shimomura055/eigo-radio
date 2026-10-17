@@ -1,0 +1,119 @@
+styles: {'P2': (166, '4ade87385824'), 'R2': (168, '625826c1187b'), 'S1': (197, '4c0a27339e4e'), 'S2': (200, '9e560789725b'), 'S3': (199, '060c08fde003'), 'S4': (199, '75459c83de01'), 'S5': (208, '6a2df7452724'), 'S6': (208, '9469272bfff0'), 'S7': (211, '4d5675df166a'), 'S8': (215, 'e7d3d528ce01')} R2==Production: True
+# COST_ESTIMATE_01 (2026-10-17, API 0)
+
+- call数: 10仕様×2Take×5section = 100。技術失敗時のみ1回retry(+10%見込み)。
+- 想定出力音声: 1セット約63.0秒(正式版5 segment実尺+margin)×20セット = 約1260秒。出力token約31495、入力token約15655。
+- 単価(前回Trial 02と同一式): 出力$6.0/M、入力$0.5/M、USD_JPY=160.0。
+- TTS概算: $0.1968 = 約JPY 31.5(retry+10%込み 約JPY 34.6)。
+- ASR(OpenAI、約21.0分、$0.003/分目安): 約JPY 10.1。
+- 合計概算 約JPY 44.7。Guardrail JPY40.0(接近・超過は記録して継続可)、7-7 JPY100判定: 超過見込みなし。
+- 補足: 委任文の見積(期待約JPY20)は前回Trial 02の80 clip(うちKP短clip 40)を件数比例で外挿したもの。今回は全clipが長いPreview/Comment(1セット約63秒)のため、音声秒ベースでは上記が妥当。前回実測 JPY13.73(85 call、候補40セグメント分は約12,800出力token)と25 tok/s換算で整合。
+- 再利用/差分再生成: 新規Style×新規Takeの独立生成が目的のため再利用キャッシュ・差分再生成は対象外(Master Audio Store/キャッシュは参照しない)。
+
+todo 100 of 100
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
+P2_A_preview OK 12.88 
+P2_A_comment_1 OK 6.76 
+P2_A_comment_2 OK 17.12 
+P2_A_comment_3 OK 12.76 
+P2_A_comment_4 OK 11.19 
+R2_A_preview OK 14.05 
+R2_A_comment_1 OK 6.84 
+R2_A_comment_2 OK 17.52 
+R2_A_comment_3 OK 14.16 
+R2_A_comment_4 OK 11.0 
+S1_A_preview OK 14.32 
+S1_A_comment_1 OK 7.39 
+S1_A_comment_2 OK 18.39 
+S1_A_comment_3 OK 14.72 
+S1_A_comment_4 OK 11.72 
+S2_A_preview OK 13.96 
+S2_A_comment_1 OK 6.71 
+S2_A_comment_2 OK 18.02 
+S2_A_comment_3 OK 13.57 
+S2_A_comment_4 OK 10.63 
+S3_A_preview OK 14.88 
+S3_A_comment_1 OK 7.39 
+S3_A_comment_2 OK 18.35 
+S3_A_comment_3 OK 14.15 
+S3_A_comment_4 OK 12.24 
+S4_A_preview OK 14.25 
+S4_A_comment_1 OK 6.48 
+S4_A_comment_2 OK 17.52 
+S4_A_comment_3 OK 13.2 
+S4_A_comment_4 OK 11.3 
+S5_A_preview OK 14.56 
+S5_A_comment_1 OK 7.19 
+S5_A_comment_2 OK 19.09 
+S5_A_comment_3 OK 14.24 
+S5_A_comment_4 OK 11.68 
+S6_A_preview OK 14.48 
+S6_A_comment_1 OK 6.87 
+S6_A_comment_2 OK 17.8 
+S6_A_comment_3 OK 13.43 
+S6_A_comment_4 OK 11.0 
+S7_A_preview OK 14.03 
+S7_A_comment_1 OK 7.12 
+S7_A_comment_2 OK 17.64 
+S7_A_comment_3 OK 13.53 
+S7_A_comment_4 OK 11.88 
+S8_A_preview OK 15.06 
+S8_A_comment_1 OK 7.29 
+S8_A_comment_2 OK 20.12 
+S8_A_comment_3 OK 14.12 
+S8_A_comment_4 OK 12.24 
+P2_B_preview OK 13.64 
+P2_B_comment_1 OK 6.67 
+P2_B_comment_2 OK 17.97 
+P2_B_comment_3 OK 13.51 
+P2_B_comment_4 OK 11.0 
+R2_B_preview OK 13.86 
+R2_B_comment_1 OK 7.09 
+R2_B_comment_2 OK 17.4 
+R2_B_comment_3 OK 13.23 
+R2_B_comment_4 OK 10.91 
+S1_B_preview OK 14.64 
+S1_B_comment_1 OK 7.2 
+S1_B_comment_2 OK 17.8 
+S1_B_comment_3 OK 13.07 
+S1_B_comment_4 OK 12.16 
+S2_B_preview OK 13.68 
+S2_B_comment_1 OK 6.75 
+S2_B_comment_2 OK 17.28 
+S2_B_comment_3 OK 13.79 
+S2_B_comment_4 OK 11.93 
+S3_B_preview OK 14.76 
+S3_B_comment_1 OK 6.92 
+S3_B_comment_2 OK 17.87 
+S3_B_comment_3 OK 14.24 
+S3_B_comment_4 OK 11.85 
+S4_B_preview OK 15.02 
+S4_B_comment_1 OK 6.92 
+S4_B_comment_2 OK 17.76 
+S4_B_comment_3 OK 13.91 
+S4_B_comment_4 OK 11.36 
+S5_B_preview OK 14.79 
+S5_B_comment_1 OK 7.58 
+S5_B_comment_2 OK 17.4 
+S5_B_comment_3 OK 13.85 
+S5_B_comment_4 OK 12.11 
+S6_B_preview OK 13.88 
+S6_B_comment_1 OK 7.16 
+S6_B_comment_2 OK 17.8 
+S6_B_comment_3 OK 12.79 
+S6_B_comment_4 OK 11.28 
+S7_B_preview OK 13.59 
+S7_B_comment_1 OK 6.84 
+S7_B_comment_2 OK 17.36 
+S7_B_comment_3 OK 13.79 
+S7_B_comment_4 OK 11.57 
+S8_B_preview OK 14.84 
+S8_B_comment_1 OK 6.72 
+S8_B_comment_2 OK 19.0 
+S8_B_comment_3 OK 13.92 
+S8_B_comment_4 OK 11.64 
+{'calls_total': 102, 'jobs': 100, 'ok': 100, 'retry_calls': 2, 'prompt_tokens': 4180, 'candidates_tokens': 32287, 'tts_est_usd': 0.19581, 'tts_est_jpy': 31.33, 'wall_seconds_this_run': 112.2, 'budget_guardrail_jpy': 40.0, 'basis': 'usage_metadata実測tokens×Standard単価(出力$6/M、入力$0.5/M)、USD_JPY=160。請求画面は未確認'}
+Counter({'PHONETIC_MATCH': 37, 'EXACT_MATCH': 34, 'NORMALIZED_MATCH': 25, 'TRUE_CONTENT_MISMATCH': 3, 'ASR_VALIDATION_UNCERTAIN': 1})
+asr_audio_minutes 21.48 est_jpy 10.31

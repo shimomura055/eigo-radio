@@ -243,3 +243,7 @@
 
 - #101(新規・UDR deferred・非Blocking) 案1(Fact単位探索上限+出典ロケータ引継ぎ)を検証Trialへ進めるか — D区分、推奨=Fable所見は報告で提示、Trial約JPY150〜200(出典=docs/research/FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-ANALYSIS-01/ANALYSIS_REPORT_01.md §9、OPEN-403)。
 - #102(新規・UDR deferred・非Blocking) 案2(Select-then-Verify)を検証Trial・設計へ進めるか — D区分、構造変更、Trial約JPY55〜60+実装別途+Opus条件A(11-3)。出典=同上、OPEN-403。
+
+### 2026-10-17 SJS4 委任_01追記(`FAMILY-X-COFFEE-STANDARD-JA-SUPPORT-CALM-STYLE-TRIAL-04`、既存行は書き換えず追記のみ)
+
+- #103(新規・未回答報告・ユーザー試聴待ち) Std日本語解説(Preview/Comment1〜4)Style選定(試聴後) — 基準P2/R2+S1〜S8を各2 Takeで比較、2 Takeとも許容範囲か確認の上で選定。試聴ページ=https://shimomura055.github.io/eigo-radio/user_test/coffee_ja_style_trial_04/index.html。選定後に別タスクでProduction反映(OPEN-404)。

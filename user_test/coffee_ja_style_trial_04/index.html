@@ -1,0 +1,391 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Coffee Standard 日本語解説 Style 比較 Trial 04(落ち着き方向)</title><style>body{font-family:sans-serif;max-width:1040px;margin:1em auto;padding:0 1em;line-height:1.5}h2{border-bottom:2px solid #888;margin-top:2em}
+h3{margin:.2em 0}h4{margin:.8em 0 .2em}.set{border:1px solid #ccc;border-radius:6px;padding:.6em 1em;margin:1em 0}
+.set.base{border:3px solid #b8860b;background:#fff8e1}.badge{display:inline-block;background:#b8860b;color:#fff;border-radius:4px;padding:1px 8px;font-size:.8em;margin-left:.5em}
+.take{border-left:4px solid #9ab;padding-left:.7em;margin:.6em 0}.take.B{border-left-color:#c97}
+.a{display:flex;align-items:center;gap:.6em;margin:.2em 0;flex-wrap:wrap}.a .lbl{min-width:9em;font-size:.9em}.a .v{font-size:.8em;color:#06c;min-width:4em}
+.a .s{font-size:.85em;color:#333;flex:1 1 20em}audio{height:32px;min-width:360px}pre{white-space:pre-wrap;background:#f5f5f5;padding:.5em;font-size:.8em}
+.note{color:#555;font-size:.9em}.warnbox{background:#ffe9e9;border:1px solid #c66;padding:.5em 1em;border-radius:6px}.aim{font-size:.9em;color:#333}
+table{border-collapse:collapse}td,th{border:1px solid #ccc;padding:2px 6px;font-size:.85em}.asr{font-size:.75em;padding:1px 5px;border-radius:4px}
+.asr.ok{background:#dfd}.asr.mid{background:#ffd}.asr.warn{background:#fed}.eval{font-size:.85em;color:#a00;background:#fff;border:1px dashed #aaa;padding:2px 6px;margin-top:.3em}</style></head><body>
+<h1>Coffee Standard 日本語解説(Preview／Comment1〜4)Style比較 Trial 04</h1>
+<div class="warnbox"><b>試聴用Trialです。ユーザー試聴前のため、どの仕様にもPASS判定はありません。</b> Productionへは反映していません(現行Productionは基準R2のまま)。選定はあなたの試聴後に別タスクで行います。</div>
+<p class="note">目的: 正式Coffee E2E完成版でやや高く感じたテンション・語尾・抑揚を、P2・R2の温かみ・親しみ・明瞭さを残したまま落ち着かせる方向で比較します。
+基準(P2・R2、金色枠)+新規S1〜S8の計10仕様を、各仕様とも5セクション一式を<b>独立に2回(Take A／Take B)</b>生成しました。<b>全Takeを掲載しています(聞こえのよいものだけの選別はしていません)</b>。Blind比較ではなく、候補名と狙いを併記しています。
+2 Takeとも許容範囲に収まるか(テンション・語尾・抑揚)をご確認ください。</p>
+<h3>共通の条件</h3><ul class="note">
+<li>原稿: 正式Coffee E2E完成版(run coffee_prices__run_fxpw_01)のStandard日本語解説 Preview／Comment1〜4を、TTSへ渡した文字列のままそのまま使用(書き換えなし)。</li>
+<li>Voice=Aoede、model=gemini-3.8-flash-lite-tts、language=ja-JP、Standard同期(DEV Trial)、無音trim余白・減速なし等、正式版のPreview／Comment生成と同条件。比較で変えたのはStyleのみ。</li>
+<li>基準P2・R2は前回Trial(coffee_ja_style_trial_02)の実際のStyle全文を逐語で使用(sha256検証済み)。S1〜S8のStyleは「個別指示+共通指示」を直接連結した全文です(P2・R2には共通指示を付けていません)。</li>
+<li><b>通し再生は「試聴用の連結」であり、正式Assemblyではありません</b>: Preview→Comment1→2→3→4を、全仕様・全Takeで同一の0.8秒の無音で連結し、同一の音量処理(目標RMS=0.0949、正式版と同値)をかけています。個別セクションも同じ音量処理済みです。</li>
+<li>ASR表示は機械による参考判定(前回Trialと同じ日本語ASR方式)であり、聴感の良し悪しではありません。NGでも再生成していません。「ユーザー聴感評価」欄はすべて未記入です。</li></ul>
+<h2>機械指標サマリ(聴感評価ではありません)</h2><table><tr><th>仕様</th><th>Style文字数</th><th>Take A: ASR 完全/正規化/音読み一致/NG</th><th>Take A: 5セクション尺(s)</th><th>Take B: ASR 完全/正規化/音読み一致/NG</th><th>Take B: 5セクション尺(s)</th></tr>
+<tr><td><a href="#P2">P2</a> (基準)</td><td>166</td><td>3/0/2/0</td><td>60.7</td><td>1/2/1/1</td><td>62.8</td></tr>
+<tr><td><a href="#R2">R2</a> (基準)</td><td>168</td><td>2/2/1/0</td><td>63.6</td><td>2/1/2/0</td><td>62.5</td></tr>
+<tr><td><a href="#S1">S1</a></td><td>197</td><td>2/1/2/0</td><td>66.5</td><td>2/1/2/0</td><td>64.9</td></tr>
+<tr><td><a href="#S2">S2</a></td><td>200</td><td>3/0/2/0</td><td>62.9</td><td>1/2/1/1</td><td>63.4</td></tr>
+<tr><td><a href="#S3">S3</a></td><td>199</td><td>2/1/2/0</td><td>67.0</td><td>1/1/2/1</td><td>65.6</td></tr>
+<tr><td><a href="#S4">S4</a></td><td>199</td><td>1/2/2/0</td><td>62.8</td><td>1/2/2/0</td><td>65.0</td></tr>
+<tr><td><a href="#S5">S5</a></td><td>208</td><td>3/0/2/0</td><td>66.8</td><td>1/2/2/0</td><td>65.7</td></tr>
+<tr><td><a href="#S6">S6</a></td><td>208</td><td>3/0/2/0</td><td>63.6</td><td>2/1/2/0</td><td>62.9</td></tr>
+<tr><td><a href="#S7">S7</a></td><td>211</td><td>1/2/2/0</td><td>64.2</td><td>1/1/2/1</td><td>63.1</td></tr>
+<tr><td><a href="#S8">S8</a></td><td>215</td><td>1/2/2/0</td><td>68.8</td><td>1/2/2/0</td><td>66.1</td></tr>
+</table>
+<div class="set base" id="P2"><h3>基準 P2(前回Trialの好評Style・逐語)<span class=badge>基準</span></h3><div class="aim">調整内容と狙い: 前回Trial(coffee_ja_style_trial_02)のP2をそのまま使用。共通指示は付けていません。</div>
+<div class="take A"><h4>P2 Take A</h4>
+<div class="a"><span class="lbl">P2 Take A 通し</span><audio controls preload="none" src="audio/P2_A_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">63.91s</span></div>
+<div class="a"><span class="lbl">P2 A Preview</span><audio controls preload="none" src="audio/P2_A_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">12.88s</span></div>
+<div class="a"><span class="lbl">P2 A Comment1</span><audio controls preload="none" src="audio/P2_A_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">6.76s</span></div>
+<div class="a"><span class="lbl">P2 A Comment2</span><audio controls preload="none" src="audio/P2_A_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">17.12s</span></div>
+<div class="a"><span class="lbl">P2 A Comment3</span><audio controls preload="none" src="audio/P2_A_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">12.76s</span></div>
+<div class="a"><span class="lbl">P2 A Comment4</span><audio controls preload="none" src="audio/P2_A_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">11.19s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 3/0/2/0、異音検知=2件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<div class="take B"><h4>P2 Take B</h4>
+<div class="a"><span class="lbl">P2 Take B 通し</span><audio controls preload="none" src="audio/P2_B_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">65.99s</span></div>
+<div class="a"><span class="lbl">P2 B Preview</span><audio controls preload="none" src="audio/P2_B_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr warn">ASR: TRUE_CONTENT_MISMATCH</span> <span class="note">13.64s</span></div>
+<div class="a"><span class="lbl">P2 B Comment1</span><audio controls preload="none" src="audio/P2_B_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">6.67s</span></div>
+<div class="a"><span class="lbl">P2 B Comment2</span><audio controls preload="none" src="audio/P2_B_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">17.97s</span></div>
+<div class="a"><span class="lbl">P2 B Comment3</span><audio controls preload="none" src="audio/P2_B_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">13.51s</span></div>
+<div class="a"><span class="lbl">P2 B Comment4</span><audio controls preload="none" src="audio/P2_B_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">11.0s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 1/2/1/1、異音検知=2件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<details open><summary>TTSへ渡したStyle全文(166文字、sha256=4ade87385824438f…)</summary><pre>明るく、温かみのある親しみやすい話し方で。聞き手に楽しく語りかけるように、自然な抑揚と軽やかなリズムをつけてください。ニュース番組としての明瞭さを保ち、演技がかった話し方は避けてください。句読点の記号そのものに反応して声の高さを変えないでください。読点は短い息継ぎの間、句点はやや長めの間として、音程は変えずに自然に置いてください。</pre></details>
+<details><summary>実際に読み上げた原稿全文(5セクション、全仕様共通)</summary><pre>[Preview]
+店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。
+
+[Comment1]
+関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。
+
+[Comment2]
+前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。
+
+[Comment3]
+店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。
+
+[Comment4]
+コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</pre></details></div>
+<div class="set base" id="R2"><h3>基準 R2(前回Trialの好評Style・逐語。現行ProductionのStd日本語Styleと同一)<span class=badge>基準</span></h3><div class="aim">調整内容と狙い: 前回Trial R2をそのまま使用。共通指示は付けていません。現行Productionと同一文字列(sha256一致)で、完成版でテンションが高めに感じられた比較元です。</div>
+<div class="take A"><h4>R2 Take A</h4>
+<div class="a"><span class="lbl">R2 Take A 通し</span><audio controls preload="none" src="audio/R2_A_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">66.77s</span></div>
+<div class="a"><span class="lbl">R2 A Preview</span><audio controls preload="none" src="audio/R2_A_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">14.05s</span></div>
+<div class="a"><span class="lbl">R2 A Comment1</span><audio controls preload="none" src="audio/R2_A_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">6.84s</span></div>
+<div class="a"><span class="lbl">R2 A Comment2</span><audio controls preload="none" src="audio/R2_A_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">17.52s</span></div>
+<div class="a"><span class="lbl">R2 A Comment3</span><audio controls preload="none" src="audio/R2_A_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">14.16s</span></div>
+<div class="a"><span class="lbl">R2 A Comment4</span><audio controls preload="none" src="audio/R2_A_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">11.0s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 2/2/1/0、異音検知=1件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<div class="take B"><h4>R2 Take B</h4>
+<div class="a"><span class="lbl">R2 Take B 通し</span><audio controls preload="none" src="audio/R2_B_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">65.69s</span></div>
+<div class="a"><span class="lbl">R2 B Preview</span><audio controls preload="none" src="audio/R2_B_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">13.86s</span></div>
+<div class="a"><span class="lbl">R2 B Comment1</span><audio controls preload="none" src="audio/R2_B_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">7.09s</span></div>
+<div class="a"><span class="lbl">R2 B Comment2</span><audio controls preload="none" src="audio/R2_B_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">17.4s</span></div>
+<div class="a"><span class="lbl">R2 B Comment3</span><audio controls preload="none" src="audio/R2_B_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">13.23s</span></div>
+<div class="a"><span class="lbl">R2 B Comment4</span><audio controls preload="none" src="audio/R2_B_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">10.91s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 2/1/2/0、異音検知=2件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<details open><summary>TTSへ渡したStyle全文(168文字、sha256=625826c1187b6381…)</summary><pre>明るく、温かみのある話し方で。身近な人にちょっとした話題を教えてあげるように、自然な抑揚と軽やかなリズムをつけてください。ニュース番組としての明瞭さは保ち、演技がかった話し方は避けてください。句読点の記号そのものに反応して声の高さを変えないでください。読点は短い息継ぎの間、句点はやや長めの間として、音程は変えずに自然に置いてください。</pre></details>
+<details><summary>実際に読み上げた原稿全文(5セクション、全仕様共通)</summary><pre>[Preview]
+店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。
+
+[Comment1]
+関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。
+
+[Comment2]
+前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。
+
+[Comment3]
+店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。
+
+[Comment4]
+コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</pre></details></div>
+<div class="set" id="S1"><h3>S1 P2の穏やかな修正版</h3><div class="aim">調整内容と狙い: P2の温かみ・明瞭さを保ち、全体の明るさと文末の力みを抑える。</div>
+<div class="take A"><h4>S1 Take A</h4>
+<div class="a"><span class="lbl">S1 Take A 通し</span><audio controls preload="none" src="audio/S1_A_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">69.74s</span></div>
+<div class="a"><span class="lbl">S1 A Preview</span><audio controls preload="none" src="audio/S1_A_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">14.32s</span></div>
+<div class="a"><span class="lbl">S1 A Comment1</span><audio controls preload="none" src="audio/S1_A_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">7.39s</span></div>
+<div class="a"><span class="lbl">S1 A Comment2</span><audio controls preload="none" src="audio/S1_A_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">18.39s</span></div>
+<div class="a"><span class="lbl">S1 A Comment3</span><audio controls preload="none" src="audio/S1_A_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">14.72s</span></div>
+<div class="a"><span class="lbl">S1 A Comment4</span><audio controls preload="none" src="audio/S1_A_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">11.72s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 2/1/2/0、異音検知=3件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<div class="take B"><h4>S1 Take B</h4>
+<div class="a"><span class="lbl">S1 Take B 通し</span><audio controls preload="none" src="audio/S1_B_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">68.07s</span></div>
+<div class="a"><span class="lbl">S1 B Preview</span><audio controls preload="none" src="audio/S1_B_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">14.64s</span></div>
+<div class="a"><span class="lbl">S1 B Comment1</span><audio controls preload="none" src="audio/S1_B_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">7.2s</span></div>
+<div class="a"><span class="lbl">S1 B Comment2</span><audio controls preload="none" src="audio/S1_B_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">17.8s</span></div>
+<div class="a"><span class="lbl">S1 B Comment3</span><audio controls preload="none" src="audio/S1_B_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">13.07s</span></div>
+<div class="a"><span class="lbl">S1 B Comment4</span><audio controls preload="none" src="audio/S1_B_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">12.16s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 2/1/2/0、異音検知=2件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<details open><summary>TTSへ渡したStyle全文(197文字、sha256=4c0a27339e4e1156…)</summary><pre>温かみのある、親しみやすい自然な話し方で。聞き手に穏やかに語りかけるように、内容に沿った控えめな抑揚をつけてください。ニュース番組としての明瞭さを保ち、全体の明るさは控えめにしてください。文末は力を抜いて自然に収めてください。句読点は自然な間として扱い、記号だけを理由に声の高さを変えないでください。問いかけは穏やかに読み、語尾を大きく跳ね上げないでください。演技がかった強調は避けてください。</pre></details>
+<details><summary>実際に読み上げた原稿全文(5セクション、全仕様共通)</summary><pre>[Preview]
+店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。
+
+[Comment1]
+関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。
+
+[Comment2]
+前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。
+
+[Comment3]
+店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。
+
+[Comment4]
+コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</pre></details></div>
+<div class="set" id="S2"><h3>S2 R2の穏やかな修正版</h3><div class="aim">調整内容と狙い: R2の「身近な人に伝える」親しみを保ち、調子を落ち着かせ、抑揚を大切な点だけに絞る。</div>
+<div class="take A"><h4>S2 Take A</h4>
+<div class="a"><span class="lbl">S2 Take A 通し</span><audio controls preload="none" src="audio/S2_A_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">66.09s</span></div>
+<div class="a"><span class="lbl">S2 A Preview</span><audio controls preload="none" src="audio/S2_A_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">13.96s</span></div>
+<div class="a"><span class="lbl">S2 A Comment1</span><audio controls preload="none" src="audio/S2_A_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">6.71s</span></div>
+<div class="a"><span class="lbl">S2 A Comment2</span><audio controls preload="none" src="audio/S2_A_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">18.02s</span></div>
+<div class="a"><span class="lbl">S2 A Comment3</span><audio controls preload="none" src="audio/S2_A_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">13.57s</span></div>
+<div class="a"><span class="lbl">S2 A Comment4</span><audio controls preload="none" src="audio/S2_A_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">10.63s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 3/0/2/0、異音検知=1件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<div class="take B"><h4>S2 Take B</h4>
+<div class="a"><span class="lbl">S2 Take B 通し</span><audio controls preload="none" src="audio/S2_B_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">66.63s</span></div>
+<div class="a"><span class="lbl">S2 B Preview</span><audio controls preload="none" src="audio/S2_B_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">13.68s</span></div>
+<div class="a"><span class="lbl">S2 B Comment1</span><audio controls preload="none" src="audio/S2_B_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">6.75s</span></div>
+<div class="a"><span class="lbl">S2 B Comment2</span><audio controls preload="none" src="audio/S2_B_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr warn">ASR: TRUE_CONTENT_MISMATCH</span> <span class="note">17.28s</span></div>
+<div class="a"><span class="lbl">S2 B Comment3</span><audio controls preload="none" src="audio/S2_B_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">13.79s</span></div>
+<div class="a"><span class="lbl">S2 B Comment4</span><audio controls preload="none" src="audio/S2_B_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">11.93s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 1/2/1/1、異音検知=1件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<details open><summary>TTSへ渡したStyle全文(200文字、sha256=9e560789725b4565…)</summary><pre>身近な人に興味深い話題を伝えるように、温かみのある自然な話し方で。親しみやすさを保ちながら、落ち着いた調子と無理のないリズムで話してください。大切な点にだけ軽く抑揚をつけ、語尾はやわらかく収めてください。言葉は明瞭に伝えてください。句読点は自然な間として扱い、記号だけを理由に声の高さを変えないでください。問いかけは穏やかに読み、語尾を大きく跳ね上げないでください。演技がかった強調は避けてください。</pre></details>
+<details><summary>実際に読み上げた原稿全文(5セクション、全仕様共通)</summary><pre>[Preview]
+店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。
+
+[Comment1]
+関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。
+
+[Comment2]
+前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。
+
+[Comment3]
+店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。
+
+[Comment4]
+コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</pre></details></div>
+<div class="set" id="S3"><h3>S3 親しみのあるニュースナレーター</h3><div class="aim">調整内容と狙い: 温かい親しみ+安定した声。抑揚は重要語・対比のみ、文末は軽く下げる。</div>
+<div class="take A"><h4>S3 Take A</h4>
+<div class="a"><span class="lbl">S3 Take A 通し</span><audio controls preload="none" src="audio/S3_A_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">70.21s</span></div>
+<div class="a"><span class="lbl">S3 A Preview</span><audio controls preload="none" src="audio/S3_A_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">14.88s</span></div>
+<div class="a"><span class="lbl">S3 A Comment1</span><audio controls preload="none" src="audio/S3_A_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">7.39s</span></div>
+<div class="a"><span class="lbl">S3 A Comment2</span><audio controls preload="none" src="audio/S3_A_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">18.35s</span></div>
+<div class="a"><span class="lbl">S3 A Comment3</span><audio controls preload="none" src="audio/S3_A_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">14.15s</span></div>
+<div class="a"><span class="lbl">S3 A Comment4</span><audio controls preload="none" src="audio/S3_A_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">12.24s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 2/1/2/0、異音検知=4件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<div class="take B"><h4>S3 Take B</h4>
+<div class="a"><span class="lbl">S3 Take B 通し</span><audio controls preload="none" src="audio/S3_B_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">68.84s</span></div>
+<div class="a"><span class="lbl">S3 B Preview</span><audio controls preload="none" src="audio/S3_B_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">14.76s</span></div>
+<div class="a"><span class="lbl">S3 B Comment1</span><audio controls preload="none" src="audio/S3_B_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr warn">ASR: TRUE_CONTENT_MISMATCH</span> <span class="note">6.92s</span></div>
+<div class="a"><span class="lbl">S3 B Comment2</span><audio controls preload="none" src="audio/S3_B_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">17.87s</span></div>
+<div class="a"><span class="lbl">S3 B Comment3</span><audio controls preload="none" src="audio/S3_B_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">14.24s</span></div>
+<div class="a"><span class="lbl">S3 B Comment4</span><audio controls preload="none" src="audio/S3_B_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">11.85s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 1/1/2/1、異音検知=2件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<details open><summary>TTSへ渡したStyle全文(199文字、sha256=060c08fde003cf7c…)</summary><pre>温かみと親しみのあるニュースナレーターとして、落ち着いた、明瞭な声で伝えてください。声の調子は安定させ、重要な言葉や対比にだけ控えめな抑揚をつけてください。文末は軽く下げて自然に収め、聞き手が内容を追いやすい流れで読んでください。句読点は自然な間として扱い、記号だけを理由に声の高さを変えないでください。問いかけは穏やかに読み、語尾を大きく跳ね上げないでください。演技がかった強調は避けてください。</pre></details>
+<details><summary>実際に読み上げた原稿全文(5セクション、全仕様共通)</summary><pre>[Preview]
+店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。
+
+[Comment1]
+関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。
+
+[Comment2]
+前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。
+
+[Comment3]
+店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。
+
+[Comment4]
+コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</pre></details></div>
+<div class="set" id="S4"><h3>S4 身近なニュース解説者</h3><div class="aim">調整内容と狙い: 背景を身近な人に説明する口調で、説明の途中でテンションを上げない。</div>
+<div class="take A"><h4>S4 Take A</h4>
+<div class="a"><span class="lbl">S4 Take A 通し</span><audio controls preload="none" src="audio/S4_A_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">65.95s</span></div>
+<div class="a"><span class="lbl">S4 A Preview</span><audio controls preload="none" src="audio/S4_A_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">14.25s</span></div>
+<div class="a"><span class="lbl">S4 A Comment1</span><audio controls preload="none" src="audio/S4_A_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">6.48s</span></div>
+<div class="a"><span class="lbl">S4 A Comment2</span><audio controls preload="none" src="audio/S4_A_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">17.52s</span></div>
+<div class="a"><span class="lbl">S4 A Comment3</span><audio controls preload="none" src="audio/S4_A_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">13.2s</span></div>
+<div class="a"><span class="lbl">S4 A Comment4</span><audio controls preload="none" src="audio/S4_A_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">11.3s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 1/2/2/0、異音検知=3件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<div class="take B"><h4>S4 Take B</h4>
+<div class="a"><span class="lbl">S4 Take B 通し</span><audio controls preload="none" src="audio/S4_B_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">68.17s</span></div>
+<div class="a"><span class="lbl">S4 B Preview</span><audio controls preload="none" src="audio/S4_B_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">15.02s</span></div>
+<div class="a"><span class="lbl">S4 B Comment1</span><audio controls preload="none" src="audio/S4_B_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">6.92s</span></div>
+<div class="a"><span class="lbl">S4 B Comment2</span><audio controls preload="none" src="audio/S4_B_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">17.76s</span></div>
+<div class="a"><span class="lbl">S4 B Comment3</span><audio controls preload="none" src="audio/S4_B_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">13.91s</span></div>
+<div class="a"><span class="lbl">S4 B Comment4</span><audio controls preload="none" src="audio/S4_B_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">11.36s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 1/2/2/0、異音検知=1件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<details open><summary>TTSへ渡したStyle全文(199文字、sha256=75459c83de01964f…)</summary><pre>ニュースの背景を身近な人に説明するように、親しみやすく落ち着いた口調で話してください。内容への関心を穏やかに示し、要点や話のつながりを明瞭に伝えてください。説明の途中でテンションを上げず、文末は力を抜いてやわらかく収めてください。句読点は自然な間として扱い、記号だけを理由に声の高さを変えないでください。問いかけは穏やかに読み、語尾を大きく跳ね上げないでください。演技がかった強調は避けてください。</pre></details>
+<details><summary>実際に読み上げた原稿全文(5セクション、全仕様共通)</summary><pre>[Preview]
+店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。
+
+[Comment1]
+関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。
+
+[Comment2]
+前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。
+
+[Comment3]
+店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。
+
+[Comment4]
+コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</pre></details></div>
+<div class="set" id="S5"><h3>S5 穏やかなニュース系Podcaster</h3><div class="aim">調整内容と狙い: 落ち着いたニュース系Podcastホストの会話調。明るさ控えめ、語尾は短く自然に。</div>
+<div class="take A"><h4>S5 Take A</h4>
+<div class="a"><span class="lbl">S5 Take A 通し</span><audio controls preload="none" src="audio/S5_A_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">69.96s</span></div>
+<div class="a"><span class="lbl">S5 A Preview</span><audio controls preload="none" src="audio/S5_A_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">14.56s</span></div>
+<div class="a"><span class="lbl">S5 A Comment1</span><audio controls preload="none" src="audio/S5_A_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">7.19s</span></div>
+<div class="a"><span class="lbl">S5 A Comment2</span><audio controls preload="none" src="audio/S5_A_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">19.09s</span></div>
+<div class="a"><span class="lbl">S5 A Comment3</span><audio controls preload="none" src="audio/S5_A_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">14.24s</span></div>
+<div class="a"><span class="lbl">S5 A Comment4</span><audio controls preload="none" src="audio/S5_A_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">11.68s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 3/0/2/0、異音検知=2件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<div class="take B"><h4>S5 Take B</h4>
+<div class="a"><span class="lbl">S5 Take B 通し</span><audio controls preload="none" src="audio/S5_B_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">68.93s</span></div>
+<div class="a"><span class="lbl">S5 B Preview</span><audio controls preload="none" src="audio/S5_B_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">14.79s</span></div>
+<div class="a"><span class="lbl">S5 B Comment1</span><audio controls preload="none" src="audio/S5_B_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">7.58s</span></div>
+<div class="a"><span class="lbl">S5 B Comment2</span><audio controls preload="none" src="audio/S5_B_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">17.4s</span></div>
+<div class="a"><span class="lbl">S5 B Comment3</span><audio controls preload="none" src="audio/S5_B_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">13.85s</span></div>
+<div class="a"><span class="lbl">S5 B Comment4</span><audio controls preload="none" src="audio/S5_B_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">12.11s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 1/2/2/0、異音検知=4件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<details open><summary>TTSへ渡したStyle全文(208文字、sha256=6a2df7452724b791…)</summary><pre>落ち着いたニュース系Podcastのホストとして、温かみのある自然な会話調で話してください。聞き手と話題を共有するような親しみを持ち、内容に沿った穏やかな抑揚と滑らかなリズムで伝えてください。声の明るさは控えめにし、語尾は短く自然に収めてください。句読点は自然な間として扱い、記号だけを理由に声の高さを変えないでください。問いかけは穏やかに読み、語尾を大きく跳ね上げないでください。演技がかった強調は避けてください。</pre></details>
+<details><summary>実際に読み上げた原稿全文(5セクション、全仕様共通)</summary><pre>[Preview]
+店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。
+
+[Comment1]
+関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。
+
+[Comment2]
+前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。
+
+[Comment3]
+店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。
+
+[Comment4]
+コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</pre></details></div>
+<div class="set" id="S6"><h3>S6 一人の聞き手に向けたPodcaster</h3><div class="aim">調整内容と狙い: 一人の聞き手に丁寧に伝える距離感。普段の会話に近い調子、抑揚は意味を伝える範囲のみ。</div>
+<div class="take A"><h4>S6 Take A</h4>
+<div class="a"><span class="lbl">S6 Take A 通し</span><audio controls preload="none" src="audio/S6_A_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">66.78s</span></div>
+<div class="a"><span class="lbl">S6 A Preview</span><audio controls preload="none" src="audio/S6_A_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">14.48s</span></div>
+<div class="a"><span class="lbl">S6 A Comment1</span><audio controls preload="none" src="audio/S6_A_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">6.87s</span></div>
+<div class="a"><span class="lbl">S6 A Comment2</span><audio controls preload="none" src="audio/S6_A_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">17.8s</span></div>
+<div class="a"><span class="lbl">S6 A Comment3</span><audio controls preload="none" src="audio/S6_A_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">13.43s</span></div>
+<div class="a"><span class="lbl">S6 A Comment4</span><audio controls preload="none" src="audio/S6_A_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">11.0s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 3/0/2/0、異音検知=1件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<div class="take B"><h4>S6 Take B</h4>
+<div class="a"><span class="lbl">S6 Take B 通し</span><audio controls preload="none" src="audio/S6_B_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">66.11s</span></div>
+<div class="a"><span class="lbl">S6 B Preview</span><audio controls preload="none" src="audio/S6_B_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">13.88s</span></div>
+<div class="a"><span class="lbl">S6 B Comment1</span><audio controls preload="none" src="audio/S6_B_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">7.16s</span></div>
+<div class="a"><span class="lbl">S6 B Comment2</span><audio controls preload="none" src="audio/S6_B_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">17.8s</span></div>
+<div class="a"><span class="lbl">S6 B Comment3</span><audio controls preload="none" src="audio/S6_B_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">12.79s</span></div>
+<div class="a"><span class="lbl">S6 B Comment4</span><audio controls preload="none" src="audio/S6_B_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">11.28s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 2/1/2/0、異音検知=2件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<details open><summary>TTSへ渡したStyle全文(208文字、sha256=9469272bfff0578e…)</summary><pre>関心を持って聞いている一人の相手に、話題を丁寧に伝えるPodcastホストのように話してください。身近で温かい距離感を保ち、落ち着いた普段の会話に近い調子で伝えてください。抑揚は意味を伝えるために必要な範囲にとどめ、文末はやわらかく収めてください。句読点は自然な間として扱い、記号だけを理由に声の高さを変えないでください。問いかけは穏やかに読み、語尾を大きく跳ね上げないでください。演技がかった強調は避けてください。</pre></details>
+<details><summary>実際に読み上げた原稿全文(5セクション、全仕様共通)</summary><pre>[Preview]
+店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。
+
+[Comment1]
+関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。
+
+[Comment2]
+前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。
+
+[Comment3]
+店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。
+
+[Comment4]
+コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</pre></details></div>
+<div class="set" id="S7"><h3>S7 ニュースの明瞭さ＋Podcastの親しみ</h3><div class="aim">調整内容と狙い: ニュースの明瞭さとPodcastの親しみを合わせる。要点・対比に軽く抑揚、語尾は伸ばさない。</div>
+<div class="take A"><h4>S7 Take A</h4>
+<div class="a"><span class="lbl">S7 Take A 通し</span><audio controls preload="none" src="audio/S7_A_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">67.4s</span></div>
+<div class="a"><span class="lbl">S7 A Preview</span><audio controls preload="none" src="audio/S7_A_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">14.03s</span></div>
+<div class="a"><span class="lbl">S7 A Comment1</span><audio controls preload="none" src="audio/S7_A_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">7.12s</span></div>
+<div class="a"><span class="lbl">S7 A Comment2</span><audio controls preload="none" src="audio/S7_A_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">17.64s</span></div>
+<div class="a"><span class="lbl">S7 A Comment3</span><audio controls preload="none" src="audio/S7_A_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">13.53s</span></div>
+<div class="a"><span class="lbl">S7 A Comment4</span><audio controls preload="none" src="audio/S7_A_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">11.88s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 1/2/2/0、異音検知=2件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<div class="take B"><h4>S7 Take B</h4>
+<div class="a"><span class="lbl">S7 Take B 通し</span><audio controls preload="none" src="audio/S7_B_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">66.35s</span></div>
+<div class="a"><span class="lbl">S7 B Preview</span><audio controls preload="none" src="audio/S7_B_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">13.59s</span></div>
+<div class="a"><span class="lbl">S7 B Comment1</span><audio controls preload="none" src="audio/S7_B_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr warn">ASR: ASR_VALIDATION_UNCERTAIN</span> <span class="note">6.84s</span></div>
+<div class="a"><span class="lbl">S7 B Comment2</span><audio controls preload="none" src="audio/S7_B_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">17.36s</span></div>
+<div class="a"><span class="lbl">S7 B Comment3</span><audio controls preload="none" src="audio/S7_B_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">13.79s</span></div>
+<div class="a"><span class="lbl">S7 B Comment4</span><audio controls preload="none" src="audio/S7_B_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">11.57s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 1/1/2/1、異音検知=1件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<details open><summary>TTSへ渡したStyle全文(211文字、sha256=4d5675df166aea5e…)</summary><pre>ニュースナレーターの明瞭さと、Podcastホストの親しみやすさを合わせた話し方で。温かみのある落ち着いた声で、聞き手に自然に語りかけてください。要点や対比には軽く抑揚をつけ、それ以外は穏やかな調子を保ってください。語尾を伸ばさず、自然に収めてください。句読点は自然な間として扱い、記号だけを理由に声の高さを変えないでください。問いかけは穏やかに読み、語尾を大きく跳ね上げないでください。演技がかった強調は避けてください。</pre></details>
+<details><summary>実際に読み上げた原稿全文(5セクション、全仕様共通)</summary><pre>[Preview]
+店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。
+
+[Comment1]
+関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。
+
+[Comment2]
+前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。
+
+[Comment3]
+店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。
+
+[Comment4]
+コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</pre></details></div>
+<div class="set" id="S8"><h3>S8 さらに抑揚を抑えた中間型</h3><div class="aim">調整内容と狙い: 明瞭さ+温かみの中間型で、抑揚とテンションをさらに抑え、関連する文を滑らかにつなぐ。</div>
+<div class="take A"><h4>S8 Take A</h4>
+<div class="a"><span class="lbl">S8 Take A 通し</span><audio controls preload="none" src="audio/S8_A_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">72.03s</span></div>
+<div class="a"><span class="lbl">S8 A Preview</span><audio controls preload="none" src="audio/S8_A_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">15.06s</span></div>
+<div class="a"><span class="lbl">S8 A Comment1</span><audio controls preload="none" src="audio/S8_A_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">7.29s</span></div>
+<div class="a"><span class="lbl">S8 A Comment2</span><audio controls preload="none" src="audio/S8_A_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">20.12s</span></div>
+<div class="a"><span class="lbl">S8 A Comment3</span><audio controls preload="none" src="audio/S8_A_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">14.12s</span></div>
+<div class="a"><span class="lbl">S8 A Comment4</span><audio controls preload="none" src="audio/S8_A_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">12.24s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 1/2/2/0、異音検知=2件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<div class="take B"><h4>S8 Take B</h4>
+<div class="a"><span class="lbl">S8 Take B 通し</span><audio controls preload="none" src="audio/S8_B_full.mp3"></audio><span class="v">Aoede</span><span class="s">Preview→Comment1→2→3→4(試聴用の連結・0.8秒無音・正式Assemblyではない)</span> <span class="note">69.32s</span></div>
+<div class="a"><span class="lbl">S8 B Preview</span><audio controls preload="none" src="audio/S8_B_preview.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">14.84s</span></div>
+<div class="a"><span class="lbl">S8 B Comment1</span><audio controls preload="none" src="audio/S8_B_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">6.72s</span></div>
+<div class="a"><span class="lbl">S8 B Comment2</span><audio controls preload="none" src="audio/S8_B_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。</span><span class="asr mid">ASR: PHONETIC_MATCH</span> <span class="note">19.0s</span></div>
+<div class="a"><span class="lbl">S8 B Comment3</span><audio controls preload="none" src="audio/S8_B_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。</span><span class="asr ok">ASR: NORMALIZED_MATCH</span> <span class="note">13.92s</span></div>
+<div class="a"><span class="lbl">S8 B Comment4</span><audio controls preload="none" src="audio/S8_B_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</span><span class="asr ok">ASR: EXACT_MATCH</span> <span class="note">11.64s</span></div>
+<div class="note">機械評価: ASR 完全一致/正規化一致/音読み一致/NG = 1/2/2/0、異音検知=2件</div>
+<div class="eval">ユーザー聴感評価(テンション／語尾／抑揚): 未記入(ユーザー試聴前、PASS判定なし)</div></div>
+<details open><summary>TTSへ渡したStyle全文(215文字、sha256=e7d3d528ce01d221…)</summary><pre>ニュースナレーターの明瞭さと、Podcastホストの温かみを持つ、落ち着いた話し方で。声の調子とテンションを穏やかに保ち、重要な点にだけ小さく抑揚をつけてください。親しみはやわらかな声で表し、文末は軽く下げて収めてください。関連する文は滑らかにつないでください。句読点は自然な間として扱い、記号だけを理由に声の高さを変えないでください。問いかけは穏やかに読み、語尾を大きく跳ね上げないでください。演技がかった強調は避けてください。</pre></details>
+<details><summary>実際に読み上げた原稿全文(5セクション、全仕様共通)</summary><pre>[Preview]
+店頭のコーヒーが高くなったとき、目立つニュースだけを見れば原因が分かるのでしょうか。値札が変わる時期と、値上がりの原因が起きた時期は同じなのか、コーヒー価格の背景をたどります。
+
+[Comment1]
+関税の話が出る前後で、コーヒー豆をめぐって何が起きていたのかに注目して聞いてください。
+
+[Comment2]
+前半では、店のコーヒーの値上がりの多くは、夏の関税より前からあった豆不足や豆の値上がりによるものだと分かりました。では、関税が始まる前に豆の市場では何が起きていて、関税はどんな影響を与えたのでしょうか。
+
+[Comment3]
+店頭のコーヒーが高くなった背景には、関税が始まる前からの豆不足と、豆の値上がりがありました。この先は、関税が値上がりにどんな役割をしたのかに注目してください。
+
+[Comment4]
+コーヒーの値段を見るときは、何が起きたかだけでなく、いつ起きたかにも目を向けることが大切です。最後に、この記事の要点を英語で振り返ります。</pre></details></div>
+<h2 id="prev">参考: 前回Trial(旧原稿・既存音声)のP2／R2</h2><p class="note"><b>これは旧原稿・既存音声です</b>(前回Trial coffee_ja_style_trial_02で生成済み。今回は再生成していません)。原稿が今回の正式版と異なるため、今回の比較には使いません。同一原稿での比較は上の基準P2・R2(今回生成)を使ってください。</p>
+<div class="set"><h3>旧原稿・既存音声: P2</h3>
+<div class="a"><span class="lbl">P2 旧原稿 通し</span><audio controls preload="none" src="https://shimomura055.github.io/eigo-radio/user_test/coffee_ja_style_trial_02/audio/P2_full.mp3"></audio><span class="v">Aoede</span><span class="s">旧原稿・既存音声(前回Trial)。Preview→Comment1〜4(旧連結)</span></div>
+<div class="a"><span class="lbl">P2 旧 Preview</span><audio controls preload="none" src="https://shimomura055.github.io/eigo-radio/user_test/coffee_ja_style_trial_02/audio/P2_preview.mp3"></audio><span class="v">Aoede</span><span class="s">旧原稿・既存音声(前回Trial)</span></div>
+<div class="a"><span class="lbl">P2 旧 Comment1</span><audio controls preload="none" src="https://shimomura055.github.io/eigo-radio/user_test/coffee_ja_style_trial_02/audio/P2_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">旧原稿・既存音声(前回Trial)</span></div>
+<div class="a"><span class="lbl">P2 旧 Comment2</span><audio controls preload="none" src="https://shimomura055.github.io/eigo-radio/user_test/coffee_ja_style_trial_02/audio/P2_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">旧原稿・既存音声(前回Trial)</span></div>
+<div class="a"><span class="lbl">P2 旧 Comment3</span><audio controls preload="none" src="https://shimomura055.github.io/eigo-radio/user_test/coffee_ja_style_trial_02/audio/P2_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">旧原稿・既存音声(前回Trial)</span></div>
+<div class="a"><span class="lbl">P2 旧 Comment4</span><audio controls preload="none" src="https://shimomura055.github.io/eigo-radio/user_test/coffee_ja_style_trial_02/audio/P2_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">旧原稿・既存音声(前回Trial)</span></div>
+</div>
+<div class="set"><h3>旧原稿・既存音声: R2</h3>
+<div class="a"><span class="lbl">R2 旧原稿 通し</span><audio controls preload="none" src="https://shimomura055.github.io/eigo-radio/user_test/coffee_ja_style_trial_02/audio/R2_full.mp3"></audio><span class="v">Aoede</span><span class="s">旧原稿・既存音声(前回Trial)。Preview→Comment1〜4(旧連結)</span></div>
+<div class="a"><span class="lbl">R2 旧 Preview</span><audio controls preload="none" src="https://shimomura055.github.io/eigo-radio/user_test/coffee_ja_style_trial_02/audio/R2_preview.mp3"></audio><span class="v">Aoede</span><span class="s">旧原稿・既存音声(前回Trial)</span></div>
+<div class="a"><span class="lbl">R2 旧 Comment1</span><audio controls preload="none" src="https://shimomura055.github.io/eigo-radio/user_test/coffee_ja_style_trial_02/audio/R2_comment_1.mp3"></audio><span class="v">Aoede</span><span class="s">旧原稿・既存音声(前回Trial)</span></div>
+<div class="a"><span class="lbl">R2 旧 Comment2</span><audio controls preload="none" src="https://shimomura055.github.io/eigo-radio/user_test/coffee_ja_style_trial_02/audio/R2_comment_2.mp3"></audio><span class="v">Aoede</span><span class="s">旧原稿・既存音声(前回Trial)</span></div>
+<div class="a"><span class="lbl">R2 旧 Comment3</span><audio controls preload="none" src="https://shimomura055.github.io/eigo-radio/user_test/coffee_ja_style_trial_02/audio/R2_comment_3.mp3"></audio><span class="v">Aoede</span><span class="s">旧原稿・既存音声(前回Trial)</span></div>
+<div class="a"><span class="lbl">R2 旧 Comment4</span><audio controls preload="none" src="https://shimomura055.github.io/eigo-radio/user_test/coffee_ja_style_trial_02/audio/R2_comment_4.mp3"></audio><span class="v">Aoede</span><span class="s">旧原稿・既存音声(前回Trial)</span></div>
+</div>
+</body></html>
