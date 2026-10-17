@@ -724,5 +724,22 @@ class AssemblyAndPagesIntegrationTest(unittest.TestCase):
             shutil.rmtree(tmp, ignore_errors=True)
 
 
+class PagesDirSingleSourceTest(unittest.TestCase):
+    """委任_18: 試聴ページ出力先の既定値が runner E2E_PAGES_DIR / HRページ生成tool と一致し、旧melos_01でないこと。"""
+
+    def test_pages_dir_defaults_match_runner_and_tool(self):
+        import ast
+        import inspect
+        import er026_family_z_fiction_production_runner_01 as r
+        self.assertEqual(z.PAGES_DIR, r.E2E_PAGES_DIR)
+        self.assertEqual(z.PAGES_DIR, "user_test/family_z_melos_02")
+        with open("tools/build_family_z_hr_review_page.py", encoding="utf-8") as f:
+            tree = ast.parse(f.read())
+        out = [n.value.value for n in tree.body if isinstance(n, ast.Assign)
+               and any(getattr(t, "id", "") == "OUT" for t in n.targets)]
+        self.assertEqual(out, [z.PAGES_DIR])
+        self.assertEqual(inspect.signature(z.build_pages).parameters["pages_dir"].default, z.PAGES_DIR)
+
+
 if __name__ == "__main__":
     unittest.main()

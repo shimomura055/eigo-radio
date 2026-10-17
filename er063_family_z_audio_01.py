@@ -1492,10 +1492,10 @@ def run_assembly(run_dir: str, level: str, story_clips: list, kp_items: list, *,
 
 
 # ============================================================
-# 10. 試聴ページ生成(user_test/family_z_melos_01/{index,standard,advanced}.html)
+# 10. 試聴ページ生成(user_test/family_z_melos_02/{index,standard,advanced}.html)
 #     file:/// 禁止、(A2)/(B1)/B1Bラベル非表示、Key Phrasesは左=英語/右=日本語の2列。
 # ============================================================
-PAGES_DIR = "user_test/family_z_melos_01"
+PAGES_DIR = "user_test/family_z_melos_02"   # 委任_18: runner E2E_PAGES_DIR(委任_17 B2)と一致。run_e2e_02の試聴ページ(melos_01)を上書きしない。一致はtestで固定
 _FORBIDDEN_LABEL_RE = re.compile(r"\(A2\)|\(B1\)|B1B")
 
 
@@ -1600,7 +1600,7 @@ def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_d
 
 
 def build_pages(run_dir: str, pages_dir: str = PAGES_DIR) -> dict:
-    """user_test/family_z_melos_01/{index,standard,advanced}.html を生成する(静的ファイルのみ)。"""
+    """user_test/family_z_melos_02/{index,standard,advanced}.html を生成する(静的ファイルのみ)。"""
     os.makedirs(pages_dir, exist_ok=True)
     out = {}
     warn_sections = []

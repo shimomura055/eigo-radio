@@ -9,7 +9,7 @@ import sys
 
 RUN = "er026_output/family_z_production_e2e_01/melos/run_e2e_02"
 BK = "er026_output/family_z_production_e2e_01/melos/cs_audit_01/pre_regen_c5_backup"
-OUT = "user_test/family_z_melos_01"
+OUT = "user_test/family_z_melos_02"   # 委任_18: runner E2E_PAGES_DIR/er063 PAGES_DIRと一致(旧melos_01は履歴の試聴ページ、上書きしない)。一致はtestで固定
 QUEUE = "er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl"
 
 EXPECT_EN = ("期待発音: 作品内の名前 Melos(走れメロス)。英語での自然な読みは MEL-os 系(/ˈmɛlɒs/ 前後)。"
