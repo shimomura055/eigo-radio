@@ -1222,6 +1222,20 @@ def _gloss_hr_gate(ctx, lv: str, text: str, res: dict, prov=None) -> None:
         "(gloss再整合が成立せず自動採用しない・TTS/完成へ進まない。resolve_gloss後に同じstageを再実行すると選定は再実行されない)")
 
 
+def _src_gate(ctx, lv: str, text: str) -> dict:
+    """SRC D1方式(z_sentence_id_posthoc_v1、ユーザー2026-10-17 #109 APPROVED_FOR_PRODUCTION)のGate。
+    ensure_stage(kp_<lv>)成功後・install_kp_assets前に、初回・再利用・--regenerate-stage kp_*・外側retry後・resumeの全経路で同じ関数を通る
+    (呼出元はstage_kpの1箇所のみ)。曖昧・不一致は推測補完せずFamilyZE2EStop(auditに記録)。
+    既存Source Consistency Gate・canonicalization・gloss再整合の判定/呼出順序は変更しない(それらの後に実行)。"""
+    import er026_family_z_src_posthoc_01 as srcz
+    kp_path = f"{ctx.out_dir}/key_phrases/{lv}/keywords_canonicalized.json"
+    try:
+        rep = srcz.gate(kp_path, text, lv, ctx.out_dir)
+    except srcz.FamilyZSourceReferenceStop as e:
+        raise FamilyZE2EStop(str(e)) from e
+    return rep
+
+
 def stage_kp(ctx) -> dict:
     m = _m()
     st, w62 = m.st, m.w62
@@ -1259,6 +1273,7 @@ def stage_kp(ctx) -> dict:
         _uneval = ga.collect_unevaluated(w62.rj(f"{ctx.out_dir}/key_phrases/{lv}/keywords_canonicalized.json"))
         if _uneval:
             raise FamilyZE2EStop(_gloss_unevaluated_stop_message(lv, [x.get("rank") for x in _uneval]))
+        _src_rep = _src_gate(ctx, lv, text)   # SRC D1(z_sentence_id_posthoc_v1): 全経路共通・install_kp_assets前
         dst = install_kp_assets(ctx, lv)
         # OF-KGCPW-16: 監視指標(記録のみ)。再利用でも保存済みresultから読む。
         _res_doc = w62.rj(f"{ctx.out_dir}/key_phrases/{lv}_result.json")
@@ -1266,7 +1281,9 @@ def stage_kp(ctx) -> dict:
         summary[lv] = {"status": r["status"], "assets": dst,
                        "gloss_alignment_status": _canon_doc.get("gloss_alignment_status"),
                        "gloss_alignment_metrics": _canon_doc.get("gloss_alignment_metrics"),
-                       "gloss_alignment_flag": ga.flag_effective()}
+                       "gloss_alignment_flag": ga.flag_effective(),
+                       "src_posthoc": {"label": _src_rep["label"], "status": _src_rep["status"],
+                                       "quote_boundary_truncated_count": _src_rep["quote_boundary_truncated_count"]}}
     # 方針6: Adv KP第3segment=英語解説(Coffee最終v3 Adv / X B1と同一構成)。
     kp = w62.rj(f"{_kp_assets_dir(ctx, 'b1b')}/keywords_canonicalized.json")
     items = sorted(kp["items"], key=lambda x: x["rank"])
@@ -1276,6 +1293,11 @@ def stage_kp(ctx) -> dict:
         # 旧gloss入力の解説が再利用されないようsigへglossを含める。status無し(ON化前/対象0件)は従来sig(=display_phraseのみ)
         # =既存Melos完成物のprovenance互換を壊さない。
         sig_payload = {"display": sig_payload, "gloss": [it.get("japanese_gloss", "") for it in items]}
+    if any(it.get("source_reference_contract") for it in items):
+        # 委任_16(委任_15指摘のsig fix): SRC D1で復元したsource_sentence(解説の入力)が変わったら旧解説を再利用しない。
+        if not isinstance(sig_payload, dict):
+            sig_payload = {"display": sig_payload}
+        sig_payload["src"] = [[it.get("source_sentence_id", ""), it.get("source_sentence", "")] for it in items]
     sig = _sha(json.dumps(sig_payload, ensure_ascii=False))
     ex_path = f"{ctx.out_dir}/key_phrases/b1b/kp_explanations.json"
 
@@ -1313,6 +1335,10 @@ def load_level_inputs(ctx, level: str) -> dict:
     _uneval = _ga.collect_unevaluated(kp)   # OF-KGCPW-08: ON化前・未評価のKP成果物も共有入力にしない
     if _uneval:
         raise FamilyZE2EStop(_gloss_unevaluated_stop_message(level, [x.get("rank") for x in _uneval]))
+    import er026_family_z_src_posthoc_01 as _srcz
+    if not _srcz.has_contract(kp):   # SRC D1(#109): 未適用のKP成果物(旧run/手置き)を--stage tts_*単独起動の共有入力にしない
+        raise FamilyZE2EStop(f"FAMILY_Z_SRC_CONTRACT_MISSING({level}): KP成果物に{_srcz.LABEL}が未付与 "
+                             f"(kp stageを再実行するか--regenerate-stage kp_{level})")
     items = sorted(kp["items"], key=lambda x: x["rank"])
     kp_items = [{"rank": it["rank"], "used_form": it["used_form"], "japanese_gloss": it.get("japanese_gloss", ""),
                  "display_phrase": it["display_phrase"]} for it in items]
