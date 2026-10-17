@@ -1,0 +1,119 @@
+{
+ "source": "C:/Users/tensh/eigo-radio/er026_output/family_z_production_e2e_01/melos/run_e2e_03/cost_log.jsonl(実測usage x pricing_snapshot単価。runner budget guardと同一関数)",
+ "n_records": 210,
+ "total_jpy_measured": 36.3845,
+ "cap_jpy": 100.0,
+ "remaining_vs_cap_jpy": 63.6155,
+ "stages": {
+  "kp": {
+   "jpy": 0.0326,
+   "calls": 1,
+   "by_provider": {
+    "openai": {
+     "jpy": 0.0326,
+     "calls": 1,
+     "models": [
+      "gpt-6-luna"
+     ]
+    }
+   },
+   "web_search_calls": 0,
+   "usage_not_obtained": 0,
+   "failed_calls": 0
+  },
+  "tts_a2": {
+   "jpy": 22.4546,
+   "calls": 119,
+   "by_provider": {
+    "azure": {
+     "jpy": 9.0092,
+     "calls": 12,
+     "models": [
+      "azure-speech-stt"
+     ]
+    },
+    "gemini": {
+     "jpy": 10.8586,
+     "calls": 41,
+     "models": [
+      "gemini-2.5-pro-preview-tts",
+      "gemini-3.8-flash-lite-tts"
+     ]
+    },
+    "openai": {
+     "jpy": 0.0053,
+     "calls": 1,
+     "models": [
+      "gpt-6-luna"
+     ]
+    },
+    "openai_asr": {
+     "jpy": 2.5814,
+     "calls": 65,
+     "models": [
+      "gpt-4o-mini-transcribe"
+     ]
+    }
+   },
+   "web_search_calls": 0,
+   "usage_not_obtained": 12,
+   "failed_calls": 0
+  },
+  "tts_b1b": {
+   "jpy": 13.8973,
+   "calls": 90,
+   "by_provider": {
+    "azure": {
+     "jpy": 3.304,
+     "calls": 6,
+     "models": [
+      "azure-speech-stt"
+     ]
+    },
+    "gemini": {
+     "jpy": 9.2403,
+     "calls": 42,
+     "models": [
+      "gemini-2.5-pro-preview-tts",
+      "gemini-3.8-flash-lite-tts"
+     ]
+    },
+    "openai_asr": {
+     "jpy": 1.353,
+     "calls": 42,
+     "models": [
+      "gpt-4o-mini-transcribe"
+     ]
+    }
+   },
+   "web_search_calls": 0,
+   "usage_not_obtained": 6,
+   "failed_calls": 0
+  }
+ },
+ "by_kind_jpy": {
+  "ASR(azure secondary)": 12.3132,
+  "ASR(openai)": 3.9344,
+  "LLM(openai)": 0.0379,
+  "TTS(gemini)": 20.099
+ },
+ "web_search_calls_total": 0,
+ "usage_not_obtained_total": 18,
+ "failed_calls_total": 0,
+ "runner_stage_log_spent_jpy_cumulative_last": 36.3845,
+ "classification": {
+  "実測": "cost_log.jsonl usage(OFFICIAL_API_RESPONSE)を単価換算した値",
+  "推定": "なし(本集計は推定値を含まない)",
+  "未取得": "usage_not_obtained_total件(0なら全件取得)"
+ },
+ "reference_other_frame_not_added": {
+  "run_e2e_01": {
+   "jpy": 108.1056,
+   "note": "¥300枠(別枠)。本runの合計に加算しない"
+  },
+  "run_e2e_02": {
+   "jpy": 62.8314,
+   "note": "¥300枠(別枠)。本runの合計に加算しない"
+  }
+ }
+}

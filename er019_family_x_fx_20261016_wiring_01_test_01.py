@@ -676,7 +676,10 @@ class AbcGoldenTests(unittest.TestCase):
                                          "er063_family_z_audio_01_smoke_01.py",
                                          # BAPE委任_04のStyle適用表集計script(read-only: 完了runのtts_generation_results.jsonを読み
                                          # audit配下のe2e_segment_style_table_bape_04.jsonへ書くのみ。Store entry/Production出力へ書き戻さない)
-                                         "er019_bape_style_table_04.py"}, readers)
+                                         "er019_bape_style_table_04.py",
+                                         # FZ委任_17のZ版Style適用表script(read-only: run_e2e_03のtts_generation_results.jsonを読み
+                                         # audit配下へ書くのみ。Store entry/Production出力へ書き戻さない)
+                                         "er026_fz_style_table_17.py"}, readers)
 
 
 # ============================================================
