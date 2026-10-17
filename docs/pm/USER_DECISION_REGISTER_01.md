@@ -241,8 +241,9 @@
 
 ### 2026-10-16 RLCO 委任_02追記(`FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-ANALYSIS-01`、UDR deferred・非Blocking。既存行は書き換えず追記のみ)
 
-- #101(新規・UDR deferred・非Blocking) 案1(Fact単位探索上限+出典ロケータ引継ぎ)を検証Trialへ進めるか — D区分、推奨=Fable所見は報告で提示、Trial約JPY150〜200(出典=docs/research/FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-ANALYSIS-01/ANALYSIS_REPORT_01.md §9、OPEN-403)。
-- #102(新規・UDR deferred・非Blocking) 案2(Select-then-Verify)を検証Trial・設計へ進めるか — D区分、構造変更、Trial約JPY55〜60+実装別途+Opus条件A(11-3)。出典=同上、OPEN-403。
+- #101(新規・UDR deferred・非Blocking) 案1(Fact単位探索上限+出典ロケータ引継ぎ)を検証Trialへ進めるか — D区分、推奨=Fable所見は報告で提示、Trial約JPY150〜200(出典=docs/research/FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-ANALYSIS-01/ANALYSIS_REPORT_01.md §9、OPEN-403)。 [2026-10-17 ユーザー指示でTrial方針承認(金額は別途承認)]
+- #102(新規・UDR deferred・非Blocking) 案2(Select-then-Verify)を検証Trial・設計へ進めるか — D区分、構造変更、Trial約JPY55〜60+実装別途+Opus条件A(11-3)。出典=同上、OPEN-403。 [2026-10-17 ユーザー指示でTrial方針承認(金額は別途承認)]
+- #104(新規・UDR-blocking) RLCT有料実行の費用承認 — 期待約JPY376〜443/上限約JPY860(>JPY100、7-7)、段階実行案X=1a Coffee+inbound[期待約140/上限約328]→1b残り3記事、Stage 2統制は別ゲート約16〜83。D区分。Opus条件Aレビュー後にFable報告。出典=docs/research/FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-TRIAL-01/COST_ESTIMATE_01.md、OPEN-403。
 
 ### 2026-10-17 SJS4 委任_01追記(`FAMILY-X-COFFEE-STANDARD-JA-SUPPORT-CALM-STYLE-TRIAL-04`、既存行は書き換えず追記のみ)
 
