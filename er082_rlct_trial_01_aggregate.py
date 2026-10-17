@@ -68,6 +68,7 @@ def collect(out_root: str) -> dict:
             tr = res.get("verdict_transitions") or {}
             rows.append({
                 "article": art, "method": m, "status": res["status"], "basis": res["usage_basis"],
+                "dry_run": res.get("dry_run"),
                 "trial_llm_jpy": tot["llm_jpy"], "trial_web_search_jpy": tot["web_search_jpy"],
                 "trial_total_jpy": tot["total_jpy"],
                 "web_search_calls": tot["web_search_calls"], "by_action_type": ws["by_action_type"],
@@ -88,7 +89,18 @@ def collect(out_root: str) -> dict:
                 "saving_vs_M0_jpy": (round(m0_eq - eq, 3) if (eq is not None and m0_eq is not None) else None),
                 "saving_vs_M0_pct": (round((m0_eq - eq) / m0_eq * 100, 1) if (eq is not None and m0_eq) else None),
             })
-    return {"rows": rows, "note": "dry-runの値はSYNTHETIC(stub)。実測ではない。" }
+    return {"rows": rows, "note": _note(rows)}
+
+
+def _note(rows: list) -> str:
+    """キャプションは出力元で切替: 全行が dry_run=False かつ basis=OFFICIAL_API_RESPONSE なら実測(MEASURED)、
+    全行 dry_run=True ならSYNTHETIC(stub)、混在は両方を明示(固定文言を廃止)。"""
+    dr = [bool(r.get("dry_run")) for r in rows]
+    if rows and not any(dr) and all(r.get("basis") == "OFFICIAL_API_RESPONSE" for r in rows):
+        return "MEASURED(実測): 全行 dry_run=false かつ usage_basis=OFFICIAL_API_RESPONSE。"
+    if rows and all(dr):
+        return "SYNTHETIC(stub)。dry-runの値であり、実測ではない。"
+    return "MIXED: dry_run行(SYNTHETIC stub)と実測行が混在。行ごとの dry_run/basis を確認すること。"
 
 
 def to_markdown(agg: dict, title: str) -> str:

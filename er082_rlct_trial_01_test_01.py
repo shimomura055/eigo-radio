@@ -306,6 +306,15 @@ class RlctTrialTests(unittest.TestCase):
         self.assertEqual(hits, [])
 
     # (p) B3 Promptの差分は『検証済み』語のみ(allow_unverified時)
+    # (q) aggregateキャプションは出力元で切替(MEASURED/SYNTHETIC/MIXED)、固定文言でない
+    def test_q_aggregate_caption_switches_by_source(self):
+        import er082_rlct_trial_01_aggregate as agg
+        m = {"dry_run": False, "basis": "OFFICIAL_API_RESPONSE"}
+        s = {"dry_run": True, "basis": "STUB"}
+        self.assertTrue(agg._note([m, m]).startswith("MEASURED"))
+        self.assertTrue(agg._note([s, s]).startswith("SYNTHETIC"))
+        self.assertTrue(agg._note([m, s]).startswith("MIXED"))
+
     def test_p_b3_prompt_difference_limited(self):
         plain = lib.build_user_prompt_trial("t", "[VERIFIED] F1: a\n", False)
         self.assertEqual(plain, b3.build_user_prompt("t", "[VERIFIED] F1: a\n"))

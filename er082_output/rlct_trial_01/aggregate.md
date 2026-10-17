@@ -1,6 +1,6 @@
-# RLCT Stage 1a 集計(実測)
+# Stage 1a (measured)
 
-dry-runの値はSYNTHETIC(stub)。実測ではない。
+MEASURED(実測): 全行 dry_run=false かつ usage_basis=OFFICIAL_API_RESPONSE。
 
 | 記事 | 方式 | status | Trial費用JPY(LLM/検索/計) | 検索呼出(種別) | クエリ | 選定Fact | Jaccard | 再選定 | 降格 | 昇格 | 中心AMBIG | 契約 | 本番換算JPY | 削減JPY | 削減% |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
