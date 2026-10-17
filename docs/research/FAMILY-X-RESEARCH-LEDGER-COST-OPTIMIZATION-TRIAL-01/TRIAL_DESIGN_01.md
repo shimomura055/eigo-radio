@@ -1,3 +1,5 @@
+> **v2に置換、履歴**: 本書(v1)はOpus条件Aレビュー前の設計。現行はTRIAL_DESIGN_02.md(OF-RLCT-R-01〜16反映)。
+
 # TRIAL_DESIGN_01(委任_01報告 §4+§6 抜粋)
 
 > 本文は委任_01 sonnet-workerの最終報告(2026-10-17)を無改変で転記。Opusレビュー前。採用判断はユーザー(正本=TRIAL_PREP_REPORT_01.md)

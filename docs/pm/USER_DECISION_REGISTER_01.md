@@ -243,7 +243,7 @@
 
 - #101(新規・UDR deferred・非Blocking) 案1(Fact単位探索上限+出典ロケータ引継ぎ)を検証Trialへ進めるか — D区分、推奨=Fable所見は報告で提示、Trial約JPY150〜200(出典=docs/research/FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-ANALYSIS-01/ANALYSIS_REPORT_01.md §9、OPEN-403)。 [2026-10-17 ユーザー指示でTrial方針承認(金額は別途承認)]
 - #102(新規・UDR deferred・非Blocking) 案2(Select-then-Verify)を検証Trial・設計へ進めるか — D区分、構造変更、Trial約JPY55〜60+実装別途+Opus条件A(11-3)。出典=同上、OPEN-403。 [2026-10-17 ユーザー指示でTrial方針承認(金額は別途承認)]
-- #104(新規・UDR-blocking) RLCT有料実行の費用承認 — 期待約JPY376〜443/上限約JPY860(>JPY100、7-7)、段階実行案X=1a Coffee+inbound[期待約140/上限約328]→1b残り3記事、Stage 2統制は別ゲート約16〜83。D区分。Opus条件Aレビュー後にFable報告。出典=docs/research/FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-TRIAL-01/COST_ESTIMATE_01.md、OPEN-403。
+- #104(新規・UDR-blocking) RLCT有料実行の費用承認【2026-10-17 委任_03で見積v2へ更新】 — 必須(Stage 1)=期待約JPY502.6/上限約JPY986.3(M0'をStage 1へ追加、inbound再選定p=1、技術retry余裕込み。v1は期待376〜443/上限860)。段階実行案X=1a Coffee+inbound[期待267.6/上限493.0、冒頭にCoffee M2 smoke]→1b streaming→openai→central[期待235.0/上限493.3]、1a→1b進行条件あり。条件付き: Stage 2 openai/central M0'(M1呼出ログで上限が拘束した場合のみ)16.4/18.8。任意(選択肢、必須に混ぜない): A故障注入プローブ(3記事)32.7/54.3、B M2初回B3追加(Coffee/inbound)23.0/27.6、C Stage 3 RF比較(W-1なし)4.3/6.4。>JPY100のため7-7によりユーザー承認なしでは有料実行不可。日次1,000円: 本日使用済み約44.6、期待は枠内、上限986.3は合計約1,030.9で約30.9超過(1a/1b別日または実費ガードで担保)。D区分。Opus条件Aレビュー実施済み(設計v2に反映)。出典=docs/research/FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-TRIAL-01/COST_ESTIMATE_02.md、OPEN-403。
 
 ### 2026-10-17 SJS4 委任_01追記(`FAMILY-X-COFFEE-STANDARD-JA-SUPPORT-CALM-STYLE-TRIAL-04`、既存行は書き換えず追記のみ)
 

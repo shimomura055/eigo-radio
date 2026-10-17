@@ -1,0 +1,364 @@
+{
+ "jpy": 0,
+ "api_calls": 0,
+ "basis": "manual_substitution(実測単価x想定呼出、cost_estimate_01.jsonを基に改訂)",
+ "assumptions_v2": {
+  "p_reselect_inbound": 1.0,
+  "retry_margin": "期待=50%x(B3 1回+選定Verifier 1回)、上限=100%x(B3 1回+全Fact Ledger Verifier 1回)/記事",
+  "M0prime_stage1_articles": [
+   "coffee_fxpw",
+   "inbound_tourism",
+   "streaming_price"
+  ],
+  "smoke": "Coffee M2初回(1a冒頭)は本番のM2 runそのもの=追加費用0、失敗時の再実行は技術retry余裕に含む",
+  "probe": "改変Fact3件x(上限なし+上限付き)の2検証。検索3回/件(期待)・5回/件(上限)。推奨=Coffee/inbound/streaming 3記事",
+  "m2_b3_extra": "Coffee/inboundでM2初回B3を追加1回(sol B3実費換算、上限+20%)",
+  "stage3_rf": "Coffee run_fxpw_01 risk_flag.*.a2のtoken実測(A3+A4 luna+gemini flash-lite)x4実行。W-1なし。inboundに既存W-1記事が無ければ約JPY14追加(未計上)",
+  "used_today": "41.6(SJS4: TTS実測31.33+ASR推定10.3)+S3W Phase A 約3(未確定の見込み)",
+  "proportional_shrink": "選定Factだけ検証した時の呼出数比例縮小は未検証の仮定(R-13c)",
+  "gate_1a_to_1b": "上限遵守率の記録が取れている/再選定loopが仕様どおり動作/実測費用÷見積<=1.3/Production・再利用成果物sha不変"
+ },
+ "table1_trial_additional_spend": {
+  "per_article_per_method_exp_hi": {
+   "coffee_fxpw": {
+    "M0": [
+     0.0,
+     0.0
+    ],
+    "M0b": [
+     10.94,
+     13.13
+    ],
+    "M0p": [
+     25.13,
+     28.9
+    ],
+    "M1": [
+     34.04,
+     42.03
+    ],
+    "M2": [
+     18.0,
+     58.33
+    ],
+    "M3": [
+     6.82,
+     45.21
+    ]
+   },
+   "inbound_tourism": {
+    "M0": [
+     12.03,
+     14.44
+    ],
+    "M0b": [
+     12.03,
+     14.44
+    ],
+    "M0p": [
+     28.26,
+     32.5
+    ],
+    "M1": [
+     38.14,
+     46.94
+    ],
+    "M2": [
+     37.83,
+     67.59
+    ],
+    "M3": [
+     25.47,
+     53.15
+    ]
+   },
+   "streaming_price": {
+    "M0": [
+     10.2,
+     12.24
+    ],
+    "M0b": [
+     10.2,
+     12.24
+    ],
+    "M0p": [
+     12.78,
+     14.7
+    ],
+    "M1": [
+     19.8,
+     26.94
+    ],
+    "M2": [
+     22.56,
+     54.98
+    ],
+    "M3": [
+     11.0,
+     42.74
+    ]
+   },
+   "openai_copyright": {
+    "M0": [
+     9.12,
+     10.95
+    ],
+    "M0b": [
+     9.12,
+     10.94
+    ],
+    "M0p": [
+     9.01,
+     10.36
+    ],
+    "M1": [
+     18.13,
+     21.31
+    ],
+    "M2": [
+     15.84,
+     47.52
+    ],
+    "M3": [
+     6.72,
+     36.58
+    ]
+   },
+   "central_bank_mortgage": {
+    "M0": [
+     11.33,
+     13.59
+    ],
+    "M0b": [
+     11.33,
+     13.6
+    ],
+    "M0p": [
+     7.38,
+     8.49
+    ],
+    "M1": [
+     18.71,
+     22.08
+    ],
+    "M2": [
+     16.91,
+     53.34
+    ],
+    "M3": [
+     5.58,
+     39.75
+    ]
+   }
+  },
+  "retry_margin_per_article_exp_hi": {
+   "coffee_fxpw": [
+    8.51,
+    36.07
+   ],
+   "inbound_tourism": [
+    10.4,
+    40.29
+   ],
+   "streaming_price": [
+    10.59,
+    22.98
+   ],
+   "openai_copyright": [
+    7.39,
+    18.13
+   ],
+   "central_bank_mortgage": [
+    7.71,
+    18.71
+   ]
+  },
+  "stage1a_coffee_inbound": [
+   267.6,
+   493.01
+  ],
+  "stage1b_streaming_openai_central": [
+   235.01,
+   493.32
+  ],
+  "stage1_required_total": [
+   502.61,
+   986.33
+  ],
+  "stage2_conditional_M0prime_openai_central": [
+   16.39,
+   18.85
+  ],
+  "optional_fault_injection_probe_3articles": [
+   32.71,
+   54.3
+  ],
+  "optional_fault_injection_probe_5articles": [
+   54.2,
+   90.02
+  ],
+  "optional_M2_initial_B3_extra_coffee_inbound": [
+   22.97,
+   27.56
+  ],
+  "optional_stage3_RF_compare_coffee_inbound": [
+   4.25,
+   6.38
+  ],
+  "rf_one_run_jpy": 1.06,
+  "optional_total_recommended": [
+   59.93,
+   88.24
+  ],
+  "all_in_total_with_stage2_and_optional": [
+   578.94,
+   1093.42
+  ]
+ },
+ "daily_check": {
+  "stage1_only": {
+   "used_today": 44.6,
+   "used_plus_total_hi": 1030.93,
+   "remaining_after": -30.93,
+   "within_daily_1000": false
+  },
+  "stage1_plus_stage2_plus_optional": {
+   "used_today": 44.6,
+   "used_plus_total_hi": 1138.02,
+   "remaining_after": -138.02,
+   "within_daily_1000": false
+  }
+ },
+ "rule_7_7": "期待・上限ともJPY100超 -> ユーザー費用承認(#104)なしで有料実行不可",
+ "table2_production_equivalent_exp_hi": {
+  "coffee_fxpw": {
+   "M0": [
+    55.92,
+    55.92
+   ],
+   "M1": [
+    53.89,
+    61.88
+   ],
+   "M2": [
+    37.85,
+    78.19
+   ],
+   "M3": [
+    37.61,
+    78.19
+   ]
+  },
+  "inbound_tourism": {
+   "M0": [
+    68.85,
+    68.85
+   ],
+   "M1": [
+    66.7,
+    75.49
+   ],
+   "M2": [
+    66.39,
+    96.16
+   ],
+   "M3": [
+    66.06,
+    96.16
+   ]
+  },
+  "streaming_price": {
+   "M0": [
+    44.66,
+    44.66
+   ],
+   "M1": [
+    41.48,
+    48.62
+   ],
+   "M2": [
+    44.24,
+    76.67
+   ],
+   "M3": [
+    42.88,
+    76.67
+   ]
+  },
+  "openai_copyright": {
+   "M0": [
+    40.95,
+    40.95
+   ],
+   "M1": [
+    40.95,
+    44.13
+   ],
+   "M2": [
+    38.66,
+    70.33
+   ],
+   "M3": [
+    38.66,
+    70.33
+   ]
+  },
+  "central_bank_mortgage": {
+   "M0": [
+    33.66,
+    33.66
+   ],
+   "M1": [
+    33.66,
+    37.03
+   ],
+   "M2": [
+    31.86,
+    68.3
+   ],
+   "M3": [
+    31.86,
+    68.3
+   ]
+  }
+ },
+ "saving_formula": "削減率=(M0本番換算-Mx本番換算)/M0本番換算。M0本番換算=Research実測+Ledger実測+B3(sol換算)。共有/再利用分も帰属",
+ "table2_saving_pct_exp": {
+  "coffee_fxpw": {
+   "M1": 3.6,
+   "M2": 32.3,
+   "M3": 32.7
+  },
+  "inbound_tourism": {
+   "M1": 3.1,
+   "M2": 3.6,
+   "M3": 4.1
+  },
+  "streaming_price": {
+   "M1": 7.1,
+   "M2": 0.9,
+   "M3": 4.0
+  },
+  "openai_copyright": {
+   "M1": 0.0,
+   "M2": 5.6,
+   "M3": 5.6
+  },
+  "central_bank_mortgage": {
+   "M1": 0.0,
+   "M2": 5.4,
+   "M3": 5.4
+  }
+ },
+ "table2_totals_exp": {
+  "M0": 244.04,
+  "M1": 236.68,
+  "M2": 219.0,
+  "M3": 217.07
+ },
+ "table2_totals_saving_pct_exp": {
+  "M1": 3.0,
+  "M2": 10.3,
+  "M3": 11.1
+ }
+}
