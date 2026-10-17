@@ -119,3 +119,40 @@ CURRENT_SPEC.md:1919 に「Family X/Z共通Core、APPROVED_FOR_PRODUCTION(2026-0
 - C独立: 既存FAIL test 9件の是正(先行是正の要否はFable判断)。
 - D新判断: (1)費用上限(別枠JPY100案)。(2)SRCのD1/D2(「候補ID等」の解釈、新仕様性)。(3)KP再利用元(run_e2e_02推奨)。(4)Melos HR(Melos said)が再発した場合の事前承認の可否。(5)Voice Algieba(OPEN-306)は新試聴で承認。(6)Adv Commentは表に記載なし、E2_UPBEAT維持で良いか。
 - リスク: STOP_NOTICEがrc=3を返す(Fable判断で解除範囲を確定)。wavがgit未追跡で消失しうる。run_e2e_02由来のHR承認はStyle変更後に誤適用の恐れ(新run dirへcopyしない)。main/BAPEの並行commitによる衝突。
+
+## §10 委任_16 実走準備記録(2026-10-17、JPY0・有料API呼出0・`--mode real`未起動)
+### 10-1 実装済み(Gate)と確認
+- SRC D1(`z_sentence_id_posthoc_v1`、ユーザー#109)= `er026_family_z_src_posthoc_01.py`(commit b88fa5115)。`stage_kp`の`ensure_stage(kp_<lv>)`成功後・`install_kp_assets`前に`_src_gate`を1箇所で呼ぶ。初回/reuse/`--regenerate-stage kp_*`/外側retry後/resume は全て同じcall site(`stage_kp`内のループ、1箇所)を通る。曖昧・不一致は推測補完せず`FamilyZE2EStop`(`audit/src_z_posthoc_01.json`にSTOP記録)。`--stage tts_*`単独起動は`load_level_inputs`が`source_reference_contract`未付与のKPを拒否。
+- run_e2e_02 KP 10件へのoffline適用: 10/10解決(exact 7 / unique_containment 3)・曖昧0・不一致0・引用符跨ぎtelemetry 1件(a2 rank2 S8)。`er026_output/family_z_production_e2e_01/melos/_src_offline_check_16.json`。
+- 一時コピー(tmp)へ`copy_reusable_run_assets`→mock context(API境界カウンタ)で stage 前段を実行: writer/std_adjust/plan/support/kp_b1b/kp_a2 は**全てreuse、mock API呼出0**、Gate PASS(b1b 5件・a2 5件)。`kp_expl_b1b`は`FamilyZProvenanceMismatchStop: 親sha不一致`でSTOP(Gate導入に伴うkp_expl署名の変更=委任_15指摘のsig fixの意図どおり)。`--regenerate-stage kp_expl_b1b`で再生成可(mock LLM 1呼出)。**実走CLIには`--regenerate-stage kp_expl_b1b`が必須**(実LLM 1呼出、見積<=JPY2.0のguard、実績参考=run_e2e_02 kp stage luna平均JPY0.42/call)。
+- 実走前に判明した事項: (a) `-I`付きで`python er026_...runner...py`を直接実行すると`ModuleNotFoundError`(script dirがsys.pathに入らない)。runner起動は`-I`なしで行う(pytest/ライブラリ呼出は`-I`可)。(b) runnerに`--pages-dir`は無く、real時のpages_dirは`E2E_PAGES_DIR="user_test/family_z_melos_01"`固定。そのまま`pages`stageを走らせると**既存の(tracked)run_e2e_02試聴ページを上書き**する。本計画§6は`user_test/family_z_melos_02/`だったため、委任_17で`E2E_PAGES_DIR`(と`describe_plan`表記)を`family_z_melos_02`へ変更するか、`family_z_melos_01`の上書きを許容するかをFableが決める。本委任では未変更。
+
+### 10-2 stop_scope_check(`tools/stop_scope_check_01.py --managed-id FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01 --run-dir ...\melos\run_e2e_03`)
+- 結果: **rc=3, stop=true**(`docs/pm/delegation_log/2026-10-17_FZ16_stop_scope_before.json`=解除通知追記前、`..._after_release_note.json`=追記後、同じ結果)。理由: STOP_NOTICEが本文に自管理IDを含む(rule b_own_or_parent_id_in_text)ため。解除通知の文面(run_e2e_03限定・run_e2e_01/02のreal禁止)を追記したが、checkerは構造化欄`status`(RELEASED等)かchecker改修が無いとrc=0にならない(ruleがscope限定より先にID一致を適用)。`run_e2e_01/STOP`は未接触。**実走(委任_17)の前に、Fableが機械的解除方式を決める必要がある**(26-2 (d)により、実行層はrc=3で新規API呼出をしない)。
+
+### 10-3 run_e2e_02 -> run_e2e_03 copy
+- `er063_family_z_audio_01.copy_reusable_run_assets`(allowlist、deny優先)。dry-run計画=`docs/research/FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01/run_e2e_03_copy_plan_16.json`(ALLOW 60 / DENY 341)。実copy済み(ファイル操作のみ、課金なし。`er026_output/family_z_production_e2e_01/melos/run_e2e_03/`、60 files、git未追跡=commitしない)。
+- ALLOW: `writer/`(r0/r1/r2/std.md・各prompt・provenance.json)、`support/`(a2/b1b_support.json等3)、`key_phrases/`(a2/b1b選定+outer_retry履歴+kp_explanations.json)、`segment_plan_{a2,b1b}.json`、`dialogue_attribution_{a2,b1b}.json`、`speaker_table.md`。
+- DENY: run直下の`a2/`(194)・`b1b/`(142)丸ごと(assembly/audit[review_lock_state・human_approved_segments・gate・tts結果]/narration/wav/導入済みKP asset)、`cost_log.jsonl`、`e2e_stage_log.jsonl`、`run_launch_log.jsonl`、`audit_stop_sentinel.jsonl`、`page_verify_local.json`。=過去のHuman Review承認・Lock・音声を新Styleの新規生成へ継承しない。
+
+### 10-4 実走CLI(**本委任では実行しない**。Fable CP・STOP解除後の委任_17)
+`.venv\Scripts\python.exe er026_family_z_fiction_production_runner_01.py --run run_e2e_03 --mode real --stage all --approved-budget-jpy 100 --tts-execution-mode STANDARD --regenerate-stage kp_expl_b1b`
+(委任_16文の例からの差分=`-I`削除[上記10-1(a)]、`--regenerate-stage kp_expl_b1b`追加)。非課金確認=`--mode dry-run --stage all --stop-after kp`(rc=0、副作用なし、run_e2e_03のfile数60不変を確認)。
+
+### 10-5 費用見積(出典: `er026_output/family_z_production_e2e_01/melos/run_e2e_02/cost_log.jsonl`をstage別に`er019_family_x_audio_production_runner_01.compute_cost_jpy_so_far`[pricing_snapshot単価]で再計算。run_e2e_02総額JPY62.831=text 22.33+TTS/ASR 40.17+後続evidence 0.24[tts_b1b/tts_a2とは別stage名])
+| 項目 | 見積JPY | 根拠 |
+|---|---|---|
+| tts_a2(Std全Role再生成+ASR/AUW含む) | 約23.2 | run_e2e_02実測 tts_a2=23.167(gemini 57/openai_asr 95/azure 23/openai LR 7) |
+| tts_b1b(Adv全Role再生成+ASR/AUW含む) | 約17.0 | run_e2e_02実測 tts_b1b=17.000(gemini 42/openai_asr 44/azure 12/openai 4) |
+| SRC D1 | 0 | Python決定論・LLM/API呼出なし |
+| kp_expl_b1b再生成(luna 1呼出) | 約0.4(guard上限2.0) | run_e2e_02 kp stage 13呼出=5.516 -> 平均0.42 |
+| writer/std_adjust/plan/support/kp選定 | 0 | 全てreuse(mock precheckでAPI 0確認) |
+| **合計(期待)** | **約40.6** | ユーザー期待 約45。AUW 3回フロー上限・Style変更によるclip長差の余裕は+4〜+10程度(根拠=run_e2e_02が既にAUWフローを含む実測)。#108上限100に対し約59の余裕 |
+- 注意: 見積は実測の組合せで、PD06/S3等の新Styleの実TTS費用は実走まで未確認。超過見込みの根拠が出た場合はSTOP。
+- 費用の分離: runnerの累計は`<run>/cost_log.jsonl`のみから算出(`make_real_spent_fn(ctx.out_dir/cost_log.jsonl)`)。run_e2e_03は新規の空cost_logから始まるため、run_e2e_01(JPY108.11)・run_e2e_02(JPY62.83)の既存費用とは混ざらない。`E2EBudget.limit() = min(warn 200, approved 100) = 100`(`--ack-warn-threshold`なし)。`E2E_APPROVED_BUDGET_MAX_JPY=300`定数は未変更(CLIが100を渡す前提)。¥300枠累計との分離記録は実走後にCOST_LEDGER_MELOS_01.mdへ別枠節で記録。
+
+### 10-6 Gate一覧(実走時)
+AUW(統一ASR/音声品質、3回フロー: Primary ASR->Secondary ASR->Local Rewrite等、`tts_generation_results.json`のattempt記録) / Std 6%減速(`verify_std_english_slowdown`、減速後再検証) / Voice assignment(Narrator=Aoede・PD06、Dialogue=melos Algieba/selinuntius Erinome/dionysius Charon、`speaker_table.md`・`dialogue_attribution_*.json`) / Dialogue切替(kind=dialogue clipはstyle_sha不変、Narrator/Dialogueの切替・結合) / Assembly(`provision_shell`->`gate`->`assemble`) / Human Review Lock(review_lock_state、Std part1_c5「Melos said.」は作業ツリーのLedger entry ec716e185835dba3[維持、commitしない]によりM1融合受理でPASS_WITH_WARNINGの可能性。受理時はユーザー試聴リストへ明示、Review Lock発火はSTOP・報告) / 全Role Style記録(`audit/style_record.json`、旧Style混在は課金前STOP)。
+
+### 10-7 STOP条件(実走時)
+累計>JPY100見込み(`E2EBudget`がclip前/stage前に新規API呼出前STOP) / Human Review Lock発火 / Style sha不一致(`audit/style_record.json`・`FamilyZRunStyleMismatchStop`) / SRC STOP(`FAMILY_Z_SRC_UNRESOLVED`) / gloss HR / STOPセンチネル(`<run>/STOP`・`STOP_ALL`)・RESTART_STORM / 外部停止または原因不明rc!=0が2回(26-2 (a)) / stop_scope_check rc=3(現状)。
