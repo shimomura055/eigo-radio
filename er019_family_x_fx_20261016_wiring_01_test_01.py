@@ -673,7 +673,10 @@ class AbcGoldenTests(unittest.TestCase):
         # 期待: reader(読み取り)はstyle_profile(M3)・Family Z(自前のresult加工)・shared_narration(今回の2段key)のみ
         self.assertTrue(set(readers) <= {"er019_family_x_style_profile_01.py", "er063_family_z_audio_01.py",
                                          "er019_family_x_kp_en_k2_store_01.py",
-                                         "er063_family_z_audio_01_smoke_01.py"}, readers)
+                                         "er063_family_z_audio_01_smoke_01.py",
+                                         # BAPE委任_04のStyle適用表集計script(read-only: 完了runのtts_generation_results.jsonを読み
+                                         # audit配下のe2e_segment_style_table_bape_04.jsonへ書くのみ。Store entry/Production出力へ書き戻さない)
+                                         "er019_bape_style_table_04.py"}, readers)
 
 
 # ============================================================
