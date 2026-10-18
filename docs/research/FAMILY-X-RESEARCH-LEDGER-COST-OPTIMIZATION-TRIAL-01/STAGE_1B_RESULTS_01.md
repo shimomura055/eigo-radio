@@ -65,3 +65,59 @@
 - 1a成果dir(`coffee_prices`・`inbound_tourism`)のsha256: 実行前後でIDENTICAL(161ファイル、`_sha_before_09.json`/`_sha_after_09.json`)。
 - 既存集計の非上書き: run本体が`run_summary.json`/`stop_check.json`/`integrity_{before,after,check}.json`を固定名で書く実装のため、実行直後に新ファイルを`*_09_1b_a1.json`へ改名し、元のファイルを事前バックアップから復元(`aggregate.md`は未接触でsha不変)。aggregateは`--out`がroot兼出力先(`--root`なし、既存`aggregate.md/json`を上書きする実装)のため、streaming_priceのみを一時rootにコピーして実行し`aggregate_1b_a1.md/json`として保存。適合照合は`ARTICLES_1A`固定のため`check_method`を直接呼出して`_conform_check_1b_a1.json`に保存(コード不変)。
 - test: `er082_rlct_trial_01_test_01.py` 25 passed。
+
+## 記事2: openai_copyright(委任_10、2026-10-18 JST)
+
+### 実行
+- 使用モデル(raw_usage_log実測): B3=`gpt-6.1-sol`、Verifier/Ledger検証=`gpt-6-luna`(全方式で`verifier_model_matches_m0=true`)。harness既定のまま(1a・記事1と同一条件、旧モデル使用なし)。
+- 起動: 1回、再起動なし。5job(M0,M0b,M1,M2,M3=PLAN["1b"]の記事2部分、M0pは実施せず)全てCOMPLETED。コマンドは委任_09と同じ置換(`--article openai_copyright --method M0,M0b,M1,M2,M3`)。dry-runは別out `_dryrun_10`で5jobを確認し`raw_usage_log.jsonl` sha256不変(331b4b93…)。
+- **プロセスrc=5**(`[STOP] integrity mismatch`、実行完了後のpost-run integrity検査)。差分は全て`shared_review_queue_tree`配下の`review_queue/post_en/index.jsonl`と`review_queue/post_en/middle_east_yemen_saudi__run_mey_01/**`(並行中のFamily X新記事MEYの書込、`integrity_check_10_1b_a2.json`にdiff16件、いずれもMEY配下かindex.jsonl)のみ。RLCT側の保護対象(1a・streaming成果dir)は変化なし(sha IDENTICAL)。BudgetガードSTOPはなし(`stop_check`は`stop=false`)。記事間Gate G1が「rc=0」を要求するため機械的にFAIL(`_gate_1b_a2_to_a3_10.json`)。記事3は未実行。
+- 事前見積(記事1の最大185に対し)実測74.738で範囲内。
+
+### 方式別結果(実測、`aggregate_1b_a2.md`/`_analysis_1b_a2.json`)
+| 方式 | status | 選定Fact | 再選定/確認パス/後続B3 | unmet | ラベル件数 | 契約 |
+|---|---|---|---|---|---|---|
+| M0 | COMPLETED | F2,F4,F6,F7,F8 | -/-/- | - | 0 | PASS |
+| M0b | COMPLETED | F2,F4,F6,F7,F8 | -/-/- | - | 0 | PASS |
+| M1 | COMPLETED | F2,F4,F6,F7,F8 | -/-/- | - | 0 | PASS |
+| M2 | COMPLETED | F2,F4,F6,F7,F8 | 0/1/1 | null(`final_confirm_pass`=NOT_NEEDED_AMBIGUOUS_ALREADY_VISIBLE) | 0 | PASS |
+| M3 | COMPLETED | F2,F4,F6,F7,F8 | 0/0/0(初回B3はM2と共有) | null(`final_confirm_pass`=NOT_NEEDED_ALL_VERIFIED) | 0 | PASS |
+- UNRESOLVED 0。全5方式の選定Factが同一(Jaccard 1.0)。既知欠陥登録なし(`known_defects=[]`)。
+- M2: 初回B3がF8を判定未提示で選定→選定検証でF8がVERIFIED→AMBIGUOUSに降格→確認パス1回→確認B3は同じ5Factを選定(F8はAMBIGUOUS付きで可視)。M3: 初回B3(M2と共有)の選定5FactをM3検証して全VERIFIED(F8もVERIFIED)→再選定・確認パスとも0回。
+
+### 方式別費用(実測JPY。出典=`raw_usage_log.jsonl`、`lib.cost_by_stage_tag`)
+| 方式 | LLM | 検索ツール | 合計 | 検索呼出(種別) | クエリ | step別 | 本番換算 | 対M0削減 |
+|---|---|---|---|---|---|---|---|---|
+| M0 | 6.389 | 0 | 6.389 | 0 | 0 | b3 6.389 | 38.22 | 基準 |
+| M0b | 7.296 | 0 | 7.296 | 0 | 0 | b3 7.296 | 39.127 | -2.4%(増) |
+| M1 | 8.634 | 9.6 | 18.234 | 6(search3/open_page2/unknown1) | 12 | ledger 10.81, b3 7.424 | 41.055 | -7.4%(増) |
+| M2 | 15.713 | 11.2 | 26.913 | 7(search4/open_page2/find_in_page1) | 15 | b3_initial 7.337, verify_sel_r0 12.477, 確認B3 7.099 | 49.734 | -30.1%(増) |
+| M3 | 1.506 | 14.4 | 15.906 | 9(search3/open_page5/find_in_page1) | 12 | verify_sel_r0 15.906(B3はM2のb3_initial共有) | 46.064 | -20.5%(増) |
+- 記事2合計(実測): **JPY74.738**。本記事ではM1/M2/M3とも本番換算でM0より高い(M1 +2.8、M2 +11.5、M3 +7.8 JPY相当、`aggregate_1b_a2.md`削減JPY列)。要因は未分析(1標本)。ソフト上限超過の記録は全方式0件。本標本1記事のみで一般化せず、記事3完了後に5記事集計で判定(R-B7)。
+
+### 機械チェック
+- 選定FactへのREJECTED混入: 全方式0。AMBIGUOUS選定: M1のF8とM2のF8(M3は全VERIFIED)。D1適合: M2=PASS(AMBIGUOUS選定F8は確認B3 promptで可視)、M3=PASS。M0/M0b/M1はN/A(`_conform_check_1b_a2.json`)。
+- 「【独立検証前の編集仮説】」ラベル出現件数: M0 0/M0b 0/M1 0/M2 0/M3 0(記録のみ)。
+- 中心Factの断定リスク候補(機械抽出): M1のみF8(AMBIGUOUS)1件、他方式0件。人手判定は別委任。
+
+### Verifier判定の方式間差(`_analysis_1b_a2.json` verdict_table。「-」=その方式では検証せず)
+| Fact | M0 | M0b | M1 | M2 | M3 |
+|---|---|---|---|---|---|
+| F1 | VERIFIED | VERIFIED | VERIFIED | - | - |
+| F2 | VERIFIED | VERIFIED | VERIFIED | VERIFIED | VERIFIED |
+| F3 | VERIFIED | VERIFIED | VERIFIED | - | - |
+| F4 | VERIFIED | VERIFIED | VERIFIED | VERIFIED | VERIFIED |
+| F5 | VERIFIED | VERIFIED | VERIFIED | - | - |
+| F6 | VERIFIED | VERIFIED | VERIFIED | VERIFIED | VERIFIED |
+| F7 | VERIFIED | VERIFIED | VERIFIED | VERIFIED | VERIFIED |
+| F8 | VERIFIED | VERIFIED | AMBIGUOUS | AMBIGUOUS | VERIFIED |
+- F8のみ方式間で揺れる(M1/M2=AMBIGUOUS、M0/M0b/M3=VERIFIED)。M2のF8降格とM3のF8 VERIFIEDは同一選定・同一初回B3に対する異なる検証呼出の結果で、Verifierばらつきと方式固有の差は分離不能(OPEN-409の観測と同種、改修なし)。
+
+### 累計(実測、出典付き)
+- 1b累計: 86.128+74.738=**160.866 / 493**(`cost_by_stage_tag` 1b|*の合計)。Trial累計: 329.819+74.738=**404.557 / 1,040**(全行集計と一致)。
+- 当日(JST 2026-10-18): RLCT 160.866+非RLCT(Family X MEY進行中、`daily_dev_cost_01.py`のrun_mey_01ログ集計)56.53=**217.40 / 1,000**(記事2実走直後に集計)。記事2実走時に渡した`--other-spend-today-jpy`は保守値180。
+
+### 完全性
+- 1a成果dir・streaming_price: 実行前後でsha256 IDENTICAL(241ファイル、`_sha_before_10.json`と再計算値が一致、`_sha_after_10.json`)。
+- 既存集計の非上書き: 固定名出力(run_summary/stop_check/integrity_*)を`*_10_1b_a2.json`へ改名保存し、事前バックアップから復元(復元後のsha256=実行前と一致、`aggregate.md`未接触)。aggregateは一時rootで実行し`aggregate_1b_a2.md/json`として保存、適合照合は`check_method`直接呼出(コード不変)。
+- 記事3(central_bank_mortgage)は記事間Gate G1 FAIL(rc=5)により未実行。
