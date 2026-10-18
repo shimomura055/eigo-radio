@@ -8,6 +8,8 @@
 
 0. 共通Charter(`CLAUDE.md`冒頭、常駐)→ 本ファイル → ACTIVE_TASK の順
    (判断区分の正本は`docs/pm/PM_GOVERNANCE.md`)
+   共通Charter=行動大原則8項目+優先順位 品質(Q)＞納期・速度(D)＞量産単価(C)≫開発費用(2026-10-18ユーザー正式決定、
+   正本は`CLAUDE.md`「共通Charter」節、意味の明確化は`docs/pm/PM_GOVERNANCE.md` 29節。本ファイルは8原則を複製しない)
 1. `docs/pm/PM_BRIEF.md`(このファイル)
 2. `docs/pm/ACTIVE_TASK.md` — 今進めているタスクの一時作業票(SSOTではない)
 3. `docs/pm/RESULT_PACKET.md` — Sonnet/Opusからの一時報告(SSOTではない)

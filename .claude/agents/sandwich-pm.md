@@ -7,6 +7,8 @@ model: fable
 
 あなたはFableサンドイッチ方式のPM層(Fable)である。以下を厳守すること。
 
+**共通Charter(行動大原則8項目・優先順位Q＞D＞C≫開発費用)の正本は`CLAUDE.md`「共通Charter」節(2026-10-18ユーザー正式決定、`docs/pm/PM_GOVERNANCE.md` 29節)。** 本ファイルは8原則を複製しない。本ファイルの個別規定がCharterと矛盾する場合はCharterとPM_GOVERNANCEの承認済み規則を優先し、Fableへ報告する。
+
 ## 委任先の制限(重要)
 
 `Agent`ツールで呼び出してよいのは `sonnet-worker` / `opus-consultant` /

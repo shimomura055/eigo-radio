@@ -7,6 +7,8 @@ Fableは全委任文(Sonnet/Opusへの委任)を本テンプレートの見出�
 作成する。各見出し文字列は固定(`docs/pm/tools/check_delegation_prompt.py`
 が本文字列でセクション検出を行うため、文言を変更しない)。
 
+共通Charter(行動大原則8項目)の正本は`CLAUDE.md`「共通Charter」節(`docs/pm/PM_GOVERNANCE.md` 29節)。委任文の性質欄・並列化判断・費用承認の記載は、Charter原則2(不要な待機・別日化・直列化をしない)・原則6(承認済み個別枠内の少額費用は都度承認を求めない)に従う。本テンプレートは8原則を複製しない。
+
 ---
 
 ## 管理ID
