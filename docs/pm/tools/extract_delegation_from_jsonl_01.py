@@ -10,6 +10,9 @@ def main():
     ap.add_argument("--role", default="user")
     ap.add_argument("--index", type=int, default=0)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--tool-use-name", default=None,
+                    help="if set, extract input[--tool-input-field] of the Nth tool_use block with this name (e.g. SubagentHandback)")
+    ap.add_argument("--tool-input-field", default="message")
     a = ap.parse_args()
     n = -1
     with open(a.jsonl, encoding="utf-8") as f:
@@ -22,6 +25,19 @@ def main():
             except Exception:
                 continue
             m = o.get("message") or {}
+            if a.tool_use_name:
+                if (m.get("role") or o.get("type")) != a.role or not isinstance(m.get("content"), list):
+                    continue
+                for b in m["content"]:
+                    if isinstance(b, dict) and b.get("type") == "tool_use" and b.get("name") == a.tool_use_name:
+                        n += 1
+                        if n == a.index:
+                            text = (b.get("input") or {}).get(a.tool_input_field, "")
+                            with open(a.out, "w", encoding="utf-8", newline=chr(10)) as w:
+                                w.write(text)
+                            print("OK chars=%d" % len(text))
+                            return 0
+                continue
             if (m.get("role") or o.get("type")) != a.role:
                 continue
             c = m.get("content")
