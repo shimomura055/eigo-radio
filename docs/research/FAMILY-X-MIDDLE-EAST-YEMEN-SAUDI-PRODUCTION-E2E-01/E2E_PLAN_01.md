@@ -139,3 +139,11 @@ OPEN_ITEMS(新規OPEN)、DECISION_LOG、USER_DECISION_REGISTER(費用180承認)�
 - Ledger外具体描写の突合(再生成後b1b/a2): 固有名詞・場面・数字14項目を突合。UN envoy for Yemen=F11/Saudi authorities・Riyadh airport・12人死亡・300人超負傷=F11(帰属付き)/Riyadh・Abha空港の同週攻撃=F11/地域安全保障の脅威・和平努力困難=F11(特使の評価と帰属明示)=一致。Ledger外の具体事実・創作場面=0件(「空港が攻撃された」引用は報道一報の言い換え、「Imagine if it were an airport you used」は読者への仮定と明示された非事実、「two clocks」は比喩)。初回の“Peace in Yemen”案内板のような事実風創作場面は消失。
 - 数字の時点明示・帰属: 帰属は良好(死傷者数=Saudi authoritiesの発表を特使が引用/和平困難化=特使の評価と分離)。**本文に日付(10月10日・11日)が無い**(初回も本文中のOctober出現0=同じ)。「that same week」のみ。
 - 評価材料(Fable CP2用): 創作場面は解消・RF0。一方B3は再びF11のみ選定(選定理由はF02-F10が「F11で説明可能/背景のみ」)で、ユーザーの狙い(なぜ周辺の紛争が地域全体に影響するか)を複数Factで語る構造にはならず「ニュースの読み方」型エッセイのまま。再生成2回目は行わない(STOP方針)。
+
+## §15 Fable CP2判定(USER_DECISION_REQUIRED)(委任_03、2026-10-18)
+- 事実性・中立性=PASS: Ledger外の創作描写0件、Risk Flagger候補0件、帰属・数字の時点分離は良好、因果誇張なし(再生成後タイトル "Airport Attacks: Another Crisis the Damage Figures Alone Cannot Show")。
+- 狙い適合=NG: B3が2回連続でF11(国連特使発言)のみ選定(F01〜F10 excluded)。記事は「ニュースの読み方」型のメタ・エッセイで、ユーザーの狙い「なぜイエメン周辺の紛争がサウジ・地域全体に影響するのか」を一連の事実(10/6〜16の空港・アラムコ・マリブ・アデン)で語れていない。
+- 判定根拠: 同じ問題が2回再現(原則5)。改善にはB3選定基準(Prompt)変更=Production挙動変更が必要でFable権限外。Ledgerも攻撃主体が公的発表で未特定・独立報道0件・1Fact1URLの限界があり、Research再実行でも達成保証なし。ユーザー§6「既存Production経路では解決できない品質問題」に該当。
+- 結論: 音声工程へ進めずSTOP、USER_DECISION_REQUIRED #112。
+- 選択肢: (a)この記事のまま音声工程へ(見込み約JPY25〜30、E2E累計約105〜110/180) (b)本記事を見送り(text実費JPY79.9で終了、成果物は保全) (c)Research再実行1回(見込み約JPY36+下流約25=約61、E2E累計約141、音声で180に接近、保証なし) (d)B3選定基準の改善を別Trialとして起票(Prompt変更=Production Gate対象、本記事とは切り離す)。Fable推奨=(b)+(d)。(a)はユーザーが本文を読んで許容できる場合のみ。
+- 本委任_03はSSOT記録のみ(JPY0、コード/Prompt/成果物変更0、音声工程未起動)。
