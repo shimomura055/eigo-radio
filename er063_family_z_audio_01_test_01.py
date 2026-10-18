@@ -688,7 +688,7 @@ class SequenceAndPageTest(unittest.TestCase):
         self.assertIn("class='kp'", html)
         bad = z.lint_page_html("<p>(A2) file:///C:/x</p>")
         self.assertTrue(bad["file_scheme"] and bad["level_label_leak"])
-        self.assertIn("standard.html", z.build_index_html())
+        self.assertIn("standard.html", z.build_index_html([], []))   # 委任_19: index=標準フォーマット(詳細ページへの導線は補助表示)
 
 
 class AssemblyAndPagesIntegrationTest(unittest.TestCase):
@@ -720,6 +720,13 @@ class AssemblyAndPagesIntegrationTest(unittest.TestCase):
             with open(pages["Standard"]["page"], encoding="utf-8") as f:
                 self.assertIn("6%減速適用", f.read())
             self.assertTrue(os.path.exists(f"{tmp}/pages/index.html"))
+            # 委任_19: indexはユーザー試聴ページ標準フォーマットに適合し、内部情報(Voice/Style/通知音)を載せない
+            self.assertEqual(pages["index"]["standard_check"], "PASS")
+            with open(f"{tmp}/pages/index.html", encoding="utf-8") as f:
+                idx = f.read()
+            self.assertNotIn("Voice:", idx)
+            self.assertNotIn("読み上げなし", idx)
+            self.assertIn("全編を通し再生", idx)
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
 

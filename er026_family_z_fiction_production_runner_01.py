@@ -1474,8 +1474,14 @@ def stage_page_verify(ctx) -> dict:
     finally:
         srv.shutdown()
         srv.server_close()
+    # 委任_19(再発防止): ユーザー試聴ページ標準適合check(通し再生/再生順スクリプト/KP/内部情報非表示/ASR警告の補助化)。X/Z/Y共通module。
+    import er_user_listening_page_common_01 as _uc
+    std = _uc.check_file(f"{ctx.pages_dir}/index.html")
+    res["user_page_standard_check"] = {"overall": std["overall"], "failed": {k: v for k, v in std["checks"].items() if not v["ok"]}}
     _m().w62.wj(f"{ctx.out_dir}/page_verify_local.json", res)
     problems = evaluate_page_verify(res)
+    if std["overall"] != "PASS":
+        problems.append(f"index.html:user_page_standard_check={res['user_page_standard_check']['failed']}")
     if problems:
         raise FamilyZE2EStop(f"FAMILY_Z_PAGE_VERIFY_LOCAL_NG: {problems}(詳細 {ctx.out_dir}/page_verify_local.json)")
     return {"pages": sorted(res["pages"]), "evidence": f"{ctx.out_dir}/page_verify_local.json",
