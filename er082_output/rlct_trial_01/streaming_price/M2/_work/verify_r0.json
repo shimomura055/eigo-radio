@@ -1,0 +1,53 @@
+{
+  "label": "r0",
+  "cap_prompt": false,
+  "fact_ids": [
+    "F01",
+    "F02",
+    "F03",
+    "F04",
+    "F07"
+  ],
+  "model": "gpt-6-luna",
+  "response_id": "resp_0fe99db60f345307006ad41957480c87d0b65830f796679840",
+  "latency_seconds": 82.80904507637024,
+  "web_search_call_count": 9,
+  "action_type_counts": {
+    "search": 6,
+    "open_page": 3
+  },
+  "query_count": 21,
+  "calls_per_fact_avg": 1.8,
+  "exceeds_soft_cap_estimate": false,
+  "prompt_sha256": "5e4f945bf850125515304b45b0b2581c2917b9e3b4897e5a33110d1a32f47c05",
+  "parsed": {
+    "verifications": [
+      {
+        "fact_id": "F01",
+        "verdict": "AMBIGUOUS",
+        "verification_notes": "「2026年10月8日までに検索で確認できた範囲」という限定付きの選定は、検索範囲の網羅性を独立に確かめられないため確定できません。また、現在の最新発表を指すなら基準日が古く、Disney+の英国価格改定が2026年10月14日に報じられています。したがって、9月23日の米国改定を現在の「最も新しい発表」として扱う根拠にはなりません。([t3.com](https://www.t3.com/entertainment/streaming/disney-raises-prices-for-all-uk-subscribers-but-heres-how-to-avoid-paying-more))"
+      },
+      {
+        "fact_id": "F02",
+        "verdict": "VERIFIED",
+        "verification_notes": "Disney+の米国向け公式価格ページは、2026年9月23日以降の新規契約価格と、同日より前に契約した利用者への2026年10月21日以降の請求サイクルでの適用を記載しています。CBS Newsは広告付き単体プランを月額11.99ドルから12.49ドルと明記しています。第三者請求経由で価格が異なる場合があるという条件も公式ページにあります。([help.disneyplus.com](https://help.disneyplus.com/iw/article/disneyplus-price?utm_source=openai))"
+      },
+      {
+        "fact_id": "F03",
+        "verdict": "VERIFIED",
+        "verification_notes": "CBS Newsは、広告なしのDisney+単体月額プランを18.99ドルから21.49ドルへ、2.50ドル増と明記しています。Disney+公式ページも新価格21.49ドルと、既存契約者への適用が2026年10月21日以降の請求サイクルであることを示しています。([cbsnews.com](https://www.cbsnews.com/news/disney-plus-hulu-price-increase/?intcid=CNR-01-0623))"
+      },
+      {
+        "fact_id": "F04",
+        "verdict": "AMBIGUOUS",
+        "verification_notes": "改定後の年額214.99ドルはDisney+公式価格ページで確認できます。改定前の189.99ドルも独立報道で確認できますが、Ledger記載の一般的なDisney+トップページURLは改定前価格の記録・保存版を特定しておらず、引用された公式ページだけでは旧価格を再確認できません。旧価格の裏付けを確実にするには、当時の公式価格ページの保存記録などが必要です。([help.disneyplus.com](https://help.disneyplus.com/iw/article/disneyplus-price?utm_source=openai))"
+      },
+      {
+        "fact_id": "F07",
+        "verdict": "VERIFIED",
+        "verification_notes": "Factが明示する限定範囲では正確です。Reuters記事はDisneyがコメント要請に直ちに回答しなかったとし、公式価格ページは価格・適用日を示す一方、値上げ理由を記していません。ただし、この限定は「会社が理由を示していない」こと全般を証明するものではありません。別の取材記事は、Disneyがユーザー体験の向上に向けた技術・機能・バックエンドへの投資を理由として挙げたと報じています。([investing.com](https://www.investing.com/news/stock-market-news/disney-to-raise-prices-on-disney-hulu-subscriptions-bloomberg-news-reports-4913527))"
+      }
+    ]
+  },
+  "prompt": "以下のFact Ledger下書きを、Ledger自身のsource_urlだけを鵜呑みにせず、\n独立してWeb検索により再照合してください。\n\n【対象テーマ】\nCurrent news/lifestyle topic: the most recent subscription price increase announced by ONE major video streaming service (pick the single most recent announcement; do not survey other services). Using only facts confirmed by web search (the company's own announcement, Reuters/AP/Bloomberg-level reporting), pin down: which service, the old and new price for each affected plan, the effective date(s), the market(s) covered, and the reason the company gave. Limit research to this one announcement; do not compare with other services or collect subscriber-reaction data. Do not invent details and do not use the assistant's own prior knowledge.\n\n【検証対象のFact Ledger下書き】\n{\n  \"facts\": [\n    {\n      \"fact_id\": \"F01\",\n      \"claim\": \"2026年10月8日までに今回のWeb調査で確認できた主要な米国向け動画ストリーミング価格改定のうち、最も新しい発表としてDisney+の2026年9月23日の改定を選定した。\",\n      \"subject\": \"Disney+の米国向け価格改定発表\",\n      \"date_or_period\": \"発表日：2026-09-23。調査基準日：2026-10-08\",\n      \"scope\": \"米国向け動画ストリーミングサービスの価格改定発表として調査で確認した範囲\",\n      \"conditions\": \"「最も新しい」は調査時点までにWeb検索で確認できた発表に基づく選定。\",\n      \"numeric_value\": null,\n      \"numeric_scope\": null,\n      \"causal_strength\": \"NOT_APPLICABLE\",\n      \"source_title\": \"Disney+ plans and prices（Disney+ Help Center）；Disney+ Price to Jump 13% to $21.49 Per Month as Soon as Wednesday（Bloomberg）\",\n      \"source_url\": \"https://help.disneyplus.com/article/disneyplus-en-ph-price ; https://finance.yahoo.com/media-advertising/articles/disney-price-jump-13-21-143019197.html\",\n      \"source_type\": \"OTHER\",\n      \"support_level\": \"INFERRED_FROM_SOURCE\",\n      \"ambiguity\": \"全世界・全地域の小規模サービスを網羅した比較ではなく、検索で確認できた主要サービスの発表からの選定。\",\n      \"notes_for_writer\": \"対象はDisney+の当該発表に限定する。他サービスとの比較はしない。\"\n    },\n    {\n      \"fact_id\": \"F02\",\n      \"claim\": \"Disney+の広告付きスタンドアロン月額プランは、月額11.99ドルから12.49ドルに改定された。\",\n      \"subject\": \"Disney+（広告付き）スタンドアロン月額プラン\",\n      \"date_or_period\": \"新規契約者向け新価格：2026-09-23から。既存契約者：2026-10-21以降の請求サイクルから。\",\n      \"scope\": \"米国のDisney+スタンドアロン月額プラン\",\n      \"conditions\": \"Disney+の米国価格ページは、2026-09-23より前に契約した利用者には2026-10-21以降の請求サイクルで価格変更が適用されると記載。第三者請求経由では価格が異なる場合がある。\",\n      \"numeric_value\": \"月額11.99ドルから12.49ドル（0.50ドル増）\",\n      \"numeric_scope\": \"広告付きスタンドアロン月額プラン1種\",\n      \"causal_strength\": \"NOT_APPLICABLE\",\n      \"source_title\": \"Disney to raise prices on Disney+, Hulu subscriptions, Bloomberg News reports（Reuters）\",\n      \"source_url\": \"https://www.investing.com/news/stock-market-news/disney-to-raise-prices-on-disney-hulu-subscriptions-bloomberg-news-reports-4913527\",\n      \"source_type\": \"RELIABLE_SECONDARY_NEWS\",\n      \"support_level\": \"INFERRED_FROM_SOURCE\",\n      \"ambiguity\": \"Reuters報道は新価格12.49ドルと50セントの増額を記載しており、旧価格11.99ドルは差額から示した。\",\n      \"notes_for_writer\": \"Disney+単体プランの価格。バンドル価格は含めない。\"\n    },\n    {\n      \"fact_id\": \"F03\",\n      \"claim\": \"Disney+ Premiumの広告なしスタンドアロン月額プランは、月額18.99ドルから21.49ドルに改定された。\",\n      \"subject\": \"Disney+ Premium（広告なし）スタンドアロン月額プラン\",\n      \"date_or_period\": \"新規契約者向け新価格：2026-09-23から。既存契約者：2026-10-21以降の請求サイクルから。\",\n      \"scope\": \"米国のDisney+ Premiumスタンドアロン月額プラン\",\n      \"conditions\": \"Disney+の米国価格ページは、2026-09-23より前に契約した利用者には2026-10-21以降の請求サイクルで価格変更が適用されると記載。第三者請求経由では価格が異なる場合がある。\",\n      \"numeric_value\": \"月額18.99ドルから21.49ドル（2.50ドル増、約13%増）\",\n      \"numeric_scope\": \"広告なしスタンドアロン月額プラン1種\",\n      \"causal_strength\": \"NOT_APPLICABLE\",\n      \"source_title\": \"Disney+ Price to Jump 13% to $21.49 Per Month as Soon as Wednesday（Bloomberg）\",\n      \"source_url\": \"https://finance.yahoo.com/media-advertising/articles/disney-price-jump-13-21-143019197.html\",\n      \"source_type\": \"RELIABLE_SECONDARY_NEWS\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": null,\n      \"notes_for_writer\": \"Disney+ Premiumは月額プランとして扱う。第三者請求の例外に注意。\"\n    },\n    {\n      \"fact_id\": \"F04\",\n      \"claim\": \"Disney+ Premiumの広告なしスタンドアロン年額プランは、年額189.99ドルから214.99ドルに改定された。\",\n      \"subject\": \"Disney+ Premium（広告なし）スタンドアロン年額プラン\",\n      \"date_or_period\": \"新規契約者向け新価格：2026-09-23から。既存契約者：2026-10-21以降の請求サイクルから。\",\n      \"scope\": \"米国のDisney+ Premiumスタンドアロン年額プラン\",\n      \"conditions\": \"現在の年額価格はDisney+の米国価格ページに掲載。旧価格は改定前のDisney+米国申込ページの掲載価格。第三者請求経由では価格が異なる場合がある。\",\n      \"numeric_value\": \"年額189.99ドルから214.99ドル（25ドル増）\",\n      \"numeric_scope\": \"広告なしスタンドアロン年額プラン1種\",\n      \"causal_strength\": \"NOT_APPLICABLE\",\n      \"source_title\": \"Disney+ U.S. subscription page（改定前掲載価格）；Disney+ plans and prices（Disney+ Help Center、現行価格）\",\n      \"source_url\": \"https://www.disneyplus.com/ ; https://help.disneyplus.com/article/disneyplus-en-ph-price\",\n      \"source_type\": \"OTHER\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": \"改定前価格と現行価格は、それぞれ改定前・改定後の公式Disney+価格ページに基づく。\",\n      \"notes_for_writer\": \"年額契約の価格。月額料金を12倍した金額とは区別する。\"\n    },\n    {\n      \"fact_id\": \"F07\",\n      \"claim\": \"今回確認したDisney+の米国価格ページとReuters報道では、Disneyが今回の値上げ理由を明示した記述は確認できない。Reutersは、DisneyがReutersのコメント要請に直ちには回答しなかったと報じた。\",\n      \"subject\": \"Disney+価格改定の会社側説明\",\n      \"date_or_period\": \"2026-09-23の価格改定報道時点\",\n      \"scope\": \"今回確認したDisney+米国価格ページおよびReuters記事\",\n      \"conditions\": \"確認対象に含まれない別の顧客通知等で、追加説明が行われた可能性までは否定しない。\",\n      \"numeric_value\": null,\n      \"numeric_scope\": null,\n      \"causal_strength\": \"NOT_APPLICABLE\",\n      \"source_title\": \"Disney to raise prices on Disney+, Hulu subscriptions, Bloomberg News reports（Reuters）；Disney+ plans and prices（Disney+ Help Center | US）\",\n      \"source_url\": \"https://www.investing.com/news/stock-market-news/disney-to-raise-prices-on-disney-hulu-subscriptions-bloomberg-news-reports-4913527 ; https://help.disneyplus.com/article/disneyplus-en-ph-price\",\n      \"source_type\": \"RELIABLE_SECONDARY_NEWS\",\n      \"support_level\": \"PARTIALLY_STATED\",\n      \"ambiguity\": \"確認できた資料の範囲で会社が示した理由は特定できない。価格改定の動機を推測して補わないこと。\",\n      \"notes_for_writer\": \"一般的な業界要因やDisneyの別時期の説明を、今回の値上げについて会社が述べた理由として転用しない。\"\n    }\n  ]\n}\n\n【検証観点】\n- FactがSourceに実際に存在するか\n- 数字のscopeが正しいか(母集団と個別条件を混同していないか)\n- 対象群と全体を混同していないか\n- 日付・時間帯が正しいか\n- 制度の適用範囲が正しいか(特に時間帯限定かどうか)\n- 条件が抜けていないか\n- 因果関係を過剰に強めていないか\n- Source間で矛盾していないか\n- 曖昧なFactを無理に確定していないか\n\n各fact_idについて、VERIFIED / AMBIGUOUS / REJECTEDのいずれかで判定し、\n判定理由をverification_notesへ記載してください。"
+}

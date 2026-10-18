@@ -1,0 +1,235 @@
+{
+  "article": "streaming_price",
+  "method": "M3",
+  "stage": "1b",
+  "dry_run": false,
+  "started_at": "2026-10-18T00:59:23.858235+00:00",
+  "usage_basis": "OFFICIAL_API_RESPONSE",
+  "reselect": {
+    "status": "COMPLETED",
+    "rounds": [
+      {
+        "round": 0,
+        "trigger": "INITIAL",
+        "b3_label": "initial",
+        "selected_fact_ids": [
+          "F01",
+          "F02",
+          "F03",
+          "F04",
+          "F07"
+        ],
+        "verified_now": [
+          "F01",
+          "F02",
+          "F03",
+          "F04",
+          "F07"
+        ],
+        "reused_verdicts": [],
+        "verify_record": {
+          "label": "r0",
+          "cap_prompt": true,
+          "fact_ids": [
+            "F01",
+            "F02",
+            "F03",
+            "F04",
+            "F07"
+          ],
+          "model": "gpt-6-luna",
+          "response_id": "resp_098a36f2fec93d2f006ad419ec3a2087d0a362a7b78e597e3b",
+          "latency_seconds": 105.3371307849884,
+          "web_search_call_count": 6,
+          "action_type_counts": {
+            "search": 4,
+            "open_page": 1,
+            "find_in_page": 1
+          },
+          "query_count": 23,
+          "calls_per_fact_avg": 1.2,
+          "exceeds_soft_cap_estimate": false,
+          "prompt_sha256": "1176c62ebda1b88f039d3fd32784fe6e49801cbaf2567fe0da753a57b107a77d"
+        },
+        "rejected": [
+          "F07"
+        ],
+        "ambiguous_selected": [
+          "F01"
+        ],
+        "ambiguous_unseen": [
+          "F01"
+        ],
+        "ambiguous_visible_to_b3": false,
+        "confirm_pass": "REQUIRED",
+        "rejected_reselect_attempts_detected": 0
+      },
+      {
+        "round": 1,
+        "trigger": "RESELECT_REJECTED+CONFIRM_AMBIGUOUS",
+        "b3_label": "reselect1",
+        "selected_fact_ids": [
+          "F02",
+          "F03",
+          "F04"
+        ],
+        "verified_now": [],
+        "reused_verdicts": [
+          "F02",
+          "F03",
+          "F04"
+        ],
+        "rejected": [],
+        "ambiguous_selected": [],
+        "ambiguous_unseen": [],
+        "ambiguous_visible_to_b3": true,
+        "confirm_pass": "NOT_NEEDED_ALL_VERIFIED"
+      }
+    ],
+    "reselect_count": 1,
+    "confirm_pass_count": 0,
+    "b3_calls_after_initial": 1,
+    "b3_calls_before_this_run": 0,
+    "final_confirm_pass": "NOT_NEEDED_ALL_VERIFIED",
+    "unmet": null
+  },
+  "shared_initial_b3_from": "1b|streaming_price|M2|b3_initial",
+  "status": "COMPLETED",
+  "selected_fact_ids": [
+    "F02",
+    "F03",
+    "F04"
+  ],
+  "selected_storyline": "Disney+の米国向け単体3プランの値上げについて、各プランの旧・新料金と、新規・既存契約者で異なる適用時期を整理する。",
+  "b3_model": "gpt-6.1-sol",
+  "b3_attempts": 1,
+  "ambiguous_central": {
+    "central_fact_ids": [
+      "F01",
+      "F02",
+      "F05",
+      "F06",
+      "F07"
+    ],
+    "ambiguous_central_fact_ids": [
+      "F01"
+    ],
+    "count": 1,
+    "note": "候補件数(機械抽出)。『断定しているか』の最終判定はSonnet+Fable独立判定(R-07、測定のみ)"
+  },
+  "known_defect_status": {
+    "F07": "c_not_selected"
+  },
+  "verdict_transitions": {
+    "counts": {
+      "AMBIGUOUS->AMBIGUOUS": 1,
+      "VERIFIED->VERIFIED": 3,
+      "AMBIGUOUS->REJECTED": 1
+    },
+    "promotions_to_verified_or_up": [],
+    "demotions_from_verified": []
+  },
+  "final_verdicts": {
+    "F01": {
+      "verdict": "AMBIGUOUS"
+    },
+    "F02": {
+      "verdict": "VERIFIED"
+    },
+    "F03": {
+      "verdict": "VERIFIED"
+    },
+    "F04": {
+      "verdict": "VERIFIED"
+    },
+    "F07": {
+      "verdict": "REJECTED"
+    }
+  },
+  "verifier_models": [
+    "gpt-6-luna"
+  ],
+  "verifier_model_matches_m0": true,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 6,
+    "by_action_type": {
+      "search": 4,
+      "open_page": 1,
+      "find_in_page": 1
+    },
+    "query_count": 23
+  },
+  "verify_requests": [
+    {
+      "label": "r0",
+      "cap_prompt": true,
+      "fact_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F07"
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_098a36f2fec93d2f006ad419ec3a2087d0a362a7b78e597e3b",
+      "latency_seconds": 105.3371307849884,
+      "web_search_call_count": 6,
+      "action_type_counts": {
+        "search": 4,
+        "open_page": 1,
+        "find_in_page": 1
+      },
+      "query_count": 23,
+      "calls_per_fact_avg": 1.2,
+      "exceeds_soft_cap_estimate": false,
+      "prompt_sha256": "1176c62ebda1b88f039d3fd32784fe6e49801cbaf2567fe0da753a57b107a77d"
+    }
+  ],
+  "cost": {
+    "by_step": {
+      "verify_sel_r0": {
+        "llm_jpy": 1.678,
+        "web_search_jpy": 9.6,
+        "calls": 1,
+        "web_search_calls": 6,
+        "input_tokens": 60012,
+        "output_tokens": 8969,
+        "total_jpy": 11.278
+      },
+      "b3_reselect1": {
+        "llm_jpy": 5.806,
+        "web_search_jpy": 0.0,
+        "calls": 1,
+        "web_search_calls": 0,
+        "input_tokens": 3473,
+        "output_tokens": 2934,
+        "total_jpy": 5.806
+      }
+    },
+    "total": {
+      "llm_jpy": 7.484,
+      "web_search_jpy": 9.6,
+      "total_jpy": 17.084,
+      "calls": 2,
+      "web_search_calls": 6
+    }
+  },
+  "contract": {
+    "method_dir": "er082_output/rlct_trial_01/streaming_price/M3",
+    "producer": {
+      "status": "PASS",
+      "n_facts": 3,
+      "llm_calls": 0
+    },
+    "validate": {
+      "status": "PASS"
+    },
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 3
+    },
+    "all_pass": true
+  },
+  "finished_at": "2026-10-18T01:02:01.499719+00:00"
+}

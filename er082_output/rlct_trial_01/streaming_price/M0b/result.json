@@ -1,0 +1,110 @@
+{
+  "article": "streaming_price",
+  "method": "M0b",
+  "stage": "1b",
+  "dry_run": false,
+  "started_at": "2026-10-18T00:51:24.059921+00:00",
+  "usage_basis": "OFFICIAL_API_RESPONSE",
+  "status": "COMPLETED",
+  "selected_fact_ids": [
+    "F01",
+    "F02",
+    "F03",
+    "F04",
+    "F07"
+  ],
+  "selected_storyline": "今回の調査で確認できた主要な米国向け動画配信サービスの最新発表として選んだDisney+は、2026年9月23日に単体3プランの値上げを発表し、新規契約者には同日、既存契約者には10月21日以降の請求サイクルから適用するが、確認資料では会社が示した理由は特定できない。",
+  "b3_model": "gpt-6.1-sol",
+  "b3_attempts": 1,
+  "ambiguous_central": {
+    "central_fact_ids": [
+      "F01",
+      "F06"
+    ],
+    "ambiguous_central_fact_ids": [
+      "F01"
+    ],
+    "count": 1,
+    "note": "候補件数(機械抽出)。『断定しているか』の最終判定はSonnet+Fable独立判定(R-07、測定のみ)"
+  },
+  "known_defect_status": {
+    "F07": "a_selected_detected"
+  },
+  "verdict_transitions": {
+    "counts": {
+      "AMBIGUOUS->AMBIGUOUS": 2,
+      "VERIFIED->VERIFIED": 5
+    },
+    "promotions_to_verified_or_up": [],
+    "demotions_from_verified": []
+  },
+  "final_verdicts": {
+    "F01": {
+      "verdict": "AMBIGUOUS"
+    },
+    "F02": {
+      "verdict": "VERIFIED"
+    },
+    "F03": {
+      "verdict": "VERIFIED"
+    },
+    "F04": {
+      "verdict": "VERIFIED"
+    },
+    "F05": {
+      "verdict": "VERIFIED"
+    },
+    "F06": {
+      "verdict": "VERIFIED"
+    },
+    "F07": {
+      "verdict": "AMBIGUOUS"
+    }
+  },
+  "verifier_models": [],
+  "verifier_model_matches_m0": null,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 0,
+    "by_action_type": {},
+    "query_count": 0
+  },
+  "verify_requests": [],
+  "cost": {
+    "by_step": {
+      "b3": {
+        "llm_jpy": 6.487,
+        "web_search_jpy": 0.0,
+        "calls": 1,
+        "web_search_calls": 0,
+        "input_tokens": 2681,
+        "output_tokens": 3518,
+        "total_jpy": 6.487
+      }
+    },
+    "total": {
+      "llm_jpy": 6.487,
+      "web_search_jpy": 0.0,
+      "total_jpy": 6.487,
+      "calls": 1,
+      "web_search_calls": 0
+    }
+  },
+  "contract": {
+    "method_dir": "er082_output/rlct_trial_01/streaming_price/M0b",
+    "producer": {
+      "status": "PASS",
+      "n_facts": 5,
+      "llm_calls": 0
+    },
+    "validate": {
+      "status": "PASS"
+    },
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 7
+    },
+    "all_pass": true
+  },
+  "finished_at": "2026-10-18T00:52:25.775325+00:00"
+}

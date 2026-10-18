@@ -1,0 +1,119 @@
+{
+  "article": "streaming_price",
+  "method": "M0p",
+  "stage": "1b",
+  "dry_run": false,
+  "started_at": "2026-10-18T00:52:25.789936+00:00",
+  "usage_basis": "OFFICIAL_API_RESPONSE",
+  "verdict_counts": {
+    "VERIFIED": 5,
+    "AMBIGUOUS": 1,
+    "REJECTED": 1
+  },
+  "status": "COMPLETED",
+  "selected_fact_ids": null,
+  "verdict_transitions": {
+    "counts": {
+      "AMBIGUOUS->REJECTED": 1,
+      "VERIFIED->VERIFIED": 4,
+      "VERIFIED->AMBIGUOUS": 1,
+      "AMBIGUOUS->VERIFIED": 1
+    },
+    "promotions_to_verified_or_up": [
+      "F07"
+    ],
+    "demotions_from_verified": [
+      "F04"
+    ]
+  },
+  "final_verdicts": {
+    "F01": {
+      "verdict": "REJECTED"
+    },
+    "F02": {
+      "verdict": "VERIFIED"
+    },
+    "F03": {
+      "verdict": "VERIFIED"
+    },
+    "F04": {
+      "verdict": "AMBIGUOUS"
+    },
+    "F05": {
+      "verdict": "VERIFIED"
+    },
+    "F06": {
+      "verdict": "VERIFIED"
+    },
+    "F07": {
+      "verdict": "VERIFIED"
+    }
+  },
+  "verifier_models": [
+    "gpt-6-luna"
+  ],
+  "verifier_model_matches_m0": true,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 6,
+    "by_action_type": {
+      "search": 5,
+      "open_page": 1
+    },
+    "query_count": 18
+  },
+  "verify_requests": [
+    {
+      "label": "full",
+      "cap_prompt": false,
+      "fact_ids": [
+        "F01",
+        "F02",
+        "F03",
+        "F04",
+        "F05",
+        "F06",
+        "F07"
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_057dfeb4cc6940e2006ad4184a225487d0b9352a1d3014e446",
+      "latency_seconds": 60.158973932266235,
+      "web_search_call_count": 6,
+      "action_type_counts": {
+        "search": 5,
+        "open_page": 1
+      },
+      "query_count": 18,
+      "calls_per_fact_avg": 0.857,
+      "exceeds_soft_cap_estimate": false,
+      "prompt_sha256": "87b4a9ec58e10309f370b914aa1d888fa63220d48c5000658ce50c3517bdeffa"
+    }
+  ],
+  "cost": {
+    "by_step": {
+      "ledger": {
+        "llm_jpy": 1.263,
+        "web_search_jpy": 9.6,
+        "calls": 1,
+        "web_search_calls": 6,
+        "input_tokens": 56618,
+        "output_tokens": 4470,
+        "total_jpy": 10.863
+      }
+    },
+    "total": {
+      "llm_jpy": 1.263,
+      "web_search_jpy": 9.6,
+      "total_jpy": 10.863,
+      "calls": 1,
+      "web_search_calls": 6
+    }
+  },
+  "contract": {
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 6
+    }
+  },
+  "finished_at": "2026-10-18T00:53:25.977596+00:00"
+}

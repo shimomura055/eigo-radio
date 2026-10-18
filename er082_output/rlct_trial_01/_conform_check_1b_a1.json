@@ -1,0 +1,106 @@
+{
+  "root": "er082_output/rlct_trial_01",
+  "article": "streaming_price",
+  "note": "conform_check.py は ARTICLES_1A 固定のためcheck_method関数を直接呼出(コード不変)",
+  "summary": {
+    "pass": [
+      "M2",
+      "M3"
+    ],
+    "fail": [],
+    "n_a": [
+      "M0",
+      "M0b",
+      "M0p",
+      "M1"
+    ]
+  },
+  "rows": [
+    {
+      "article": "streaming_price",
+      "method": "M0",
+      "conform_d1": "N/A",
+      "reason": "全Fact検証後にB3を呼ぶ方式(候補Ledgerは検証済みタグ付き)。確認パスの対象外"
+    },
+    {
+      "article": "streaming_price",
+      "method": "M0b",
+      "conform_d1": "N/A",
+      "reason": "全Fact検証後にB3を呼ぶ方式(候補Ledgerは検証済みタグ付き)。確認パスの対象外"
+    },
+    {
+      "article": "streaming_price",
+      "method": "M0p",
+      "conform_d1": "N/A",
+      "reason": "全Fact検証後にB3を呼ぶ方式(候補Ledgerは検証済みタグ付き)。確認パスの対象外"
+    },
+    {
+      "article": "streaming_price",
+      "method": "M1",
+      "conform_d1": "N/A",
+      "reason": "全Fact検証後にB3を呼ぶ方式(候補Ledgerは検証済みタグ付き)。確認パスの対象外"
+    },
+    {
+      "article": "streaming_price",
+      "method": "M2",
+      "final_sel_equals_prev_minus_rejected": null,
+      "storyline_changed": null,
+      "conform_d1": "PASS",
+      "reason": "AMBIGUOUS ['F04'] は生成B3呼出(confirm1)の候補Ledgerに判定付きで提示済み",
+      "final_sel_b3_label": "confirm1",
+      "selected_fact_ids": [
+        "F02",
+        "F03",
+        "F04",
+        "F07"
+      ],
+      "final_verdicts_of_selected": {
+        "F02": "VERIFIED",
+        "F03": "VERIFIED",
+        "F04": "AMBIGUOUS",
+        "F07": "VERIFIED"
+      },
+      "ambiguous_selected": [
+        "F04"
+      ],
+      "ambiguous_unseen_by_b3": [],
+      "rejected_selected": [],
+      "prompt_evidence": {
+        "path": "er082_output/rlct_trial_01/streaming_price/M2/_work/b3_confirm1.json",
+        "ambiguous_shown_in_b3_prompt": {
+          "F04": true
+        },
+        "agrees_with_rounds": true
+      },
+      "action": "再生成不要"
+    },
+    {
+      "article": "streaming_price",
+      "method": "M3",
+      "final_sel_equals_prev_minus_rejected": null,
+      "storyline_changed": null,
+      "conform_d1": "PASS",
+      "reason": "選定Factは全てVERIFIED(確認パス不要)",
+      "final_sel_b3_label": "reselect1",
+      "selected_fact_ids": [
+        "F02",
+        "F03",
+        "F04"
+      ],
+      "final_verdicts_of_selected": {
+        "F02": "VERIFIED",
+        "F03": "VERIFIED",
+        "F04": "VERIFIED"
+      },
+      "ambiguous_selected": [],
+      "ambiguous_unseen_by_b3": [],
+      "rejected_selected": [],
+      "prompt_evidence": {
+        "path": "er082_output/rlct_trial_01/streaming_price/M3/_work/b3_reselect1.json",
+        "ambiguous_shown_in_b3_prompt": {},
+        "agrees_with_rounds": true
+      },
+      "action": "再生成不要"
+    }
+  ]
+}

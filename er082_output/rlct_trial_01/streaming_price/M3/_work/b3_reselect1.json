@@ -1,0 +1,91 @@
+{
+  "parsed": {
+    "selected_storyline": "Disney+の米国向け単体3プランの値上げについて、各プランの旧・新料金と、新規・既存契約者で異なる適用時期を整理する。",
+    "fact_tests": [
+      {
+        "fact_id": "F01",
+        "test1_answer": "YES",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "NO",
+        "decision": "excluded",
+        "reason": "「最新」という位置付けはテーマ上重要だが、このFactでは調査範囲の網羅性も現在時点の最新性も確定できない。米国の当該改定内容はF02〜F04で説明できるため除外し、Storylineにも「最新」とは記載しない。"
+      },
+      {
+        "fact_id": "F02",
+        "test1_answer": "YES",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "NO",
+        "decision": "selected",
+        "reason": "削除しても値上げという筋は理解でき、この価格自体は原因や会社の理由を説明しない。ただし、影響を受ける各プランの旧・新価格を示すという明示的な要件を満たすため例外採用する。広告付き月額プランの情報は他Factで代替できず、単なる数字の具体性を理由に残すものではない。米国という範囲と適用時期も含む。"
+      },
+      {
+        "fact_id": "F03",
+        "test1_answer": "YES",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "NO",
+        "decision": "selected",
+        "reason": "削除しても値上げという筋は理解でき、因果関係や値上げ理由の説明には使わない。ただし、対象プランごとの旧・新価格という必須要件のため例外採用する。広告なし月額プランの価格はF02やF04では代替できず、補足的な数字ではない。"
+      },
+      {
+        "fact_id": "F04",
+        "test1_answer": "YES",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "NO",
+        "decision": "selected",
+        "reason": "削除しても値上げの概要は理解でき、原因や会社の理由を説明するFactではない。ただし、対象全プランの旧・新価格を欠落なく示すため例外採用する。年額プランは月額プランとは別の料金設定であり、F03から計算して代用できない。"
+      },
+      {
+        "fact_id": "F05",
+        "test1_answer": "YES",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "YES",
+        "decision": "excluded",
+        "reason": "米国向け価格であることと第三者請求では価格が異なり得るという留保は、採用するF02〜F04のscope・conditionsに既に含まれる。独立したFactとして残しても補足の重複となるため、未検証候補を追加採用する必要はない。留保自体はBriefに保持する。"
+      },
+      {
+        "fact_id": "F06",
+        "test1_answer": "YES",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "YES",
+        "decision": "excluded",
+        "reason": "新規契約者と既存契約者への適用時期は必須情報だが、同じ内容がF02〜F04のdate_or_period・conditionsに含まれる。独立採用は重複となるため除外する。既存契約者全員が10月21日に一斉に値上げされるわけではないという条件はBriefに残す。"
+      }
+    ],
+    "selected_fact_ids": [
+      "F02",
+      "F03",
+      "F04"
+    ],
+    "selected_fact_brief": "Disney+の米国向け単体3プランの値上げについて、各プランの旧・新料金と、新規・既存契約者で異なる適用時期を整理する。\n\n【採用素材】\n・F02：広告付き単体月額プランは11.99米ドルから12.49米ドルへ改定。\n・F03：Disney+ Premiumの広告なし単体月額プランは18.99米ドルから21.49米ドルへ改定。\n・F04：Disney+ Premiumの広告なし単体年額プランは189.99米ドルから214.99米ドルへ改定。月額料金の12倍とは区別する。\n・上記3件に含まれる共通条件：対象は米国の単体プランで、バンドルは含めない。新規契約者には2026年9月23日から、同日より前に契約した既存契約者には2026年10月21日以降の各請求サイクルから適用される。第三者請求経由では価格が異なる場合がある。\n\n【記事化前の不足・制約】\nこの選定だけでは、依頼された「最新の発表」の特定と「会社が示した値上げ理由」を満たせない。「最新」とは断定せず、最新性の再確認と会社説明のFact化・検証が必要。採用可能なLedger項目に理由の記載がないことを、「会社が理由を示していない」「理由は特定できない」という結論に置き換えない。",
+    "recheck_note": null
+  },
+  "model": "gpt-6.1-sol",
+  "response_id": "resp_0ef9300281502cff006ad41a55971887d0a5c4235edfdb45e4",
+  "latency_seconds": 52.21745705604553,
+  "attempts": 1,
+  "retried": false,
+  "soft_warnings": [],
+  "ledger_fact_ids": [
+    "F01",
+    "F02",
+    "F03",
+    "F04",
+    "F05",
+    "F06"
+  ],
+  "attempts_log": [
+    {
+      "attempt": 1,
+      "validation_errors": []
+    }
+  ],
+  "user_prompt_sha256": "7ec358f935ee531ed78d6c4df10423442665e1df50db6b0c4e38e30858f2075b",
+  "allow_unverified": true,
+  "user_prompt": "以下は、あるテーマについてWeb調査で収集し独立検証前のFull Fact Ledger候補(各Factには[VERIFIED]/[AMBIGUOUS]/[UNVERIFIED]のタグが付いています。[UNVERIFIED]は未検証で、選定後に選ばれたFactだけを独立検証します)です。\n\n【テーマ】\nCurrent news/lifestyle topic: the most recent subscription price increase announced by ONE major video streaming service (pick the single most recent announcement; do not survey other services). Using only facts confirmed by web search (the company's own announcement, Reuters/AP/Bloomberg-level reporting), pin down: which service, the old and new price for each affected plan, the effective date(s), the market(s) covered, and the reason the company gave. Limit research to this one announcement; do not compare with other services or collect subscriber-reaction data. Do not invent details and do not use the assistant's own prior knowledge.\n\n【Full Fact Ledger】\n[AMBIGUOUS - 断定禁止、曖昧さを保持すること] F01: 2026年10月8日までに今回のWeb調査で確認できた主要な米国向け動画ストリーミング価格改定のうち、最も新しい発表としてDisney+の2026年9月23日の改定を選定した。\n  scope: 米国向け動画ストリーミングサービスの価格改定発表として調査で確認した範囲\n  conditions: 「最も新しい」は調査時点までにWeb検索で確認できた発表に基づく選定。\n  date_or_period: 発表日：2026-09-23。調査基準日：2026-10-08\n  ambiguity_note: 全世界・全地域の小規模サービスを網羅した比較ではなく、検索で確認できた主要サービスの発表からの選定。\n  notes_for_writer: 対象はDisney+の当該発表に限定する。他サービスとの比較はしない。\n\n[VERIFIED] F02: Disney+の広告付きスタンドアロン月額プランは、月額11.99ドルから12.49ドルに改定された。\n  scope: 米国のDisney+スタンドアロン月額プラン\n  conditions: Disney+の米国価格ページは、2026-09-23より前に契約した利用者には2026-10-21以降の請求サイクルで価格変更が適用されると記載。第三者請求経由では価格が異なる場合がある。\n  numeric_value: 月額11.99ドルから12.49ドル（0.50ドル増） (numeric_scope: 広告付きスタンドアロン月額プラン1種)\n  date_or_period: 新規契約者向け新価格：2026-09-23から。既存契約者：2026-10-21以降の請求サイクルから。\n  notes_for_writer: Disney+単体プランの価格。バンドル価格は含めない。\n\n[VERIFIED] F03: Disney+ Premiumの広告なしスタンドアロン月額プランは、月額18.99ドルから21.49ドルに改定された。\n  scope: 米国のDisney+ Premiumスタンドアロン月額プラン\n  conditions: Disney+の米国価格ページは、2026-09-23より前に契約した利用者には2026-10-21以降の請求サイクルで価格変更が適用されると記載。第三者請求経由では価格が異なる場合がある。\n  numeric_value: 月額18.99ドルから21.49ドル（2.50ドル増、約13%増） (numeric_scope: 広告なしスタンドアロン月額プラン1種)\n  date_or_period: 新規契約者向け新価格：2026-09-23から。既存契約者：2026-10-21以降の請求サイクルから。\n  notes_for_writer: Disney+ Premiumは月額プランとして扱う。第三者請求の例外に注意。\n\n[VERIFIED] F04: Disney+ Premiumの広告なしスタンドアロン年額プランは、年額189.99ドルから214.99ドルに改定された。\n  scope: 米国のDisney+ Premiumスタンドアロン年額プラン\n  conditions: 現在の年額価格はDisney+の米国価格ページに掲載。旧価格は改定前のDisney+米国申込ページの掲載価格。第三者請求経由では価格が異なる場合がある。\n  numeric_value: 年額189.99ドルから214.99ドル（25ドル増） (numeric_scope: 広告なしスタンドアロン年額プラン1種)\n  date_or_period: 新規契約者向け新価格：2026-09-23から。既存契約者：2026-10-21以降の請求サイクルから。\n  notes_for_writer: 年額契約の価格。月額料金を12倍した金額とは区別する。\n\n[UNVERIFIED] F05: Disney+の改定後価格は米国向けであり、公式価格ページは第三者請求パートナー経由では価格が異なる場合があると記載している。\n  scope: Disney+ Help Centerの米国向け価格ページに掲載された価格\n  conditions: 第三者請求パートナー経由の価格は、プラットフォーム上の制限や地域別価格により異なる場合がある。\n  date_or_period: 2026-09-23掲載の価格情報\n  notes_for_writer: 確認した価格を全世界共通価格として記述しない。\n\n[UNVERIFIED] F06: Disney+の米国価格ページは、新規契約者向け価格を2026年9月23日開始とし、それ以前に契約した利用者には2026年10月21日以降の請求サイクルで価格変更が適用されるとしている。\n  scope: 米国向けDisney+契約者\n  conditions: 既存契約者への適用日は、各利用者の請求サイクルにより異なる。第三者請求パートナー経由では価格や適用条件が異なる場合がある。\n  date_or_period: 新規契約者：2026-09-23から。既存契約者：2026-10-21以降の請求サイクル。\n  numeric_value: 2026-09-23；2026-10-21以降 (numeric_scope: 新規契約価格の開始日；既存契約者の価格変更が始まる請求サイクルの基準日)\n  notes_for_writer: 既存契約者全員が10月21日に同時に請求されるという意味ではない。\n\n\nあなたの仕事は次の5つです。\n\n1. このFull Ledgerの中から、記事として一本化しやすい中心Storyline(のちの記事が伝える「何が起きて、なぜそうなったか」という一続きの筋)を1つ決定してください。\n2. 決定したStorylineを1行の日本語で明示してください(これが後工程でWriterへ渡すテーマ文としてそのまま使われます)。\n3. Full Ledgerの全fact_idそれぞれについて、以下4つのテストを適用してください。\n\nTest1: そのFactを削除しても中心Storylineを理解できるか。YESなら原則除外。\nTest2: そのFactは他Factとの因果関係に実際に使われるか。NOなら原則除外。\nTest3: そのFactがないとStoryline上重要な「なぜ?」が説明できなくなるか。NOなら原則除外。\nTest4: そのFactを残した理由が「面白い/具体的/数字がある/珍しい/補足として便利」だけではないか。YESなら原則除外。\n\n4. 各Factについて、4テストの回答を踏まえてselected(採用)/excluded(除外)を決定し、理由(reason)を記載してください。判定に迷うFactについては、迷った理由も含めてreasonへ記載して構いません。\n5. 採用したFactだけを使って、Writerへそのまま渡す「Selected Fact Brief」(必要最小限のFactを簡潔にまとめた文章。冒頭にStorylineの1行を含める)を作成してください。Selected Fact Briefは記事本文そのものではなく、Writerへの素材です。\n\n【採用Fact数についての注意】\n目安は3〜5件です。Hard ruleではありませんが、6件以上採用する場合は、本当にそれら全てが中心Storylineの理解に必要かをもう一度自問し、recheck_noteフィールドへその検討内容を明記してください(3件未満でも、Storylineが単独で成立するなら構いません)。5件以下の場合、recheck_noteはnullにしてください。\n\n【出力】\nJSON schemaの指示に従い、以下を出力してください:\n- selected_storyline: 決定したStorylineの1行\n- fact_tests: Full Ledgerの全fact_idについて、test1_answer/test2_answer/test3_answer/test4_answer(いずれも\"YES\"か\"NO\")・reason・decision(\"selected\"か\"excluded\")\n- selected_fact_ids: 採用したfact_idのリスト(fact_testsでdecision=\"selected\"のものと一致させること)\n- selected_fact_brief: Writerへ渡すSelected Fact Brief本文(Storylineの1行を含む)\n- recheck_note: 採用Fact数が6件以上の場合のみ記入。5件以下の場合はnull。\n\n【重要】fact_idは、上記Full Ledgerに実在するfact_idのみを使用してください。Ledgerに存在しないfact_idを作り出さないでください。\n\n【最終確認の指示(Trial)】前回選んだFactの独立検証が終わりました。検証結果を踏まえ、Storylineの構成を再評価し、必要ならFactを選び直してください。REJECTEDのFactは選定してはいけません(選定禁止)。AMBIGUOUSのFactは無条件に断定してはいけません。\n- REJECTED F07: Reuters記事が「コメント要請に直ちには回答しなかった」と報じた点は確認できますが、それを会社が理由を明示していないという一般的な結論に広げるのは不適切です。翌日の報道ではDisneyの説明として、値上げをユーザー体験向上のための新技術・機能・バックエンド改善への投資に結び付けています。したがって「今回の値上げ理由は特定できない」という結論は独立報道を含めると成立しません。([investing.com](https://www.investing.com/news/stock-market-news/disney-to-raise-prices-on-disney-hulu-subscriptions-bloomberg-news-reports-4913527))(候補一覧から外しました。選定禁止)\n- AMBIGUOUS F01: 「2026-10-08までに確認できた」という歴史的な調査範囲内での選定は、Disney+の9月23日発表とReuters報道だけでは網羅性を独立確認できません。また、現在日付の2026-10-18時点での「最新」を示すFactとしては調査基準日が古く、10月14日にはDisney+ UKの別市場での価格改定が報じられています。したがって、米国市場に限定した当時の順位は確定できず、対象テーマ全体の最新発表としては未確認です。([investing.com](https://www.investing.com/news/stock-market-news/disney-to-raise-prices-on-disney-hulu-subscriptions-bloomberg-news-reports-4913527)) / 使用上の制約: このFactを使う場合、Storyline・Briefでは不確実性・留保条件を明示し、無条件の断定をしてはならない\n【検証済みの他のFactの判定】\n- F02: VERIFIED / 米国の広告付きDisney+単体月額プランは、$11.99から$12.49へ0.50ドル増という数字がCBS報道で直接確認できます。新規契約は発表当日から、既存契約は次月の請求からと報じられており、Disney+の価格案内も9月23日以前の契約者には10月21日以降の請求サイクルで適用するとしています。第三者請求では価格が異なる場合がある点も価格案内と整合します。([cbsnews.com](https://www.cbsnews.com/news/disney-plus-hulu-price-increase/))\n- F03: VERIFIED / 米国の広告なしDisney+ Premium単体月額プランは、$18.99から$21.49へ2.50ドル増という記載がCBS報道で直接確認できます。新規契約と既存契約への適用時期も、報道およびDisney+価格案内と整合します。([cbsnews.com](https://www.cbsnews.com/news/disney-plus-hulu-price-increase/))\n- F04: VERIFIED / Disney+ Premium年額プランの旧価格$189.99は値上げ前の公式Disney+掲載情報で、新価格$214.99は現在のDisney+公式案内で確認できます。旧価格の根拠として挙げられたトップページは更新され得るため、旧価格の検証では値上げ前の掲載時点との対応が重要ですが、提示された金額自体は確認できます。([disneyplus.com](https://www.disneyplus.com/?msockid=180f507def6f68c71e8246b5eee26946&utm_source=openai))\n【未検証の候補】F05, F06 (新たに選んだFactだけを選定後に独立検証します)\nStorylineの構成を再評価し、必要ならFactを選び直してください。"
+}

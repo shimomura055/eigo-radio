@@ -21815,3 +21815,5 @@ Fable決定: F1 STOP_NOTICE(2026-10-12)をrun_e2e_03限定で解除(run_e2e_01/0
   9. CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS更新=委任_17で事実記録済み、委任_18で判定を記録
   10. commit/push/merge=充足(fb01f125f/43c75180f/6a29bb3d3)
 - evidence: segment_style_table_17.json(58/0)、src_z_posthoc_01.json(10/10、STOP 0)、cost_by_stage_17.json(JPY36.3845/100)、pages_play_evidence_17.json(audio 12/51/50)。本委任はJPY0・有料API呼出0。
+
+2026-10-18 FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-TRIAL-01 委任_09: Stage 1b 記事1(streaming_price)有料実走(M0/M0b/M0p/M1/M2/M3、1回起動・再起動なし・rc=0、全方式COMPLETED、確認パス M2 1回/M3 0回[M3は再選定1回]、UNRESOLVED 0、STOP 0)。実費JPY86.128(実測、raw_usage_log.jsonl・cost_by_stage_tag)、1b累計86.128/493、Trial累計243.7+86.128=329.8/1,040、当日(JST 2026-10-18)86.128/1,000。適合照合D1 M2/M3=PASS、REJECTED選定混入0、ラベル0件。1a成果sha IDENTICAL(161ファイル)。記事2・3は未実行。Production変更なし。Status=STAGE_1B_ARTICLE1_COMPLETE_PENDING_FABLE(判定はFable)。
