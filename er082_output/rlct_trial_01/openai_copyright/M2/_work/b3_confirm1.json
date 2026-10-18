@@ -1,0 +1,113 @@
+{
+  "parsed": {
+    "selected_storyline": "USA TODAY Co., Inc.と関連出版社が報道コンテンツの無断利用などを主張し、OpenAI側に賠償・差止め等を求めて提訴した事件では、確認できた記録の範囲で訴訟停止の是非を巡る説明・応答期限が設定されているが、この命令は停止決定でも侵害認定でもない。",
+    "fact_tests": [
+      {
+        "fact_id": "F1",
+        "test1_answer": "YES",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "NO",
+        "decision": "excluded",
+        "reason": "提訴の主体・日付・裁判所と、主張を侵害認定と区別する注意はF2・F4・検証補足付きのF8で確保できる。重要な導入情報ではあるが、独立したFactとして残すと重複するため除外する。"
+      },
+      {
+        "fact_id": "F2",
+        "test1_answer": "NO",
+        "test2_answer": "YES",
+        "test3_answer": "NO",
+        "test4_answer": "NO",
+        "decision": "selected",
+        "reason": "誰がOpenAI側に権利侵害を主張し救済を求めているのかを特定する基礎情報で、F4・F6の主体となる。提訴理由そのものを説明するFactではないが、原告の特定はテーマの必須要件であるため採用する。Briefでは14者の全名称を列挙せず、USA TODAYとGannett名義の原告を代表例として示す。"
+      },
+      {
+        "fact_id": "F3",
+        "test1_answer": "YES",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "YES",
+        "decision": "excluded",
+        "reason": "19出版物の名称と著作権保有の主張は対象コンテンツの詳細だが、提訴理由はF4で説明できる。出版物の網羅性や数の具体性を加えることが中心となり、今回の最小構成には不要。"
+      },
+      {
+        "fact_id": "F4",
+        "test1_answer": "NO",
+        "test2_answer": "YES",
+        "test3_answer": "YES",
+        "test4_answer": "NO",
+        "decision": "selected",
+        "reason": "なぜ原告らが提訴し、F6の救済を求めるのかを説明する中心Fact。訓練利用、出力での複製・再構成、著作権管理情報の除去はいずれも原告の主張として扱い、確定事実にしない。"
+      },
+      {
+        "fact_id": "F5",
+        "test1_answer": "YES",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "YES",
+        "decision": "excluded",
+        "reason": "請求原因の分類と件数は法的な補足に当たり、原告の問題視する行為と求める救済はF4・F6で伝えられる。中心Storylineに不可欠ではなく、新たに未検証Factを追加する必要もない。"
+      },
+      {
+        "fact_id": "F6",
+        "test1_answer": "NO",
+        "test2_answer": "YES",
+        "test3_answer": "NO",
+        "test4_answer": "NO",
+        "decision": "selected",
+        "reason": "提訴の原因自体はF4で説明できるが、原告が訴訟で何を実現しようとしているかを示す到達点として必要。救済内容はテーマの必須要件でもあり、金額の目新しさを理由にした採用ではない。請求額・破棄請求を認容額・裁判所命令と混同しない。"
+      },
+      {
+        "fact_id": "F7",
+        "test1_answer": "YES",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "NO",
+        "decision": "selected",
+        "reason": "提訴の因果説明だけなら削除できるため採否に迷うが、OpenAIの対応はテーマが明示する必須項目であり、例外的に採用する。確認できるのは10月8日のReuters報道時点で直ちにコメントがなかったことだけで、現在も無回答、反論なし、法廷で未答弁とは推論しない。"
+      },
+      {
+        "fact_id": "F8",
+        "test1_answer": "NO",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "NO",
+        "decision": "selected",
+        "reason": "裁判所・提訴日と手続状況を示し、事件を現在も提訴当日の状態と誤認させないために必要。提訴理由の因果説明ではないが、テーマの必須要件として採用する。AMBIGUOUSの留保を維持し、提示された検証補足で10月15日付命令を追記する。確認できた記録の範囲に限定し、説明・応答期限の設定を停止決定や侵害の本案判断と扱わない。"
+      }
+    ],
+    "selected_fact_ids": [
+      "F2",
+      "F4",
+      "F6",
+      "F7",
+      "F8"
+    ],
+    "selected_fact_brief": "USA TODAY Co., Inc.と関連出版社が報道コンテンツの無断利用などを主張し、OpenAI側に賠償・差止め等を求めて提訴した事件では、確認できた記録の範囲で訴訟停止の是非を巡る説明・応答期限が設定されているが、この命令は停止決定でも侵害認定でもない。\n\n・原告［F2］：USA TODAY Co., Inc.、Gannett Satellite Information Network, LLCなど、訴状に列挙された14法人・事業体。\n・原告の主張［F4］：OpenAIが原告側の報道コンテンツを許可なく取得・複製してAI訓練に使用し、出力で複製・再構成したほか、著作権管理情報を除去したという。いずれも訴状上の主張であり、裁判所の認定として書かない。\n・求める救済［F6］：原告らは損害賠償額が2億5,000万ドルを超えると記載し、損害賠償、利益返還、恒久的差止め等に加え、原告コンテンツを組み込んだモデル・訓練セットの破棄を求めている。裁判所が認めた金額・救済ではない。\n・OpenAIの対応［F7］：Reutersの2026年10月8日付報道では、広報担当者はコメント依頼に直ちには応じなかった。同日時点の取材状況に限る情報で、実体的な反論や法廷上の答弁を示さず、その後の対応も判断できない。\n・提訴と手続状況［F8・検証補足を反映］：訴状は2026年10月8日、ニューヨーク南部地区連邦地方裁判所に提出された。提示された検証補足が示す10月18日時点で確認できた記録の範囲では、裁判所は10月15日、他の関連事件の略式判決申立てに対する決定まで本件を停止すべきでない理由を原告が10月30日までに示すよう命じ、被告側の応答期限を11月6日とした。この命令自体は訴訟停止の決定でも著作権侵害の本案判断でもない。「提訴段階」は10月8日当日の説明に限定し、その後に手続上の命令が出ていることを落とさない。これ以外の手続更新の有無は、この確認範囲から断定しない。",
+    "recheck_note": null
+  },
+  "model": "gpt-6.1-sol",
+  "response_id": "resp_00a6a0b522aca73d006ad41d76617087d08d7d642289a22e08",
+  "latency_seconds": 65.65180611610413,
+  "attempts": 1,
+  "retried": false,
+  "soft_warnings": [],
+  "ledger_fact_ids": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8"
+  ],
+  "attempts_log": [
+    {
+      "attempt": 1,
+      "validation_errors": []
+    }
+  ],
+  "user_prompt_sha256": "5eec29e1b3628b8f13f7a023b67c051f41862226f8cba0a11b32b78a6053f233",
+  "allow_unverified": true,
+  "user_prompt": "以下は、あるテーマについてWeb調査で収集し独立検証前のFull Fact Ledger候補(各Factには[VERIFIED]/[AMBIGUOUS]/[UNVERIFIED]のタグが付いています。[UNVERIFIED]は未検証で、選定後に選ばれたFactだけを独立検証します)です。\n\n【テーマ】\nCurrent news topic: the copyright infringement lawsuit filed against OpenAI by USA Today (and affiliated news publishers). Using only facts confirmed by web search (court filings, Reuters/AP-level reporting), clearly distinguish that this is a lawsuit filing stage and NOT a court finding of infringement: who the plaintiff(s) are (USA Today / Gannett and any others), which court and when it was filed, what the plaintiffs allege and what relief they seek, what OpenAI has said in response, and the current procedural status of the case. Do not state allegations as established facts. Do not invent details and do not use the assistant's own prior knowledge.\n\n【Full Fact Ledger】\n[UNVERIFIED] F1: USA TODAY Co., Inc. と複数の関連出版社は、OpenAI側の複数法人を相手取り、著作権侵害等を主張する訴状を提出した。これは原告の主張を記載した訴状であり、裁判所による侵害認定ではない。\n  scope: 米国連邦裁判所への本件訴状提出\n  conditions: 訴状提出段階。訴状の主張と裁判所の事実認定を区別する。\n  date_or_period: 2026-10-08\n  notes_for_writer: 「提訴した」「訴状で主張した」と表現する。「裁判所が侵害を認定した」とは書かない。\n\n[VERIFIED] F2: 訴状に記載された原告は14の法人・事業体で、USA TODAY Co., Inc.、Gannett Satellite Information Network, LLC、Gannett GP Media, Inc.、The Courier-Journal, Inc.、Des Moines Register and Tribune Company、Detroit Free Press, Inc.、Detroit Newspaper Partnership, L.P.、CA Florida Holdings, LLC、Scripps NP Operating, LLC、CA North Carolina Holdings, Inc.、GateHouse Media Oklahoma Holdings, Inc.、Journal Sentinel Inc.、GateHouse Media Ohio Holdings II, Inc.、Phoenix Newspapers, Inc.である。訴状は、これらをUSA TODAY Co., Inc.傘下の原告らとしている。\n  scope: 本件訴状に名を連ねる法人・事業体\n  conditions: 訴状に記載された当事者名。各出版物そのものがすべて別個の法人原告だという意味ではない。\n  numeric_value: 14 (numeric_scope: 訴状の共同原告として記載された法人・事業体数)\n  date_or_period: 2026-10-08時点の訴状\n  notes_for_writer: 原告数14と、訴状が対象として挙げる出版物数19を混同しない。\n\n[UNVERIFIED] F3: 訴状は、原告らがUSA TODAY、The Tennessean、Indy Star、The Bergen Record、The Enquirer、Asbury Park Press、Democrat & Chronicle、The Knoxville News-Sentinel、Naples Daily News、The Oklahoman、Milwaukee Journal Sentinel、The Columbus Dispatch、The Arizona Republic、The Courier-Journal、The Des Moines Register、Detroit Free Press、The Detroit News、The Palm Beach Post、Star Newsの19出版物に掲載されたコンテンツの著作権を有すると主張している。\n  scope: 訴状が列挙する19出版物に掲載されたコンテンツ\n  conditions: 著作権保有・権利関係は訴状上の原告側の主張として記録する。\n  date_or_period: 2026-10-08時点の訴状\n  numeric_value: 19 (numeric_scope: 訴状が列挙する出版物数)\n  notes_for_writer: 「訴状によれば、原告らは19出版物のコンテンツの著作権を有すると主張」とする。裁判所による権利帰属の認定ではない。\n\n[VERIFIED] F4: 訴状は、OpenAIが原告側の報道コンテンツを許可なく取得・複製してAIモデルの訓練に使用し、モデル出力でそのコンテンツを複製または再構成したと主張する。また、OpenAIが著作権管理情報を除去したとも主張する。いずれも原告側の主張であり、本件で確定した事実ではない。\n  scope: 原告らの報道コンテンツ、AIモデルの訓練データおよびモデル出力\n  conditions: 著作権侵害や著作権管理情報の除去は、訴状上の主張として扱う。\n  numeric_value: 数十万件の報道記事その他の資料（訴状の表現） (numeric_scope: OpenAIが訓練に使ったと原告が主張する対象コンテンツの規模。裁判所が確認した件数ではない。)\n  date_or_period: 訴状が対象とする期間。具体的な開始・終了日は本Factでは特定しない。\n  notes_for_writer: 「OpenAIが無断使用した」ではなく「原告らは、OpenAIが無断使用したと主張」とする。\n\n[UNVERIFIED] F5: 訴状は、(1)著作権侵害、(2)代位責任に基づく著作権侵害、(3)著作権管理情報の除去に関するDigital Millennium Copyright Act違反の3つの請求を掲げている。\n  scope: 本件訴状の請求原因\n  conditions: 請求原因の記載であり、請求の成立や責任について裁判所の判断が下されたことを意味しない。\n  date_or_period: 2026-10-08に提出された訴状\n  numeric_value: 3 (numeric_scope: 訴状に掲げられた請求原因の数)\n  notes_for_writer: 請求原因の数と、裁判所が認定した違反の数を混同しない。\n\n[VERIFIED] F6: 原告らは、損害賠償額が2億5,000万ドルを超えるとする請求を記載し、法定・補償的損害賠償、利益の返還・吐き出し、宣言的救済、恒久的差止め、訴訟費用・弁護士費用等を求めている。さらに、原告らのコンテンツを組み込んだGPTその他の大規模言語モデルおよび訓練セットの破棄も請求している。\n  scope: 本件訴状のPrayer for Reliefおよび損害額に関する記載\n  conditions: 請求された救済であり、裁判所が認めた損害額・救済ではない。\n  numeric_value: 2億5,000万ドル超 (numeric_scope: 原告らが訴状で求める損害賠償額。認容額ではない。)\n  date_or_period: 2026-10-08に提出された訴状\n  notes_for_writer: 金額とモデル・訓練セットの破棄はいずれも原告側の請求。認容・命令済みと書かない。\n\n[VERIFIED] F7: Reutersは2026-10-08の報道で、OpenAIの広報担当者は訴状についてのコメント依頼に直ちには応じなかったと報じた。これは報道時点での取材状況であり、OpenAIによる訴状への実体的な回答や法廷上の答弁を示すものではない。\n  scope: Reutersが報じたコメント依頼への応答状況\n  conditions: 「直ちには応じなかった」という報道時点の記述。以後の対応の有無はこのFactでは扱わない。\n  date_or_period: 2026-10-08（Reuters報道時点）\n  notes_for_writer: 本件に関するOpenAIの実体的な反論が確認された、と書かない。\n\n[AMBIGUOUS - 断定禁止、曖昧さを保持すること] F8: 本件は2026-10-08にニューヨーク南部地区連邦地方裁判所へ提出された新規訴訟で、事件番号は1:26-cv-08892である。確認した訴状と同日報道が示すのは提訴段階であり、裁判所による著作権侵害の認定や本案判断ではない。\n  scope: 米国ニューヨーク南部地区連邦地方裁判所における本件訴訟\n  conditions: 検索時点で確認できたのは提訴の事実。これ以後の手続更新があれば別途確認を要する。\n  numeric_value: 1:26-cv-08892 (numeric_scope: 本件の連邦裁判所事件番号)\n  date_or_period: 2026-10-08時点\n  ambiguity_note: 2026-10-08以降の手続状況は、本Factの確認範囲外。\n  notes_for_writer: 必ず「訴状提出段階」「侵害は裁判所により認定されていない」と区別する。\n\n\nあなたの仕事は次の5つです。\n\n1. このFull Ledgerの中から、記事として一本化しやすい中心Storyline(のちの記事が伝える「何が起きて、なぜそうなったか」という一続きの筋)を1つ決定してください。\n2. 決定したStorylineを1行の日本語で明示してください(これが後工程でWriterへ渡すテーマ文としてそのまま使われます)。\n3. Full Ledgerの全fact_idそれぞれについて、以下4つのテストを適用してください。\n\nTest1: そのFactを削除しても中心Storylineを理解できるか。YESなら原則除外。\nTest2: そのFactは他Factとの因果関係に実際に使われるか。NOなら原則除外。\nTest3: そのFactがないとStoryline上重要な「なぜ?」が説明できなくなるか。NOなら原則除外。\nTest4: そのFactを残した理由が「面白い/具体的/数字がある/珍しい/補足として便利」だけではないか。YESなら原則除外。\n\n4. 各Factについて、4テストの回答を踏まえてselected(採用)/excluded(除外)を決定し、理由(reason)を記載してください。判定に迷うFactについては、迷った理由も含めてreasonへ記載して構いません。\n5. 採用したFactだけを使って、Writerへそのまま渡す「Selected Fact Brief」(必要最小限のFactを簡潔にまとめた文章。冒頭にStorylineの1行を含める)を作成してください。Selected Fact Briefは記事本文そのものではなく、Writerへの素材です。\n\n【採用Fact数についての注意】\n目安は3〜5件です。Hard ruleではありませんが、6件以上採用する場合は、本当にそれら全てが中心Storylineの理解に必要かをもう一度自問し、recheck_noteフィールドへその検討内容を明記してください(3件未満でも、Storylineが単独で成立するなら構いません)。5件以下の場合、recheck_noteはnullにしてください。\n\n【出力】\nJSON schemaの指示に従い、以下を出力してください:\n- selected_storyline: 決定したStorylineの1行\n- fact_tests: Full Ledgerの全fact_idについて、test1_answer/test2_answer/test3_answer/test4_answer(いずれも\"YES\"か\"NO\")・reason・decision(\"selected\"か\"excluded\")\n- selected_fact_ids: 採用したfact_idのリスト(fact_testsでdecision=\"selected\"のものと一致させること)\n- selected_fact_brief: Writerへ渡すSelected Fact Brief本文(Storylineの1行を含む)\n- recheck_note: 採用Fact数が6件以上の場合のみ記入。5件以下の場合はnull。\n\n【重要】fact_idは、上記Full Ledgerに実在するfact_idのみを使用してください。Ledgerに存在しないfact_idを作り出さないでください。\n\n【最終確認の指示(Trial)】前回選んだFactの独立検証が終わりました。検証結果を踏まえ、Storylineの構成を再評価し、必要ならFactを選び直してください。REJECTEDのFactは選定してはいけません(選定禁止)。AMBIGUOUSのFactは無条件に断定してはいけません。\n- AMBIGUOUS F8: 裁判所、提訴日、事件番号は訴状・事件記録と一致し、10月8日時点で提訴段階であったことも正しいです。ただし、Factは「検索時点で確認できたのは提訴の事実」としており、2026年10月18日時点の最新状況を示していません。10月15日、裁判所は原告に対し、他の関連事件の略式判決申立ての決定まで本件を停止すべきでない理由を10月30日までに示すよう命じ、被告側の応答期限を11月6日としました。確認できた記録上、これは停止の決定そのものでも侵害の本案判断でもありません。したがって、提訴段階という記述は提訴当日の説明として正しいものの、現時点の手続状況のFactとしては更新が必要です。([dockets.justia.com](https://dockets.justia.com/docket/new-york/nysdce/1%3A2026cv08892/674652)) / 使用上の制約: このFactを使う場合、Storyline・Briefでは不確実性・留保条件を明示し、無条件の断定をしてはならない\n【検証済みの他のFactの判定】\n- F2: VERIFIED / 訴状冒頭には記載された14法人が共同原告として列挙され、全社がUSA TODAY Co., Inc.に所有されると明記されています。14原告と19出版物を区別する注記も適切です。訴状の共同原告欄および同日付の事件記録と一致します。([storage.courtlistener.com](https://storage.courtlistener.com/recap/gov.uscourts.nysd.674652/gov.uscourts.nysd.674652.1.0_1.pdf))\n- F4: VERIFIED / 訴状は、原告側の数十万件のコンテンツの取得・訓練利用、出力での複製・再構成、著作権管理情報の除去を主張しています。Factはこれらを原告の主張として明示し、裁判所の認定と混同していません。「数十万件」も訴状の記載として扱われています。([storage.courtlistener.com](https://storage.courtlistener.com/recap/gov.uscourts.nysd.674652/gov.uscourts.nysd.674652.1.0_1.pdf))\n- F6: VERIFIED / 訴状は損害賠償額が2億5,000万ドルを超えると述べ、法定・補償的損害賠償、返還・吐き出し、宣言的救済、恒久的差止め、訴訟費用・弁護士費用、および原告コンテンツを含むモデル・訓練セットの破棄を求めています。Factはこれらを請求として記し、認容済みとはしていません。([storage.courtlistener.com](https://storage.courtlistener.com/recap/gov.uscourts.nysd.674652/gov.uscourts.nysd.674652.1.0_1.pdf))\n- F7: VERIFIED / Reutersの2026年10月8日付報道は、OpenAIの広報担当者が訴状についてのコメント依頼に直ちには応じなかったとしています。Factはこの報道時点の取材状況に限定し、OpenAIの実体的な反論や法廷上の答弁を示すものではないと適切に区別しています。([stockopedia.com](https://www.stockopedia.com/share-prices/usa-today-NYQ%3ATDAY/news/usa-today-sues-open-ai-for-copyright-infringement-over-ai-training-01a11c30-fc3c-723b\n【未検証の候補】F1, F3, F5 (新たに選んだFactだけを選定後に独立検証します)\nStorylineの構成を再評価し、必要ならFactを選び直してください。"
+}

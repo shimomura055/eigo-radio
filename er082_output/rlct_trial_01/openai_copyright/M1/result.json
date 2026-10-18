@@ -1,0 +1,163 @@
+{
+  "article": "openai_copyright",
+  "method": "M1",
+  "stage": "1b",
+  "dry_run": false,
+  "started_at": "2026-10-18T01:10:42.439489+00:00",
+  "usage_basis": "OFFICIAL_API_RESPONSE",
+  "verdict_counts": {
+    "VERIFIED": 7,
+    "AMBIGUOUS": 1,
+    "REJECTED": 0
+  },
+  "status": "COMPLETED",
+  "selected_fact_ids": [
+    "F2",
+    "F4",
+    "F6",
+    "F7",
+    "F8"
+  ],
+  "selected_storyline": "USA TODAY・Gannett系の原告らが、報道記事の無断利用などを訴状で主張してOpenAIに賠償とモデル等の破棄を求めて提訴したが、確認できるのは訴状提出段階の情報であり、裁判所による侵害認定ではない。",
+  "b3_model": "gpt-6.1-sol",
+  "b3_attempts": 1,
+  "ambiguous_central": {
+    "central_fact_ids": [
+      "F1",
+      "F2",
+      "F3",
+      "F8"
+    ],
+    "ambiguous_central_fact_ids": [
+      "F8"
+    ],
+    "count": 1,
+    "note": "候補件数(機械抽出)。『断定しているか』の最終判定はSonnet+Fable独立判定(R-07、測定のみ)"
+  },
+  "known_defect_status": {},
+  "verdict_transitions": {
+    "counts": {
+      "VERIFIED->VERIFIED": 7,
+      "VERIFIED->AMBIGUOUS": 1
+    },
+    "promotions_to_verified_or_up": [],
+    "demotions_from_verified": [
+      "F8"
+    ]
+  },
+  "final_verdicts": {
+    "F1": {
+      "verdict": "VERIFIED"
+    },
+    "F2": {
+      "verdict": "VERIFIED"
+    },
+    "F3": {
+      "verdict": "VERIFIED"
+    },
+    "F4": {
+      "verdict": "VERIFIED"
+    },
+    "F5": {
+      "verdict": "VERIFIED"
+    },
+    "F6": {
+      "verdict": "VERIFIED"
+    },
+    "F7": {
+      "verdict": "VERIFIED"
+    },
+    "F8": {
+      "verdict": "AMBIGUOUS"
+    }
+  },
+  "verifier_models": [
+    "gpt-6-luna"
+  ],
+  "verifier_model_matches_m0": true,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 6,
+    "by_action_type": {
+      "search": 3,
+      "open_page": 2,
+      "unknown": 1
+    },
+    "query_count": 12
+  },
+  "verify_requests": [
+    {
+      "label": "full",
+      "cap_prompt": true,
+      "fact_ids": [
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6",
+        "F7",
+        "F8"
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_0d30eaeb70e9822c006ad41c92c13087d0af95110389293039",
+      "latency_seconds": 49.37988519668579,
+      "web_search_call_count": 6,
+      "action_type_counts": {
+        "search": 3,
+        "open_page": 2,
+        "unknown": 1
+      },
+      "query_count": 12,
+      "calls_per_fact_avg": 0.75,
+      "exceeds_soft_cap_estimate": false,
+      "prompt_sha256": "eb0f9e703b70f83ab6149b701fe177eb2bc3ce328d646a472c17ff6207d13583"
+    }
+  ],
+  "cost": {
+    "by_step": {
+      "ledger": {
+        "llm_jpy": 1.21,
+        "web_search_jpy": 9.6,
+        "calls": 1,
+        "web_search_calls": 6,
+        "input_tokens": 55179,
+        "output_tokens": 4085,
+        "total_jpy": 10.81
+      },
+      "b3": {
+        "llm_jpy": 7.424,
+        "web_search_jpy": 0.0,
+        "calls": 1,
+        "web_search_calls": 0,
+        "input_tokens": 3126,
+        "output_tokens": 4015,
+        "total_jpy": 7.424
+      }
+    },
+    "total": {
+      "llm_jpy": 8.634,
+      "web_search_jpy": 9.6,
+      "total_jpy": 18.234,
+      "calls": 2,
+      "web_search_calls": 6
+    }
+  },
+  "contract": {
+    "method_dir": "er082_output/rlct_trial_01/openai_copyright/M1",
+    "producer": {
+      "status": "PASS",
+      "n_facts": 5,
+      "llm_calls": 0
+    },
+    "validate": {
+      "status": "PASS"
+    },
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 8
+    },
+    "all_pass": true
+  },
+  "finished_at": "2026-10-18T01:12:41.302320+00:00"
+}

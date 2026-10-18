@@ -1,0 +1,112 @@
+{
+  "parsed": {
+    "selected_storyline": "USA TODAYと関連出版社が、報道コンテンツをAIの訓練・出力に無断利用されたと主張してOpenAIを提訴し、賠償や差止めを求めたという案件を、侵害認定ではない訴状提出段階の動きとして伝える。",
+    "fact_tests": [
+      {
+        "fact_id": "F1",
+        "test1_answer": "YES",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "NO",
+        "decision": "excluded",
+        "reason": "提訴という中心的な出来事だが、原告の特定はF2、提訴理由はF4、提出日・裁判所と侵害認定との区別はF8で押さえられる。重要でないからではなく、採用Factとの重複を避けるため除外する。"
+      },
+      {
+        "fact_id": "F2",
+        "test1_answer": "NO",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "NO",
+        "decision": "selected",
+        "reason": "USA TODAYとGannett関連法人のうち誰が原告なのかを特定する基礎情報。因果説明や「なぜ」の説明そのものではないためTest2・3はNOだが、当事者の特定は依頼テーマの必須要素として採用する。14という数字や全法人名の列挙自体を採用理由にはしない。"
+      },
+      {
+        "fact_id": "F3",
+        "test1_answer": "YES",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "YES",
+        "decision": "excluded",
+        "reason": "19出版物の一覧と権利保有の主張は対象コンテンツの詳しい補足になるが、提訴理由はF4で理解できる。掲載媒体の網羅よりも、法人原告を示すF2を優先する。"
+      },
+      {
+        "fact_id": "F4",
+        "test1_answer": "NO",
+        "test2_answer": "YES",
+        "test3_answer": "YES",
+        "test4_answer": "NO",
+        "decision": "selected",
+        "reason": "原告らがなぜ提訴し、F6の救済を求めるのかを説明する中心情報。無断取得・複製、訓練利用、出力での複製・再構成などを、確定事実ではなく原告の主張として扱う。"
+      },
+      {
+        "fact_id": "F5",
+        "test1_answer": "YES",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "YES",
+        "decision": "excluded",
+        "reason": "請求原因の正式名称と3分類は法律上の補足としては有用だが、何を問題視して訴えたかはF4で説明できる。最小構成の記事では独立したFactとして残す必要がない。"
+      },
+      {
+        "fact_id": "F6",
+        "test1_answer": "NO",
+        "test2_answer": "YES",
+        "test3_answer": "NO",
+        "test4_answer": "NO",
+        "decision": "selected",
+        "reason": "F4の利用行為を問題視した結果、原告が何を裁判所に求めたのかを示す。提訴理由そのものはF4で説明できるためTest3はNOだが、請求内容は依頼テーマの必須要素として採用する。金額の大きさやモデル破棄請求の珍しさだけを理由にはしない。"
+      },
+      {
+        "fact_id": "F7",
+        "test1_answer": "YES",
+        "test2_answer": "NO",
+        "test3_answer": "NO",
+        "test4_answer": "NO",
+        "decision": "selected",
+        "reason": "原告側の提訴に至る因果筋だけなら省略できるが、OpenAIの対応を区別して示すことが依頼テーマの必須条件なので例外的に採用する。Reuters報道時点で直ちに応答がなかったという範囲に限定し、実体的な反論や現在までの沈黙を意味させない。"
+      },
+      {
+        "fact_id": "F8",
+        "test1_answer": "NO",
+        "test2_answer": "NO",
+        "test3_answer": "YES",
+        "test4_answer": "NO",
+        "decision": "selected",
+        "reason": "裁判所・提出日・確認範囲内の手続状況を示し、なぜ侵害認定として報じてはいけないかを説明する。因果関係の説明ではないためTest2はNOだが、記事の時点と法的な位置付けを確定する必須情報として採用する。事件番号の具体性だけが採用理由ではない。"
+      }
+    ],
+    "selected_fact_ids": [
+      "F2",
+      "F4",
+      "F6",
+      "F7",
+      "F8"
+    ],
+    "selected_fact_brief": "Storyline：USA TODAYと関連出版社が、報道コンテンツをAIの訓練・出力に無断利用されたと主張してOpenAIを提訴し、賠償や差止めを求めたという案件を、侵害認定ではない訴状提出段階の動きとして伝える。\n\n【検証上の前提】以下はすべて[UNVERIFIED]の候補情報であり、独立検証済みの事実ではない。訴状・裁判所記録やReutersなどの報道による確認後に使用する。\n\n・原告：候補F2によれば、USA TODAY Co., Inc.、Gannett Satellite Information Network, LLC、Gannett GP Media, Inc.など計14の法人・事業体。出版物名と法人原告を混同しない。\n・提出先・日付・手続段階：候補F8では、2026年10月8日にニューヨーク南部地区連邦地方裁判所へ提出された新規訴訟とされる。候補資料が扱うのは提訴段階であり、裁判所による著作権侵害の認定や本案判断ではない。\n・提訴理由：原告らは、OpenAIが報道コンテンツを無断取得・複製してAIモデルの訓練に使い、出力でも複製・再構成したほか、著作権管理情報を除去したと主張している。いずれも訴状上の主張として記述する（F4）。\n・求める救済：原告らは2億5,000万ドル超の損害賠償、利益の返還、恒久的差止めなどに加え、対象コンテンツを組み込んだモデル・訓練セットの破棄を求めているとされる。認容額や裁判所の命令ではない（F6）。\n・OpenAIの応答：候補F7では、Reutersが2026年10月8日の報道時点で、広報担当者はコメント依頼に直ちには応じなかったと伝えたとされる。これは実体的な反論や法廷での答弁ではない。\n\n【時点の制限】F7・F8は同日以降の応答や手続更新を確認するものではない。現在の手続状況やOpenAIの立場として掲載する前に、最新の裁判所記録・報道を確認する。",
+    "recheck_note": null
+  },
+  "model": "gpt-6.1-sol",
+  "response_id": "resp_09ab20d3fbeafcd9006ad41d0997dc87d09972ebd5301e3eb3",
+  "latency_seconds": 71.62879276275635,
+  "attempts": 1,
+  "retried": false,
+  "soft_warnings": [],
+  "ledger_fact_ids": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8"
+  ],
+  "attempts_log": [
+    {
+      "attempt": 1,
+      "validation_errors": []
+    }
+  ],
+  "user_prompt_sha256": "568e3c41af50ee5667a09e8f0a269a0da23bb70c57c8f3e2178082c94260181c",
+  "allow_unverified": true
+}

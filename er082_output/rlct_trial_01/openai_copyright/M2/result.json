@@ -1,0 +1,245 @@
+{
+  "article": "openai_copyright",
+  "method": "M2",
+  "stage": "1b",
+  "dry_run": false,
+  "started_at": "2026-10-18T01:12:41.318170+00:00",
+  "usage_basis": "OFFICIAL_API_RESPONSE",
+  "reselect": {
+    "status": "COMPLETED",
+    "rounds": [
+      {
+        "round": 0,
+        "trigger": "INITIAL",
+        "b3_label": "initial",
+        "selected_fact_ids": [
+          "F2",
+          "F4",
+          "F6",
+          "F7",
+          "F8"
+        ],
+        "verified_now": [
+          "F2",
+          "F4",
+          "F6",
+          "F7",
+          "F8"
+        ],
+        "reused_verdicts": [],
+        "verify_record": {
+          "label": "r0",
+          "cap_prompt": false,
+          "fact_ids": [
+            "F2",
+            "F4",
+            "F6",
+            "F7",
+            "F8"
+          ],
+          "model": "gpt-6-luna",
+          "response_id": "resp_03538ab15382228f006ad41d51160c87d096ca21af9c9b0208",
+          "latency_seconds": 37.29547166824341,
+          "web_search_call_count": 7,
+          "action_type_counts": {
+            "search": 4,
+            "open_page": 2,
+            "find_in_page": 1
+          },
+          "query_count": 15,
+          "calls_per_fact_avg": 1.4,
+          "exceeds_soft_cap_estimate": false,
+          "prompt_sha256": "20d28e2e0e7dddd791c13908f62fdcc6af1570aec3259349969e0d27f37e6760"
+        },
+        "rejected": [],
+        "ambiguous_selected": [
+          "F8"
+        ],
+        "ambiguous_unseen": [
+          "F8"
+        ],
+        "ambiguous_visible_to_b3": false,
+        "confirm_pass": "REQUIRED",
+        "rejected_reselect_attempts_detected": 0
+      },
+      {
+        "round": 1,
+        "trigger": "CONFIRM_AMBIGUOUS",
+        "b3_label": "confirm1",
+        "selected_fact_ids": [
+          "F2",
+          "F4",
+          "F6",
+          "F7",
+          "F8"
+        ],
+        "verified_now": [],
+        "reused_verdicts": [
+          "F2",
+          "F4",
+          "F6",
+          "F7",
+          "F8"
+        ],
+        "rejected": [],
+        "ambiguous_selected": [
+          "F8"
+        ],
+        "ambiguous_unseen": [],
+        "ambiguous_visible_to_b3": true,
+        "confirm_pass": "NOT_NEEDED_AMBIGUOUS_ALREADY_VISIBLE"
+      }
+    ],
+    "reselect_count": 0,
+    "confirm_pass_count": 1,
+    "b3_calls_after_initial": 1,
+    "b3_calls_before_this_run": 0,
+    "final_confirm_pass": "NOT_NEEDED_AMBIGUOUS_ALREADY_VISIBLE",
+    "unmet": null
+  },
+  "shared_initial_b3_from": null,
+  "status": "COMPLETED",
+  "selected_fact_ids": [
+    "F2",
+    "F4",
+    "F6",
+    "F7",
+    "F8"
+  ],
+  "selected_storyline": "USA TODAY Co., Inc.と関連出版社が報道コンテンツの無断利用などを主張し、OpenAI側に賠償・差止め等を求めて提訴した事件では、確認できた記録の範囲で訴訟停止の是非を巡る説明・応答期限が設定されているが、この命令は停止決定でも侵害認定でもない。",
+  "b3_model": "gpt-6.1-sol",
+  "b3_attempts": 1,
+  "ambiguous_central": {
+    "central_fact_ids": [
+      "F1",
+      "F2",
+      "F3"
+    ],
+    "ambiguous_central_fact_ids": [],
+    "count": 0,
+    "note": "候補件数(機械抽出)。『断定しているか』の最終判定はSonnet+Fable独立判定(R-07、測定のみ)"
+  },
+  "known_defect_status": {},
+  "verdict_transitions": {
+    "counts": {
+      "VERIFIED->VERIFIED": 4,
+      "VERIFIED->AMBIGUOUS": 1
+    },
+    "promotions_to_verified_or_up": [],
+    "demotions_from_verified": [
+      "F8"
+    ]
+  },
+  "final_verdicts": {
+    "F2": {
+      "verdict": "VERIFIED"
+    },
+    "F4": {
+      "verdict": "VERIFIED"
+    },
+    "F6": {
+      "verdict": "VERIFIED"
+    },
+    "F7": {
+      "verdict": "VERIFIED"
+    },
+    "F8": {
+      "verdict": "AMBIGUOUS"
+    }
+  },
+  "verifier_models": [
+    "gpt-6-luna"
+  ],
+  "verifier_model_matches_m0": true,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 7,
+    "by_action_type": {
+      "search": 4,
+      "open_page": 2,
+      "find_in_page": 1
+    },
+    "query_count": 15
+  },
+  "verify_requests": [
+    {
+      "label": "r0",
+      "cap_prompt": false,
+      "fact_ids": [
+        "F2",
+        "F4",
+        "F6",
+        "F7",
+        "F8"
+      ],
+      "model": "gpt-6-luna",
+      "response_id": "resp_03538ab15382228f006ad41d51160c87d096ca21af9c9b0208",
+      "latency_seconds": 37.29547166824341,
+      "web_search_call_count": 7,
+      "action_type_counts": {
+        "search": 4,
+        "open_page": 2,
+        "find_in_page": 1
+      },
+      "query_count": 15,
+      "calls_per_fact_avg": 1.4,
+      "exceeds_soft_cap_estimate": false,
+      "prompt_sha256": "20d28e2e0e7dddd791c13908f62fdcc6af1570aec3259349969e0d27f37e6760"
+    }
+  ],
+  "cost": {
+    "by_step": {
+      "b3_initial": {
+        "llm_jpy": 7.337,
+        "web_search_jpy": 0.0,
+        "calls": 1,
+        "web_search_calls": 0,
+        "input_tokens": 3252,
+        "output_tokens": 3935,
+        "total_jpy": 7.337
+      },
+      "verify_sel_r0": {
+        "llm_jpy": 1.277,
+        "web_search_jpy": 11.2,
+        "calls": 1,
+        "web_search_calls": 7,
+        "input_tokens": 65525,
+        "output_tokens": 2852,
+        "total_jpy": 12.477
+      },
+      "b3_confirm1": {
+        "llm_jpy": 7.099,
+        "web_search_jpy": 0.0,
+        "calls": 1,
+        "web_search_calls": 0,
+        "input_tokens": 4265,
+        "output_tokens": 3584,
+        "total_jpy": 7.099
+      }
+    },
+    "total": {
+      "llm_jpy": 15.713,
+      "web_search_jpy": 11.2,
+      "total_jpy": 26.913,
+      "calls": 3,
+      "web_search_calls": 7
+    }
+  },
+  "contract": {
+    "method_dir": "er082_output/rlct_trial_01/openai_copyright/M2",
+    "producer": {
+      "status": "PASS",
+      "n_facts": 5,
+      "llm_calls": 0
+    },
+    "validate": {
+      "status": "PASS"
+    },
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 5
+    },
+    "all_pass": true
+  },
+  "finished_at": "2026-10-18T01:15:35.974978+00:00"
+}

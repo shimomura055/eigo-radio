@@ -1,0 +1,101 @@
+{
+  "selected_storyline": "USA TODAY Co., Inc.など14原告が、報道コンテンツの無断利用などを主張してOpenAI側を提訴し、賠償・差止めなどを求めたが、確認範囲は2026年10月8日の提訴段階で、侵害の司法判断はなく、同日報道時点ではOpenAIから直ちにコメントは得られていない。",
+  "full_ledger_fact_ids": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8"
+  ],
+  "fact_tests": [
+    {
+      "fact_id": "F1",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "NO",
+      "decision": "excluded",
+      "reason": "提訴という出来事と、訴状の主張を侵害認定と区別する注意は重要だが、原告の特定はF2、主張はF4、提訴の日時・裁判所・段階はF8で確保できる。独立して残すと重複するため除外。"
+    },
+    {
+      "fact_id": "F2",
+      "test1_answer": "NO",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "原告名そのものは因果説明ではないためTest2・3はNO。ただし、誰が訴えたのかは本件を特定する必須情報であり、依頼でもUSA TODAYとGannettの関係する原告の確認が求められているため採用する。14原告の全名称を本文素材に列挙する必要はなく、主要法人名と総数に絞る。"
+    },
+    {
+      "fact_id": "F3",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "19出版物の列挙と権利保有の主張は対象範囲の補足であり、提訴理由はF4で説明できる。中心の筋には不要で、14原告との数の混同を避けるためにも除外する。"
+    },
+    {
+      "fact_id": "F4",
+      "test1_answer": "NO",
+      "test2_answer": "YES",
+      "test3_answer": "YES",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "原告がなぜ提訴し、F6の救済を求めたのかを説明する中心的な主張。無断取得・複製、訓練利用、出力での複製・再構成、著作権管理情報の除去を、すべて原告側の主張として示すため採用する。"
+    },
+    {
+      "fact_id": "F5",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "請求原因の法的分類は補足情報であり、今回の筋ではF4の具体的な主張とF6の救済請求があれば理解できる。3請求の内訳を解説する別の筋は立てず、最小限の選定から外す。"
+    },
+    {
+      "fact_id": "F6",
+      "test1_answer": "NO",
+      "test2_answer": "YES",
+      "test3_answer": "YES",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "F4の主張を受け、原告が裁判を通じて何を実現しようとしているかを示す。金額の具体性だけでなく、賠償・差止め・モデル等の破棄という救済目的が必要なため採用する。請求と認容・命令は区別する。"
+    },
+    {
+      "fact_id": "F7",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "削除しても提訴の因果的な筋は理解できるが、依頼が明示的に求めるOpenAI側の応答状況を示す唯一のFactとして例外的に採用する。実体的な反論が確認されたとも、その後も回答がないとも書かず、Reutersの同日報道時点に限定する。"
+    },
+    {
+      "fact_id": "F8",
+      "test1_answer": "NO",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "提訴理由の因果説明ではないためTest2・3はNOだが、いつ・どの裁判所への提訴かと、確認できる手続段階を確定する不可欠なFact。訴状の主張を裁判所の侵害認定と取り違えないため採用する。事件番号は補足なのでBriefでは省く。"
+    }
+  ],
+  "selected_fact_ids": [
+    "F2",
+    "F4",
+    "F6",
+    "F7",
+    "F8"
+  ],
+  "selected_fact_brief_text": "USA TODAY Co., Inc.など14原告が、報道コンテンツの無断利用などを主張してOpenAI側を提訴し、賠償・差止めなどを求めたが、確認範囲は2026年10月8日の提訴段階で、侵害の司法判断はなく、同日報道時点ではOpenAIから直ちにコメントは得られていない。\n\n・原告：USA TODAY Co., Inc.、Gannett Satellite Information Network, LLC、Gannett GP Media, Inc.など14法人・事業体。媒体名と法人原告名を混同しない。（F2）\n・提出先・時点：2026年10月8日、ニューヨーク南部地区連邦地方裁判所に提出された新規訴訟。確認した訴状と同日報道が示すのは提訴段階であり、侵害認定や本案判断ではない。後日の手続状況は別途確認が必要。（F8）\n・提訴理由：原告らは、OpenAIが報道コンテンツを無断で取得・複製してモデル訓練に使用し、出力でも複製・再構成したほか、著作権管理情報を除去したと主張している。いずれも本件で確定した事実として扱わない。（F4）\n・求める救済：2億5,000万ドル超の損害賠償、利益返還、恒久的差止め、原告コンテンツを組み込んだGPT等のモデル・訓練セットの破棄など。いずれも原告の請求であり、認容額や発令済みの命令ではない。（F6）\n・OpenAI側の応答：Reutersは2026年10月8日、OpenAIの広報担当者がコメント依頼に直ちには応じなかったと報道。これは取材時点の応答状況であり、実体的な反論や法廷での答弁を示さない。（F7）",
+  "recheck_note": null,
+  "soft_warnings": [],
+  "deterministic_selected_fact_brief_text": "- 訴状に記載された原告は14の法人・事業体で、USA TODAY Co., Inc.、Gannett Satellite Information Network, LLC、Gannett GP Media, Inc.、The Courier-Journal, Inc.、Des Moines Register and Tribune Company、Detroit Free Press, Inc.、Detroit Newspaper Partnership, L.P.、CA Florida Holdings, LLC、Scripps NP Operating, LLC、CA North Carolina Holdings, Inc.、GateHouse Media Oklahoma Holdings, Inc.、Journal Sentinel Inc.、GateHouse Media Ohio Holdings II, Inc.、Phoenix Newspapers, Inc.である。訴状は、これらをUSA TODAY Co., Inc.傘下の原告らとしている。（範囲：本件訴状に名を連ねる法人・事業体。条件：訴状に記載された当事者名。各出版物そのものがすべて別個の法人原告だという意味ではない）\n- 訴状は、OpenAIが原告側の報道コンテンツを許可なく取得・複製してAIモデルの訓練に使用し、モデル出力でそのコンテンツを複製または再構成したと主張する。また、OpenAIが著作権管理情報を除去したとも主張する。いずれも原告側の主張であり、本件で確定した事実ではない。（範囲：原告らの報道コンテンツ、AIモデルの訓練データおよびモデル出力）\n- 原告らは、損害賠償額が2億5,000万ドルを超えるとする請求を記載し、法定・補償的損害賠償、利益の返還・吐き出し、宣言的救済、恒久的差止め、訴訟費用・弁護士費用等を求めている。さらに、原告らのコンテンツを組み込んだGPTその他の大規模言語モデルおよび訓練セットの破棄も請求している。（範囲：本件訴状のPrayer for Reliefおよび損害額に関する記載。条件：請求された救済であり、裁判所が認めた損害額・救済ではない）\n- Reutersは2026-10-08の報道で、OpenAIの広報担当者は訴状についてのコメント依頼に直ちには応じなかったと報じた。これは報道時点での取材状況であり、OpenAIによる訴状への実体的な回答や法廷上の答弁を示すものではない。（範囲：Reutersが報じたコメント依頼への応答状況）\n- 本件は2026-10-08にニューヨーク南部地区連邦地方裁判所へ提出された新規訴訟で、事件番号は1:26-cv-08892である。確認した訴状と同日報道が示すのは提訴段階であり、裁判所による著作権侵害の認定や本案判断ではない。（範囲：米国ニューヨーク南部地区連邦地方裁判所における本件訴訟。条件：検索時点で確認できたのは提訴の事実。これ以後の手続更新があれば別途確認を要する）\n",
+  "deterministic_selected_fact_brief_text_source": "deterministic_v2",
+  "writer_constraints_text": "Writerへの注意(事実ではありません)：\n- 事実1について：原告数14と、訴状が対象として挙げる出版物数19を混同しない。\n- 事実2の条件について：著作権侵害や著作権管理情報の除去は、訴状上の主張として扱う。\n- 事実2について：「OpenAIが無断使用した」ではなく「原告らは、OpenAIが無断使用したと主張」とする。\n- 事実3について：金額とモデル・訓練セットの破棄はいずれも原告側の請求。認容・命令済みと書かない。\n- 事実4の条件について：「直ちには応じなかった」という報道時点の記述。以後の対応の有無はこのFactでは扱わない。\n- 事実4について：本件に関するOpenAIの実体的な反論が確認された、と書かない。\n- 事実5について：必ず「訴状提出段階」「侵害は裁判所により認定されていない」と区別する。\n",
+  "writer_news_field_text": "- 訴状に記載された原告は14の法人・事業体で、USA TODAY Co., Inc.、Gannett Satellite Information Network, LLC、Gannett GP Media, Inc.、The Courier-Journal, Inc.、Des Moines Register and Tribune Company、Detroit Free Press, Inc.、Detroit Newspaper Partnership, L.P.、CA Florida Holdings, LLC、Scripps NP Operating, LLC、CA North Carolina Holdings, Inc.、GateHouse Media Oklahoma Holdings, Inc.、Journal Sentinel Inc.、GateHouse Media Ohio Holdings II, Inc.、Phoenix Newspapers, Inc.である。訴状は、これらをUSA TODAY Co., Inc.傘下の原告らとしている。（範囲：本件訴状に名を連ねる法人・事業体。条件：訴状に記載された当事者名。各出版物そのものがすべて別個の法人原告だという意味ではない）\n- 訴状は、OpenAIが原告側の報道コンテンツを許可なく取得・複製してAIモデルの訓練に使用し、モデル出力でそのコンテンツを複製または再構成したと主張する。また、OpenAIが著作権管理情報を除去したとも主張する。いずれも原告側の主張であり、本件で確定した事実ではない。（範囲：原告らの報道コンテンツ、AIモデルの訓練データおよびモデル出力）\n- 原告らは、損害賠償額が2億5,000万ドルを超えるとする請求を記載し、法定・補償的損害賠償、利益の返還・吐き出し、宣言的救済、恒久的差止め、訴訟費用・弁護士費用等を求めている。さらに、原告らのコンテンツを組み込んだGPTその他の大規模言語モデルおよび訓練セットの破棄も請求している。（範囲：本件訴状のPrayer for Reliefおよび損害額に関する記載。条件：請求された救済であり、裁判所が認めた損害額・救済ではない）\n- Reutersは2026-10-08の報道で、OpenAIの広報担当者は訴状についてのコメント依頼に直ちには応じなかったと報じた。これは報道時点での取材状況であり、OpenAIによる訴状への実体的な回答や法廷上の答弁を示すものではない。（範囲：Reutersが報じたコメント依頼への応答状況）\n- 本件は2026-10-08にニューヨーク南部地区連邦地方裁判所へ提出された新規訴訟で、事件番号は1:26-cv-08892である。確認した訴状と同日報道が示すのは提訴段階であり、裁判所による著作権侵害の認定や本案判断ではない。（範囲：米国ニューヨーク南部地区連邦地方裁判所における本件訴訟。条件：検索時点で確認できたのは提訴の事実。これ以後の手続更新があれば別途確認を要する）\n\nWriterへの注意(事実ではありません)：\n- 事実1について：原告数14と、訴状が対象として挙げる出版物数19を混同しない。\n- 事実2の条件について：著作権侵害や著作権管理情報の除去は、訴状上の主張として扱う。\n- 事実2について：「OpenAIが無断使用した」ではなく「原告らは、OpenAIが無断使用したと主張」とする。\n- 事実3について：金額とモデル・訓練セットの破棄はいずれも原告側の請求。認容・命令済みと書かない。\n- 事実4の条件について：「直ちには応じなかった」という報道時点の記述。以後の対応の有無はこのFactでは扱わない。\n- 事実4について：本件に関するOpenAIの実体的な反論が確認された、と書かない。\n- 事実5について：必ず「訴状提出段階」「侵害は裁判所により認定されていない」と区別する。\n"
+}

@@ -1,0 +1,50 @@
+{
+ "gate": "1b_a2_to_a3",
+ "decided_by": "sonnet-worker(機械判定。採否のFable判断は別)",
+ "decided_at_jst": "2026-10-18",
+ "result": "NOT_ALL_PASS -> 記事3(central_bank_mortgage)は未実行(STOP)",
+ "G1": {
+  "pass": false,
+  "launches": 1,
+  "restarts": 0,
+  "rc": 5,
+  "budget_stop": false,
+  "detail": "記事2の全5jobはCOMPLETED。ただしrunnerのpost-run integrityが rc=5(integrity mismatch)。差分はshared_review_queue_tree配下(review_queue/post_en/middle_east_yemen_saudi__run_mey_01/** と index.jsonl)のみ=並行中のFamily X新記事(MEY)のwrite。RLCT由来ではない(1a/streaming sha IDENTICAL)。Gate文言『rc=0』を満たさないため機械的にFAIL"
+ },
+ "G2": {
+  "pass": true,
+  "detail": "M0,M0b,M1,M2,M3 全COMPLETED、UNRESOLVED 0、unmet全てnull"
+ },
+ "G3": {
+  "pass": true,
+  "article2_jpy": 74.738,
+  "limit_article": 185,
+  "b1_cum_after_a2": 160.866,
+  "b1_cum_plus_a3_max": 345.866,
+  "limit_1b": 493
+ },
+ "G4": {
+  "pass": true,
+  "rejected_in_selected": 0,
+  "d1_conform": {
+   "M2": "PASS",
+   "M3": "PASS"
+  }
+ },
+ "G5": {
+  "pass": true,
+  "detail": "1a(coffee_prices,inbound_tourism)+streaming_price 241ファイル sha IDENTICAL(_sha_before_10.json 対 実行後再計算)"
+ },
+ "G6": {
+  "pass": true,
+  "rlct_today_jpy": 160.866,
+  "non_rlct_today_jpy_at_check": 56.53,
+  "non_rlct_source": "daily_dev_cost_01.py --date 2026-10-18(er019_output/middle_east_yemen_saudi/run_mey_01/raw_usage_log.jsonl等、MEY進行中)",
+  "day_total_jpy": 217.4,
+  "plus_a3_max_185": 402.4,
+  "limit": 1000,
+  "worst_case_with_mey_cap180": 526.866
+ },
+ "trial_cum_jpy": 404.557,
+ "trial_cap": 1040
+}
