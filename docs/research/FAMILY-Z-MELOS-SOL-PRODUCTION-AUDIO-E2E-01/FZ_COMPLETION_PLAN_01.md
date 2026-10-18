@@ -172,3 +172,10 @@ AUW(統一ASR/音声品質、3回フロー: Primary ASR->Secondary ASR->Local Re
 - 照合: 受入10条件(ユーザー§6)全て充足(詳細=DECISION_LOG 2026-10-17 委任_18、OPEN-412 受入記録)。evidence=run_e2e_03 audit群(segment_style_table_17 58/0、src_z_posthoc_01 10/10、cost_by_stage_17 JPY36.3845/100、pages_play_evidence_17)。
 - 未: ユーザー試聴PASS(REGISTER #23)は別扱い・未判断。§8 close候補はユーザー試聴後。
 - 残置整理: er063 `PAGES_DIR`既定値・`tools/build_family_z_hr_review_page.py` OUTのmelos_01をmelos_02へ一本化(委任_18 commit 2)。
+
+## §13 試聴ページ是正(委任_19)
+
+- 日付: 2026-10-18。ユーザー指示: 旧`family_z_melos_02/index.html`(Std/Advリンク+ASR警告一覧)は試聴用として不適切 -> 標準フォーマットへ是正。JPY0・TTS/ASR/LLM呼出0・既存mp3/wav/原稿不変。
+- 実施: 共通builder/check新設(`er_user_listening_page_common_01.py`)、Z `build_pages`のindex.htmlを標準フォーマット化、runner `stage_page_verify`にcheck組込み、Regression追加。URL: https://shimomura055.github.io/eigo-radio/user_test/family_z_melos_02/index.html (Std=#std / Adv=#adv。standard.html/advanced.htmlは詳細確認ページ)。
+- 検証: ローカル+GitHub Pages実再生(通し再生ボタン押下・中盤/末尾シーク・「全編のこの位置へ」・全audio 49本再生・console error 0) = `run_e2e_03/audit/pages_play_evidence_19.json`。標準適合check = `page_standard_check_19.json`(Z)/`page_standard_check_bape_19.json`(BAPE)。
+- Preview仕様read-only確認: DECISION_LOG 2026-10-18 委任_19 (4)。変更なし。#23は修正ページ提供後に試聴判断(保留継続)。

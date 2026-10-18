@@ -392,6 +392,7 @@ Voice B GATE_BLOCKEDのUSER_DECISION_REQUIREDで試聴リンク未提示だっ�
       機械判定)。新規/既存player提示前に本チェッカーでPASSを確認する
       (Gate 7 (a)〜(m)の到達確認に加えて満たすべき追加要件、既存要件を
       置き換えるものではない)。
+    - **運用補足(2026-10-18、FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01 委任_19、上位ルール変更ではない)**: Gate 7受入記録に「ユーザー試聴ページ標準適合」(全編通し再生ボタン・再生順の全スクリプト・KP英+日・内部情報/効果音非表示・ASR警告の補助化)を確認項目として含める。X/Z/Y共通の機械check=`tools/user_test_page_standard_check_01.py`(実体`er_user_listening_page_common_01.py`)とRegression(`tools/user_test_page_standard_check_01_test_01.py`)。正式な試聴依頼前に実行する。
     - 経緯: `er014_output/user_test_news_light_01/tiny_bags/`等で、
       `unified.html`の`kpParts()`が「English:」+「日本語:」ラベル形式を
       未対応(旧regexは「英語:」+「日本語gloss:」等のみ対応)だったため、
