@@ -725,7 +725,8 @@ class AssemblyAndPagesIntegrationTest(unittest.TestCase):
             with open(f"{tmp}/pages/index.html", encoding="utf-8") as f:
                 idx = f.read()
             self.assertNotIn("Voice:", idx)
-            self.assertNotIn("読み上げなし", idx)
+            self.assertNotIn("(音楽・通知音。読み上げなし)", idx)   # 効果音行のscript表示は無い(読み上げなしは冒頭noteで1回明記: Gate 7 (f))
+            self.assertEqual(idx.count("読み上げなし"), 1)
             self.assertIn("全編を通し再生", idx)
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
