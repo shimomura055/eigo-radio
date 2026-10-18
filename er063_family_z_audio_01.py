@@ -1643,7 +1643,12 @@ def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_r
             if x is None:
                 x, sr = sf.read(tl["wav"], dtype="float32")
             sf.write(f"{audio_out_dir}/{fn}", x[int(round(start * sr)): int(round(end * sr))], sr, format="MP3")
-            out.append({"part": f"Full Story Part {n}", "start": start, "dur": end - start, "src": f"{audio_rel_prefix}{fn}",
+            voices = []
+            for g in grp:
+                for v in str(g.get("voice") or "").split(" / "):
+                    if v and v != "-" and v not in voices:
+                        voices.append(v)
+            out.append({"part": f"Full Story Part {n}" + (f" ({' / '.join(voices)})" if voices else ""), "start": start, "dur": end - start, "src": f"{audio_rel_prefix}{fn}",
                         "blocks": [uc.script_block(g["script"]) for g in grp]})
             i = j
             continue
@@ -1663,7 +1668,11 @@ def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_r
                         "blocks": [uc.kp_block(heads, cells)]})
             i += 1
             continue
-        out.append({"part": _USER_LABEL.get(part, part), "start": r["start"], "dur": r["dur"], "src": r["file"],
+        base = _USER_LABEL.get(part, part)
+        voice = r.get("voice")
+        if voice and voice != "-" and "(" not in base:   # Gate 7 (h): 使用voice名はラベルに併記(scriptには入れない)
+            base = f"{base} ({voice})"
+        out.append({"part": base, "start": r["start"], "dur": r["dur"], "src": r["file"],
                     "blocks": [uc.script_block(r["script"])]})
         i += 1
     return out
@@ -1734,7 +1743,8 @@ def build_index_html(user_levels: list, warn_sections=None) -> str:
            "<details class='aux'><summary>詳細確認ページ(開発確認用)</summary>"
            "<a href='standard.html'>Standard 詳細</a> / <a href='advanced.html'>Advanced 詳細</a></details>")
     intro = ("<div class='note'>各レベルの「全編を通し再生」ボタンで冒頭から最後まで通して聴けます。下の表は再生順のスクリプトで、"
-             "「全編のこの位置へ」で通し再生をその位置から再生します。</div>")
+             "「全編のこの位置へ」で通し再生をその位置から再生します。冒頭・区切り・末尾の音楽/通知音は読み上げなし(通し再生には含まれます)。"
+             "TTS方式: Standard同期(TTS_EXECUTION_MODE=STANDARD)。</div>")
     return uc.render_standard_page("走れメロス 試聴(Standard / Advanced)", user_levels, intro_html=intro, aux_html=aux)
 
 
