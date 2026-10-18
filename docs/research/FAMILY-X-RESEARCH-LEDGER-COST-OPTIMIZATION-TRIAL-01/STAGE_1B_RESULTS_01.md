@@ -1,7 +1,7 @@
 # Stage 1b 結果 01(FAMILY-X-RESEARCH-LEDGER-COST-OPTIMIZATION-TRIAL-01)
 
-性質: Trial専用(`er082_*`)。Production code・Prompt・Gate変更0。Production到達経路なし。Trial結果はProduction採用を意味しない(到達上限Status=`STAGE_1B_ARTICLE1_COMPLETE_PENDING_FABLE`)。
-記事2・3(openai_copyright/central_bank_mortgage)は後続委任で本ファイルへ追記する。人手品質評価(ブラインド・R-07)は記事3完了後に別委任。
+性質: Trial専用(`er082_*`)。Production code・Prompt・Gate変更0。Production到達経路なし。Trial結果はProduction採用を意味しない(到達上限Status=`STAGE_1B_COMPLETE_PENDING_FABLE`)。
+記事2・3は下記へ追記済み(1b完了)。人手品質評価(ブラインド・R-07)は別委任。
 
 ## 記事1: streaming_price(委任_09、2026-10-18 JST)
 
@@ -121,3 +121,79 @@
 - 1a成果dir・streaming_price: 実行前後でsha256 IDENTICAL(241ファイル、`_sha_before_10.json`と再計算値が一致、`_sha_after_10.json`)。
 - 既存集計の非上書き: 固定名出力(run_summary/stop_check/integrity_*)を`*_10_1b_a2.json`へ改名保存し、事前バックアップから復元(復元後のsha256=実行前と一致、`aggregate.md`未接触)。aggregateは一時rootで実行し`aggregate_1b_a2.md/json`として保存、適合照合は`check_method`直接呼出(コード不変)。
 - 記事3(central_bank_mortgage)は記事間Gate G1 FAIL(rc=5)により未実行。
+
+## 記事3: central_bank_mortgage(委任_11、2026-10-18 JST)
+
+### 実行
+- 使用モデル(raw_usage_log実測): B3=`gpt-6.1-sol`、Verifier/Ledger検証=`gpt-6-luna`(M1/M2/M3で`verifier_model_matches_m0=true`)。harness既定のまま(旧モデルなし)。
+- 起動: 1回、再起動なし。5job(M0,M0b,M1,M2,M3)全てCOMPLETED。`--other-spend-today-jpy 120`(daily_dev_cost_01.py再集計の非RLCT=MEY run_mey_01 63.21+_before_regen_01 56.53の保守合算)。dry-runは別out `_dryrun_11`、`raw_usage_log.jsonl`のsha256は前後不変。stop_scope_check rc=0(実走前)。
+- **プロセスrc=5**(`[STOP] integrity mismatch`)。差分17件は全て`shared_review_queue_tree`の`review_queue/post_en/index.jsonl`と`review_queue/post_en/middle_east_yemen_saudi__run_mey_01/**`(並行MEYの書込。`integrity_check_11_1b_a3.json`)。review_queue配下以外の差分は0件。
+- **Gate(Fable読替え版、`_gate_1b_a3_11.json`)=ALL_PASS**: 1回起動・再起動なし・BudgetガードSTOPなし(`stop_check_11_1b_a3.json` stop=false)・全job COMPLETED・RLCT保護対象(1a 2記事+streaming_price+openai_copyright、316ファイル)sha IDENTICAL(`_sha_before_11.json`/`_sha_after_11.json`)。
+- 事前見積(期待約70〜90、最大185)に対し実測51.257(見積内、見積より小さい)。
+
+### 方式別結果(実測、`aggregate_1b_a3.md`/`_analysis_1b_a3.json`)
+| 方式 | status | 選定Fact | 再選定/確認パス/後続B3 | unmet | ラベル件数 | 契約 |
+|---|---|---|---|---|---|---|
+| M0 | COMPLETED | F002,F003,F006,F008,F010 | -/-/- | - | 0 | PASS |
+| M0b | COMPLETED | F002,F003,F007,F008,F010 | -/-/- | - | 0 | PASS |
+| M1 | COMPLETED | F001,F002,F003,F006,F008 | -/-/- | - | 0 | PASS |
+| M2 | COMPLETED | F002,F003,F006,F008,F010 | 0/0/0 | null(`final_confirm_pass`=NOT_NEEDED_ALL_VERIFIED) | 0 | PASS |
+| M3 | COMPLETED | F002,F003,F006,F008,F010 | 0/0/0(初回B3はM2と共有) | null(`final_confirm_pass`=NOT_NEEDED_ALL_VERIFIED) | 0 | PASS |
+- UNRESOLVED 0。M2/M3とM0の選定は一致(Jaccard 1.0)、M0b・M1はJaccard 0.667。M2/M3は初回B3の選定5Factが全てVERIFIEDで、確認パス・再選定とも不要。
+
+### 方式別費用(実測JPY。出典=`raw_usage_log.jsonl`、`lib.cost_by_stage_tag`)
+| 方式 | LLM | 検索ツール | 合計 | 検索呼出(種別) | クエリ | step別 | 本番換算 | 対M0削減 |
+|---|---|---|---|---|---|---|---|---|
+| M0 | 8.060 | 0 | 8.060 | 0 | 0 | b3 8.060 | 30.392 | 基準 |
+| M0b | 8.564 | 0 | 8.564 | 0 | 0 | b3 8.564 | 30.896 | -1.7%(増) |
+| M1 | 11.402 | 6.4 | 17.802 | 4(search1/open_page2/find_in_page1) | 10 | ledger 7.463, b3 10.339 | 32.749 | -7.8%(増) |
+| M2 | 8.266 | 4.8 | 13.066 | 3(search1/open_page2) | 4 | b3_initial 7.581, verify_sel_r0 5.485 | 28.013 | +7.8% |
+| M3 | 0.565 | 3.2 | 3.765 | 2(search1/open_page1) | 4 | verify_sel_r0 3.765(B3はM2のb3_initial共有) | 26.293 | +13.5% |
+- 記事3合計(実測): **JPY51.257**。本記事のみM2/M3が本番換算でM0より安い(+2.379/+4.099 JPY相当)。要因は選定5Factが全てVERIFIEDで確認パス・再選定が0回だったこと(1標本、一般化しない。R-B7)。ソフト上限超過の記録は全方式0件。
+
+### 機械チェック
+- 選定FactへのREJECTED混入: 全方式0。AMBIGUOUS選定: 全方式0(全Fact VERIFIED)。D1適合: M2=PASS、M3=PASS、M0/M0b/M1はN/A(`_conform_check_1b_a3.json`)。
+- 「【独立検証前の編集仮説】」ラベル出現件数: M0 0/M0b 0/M1 0/M2 0/M3 0(記録のみ)。
+- 中心Fact断定リスク候補(機械抽出のAMBIGUOUS): 全方式0件。人手判定は別委任。
+
+### Verifier判定の方式間差(`_analysis_1b_a3.json` verdict_table)
+- 全方式・全検証Factで VERIFIED(F001〜F011。M0/M0b/M1は11Fact、M2/M3は選定5Factのみ検証)。方式間の判定揺れなし(記事1・2で見られたOPEN-409型のばらつきは本記事では未観測)。
+
+### 累計(実測、出典付き)
+- 1b累計: 160.866+51.257=**212.123 / 493**(`cost_by_stage_tag` 1b|*の合計)。Trial累計: 404.557+51.257=**455.814 / 1,040**(全行集計と一致)。
+- 当日(JST 2026-10-18): `daily_dev_cost_01.py`採用値**348.36 / 1,000**(RLCT 212.12+MEY run_mey_01 79.71+MEY _before_regen_01 56.53)。`_before_regen_01`は再生成前の退避ログで重複計上の可能性があり、実質は約291.8〜348.4。いずれも上限内。
+
+### 完全性
+- 1a成果dir・streaming_price・openai_copyright: 実行前後でsha256 IDENTICAL(316ファイル)。
+- 既存集計の非上書き: 固定名出力(run_summary/stop_check/integrity_*)を`*_11_1b_a3.json`へ改名保存し、事前バックアップ(`_backup_11`)から復元(cmp一致、`aggregate.md/json`は未接触)。aggregateは一時rootで実行し`aggregate_1b_a3.*`として保存(`-I`ではlib importが失敗するため`-I`なしで実行。コード不変)。適合照合は`check_method`直接呼出。
+- 委任_10のG1相当(rc=5)は、Fable判定どおりMEYのreview_queue書込によるfalse-positive。integrity検査のreview_queue除外はコード変更せずTrial後の改善候補(OPEN-410)。
+- test: `er082_rlct_trial_01_test_01.py` 25 passed。
+
+## 1b合計(3記事、`aggregate_1b_all.md`/`.json`、実測)
+| 方式 | Trial費用JPY(3記事計) | 検索呼出/クエリ | 本番換算(3記事計) | 対M0削減JPY | 対M0削減% |
+|---|---|---|---|---|---|
+| M0 | 20.184 | 0/0 | 108.807 | 基準 | 基準 |
+| M0b | 22.347 | 0/0 | 110.970 | -2.163 | -2.0%(増) |
+| M1 | 51.764 | 15/34 | 111.209 | -2.402 | -2.2%(増) |
+| M2 | 70.210 | 19/40 | 129.655 | -20.848 | -19.2%(増) |
+| M3 | 36.755 | 17/39 | 118.087 | -9.280 | -8.5%(増) |
+(M0pはstreaming_priceのみ実施: 10.863・検索6回/18q、対象外。)
+- 1b実費合計 JPY212.123(記事1 86.128+記事2 74.738+記事3 51.257)/ 493。
+- 確認パス/再選定回数(3記事): M2 確認パス2回(streaming 1・openai 1・central 0)、再選定0回。M3 再選定1回(streaming)、確認パス0回。
+- ラベル件数: 全方式・全3記事で0件(15job)。
+- unmet内訳: 全方式null(UNRESOLVED 0、REJECTED_SELECTED/AMBIGUOUS_NOT_CONFIRMEDとも0)。「確定条件のもとでの成立率」はM2/M3のみの指標(R-B2): 1b 6/6成立。
+- Verifier遷移: 記事1=F01/F04/F07がM0p・M1・M2・M3で揺れ(M3のF07 REJECTED)、記事2=F8のみ揺れ(M1/M2=AMBIGUOUS)、記事3=遷移0。
+- 1b単独では、M2/M3は3記事合計で本番換算がM0より高い(記事1・2で増、記事3のみ削減)。1b 3標本に基づく暫定値で、5記事暫定合計と人手品質評価で判定する。
+
+## 新設計列の5記事暫定合計(R-B7、M0基準の本番換算、`aggregate.json`+`aggregate_1b_all.json`)
+Coffee M2/M3(確認パス不要のため新設計と同一経路)+inbound M2c/M3c+1b 3記事(M2/M3)。旧inbound M2/M3(修正前)は参考行で母数に入れない。
+| 記事 | M2列 削減JPY | M3列 削減JPY |
+|---|---|---|
+| coffee_prices(M2/M3) | +4.291 | +6.269 |
+| inbound_tourism(M2c/M3c) | +9.224 | +6.965 |
+| streaming_price | -11.713 | -5.535 |
+| openai_copyright | -11.514 | -7.844 |
+| central_bank_mortgage | +2.379 | +4.099 |
+| **合計** | **-7.333**(M0計230.009に対し -3.2%、微増) | **+3.954**(+1.7%、微減) |
+- 本番換算(5記事計): M0 230.009 / M2 237.342 / M3 226.055。
+- 記事ごとに符号が分かれ(M2:+,+,-,-,+/M3:+,+,-,-,+)、5標本で明確な削減は確認されない。案1の上限効果との分離は不可(R-B5)。人手品質評価(ブラインド・R-07)と最終分類は別委任。到達上限Status=`STAGE_1B_COMPLETE_PENDING_FABLE`。
