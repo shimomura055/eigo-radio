@@ -120,3 +120,22 @@ OPEN_ITEMS(新規OPEN)、DECISION_LOG、USER_DECISION_REGISTER(費用180承認)�
 - 成果物: `er019_output/middle_east_yemen_saudi/run_mey_01/`(research_ledger/storyline_b3/ja_writer/b1b/a2/writer_run_summary.json/cost.json/raw_usage_log.jsonl/audit/cost_by_stage_text_01.json/console_s1〜s6)、review_queue、audio plan dir。
 
 *`PYTHONIOENCODING=utf-8`以外のRunner引数・環境差異なし。*
+
+## §14 Fable CP-C判定と再生成記録(委任_02、2026-10-18)
+- Fable CP-C=NG(根拠: 冒頭の「空港案内板に“Peace in Yemen”」はLedger外の創作/B3がF11のみ選定し狙い未達)。対応=既存機構でB3再選定1回+下流再生成(Prompt・Gate・Style・Ledger不変、Research再実行なし)。
+- E-1 既存仕様確認: runner usage `er019_family_x_entertainment_production_runner_01.py:33`(`--regenerate-stage storyline_b3|writer|advanced|standard`)。実装は:410-413(B3再生成)、:429-432(Writer)、:449/:461(Adv/Std)。**下流の自動再生成は行わない(安全側)**=:253「(下流の自動再生成は行いません=安全側)」、B3再生成後にWriterをreuseしようとするとU-1 PROVENANCE_MISMATCHでSTOP(:246-254)。したがって委任文の「stage再生成が下流をstale化し再生成する」のうち、再生成は自動ではなく段階別に明示実行が正式手順(`--stage X --regenerate-stage X`をstoryline_b3→writer→advanced→standardの順に各1回)。各stageは1回ずつ(retry/2回目の再生成なし)。
+- 実行(実在形): `--theme ... --slug middle_east_yemen_saudi --out-dir ...run_mey_01 --run-label MEY-E2E-01 --budget-jpy 110 --stage <S> --regenerate-stage <S>`、S=storyline_b3/writer/advanced/standard。console=`console_regen_b3_02.txt`・`console_regen_s3_02.txt`〜`_s5_02.txt`。初回成果保全=`run_mey_01/_before_regen_01/`。
+
+| 項目 | 初回(_before_regen_01) | 再生成後 |
+|---|---|---|
+| b1bタイトル | Why Does “Peace” Appear in Airport News? | Airport Attacks: Another Crisis the Damage Figures Alone Cannot Show |
+| 選定Fact | F11のみ(F01〜F10 excluded) | F11のみ(F01〜F10 excluded) |
+| 選定storyline | 空港攻撃の民間被害+特使の和平困難評価 | 同(10月11日の特使の非難・警告) |
+| In one line(b1b) | A UN envoy said the Riyadh airport attack could make peace efforts in Yemen harder. Saudi authorities supplied the casualty figures, while the effect on peace was the envoy’s assessment. | The UN envoy for Yemen warned that attacks on Saudi airports would make efforts to end Yemen’s conflict harder. Readers should look beyond casualty figures and keep both lives at stake now and future peace in view. |
+| Risk Flagger候補 | b1b 2件/a2 3件(luna A4=冒頭の案内板場面s3ほか) | b1b 0件/a2 0件(status=OK) |
+| HR/Lock | 発火なし | 発火なし(symbol_qa findings=[]、r2 rerun=False) |
+| 費用(JPY) | 56.621 | 再生成分23.260(B3 6.673/W-1 R0-R2 14.264/Adv 0.343+RF 0.92/Std 0.270+RF 1.03)、text累計79.881/110 |
+
+- Ledger外具体描写の突合(再生成後b1b/a2): 固有名詞・場面・数字14項目を突合。UN envoy for Yemen=F11/Saudi authorities・Riyadh airport・12人死亡・300人超負傷=F11(帰属付き)/Riyadh・Abha空港の同週攻撃=F11/地域安全保障の脅威・和平努力困難=F11(特使の評価と帰属明示)=一致。Ledger外の具体事実・創作場面=0件(「空港が攻撃された」引用は報道一報の言い換え、「Imagine if it were an airport you used」は読者への仮定と明示された非事実、「two clocks」は比喩)。初回の“Peace in Yemen”案内板のような事実風創作場面は消失。
+- 数字の時点明示・帰属: 帰属は良好(死傷者数=Saudi authoritiesの発表を特使が引用/和平困難化=特使の評価と分離)。**本文に日付(10月10日・11日)が無い**(初回も本文中のOctober出現0=同じ)。「that same week」のみ。
+- 評価材料(Fable CP2用): 創作場面は解消・RF0。一方B3は再びF11のみ選定(選定理由はF02-F10が「F11で説明可能/背景のみ」)で、ユーザーの狙い(なぜ周辺の紛争が地域全体に影響するか)を複数Factで語る構造にはならず「ニュースの読み方」型エッセイのまま。再生成2回目は行わない(STOP方針)。

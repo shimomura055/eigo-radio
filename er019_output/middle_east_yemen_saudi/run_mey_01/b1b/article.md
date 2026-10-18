@@ -1,22 +1,28 @@
-# Why Does “Peace” Appear in Airport News?
+# Airport Attacks: Another Crisis the Damage Figures Alone Cannot Show
 
-An airport was attacked. As I followed the news, an unexpected phrase appeared on an airport departure board: “Peace in Yemen.” Wait, wasn’t this happening in Saudi Arabia? I hadn’t misread it. This news has a connection that goes beyond the name of just one country.
+“An airport has been attacked.”
 
-First, let’s check the reports of damage. The UN official in charge of Yemen cited Saudi authorities’ report on the attack on Riyadh airport: 12 people were killed, and more than 300 were injured. The official also condemned the continued attacks on civilian facilities. We should take in the weight of these figures before moving on.
+That one report makes us stop following the news. Were the people there safe? Were people killed? Were people hurt? The first thing we should check is whether people are safe. But this news holds another crisis that cannot be seen just by reading the damage figures.
 
-So why is the UN official in charge of Yemen speaking about an airport in Saudi Arabia? Try reading this as if you had spread two maps out on a desk. One map shows where the attack took place. The other shows efforts to end the conflict.
+The UN envoy for Yemen condemned a series of attacks on civilian sites in Saudi Arabia. He cited a statement from Saudi authorities that 12 people had died and more than 300 had been injured in the attack on Riyadh airport. He also said that attacks on the airports in Riyadh and Abha that same week had killed or injured civilians.
 
-What connects the two maps is the official’s assessment. The official says attacks like these threaten regional security and make efforts to bring peace to Yemen even more difficult. In other words, the official does not see the airport attack as “an event limited to that place.”
+At this point, the story moves from “what happened” to “what happens next.”
 
-The question we ask as we read the news also shifts here. First, we ask, “Where did it happen, and how much damage was done?” Then we ask, “How is this event thought to affect peace efforts taking place somewhere else?” It is the same news, but now we can see a wider picture.
+The envoy warned not only of a threat to security in the region. He said these attacks would make efforts to end the conflict in Yemen even harder.
 
-When people hear the word “airport,” some may remember checking departure times or waiting for someone. An airport in a faraway country is not just a mark on a map. It is a place where people come and go, and where their lives connect. An attack on that place is linked to yet another issue.
+One clock counts the harm right before us, while another marks the road to peace. In this warning, the two clocks overlap. How many people have been hurt now? And what will happen to the path to prevent more people from being hurt?
 
-But we should not let our imagination run at full speed here. The idea that “the attack makes efforts to bring peace more difficult” is the official’s assessment. If we go as far as saying, “This will definitely push peace further away,” we would be going beyond what the official said. The more clearly we see the connection, the more important it is not to rush to a conclusion.
+But we should not rush to read this. The number of people killed and injured was given by the envoy as a statement from Saudi authorities. The claim that efforts toward peace will become harder is the envoy’s view. The figures and the view are not the same thing.
 
-To sum up, the figures on the damage come from a report by Saudi authorities. The effect on peace efforts is the official’s assessment. Each has its own source. Keeping them separate as we read does not make the story less interesting. It helps us keep track of what was reported and what was described as a possible effect.
+If we turn “will become harder” into “peace is now impossible,” we turn a warning into a conclusion. Taking the warning seriously and deciding the future in advance are two different things.
 
-Before putting this away in a drawer marked “Saudi story,” look at the label marked “Yemen,” too. Then, beyond the news of damage to the airport, we can see concerns about peace. The headline is the entrance. Beyond it, another map opens up.
+Imagine if it were an airport you used.
+
+Would you be able to get home safely today? The next time you came here, would you be able to use it without worry? The first is a worry about “now,” and the second is a worry about “what comes next.” But for the people involved, those two worries cannot be easily separated.
+
+Those of us reading the news do not have to stop at the damage figures. After checking what happened, we should also look at whether the path to ending the conflict is growing narrower.
+
+What should we look for beyond the news? Rather than wait for more people to be harmed, we should keep asking how the harm can be stopped. The lives at stake now, and the peace that lies ahead. The envoy’s warning asks us not to lose sight of one or the other, but to keep sight of both.
 
 ## In one line
-A UN envoy said the Riyadh airport attack could make peace efforts in Yemen harder. Saudi authorities supplied the casualty figures, while the effect on peace was the envoy’s assessment.
+The UN envoy for Yemen warned that attacks on Saudi airports would make efforts to end Yemen’s conflict harder. Readers should look beyond casualty figures and keep both lives at stake now and future peace in view.
