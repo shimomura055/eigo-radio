@@ -1,0 +1,121 @@
+{
+  "article": "central_bank_mortgage",
+  "method": "M0b",
+  "stage": "1b",
+  "dry_run": false,
+  "started_at": "2026-10-18T01:24:50.588324+00:00",
+  "usage_basis": "OFFICIAL_API_RESPONSE",
+  "status": "COMPLETED",
+  "selected_fact_ids": [
+    "F002",
+    "F003",
+    "F007",
+    "F008",
+    "F010"
+  ],
+  "selected_storyline": "米Fedが2026年9月16日にインフレ抑制へ利上げするなか、住宅ローン金利上昇による新規借入の月額負担増が試算されたが、その上昇はFedの決定だけに帰せず、既存借り手への影響も固定・変動の契約条件で異なる。",
+  "b3_model": "gpt-6.1-sol",
+  "b3_attempts": 1,
+  "ambiguous_central": {
+    "central_fact_ids": [
+      "F001",
+      "F002",
+      "F005",
+      "F006",
+      "F007",
+      "F010"
+    ],
+    "ambiguous_central_fact_ids": [],
+    "count": 0,
+    "note": "候補件数(機械抽出)。『断定しているか』の最終判定はSonnet+Fable独立判定(R-07、測定のみ)"
+  },
+  "known_defect_status": {},
+  "verdict_transitions": {
+    "counts": {
+      "VERIFIED->VERIFIED": 11
+    },
+    "promotions_to_verified_or_up": [],
+    "demotions_from_verified": []
+  },
+  "final_verdicts": {
+    "F001": {
+      "verdict": "VERIFIED"
+    },
+    "F002": {
+      "verdict": "VERIFIED"
+    },
+    "F003": {
+      "verdict": "VERIFIED"
+    },
+    "F004": {
+      "verdict": "VERIFIED"
+    },
+    "F005": {
+      "verdict": "VERIFIED"
+    },
+    "F006": {
+      "verdict": "VERIFIED"
+    },
+    "F007": {
+      "verdict": "VERIFIED"
+    },
+    "F008": {
+      "verdict": "VERIFIED"
+    },
+    "F009": {
+      "verdict": "VERIFIED"
+    },
+    "F010": {
+      "verdict": "VERIFIED"
+    },
+    "F011": {
+      "verdict": "VERIFIED"
+    }
+  },
+  "verifier_models": [],
+  "verifier_model_matches_m0": null,
+  "m0_verifier_model": "gpt-6-luna",
+  "web_search_calls": {
+    "web_search_call_rows": 0,
+    "by_action_type": {},
+    "query_count": 0
+  },
+  "verify_requests": [],
+  "cost": {
+    "by_step": {
+      "b3": {
+        "llm_jpy": 8.564,
+        "web_search_jpy": 0.0,
+        "calls": 1,
+        "web_search_calls": 0,
+        "input_tokens": 3809,
+        "output_tokens": 4591,
+        "total_jpy": 8.564
+      }
+    },
+    "total": {
+      "llm_jpy": 8.564,
+      "web_search_jpy": 0.0,
+      "total_jpy": 8.564,
+      "calls": 1,
+      "web_search_calls": 0
+    }
+  },
+  "contract": {
+    "method_dir": "er082_output/rlct_trial_01/central_bank_mortgage/M0b",
+    "producer": {
+      "status": "PASS",
+      "n_facts": 5,
+      "llm_calls": 0
+    },
+    "validate": {
+      "status": "PASS"
+    },
+    "ledger_complete": {
+      "status": "PASS",
+      "n_facts": 11
+    },
+    "all_pass": true
+  },
+  "finished_at": "2026-10-18T01:26:11.509726+00:00"
+}

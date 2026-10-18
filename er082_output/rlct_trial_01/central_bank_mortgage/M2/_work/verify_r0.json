@@ -1,0 +1,53 @@
+{
+  "label": "r0",
+  "cap_prompt": false,
+  "fact_ids": [
+    "F002",
+    "F003",
+    "F006",
+    "F008",
+    "F010"
+  ],
+  "model": "gpt-6-luna",
+  "response_id": "resp_05afeac9ab490c23006ad42104b15887d0a2c5133d9a217393",
+  "latency_seconds": 24.978796005249023,
+  "web_search_call_count": 3,
+  "action_type_counts": {
+    "search": 1,
+    "open_page": 2
+  },
+  "query_count": 4,
+  "calls_per_fact_avg": 0.6,
+  "exceeds_soft_cap_estimate": false,
+  "prompt_sha256": "464a4c79298943deb8eecceceff3613fd7a56fdfa64587bb9b703ceffbc7ed43",
+  "parsed": {
+    "verifications": [
+      {
+        "fact_id": "F002",
+        "verdict": "VERIFIED",
+        "verification_notes": "連邦準備制度理事会の2026年9月16日声明に、目標レンジを0.25ポイント引き上げて3.75～4.00％とし、声明を12対0で承認したと記載されています。実施日は9月17日で、議事録にも確認できます。([federalreserve.gov](https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm?gsid=75fc55dc-7a52-40fc-8723-23609644bc15))"
+      },
+      {
+        "fact_id": "F003",
+        "verdict": "VERIFIED",
+        "verification_notes": "9月16日のFOMC声明は、経済活動の堅調な拡大、底堅い国内支出、生産性の伸びと設備投資、雇用増と失業率、インフレ高止まりを下書きの記述どおり説明しています。政策措置は2％目標への「より早い回帰を支える」とされており、下書きの注記も適切です。([federalreserve.gov](https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm?gsid=75fc55dc-7a52-40fc-8723-23609644bc15))"
+      },
+      {
+        "fact_id": "F006",
+        "verdict": "VERIFIED",
+        "verification_notes": "Freddie Macのアーカイブで、2026年10月8日は30年固定7.40％・15年固定6.73％、10月1日はそれぞれ7.28％・6.60％と確認できます。これはFreddie Macの週次平均で、個々の借り手の提示金利そのものではありません。なおPMMSは特定の全住宅ローンを網羅した統計ではなく、対象条件に合う申請データに基づく平均です。ARM金利は公表系列に含まれません。([freddiemac.com](https://www.freddiemac.com/pmms/archive))"
+      },
+      {
+        "fact_id": "F008",
+        "verdict": "VERIFIED",
+        "verification_notes": "Federal Reserve Consumer Helpは、フェデラルファンド金利が住宅ローン金利を直接決めるものではなく、住宅ローン金利は貸し手と契約条件に従うと説明しています。また、固定金利はローン期間中固定され、変動・調整金利は契約条件に応じて変わり得るとしています。([federalreserveconsumerhelp.gov](https://www.federalreserveconsumerhelp.gov/loans-mortgage/))"
+      },
+      {
+        "fact_id": "F010",
+        "verdict": "VERIFIED",
+        "verification_notes": "APの2026年10月8日報道は、住宅ローン金利にはインフレ、Fed政策、債券市場投資家の経済見通しなどが影響し、一般に10年米国債利回りの動きに沿うと説明しています。また、直近の上昇について、債券市場の変動と、原油高がもたらすインフレ懸念を挙げています。複数要因として扱い、Fedの9月決定だけに原因を帰していない下書きの表現は妥当です。([ny1.com](https://ny1.com/nyc/all-boroughs/ap-top-news/2026/10/08/average-long-term-us-mortgage-rate-at-highest-level-in-nearly-3-years-after-7th-weekly-rise-in-a-row))"
+      }
+    ]
+  },
+  "prompt": "以下のFact Ledger下書きを、Ledger自身のsource_urlだけを鵜呑みにせず、\n独立してWeb検索により再照合してください。\n\n【対象テーマ】\nCurrent news/lifestyle topic: the latest central bank interest rate decision and what it means for mortgage borrowers. Using only facts confirmed by web search (official central bank statements, Reuters/AP/Bloomberg-level reporting), cover the most recent rate decision (which central bank, date, size and direction of the move), the stated reasoning, and the reported effect on mortgage rates or home loan payments for borrowers (fixed vs variable where reported). Separate confirmed facts from forecasts. Do not invent details and do not use the assistant's own prior knowledge.\n\n【検証対象のFact Ledger下書き】\n{\n  \"facts\": [\n    {\n      \"fact_id\": \"F002\",\n      \"claim\": \"FOMCは2026年9月16日、フェデラルファンド金利の目標レンジを0.25パーセントポイント引き上げ、3.75～4.00％とした。声明は12対0で承認された。\",\n      \"subject\": \"Federal Reserve（FOMC）の政策金利決定\",\n      \"date_or_period\": \"2026-09-16の発表。実施日は2026-09-17。\",\n      \"scope\": \"米国のフェデラルファンド金利目標レンジ。住宅ローン金利そのものではない。\",\n      \"conditions\": \"Fedの声明に記載された目標レンジの変更。\",\n      \"numeric_value\": \"25ベーシスポイント引き上げ。新レンジは3.75～4.00％。採決は12対0。\",\n      \"numeric_scope\": \"政策金利目標レンジとFOMCの採決\",\n      \"causal_strength\": \"NOT_APPLICABLE\",\n      \"source_title\": \"Federal Reserve issues FOMC statement, September 16, 2026\",\n      \"source_url\": \"https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm\",\n      \"source_type\": \"PRIMARY_GOVERNMENT_OR_REGULATOR\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": null,\n      \"notes_for_writer\": \"住宅ローン金利が同じ幅だけ上がったという意味ではない。\"\n    },\n    {\n      \"fact_id\": \"F003\",\n      \"claim\": \"FOMC声明は、経済活動が堅調に拡大し、国内支出が底堅く、生産性の伸びと設備投資が強い一方、雇用増は労働力の伸びに見合い、失業率は大きく変わらず、インフレは高止まりしていると説明した。委員会は利上げがインフレを2％目標へより早く戻す助けになると述べた。\",\n      \"subject\": \"FOMCの政策判断理由\",\n      \"date_or_period\": \"2026-09-16の声明\",\n      \"scope\": \"FOMCが米国経済と物価について示した評価\",\n      \"conditions\": \"「2％」はFOMCの長期インフレ目標。\",\n      \"numeric_value\": \"インフレ目標：2％。\",\n      \"numeric_scope\": \"FOMCの長期インフレ目標\",\n      \"causal_strength\": \"CAUSAL_STATED_BY_SOURCE\",\n      \"source_title\": \"Federal Reserve issues FOMC statement, September 16, 2026\",\n      \"source_url\": \"https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm\",\n      \"source_type\": \"PRIMARY_GOVERNMENT_OR_REGULATOR\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": null,\n      \"notes_for_writer\": \"2％への回帰は政策の目標・期待として記載されたものであり、利上げの効果が既に実現したという確認ではない。\"\n    },\n    {\n      \"fact_id\": \"F006\",\n      \"claim\": \"Freddie Macの2026年10月8日週の全米平均固定住宅ローン金利は、30年固定が7.40％、15年固定が6.73％だった。前週（10月1日）はそれぞれ7.28％、6.60％だった。\",\n      \"subject\": \"米国の固定住宅ローン金利\",\n      \"date_or_period\": \"2026-10-08週と前週の2026-10-01\",\n      \"scope\": \"Freddie Macの全米週次平均。対象は30年固定・15年固定で、個別借り手への提示金利ではない。\",\n      \"conditions\": \"借り手の信用、所得、ローン条件などにより実際の提示金利は異なり得る。\",\n      \"numeric_value\": \"30年固定：7.40％（前週7.28％）。15年固定：6.73％（前週6.60％）。\",\n      \"numeric_scope\": \"Freddie Mac週次調査の米国平均金利。ARM（変動金利型）はこの数値に含まれない。\",\n      \"causal_strength\": \"OBSERVED_REPORTED\",\n      \"source_title\": \"Mortgage Market Survey Archive\",\n      \"source_url\": \"https://www.freddiemac.com/pmms/archive\",\n      \"source_type\": \"OFFICIAL_REPORT_OR_STUDY\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": null,\n      \"notes_for_writer\": \"観測された週次平均の上昇であり、FOMCの9月利上げがこの上昇を直接引き起こしたとは、この数値だけからは言えない。\"\n    },\n    {\n      \"fact_id\": \"F008\",\n      \"claim\": \"米連邦準備制度理事会の消費者向け説明によると、フェデラルファンド金利は住宅ローン金利を直接決めない。住宅ローン金利は貸し手と契約条件によって定まり、固定金利型は契約期間中に金利が固定され、変動・調整金利型は契約条件に応じて金利が変わり得る。\",\n      \"subject\": \"政策金利と住宅ローン契約の関係\",\n      \"date_or_period\": null,\n      \"scope\": \"米国の住宅ローン一般\",\n      \"conditions\": \"固定・変動の扱いは個別ローン契約の条件に従う。\",\n      \"numeric_value\": null,\n      \"numeric_scope\": null,\n      \"causal_strength\": \"NOT_APPLICABLE\",\n      \"source_title\": \"Federal Reserve Consumer Help — Loans & Mortgage\",\n      \"source_url\": \"https://www.federalreserveconsumerhelp.gov/loans-mortgage/\",\n      \"source_type\": \"PRIMARY_GOVERNMENT_OR_REGULATOR\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": null,\n      \"notes_for_writer\": \"固定金利型の契約金利はFed決定だけで自動的に変わらない。変動金利型も、改定時期や指標など具体的な条件を契約書で確認する必要がある。\"\n    },\n    {\n      \"fact_id\": \"F010\",\n      \"claim\": \"APは、2026年秋の住宅ローン金利上昇について、インフレ、Fed政策、債券市場投資家の経済見通しが影響要因であり、住宅ローン金利は一般に10年米国債利回りの動きに沿うと報じた。同記事は、直近の上昇に債券市場の変動や原油高によるインフレ懸念も関わったと報じている。\",\n      \"subject\": \"住宅ローン金利の直近上昇要因に関する報道\",\n      \"date_or_period\": \"2026年2月下旬以降の上昇について。報道日：2026-10-08。\",\n      \"scope\": \"米国の住宅ローン金利市場についてのAP報道\",\n      \"conditions\": \"複数要因の報道であり、特定要因が上昇全体を単独で説明するとはしていない。\",\n      \"numeric_value\": null,\n      \"numeric_scope\": null,\n      \"causal_strength\": \"CAUSAL_STATED_BY_SOURCE\",\n      \"source_title\": \"Average long-term US mortgage rate at highest level in nearly 3 years after 7th weekly rise in a row\",\n      \"source_url\": \"https://apnews.com/article/mortgage-10year-interest-rates-home-sales-e9badb974fbb8e3f7ca2ae25fbe556fa\",\n      \"source_type\": \"RELIABLE_SECONDARY_NEWS\",\n      \"support_level\": \"DIRECTLY_STATED\",\n      \"ambiguity\": null,\n      \"notes_for_writer\": \"観測された金利上昇をFedの9月決定だけの効果として説明しない。APは複数の要因を挙げている。\"\n    }\n  ]\n}\n\n【検証観点】\n- FactがSourceに実際に存在するか\n- 数字のscopeが正しいか(母集団と個別条件を混同していないか)\n- 対象群と全体を混同していないか\n- 日付・時間帯が正しいか\n- 制度の適用範囲が正しいか(特に時間帯限定かどうか)\n- 条件が抜けていないか\n- 因果関係を過剰に強めていないか\n- Source間で矛盾していないか\n- 曖昧なFactを無理に確定していないか\n\n各fact_idについて、VERIFIED / AMBIGUOUS / REJECTEDのいずれかで判定し、\n判定理由をverification_notesへ記載してください。"
+}
