@@ -1,0 +1,63 @@
+{
+  "article": "inbound_tourism",
+  "dry_run": false,
+  "n_injected": 3,
+  "rows": [
+    {
+      "variant": "uncapped",
+      "injected_fact_id": "INJ_F01_numeric_1",
+      "orig_fact_id": "F01",
+      "kind": "numeric",
+      "verdict": "REJECTED",
+      "outcome": "detected"
+    },
+    {
+      "variant": "uncapped",
+      "injected_fact_id": "INJ_F02_date_2",
+      "orig_fact_id": "F02",
+      "kind": "date",
+      "verdict": "REJECTED",
+      "outcome": "detected"
+    },
+    {
+      "variant": "uncapped",
+      "injected_fact_id": "INJ_F05_direction_3",
+      "orig_fact_id": "F05",
+      "kind": "direction",
+      "verdict": "AMBIGUOUS",
+      "outcome": "not_passed_as_verified(partial)"
+    },
+    {
+      "variant": "capped",
+      "injected_fact_id": "INJ_F01_numeric_1",
+      "orig_fact_id": "F01",
+      "kind": "numeric",
+      "verdict": "REJECTED",
+      "outcome": "detected"
+    },
+    {
+      "variant": "capped",
+      "injected_fact_id": "INJ_F02_date_2",
+      "orig_fact_id": "F02",
+      "kind": "date",
+      "verdict": "REJECTED",
+      "outcome": "detected"
+    },
+    {
+      "variant": "capped",
+      "injected_fact_id": "INJ_F05_direction_3",
+      "orig_fact_id": "F05",
+      "kind": "direction",
+      "verdict": "AMBIGUOUS",
+      "outcome": "not_passed_as_verified(partial)"
+    }
+  ],
+  "missed_critical_ng": [],
+  "critical_ng": false,
+  "original_draft_unchanged": true,
+  "cost": {
+    "total_jpy": 21.344
+  },
+  "disclaimer": "故障注入の結果は通常記事における誤り検出率の保証ではない(ユーザー§5)",
+  "basis": "OFFICIAL_API_RESPONSE"
+}
