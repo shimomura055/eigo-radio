@@ -1,0 +1,131 @@
+{
+ "cost_json_total_jpy": 56.621,
+ "cost_json_diff_note": "cost.json(runner)とraw_usage_logのGemini cost_usdの差=cached_input割引の扱い差(a2 RF gemini 2 call)。cost.jsonが保守側",
+ "run_dir": "er019_output/middle_east_yemen_saudi/run_mey_01",
+ "usd_jpy": 160.0,
+ "text_stage_rows": [
+  {
+   "stage": "Research",
+   "llm_jpy": 2.995,
+   "web_search_jpy": 24.0,
+   "total_jpy": 26.995,
+   "web_search_calls": 15,
+   "calls": 1,
+   "basis": "実測(usage OFFICIAL_API_RESPONSE x pricing_snapshot単価の計算値)",
+   "note": ""
+  },
+  {
+   "stage": "Ledger(Verification)",
+   "llm_jpy": 1.11,
+   "web_search_jpy": 8.0,
+   "total_jpy": 9.11,
+   "web_search_calls": 5,
+   "calls": 1,
+   "basis": "実測(usage OFFICIAL_API_RESPONSE x pricing_snapshot単価の計算値)",
+   "note": ""
+  },
+  {
+   "stage": "B3 Storyline",
+   "llm_jpy": 5.993,
+   "web_search_jpy": 0.0,
+   "total_jpy": 5.993,
+   "web_search_calls": 0,
+   "calls": 1,
+   "basis": "実測(usage OFFICIAL_API_RESPONSE x pricing_snapshot単価の計算値)",
+   "note": ""
+  },
+  {
+   "stage": "Writer R0",
+   "llm_jpy": 6.234,
+   "web_search_jpy": 0.0,
+   "total_jpy": 6.234,
+   "web_search_calls": 0,
+   "calls": 1,
+   "basis": "実測(usage OFFICIAL_API_RESPONSE x pricing_snapshot単価の計算値)",
+   "note": ""
+  },
+  {
+   "stage": "Writer R1",
+   "llm_jpy": 3.08,
+   "web_search_jpy": 0.0,
+   "total_jpy": 3.08,
+   "web_search_calls": 0,
+   "calls": 1,
+   "basis": "実測(usage OFFICIAL_API_RESPONSE x pricing_snapshot単価の計算値)",
+   "note": ""
+  },
+  {
+   "stage": "Writer R2",
+   "llm_jpy": 2.375,
+   "web_search_jpy": 0.0,
+   "total_jpy": 2.375,
+   "web_search_calls": 0,
+   "calls": 1,
+   "basis": "実測(usage OFFICIAL_API_RESPONSE x pricing_snapshot単価の計算値)",
+   "note": ""
+  },
+  {
+   "stage": "英語化(Advanced+IOL)",
+   "llm_jpy": 0.332,
+   "web_search_jpy": 0.0,
+   "total_jpy": 0.332,
+   "web_search_calls": 0,
+   "calls": 2,
+   "basis": "実測(usage OFFICIAL_API_RESPONSE x pricing_snapshot単価の計算値)",
+   "note": "advanced stageにはAdvanced英語化1回+IOL生成1回(attempt_number=2は再試行でなく別目的call)"
+  },
+  {
+   "stage": "Risk Flagger b1b",
+   "llm_jpy": 0.792,
+   "web_search_jpy": 0.0,
+   "total_jpy": 0.792,
+   "web_search_calls": 0,
+   "calls": 4,
+   "basis": "実測(usage OFFICIAL_API_RESPONSE x pricing_snapshot単価の計算値)",
+   "note": ""
+  },
+  {
+   "stage": "Standard調整",
+   "llm_jpy": 0.527,
+   "web_search_jpy": 0.0,
+   "total_jpy": 0.527,
+   "web_search_calls": 0,
+   "calls": 1,
+   "basis": "実測(usage OFFICIAL_API_RESPONSE x pricing_snapshot単価の計算値)",
+   "note": ""
+  },
+  {
+   "stage": "Risk Flagger a2",
+   "llm_jpy": 1.095,
+   "web_search_jpy": 0.0,
+   "total_jpy": 1.095,
+   "web_search_calls": 0,
+   "calls": 5,
+   "basis": "実測(usage OFFICIAL_API_RESPONSE x pricing_snapshot単価の計算値)",
+   "note": ""
+  }
+ ],
+ "retry_fallback_calls_by_stage": {
+  "risk_flag.gemini35fl.A4.a2": 1
+ },
+ "retry_fallback_jpy": 0.0,
+ "retry_fallback_basis": "retry/fallback/regeneration callは0件(failed_or_retry_calls参照)",
+ "text_total_jpy": 56.533,
+ "research_ledger_llm_jpy": 4.105,
+ "research_ledger_web_search_jpy": 32.0,
+ "web_search_calls_total": 20,
+ "untaken": {
+  "KP": "未取得(S7は委任_02)",
+  "TTS": "未取得(S8/S9は委任_02)",
+  "ASR": "未取得(S8/S9は委任_02)",
+  "audio_total": "未取得"
+ },
+ "approved_cap_e2e_jpy": 180,
+ "remaining_vs_cap_after_text_jpy": 123.467,
+ "text_guardrail_jpy": 110,
+ "audio_guardrail_jpy": 70,
+ "gap_vs_70jpy_target_text_only_jpy": -13.467,
+ "gap_note": "70円目標は記事セット全体。text小計のみ時点の参考(音声工程は未取得)",
+ "pricing_snapshot": "er005_output/cost_baseline_01/pricing_snapshot.json",
+ "provenance": "production_formal_path(fresh)"
+}

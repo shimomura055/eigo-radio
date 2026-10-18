@@ -1,0 +1,292 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "middle_east_yemen_saudi__run_mey_01",
+  "article_level": "a2",
+  "article_sha256": "1f6e42d75c64d295e56e9f6085953b5b613108302aba9f1c4e949e2361b01461",
+  "ledger_sha256": "4f7d28b0bb7c280a34715215bc6c3d8b3c6b9127899a342c97cb1e6924cb8cf6",
+  "run_id": "rf20261018T011532Z-fc19",
+  "timestamp": "2026-10-18T01:15:32+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "MEY-E2E-01",
+  "sentence_count": 47,
+  "fact_count": 11,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5341,
+      "output_tokens": 483,
+      "cached_tokens": 0,
+      "cost_jpy": 0.124096,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 5491,
+      "output_tokens": 1571,
+      "cached_tokens": 0,
+      "cost_jpy": 0.213536,
+      "flag_count": 3,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4995,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.24136,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 2,
+      "input_tokens": 10230,
+      "output_tokens": 281,
+      "cached_tokens": 2033,
+      "cost_jpy": 0.515614,
+      "flag_count": 1,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "middle_east_yemen_saudi__run_mey_01__a2__1f6e42d7__rf20261018T011532Z-fc19__s3",
+      "article_id": "middle_east_yemen_saudi__run_mey_01",
+      "article_level": "a2",
+      "article_sha256": "1f6e42d75c64d295e56e9f6085953b5b613108302aba9f1c4e949e2361b01461",
+      "run_id": "rf20261018T011532Z-fc19",
+      "timestamp": "2026-10-18T01:15:32+00:00",
+      "sentence_id": "s3",
+      "sentence_text": "As I followed the news, I saw a surprising phrase on an airport departure board: “Peace in Yemen.”",
+      "context": {
+        "before": [
+          "# Why Does “Peace” Appear in Airport News?",
+          "An airport was attacked."
+        ],
+        "after": [
+          "Wait, wasn’t this happening in Saudi Arabia?",
+          "I had read it correctly."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [],
+      "facts": [],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "空港の出発案内板に「Peace in Yemen」と表示されていたという記述は、台帳で確認できない事実ではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.3,
+          "type": "その他",
+          "fact_ids": [],
+          "question": "空港の出発案内板に「Peace in Yemen」と表示されていたという記述は、台帳で確認できない事実ではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "issue_id": "middle_east_yemen_saudi__run_mey_01__a2__1f6e42d7__rf20261018T011532Z-fc19__s31",
+      "article_id": "middle_east_yemen_saudi__run_mey_01",
+      "article_level": "a2",
+      "article_sha256": "1f6e42d75c64d295e56e9f6085953b5b613108302aba9f1c4e949e2361b01461",
+      "run_id": "rf20261018T011532Z-fc19",
+      "timestamp": "2026-10-18T01:15:32+00:00",
+      "sentence_id": "s31",
+      "sentence_text": "The official’s view is that the attack makes work to bring peace harder.",
+      "context": {
+        "before": [
+          "An attack on that place is linked to yet another issue.",
+          "But we should not let our imagination run at full speed here."
+        ],
+        "after": [
+          "If we say, “This will surely push peace farther away,” we are saying more than the official did.",
+          "The more clearly we see the link, the more careful we must be."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F11"
+      ],
+      "facts": [
+        {
+          "fact_id": "F11",
+          "text": "国連イエメン担当特使は、サウジアラビアの民間インフラに対する継続的な攻撃を非難し、10月10日のリヤド空港攻撃についてサウジ当局による死者12人・負傷者300人超との報告を示した。また、同週のリヤドおよびアブハ空港への攻撃でも民間人の死傷があったと述べ、攻撃は地域の安全保障を脅かし、イエメンの和平努力を一層困難にすると評価した。\n  scope: サウジアラビアの民間インフラ、とくにリヤド・アブハの空港。和平への影響は特使による評価。\n  conditions: 死傷者数は国連特使がサウジ当局の発表に基づくとして紹介したもの。和平努力への影響は特使自身の評価。\n  numeric_value: リヤド空港攻撃：死亡12人、負傷300人超（サウジ当局発表として国連特使が引用）。 (numeric_scope: 2026年10月10日のリヤド空港攻撃)\n  date_or_period: 2026-10-11。対象となる直近の攻撃は同週および2026-10-10。\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: 「和平努力を困難にする」は国連特使の評価として記載し、独立に実証された因果関係として一般化しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "主体対象入替",
+          "question": "「the attack」が指す特定の攻撃と、台帳が和平努力を困難にするとした「攻撃」全般では、対象の範囲が異なるのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.3,
+          "type": "主体対象入替",
+          "fact_ids": [
+            "F11"
+          ],
+          "question": "「the attack」が指す特定の攻撃と、台帳が和平努力を困難にするとした「攻撃」全般では、対象の範囲が異なるのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        }
+      ],
+      "confidence": 0.3
+    },
+    {
+      "issue_id": "middle_east_yemen_saudi__run_mey_01__a2__1f6e42d7__rf20261018T011532Z-fc19__s46",
+      "article_id": "middle_east_yemen_saudi__run_mey_01",
+      "article_level": "a2",
+      "article_sha256": "1f6e42d75c64d295e56e9f6085953b5b613108302aba9f1c4e949e2361b01461",
+      "run_id": "rf20261018T011532Z-fc19",
+      "timestamp": "2026-10-18T01:15:32+00:00",
+      "sentence_id": "s46",
+      "sentence_text": "The UN official for Yemen said the Riyadh airport attack could make peace efforts harder.",
+      "context": {
+        "before": [
+          "Beyond it, another map opens up.",
+          "## In one line"
+        ],
+        "after": [
+          "Saudi officials gave the death and injury numbers, while the official described the effect on peace."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "F11"
+      ],
+      "facts": [
+        {
+          "fact_id": "F11",
+          "text": "国連イエメン担当特使は、サウジアラビアの民間インフラに対する継続的な攻撃を非難し、10月10日のリヤド空港攻撃についてサウジ当局による死者12人・負傷者300人超との報告を示した。また、同週のリヤドおよびアブハ空港への攻撃でも民間人の死傷があったと述べ、攻撃は地域の安全保障を脅かし、イエメンの和平努力を一層困難にすると評価した。\n  scope: サウジアラビアの民間インフラ、とくにリヤド・アブハの空港。和平への影響は特使による評価。\n  conditions: 死傷者数は国連特使がサウジ当局の発表に基づくとして紹介したもの。和平努力への影響は特使自身の評価。\n  numeric_value: リヤド空港攻撃：死亡12人、負傷300人超（サウジ当局発表として国連特使が引用）。 (numeric_scope: 2026年10月10日のリヤド空港攻撃)\n  date_or_period: 2026-10-11。対象となる直近の攻撃は同週および2026-10-10。\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: 「和平努力を困難にする」は国連特使の評価として記載し、独立に実証された因果関係として一般化しない。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "主体対象入替",
+          "question": "「the Riyadh airport attack」と特定する表現は、台帳が和平努力への影響を述べた「攻撃」全般より範囲を狭めているのではありませんか。"
+        },
+        {
+          "type": "その他",
+          "question": "国連特使の発言について、台帳(F11)では「和平努力を一層困難にする」と評価しているのに対し、s46では「could make peace efforts harder」と表現していますが、ニュアンスや時制が台帳の趣旨からずれていませんか？"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A4",
+          "confidence": 0.3,
+          "type": "主体対象入替",
+          "fact_ids": [
+            "F11"
+          ],
+          "question": "「the Riyadh airport attack」と特定する表現は、台帳が和平努力への影響を述べた「攻撃」全般より範囲を狭めているのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A4.jsonl"
+        },
+        {
+          "model_key": "gemini35fl",
+          "model_id": "gemini-3.5-flash-lite",
+          "condition": "A4",
+          "confidence": 0.7,
+          "type": "その他",
+          "fact_ids": [
+            "F11"
+          ],
+          "question": "国連特使の発言について、台帳(F11)では「和平努力を一層困難にする」と評価しているのに対し、s46では「could make peace efforts harder」と表現していますが、ニュアンスや時制が台帳の趣旨からずれていませんか？",
+          "severity": "重大",
+          "raw_flag_source": "raw/gemini35fl_A4.jsonl"
+        }
+      ],
+      "confidence": 0.7
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "a2",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 10832,
+      "output_tokens": 2054,
+      "cost_jpy": 0.337632,
+      "a3_flag_count": 0,
+      "a4_flag_count": 3,
+      "unique_issue": 3,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "a2",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 3,
+      "input_tokens": 15225,
+      "output_tokens": 285,
+      "cost_jpy": 0.756974,
+      "a3_flag_count": 0,
+      "a4_flag_count": 1,
+      "unique_issue": 1,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 0
+    },
+    "_all": {
+      "article_level": "a2",
+      "article_status": "OK",
+      "unique_issue": 3,
+      "cost_jpy": 1.094606,
+      "issues_by_both_models": 1
+    }
+  },
+  "warnings": []
+}
