@@ -1,0 +1,53 @@
+{
+  "trial_id": "FAMILY-Z-AZURE-PHRASELIST-WEIGHT-TRIAL-01",
+  "design_version": "01 (事前登録。変更はTRIAL_DESIGN_01.md §9 改訂履歴に残す)",
+  "language": "en-US",
+  "phrase_list": ["Melos"],
+  "conditions": ["no_pl", "pl_unspecified", "pl_w1.0", "pl_w1.5", "pl_w2.0"],
+  "phases": {
+    "A": {
+      "purpose": "録音2(同一wav)で5条件x3回。決定論性の実測と重み反映証拠。",
+      "reps": 3,
+      "audio": [
+        {
+          "id": "rec2_att2",
+          "path": "er026_output/family_z_production_e2e_01/melos/run_e2e_04/a2/narration/attempts/full_story_part3_c1_attempt2_customa3c4625e.wav",
+          "sha256": "f96c224d7498d454a4a613dd3de3b2d18ce81f30255aafb5313dfffc09896cbf",
+          "duration_s_expected": 24.59,
+          "voice": "Aoede",
+          "model": "gemini-3.8-flash-lite-tts",
+          "speaking_rate": "標準(6%減速未適用の生take)",
+          "canonical_text": "He remembered the hands held out for the chains. His friend trusted him without asking for another promise. Water came slowly through a crack in the rock. Melos drank, got onto his knees, and stood up. He managed one step, then took another. At the city gates, the bell rang for his friend's death. He raced to the square, where the sword was already raised above his friend.",
+          "primary_text_source": "attempt2 json asr_text (Production記録のOpenAI Primary転写)",
+          "label": "positive"
+        }
+      ]
+    },
+    "B": {
+      "purpose": "文脈別(委任_02で実走)。正例7+負例4、voice=Aoede/Charon、Aoedeは6%減速版も。B1は同一文を4take/voiceで取りtake差を測る。",
+      "reps": "1(Phase Aで条件内変動が観測された場合のみ2。上限2)",
+      "sentences_positive": [
+        {"id": "P1_nonsib", "text": "Melos drank deeply from the cold stream.", "purpose": "非歯擦音後続(失敗条件再現)", "takes_per_voice": 4},
+        {"id": "P2_sib", "text": "Melos said nothing to the guards.", "purpose": "歯擦音後続(音連結許容との比較)", "takes_per_voice": 1},
+        {"id": "P3_final", "text": "The man waiting at the gate was Melos.", "purpose": "文末(後続音なし)", "takes_per_voice": 1},
+        {"id": "P4_mid", "text": "Then Melos walked away.", "purpose": "文中", "takes_per_voice": 1},
+        {"id": "P5_repeat", "text": "Melos spoke, and Melos listened.", "purpose": "複数回出現", "takes_per_voice": 1},
+        {"id": "P6_long", "text": "The road to the city was long and the sun was already low when Melos reached the river. The bridge had been washed away, and the water ran brown and fast between the stones. He stood on the bank for a moment, thinking of his friend and of the promise he had made. Then Melos took a breath, stepped into the cold current, and began to swim toward the far side.", "purpose": "長文(50語以上、文中・複数出現)", "takes_per_voice": 1},
+        {"id": "P7_compete", "text": "Melos liked the mellow sound of the old bell.", "purpose": "一般語(mellow)との競合を含む正例", "takes_per_voice": 1}
+      ],
+      "sentences_negative": [
+        {"id": "N1_mellow", "text": "The mellow sound of the bell drifted across the square.", "must_not_be": "Melos", "takes_per_voice": 1},
+        {"id": "N2_mellows", "text": "The old wine mellows slowly in the cellar.", "must_not_be": "Melos", "takes_per_voice": 1},
+        {"id": "N3_mello", "text": "Her gray cat Mello slept by the window.", "must_not_be": "Melos", "takes_per_voice": 1},
+        {"id": "N4_milos", "text": "Milos drank slowly from the cup.", "must_not_be": "Melos", "takes_per_voice": 1}
+      ],
+      "voices": ["Aoede", "Charon"],
+      "speed_variants": {"Aoede": ["normal", "slow6pct"], "Charon": ["normal"]},
+      "tts": {"model": "gemini-3.8-flash-lite-tts", "TTS_EXECUTION_MODE": "STANDARD"}
+    },
+    "C": {
+      "purpose": "追加反復/追加サンプル。AおよびBの結果で差・揺れが出た条件に集中。事前ルールはTRIAL_DESIGN_01.md §2-C。",
+      "rule": "TRIAL_DESIGN_01.md §2-C参照"
+    }
+  }
+}
