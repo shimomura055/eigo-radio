@@ -390,3 +390,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-19 | FAMILY-Z-QUALITY-IMPROVEMENT-4-PRODUCTION-01 委任_09(run_e2e_04 Std part3_c1 HRページ公開+#116 USER_DECISION_REQUIRED記録、JPY0、Lock操作なし、Status=PHASE3_HR_LOCK_USER_DECISION_REQUIRED)。報告=docs/pm/RESULT_PACKET_FZQI9.md。
 - 2026-10-19 | FAMILY-X-B3-FACT-MIN2-PRODUCTION-01 委任_01(ユーザー指示原文保存+B3下限2件の現行経路調査・最小変更設計[案I/II/III、推奨案III]・Regression案・中東記事再生成計画・費用見積、Phase 1、JPY0、Status=B3MIN2_DESIGN_READY_PENDING_OPUS_A、初回報告未)。報告=docs/pm/RESULT_PACKET_XB3M1.md。
 - 2026-10-19 | PM-DEV-COST-APPROVAL-RULE-300-01 委任_01(開発費承認ルール改訂: 見積100円超→300円超で事前承認、PM_GOVERNANCE 7-7正本改訂+全文書/Agent整合+判定test、JPY0、Status=DOCS_ALIGNED_PENDING_FABLE、初回報告未)。報告=docs/pm/RESULT_PACKET_COST300_1.md。
+- 2026-10-19 | FAMILY-Z-QUALITY-IMPROVEMENT-4-PRODUCTION-01 委任_10(run_e2e_04 Std part3_c1 HR Lock原因分析、A/B=区別不能B寄り、LR発火条件乖離+OPEN-283検出・修正なし、HRページ更新、Lock維持、新規TTS 0、ASR再評価概算JPY2.75、Status=HR_LOCK_ROOT_CAUSE_ANALYZED_PENDING_FABLE、初回報告未)。報告=docs/pm/RESULT_PACKET_FZQI10.md。
