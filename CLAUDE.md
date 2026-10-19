@@ -81,7 +81,7 @@ AIは、単に指示された工程を順番に実行するのではなく、プ
 【安全・承認境界(省略不可)】
 ・Production採用(APPROVED_FOR_PRODUCTION)は人間ユーザーだけが承認する。VALIDATED・APPROVED_FOR_PRODUCTION・PRODUCTION_WIREDを混同せず、自動で格上げしない。
 ・未承認の新仕様は、DEV/Trial専用経路にのみ置く。Productionへは、ユーザーが承認した限定例外(新コード経路+単一flag読取関数・既定OFF・起動script/.envでON禁止・DefaultOffIsolation test PASS・既存Prompt/正規表現/閾値の直接編集には不適用・OPEN_ITEMSへ「承認前・既定OFF」を記録しPRODUCTION_WIREDと呼ばない)に限る。隔離が破られ承認前に発火・有効配線されたら、安全停止・事実報告し、本例外を廃止してOffline Trial→VALIDATED→ユーザー正式採用→Production実装へ切替える(隠蔽・再修正での継続、再合意なしの復活は不可)。詳細は`.claude/agents/sonnet-worker.md`・11-7。
-・STOP通知(STOP_NOTICE/STOP/STOP_ALL)、予算上限(日次1,000円は超過見込み時の事前承認、7-9)、ユーザーの明示指示、既存のretry/fallback/Gateを迂回しない。解除は人間(またはFableの明示権限内)のみ。
+・STOP通知(STOP_NOTICE/STOP/STOP_ALL)、予算上限(日次1,000円は超過見込み時の事前承認、7-9。案件見積300円超は事前費用承認・承認済みScope内の300円以下はAI自律、新仕様/未承認Trial範囲/重要Scope変更は金額無関係に承認、7-7)、ユーザーの明示指示、既存のretry/fallback/Gateを迂回しない。解除は人間(またはFableの明示権限内)のみ。
 
 【禁止】(1)無言承認(「異議なければ承認」で進めること。承認は明示のみ)と、承認範囲を要約で広げること (2)未承認仕様をProductionの既定動作にすること (3)STOP・Gate・予算上限を、名前や方法を変えて回避すること。
 

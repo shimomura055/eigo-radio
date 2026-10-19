@@ -208,6 +208,12 @@ Production実装の設計優先順位は別の話)。
 理由に自動STOPしない(継続条件・STOP条件・優先順位は
 `docs/pm/PM_GOVERNANCE.md` 7-6、`PM-BUDGET-CAP-GUARDRAIL-POLICY-01`)。
 
+開発費の承認(2026-10-19ユーザー正式決定、正本`docs/pm/PM_GOVERNANCE.md` 7-7、
+日次は7-9): 承認済みScope内・案件見積300円以下=AI/Fable自律(個別費用承認不要)、
+案件見積300円超=事前費用承認、日次累計1,000円超過見込み=事前予算承認、
+既存の個別Cap超過・新仕様/未承認Trial範囲/重要Scope変更=金額無関係に承認。
+分割・日付分割による境界回避は禁止(合算判定)。旧100円基準は廃止。
+
 ## 委任文標準(D-2、2026-09-13ユーザー正式採用・PRODUCTION_WIRED)
 
 Fableは全委任文を`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`に

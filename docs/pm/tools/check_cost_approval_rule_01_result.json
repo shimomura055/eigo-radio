@@ -1,0 +1,164 @@
+{
+ "all_ok": true,
+ "n": 22,
+ "thresholds": {
+  "case_yen": 300,
+  "daily_yen": 1000
+ },
+ "results": [
+  {
+   "case": "(a) Scope内20円・日次残あり",
+   "got": "AUTONOMOUS",
+   "want": "AUTONOMOUS",
+   "ok": true,
+   "reason": "承認済みScope内・案件見積300円以下・日次内"
+  },
+  {
+   "case": "(b) Scope内50円",
+   "got": "AUTONOMOUS",
+   "want": "AUTONOMOUS",
+   "ok": true,
+   "reason": "承認済みScope内・案件見積300円以下・日次内"
+  },
+  {
+   "case": "(c) 300円ちょうど",
+   "got": "AUTONOMOUS",
+   "want": "AUTONOMOUS",
+   "ok": true,
+   "reason": "承認済みScope内・案件見積300円以下・日次内"
+  },
+  {
+   "case": "(d) 301円",
+   "got": "USER_COST_APPROVAL",
+   "want": "USER_COST_APPROVAL",
+   "ok": true,
+   "reason": "案件合算見積が300円超"
+  },
+  {
+   "case": "(e) 120円だが日次累計1,000円超過見込み",
+   "got": "USER_BUDGET_APPROVAL",
+   "want": "USER_BUDGET_APPROVAL",
+   "ok": true,
+   "reason": "日次累計が1000円超過見込み"
+  },
+  {
+   "case": "(f) 80円だが個別Cap超過",
+   "got": "USER_APPROVAL_CAP",
+   "want": "USER_APPROVAL_CAP",
+   "ok": true,
+   "reason": "個別Cap超過(300円以下でも承認)"
+  },
+  {
+   "case": "(g) 40円だが未承認新仕様",
+   "got": "USER_APPROVAL_SCOPE",
+   "want": "USER_APPROVAL_SCOPE",
+   "ok": true,
+   "reason": "新仕様/未承認Trial範囲/Scope変更は金額無関係"
+  },
+  {
+   "case": "(g2) 40円だが未承認Trial範囲(Scope外)",
+   "got": "USER_APPROVAL_SCOPE",
+   "want": "USER_APPROVAL_SCOPE",
+   "ok": true,
+   "reason": "新仕様/未承認Trial範囲/Scope変更は金額無関係"
+  },
+  {
+   "case": "(h) 600円を200円x3分割(3つ目の判定=合算)",
+   "got": "USER_COST_APPROVAL",
+   "want": "USER_COST_APPROVAL",
+   "ok": true,
+   "reason": "案件合算見積が300円超"
+  },
+  {
+   "case": "(i) 日付をまたぐ分割(前日200+前日200+当日200)",
+   "got": "USER_COST_APPROVAL",
+   "want": "USER_COST_APPROVAL",
+   "ok": true,
+   "reason": "案件合算見積が300円超"
+  },
+  {
+   "case": "(j) 日次ちょうど1,000円は超過でない",
+   "got": "AUTONOMOUS",
+   "want": "AUTONOMOUS",
+   "ok": true,
+   "reason": "承認済みScope内・案件見積300円以下・日次内"
+  },
+  {
+   "case": "doc: 閾値 300/1000 を7-7表から取得",
+   "got": "OK",
+   "want": "OK",
+   "ok": true,
+   "reason": ""
+  },
+  {
+   "case": "doc: 7-7に『分割』",
+   "got": "OK",
+   "want": "OK",
+   "ok": true,
+   "reason": ""
+  },
+  {
+   "case": "doc: 7-7に『日付を分割』",
+   "got": "OK",
+   "want": "OK",
+   "ok": true,
+   "reason": ""
+  },
+  {
+   "case": "doc: 7-7に『既存Capを超える場合は、300円以下でも承認が必要』",
+   "got": "OK",
+   "want": "OK",
+   "ok": true,
+   "reason": ""
+  },
+  {
+   "case": "doc: 7-7に『金額に関係なく』",
+   "got": "OK",
+   "want": "OK",
+   "ok": true,
+   "reason": ""
+  },
+  {
+   "case": "doc: 7-7に『超過前に承認』",
+   "got": "OK",
+   "want": "OK",
+   "ok": true,
+   "reason": ""
+  },
+  {
+   "case": "doc: 7-7に『自律的に実行する』",
+   "got": "OK",
+   "want": "OK",
+   "ok": true,
+   "reason": ""
+  },
+  {
+   "case": "doc: 7-7本文(改定履歴行除く)に旧100円基準なし",
+   "got": "OK",
+   "want": "OK",
+   "ok": true,
+   "reason": ""
+  },
+  {
+   "case": "doc: CLAUDE.md安全・承認境界に300円/7-7参照",
+   "got": "OK",
+   "want": "OK",
+   "ok": true,
+   "reason": ""
+  },
+  {
+   "case": "doc: 7-9承認要否が300円基準",
+   "got": "OK",
+   "want": "OK",
+   "ok": true,
+   "reason": ""
+  },
+  {
+   "case": "doc: 29節にC-13実質変更行",
+   "got": "OK",
+   "want": "OK",
+   "ok": true,
+   "reason": ""
+  }
+ ]
+}
