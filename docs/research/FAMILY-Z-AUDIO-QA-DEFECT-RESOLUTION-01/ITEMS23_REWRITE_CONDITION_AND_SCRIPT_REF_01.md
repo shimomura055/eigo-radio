@@ -105,3 +105,10 @@ Opus_H逐語=`OPUS_REVIEW_H_01_VERBATIM.md`(16,696文字、sha256 `2e06aeea2dac6
 **`_M1_FROZEN_CACHE`はプロセス内で保持され(`_reset_m1_freeze_cache()`でのみ消去)、別segment・別runでも同一文なら古い凍結を使い回す(結果はより厳しい側に倒れるだけで無害、Opus_H論点2 任意改善)**。
 **未実装のまま残す事実(新仕様なので実装しない)**: entity保全Gate(固有名詞→代名詞の書換えはLLM Gate[文脈なし]のみで採用、事後試聴で確認=Opus_H論点5)。rollback時の早期LR(上記)。①(P1)はユーザー判断待ちのため未実装。
 
+### §10-1 条件5: commit後の全体suite再実行(委任_03、`834b93a6d`+`75bb156c6`後)
+同じper-fileランナー(`er058_output/unified_all_roles_production_wiring_01/patch_03b/run_tests_per_file.py`、`W=4 .venv/Scripts/python.exe <runner> <out.json> ""`、`*test*.py` 全件)。結果: files=351 passed=8595 failed+error=153。
+- **fail集合(テストID単位)はbaseline(委任_02前、files=347 passed=8539、148 id)と完全一致(新規fail 0・消滅は下記2件のみ)**。委任_02後(150 id)との差=未commit差分検出guard2件(`er019_family_x_pointless_01_test_01.py::FamilyAUnchangedTest::test_family_a_files_have_no_working_tree_diff`・`er064_kp_int_01_test_01.py::ProductionUnchanged::test_no_tracked_py_or_template_modified`)がcommit後に解消(予告どおり)。差0を確認。
+- passed増分の内訳: 本修正の新規test 11(`er020_lr_post_rewrite_m1_anchor_fzaq3_test_01.py`)+並行agent(B3 Trial、`er083_*`)の新規27 (18+9)+guard解消2 = 8555→8595。
+- 関連suite(ファイル名が`er020|local_rewrite|er003_v1_n3|crosslevel|er063|slowdown|secondary_asr|m1_multi|human_review`に一致するファイル、per-file): 438 passed / 3 failed。3件(`er007_ja_secondary_asr_01_test.py::test_koro_kanji_variant_confirmed_by_reading_candidates`・`::test_single_engine_repetition_does_not_confirm_orthographic_variant`、`er020_tts_retry_local_rewrite_fullseg_test_01.py::RegressionCorpusTest::test_recorded_candidates`)はbaseline(委任_02前)から存在する既知failで本修正と無関係(fail集合の一致で確認)。委任文のルート全体`pytest -k`はルート配下の`*_output`内スクリプト(`sys.exit`をモジュール直下で呼ぶもの、`er052_output/...`・`er064_kp_opt_01_fix_test_02.py`)でcollectionがINTERNALERRORになるため、実測にはper-fileランナーを使った。
+- 注: 自分のcommitは並行agentのcommit(`834b93a6d`、B3 Trial SSOT)の実行と同時刻に重なり、私がstage済みだった16ファイルがその1commitに収録された(commit messageは並行agent側の文面)。内容は欠落なく履歴に入っている。
+
