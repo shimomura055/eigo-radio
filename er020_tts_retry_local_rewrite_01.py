@@ -717,6 +717,12 @@ def run_local_rewrite_recovery(*, segment_id: str, canonical_text: str, last_asr
     持つTTS+ASR生成ロジック(その関数自身の`.__wrapped__`をmax_attempts=1
     で呼ぶ、というProduction既存の設計パターン)をそのまま使う想定。
 
+    発動条件(2026-10-19ユーザー決定[FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01、APPROVED_FOR_PRODUCTION]): 基本フロー=TTS初回
+    -> Primary/Secondaryの承認済み検証 -> NGなら最大2回のTTS再生成 -> なおNGならRewrite。本関数は『呼出元が通算TTS試行を使い切って
+    なお不合格』のときだけ呼ばれる(呼出元=voice01/news_tail_fix/crosslevelの各`_local_rewrite_recovery_for_*`)。旧設計の発火条件
+    『両エンジン合意誤読のみ』(DESIGN_01 §4-7⑤)はユーザー決定で削除済みで、本関数内にも呼出元にも存在しない(実装されたことはない)。
+    Rewrite後の音声検査が照合する正解原稿は`resolve_expected_text_after_local_rewrite`が決める(書換え後の実送信文)。
+
     戻り値のstatus:
       RESOLVED_BY_LOCAL_REWRITE  -> retts_fnがstatus=="OK"を返した
       HUMAN_REVIEW_LOCKED_NO_CANDIDATE_PASSED_QA -> 7 Gate全PASSの候補なし
@@ -773,6 +779,28 @@ def run_local_rewrite_recovery(*, segment_id: str, canonical_text: str, last_asr
     _write_recovery_artifacts(result, out_dir)
     _append_recovery_history(result, out_dir)
     return result
+
+
+def resolve_expected_text_after_local_rewrite(result: dict | None, canonical_text: str) -> tuple[str, str]:
+    """FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01 委任_02(不具合③、OPEN-283修正、2026-10-19)。
+    **Local Rewrite(LR)後の音声検査が照合すべき『正解原稿』を決める唯一の参照点。**
+
+    LRが正式に採用された結果(`local_rewrite_recovery.status == RESOLVED_BY_LOCAL_REWRITE`)は、音声が**書換え後の文**で
+    生成されている。後続の音声検査(A2 6%減速後の再検証=`apply_a2_slowdown_postprocess`、その内のLedger PhraseList導出等)は、
+    書換え前の`tts_input`ではなく、**再TTSに実際に送った文**を期待テキストとして使う。戻り値=(期待テキスト, 出典)。
+    出典: `local_rewrite_text`(LR採用済み。送信文を優先順で取得: `selection.selected.rewritten_segment` ->
+    `retts_result.text` -> `result["text"]`) / `canonical_text`(LRなし、またはLR未採用=従来どおり)。
+    注意: Human Review Lockのkey(`record_outcome`のtext sha)とHR承認記録の同一性は**元の原稿のまま**維持する(本関数の対象外)。
+    副作用なし・API 0(純関数)。LR記録の形は`run_local_rewrite_recovery`の戻り値(voice01/news_tail_fix/crosslevelが
+    `resolved["local_rewrite_recovery"]`へそのまま保持する)に従う。"""
+    rec = (result or {}).get("local_rewrite_recovery") if isinstance(result, dict) else None
+    if not isinstance(rec, dict) or rec.get("status") != "RESOLVED_BY_LOCAL_REWRITE":
+        return canonical_text, "canonical_text"
+    selected = ((rec.get("selection") or {}).get("selected") or {})
+    for sent in (selected.get("rewritten_segment"), (rec.get("retts_result") or {}).get("text"), result.get("text")):
+        if isinstance(sent, str) and sent.strip():
+            return sent, "local_rewrite_text"
+    return canonical_text, "canonical_text"
 
 
 def _write_recovery_artifacts(result: dict, out_dir: str | None) -> None:

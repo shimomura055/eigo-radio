@@ -199,6 +199,13 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
     import shutil
     shutil.copyfile(out_path, original_path)
 
+    # FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01 委任_02(不具合③、OPEN-283修正、2026-10-19): Local Rewrite(LR)が正式に採用された
+    # 結果は『書換え後の文』で生成された音声である。減速後再検証の正解原稿は、呼出元の`tts_input_text`(書換え前)ではなく
+    # 再TTSに実際に送った文にする(単一参照点=retry_primitive.resolve_expected_text_after_local_rewrite)。LRなし/未採用は従来どおり。
+    # Lock key(finalize_a2_slowdown_final_ng/record_outcome)は元の原稿のまま(下記)。
+    tts_input_text, _expected_source = retry_primitive.resolve_expected_text_after_local_rewrite(result, tts_input_text)
+    result["post_slowdown_expected_text_source"] = _expected_source
+
     stretch_info = a2_slowdown.apply_a2_slowdown(original_path, out_path)
 
     asr_text, err = routing.transcribe(out_path, language="en-US")

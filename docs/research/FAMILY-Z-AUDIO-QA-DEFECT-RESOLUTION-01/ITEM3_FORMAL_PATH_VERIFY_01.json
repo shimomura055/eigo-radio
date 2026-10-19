@@ -1,0 +1,81 @@
+{
+  "management_id": "FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01 委任_02",
+  "clip": "full_story_part3_c1",
+  "canonical_text": "He remembered the hands held out for the chains. His friend trusted him without asking for another promise. Water came slowly through a crack in the rock. Melos drank, got onto his knees, and stood up. He managed one step, then took another. At the city gates, the bell rang for his friend's death. He raced to the square, where the sword was already raised above his friend.",
+  "rewritten_text_actually_sent": "He remembered the hands held out for the chains. His friend trusted him without asking for another promise. Water came slowly through a crack in the rock. He drank, got onto his knees, and stood up. He managed one step, then took another. At the city gates, the bell rang for his friend's death. He raced to the square, where the sword was already raised above his friend.",
+  "cached_transcript_source": "er011_output/attempt_history.jsonl A2_SLOWDOWN_REVERIFY(行15175相当)",
+  "cases": [
+    {
+      "label": "fixed_formal_path",
+      "status": "OK",
+      "asr_verified": true,
+      "post_slowdown_classification": "NORMALIZED_MATCH",
+      "post_slowdown_final_classification": "NORMALIZED_MATCH",
+      "post_slowdown_expected_text_source": "local_rewrite_text",
+      "expected_text_passed_to_judge": "He remembered the hands held out for the chains. His friend trusted him without asking for another promise. Water came slowly through a crack in the rock. He drank, got onto his knees, and stood up. He managed one step, then took another. At the city gates, the bell rang for his friend's death. He raced to the square, where the sword was already raised above his friend.",
+      "post_slowdown_asr_text": "He remembered the hands held out for the chains. His friend trusted him, without asking for another promise. Water came slowly through a crack in the rock. He drank, got onto his knees, and stood up. He managed one step, then took another. At the city gates, the bell rang for his friend's death. He raced to the square where the sword was already raised above his friend.",
+      "slowed_wav_sha256": "713252709b972870eb53f9a653b2b89168bc8d71af74e9d84d7f0d46b1f85932",
+      "slowed_sha_equals_run04_wav": true,
+      "slowdown_info": {
+        "slowdown_pct_target": 6.0,
+        "slowdown_pct_actual": 5.933,
+        "src_duration_seconds": 23.12,
+        "dst_duration_seconds": 24.492,
+        "src_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_04_verify_fzaq2/fixed_formal_path/a2/narration/full_story_part3_c1_original.wav",
+        "dst_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_04_verify_fzaq2/fixed_formal_path/a2/narration/full_story_part3_c1.wav"
+      },
+      "api": {
+        "openai_asr_calls": 0,
+        "cached_transcript_used": true,
+        "azure_calls": 0
+      },
+      "asr_judgement_state": "PASS",
+      "reason": null
+    },
+    {
+      "label": "pre_fix_equivalent_canonical_reference",
+      "status": "STOPPED",
+      "asr_verified": false,
+      "post_slowdown_classification": "ASR_VALIDATION_UNCERTAIN",
+      "post_slowdown_final_classification": "ASR_VALIDATION_UNCERTAIN",
+      "post_slowdown_expected_text_source": "canonical_text",
+      "expected_text_passed_to_judge": "He remembered the hands held out for the chains. His friend trusted him without asking for another promise. Water came slowly through a crack in the rock. Melos drank, got onto his knees, and stood up. He managed one step, then took another. At the city gates, the bell rang for his friend's death. He raced to the square, where the sword was already raised above his friend.",
+      "post_slowdown_asr_text": "He remembered the hands held out for the chains. His friend trusted him, without asking for another promise. Water came slowly through a crack in the rock. He drank, got onto his knees, and stood up. He managed one step, then took another. At the city gates, the bell rang for his friend's death. He raced to the square where the sword was already raised above his friend.",
+      "slowed_wav_sha256": "713252709b972870eb53f9a653b2b89168bc8d71af74e9d84d7f0d46b1f85932",
+      "slowed_sha_equals_run04_wav": true,
+      "slowdown_info": {
+        "slowdown_pct_target": 6.0,
+        "slowdown_pct_actual": 5.933,
+        "src_duration_seconds": 23.12,
+        "dst_duration_seconds": 24.492,
+        "src_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_04_verify_fzaq2/pre_fix_equivalent_canonical_reference/a2/narration/full_story_part3_c1_original.wav",
+        "dst_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_04_verify_fzaq2/pre_fix_equivalent_canonical_reference/a2/narration/full_story_part3_c1.wav"
+      },
+      "api": {
+        "openai_asr_calls": 0,
+        "cached_transcript_used": true,
+        "azure_calls": 2
+      },
+      "asr_judgement_state": null,
+      "reason": "post-process(6%減速)後の音声がASR再検証で不一致: classification=ASR_VALIDATION_UNCERTAIN"
+    }
+  ],
+  "verdict": {
+    "fixed_passes_against_rewritten_text": true,
+    "pre_fix_equivalent_fails_against_canonical": true,
+    "run04_source_files_unchanged": true
+  },
+  "source_sha256_before": {
+    "er026_output/family_z_production_e2e_01/melos/run_e2e_04\\a2\\narration\\full_story_part3_c1_original.wav": "40c6907e0c20eadc16c5aa74b60187242690fa6e8d5c59f0004146315a7628ec",
+    "er026_output/family_z_production_e2e_01/melos/run_e2e_04\\a2\\narration\\full_story_part3_c1.wav": "713252709b972870eb53f9a653b2b89168bc8d71af74e9d84d7f0d46b1f85932",
+    "er026_output/family_z_production_e2e_01/melos/run_e2e_04\\a2\\audit\\review_lock_state.json": "6720ce80b7eedba9789dc190a431b030e20486b298a451479129e4d017fb3e19"
+  },
+  "source_sha256_after": {
+    "er026_output/family_z_production_e2e_01/melos/run_e2e_04\\a2\\narration\\full_story_part3_c1_original.wav": "40c6907e0c20eadc16c5aa74b60187242690fa6e8d5c59f0004146315a7628ec",
+    "er026_output/family_z_production_e2e_01/melos/run_e2e_04\\a2\\narration\\full_story_part3_c1.wav": "713252709b972870eb53f9a653b2b89168bc8d71af74e9d84d7f0d46b1f85932",
+    "er026_output/family_z_production_e2e_01/melos/run_e2e_04\\a2\\audit\\review_lock_state.json": "6720ce80b7eedba9789dc190a431b030e20486b298a451479129e4d017fb3e19"
+  },
+  "hr_lock_untouched": true,
+  "new_tts_calls": 0,
+  "cost_note": "OpenAI ASR呼出数は cases[*].api.openai_asr_calls を参照(0ならAPI費用0)。Azure呼出は遮断(0)。"
+}

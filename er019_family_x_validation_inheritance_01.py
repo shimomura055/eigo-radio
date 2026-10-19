@@ -246,6 +246,12 @@ def rejudge_with_current_judge(entry: dict, level: str, label: str, force_lang: 
     ja = (force_lang == "ja") if force_lang in ("ja", "en") else is_japanese_label(level, label)
     asr_text = entry.get("asr_text")
     base_text = entry.get("text") or entry.get("canonical_text")
+    if base_text:
+        # FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01 委任_02(不具合③、OPEN-283修正): Local Rewrite(LR)採用済みentryの保存転写は
+        # 書換え後の文で生成された音声の転写。再利用/継承の再判定も、書換え前の原稿ではなく書換え後の実送信文と照合する
+        # (単一参照点=er020.resolve_expected_text_after_local_rewrite。LR記録の無いentryは従来どおり)。
+        import er020_tts_retry_local_rewrite_01 as _lr
+        base_text, _ = _lr.resolve_expected_text_after_local_rewrite(entry, base_text)
     aj, adopted = _j11_adopted_judgement(entry)
     if not asr_text or not base_text:
         return {"applicable": True, "ok": False, "reason": "NO_ASR_TEXT_OR_TEXT", "secondary_new_calls": 0}
