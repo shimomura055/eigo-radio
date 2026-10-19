@@ -655,11 +655,15 @@ def is_english_text(text: str) -> bool:
     return bool(chars) and sum(c.isascii() for c in chars) / len(chars) > 0.9
 
 
-def lint_support_text(text: str, lang: str, story_key: str = "melos") -> list:
+def lint_support_text(text: str, lang: str, story_key: str = "melos", *,
+                      allow_listen_instruction_as_warn: bool = False, warn_out: list = None) -> list:
     """Preview/Comment出力の決定論lint。違反コードのlist(空=OK)。
     lang='ja'(Std)は聴取指示(Family C banned phrases + 聞いてみ等)も検査。
     lang='en'(Adv)はX B1のListening Focus役割が注目点を示す設計のため聴取指示は検査しない
-    (news/In One Line/Point/構造ラベル/ネタバレ/名前/言語のみ)。"""
+    (news/In One Line/Point/構造ラベル/ネタバレ/名前/言語のみ)。
+    allow_listen_instruction_as_warn(既定False=従来どおりblocking。FZQI委任_06/Opus_E R-E4 L-1): Z Stdの呼出側が
+    明示したときのみ、lang='ja'のLISTEN_INSTRUCTIONをblockingにせずwarn_out(list)へ"LISTEN_INSTRUCTION"を追記する。
+    他の違反コード(NEWS/IOL/Point/構造ラベル/ネタバレ/禁止名/言語)は常にblocking。"""
     if lang not in ("ja", "en"):
         raise ValueError(lang)
     v = []
@@ -675,7 +679,11 @@ def lint_support_text(text: str, lang: str, story_key: str = "melos") -> list:
             v.append(code)
     if lang == "ja":
         if fam_c.FAMILY_C_A2_COMMENT_BANNED_PATTERNS_RE.search(t) or _LINT_LISTEN_JA.search(t):
-            v.append("LISTEN_INSTRUCTION")
+            if allow_listen_instruction_as_warn:
+                if warn_out is not None:
+                    warn_out.append("LISTEN_INSTRUCTION")
+            else:
+                v.append("LISTEN_INSTRUCTION")
     cfg = STORY_LINT_CONFIG.get(story_key, {})
     low = t.lower()
     for nm in cfg.get("forbidden_names", []):

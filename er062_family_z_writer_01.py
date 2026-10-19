@@ -843,52 +843,116 @@ def _support_text(fn, client, role, context, model):
     return r["text"]
 
 
+# ------------------------------------------------------------
+# Std Preview/Comment = Advanced方式の日本語適用(FZQI委任_06、ユーザー2026-10-19 ②、Opus_E P-A)
+# ------------------------------------------------------------
+STD_SUPPORT_METHOD_VERSION = "adv_method_ja_v1"   # 方式版の識別子(flagではない)。Std support stageのsha/priorに混ぜる
+
+_OVERLAP_KATAKANA_RE = re.compile(r"[ァ-ヶー]{3,}")
+_OVERLAP_JA_RUN_RE = re.compile(r"[぀-ゟ一-鿿]+")
+# 頻出語(4-gram一致のノイズ源)。固有名(カタカナ3字以上)と併せて除外する。参考値であり判定には使わない。
+_OVERLAP_STOP_FRAGMENTS = ("について", "ことが", "ということ", "しています", "ましょう", "これから", "ください",
+                           "聞いて", "聞く", "ところ", "ですか", "でしょう", "のでしょう", "してい", "ありま")
+
+
+def support_stage_input_sha(level: str, text: str, plan_sha: str) -> str:
+    """support stage(Z E2E runner `stage_support`/er062 CLI共通)の入力sha。
+    Adv(b1b)は従来式 sha(text+plan_sha) のまま不変。Std(a2)は方式版を混ぜ、旧方式(Family C型)のcacheが
+    reusedで通って新方式が発火しない事故を防ぐ(旧cacheはFamilyZProvenanceMismatchStop=明示regenerate要求)。"""
+    base = text + plan_sha
+    if level == "a2":
+        base += "|" + STD_SUPPORT_METHOD_VERSION
+    return sha(base)
+
+
+def _ja_4grams(text: str) -> set:
+    t = _OVERLAP_KATAKANA_RE.sub(" ", text or "")          # カタカナ固有名(メロス等)を除外
+    for frag in _OVERLAP_STOP_FRAGMENTS:
+        t = t.replace(frag, " ")
+    grams = set()
+    for run in _OVERLAP_JA_RUN_RE.findall(t):
+        for i in range(len(run) - 3):
+            grams.add(run[i:i + 4])
+    return grams
+
+
+def compute_support_overlap_notes(texts: dict, story_key: str = "melos") -> dict:
+    """Preview/Comment間の重複・先取りの参考記録(WARN記録のみ。Gate化しない・raiseしない・retryしない)。
+    (a) 日本語4-gram相互一致(固有名[カタカナ3字以上]・頻出語を除外した参考値)
+    (b) 結末語: 既存spoiler_ja辞書の出現とカタカナ固有名の一覧(英日跨ぎのPart3固有語checkは行わない=Opus_E F3-1)。"""
+    keys = [k for k in ("preview", "comment_1", "comment_2", "comment_3") if k in texts]
+    grams = {k: _ja_4grams(texts[k]) for k in keys}
+    pairs = {}
+    for i, a in enumerate(keys):
+        for b in keys[i + 1:]:
+            common = sorted(grams[a] & grams[b])
+            if common:
+                pairs[f"{a}x{b}"] = {"count": len(common), "samples": common[:5]}
+    cfg = st.STORY_LINT_CONFIG.get(story_key, {})
+    spoiler = {k: [t for t in cfg.get("spoiler_ja", []) if t in texts[k]] for k in keys}
+    return {
+        "note": "参考値(固有名・頻出語を除外した日本語4-gram一致)。Gateではなく、判定は人手試聴/Fableが行う",
+        "ngram4_overlap": pairs,
+        "spoiler_ja_terms": {k: v for k, v in spoiler.items() if v},
+        "katakana_names": {k: sorted(set(_OVERLAP_KATAKANA_RE.findall(texts[k]))) for k in keys
+                           if _OVERLAP_KATAKANA_RE.search(texts[k])},
+    }
+
+
 def run_support_std(client, parts: dict, full_text: str, *, ja_support_fn=None, story_key="melos", prior: dict = None) -> dict:
-    """Std: JA Preview + JA Comment1〜3(実LLM呼出。E2Eで実施。本委任ではmockのみ)。
-    Comment n は「これから聞くPart n」に実在する事実のみ(content_facts)。lint NG -> retry1 -> STOP。"""
+    """Std: JA Preview + JA Comment1〜3。Advanced方式(run_support_adv)の日本語適用(ユーザー2026-10-19 ②、Opus_E P-A)。
+    入力構成・生成順序はrun_support_advと同形。役割文はX Standardの既存a2gen.COMMENT_1_ROLE/COMMENT_2_ROLE/PREVIEW_ROLE
+    を無改変で再利用(Comment2とComment3は同じCOMMENT_2_ROLE。新Prompt文は作らない)。Std固有=日本語出力と
+    a2gen.build_support_promptが付けるSUPPORT_JA_PRINCIPLE(平易さ)。fam_c経路・旧scene_transition文は使わない。
+    lint: LISTEN_INSTRUCTIONのみblocking->WARN(support.jsonのlint_warnへ記録。Adv lintと同一思想)、他はblocking(retry1->STOP)。
+    prior(明示再生成時のComment1/2/Preview再利用)はmethodがSTD_SUPPORT_METHOD_VERSIONと一致するときのみ有効。"""
     import er003_v1_iran01_a2_generate as a2gen
-    import er013_family_c_production_01 as fam_c
     fn = ja_support_fn or a2gen.run_support_text
     model = routing.require_model("A2_SUPPORT", routing.SUPPORT_MODEL)
-    lint = lambda t: st.lint_support_text(t, "ja", story_key)  # noqa: E731
-    out = {"comments": {}, "attempts": {}}
-    transitions = {1: "", 2: "ここまでの場面を聞き終えたところで、物語の続きに入ります。",
-                   3: "さらに物語が進み、次の場面に入ります。"}
+    if prior is not None and prior.get("method") != STD_SUPPORT_METHOD_VERSION:
+        prior = None                   # 旧方式の出力は再利用しない(全4生成)
+    lint = lambda t: st.lint_support_text(t, "ja", story_key, allow_listen_instruction_as_warn=True)  # noqa: E731
+    out = {"method": STD_SUPPORT_METHOD_VERSION, "comments": {}, "attempts": {}}
+    ctxs = {
+        1: f"【本文(これから聞く部分)】\n{parts[1]}\n\n{NOT_NEWS_NOTE}",
+        2: f"【すでに聞いた本文(前半)】\n{parts[1]}\n\n【これから聞く本文(後半)】\n{parts[2]}\n\n{NOT_NEWS_NOTE}",
+        3: f"【すでに聞いた本文(前半)】\n{parts[1]}\n\n{parts[2]}\n\n【これから聞く本文(後半)】\n{limit_comment3_part(parts[3])}\n\n{NOT_NEWS_NOTE}",
+    }
+    roles = {1: a2gen.COMMENT_1_ROLE, 2: a2gen.COMMENT_2_ROLE, 3: a2gen.COMMENT_2_ROLE}
     for n in (1, 2, 3):
         if prior and n in (1, 2):      # 再生成時はComment1/2を再利用(Comment3のみ再生成)
             out["comments"][str(n)] = prior["comments"][str(n)]
             out["attempts"][f"comment_{n}"] = prior["attempts"][f"comment_{n}"]
             continue
-        content_facts = ("これから聞く英文(下の【これから聞く部分】)に実際に書かれている事実のみ。場所・状況、人物関係、"
-                         "場面の変化、次の行動、選択や対立点のうち必要なもの。【これから聞く部分】に書かれていない事実・"
-                         "人物・結末は使わない。")
-        listen = limit_comment3_part(parts[n]) if n == 3 else parts[n]    # Comment3はPart3前半のみ
-        art = f"【これから聞く部分】\n{listen}"
-        if n > 1:
-            art += f"\n\n【すでに聞いた部分(流れの参考のみ。ここの事実を再説明しない)】\n{parts[n - 1]}"
 
-        def gen(i, n=n, art=art, content_facts=content_facts):
-            res = fam_c.generate_family_c_a2_comment(
-                client, n, art, content_facts, scene_transition=transitions[n],
-                label_prefix=f"family_z_std_comment_try{i + 1}", model=model, run_support_text_fn=fn)
-            return res["text"]
-
+        def gen(i, n=n):
+            return _support_text(fn, client, roles[n], ctxs[n], model)
         text, att = generate_with_lint(gen, lint)
         out["comments"][str(n)] = text
         out["attempts"][f"comment_{n}"] = att
-    import er026_family_z_fiction_production_runner_01 as er026   # Z既存Previewのrole(lazy: 循環import回避)
-    role = er026.build_family_z_preview_prompt() + (
-        f"\n\n【重複回避】直前に流れるComment 1は次の通りです。これと内容が重複しないようにしてください。\n{out['comments']['1']}")
-    ctx = f"【物語全文(参考、新しい設定・事実の追加禁止)】\n{full_text}"
-
-    def gen_p(i):
-        return _support_text(fn, client, role, ctx, model)
-
     if prior and prior.get("preview"):
         out["preview"], out["attempts"]["preview"] = prior["preview"], prior["attempts"]["preview"]
-        return out
-    text, att = generate_with_lint(gen_p, lint)
-    out["preview"], out["attempts"]["preview"] = text, att
+    else:
+        prole = a2gen.PREVIEW_ROLE.format(comment_1=out["comments"]["1"], comment_2=out["comments"]["2"])
+
+        def gen_p(i):
+            return _support_text(fn, client, prole, f"【本文】\n{full_text}\n\n{NOT_NEWS_NOTE}", model)
+
+        text, att = generate_with_lint(gen_p, lint)
+        out["preview"], out["attempts"]["preview"] = text, att
+    # WARN記録(Gate化しない): 最終採用文のlint WARN + 重複・先取りの参考値
+    final = {"preview": out["preview"], "comment_1": out["comments"]["1"],
+             "comment_2": out["comments"]["2"], "comment_3": out["comments"]["3"]}
+    lint_warn = {}
+    for k, t in final.items():
+        w = []
+        st.lint_support_text(t, "ja", story_key, allow_listen_instruction_as_warn=True, warn_out=w)
+        if w:
+            lint_warn[k] = w
+    out["lint_warn"] = lint_warn
+    out["overlap_notes"] = compute_support_overlap_notes(final, story_key)
+    if lint_warn or out["overlap_notes"]["ngram4_overlap"]:
+        print(f"[WARN][support_std] lint_warn={lint_warn} ngram4_overlap={out['overlap_notes']['ngram4_overlap']}", file=sys.stderr)
     return out
 
 
@@ -1279,7 +1343,8 @@ def main(argv=None):
                         def runner(lv=lv, pt=pt, text=text):
                             fn = run_support_std if lv == "a2" else run_support_adv
                             return st.dumps(fn(client, pt, text)), {}
-                        r = ensure_stage(prov, f"support_{lv}", sha(text + file_sha(f"{out_dir}/segment_plan_{lv}.json")),
+                        r = ensure_stage(prov, f"support_{lv}",
+                                         support_stage_input_sha(lv, text, file_sha(f"{out_dir}/segment_plan_{lv}.json")),
                                          f"{out_dir}/support/{lv}_support.json", runner,
                                          regenerate=a.regenerate_stage == f"support_{lv}")
                     print(lv, r["status"])

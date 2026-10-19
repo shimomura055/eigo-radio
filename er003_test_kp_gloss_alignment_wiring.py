@@ -116,7 +116,12 @@ class ExplanationSignatureZ(unittest.TestCase):
             installed = json.load(open(f"{ctx.out_dir}/b1b/key_phrases/keywords_canonicalized.json", encoding="utf-8"))
             items = sorted(installed["items"], key=lambda i: i["rank"])
             self.assertFalse(any(i.get("gloss_alignment_status") for i in items))
-            expected = r._sha(json.dumps([i["display_phrase"] for i in items], ensure_ascii=False))
+            payload = [i["display_phrase"] for i in items]
+            if any(i.get("source_reference_contract") for i in items):
+                # 委任_16(SRC D1): source_reference_contractを持つitemがあれば解説sigにsrc(source_sentence_id/source_sentence)が加わる
+                # (FZQI委任_06で期待値更新: status無し=glossは含まない/displayのみ+src。実装不変)
+                payload = {"display": payload, "src": [[i.get("source_sentence_id", ""), i.get("source_sentence", "")] for i in items]}
+            expected = r._sha(json.dumps(payload, ensure_ascii=False))
             pv = r._m().w62.rj(f"{ctx.out_dir}/writer/provenance.json")
             self.assertEqual(pv["downstream_stages"]["kp_expl_b1b"]["input_sha256"], expected)
 

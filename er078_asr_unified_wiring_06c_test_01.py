@@ -418,6 +418,14 @@ def test_d_en_last_slot_secondary_only_failure_is_technical_stop_not_hr(tmp_path
 
 def test_d_en_last_slot_real_ng_still_goes_to_hr(tmp_path, monkeypatch):
     monkeypatch.setattr(sec, "_log_human_review", lambda d: None)
+    # FZQI委任_06付帯是正: 実HTTP(Perplexity research_pronunciations -> requests.post)を環境依存で発行しないようmock化
+    # (課金経路ゼロ)。ネットワーク層失敗として扱われ(lookup利用不可=None)、追加TTSなしでHRへ進む安全側経路を検証する。
+    import requests as _requests
+    import er006_pronunciation_research_01 as _research
+
+    def _no_http(*a, **k):
+        raise _requests.exceptions.ConnectionError("mocked: no real HTTP in test")
+    monkeypatch.setattr(_research.requests, "post", _no_http)
     monkeypatch.setattr(sec, "get_full_text_via_azure_stt_with_phrase_list", Az(("Completely unrelated sentence here.", None)))
     d = sec.evaluate_attempt_with_cascade_detail(CANON_B, PRIMARY_NG_B, [], _wav(tmp_path), cascade_enabled=True,
                                                  attempt_ctx={"slot": 3, "is_last_slot": True})

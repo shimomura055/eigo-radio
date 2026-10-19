@@ -216,3 +216,8 @@ Phase 3の予算ガード提案: `--approved-budget-jpy 20`(委任文で明示�
 
 ## 10. 自己チェック
 有料API呼出0・コード変更0(新規ファイルは本書と委任文保存のみ)・Production変更0。語数実測と費用再計算は既存ログのread-only処理。STOP: `stop_scope_check_01.py --managed-id … --run-dir run_e2e_03` rc=0(`stop:false`)。
+
+## 追記(2026-10-19 委任_06 実装反映、Opus_E GO_WITH_FIXES採用)
+- ②はP-Aで実装済み(`er062_family_z_writer_01.py::run_support_std`=`run_support_adv`同形、a2gen役割文無改変、`STD_SUPPORT_METHOD_VERSION="adv_method_ja_v1"`、共通ヘルパ`support_stage_input_sha(level, text, plan_sha)`をer026 `stage_support`とer062 CLIから呼ぶ。priorはmethod一致時のみ)。
+- F3-1: 設計2-3の(c)「Part3固有語の出現」(英日跨ぎ)は削除。`overlap_notes`=日本語4-gram一致(カタカナ3字以上の固有名・頻出語除外の参考値)+既存`spoiler_ja`辞書出現+カタカナ固有名。Gate化せずconsole WARN+`support.json`記録のみ。F3-3: 旧`scene_transition`文の不在とfam_c不呼出をtestで固定。F3-2はPhase 3でFableが照合。
+- D-1(2-4)=L-1採用(R-E4): `lint_support_text(..., allow_listen_instruction_as_warn=False[既定], warn_out=None)`を追加し、Z Std呼出側のみTrue。結果は`support.json`の`lint_warn`。他blockingは維持、関数既定は不変。

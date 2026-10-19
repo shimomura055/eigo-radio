@@ -465,6 +465,9 @@ def build_fixed_segment_role_map() -> list:
 # Contractの禁止語句リスト・understanding-guide方針を流用しつつ、Family Z
 # 用に新規のprompt文言のみを本ファイル内に定義する(fam_c本体は編集しない、
 # import参照のみ)。
+# SUPERSEDED(FZQI委任_06、2026-10-19): Z E2E正式経路のStd Preview/CommentはAdvanced方式の日本語適用
+# (er062 run_support_std、a2gen役割文流用、STD_SUPPORT_METHOD_VERSION)に置換済み。本定数・build_family_z_preview_prompt・
+# generate_family_z_previewはPhase1互換・trial(er067/er070/er072/er076)・testの参照用に残置(E2E経路からは呼ばない)。
 _FAMILY_Z_PREVIEW_ROLE_JA = (
     "あなたは英語学習者向け音声番組で、これから始まる短い物語(A2レベル、"
     "Public Domain文学のリライト)の前に置く短い日本語Previewを書く担当"
@@ -1136,7 +1139,7 @@ def stage_support(ctx) -> dict:
                                           story_key=ctx.story_key, prior=prior)
             return st.dumps(res), {}
 
-        r = w62.ensure_stage(prov, f"support_{lv}", _sha(text + w62.file_sha(plan_path)),
+        r = w62.ensure_stage(prov, f"support_{lv}", w62.support_stage_input_sha(lv, text, w62.file_sha(plan_path)),
                              f"{ctx.out_dir}/support/{lv}_support.json", runner,
                              regenerate=ctx.regenerate_stage == f"support_{lv}")
         summary[lv] = r["status"]

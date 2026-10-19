@@ -602,9 +602,13 @@ def pat_z(base):
     with contextlib.redirect_stdout(io.StringIO()):
         res_kp = r.run_stage(ctx, "kp")
     installed = json.load(open(f"{odir}/b1b/key_phrases/keywords_canonicalized.json", encoding="utf-8"))
-    sig_expected = r._sha(json.dumps({"display": [it["display_phrase"] for it in sorted(installed["items"], key=lambda x: x["rank"])],
-                                      "gloss": [it.get("japanese_gloss", "") for it in sorted(installed["items"], key=lambda x: x["rank"])]},
-                                     ensure_ascii=False))
+    _sorted_items = sorted(installed["items"], key=lambda x: x["rank"])
+    _sig_payload = {"display": [it["display_phrase"] for it in _sorted_items],
+                    "gloss": [it.get("japanese_gloss", "") for it in _sorted_items]}
+    if any(it.get("source_reference_contract") for it in _sorted_items):
+        # 委任_16(SRC D1): 解説sigにsrcが加わる(FZQI委任_06で期待値更新。実装不変)
+        _sig_payload["src"] = [[it.get("source_sentence_id", ""), it.get("source_sentence", "")] for it in _sorted_items]
+    sig_expected = r._sha(json.dumps(_sig_payload, ensure_ascii=False))
     pv = r._m().w62.rj(f"{odir}/writer/provenance.json")
     expl_entry = (pv.get("downstream_stages") or {}).get("kp_expl_b1b") or {}
     consumed = os.path.exists(f"{kd}/gloss_alignment_pending_result.consumed.json")

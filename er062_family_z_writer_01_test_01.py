@@ -383,31 +383,22 @@ class Comment3ContentFactsLimitTest(unittest.TestCase):
         self.assertEqual(w.limit_comment3_part(sep.join(["He arrived at the gate.", "b", "c", "d"])), "He arrived at the gate.")
 
     def test_std_comment3_receives_only_front_part_and_prior_reused(self):
+        # FZQI委任_06更新: fam_cモック前提 -> Adv同形の新経路(a2gen役割文)。Comment3のcontextはPart3先頭約25%のみ、
+        # method一致のpriorならComment1/2/Previewは再利用されComment3のみ生成される。
         seen = []
 
         def fn(client, role, context, model=None):
-            seen.append(context)
-            return {"status": "OK", "text": "ok"}
+            seen.append((role, context))
+            return {"status": "OK", "text": "メロスは走ります。"}
 
-        import er013_family_c_production_01 as fam_c
-        orig = fam_c.generate_family_c_a2_comment
-        calls = []
-
-        def fake(client, n, art, facts, **kw):
-            calls.append((n, art))
-            return {"text": "メロスは走ります。"}
-        fam_c.generate_family_c_a2_comment = fake
-        try:
-            parts = {1: "a1", 2: "a2", 3: self._p3(10)}
-            prior = {"comments": {"1": "P1", "2": "P2"}, "attempts": {"comment_1": [], "comment_2": []},
-                     "preview": "PV", "attempts_dummy": 1}
-            prior["attempts"]["preview"] = []
-            out = w.run_support_std(None, parts, "full", ja_support_fn=fn, prior=prior)
-        finally:
-            fam_c.generate_family_c_a2_comment = orig
-        self.assertEqual([c[0] for c in calls], [3])
-        self.assertIn("para2", calls[0][1].split("【すでに聞いた部分")[0])
-        self.assertNotIn("para3", calls[0][1].split("【すでに聞いた部分")[0])
+        parts = {1: "a1", 2: "a2", 3: self._p3(10)}
+        prior = {"method": w.STD_SUPPORT_METHOD_VERSION, "comments": {"1": "P1", "2": "P2"},
+                 "attempts": {"comment_1": [], "comment_2": [], "preview": []}, "preview": "PV"}
+        out = w.run_support_std(None, parts, "full", ja_support_fn=fn, prior=prior)
+        self.assertEqual(len(seen), 1)
+        c3 = seen[0][1]
+        self.assertIn("para2", c3)
+        self.assertNotIn("para3", c3)
         self.assertEqual(out["comments"]["1"], "P1")
         self.assertEqual(out["preview"], "PV")
 
@@ -530,6 +521,7 @@ class SupportGenerationTest(unittest.TestCase):
         self.assertEqual(n["i"], 2)                                 # retry 1回のみ
 
     def test_std_comment_facts_only_from_target_part(self):
+        # FZQI委任_06更新: content_facts(fam_c)前提 -> Adv同形のcontext構成(Comment nは本文の該当範囲のみ)
         ctxs = []
 
         def fn(client, prompt, context, model=None):
@@ -538,19 +530,195 @@ class SupportGenerationTest(unittest.TestCase):
                                             "友人との関係も大切な場面になります。"}
         out = w.run_support_std(object(), self.parts, "FULL STORY", ja_support_fn=fn)
         self.assertEqual(set(out["comments"]), {"1", "2", "3"})
-        # Comment1(2回目以降のcall含む)のcontextは対象Partのみ。他Partの本文は含めない
-        c1_ctx = [c for _p, c in ctxs if "PART ONE" in c and "PART TWO" not in c]
-        self.assertTrue(c1_ctx)
-        c2_ctx = [c for _p, c in ctxs if "PART TWO" in c and "PART THREE" not in c]
-        self.assertTrue(c2_ctx)
-        self.assertTrue(any("これから聞く部分】\nPART THREE" in c for _p, c in ctxs))
-        self.assertIn("プレビュー" if False else "preview", out)
+        c1_ctx = ctxs[0][1]
+        self.assertIn("PART ONE", c1_ctx)
+        self.assertNotIn("PART TWO", c1_ctx)
+        c2_ctx = ctxs[1][1]
+        self.assertIn("PART TWO", c2_ctx)
+        self.assertNotIn("PART THREE", c2_ctx)
+        self.assertIn("これから聞く本文(後半)】\nPART THREE", ctxs[2][1])
+        self.assertIn("preview", out)
 
-    def test_std_preview_has_no_listen_instruction(self):
+    def test_std_preview_listen_instruction_is_warn_not_blocking(self):
+        # FZQI委任_06 L-1(Opus_E R-E4): LISTEN_INSTRUCTIONはZ Stdではblockingでなくlint_warn記録
+        n = {"i": 0}
+
         def fn(client, prompt, context, model=None):
+            n["i"] += 1
             return {"status": "OK", "text": "聞いてみましょう、羊飼いの話です。"}
-        with self.assertRaises((st.FamilyZLintStop, RuntimeError)):
-            w.run_support_std(object(), self.parts, "FULL", ja_support_fn=fn)
+        out = w.run_support_std(object(), self.parts, "FULL", ja_support_fn=fn)
+        self.assertEqual(n["i"], 4)                                  # retryなし(4呼出)
+        self.assertEqual(set(out["lint_warn"]), {"preview", "comment_1", "comment_2", "comment_3"})
+        self.assertTrue(all(v == ["LISTEN_INSTRUCTION"] for v in out["lint_warn"].values()))
+        # 関数の既定挙動は不変(明示optionなしはblocking)
+        self.assertIn("LISTEN_INSTRUCTION", st.lint_support_text("聞いてみましょう、羊飼いの話です。", "ja"))
+
+
+class StdSupportAdvMethodTest(unittest.TestCase):
+    """FZQI委任_06 ②: Std Preview/Comment = Advanced方式の日本語適用(P-A)。"""
+    OK = "羊飼いのメロスは王の前に立たされています。妹の結婚式が近く、気がかりです。"
+
+    def setUp(self):
+        self.parts = {1: "PART ONE SHEPHERD SCENE.", 2: "PART TWO RIVER SCENE.", 3: "PART THREE CITY SCENE."}
+
+    def _run_std(self, text=None, **kw):
+        seen = []
+
+        def fn(client, role, ctx, model=None):
+            seen.append((role, ctx, model))
+            return {"status": "OK", "text": text or self.OK}
+        out = w.run_support_std(object(), self.parts, "FULL", ja_support_fn=fn, **kw)
+        return out, seen
+
+    def test_input_composition_and_order_same_as_adv(self):
+        _o, std_seen = self._run_std()
+        adv_seen = []
+
+        def fe(client, role, ctx, model=None):
+            adv_seen.append((role, ctx, model))
+            return {"status": "OK", "text": "A shepherd faces a ruler and a hard choice."}
+        w.run_support_adv(object(), self.parts, "FULL", en_support_fn=fe)
+        self.assertEqual(len(std_seen), 4)
+        self.assertEqual([c for _r, c, _m in std_seen], [c for _r, c, _m in adv_seen])    # context構成が同一
+        self.assertEqual([m for _r, _c, m in std_seen], [m for _r, _c, m in adv_seen])
+
+    def test_roles_are_a2gen_objects_unmodified(self):
+        import er003_v1_iran01_a2_generate as a2gen
+        out, seen = self._run_std()
+        roles = [r for r, _c, _m in seen]
+        self.assertIs(roles[0], a2gen.COMMENT_1_ROLE)
+        self.assertIs(roles[1], a2gen.COMMENT_2_ROLE)
+        self.assertIs(roles[2], a2gen.COMMENT_2_ROLE)
+        self.assertEqual(roles[3], a2gen.PREVIEW_ROLE.format(comment_1=out["comments"]["1"], comment_2=out["comments"]["2"]))
+        self.assertNotIn(a2gen.COMMENT_3_ROLE, roles)
+        self.assertNotIn(a2gen.COMMENT_4_ROLE, roles)
+        self.assertTrue(all(m == "gpt-6-luna" for _r, _c, m in seen))
+
+    def test_support_ja_principle_applied_via_build_support_prompt(self):
+        import er003_v1_iran01_a2_generate as a2gen
+        prompts = []
+
+        class R:
+            output_text = "羊飼いのメロスは王の前に立たされています。"
+            model = "m"
+            id = "r1"
+
+        class C:
+            class responses:
+                @staticmethod
+                def create(**kw):
+                    prompts.append(kw["input"][1]["content"])
+                    return R()
+        w.run_support_std(C(), self.parts, "FULL")
+        self.assertEqual(len(prompts), 4)
+        self.assertTrue(all(a2gen.SUPPORT_JA_PRINCIPLE in p for p in prompts))
+
+    def test_old_scene_transition_text_absent(self):
+        _o, seen = self._run_std()
+        joined = "\n".join(r + c for r, c, _m in seen)
+        for old in ("ここまでの場面を聞き終えたところで、物語の続きに入ります", "さらに物語が進み、次の場面に入ります",
+                    "これから聞く英文(下の【これから聞く部分】)に実際に書かれている事実のみ"):
+            self.assertNotIn(old, joined)
+
+    def test_family_c_path_and_old_preview_prompt_not_called(self):
+        import er013_family_c_production_01 as fam_c
+        import er026_family_z_fiction_production_runner_01 as er026
+        orig = (fam_c.generate_family_c_a2_comment, er026.build_family_z_preview_prompt)
+
+        def boom(*a, **k):
+            raise AssertionError("旧経路が呼ばれた")
+        fam_c.generate_family_c_a2_comment = boom
+        er026.build_family_z_preview_prompt = boom
+        try:
+            out, _seen = self._run_std()
+        finally:
+            fam_c.generate_family_c_a2_comment, er026.build_family_z_preview_prompt = orig
+        self.assertEqual(out["method"], w.STD_SUPPORT_METHOD_VERSION)
+
+    def test_method_version_in_sha_and_adv_sha_unchanged(self):
+        t, ps = "TEXT", "p" * 64
+        adv_old = w.sha(t + ps)                                  # 従来式(委任_06以前)
+        self.assertEqual(w.support_stage_input_sha("b1b", t, ps), adv_old)          # Adv shaは不変
+        std = w.support_stage_input_sha("a2", t, ps)
+        self.assertNotEqual(std, adv_old)
+        self.assertEqual(std, w.sha(t + ps + "|" + w.STD_SUPPORT_METHOD_VERSION))
+        old_ver = w.STD_SUPPORT_METHOD_VERSION
+        try:
+            w.STD_SUPPORT_METHOD_VERSION = "other_version"
+            self.assertNotEqual(w.support_stage_input_sha("a2", t, ps), std)
+            self.assertEqual(w.support_stage_input_sha("b1b", t, ps), adv_old)
+        finally:
+            w.STD_SUPPORT_METHOD_VERSION = old_ver
+
+    def test_prior_ignored_when_method_mismatch(self):
+        base = {"comments": {"1": "P1", "2": "P2"}, "attempts": {"comment_1": [], "comment_2": [], "preview": []},
+                "preview": "PV"}
+        out, seen = self._run_std(prior=dict(base))               # methodキー無し=旧方式
+        self.assertEqual(len(seen), 4)
+        self.assertNotEqual(out["comments"]["1"], "P1")
+        self.assertNotEqual(out["preview"], "PV")
+        out2, seen2 = self._run_std(prior=dict(base, method="old_family_c_v0"))
+        self.assertEqual(len(seen2), 4)
+        out3, seen3 = self._run_std(prior=dict(base, method=w.STD_SUPPORT_METHOD_VERSION))
+        self.assertEqual(len(seen3), 1)
+        self.assertEqual((out3["comments"]["1"], out3["preview"]), ("P1", "PV"))
+
+    def test_old_method_cache_resume_is_provenance_mismatch_stop(self):
+        t, ps = "TEXT", "p" * 64
+        with tempfile.TemporaryDirectory() as d:
+            prov = w.Provenance(f"{d}/p.json", "melos", "s" * 64)
+            out_path = f"{d}/a2_support.json"
+            old_sha = w.sha(t + ps)                                # 旧方式でのstage入力sha
+            w.ensure_stage(prov, "support_a2", old_sha, out_path, lambda: ('{"old": 1}', {}))
+            new_sha = w.support_stage_input_sha("a2", t, ps)
+            with self.assertRaises(st.FamilyZProvenanceMismatchStop):
+                w.ensure_stage(prov, "support_a2", new_sha, out_path, lambda: ('{"new": 1}', {}))
+            r = w.ensure_stage(prov, "support_a2", new_sha, out_path, lambda: ('{"new": 1}', {}), regenerate=True)
+            self.assertEqual(r["status"], "generated")
+            r2 = w.ensure_stage(prov, "support_a2", new_sha, out_path, lambda: ('{"x": 1}', {}))
+            self.assertEqual(r2["status"], "reused")              # 新方式cacheは再利用される
+            # Advは旧shaのまま再利用(影響なし)
+            w.ensure_stage(prov, "support_b1b", w.support_stage_input_sha("b1b", t, ps), f"{d}/b1b.json",
+                           lambda: ('{"adv": 1}', {}))
+            r3 = w.ensure_stage(prov, "support_b1b", old_sha, f"{d}/b1b.json", lambda: ('{"adv": 2}', {}))
+            self.assertEqual(r3["status"], "reused")
+
+    def test_other_blocking_lint_codes_still_raise_and_listen_is_warn_only(self):
+        for bad in ("このニュースは羊飼いの話です。", "メロスは間に合います。羊飼いの話です。", "セリヌンティウスが待っています。",
+                    "Part 1では羊飼いが出ます。羊飼いの話です。"):
+            with self.assertRaises(st.FamilyZLintStop, msg=bad):
+                self._run_std(text=bad)
+        # 英語出力(言語NG)もblocking
+        with self.assertRaises(st.FamilyZLintStop):
+            self._run_std(text="A shepherd faces a ruler.")
+        # LISTEN_INSTRUCTION + blocking違反の併存はblocking
+        with self.assertRaises(st.FamilyZLintStop):
+            self._run_std(text="注目して聞いてください。このニュースは羊飼いの話です。")
+        w_out = []
+        v = st.lint_support_text("注目して聞いてください。羊飼いの話です。", "ja",
+                                 allow_listen_instruction_as_warn=True, warn_out=w_out)
+        self.assertEqual((v, w_out), ([], ["LISTEN_INSTRUCTION"]))
+        # en側・既定は変わらない
+        self.assertEqual(st.lint_support_text("A shepherd faces a ruler.", "en"), [])
+
+    def test_overlap_notes_recorded_and_not_raising(self):
+        texts = iter(["羊飼いは王様の前で立たされています。", "王様の前で立たされた羊飼いが戻ります。",
+                      "川を渡る場面になります。", "羊飼いは王様の前で立たされた物語です。"])
+
+        def fn(client, role, ctx, model=None):
+            return {"status": "OK", "text": next(texts)}
+        out = w.run_support_std(object(), self.parts, "FULL", ja_support_fn=fn)
+        notes = out["overlap_notes"]
+        self.assertIn("参考値", notes["note"])
+        self.assertTrue(notes["ngram4_overlap"])                  # 重複あり(記録のみ・raiseしない)
+        self.assertEqual(out["method"], w.STD_SUPPORT_METHOD_VERSION)
+        # カタカナ固有名(メロス)は4-gram一致の対象外
+        n2 = w.compute_support_overlap_notes({"preview": "メロスメロスメロス", "comment_1": "メロスメロスメロス"})
+        self.assertEqual(n2["ngram4_overlap"], {})
+        self.assertEqual(n2["katakana_names"]["preview"], ["メロスメロスメロス"])
+        # 既存spoiler_ja辞書の出現を記録(結末語)
+        n3 = w.compute_support_overlap_notes({"preview": "最後に間に合います", "comment_1": "ふつうの文です"})
+        self.assertIn("間に合", n3["spoiler_ja_terms"]["preview"])
 
 
 class KeyPhraseTest(unittest.TestCase):

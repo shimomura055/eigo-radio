@@ -42,7 +42,7 @@ check("full prompt via build_support_prompt contains both",
       all(c in a2gen.build_support_prompt(role_real, "ctx") for c in (sup["comments"]["1"], sup["comments"]["2"])))
 check("context heading is Family X verbatim", "新しいFactの追加禁止" in m.CONTEXT_HEAD_X)
 
-# 3. 現行Production(run_support_std)の事実確認: mockで Preview role に Comment 2 が入っていない(=本Trialで変える入力条件)
+# 3. Production(run_support_std)の事実確認(FZQI委任_06以降: Adv方式の日本語適用。Preview roleにComment 1・2が入る)
 calls = []
 
 
@@ -59,9 +59,11 @@ parts = {1: "Part one text.", 2: "Part two text.", 3: "Part three text.\n\nMore.
 try:
     out = w62.run_support_std(object(), parts, "FULL STORY", ja_support_fn=fn)
     prole = calls[-1][0]
-    check("[baseline] current Production Preview role contains Comment 1", out["comments"]["1"] in prole)
-    check("[baseline] current Production Preview role does NOT contain Comment 2 (Comment-1-only, to be unified)",
-          out["comments"]["2"] not in prole)
+    # 2026-10-19 FZQI委任_06で期待値更新: Production Std Previewは Adv方式の日本語適用(a2gen.PREVIEW_ROLE、Comment1・2両方を埋め込む)
+    check("[updated] Production Std Preview role is a2gen.PREVIEW_ROLE with Comment 1 AND Comment 2",
+          prole == a2gen.PREVIEW_ROLE.format(comment_1=out["comments"]["1"], comment_2=out["comments"]["2"]))
+    check("[updated] Production Std Preview role contains Comment 1 and Comment 2",
+          out["comments"]["1"] in prole and out["comments"]["2"] in prole)
     check("[order] Comment 1-3 generated before Preview (Comment 2 available at Preview time)", len(calls) == 4)
 except Exception as e:   # mockシグネチャ不一致等でも原因を表示
     print("BASELINE_MOCK_NOTE", type(e).__name__, str(e)[:200])
