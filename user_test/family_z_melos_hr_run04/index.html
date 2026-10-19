@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Human Review: 走れメロス Std 後半 最初の1文の読み確認</title>
+<style>body{font-family:sans-serif;max-width:820px;margin:1em auto;padding:0 1em;line-height:1.6}
+.card{border:1px solid #bbb;border-radius:8px;padding:.8em 1em;margin:1em 0}h2{font-size:1.1em;margin:.2em 0}
+.ng{color:#a00}.ok{color:#060}.t{background:#f5f5f5;padding:.4em .6em;border-radius:4px;font-size:.92em}audio{width:100%}mark{background:#ffe08a}</style></head><body>
+<h1>Human Review 依頼: 「走れメロス」Standard版 後半パート1</h1>
+<p>自動チェックでは「Melos」の読みを機械的に確定できず、人間の聴取判断待ちで停止しています。以下3つの録音と前回版を聞いて、判断をチャットでお知らせください(このページに選択操作はありません)。</p>
+<div class="card"><h2>確認してほしいこと</h2>
+<p>次の本文で、<mark>Melos</mark> が人名「メロス」として自然に聞こえるか(語末の s が発音され、Mel- が「メル」と読まれているか)。ASRは Mello/Mellow/Mellows 等と綴りますが、綴りだけでは読みの良否は判断できません。他の文の誤り・途切れ・不自然な間も合わせてご確認ください。</p>
+<div class="t">He remembered the hands held out for the chains. His friend trusted him without asking for another promise. Water came slowly through a crack in the rock. <mark>Melos drank</mark>, got onto his knees, and stood up. He managed one step, then took another. At the city gates, the bell rang for his friend's death. He raced to the square, where the sword was already raised above his friend.</div></div>
+
+<div class="card"><h2>録音1(1回目・標準TTS)</h2><audio controls preload="none" src="audio/attempt1.mp3"></audio>
+<p>自動判定: <span class="ng">不一致(TRUE_CONTENT_MISMATCH)</span>。<br>
+ASR(主): ... Water came slowly through a crack in the rock. <b>Melo strained</b>, got onto his knees, and stood up. ...<br>
+ASR(副・Azure): ... a crack in the rock.<b>Mellow Strength</b> got onto his knees and stood up. ...<br>
+→ 「Melos drank」が「Melo strained / Mellow Strength」と聞き取られています(本文と違う語に聞こえている可能性)。</p></div>
+
+<div class="card"><h2>録音2(2回目・標準TTS)</h2><audio controls preload="none" src="audio/attempt2.mp3"></audio>
+<p>自動判定: <span class="ng">判定保留(ASR_VALIDATION_UNCERTAIN)</span>。<br>
+ASR(主): ... Water came slowly through a crack in the rock. <b>Mello drank</b>, got onto his knees, and stood up. ...<br>
+ASR(副・Azure): ... a crack in the rock. <b>Mellows drank</b>, got onto his knees and stood up. ...<br>
+→ 他の語は本文と一致。名前だけ「Mello / Mellows」と綴られ、s の有無が揺れています。</p></div>
+
+<div class="card"><h2>録音3(3回目・最小指示のフォールバックTTS)</h2><audio controls preload="none" src="audio/attempt3.mp3"></audio>
+<p>自動判定: <span class="ng">判定保留(ASR_VALIDATION_UNCERTAIN)</span>。<br>
+ASR(主): ... Water came slowly through a crack in the rock. <b>Mello drank</b>, got onto his knees, and stood up. ...<br>
+ASR(副): この録音では副ASRの結果は記録されていません。<br>
+→ 他の語は本文と一致。名前は「Mello」と綴られています。</p></div>
+
+<div class="card"><h2>現在ファイルに残っている音声(録音3の後処理版)</h2><audio controls preload="none" src="audio/current_candidate.mp3"></audio>
+<p>録音3に速度調整(約6%)の後処理を加えたものです。この版を再ASRで検証したところ判定が保留となり、停止の直接原因になりました。内容は録音3と同じ読みのはずです。</p></div>
+
+<div class="card"><h2>参考: 前回実行(run_e2e_03)の同じ文</h2><audio controls preload="none" src="audio/previous_run03.mp3"></audio>
+<p>自動判定: <span class="ok">合格</span>。ASR: ... <b>Melos drank</b>, got onto his knees, and stood up. ...(本文どおりの綴りで聞き取られました。比較用に併記します)</p></div>
+
+<div class="card"><h2>ご判断の選択肢(回答はチャットで)</h2>
+<ul>
+<li><b>(a)</b> 録音1・2・3のいずれかを承認する(どれかが人名として許容できる読みであれば、その番号をお知らせください)。承認した録音がこの文の最終音声になります。</li>
+<li><b>(b)</b> 3つとも却下し、再生成する(Fableの許可のもと最大2回、追加費用の見込みは約2〜5円)。</li>
+<li><b>(c)</b> 保留(今は判断せず、この文はロックされたまま)。</li>
+</ul></div>
+</body></html>
