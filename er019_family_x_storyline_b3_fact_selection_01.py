@@ -31,6 +31,8 @@ import re
 import time
 
 import er005_cost_logger as cl
+# FAMILY-X-B3-FACT-MIN2-PRODUCTION-01(M3): VERIFIED判定はproducerと同一のparse_ledger(ambiguousフラグ)を使う(定義を1つに統一)。
+from er053_b3_deterministic_producer_01 import parse_ledger as _producer_parse_ledger
 
 THEME_TAG = "NEWS_FAMILY_X_B3_FACT_SELECTION_PRODUCTION_01"
 
@@ -68,7 +70,7 @@ USER_PROMPT_TEMPLATE = """以下は、あるテーマについてWeb調査で収
 5. 採用したFactだけを使って、Writerへそのまま渡す「Selected Fact Brief」(必要最小限のFactを簡潔にまとめた文章。冒頭にStorylineの1行を含める)を作成してください。Selected Fact Briefは記事本文そのものではなく、Writerへの素材です。
 
 【採用Fact数についての注意】
-目安は3〜5件です。Hard ruleではありませんが、6件以上採用する場合は、本当にそれら全てが中心Storylineの理解に必要かをもう一度自問し、recheck_noteフィールドへその検討内容を明記してください(3件未満でも、Storylineが単独で成立するなら構いません)。5件以下の場合、recheck_noteはnullにしてください。
+`[VERIFIED]`のFactから最低2件を採用してください(`[AMBIGUOUS]`のFactは採用してもかまいませんが、最低2件には数えません)。数合わせのための関連性の低いFactの追加は不可です。6件以上採用する場合は、本当にそれら全てが中心Storylineの理解に必要かをもう一度自問し、recheck_noteフィールドへその検討内容を明記してください。5件以下の場合、recheck_noteはnullにしてください。
 
 【出力】
 JSON schemaの指示に従い、以下を出力してください:
@@ -86,6 +88,32 @@ RETRY_APPEND_NOTE = (
     "Full Ledgerに実在するfact_idのみを使い、指定のJSON schemaに厳密に従って"
     "再出力してください。"
 )
+
+# FAMILY-X-B3-FACT-MIN2-PRODUCTION-01(2026-10-19ユーザー正式決定、Opusレビュー_F M1): 採用FactのうちVERIFIEDが
+# 下限未満のときだけ1回行う再評価callの追記note(テンプレート。sha固定)。4テスト定義・DEVELOPER_MESSAGE・JSON schemaは不変。
+MIN_VERIFIED_SELECTED_DEFAULT = 2
+REEVAL_APPEND_NOTE_TEMPLATE = (
+    "\n\n【再評価の指示】初回の選定では、採用Factのうち`[VERIFIED]`のFactが最低2件に届きませんでした"
+    "(初回は検証済みFactが1件以下でした)。以下の方針でやり直してください。"
+    "\n1. 上記【テーマ】の範囲内で、中心Storylineを見直してかまいません。ただし【テーマ】から外れるStorylineは不可です。"
+    "\n2. 4つのテストは、見直したStorylineに対して全Factへ改めて適用してください。採用/除外の判定は、テストの回答と整合させてください"
+    "(テストの回答を変えずに採用判定だけを変えることは禁止です)。"
+    "\n3. 数合わせのために、関連性の低いFactや`[AMBIGUOUS]`のFactを検証済みとして扱ってはいけません。"
+    "最低2件に届かない場合は、各Factのreasonにその理由を書いてください。"
+    "\n4. 初回のStorylineと採用Factは参考情報です(初回のreasonは引き継がず、改めて判断してください)。"
+    "\n   初回のStoryline: {first_storyline}"
+    "\n   初回の採用fact_id: {first_selected_ids}"
+)
+
+
+class B3MinFactsStop(RuntimeError):
+    """採用Fact下限(VERIFIEDのみ算入)未達のSTOP。`record`にb3_min2_stop_record.json用dictを持つ
+    (reason: LEDGER_VERIFIED_LT2 / REEVAL_STILL_LT2 / REEVAL_INVALID / SELECTED_VERIFIED_LT2_AT_RUNNER_GUARD)。"""
+
+    def __init__(self, message: str, record: dict | None = None):
+        super().__init__(message)
+        self.record = record or {}
+
 
 STORYLINE_B3_JSON_SCHEMA = {
     "name": "storyline_b3_fact_selection",
@@ -143,6 +171,40 @@ def prompt_shas() -> dict:
 
 def extract_fact_ids_from_ledger(ledger_text: str) -> list:
     return sorted(set(FACT_ID_LINE_RE.findall(ledger_text or "")))
+
+
+def verified_fact_ids(ledger_text: str) -> list:
+    """Ledger内の`[VERIFIED]`のfact_id(producerのparse_ledgerのambiguous=Falseと同一定義)。"""
+    facts, order = _producer_parse_ledger(ledger_text or "")
+    return [fid for fid in order if not facts[fid]["ambiguous"]]
+
+
+def count_selected_verified(selected_ids, ledger_text: str) -> int:
+    """採用IDのうち`[VERIFIED]`の件数(下限2件の算定式。b3 moduleとrunnerガードで共有)。"""
+    verified = set(verified_fact_ids(ledger_text))
+    return len({fid for fid in (selected_ids or []) if fid in verified})
+
+
+def reeval_note_sha() -> str:
+    return sha256_text(REEVAL_APPEND_NOTE_TEMPLATE)
+
+
+def build_reeval_note(first_parsed: dict) -> str:
+    return REEVAL_APPEND_NOTE_TEMPLATE.format(
+        first_storyline=(first_parsed.get("selected_storyline") or "").strip(),
+        first_selected_ids=", ".join(first_parsed.get("selected_fact_ids") or []) or "(なし)")
+
+
+def detect_selected_despite_all_tests_exclude(parsed: dict) -> list:
+    """4テストの回答がすべて除外側(Test1=YES・Test2=NO・Test3=NO・Test4=YES)なのに採用されたFactのID。
+    soft warningとしてevidenceへ記録するのみ(retry/STOP/採用数算定には使わない)。"""
+    out = []
+    for ft in parsed.get("fact_tests") or []:
+        if (ft.get("decision") == "selected" and ft.get("test1_answer") == "YES"
+                and ft.get("test2_answer") == "NO" and ft.get("test3_answer") == "NO"
+                and ft.get("test4_answer") == "YES"):
+            out.append(ft.get("fact_id"))
+    return out
 
 
 def build_user_prompt(topic: str, ledger_text: str) -> str:
@@ -206,12 +268,24 @@ def _call_once(client, topic: str, ledger_text: str, model: str, effort: str,
     }
 
 
-def run_storyline_b3_selection(client, topic: str, ledger_text: str,
-                                model: str, effort: str) -> dict:
-    """戻り値: {"parsed", "model", "response_id", "latency_seconds",
-    "attempts", "retried", "validation_errors_by_attempt", "prompt_shas"}
-    技術的に2回とも失敗した場合はRuntimeErrorをSTOPとして送出する。"""
-    ledger_fact_ids = extract_fact_ids_from_ledger(ledger_text)
+def _stop_record(reason: str, ledger_text: str, parsed: dict | None, extra: dict | None = None) -> dict:
+    rec = {
+        "reason": reason, "floor": MIN_VERIFIED_SELECTED_DEFAULT, "counted": "VERIFIED",
+        "ledger_verified_fact_ids": verified_fact_ids(ledger_text),
+        "selected_fact_ids": list((parsed or {}).get("selected_fact_ids") or []),
+        "selected_verified_n": count_selected_verified((parsed or {}).get("selected_fact_ids"), ledger_text),
+        "fact_reasons": [{"fact_id": ft.get("fact_id"), "decision": ft.get("decision"), "reason": ft.get("reason")}
+                         for ft in ((parsed or {}).get("fact_tests") or [])],
+        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S"),
+    }
+    if extra:
+        rec.update(extra)
+    return rec
+
+
+def _technical_attempts(client, topic: str, ledger_text: str, model: str, effort: str,
+                         ledger_fact_ids: list) -> dict:
+    """初回選定(技術retry最大2 attempt、従来どおり)。技術的に2回とも失敗した場合はRuntimeErrorをSTOPとして送出する。"""
     attempts_log = []
     last_exc = None
     for attempt in (1, 2):
@@ -229,20 +303,93 @@ def run_storyline_b3_selection(client, topic: str, ledger_text: str,
         hard_errors = [e for e in errors if not e.startswith("RECHECK_NOTE_MISSING")]
         attempts_log.append({"attempt": attempt, "validation_errors": errors})
         if not hard_errors:
-            return {
-                "parsed": result["parsed"], "model": result["model"],
-                "response_id": result["response_id"],
-                "latency_seconds": result["latency_seconds"],
-                "attempts": attempt, "retried": attempt > 1,
-                "soft_warnings": errors,
-                "ledger_fact_ids": ledger_fact_ids,
-                "attempts_log": attempts_log,
-                "prompt_shas": prompt_shas(),
-            }
+            return {"result": result, "attempt": attempt, "errors": errors, "attempts_log": attempts_log}
     raise RuntimeError(
         "[STOP] Storyline+B3 Fact Selection: 2回試行しても技術的に有効な出力を得られませんでした。"
         f" attempts_log={attempts_log} last_exc={last_exc}"
     )
+
+
+def run_storyline_b3_selection(client, topic: str, ledger_text: str,
+                                model: str, effort: str,
+                                min_verified_selected: int | None = MIN_VERIFIED_SELECTED_DEFAULT) -> dict:
+    """戻り値: {"parsed", "model", "response_id", "latency_seconds",
+    "attempts", "retried", "validation_errors_by_attempt", "prompt_shas", "min2_policy", ...}
+    技術的に2回とも失敗した場合はRuntimeErrorをSTOPとして送出する。
+
+    FAMILY-X-B3-FACT-MIN2-PRODUCTION-01: min_verified_selected(既定2、Production既定ON)>0のとき、
+    (1) Ledgerの[VERIFIED]が下限未満ならAPI呼出前に B3MinFactsStop(LEDGER_VERIFIED_LT2)、
+    (2) 初回選定の採用IDのうち[VERIFIED]が下限未満なら、再評価callを1回だけ行う(技術retry枠とは別。最悪合計3 call)、
+    (3) 再評価の出力が技術的に不正(REEVAL_INVALID)、または再評価後も下限未満(REEVAL_STILL_LT2)なら B3MinFactsStop、
+    (4) 再評価で下限を満たしたら、Storyline/fact_tests/採用ID/Briefの全てを再評価call出力1回分で置換する(初回と混ぜない)。
+    コードはFactを選ばない(補完・追加なし)。Noneまたは0を渡すと下限強制なし(旧挙動。Trial側の明示用)。"""
+    ledger_fact_ids = extract_fact_ids_from_ledger(ledger_text)
+    floor = int(min_verified_selected or 0)
+    if floor > 0 and len(verified_fact_ids(ledger_text)) < floor:
+        raise B3MinFactsStop(
+            f"[STOP] B3採用Fact下限: Ledgerの[VERIFIED]が{floor}件未満のためAPI呼出前に停止しました"
+            f"(verified={verified_fact_ids(ledger_text)})。",
+            _stop_record("LEDGER_VERIFIED_LT2", ledger_text, None))
+
+    first = _technical_attempts(client, topic, ledger_text, model, effort, ledger_fact_ids)
+    result, attempt = first["result"], first["attempt"]
+    attempts_log = list(first["attempts_log"])
+    errors = first["errors"]
+    first_parsed = result["parsed"]
+    first_verified_n = count_selected_verified(first_parsed.get("selected_fact_ids"), ledger_text)
+    min2_policy = {
+        "floor": floor, "counted": "VERIFIED", "enforced": floor > 0,
+        "first_pass_selected_ids": list(first_parsed.get("selected_fact_ids") or []),
+        "first_pass_verified_n": first_verified_n, "reevaluated": False,
+        "reeval_note_sha256": reeval_note_sha(),
+    }
+    final = result
+    if floor > 0 and first_verified_n < floor:
+        min2_policy["reevaluated"] = True
+        min2_policy["first_attempt"] = {   # 参考情報のみ(採用判定には使わない)
+            "selected_storyline": first_parsed.get("selected_storyline"),
+            "selected_fact_ids": list(first_parsed.get("selected_fact_ids") or []),
+            "response_id": result.get("response_id")}
+        try:
+            re_result = _call_once(client, topic, ledger_text, model, effort, stage_tag="storyline_b3",
+                                    extra_note=build_reeval_note(first_parsed))
+        except (json.JSONDecodeError, Exception) as exc:  # noqa: BLE001
+            attempts_log.append({"attempt": "reeval", "error": str(exc)[:500]})
+            raise B3MinFactsStop(
+                f"[STOP] B3採用Fact下限: 再評価callが技術的に失敗しました: {str(exc)[:200]}",
+                _stop_record("REEVAL_INVALID", ledger_text, first_parsed, {"reeval_error": str(exc)[:500]})) from exc
+        re_errors = validate_selection_output(re_result["parsed"], ledger_fact_ids)
+        re_hard = [e for e in re_errors if not e.startswith("RECHECK_NOTE_MISSING")]
+        attempts_log.append({"attempt": "reeval", "validation_errors": re_errors})
+        if re_hard:
+            raise B3MinFactsStop(
+                f"[STOP] B3採用Fact下限: 再評価の出力が技術的に不正でした: {re_hard}",
+                _stop_record("REEVAL_INVALID", ledger_text, re_result["parsed"], {"reeval_validation_errors": re_hard}))
+        re_verified_n = count_selected_verified(re_result["parsed"].get("selected_fact_ids"), ledger_text)
+        min2_policy["reeval_verified_n"] = re_verified_n
+        if re_verified_n < floor:
+            raise B3MinFactsStop(
+                f"[STOP] B3採用Fact下限: 再評価後も採用IDのうち[VERIFIED]が{floor}件未満です(n={re_verified_n})。",
+                _stop_record("REEVAL_STILL_LT2", ledger_text, re_result["parsed"],
+                             {"first_pass_selected_ids": min2_policy["first_pass_selected_ids"]}))
+        final, errors = re_result, re_errors      # M4: 再評価call出力1回分で全置換
+    min2_policy["final_selected_ids"] = list(final["parsed"].get("selected_fact_ids") or [])
+    min2_policy["final_verified_n"] = count_selected_verified(final["parsed"].get("selected_fact_ids"), ledger_text)
+    soft = list(errors)
+    despite = detect_selected_despite_all_tests_exclude(final["parsed"])
+    if despite:
+        soft.append(f"SELECTED_DESPITE_ALL_TESTS_EXCLUDE: {despite}")
+    return {
+        "parsed": final["parsed"], "model": final["model"],
+        "response_id": final["response_id"],
+        "latency_seconds": final["latency_seconds"],
+        "attempts": attempt, "retried": attempt > 1,
+        "soft_warnings": soft,
+        "ledger_fact_ids": ledger_fact_ids,
+        "attempts_log": attempts_log,
+        "prompt_shas": prompt_shas(),
+        "min2_policy": min2_policy,
+    }
 
 
 def build_full_ledger_record(topic: str, ledger_text: str, ledger_fact_ids: list) -> dict:

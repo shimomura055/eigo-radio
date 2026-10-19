@@ -129,19 +129,19 @@ class RunStorylineB3SelectionTests(unittest.TestCase):
 
     def test_success_on_first_attempt(self):
         ledger_ids = ["FACT-001", "FACT-002", "FACT-003"]
-        parsed = _make_parsed(["FACT-001"], ledger_ids)
+        parsed = _make_parsed(["FACT-001", "FACT-002"], ledger_ids)
         client = self._mock_client([parsed])
         result = b3.run_storyline_b3_selection(
             client, "topic", SAMPLE_LEDGER_TEXT, model="gpt-5.6-luna", effort="high")
         self.assertEqual(result["attempts"], 1)
         self.assertFalse(result["retried"])
-        self.assertEqual(result["parsed"]["selected_fact_ids"], ["FACT-001"])
+        self.assertEqual(result["parsed"]["selected_fact_ids"], ["FACT-001", "FACT-002"])
 
     def test_retries_once_then_succeeds_on_invalid_fact_id(self):
         ledger_ids = ["FACT-001", "FACT-002", "FACT-003"]
-        bad = _make_parsed(["FACT-001"], ledger_ids)
+        bad = _make_parsed(["FACT-001", "FACT-002"], ledger_ids)
         bad["selected_fact_ids"] = ["FACT-999"]
-        good = _make_parsed(["FACT-001"], ledger_ids)
+        good = _make_parsed(["FACT-001", "FACT-002"], ledger_ids)
         client = self._mock_client([bad, good])
         result = b3.run_storyline_b3_selection(
             client, "topic", SAMPLE_LEDGER_TEXT, model="gpt-5.6-luna", effort="high")
@@ -150,7 +150,7 @@ class RunStorylineB3SelectionTests(unittest.TestCase):
 
     def test_stops_after_two_failed_attempts(self):
         ledger_ids = ["FACT-001", "FACT-002", "FACT-003"]
-        bad = _make_parsed(["FACT-001"], ledger_ids)
+        bad = _make_parsed(["FACT-001", "FACT-002"], ledger_ids)
         bad["selected_fact_ids"] = ["FACT-999"]
         client = self._mock_client([bad, bad])
         with self.assertRaises(RuntimeError):
@@ -371,10 +371,11 @@ class B3Sol61ModelTests(unittest.TestCase):
         client.responses.create.assert_not_called()
 
     def test_b3_prompt_shas_pinned_unchanged_by_model_change(self):
-        # Prompt本文はモデル変更で不変(E案はPrompt不変の条件)。sha固定。
+        # 4テスト定義・developer messageはモデル変更でもB3下限2件変更でも不変。user_prompt_template_sha256は
+        # FAMILY-X-B3-FACT-MIN2-PRODUCTION-01(L70-71差替え)で更新(旧d6fe9bc3...)。sha固定。
         self.assertEqual(b3.prompt_shas(), {
             "developer_message_sha256": "b4391b0387c54d39cf2ed095e7c00e028b13f173065ed0077b3a16f0fe37981a",
-            "user_prompt_template_sha256": "d6fe9bc33ceccf4c4af3a44ce12b9d83ef7c2efe04de4dfbb2cf17adb02ff333",
+            "user_prompt_template_sha256": "6cc7218432a685701ddeb9342fc63fd1da6d13a18e0f0e5dd842ed591808b796",
             "fact_test_definitions_sha256": "91513c8999a63439adb40d5c28a253e4cdbb438228ba1deda199d2ae6c6c5a8a"})
 
 

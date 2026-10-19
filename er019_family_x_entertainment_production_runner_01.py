@@ -151,13 +151,24 @@ def run_storyline_b3(client, topic: str, ledger_text: str, out_dir: str) -> dict
     # FAMILY_X_STORYLINE_B3(gpt-6.1-sol)。API call前にrequire_model、返却model不一致はSTOP(従来のvfl01.MODEL
     # 暗黙参照=Lunaは廃止)。effortは従来どおりvfl01.REASONING_EFFORT(high、不変)。
     b3_model = routing.require_model("FAMILY_X_STORYLINE_B3", routing.PROCESS_MODEL_MAP["FAMILY_X_STORYLINE_B3"])
-    selection = b3.run_storyline_b3_selection(
-        client, topic, ledger_text, model=b3_model, effort=vfl01.REASONING_EFFORT)
+    stop_record_path = f"{stage_dir}/{B3_MIN2_STOP_RECORD_NAME}"
+    try:
+        selection = b3.run_storyline_b3_selection(
+            client, topic, ledger_text, model=b3_model, effort=vfl01.REASONING_EFFORT,
+            min_verified_selected=b3.MIN_VERIFIED_SELECTED_DEFAULT)
+    except b3.B3MinFactsStop as stop:
+        # FAMILY-X-B3-FACT-MIN2-PRODUCTION-01(M4): 3ケース(LEDGER_VERIFIED_LT2/REEVAL_STILL_LT2/REEVAL_INVALID)全てでSTOP記録を
+        # 書いてから再送出する。selected_brief.md/fact_selection_evidence.json/注記artifactには触れない(旧版を新版として扱わない)。
+        save_json(stop_record_path, stop.record)
+        raise
     if not str(selection.get("model") or "").startswith(b3_model):
         raise RuntimeError(f"[STOP] B3段の返却modelが{b3_model}で始まらない: {selection.get('model')!r}")
 
     ledger_fact_ids = selection["ledger_fact_ids"]
     full_ledger_record = b3.build_full_ledger_record(topic, ledger_text, ledger_fact_ids)
+    # M4: 以前のSTOP記録が残っていれば、今回の成功で superseded として退避(古いSTOP記録の誤読防止)。
+    if os.path.exists(stop_record_path):
+        os.replace(stop_record_path, f"{stage_dir}/b3_min2_stop_record_superseded_{time.strftime('%Y%m%dT%H%M%S')}.json")
     save_json(f"{stage_dir}/full_ledger.json", full_ledger_record)
 
     brief_md = b3.build_selected_brief_markdown(selection)
@@ -171,6 +182,7 @@ def run_storyline_b3(client, topic: str, ledger_text: str, out_dir: str) -> dict
         "selected_fact_brief_text": selection["parsed"]["selected_fact_brief"],
         "recheck_note": selection["parsed"]["recheck_note"],
         "soft_warnings": selection["soft_warnings"],
+        "min2_policy": selection["min2_policy"],
     }
     save_json(f"{stage_dir}/fact_selection_evidence.json", fact_selection_evidence)
 
@@ -193,8 +205,41 @@ def run_storyline_b3(client, topic: str, ledger_text: str, out_dir: str) -> dict
 # ------------------------------------------------------------
 # Stage 3: JA Writer = 新Writer W-1(注記済みB3契約検証 -> R0[Fact Lock] -> R1/R2、全段gpt-6.1-sol)
 # ------------------------------------------------------------
+B3_MIN2_STOP_RECORD_NAME = "b3_min2_stop_record.json"
+
+
 class LegacyWriterProvenanceStop(RuntimeError):
     """U-1: W-1来歴のない(または契約と不一致の)JA記事を通常Production経路で再利用しようとした場合のSTOP。"""
+
+
+def assert_b3_min_verified(out_dir: str) -> None:
+    """FAMILY-X-B3-FACT-MIN2-PRODUCTION-01(M2): run_annotation_producerの直前に置く合流点ガード。初回/--regenerate-stage/resume/
+    既存B3再利用/手動差替えのすべてがこの1点を通る。`storyline_b3/fact_selection_evidence.json`の`selected_fact_ids`のうち
+    Ledgerの[VERIFIED]が2件未満なら B3MinFactsStop(API呼出0、課金前)。判定根拠は`selected_fact_ids`のみ(`min2_policy`キーの有無は
+    使わない=既存の3件以上のrunを止めない)。数え方はb3 moduleと同一関数(b3.count_selected_verified)。"""
+    floor = b3.MIN_VERIFIED_SELECTED_DEFAULT
+    evidence_path = f"{out_dir}/storyline_b3/fact_selection_evidence.json"
+    if not os.path.exists(evidence_path):
+        raise b3.B3MinFactsStop(
+            f"[STOP] B3採用Fact下限: {evidence_path} がありません。--stage storyline_b3 --regenerate-stage storyline_b3 で再選定してください。",
+            {"reason": "EVIDENCE_MISSING_AT_RUNNER_GUARD", "floor": floor, "counted": "VERIFIED"})
+    with open(evidence_path, encoding="utf-8") as f:
+        evidence = json.load(f)
+    ledger_path = f"{out_dir}/research_ledger/verified_fact_ledger.txt"
+    if os.path.exists(ledger_path):
+        with open(ledger_path, encoding="utf-8") as f:
+            ledger_text = f.read()
+    else:
+        with open(f"{out_dir}/storyline_b3/full_ledger.json", encoding="utf-8") as f:
+            ledger_text = json.load(f)["ledger_text"]
+    selected = evidence.get("selected_fact_ids") or []
+    n = b3.count_selected_verified(selected, ledger_text)
+    if n < floor:
+        raise b3.B3MinFactsStop(
+            f"[STOP] B3採用Fact下限: 採用IDのうち[VERIFIED]が{n}件(下限{floor}件)です(selected_fact_ids={selected})。"
+            "旧版のSelected Fact Briefを使って進めません。--stage storyline_b3 --regenerate-stage storyline_b3 で再選定してください。",
+            {"reason": "SELECTED_VERIFIED_LT2_AT_RUNNER_GUARD", "floor": floor, "counted": "VERIFIED",
+             "selected_fact_ids": list(selected), "selected_verified_n": n})
 
 
 def run_annotation_producer(out_dir: str) -> dict:
@@ -417,6 +462,7 @@ def main() -> None:
         else:
             storyline_result = run_storyline_b3(client, args.theme, ledger_text, out_dir)
             efam.assert_budget_ok(out_dir, args.budget_jpy, "after storyline_b3")
+        assert_b3_min_verified(out_dir)     # FAMILY-X-B3-FACT-MIN2-PRODUCTION-01 M2: 全経路の合流点(producer/契約の手前)で採用VERIFIED>=2を確認
         run_annotation_producer(out_dir)    # C4: 初回・regeneration・resume・再利用のすべてで storyline_b3 確定直後(Writer/契約検証の前)に呼ぶ
         if stage == "storyline_b3" or args.stop_after == "storyline_b3":
             print("[B3-RUNNER] stage=storyline_b3で停止(--stop-after storyline_b3)。")

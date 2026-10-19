@@ -45,10 +45,21 @@ class Rec:
 
     def research(self, client, topic, ledger_dir):
         self.events.append("research_ledger")
+        # FAMILY-X-B3-FACT-MIN2-PRODUCTION-01: runner合流点ガード(assert_b3_min_verified)が参照するLedgerをstubでも用意する(既存があれば触れない)。
+        lp = os.path.join(ledger_dir, "verified_fact_ledger.txt")
+        if not os.path.exists(lp):
+            os.makedirs(ledger_dir, exist_ok=True)
+            with open(lp, "w", encoding="utf-8") as f:
+                f.write("[VERIFIED] S01: stub one." + chr(10) + "  scope: x" + chr(10) + chr(10) + "[VERIFIED] S02: stub two." + chr(10) + "  scope: x" + chr(10))
         return {"ledger_text": "LEDGER"}
 
     def storyline(self, client, topic, ledger_text, out_dir):
         self.events.append("storyline_b3")
+        ep = os.path.join(out_dir, "storyline_b3", "fact_selection_evidence.json")
+        if not os.path.exists(ep):    # ガード用の最小evidence(採用VERIFIED 2件)。既存があれば触れない
+            os.makedirs(os.path.dirname(ep), exist_ok=True)
+            with open(ep, "w", encoding="utf-8") as f:
+                json.dump({"selected_fact_ids": ["S01", "S02"]}, f)
         return {"selected_storyline": "S", "selected_fact_brief_text": "B"}
 
     def annotation(self, out_dir):
@@ -279,7 +290,7 @@ class MainContractFailClosedTests(unittest.TestCase):
                     mock.patch.object(runner, "run_post_en_risk_flag", side_effect=rec.risk_flag), \
                     mock.patch.object(runner.efam, "assert_budget_ok", return_value=0.0), \
                     mock.patch.object(runner.w1, "call_astra", side_effect=_boom), \
-                    mock.patch.object(runner.w1, "call_luna_r0", side_effect=_boom):
+                    mock.patch.object(runner.w1, "call_luna_r0", side_effect=_boom),                     mock.patch.object(runner, "assert_b3_min_verified"):    # 本testは producer 自身のfail-closedを検証(合流点ガードは er019_family_x_b3_min2_test_01.py で検証)
                 with self.assertRaises(annot.AnnotationProducerError):
                     runner.main()
             self.assertEqual(rec.events, ["research_ledger"])

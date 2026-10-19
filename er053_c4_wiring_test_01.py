@@ -84,7 +84,7 @@ class Harness:
         self.events.append("rf:" + level)
         return {"status": "OK", "queue": {"saved": True}}
 
-    def run(self, argv_extra):
+    def run(self, argv_extra, guard_off=False):
         argv = ["runner", "--theme", "T", "--slug", "s", "--out-dir", self.out, *argv_extra]
         orig_prod, orig_val = annot.produce_annotated_b3, contract.validate_annotated_b3
 
@@ -109,6 +109,8 @@ class Harness:
             mock.patch.object(annot, "produce_annotated_b3", side_effect=spy_prod),
             mock.patch.object(contract, "validate_annotated_b3", side_effect=spy_val),
         ]
+        if guard_off:   # producer自身のfail-closed(_check_inputs)を検証するtest用。合流点ガード(assert_b3_min_verified)は er019_family_x_b3_min2_test_01.py で検証
+            patches.append(mock.patch.object(runner, "assert_b3_min_verified"))
         for p in patches:
             p.start()
         try:
@@ -196,7 +198,7 @@ class FourPathOrderTests(unittest.TestCase):
         json.dump(ev, open(p, "w", encoding="utf-8"), ensure_ascii=False)
         h = Harness(self.out)
         with self.assertRaises(annot.AnnotationProducerError):
-            h.run(["--stage", "writer"])
+            h.run(["--stage", "writer"], guard_off=True)
         self.assertEqual(h.events, ["research", "producer"])           # 契約・W-1・API・英訳・RFへ進まない(課金前STOP)
         self.assertEqual(h.client.n, 0)
 
@@ -209,7 +211,7 @@ class FourPathOrderTests(unittest.TestCase):
         ev["selected_fact_ids"] = []
         json.dump(ev, open(p, "w", encoding="utf-8"), ensure_ascii=False)
         with self.assertRaises(annot.AnnotationProducerError):
-            h.run(["--stage", "writer"])
+            h.run(["--stage", "writer"], guard_off=True)
         self.assertFalse(os.path.exists(os.path.join(self.out, "storyline_b3", "selected_brief_annotated.md")))
 
 
