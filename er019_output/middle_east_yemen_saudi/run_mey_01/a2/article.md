@@ -1,28 +1,33 @@
-# Airport Attacks: A Crisis Damage Numbers Cannot Show
+# Attack on an Airport: Why Does the News Start Talking About “Peace”?
 
-“An airport has been attacked.”
+I was following the numbers of people killed and hurt. Then the news suddenly began talking about “peace.” I thought I was reading about an airport attack. So why was the news talking about ending the conflict? This change in the story caught my attention.
 
-That report makes us stop and pay attention to the news. Were the people there safe? Were people killed? Were people hurt? First, we should find out if people are safe. But this news also points to another crisis. We cannot see it just by looking at damage numbers.
+An airport in Riyadh, Saudi Arabia, was attacked. A later report said 12 people had died and 309 had been hurt. Some of them were badly hurt.
 
-The UN envoy for Yemen spoke out against a series of attacks on civilian places in Saudi Arabia. He pointed to a statement from Saudi officials. It said 12 people had died and more than 300 had been hurt in the attack on Riyadh airport. He also said attacks on the airports in Riyadh and Abha that same week had killed or hurt civilians.
+12, 309. On a screen, these are just a few digits. But those few digits and the harm they stand for are very different things. What if it had been the airport where I was waiting for my flight? When I think about that, news from a faraway country suddenly feels close to home.
 
-At this point, the story moves from “what happened” to “what happens next.”
+But if we close the article here, we will miss something.
 
-The envoy warned that the attacks threatened safety in the region. He also said they would make it even harder to work toward ending the conflict in Yemen.
+The UN special envoy for Yemen condemned the continuing attacks on civilian sites in Saudi Arabia. The envoy said these attacks put safety in the region at risk. They also make efforts to bring peace to Yemen even harder.
 
-One clock counts the harm we can see now. The other follows the road to peace. In this warning, the two clocks run together. How many people have been hurt now? And what will happen to the path to stop more people from being hurt?
+Here, the camera of the news story pulls far back.
 
-But we should not read this too quickly. The envoy said the numbers of people killed and hurt came from a statement by Saudi officials. His view was that peace efforts would become harder. The numbers and his view are not the same thing.
+Until then, the news had focused on the harm at the airport. But when the view grows wider, we see efforts to end the conflict too. It is the same story, but the question changes.
 
-If we change “will become harder” to “peace is now impossible,” we treat a warning as a final answer. Taking the warning seriously is not the same as deciding the future now.
+From “What happened?” to “What will happen next?”
 
-Imagine if it were an airport you used.
+Still, we need to read this carefully. The reported numbers of people killed and hurt are one kind of information. The envoy’s view that the attacks “make peace efforts harder” is another. From this information alone, we cannot know for sure how much harder peace has become.
 
-Would you be able to get home safely today? If you came here again, could you use it without worry? The first worry is about “now.” The second is about “what comes next.” But for the people affected, it is hard to keep these worries apart.
+The numbers tell us about the harm. The envoy’s words warn us about what may happen next. We should not treat them as the same thing. We should understand what each one tells us.
 
-We who read the news should not stop at the damage numbers. After we learn what happened, we should also look at whether the path to ending the conflict is getting narrower.
+But keeping them separate does not mean ignoring the warning.
 
-What should we look for beyond the news? We should not wait for more people to get hurt. We should keep asking how to stop the harm. The lives at risk now, and the peace ahead. The envoy’s warning asks us not to lose sight of either one, but to keep both in view.
+“How much harm was done?”
+“What will happen to the effort to end the conflict?”
+
+We do not have to put these two questions in separate boxes. We can want to understand the harm clearly. We can also want the conflict to end.
+
+Breaking-news numbers are not the end of the story. We can pause there and look a little wider. Beyond what has already happened, what is at risk? The report about the airport attack was also asking us to think about how to read it.
 
 ## In one line
-The UN envoy for Yemen said attacks on Saudi airports would make it harder to end the conflict in Yemen. Readers should look beyond the numbers and think about lives now and peace in the future.
+An attack on Riyadh’s airport killed 12 people and injured 309. A UN envoy warned that attacks on civilian sites put safety in the region at risk and make peace efforts in Yemen harder, but the report did not say how much.
