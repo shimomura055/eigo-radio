@@ -193,18 +193,48 @@ _M1_FROZEN_CACHE: dict = {}
 
 def _reset_m1_freeze_cache() -> None:
     _M1_FROZEN_CACHE.clear()
+    _M1_SNAPSHOT_CACHE.clear()
 
 
-def _m1_frozen_for(canonical_text: str):
+# 注: _M1_FROZEN_CACHE / _M1_SNAPSHOT_CACHE はプロセス内で保持され(_reset_m1_freeze_cache()でのみ消去)、別segment・別runでも
+# 同一canonical_textなら古い凍結を使い回す(結果はより厳しい側=古い時刻境界に倒れるだけで無害。Opus_H論点2 任意改善、委任_03で記録)。
+_M1_SNAPSHOT_CACHE: dict = {}
+
+
+def _m1_frozen_for(canonical_text: str, *, anchor_text: str | None = None):
     """segment最初の試行前に1回だけ候補集合を凍結する(OF-179)。同一canonical_textの
     2回目以降(retry/fallback/regen/減速後)は同じ凍結物を返し、再計算しない。
-    失敗時はNone(M1不発=従来挙動、fail-closed)。"""
+    失敗時はNone(M1不発=従来挙動、fail-closed)。
+
+    anchor_text(委任_03、Opus_H条件1[論点2 M5]、OF-179): Local Rewrite(LR)後の再TTS・減速後再検証は、書換え後の文が
+    新しいcanonical_textになる。これを『現在時刻』で凍結すると、同じsegment内でLR前に調べた(upsertした)Ledgerエントリが
+    『開始前』扱いで候補に入る(OF-179違反)。そこでanchor_text(=LR前の元原稿)が**凍結済み**ならその`segment_started_at`
+    (と保存済みsnapshot)で書換え後の文を凍結する。anchorが未凍結/凍結失敗(None)の場合は現在時刻やNoneで凍結せず
+    M1不発(None=安全側)を返す。anchor_text未指定(または canonical_text と同一)は従来どおり(挙動不変)。"""
+    if anchor_text is not None and anchor_text != canonical_text:
+        key = ("anchor", anchor_text, canonical_text)
+        if key in _M1_FROZEN_CACHE:
+            return _M1_FROZEN_CACHE[key]
+        anchor_fz = _M1_FROZEN_CACHE.get(anchor_text)
+        started = getattr(anchor_fz, "segment_started_at", None) if anchor_fz is not None else None
+        if anchor_fz is None or not started:
+            return None  # anchor不在: キャッシュしない(後でanchorが凍結されれば使える)。M1不発=安全側
+        try:
+            snap = _M1_SNAPSHOT_CACHE.get(anchor_text)
+            if snap is None:
+                snap = copy.deepcopy(pronun_ledger._load())
+            fz = m1_multi.freeze_candidates(canonical_text, ledger_snapshot=snap, segment_started_at=started)
+        except Exception:
+            fz = None
+        _M1_FROZEN_CACHE[key] = fz
+        return fz
     if canonical_text in _M1_FROZEN_CACHE:
         return _M1_FROZEN_CACHE[canonical_text]
     try:
         snap = copy.deepcopy(pronun_ledger._load())
         fz = m1_multi.freeze_candidates(
             canonical_text, ledger_snapshot=snap, segment_started_at=time.strftime("%Y-%m-%dT%H:%M:%S"))
+        _M1_SNAPSHOT_CACHE[canonical_text] = snap
     except Exception:
         fz = None
     _M1_FROZEN_CACHE[canonical_text] = fz
@@ -363,6 +393,10 @@ def _log_human_review(detail: dict) -> None:
         "steps": detail["steps"],
         "cost_guard_triggered": detail["cost_guard_triggered"],
         "final_status": detail["final_status"],
+        # 委任_03(Opus_H条件3、追加のみ): 減速後再検証でLR採用済みの場合、queueのcanonical_textは判定に使った文(書換え後)。
+        # Lock/承認(record_human_approval)のkeyは元の原稿なので、その元原稿と正解原稿の出典を併記する(キー無し=従来行と同一)。
+        **({"lock_canonical_text": detail["lock_canonical_text"]} if detail.get("lock_canonical_text") is not None else {}),
+        **({"expected_text_source": detail["expected_text_source"]} if detail.get("expected_text_source") is not None else {}),
         # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part K: 固有名詞
         # (CMU辞書に無い外国由来名等)でHuman Reviewへ落ちた場合、
         # Pronunciation Ledgerから得られたcanonical_spelling/expected_
@@ -737,7 +771,14 @@ def evaluate_attempt_with_cascade_detail(
               # S3(additive、修正1回目): entity_like判定の根拠カテゴリ。
               "entity_like_source": val.aggregate_entity_like_sources(cls.protected.content_word_diffs)}]
     # M1: segment単位の凍結(最初の呼出時のみ生成、以降は再利用)。en-US以外は不発。
-    _m1_frozen = _m1_frozen_for(canonical_text) if (m1_enabled and language == "en-US") else None
+    # 委任_03(Opus_H条件1): LR後の再TTS/減速後再検証はattempt_ctx["m1_anchor_text"](=元原稿)を渡し、元segment開始時刻で凍結する。
+    # 未指定時は従来の呼出(引数1つ)のまま=挙動不変。
+    _m1_anchor = actx.get("m1_anchor_text")
+    if m1_enabled and language == "en-US":
+        _m1_frozen = (_m1_frozen_for(canonical_text, anchor_text=_m1_anchor) if _m1_anchor
+                      else _m1_frozen_for(canonical_text))
+    else:
+        _m1_frozen = None
 
     result = {
         "verified": verified, "stop_retrying": False, "classification": cls,

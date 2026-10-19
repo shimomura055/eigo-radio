@@ -104,7 +104,9 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                                          # 転送する。
                                          tts_backend: str = "structured_separation",
                                          # AUW 委任_05(既定"v0"): Local Rewrite後のv1再TTSのみ"v1"。
-                                         script_version: str = "v0") -> dict:
+                                         script_version: str = "v0",
+                                         # 委任_03(Opus_H条件1、OF-179): LR後の再TTSのみ元原稿を渡す(M1候補の時刻境界を元segment開始に固定)。
+                                         m1_anchor_text: str | None = None) -> dict:
     """p9a.generate_narration_snippet(ENGLISH_STYLE_PREFIX経路)と同じ
     prompt/model/voiceを使うが、末尾trim安全マージンのみ0.35秒に広げる。
     失敗時はMINIMAL_INSTRUCTION経路(同じく広いマージン)へfallbackする。"""
@@ -209,7 +211,8 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             ledger_phrases=ledger_phrases, cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED,
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
             segment_id=segment_id, detail_out=_aj,
-            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts, script_version=script_version, max_len=max_len))  # AUW 委任_05/13
+            attempt_ctx=attempt_ctx_mod.build_attempt_ctx(attempt, max_attempts, script_version=script_version, max_len=max_len,
+                                                           m1_anchor_text=m1_anchor_text))  # AUW 委任_05/13
         final_len_ok = unified_judge_mod.final_length_ok(length_ok, _aj)  # AUW 委任_13(A3是正)
         verified = verified_content and final_len_ok
         gate = dq18.apply_disfluency_gate(verified, out_path, language="en", enabled=disfluency_qa)
@@ -371,7 +374,7 @@ def _local_rewrite_recovery_for_news_narration(
             enable_connected_speech_equivalence_layer=enable_connected_speech_equivalence_layer,
             enable_repetition_qa=enable_repetition_qa,
             enable_pronunciation_resolver=enable_pronunciation_resolver, tts_backend=tts_backend,
-            script_version="v1")  # AUW 委任_05: LR後v1
+            script_version="v1", m1_anchor_text=text)  # AUW 委任_05: LR後v1 / 委任_03: 元原稿をM1 anchorに
 
     recovery = retry_primitive.run_local_rewrite_recovery(
         segment_id=segment_id, canonical_text=text, last_asr_text=last_asr_text,

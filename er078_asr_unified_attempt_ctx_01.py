@@ -18,7 +18,8 @@ from typing import Optional
 
 def build_attempt_ctx(attempt: int, max_attempts: int, *, slot_offset: int = 0, total_slots: Optional[int] = None,
                       script_version: str = "v0", length_ok: Optional[bool] = None,
-                      segment_key: Optional[str] = None, max_len: Optional[int] = None) -> dict:
+                      segment_key: Optional[str] = None, max_len: Optional[int] = None,
+                      m1_anchor_text: Optional[str] = None) -> dict:
     slot = int(slot_offset) + int(attempt)
     total = int(total_slots) if total_slots is not None else int(slot_offset) + int(max_attempts)
     ctx = {"slot": slot, "is_last_slot": slot >= total, "script_version": script_version}
@@ -29,4 +30,7 @@ def build_attempt_ctx(attempt: int, max_attempts: int, *, slot_offset: int = 0, 
     if max_len is not None:
         # AUW 委任_13(A3R-01): 呼出元のmax_len(余裕文字数は呼出元ごとに異なる)。judgeはこの値でPrimary/Secondaryの長さを評価する。
         ctx["max_len"] = int(max_len)
+    if m1_anchor_text is not None:
+        # 委任_03(Opus_H条件1、OF-179): LR後の再TTSが書換え後の文のM1凍結に使う、元原稿(凍結済みanchor)。未指定=従来どおり。
+        ctx["m1_anchor_text"] = m1_anchor_text
     return ctx

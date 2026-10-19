@@ -412,7 +412,8 @@ def _local_rewrite_recovery_for_english_segment_with_fallback(
             rewritten_text, out_path, retts_max_len, retts_classification_history,
             enable_connected_speech_equivalence_layer, disfluency_qa, enable_repetition_qa,
             tts_backend=tts_backend,
-            attempt_ctx={"script_version": "v1", "is_last_slot": True})  # AUW 委任_03: LR後v1=LR_REWRITTEN警告
+            attempt_ctx={"script_version": "v1", "is_last_slot": True,
+                         "m1_anchor_text": text})  # AUW 委任_03: LR後v1=LR_REWRITTEN警告 / FZAQ委任_03: 元原稿をM1 anchorに(OF-179)
         r = dict(outcome["result"])
         if not outcome["ok"]:
             return r

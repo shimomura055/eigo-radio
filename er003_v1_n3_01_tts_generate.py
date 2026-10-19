@@ -119,7 +119,9 @@ A2_SLOWDOWN_TARGET_SEGMENTS = (
 
 
 def _post_slowdown_unified_judge(result: dict, tts_input_text: str, asr_text: str, out_path: str,
-                                 segment_id: str, is_last_slot: bool, log_human_review: bool = False) -> dict:
+                                 segment_id: str, is_last_slot: bool, log_human_review: bool = False,
+                                 lock_canonical_text: str | None = None, expected_text_source: str | None = None,
+                                 m1_anchor_text: str | None = None) -> dict:
     """AUW 委任_05(J7): 6%減速後のwavを**統一judge(EN adapter)**で判定する。旧実装は直接
     `en_validator.classify_asr_match`+homophone+UNCERTAIN限定の共有Cascadeだった。
 
@@ -142,7 +144,10 @@ def _post_slowdown_unified_judge(result: dict, tts_input_text: str, asr_text: st
         detail = secondary_asr.evaluate_attempt_with_cascade_detail(
             tts_input_text, asr_text, [], out_path, language="en-US", ledger_phrases=ledger_phrases,
             cascade_enabled=secondary_asr.FEATURE_FLAG_SECONDARY_ASR_ENABLED, segment_id=segment_id,
-            attempt_ctx={"slot": 1, "script_version": "v0", "is_last_slot": bool(is_last_slot)})
+            attempt_ctx=({"slot": 1, "script_version": "v0", "is_last_slot": bool(is_last_slot),
+                          # 委任_03(Opus_H条件1、OF-179): LR採用時のみ元原稿をM1 anchorに(元segment開始時刻で凍結)。LRなしは従来どおり。
+                          "m1_anchor_text": m1_anchor_text} if m1_anchor_text
+                         else {"slot": 1, "script_version": "v0", "is_last_slot": bool(is_last_slot)}))
     except RuntimeError as exc:
         if "init_logger" in str(exc) or "[STOP]" in str(exc):
             raise  # 設定不備(cost logger未初期化/単価未登録)は握りつぶさない
@@ -157,7 +162,14 @@ def _post_slowdown_unified_judge(result: dict, tts_input_text: str, asr_text: st
     if log_human_review and is_last_slot and detail.get("human_review_required"):
         # AUW 委任_06e(F3): 外側ループ(通算TTS3回)の最終slotで減速後NG(Primary・Secondary両NG、技術STOPを除く)なら、
         # 通常経路(evaluate_attempt_with_cascade)と同じ既存の_log_human_reviewでHR queueへ1行(重複は既存の重複抑止)。
-        secondary_asr._log_human_review(detail)
+        # 委任_03(Opus_H条件3): HR queue行へ『Lock/承認のkey=元の原稿』と『判定に使った正解原稿の出典』を追加の形で記録する
+        # (queueのcanonical_textは判定に使った文=LR時は書換え後の文。承認は元の原稿のshaで照合されるため、担当者が取り違えないように)。
+        _hr_detail = dict(detail)
+        if lock_canonical_text is not None:
+            _hr_detail["lock_canonical_text"] = lock_canonical_text
+        if expected_text_source is not None:
+            _hr_detail["expected_text_source"] = expected_text_source
+        secondary_asr._log_human_review(_hr_detail)
     if detail.get("cascade_invoked") or ledger_error:
         # Secondary/補強層が走った場合のみ従来どおり post_slowdown_cascade を残す(Primary単独PASS/NGでは付けない)。
         result["post_slowdown_cascade"] = {
@@ -203,6 +215,7 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
     # 結果は『書換え後の文』で生成された音声である。減速後再検証の正解原稿は、呼出元の`tts_input_text`(書換え前)ではなく
     # 再TTSに実際に送った文にする(単一参照点=retry_primitive.resolve_expected_text_after_local_rewrite)。LRなし/未採用は従来どおり。
     # Lock key(finalize_a2_slowdown_final_ng/record_outcome)は元の原稿のまま(下記)。
+    _lock_text = tts_input_text  # Lock key/HR承認key=元の原稿(下記で再代入する前に保持)
     tts_input_text, _expected_source = retry_primitive.resolve_expected_text_after_local_rewrite(result, tts_input_text)
     result["post_slowdown_expected_text_source"] = _expected_source
 
@@ -219,7 +232,9 @@ def apply_a2_slowdown_postprocess(name: str, narration_dir: str, tts_input_text:
     # nameは既にこのsegmentのsegment_id(A2_SLOWDOWN_TARGET_SEGMENTS、narration/{name}.wavのbasename)そのもの
     # なのでrole gatingへそのまま渡す(EN-ASR-SEMANTIC-EQUIVALENCE-PRODUCTION-WIRING-01と同じ)。
     detail = _post_slowdown_unified_judge(result, tts_input_text, asr_text, out_path, name, is_last_slot,
-                                          log_human_review=log_human_review)
+                                          log_human_review=log_human_review, lock_canonical_text=_lock_text,
+                                          expected_text_source=_expected_source,
+                                          m1_anchor_text=(_lock_text if _expected_source == "local_rewrite_text" else None))
     _steps = detail.get("steps") or []
     _primary_label = (_steps[0].get("classification") if _steps else None) or "ASR_VALIDATION_UNCERTAIN"
     _cls = detail.get("classification")

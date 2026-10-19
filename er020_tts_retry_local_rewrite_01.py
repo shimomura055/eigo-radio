@@ -789,12 +789,22 @@ def resolve_expected_text_after_local_rewrite(result: dict | None, canonical_tex
     生成されている。後続の音声検査(A2 6%減速後の再検証=`apply_a2_slowdown_postprocess`、その内のLedger PhraseList導出等)は、
     書換え前の`tts_input`ではなく、**再TTSに実際に送った文**を期待テキストとして使う。戻り値=(期待テキスト, 出典)。
     出典: `local_rewrite_text`(LR採用済み。送信文を優先順で取得: `selection.selected.rewritten_segment` ->
-    `retts_result.text` -> `result["text"]`) / `canonical_text`(LRなし、またはLR未採用=従来どおり)。
+    `retts_result.text` -> `result["text"]`。Z形entryは2次出典`audio_text_deviation.audio_text_after`) / `canonical_text`(LRなし、またはLR未採用=従来どおり)。
     注意: Human Review Lockのkey(`record_outcome`のtext sha)とHR承認記録の同一性は**元の原稿のまま**維持する(本関数の対象外)。
     副作用なし・API 0(純関数)。LR記録の形は`run_local_rewrite_recovery`の戻り値(voice01/news_tail_fix/crosslevelが
     `resolved["local_rewrite_recovery"]`へそのまま保持する)に従う。"""
     rec = (result or {}).get("local_rewrite_recovery") if isinstance(result, dict) else None
-    if not isinstance(rec, dict) or rec.get("status") != "RESOLVED_BY_LOCAL_REWRITE":
+    if not isinstance(rec, dict):
+        # 委任_03(Opus_H条件2、論点1-a): Family Zのentry(er063.build_entry)は`local_rewrite_recovery`キーを持たず、LRの事実を
+        # `audio_text_deviation`(canonical_text_before_local_rewrite/audio_text_after)として保持する。これを2次出典として読む
+        # (Z再利用経路guard_entry/rejudgeが単一参照点を通る)。audio_text_afterが非空文字列でかつ元原稿と異なる場合のみLR採用扱い。
+        dev = (result or {}).get("audio_text_deviation") if isinstance(result, dict) else None
+        if isinstance(dev, dict):
+            after = dev.get("audio_text_after")
+            if isinstance(after, str) and after.strip() and after != canonical_text:
+                return after, "local_rewrite_text"
+        return canonical_text, "canonical_text"
+    if rec.get("status") != "RESOLVED_BY_LOCAL_REWRITE":
         return canonical_text, "canonical_text"
     selected = ((rec.get("selection") or {}).get("selected") or {})
     for sent in (selected.get("rewritten_segment"), (rec.get("retts_result") or {}).get("text"), result.get("text")):

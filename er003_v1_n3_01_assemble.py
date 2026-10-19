@@ -96,7 +96,12 @@ def human_approval_path(out_dir: str) -> str:
 def record_human_approval(out_dir: str, segment_key: str, canonical_text: str, approved_by: str = "user") -> None:
     """Human Reviewで実際に聴取しPASSと判断したsegmentを記録する。
     canonical_textのsha256を保存し、後でtext自体が変わっていないかを
-    照合する(記事本文が変わった後に古い承認を誤って使い回さないため)。"""
+    照合する(記事本文が変わった後に古い承認を誤って使い回さないため)。
+
+    **承認キー(canonical_text)は『元の原稿』(Local Rewrite前の原稿=Human Review Lockのkeyと同じ文)を渡すこと**
+    (FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01 委任_03、Opus_H論点3)。Local Rewrite採用後の減速後再検証がNGでHR queueへ入った行は、
+    `canonical_text`が判定に使った文(書換え後の文)になり得る。その場合は同じ行の`lock_canonical_text`(元の原稿)を渡す
+    (`expected_text_source=local_rewrite_text`の行が該当)。書換え後の文を渡すとshaが一致せず承認が有効にならない(安全側だが運用blocker)。"""
     path = human_approval_path(out_dir)
     approvals = load_json(path) if os.path.exists(path) else {}
     approvals[segment_key] = {
