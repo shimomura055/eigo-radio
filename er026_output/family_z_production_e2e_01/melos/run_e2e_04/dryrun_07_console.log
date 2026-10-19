@@ -1,0 +1,196 @@
+{
+ "dry_run": true,
+ "management_id": "FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01",
+ "story": "melos",
+ "out_dir": "er026_output/family_z_production_e2e_01/melos/run_e2e_04",
+ "pages_dir": "user_test/family_z_melos_02",
+ "stages": [
+  {
+   "stage": "seed_check",
+   "api": "読み取りのみ",
+   "writes": [],
+   "est_jpy": 0.0,
+   "output_exists": null,
+   "resume": "新規実行"
+  },
+  {
+   "stage": "writer",
+   "api": "Sol R0->R1->R2 (FAMILY_Z_WRITER_ADV_R0/R1/R2)",
+   "writes": [
+    "writer/r0.md",
+    "r1.md",
+    "r2.md",
+    "provenance.json"
+   ],
+   "est_jpy": 22.0,
+   "output_exists": true,
+   "resume": "provenance sha一致で再利用/不一致STOP"
+  },
+  {
+   "stage": "std_adjust",
+   "api": "Std調整 (FAMILY_Z_STD_ADJUST、段落不一致はWARNのみ・再生成/STOPしない)",
+   "writes": [
+    "writer/std.md"
+   ],
+   "est_jpy": 8.0,
+   "output_exists": true,
+   "resume": "provenance sha一致で再利用/不一致STOP"
+  },
+  {
+   "stage": "plan",
+   "api": "分割選択+話者判定 (FAMILY_Z_STORY_SPLIT / FAMILY_Z_DIALOGUE_ATTRIBUTION)",
+   "writes": [
+    "segment_plan_{b1b,a2}.json",
+    "speaker_table.md"
+   ],
+   "est_jpy": 2.0,
+   "output_exists": true,
+   "resume": "provenance sha一致で再利用/不一致STOP"
+  },
+  {
+   "stage": "support",
+   "api": "Preview/Comment (gpt-6-luna support)",
+   "writes": [
+    "support/{b1b,a2}_support.json"
+   ],
+   "est_jpy": 8.0,
+   "output_exists": true,
+   "resume": "provenance sha一致で再利用/不一致STOP"
+  },
+  {
+   "stage": "kp",
+   "api": "Key Phrase選定+Adv英語解説 (support model)",
+   "writes": [
+    "key_phrases/",
+    "{b1b,a2}/key_phrases/keywords_canonicalized.json"
+   ],
+   "est_jpy": 10.0,
+   "output_exists": true,
+   "resume": "provenance sha一致で再利用/不一致STOP"
+  },
+  {
+   "stage": "tts_b1b",
+   "api": "TTS flash-lite + ASR Primary/Secondary + LR(必要時)",
+   "writes": [
+    "b1b/narration/",
+    "b1b/audit/tts_generation_results.json"
+   ],
+   "est_jpy": 40.0,
+   "output_exists": false,
+   "resume": "新規実行"
+  },
+  {
+   "stage": "tts_a2",
+   "api": "TTS flash-lite + ASR Primary/Secondary + LR(必要時)",
+   "writes": [
+    "a2/narration/",
+    "a2/audit/tts_generation_results.json"
+   ],
+   "est_jpy": 40.0,
+   "output_exists": false,
+   "resume": "新規実行"
+  },
+  {
+   "stage": "provision_shell",
+   "api": "API 0 (既存共有shell資産の読取コピー)",
+   "writes": [
+    "{b1b,a2}/narration/*shell"
+   ],
+   "est_jpy": 0.0,
+   "output_exists": null,
+   "resume": "新規実行"
+  },
+  {
+   "stage": "gate",
+   "api": "API 0 (M2->M1->品質->既存Gate)",
+   "writes": [
+    "{b1b,a2}/audit/gate_result_04C.json"
+   ],
+   "est_jpy": 0.0,
+   "output_exists": false,
+   "resume": "新規実行"
+  },
+  {
+   "stage": "assemble",
+   "api": "API 0 (assembly)",
+   "writes": [
+    "{b1b,a2}/assembly/"
+   ],
+   "est_jpy": 0.0,
+   "output_exists": false,
+   "resume": "新規実行"
+  },
+  {
+   "stage": "pages",
+   "api": "API 0 (user_test/family_z_melos_02/)",
+   "writes": [
+    "pages_dir"
+   ],
+   "est_jpy": 0.0,
+   "output_exists": null,
+   "resume": "新規実行"
+  },
+  {
+   "stage": "page_verify",
+   "api": "API 0 (Playwright --local)",
+   "writes": [
+    "page_verify_local.json"
+   ],
+   "est_jpy": 0.0,
+   "output_exists": false,
+   "resume": "新規実行"
+  }
+ ],
+ "stop_sentinel": {
+  "stop_all_path": "C:\\Users\\tensh\\eigo-radio\\er026_output\\family_z_production_e2e_01\\STOP_ALL",
+  "run_stop_path": "er026_output/family_z_production_e2e_01/melos/run_e2e_04/STOP",
+  "present_now": null,
+  "exit_code_on_hit": 3
+ },
+ "removed_from_path": [
+  "validate_b1b",
+  "validate_a2",
+  "er061(原作保持Validator)"
+ ],
+ "budget": {
+  "approved_max_jpy": 300.0,
+  "warn_jpy": 200.0
+ },
+ "note": "副作用なし(ファイル作成・API呼出・Master Store/telemetry/queue/attempt_history更新なし)",
+ "preflight": {
+  "seed_files": {
+   "seed.json": "f4a85f5ceb9a",
+   "primary_text_excerpt.md": "cdf8b3dd6ad5"
+  },
+  "routing_models": {
+   "FAMILY_Z_WRITER_ADV_R0": "gpt-6.1-sol",
+   "FAMILY_Z_WRITER_ADV_R1": "gpt-6.1-sol",
+   "FAMILY_Z_WRITER_ADV_R2": "gpt-6.1-sol",
+   "FAMILY_Z_STD_ADJUST": "gpt-6.1-sol",
+   "FAMILY_Z_STORY_SPLIT": "gpt-6-luna",
+   "FAMILY_Z_DIALOGUE_ATTRIBUTION": "gpt-6-luna"
+  },
+  "style_table_keys": [
+   "A5",
+   "B5",
+   "E1",
+   "E2_UPBEAT",
+   "K2",
+   "P7",
+   "P8_KP",
+   "PD06",
+   "S3",
+   "X_J3",
+   "X_TOPIC_INTRO"
+  ],
+  "melos_voice": "Algieba",
+  "melos_voice_status": "PROVISIONAL_UNAPPROVED",
+  "er020_full_story_clip_pattern": true,
+  "dialogue_voices": {
+   "narrator": "Aoede",
+   "melos": "Algieba",
+   "selinuntius": "Erinome",
+   "dionysius": "Charon"
+  }
+ }
+}
