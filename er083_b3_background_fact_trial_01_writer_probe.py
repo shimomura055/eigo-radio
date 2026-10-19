@@ -43,7 +43,7 @@ class StubWriterClient:
 
 def run_probe(cand_dir: str, out_root: str, budget_jpy: float, dry_run: bool, client=None, cost_log: str | None = None) -> dict:
     lib.assert_under_out_root(cand_dir, out_root)
-    cost_log = cost_log or os.path.join(out_root, "cost_log_dryrun.jsonl" if dry_run else "cost_log.jsonl")
+    cost_log = cost_log or (os.path.join(out_root, "cost_log_dryrun.jsonl") if dry_run else os.path.join(cand_dir, "cost_log_w1.jsonl"))
     guard = lib.BudgetGuard(cost_log, budget_jpy, lib.EST_W1_CHAIN_JPY / 3.0, dry_run)
     if client is None:
         if dry_run:

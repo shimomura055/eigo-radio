@@ -57,6 +57,7 @@ COMMON_GUARD = """\
 - 追加してよいのは、Full Ledgerに実在するfact_idのうち、その前提をFact自身の記述として直接述べているFactだけです。Ledgerに書かれていない事実を、推測・創作・補完してはいけません。
 - 関与している主体の帰属(誰が)、動機・理由(なぜ)、背景(それまでの経緯・状況)は別のものです。あるFactが述べているのがそのうちの一つだけなら、他の二つの裏付けとして扱ってはいけません。また、別の出来事を述べたFactから、このStorylineの出来事の関与主体や動機を推定して結び付けてはいけません。
 - 補足として便利、詳しくなる、面白い、数字がある、というだけのFactの追加、ニュース全体の網羅、背景の詳細な解説は目的ではありません。追加するFactは、Storylineの焦点・筋・読み味を変えないものに限ります。
+- 【背景補完】で追加したFactは、上記『最低2件』に数えません。背景補完の前に、最低2件の条件を満たす選定を完了してください。
 - 追加の上限は最大2件です。追加によって採用数が6件以上になる場合は、従来どおりrecheck_noteへ検討内容も記載してください。
 - 追加したFactは selected_fact_ids と fact_tests(decision="selected")に含め、そのreasonの先頭に「【背景補完】」を付けて、「このFactが無いと何が理解できないか」を1文で書いてください。追加しなかったFactのreasonに【背景補完】は付けません。
 - 背景確認の結果は、recheck_noteの先頭に「【背景確認】」を付けて1〜3文で必ず記録してください(追加不要 / 追加(fact_idと理由) / 不足(何が足りず、Ledger内に直接述べるFactが無い))。採用数が5件以下でも記入してかまいません。この場合、上の「5件以下の場合はnull」の指示より優先します。
@@ -87,17 +88,26 @@ C3_SPECIFIC = """\
 【背景補完の確認(補助指示・候補C3)】
 上記1〜5の選定を先に完了し、決定済みのStorylineと採用Factはこの確認のために変更しないでください。
 そのうえで、決定したStorylineを初見で読んだ読者が最初に抱く素朴な疑問を、そのStorylineが自然に抱かせるものに限り、最大2つ挙げてください(型の例: 「誰が(何が)関わっているのか」「なぜそうなったのか」「これは何の流れの一部なのか」。Storylineが触れていない話題についての疑問を作ってはいけません)。
+挙げてよい疑問は、それが解けないと読者がStorylineの文意を取れない、または誤解するものに限ります。「もっと知りたい」「次に気になる」疑問は対象外です。
+各疑問に型(誰が/なぜ/何の流れの一部か)を付け、Factがその型の内容を自身の記述として述べている場合に限り、回答とみなします。状況や経緯を述べるFactは「なぜ」への回答になりません。
 各疑問について、採用Factだけで答えられるかを確認します。
 - 採用Factだけで答えられる: 何も追加しません。
 - 答えられず、Full Ledgerのfact自身がその疑問に直接答えている: そのFactを疑問ごとに1件まで追加採用してよい。
 - 答えられず、Ledgerにも直接答えるFactが無い: 何も追加せず、その疑問を「Ledger内に回答なし」として記録します(推測で答えない)。
 - recheck_note(【背景確認】)には、挙げた疑問ごとに「疑問 / 採用Factで回答済 / 追加Fact(fact_id)で回答 / Ledger内に回答なし」を書いてください。"""
 
+# C1/C3共通の任意改善3文(Opus_I M4任意改善)
+C1C3_CALIBRATION = """
+【判定の目安(補助指示)】
+- 採用Factで既に部分的に示されている前提は、欠落とみなしません。
+- 判定に迷う場合は、追加しません。
+- 推測すれば言える、というFactは、直接述べていないものとして扱います。"""
+
 CANDIDATE_NOTES = {
     "baseline": "",
-    "C1": C1_SPECIFIC + "\n" + COMMON_GUARD,
+    "C1": C1_SPECIFIC + C1C3_CALIBRATION + "\n" + COMMON_GUARD,
     "C2": C2_SPECIFIC + "\n" + COMMON_GUARD,
-    "C3": C3_SPECIFIC + "\n" + COMMON_GUARD,
+    "C3": C3_SPECIFIC + C1C3_CALIBRATION + "\n" + COMMON_GUARD,
 }
 
 # 仕様文に含めてはならない固有事例(評価条件であり仕様文ではない。ユーザー§3)。Fact ID形式も禁止(誘導防止)。
@@ -152,32 +162,63 @@ def append_jsonl(path: str, row: dict) -> None:
         f.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
-TRIAL_THEMES = (THEME_TAG, "FAMILY_X_FACTLOCK_W1_PRODUCTION_01")   # B3候補 + 下流W-1 probe(Production Writerのtheme tag)
+def _row_cost_jpy(rec: dict, price) -> float | None:
+    """実API行のJPY(openai+model_idのある行のみ)。それ以外はNone。"""
+    model = rec.get("model_id") or rec.get("model")
+    if not (rec.get("provider") == "openai" and model):
+        return None
+    usd = ((rec.get("input_tokens") or 0) * price("openai", model, "input_tokens") / 1e6
+           + (rec.get("output_tokens") or 0) * price("openai", model, "output_tokens") / 1e6
+           + efam.web_search_call_usd(rec, price))
+    return usd * efam.USD_JPY
 
 
-def cost_summary(log_path: str, theme: str | None = None) -> dict:
-    """cost_log.jsonl(er005 cost logger形式)からJPYを集計。LLM(openai)のみ(web_searchは本Trialで使わないがwebsearch込み式を流用)。
-    dry_run_stub行は実費0として別計上。"""
+def cost_summary(log_path: str) -> dict:
+    """Trial専用cost log(`cl.install`先。run単位のファイル)に記録された**実API行を全て**集計する(M1)。
+    Production B3 `_call_once` は内側で `THEME_TAG=NEWS_FAMILY_X_B3_FACT_SELECTION_PRODUCTION_01` を設定し外側themeを上書きする
+    (er005_cost_logger.logging_context)ため、themeでの絞込はB3実費を0円と誤算定する。ここでは theme を見ない
+    (対象はTrial run dir配下のlogに限定される=呼出側の責務)。dry_run_stub行は実費0として別計上。"""
     price = efam._load_pricing()
-    total, real_calls, stub_calls, by_stage = 0.0, 0, 0, {}
+    total, real_calls, stub_calls, by_stage, by_theme = 0.0, 0, 0, {}, {}
     for rec in _jsonl(log_path):
-        if rec.get("theme") not in ((theme,) if theme else TRIAL_THEMES):
-            continue
         if rec.get("dry_run_stub"):
             stub_calls += 1
             continue
-        model = rec.get("model_id") or rec.get("model")
-        if not (rec.get("provider") == "openai" and model):
+        jpy = _row_cost_jpy(rec, price)
+        if jpy is None:
             continue
-        usd = ((rec.get("input_tokens") or 0) * price("openai", model, "input_tokens") / 1e6
-               + (rec.get("output_tokens") or 0) * price("openai", model, "output_tokens") / 1e6
-               + efam.web_search_call_usd(rec, price))
-        jpy = usd * efam.USD_JPY
         total += jpy
         real_calls += 1
         st = str(rec.get("stage") or "UNTAGGED")
         by_stage[st] = round(by_stage.get(st, 0.0) + jpy, 3)
-    return {"total_jpy": round(total, 3), "real_api_calls": real_calls, "stub_calls": stub_calls, "by_stage_jpy": by_stage}
+        th = str(rec.get("theme") or "UNTAGGED")
+        by_theme[th] = round(by_theme.get(th, 0.0) + jpy, 3)
+    return {"total_jpy": round(total, 3), "real_api_calls": real_calls, "stub_calls": stub_calls,
+            "by_stage_jpy": by_stage, "by_theme_jpy": by_theme}
+
+
+def cost_logs_under(out_root: str, include_dryrun: bool = False) -> list:
+    """out_root配下の全 cost_log*.jsonl(run単位)。既定でdry-run用(`_dryrun`配下・名前に dryrun を含む)は除く。"""
+    found = []
+    for dp, _dn, fns in os.walk(out_root):
+        for fn in fns:
+            if fn.startswith("cost_log") and fn.endswith(".jsonl"):
+                full = os.path.join(dp, fn)
+                if not include_dryrun and ("dryrun" in fn or "_dryrun" in dp):
+                    continue
+                found.append(full)
+    return sorted(found)
+
+
+def cost_summary_tree(out_root: str) -> dict:
+    """Trial全体(R1/R2/R3全run)の実費合計。出典=各cost log行(path別内訳つき)。"""
+    per, total, calls = {}, 0.0, 0
+    for lp in cost_logs_under(out_root):
+        cs = cost_summary(lp)
+        per[os.path.relpath(lp, out_root)] = cs
+        total += cs["total_jpy"]
+        calls += cs["real_api_calls"]
+    return {"total_jpy": round(total, 3), "real_api_calls": calls, "per_log": per}
 
 
 class BudgetGuard:
@@ -254,6 +295,13 @@ def analyze_selection(parsed: dict, ledger_text: str, baseline_ids: list | None)
         "min2_satisfied": b3.count_selected_verified(selected, ledger_text) >= b3.MIN_VERIFIED_SELECTED_DEFAULT,
         "selected_storyline": parsed.get("selected_storyline"),
     }
+    # M2: 背景補完Factは下限2件に算入しない(補完を除くcore)。補完のおかげで初めて下限を満たした結果は軸1・軸3で「問題」
+    core = [i for i in selected if i not in supp]
+    core_v = b3.count_selected_verified(core, ledger_text)
+    out["core_selected_ids"] = core
+    out["core_verified_n"] = core_v
+    out["min2_met_only_via_supplement"] = bool(core_v < b3.MIN_VERIFIED_SELECTED_DEFAULT
+                                               and out["verified_selected_n"] >= b3.MIN_VERIFIED_SELECTED_DEFAULT)
     if baseline_ids is not None:
         out["added_vs_baseline"] = [i for i in selected if i not in baseline_ids]
         out["removed_vs_baseline"] = [i for i in baseline_ids if i not in selected]
@@ -354,6 +402,7 @@ def run_candidate(client, *, candidate: str, topic: str, ledger_text: str, cand_
         produced = annot.produce_annotated_b3(cand_dir)       # Production producerをそのまま(決定論・LLM 0)
         meta["analysis"] = analyze_selection(parsed, ledger_text, baseline_ids)
         meta["min2_policy"] = selection["min2_policy"]
+        meta["final_result_call"] = "reeval" if (selection["min2_policy"] or {}).get("reevaluated") else "initial"
         meta["soft_warnings"] = selection["soft_warnings"]
         meta["producer"] = {"annotated_md_sha256": produced["annotated_md_sha256"], "n_facts": produced["n_facts"],
                             "rules_sha256": produced["rules_sha256"]}

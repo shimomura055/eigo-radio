@@ -39,7 +39,7 @@ def _run(tmp_path, cand, client=None, budget=0.0):
     log = os.path.join(out_root, "cost_log_dryrun.jsonl")
     client = client or lib.StubB3Client(_stored(), log, synthetic_supplement_id="F01")
     meta = lib.run_candidate(client, candidate=cand, topic=THEME, ledger_text=_ledger(),
-                             cand_dir=os.path.join(out_root, "art", cand), out_root=out_root,
+                             cand_dir=os.path.join(out_root, "art", cand, "s1"), out_root=out_root,
                              baseline_ids=lib.baseline_ids_from_production(), budget_jpy=budget, cost_log=log, dry_run=True)
     return meta, client, out_root
 
@@ -72,7 +72,7 @@ def test_baseline_dry_run_reproduces_production_selection_and_artifacts(tmp_path
     meta, _, out_root = _run(tmp_path, "baseline")
     assert meta["analysis"]["selected_fact_ids"] == ["F04", "F11"] == lib.baseline_ids_from_production()
     assert meta["analysis"]["supplement_fact_ids"] == [] and meta["analysis"]["min2_satisfied"] is True
-    cdir = os.path.join(out_root, "art", "baseline", "storyline_b3")
+    cdir = os.path.join(out_root, "art", "baseline", "s1", "storyline_b3")
     for name in ("selected_brief.md", "selected_brief_annotated.md", "annotation.json", "writer_constraints.txt", "full_ledger.json"):
         with open(os.path.join(cdir, name), "rb") as a, open(os.path.join(RUN, "storyline_b3", name), "rb") as b:
             assert a.read() == b.read(), name       # Production producer出力とbyte同一
@@ -166,7 +166,7 @@ def test_min2_stop_is_recorded_not_swallowed(tmp_path):
             return r
     meta, _, out_root = _run(tmp_path, "C2", client=OnlyOne())
     assert meta["status"] == "B3_MIN2_STOP:REEVAL_STILL_LT2"
-    assert os.path.isfile(os.path.join(out_root, "art", "C2", "storyline_b3", "b3_min2_stop_record.json"))
+    assert os.path.isfile(os.path.join(out_root, "art", "C2", "s1", "storyline_b3", "b3_min2_stop_record.json"))
     assert "analysis" not in meta       # STOP時は選定結果を作らない(Production同様)
 
 
@@ -213,19 +213,19 @@ def test_eval_comparison_and_blind_pack_hide_candidate_names(tmp_path):
         _run(tmp_path, c)
     out_root = str(tmp_path / "root")
     rows = ev_mod.collect(out_root, "art", dry_run=False)
-    assert [r["_label"] for r in rows][:2] == ["baseline(現行Production run_mey_01)", "baseline_rerun(同Prompt再走sample)"]
+    assert [r["_label"] for r in rows][:2] == ["baseline(現行Production run_mey_01)", "baseline_rerun/s1"]
     md = ev_mod.render_md(rows, lib.generalization_report())
     assert "F01" in md and "C1" in md
-    probe.run_probe(os.path.join(out_root, "art", "C1"), out_root, 0.0, True, cost_log=os.path.join(out_root, "cost_log_dryrun.jsonl"))
+    probe.run_probe(os.path.join(out_root, "art", "C1", "s1"), out_root, 0.0, True, cost_log=os.path.join(out_root, "cost_log_dryrun.jsonl"))
     rows = ev_mod.collect(out_root, "art", dry_run=False)
     key = ev_mod.blind_pack(rows, out_root)
     pack = open(os.path.join(out_root, "blind_pack.md"), encoding="utf-8").read()
-    assert "C1" not in pack and "baseline" not in pack and set(key.values()) == {"C1", "baseline(現行Production run_mey_01)"} and set(key) == {"A", "B"}
+    assert "C1" not in pack and "baseline" not in pack and set(key.values()) == {"C1/s1", "baseline(現行Production run_mey_01)", "baseline_rerun/s1"} and set(key) == {"A", "B", "C"}
 
 
 def test_writer_probe_runs_production_w1_on_candidate_dir_only_and_refuses_production_dir(tmp_path):
     _, _, out_root = _run(tmp_path, "C3")
-    cdir = os.path.join(out_root, "art", "C3")
+    cdir = os.path.join(out_root, "art", "C3", "s1")
     out = probe.run_probe(cdir, out_root, 0.0, True, cost_log=os.path.join(out_root, "cost_log_dryrun.jsonl"))
     assert os.path.isfile(out["revision2"]) and out["cost"]["real_api_calls"] == 0
     with pytest.raises(RuntimeError):
