@@ -389,3 +389,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-19 | FAMILY-Z-QUALITY-IMPROVEMENT-4-PRODUCTION-01 委任_06(②Std Preview/Comment=Adv方式の日本語適用[P-A]配線+test、付帯test是正3件、JPY0、Status=ITEM2_CODE_WIRED_TESTED_PENDING_PHASE3、runtime evidenceはPhase 3)。報告=docs/pm/RESULT_PACKET_FZQI6.md。
 - 2026-10-19 | FAMILY-Z-QUALITY-IMPROVEMENT-4-PRODUCTION-01 委任_09(run_e2e_04 Std part3_c1 HRページ公開+#116 USER_DECISION_REQUIRED記録、JPY0、Lock操作なし、Status=PHASE3_HR_LOCK_USER_DECISION_REQUIRED)。報告=docs/pm/RESULT_PACKET_FZQI9.md。
 - 2026-10-19 | FAMILY-X-B3-FACT-MIN2-PRODUCTION-01 委任_01(ユーザー指示原文保存+B3下限2件の現行経路調査・最小変更設計[案I/II/III、推奨案III]・Regression案・中東記事再生成計画・費用見積、Phase 1、JPY0、Status=B3MIN2_DESIGN_READY_PENDING_OPUS_A、初回報告未)。報告=docs/pm/RESULT_PACKET_XB3M1.md。
+- 2026-10-19 | PM-DEV-COST-APPROVAL-RULE-300-01 委任_01(開発費承認ルール改訂: 見積100円超→300円超で事前承認、PM_GOVERNANCE 7-7正本改訂+全文書/Agent整合+判定test、JPY0、Status=DOCS_ALIGNED_PENDING_FABLE、初回報告未)。報告=docs/pm/RESULT_PACKET_COST300_1.md。
