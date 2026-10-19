@@ -1,0 +1,94 @@
+{
+ "source": "er026_output/family_z_production_e2e_01/melos/run_e2e_05/cost_log.jsonl(実測usage x pricing_snapshot単価。runner budget guardと同一関数)",
+ "n_records": 211,
+ "total_jpy_measured": 28.7886,
+ "cap_jpy": 80.0,
+ "remaining_vs_cap_jpy": 51.2114,
+ "stages": {
+  "tts_a2": {
+   "jpy": 16.1195,
+   "calls": 122,
+   "by_provider": {
+    "azure": {
+     "jpy": 4.593,
+     "calls": 12,
+     "models": [
+      "azure-speech-stt"
+     ]
+    },
+    "gemini": {
+     "jpy": 9.4353,
+     "calls": 43,
+     "models": [
+      "gemini-2.5-pro-preview-tts",
+      "gemini-3.8-flash-lite-tts"
+     ]
+    },
+    "openai": {
+     "jpy": 0.0062,
+     "calls": 1,
+     "models": [
+      "gpt-6-luna"
+     ]
+    },
+    "openai_asr": {
+     "jpy": 2.085,
+     "calls": 66,
+     "models": [
+      "gpt-4o-mini-transcribe"
+     ]
+    }
+   },
+   "web_search_calls": 0,
+   "usage_not_obtained": 12,
+   "failed_calls": 0
+  },
+  "tts_b1b": {
+   "jpy": 12.6691,
+   "calls": 89,
+   "by_provider": {
+    "azure": {
+     "jpy": 1.7836,
+     "calls": 5,
+     "models": [
+      "azure-speech-stt"
+     ]
+    },
+    "gemini": {
+     "jpy": 9.6062,
+     "calls": 42,
+     "models": [
+      "gemini-2.5-pro-preview-tts",
+      "gemini-3.8-flash-lite-tts"
+     ]
+    },
+    "openai_asr": {
+     "jpy": 1.2794,
+     "calls": 42,
+     "models": [
+      "gpt-4o-mini-transcribe"
+     ]
+    }
+   },
+   "web_search_calls": 0,
+   "usage_not_obtained": 5,
+   "failed_calls": 0
+  }
+ },
+ "by_kind_jpy": {
+  "ASR(azure secondary)": 6.3766,
+  "ASR(openai)": 3.3644,
+  "LLM(openai)": 0.0062,
+  "TTS(gemini)": 19.0414
+ },
+ "web_search_calls_total": 0,
+ "usage_not_obtained_total": 17,
+ "failed_calls_total": 0,
+ "runner_stage_log_spent_jpy_cumulative_last": 28.7886,
+ "classification": {
+  "実測": "cost_log.jsonl usage(OFFICIAL_API_RESPONSE)を単価換算した値",
+  "推定": "なし(本集計は推定値を含まない)",
+  "未取得": "usage_not_obtained_total件(0なら全件取得)"
+ },
+ "reference_other_frame_not_added": {}
+}

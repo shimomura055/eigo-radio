@@ -1,0 +1,31 @@
+# MELOS_REGEN_RUN_E2E_05_RECORD_01(委任_07、2026-10-20、事実のみ。状態=MELOS_REGENERATED_ASSEMBLED_PAGES_UPDATED_PENDING_FABLE)
+
+## 実走
+- 前提: 録音2(run_e2e_04 a2 `full_story_part3_c1` attempt2、wav=`run_e2e_04/a2/narration/full_story_part3_c1.wav` sha256 `713252709b972870…`)を `record_human_approval`(承認キー=元原稿 sha `b6d43773…`)で記録(`run_e2e_04/a2/audit/human_approved_segments.json`、approved_at 2026-10-20T07:48:13)。`review_lock_state.json` sha `6720ce80…3e19` は承認前後で不変。`run_e2e_04/STOP`設置(SUPERSEDED_BY_run_e2e_05、RUN_CLOSEDではない)。
+- run_e2e_05作成: `copy_reusable_run_assets`(copied 66 / denied 308[=306 + 本委任で新規追加の run_e2e_04/STOP・human_approved_segments.json 2件]。計画=`run_e2e_05/run_e2e_05_copy_plan_07.json`)。`stop_scope_check_fzaq7.json` rc=0、STOP_ALL不在。
+- provenance: `writer/provenance.json` の `audio_text_deviations`(旧Melos→He 3件)を `audit/provenance_audio_text_deviations_inherited_from_run_e2e_04.json` へ退避し `[]` にリセット(sha256 c781b0a0…→e3fbef32…、他キー不変、JSON等価確認済み)。`segment_plan_a2/b1b.json`・`writer/r0.md,r1.md,r2.md,std.md` のsha256はrun_e2e_04と一致。`He drank` は新run内に(退避ファイル以外)0件。
+- runner: 1回のみ起動、再起動0。`--run run_e2e_05 --mode real --stage all --approved-budget-jpy 80 --tts-execution-mode STANDARD`、`TTS_EXECUTION_MODE=STANDARD`。開始 2026-10-20T07:49:30 JST / 終了 08:03:22 JST(壁時計13分52秒、page_verify 170秒を含む)。**rc=0**。stage完走: seed_check/writer/std_adjust/plan/support/kp/tts_b1b/tts_a2/provision_shell/gate/assemble/pages/page_verify(writer/std_adjust/plan/support/kpは再利用、LLM呼出なし)。
+- stage別所要: tts_b1b 315.7s / tts_a2 325.0s / provision_shell 0.2s / gate 0.6s / assemble 1.8s / pages 10.7s / page_verify 170.3s。cooldown発生0(`cooldown_occurred` 全clip False)。
+- 名称対応: ディレクトリ`a2`=Standard、`b1b`=Advanced。
+
+## clip結果(`{a2,b1b}/audit/tts_generation_results.json`、全clip一覧=`audit/clip_evidence_summary_07.json`)
+- Standard(a2): 38 segment 全て status=OK(`review_lock_state`は39 key[+topic_intro_en]全RESOLVED)。TTS 2回生成=4 clip(part1_c1・part3_c1・part3_c7・part3_c10)、他は1回。減速(6%)適用23 clip、`A2_SLOWDOWN_REVERIFY` 23行(post_slowdown_classification: NORMALIZED_MATCH 10 / ASR_VALIDATION_UNCERTAIN 6 / EXACT_MATCH 5 / NUMERIC_EQUIVALENCE_MATCH 2、全てstatus=OK)。
+- Advanced(b1b): 39 segment 全て status=OK(`review_lock_state` 40 key全RESOLVED)。全clip TTS 1回(tts_generations_used 未記録=初回)、減速なし。
+- asr_judgement集計: Standard = PASS/primary_pass 16・PASS_WITH_WARNING/secondary_confirmed 4・PASS_WITH_WARNING/primary_pass 4・PASS(approved_equivalence READING_MATCH[日本語3]) 3・TIER1_DIFF_ANCHORED 1・TIER1_NUMERIC_EQUIVALENCE 1・未記録(固定clip等)9。Advanced = PASS/primary_pass 22・PASS_WITH_WARNING/primary_pass 4・TIER1_NUMERIC_EQUIVALENCE 3・TIER1_DIFF_ANCHORED 1・未記録9。
+- M1: Standard `full_story_part1_c5` が `M1_MULTI_CANDIDATE`(warning label)でPASS_WITH_WARNING。Tier3(approved equivalence): 上記 TIER1_DIFF_ANCHORED(Std part2_c1、Adv part3_c1)・TIER1_NUMERIC_EQUIVALENCE(Std part3_c11、Adv part1_c11/part2_c1/part3_c13)・READING_MATCH(日本語 title/comment_1/comment_3)。Secondary(azure)使用: Standard preview・part1_c1・part1_c9・part1_c11(`secondary_confirmed`)。
+- PASS_WITH_WARNING listening list(`*/audit/pass_with_warning_listening_list.json`): Standard 8件(preview・comment_2[JA_NUMERIC_IRREGULAR_READING]・part1_c1・part1_c5[M1_MULTI_CANDIDATE]・part1_c9・part1_c11・part3_c1・part3_c3)、Advanced 4件(part1_c1・part1_c5・part1_c9・part3_c3、全て SECONDARY_CORROBORATED)。
+- **part3_c1(委任の焦点)**: Standard = 2回生成。ASR転写(primary)は `…Water came slowly through a crack in the rock. Mellos drank, got onto his knees, and stood up. …`、`SECONDARY_ASR_CORROBORATED_MATCH`(primary_pass、PASS_WITH_WARNING、`SECONDARY_CORROBORATED`)、減速後 post_slowdown_classification=ASR_VALIDATION_UNCERTAIN→status=OK。最終採用テキスト=元原稿のまま(`Melos drank, got onto his knees, and stood up`、canonical_text=text、`audio_text_deviation`=None、Local Rewriteなし)。Advanced = 1回生成、転写 `…Melos drank, pushed himself onto his knees, and stood. …`、`TIER1_DIFF_ANCHORED`(PASS)、採用テキスト=元原稿(`Melos drank`)。`He drank` 出現0。
+- **Local Rewrite発火: 0**(`er011_output/local_rewrite_recovery/run_e2e_05/` 不在、`attempt_history.jsonl` theme_id=run_e2e_05 の102行[PROCEED 79[a2 39+b1b 40]・A2_SLOWDOWN_REVERIFY 23]にLR行なし、`audio_text_deviation` 全clip 0、gate `audio_text_deviations=[]`)。`LR_REWRITTEN`警告0。
+- **③ live evidence: 未観測**。LRが発火しなかったため `post_slowdown_expected_text_source=local_rewrite_text` の分岐は通っていない(`tts_generation_results.json`にも`post_slowdown_expected_text_source`キー自体は書き出されていない[通常分岐では結果へ出ない/None]。減速後再検証23件は従来分岐[書換えなし]で実行され全OK)。追加の有料検証は行わない(委任文どおり)。
+- HR: Human Review Lock 0(`review_lock_state` 全RESOLVED)、`er006_output/audio_retry_cascade_prod_01/human_review_queue.jsonl` の run_e2e_05 新規行 0、Master Audio Store reuse_telemetry 新規行 0(Z経路は不呼出)。
+
+## gate / assemble / pages / page_verify
+- gate(`*/audit/gate_result_04C.json`): `shared_gate=PASS`、`m2_complete=True`、`audio_text_deviations=[]`(Std/Adv)、`m1_slowdown`はStd 23 clip全て ok。
+- assemble: `a2/assembly/Family_Z_melos_a2.wav`・`b1b/assembly/Family_Z_melos_b1b.wav` 生成(wavはcommit対象外)。
+- pages: `user_test/family_z_melos_02/{index,standard,advanced}.html` と `audio_standard/`・`audio_advanced/` のmp3を更新。
+- page_verify(`run_e2e_05/page_verify_local.json`): `user_page_standard_check.overall=PASS`(failed 空)。standard.html: audio 52 plays_ok 52、story_rows 23、kp_rows 5、comment_rows 3。advanced.html: audio 49 plays_ok 49、story_rows 25、kp_rows 5、comment_rows 3。console_errors・http>=400 全て0。`seek_ok_all=False`(3ページ共通。run_e2e_03の`page_verify_local.json`でも`false`が3件あり前例どおり、Gate項目外)。
+- 注: `user_test/family_z_melos_02/` の未追跡 `audio/`・`hr_items.json`・`hr_review_01.html`(2026-10-19 12:23作成、run_e2e_04 HR確認用の旧ページ)は本委任で作成・変更しておらず、stageしていない。
+
+## 費用(`audit/cost_by_stage_05.json`、`er026_fz_cost_17.py --cap 80`、cost_log.jsonl 211件)
+- 合計 JPY 28.7886 / 上限80(残51.2114)。runner stage log最終 28.7886 と一致。tts_b1b 12.6691(gemini TTS 9.6062/azure ASR 1.7836/openai ASR 1.2794)、tts_a2 16.1195(gemini TTS 9.4353/azure ASR 4.593/openai ASR 2.085/openai LLM 0.0062)。種別: TTS(gemini) 19.0414 / ASR(azure secondary) 6.3766 / ASR(openai) 3.3644 / LLM 0.0062。Web Search 0、failed_calls 0、usage未取得17件(azure ASR、推定値は含めず)。
+- 当日(2026-10-20 JST)累計: `daily_dev_cost_01.py` adopted 28.79。run_e2e_04(46.14)比 -17.35(TTS retry・Pro fallback・HR Lockなし、gemini TTS 22.58→19.04)。
