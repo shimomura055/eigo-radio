@@ -534,7 +534,10 @@ def _gloss_alignment_hr_unresolved(kp):
     """関所: artifactにHuman Review待ち(gloss_alignment_status=FAILED_HUMAN_REVIEW_REQUIRED、旧版の"FAILED"含む)の
     itemがあれば、そのitem一覧を返す。さらに(OF-KGCPW-08)再整合の対象なのにgloss_alignment_statusが無い=ON化前・未評価の
     itemも、`_unevaluated=True`付きで返す(決定論・LLM 0。対象0件の成果物は通過)。HR解消(resolve_gloss)後は
-    HUMAN_RESOLVEDになり通過する。"""
+    HUMAN_RESOLVEDになり通過する。
+    ITEM1(2026-10-19、人称・指示対象整合): collect_unevaluatedは消費側の定義(select_consumer_unevaluated)=従来の未評価 ∪
+    決定論の人称語突合で不整合のitem。X runnerはここでSTOPするだけで修復経路は持たない(Zのstage_kp関所のみが修復する。
+    census上Xの不整合artifactは0件。OPEN_ITEMSに『X: 修復経路なし・STOPのみ』を記録)。"""
     _ga = _gloss_align_mod()
     out = list(_ga.collect_unresolved(kp))
     out += [{**it, "_unevaluated": True} for it in _ga.collect_unevaluated(kp)]

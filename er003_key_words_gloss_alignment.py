@@ -150,6 +150,153 @@ def select_alignment_targets(merged_items: list) -> list:
             or kp_adds_words_beyond_display(it.get("display_phrase"), it.get("key_phrase"))]
 
 
+# ============================================================
+# 人称・指示対象の整合(FAMILY-Z-QUALITY-IMPROVEMENT-4-PRODUCTION-01 委任_05, 2026-10-19)
+# ユーザー2026-10-19 APPROVED_FOR_PRODUCTION(項目①) / Opus条件Aレビュー_E F1-1〜F1-6。X/Z/Y共通。
+# 根本原因: 英語KPがcanonicalizationで人称を一般化(your->someone's等)しても、選定時に付いた日本語意味
+#   (具体的な人称語を含む日本語意味)は追従せず、旧版は_GENERIC_TOKENSを『語の追加』に数えないため再整合の対象外だった。
+# 方式(案III): (a)人称一般化itemを再整合の対象に追加(生成用) (b)汎用制約文(不定の人称は日本語でも不定のまま・文脈は語義選択のみ)
+#   (c)決定論的な人称語突合を採用値(adopt_gloss)へ適用し、不整合は既存validate->retry(上限2)->HRへ接続。
+# 特定表現・記事に依存する分岐は持たない(閉じた語彙表の構造的な突合のみ)。kill switch(EIGO_KP_GLOSS_ALIGNMENT=0)OFF時は無効。
+# 生成用の対象(select_generation_targets)と消費側の未評価判定(select_consumer_unevaluated)は意図的に別関数(F1-1):
+#   消費側へ人称一般化item全件を入れると、健全な既存artifact(日本語意味に人称語が無いもの)が一斉にSTOPする。
+# ============================================================
+PERSON_ALIGNMENT_VERSION = "ER-003-KP-GLOSS-PERSON-ALIGN-01"
+PERSON_NORMALIZATION_REASON = "generalize_person_dependent_reference"
+# 英語KPが具体的な人称を持つ(=検査対象外とする)語。canonicalizationの閉じた語彙表のkey + 目的格・一人称。
+_CONCRETE_PERSON_EN = frozenset(set(kc._PERSON_DEPENDENT_TO_GENERIC) |
+                                {"me", "him", "us", "them", "myself", "ourselves", "i", "we", "mine", "ours", "hers"})
+_REFLEXIVE_EN = frozenset({"one's", "oneself"})
+_KANJI = "㐀-鿿々〆"
+# 日本語の具体人称語(閉じた語彙)。かな表記は『きみ』『おれ』『かれ』等の語中・他語義との衝突が大きいため含めない。
+_JA_PERSON_WORDS = ("あなた", "貴方", "お前", "おまえ", "わたくし", "わたし", "ぼく", "かのじょ", "我々", "彼女", "君", "私", "僕", "俺", "彼")
+_JA_REFLEXIVE_WORDS = ("自分", "自身")
+_JA_SUFFIX = ("たち", "から", "より", "だけ", "さえ", "自身", "の", "が", "は", "を", "に", "と", "も", "へ", "で", "や", "ら", "達")
+_JA_PUNCT = "\\s、。・,.!?！？～〜~」』)）"
+_JA_AFTER = "(?=(?:" + "|".join(_JA_SUFFIX) + ")|$|[" + _JA_PUNCT + "])"
+_JA_PERSON_RE = re.compile("(?<![" + _KANJI + "])(" + "|".join(_JA_PERSON_WORDS) + ")" + _JA_AFTER)
+# 『あなた方』のみ『方』を接尾として許容する(『彼方』『君主』等の語を誤検出しない)。
+_JA_ANATA_KATA_RE = re.compile("(?<![" + _KANJI + "])あなた方")
+_JA_REFLEXIVE_RE = re.compile("(?<![" + _KANJI + "])(" + "|".join(_JA_REFLEXIVE_WORDS) + ")" + _JA_AFTER)
+
+
+def _kp_tokens(kp: Optional[str]) -> list:
+    k = kc._normalize_for_match(kp or "").replace("’", "'")
+    return _TOKEN_RE.findall(k)
+
+
+def indefinite_person_tokens(key_phrase: Optional[str]) -> list:
+    """英語KPに含まれる不定の人称(一般形)トークン(出現順・重複除去)。"""
+    out: list = []
+    for t in _kp_tokens(key_phrase):
+        if t in _GENERIC_TOKENS and t not in out:
+            out.append(t)
+    return out
+
+
+def _ja_person_hits(gloss: Optional[str]) -> tuple:
+    """(具体人称語のlist, 再帰語『自分/自身』のlist)。境界付き照合(直前が漢字でない・直後が助詞/接尾/末尾)。"""
+    g = unicodedata.normalize("NFKC", gloss or "")
+    concrete = [m.group(1) for m in _JA_PERSON_RE.finditer(g)] + ["あなた方" for _ in _JA_ANATA_KATA_RE.finditer(g)]
+    reflexive = [m.group(1) for m in _JA_REFLEXIVE_RE.finditer(g)]
+    return concrete, reflexive
+
+
+def person_reference_mismatch(key_phrase: Optional[str], gloss_ja: Optional[str]) -> Optional[str]:
+    """決定論(LLM 0): 英語KPが不定の人称(someone/one's/oneself等)を持ち、かつ具体的な人称語(me/him/us/them/your等)を
+    持たないとき、日本語意味が具体的な人称語(あなた/私/彼/君…)を含めば不整合理由を返す。無ければNone。
+    再帰: KPのどこかにone's/oneselfがあれば『自分/自身』を許容(例 put oneself in someone's shoes)。
+    someone系のみのKPで『自分』は不整合。『相手/その人/人』は不定の自然な訳なので検出しない。"""
+    toks = _kp_tokens(key_phrase)
+    generic = [t for t in toks if t in _GENERIC_TOKENS]
+    if not generic or any(t in _CONCRETE_PERSON_EN for t in toks):
+        return None
+    concrete, reflexive = _ja_person_hits(gloss_ja)
+    bad = list(dict.fromkeys(concrete))
+    if not any(t in _REFLEXIVE_EN for t in toks):
+        bad += [w for w in dict.fromkeys(reflexive)]
+    if not bad:
+        return None
+    return (f"人称不整合: 英語KP『{key_phrase}』は不定の人称({'/'.join(dict.fromkeys(generic))})だが、日本語意味『{gloss_ja}』が"
+            f"具体的な人称語({'/'.join(bad)})を含む。不定の人称は日本語でも不定のまま(『誰かの』『人の』、再帰のone's等は『自分の』)表す")
+
+
+def is_person_generalized(item: dict) -> bool:
+    """canonicalizationが人称を一般化したitem(normalization_reason、またはdisplay->keyが閉じた語彙表の1対1置換)。"""
+    if not indefinite_person_tokens(item.get("key_phrase")):
+        return False
+    if item.get("normalization_reason") == PERSON_NORMALIZATION_REASON:
+        return True
+    try:
+        return bool(kc._is_valid_person_generalization(item.get("key_phrase") or "", item.get("display_phrase") or ""))
+    except Exception:
+        return False
+
+
+def person_generalization_pairs(item: dict) -> list:
+    """display_phrase->key_phraseで人称トークンが一般形へ置換された組([{from,to}])。導出できなければ[]。"""
+    d = _kp_tokens(item.get("display_phrase"))
+    k = _kp_tokens(item.get("key_phrase"))
+    if len(d) != len(k):
+        return []
+    return [{"from": a, "to": b} for a, b in zip(d, k)
+            if a != b and b in (kc._PERSON_DEPENDENT_TO_GENERIC.get(a) or ())]
+
+
+def _person_mismatch_reason(item: dict) -> Optional[str]:
+    """statusにかかわらず全itemへ適用(F1-2)。例外=HUMAN_RESOLVED(人間確定値を再度STOPさせない)。"""
+    if item.get("gloss_alignment_status") == STATUS_HUMAN_RESOLVED:
+        return None
+    return person_reference_mismatch(item.get("key_phrase"), item.get("japanese_gloss"))
+
+
+def select_generation_targets(merged_items: list) -> list:
+    """(a)生成用: 従来の再整合対象 + 人称一般化item + 決定論checkで不整合のitem。消費側(select_consumer_unevaluated)とは別関数。"""
+    out = []
+    for it in merged_items:
+        if (select_alignment_targets([it]) or is_person_generalized(it) or _person_mismatch_reason(it)):
+            out.append(it)
+    return out
+
+
+def select_person_mismatches(items: list) -> list:
+    """修復/検出の対象: 決定論checkで不整合のitem(HUMAN_RESOLVEDとHR待ちを除く。HR待ちは別経路collect_unresolvedで止まる)。"""
+    return [it for it in items if isinstance(it, dict)
+            and it.get("gloss_alignment_status") not in (STATUS_HR_REQUIRED, STATUS_OLD_FAILED)
+            and _person_mismatch_reason(it)]
+
+
+def select_consumer_unevaluated(items: list) -> list:
+    """(b)消費側: 従来の定義(再整合対象なのにstatus無し) + 決定論checkで不整合のitem。
+    人称一般化item全件は入れない(健全artifactを一斉STOPさせない。F1-1)。"""
+    out = [it for it in select_alignment_targets(items) if not it.get("gloss_alignment_status")]
+    seen = {id(it) for it in out}
+    out += [it for it in select_person_mismatches(items) if id(it) not in seen]
+    return out
+
+
+def person_mismatch_warnings(items: list) -> list:
+    """HUMAN_RESOLVEDで人称不整合になっているitem(STOPさせず、WARNとして記録するだけ)。"""
+    return [{"rank": it.get("rank"), "key_phrase": it.get("key_phrase"), "japanese_gloss": it.get("japanese_gloss"),
+             "reason": person_reference_mismatch(it.get("key_phrase"), it.get("japanese_gloss"))}
+            for it in items if isinstance(it, dict) and it.get("gloss_alignment_status") == STATUS_HUMAN_RESOLVED
+            and person_reference_mismatch(it.get("key_phrase"), it.get("japanese_gloss"))]
+
+
+PERSON_CONSTRAINT_TEXT = (
+    "【人称・指示対象の規則(indefinite_person_tokens_in_key_phraseを持つ項目に適用。承認済みgloss規則・上記1〜3より優先)】\n"
+    "- key_phraseの不定の人称(someone's/someone/somebody/one's/oneself等)は、日本語でも不定のまま表してください"
+    "(例: 『誰かの』『人の』『人を』。one's/oneselfのように主語自身を指す再帰の場合は『自分の』『自分自身を』)。"
+    "display_phrase_before_canonicalization・current_japanese_gloss・source_sentenceにある具体的な人称"
+    "(あなた・君・私・僕・彼・彼女・彼ら・我々等)を日本語意味へ残してはいけません。"
+    "不定の人称を具体的な人称で訳すことは『誤っている』に当たります。current_japanese_glossがそうなっている場合は、"
+    "指示2の『書き換えない』の例外として、current_gloss_consistent=falseにして書き換えてください。\n"
+    "- source_sentenceは、辞書に複数の語義がある表現で、そのうちどの語義かを選ぶためだけに使い、"
+    "人称の指示対象を決めるためには使わないでください。\n"
+    "- 逐語訳は求めません。不定の人称を訳出すると不自然になる場合は、人称を明示しない自然な表現にしてかまいません。"
+    "(型の例: catch someone's attention -> 『人の注意を引く』であって『あなたの注意を引く』ではない。)\n\n")
+
+
 class GlossRulesExtractionError(RuntimeError):
     pass
 
@@ -361,16 +508,35 @@ def check_added_word_mappings(required_words: list, mappings: Any, gloss: str) -
     return result
 
 
-def build_user_message_corrected(targets: list, article_text: str, rules: Optional[str] = None) -> str:
+def build_user_message_corrected(targets: list, article_text: str, rules: Optional[str] = None,
+                                 prior: Optional[dict] = None) -> str:
+    """prior: {rank: {"gloss": 前回提案, "reasons": [前回INVALID理由]}}。retry時だけ項目単位で渡す(ITEM1 F1-3)。"""
     rules = rules if rules is not None else (preflight(True) or {})["rules"]
-    items = [{
-        "rank": it["rank"],
-        "key_phrase": it["key_phrase"],
-        "display_phrase_before_canonicalization": it.get("display_phrase"),
-        "current_japanese_gloss": it.get("japanese_gloss"),
-        "source_sentence": it.get("source_sentence", ""),
-        "added_content_words": added_content_words(it.get("display_phrase"), it.get("key_phrase")),
-    } for it in targets]
+    items = []
+    any_person = False
+    for it in targets:
+        d = {
+            "rank": it["rank"],
+            "key_phrase": it["key_phrase"],
+            "display_phrase_before_canonicalization": it.get("display_phrase"),
+            "current_japanese_gloss": it.get("japanese_gloss"),
+            "source_sentence": it.get("source_sentence", ""),
+            "added_content_words": added_content_words(it.get("display_phrase"), it.get("key_phrase")),
+        }
+        ind = indefinite_person_tokens(it.get("key_phrase"))
+        if ind:
+            any_person = True
+            d["indefinite_person_tokens_in_key_phrase"] = ind
+            pairs = person_generalization_pairs(it)
+            if pairs:
+                d["person_generalization"] = pairs
+        if prior and it["rank"] in prior:
+            d["previous_attempt_rejected"] = {"gloss": prior[it["rank"]].get("gloss"),
+                                              "reasons": list(prior[it["rank"]].get("reasons") or [])}
+        items.append(d)
+    person_block = PERSON_CONSTRAINT_TEXT if any_person else ""
+    prior_block = ("previous_attempt_rejected(ある項目のみ)は、前回の応答が検証で却下された理由です。同じ誤りを繰り返さないでください。\n\n"
+                   if prior else "")
     return (
         "以下の各英語key_phraseは、教材として最終確定した英語表現です。current_japanese_glossは、確定前の候補表現"
         "(display_phrase_before_canonicalization)を基準に付けた日本語グロスで、確定したkey_phrase全体とは"
@@ -397,6 +563,7 @@ def build_user_message_corrected(targets: list, article_text: str, rules: Option
         "- key_phrase「fall into」にcurrent「～に落ちる」: 意味は表れているので一致です(「～に陥る」へ書き換えません)。\n\n"
         "key_phrase単体で他の文脈でも再利用できる自然な訳にし、本文固有の固有名詞・文脈の追加はしないでください。"
         "key_phrase全体の意味を反映できている場合のみqa_reflects_all_key_phrase_wordsをPASSにしてください。\n\n"
+        + person_block + prior_block +
         "【日本語グロスの規則(承認済み選定Promptと同一)】\n" + rules + "\n\n"
         "【対象項目】\n" + json.dumps(items, ensure_ascii=False, indent=2) + "\n\n【記事本文(参考)】\n" + article_text
     )
@@ -411,7 +578,7 @@ def validate_item_corrected(resp: Any, target: dict, mapping_gate: bool = False)
     reasons: list = []
     out = {"rank": rank, "valid": False, "reasons": reasons, "machine_check": None, "adopt_gloss": None,
            "proposed_gloss": None, "current_gloss_consistent": None, "qa": None, "reasoning": None,
-           "added_word_mappings": None}
+           "added_word_mappings": None, "person_check": None}
     if not isinstance(resp, dict):
         reasons.append("応答にこのrankのitemが無い")
         return out
@@ -446,6 +613,11 @@ def validate_item_corrected(resp: Any, target: dict, mapping_gate: bool = False)
         reasons.append("current_gloss_consistent=偽なのにcurrentと同じglossを返した(矛盾)")
     adopt = cur if (consistent is True and same) else g
     out["adopt_gloss"] = adopt
+    # ITEM1(F1-3): 決定論の人称語突合は提案値ではなく採用値adopt_glossに掛ける(current維持でも素通りさせない)。
+    pm = person_reference_mismatch(target.get("key_phrase"), adopt)
+    out["person_check"] = pm
+    if pm:
+        reasons.append(pm)
     required = added_content_words(target.get("display_phrase"), target.get("key_phrase"))
     mc = check_added_word_mappings(required, resp.get("added_word_mappings"), adopt)
     out["machine_check"] = mc
@@ -473,10 +645,11 @@ def run_alignment_gate_corrected(make_factory_for: Callable[[str], Callable], ta
     attempts: list = []
     messages: list = []
     pending = list(targets)
+    prior: dict = {}   # ITEM1 F1-3: 前回INVALID理由(人称語残存等)を項目単位でretryのuser messageへ渡す
     for attempt in range(1, max_attempts + 1):
         if not pending:
             break
-        msg = build_user_message_corrected(pending, article_text, rules)
+        msg = build_user_message_corrected(pending, article_text, rules, prior=prior or None)
         messages.append(msg)
         fn = make_factory_for(msg)
         rec = {"attempt": attempt, "target_ranks": [t["rank"] for t in pending]}
@@ -520,6 +693,8 @@ def run_alignment_gate_corrected(make_factory_for: Callable[[str], Callable], ta
             if v["valid"]:
                 adopted[t["rank"]] = {**v, "attempt": attempt}
                 n_valid += 1
+            else:
+                prior[t["rank"]] = {"gloss": v.get("proposed_gloss"), "reasons": list(v["reasons"])}
         rec["status"] = "ALIGN_PASS" if n_valid == len(pending) else ("ALIGN_PARTIAL" if n_valid else "ALIGN_INVALID")
         rec["n_valid"] = n_valid
         rec["n_items"] = len(pending)
@@ -579,14 +754,16 @@ def apply_alignment_corrected(merged: dict, targets: list, gate: dict) -> dict:
 
 def align_glosses(merged: dict, article_text: str, make_factory_for: Callable[[str], Callable],
                   out_dir: Optional[str] = None, article_id: str = "", enabled: Optional[bool] = None,
-                  mapping_gate: bool = False) -> dict:
+                  mapping_gate: bool = False, only_ranks: Optional[list] = None) -> dict:
     """戻り値: {"merged": 更新後merged, "status": ..., "targets": [ranks], "attempts": [...]}。
     対象0件のときはAPI呼出なし・mergedは無変更(同一object)。enabled=False(kill switch)なら status=DISABLED で無変更。"""
     if enabled is None:
         enabled = GLOSS_ALIGNMENT_ENABLED
     if not enabled:
         return {"merged": merged, "status": "DISABLED", "targets": [], "attempts": []}
-    targets = select_alignment_targets(merged["items"])
+    targets = select_generation_targets(merged["items"])   # ITEM1(F1-1): 生成用の対象(従来 ∪ 人称一般化 ∪ 人称不整合)
+    if only_ranks is not None:   # 永続化済みartifactの修復(Z stage_kpの人称整合関所): 指定rankのみ
+        targets = [t for t in targets if t["rank"] in set(only_ranks)]
     if not targets:
         return {"merged": merged, "status": "NO_TARGETS", "targets": [], "attempts": []}
     pf = preflight(True)
@@ -628,7 +805,7 @@ def collect_unresolved(kp_json: Any) -> list:
 
 def collect_unevaluated(kp_items: Any) -> list:
     """OF-KGCPW-08(LLM 0・決定論): 再整合の対象(select_alignment_targets)なのにgloss_alignment_statusが無いitem
-    =ON化前・未評価のKP成果物。kill switch OFF時は評価対象外のため[]。対象0件の成果物は通過([])。
+    =ON化前・未評価のKP成果物。加えて(ITEM1)決定論の人称語突合で不整合のitem(statusにかかわらず。HUMAN_RESOLVEDは除く)。kill switch OFF時は評価対象外のため[]。対象0件の成果物は通過([])。
     kp_itemsはitemのlistまたはartifact dict(items)。"""
     if not flag_enabled():
         return []
@@ -637,7 +814,7 @@ def collect_unevaluated(kp_items: Any) -> list:
     if not isinstance(kp_items, list):
         return []
     items = [it for it in kp_items if isinstance(it, dict)]
-    return [it for it in select_alignment_targets(items) if not it.get("gloss_alignment_status")]
+    return select_consumer_unevaluated(items)   # ITEM1(F1-1): 消費側の定義(従来 ∪ 人称不整合)。人称一般化item全件は入れない
 
 
 def build_hr_entries(article_id: str, level: str, unresolved_items: list) -> list:

@@ -1235,6 +1235,134 @@ def _src_gate(ctx, lv: str, text: str) -> dict:
         raise FamilyZE2EStop(str(e)) from e
     return rep
 
+E2E_PERSON_REPAIR_EST_JPY = 0.5   # 人称整合関所の修復(gloss再整合1〜2回)のbudget guard見積(実測1回約0.06円)
+
+
+def _person_repair_factory(ctx, lv: str):
+    """人称整合関所の修復で使うLLM factory。hook(test/mock)優先。mockでhook無しは実APIへ出さずSTOP。
+    実運用=scaffold.run_key_phrase_canonicalization内のgloss再整合と同一のmodel routing(process=A2_SUPPORT/B1_SUPPORT)。"""
+    hook = ctx.hooks.get("gloss_align_factory")
+    if hook is not None:
+        return hook
+    if ctx.mode != "real":
+        raise FamilyZE2EStop(f"FAMILY_Z_KP_PERSON_REPAIR_NO_FACTORY({lv}): mock/dry-runでは修復用factory(hooks.gloss_align_factory)が必要"
+                             "(実APIへは出さない)")
+    import er003_key_words_gloss_alignment as ga
+    process = "A2_SUPPORT" if lv == "a2" else "B1_SUPPORT"
+    model = routing.require_model(process, routing.SUPPORT_MODEL)
+
+    def factory(msg: str):
+        return ga.make_alignment_fn(msg, model=model)
+    return factory
+
+
+def _gloss_fields(item: dict) -> dict:
+    """itemのうち日本語意味(gloss)に関わるフィールド(japanese_gloss/japanese_gloss_tts/gloss_*)。"""
+    return {k: v for k, v in item.items() if k in ("japanese_gloss", "japanese_gloss_tts") or k.startswith("gloss_")}
+
+
+def _result_gloss_diff(res_merged: dict, art: dict) -> bool:
+    """stage結果のcanonicalization.mergedと、artifact(SRC D1等の後処理が入る)とで、gloss関連フィールドだけを比較する。"""
+    by = {it["rank"]: it for it in (res_merged.get("items") or [])}
+    for it in art.get("items") or []:
+        r = by.get(it["rank"])
+        if r is None or _gloss_fields(r) != _gloss_fields(it):
+            return True
+    return res_merged.get("gloss_alignment_unresolved") != art.get("gloss_alignment_unresolved")
+
+
+def _sync_kp_result(ctx, lv: str, prov, art: dict, records: list) -> str:
+    """artifact(keywords_canonicalized.json)を正として、ensure_stageの出力(key_phrases/<lv>_result.json)の
+    canonicalization.mergedの**gloss関連フィールドだけ**を同期し(SRC D1等が後でartifactへ足すフィールドは持ち込まない)、
+    同一処理内でprov entryのoutput_sha256を更新+修復記録を残してprov.save()する(Opus_E F2-1(a)。
+    更新しないと次回ensure_stageが出力ファイルsha不一致でSTOPする)。旧entryはprov.regenerationsに残る。"""
+    m = _m()
+    w62, st = m.w62, m.st
+    res_path = f"{ctx.out_dir}/key_phrases/{lv}_result.json"
+    res = w62.rj(res_path)
+    canon = res.setdefault("canonicalization", {})
+    cm = canon.get("merged")
+    if cm is None:
+        canon["merged"] = art
+    else:
+        by = {it["rank"]: it for it in cm.get("items") or []}
+        for it in art.get("items") or []:
+            tgt = by.get(it["rank"])
+            if tgt is None:
+                continue
+            for k in list(_gloss_fields(tgt)):
+                tgt.pop(k, None)
+            tgt.update(_gloss_fields(it))
+        if "gloss_alignment_unresolved" in art:
+            cm["gloss_alignment_unresolved"] = art["gloss_alignment_unresolved"]
+        else:
+            cm.pop("gloss_alignment_unresolved", None)
+    if records:
+        res.setdefault("person_gloss_repairs", []).extend(records)
+    out_text = st.dumps(res)
+    w62.wt(res_path, out_text)
+    old = prov.stage_entry(f"kp_{lv}")
+    if old is None:
+        raise FamilyZE2EStop(f"FAMILY_Z_KP_PERSON_REPAIR_NO_PROV_ENTRY({lv}): kp_{lv}の来歴entryが無い(推測で補完しない)")
+    entry = dict(old)
+    entry["output_sha256"] = w62.sha(out_text)
+    if records:
+        entry["person_gloss_repairs"] = list(entry.get("person_gloss_repairs") or []) + records
+        entry["person_gloss_repaired_at"] = w62._now()
+    prov.set_entry(f"kp_{lv}", entry)
+    prov.save()
+    return res_path
+
+
+def _gloss_person_gate(ctx, lv: str, text: str, prov) -> dict:
+    """人称・指示対象整合の関所(ITEM1、ユーザー2026-10-19 APPROVED_FOR_PRODUCTION / Opus_E F2-1(a))。
+    stage_kpの ensure_stage(kp_<lv>) 後・collect_unevaluated 前に置く全経路共通の1箇所(初回/reuse/--regenerate-stage/HR resume)。
+    永続化済みartifactに、英語KPが不定の人称なのに日本語意味が具体的な人称語を持つitemがあれば、選定・canonicalizationを
+    保持したまま既存align_glossesでglossのみ再生成し、artifact・stage結果・provenanceを更新する。
+    修復が成立しない場合は既存_gloss_hr_gateと同じHR報告→STOP(新しいSTOP経路は作らない)。有料呼出は_guard経由。
+    kill switch(EIGO_KP_GLOSS_ALIGNMENT=0)OFF時は無効。HUMAN_RESOLVEDは修復/STOPせずWARN記録のみ。"""
+    import er003_key_words_gloss_alignment as ga
+    m = _m()
+    w62, st = m.w62, m.st
+    if not ga.flag_enabled():
+        return {"status": "DISABLED"}
+    kp_path = f"{ctx.out_dir}/key_phrases/{lv}/keywords_canonicalized.json"
+    kp = w62.rj(kp_path)
+    items = kp.get("items") or []
+    rec = {"status": "CLEAN", "repaired_ranks": [], "warnings": ga.person_mismatch_warnings(items)}
+    # artifact(keywords_canonicalized.json)を正とする(_load_gloss_hr_resumeと同じ思想)。resolve_gloss等でartifactだけが更新された場合、
+    # stage結果のcanonicalization.mergedとprovenanceを同期する(古いHR状態をstage結果に残さない)。
+    _cm = (w62.rj(f"{ctx.out_dir}/key_phrases/{lv}_result.json").get("canonicalization") or {}).get("merged")
+    if _cm is not None and _result_gloss_diff(_cm, kp):
+        _sync_kp_result(ctx, lv, prov, kp, [])
+        rec["synced_from_artifact"] = True
+    mism = ga.select_person_mismatches(items)
+    if mism:
+        ranks = [it["rank"] for it in mism]
+        _guard(ctx, f"kp_{lv}_person_repair", E2E_PERSON_REPAIR_EST_JPY)
+        factory = _person_repair_factory(ctx, lv)
+        article_id = f"family_z_{ctx.slug}_{w62.LEVEL_DIR[lv]}"
+        with ctx.stage_context("kp_gloss_person_repair"):
+            aligned = ga.align_glosses(kp, text, factory, out_dir=f"{ctx.out_dir}/key_phrases/{lv}/gloss_person_repair",
+                                       article_id=article_id, enabled=True, only_ranks=ranks)
+        new_items = {it["rank"]: it for it in aligned["merged"]["items"]}
+        old_items = {it["rank"]: it for it in items}
+        records = [{"rank": r, "reason": ga.person_reference_mismatch(old_items[r].get("key_phrase"), old_items[r].get("japanese_gloss")),
+                    "old_gloss": old_items[r].get("japanese_gloss"), "new_gloss": new_items[r].get("japanese_gloss"),
+                    "new_status": new_items[r].get("gloss_alignment_status"), "version": ga.PERSON_ALIGNMENT_VERSION,
+                    "alignment_status": aligned["status"], "cost_jpy": aligned.get("cost_jpy")} for r in ranks]
+        with open(kp_path, "w", encoding="utf-8") as f:
+            json.dump(aligned["merged"], f, ensure_ascii=False, indent=2)
+        res_path = _sync_kp_result(ctx, lv, prov, aligned["merged"], records)
+        rec.update({"status": "REPAIRED" if aligned["status"] == "ALIGN_PASS" else aligned["status"],
+                    "repaired_ranks": ranks, "records": records})
+        # 修復が成立しなかったitem(FAILED_HUMAN_REVIEW_REQUIRED)は既存のHR経路(報告書・event・snapshot・STOP)へ。
+        _gloss_hr_gate(ctx, lv, text, w62.rj(res_path), prov=prov)
+    else:
+        # 再利用経路でHR待ちが残っていれば(修復失敗後の再実行等)同じHR経路で止める(resolve_gloss後はHUMAN_RESOLVEDで通過)。
+        _gloss_hr_gate(ctx, lv, text, w62.rj(f"{ctx.out_dir}/key_phrases/{lv}_result.json"), prov=prov)
+    return rec
+
 
 def stage_kp(ctx) -> dict:
     m = _m()
@@ -1269,6 +1397,8 @@ def stage_kp(ctx) -> dict:
         _snap = f"{ctx.out_dir}/key_phrases/{lv}/{_GLOSS_HR_SNAPSHOT}"
         if os.path.exists(_snap):
             os.replace(_snap, _snap.replace(".json", ".consumed.json"))
+        # ITEM1(Opus_E F2-1(a)): 人称・指示対象整合の関所。全経路共通の1箇所(ensure_stage後・collect_unevaluated前)。
+        _person_rep = _gloss_person_gate(ctx, lv, text, prov)
         # OF-KGCPW-08: ON化前・未評価のKP stageを(再利用で)通さない。対象なのにstatus無しならSTOPして再生成を要求する。
         _uneval = ga.collect_unevaluated(w62.rj(f"{ctx.out_dir}/key_phrases/{lv}/keywords_canonicalized.json"))
         if _uneval:
@@ -1282,6 +1412,7 @@ def stage_kp(ctx) -> dict:
                        "gloss_alignment_status": _canon_doc.get("gloss_alignment_status"),
                        "gloss_alignment_metrics": _canon_doc.get("gloss_alignment_metrics"),
                        "gloss_alignment_flag": ga.flag_effective(),
+                       "gloss_person_gate": _person_rep,
                        "src_posthoc": {"label": _src_rep["label"], "status": _src_rep["status"],
                                        "quote_boundary_truncated_count": _src_rep["quote_boundary_truncated_count"]}}
     # 方針6: Adv KP第3segment=英語解説(Coffee最終v3 Adv / X B1と同一構成)。
