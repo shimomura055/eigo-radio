@@ -49,16 +49,16 @@ class CanonicalTextTest(unittest.TestCase):
         self.assertEqual(len(result["edits"]), 1)
         self.assertEqual(result["edits"][0]["method"], "deterministic_text_substitution_no_llm")
         # 語数はほぼ変わらない(名前の付記のみ、+数語程度)
-        self.assertTrue(280 <= result["word_count"] <= 420)
+        self.assertTrue(330 <= result["word_count"] <= 470)
 
     def test_word_count_range_boundaries(self):
-        ok, n = runner.check_word_count(" ".join(["word"] * 280))
+        ok, n = runner.check_word_count(" ".join(["word"] * 330))
         self.assertTrue(ok)
-        ok, n = runner.check_word_count(" ".join(["word"] * 279))
+        ok, n = runner.check_word_count(" ".join(["word"] * 329))
         self.assertFalse(ok)
-        ok, n = runner.check_word_count(" ".join(["word"] * 420))
+        ok, n = runner.check_word_count(" ".join(["word"] * 470))
         self.assertTrue(ok)
-        ok, n = runner.check_word_count(" ".join(["word"] * 421))
+        ok, n = runner.check_word_count(" ".join(["word"] * 471))
         self.assertFalse(ok)
 
 

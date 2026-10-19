@@ -72,7 +72,7 @@ class PromptAssemblyTest(unittest.TestCase):
     def test_r0_prompt_advanced_and_requirements(self):
         p, applied = w.build_r0_prompt(_seed())
         self.assertEqual(len(applied), 2)                        # Seed変換計画のA2/語数文言を置換
-        self.assertIn("about 350 words (roughly 280-420", p)   # 2026-10-12決定: Adv/Std共通280-420
+        self.assertIn("about 400 words (roughly 330-470", p)   # 2026-10-19ユーザー指示④: Adv/Std共通400±70
         self.assertIn("B1-B2", p)
         self.assertNotIn("A2", p)                                # Advanced Promptにレベル指定A2が残らない
         self.assertNotIn("300–350", p)
@@ -96,7 +96,7 @@ class PromptAssemblyTest(unittest.TestCase):
     def test_revise_prompt(self):
         p = w.build_revise_prompt("BODY")
         self.assertIn("BODY", p)
-        self.assertIn("280-420", p)
+        self.assertIn("330-470", p)
         self.assertNotIn("400-560", p)
         self.assertNotIn("A2", p)
 
@@ -108,8 +108,8 @@ class PromptAssemblyTest(unittest.TestCase):
         self.assertNotIn("## In one line", p)                      # In one line要求は含めない
         self.assertNotIn("Keep the same Markdown structure", p)
         self.assertIn("exactly 8 paragraphs", p)                   # 段落整列契約(構造契約、指示は維持)
-        self.assertIn("about 350 words", p)                        # 語数目標はAdvと同じ(Adv語数に連動しない)
-        self.assertIn("between 280 and 420", p)
+        self.assertIn("about 400 words", p)                        # 語数目標はAdvと同じ(Adv語数に連動しない)
+        self.assertIn("between 330 and 470", p)
         self.assertNotIn("Keep every fact exactly", p)             # 過度な忠実性要求の撤回
         self.assertIn("must not be the same text as the source", p)
         self.assertIn(adv.strip(), p)
@@ -147,7 +147,7 @@ class GuardrailTest(unittest.TestCase):
         g = w.check_adv_guardrails(_story_text(8, 30))
         self.assertTrue(any("ADV_WORDS_OUT_OF_RANGE" in x for x in g["warnings"]))
         self.assertEqual(g["failures"], [])
-        g = w.check_adv_guardrails(_story_text(8, 40))        # 320語(280-420内)
+        g = w.check_adv_guardrails(_story_text(8, 45))        # 360語(330-470内)
         self.assertEqual(g["warnings"], [])
 
     def test_adv_name_rule_is_warn_only(self):
@@ -793,6 +793,66 @@ class CliTest(unittest.TestCase):
     def test_real_requires_budget(self):
         with self.assertRaises(SystemExit):
             w.main(["--run", "x", "--stage", "writer", "--mode", "real"])
+
+
+def _body_n(n):
+    return "# T\n\n" + " ".join(["word"] * n) + "\n"
+
+
+class WordTarget400Test(unittest.TestCase):
+    """2026-10-19 委任_04(ユーザー指示④): 目標400語・目安330-470(400±70)、WARNのみ。"""
+
+    def test_constants_single_definition_and_er026_match(self):
+        import er026_family_z_fiction_production_runner_01 as r26
+        self.assertEqual(w.Z_WORD_TARGET, 400)
+        self.assertEqual(w.Z_WORD_TOLERANCE, 70)
+        self.assertEqual(w.TARGET_WORDS, 400)
+        self.assertEqual(w.ADV_WORD_RANGE, (330, 470))
+        self.assertEqual(w.STD_WORD_RANGE, (330, 470))
+        self.assertEqual(r26.ACCEPT_WORD_RANGE, w.ADV_WORD_RANGE)
+
+    def test_boundaries_warn_only_and_no_failures(self):
+        def body(n):
+            return _body_n(n)
+        for n, warn in ((329, True), (330, False), (470, False), (471, True)):
+            g = w.check_adv_guardrails(body(n))
+            self.assertEqual(g["failures"], [], n)               # raise/STOP/failure化しない
+            self.assertEqual(any("ADV_WORDS_OUT_OF_RANGE" in x for x in g["warnings"]), warn, n)
+        adv = _story_text(8, 60)
+        for n, warn in ((329, True), (330, False), (470, False), (471, True)):
+            g = w.check_std_guardrails(body(n), adv)
+            self.assertFalse(any("STD_WORDS_OUT_OF_RANGE" in x for x in g["failures"]), n)
+            self.assertEqual(any("STD_WORDS_OUT_OF_RANGE" in x for x in g["warnings"]), warn, n)
+
+    def test_prompts_contain_400_range_and_no_old_targets(self):
+        p, _ = w.build_r0_prompt(_seed())
+        self.assertIn("about 400 words (roughly 330-470", p)
+        sp = w.build_std_prompt(_story_text(8, 60))
+        self.assertIn("about 400 words", sp)
+        self.assertIn("between 330 and 470", sp)
+        rp = w.build_revise_prompt("BODY")
+        self.assertIn("about 330-470 words", rp)
+        s2 = dict(_seed(), conversion_plan="Totally different plan.")
+        po, applied = w.build_r0_prompt(s2)
+        self.assertIn("override_appended", applied)
+        self.assertIn("about 400 words", po)
+        self.assertIn("(roughly 330-470)", po)
+        for prompt in (p, sp, rp, po):
+            for old in ("350 words", "280-420", "280 and 420", "300–350"):
+                self.assertNotIn(old, prompt)
+
+    def test_old_targets_not_in_prompt_constants(self):
+        texts = [w.R0_BLOCK_LENGTH_ADV, w._CONVERSION_OVERRIDE, w.REVISE_USER_TMPL, w.STD_PROMPT_TAIL]
+        texts += [rep for _pat, rep in w._CONVERSION_SUBSTITUTIONS]   # 置換後文言(被置換正規表現は対象外)
+        for t in texts:
+            for old in ("350", "280", "420", "300"):
+                self.assertNotIn(old, t, old)
+
+    def test_melos_measured_counts_in_range_no_warn(self):
+        # run_e2e_03実測(408/387語)は新範囲内=WARNなし(本文再生成不要の根拠)
+        for n in (408, 387):
+            g = w.check_adv_guardrails(_body_n(n))
+            self.assertFalse(any("OUT_OF_RANGE" in x for x in g["warnings"]), n)
 
 
 if __name__ == "__main__":

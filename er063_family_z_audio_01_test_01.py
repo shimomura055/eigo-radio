@@ -97,6 +97,38 @@ class StyleTableTest(unittest.TestCase):
         self.assertEqual(fl.FAMILY_X_ROLE_STYLE_JA, z._X_JA_J3)
         self.assertEqual(fl.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0], "natural, clear, conversational")
 
+    def test_std_dialogue_style_text_none_same_as_adv_and_label(self):
+        # 2026-10-19 ③: Std/Adv Dialogueとも style_text_for=None。ラベルに旧SLOWERを含まない。
+        sa = [s for s in make_plan("a2")[0] if s.kind == "dialogue"]
+        sb = [s for s in make_plan("b1b")[0] if s.kind == "dialogue"]
+        self.assertTrue(sa and sb)
+        for s in sa + sb:
+            self.assertIsNone(z.style_text_for(s), s.clip_id)
+        std = z.FAMILY_Z_ROLE_STYLE["DIALOGUE_STD"]
+        self.assertIsNone(std["text"])
+        self.assertNotIn("SLOWER", std["style_label"] + std["origin"])
+        # 共通Style対象外(EXCEPTION)のまま
+        self.assertTrue(z.CROSS_FAMILY_COMMON_STYLE_MAP["DIALOGUE_STD"]["Z"].startswith("EXCEPTION"))
+        # Std Dialogueのreuse_key style shaはAdvと同値(None由来)、他roleは従前どおりROLE_STYLE textのsha
+        self.assertEqual(z.build_reuse_key(sa[0])["style_prefix_sha256"], z.build_reuse_key(sb[0])["style_prefix_sha256"])
+        for lvl in ("a2", "b1b"):
+            for s in make_plan(lvl)[0]:
+                if s.kind != "dialogue":
+                    self.assertEqual(z.build_reuse_key(s)["style_prefix_sha256"],
+                                     z.style_prefix_sha256(z.FAMILY_Z_ROLE_STYLE[s.role_key]["text"]), s.clip_id)
+
+    def test_effective_style_sha_std_dialogue_equals_adv_default(self):
+        import er003_b1_p9a_audio as p9a
+        sa = [s for s in make_plan("a2")[0] if s.kind == "dialogue"][0]
+        self.assertEqual(z._effective_style_sha(sa, z.style_text_for(sa)), z.style_prefix_sha256(p9a.ENGLISH_STYLE_PREFIX))
+
+    def test_no_a2_slower_prefix_remains_in_family_z_audio_module(self):
+        import inspect
+        self.assertNotIn("A2_ENGLISH_STYLE_PREFIX_SLOWER", inspect.getsource(z))
+        # 共有定数自体は他Family用に残置
+        import er003_v1_n3_01_tts_generate as n3
+        self.assertTrue(hasattr(n3, "A2_ENGLISH_STYLE_PREFIX_SLOWER"))
+
     def test_narrator_style_not_mixed_into_dialogue(self):
         for lvl in ("a2", "b1b"):
             plan, _, _ = make_plan(lvl)
@@ -108,6 +140,8 @@ class StyleTableTest(unittest.TestCase):
                     self.assertTrue(st is None or z._STYLE_TEXT["PD06"] not in st)
         adv_d = [s for s in make_plan("b1b")[0] if s.kind == "dialogue"][0]
         self.assertIsNone(z.style_text_for(adv_d))  # style_prefix_overrideを渡さない
+        std_d = [s for s in make_plan("a2")[0] if s.kind == "dialogue"][0]
+        self.assertIsNone(z.style_text_for(std_d))  # 2026-10-19 決定③: Stdも既定Dialogue Style(Advと同一)
 
     def test_role_style_assignment(self):
         std, _, _ = make_plan("a2")
@@ -603,7 +637,9 @@ class WiringTest(unittest.TestCase):
         self.assertEqual(m.call_args.args[2], "Charon")
         self.assertNotIn("style_prefix_override", m.call_args.kwargs)
 
-    def test_std_dialogue_a2_slower_and_postprocess_no_pd8(self):
+    def test_std_dialogue_default_style_same_as_adv_and_postprocess_6pct_no_pd8(self):
+        # 2026-10-19 委任_04(ユーザー決定③): 期待値を意図的に更新(旧: Std Dialogue=A2_ENGLISH_STYLE_PREFIX_SLOWERを生成時に渡す)。
+        # 現: Advと同一の既定Dialogue Style(style_prefix_overrideを渡さない)+生成後6%減速のみ。
         import er012_b_family_voices_production_01 as bv
         import er003_v1_n3_01_tts_generate as n3
         spec = self._spec("a2", "dialogue", "melos")
@@ -611,8 +647,8 @@ class WiringTest(unittest.TestCase):
                 mock.patch.object(n3, "apply_a2_slowdown_postprocess", return_value={"status": "OK", "slowdown_applied": True}) as pp:
             r = z.real_generators()["dialogue"](spec, "x/a2/narration/full_story_part3_c1.wav")
         self.assertEqual(m.call_args.args[2], "Algieba")
-        self.assertEqual(m.call_args.kwargs["style_prefix_override"], n3.A2_ENGLISH_STYLE_PREFIX_SLOWER)
-        self.assertNotIn(z._STYLE_TEXT["PD06"], m.call_args.kwargs["style_prefix_override"])
+        self.assertNotIn("style_prefix_override", m.call_args.kwargs)   # Advと同一(既定ENGLISH_STYLE_PREFIX)
+        self.assertEqual(m.call_args.kwargs, {"max_attempts": 3})
         pp.assert_called_once()
         self.assertTrue(r["slowdown_applied"])
 

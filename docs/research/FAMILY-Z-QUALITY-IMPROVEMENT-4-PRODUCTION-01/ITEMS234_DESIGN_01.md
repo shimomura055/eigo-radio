@@ -156,6 +156,11 @@ Std Dialogue 10clip=Gemini 2.5 pro TTS 11呼出(1clipが2回)JPY4.2646+OpenAI AS
 ### 4-5 Phase 3(本文reuse確認)
 1. 退避: `writer/{r0,r1,r2,std_adjust}_prompt.txt`→`*_gen350.txt`。2. 新run dirで`--stage all`(writerは`--regenerate-stage`なし): `r0/r1/r2/std_adjust`が**`reused`**でLLM呼出0・`cost_log`にwriter stage 0行。3. `provenance.json`の`output_sha256`がrun_e2e_03と同一。4. Guardrail再計算で`ADV/STD_WORDS_OUT_OF_RANGE`警告0(387/408)。
 
+### 4-6 【委任_04追記 2026-10-19】実装済み差分とPhase 3用コマンド
+- 実装(③④、JPY0): ③=`er063`の`style_text_for`(dialogueは常にNone)・`dialogue()`(Std分岐から`style_prefix_override`撤去)・`FAMILY_Z_ROLE_STYLE["DIALOGUE_STD"]`ラベル/origin・`CROSS_FAMILY_COMMON_STYLE_MAP["DIALOGUE_STD"]`文言。HEAD比較でreuse_key差分は`DIALOGUE_STD`の`style_prefix_sha256`のみ(21 key同一/2 key差、make_plan a2+b1b)。④=`er062`に`Z_WORD_TARGET=400`/`Z_WORD_TOLERANCE=70`から導出(`ADV/STD_WORD_RANGE=(330,470)`、`TARGET_WORDS=400`)、Prompt文言4箇所、`er026.ACCEPT_WORD_RANGE=(330,470)`。
+- Phase 3(別委任)前の`*_prompt.txt`退避(`writer/{r0,r1,r2,std_adjust}_prompt.txt`は本文再利用時も現行Promptで上書きされるため)。`<RUN_SRC>`=`er026_output/family_z_production_e2e_01/melos/run_e2e_03/writer`:
+  `for s in r0 r1 r2 std_adjust; do cp "<RUN_SRC>/${s}_prompt.txt" "<RUN_SRC>/${s}_prompt_gen350.txt"; done`(新run dirへコピーする運用の場合は、コピー先の`writer/`で同名退避してから`--stage all`)。退避後、`provenance.json`の`prompt_sha256`が旧値のままで本文`output_sha256`が不変(=reused)なことを確認する。
+
 ## 5. 実装順序案(並列可能性・ファイル競合)
 
 | 順 | 作業 | ファイル | 依存/競合 | 並列 |

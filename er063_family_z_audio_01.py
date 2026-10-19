@@ -176,9 +176,9 @@ FAMILY_Z_ROLE_STYLE = {
         "origin": "family_z_specific: er012 generate_voice_body_wide_margin 既定(style_prefix_override=None)。Narrator Styleは混入しない",
         "path": "er012.generate_voice_body_wide_margin"},
     "DIALOGUE_STD": {
-        "style_label": "existing_dialogue_style+A2_SLOWER(n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER)", "text": None, "voice": "per-speaker",
+        "style_label": "existing_dialogue_style(ENGLISH_STYLE_PREFIX)+post6%", "text": None, "voice": "per-speaker",
         "language": "en", "origin_kind": _ORIGIN_KIND_Z,
-        "origin": "family_z_specific: er012 Voice A/B Std既存仕様(A2_ENGLISH_STYLE_PREFIX_SLOWER+6%後処理)。Narrator Styleは混入しない",
+        "origin": "family_z_specific: Advと同一の既定Dialogue Style(style_prefix_override=None、生成時の減速指示なし、2026-10-19ユーザー決定③)+生成後6%減速。Narrator Styleは混入しない",
         "path": "er012.generate_voice_body_wide_margin + n3_tts.apply_a2_slowdown_postprocess"},
     "STD_JA_PREVIEW": {"style_label": "S3", "text": _STYLE_TEXT["S3"], "voice": "Aoede", "language": "ja",
                        "origin_kind": _ORIGIN_KIND_COMMON,
@@ -234,7 +234,7 @@ CROSS_FAMILY_COMMON_STYLE_MAP = {
     "TOPIC_INTRO_EN": {"X": None, "Z": "EXCEPTION:X既存承認TOPIC_INTRO逐語コピー(共通Style表の対象外)"},
     "JAPANESE_TITLE": {"X": None, "Z": "EXCEPTION:X既存承認J3逐語コピー(共通Style表の対象外)"},
     "DIALOGUE_ADV": {"X": None, "Z": "EXCEPTION:Dialogueは既存speaker assignment/Dialogue Style/Voiceを尊重(ユーザー§2B)"},
-    "DIALOGUE_STD": {"X": None, "Z": "EXCEPTION:Dialogueは既存speaker assignment/Dialogue Style/Voiceを尊重(ユーザー§2B)"},
+    "DIALOGUE_STD": {"X": None, "Z": "EXCEPTION:Dialogueは既存speaker assignment/Voiceを尊重(ユーザー§2B)。Std Dialogue生成時StyleはAdv同一の既定Dialogue Style(2026-10-19決定③)"},
     "SHELL": {"X": None, "Z": "EXCEPTION:既存Master/共有資産(TTSなし)"},
 }
 
@@ -700,9 +700,7 @@ def copy_reusable_run_assets(src_run_dir: str, dst_run_dir: str, *, dry_run: boo
 def style_text_for(spec: ClipSpec):
     """そのclipで実際に渡すstyle_prefix_override(None=従来Dialogue style/既存挙動)。"""
     if spec.kind == "dialogue":
-        if spec.level == "a2":
-            import er003_v1_n3_01_tts_generate as n3_tts
-            return n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER
+        # Std/Adv共通: 既定Dialogue Style(2026-10-19ユーザー決定③。Stdも生成時の減速指示なし、後処理6%減速のみ)
         return None
     return FAMILY_Z_ROLE_STYLE[spec.role_key]["text"]
 
@@ -787,14 +785,13 @@ def real_generators() -> dict:
     def dialogue(spec, out_path):
         text = _norm_for_tts(spec)
         if spec.level == "a2":
-            # Std: 既存Voice A/B Std仕様(A2_ENGLISH_STYLE_PREFIX_SLOWER + 6%後処理)。Narrator Style(PD06)は渡さない。
+            # Std: Advと同一の既定Dialogue Style(生成時の減速指示なし)+生成後6%減速(2026-10-19ユーザー決定③)。Narrator Style(PD06)は渡さない。
             # 委任_06c(OF-AUW-C-08、原文L204「最大3回のTTS生成フロー」): 減速後NGでも通算TTS3回の残予算で取り直す外側ループ
-            # (旧: 減速後NGは再生成せずSTOPPED)。Dialogue固有のPrompt(A2_ENGLISH_STYLE_PREFIX_SLOWER)・Voice・話者帰属は不変。
+            # (旧: 減速後NGは再生成せずSTOPPED)。Voice・話者帰属は不変。
             return n3_tts.generate_with_a2_slowdown_outer_loop(
                 spec.clip_id, text, out_path,
                 lambda max_attempts: bvoices.generate_voice_body_wide_margin(
-                    text, out_path, spec.voice, max_attempts=max_attempts,
-                    style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER))
+                    text, out_path, spec.voice, max_attempts=max_attempts))
         return bvoices.generate_voice_body_wide_margin(text, out_path, spec.voice)  # style_prefix_overrideを渡さない
 
     def charon_en(spec, out_path):

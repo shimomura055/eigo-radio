@@ -598,4 +598,5 @@ def test_h_dialogue_std_and_voices_a2_use_outer_loop_with_prompt_unchanged(tmp_p
     gens = z_audio.real_generators()
     spec = z_audio.ClipSpec(clip_id="dlg1", level="a2", kind="dialogue", text="Hello there.", voice="Puck", speaker="A")
     gens["dialogue"](spec, str(tmp_path / "d.wav"))
-    assert [s[2] for s in seen] == [n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER] * 2 and [s[0] for s in seen] == ["Puck", "Puck"]
+    # [Voices A2=SLOWER維持, Z Std Dialogue=None(2026-10-19決定③: Adv同一の既定Style)]
+    assert [s[2] for s in seen] == [n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER, None] and [s[0] for s in seen] == ["Puck", "Puck"]

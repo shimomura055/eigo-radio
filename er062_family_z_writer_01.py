@@ -6,16 +6,16 @@ Dialogue話者判定・Preview/Comment/KP・来歴(provenance)。
 (er026 runnerへの統合は後続)。本moduleはTrial(er059)をimportしない。
 【構成】構造処理(純粋関数・課金0)は er062_family_z_structure_01.py。本fileはLLM呼出・stage管理・CLI。
 【Prompt】R0/R1/R2/Std調整はTrial②(er059 Sol only)のPrompt/effort/developer文を正式化(B3Zなし)。
-  Advanced化のための差分(最小): Length and levelをA2→Advanced(B1-B2相当・280-420語)、Seed変換計画の
+  Advanced化のための差分(最小): Length and levelをA2→Advanced(B1-B2相当・400±70語=330-470語)、Seed変換計画の
   A2/語数文言の置換、編集方針(原作のエッセンス重視)・Story Type metadata・タイトル行の追加。
-  【仕様修正 2026-10-12(委任_11、ユーザー正式決定)】原稿長はAdv/Stdとも280-420英語語(Family X共通目標、レベルで変えない)。
+  【仕様修正 2026-10-12(委任_11、ユーザー正式決定)】原稿長はAdv/Stdとも共通(レベルで変えない)。【更新 2026-10-19(ユーザー指示④)】目標400語・目安330-470語(400±70)に変更(旧280-420/目標350は置換)。
   Adv/Std語数比Guardrail・原作保持条件(中心Story・人物関係・結末の厳密保持)は撤回。原作のエッセンスを活かし
   面白さ・自然なStorytelling優先、原作と異なる展開も作品として成立すれば許容。品質問題はWriter Prompt側で対応し、
   Checker/Validatorは増設しない(語数はWARNのみ・再生成/STOPしない)。
 【Model】routing key経由(FAMILY_Z_WRITER_ADV_R0/R1/R2, FAMILY_Z_STD_ADJUST=gpt-6.1-sol、
   FAMILY_Z_STORY_SPLIT, FAMILY_Z_DIALOGUE_ATTRIBUTION=gpt-6-luna)。返却model不一致はSTOP。
 【R2固定】retry/regenerationは明示 --regenerate-stage のみ。親sha不一致はSTOP(FamilyZProvenanceMismatchStop)。
-【語数Guardrail】Adv/Std とも 280-420 語(範囲外はWARNのみ)。再生成は明示指定時のみ。(旧OPEN-302暫定 Adv400-560/Std300-500/比85-110%は撤回)
+【語数Guardrail】Adv/Std とも 目標400語・目安330-470 語=400±70(範囲外はWARNのみ・語数理由の自動再生成/STOPなし)。再生成は明示指定時のみ。(旧OPEN-302暫定 Adv400-560/Std300-500/比85-110%は撤回)
 """
 from __future__ import annotations
 
@@ -47,9 +47,11 @@ WRITER_EFFORT = "high"                            # Trial②と同じ(温度は�
 SPLIT_EFFORT = "medium"
 ATTRIBUTION_EFFORT = "medium"
 
-ADV_WORD_RANGE = (280, 420)                       # 2026-10-12ユーザー決定: Family X共通目標(WARNのみ)
-STD_WORD_RANGE = (280, 420)                       # レベルで目標を変えない
-TARGET_WORDS = 350                                # 範囲中央(Writer/Std調整Promptの目標語数)
+Z_WORD_TARGET = 400                               # 2026-10-19ユーザー指示④: 目標400語(単一定義)
+Z_WORD_TOLERANCE = 70                             # 目安=400±70(WARNのみ)
+ADV_WORD_RANGE = (Z_WORD_TARGET - Z_WORD_TOLERANCE, Z_WORD_TARGET + Z_WORD_TOLERANCE)   # (330, 470) WARNのみ
+STD_WORD_RANGE = ADV_WORD_RANGE                   # レベルで目標を変えない
+TARGET_WORDS = Z_WORD_TARGET                      # Writer/Std調整Promptの目標語数
 STD_AVG_SENT_FACTOR = 0.85                        # soft gate(WARN)
 STD_IDENTICAL_FAIL = 0.50                         # M8: 一致文率>=50%でFAIL
 
@@ -93,10 +95,10 @@ Use 1 or 2 characters as the core of the story; 3 at the absolute most if truly 
 R0_BLOCK_LISTENING = """[Listening-friendliness -- an editorial goal, not a hard rule]
 This article will also be listened to as audio. Try to keep it easy for a listener to follow: avoid introducing more named people than necessary, avoid jumping between many different times or places, avoid long strings of abstract explanation, and try to keep it reasonably clear at each point whose perspective the reader/listener is in."""
 
-# Advanced化の差分ブロック(Trialは「A2・約350語(280-420)」だった)
+# Advanced化の差分ブロック(Trialは「A2・約350語」だった。本番は2026-10-19以降400±70語)
 R0_BLOCK_LENGTH_ADV = """[Length and level]
 - Write natural, fluent English for an upper-intermediate learner (around CEFR B1-B2): varied sentence structures, richer but common vocabulary, natural rhythm. It must still be easy to follow by ear.
-- Target length for the reader-facing text is about 350 words (roughly 280-420 words is fine)."""
+- Target length for the reader-facing text is about 400 words (roughly 330-470 words is fine)."""
 
 # 追加ブロック(Trialに無い。編集方針・Story Type metadata)
 # 2026-10-12ユーザー決定: 原作保持条件(中心Story・人物関係・結末の厳密保持)を撤回し、エッセンス重視・自然なStorytelling優先へ置換。
@@ -125,17 +127,17 @@ R0_TEMPLATE = (
 
 # Seed変換計画のAdvanced化置換(A2・語数文言のみ。見つからなければ末尾に上書き指示を追加)
 _CONVERSION_SUBSTITUTIONS = (
-    (re.compile(r"simple third-person English at about 300[–-]350 words"), "natural third-person English at about 350 words"),
+    (re.compile(r"simple third-person English at about 300[–-]350 words"), "natural third-person English at about 400 words"),
     (re.compile(r"while simplifying the language and minor details for A2 learners"),
      "while keeping minor details light, for upper-intermediate (B1-B2) learners"),
 )
-_CONVERSION_OVERRIDE = ("\nLevel and length override: write natural upper-intermediate (B1-B2) English, about 350 words "
-                        "(roughly 280-420); ignore any earlier A2 / word-count instruction.")
+_CONVERSION_OVERRIDE = ("\nLevel and length override: write natural upper-intermediate (B1-B2) English, about 400 words "
+                        "(roughly 330-470); ignore any earlier A2 / word-count instruction.")
 
-# R1/R2(Trial②のREVISE_USER_TMPLのAdvanced化: A2 -> B1-B2相当。語数は280-420語でA2時と同じ)
+# R1/R2(Trial②のREVISE_USER_TMPLのAdvanced化: A2 -> B1-B2相当。語数は400±70=330-470語)
 REVISE_USER_TMPL = ("Here is a short story:\n\n{body}\n\n"
                     "Without changing the events, the characters, or the cause-and-effect, please revise it into a more engaging story. "
-                    "Keep it at a natural upper-intermediate level (CEFR B1-B2), about 280-420 words, in third person, "
+                    "Keep it at a natural upper-intermediate level (CEFR B1-B2), about 330-470 words, in third person, "
                     "and only Melos may have a personal name. Output the title and the story only.")
 
 # Std調整(Z専用): X共有ブロックはimport(STANDARD_A2_NEW_VOCAB_BLOCK/STANDARD_A2_DEVELOPER)。
@@ -372,7 +374,7 @@ def build_std_prompt(adv_text: str) -> str:
     import er003_v1_n3_01_standard_a2_generate as sa2     # X共有ブロック(import only)
     title, body = st.split_title_body(adv_text)
     paras = st.clean_body_paragraphs(body)
-    # 2026-10-12ユーザー決定: 語数目標はAdvと同じ280-420(Advの語数に連動させない)。
+    # 2026-10-12ユーザー決定: 語数目標はAdvと同じ400±70=330-470(Advの語数に連動させない)。
     tail = STD_PROMPT_TAIL.format(n_paragraphs=len(paras), target_words=TARGET_WORDS,
                                   lo_words=STD_WORD_RANGE[0], hi_words=STD_WORD_RANGE[1],
                                   advanced_story=adv_text.strip())

@@ -122,7 +122,7 @@ class MockFullPipelineTest(unittest.TestCase):
         self.assertTrue(all(x["mode"] == "mock" for x in rows))
 
     def test_word_count_and_ratio_guardrails_are_warn_only_and_never_regenerate(self):
-        # 2026-10-12ユーザー決定: Adv/Stdとも280-420語(WARNのみ)。Adv/Std語数比Guardrailは撤回。自動再生成しない。
+        # 2026-10-12ユーザー決定: Adv/Stdとも400±70=330-470語(2026-10-19更新、WARNのみ)。Adv/Std語数比Guardrailは撤回。自動再生成しない。
         g_adv = self.results["writer"]["stages"]["r2"]["guardrails"]
         self.assertEqual(g_adv["failures"], [])
         self.assertFalse(any("RATIO" in w for w in g_adv["warnings"]))

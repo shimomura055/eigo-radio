@@ -266,7 +266,7 @@ def test_dialogue_std_reaches_unified_judge_via_j4_and_j7_with_prompt_unchanged(
                         Az((n3.tts_safe_news_en(CANON), None)))
     r = gens["dialogue"](spec, out_path)
     # Dialogue固有のPrompt/Voice不変。委任_06c(OF-AUW-C-08)で外側ループ化: 初回のmax_attempts=通算予算3(残予算)が追加される。
-    assert captured["voice"] == "Puck" and captured["kw"] == {"max_attempts": 3, "style_prefix_override": n3.A2_ENGLISH_STYLE_PREFIX_SLOWER}
+    assert captured["voice"] == "Puck" and captured["kw"] == {"max_attempts": 3}  # 2026-10-19 決定③: Z Std Dialogueは生成時Style override無し(Adv同一)
     assert r["status"] == "OK" and r["slowdown_applied"] is True
     assert r["asr_judgement"]["state"] == uj.PASS_WITH_WARNING            # J7(減速後)が統一judge経由でWARNING
     assert r["asr_judgement_pre_slowdown"] == inner_judgement             # J4(減速前)のrecordは退避

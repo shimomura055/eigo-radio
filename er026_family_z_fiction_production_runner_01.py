@@ -211,7 +211,7 @@ STORY_REGISTRY = {
 # ============================================================
 # Canonical text: 受入条件照合 + 人物名ルール復元(item 2)
 # ============================================================
-ACCEPT_WORD_RANGE = (280, 420)  # recon根拠: FICTION-EXTERNAL-SEED-SELECTION-
+ACCEPT_WORD_RANGE = (330, 470)  # 2026-10-19ユーザー指示④: 400±70(er062.ADV/STD_WORD_RANGEとtestで一致固定)。旧(280,420) recon根拠: FICTION-EXTERNAL-SEED-SELECTION-
                                  # CRITERIA-TRIAL-02_REPORT.md §2 Gate3
 
 
@@ -341,7 +341,7 @@ def resolve_canonical_text(story_key: str) -> dict:
 def resolve_canonical_text_plain(story_key: str) -> dict:
     """run_text_stage(Phase 1互換)用のcanonical解決。2026-10-12ユーザー決定により、原作保持Validator(er061)も
     旧人物名ルール(check_character_name_rule/restore_character_names)も使わない。Trial本文は改変せず、
-    語数目標(280-420)だけをWARN相当で記録する。権利Gateはrun_text_stage側で維持。"""
+    語数目標(330-470)だけをWARN相当で記録する。権利Gateはrun_text_stage側で維持。"""
     loaded = load_trial_seed_and_story(story_key)
     title, body = strip_markdown_title(loaded["raw_trial_text"])
     word_ok, word_count = check_word_count(body)
