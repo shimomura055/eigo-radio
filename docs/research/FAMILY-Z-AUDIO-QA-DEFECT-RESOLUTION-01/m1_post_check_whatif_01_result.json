@@ -1,0 +1,160 @@
+{
+ "recording_what_if": {
+  "att2_primary_PRODUCTION(E21行9613) 'Mello drank'": {
+   "current_M1": [
+    false,
+    "SUBSTITUTION_NOT_F1_EXPLAINED"
+   ],
+   "P1_M1": [
+    true,
+    "M1_MULTI_CANDIDATE_ACCEPT"
+   ]
+  },
+  "att2_azure 'Mellows drank'": {
+   "current_M1": [
+    false,
+    "MULTI_CANDIDATE_NO_MATCH"
+   ],
+   "P1_M1": [
+    false,
+    "MULTI_CANDIDATE_NO_MATCH"
+   ]
+  },
+  "att3_primary 'Mello drank'": {
+   "current_M1": [
+    false,
+    "SUBSTITUTION_NOT_F1_EXPLAINED"
+   ],
+   "P1_M1": [
+    true,
+    "M1_MULTI_CANDIDATE_ACCEPT"
+   ]
+  },
+  "att3_azure 'Mellow strength'": {
+   "current_M1": [
+    false,
+    "BASE_CLASSIFICATION_NOT_UNCERTAIN"
+   ],
+   "P1_M1": [
+    false,
+    "BASE_CLASSIFICATION_NOT_UNCERTAIN"
+   ]
+  },
+  "run03_PASS_primary 'Mellow drank'": {
+   "current_M1": [
+    false,
+    "SUBSTITUTION_NOT_F1_EXPLAINED"
+   ],
+   "P1_M1": [
+    true,
+    "M1_MULTI_CANDIDATE_ACCEPT"
+   ]
+  }
+ },
+ "fixtures": [
+  {
+   "name": "非歯擦音後続 Melos left -> Mello left",
+   "desc": "現行M1=不受理(OF-178)、P1=Melo(現行自動PASS)と同判定になるか",
+   "base_classification": "ASR_VALIDATION_UNCERTAIN",
+   "current_M1": [
+    false,
+    "SUBSTITUTION_NOT_F1_EXPLAINED"
+   ],
+   "P1_M1": [
+    true,
+    "M1_MULTI_CANDIDATE_ACCEPT"
+   ]
+  },
+  {
+   "name": "非歯擦音後続 Melos left -> Melo left (現行Production)",
+   "desc": "現行でPASS(長文ではbenign複数形+ratio)",
+   "base_classification": "HIGH_SIMILARITY_SAFE",
+   "current_M1": [
+    false,
+    "BASE_CLASSIFICATION_NOT_UNCERTAIN"
+   ],
+   "P1_M1": [
+    false,
+    "BASE_CLASSIFICATION_NOT_UNCERTAIN"
+   ]
+  },
+  {
+   "name": "歯擦音後続 Melos said -> Mello said",
+   "desc": "現行M1受理(Pattern A)",
+   "base_classification": "ASR_VALIDATION_UNCERTAIN",
+   "current_M1": [
+    true,
+    "M1_MULTI_CANDIDATE_ACCEPT"
+   ],
+   "P1_M1": [
+    true,
+    "M1_MULTI_CANDIDATE_ACCEPT"
+   ]
+  },
+  {
+   "name": "母音差 Melos -> Milo (別音素列)",
+   "desc": "どちらも不受理であること",
+   "base_classification": "ASR_VALIDATION_UNCERTAIN",
+   "current_M1": [
+    false,
+    "MULTI_CANDIDATE_NO_MATCH"
+   ],
+   "P1_M1": [
+    false,
+    "MULTI_CANDIDATE_NO_MATCH"
+   ]
+  },
+  {
+   "name": "母音差 Melos -> Malos",
+   "desc": "どちらも不受理であること",
+   "base_classification": "ASR_VALIDATION_UNCERTAIN",
+   "current_M1": [
+    false,
+    "MULTI_CANDIDATE_NO_MATCH"
+   ],
+   "P1_M1": [
+    false,
+    "MULTI_CANDIDATE_NO_MATCH"
+   ]
+  },
+  {
+   "name": "同音素列 + 別内容語 (Mello took)",
+   "desc": "どちらも不受理であること",
+   "base_classification": "TRUE_CONTENT_MISMATCH",
+   "current_M1": [
+    false,
+    "BASE_CLASSIFICATION_NOT_UNCERTAIN"
+   ],
+   "P1_M1": [
+    false,
+    "BASE_CLASSIFICATION_NOT_UNCERTAIN"
+   ]
+  },
+  {
+   "name": "語末脱落が他の語 (Melos -> Mel)",
+   "desc": "どちらも不受理であること",
+   "base_classification": "ASR_VALIDATION_UNCERTAIN",
+   "current_M1": [
+    false,
+    "MULTI_CANDIDATE_NO_MATCH"
+   ],
+   "P1_M1": [
+    false,
+    "MULTI_CANDIDATE_NO_MATCH"
+   ]
+  }
+ ],
+ "census_E21_entity_only_rows": {
+  "rows_evaluated": 2309,
+  "current_M1_accept": 368,
+  "P1_M1_accept": 392,
+  "newly_accepted_by_P1_unique_pairs": [
+   {
+    "canonical": "melos",
+    "asr": "mello",
+    "rows": 24
+   }
+  ]
+ },
+ "ledger_sha256_unchanged": true
+}
