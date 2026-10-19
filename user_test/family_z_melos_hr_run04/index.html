@@ -3,41 +3,62 @@
 <title>Human Review: 走れメロス Std 後半 最初の1文の読み確認</title>
 <style>body{font-family:sans-serif;max-width:820px;margin:1em auto;padding:0 1em;line-height:1.6}
 .card{border:1px solid #bbb;border-radius:8px;padding:.8em 1em;margin:1em 0}h2{font-size:1.1em;margin:.2em 0}
-.ng{color:#a00}.ok{color:#060}.t{background:#f5f5f5;padding:.4em .6em;border-radius:4px;font-size:.92em}audio{width:100%}mark{background:#ffe08a}</style></head><body>
-<h1>Human Review 依頼: 「走れメロス」Standard版 後半パート1</h1>
-<p>自動チェックでは「Melos」の読みを機械的に確定できず、人間の聴取判断待ちで停止しています。以下3つの録音と前回版を聞いて、判断をチャットでお知らせください(このページに選択操作はありません)。</p>
-<div class="card"><h2>確認してほしいこと</h2>
-<p>次の本文で、<mark>Melos</mark> が人名「メロス」として自然に聞こえるか(語末の s が発音され、Mel- が「メル」と読まれているか)。ASRは Mello/Mellow/Mellows 等と綴りますが、綴りだけでは読みの良否は判断できません。他の文の誤り・途切れ・不自然な間も合わせてご確認ください。</p>
+.ng{color:#a00}.ok{color:#060}.t{background:#f5f5f5;padding:.4em .6em;border-radius:4px;font-size:.92em}audio{width:100%}mark{background:#ffe08a}
+table{border-collapse:collapse;width:100%;font-size:.92em}td,th{border:1px solid #bbb;padding:.3em .5em;vertical-align:top}</style></head><body>
+<h1>Human Review 依頼(更新版): 「走れメロス」Standard版 後半パート1</h1>
+<p><b>この依頼は、原因分析の結果を踏まえて内容を更新しました。</b>前回版にあった「現在ファイルに残っている音声は録音3の後処理版」という説明は誤りでした(正しくは下の「録音4」です)。録音ファイル自体は変えていません。</p>
+
+<div class="card"><h2>1. 何が起きたか(要点)</h2>
+<ul>
+<li>対象は、後半パート1の最初の1つの音声(約25秒、4文目に <mark>Melos drank</mark> を含む)です。この1か所だけが自動チェックを通らず、停止しています。</li>
+<li>前回の実行(run_e2e_03)では、同じ文・同じ設定で自動合格しました。今回は、同じ設定なのに読み上げ音声の細かな揺れと、聞き取り(ASR)の綴りの揺れが重なり、自動で確定できませんでした。</li>
+<li>聞き取り結果の綴りは Melo / Mello / Mellow / Mellows / Melost などに揺れます。同じ録音を聞き直させても綴りが変わる場合があり(録音1は初回「Melo strained」でしたが、後日の再確認では「Mello drank」と聞き取られました)、<b>機械だけでは「発音が悪い」のか「聞き取りが苦手な名前なだけ」なのか区別できません</b>。</li>
+<li>自動の書き換え機能が働き、名前 Melos を <b>He</b> に置き換えた版(録音4)も作られましたが、名前が消えるため、これを採用してよいかも人の判断が必要です。</li>
+</ul></div>
+
+<div class="card"><h2>2. 疑っていること / 確認してほしいこと</h2>
+<p><b>疑い</b>: ①名前の語末の「ス/ズ(s)」が弱い、または次の語 drank と溶けて「Melo / Mello」「Mellow strength」に聞こえている(読み上げ側の問題の可能性) ②読みは許容範囲だが、聞き取りエンジンが綴りを再現できていないだけ(検査側の問題の可能性)。</p>
+<p><b>確認箇所</b>: 各録音の冒頭から<b>約9〜11秒付近</b>(3文目 “…through a crack in the rock.” の直後の <mark>Melos drank</mark>)。無音区間からの推定位置で、録音ごとに±1秒ほどずれます。</p>
+<p><b>期待する発音</b>: 「メロス」(英語の発音記号で /ˈmɛlɒs/、または /ˈmɛloʊs/)。システムは「メル」始まりで語末のスが聞こえる読みを許容候補として登録しています。次の点を聞いてください。</p>
+<ol>
+<li>名前が「メル(ロス)」で始まっているか(「ミーロス」「マロー」「メロー(mellow)」に聞こえないか)</li>
+<li>語末の「ス/ズ」が聞こえるか(「メロ」「メロー」だけで終わっていないか)</li>
+<li>直後の drank(ドランク)が、strained / strength(ストレ…)に聞こえないか</li>
+<li>この文の前後に、途切れ・繰り返し・不自然な間がないか</li>
+</ol>
+<p><b>許容の目安(最終判断はお任せします)</b>: 「メロス/メロズ」と人名として自然に聞こえれば許容、語末のスが聞こえず別の語(Mellow など)に聞こえれば不許容。</p>
 <div class="t">He remembered the hands held out for the chains. His friend trusted him without asking for another promise. Water came slowly through a crack in the rock. <mark>Melos drank</mark>, got onto his knees, and stood up. He managed one step, then took another. At the city gates, the bell rang for his friend's death. He raced to the square, where the sword was already raised above his friend.</div></div>
 
-<div class="card"><h2>録音1(1回目・標準TTS)</h2><audio controls preload="none" src="audio/attempt1.mp3"></audio>
-<p>自動判定: <span class="ng">不一致(TRUE_CONTENT_MISMATCH)</span>。<br>
-ASR(主): ... Water came slowly through a crack in the rock. <b>Melo strained</b>, got onto his knees, and stood up. ...<br>
-ASR(副・Azure): ... a crack in the rock.<b>Mellow Strength</b> got onto his knees and stood up. ...<br>
-→ 「Melos drank」が「Melo strained / Mellow Strength」と聞き取られています(本文と違う語に聞こえている可能性)。</p></div>
+<div class="card"><h2>録音1(1回目)</h2><audio controls preload="none" src="audio/attempt1.mp3"></audio>
+<p>機械判定: <span class="ng">不一致(TRUE_CONTENT_MISMATCH)</span>。<br>
+聞き取り(主): ... <b>Melo strained</b>, got onto his knees ... / 聞き取り(副・Azure): ... <b>Mellow Strength</b> got onto his knees ...<br>
+判断が必要な理由: 2つのエンジンとも drank を strained / Strength と聞き取りました。ただし同じ録音を再度聞き取らせると「Mello drank」と出る場合があり、聞き取りの揺れの可能性が残ります。drank が明瞭かを確認してください。</p></div>
 
-<div class="card"><h2>録音2(2回目・標準TTS)</h2><audio controls preload="none" src="audio/attempt2.mp3"></audio>
-<p>自動判定: <span class="ng">判定保留(ASR_VALIDATION_UNCERTAIN)</span>。<br>
-ASR(主): ... Water came slowly through a crack in the rock. <b>Mello drank</b>, got onto his knees, and stood up. ...<br>
-ASR(副・Azure): ... a crack in the rock. <b>Mellows drank</b>, got onto his knees and stood up. ...<br>
-→ 他の語は本文と一致。名前だけ「Mello / Mellows」と綴られ、s の有無が揺れています。</p></div>
+<div class="card"><h2>録音2(2回目)</h2><audio controls preload="none" src="audio/attempt2.mp3"></audio>
+<p>機械判定: <span class="ng">判定保留(ASR_VALIDATION_UNCERTAIN)</span>。<br>
+聞き取り(主): ... <b>Mello drank</b>, got onto his knees ... / 聞き取り(副・Azure): ... <b>Mellows drank</b>, got onto his knees ...<br>
+判断が必要な理由: 名前以外は原稿と一致。主は語末のスなし(Mello)、副はスあり(Mellows)と食い違い、機械は「Melos と同じ読み」と確定できませんでした(自動合格には副が Melos と一致する必要があります)。語末のスが実際に聞こえるかが判断点です。</p></div>
 
-<div class="card"><h2>録音3(3回目・最小指示のフォールバックTTS)</h2><audio controls preload="none" src="audio/attempt3.mp3"></audio>
-<p>自動判定: <span class="ng">判定保留(ASR_VALIDATION_UNCERTAIN)</span>。<br>
-ASR(主): ... Water came slowly through a crack in the rock. <b>Mello drank</b>, got onto his knees, and stood up. ...<br>
-ASR(副): この録音では副ASRの結果は記録されていません。<br>
-→ 他の語は本文と一致。名前は「Mello」と綴られています。</p></div>
+<div class="card"><h2>録音3(3回目・指示を簡素にした再生成)</h2><audio controls preload="none" src="audio/attempt3.mp3"></audio>
+<p>機械判定: <span class="ng">判定保留(ASR_VALIDATION_UNCERTAIN)</span>。<br>
+聞き取り(主): ... <b>Mello drank</b>, got onto his knees ... / 聞き取り(副・Azure): ... <b>Mellow strength</b> got onto his knees ...<br>
+判断が必要な理由: 録音2と同じ型(主はMello、副は別綴り)で、機械は確定できませんでした。</p></div>
 
-<div class="card"><h2>現在ファイルに残っている音声(録音3の後処理版)</h2><audio controls preload="none" src="audio/current_candidate.mp3"></audio>
-<p>録音3に速度調整(約6%)の後処理を加えたものです。この版を再ASRで検証したところ判定が保留となり、停止の直接原因になりました。内容は録音3と同じ読みのはずです。</p></div>
+<div class="card"><h2>録音4(現在ファイルに残っている音声=自動書き換え版・速度調整後)</h2><audio controls preload="none" src="audio/current_candidate.mp3"></audio>
+<p>この音声では、名前 Melos が <b>He</b> に置き換わっています(“… He drank, got onto his knees …”)。録音3までの3回が通らなかったため自動書き換え機能が働いて作られました。文の意味は保たれていますが、<b>名前が読まれません</b>。<br>
+機械判定: 書き換え後の文としては合格相当ですが、停止後の最終確認が書き換え前の原稿(Melos入り)と照合されたため不一致となり、これが停止の直接の原因です。<br>
+判断が必要な理由: 名前を残す方針か、この文だけ代名詞でもよいかは品質の判断になります。なお、Advanced版の同じ文は、同じ自動書き換えで「He drank」として既に通過しています。</p></div>
 
 <div class="card"><h2>参考: 前回実行(run_e2e_03)の同じ文</h2><audio controls preload="none" src="audio/previous_run03.mp3"></audio>
-<p>自動判定: <span class="ok">合格</span>。ASR: ... <b>Melos drank</b>, got onto his knees, and stood up. ...(本文どおりの綴りで聞き取られました。比較用に併記します)</p></div>
+<p>機械判定: <span class="ok">合格</span>。聞き取り: ... <b>Melos drank</b>, got onto his knees ...(副エンジンが原稿どおりの綴りを返したため合格)。録音1〜3と同じ設定で作られた別の読み上げ回です。比較にお使いください。</p></div>
 
-<div class="card"><h2>ご判断の選択肢(回答はチャットで)</h2>
-<ul>
-<li><b>(a)</b> 録音1・2・3のいずれかを承認する(どれかが人名として許容できる読みであれば、その番号をお知らせください)。承認した録音がこの文の最終音声になります。</li>
-<li><b>(b)</b> 3つとも却下し、再生成する(Fableの許可のもと最大2回、追加費用の見込みは約2〜5円)。</li>
-<li><b>(c)</b> 保留(今は判断せず、この文はロックされたまま)。</li>
-</ul></div>
+<div class="card"><h2>3. あなたの判断で何が決まり、次の処理がどう変わるか(回答はチャットで)</h2>
+<table>
+<tr><th>選択肢</th><th>確定すること</th><th>次の処理</th></tr>
+<tr><td><b>(a)</b> 録音1・2・3のいずれかを承認(番号をお知らせください)</td><td>その録音の読みを許容と確認したことになり、それがこの文の最終音声になります</td><td>他の文と同じ速度調整を機械的に適用 → 停止(ロック)を解除 → 自動の最終検査 → 全体の組み立て → 試聴ページ公開に進みます。追加の生成費用はほぼありません</td></tr>
+<tr><td><b>(b)</b> 3つとも不許容 → 再生成</td><td>録音1〜3の読みは使えないという判断になります</td><td>再生成を許可する場合は(Fableの許可のもと)最大2回(追加約2〜5円)。ただし過去の3回はいずれも自動合格しなかったため、再生成後もまた「判定保留」になる可能性があります</td></tr>
+<tr><td><b>(c)</b> 録音4(名前を He にした版)を承認</td><td>この文に限り名前を読まない版を許容します</td><td>(a)と同じ流れで進みます(Advanced版とそろいます)</td></tr>
+<tr><td><b>(d)</b> 保留</td><td>何も確定しません</td><td>この文はロックされたままで、組み立て・公開は進みません</td></tr>
+</table>
+<p>※ 将来の同種の停止を減らすため、Melos の読みをシステムの辞書に登録する案も別途検討しています(今回の選択とは独立です)。</p></div>
 </body></html>
