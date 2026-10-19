@@ -1,0 +1,107 @@
+{
+  "trial_id": "FAMILY-X-B3-BACKGROUND-FACT-COMPLEMENT-TRIAL-01",
+  "candidate": "C1",
+  "dry_run": false,
+  "status": "OK",
+  "model_requested": "gpt-6.1-sol",
+  "effort": "high",
+  "topic": "中東情勢が悪化、イエメン・サウジ周辺で攻撃続く",
+  "candidate_note_sha256": "592a13b317d9792ada52d8df274c4bfaebb46bab2521bb626bffa1a487d055a1",
+  "candidate_note_chars": 1466,
+  "production_prompt_shas": {
+    "developer_message_sha256": "b4391b0387c54d39cf2ed095e7c00e028b13f173065ed0077b3a16f0fe37981a",
+    "user_prompt_template_sha256": "6cc7218432a685701ddeb9342fc63fd1da6d13a18e0f0e5dd842ed591808b796",
+    "fact_test_definitions_sha256": "91513c8999a63439adb40d5c28a253e4cdbb438228ba1deda199d2ae6c6c5a8a"
+  },
+  "reeval_note_sha256": "dcf4f2b40a9ddaccf6121ae39c6b5ccf1bd31edab3b012d7a65d8da05d4142dd",
+  "calls": [
+    {
+      "model": "gpt-6.1-sol",
+      "reasoning": {
+        "effort": "high"
+      },
+      "schema_name": "storyline_b3_fact_selection",
+      "developer_sha256": "b4391b0387c54d39cf2ed095e7c00e028b13f173065ed0077b3a16f0fe37981a",
+      "user_prompt_sha256": "f5560a2cc1ef77b6c54267725a663bfafcce8f70ad025b48e9b642620c647db6",
+      "user_prompt_chars": 7514
+    }
+  ],
+  "wall_seconds": 95.38,
+  "stop_record": null,
+  "ledger_sha256": "0b3005d64c94cd49eef01063ed1b2ace29e04416b750995c1044194729ff5a93",
+  "generalization_hits": [],
+  "analysis": {
+    "selected_fact_ids": [
+      "F05",
+      "F11"
+    ],
+    "excluded_fact_ids": [
+      "F01",
+      "F02",
+      "F03",
+      "F04",
+      "F06",
+      "F07",
+      "F08",
+      "F09",
+      "F10"
+    ],
+    "supplement_fact_ids": [],
+    "supplement_reasons": {},
+    "n_supplement": 0,
+    "supplement_over_cap_2": false,
+    "supplement_not_in_selected": [],
+    "background_confirm_note": "【背景確認】追加不要。採用した2件で、攻撃の場所・継続性・人的被害と、地域の安全保障およびイエメン和平への影響に関する特使の評価を最低限理解できる。サウジ側の攻撃主体や動機は当該事案についてLedgerに直接の記述がなく、別の攻撃事案から補わない。",
+    "background_confirm_note_present": true,
+    "n_selected": 2,
+    "verified_selected_n": 2,
+    "min2_satisfied": true,
+    "selected_storyline": "リヤド空港では10月10日の多数死傷に続き11日も攻撃で負傷者が出ており、国連特使はサウジの民間インフラへの継続攻撃が地域の安全保障を脅かし、イエメン和平を一層困難にすると警告した。",
+    "core_selected_ids": [
+      "F05",
+      "F11"
+    ],
+    "core_verified_n": 2,
+    "min2_met_only_via_supplement": false,
+    "added_vs_baseline": [
+      "F05"
+    ],
+    "removed_vs_baseline": [
+      "F04"
+    ],
+    "added_without_supplement_marker": [
+      "F05"
+    ],
+    "baseline_ids": [
+      "F04",
+      "F11"
+    ]
+  },
+  "min2_policy": {
+    "floor": 2,
+    "counted": "VERIFIED",
+    "enforced": true,
+    "first_pass_selected_ids": [
+      "F05",
+      "F11"
+    ],
+    "first_pass_verified_n": 2,
+    "reevaluated": false,
+    "reeval_note_sha256": "dcf4f2b40a9ddaccf6121ae39c6b5ccf1bd31edab3b012d7a65d8da05d4142dd",
+    "final_selected_ids": [
+      "F05",
+      "F11"
+    ],
+    "final_verified_n": 2
+  },
+  "final_result_call": "initial",
+  "soft_warnings": [],
+  "producer": {
+    "annotated_md_sha256": "941861cc24d940b6b20086487a1be03c5be9f0916ded7d9b03c969005a5326bb",
+    "n_facts": 2,
+    "rules_sha256": "525f2309b5212e68a5891794e7fa6194fb25cbf92f1954727c286796597910d8"
+  },
+  "model_returned": "gpt-6.1-sol",
+  "response_id": "resp_077e4732037ef375006ad61011f06887d0880f60398fbf6dce",
+  "b3_latency_seconds": 95.38367104530334
+}
