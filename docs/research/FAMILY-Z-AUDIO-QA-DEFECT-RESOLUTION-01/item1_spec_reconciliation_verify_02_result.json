@@ -1,0 +1,895 @@
+{
+ "ledger_sha_before": "36122420c50cfb78b160040fe2c764fa2493537dcaafdac327be3bebcd58cc3c",
+ "cmu": {
+  "melos": [],
+  "melo": [
+   [
+    "M",
+    "EH",
+    "L",
+    "OW"
+   ]
+  ],
+  "mello": [
+   [
+    "M",
+    "EH",
+    "L",
+    "OW"
+   ]
+  ],
+  "mellow": [
+   [
+    "M",
+    "EH",
+    "L",
+    "OW"
+   ]
+  ],
+  "mellows": [],
+  "mellos": [],
+  "drank": [
+   [
+    "D",
+    "R",
+    "AE",
+    "NG",
+    "K"
+   ]
+  ],
+  "said": [
+   [
+    "S",
+    "EH",
+    "D"
+   ]
+  ]
+ },
+ "F1_helpers": {
+  "final_s_sound(Melos)": "/z/",
+  "initial_sound(drank)": "/d/",
+  "initial_sound(said)": "/s/",
+  "initial_sound(left)": null,
+  "s_suffix_label_if_match(Melos,Melo)": "s",
+  "s_suffix_label_if_match(Melos,Mello)": null,
+  "s_suffix_label_if_match(Melos,Mellows)": null
+ },
+ "benign": {
+  "_singularize_simple(melos)": "melo",
+  "_is_benign_plural_pair(melos,melo)": true,
+  "_is_benign_plural_pair(melos,mello)": false,
+  "_is_benign_plural_pair(melos,mellow)": false,
+  "_is_benign_plural_pair(melos,mellows)": false,
+  "_singularize_simple(mellows)": "mellow"
+ },
+ "traces": {
+  "LONG(part3_c1全文, Melos drank)": {
+   "Melos": {
+    "asr": "He remembered the hands held out for the chains. His friend trusted him without ",
+    "classification": "EXACT_MATCH",
+    "ratio": 1.0,
+    "should_pass": true,
+    "content_word_diffs": [],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "NO_DIFF",
+     "rule": null,
+     "f1_residual": [],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "BASE_CLASSIFICATION_NOT_UNCERTAIN",
+     "applicable": false,
+     "no_match_reason": null,
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {},
+     "no_match_reasons": []
+    }
+   },
+   "Melo": {
+    "asr": "He remembered the hands held out for the chains. His friend trusted him without ",
+    "classification": "HIGH_SIMILARITY_SAFE",
+    "ratio": 0.9855,
+    "should_pass": true,
+    "content_word_diffs": [],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "rule": null,
+     "f1_residual": [],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "BASE_CLASSIFICATION_NOT_UNCERTAIN",
+     "applicable": false,
+     "no_match_reason": null,
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {},
+     "no_match_reasons": []
+    }
+   },
+   "Mello": {
+    "asr": "He remembered the hands held out for the chains. His friend trusted him without ",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "ratio": 0.9855,
+    "should_pass": false,
+    "content_word_diffs": [
+     {
+      "canonical": "melos",
+      "asr": "mello",
+      "entity_like": true,
+      "homophone_candidate": false
+     }
+    ],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "rule": null,
+     "f1_residual": [
+      {
+       "op": "replace",
+       "index": 27,
+       "canonical": [
+        "Melos"
+       ],
+       "asr": [
+        "Mello"
+       ]
+      }
+     ],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "SUBSTITUTION_NOT_F1_EXPLAINED",
+     "applicable": true,
+     "no_match_reason": "SUBSTITUTION_NOT_F1_EXPLAINED",
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {
+      "27": [
+       {
+        "to": "melo",
+        "rule": "drop_final_S_or_Z"
+       }
+      ]
+     },
+     "no_match_reasons": []
+    },
+    "M1_post_check": {
+     "asr2": "He remembered the hands held out for the chains. His friend ",
+     "ok": false,
+     "reason": "SUBSTITUTION_NOT_F1_EXPLAINED",
+     "cs2_new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "cs2_rule": null,
+     "cs2_f1_explained": []
+    }
+   },
+   "Mellow": {
+    "asr": "He remembered the hands held out for the chains. His friend trusted him without ",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "ratio": 0.9855,
+    "should_pass": false,
+    "content_word_diffs": [
+     {
+      "canonical": "melos",
+      "asr": "mellow",
+      "entity_like": true,
+      "homophone_candidate": false
+     }
+    ],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "rule": null,
+     "f1_residual": [
+      {
+       "op": "replace",
+       "index": 27,
+       "canonical": [
+        "Melos"
+       ],
+       "asr": [
+        "Mellow"
+       ]
+      }
+     ],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "SUBSTITUTION_NOT_F1_EXPLAINED",
+     "applicable": true,
+     "no_match_reason": "SUBSTITUTION_NOT_F1_EXPLAINED",
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {
+      "27": [
+       {
+        "to": "melo",
+        "rule": "drop_final_S_or_Z"
+       }
+      ]
+     },
+     "no_match_reasons": []
+    },
+    "M1_post_check": {
+     "asr2": "He remembered the hands held out for the chains. His friend ",
+     "ok": false,
+     "reason": "SUBSTITUTION_NOT_F1_EXPLAINED",
+     "cs2_new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "cs2_rule": null,
+     "cs2_f1_explained": []
+    }
+   },
+   "Mellows": {
+    "asr": "He remembered the hands held out for the chains. His friend trusted him without ",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "ratio": 0.9855,
+    "should_pass": false,
+    "content_word_diffs": [
+     {
+      "canonical": "melos",
+      "asr": "mellows",
+      "entity_like": true,
+      "homophone_candidate": false
+     }
+    ],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "rule": null,
+     "f1_residual": [
+      {
+       "op": "replace",
+       "index": 27,
+       "canonical": [
+        "Melos"
+       ],
+       "asr": [
+        "Mellows"
+       ]
+      }
+     ],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "MULTI_CANDIDATE_NO_MATCH",
+     "applicable": true,
+     "no_match_reason": "asr_word_not_in_cmu",
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {},
+     "no_match_reasons": [
+      "asr_word_not_in_cmu"
+     ]
+    }
+   },
+   "Mellos": {
+    "asr": "He remembered the hands held out for the chains. His friend trusted him without ",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "ratio": 0.9855,
+    "should_pass": false,
+    "content_word_diffs": [
+     {
+      "canonical": "melos",
+      "asr": "mellos",
+      "entity_like": true,
+      "homophone_candidate": false
+     }
+    ],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "rule": null,
+     "f1_residual": [
+      {
+       "op": "replace",
+       "index": 27,
+       "canonical": [
+        "Melos"
+       ],
+       "asr": [
+        "Mellos"
+       ]
+      }
+     ],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "MULTI_CANDIDATE_NO_MATCH",
+     "applicable": true,
+     "no_match_reason": "asr_word_not_in_cmu",
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {},
+     "no_match_reasons": [
+      "asr_word_not_in_cmu"
+     ]
+    }
+   }
+  },
+  "SHORT 'Melos drank.'": {
+   "Melos": {
+    "asr": "Melos drank.",
+    "classification": "EXACT_MATCH",
+    "ratio": 1.0,
+    "should_pass": true,
+    "content_word_diffs": [],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "NO_DIFF",
+     "rule": null,
+     "f1_residual": [],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "BASE_CLASSIFICATION_NOT_UNCERTAIN",
+     "applicable": false,
+     "no_match_reason": null,
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {},
+     "no_match_reasons": []
+    }
+   },
+   "Melo": {
+    "asr": "Melo drank.",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "ratio": 0.5,
+    "should_pass": false,
+    "content_word_diffs": [],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "rule": null,
+     "f1_residual": [],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "NO_FLAGGED_DIFF",
+     "applicable": true,
+     "no_match_reason": null,
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {},
+     "no_match_reasons": []
+    }
+   },
+   "Mello": {
+    "asr": "Mello drank.",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "ratio": 0.5,
+    "should_pass": false,
+    "content_word_diffs": [
+     {
+      "canonical": "melos",
+      "asr": "mello",
+      "entity_like": true,
+      "homophone_candidate": false
+     }
+    ],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "rule": null,
+     "f1_residual": [
+      {
+       "op": "replace",
+       "index": 0,
+       "canonical": [
+        "Melos"
+       ],
+       "asr": [
+        "Mello"
+       ]
+      }
+     ],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "SUBSTITUTION_NOT_F1_EXPLAINED",
+     "applicable": true,
+     "no_match_reason": "SUBSTITUTION_NOT_F1_EXPLAINED",
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {
+      "0": [
+       {
+        "to": "melo",
+        "rule": "drop_final_S_or_Z"
+       }
+      ]
+     },
+     "no_match_reasons": []
+    },
+    "M1_post_check": {
+     "asr2": "Melo drank.",
+     "ok": false,
+     "reason": "SUBSTITUTION_NOT_F1_EXPLAINED",
+     "cs2_new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "cs2_rule": null,
+     "cs2_f1_explained": []
+    }
+   },
+   "Mellow": {
+    "asr": "Mellow drank.",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "ratio": 0.5,
+    "should_pass": false,
+    "content_word_diffs": [
+     {
+      "canonical": "melos",
+      "asr": "mellow",
+      "entity_like": true,
+      "homophone_candidate": false
+     }
+    ],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "rule": null,
+     "f1_residual": [
+      {
+       "op": "replace",
+       "index": 0,
+       "canonical": [
+        "Melos"
+       ],
+       "asr": [
+        "Mellow"
+       ]
+      }
+     ],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "SUBSTITUTION_NOT_F1_EXPLAINED",
+     "applicable": true,
+     "no_match_reason": "SUBSTITUTION_NOT_F1_EXPLAINED",
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {
+      "0": [
+       {
+        "to": "melo",
+        "rule": "drop_final_S_or_Z"
+       }
+      ]
+     },
+     "no_match_reasons": []
+    },
+    "M1_post_check": {
+     "asr2": "Melo drank.",
+     "ok": false,
+     "reason": "SUBSTITUTION_NOT_F1_EXPLAINED",
+     "cs2_new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "cs2_rule": null,
+     "cs2_f1_explained": []
+    }
+   },
+   "Mellows": {
+    "asr": "Mellows drank.",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "ratio": 0.5,
+    "should_pass": false,
+    "content_word_diffs": [
+     {
+      "canonical": "melos",
+      "asr": "mellows",
+      "entity_like": true,
+      "homophone_candidate": false
+     }
+    ],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "rule": null,
+     "f1_residual": [
+      {
+       "op": "replace",
+       "index": 0,
+       "canonical": [
+        "Melos"
+       ],
+       "asr": [
+        "Mellows"
+       ]
+      }
+     ],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "MULTI_CANDIDATE_NO_MATCH",
+     "applicable": true,
+     "no_match_reason": "asr_word_not_in_cmu",
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {},
+     "no_match_reasons": [
+      "asr_word_not_in_cmu"
+     ]
+    }
+   },
+   "Mellos": {
+    "asr": "Mellos drank.",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "ratio": 0.5,
+    "should_pass": false,
+    "content_word_diffs": [
+     {
+      "canonical": "melos",
+      "asr": "mellos",
+      "entity_like": true,
+      "homophone_candidate": false
+     }
+    ],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "rule": null,
+     "f1_residual": [
+      {
+       "op": "replace",
+       "index": 0,
+       "canonical": [
+        "Melos"
+       ],
+       "asr": [
+        "Mellos"
+       ]
+      }
+     ],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "MULTI_CANDIDATE_NO_MATCH",
+     "applicable": true,
+     "no_match_reason": "asr_word_not_in_cmu",
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {},
+     "no_match_reasons": [
+      "asr_word_not_in_cmu"
+     ]
+    }
+   }
+  },
+  "SHORT 'Melos said.'": {
+   "Melos": {
+    "asr": "Melos said.",
+    "classification": "EXACT_MATCH",
+    "ratio": 1.0,
+    "should_pass": true,
+    "content_word_diffs": [],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "NO_DIFF",
+     "rule": null,
+     "f1_residual": [],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "BASE_CLASSIFICATION_NOT_UNCERTAIN",
+     "applicable": false,
+     "no_match_reason": null,
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {},
+     "no_match_reasons": []
+    }
+   },
+   "Melo": {
+    "asr": "Melo said.",
+    "classification": "CONNECTED_SPEECH_ACCEPT",
+    "ratio": 0.5,
+    "should_pass": true,
+    "content_word_diffs": [],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "CONNECTED_SPEECH_ACCEPT",
+     "rule": "Pattern_A_sibilant_sequence",
+     "f1_residual": [],
+     "f1_explained": [
+      {
+       "index": 0,
+       "canonical": "Melos",
+       "asr": "Melo",
+       "rule": "Pattern_A_sibilant_sequence",
+       "judgment": "CONNECTED_SPEECH_ACCEPT",
+       "expected_phoneme_boundary": "Melos/z/ + said/s/"
+      }
+     ]
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "BASE_CLASSIFICATION_NOT_UNCERTAIN",
+     "applicable": false,
+     "no_match_reason": null,
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {},
+     "no_match_reasons": []
+    }
+   },
+   "Mello": {
+    "asr": "Mello said.",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "ratio": 0.5,
+    "should_pass": false,
+    "content_word_diffs": [
+     {
+      "canonical": "melos",
+      "asr": "mello",
+      "entity_like": true,
+      "homophone_candidate": false
+     }
+    ],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "rule": null,
+     "f1_residual": [
+      {
+       "op": "replace",
+       "index": 0,
+       "canonical": [
+        "Melos"
+       ],
+       "asr": [
+        "Mello"
+       ]
+      }
+     ],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": true,
+     "reason": "M1_MULTI_CANDIDATE_ACCEPT",
+     "applicable": true,
+     "no_match_reason": null,
+     "subs": [
+      {
+       "from": "mello",
+       "to": "melo",
+       "canonical_word": "melos",
+       "rule": "drop_final_S_or_Z"
+      }
+     ]
+    },
+    "M1_enumerate_subs": {
+     "options": {
+      "0": [
+       {
+        "to": "melo",
+        "rule": "drop_final_S_or_Z"
+       }
+      ]
+     },
+     "no_match_reasons": []
+    },
+    "M1_post_check": {
+     "asr2": "Melo said.",
+     "ok": true,
+     "reason": null,
+     "cs2_new_judgment": "CONNECTED_SPEECH_ACCEPT",
+     "cs2_rule": "Pattern_A_sibilant_sequence",
+     "cs2_f1_explained": [
+      {
+       "index": 0,
+       "canonical": "Melos",
+       "asr": "Melo",
+       "rule": "Pattern_A_sibilant_sequence",
+       "judgment": "CONNECTED_SPEECH_ACCEPT",
+       "expected_phoneme_boundary": "Melos/z/ + said/s/"
+      }
+     ]
+    }
+   },
+   "Mellow": {
+    "asr": "Mellow said.",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "ratio": 0.5,
+    "should_pass": false,
+    "content_word_diffs": [
+     {
+      "canonical": "melos",
+      "asr": "mellow",
+      "entity_like": true,
+      "homophone_candidate": false
+     }
+    ],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "rule": null,
+     "f1_residual": [
+      {
+       "op": "replace",
+       "index": 0,
+       "canonical": [
+        "Melos"
+       ],
+       "asr": [
+        "Mellow"
+       ]
+      }
+     ],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": true,
+     "reason": "M1_MULTI_CANDIDATE_ACCEPT",
+     "applicable": true,
+     "no_match_reason": null,
+     "subs": [
+      {
+       "from": "mellow",
+       "to": "melo",
+       "canonical_word": "melos",
+       "rule": "drop_final_S_or_Z"
+      }
+     ]
+    },
+    "M1_enumerate_subs": {
+     "options": {
+      "0": [
+       {
+        "to": "melo",
+        "rule": "drop_final_S_or_Z"
+       }
+      ]
+     },
+     "no_match_reasons": []
+    },
+    "M1_post_check": {
+     "asr2": "Melo said.",
+     "ok": true,
+     "reason": null,
+     "cs2_new_judgment": "CONNECTED_SPEECH_ACCEPT",
+     "cs2_rule": "Pattern_A_sibilant_sequence",
+     "cs2_f1_explained": [
+      {
+       "index": 0,
+       "canonical": "Melos",
+       "asr": "Melo",
+       "rule": "Pattern_A_sibilant_sequence",
+       "judgment": "CONNECTED_SPEECH_ACCEPT",
+       "expected_phoneme_boundary": "Melos/z/ + said/s/"
+      }
+     ]
+    }
+   },
+   "Mellows": {
+    "asr": "Mellows said.",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "ratio": 0.5,
+    "should_pass": false,
+    "content_word_diffs": [
+     {
+      "canonical": "melos",
+      "asr": "mellows",
+      "entity_like": true,
+      "homophone_candidate": false
+     }
+    ],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "rule": null,
+     "f1_residual": [
+      {
+       "op": "replace",
+       "index": 0,
+       "canonical": [
+        "Melos"
+       ],
+       "asr": [
+        "Mellows"
+       ]
+      }
+     ],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "MULTI_CANDIDATE_NO_MATCH",
+     "applicable": true,
+     "no_match_reason": "asr_word_not_in_cmu",
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {},
+     "no_match_reasons": [
+      "asr_word_not_in_cmu"
+     ]
+    }
+   },
+   "Mellos": {
+    "asr": "Mellos said.",
+    "classification": "ASR_VALIDATION_UNCERTAIN",
+    "ratio": 0.5,
+    "should_pass": false,
+    "content_word_diffs": [
+     {
+      "canonical": "melos",
+      "asr": "mellos",
+      "entity_like": true,
+      "homophone_candidate": false
+     }
+    ],
+    "caseA_or_homophone_label": null,
+    "F1": {
+     "new_judgment": "UNCLASSIFIED_FALLS_THROUGH_TO_EXISTING",
+     "rule": null,
+     "f1_residual": [
+      {
+       "op": "replace",
+       "index": 0,
+       "canonical": [
+        "Melos"
+       ],
+       "asr": [
+        "Mellos"
+       ]
+      }
+     ],
+     "f1_explained": []
+    },
+    "M1": {
+     "accepted": false,
+     "reason": "MULTI_CANDIDATE_NO_MATCH",
+     "applicable": true,
+     "no_match_reason": "asr_word_not_in_cmu",
+     "subs": []
+    },
+    "M1_enumerate_subs": {
+     "options": {},
+     "no_match_reasons": [
+      "asr_word_not_in_cmu"
+     ]
+    }
+   }
+  }
+ },
+ "tier3": {
+  "locate_single_token_diff(Primary=Mello)": {
+   "index": 27,
+   "canonical_word": "melos",
+   "asr_word": "mello"
+  },
+  "corroboration_supports(Azure=Mellows)": false,
+  "corroboration_supports(Azure=Melos)": true,
+  "corroboration_supports(Azure=Mellow)": false,
+  "corroboration_supports(Azure=Mellos)": false
+ },
+ "ledger_sha_after": "36122420c50cfb78b160040fe2c764fa2493537dcaafdac327be3bebcd58cc3c",
+ "ledger_unchanged": true
+}
