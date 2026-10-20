@@ -1,0 +1,59 @@
+{
+  "attempt_number": 1,
+  "route": "custom_78daa961",
+  "segment_id": "in_one_line",
+  "theme_id": "middle_east_yemen_saudi__run_mey_02",
+  "level": "a2",
+  "source_out_path": "er019_output/family_x_audio_production_wiring_01/middle_east_yemen_saudi__run_mey_02/a2/narration/in_one_line.wav",
+  "saved_at": "2026-10-20T21:54:25",
+  "sha256": "0868d7bc1716c20744aa968fbdedbd192edd6057c65b905d78ed5b24f880eb5f",
+  "loop_attempt_index": 1,
+  "max_attempts": 2,
+  "language": "en",
+  "model": "gemini-3.8-flash-lite-tts",
+  "voice": "Aoede",
+  "tts_backend": "speech_metadata_flash_lite",
+  "tts_execution_mode": "STANDARD",
+  "instruction_text": "concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.\nSpeak at a slightly slower, relaxed pace than natural adult narration, while keeping the delivery smooth, conversational, and natural. Do not exaggerate pauses or sound instructional.",
+  "asr_text": "Britain said its Typhoon jets would defend Saudi cities and key sites, not attack the Houthis. Its refueling support also helped weaken Houthi military targets. So won't attack means the Typhoon mission, not all British support.",
+  "audio_classification": "NORMALIZED_MATCH",
+  "length_ok": true,
+  "final_length_ok": true,
+  "verified": true,
+  "disfluency_checked": true,
+  "disfluency_evidence": {
+    "flagged": false,
+    "repeats": [],
+    "word_count": 36,
+    "transcript": "Britain  said  its  typhoon  jets  would  defend  Saudi  cities  and  key  sites,  not  attack  the  Houthis.  Its  refueling  support  also  helps  weaken  Houthi  military  targets,  so  won't  attack  means  the  typhoon  mission  not  all  British  support.",
+    "method": "faster_whisper_small_local_verbatim"
+  },
+  "repetition_qa_checked": false,
+  "repetition_qa_evidence": null,
+  "scg_info": null,
+  "asr_prompt_applied": false,
+  "non_latin_cascade_enabled": false,
+  "non_latin_cascade_invoked": false,
+  "cascade_invoked": true,
+  "cascade_steps": [
+    {
+      "step": "primary_1",
+      "provider": "openai_asr",
+      "text": "Britain said its Typhoon jets would defend Saudi cities and key sites, not attack the Houthis. Its refueling support also helped weaken Houthi military targets. So won't attack means the Typhoon mission, not all British support.",
+      "classification": "TRUE_CONTENT_MISMATCH",
+      "entity_like_source": []
+    },
+    {
+      "step": "secondary_1",
+      "provider": "azure",
+      "text": "Britain said its Typhoon jets would defend Saudi cities and key sites, not attack the Houthis. It's refueling support also helps weaken Houthi military targets, so won't attack means the Typhoon mission not all British support.",
+      "classification": "NORMALIZED_MATCH",
+      "phrase_list_used": false,
+      "azure_phrase_list_weight": null,
+      "azure_phrase_list": [],
+      "cached": false,
+      "unified_judge_state": "PASS_WITH_WARNING",
+      "entity_like_source": []
+    }
+  ]
+}
