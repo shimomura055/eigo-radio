@@ -128,3 +128,16 @@ def test_verdict_machine():
     ge = copy.deepcopy(good)
     ge["mey"]["mean_llm_calls"] = 3
     assert ev.classify_variant("E", ge, base)["label"] == "USER_DECISION_CANDIDATE_COST"
+
+
+def test_source_extractors_ap_and_nextdata():
+    ap = '<html><div class="Related">Other story Ansar Allah</div><div class="RichTextStoryBody RichTextBody"><p>Houthi attack on Riyadh</p></div><div class="Page-actions-bottom">x</div></html>'
+    t = sa.ap_body(ap)
+    assert "Houthi attack on Riyadh" in t and "Other story" not in t
+    assert sa.ap_body("<html>no body</html>") == ""
+    nd = ('<html><meta property="og:description" content="Riyadh, SPA -- spokesperson said the air defense intercepted a cruise missile near the airport."/>'
+          '<script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"newsDetails":{"title":"Coalition intercepts missile near King Khalid airport today",'
+          '"content":"Official Spokesperson of the Coalition stated that the air defense intercepted and destroyed a cruise missile."},'
+          '"other":{"x":"UNRELATED site-wide story text that must not be mixed into the article body at all ok"}}}}</script></html>')
+    t2 = sa.nextdata_text(nd)
+    assert "cruise missile" in t2 and "UNRELATED" not in t2

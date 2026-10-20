@@ -61,6 +61,23 @@ class T(unittest.TestCase):
         self.assertEqual(r["total_jpy"], 0.0)
         self.assertEqual(r["unpriced"], {"openai/unknown": 1})
 
+    def test_synthetic_dryrun_rows_excluded_from_real_cost(self):
+        # 正例: 実行(OFFICIAL_API_RESPONSE)/usage_source欠落は計上。負例: SYNTHETIC_DRYRUN_STUB・STUBは除外し別枠
+        self.log([
+            {"timestamp": "2026-10-15T01:00:00Z", "provider": "openai", "model_id": "m1", "input_tokens": 1000000,
+             "usage_source": "OFFICIAL_API_RESPONSE"},
+            {"timestamp": "2026-10-15T01:00:00Z", "provider": "openai", "model_id": "m1", "input_tokens": 1000000},
+            {"timestamp": "2026-10-15T01:00:00Z", "provider": "openai", "model_id": "m1", "input_tokens": 1000000,
+             "usage_source": "SYNTHETIC_DRYRUN_STUB"},
+            {"timestamp": "2026-10-15T01:00:00Z", "provider": "openai", "model_id": "m1", "input_tokens": 500000,
+             "usage_source": "STUB"},
+        ])
+        r = d.aggregate_logs(self.root, "2026-10-15", d.load_prices(self.root))
+        self.assertEqual(r["records"], 2)
+        self.assertAlmostEqual(r["total_jpy"], 2 * 1.0 * 160, places=2)
+        self.assertEqual(r["excluded_synthetic"]["records"], 2)
+        self.assertAlmostEqual(r["excluded_synthetic"]["jpy"], 1.5 * 160, places=2)
+
     def test_ledger_and_max(self):
         self.log([{"timestamp": "2026-10-15T01:00:00Z", "provider": "x", "cost_usd": 0.01}])
         led = os.path.join(self.root, "L.md")

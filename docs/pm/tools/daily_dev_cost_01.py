@@ -87,6 +87,15 @@ def price_record(rec, prices):
     return None, "%s/%s" % (provider, model)
 
 
+_SYNTHETIC_SRC = re.compile(r"^(SYNTHETIC|STUB)|DRY_?RUN", re.I)
+
+
+def is_synthetic_record(rec):
+    """dry-run/stub合成行(usage_sourceがSYNTHETIC_DRYRUN_STUB / STUB等)。実費に計上しない(2026-10-20 XRFR 委任_02 不具合是正)。"""
+    us = rec.get("usage_source")
+    return isinstance(us, str) and bool(_SYNTHETIC_SRC.search(us))
+
+
 def iter_log_files(repo_root):
     for dirpath, dirnames, filenames in os.walk(repo_root):
         dirnames[:] = [d for d in dirnames if d not in SKIP_DIRS]
@@ -99,6 +108,7 @@ def aggregate_logs(repo_root, date, prices):
     total_usd = 0.0
     by_provider, by_dir, unpriced = {}, {}, {}
     files = records = 0
+    synthetic_n, synthetic_usd = 0, 0.0
     for path in iter_log_files(repo_root):
         files += 1
         try:
@@ -116,6 +126,11 @@ def aggregate_logs(repo_root, date, prices):
                 continue
             if not isinstance(rec, dict) or to_jst_date(rec.get("timestamp")) != date:
                 continue
+            if is_synthetic_record(rec):
+                synthetic_n += 1
+                _u, _w = price_record(rec, prices)
+                synthetic_usd += _u or 0.0
+                continue
             records += 1
             usd, why = price_record(rec, prices)
             if usd is None:
@@ -131,6 +146,8 @@ def aggregate_logs(repo_root, date, prices):
         "by_provider_jpy": {k: round(v, 2) for k, v in by_provider.items()},
         "top_run_dirs_jpy": sorted(((k, round(v, 2)) for k, v in by_dir.items()), key=lambda x: -x[1])[:10],
         "records": records, "files_scanned": files, "unpriced": unpriced,
+        "excluded_synthetic": {"records": synthetic_n, "jpy": round(synthetic_usd * USD_JPY, 2),
+                               "note": "usage_source=SYNTHETIC_DRYRUN_STUB/STUB等のdry-run合成行。実費から除外(別枠表示)"},
     }
 
 
