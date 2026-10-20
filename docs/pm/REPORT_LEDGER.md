@@ -401,3 +401,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-20 | FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01 委任_05(①承認済み仕様文との逐語照合、11-8不具合0件・新仕様承認不要、JPY0、報告=docs/pm/RESULT_PACKET_FZAQ5.md、Fable受入済み・commit cb50b7127)。
 - 2026-10-20 | FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01 委任_06(②③Production配線保証チェックリスト+録音2 Lock解除手順+全TTS再生成計画、JPY0、報告=docs/pm/RESULT_PACKET_FZAQ6.md、Fable受入済み・②=PRODUCTION_WIRED判定・commit 1844ea4e0)。
 - 2026-10-20 | FAMILY-Z-AUDIO-QA-DEFECT-RESOLUTION-01 委任_07(録音2承認記録+run_e2e_04凍結+run_e2e_05でStd/Adv全TTS再生成rc=0[Std38/38・Adv39/39 OK、LR発火0、HR0、実費JPY28.79]+SSOT統合+T-0逐語是正、Status=MELOS_REGENERATED_ASSEMBLED_PAGES_UPDATED_PENDING_FABLE、commit 65ab771b8/118c09356、報告=docs/pm/RESULT_PACKET_FZAQ7.md、初回報告未)。
+- 2026-10-20 | FAMILY-Z-AZURE-PHRASELIST-WEIGHT-TRIAL-01 委任_02a(Phase B準備: 42 wav生成[TTS 28+減速14]+manifest固定+Primary転写42+eval_ext、Azure Phase B/C未実行、実費約JPY4、報告=docs/pm/RESULT_PACKET_PLW2a.md、初回報告未)。
