@@ -67,6 +67,14 @@ def is_non_latin_dominant_mismatch(asr_text: Optional[str]) -> bool:
     return non_latin_dominance_info(asr_text)["is_non_latin_dominant"]
 
 
+# Azure Phrase List重み(SDK 1.50.0 PhraseListGrammar.setWeight、範囲0.0〜2.0。SDK既定=1.0)。
+# 2026-10-20 ユーザー正式決定 APPROVED_FOR_PRODUCTION(FAMILY-Z-AZURE-PHRASELIST-WEIGHT-2-PRODUCTION-01)で2.0を採用。
+# Trial(FAMILY-Z-AZURE-PHRASELIST-WEIGHT-TRIAL-01、Fable判定REJECTED)で観測した副作用(有効負例33wav中、重み2.0で新規誤PASS+3、
+# 例: Mullos->Melos)はユーザーが承知のうえ採用(安全網=既存のPASS_WITH_WARNING+試聴リスト運用、変更なし)。
+# 正式採用のため既定ON固定: flag/環境変数/関数引数では切替えない(Family X/Y/Z共通、_AzureShared経由の全Azure呼出に適用)。
+AZURE_PHRASE_LIST_WEIGHT: float = 2.0
+
+
 def get_full_text_via_azure_stt_with_phrase_list(
     wav_path: str, language: str = "en-US", phrases: Optional[list[str]] = None,
     timeout_seconds: float = 90.0,
@@ -99,6 +107,8 @@ def get_full_text_via_azure_stt_with_phrase_list(
         phrase_list = speechsdk.PhraseListGrammar.from_recognizer(recognizer)
         for phrase in phrases:
             phrase_list.addPhrase(phrase)
+        # 2026-10-20 APPROVED_FOR_PRODUCTION: 重み2.0(定数。PLが空ならPL未作成=bias送信なしのまま)
+        phrase_list.setWeight(float(AZURE_PHRASE_LIST_WEIGHT))
 
     segments = []
     done = {"flag": False, "reason": None, "cancel_error": None}
@@ -285,9 +295,8 @@ FEATURE_FLAG_SECONDARY_ASR_ENABLED = True  # Production既定でON(ER-006-GATE-E
 CASCADE_CONFIG = {
     "max_primary_attempts": 2,
     "max_secondary_attempts": 2,
-    "phrase_list_weight": None,  # AzureのPhraseListGrammarはper-phrase重み設定APIを
-                                  # 現行SDKでは公開していないため、既定(均等)を使う。
-                                  # 将来SDKが対応した場合はここへ重み値を設定する。
+    "phrase_list_weight": AZURE_PHRASE_LIST_WEIGHT,  # SDK 1.50.0のPhraseListGrammar.setWeight(範囲0〜2、list全体の重み)を使用。
+                                  # per-phrase重みではない。2026-10-20ユーザー採用で2.0(旧記述「SDKは重みAPI非公開」は誤りで訂正)。
 }
 
 # Cost Guard(タスク仕様§13): 1 segmentあたりの累積コストがこれを超えたら
@@ -911,6 +920,8 @@ def evaluate_attempt_with_cascade_detail(
         steps.append({"step": "non_latin_secondary", "provider": "azure", "text": text_nl,
                        "classification": cls_nl.classification if cls_nl else "TTS_FAILURE",
                        "phrase_list_used": bool(ledger_phrases),
+                       "azure_phrase_list_weight": (AZURE_PHRASE_LIST_WEIGHT if ledger_phrases else None),
+                       "azure_phrase_list": list(ledger_phrases or []),
                        "non_latin_info": non_latin_dominance_info(asr_text),
                        "entity_like_source": (val.aggregate_entity_like_sources(cls_nl.protected.content_word_diffs)
                                                if cls_nl else [])})
@@ -1004,7 +1015,9 @@ def evaluate_attempt_with_cascade_detail(
         steps.append({"step": _sec_step_name,
                        "provider": "azure", "text": sec.get("text"),
                        "classification": cls_s.classification if cls_s else ("TTS_FAILURE" if not sec.get("text") else sec.get("label")),
-                       "phrase_list_used": bool(ledger_phrases), "cached": bool(sec.get("cached")),
+                       "phrase_list_used": bool(ledger_phrases),
+                       "azure_phrase_list_weight": (AZURE_PHRASE_LIST_WEIGHT if ledger_phrases else None),
+                       "azure_phrase_list": list(ledger_phrases or []), "cached": bool(sec.get("cached")),
                        "unified_judge_state": jr.state,
                        "entity_like_source": (val.aggregate_entity_like_sources(cls_s.protected.content_word_diffs) if cls_s else [])})
     if az.cost_guard_triggered:

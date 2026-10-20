@@ -1,0 +1,28 @@
+{
+ "function": "er006_secondary_asr_01.get_full_text_via_azure_stt_with_phrase_list",
+ "wav": "er026_output/family_z_production_e2e_01/melos/run_e2e_04/a2/narration/attempts/full_story_part3_c1_attempt2_customa3c4625e.wav",
+ "phrases": [
+  "Melos"
+ ],
+ "AZURE_PHRASE_LIST_WEIGHT": 2.0,
+ "text_head": "He remembered the hands held out for the chains. His friend trusted him without asking for another promise. Water came s",
+ "err": null,
+ "sdk_prop_weight": [
+  "2.000000"
+ ],
+ "wire_bias": [
+  "2.000000"
+ ],
+ "wire_has_dgi": true,
+ "hits_head": [
+  "[998072]: 3203ms SPX_DBG_TRACE_VERBOSE:  named_properties.h:483 ISpxPropertyBagImpl::SetStringValue: this=000001EC38245878; name='SPEECH-PhraseListWeight'; value='2.000000'",
+  "[998072]: 3203ms SPX_DBG_TRACE_VERBOSE:  named_properties.h:483 ISpxNamedProperties::GetStringValue: this=000001EC37C9CC00; name='SPEECH-PhraseListWeight'; value='2.000000'",
+  "[998072]: 3203ms SPX_DBG_TRACE_VERBOSE:  usp_reco_engine_adapter.cpp:1336 speech.context='{\"phraseDetection\":{\"mode\":\"CONVERSATION\",\"language\":\"en-US\"},\"dgi\":{\"Groups\":[{\"Type\":\"Generic\",\"Items\":[{\"Text\":\"Melos\"}]}],\"bias\":2.000000},\"audio\":{\"streams\":{\"1\":null}}}'",
+  "[998072]: 3877ms SPX_TRACE_VERBOSE:  web_socket.cpp:582 [000001EC380A8F40] Web socket sending message. Time: 2026-10-20T01:29:52.1931533Z, TimeInQueue: 674ms, IsBinary: 0, Path: speech.context, Size:283 B",
+  "[998072]: 3877ms SPX_TRACE_VERBOSE:  web_socket.cpp:711 [000001EC380A8F40] Web socket send message completed. Result: 0, SendTime: 0ms, IsBinary: 0, Path: speech.context, Size:283 B",
+  "[998072]: 13215ms SPX_DBG_TRACE_VERBOSE:  usp_reco_engine_adapter.cpp:3505 CSpxUspRecoEngineAdapter::OnAcknowledgedAudio: this=0x000001EC37C9CB90 Service acknowledging to offset 244400000 (100ns).",
+  "[998072]: 13216ms SPX_DBG_TRACE_VERBOSE:  usp_reco_engine_adapter.cpp:3505 CSpxUspRecoEngineAdapter::OnAcknowledgedAudio: this=0x000001EC37C9CB90 Service acknowledging to offset 245900000 (100ns)."
+ ],
+ "PASS": true,
+ "note": "PASS判定式を実行後に float比較へ修正(初回は文字列'2.000000'比較でfalse表示)。Azure再呼出なし、値は同一実行の送信ログ"
+}
