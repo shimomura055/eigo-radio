@@ -1503,7 +1503,7 @@ def _esc(s) -> str:
 
 def build_listening_page_html(level_label: str, rows: list, kp_rows: list, full_audio_rel: str, duration: float,
                               tts_mode: str = "Standard同期(TTS_EXECUTION_MODE=STANDARD)",
-                              warn_section_html: str = "") -> str:
+                              warn_section_html: str = "", page_title: str = "走れメロス") -> str:
     """rows=[{part,start,dur,file,voice,style,script,notes[]}]。level_labelは'Standard'/'Advanced'のみ。"""
     trs = []
     for i, r in enumerate(rows):
@@ -1515,13 +1515,13 @@ def build_listening_page_html(level_label: str, rows: list, kp_rows: list, full_
             f"<td class='txt'><div class='voice'>Voice: {_esc(r['voice'])} / Style: {_esc(r['style'])}</div>{notes}"
             f"<div class='script'>{_esc(r['script'])}</div></td></tr>")
     kp = "".join(f"<table class='kp'><tr><td>{_esc(a)}</td><td>{_esc(b)}</td></tr></table>" for a, b in kp_rows)
-    return (f"<!doctype html><html lang='ja'><head><meta charset='utf-8'><title>走れメロス {level_label} 試聴</title>"
+    return (f"<!doctype html><html lang='ja'><head><meta charset='utf-8'><title>{page_title} {level_label} 試聴</title>"
             "<style>body{font-family:sans-serif;max-width:1180px;margin:1em auto;padding:0 1em;line-height:1.5}"
             "table{border-collapse:collapse;width:100%;margin-bottom:1.2em}th,td{border:1px solid #ccc;padding:6px;vertical-align:top;text-align:left}"
             "td.play{min-width:360px}td.play audio{width:100%}.script{background:#f6f6f6;padding:4px;white-space:pre-wrap}"
             ".note{background:#fff8e0;padding:3px;font-size:.85em}.voice{color:#555;font-size:.85em}"
             "table.kp td{width:50%}.combo{background:#eef6ff;padding:10px;border:1px solid #99c}</style></head><body>"
-            f"<h1>走れメロス {level_label}</h1><p>TTS方式: {_esc(tts_mode)}</p>"
+            f"<h1>{page_title} {level_label}</h1><p>TTS方式: {_esc(tts_mode)}</p>"
             f"<div class='combo'><b>{level_label} 通し全編再生</b>({duration:.0f}秒)<br>"
             f"<audio id='main' controls preload='none' src='{_esc(full_audio_rel)}' style='width:100%'></audio></div>"
             f"<h2>Key Phrases</h2>{kp}"
@@ -1552,7 +1552,8 @@ def part_to_clip_id(part: str):
     return None
 
 
-def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_dir: str, write_audio: bool = True) -> tuple:
+def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_dir: str, write_audio: bool = True,
+                    audio_file_prefix: str = "Melos") -> tuple:
     """timeline.json + tts_generation_results.json から試聴ページの行を作り、timelineスライスのmp3を書き出す。
     戻り値=(rows, kp_rows, full_mp3_name, duration)。テキスト未取得のsegmentは『未取得』と明記(推測補完なし)。
     write_audio=False(委任_19): 既存mp3を再利用し一切書き換えない(存在しなければFamilyZAudioStop)。"""
@@ -1562,7 +1563,7 @@ def build_page_rows(run_dir: str, level: str, audio_rel_prefix: str, audio_out_d
     data = _read_json(f"{level_dir}/audit/tts_generation_results.json")
     x, sr = sf.read(tl["wav"], dtype="float32")
     os.makedirs(audio_out_dir, exist_ok=True)
-    full_name = f"Melos_{level}_full.mp3"
+    full_name = f"{audio_file_prefix}_{level}_full.mp3"
     if write_audio:
         sf.write(f"{audio_out_dir}/{full_name}", x, sr, format="MP3")
     elif not os.path.exists(f"{audio_out_dir}/{full_name}"):
@@ -1675,7 +1676,8 @@ def _user_page_rows(run_dir: str, level: str, rows: list, kp_rows: list, audio_r
     return out
 
 
-def build_pages(run_dir: str, pages_dir: str = PAGES_DIR, reuse_existing_audio: bool = False) -> dict:
+def build_pages(run_dir: str, pages_dir: str = PAGES_DIR, reuse_existing_audio: bool = False, *,
+                page_title: str = "走れメロス", audio_file_prefix: str = "Melos") -> dict:
     """user_test/family_z_melos_02/{index,standard,advanced}.html を生成する(静的ファイルのみ)。
     index.html=ユーザー試聴ページ標準フォーマット(Std/Adv 1ページ、通し再生・再生順スクリプト・KP、ASR警告は補助表示。委任_19、
     er_user_listening_page_common_01)。standard.html/advanced.html=Voice/Style付き詳細確認ページ(開発確認用、従来形式)。
@@ -1688,7 +1690,7 @@ def build_pages(run_dir: str, pages_dir: str = PAGES_DIR, reuse_existing_audio: 
     for level, fname, label in (("a2", "standard.html", "Standard"), ("b1b", "advanced.html", "Advanced")):
         audio_dir = f"{pages_dir}/audio_{label.lower()}"
         rows, kp_rows, full, dur = build_page_rows(run_dir, level, f"audio_{label.lower()}/", audio_dir,
-                                                   write_audio=not reuse_existing_audio)
+                                                   write_audio=not reuse_existing_audio, audio_file_prefix=audio_file_prefix)
         # AUW 委任_03: 事後試聴リスト(PASS_WITH_WARNING)節(0件でも節を出す)。mp3リンクは当該partの試聴ページ内mp3。
         import er078_pass_with_warning_registry_01 as _pww
         warn_entries = _pww.load_listening_list(f"{run_dir}/{level}")
@@ -1697,7 +1699,7 @@ def build_pages(run_dir: str, pages_dir: str = PAGES_DIR, reuse_existing_audio: 
             warn_entries, href_fn=lambda e: clip_to_file.get(_warn_entry_to_clip_id(e.get("entry_key", "")), ""))
         warn_sections.append((label, warn_html))
         html_text = build_listening_page_html(label, rows, kp_rows, f"audio_{label.lower()}/{full}", dur,
-                                              warn_section_html=warn_html)
+                                              warn_section_html=warn_html, page_title=page_title)
         lint = lint_page_html(html_text)
         if any(lint.values()):
             raise FamilyZAudioStop(f"試聴ページlint NG ({label}): {lint}")
@@ -1706,7 +1708,7 @@ def build_pages(run_dir: str, pages_dir: str = PAGES_DIR, reuse_existing_audio: 
         user_levels.append({"id": "std" if label == "Standard" else "adv", "label": label, "full_src": f"audio_{label.lower()}/{full}", "duration": dur,
                             "rows": _user_page_rows(run_dir, level, rows, kp_rows, f"audio_{label.lower()}/", audio_dir)})
         out[label] = {"page": f"{pages_dir}/{fname}", "rows": len(rows), "kp_rows": len(kp_rows), "lint": lint}
-    index_html = build_index_html(user_levels, warn_sections)
+    index_html = build_index_html(user_levels, warn_sections, page_title=page_title)
     lint = lint_page_html(index_html)
     chk = uc.check_page(index_html, base_dir=pages_dir)
     if any(lint.values()) or chk["overall"] != "PASS":
@@ -1729,7 +1731,7 @@ def _warn_entry_to_clip_id(entry_key: str):
     return None
 
 
-def build_index_html(user_levels: list, warn_sections=None) -> str:
+def build_index_html(user_levels: list, warn_sections=None, page_title: str = "走れメロス") -> str:
     """ユーザー試聴ページ(標準フォーマット)。warn_sections=[(level_label, section_html)]: AUW 委任_03の『事後試聴リスト』節は
     補助表示(全レベル節の後ろ、折りたたみ)へ置く。standard.html/advanced.htmlは開発確認用の詳細ページとして補助表示から案内。"""
     import er_user_listening_page_common_01 as uc
@@ -1742,7 +1744,7 @@ def build_index_html(user_levels: list, warn_sections=None) -> str:
     intro = ("<div class='note'>各レベルの「全編を通し再生」ボタンで冒頭から最後まで通して聴けます。下の表は再生順のスクリプトで、"
              "「全編のこの位置へ」で通し再生をその位置から再生します。冒頭・区切り・末尾の音楽/通知音は読み上げなし(通し再生には含まれます)。"
              "TTS方式: Standard同期(TTS_EXECUTION_MODE=STANDARD)。</div>")
-    return uc.render_standard_page("走れメロス 試聴(Standard / Advanced)", user_levels, intro_html=intro, aux_html=aux)
+    return uc.render_standard_page(f"{page_title} 試聴(Standard / Advanced)", user_levels, intro_html=intro, aux_html=aux)
 
 
 def lint_page_html(html_text: str) -> dict:

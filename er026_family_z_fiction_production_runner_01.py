@@ -174,8 +174,56 @@ MELOS_RIGHTS_BLOCK = {
 }
 
 
+# 『開いた窓』(Saki)のrights block(FAMILY-Z-THE-OPEN-WINDOW-PRODUCTION-E2E-01 委任_01)。
+# 出典・確認日付き。法的最終判断ではない。計算根拠: docs/research/FAMILY-Z-THE-OPEN-WINDOW-PRODUCTION-E2E-01/E2E_PLAN_01.md §1。
+# legal_use_basisは、Melosと同じユーザー決定(2026-09-26、REPORT §6)の(1)〜(5)と採用文を逐語転記
+# (REPORT §6の「走れメロスは日本でPD確認済みのため初回Family Z E2E対象として継続、差し替え不要。」はMelos固有文のため本作では省略)。
+OPEN_WINDOW_RIGHTS_BLOCK = {
+    "author": "Hector Hugh Munro (筆名 Saki / サキ)",
+    "author_death_date": "1916-11-14",
+    "jp_public_domain_basis": (
+        "日本の著作権保護期間は、2018年末のTPP11整備法による70年化以前は"
+        "死後50年だった。Munro(Saki)は1916-11-14没(英国人、フランス戦線で戦死、"
+        "en.wikipedia.org/wiki/Saki、確認2026-10-21、HTTP 200)。死後50年は没年の翌年から起算し"
+        "1966-12-31に満了。連合国(英国)国民の著作権には、1941-12-07以前に取得された著作権について"
+        "連合国及び連合国民の著作権の特例に関する法律(昭和27年法律第302号)の戦時加算3,794日が"
+        "加算される(英国・米国・豪州・カナダ・仏等は3,794日、en.wikipedia.org/wiki/Copyright_law_of_Japan、"
+        "ja.wikipedia.org/wiki/著作権の保護期間(戦時加算の節)、確認2026-10-21、HTTP 200)。"
+        "1966-12-31+3,794日=1977-05-21に日本での保護は満了(計算値)。本作は1914年出版で"
+        "取得時期は1941-12-07以前。2018年末の70年化は、1999〜2018-12-29に満了済みの作品には"
+        "遡及しない(en.wikipedia.org/wiki/Copyright_law_of_Japan、確認2026-10-21、HTTP 200)ため、"
+        "日本において1977-05-21以降パブリックドメイン。Project Gutenberg(#269、"
+        "'Beasts and Super-Beasts'、1914年短編集)が全文を公開している。最終的な法的判断ではない。"
+    ),
+    "source_url": "https://www.gutenberg.org/cache/epub/269/pg269.txt",
+    "source_card_url": "https://www.gutenberg.org/ebooks/269",
+    "confirmed_date": "2026-10-21",
+    "us_copyright_status_record_only": (
+        "記録事項(必須条件ではない、日本国内向けサービスのため)。1914年出版の"
+        "作品は1931年より前の出版であり、Cornell University Library "
+        "\"Copyright Term and the Public Domain in the United States\" "
+        "チャート(https://copyright.cornell.edu/publicdomain、確認2026-10-21、HTTP 200)で"
+        "「Before 1931: In the public domain」に該当し米国PD。最終的な法的判断ではない。"
+    ),
+    "legal_use_basis": (
+        "ユーザー正式決定(2026-09-26、FICTION-FAMILY-Z-RIGHTS-RECHECK-01_"
+        "REPORT.md §6): 「日本人向け・日本国内向けサービスであるため、"
+        "Family Zの権利条件は以下で正式採用: (1)日本国内でPublic Domain、"
+        "または日本国内で適法に利用可能であることを必須条件とする "
+        "(2)米国PDは必須条件にしない (3)海外向け配信・提供を将来行う場合"
+        "のみ、その対象法域のrights確認を追加する (4)原作がPDでも、現代の"
+        "第三者翻訳・英訳・挿絵等は別著作物として扱い、権利未確認のものは"
+        "流用しない (5)Family Zのadaptationは、確認済み原文/正式Seedから"
+        "自前生成する。」(同決定の採用文: 「本rights方針はAPPROVED_FOR_"
+        "PRODUCTION。」)。本作は原文(Gutenberg)から自前生成し、現代の"
+        "第三者翻訳・翻案は使用しない。"
+    ),
+    "gate_reference": "FICTION-FAMILY-Z-RIGHTS-RECHECK-01_REPORT.md §6 (2026-09-26); FAMILY-Z-THE-OPEN-WINDOW-PRODUCTION-E2E-01 (2026-10-21)",
+}
+
+
 # ============================================================
-# Story Registry (Phase 1では"melos"のみ)
+# Story Registry ("melos" / "the_open_window")
 # ============================================================
 TRIAL_SEED_DIR = (
     "er018_output/fiction_external_seed_selection_criteria_trial_02/"
@@ -184,6 +232,12 @@ TRIAL_SEED_DIR = (
 
 STORY_REGISTRY = {
     "melos": {
+        # 委任_01(THE-OPEN-WINDOW): story別E2E値。Melosの値は従来の定数と同一(testでsnapshot固定)。
+        "e2e_management_id": "FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01",
+        "e2e_theme_tag": "FAMILY_Z_MELOS_SOL_PRODUCTION_E2E_01",
+        "e2e_pages_dir": "user_test/family_z_melos_02",
+        "page_title_ja": "走れメロス",
+        "audio_file_prefix": "Melos",
         "story_type": "literature",
         "topic_title": "The Three-Day Promise",
         "japanese_title_text": "走れメロス(The Three-Day Promise)",
@@ -203,6 +257,34 @@ STORY_REGISTRY = {
             "narrator": "Aoede",
             "selinuntius": "Erinome",
             "dionysius": "Charon",
+        },
+    },
+    "the_open_window": {
+        "e2e_management_id": "FAMILY-Z-THE-OPEN-WINDOW-PRODUCTION-E2E-01",
+        "e2e_theme_tag": "FAMILY_Z_THE_OPEN_WINDOW_PRODUCTION_E2E_01",
+        "e2e_pages_dir": "user_test/family_z_open_window_01",
+        "page_title_ja": "開いた窓",
+        "audio_file_prefix": "OpenWindow",
+        "story_type": "literature",
+        "topic_title": "The Open Window",
+        "japanese_title_text": "開いた窓(The Open Window)",
+        "japanese_title_tts": "開いた窓",
+        "trial_seed_dir": "er026_seeds/the_open_window",
+        # Voice割当案(plan only)。E2E経路のspeaker/Voice表(er062 SPEAKERS・er063 FAMILY_Z_DIALOGUE_VOICE_*)は
+        # 現状Melos固定のため、本registry値だけでは実走に反映されない(設計案=E2E_PLAN_01.md §3-C/§4)。
+        # 承認pool(Aoede/Erinome/Charon/Algieba[Melos run_e2e_02で21/21使用])の範囲内。Mrs. Sappleton用の
+        # 第2女性Voiceは承認pool内で賄えないため未割当(判断候補、E2E_PLAN_01.md §4)。
+        "rights_block": OPEN_WINDOW_RIGHTS_BLOCK,
+        "voice_keywords": {
+            "vera": ["vera", "niece", "girl"],
+            "framton": ["framton", "nuttel", "visitor"],
+            "men": ["husband", "brother", "ronnie"],
+        },
+        "voice_tts_names_plan": {
+            "narrator": "Aoede",
+            "vera": "Erinome",
+            "framton": "Algieba",
+            "men": "Charon",
         },
     },
 }
@@ -814,10 +896,10 @@ import contextlib
 import dataclasses
 import types
 
-E2E_MANAGEMENT_ID = "FAMILY-Z-MELOS-SOL-PRODUCTION-AUDIO-E2E-01"
-E2E_THEME_TAG = "FAMILY_Z_MELOS_SOL_PRODUCTION_E2E_01"
+E2E_MANAGEMENT_ID = STORY_REGISTRY["melos"]["e2e_management_id"]   # Melos既定(story別値はSTORY_REGISTRY[story][e2e_*]、委任_01 THE-OPEN-WINDOW)
+E2E_THEME_TAG = STORY_REGISTRY["melos"]["e2e_theme_tag"]
 E2E_RUN_ROOT = "er026_output/family_z_production_e2e_01"
-E2E_PAGES_DIR = "user_test/family_z_melos_02"   # 委任_17 Fable決定B2: run_e2e_02の試聴ページ(melos_01)を上書きしない
+E2E_PAGES_DIR = STORY_REGISTRY["melos"]["e2e_pages_dir"]   # 委任_17 Fable決定B2: run_e2e_02の試聴ページ(melos_01)を上書きしない
 E2E_APPROVED_BUDGET_MAX_JPY = 300.0     # 方針8: --approved-budget-jpy 300
 E2E_WARN_THRESHOLD_JPY = 200.0          # 方針8: 警告閾値(超過見込みで新規API呼出前にSTOP)
 E2E_DEFAULT_RUN = "run_e2e_01"
@@ -920,13 +1002,25 @@ class E2EContext:
     run: str = E2E_DEFAULT_RUN
     mode: str = "dry-run"                       # dry-run | mock | real
     run_root: str = E2E_RUN_ROOT
-    pages_dir: str = E2E_PAGES_DIR
+    pages_dir: str = None                       # None -> STORY_REGISTRY[story_key]["e2e_pages_dir"](Melosは従来のE2E_PAGES_DIR)
     budget: object = None
     llm_client: object = None
     hooks: dict = dataclasses.field(default_factory=dict)
     only_clips: object = None
     regenerate_stage: object = None
     mock_api: object = None                     # mock時のみ: API境界(guard+呼出カウンタ)
+
+    def __post_init__(self):
+        if self.pages_dir is None:
+            self.pages_dir = STORY_REGISTRY[self.story_key]["e2e_pages_dir"]
+
+    @property
+    def management_id(self) -> str:
+        return STORY_REGISTRY[self.story_key]["e2e_management_id"]
+
+    @property
+    def theme_tag(self) -> str:
+        return STORY_REGISTRY[self.story_key]["e2e_theme_tag"]
 
     @property
     def out_dir(self) -> str:
@@ -940,7 +1034,7 @@ class E2EContext:
         if self.mode != "real":
             return contextlib.nullcontext()
         import er005_cost_logger as cl
-        return cl.logging_context(E2E_THEME_TAG, name)
+        return cl.logging_context(self.theme_tag, name)
 
 
 def _stop_sentinel(ctx, where):
@@ -1565,7 +1659,9 @@ def stage_assemble(ctx) -> dict:
 
 
 def stage_pages(ctx) -> dict:
-    return _m().a63.build_pages(ctx.out_dir, ctx.pages_dir)
+    cfg = STORY_REGISTRY[ctx.story_key]
+    return _m().a63.build_pages(ctx.out_dir, ctx.pages_dir, page_title=cfg["page_title_ja"],
+                                audio_file_prefix=cfg["audio_file_prefix"])
 
 
 def evaluate_page_verify(res: dict) -> list:
@@ -1661,6 +1757,8 @@ def _log_stage(ctx, name, result, t0):
 
 def run_stages(ctx, stages) -> dict:
     results = {}
+    if ctx.mode != "dry-run":
+        _m().a63.MANAGEMENT_ID = ctx.management_id      # 監査記録(style record/tts results)のmanagement_id。Melosは従来値と同一
     for name in stages:
         t0 = time.time()
         if ctx.mode != "dry-run":
@@ -1697,12 +1795,14 @@ def describe_plan(ctx, stages=E2E_STAGES) -> dict:
     rows = []
     for name in stages:
         api, writes, marker = _STAGE_PLAN_INFO[name]
+        if name == "pages":
+            api = f"API 0 ({ctx.pages_dir}/)"      # story別(Melosは従来表記と同一)
         exists = None if marker == "-" else os.path.exists(f"{ctx.out_dir}/{marker}")
         rows.append({"stage": name, "api": api, "writes": writes,
                      "est_jpy": E2E_STAGE_EST_JPY.get(name, 0.0),
                      "output_exists": exists,
                      "resume": ("provenance sha一致で再利用/不一致STOP" if exists else "新規実行")})
-    return {"dry_run": True, "management_id": E2E_MANAGEMENT_ID, "story": ctx.story_key, "out_dir": ctx.out_dir,
+    return {"dry_run": True, "management_id": ctx.management_id, "story": ctx.story_key, "out_dir": ctx.out_dir,
             "pages_dir": ctx.pages_dir, "stages": rows,
             "stop_sentinel": {"stop_all_path": _m().st.STOP_ALL_PATH, "run_stop_path": f"{ctx.out_dir}/STOP",
                               "present_now": _m().st.stop_sentinel_hit(ctx.out_dir), "exit_code_on_hit": _m().st.STOP_EXIT_CODE},
@@ -1867,10 +1967,11 @@ class MockApi:
 
 
 def build_mock_context(run_root: str, run: str = "run_mock", pages_dir: str | None = None,
-                       writer_hook=None, tts_generators=None) -> E2EContext:
+                       writer_hook=None, tts_generators=None, story_key: str = "melos", slug: str | None = None) -> E2EContext:
     m = _m()
-    ctx = E2EContext(mode="mock", run=run, run_root=run_root,
-                     pages_dir=pages_dir or f"{run_root}/melos/{run}/pages_mock")
+    slug = slug or story_key
+    ctx = E2EContext(story_key=story_key, slug=slug, mode="mock", run=run, run_root=run_root,
+                     pages_dir=pages_dir or f"{run_root}/{slug}/{run}/pages_mock")
     ctx.mock_api = api = MockApi(ctx.out_dir)
     ctx.llm_client = m.w62.MockClient(api.wrap("llm", writer_hook or mock_writer_hook()))
     gens = tts_generators or mock_tts_generators()
@@ -1995,7 +2096,8 @@ def main(argv=None):
         _m().st.check_stop_sentinel("startup", startup_dir)
         if args.mode == "mock":
             ctx = build_mock_context(E2E_RUN_ROOT, run=f"{args.run}_mock",
-                                     pages_dir=f"{E2E_RUN_ROOT}/{slug}/{args.run}_mock/pages_mock")
+                                     pages_dir=f"{E2E_RUN_ROOT}/{slug}/{args.run}_mock/pages_mock",
+                                     story_key=args.story, slug=slug)
             _launch_guard(ctx.out_dir)
         else:
             ctx = build_real_context(args)
@@ -2007,7 +2109,7 @@ def main(argv=None):
         with open(f"{ctx.out_dir}/gloss_alignment_flag.json", "w", encoding="utf-8") as _ff:
             json.dump(_flag_eff, _ff, ensure_ascii=False, indent=2)
         results = run_stages(ctx, stages)
-        summary = {"management_id": E2E_MANAGEMENT_ID, "mode": ctx.mode, "stages": list(results),
+        summary = {"management_id": ctx.management_id, "mode": ctx.mode, "stages": list(results),
                    "gloss_alignment_flag": _flag_eff,
                    "spent_jpy": round(ctx.budget.spent(), 4) if ctx.budget is not None else None}
         print(json.dumps(summary, ensure_ascii=False))

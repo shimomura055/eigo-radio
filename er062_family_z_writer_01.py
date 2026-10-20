@@ -138,7 +138,7 @@ _CONVERSION_OVERRIDE = ("\nLevel and length override: write natural upper-interm
 REVISE_USER_TMPL = ("Here is a short story:\n\n{body}\n\n"
                     "Without changing the events, the characters, or the cause-and-effect, please revise it into a more engaging story. "
                     "Keep it at a natural upper-intermediate level (CEFR B1-B2), about 330-470 words, in third person, "
-                    "and only Melos may have a personal name. Output the title and the story only.")
+                    "and only {main_character} may have a personal name. Output the title and the story only.")
 
 # Std調整(Z専用): X共有ブロックはimport(STANDARD_A2_NEW_VOCAB_BLOCK/STANDARD_A2_DEVELOPER)。
 # 「## In one line」要求と見出し構造の記述は含めない。段落整列契約・同一本文禁止を追加。
@@ -361,8 +361,12 @@ def build_r0_prompt(seed: dict, story_type: str = "literature") -> tuple:
     return R0_TEMPLATE.format(seed_bullets=bullets, conversion=conv, story_type=story_type), applied
 
 
-def build_revise_prompt(body: str) -> str:
-    return REVISE_USER_TMPL.format(body=body.strip())
+# story別の主人公名(REVISE_USER_TMPLの「only <名前> may have a personal name」に入る。Story名の差替えのみ。Melosは従来文言と同一)。
+STORY_MAIN_CHARACTER = {"melos": "Melos", "the_open_window": "Framton Nuttel"}
+
+
+def build_revise_prompt(body: str, story_key: str = "melos") -> str:
+    return REVISE_USER_TMPL.format(body=body.strip(), main_character=STORY_MAIN_CHARACTER[story_key])
 
 
 def std_developer() -> str:
@@ -384,8 +388,8 @@ def build_std_prompt(adv_text: str) -> str:
 # ------------------------------------------------------------
 # Guardrail(WARN/FAIL)
 # ------------------------------------------------------------
-def check_adv_guardrails(text: str, forbidden_names=None) -> dict:
-    forbidden = forbidden_names or st.STORY_LINT_CONFIG["melos"]["forbidden_names"][:4]
+def check_adv_guardrails(text: str, forbidden_names=None, story_key: str = "melos") -> dict:
+    forbidden = forbidden_names or st.STORY_LINT_CONFIG.get(story_key, st.STORY_LINT_CONFIG["melos"])["forbidden_names"][:4]
     wc = st.body_word_count(text)
     title, body = st.split_title_body(text)
     warns, fails = [], []
@@ -573,7 +577,7 @@ def run_writer_chain(llm: LLM, out_dir: str, seed_dir: str, *, stages=("r0", "r1
             dev, user = WRITER_DEVELOPER_MESSAGE, prompt
             extra = {"conversion_substitutions": applied}
         elif stage in ("r1", "r2"):
-            dev, user, extra = None, build_revise_prompt(prev_text), {}
+            dev, user, extra = None, build_revise_prompt(prev_text, story_key), {}
         else:
             dev, user, extra = std_developer(), build_std_prompt(prev_text), {}
         prompt_sha = sha((dev or "") + "\n\n---\n\n" + user)
@@ -593,7 +597,7 @@ def run_writer_chain(llm: LLM, out_dir: str, seed_dir: str, *, stages=("r0", "r1
         if stage == "std_adjust":
             g = check_std_guardrails(text, prev_text)
         else:
-            g = check_adv_guardrails(text) if stage == "r2" else {"word_count": st.body_word_count(text)}
+            g = check_adv_guardrails(text, story_key=story_key) if stage == "r2" else {"word_count": st.body_word_count(text)}
         r["guardrails"] = g
         e = prov.chain_entry(stage)
         e["guardrails"] = g
