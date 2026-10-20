@@ -198,3 +198,9 @@ KEY保持率(CTRL回帰、Fact数Δ対E0):
 1. 本Trialの結論(推奨方式なし/現行維持)を受け入れるか、(2)の別手段Trialを承認するか(新仕様・Scope追加、見積は設計後)。
 2. 背景欠落(主体は再現せず)を許容水準とするか(品質ライン判断)。
 3. 地理誤り等の検索込み共通の検証観点を既存Gate(fact_check等)で扱うか(新規Gate追加なら承認要)。
+
+## 最終ラベル(ユーザー正式決定 2026-10-20)
+- A〜E全5方式=`REJECTED`(ユーザー決定①)。原文=docs/pm/delegation_log/2026-10-20_FAMILY-X-MIDDLE-EAST-YEMEN-SAUDI-PRODUCTION-E2E-02_USER.md §1①(sha256=76b6552882e2a9bf2d8219cf11f188a693601d190cda1962306925d92d8dad1f)。
+- 現行Researcher／検証仕様を維持。追加Trialは実施しない。Production変更0。
+- Trial実費合計: JPY203.00(委任_01 4.245 + 委任_02 165.92 = 170.17 + 委任_03 32.83)。出典=本書「9. 費用・実績」(委任_01/委任_02実費行)・OPEN_ITEMS.md OPEN-427行(案件合算203.00)・docs/pm/RESULT_PACKET_XRFR3.md。
+- 本Closeoutにより、§v02-5の判断候補(別手段Trial承認・許容水準・検証観点追加)は、ユーザー決定①②(背景Fact欠落=現行維持、改善Trial再開はユーザー判断のみ)で解消済み。

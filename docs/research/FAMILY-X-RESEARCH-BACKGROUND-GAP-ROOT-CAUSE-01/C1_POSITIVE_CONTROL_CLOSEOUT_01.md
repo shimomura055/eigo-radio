@@ -49,3 +49,8 @@
 - 当日(JST)累計(`daily_dev_cost_01.py`、全作業): JPY390.26(本委任139.18を含む)。1,000円/日内。
 - 追加工程の時間: R1壁時間≈2分(3 process並列)、W-1≈1分。量産単価への影響: C1はProduction未採用のため影響なし(採用すればB3 call+1回の追記プロンプト分のトークン増。追加callなし)。
 - 再開: なし(R1・R2とも途中停止なし)。W-1初回起動で`--out-root`指定誤り(preflight guard、API前)により2process失敗→課金0で引数修正し再実行(費用重複0)。
+
+## 最終ラベル(2026-10-20)
+- C1(XRG/B3BG)=`REJECTED`(Fable確定。ユーザー決定②で現行維持確定)。原文=docs/pm/delegation_log/2026-10-20_FAMILY-X-MIDDLE-EAST-YEMEN-SAUDI-PRODUCTION-E2E-02_USER.md §1②(sha256=76b6552882e2a9bf2d8219cf11f188a693601d190cda1962306925d92d8dad1f)。
+- 「Research新観点(帰属・文脈保持)」提案=不採用(XRFR方式Aで効果なし=OPEN-427、全5方式REJECTED)。
+- 以後の改善Trial再開はユーザー判断のみ(Claude/Fableの独断での再開禁止、本課題を理由とする新規Open Item起票禁止)。
