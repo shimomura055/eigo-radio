@@ -1,9 +1,17 @@
 {
   "trial_id": "FAMILY-Z-AZURE-PHRASELIST-WEIGHT-TRIAL-01",
-  "design_version": "01 (事前登録。変更はTRIAL_DESIGN_01.md §9 改訂履歴に残す)",
+  "design_version": "02 (委任_02b: Opus_J反映、Phase B Azure実走前に固定。v01の記述は履歴。変更はTRIAL_DESIGN_01.md §9に残す)",
   "language": "en-US",
-  "phrase_list": ["Melos"],
-  "conditions": ["no_pl", "pl_unspecified", "pl_w1.0", "pl_w1.5", "pl_w2.0"],
+  "phrase_list": [
+    "Melos"
+  ],
+  "conditions": [
+    "no_pl",
+    "pl_unspecified",
+    "pl_w1.0",
+    "pl_w1.5",
+    "pl_w2.0"
+  ],
   "phases": {
     "A": {
       "purpose": "録音2(同一wav)で5条件x3回。決定論性の実測と重み反映証拠。",
@@ -27,23 +35,182 @@
       "purpose": "文脈別(委任_02で実走)。正例7+負例4、voice=Aoede/Charon、Aoedeは6%減速版も。B1は同一文を4take/voiceで取りtake差を測る。",
       "reps": "1(Phase Aで条件内変動が観測された場合のみ2。上限2)",
       "sentences_positive": [
-        {"id": "P1_nonsib", "text": "Melos drank deeply from the cold stream.", "purpose": "非歯擦音後続(失敗条件再現)", "takes_per_voice": 4},
-        {"id": "P2_sib", "text": "Melos said nothing to the guards.", "purpose": "歯擦音後続(音連結許容との比較)", "takes_per_voice": 1},
-        {"id": "P3_final", "text": "The man waiting at the gate was Melos.", "purpose": "文末(後続音なし)", "takes_per_voice": 1},
-        {"id": "P4_mid", "text": "Then Melos walked away.", "purpose": "文中", "takes_per_voice": 1},
-        {"id": "P5_repeat", "text": "Melos spoke, and Melos listened.", "purpose": "複数回出現", "takes_per_voice": 1},
-        {"id": "P6_long", "text": "The road to the city was long and the sun was already low when Melos reached the river. The bridge had been washed away, and the water ran brown and fast between the stones. He stood on the bank for a moment, thinking of his friend and of the promise he had made. Then Melos took a breath, stepped into the cold current, and began to swim toward the far side.", "purpose": "長文(50語以上、文中・複数出現)", "takes_per_voice": 1},
-        {"id": "P7_compete", "text": "Melos liked the mellow sound of the old bell.", "purpose": "一般語(mellow)との競合を含む正例", "takes_per_voice": 1}
+        {
+          "id": "P1_nonsib",
+          "text": "Melos drank deeply from the cold stream.",
+          "purpose": "非歯擦音後続(失敗条件再現)",
+          "takes_per_voice": 4
+        },
+        {
+          "id": "P2_sib",
+          "text": "Melos said nothing to the guards.",
+          "purpose": "歯擦音後続(音連結許容との比較)",
+          "takes_per_voice": 1
+        },
+        {
+          "id": "P3_final",
+          "text": "The man waiting at the gate was Melos.",
+          "purpose": "文末(後続音なし)",
+          "takes_per_voice": 1
+        },
+        {
+          "id": "P4_mid",
+          "text": "Then Melos walked away.",
+          "purpose": "文中",
+          "takes_per_voice": 1
+        },
+        {
+          "id": "P5_repeat",
+          "text": "Melos spoke, and Melos listened.",
+          "purpose": "複数回出現",
+          "takes_per_voice": 1
+        },
+        {
+          "id": "P6_long",
+          "text": "The road to the city was long and the sun was already low when Melos reached the river. The bridge had been washed away, and the water ran brown and fast between the stones. He stood on the bank for a moment, thinking of his friend and of the promise he had made. Then Melos took a breath, stepped into the cold current, and began to swim toward the far side.",
+          "purpose": "長文(50語以上、文中・複数出現)",
+          "takes_per_voice": 1
+        },
+        {
+          "id": "P7_compete",
+          "text": "Melos liked the mellow sound of the old bell.",
+          "purpose": "一般語(mellow)との競合を含む正例",
+          "takes_per_voice": 1
+        }
       ],
       "sentences_negative": [
-        {"id": "N1_mellow", "text": "The mellow sound of the bell drifted across the square.", "must_not_be": "Melos", "takes_per_voice": 1},
-        {"id": "N2_mellows", "text": "The old wine mellows slowly in the cellar.", "must_not_be": "Melos", "takes_per_voice": 1},
-        {"id": "N3_mello", "text": "Her gray cat Mello slept by the window.", "must_not_be": "Melos", "takes_per_voice": 1},
-        {"id": "N4_milos", "text": "Milos drank slowly from the cup.", "must_not_be": "Melos", "takes_per_voice": 1}
+        {
+          "id": "N1_mellow",
+          "text": "The mellow sound of the bell drifted across the square.",
+          "must_not_be": "Melos",
+          "takes_per_voice": 1
+        },
+        {
+          "id": "N2_mellows",
+          "text": "The old wine mellows slowly in the cellar.",
+          "must_not_be": "Melos",
+          "takes_per_voice": 1
+        },
+        {
+          "id": "N3_mello",
+          "text": "Her gray cat Mello slept by the window.",
+          "must_not_be": "Melos",
+          "takes_per_voice": 1
+        },
+        {
+          "id": "N4_milos",
+          "text": "Milos drank slowly from the cup.",
+          "must_not_be": "Melos",
+          "takes_per_voice": 1
+        }
       ],
-      "voices": ["Aoede", "Charon"],
-      "speed_variants": {"Aoede": ["normal", "slow6pct"], "Charon": ["normal"]},
-      "tts": {"model": "gemini-3.8-flash-lite-tts", "TTS_EXECUTION_MODE": "STANDARD"}
+      "voices": [
+        "Aoede",
+        "Charon"
+      ],
+      "speed_variants": {
+        "Aoede": [
+          "normal",
+          "slow6pct"
+        ],
+        "Charon": [
+          "normal"
+        ]
+      },
+      "tts": {
+        "model": "gemini-3.8-flash-lite-tts",
+        "TTS_EXECUTION_MODE": "STANDARD"
+      },
+      "v02": {
+        "conditions_B": [
+          "no_pl",
+          "pl_unspecified",
+          "pl_w1.5",
+          "pl_w2.0"
+        ],
+        "primary_weight": "pl_w1.5",
+        "secondary_weight": "pl_w2.0",
+        "spot_check": {
+          "rule": "wavごとにsha256(wav_sha256 + \":spot\")の昇順で、duration_s<=10のwavから先頭9件。pl_w1.0はこの9件のrep1のみ、rep2はこの9件の4条件+pl_w1.0。",
+          "n_wav": 9,
+          "max_duration_s": 10.0,
+          "rep2_conditions": [
+            "no_pl",
+            "pl_unspecified",
+            "pl_w1.0",
+            "pl_w1.5",
+            "pl_w2.0"
+          ],
+          "w1.0_rep1": true
+        },
+        "boundary_reclassification": {
+          "N2_mellows": "boundary(Ledger別読み/ˈmɛloʊs/と有声無声差のみ)",
+          "N4_milos": "boundary(Ledger別読み/ˈmɪlɒs/に近い)"
+        },
+        "valid_negatives_from_manifest_01": [
+          "N1_mellow",
+          "N3_mello"
+        ],
+        "negatives_v02": {
+          "group": "negatives_v02",
+          "contexts": [
+            {
+              "id": "P1",
+              "template": "Melos drank deeply from the cold stream."
+            },
+            {
+              "id": "P3",
+              "template": "The man waiting at the gate was Melos."
+            },
+            {
+              "id": "P4",
+              "template": "Then Melos walked away."
+            }
+          ],
+          "variants": {
+            "mello": "Mello",
+            "melon": "Melon",
+            "mullos": "Mullos"
+          },
+          "voices": [
+            "Aoede",
+            "Charon"
+          ],
+          "speed_variants": {
+            "Aoede": [
+              "normal",
+              "slow6pct"
+            ],
+            "Charon": [
+              "normal"
+            ]
+          },
+          "takes_per_voice": 1,
+          "canonical_is_original_melos_sentence": true,
+          "expected": {
+            "n_tts": 18,
+            "n_slow": 9,
+            "n_wav": 27
+          },
+          "tts": {
+            "model": "gemini-3.8-flash-lite-tts",
+            "TTS_EXECUTION_MODE": "STANDARD"
+          }
+        },
+        "production_takes": {
+          "purpose": "主評価集合(S-1)。本番既存take(Primary NG系)を再利用。TTS 0。",
+          "source_glob": "er026_output/family_z_production_e2e_01/melos/run_e2e_0[1-5]/{a2,b1b}/narration/attempts/*.json",
+          "max_takes": 20,
+          "max_total_seconds": 500,
+          "selection_rule": "TRIAL_DESIGN_01.md §2-D-2",
+          "phrase_list_rule": "[h[\"canonical_spelling\"] for h in get_hint_for_text(canonical, min_confidence=\"low\")]",
+          "generalization_probe_max": 6
+        },
+        "judge_roles": {
+          "full_story": "実segment名(合成wavはfull_story_part1_c1)、CS層=connected_speech_enabled_for",
+          "no_tier3": "segment_id=None"
+        }
+      }
     },
     "C": {
       "purpose": "追加反復/追加サンプル。AおよびBの結果で差・揺れが出た条件に集中。事前ルールはTRIAL_DESIGN_01.md §2-C。",

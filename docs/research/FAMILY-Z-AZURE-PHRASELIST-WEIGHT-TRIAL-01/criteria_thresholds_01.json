@@ -1,12 +1,15 @@
 {
   "trial_id": "FAMILY-Z-AZURE-PHRASELIST-WEIGHT-TRIAL-01",
-  "note": "TRIAL_DESIGN_01.md §2-C/§3 の事前固定数値の機械可読な転記(委任_02aで新規追加。設計書・design_matrix_01.jsonは編集していない)。値を変えるときは設計書§9改訂履歴が先。eval_extはこのファイルから閾値を読み、ハードコードしない。転記元との一致はtestで検査。",
-  "source": "docs/research/FAMILY-Z-AZURE-PHRASELIST-WEIGHT-TRIAL-01/TRIAL_DESIGN_01.md §2-C(R>=6) / §3(判定基準)",
+  "note": "TRIAL_DESIGN_01.md §3-v02(委任_02b、Phase B Azure実走前に固定)の機械可読な転記。v01のキーは維持(eval_ext互換)。値を変えるときは設計書§9改訂履歴が先。eval_v02はこのファイルから閾値を読み、ハードコードしない。転記元との一致はtestで検査。",
+  "source": "docs/research/FAMILY-Z-AZURE-PHRASELIST-WEIGHT-TRIAL-01/TRIAL_DESIGN_01.md §3-v02",
   "baseline_cond": "pl_unspecified",
-  "candidate_conds": ["pl_w1.5", "pl_w2.0"],
+  "candidate_conds": [
+    "pl_w1.5",
+    "pl_w2.0"
+  ],
   "min_R_for_identifiability": 6,
   "fixed_min_abs": 3,
-  "fixed_min_fraction_of_R": 0.30,
+  "fixed_min_fraction_of_R": 0.3,
   "negative_false_melos_increase_max": 0,
   "degraded_max_abs": 1,
   "degraded_fraction_of_fixed_exclusive_upper": 0.3333333333333333,
@@ -20,5 +23,33 @@
     "degraded": "ベースラインで全rep正認識だが、重みwで全rep正認識でなくなったwav数(1repでも誤認識なら悪化に数える保守解釈)",
     "voice_speed_condition": "(voice, slow6)の組。Aoede通常/Aoede減速/Charon",
     "criterion5": "fixed wavの各repで、重みw=PASS系かつベースライン=非PASS系。かつ負例canonical注入のw条件の誤PASS=0"
+  },
+  "version": "02",
+  "v02": {
+    "primary_weight_cond": "pl_w1.5",
+    "secondary_weight_cond": "pl_w2.0",
+    "alpha_primary": 0.05,
+    "alpha_secondary": 0.025,
+    "min_clusters": 3,
+    "primary_role": "full_story",
+    "secondary_role": "no_tier3",
+    "rule_of_three_numerator": 3.0,
+    "valid_negative_expected_n": 33,
+    "secondary_role_down_le_up": true,
+    "record_excluded": "rec2_att2(Phase A基準wav)は確認集計から除外し参考値",
+    "order_of_status": [
+      "INCONCLUSIVE(R<min_R)",
+      "REJECTED(up<fixed_min_abs or up<0.30R)",
+      "INCONCLUSIVE(sign test p>alpha)",
+      "判断候補(基準4-7のいずれかを破る)",
+      "VALIDATED候補"
+    ],
+    "diagnosis": {
+      "a_too_easy_baseline_pass_fraction_min": 0.5,
+      "b_pl_not_effective_transcript_change_fraction_max": 0.1,
+      "c_already_enough_baseline_pass_fraction_min": 0.5,
+      "d_context_dependent_top_cluster_share_min": 0.5,
+      "e_not_solved_by_weight_residual_ng_fraction_min": 0.7
+    }
   }
 }
