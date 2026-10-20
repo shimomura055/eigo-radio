@@ -1,0 +1,103 @@
+{
+ "source": "er026_output/family_z_production_e2e_01/melos/run_e2e_06/cost_log.jsonl(実測usage x pricing_snapshot単価。runner budget guardと同一関数)",
+ "n_records": 211,
+ "total_jpy_measured": 27.5762,
+ "cap_jpy": 80.0,
+ "remaining_vs_cap_jpy": 52.4238,
+ "stages": {
+  "tts_a2": {
+   "jpy": 14.8168,
+   "calls": 123,
+   "by_provider": {
+    "azure": {
+     "jpy": 4.4995,
+     "calls": 14,
+     "models": [
+      "azure-speech-stt"
+     ]
+    },
+    "gemini": {
+     "jpy": 8.3321,
+     "calls": 40,
+     "models": [
+      "gemini-2.5-pro-preview-tts",
+      "gemini-3.8-flash-lite-tts"
+     ]
+    },
+    "openai": {
+     "jpy": 0.0384,
+     "calls": 6,
+     "models": [
+      "gpt-6-luna"
+     ]
+    },
+    "openai_asr": {
+     "jpy": 1.9468,
+     "calls": 63,
+     "models": [
+      "gpt-4o-mini-transcribe"
+     ]
+    }
+   },
+   "web_search_calls": 0,
+   "usage_not_obtained": 14,
+   "failed_calls": 0
+  },
+  "tts_b1b": {
+   "jpy": 12.7594,
+   "calls": 88,
+   "by_provider": {
+    "azure": {
+     "jpy": 3.4231,
+     "calls": 8,
+     "models": [
+      "azure-speech-stt"
+     ]
+    },
+    "gemini": {
+     "jpy": 8.2099,
+     "calls": 40,
+     "models": [
+      "gemini-2.5-pro-preview-tts",
+      "gemini-3.8-flash-lite-tts"
+     ]
+    },
+    "openai_asr": {
+     "jpy": 1.1264,
+     "calls": 40,
+     "models": [
+      "gpt-4o-mini-transcribe"
+     ]
+    }
+   },
+   "web_search_calls": 0,
+   "usage_not_obtained": 8,
+   "failed_calls": 0
+  }
+ },
+ "by_kind_jpy": {
+  "ASR(azure secondary)": 7.9226,
+  "ASR(openai)": 3.0732,
+  "LLM(openai)": 0.0384,
+  "TTS(gemini)": 16.542
+ },
+ "web_search_calls_total": 0,
+ "usage_not_obtained_total": 22,
+ "failed_calls_total": 0,
+ "runner_stage_log_spent_jpy_cumulative_last": 27.5762,
+ "classification": {
+  "実測": "cost_log.jsonl usage(OFFICIAL_API_RESPONSE)を単価換算した値",
+  "推定": "なし(本集計は推定値を含まない)",
+  "未取得": "usage_not_obtained_total件(0なら全件取得)"
+ },
+ "reference_other_frame_not_added": {
+  "run_e2e_01": {
+   "jpy": 108.1056,
+   "note": "¥300枠(別枠)。本runの合計に加算しない"
+  },
+  "run_e2e_02": {
+   "jpy": 62.8314,
+   "note": "¥300枠(別枠)。本runの合計に加算しない"
+  }
+ }
+}
