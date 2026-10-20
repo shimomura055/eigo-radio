@@ -1,0 +1,181 @@
+{
+  "schema_version": "review_queue_post_en_v1",
+  "article_id": "middle_east_yemen_saudi__run_mey_02",
+  "article_level": "a2",
+  "article_sha256": "d948d2c6570e6e5db57bb87bb00b799fba77ea2d6adf6aba76e822558d22e421",
+  "ledger_sha256": "ae7611d033858e0738b27b2357313cc088aea76ce4df2a0d837639a476b9e665",
+  "run_id": "rf20261020T124010Z-0975",
+  "timestamp": "2026-10-20T12:40:10+00:00",
+  "status": "OK",
+  "reason": null,
+  "splitter_version": "en_split_v1",
+  "producer": "deterministic_v2",
+  "run_label": "MEY-E2E-02-T1",
+  "sentence_count": 44,
+  "fact_count": 8,
+  "conditions": [
+    {
+      "model_key": "luna",
+      "condition": "A3",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4263,
+      "output_tokens": 927,
+      "cached_tokens": 0,
+      "cost_jpy": 0.142368,
+      "flag_count": 1,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "luna",
+      "condition": "A4",
+      "model_id_requested": "gpt-6-luna",
+      "model_id_returned": "gpt-6-luna",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4413,
+      "output_tokens": 778,
+      "cached_tokens": 0,
+      "cost_jpy": 0.132848,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A3",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4028,
+      "output_tokens": 5,
+      "cached_tokens": 0,
+      "cost_jpy": 0.195344,
+      "flag_count": 0,
+      "system_prompt_sha256": "9d9950428419c3af824cc5b8676a4b564f96aeb87657c547d418cc86ef3538e9",
+      "model_mismatch": false
+    },
+    {
+      "model_key": "gemini35fl",
+      "condition": "A4",
+      "model_id_requested": "gemini-3.5-flash-lite",
+      "model_id_returned": "gemini-3.5-flash-lite",
+      "status": "OK",
+      "reason": null,
+      "api_calls": 1,
+      "input_tokens": 4148,
+      "output_tokens": 4,
+      "cached_tokens": 0,
+      "cost_jpy": 0.200704,
+      "flag_count": 0,
+      "system_prompt_sha256": "c87b95e5bcf1b5c266b8978c5688849eb339a6087efbcaf56bb7399ed128ef01",
+      "model_mismatch": false
+    }
+  ],
+  "issues": [
+    {
+      "issue_id": "middle_east_yemen_saudi__run_mey_02__a2__d948d2c6__rf20261020T124010Z-0975__s11",
+      "article_id": "middle_east_yemen_saudi__run_mey_02",
+      "article_level": "a2",
+      "article_sha256": "d948d2c6570e6e5db57bb87bb00b799fba77ea2d6adf6aba76e822558d22e421",
+      "run_id": "rf20261020T124010Z-0975",
+      "timestamp": "2026-10-20T12:40:10+00:00",
+      "sentence_id": "s11",
+      "sentence_text": "The Houthis had fired it toward Riyadh.",
+      "context": {
+        "before": [
+          "First, let’s look at the announcement.",
+          "A spokesperson for the Saudi-led coalition forces in Yemen said they had stopped and destroyed one ballistic missile."
+        ],
+        "after": [
+          "In this case, the UK Ministry of Defence announced an air-defense mission for Royal Air Force Typhoon fighter jets.",
+          "They will protect Saudi cities and important sites from air attacks."
+        ],
+        "note": "Queue生成時のみ付与。LLM入力には含まれていない"
+      },
+      "related_fact_ids": [
+        "YSA-20261020-01"
+      ],
+      "facts": [
+        {
+          "fact_id": "YSA-20261020-01",
+          "text": "サウジ主導のイエメン連合軍報道官は、フーシ派がリヤドに向けて発射した弾道ミサイル1発を迎撃・破壊したと発表した。\n  scope: サウジアラビアのリヤドに向けて発射されたミサイル1発\n  numeric_value: 1発 (numeric_scope: 連合軍報道官が迎撃・破壊したと発表した弾道ミサイル)\n  date_or_period: 2026年10月20日\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: サウジ国営通信SPA掲載の連合軍報道官発表。独立した第三者による検証とは区別する。"
+        }
+      ],
+      "flag_reasons": [
+        {
+          "type": "その他",
+          "question": "「The Houthis had fired it」と事実として述べる表現は、台帳の「連合軍報道官がそう発表した」という情報源の限定を外しているのではありませんか。"
+        }
+      ],
+      "detected_by": [
+        {
+          "model_key": "luna",
+          "model_id": "gpt-6-luna",
+          "condition": "A3",
+          "confidence": 0.3,
+          "type": "その他",
+          "fact_ids": [
+            "YSA-20261020-01"
+          ],
+          "question": "「The Houthis had fired it」と事実として述べる表現は、台帳の「連合軍報道官がそう発表した」という情報源の限定を外しているのではありませんか。",
+          "severity": "重大",
+          "raw_flag_source": "raw/luna_A3.jsonl"
+        }
+      ],
+      "confidence": 0.3
+    }
+  ],
+  "unlocated_flags": [],
+  "model_stats": {
+    "luna": {
+      "article_level": "a2",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 8676,
+      "output_tokens": 1705,
+      "cost_jpy": 0.275216,
+      "a3_flag_count": 1,
+      "a4_flag_count": 0,
+      "unique_issue": 1,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 0
+    },
+    "gemini35fl": {
+      "article_level": "a2",
+      "articles_processed": 1,
+      "conditions_ok": 2,
+      "conditions_unavailable": 0,
+      "article_unavailable": 0,
+      "article_partial": 0,
+      "api_calls": 2,
+      "input_tokens": 8176,
+      "output_tokens": 9,
+      "cost_jpy": 0.396048,
+      "a3_flag_count": 0,
+      "a4_flag_count": 0,
+      "unique_issue": 0,
+      "overlap_a3_a4": 0,
+      "zero_flag_article": 1
+    },
+    "_all": {
+      "article_level": "a2",
+      "article_status": "OK",
+      "unique_issue": 1,
+      "cost_jpy": 0.671264,
+      "issues_by_both_models": 0
+    }
+  },
+  "warnings": []
+}

@@ -1,0 +1,17 @@
+[B3-RUNNER][research_ledger] 既存Ledgerを再利用(既生成済み): er019_output/middle_east_yemen_saudi/run_mey_02/research_ledger
+[E-FAMILY-RUNNER][cost] so far=30.69 JPY by_provider={'openai': 30.69} (after research_ledger)
+[B3-RUNNER][storyline_b3] 既存Selected Fact Briefを再利用: er019_output/middle_east_yemen_saudi/run_mey_02/storyline_b3
+[B3-RUNNER][annotation] producer=deterministic_v2 rules_sha=525f2309b521 facts=2 annotated_sha=c7d78fc63a37(LLM 0 call)
+[B3-RUNNER][writer] 既存JA記事(R2)の再利用を検討: er019_output/middle_east_yemen_saudi/run_mey_02/ja_writer/revision2.md(W-1来歴+注記契約sha一致を確認、U-1)
+[E-FAMILY-RUNNER][writer/middle_east_yemen_saudi] Advanced(Family X忠実英訳)生成開始...
+[E-FAMILY-RUNNER][cost] so far=31.07 JPY by_provider={'openai': 31.07} (after advanced writer)
+[E-FAMILY-RUNNER][cost] so far=31.07 JPY by_provider={'openai': 31.07} (after advanced)
+[B3-RUNNER][risk_flag/b1b] Risk Flagger開始(非Blocking、4条件逐次)...
+[E-FAMILY-RUNNER][cost] so far=31.07 JPY by_provider={'openai': 31.07} (risk_flag b1b)
+[E-FAMILY-RUNNER][cost] so far=31.16 JPY by_provider={'openai': 31.16} (risk_flag b1b)
+[E-FAMILY-RUNNER][cost] so far=31.26 JPY by_provider={'openai': 31.26} (risk_flag b1b)
+[E-FAMILY-RUNNER][cost] so far=31.45 JPY by_provider={'openai': 31.26, 'gemini': 0.19} (risk_flag b1b)
+[B3-RUNNER][risk_flag/b1b] status=OK issues=0 queue_saved=True
+[E-FAMILY-RUNNER][cost] so far=31.65 JPY by_provider={'openai': 31.26, 'gemini': 0.38} (after risk_flag b1b)
+[B3-RUNNER] stage=advancedで停止(--stop-after advanced、Mandatory STOP)。
+[B3-RUNNER][cost] {'by_stage_jpy': {'research': 7.415, 'ledger': 5.538, 'storyline_b3': 5.044, 'w1_r0': 6.739, 'w1_astra_r1': 2.663, 'w1_astra_r2': 3.291, 'advanced': 0.385, 'risk_flag.luna.A3.b1b': 0.087, 'risk_flag.luna.A4.b1b': 0.101, 'risk_flag.gemini35fl.A3.b1b': 0.189, 'risk_flag.gemini35fl.A4.b1b': 0.194}, 'total_jpy': 31.645, 'by_provider_jpy': {'openai': 31.262, 'gemini': 0.384}, 'risk_flag_by_level_model_condition_jpy': {'b1b': {'luna': {'A3': 0.087, 'A4': 0.101}, 'gemini35fl': {'A3': 0.189, 'A4': 0.194}}}}
