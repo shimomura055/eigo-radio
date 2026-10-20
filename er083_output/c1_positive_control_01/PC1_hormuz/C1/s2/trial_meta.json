@@ -1,0 +1,115 @@
+{
+  "trial_id": "FAMILY-X-B3-BACKGROUND-FACT-COMPLEMENT-TRIAL-01",
+  "candidate": "C1",
+  "dry_run": false,
+  "status": "OK",
+  "model_requested": "gpt-6.1-sol",
+  "effort": "high",
+  "topic": "ホルムズ海峡を通航する船舶への20％通航料をめぐる発言の撤回と市場反応",
+  "candidate_note_sha256": "592a13b317d9792ada52d8df274c4bfaebb46bab2521bb626bffa1a487d055a1",
+  "candidate_note_chars": 1466,
+  "production_prompt_shas": {
+    "developer_message_sha256": "b4391b0387c54d39cf2ed095e7c00e028b13f173065ed0077b3a16f0fe37981a",
+    "user_prompt_template_sha256": "6cc7218432a685701ddeb9342fc63fd1da6d13a18e0f0e5dd842ed591808b796",
+    "fact_test_definitions_sha256": "91513c8999a63439adb40d5c28a253e4cdbb438228ba1deda199d2ae6c6c5a8a"
+  },
+  "reeval_note_sha256": "dcf4f2b40a9ddaccf6121ae39c6b5ccf1bd31edab3b012d7a65d8da05d4142dd",
+  "calls": [
+    {
+      "model": "gpt-6.1-sol",
+      "reasoning": {
+        "effort": "high"
+      },
+      "schema_name": "storyline_b3_fact_selection",
+      "developer_sha256": "b4391b0387c54d39cf2ed095e7c00e028b13f173065ed0077b3a16f0fe37981a",
+      "user_prompt_sha256": "469d93dfbb00398b904da5ae57276f465b767099b395e9ce27e6a4c97a479199",
+      "user_prompt_chars": 7987
+    }
+  ],
+  "wall_seconds": 73.56,
+  "stop_record": null,
+  "ledger_sha256": "83b2a09b99b20af0f1d30aefc6dda7bfe40ed06a6d7726a56a0bb90bce774522",
+  "generalization_hits": [],
+  "analysis": {
+    "selected_fact_ids": [
+      "HF-002",
+      "HF-007",
+      "HF-009"
+    ],
+    "excluded_fact_ids": [
+      "HF-001",
+      "HF-003",
+      "HF-004",
+      "HF-005",
+      "HF-006",
+      "HF-008",
+      "HF-010",
+      "HF-011",
+      "HF-012"
+    ],
+    "supplement_fact_ids": [],
+    "supplement_reasons": {},
+    "n_supplement": 0,
+    "supplement_over_cap_2": false,
+    "supplement_not_in_selected": [],
+    "background_confirm_note": "【背景確認】追加不要。採用済みの3件で、提案主体、当初の費用回収目的、置換までの経緯、本人が説明した理由、市場に残る供給懸念が示されており、最低限の理解に不可欠な前提の欠落はない。",
+    "background_confirm_note_present": true,
+    "n_selected": 3,
+    "verified_selected_n": 3,
+    "min2_satisfied": true,
+    "selected_storyline": "トランプ米大統領はホルムズ海峡の警備費用の償還として提案した20％料を、中東首脳との協議を理由に翌日、湾岸諸国の対米貿易・投資案件へ置き換えたが、供給懸念が続くなかBrent先物の上げ幅縮小は一時的にとどまった。",
+    "core_selected_ids": [
+      "HF-002",
+      "HF-007",
+      "HF-009"
+    ],
+    "core_verified_n": 3,
+    "min2_met_only_via_supplement": false,
+    "added_vs_baseline": [],
+    "removed_vs_baseline": [],
+    "added_without_supplement_marker": [],
+    "baseline_ids": [
+      "HF-002",
+      "HF-007",
+      "HF-009"
+    ]
+  },
+  "min2_policy": {
+    "floor": 2,
+    "counted": "VERIFIED",
+    "enforced": true,
+    "first_pass_selected_ids": [
+      "HF-002",
+      "HF-007",
+      "HF-009"
+    ],
+    "first_pass_verified_n": 3,
+    "reevaluated": false,
+    "reeval_note_sha256": "dcf4f2b40a9ddaccf6121ae39c6b5ccf1bd31edab3b012d7a65d8da05d4142dd",
+    "final_selected_ids": [
+      "HF-002",
+      "HF-007",
+      "HF-009"
+    ],
+    "final_verified_n": 3
+  },
+  "final_result_call": "initial",
+  "soft_warnings": [],
+  "producer": {
+    "annotated_md_sha256": "2655a48cbd2526824e234fd83b97cce674873c045b32b25cf1ab23ce72d082d0",
+    "n_facts": 3,
+    "rules_sha256": "525f2309b5212e68a5891794e7fa6194fb25cbf92f1954727c286796597910d8"
+  },
+  "model_returned": "gpt-6.1-sol",
+  "response_id": "resp_009384c2cb662af4006ad6c2e77e3487d0b07308fa987028d5",
+  "b3_latency_seconds": 73.55860328674316,
+  "ledger_id": "PC1_hormuz",
+  "role": "positive",
+  "sample": 2,
+  "expected_core": [
+    "HF-006"
+  ],
+  "expected_ok": [],
+  "is_test_ledger": false,
+  "theme_tag": "C1_POSCTRL_01"
+}

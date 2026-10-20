@@ -1,0 +1,132 @@
+{
+  "trial_id": "FAMILY-X-B3-BACKGROUND-FACT-COMPLEMENT-TRIAL-01",
+  "candidate": "baseline",
+  "dry_run": false,
+  "status": "OK",
+  "model_requested": "gpt-6.1-sol",
+  "effort": "high",
+  "topic": "Current news/lifestyle topic: why coffee prices have risen so sharply and why a cup of coffee now costs more. Using only facts confirmed by web search (International Coffee Organization, USDA reports, Reuters/AP/Bloomberg-level reporting, company announcements), cover recent coffee bean price levels and changes (with dates, and whether arabica or robusta), the reported causes (weather and harvest conditions in producing countries, currency, supply and demand, tariffs if reported), and the reported effect on retail or cafe prices for consumers. Separate confirmed facts from forecasts, and do not present one cause as the only cause unless the source says so. Do not invent details and do not use the assistant's own prior knowledge.",
+  "candidate_note_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "candidate_note_chars": 0,
+  "production_prompt_shas": {
+    "developer_message_sha256": "b4391b0387c54d39cf2ed095e7c00e028b13f173065ed0077b3a16f0fe37981a",
+    "user_prompt_template_sha256": "6cc7218432a685701ddeb9342fc63fd1da6d13a18e0f0e5dd842ed591808b796",
+    "fact_test_definitions_sha256": "91513c8999a63439adb40d5c28a253e4cdbb438228ba1deda199d2ae6c6c5a8a"
+  },
+  "reeval_note_sha256": "dcf4f2b40a9ddaccf6121ae39c6b5ccf1bd31edab3b012d7a65d8da05d4142dd",
+  "calls": [
+    {
+      "model": "gpt-6.1-sol",
+      "reasoning": {
+        "effort": "high"
+      },
+      "schema_name": "storyline_b3_fact_selection",
+      "developer_sha256": "b4391b0387c54d39cf2ed095e7c00e028b13f173065ed0077b3a16f0fe37981a",
+      "user_prompt_sha256": "bb1e448e4ac6f580b6b15ac166aa31c9ae74d5c8f04e5d8f68192e2ce9b3f7c5",
+      "user_prompt_chars": 10541
+    }
+  ],
+  "wall_seconds": 115.31,
+  "stop_record": null,
+  "ledger_sha256": "a2146bc523d9e2100217f586b0646657bc66045b25895c1ea8f5c1d2364573b9",
+  "generalization_hits": [],
+  "analysis": {
+    "selected_fact_ids": [
+      "COFFEE-001",
+      "COFFEE-010",
+      "COFFEE-014",
+      "COFFEE-015"
+    ],
+    "excluded_fact_ids": [
+      "COFFEE-002",
+      "COFFEE-003",
+      "COFFEE-004",
+      "COFFEE-005",
+      "COFFEE-006",
+      "COFFEE-007",
+      "COFFEE-008",
+      "COFFEE-009",
+      "COFFEE-011",
+      "COFFEE-012",
+      "COFFEE-013",
+      "COFFEE-016",
+      "COFFEE-017",
+      "COFFEE-018",
+      "COFFEE-019"
+    ],
+    "supplement_fact_ids": [],
+    "supplement_reasons": {},
+    "n_supplement": 0,
+    "supplement_over_cap_2": false,
+    "supplement_not_in_selected": [],
+    "background_confirm_note": null,
+    "background_confirm_note_present": false,
+    "n_selected": 4,
+    "verified_selected_n": 4,
+    "min2_satisfied": true,
+    "selected_storyline": "悪天候や強い需要で高騰したコーヒーは、供給増で国際相場が下落する一方、米国の小売価格は前年を上回っており、業界は生豆相場の小売への反映に時間がかかると説明している。",
+    "core_selected_ids": [
+      "COFFEE-001",
+      "COFFEE-010",
+      "COFFEE-014",
+      "COFFEE-015"
+    ],
+    "core_verified_n": 4,
+    "min2_met_only_via_supplement": false,
+    "added_vs_baseline": [
+      "COFFEE-001"
+    ],
+    "removed_vs_baseline": [
+      "COFFEE-003",
+      "COFFEE-009"
+    ],
+    "added_without_supplement_marker": [
+      "COFFEE-001"
+    ],
+    "baseline_ids": [
+      "COFFEE-003",
+      "COFFEE-009",
+      "COFFEE-010",
+      "COFFEE-014",
+      "COFFEE-015"
+    ]
+  },
+  "min2_policy": {
+    "floor": 2,
+    "counted": "VERIFIED",
+    "enforced": true,
+    "first_pass_selected_ids": [
+      "COFFEE-001",
+      "COFFEE-010",
+      "COFFEE-014",
+      "COFFEE-015"
+    ],
+    "first_pass_verified_n": 4,
+    "reevaluated": false,
+    "reeval_note_sha256": "dcf4f2b40a9ddaccf6121ae39c6b5ccf1bd31edab3b012d7a65d8da05d4142dd",
+    "final_selected_ids": [
+      "COFFEE-001",
+      "COFFEE-010",
+      "COFFEE-014",
+      "COFFEE-015"
+    ],
+    "final_verified_n": 4
+  },
+  "final_result_call": "initial",
+  "soft_warnings": [],
+  "producer": {
+    "annotated_md_sha256": "367b716dd2f56e2998a5a79c0e2baabd6fe487051054bd672cce53c8b82016a7",
+    "n_facts": 4,
+    "rules_sha256": "525f2309b5212e68a5891794e7fa6194fb25cbf92f1954727c286796597910d8"
+  },
+  "model_returned": "gpt-6.1-sol",
+  "response_id": "resp_03aaa553552cb93d006ad6c27f63c487d0b3d7bf3647cafbd3",
+  "b3_latency_seconds": 115.30978584289551,
+  "ledger_id": "NC1_coffee",
+  "role": "negative",
+  "sample": 2,
+  "expected_core": [],
+  "expected_ok": [],
+  "is_test_ledger": false,
+  "theme_tag": "C1_POSCTRL_01"
+}

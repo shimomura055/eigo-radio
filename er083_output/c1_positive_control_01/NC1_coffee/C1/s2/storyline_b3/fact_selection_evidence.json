@@ -1,0 +1,231 @@
+{
+  "selected_storyline": "供給制約や強い需要で高騰したコーヒーは、供給増で国際相場が下落する一方、小売への価格反映には時間差があるとされ、カフェの値上げには豆以外の経費も重なっている。",
+  "full_ledger_fact_ids": [
+    "COFFEE-001",
+    "COFFEE-002",
+    "COFFEE-003",
+    "COFFEE-004",
+    "COFFEE-005",
+    "COFFEE-006",
+    "COFFEE-007",
+    "COFFEE-008",
+    "COFFEE-009",
+    "COFFEE-010",
+    "COFFEE-011",
+    "COFFEE-012",
+    "COFFEE-013",
+    "COFFEE-014",
+    "COFFEE-015",
+    "COFFEE-016",
+    "COFFEE-017",
+    "COFFEE-018",
+    "COFFEE-019"
+  ],
+  "fact_tests": [
+    {
+      "fact_id": "COFFEE-001",
+      "test1_answer": "NO",
+      "test2_answer": "YES",
+      "test3_answer": "YES",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "直近の国際相場の下落と、その背景にある供給増・供給見通しを示す。これがないと、過去の高騰から供給改善による下落へ移ったという本筋が欠け、小売への反映の時間差を説明する起点も失われる。"
+    },
+    {
+      "fact_id": "COFFEE-002",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "グループ別の価格水準は詳しくなるが、品種間の価格差を説明するStorylineではない。相場下落と供給要因はCOFFEE-001で示せる。"
+    },
+    {
+      "fact_id": "COFFEE-003",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "当時の最高値は高騰の規模を具体化するが、本筋に必要な高価格の背景はCOFFEE-010で確保できる。特定日の先物最高値を加えても、小売への時間差やカフェの費用構造の説明は増えない。"
+    },
+    {
+      "fact_id": "COFFEE-004",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "販売済み割合の推定と次期作予測は供給制約の詳細だが、COFFEE-010で必要な説明は足りる。追加すると、不可欠でない推定・予測の説明が増える。"
+    },
+    {
+      "fact_id": "COFFEE-005",
+      "test1_answer": "YES",
+      "test2_answer": "YES",
+      "test3_answer": "NO",
+      "test4_answer": "NO",
+      "decision": "excluded",
+      "reason": "生産低迷から在庫減少への因果は高騰の背景として使えるが、供給制約・低在庫はCOFFEE-010に含まれる。長期の在庫推移まで遡らなくても中心Storylineは成立する。"
+    },
+    {
+      "fact_id": "COFFEE-006",
+      "test1_answer": "YES",
+      "test2_answer": "YES",
+      "test3_answer": "NO",
+      "test4_answer": "NO",
+      "decision": "excluded",
+      "reason": "悪天候から収量低下への説明には使えるが、COFFEE-010がブラジルとベトナムの悪天候による供給混乱を既に示す。年度別の気象要因の掘り下げは本筋に不可欠ではない。"
+    },
+    {
+      "fact_id": "COFFEE-007",
+      "test1_answer": "YES",
+      "test2_answer": "YES",
+      "test3_answer": "NO",
+      "test4_answer": "NO",
+      "decision": "excluded",
+      "reason": "降雨改善と増産予測は供給改善の説明に使えるが、相場下落に関係する供給増・供給見通しはCOFFEE-001で足りる。生産年度別の予測を追加する必要はない。"
+    },
+    {
+      "fact_id": "COFFEE-008",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "世界の生産・消費・在庫予測は需給見通しを詳しくするが、今回の中心は将来の需給予測ではなく、相場変動と消費者価格への反映である。"
+    },
+    {
+      "fact_id": "COFFEE-009",
+      "test1_answer": "YES",
+      "test2_answer": "YES",
+      "test3_answer": "NO",
+      "test4_answer": "NO",
+      "decision": "excluded",
+      "reason": "追加供給と相場下落の関係を示すが、COFFEE-001と役割が重なる。直近の価格水準と下落要因を示すCOFFEE-001に絞る。"
+    },
+    {
+      "fact_id": "COFFEE-010",
+      "test1_answer": "NO",
+      "test2_answer": "YES",
+      "test3_answer": "YES",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "過去の生豆高がなぜ起きたかを、悪天候、販売可能な豆の限定、低在庫、強い需要という複数要因で説明する。これがないと価格高騰の原因が欠け、天候だけを原因とする単純化も避けられない。"
+    },
+    {
+      "fact_id": "COFFEE-011",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "NO",
+      "decision": "excluded",
+      "reason": "為替による特定月の上昇圧力は独立した要因だが、選んだ筋の高騰・供給改善・価格転嫁を理解するためには不可欠ではない。2026年1月の短期変動へ焦点が分岐するため除外する。"
+    },
+    {
+      "fact_id": "COFFEE-012",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "NO",
+      "decision": "excluded",
+      "reason": "関税の適用・撤廃経緯は別の政策要因だが、このFact自体はカフェの値上げへの寄与を示していない。関税を含む政策史を説明しなくても、選んだ因果の筋は成立する。"
+    },
+    {
+      "fact_id": "COFFEE-013",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "関税撤廃後の短期的な先物反応は具体例になるが、供給改善による直近の相場下落とは別の出来事である。小売への反映の時間差を説明するために、この取引日の価格は必要ない。"
+    },
+    {
+      "fact_id": "COFFEE-014",
+      "test1_answer": "NO",
+      "test2_answer": "YES",
+      "test3_answer": "YES",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "生豆相場の下落が消費者価格の即時低下を意味しない理由を、在庫・製造・価格交渉による時間差として説明する、本筋の接続部分である。業界関係者の見積もりとして限定して使う。"
+    },
+    {
+      "fact_id": "COFFEE-015",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "米国小売の直近の前年比上昇を追加確認できるが、選んだStorylineは2026年の小売価格が下がっていないと実証するものではない。国際相場の前月比と小売指数の前年比を対比する枝を増やさず、消費者への影響はカフェ事例に絞る。"
+    },
+    {
+      "fact_id": "COFFEE-016",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "家庭用コーヒーの値上がり幅を具体化するが、カフェ価格とは別の商品範囲である。消費者への値上げと費用要因はCOFFEE-018で示せる。"
+    },
+    {
+      "fact_id": "COFFEE-017",
+      "test1_answer": "YES",
+      "test2_answer": "NO",
+      "test3_answer": "NO",
+      "test4_answer": "YES",
+      "decision": "excluded",
+      "reason": "一杯の価格水準は分かるが、このFactだけでは値上がりの有無や理由を説明できない。中心Storylineでは、価格水準の追加より値上げ要因の接続を優先する。"
+    },
+    {
+      "fact_id": "COFFEE-018",
+      "test1_answer": "NO",
+      "test2_answer": "YES",
+      "test3_answer": "YES",
+      "test4_answer": "NO",
+      "decision": "selected",
+      "reason": "生豆の高値がカフェの仕入れ費と飲料価格に関わる具体的な接点を示し、資材・人件費も値上げ要因だと説明する。これがないと、一杯の値上げと豆以外の費用負担という本筋が欠ける。"
+    },
+    {
+      "fact_id": "COFFEE-019",
+      "test1_answer": "YES",
+      "test2_answer": "YES",
+      "test3_answer": "NO",
+      "test4_answer": "NO",
+      "decision": "excluded",
+      "reason": "高い生豆相場と小売価格の関係を説明できるが、カフェの費用負担はCOFFEE-018で示せる。袋入り製品の製造コスト比率や関税寄与の評価まで広げなくても、本筋に必要な理由は説明できる。"
+    }
+  ],
+  "selected_fact_ids": [
+    "COFFEE-001",
+    "COFFEE-010",
+    "COFFEE-014",
+    "COFFEE-018"
+  ],
+  "selected_fact_brief_text": "供給制約や強い需要で高騰したコーヒーは、供給増で国際相場が下落する一方、小売への価格反映には時間差があるとされ、カフェの値上げには豆以外の経費も重なっている。\n\n・高騰の背景【COFFEE-010】：USDAの2025年ブラジル現地報告は、2025年初頭の高価格について、ブラジルとベトナムの悪天候による供給混乱、販売可能な豆の限定、低在庫、強い国際需要を列挙した。天候だけを唯一の原因としない。\n\n・カフェへの影響【COFFEE-018】：APの2025年10月報道で、シカゴのMomentum Coffee運営者は、4店舗のラテ、カプチーノなどを約15%値上げしたと説明。豆の購入費が前年より15%高くなり、カップ、スリーブ、人件費も費用要因だったと述べた。一事業者の事例であり、全米平均ではない。\n\n・その後の国際相場【COFFEE-001】：ICOの2026年9月の複合指標I-CIPは平均262.18米セント／ポンドで、前月比8.7%下落。ICOはブラジルの収穫物の供給増加と潤沢な供給見通しを下落要因とし、少ない認証済みアラビカ在庫とエルニーニョの不確実性を下支え要因とした。I-CIPは4グループを含む国際指標で、アラビカ単独・ロブスタ単独の価格や小売価格ではない。供給見通しは確定実績と区別する。\n\n・小売への時間差【COFFEE-014】：Reutersが2025年12月に取材した市場関係者・専門家は、生豆価格が米国小売に反映されるまで少なくとも約9か月かかるとの見積もりを示した。在庫、焙煎・包装、小売業者との価格交渉に時間がかかるという説明であり、全企業共通の期間ではない。\n\n執筆上の境界：価格転嫁の時間差は米国小売についての取材上の見積もりとして扱い、カフェすべてに同じ期間を適用しない。採用Factは、2026年9月の相場下落後にカフェ価格が実際に据え置かれたことまで確認するものではない。",
+  "recheck_note": "【背景確認】追加不要。採用Factだけで、生産国の供給・需要要因、国際指標と消費者価格の違い、米国小売への反映の時間差、カフェ運営者の費用負担が示されており、中心Storylineの最低限の理解に不可欠な前提の欠落はない。",
+  "soft_warnings": [],
+  "min2_policy": {
+    "floor": 2,
+    "counted": "VERIFIED",
+    "enforced": true,
+    "first_pass_selected_ids": [
+      "COFFEE-001",
+      "COFFEE-010",
+      "COFFEE-014",
+      "COFFEE-018"
+    ],
+    "first_pass_verified_n": 4,
+    "reevaluated": false,
+    "reeval_note_sha256": "dcf4f2b40a9ddaccf6121ae39c6b5ccf1bd31edab3b012d7a65d8da05d4142dd",
+    "final_selected_ids": [
+      "COFFEE-001",
+      "COFFEE-010",
+      "COFFEE-014",
+      "COFFEE-018"
+    ],
+    "final_verified_n": 4
+  },
+  "deterministic_selected_fact_brief_text": "- ICO Composite Indicator Price（I-CIP）は2026年9月に平均262.18米セント／ポンドとなり、2026年8月比で8.7%下落した。ICOは、ブラジルの収穫物の供給増加と潤沢な供給見通しが価格を押し下げた一方、認証済みアラビカ在庫の少なさとエルニーニョをめぐる不確実性が下支えしたと報告した。（範囲：国際的なICO Composite Indicator Price。コーヒー4グループの指標を含む。条件：ICOの2026年9月市場報告。値下がり要因と下支え要因の双方を記録）\n- USDAのブラジル現地報告は、2025年初頭の高価格について、ブラジルとベトナムの悪天候による供給混乱、販売可能な豆の限定、低在庫、強い国際需要を要因として列挙した。（範囲：国際コーヒー市場および主要生産国ブラジル・ベトナム。条件：USDAブラジル現地報告における市場説明）\n- Reutersが2025年12月に取材した市場関係者・専門家は、生豆価格が小売に反映されるまで少なくとも約9か月かかるとの見積もりを示した。記事は、米国ロースターが平均で生豆在庫を約2～3か月分保有し、その後の焙煎・包装にも約2～3か月かかり、小売業者との価格交渉は四半期ごとに行われることが多いと報じた。（範囲：米国のロースターと小売価格への価格転嫁。条件：市場関係者・専門家の推定およびReutersの取材報告であり、すべての企業の標準期間を示すものではない）\n- APが2025年10月に取材したシカゴのカフェ運営者は、4店舗でラテ、カプチーノなどの価格を約15%引き上げたと述べた。同運営者は、前年より豆の購入費が15%高くなり、カップやスリーブ、人件費も費用要因になったと説明した。（範囲：シカゴのMomentum Coffee 4店舗の事例。条件：一事業者への取材事例。全米カフェの平均的な値上げ率ではない）\n",
+  "deterministic_selected_fact_brief_text_source": "deterministic_v2",
+  "writer_constraints_text": "Writerへの注意(事実ではありません)：\n- 事実1について：ICOの報告する市場要因。これだけで消費者価格が同月に下がったとは言えない。報告ページは2026年10月9日時点で9月報告を掲載。\n- 事実2について：天候だけを唯一の原因としない。\n- 事実3について：相場下落や関税撤廃の後も消費者価格がすぐ下がらない理由の一つとして、推定・報道の帰属を付けて記載する。\n- 事実4について：豆価格だけが値上げを引き起こしたと断定しない。事業者の説明として限定して記載する。\n",
+  "writer_news_field_text": "- ICO Composite Indicator Price（I-CIP）は2026年9月に平均262.18米セント／ポンドとなり、2026年8月比で8.7%下落した。ICOは、ブラジルの収穫物の供給増加と潤沢な供給見通しが価格を押し下げた一方、認証済みアラビカ在庫の少なさとエルニーニョをめぐる不確実性が下支えしたと報告した。（範囲：国際的なICO Composite Indicator Price。コーヒー4グループの指標を含む。条件：ICOの2026年9月市場報告。値下がり要因と下支え要因の双方を記録）\n- USDAのブラジル現地報告は、2025年初頭の高価格について、ブラジルとベトナムの悪天候による供給混乱、販売可能な豆の限定、低在庫、強い国際需要を要因として列挙した。（範囲：国際コーヒー市場および主要生産国ブラジル・ベトナム。条件：USDAブラジル現地報告における市場説明）\n- Reutersが2025年12月に取材した市場関係者・専門家は、生豆価格が小売に反映されるまで少なくとも約9か月かかるとの見積もりを示した。記事は、米国ロースターが平均で生豆在庫を約2～3か月分保有し、その後の焙煎・包装にも約2～3か月かかり、小売業者との価格交渉は四半期ごとに行われることが多いと報じた。（範囲：米国のロースターと小売価格への価格転嫁。条件：市場関係者・専門家の推定およびReutersの取材報告であり、すべての企業の標準期間を示すものではない）\n- APが2025年10月に取材したシカゴのカフェ運営者は、4店舗でラテ、カプチーノなどの価格を約15%引き上げたと述べた。同運営者は、前年より豆の購入費が15%高くなり、カップやスリーブ、人件費も費用要因になったと説明した。（範囲：シカゴのMomentum Coffee 4店舗の事例。条件：一事業者への取材事例。全米カフェの平均的な値上げ率ではない）\n\nWriterへの注意(事実ではありません)：\n- 事実1について：ICOの報告する市場要因。これだけで消費者価格が同月に下がったとは言えない。報告ページは2026年10月9日時点で9月報告を掲載。\n- 事実2について：天候だけを唯一の原因としない。\n- 事実3について：相場下落や関税撤廃の後も消費者価格がすぐ下がらない理由の一つとして、推定・報道の帰属を付けて記載する。\n- 事実4について：豆価格だけが値上げを引き起こしたと断定しない。事業者の説明として限定して記載する。\n"
+}

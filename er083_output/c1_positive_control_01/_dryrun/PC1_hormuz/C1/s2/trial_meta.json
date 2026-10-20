@@ -1,0 +1,125 @@
+{
+  "trial_id": "FAMILY-X-B3-BACKGROUND-FACT-COMPLEMENT-TRIAL-01",
+  "candidate": "C1",
+  "dry_run": true,
+  "status": "OK",
+  "model_requested": "gpt-6.1-sol",
+  "effort": "high",
+  "topic": "ホルムズ海峡を通航する船舶への20％通航料をめぐる発言の撤回と市場反応",
+  "candidate_note_sha256": "592a13b317d9792ada52d8df274c4bfaebb46bab2521bb626bffa1a487d055a1",
+  "candidate_note_chars": 1466,
+  "production_prompt_shas": {
+    "developer_message_sha256": "b4391b0387c54d39cf2ed095e7c00e028b13f173065ed0077b3a16f0fe37981a",
+    "user_prompt_template_sha256": "6cc7218432a685701ddeb9342fc63fd1da6d13a18e0f0e5dd842ed591808b796",
+    "fact_test_definitions_sha256": "91513c8999a63439adb40d5c28a253e4cdbb438228ba1deda199d2ae6c6c5a8a"
+  },
+  "reeval_note_sha256": "dcf4f2b40a9ddaccf6121ae39c6b5ccf1bd31edab3b012d7a65d8da05d4142dd",
+  "calls": [
+    {
+      "model": "gpt-6.1-sol",
+      "reasoning": {
+        "effort": "high"
+      },
+      "schema_name": "storyline_b3_fact_selection",
+      "developer_sha256": "b4391b0387c54d39cf2ed095e7c00e028b13f173065ed0077b3a16f0fe37981a",
+      "user_prompt_sha256": "469d93dfbb00398b904da5ae57276f465b767099b395e9ce27e6a4c97a479199",
+      "user_prompt_chars": 7987
+    }
+  ],
+  "wall_seconds": 0.0,
+  "stop_record": null,
+  "ledger_sha256": "83b2a09b99b20af0f1d30aefc6dda7bfe40ed06a6d7726a56a0bb90bce774522",
+  "generalization_hits": [],
+  "analysis": {
+    "selected_fact_ids": [
+      "HF-002",
+      "HF-007",
+      "HF-009",
+      "HF-006"
+    ],
+    "excluded_fact_ids": [
+      "HF-001",
+      "HF-003",
+      "HF-004",
+      "HF-005",
+      "HF-008",
+      "HF-010",
+      "HF-011",
+      "HF-012"
+    ],
+    "supplement_fact_ids": [
+      "HF-006"
+    ],
+    "supplement_reasons": {
+      "HF-006": "【背景補完】[stub合成] 解析経路の検証用。実LLM出力ではない。"
+    },
+    "n_supplement": 1,
+    "supplement_over_cap_2": false,
+    "supplement_not_in_selected": [],
+    "background_confirm_note": "【背景確認】[stub合成] 追加1件。",
+    "background_confirm_note_present": true,
+    "n_selected": 4,
+    "verified_selected_n": 4,
+    "min2_satisfied": true,
+    "selected_storyline": "トランプ氏は7月13日に提案したホルムズ海峡貨物への20％償還料を、中東指導者との協議を受けて翌日、湾岸諸国の対米貿易・投資案件に置き換えたが、撤回後のBrent原油先物は一時上げ幅を縮めただけで高値に戻った。",
+    "core_selected_ids": [
+      "HF-002",
+      "HF-007",
+      "HF-009"
+    ],
+    "core_verified_n": 3,
+    "min2_met_only_via_supplement": false,
+    "added_vs_baseline": [
+      "HF-006"
+    ],
+    "removed_vs_baseline": [],
+    "added_without_supplement_marker": [],
+    "baseline_ids": [
+      "HF-002",
+      "HF-007",
+      "HF-009"
+    ]
+  },
+  "min2_policy": {
+    "floor": 2,
+    "counted": "VERIFIED",
+    "enforced": true,
+    "first_pass_selected_ids": [
+      "HF-002",
+      "HF-007",
+      "HF-009",
+      "HF-006"
+    ],
+    "first_pass_verified_n": 4,
+    "reevaluated": false,
+    "reeval_note_sha256": "dcf4f2b40a9ddaccf6121ae39c6b5ccf1bd31edab3b012d7a65d8da05d4142dd",
+    "final_selected_ids": [
+      "HF-002",
+      "HF-007",
+      "HF-009",
+      "HF-006"
+    ],
+    "final_verified_n": 4
+  },
+  "final_result_call": "initial",
+  "soft_warnings": [
+    "SELECTED_DESPITE_ALL_TESTS_EXCLUDE: ['HF-006']"
+  ],
+  "producer": {
+    "annotated_md_sha256": "91bca452d0097a8801404df7be20d5348b8d4fc887e9fa3b622b855d58cee3a2",
+    "n_facts": 4,
+    "rules_sha256": "525f2309b5212e68a5891794e7fa6194fb25cbf92f1954727c286796597910d8"
+  },
+  "model_returned": "gpt-6.1-sol",
+  "response_id": "stub_resp_1",
+  "b3_latency_seconds": 0.0006139278411865234,
+  "ledger_id": "PC1_hormuz",
+  "role": "positive",
+  "sample": 2,
+  "expected_core": [
+    "HF-006"
+  ],
+  "expected_ok": [],
+  "is_test_ledger": false,
+  "theme_tag": "C1_POSCTRL_01"
+}
