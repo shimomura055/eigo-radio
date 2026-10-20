@@ -21,3 +21,5 @@ W4. SSOT: OPEN-427行末・DECISION_LOG末尾・REGISTER #127行末・REPORT_LED
 
 ## Git/報告
 commit1: 結果+eval+原因分析+Closeout v02+委任文 / commit2: SSOT。trailer: Delegation: FAMILY-X-RESEARCH-FACT-RETENTION-TRIAL-01/委任_03。報告: docs/pm/RESULT_PACKET_XRFR3.md (1)〜(11)+判定整合行。
+
+※本ファイルは要旨版。逐語版=docs/pm/delegation_log/2026-10-20_FAMILY-X-RESEARCH-FACT-RETENTION-TRIAL-01_委任_03_VERBATIM.md
