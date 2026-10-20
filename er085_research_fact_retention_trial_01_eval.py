@@ -89,6 +89,77 @@ def aggregate(cells: list) -> dict:
     return out
 
 
+# ---------------------------------------------------------------------------
+# 判定機械(設計v02 §9-1、事前登録。実走前commit)。最終ラベルはFable。
+# ---------------------------------------------------------------------------
+TOL = 1e-6
+
+
+def classify_variant(variant: str, per_topic: dict, base: dict) -> dict:
+    """per_topic/base: {topic: {key_ledger, ctrl_ledger, delta_facts_vs_E0, fabrication_unsupported, flags_unadjudicated, schema_errors, mean_llm_calls}}
+    返り値: {'label','unmet':[...],'notes':[...]}。label:
+      REJECTED(創作UNSUPPORTED>0、またはmey KEY改善<+0.10) /
+      NOT_FINALIZABLE_UNADJUDICATED(創作フラグ未判定が残る) /
+      NOT_VALIDATED_BELOW_CRITERION_A_PRIME(改善>=+0.10だが基準(a')未達のみ) /
+      NOT_VALIDATED_CRITERIA_UNMET(他基準未達) /
+      USER_DECISION_CANDIDATE_COST(a'〜g充足だが追加LLM呼出>0=費用判断が要る) /
+      VALIDATED_CANDIDATE_PENDING_SEARCH_ARM(a'〜g充足。(h)検索回数/費用は検索込み腕で別判定)
+    """
+    unsupp = sum(t["fabrication_unsupported"] for t in per_topic.values())
+    unadj = sum(t["flags_unadjudicated"] for t in per_topic.values())
+    notes, unmet = [], []
+    mey, mey0 = per_topic["mey"], base["mey"]
+    imp = (mey["key_ledger"] or 0) - (mey0["key_ledger"] or 0)
+    if unsupp > 0:
+        return {"label": "REJECTED", "unmet": ["d:fabrication_unsupported=%d" % unsupp], "notes": notes}
+    if unadj > 0:
+        return {"label": "NOT_FINALIZABLE_UNADJUDICATED", "unmet": ["d:unadjudicated=%d" % unadj], "notes": notes}
+    if imp < 0.10 - TOL:
+        return {"label": "REJECTED", "unmet": ["a:mey KEY improvement %.3f < +0.10" % imp], "notes": notes}
+    a_prime = (mey["key_ledger"] >= 0.9165 - TOL or imp >= 0.1665 - TOL) and mey["key_ledger"] >= 0.667 - TOL
+    if not a_prime:
+        unmet.append("a_prime")
+    only_a_prime = True
+    for t in ("muse", "coffee"):
+        if t not in per_topic:
+            continue
+        pt, bt = per_topic[t], base[t]
+        if pt["key_ledger"] < bt["key_ledger"] - 0.05 - TOL:
+            unmet.append("b:%s regression" % t)
+        elif bt["key_ledger"] < 0.9 and pt["key_ledger"] - bt["key_ledger"] < 0.15 - TOL:
+            unmet.append("b:%s improvement<+0.15 (E0<0.9)" % t)
+    for t, pt in per_topic.items():
+        if pt["ctrl_ledger"] is not None and base[t]["ctrl_ledger"] is not None and pt["ctrl_ledger"] < base[t]["ctrl_ledger"] - 0.10 - TOL:
+            unmet.append("c:%s CTRL regression" % t)
+        if (pt["delta_facts_vs_E0"] or 0) > 2.0 + TOL:
+            unmet.append("e:%s delta_facts>+2" % t)
+        if pt["schema_errors"]:
+            unmet.append("g:%s schema errors" % t)
+    others = [u for u in unmet if u != "a_prime"]
+    extra = any(per_topic[t]["mean_llm_calls"] > base[t]["mean_llm_calls"] + TOL for t in per_topic)
+    if others:
+        return {"label": "NOT_VALIDATED_CRITERIA_UNMET", "unmet": unmet, "notes": notes}
+    if "a_prime" in unmet:
+        return {"label": "NOT_VALIDATED_BELOW_CRITERION_A_PRIME", "unmet": unmet, "notes": ["mey KEY improvement=%.3f (>=+0.10, <a')" % imp]}
+    if extra:
+        return {"label": "USER_DECISION_CANDIDATE_COST", "unmet": [], "notes": ["追加LLM呼出>0: 費用対効果(f)はA〜D最良に対する追加改善+0.15以上かつ追加費用<=JPY1/記事で別判定"]}
+    return {"label": "VALIDATED_CANDIDATE_PENDING_SEARCH_ARM", "unmet": [], "notes": ["(h)検索回数・恒常費用は検索込み腕の結果で別判定"]}
+
+
+def classify_all(agg: dict) -> dict:
+    topics = sorted({k.split("|")[1] for k in agg})
+    variants = sorted({k.split("|")[0] for k in agg if k.split("|")[0] not in ("E0", "X1")})
+    if not all(f"E0|{t}" in agg for t in topics):
+        return {}
+    base = {t: agg[f"E0|{t}"] for t in topics}
+    out = {}
+    for v in variants:
+        pt = {t: agg[f"{v}|{t}"] for t in topics if f"{v}|{t}" in agg}
+        if "mey" in pt:
+            out[v] = classify_variant(v, pt, base)
+    return out
+
+
 def md_report(cells: list, agg: dict, gold: dict, title: str) -> str:
     L = [f"# {title}", "", f"(機械採点。gold={gold.get('frozen_at')})", "", "## 方式×題材 集計", "",
          "| 方式|題材 | n | KEY保持(Ledger) | KEY保持(下書き) | SEC | CTRL | Fact数平均 | Δ対E0 | フラグ(未判定/創作) | LLM呼出 | 費用JPY | 時間s | 検索 |",
@@ -96,6 +167,11 @@ def md_report(cells: list, agg: dict, gold: dict, title: str) -> str:
     for k, a in agg.items():
         L.append(f"| {k} | {a['n_samples']} | {a['key_ledger']} | {a['key_draft']} | {a['sec_ledger']} | {a['ctrl_ledger']} | {a['mean_facts']} | {a['delta_facts_vs_E0']} | "
                  f"{a['flags_total']}({a['flags_unadjudicated']}/{a['fabrication_unsupported']}) | {a['mean_llm_calls']} | {a['mean_cost_jpy']} | {a['mean_latency_s']} | {a['web_search_calls']} |")
+    cls = classify_all(agg)
+    if cls:
+        L += ["", "## 方式別 機械判定(設計v02 §9-1。最終ラベルはFable)", ""]
+        for v, c in cls.items():
+            L.append(f"- {v}: **{c['label']}** unmet={c['unmet']} {c['notes']}")
     L += ["", "## gold項目別(各セル)", ""]
     for c in sorted(cells, key=lambda x: (x["topic"], x["variant"], x["sample"])):
         rows = [f"{iid}:{'OK' if r['ledger'] else 'MISS[' + r['diag'].split('(')[0] + ']'}" for iid, r in c["per_item"].items()]
@@ -140,7 +216,7 @@ def main(argv=None) -> int:
     cells = collect(os.path.abspath(a.out), a.variant, a.include_dryrun, a.gold)
     gold = load_gold(a.gold)
     agg = aggregate(cells)
-    res = {"cells": cells, "aggregate": agg}
+    res = {"cells": cells, "aggregate": agg, "classification": classify_all(agg)}
     lib.write_json(os.path.join(os.path.abspath(a.out), "eval_summary_dryrun.json" if a.include_dryrun else "eval_summary.json"), res)
     md = md_report(cells, agg, gold, a.title)
     if a.report:

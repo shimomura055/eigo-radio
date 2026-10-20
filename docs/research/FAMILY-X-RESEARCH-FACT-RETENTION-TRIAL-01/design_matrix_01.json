@@ -115,7 +115,25 @@
       "方式E/Dを省略(約-10)",
       "S-checkを省略または1 sample(-27〜-54)",
       "題材coffeeを省略(約-13)"
-    ]
+    ],
+    "v02": {
+      "no_search_full_matrix": 39.0,
+      "search_arm_6runs": [
+        162.0,
+        180.0
+      ],
+      "b3_connection": 15.0,
+      "trial_total_委任_02": [
+        216.0,
+        234.0
+      ],
+      "cap_jpy": 230.0,
+      "anken_total_incl_委任_01": [
+        220.0,
+        238.0
+      ],
+      "approval_class": "C(300円以下)"
+    }
   },
   "production_cost_context_jpy": {
     "mey_research_stage": 26.995,
@@ -125,5 +143,38 @@
     "mey_web_search_calls_verification": 5,
     "mey_search_fee_share_of_research_plus_ledger": "20 call x USD0.01 x 160 = 32.0 JPY (約89%)",
     "mey_article_total": 104.275
-  }
+  },
+  "version": "v02 (2026-10-20 委任_02。候補方式の実走前に確定。設計書 TRIAL_DESIGN_01.md §9 v02)",
+  "decision_criteria_v02": {
+    "a_prime": "mey KEY保持率(Ledger,n=12観測) >= 0.917 (11/12) または E0比+0.17以上(=2観測以上)。かつ>=0.667。(旧(a) E0+0.25を置換)",
+    "rejected_if": [
+      "創作UNSUPPORTED>=1",
+      "mey KEY改善 < +0.10"
+    ],
+    "b": "muse/coffee: KEY >= E0-0.05。E0<0.9のtopicは+0.15以上の改善",
+    "c": "CTRL >= E0-0.10 (各topic)",
+    "e": "delta_facts <= +2.0/topic",
+    "f": "追加LLM呼出0 (Eは費用対効果例外)",
+    "g": "schema適合・B3 id抽出",
+    "h_search_arm": "Researcher検索回数の2run平均がE0平均+2回以内、Researcher費用平均がE0+JPY3以内。検証検索がProduction実績(5回)の2倍(10回)超なら増加とみなす",
+    "unchanged": "(b)〜(h)・他の指標・gold_02・方式文面は不変。全方式に同一適用",
+    "machine": "er085_research_fact_retention_trial_01_eval.py::classify_variant"
+  },
+  "search_arm_v02": {
+    "description": "Production経路と同一のrun_researcher_for_topic(web_search tool固定)で E0(Prompt不変)/A/D を mey × 2 sample。DのみrunVerification(run_verification_for_topic)も呼ぶ。S-check廃止(本腕に吸収)",
+    "variants": [
+      "E0",
+      "A",
+      "D"
+    ],
+    "topic": "mey",
+    "samples_per_variant": 2,
+    "runs": 6,
+    "script": "er085_research_fact_retention_trial_01_search_arm.py",
+    "out": "er085_output/research_fact_retention_trial_01/search_arm",
+    "anomaly_stop_web_search_per_run": 40,
+    "budget_jpy_guard_total": 190,
+    "scoring": "引用URLを無料HTTP取得→出典窓(700字)で主体(SA)・文脈(SC)・gold KEYが明示される場合のみ、Ledger単一Factブロックに保持されたかを判定。創作は引用出典の逐語照合(adjudication_02.json)"
+  },
+  "s_check_abolished": "S-check(候補1方式Researcherのみ約JPY54)は廃止し検索込み腕に吸収"
 }

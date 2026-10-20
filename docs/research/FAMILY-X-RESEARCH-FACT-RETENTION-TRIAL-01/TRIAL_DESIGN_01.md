@@ -132,3 +132,37 @@ byd_recall 4/semiconductor 5/gpt6_wiring 5・6/central_bank 8/boredom 9/coffee 1
 - OPEN-416(中東記事、USER_DECISION_REQUIRED #112)/OPEN-425(本件の根本原因調査+C1陽性対照Trial、C1の背景補完追加0/12→C1評価は撤回済み[ユーザー2026-10-20])。
 - DECISION_LOG:20154(Researcher `notes_for_writer`案N: 逆表現のみ、Verification・Fact本文・schema不変。Ledger側の別問題で、本Trialの『主体・背景の脱落』とは独立)。
 - 過去Trialとの重複回避: B3側(C1)は『Ledgerにあるものを選ぶ』検証で、上流Ledgerに無いFactは扱えない。本Trialは上流(Research/検証)の保持を扱い重複しない。DECISION_LOG:20154(案N)は逆表現のみで、主体・背景保持は未検証。
+
+## §9 v02(追記、2026-10-20 委任_02、候補方式の実走前に確定。管理ID FAMILY-X-RESEARCH-FACT-RETENTION-TRIAL-01 委任_02)
+
+**変更理由(Fable決定、委任_01所見に基づく)**: ①E0(検索なし)はKEY 9/12=0.75で、Production(検索込み)の0/6を部分再現にとどまった。事前登録基準(a)「E0+0.25以上」はE0=0.75では12/12を要し達成不能。また検索なし比較だけでは、Production(検索込み・素材量119K tok)での採否判断に足りない。候補方式の実走前に、以下(9-1〜9-4)へ改訂・追加する。**他の指標・閾値・gold(gold_02)・方式文面は不変。全方式に同一適用。結果を見ての基準変更は行わない。**
+
+### 9-1 基準(a')(§4の(a)を置換。(b)〜(h)は不変)
+- 旧(a): mey KEY保持率(Ledger、n=12観測)がE0+0.25以上かつ0.667以上。
+- **新(a')**: mey KEY保持率が **0.917(11/12)以上、またはE0比+0.17以上(=2観測以上の改善)** で、かつ0.667以上。REJECTED条件「(a)の改善が+0.10未満」は不変(改善+0.10未満=REJECTED)。
+- 機械判定: `er085_research_fact_retention_trial_01_eval.py::classify_variant`(ラベル: REJECTED / NOT_FINALIZABLE_UNADJUDICATED / NOT_VALIDATED_BELOW_CRITERION_A_PRIME / NOT_VALIDATED_CRITERIA_UNMET / USER_DECISION_CANDIDATE_COST / VALIDATED_CANDIDATE_PENDING_SEARCH_ARM)。最終ラベルはFable。`test_02.py::test_verdict_machine`で固定。
+
+### 9-2 検索込み比較腕(S-check §7-4を置換・廃止)
+- **S-check(候補1方式のResearcherのみ・約JPY54)は廃止し、本腕に吸収する。**
+- 実装: `er085_research_fact_retention_trial_01_search_arm.py`。Production経路と同一の `er012_e_family_entertainment_two_level_runner_01.run_researcher_for_topic(client, topic)`(`tools=web_search`固定、model/effort/schema/developer message同一)を呼ぶ。topicはProduction run_mey_01と同一文字列(`中東情勢が悪化、イエメン・サウジ周辺で攻撃続く`)。Prompt差分は**当該process内のcontext managerでの差し替えのみ**(終了時に必ず復元、testで固定): E0=不変(Production関数の出力と一致をrun前にassert) / A=Researcher Promptに第5・6観点(検索なしと同一文言)を挿入 / D=A+検証Promptに1行追加(検証は`run_verification_for_topic`も呼ぶ。独立再検索が発生するため費用・検索回数に含める)。E0/Aは検証を走らせない(Ledger比較は『draft view』=draft全FactをVERIFIED扱いで描画。Productionの検証が追加で脱落/AMBIGUOUS化させ得る点は限界)。
+- 構成: mey題材、E0/A/D × 2 sample = 6 run(Researcher約JPY27/run、Dは検証約JPY9追加)。出力は `er085_output/research_fact_retention_trial_01/search_arm/` のみ(Production run dir・Ledgerに書かない)。harnessから別途Web検索しない。無料HTTP取得は各runが実際に引用した出典URL本文のみ。
+- **採点(事前登録)**: 各runの引用URL(Ledger draftの`source_url` ∪ `url_citation`)を無料HTTPで取得(`curl.exe`)。出典本文の700字窓(350字刻み)で、項目が**その出典に明示されているか**(expected)を判定し、expectedの項目のみ、Ledger(Dは検証後/E0・Aはdraft view)の**単一Factブロック**に保持されたか(retained)を判定する。項目: **SA**=空港攻撃等の主体(出典窓に{Ansar Allah/Houthi}∧{Saudi/Riyadh/airport等}∧{attack/strike/drone/missile}。Ledger側は同一Factブロックに主体∧サウジ関連語∧攻撃語)、**SC**=紅海・海上交易路とイエメン戦況の文脈(出典窓に{Red Sea/Bab al-Mandab/maritime/shipping/trade route}∧{Houthi/Ansar Allah/Yemen}。Ledger側は同一Factブロックに海上語∧フーシ/イエメン語)。加えてgold_02のKEY項目(M-A1〜M-B4)を、引用出典の窓にそのgroups全てが一致する場合のみexpectedとして併用。取得不能(HTTP非2xx/本文500字未満)の出典はexpectedに含めず、件数を明記。retention=保持観測/expected観測。
+- **検索・費用の判定(事前登録、(h)の具体化)**: 候補(A/D)の `web_search_call_count`(Researcher)の2 run平均が **E0の2 run平均+2回以内**、かつ Researcher費用の平均がE0平均+JPY3以内。Dの検証検索はE0側に比較対象がないため、Production実績(5回/JPY9.11、run_mey_01)を参照値として併記し、Dの追加費用(恒常+検証分)は『Production検証は元々存在するため、Dの差分=検証Prompt 1行のtoken増のみ』として扱い、検証検索回数がProduction実績の2倍(10回)を超えた場合は増加とみなす。n=2の検出力限界(歴史的分布4〜16回)をClosoutで明記し、結論は『増加が確認されない/確認された』に限る。
+- 品質の判定: 検索込みでの保持改善(retention)がE0比+0.17以上、または0.917以上(expected観測が各方式4以上ある場合のみ。満たない場合は『識別不能』と明記し、Fableへ判断候補)。創作: 検索込みrunのフラグ付きFactを引用出典の逐語で照合(`adjudication_02.json`)。UNSUPPORTEDが1件でもあれば当該方式はREJECTED。
+- **異常STOP条件**: 1 runの`web_search_call_count`が40(Production実績20の2倍)を超えたら即中断しFableへ報告(`ANOMALY_STOP.json`)。予算超過見込み・案件合算300円超見込みもSTOP。
+
+### 9-3 検索なし本走の構成(§7-2の具体化)
+- 方式E0/A/B/C/D/E × {mey, muse, coffee} × 2 sample(`_run.py`)。meyのE0(s1/s2)は委任_01の実走stage cacheを再利用し再実行しない(同一cell・同一Prompt)。muse/coffeeのE0は新規。方式間のR0/RA/RB・検証stageはpaired共有(§design_matrix stage_sharing)。
+
+### 9-4 費用表(更新)
+| 項目 | 見積JPY | 備考 |
+|---|---|---|
+| 検索なし本走(mey 5方式 + muse/coffee 6方式、各2 sample) | 約39(上限45) | stage共有、§5-3 |
+| 検索込み腕 6 run | 約162〜180(E0/A: Researcher約27×4、D: 約36×2) | 検索回数に依存。1 run=検索料JPY1.6/回。ガード合計190 |
+| Ledger→B3接続(最良1方式のmey Ledger、現行B3 2 call) | 約15 | `er083_c1_positive_control_01_run.py`系 |
+| 委任_02 合計 | 約216〜234(Cap 230、T-3記録) | 案件合算(委任_01 実費4.245含む) ≈220〜238 ≤300 → 承認区分C(7-7、ユーザー費用承認不要) |
+- 当日実費累計(PMツール修正後): 約343(314.5+PLWP1 28.6)+本委任 約230でも1,000円以内。
+- 量産時の恒常費用との区別(ユーザー§4): 上記はTrial費用(開発費)。恒常費用はCloseoutで『A/D: 追加検索0・追加LLM0・token増のみ』を検索込み腕の実測(検索回数・token差)で示す。70円目標への影響も併記。
+
+### 9-5 E-1(v02で参照した既存記録)
+委任_01 RESULT_PACKET(docs/pm/RESULT_PACKET_XRFR1.md (6)(10))、`BASELINE_REPRO_01.md`、gold_02。Fable決定1〜4(委任_02委任文、`docs/pm/delegation_log/2026-10-20_FAMILY-X-RESEARCH-FACT-RETENTION-TRIAL-01_委任_02.md`)。
