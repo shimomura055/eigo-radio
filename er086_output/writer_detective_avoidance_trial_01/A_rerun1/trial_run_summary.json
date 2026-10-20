@@ -1,0 +1,85 @@
+{
+  "trial_id": "FAMILY-X-WRITER-DETECTIVE-WORD-AVOIDANCE-TRIAL-01",
+  "pattern": "A",
+  "pattern_text": "Do not use the word \"detective\" anywhere in the article.",
+  "pattern_text_sha256": "db455becf94a3bc7a6dbd5d00eeb8f069fc3d71b2504dda67dee405b865102be",
+  "out_dir": "er086_output/writer_detective_avoidance_trial_01/A_rerun1",
+  "budget_jpy": 40.0,
+  "rf_run": false,
+  "rf_skip_reason": "RFは共有review_queue/へ書込むため本Trialでは実行しない(本文は変更しない検査系)",
+  "timings": {
+    "started": "2026-10-21T08:47:37",
+    "writer_sec": 157.8,
+    "advanced_sec": 26.0,
+    "standard_sec": 40.0,
+    "total_sec": 223.8,
+    "ended": "2026-10-21T08:51:21"
+  },
+  "prompt_dump": [
+    {
+      "stage": "r0",
+      "file": "A_r0.txt",
+      "sha256": "af990a7c4c0328795573d12dd7d94a8ef357de84ef577b4c742936eb759e37cf",
+      "chars": 2570,
+      "contains_pattern_text": true
+    },
+    {
+      "stage": "r1",
+      "file": "A_r1.txt",
+      "sha256": "24ab52958daaeea8e83553ebbebc2926a4c56779cdf870e953f79e310a5673e3",
+      "chars": 979,
+      "contains_pattern_text": true
+    },
+    {
+      "stage": "r2",
+      "file": "A_r2.txt",
+      "sha256": "2dfae687ce49832c4daa36cd7b589c9627d92a5f8e4f0f42e2351e3eb303de80",
+      "chars": 1037,
+      "contains_pattern_text": true
+    },
+    {
+      "stage": "adv_translation",
+      "file": "A_adv_translation.txt",
+      "sha256": "fd16887a210a6b589de7ba763c571354fdafaa4253daa6b7be59ce032b72e7c3",
+      "chars": 4521,
+      "contains_pattern_text": true
+    },
+    {
+      "stage": "adv_in_one_line",
+      "file": "A_adv_in_one_line.txt",
+      "sha256": "d46c59f1986e0bf088aee63d1d61751d73ab8f75bf402353b7afd3c759520cc3",
+      "chars": 8110,
+      "contains_pattern_text": true
+    },
+    {
+      "stage": "standard",
+      "file": "A_standard.txt",
+      "sha256": "9e66a3c7f8ff605438e3fc0df408cee1cc55d6c0740afe18b472e1e9daf155a8",
+      "chars": 6053,
+      "contains_pattern_text": true
+    },
+    {
+      "stage": "standard",
+      "file": "A_standard_2.txt",
+      "sha256": "9e66a3c7f8ff605438e3fc0df408cee1cc55d6c0740afe18b472e1e9daf155a8",
+      "chars": 6053,
+      "contains_pattern_text": true
+    }
+  ],
+  "production_restored": {
+    "USER_TMPL": true
+  },
+  "cost": {
+    "by_stage_jpy": {
+      "w1_r0": 5.649,
+      "w1_astra_r1": 3.591,
+      "w1_astra_r2": 3.828,
+      "advanced": 0.309,
+      "standard": 0.365
+    },
+    "total_jpy": 13.741,
+    "by_provider_jpy": {
+      "openai": 13.741
+    }
+  }
+}

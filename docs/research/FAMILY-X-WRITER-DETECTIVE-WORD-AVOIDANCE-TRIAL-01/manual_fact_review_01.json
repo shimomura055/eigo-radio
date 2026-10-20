@@ -1,0 +1,18 @@
+{
+  "_method": "Sonnet全文通読(Advanced/Standard)。入力=run_mey_02 storyline_b3/selected_brief_annotated.md(事実1: 連合軍報道官がフーシ派発射の弾道ミサイル1発を迎撃・破壊と発表/事実2: 英国防省がタイフーン防空任務を発表、攻撃は行わない、空中給油支援延長[フーシ派軍事目標弱体化作戦を含む]、A400M・軍事顧問)とwriter_constraints、verified_fact_ledger.txt。Baselineに既にある同種の問題は『新規』に数えない。",
+  "_rule": "major_errors = Baselineに無い新規の重大誤り(Ledger外の事実/原因動機の創作/発表主体・帰属の欠落または変更/時系列・因果の誤り)の件数。MINOR(語調・時制の緩さ等)は数えず notes に記録。",
+  "A": {"major_errors": 1,
+        "notes": ["A_rerun1(Advanced/Standard共通): 第2段落冒頭『The Houthis fired one ballistic missile toward Riyadh』を記事自身の断定として書き、連合軍報道官の発表帰属は『迎撃・破壊した』側にしか付いていない。ミサイル発射主体(フーシ派)の発表帰属がBaseline Advancedより弱い(MAJOR、新規)。",
+                  "MINOR: 『Fighter jets are coming』(発表された将来の任務を進行中と読ませる)。",
+                  "初回A(out-dir=A)はJA R2が『配役表』形式(『タイフーン：』)で全角コロンを含み、Production JA記号QAのR2再実行後も残りSTOP。本文は未完成のため評価対象外(A_rerun1を評価)。"]},
+  "B": {"major_errors": 1,
+        "notes": ["Advanced『In response to these threats, the UK Ministry of Defense said …』/Standard『The UK Ministry of Defense responded to these threats.』: 英国防省の発表がミサイル事案への対応だったという因果関係はLedgerに無い(新規の因果創作、MAJOR。Baselineは『In this context』)。",
+                  "Standard『The Houthis had fired it toward Riyadh.』は報道官発言の直後の別文で帰属語なし(Baseline Standardと同型のため新規に数えない)。",
+                  "MINOR: 『passing fuel from one aircraft to another』(一般知識による補足)。"]},
+  "C": {"major_errors": 0,
+        "notes": ["発射主体(フーシ派)は『A spokesperson for the Saudi-led coalition said it had intercepted and destroyed one ballistic missile fired by the Houthis』と帰属付きで維持。Advancedには『this was the coalition's account』と帰属を明示する追加文。Standardは2文に分かれるが直後に『This was the coalition's account.』を置く(Baseline Standardより帰属が強い)。",
+                  "MINOR(要Fable確認の境界): 『They will not attack the other side's bases.』(Advanced/Standard)=Ledger外の名詞『bases』。直後に『will not attack the Houthis』と正しく述べるため重大誤りとはしなかったが、Ledger外の細部。",
+                  "MINOR: Standard『It has extended its support』は発表の『延長するとした』(将来)より完了寄りの時制。『Are on the Way』/『Britain is sending fighter jets』も発表された任務を進行中と読ませる(LLM判定もMINOR)。",
+                  "MINOR: 『It was not a report that British Typhoons had intercepted the missile』はLedgerに無い否定の追加(論旨は帰属の強調で、事実を足していない)。"]},
+  "Baseline_reference": {"notes": ["Standard『The Houthis had fired it toward Riyadh.』が別文で帰属語なし(RF候補s11と同じ、E2E_PLAN_02 §3)。LLM判定もMAJOR扱い。これは既存のBaselineの特性で、新規誤りの比較基準とする。"]}
+}

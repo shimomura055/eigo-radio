@@ -1,0 +1,60 @@
+{
+  "trial_id": "FAMILY-X-WRITER-DETECTIVE-WORD-AVOIDANCE-TRIAL-01",
+  "pattern": "A",
+  "pattern_text": "Do not use the word \"detective\" anywhere in the article.",
+  "pattern_text_sha256": "db455becf94a3bc7a6dbd5d00eeb8f069fc3d71b2504dda67dee405b865102be",
+  "out_dir": "er086_output/writer_detective_avoidance_trial_01/A",
+  "budget_jpy": 40.0,
+  "rf_run": false,
+  "rf_skip_reason": "RFは共有review_queue/へ書込むため本Trialでは実行しない(本文は変更しない検査系)",
+  "timings": {
+    "started": "2026-10-21T08:43:34",
+    "total_sec": 193.3,
+    "ended": "2026-10-21T08:46:47"
+  },
+  "prompt_dump": [
+    {
+      "stage": "r0",
+      "file": "A_r0.txt",
+      "sha256": "af990a7c4c0328795573d12dd7d94a8ef357de84ef577b4c742936eb759e37cf",
+      "chars": 2570,
+      "contains_pattern_text": true
+    },
+    {
+      "stage": "r1",
+      "file": "A_r1.txt",
+      "sha256": "e1883656c853f06cf5622a621995abf0bcdfd6c2152402f7bfc1521e0d003939",
+      "chars": 1011,
+      "contains_pattern_text": true
+    },
+    {
+      "stage": "r2",
+      "file": "A_r2.txt",
+      "sha256": "06cbcf7bed1f368d257c0104369c660983ed76829f6d3459cc5e9687cd4a9411",
+      "chars": 1144,
+      "contains_pattern_text": true
+    },
+    {
+      "stage": "r2_symbol_rerun",
+      "file": "A_r2_symbol_rerun.txt",
+      "sha256": "06cbcf7bed1f368d257c0104369c660983ed76829f6d3459cc5e9687cd4a9411",
+      "chars": 1144,
+      "contains_pattern_text": true
+    }
+  ],
+  "production_restored": {
+    "USER_TMPL": true
+  },
+  "cost": {
+    "by_stage_jpy": {
+      "w1_r0": 6.475,
+      "w1_astra_r1": 2.286,
+      "w1_astra_r2": 2.821,
+      "w1_astra_r2_symbol_rerun": 2.639
+    },
+    "total_jpy": 14.221,
+    "by_provider_jpy": {
+      "openai": 14.221
+    }
+  }
+}

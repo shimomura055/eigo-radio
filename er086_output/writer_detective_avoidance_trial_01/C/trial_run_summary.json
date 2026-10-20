@@ -1,0 +1,85 @@
+{
+  "trial_id": "FAMILY-X-WRITER-DETECTIVE-WORD-AVOIDANCE-TRIAL-01",
+  "pattern": "C",
+  "pattern_text": "Do not use the word \"detective\" anywhere in the article. Create an engaging news story through the actual events, surprising developments, decisions, consequences, and connections between verified facts. Avoid relying on a detective metaphor to make the story entertaining. A mystery-like narrative structure is acceptable when it naturally follows the facts.",
+  "pattern_text_sha256": "37c2d4cc180a705510b5a43f45f8ebc36d408a668ab247b8462f9bdc958747e3",
+  "out_dir": "er086_output/writer_detective_avoidance_trial_01/C",
+  "budget_jpy": 40.0,
+  "rf_run": false,
+  "rf_skip_reason": "RFは共有review_queue/へ書込むため本Trialでは実行しない(本文は変更しない検査系)",
+  "timings": {
+    "started": "2026-10-21T08:43:34",
+    "writer_sec": 156.4,
+    "advanced_sec": 19.0,
+    "standard_sec": 22.0,
+    "total_sec": 197.4,
+    "ended": "2026-10-21T08:46:51"
+  },
+  "prompt_dump": [
+    {
+      "stage": "r0",
+      "file": "C_r0.txt",
+      "sha256": "32c32a28a96ebfa24a991eb718f85ce5ff2988735f812b2d3c376ac30a0cb9a5",
+      "chars": 2873,
+      "contains_pattern_text": true
+    },
+    {
+      "stage": "r1",
+      "file": "C_r1.txt",
+      "sha256": "e8294e2829467a99a97c12d1b7ad707bbb1052c5b2a9aca0b17043bbcbc55189",
+      "chars": 1307,
+      "contains_pattern_text": true
+    },
+    {
+      "stage": "r2",
+      "file": "C_r2.txt",
+      "sha256": "53acd37f43de648b179b8dcce1df2e754ca9f79cef6eae45bc7efcf3df599eed",
+      "chars": 1432,
+      "contains_pattern_text": true
+    },
+    {
+      "stage": "adv_translation",
+      "file": "C_adv_translation.txt",
+      "sha256": "37ebcc665a8ec8769cfb761a67e9b77b937cad719bf6d5b98353f44fa3fc5a64",
+      "chars": 4903,
+      "contains_pattern_text": true
+    },
+    {
+      "stage": "adv_in_one_line",
+      "file": "C_adv_in_one_line.txt",
+      "sha256": "91dbede6d9ccd8afc00443f3c529c053414c2a066dbdb51576b145a3e7898acb",
+      "chars": 8692,
+      "contains_pattern_text": true
+    },
+    {
+      "stage": "standard",
+      "file": "C_standard.txt",
+      "sha256": "09e73189647991815c51e71db5ec10bdf7eb700bb6fb67e967ce3f5c913b4475",
+      "chars": 6531,
+      "contains_pattern_text": true
+    },
+    {
+      "stage": "standard",
+      "file": "C_standard_2.txt",
+      "sha256": "09e73189647991815c51e71db5ec10bdf7eb700bb6fb67e967ce3f5c913b4475",
+      "chars": 6531,
+      "contains_pattern_text": true
+    }
+  ],
+  "production_restored": {
+    "USER_TMPL": true
+  },
+  "cost": {
+    "by_stage_jpy": {
+      "w1_r0": 5.66,
+      "w1_astra_r1": 2.977,
+      "w1_astra_r2": 2.723,
+      "advanced": 0.234,
+      "standard": 0.253
+    },
+    "total_jpy": 11.846,
+    "by_provider_jpy": {
+      "openai": 11.846
+    }
+  }
+}
