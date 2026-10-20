@@ -17,6 +17,8 @@ import er020_tts_retry_local_rewrite_01 as role_gate
 ROLE_FULL_STORY_SEGMENT = "full_story_part1_c1"  # FULL_STORY role(Tier3有効、CS層有効)。Family Z narrator clip名型
 ROLE_NO_TIER3 = None  # Tier3なしrole(segment_id=None相当、KP型)
 
+_LOCAL_ASR_MEMO = {}  # wav(path,mtime,size)->local faster-whisper転写(同一入力・同一出力のmemo化のみ。判定ロジックは無変更、評価時間短縮)
+
 
 def judge_offline(canonical_text: str, primary_text: str, secondary_text, wav_path: str,
                   ledger_phrases=("Melos",), segment_id=ROLE_FULL_STORY_SEGMENT, force_secondary: bool = False) -> dict:
@@ -34,8 +36,22 @@ def judge_offline(canonical_text: str, primary_text: str, secondary_text, wav_pa
     cs_flag = bool(role_gate.connected_speech_enabled_for(segment_id))
     orig = sec.get_full_text_via_azure_stt_with_phrase_list
     orig_tel = sec.semantic_equivalence.append_telemetry_log
+    orig_local = sec._connected_speech_equivalence_local_asr_text
+
+    def memo_local(wav):
+        import os
+        try:
+            st = os.stat(wav)
+            key = (os.path.abspath(wav), st.st_mtime_ns, st.st_size)
+        except OSError:
+            return orig_local(wav)
+        if key not in _LOCAL_ASR_MEMO:
+            _LOCAL_ASR_MEMO[key] = orig_local(wav)
+        return _LOCAL_ASR_MEMO[key]
+
     sec.get_full_text_via_azure_stt_with_phrase_list = fake_azure
     sec.semantic_equivalence.append_telemetry_log = noop_telemetry
+    sec._connected_speech_equivalence_local_asr_text = memo_local
     try:
         sec.reset_secondary_cache()
         detail = sec.evaluate_attempt_with_cascade_detail(
@@ -46,6 +62,7 @@ def judge_offline(canonical_text: str, primary_text: str, secondary_text, wav_pa
     finally:
         sec.get_full_text_via_azure_stt_with_phrase_list = orig
         sec.semantic_equivalence.append_telemetry_log = orig_tel
+        sec._connected_speech_equivalence_local_asr_text = orig_local
     j = detail.get("asr_judgement")
     cls = detail.get("classification")
     state = j.get("state") if isinstance(j, dict) else str(j)[:60]

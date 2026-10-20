@@ -50,6 +50,28 @@ def build_plan(design: dict) -> dict:
     return {"takes": takes, "slows": slows, "n_tts": len(takes), "n_slow": len(slows), "n_wav": len(takes) + len(slows)}
 
 
+def build_plan_v02(design: dict) -> dict:
+    """[v02] 追加負例(minimal pair)の生成計画。純関数(API 0)。
+    P1/P3/P4の文脈でMelosだけをMello/Melon/Mullosに差し替えた文をTTSへ渡す。判定用canonicalは元のMelos文。"""
+    g = design["phases"]["B"]["v02"]["negatives_v02"]
+    takes, slows = [], []
+    for ctx in g["contexts"]:
+        assert "Melos" in ctx["template"], ctx
+        for vkey, vword in g["variants"].items():
+            text = ctx["template"].replace("Melos", vword)
+            for voice in g["voices"]:
+                for t in range(1, int(g["takes_per_voice"]) + 1):
+                    wid = f"NM_{ctx['id']}_{vkey}_{voice}_take{t}"
+                    base = {"sentence_id": f"NM_{ctx['id']}_{vkey}", "context_id": ctx["id"], "variant": vkey,
+                            "label": "negative", "negative_kind": "minimal_pair", "voice": voice, "take": t,
+                            "text": text, "canonical_text": ctx["template"], "confusable": vword,
+                            "expected_melos": len(L.RE_MELOS.findall(ctx["template"]))}
+                    takes.append({"id": wid, "slow6": False, **base})
+                    if "slow6pct" in g["speed_variants"].get(voice, []):
+                        slows.append({"id": wid + "_slow6", "base_id": wid, "slow6": True, **base})
+    return {"takes": takes, "slows": slows, "n_tts": len(takes), "n_slow": len(slows), "n_wav": len(takes) + len(slows)}
+
+
 def generate_take(entry: dict, out_dir: str) -> dict:
     import er002_common as common
     import er003_b1_p3u_audio as p3u
@@ -80,12 +102,14 @@ def main(argv=None):
     ap.add_argument("--budget-jpy", type=float, required=True)
     ap.add_argument("--tts-execution-mode", required=True, choices=["STANDARD"])
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--only-group", default=None, choices=["negatives_v02"],
+                    help="[v02] 追加負例(minimal pair)だけを生成。manifest_02.jsonを書く(manifest_01は不変)")
     a = ap.parse_args(argv)
     if os.environ.get("TTS_EXECUTION_MODE", "").strip().upper() != "STANDARD":
         print("TTS_EXECUTION_MODE=STANDARD が環境変数に必要(Batch不使用)", file=sys.stderr)
         return 2
     design = json.load(open(a.design, encoding="utf-8"))
-    plan = build_plan(design)
+    plan = build_plan_v02(design) if a.only_group == "negatives_v02" else build_plan(design)
     est = plan["n_tts"] * 0.3
     print(json.dumps({"n_tts": plan["n_tts"], "n_slow": plan["n_slow"], "n_wav": plan["n_wav"],
                       "est_tts_jpy": round(est, 2), "budget_jpy": a.budget_jpy, "dry_run": a.dry_run}))
@@ -97,7 +121,7 @@ def main(argv=None):
     import er019_family_x_style_profile_01 as prof
     out_dir = os.path.abspath(a.out)
     os.makedirs(out_dir, exist_ok=True)
-    cl.install(os.path.join(os.path.dirname(out_dir), "cost_log_phase_B_tts.jsonl"))
+    cl.install(os.path.join(os.path.dirname(out_dir), "cost_log_phase_B_tts_negv02.jsonl" if a.only_group else "cost_log_phase_B_tts.jsonl"))
     consecutive_err, calls = 0, 0
     with cl.logging_context(L.THEME_TAG, "phase_B_tts"):
         for e in plan["takes"]:
@@ -138,6 +162,20 @@ def main(argv=None):
                       "canonical_text": e["canonical_text"], "expected_melos": e["expected_melos"],
                       "confusable": e["confusable"], "slow6": e["slow6"], "base_id": e.get("base_id"),
                       "slowdown_actual_pct": (slow_res.get(e["id"]) or {}).get("slowdown_pct_actual")})
+    if a.only_group == "negatives_v02":
+        for x in audio:
+            x["negative_kind"] = "minimal_pair"
+        for e, x in zip(plan["takes"] + plan["slows"], audio):
+            x.update({"context_id": e["context_id"], "variant": e["variant"]})
+        m2 = {"trial_id": L.TRIAL_ID, "manifest_version": "02(追加負例minimal pair。manifest_01は不変)",
+              "generated": time.strftime("%Y-%m-%dT%H:%M:%S"), "n_tts": plan["n_tts"], "n_slow": plan["n_slow"], "n_audio": len(audio),
+              "reclassification": {"N2_mellows": "boundary", "N4_milos": "boundary"},
+              "valid_negatives_from_manifest_01": ["N1_mellow", "N3_mello"],
+              "constraint_note": "Charonもナレーター経路(flash-lite+PD06)。判定用canonicalは元のMelos文(TTS原稿はMello/Melon/Mullos)。",
+              "audio": audio}
+        json.dump(m2, open(os.path.join(out_dir, "manifest_02.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+        print(json.dumps({"done": True, "n_audio": len(audio), "manifest": "manifest_02.json"}))
+        return 0
     manifest = {"trial_id": L.TRIAL_ID, "manifest_version": "01(固定。以後不変。Phase B/Cはこのmanifestのみ参照)",
                 "generated": time.strftime("%Y-%m-%dT%H:%M:%S"), "n_tts": plan["n_tts"], "n_slow": plan["n_slow"],
                 "n_audio": len(audio),
