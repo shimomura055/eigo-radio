@@ -73,3 +73,19 @@ UDR候補(Fableが判断): (a)本Trialの範囲(非侵食・不補完のみ確�
 ## 参照
 - `TRIAL_DESIGN_01.md`(§4 M3改訂rubric・§8 Opus_I反映)、`OPUS_REVIEW_I_01_VERBATIM.md`、`R1_EVAL_01.md`、`R1_BLIND_PACK_01.md`、`R1_BLIND_EVAL_01.md`、`ARTICLE_COMPARISON_01.md`。
 - 実走証跡: `er083_output/b3_background_fact_trial_01/middle_east_yemen_saudi/{baseline,C1,C2,C3}/s<N>/`(`trial_meta.json`、`storyline_b3/`、`cost_log*.jsonl`、`ja_writer/`)、`er083_output/b3_background_fact_trial_01/{comparison.json,blind_key.json}`。
+
+## §X 2026-10-20 評価是正(ユーザー決定。上記§1〜§7は履歴として改変せず残す)
+
+出典: ユーザー決定(FAMILY-X-RESEARCH-BACKGROUND-GAP-ROOT-CAUSE-01、原文=`docs/pm/delegation_log/2026-10-20_FAMILY-X-RESEARCH-BACKGROUND-GAP-ROOT-CAUSE-01_USER.md`)。
+**上記§1の分類案「VALIDATED(範囲限定)。推奨候補=C1」はC1全体の有効性を意味しない。C1の有効性が確認されたという評価は撤回する。** 現時点のStatus=`C1_CORE_UNVERIFIED`(OPEN-423/OPEN-425、REGISTER #123・#125)。Fable最終分類欄は空欄のまま、Fableが陽性対照Trial(委任_03以降)の結果を踏まえて記入する。
+
+| 区分 | 内容 | 根拠(本Trial) |
+|---|---|---|
+| 確認済み(限定的成果) | 不必要な追加をしない(補完Fact追加0/7、Baseline観測範囲内の選定) | §3: 全7 callで採用IDはF04/F05/F11のみ |
+| 確認済み | 背景不足を正しく記録する(`【背景確認】`で不足明示、C1×2・C2×1で100%) | §1 |
+| 確認済み | ストーリー性を損なわない(Baselineと同等) | §4・`ARTICLE_COMPARISON_01.md` |
+| **未検証(核心機能)** | **必要な背景Factを見つけて追加する**(補完Fact追加実績0件) | §7-1「陽性対照が無い」 |
+| 未検証 | 補完が必要な場面での節度(過剰補完しない・誤帰属しない) | 補完が一度も発生していない |
+| 未検証 | 追加した背景FactがWriter入力経路(producer)に正しく反映され本文で使われること | 追加0件のため経路は実データで未観測(stub dry-runのみ) |
+
+重要: 「追加しなかった」という結果を、背景補完能力の成功として扱わない。本Trialの7 callでは、Ledgerに背景Factが存在しなかった(動機・攻撃主体はLedger欠落と当時判定)ため、「追加0件」は能力の証拠にも不在の証拠にもならない。なお、追加調査(2026-10-20、委任_02)では、本Trialの中東Ledger F01・F11の出典である国連発表(DPPA 2026-10-09)の原文が、サウジ施設への攻撃主体を「Ansar Allah」と明示していることを確認した(Ledger側のF01・F11はその主体名を含んでいない)。これは「背景Fact自体がLedgerに無かった」ことの原因調査(Research段階)に関わる事実であり、詳細は委任_01(`RESEARCH_GAP_ROOT_CAUSE_01.md`)で扱う。次段階=`C1_POSITIVE_CONTROL_DESIGN_01.md`(陽性対照Trial設計、実在の検証済みFactのみ)。Production採用・B3正式仕様変更・過去テーマ大規模展開は未承認のまま。
