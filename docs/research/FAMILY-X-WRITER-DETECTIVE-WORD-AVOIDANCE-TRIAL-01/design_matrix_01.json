@@ -1,0 +1,25 @@
+{
+  "trial_id": "FAMILY-X-WRITER-DETECTIVE-WORD-AVOIDANCE-TRIAL-01",
+  "status": "TRIAL(到達上限VALIDATED、Production採用はユーザーのみ)",
+  "user_original": "docs/pm/delegation_log/2026-10-21_FAMILY-X-WRITER-DETECTIVE-WORD-AVOIDANCE-TRIAL-01_USER.md",
+  "patterns": {
+    "Baseline": {"text": null, "source": "er019_output/middle_east_yemen_saudi/run_mey_02 (production_formal_path、再生成なし)"},
+    "A": {"text": "Do not use the word \"detective\" anywhere in the article."},
+    "B": {"text": "Do not use the word \"detective\" anywhere in the article. However, this restriction does not prohibit a mystery-like narrative structure or a detective-like progression of the news story, as long as it remains faithful to the verified facts."},
+    "C": {"text": "Do not use the word \"detective\" anywhere in the article. Create an engaging news story through the actual events, surprising developments, decisions, consequences, and connections between verified facts. Avoid relying on a detective metaphor to make the story entertaining. A mystery-like narrative structure is acceptable when it naturally follows the facts."}
+  },
+  "injected_stages": {
+    "r0": "er053 build_r0_prompt の末尾(Fact Lockブロックの後)",
+    "r1": "w1.USER_TMPL 末尾(R1 user prompt末尾)",
+    "r2": "w1.USER_TMPL 末尾(R2 user prompt末尾、R1と同一テンプレート)",
+    "adv_translation": "build_family_x_faithful_translation_prompt の指示ブロック末尾(語彙規則ブロックの後・[Japanese article]の直前)",
+    "adv_in_one_line": "build_family_x_in_one_line_prompt の指示ブロック末尾([Japanese source article]の直前)",
+    "standard": "build_family_x_no_heading_prompt の指示ブロック末尾([Article]の直前)"
+  },
+  "not_injected": ["Research", "Ledger検証", "B3", "Risk Flagger(本Trialでは実行しない)", "In One Line文数Validator/記号Validator/段落retryのmust-fix(検査系・技術retry)", "TTS/Assembly"],
+  "generation_model_conditions": "Productionと同一(R0=gpt-6-luna、R1/R2=gpt-6.1-sol effort high、Advanced英訳/IOL/Standard=gpt-6-luna)。変更不可",
+  "max_budget_jpy_per_pattern": 40,
+  "guardrail_total_jpy": 100,
+  "machine_rule": "候補=本文detective(substring,大小文字不問)0件 かつ 事実で新たな重大誤り0 かつ Entertainment平均がBaseline-0.5点以内。複数候補なら追加指示が短いものを同等なら優先。満たさなければREJECTED_CANDIDATE_MACHINE。最終ラベルはFable",
+  "repro_rule": "1セットで結果が明確(候補が1つに定まる/全滅)なら追加生成しない。不明瞭(候補複数でEntertainment差0.3点未満等)の場合のみ候補Patternに限り各1回再生成"
+}
