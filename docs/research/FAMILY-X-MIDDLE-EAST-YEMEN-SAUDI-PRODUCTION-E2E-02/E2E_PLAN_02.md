@@ -52,3 +52,32 @@ Research/Ledger/B3: `run_mey_02/research_ledger/runtime_evidence.json`(gpt-6-lun
 
 ## §8 STOP(2026-10-20 委任_01)
 Std comment_2 の M3 Gate BLOCK(HUMAN_REVIEW_REQUIRED)でS10にてSTOP。Gate迂回・resume・再起動なし。判断候補は RESULT_PACKET_MEY2.md 参照。
+
+## §9 委任_02 調査結果(Std comment_2 HR、2026-10-20、費用JPY0・新規TTS/ASR/LLM呼出0・Lock操作0)
+### 9-1 既存仕様reconcile(14節step2)+11-8判定材料
+- 正式仕様: JA ASR Secondary(SCG)=`CURRENT_SPEC.md:2138`(Azure ja-JP、**Phrase Listなし**、受理=EXACT/NORMALIZED_MATCHのみ。PHONETIC_MATCHは受理しない)。統一judge JA受理集合=`:2819`(OF-AUW-08 R+: EXACT/NORMALIZED、ORTHOGRAPHIC_VARIANT_CONFIRMEDは2エンジン確認)。除外表=`:2810`(**『読みでの受理禁止』2026-10-11ユーザー安全条件**、A7)。表記ゆれ一般化Variant Layer(OPEN-145)=`:2154`、実装`er011_ja_asr_variant_layer_01.py`(形態素解析の全文読み一致)。短文PHONETIC_MATCH=`:1827`(30字以下のみ・読み完全一致のみ)。
+- 判定: 漢字/カタカナの読み同値を受理するTierは**存在する**(Variant Layer Candidate B)が、読みが一致した場合のみ発火する。オフライン再現(`classify_ja_asr_match`、API不要): 台本「タイフーン機」=タイフーンキ(`morph_kana_reading`)に対し、ASR「台風機/台風期」=タイフウキ、「大奮期」=ダイフンキ。**撥音『ン』の有無・濁音が異なる=読みが不一致**のため同値Tierは正しく不発火。よって (a)(仕様と実装の乖離=11-8範囲内の是正)は**非該当**、受理するには「ン脱落を許容する読み許容の新設」=受理面の新設=範囲外(`:2810`の『読みでの受理禁止』とも衝突)。T1/T2(11-8)とも該当なし=不具合0件。
+- Family Z既決との関係: REGISTER #52(M1 OOV除外)・#120(Pattern A受理範囲)は**英語**の音韻等価の判断で、JA固有名詞の表記ゆれは別問題。JAに直接効く既決は`:2810`/`:2819`(読みでの受理禁止・受理集合縮小)。OPEN-371はSecondary障害時のHR Lock早期return(本件と別。委任文のP1辞書UDRとは不一致)。結論: JAで『読みが違うASR転写を受理する』方向は既に否の判断済みで、本件の出口は既存のHR人間試聴(REGISTER #116の運用例)のみ。再質問材料なし。
+- Azure Phrase List(A-3): JA経路は`phrase_list=False`(`er007_ja_secondary_asr_01.py:314`、audit実値は3 attemptとも`phrase_list:false`、`azure_phrase_list`/`azure_phrase_list_weight`キー自体はJA SCG scg_infoに無い)。`AZURE_PHRASE_LIST_WEIGHT=2.0`は`er006_secondary_asr_01.py:75,111`でPhrase List**非空時のみ**適用されるため、JA SCG(PLなし)には効かない。台本語[タイフーン]をJAのPLへ入れる配線は存在しない(新設なら仕様変更=範囲外・判断候補)。
+### 9-2 原因切り分け(14節step3)
+| attempt | route | 音声sha(先頭16)/bytes | 一次ASR(OpenAI) | 二次ASR(Azure) | 差分 |
+|---|---|---|---|---|---|
+| 1 | custom_06ec49ff(S3) | 57c6b7a8…/638,924 | …台風機の… | …**大奮期**の任務は？… | タイフーン機のみ(二次に句読点差) |
+| 2 | custom_06ec49ff(S3) | c9f48c1b…/637,484 | …台風機…**風師波**を攻撃… | …大奮期… | タイフーン機+**フーシ派→風師波(一次のみ)** |
+| 3 | minimal_fallback | 8a05886b…/658,604 | …**台風期**… | …台風期… | タイフーン機のみ |
+- 訂正: 委任_01の『フーシ派以降は全一致』はattempt2の一次ASRについて不正確(風師波)。差分は主に「タイフーン機」、attempt2のみ追加で「フーシ派」。
+- 3音声は**同一ではない**(sha・サイズ全て異なる、3回別生成)。3回とも『ン』を含まない読み(taifū-ki系)にASRが収束=(i)TTSが『タイフーキ』と読んだ、(ii)ASRの語彙事前分布が既知語『台風機/台風期』へ寄せた、の双方が成立し得て転写からは区別不能。傍証: 同runのComment 3『タイフーン戦闘機』は一次=台風戦闘機・二次=**タイフーン戦闘機(完全一致)**でSECONDARY_CONFIRMED合格(pass_with_warning list)=同じ語を含む別文ではTTSが読めている。断定しない。確定は人間の試聴。
+- 所見(1行・変更しない): 台本「タイフーン機」は『戦闘機』を欠く不自然な略称で、ASRが『台風期(typhoon season)』という自然語へ引かれる設計上の弱点。S3 scaffoldは同runのComment 3では『タイフーン戦闘機』を生成しており、『タイフーン戦闘機』のほうが自然で聴取者にも明瞭。
+### 9-3 failure mode一般化(14節step4)
+- failure mode=『台本のカタカナ外来語/固有名詞を、JA ASRが同音近似の既知漢字語へ正書化する』。既往(全Grep、`pass_with_warning_listening_list.json` 51ファイルJA 18エントリ): 一次が漢字化→二次(Azure)が原稿一致で救済(SECONDARY_CONFIRMED)された例3件(タイフーン1[本run Comment 3]、メロス2[Family Z])。二次も漢字化して失敗(NG_BOTH→HR)は`er007_output/ja_asr_cascade_01/human_review_queue.jsonl` JA 11件中の本件1件のみ。er009 JA queue(343件)はASR steps無しのテキストGate記録で対象外。
+- 発生構造は『一次だけ誤る→二次で救済』が通常で、『両エンジンが同じ漢字語へ収束』は希少。語の性質は『カタカナ語+短い漢語接尾(機)』で既知漢語(台風期)に衝突するもの。一般対策の候補(実装せず): (1)scaffold側で衝突しやすい略称を避ける(『戦闘機』等で既知語衝突を減らす)(2)JA SCGへPhrase List(台本のカタカナ語)を渡す(仕様変更=判断)。いずれも未承認・今回実施せず。
+## 9-4 残CP(E2E-01 §14観点、b1b/a2 article.mdをLedger YSA-20261020-01/-02と突合)
+- Ledger外の具体事実・数字・日付・創作場面=0件。本文に数字・月日・曜日・時点語(today等)は0件(grep 0)。比喩(meeting minutes/news detective/name tag/運転と給油)は4つのみで、うち運転/給油の例えは本文で『これで責任は決められない』と非事実を明示。省略(A400M/軍事顧問)は誤りでなく省略。
+- 帰属: Adv=『A spokesperson for the Saudi-led coalition ... said they had intercepted and destroyed one ballistic missile fired toward Riyadh by the Houthis.』=同一文でFact(F-01、連合軍報道官発表)の帰属内に収まる。Std=『...said they had stopped and destroyed one ballistic missile. The Houthis had fired it toward Riyadh.』(s11)。
+- s11所見: Stdは2文に分離され、第2文『The Houthis had fired it』は文法上は報道官のsaid節の外に置かれる。過去完了(had fired)で直前の『said』の内容として読める余地は残るが、独立文としては地の文の断定(フーシ派が発射した)に見える。Ledgerでは『フーシ派が発射したミサイルを連合軍報道官が迎撃と発表』=帰属付き(OBSERVED_REPORTED)なので、Advは帰属維持、Stdは帰属が弱まる(luna A3 conf 0.3のRF候補と整合)。変更は行わない。帰属を強めるなら『the coalition said the Houthis had fired it』形が候補(Writer/Prompt変更に当たるため報告のみ)。
+## 9-5 解除後の手順書(実行しない・ユーザー試聴承認が前提)と代替案
+0. 前提確認: `TTS_EXECUTION_MODE=STANDARD`を明示(新規TTS時のみ)。承認対象wavは**`a2/narration/comment_2.wav`(=attempt3 minimal_fallback、sha 8a05886b…)**。attempt1/2を採用したい場合の既存の公式差替え経路は未確認(要Fable確認。承認は台本shaにのみ紐づきwavは紐づかない=`er003_v1_n3_01_assemble.py:96-117`)。
+1. `record_human_approval(out_dir="er019_output/family_x_audio_production_wiring_01/middle_east_yemen_saudi__run_mey_02/a2", segment_key="comment_2", canonical_text=<a2_support_texts.json comment_2>, approved_by="user")`(`er003_v1_n3_01_assemble.py:96`の正規経路)。費用0。承認でM3 Gate(`er019_family_x_style_profile_01.py:692-693,m3_assembly_gate`)がhuman_approvedへ移る。
+2. `TTS_EXECUTION_MODE=STANDARD .venv\Scripts\python.exe er019_family_x_audio_production_runner_01.py --slug middle_east_yemen_saudi --run run_mey_02 --level a2 --stage tts --budget-jpy 70`(resume)。コード読みでは、comment_2はlock HUMAN_REVIEW_REQUIRED(`er011_human_review_lock_01.py:339`)で0 API、他segmentはstatus==OK+wav存在でreuse(同`:661,708`、14-6)=差分のみ。見積JPY0〜(上限=--budget-jpy 70、実測は走らせて確認)。承認だけでassembleに進める可能性もあるため、tts resumeが必要かはFable確認。
+3. `--stage assemble --level both`(API呼出なし想定、見積0。b1bは既存OKの再組立)→ `--stage player` → `python er019_mey_page_02.py --run-dir ... --audio-dir ... --out user_test/middle_east_yemen_saudi_e2e_02` → `er019_mey_play_verify_02.py`(Playwright)。いずれもJPY0。合計見積JPY0〜数円。
+4. 代替案(判断候補): (ア)承認して続行(上記、最安・最速)。(イ)comment_2のみ文言再生成=**専用経路なし**: `--stage scaffold`はStd support 5文を全て再生成(`runner:309-333`)、LLM非決定のため他4文のshaも変わりTTS再実行(概算JPY10〜15)。かつHR Lock/承認キーは台本shaなので新版扱いで自動解放される(`er011_human_review_lock_01.py:329-332`)が、これは台本の再生成=ユーザー承認範囲(Production挙動の変更でなく既存scaffold再実行)か要Fable判断。(ウ)11-8範囲内是正=9-1のとおり(a)非該当のため案なし。
