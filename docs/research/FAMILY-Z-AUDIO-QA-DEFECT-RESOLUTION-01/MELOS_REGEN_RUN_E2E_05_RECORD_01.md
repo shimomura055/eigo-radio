@@ -1,7 +1,7 @@
 # MELOS_REGEN_RUN_E2E_05_RECORD_01(委任_07、2026-10-20、事実のみ。状態=MELOS_REGENERATED_ASSEMBLED_PAGES_UPDATED_PENDING_FABLE)
 
 ## 実走
-- 前提: 録音2(run_e2e_04 a2 `full_story_part3_c1` attempt2、wav=`run_e2e_04/a2/narration/full_story_part3_c1.wav` sha256 `713252709b972870…`)を `record_human_approval`(承認キー=元原稿 sha `b6d43773…`)で記録(`run_e2e_04/a2/audit/human_approved_segments.json`、approved_at 2026-10-20T07:48:13)。`review_lock_state.json` sha `6720ce80…3e19` は承認前後で不変。`run_e2e_04/STOP`設置(SUPERSEDED_BY_run_e2e_05、RUN_CLOSEDではない)。
+- 前提: 録音2(run_e2e_04 a2 `full_story_part3_c1` attempt2、wav=`run_e2e_04/a2/narration/attempts/full_story_part3_c1_attempt2_customa3c4625e.wav` sha256 `f96c224d7498d454…`(24.59秒))を `record_human_approval`(承認キー=元原稿 sha `b6d43773…`)で記録(`run_e2e_04/a2/audit/human_approved_segments.json`、approved_at 2026-10-20T07:48:13)。`review_lock_state.json` sha `6720ce80…3e19` は承認前後で不変。`run_e2e_04/STOP`設置(SUPERSEDED_BY_run_e2e_05、RUN_CLOSEDではない)。
 - run_e2e_05作成: `copy_reusable_run_assets`(copied 66 / denied 308[=306 + 本委任で新規追加の run_e2e_04/STOP・human_approved_segments.json 2件]。計画=`run_e2e_05/run_e2e_05_copy_plan_07.json`)。`stop_scope_check_fzaq7.json` rc=0、STOP_ALL不在。
 - provenance: `writer/provenance.json` の `audio_text_deviations`(旧Melos→He 3件)を `audit/provenance_audio_text_deviations_inherited_from_run_e2e_04.json` へ退避し `[]` にリセット(sha256 c781b0a0…→e3fbef32…、他キー不変、JSON等価確認済み)。`segment_plan_a2/b1b.json`・`writer/r0.md,r1.md,r2.md,std.md` のsha256はrun_e2e_04と一致。`He drank` は新run内に(退避ファイル以外)0件。
 - runner: 1回のみ起動、再起動0。`--run run_e2e_05 --mode real --stage all --approved-budget-jpy 80 --tts-execution-mode STANDARD`、`TTS_EXECUTION_MODE=STANDARD`。開始 2026-10-20T07:49:30 JST / 終了 08:03:22 JST(壁時計13分52秒、page_verify 170秒を含む)。**rc=0**。stage完走: seed_check/writer/std_adjust/plan/support/kp/tts_b1b/tts_a2/provision_shell/gate/assemble/pages/page_verify(writer/std_adjust/plan/support/kpは再利用、LLM呼出なし)。
@@ -29,3 +29,5 @@
 ## 費用(`audit/cost_by_stage_05.json`、`er026_fz_cost_17.py --cap 80`、cost_log.jsonl 211件)
 - 合計 JPY 28.7886 / 上限80(残51.2114)。runner stage log最終 28.7886 と一致。tts_b1b 12.6691(gemini TTS 9.6062/azure ASR 1.7836/openai ASR 1.2794)、tts_a2 16.1195(gemini TTS 9.4353/azure ASR 4.593/openai ASR 2.085/openai LLM 0.0062)。種別: TTS(gemini) 19.0414 / ASR(azure secondary) 6.3766 / ASR(openai) 3.3644 / LLM 0.0062。Web Search 0、failed_calls 0、usage未取得17件(azure ASR、推定値は含めず)。
 - 当日(2026-10-20 JST)累計: `daily_dev_cost_01.py` adopted 28.79。run_e2e_04(46.14)比 -17.35(TTS retry・Pro fallback・HR Lockなし、gemini TTS 22.58→19.04)。
+
+- 訂正履歴(2026-10-20 PLW委任_01): 冒頭『前提』の録音2 wav実体パスを訂正。旧記載`run_e2e_04/a2/narration/full_story_part3_c1.wav`(sha 713252…)は録音4相当=LR再TTS後の6%減速版(`full_story_part3_c1_original.wav` sha 40c6907e…が減速前)で、録音2(attempt2)ではない。正しくは`narration/attempts/full_story_part3_c1_attempt2_customa3c4625e.wav`(sha f96c224d…)。承認キーは元原稿sha(b6d43773…)でwavパスを含まないため`human_approved_segments.json`への影響なし(根拠: HR_LOCK_PART3C1_ROOT_CAUSE_01.md L17・L88)。
