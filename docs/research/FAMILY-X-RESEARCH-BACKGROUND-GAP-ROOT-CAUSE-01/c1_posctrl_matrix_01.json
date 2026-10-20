@@ -1,0 +1,97 @@
+{
+  "trial_id": "FAMILY-X-RESEARCH-BACKGROUND-GAP-ROOT-CAUSE-01/C1_POSITIVE_CONTROL_TRIAL",
+  "design_doc": "docs/research/FAMILY-X-RESEARCH-BACKGROUND-GAP-ROOT-CAUSE-01/C1_POSITIVE_CONTROL_DESIGN_01.md",
+  "theme_tag": "C1_POSCTRL_01",
+  "conditions": [
+    "baseline",
+    "C1"
+  ],
+  "samples": [
+    1,
+    2
+  ],
+  "est_b3_call_jpy": {
+    "lib_estimate": 7.6,
+    "previous_trial_actual_mean": 8.67,
+    "source": "TRIAL_CLOSEOUT_01.md §6: R1 7 call=60.722円"
+  },
+  "est_w1_chain_jpy": {
+    "lib_estimate": 14.6,
+    "previous_trial_actual": [
+      11.951,
+      10.957
+    ]
+  },
+  "ledgers": [
+    {
+      "id": "PC1_hormuz",
+      "role": "positive",
+      "is_test_ledger": false,
+      "ledger_path": "er019_output/family_x_b3_diversity_trial_01/hormuz/run_01/research_ledger/verified_fact_ledger.txt",
+      "topic": "ホルムズ海峡を通航する船舶への20％通航料をめぐる発言の撤回と市場反応",
+      "expected_core": [
+        "HF-006"
+      ],
+      "expected_ok": [],
+      "prior_baseline_selection": [
+        "HF-002",
+        "HF-007",
+        "HF-009"
+      ],
+      "prior_baseline_runs": 8,
+      "usage_keywords": {
+        "HF-006": [
+          "封鎖",
+          "イラン"
+        ]
+      },
+      "why": "撤回後Brentが『高値に戻った』の前提(7/13の9.59%上昇は米国の対イラン海上封鎖とホルムズ経由のエネルギー輸送への懸念に関連付けられた)を与えるFact。過去8 runで一度も採用されず、B3自身が『市場環境の補足』として除外(fact_selection_evidence.json)"
+    },
+    {
+      "id": "PC2_mey_positive",
+      "role": "positive",
+      "is_test_ledger": true,
+      "ledger_path": "er083_output/c1_positive_control_01/test_ledgers/test_ledger_mey_positive_01.txt",
+      "topic": "中東情勢が悪化、イエメン・サウジ周辺で攻撃続く",
+      "expected_core": [
+        "F12"
+      ],
+      "expected_ok": [
+        "F13",
+        "F14"
+      ],
+      "prior_baseline_selection": [
+        "F04",
+        "F11"
+      ],
+      "prior_baseline_runs": 3,
+      "usage_keywords": {
+        "F12": [
+          "アンサール",
+          "フーシ"
+        ]
+      },
+      "why": "『誰がサウジを攻撃しているのか』(攻撃主体の帰属)を国連特使発言として直接述べるFact(F12)。既存F01〜F11(前Trial)には主体の帰属が無い"
+    },
+    {
+      "id": "NC1_coffee",
+      "role": "negative",
+      "is_test_ledger": false,
+      "ledger_path": "er019_output/coffee_prices/run_l3_01/research_ledger/verified_fact_ledger.txt",
+      "topic": "Current news/lifestyle topic: why coffee prices have risen so sharply and why a cup of coffee now costs more. Using only facts confirmed by web search (International Coffee Organization, USDA reports, Reuters/AP/Bloomberg-level reporting, company announcements), cover recent coffee bean price levels and changes (with dates, and whether arabica or robusta), the reported causes (weather and harvest conditions in producing countries, currency, supply and demand, tariffs if reported), and the reported effect on retail or cafe prices for consumers. Separate confirmed facts from forecasts, and do not present one cause as the only cause unless the source says so. Do not invent details and do not use the assistant's own prior knowledge.",
+      "expected_core": [],
+      "expected_ok": [],
+      "prior_baseline_selection": [
+        "COFFEE-003",
+        "COFFEE-009",
+        "COFFEE-010",
+        "COFFEE-014",
+        "COFFEE-015"
+      ],
+      "prior_baseline_runs": 3,
+      "usage_keywords": {},
+      "why": "採用5件が原因(010)・下落(009)・転嫁の遅れ(014)・CPI(015)を自己完結で含み、追加すべき背景Factは無い。未採用に背景風Fact(005/006/007/011/012/013)が多数あり過剰補完を誘う陰性対照"
+    }
+  ],
+  "writer_probe_rule": "陽性Ledgerで C1セルが期待Factを選んだ場合のみ、そのC1セル1本とbaselineセル1本(同Ledger)にW-1を実行(最大4本)"
+}
