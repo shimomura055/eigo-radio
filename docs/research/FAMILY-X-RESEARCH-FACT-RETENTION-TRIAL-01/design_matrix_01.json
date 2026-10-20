@@ -1,0 +1,33 @@
+{
+  "trial_id": "FAMILY-X-RESEARCH-FACT-RETENTION-TRIAL-01",
+  "frozen_at": "2026-10-20 (①現行再現の実走前。結果を見て指標・閾値を変えない)",
+  "model": {"name": "gpt-6-luna (vfl01.MODEL = routing.WRITER_MODEL、Production Researcher/検証と同一)", "reasoning_effort": "high", "exception_note": "25節(開発評価=最新上位系原則)の例外: 本Trialの目的は『Production Researcher(luna)で効果が出るか』の比較であり、本番ラインのモデル選定は別判断のため、現行と同一モデルで比較する。上位モデルでの追加比較は委任_02でFableが判断(任意)。"},
+  "variants": {
+    "E0": {"desc": "現行(Production Prompt本文+No-search化の2置換のみ)", "research": "R0", "verify": "V0", "audit": false, "extra_llm_calls": 0, "extra_web_search": 0},
+    "A": {"desc": "Researcher Prompt: 第5(帰属・行為主体)/第6(直接の文脈)観点を追加(RESEARCH_GAP_ROOT_CAUSE_01 §5-3案を逐語)", "research": "RA", "verify": "V0", "audit": false, "extra_llm_calls": 0, "extra_web_search": 0},
+    "B": {"desc": "Trial専用schema: 任意欄actor/contextを追加し、決定論でLedger既存欄(conditions/notes_for_writer)へ畳み込む(Ledger本体schema不変)", "research": "RB", "verify": "V0", "audit": false, "extra_llm_calls": 0, "extra_web_search": 0},
+    "C": {"desc": "検証側のみ: 検証観点に『出典内の重要な帰属・文脈の省略検知』1行を追加(Researcher不変=E0と同一draftを共有)", "research": "R0", "verify": "VC", "audit": false, "extra_llm_calls": 0, "extra_web_search": 0},
+    "D": {"desc": "A+C", "research": "RA", "verify": "VC", "audit": false, "extra_llm_calls": 0, "extra_web_search": 0},
+    "E": {"desc": "二段: E0 draftの後に『保持監査』LLM呼出を1回追加し脱落Factを追加(コスト増方式、費用対効果の対照)", "research": "R0", "verify": "V0", "audit": true, "extra_llm_calls": 1, "extra_web_search": 0}
+  },
+  "topics": {"mey": "主比較条件(Production run_mey_01の出典のうち本文取得できた6件)", "muse": "一般化(主体・理由が明示される報道、正例)", "coffee": "一般化(機関報告、創作誘発への耐性=陰性寄り対照)"},
+  "samples_per_cell": 2,
+  "stage_sharing": "同一(topic,sample)内でR0/RA/RB/検証/AUのstage出力をキャッシュ共有(E0・C・EはR0を共有、A・DはRAを共有)。方式間はpaired比較。方式ごとの費用は『その方式単独で走らせた場合のstage費用の合計』として帰属させる。",
+  "calls_per_topic_sample": {"R0": 1, "RA": 1, "RB": 1, "V0@R0": 1, "V0@RA": 1, "V0@RB": 1, "VC@R0": 1, "VC@RA": 1, "AU@R0": 1, "V0@E": 1, "total": 10},
+  "cost_estimate_jpy": {
+    "basis": "run_mey_01 raw_usage_logの実測単価(gpt-6-luna: in 0.1/out 0.5 USD per 1M、web_search 10USD/1000call、USD_JPY=160)。検索なしの呼出は検索料も検索結果由来の入力tokenも無い。入力tokenは出典長から保守的に見積り(mey R:7K/V:13K、muse 4K/8K、coffee 6K/11K)、出力はProduction実測13.5K(うち推論8.7K、検索込み)を上回る12K/6K/6Kとして上乗せ。",
+    "per_stage_jpy": {"R(mey)": 1.07, "V(mey)": 0.69, "AU(mey)": 0.67, "R(muse)": 0.9, "V(muse)": 0.6, "R(coffee)": 1.0, "V(coffee)": 0.65},
+    "per_topic_sample_jpy": {"mey": 8.1, "muse": 4.9, "coffee": 6.5},
+    "stage1_full_matrix_n2_jpy": 39.0,
+    "stage1_cap_jpy": 50.0,
+    "baseline_repro_E0_mey_n2_jpy_est": 3.5,
+    "baseline_repro_cap_jpy": 30.0,
+    "s_check_with_search_mey_candidate_n2_jpy_est": 54.0,
+    "b3_connection_2calls_jpy_est": 15.2,
+    "trial_total_jpy_est_委任_02": 108.0,
+    "anken_total_incl_委任_01_jpy_est": 112.0,
+    "approval_class": "C(案件合算300円以下、承認済みScope内=7-7によりAI自律)",
+    "reduction_if_needed": ["samplesを2->1(約-20)", "方式E/Dを省略(約-10)", "S-checkを省略または1 sample(-27〜-54)", "題材coffeeを省略(約-13)"]
+  },
+  "production_cost_context_jpy": {"mey_research_stage": 26.995, "mey_ledger_verification_stage": 9.11, "mey_research_plus_ledger": 36.1, "mey_web_search_calls_research": 15, "mey_web_search_calls_verification": 5, "mey_search_fee_share_of_research_plus_ledger": "20 call x USD0.01 x 160 = 32.0 JPY (約89%)", "mey_article_total": 104.275}
+}

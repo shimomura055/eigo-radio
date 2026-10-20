@@ -1,0 +1,462 @@
+{
+ "trial_id": "FAMILY-X-RESEARCH-FACT-RETENTION-TRIAL-01",
+ "frozen_at": "2026-10-20 (実走前。結果を見て変更しない)",
+ "scoring_rules": {
+  "item_retained": "当該topic・sample・方式のrendered Ledger(verified_fact_ledger.txt = Productionのbuild_verified_ledger_textの出力 = B3の入力)の**単一Factブロック**が、itemの全groupsの正規表現(大文字小文字無視)に一致する。groupsは日英の同義語を列挙。",
+  "draft_retained": "同判定を下書きFact(claim/scope/conditions/ambiguity/notes_for_writer/numeric_scope/actor/context)に対して行う。draft_retained かつ not item_retained は『検証/Ledger化で脱落』と診断する。",
+  "tiers": "KEY=本Trialの主指標(出典が明示する主体・背景・明示された理由)。SEC=副指標。CTRL=現行で保持される想定の対照(回帰検出)。",
+  "reason_policy": "『理由(動機)』は出典が明示している場合のみgold化する(中東は出典に動機の明示が無く、gold対象外=むしろ『書かれていれば創作』)。Muse U-B3/U-R1、coffee K-B1は出典が理由を明示している。",
+  "fabrication": "gold外で出典に裏付けのない主体・動機・因果を書いた場合を創作(UNSUPPORTED)とする。機械フラグ(motive_causal_marker / causal_stated_by_source / watch)を出し、フラグ付きFactを出典逐語と照合してadjudication_01.jsonへ SUPPORTED(quote)/UNSUPPORTED を記録する。未判定フラグはUNADJUDICATEDとし、最終ラベルを出さない。",
+  "unneeded_fact": "不要Fact増加数 = 方式のFact数(下書き)平均 − E0のFact数平均(同topic)。周辺数値の重複Factを含む。判定基準で+2以内。"
+ },
+ "topics": {
+  "mey": {
+   "items": [
+    {
+     "id": "M-A1",
+     "class": "actor",
+     "tier": "KEY",
+     "source_id": "S2",
+     "quote": "continuing attacks against civilian infrastructure in the Kingdom of Saudi Arabia by Ansar Allah, including the latest attack on 10 October against King Khalid International Airport in Riyadh",
+     "groups": [
+      "(Ansar\\s*Allah|アンサール|アンサル|フーシ|Houthi|ホーシ)",
+      "(サウジ|Saudi)",
+      "(特使|国連|グルンドベルグ|Grundberg|\\bUN\\b)",
+      "(攻撃|attack)"
+     ],
+     "desc": "主体: UN特使(10/11声明)が、サウジ民間インフラへの継続的攻撃の主体をAnsar Allahと明示"
+    },
+    {
+     "id": "M-A2",
+     "class": "actor",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "Ansar Allah has carried out deadly attacks against civilian and energy infrastructure in Saudi Arabia",
+     "groups": [
+      "(Ansar\\s*Allah|アンサール|アンサル|フーシ|Houthi|ホーシ)",
+      "(サウジ|Saudi)",
+      "(エネルギー|energy)",
+      "(攻撃|attack)"
+     ],
+     "desc": "主体: UN特使(10/9 安保理)が、サウジの民間・エネルギー施設への致命的攻撃の主体をAnsar Allahと明示"
+    },
+    {
+     "id": "M-B1",
+     "class": "background",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "Following Ansar Allah’s advances on Mokha and the coast along the Bab al-Mandab",
+     "groups": [
+      "(Ansar\\s*Allah|アンサール|アンサル|フーシ|Houthi|ホーシ)",
+      "(モカ|ムハ|Mokha|Mocha|マンデブ|Bab al-Mandab)",
+      "(進攻|進出|前進|攻勢|進軍|advance|制圧|進撃)"
+     ],
+     "desc": "背景: Ansar Allahのモカ・バブ・アル・マンデブ沿岸への進攻(戦況)"
+    },
+    {
+     "id": "M-B2",
+     "class": "background",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "Ansar Allah’s threats against Saudi-linked commercial ships in the Red Sea undermine the freedom of navigation of every country",
+     "groups": [
+      "(Ansar\\s*Allah|アンサール|アンサル|フーシ|Houthi|ホーシ)",
+      "(紅海|Red Sea)",
+      "(船|ship|航行|商船)"
+     ],
+     "desc": "背景: Ansar Allahの紅海でのサウジ関連商船への脅威(航行の自由)"
+    },
+    {
+     "id": "M-B3",
+     "class": "background",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "These threats are becoming enmeshed with the broader confrontation over control of maritime trade routes and the stresses on the international energy market",
+     "groups": [
+      "(海上交易路|海上貿易路|海上輸送路|海上通商路|maritime trade|交易路|貿易路|通商路)",
+      "(エネルギー市場|energy market|エネルギー)"
+     ],
+     "desc": "背景: 脅威が海上交易路の支配をめぐる対立・国際エネルギー市場の緊張と絡み合いつつある(特使の状況認識)"
+    },
+    {
+     "id": "M-B4",
+     "class": "background",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "Earlier this week, the Government launched a large-scale counter-offensive and has since reported retaking areas around the Bab al-Mandab",
+     "groups": [
+      "(反攻|反撃|counter-offensive|大規模攻勢)",
+      "(政府|Government)",
+      "(バブ|マンデブ|Bab al-Mandab|奪還|取り戻|再奪取)"
+     ],
+     "desc": "背景: 政府側の大規模反攻とバブ・アル・マンデブ周辺の奪還報告"
+    },
+    {
+     "id": "M-B5",
+     "class": "context",
+     "tier": "SEC",
+     "source_id": "S2",
+     "quote": "These attacks represent a grave escalation. Such actions pose a serious threat to regional security, perpetuate cycles of violence and complicate even more peace efforts for Yemen",
+     "groups": [
+      "(深刻な|重大な|重大|grave|エスカレーション)",
+      "(和平|平和|peace)"
+     ],
+     "desc": "文脈: 特使の評価(重大なエスカレーション、地域安全保障への脅威、和平努力を一層複雑化)"
+    },
+    {
+     "id": "M-C1",
+     "class": "action_object",
+     "tier": "CTRL",
+     "source_id": "S3",
+     "quote": "the attack resulted in 12 fatalities",
+     "groups": [
+      "(12人|12名|十二人)",
+      "309",
+      "(GACA|民間航空)"
+     ],
+     "desc": "対照(現行で保持済み想定): GACA続報の死傷者12人/309人"
+    },
+    {
+     "id": "M-C2",
+     "class": "actor",
+     "tier": "CTRL",
+     "source_id": "S5",
+     "quote": "صاروخين أطلقتهما جماعة الحوثيين سقطا داخل حرم مطار عدن الدولي",
+     "groups": [
+      "(アデン)",
+      "(2発|二発|ミサイル2)",
+      "(Ansar\\s*Allah|アンサール|アンサル|フーシ|Houthi|ホーシ)"
+     ],
+     "desc": "対照(現行で保持済み想定): アデン空港構内にフーシ派発射ミサイル2発(主体明示)"
+    },
+    {
+     "id": "M-C3",
+     "class": "actor",
+     "tier": "CTRL",
+     "source_id": "S4",
+     "quote": "Iran-backed Houthi terrorist militias launched this evening, Thursday, 9 ballistic missiles and 7 different projectiles on several residential neighborhoods in Marib city",
+     "groups": [
+      "(マリブ|Marib)",
+      "(Ansar\\s*Allah|アンサール|アンサル|フーシ|Houthi|ホーシ)",
+      "(弾道ミサイル|ballistic)"
+     ],
+     "desc": "対照(現行で保持済み想定): マリブ市内住宅地へのフーシ派ミサイル(SABA、マリブ県メディア局の報告として)"
+    },
+    {
+     "id": "M-C4",
+     "class": "action_object",
+     "tier": "CTRL",
+     "source_id": "S6",
+     "quote": "استهداف أحد المباني الإدارية التابعة لشركة أرامكو السعودية في مدينة الظهران",
+     "groups": [
+      "(アラムコ|Aramco)",
+      "(ダ[ーハフ]*ラン|ザフラン|Dhahran)",
+      "(火災|fire)"
+     ],
+     "desc": "対照: エネルギー省関係者の発表: アラムコ管理棟(ダーラン)が攻撃を受け限定的火災、死傷者なし"
+    }
+   ],
+   "watch": [
+    {
+     "id": "iran",
+     "pattern": "イラン|Iran",
+     "note": "S4(SABA)に『Iran-backed』の形容があるのみ。他の文脈でイランを主体・動機として書いたら創作候補"
+    },
+    {
+     "id": "coalition",
+     "pattern": "連合|coalition",
+     "note": "packetに連合軍の記述なし(SPA本文は取得不可)"
+    },
+    {
+     "id": "us_israel_others",
+     "pattern": "米国|アメリカ|イスラエル|ロシア|UAE|アラブ首長国|ヒズボラ|ハマス",
+     "note": "packetに無い主体"
+    },
+    {
+     "id": "saudi_aggressor",
+     "pattern": "サウジ(軍|主導|が.{0,6}(空爆|攻撃した))",
+     "note": "サウジを攻撃主体とする記述はpacketに無い"
+    },
+    {
+     "id": "motive_words",
+     "pattern": "(報復|仕返し|示威|威嚇のため|ためと見られ|ためとみられ|狙っ)",
+     "note": "動機はpacketに明示なし(gold対象外)"
+    }
+   ]
+  },
+  "muse": {
+   "items": [
+    {
+     "id": "U-A1",
+     "class": "actor",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "Meta has been testing a “human concierge” for its new personal AI assistant, Muse, which entails having human contractors quietly handle some of the phone calls placed via the digital agent",
+     "groups": [
+      "Meta",
+      "(契約|外部委託|業務委託|contractor|人間|ヒューマン)",
+      "(電話|通話|call)"
+     ],
+     "desc": "主体・行為: Metaが人間の契約スタッフにMuse経由の電話の一部を代行させるテスト"
+    },
+    {
+     "id": "U-A2",
+     "class": "actor",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "Meta enabled the human concierge feature, also referred to as “human agent calls,” for half of its employees last week",
+     "groups": [
+      "(従業員|社員|employee)",
+      "(半数|half|50%|5割)"
+     ],
+     "desc": "対象: 人間エージェント通話機能を従業員の半数に有効化"
+    },
+    {
+     "id": "U-B1",
+     "class": "background",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "The Facebook and Instagram owner told employees about the test last week, shortly after the company publicly launched a phone-calling feature for Muse",
+     "groups": [
+      "Muse",
+      "(電話|通話)",
+      "(公開|開始|提供|ローンチ|発表|リリース)",
+      "(直後|先週|前週|数日|days|shortly|last week|後)"
+     ],
+     "desc": "背景: Museの電話発信機能の公開直後に社内へテストを告知"
+    },
+    {
+     "id": "U-B2",
+     "class": "background",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "Some employees have raised privacy concerns about humans handling those calls, warning that the approach could result in sensitive information being shared unintentionally with contractors in call centers",
+     "groups": [
+      "(従業員|社員|employee)",
+      "(プライバシー|機微|個人情報|sensitive|privacy|漏え|流出)"
+     ],
+     "desc": "背景: 従業員がプライバシー懸念(機微情報が契約スタッフへ意図せず共有され得る)を提起"
+    },
+    {
+     "id": "U-B3",
+     "class": "reason",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "some tests indicated having humans make the calls could get their success rate up to the 95 per cent to 98 per cent range, instead of the “lower percentage of AI calling.”",
+     "groups": [
+      "95",
+      "98",
+      "(成功率|success)"
+     ],
+     "desc": "理由(出典明示): 人間が発信すると成功率が95〜98%に上がり得る(AI発信は低い)と社内投稿"
+    },
+    {
+     "id": "U-B4",
+     "class": "background",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "each agent would have its own secure “virtual machine,” or a dedicated computer in the cloud designed to keep people’s sessions isolated",
+     "groups": [
+      "(仮想マシン|VM|virtual machine|専用.{0,6}(クラウド|コンピュータ))",
+      "(安全|セキュリティ|隔離|分離|secure|保護)"
+     ],
+     "desc": "背景: Metaは各エージェントに専用の仮想マシン等の安全策を強調(人間通話はその訴求を損ない得ると従業員が指摘)"
+    },
+    {
+     "id": "U-B6",
+     "class": "actor",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "a vice president in Meta's Superintelligence Labs unit acknowledged that “it was a miss” to start testing contractor-placed calls without proper disclosures and said the company had “rolled back this feature” for now",
+     "groups": [
+      "(副社長|Vice President|\\bVP\\b)",
+      "(Superintelligence|スーパーインテリジェンス)",
+      "(ロールバック|巻き戻|停止|中止|撤回|取りやめ|見送|rolled back)"
+     ],
+     "desc": "主体・行為: Meta Superintelligence Labsの副社長が、適切な開示なしの契約スタッフ通話テストは「ミス」と認め、機能を当面ロールバックしたと述べた"
+    },
+    {
+     "id": "U-R1",
+     "class": "reason",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "the purpose of the test was to “get feedback so we can implement safety and privacy protections and improve features before we release them publicly.”",
+     "groups": [
+      "(広報|スポークスパーソン|スポークスマン|spokesperson|Roberts|ロバーツ)",
+      "(フィードバック|feedback|安全|プライバシー保護|safety)"
+     ],
+     "desc": "理由(出典明示): Meta広報(Daniel Roberts)が、テストの目的は公開前に安全・プライバシー保護を実装するためのフィードバック取得と説明"
+    },
+    {
+     "id": "U-B5",
+     "class": "background",
+     "tier": "SEC",
+     "source_id": "S1",
+     "quote": "when the company, then known as Facebook, trialed a digital assistant called “M” in its Messenger service. Media reports later estimated that around 70 per cent of the agent's tasks were actually carried out by humans",
+     "groups": [
+      "(「?M」?|Facebook)",
+      "70"
+     ],
+     "desc": "背景: 約10年前のFacebookのデジタルアシスタント「M」(報道推計でタスクの約70%が人間)"
+    },
+    {
+     "id": "U-B7",
+     "class": "action_object",
+     "tier": "SEC",
+     "source_id": "S1",
+     "quote": "a transcript showed the human contractor had made a racist reference during the call",
+     "groups": [
+      "(人種|racist|race)",
+      "(契約|担当者|スタッフ|contractor|human|人間)"
+     ],
+     "desc": "行為: 人間の契約スタッフが通話中に人種に関する不適切な言及(従業員の報告)"
+    },
+    {
+     "id": "U-S1",
+     "class": "source",
+     "tier": "SEC",
+     "source_id": "S1",
+     "quote": "according to internal company posts seen by Reuters",
+     "groups": [
+      "(社内|internal)",
+      "(Reuters|ロイター)"
+     ],
+     "desc": "出典: 社内投稿をReutersが確認(情報の出所)"
+    },
+    {
+     "id": "U-C1",
+     "class": "action_object",
+     "tier": "CTRL",
+     "source_id": "S1",
+     "quote": "Meta's Muse agent has had more than 2.5 million downloads since its release, according to data provided by market intelligence firm Sensor Tower",
+     "groups": [
+      "(250万|2\\.5)",
+      "(Sensor Tower|センサータワー|センサー・タワー)"
+     ],
+     "desc": "対照: Museのダウンロード250万超(Sensor Tower)"
+    }
+   ],
+   "watch": [
+    {
+     "id": "other_cos",
+     "pattern": "OpenAI|Google|Microsoft|Amazon|Apple|Anthropic|FTC|連邦取引委員会|規制当局",
+     "note": "packetに無い主体"
+    },
+    {
+     "id": "lawsuit_fine",
+     "pattern": "訴訟|罰金|制裁金|解雇",
+     "note": "packetに無い"
+    }
+   ]
+  },
+  "coffee": {
+   "items": [
+    {
+     "id": "K-B1",
+     "class": "background",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "Increased availability from Brazil's harvest and expectations of ample supply weighed on prices",
+     "groups": [
+      "(ブラジル|Brazil)",
+      "(収穫|harvest|新穀|供給|supply)",
+      "(下落|下げ|低下|押し下げ|重し|下押し|下がっ|weigh|弱含)"
+     ],
+     "desc": "原因(出典明示): ブラジルの収穫による供給増と潤沢な供給見通しが価格を押し下げた(ICO)"
+    },
+    {
+     "id": "K-B2",
+     "class": "background",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "Low certified Arabica stocks and uncertainty surrounding El",
+     "groups": [
+      "(認証|certified|取引所)",
+      "(在庫|stocks)",
+      "(エルニーニョ|El Ni)",
+      "(下支え|支え|support)"
+     ],
+     "desc": "背景(出典明示): 認証アラビカ在庫の低さとエルニーニョの不確実性が価格を下支え(ICO)"
+    },
+    {
+     "id": "K-B3",
+     "class": "actor",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "CONAB raised its estimate for the 2026/27 crop to 67.6 million bags (record level) on 24 September",
+     "groups": [
+      "CONAB",
+      "67\\.6"
+     ],
+     "desc": "主体・行為: CONABが9/24に2026/27年産ブラジル見通しを過去最高の6,760万袋へ引き上げ"
+    },
+    {
+     "id": "K-B4",
+     "class": "background",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "2025/26 coffee year surplus of 3.0 million bags after four",
+     "groups": [
+      "(余剰|過剰|surplus)",
+      "(3\\.0|300万|3百万|3,0)"
+     ],
+     "desc": "背景(出典明示): ICOは2025/26コーヒー年度に4年連続の不足の後、300万袋の余剰と見ている"
+    },
+    {
+     "id": "K-B5",
+     "class": "actor",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "NOAA: >90% chance of a very strong El",
+     "groups": [
+      "NOAA",
+      "90"
+     ],
+     "desc": "主体・行為: NOAA気候予測センターが9/10に、非常に強いエルニーニョの確率90%超と公表"
+    },
+    {
+     "id": "K-B6",
+     "class": "background",
+     "tier": "KEY",
+     "source_id": "S1",
+     "quote": "ICO: 2025/26 consumption estimated to decline by 0.8%, including a reduction in the United States",
+     "groups": [
+      "(消費|consumption|需要)",
+      "0\\.8"
+     ],
+     "desc": "背景(出典明示): ICOは2025/26の消費が米国の減少を含め0.8%減と推計"
+    },
+    {
+     "id": "K-C1",
+     "class": "action_object",
+     "tier": "CTRL",
+     "source_id": "S1",
+     "quote": "The ICO Composite Indicator Price (I-CIP) averaged 262.18 US cents/lb in September 2026, down 8.7% from",
+     "groups": [
+      "262\\.18",
+      "8\\.7"
+     ],
+     "desc": "対照: I-CIP 2026年9月平均262.18セント/ポンド、前月比8.7%下落"
+    }
+   ],
+   "watch": [
+    {
+     "id": "tariff_trump",
+     "pattern": "関税|トランプ|Trump|tariff",
+     "note": "ICO packetに関税の記述なし(別出典の話題)"
+    },
+    {
+     "id": "actors_unknown",
+     "pattern": "投機筋が.{0,10}(売り崩|仕掛け)|ヘッジファンド",
+     "note": "packetは『Rising non-commercial shorts』『short covering』のみ"
+    },
+    {
+     "id": "currency",
+     "pattern": "レアル|為替|ドル高",
+     "note": "ICO packet(価格要因節)に為替の記述なし"
+    }
+   ]
+  }
+ },
+ "selection_rule_generalization": "(1)出典URLがrepoの既存Ledger/ER記録に残り、無料HTTPで本文を再取得できる (2)テーマ理解に『主体/背景』が必要(Muse: 誰が何を行ったか、coffee: 価格要因の出典帰属) (3)中東と異なる分野 (4)中東とは構造が異なる対照を含める: Muse=主体・理由が明示される報道(正例)、coffee=主体が薄く数値と要因帰属が主の機関報告(創作誘発への耐性=陰性寄り対照)。coffee(Production Researcher出力のrun_fxpw_01 Ledger)の主要URLのうちinvesting.com/AP/BLSはHTTP 403で再取得不可のため、取得可能なICO報告のみを出典とする。MuseはMUSE-HC手作りLedger(Researcher出力ではない)の出典URLのうち、本文が取得できるCNA/Reuters記事を使う(2026-10-20確認)。"
+}

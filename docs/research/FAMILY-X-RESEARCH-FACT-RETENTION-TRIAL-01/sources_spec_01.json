@@ -1,0 +1,119 @@
+{
+  "trial_id": "FAMILY-X-RESEARCH-FACT-RETENTION-TRIAL-01",
+  "note": "出典本文は全文をrepoへcommitしない(著作権配慮)。er085_output/research_fact_retention_trial_01/sources_raw/(取得時の無フィルタテキスト、非commit)から、下記の開始/終了markerで本文部分のみを切り出し(sources/<topic>/<id>.txt)、body_sha256をmanifestへ記録する。中東の取得は FAMILY-X-RESEARCH-BACKGROUND-GAP-ROOT-CAUSE-01 委任_01(2026-10-20 10:02-10:06 JST、HTTP 200、無料)。muse/coffeeは本委任(2026-10-20、無料HTTP)。中東でLedger引用はあるがJS描画で本文なし/取得不可だった出典(SPA N2695829/w2697151/N2698672/N2698603/w2698805, AP 403)は含めない。Researcherが検索で参照したがFactにしなかったページは記録が無いため含められない(Production同等性の限界)。",
+  "topics": {
+    "mey": {
+      "topic_text": "中東情勢が悪化、イエメン・サウジ周辺で攻撃続く",
+      "ledger_origin": "er019_output/middle_east_yemen_saudi/run_mey_01/research_ledger/fact_ledger_draft.json(Production Researcher出力11 Fact、E0 Before)",
+      "sources": [
+        {
+          "id": "S1",
+          "raw": "mey/src_01.txt",
+          "url": "https://dppa.un.org/en/news/yemen-has-returned-to-full-scale-war-special-envoy-warns",
+          "title": "Yemen has returned to full-scale war, Special Envoy warns | DPPA",
+          "date": "2026-10-09",
+          "http": 200,
+          "fetched_at": "2026-10-20T10:02:42+09:00",
+          "start": "09 October 2026",
+          "end": "Link to original content"
+        },
+        {
+          "id": "S2",
+          "raw": "mey/src_11.txt",
+          "url": "https://osesgy.unmissions.org/en/news/statement-by-un-special-envoy-for-yemen-hans-grundberg-on-latest-attacks-against-saudi",
+          "title": "Statement by UN Special Envoy for Yemen, Hans Grundberg, on latest attacks against Saudi Arabia | OSESGY",
+          "date": "2026-10-11",
+          "http": 200,
+          "fetched_at": "2026-10-20T10:05:06+09:00",
+          "start": "Amman, 11 October 2026",
+          "end": "\nShare"
+        },
+        {
+          "id": "S3",
+          "raw": "mey/src_04.txt",
+          "url": "https://oananews.org/node/713861",
+          "title": "GACA Follow-up Statement on the Attack Targeting King Khalid International Airport (SPA via OANA)",
+          "date": "2026-10-11",
+          "http": 200,
+          "fetched_at": "2026-10-20T10:04:04+09:00",
+          "start": "Riyadh, October 11, 2026, SPA",
+          "end": "-- SPA"
+        },
+        {
+          "id": "S4",
+          "raw": "mey/src_09.txt",
+          "url": "https://www.sabanew.net/story/en/154079",
+          "title": "Houthi Terrorist Militias Fire 16 Ballistic Missiles, Projectiles on Residential Areas in Marib City (SABA)",
+          "date": "2026-10-15",
+          "http": 200,
+          "fetched_at": "2026-10-20T10:06:12+09:00",
+          "start": "[15/10/2026 05:29]",
+          "end": "Key words:"
+        },
+        {
+          "id": "S5",
+          "raw": "mey/src_10.txt",
+          "url": "https://media.aden-gov.net/news/1167",
+          "title": "توضيح أمني بشأن استهداف مطار عدن الدولي (アデン首都治安局)",
+          "date": "2026-10-16",
+          "http": 200,
+          "fetched_at": "2026-10-20T10:05:05+09:00",
+          "start": "الجمعة - 16 أكتوبر 2026",
+          "end": "تابعونا عبر"
+        },
+        {
+          "id": "S6",
+          "raw": "mey/src_08.txt",
+          "url": "https://www.okaz.com.sa/local/na/2270709",
+          "title": "«الطاقة»: استهداف مبنى إداري تابع لشركة أرامكو السعودية في الظهران دون إصابات (Okaz)",
+          "date": "2026-10-14",
+          "http": 200,
+          "fetched_at": "2026-10-20T10:05:04+09:00",
+          "start": "14 أكتوبر 2026 - 00:35",
+          "end": "أخبار ذات صلة"
+        }
+      ],
+      "topic_text_note": "run_mey_01のProduction Researcher Promptの【今回のテーマ】と同一(researcher_full_record.json::prompt)"
+    },
+    "muse": {
+      "topic_text": "MetaのパーソナルAIエージェント「Muse」の電話発信機能で、人間の契約スタッフが一部の通話を代行する「ヒューマン・コンシェルジュ」テスト",
+      "ledger_origin": "er019_output/meta/run_sol61_01/research_ledger(MUSE-HC手作りLedger、参照のみ。Researcher出力ではない)",
+      "sources": [
+        {
+          "id": "S1",
+          "raw": "muse/g_9.txt",
+          "url": "https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946",
+          "title": "Exclusive-Meta testing a 'human concierge' for its new personal AI agent, Muse (Reuters via CNA)",
+          "date": "2026-09-23",
+          "http": 200,
+          "fetched_at": "2026-10-20T10:47:00+09:00",
+          "start": "NEW YORK, Sept 22",
+          "end": "Source: Reuters",
+          "drop": [
+            [
+              "CNA Games",
+              "Show Less"
+            ]
+          ]
+        }
+      ]
+    },
+    "coffee": {
+      "topic_text": "コーヒー豆の国際価格が下落した背景: ICO Coffee Market Report 2026年9月に記載された価格動向と要因(取得済み出典の範囲)",
+      "ledger_origin": "er019_output/coffee_prices/run_fxpw_01/research_ledger(F03-F05のICO出典)",
+      "sources": [
+        {
+          "id": "S1",
+          "raw": "coffee/g_5.txt",
+          "url": "https://www.ico.org/documents/cy2025-26/cmr-0926-e.pdf",
+          "title": "ICO Coffee Market Report - September 2026 (抜粋: 価格要因の節まで)",
+          "date": "2026-09",
+          "http": 200,
+          "fetched_at": "2026-10-20T10:47:00+09:00",
+          "start": "I-CIP drops 8.7% as Brazil's record crop",
+          "end": "US certified stocks of Arabica coffee rose"
+        }
+      ]
+    }
+  }
+}
