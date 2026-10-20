@@ -139,6 +139,18 @@ def load_packet(topic: str, spec: dict, out_root: str = OUT_ROOT) -> list:
     return packet
 
 
+def load_packet_raw(topic: str, spec: dict, out_root: str = OUT_ROOT) -> list:
+    """探索腕X1用: 本文切出し前の取得テキスト全体(ナビ・関連記事等のノイズを含む)を出典として同梱する。
+    Production Researcherが検索で受け取る大量・雑多な内容に近い入力量/ノイズ条件の影響を見る(事前登録外の探索腕)。"""
+    packet = []
+    for s_ in spec["topics"][topic]["sources"]:
+        raw = read_text(os.path.join(out_root, "sources_raw", s_["raw"]))
+        lines = [ln.strip() for ln in raw.splitlines()]
+        body = "\n".join(ln for ln in lines if ln)
+        packet.append({"id": s_["id"], "url": s_["url"], "title": s_["title"], "date": s_["date"], "body": body})
+    return packet
+
+
 def render_packet(packet: list) -> str:
     parts = []
     for s in packet:
@@ -457,6 +469,8 @@ VARIANTS = {
     "C": {"research": "R0", "audit": False, "verify": "VC"},
     "D": {"research": "RA", "audit": False, "verify": "VC"},
     "E": {"research": "R0", "audit": True, "verify": "V0"},
+    # 探索腕(事前登録の比較対象外): E0と同一Promptで、出典を生ページ全文(ノイズ込み)にする。①の再現条件差の切り分け専用
+    "X1": {"research": "R0RAW", "audit": False, "verify": "V0", "raw_packet": True},
 }
 # 追加LLM呼出数(現行E0=Researcher1+検証1=2回に対する増分): A/B/C/D=0, E=+1(保持監査)
 
@@ -487,11 +501,11 @@ def run_variant(client, variant: str, topic: str, sample: int, spec: dict, out_r
     cell_dir = os.path.normpath(cell_dir)
     assert_under_out_root(cell_dir, out_root)
     topic_text = spec["topics"][topic]["topic_text"]
-    packet = load_packet(topic, spec, out_root)
+    packet = load_packet_raw(topic, spec, out_root) if vd.get("raw_packet") else load_packet(topic, spec, out_root)
     meta = {"topic": topic, "sample": sample, "trial_id": TRIAL_ID}
     kw = dict(model=model, effort=effort, guard=guard, dry_run=dry_run, meta=meta)
 
-    r = run_stage(client, cell_dir, vd["research"], lambda: build_researcher_prompt(vd["research"], topic_text, packet), **kw)
+    r = run_stage(client, cell_dir, vd["research"], lambda: build_researcher_prompt("R0" if vd["research"] == "R0RAW" else vd["research"], topic_text, packet), **kw)
     stages = [r]
     draft = fold_b_to_ledger(r["parsed"]) if vd["research"] == "RB" else r["parsed"]
     verify_in_name = vd["research"]

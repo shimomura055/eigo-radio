@@ -2,7 +2,7 @@
 """FAMILY-X-RESEARCH-FACT-RETENTION-TRIAL-01 eval(機械採点。API 0)。
 
 入力: <out>/<topic>/s<N>/<variant>/{draft.json, verified_fact_ledger.txt, summary.json}
-採点規則: gold_01.json(実走前に固定)。item_retained=rendered Ledgerの単一Factブロックが全groupsに一致。
+採点規則: gold_02.json(gold_01の1項目を①実走後・候補実走前に訂正、docs参照)。item_retained=rendered Ledgerの単一Factブロックが全groupsに一致。
 創作: 機械フラグ→adjudication_01.json(SUPPORTED(quote)/UNSUPPORTED)で確定。未判定は最終ラベルを出さない。
 """
 from __future__ import annotations
@@ -18,7 +18,7 @@ import er085_research_fact_retention_trial_01_lib as lib
 
 
 def load_gold(path: str | None = None) -> dict:
-    return lib.read_json(path or os.path.join(lib.DOC_DIR, "gold_01.json"))
+    return lib.read_json(path or os.path.join(lib.DOC_DIR, "gold_02.json"))
 
 
 def eval_cell(cell_variant_dir: str, topic: str, gold: dict, adjud: dict, variant: str, sample: int) -> dict:
@@ -42,7 +42,12 @@ def eval_cell(cell_variant_dir: str, topic: str, gold: dict, adjud: dict, varian
         key = f"{variant}|{topic}|s{sample}|{fl['fact_id']}"
         a = adjud.get(key)
         fl["adjudication"] = a["verdict"] if a else "UNADJUDICATED"
+    flagged_ids = {fl["fact_id"] for fl in flags}
+    prefix = f"{variant}|{topic}|s{sample}|"
+    manual = sorted(k.split("|")[3] for k, v in adjud.items()
+                    if k.startswith(prefix) and v.get("verdict") == "UNSUPPORTED" and k.split("|")[3] not in flagged_ids)
     return {
+        "manual_unsupported": manual,
         "variant": variant, "topic": topic, "sample": sample, "per_item": per_item, "n_facts_draft": len(draft["facts"]),
         "n_blocks_ledger": len(blocks), "verdict_counts": summ["verdict_counts"], "schema_errors": summ["schema_errors"],
         "b3_ids_extractable": len(blocks) > 0 and all(b["fact_id"] for b in blocks), "flags": flags,
@@ -69,7 +74,7 @@ def aggregate(cells: list) -> dict:
     out = {}
     for (var, t), v in sorted(by.items()):
         unadj = sum(1 for c in v for f in c["flags"] if f["adjudication"] == "UNADJUDICATED")
-        unsup = sum(1 for c in v for f in c["flags"] if f["adjudication"] == "UNSUPPORTED")
+        unsup = sum(1 for c in v for f in c["flags"] if f["adjudication"] == "UNSUPPORTED") + sum(len(c.get("manual_unsupported", [])) for c in v)
         mean_facts = statistics.mean(x["n_facts_draft"] for x in v)
         out[f"{var}|{t}"] = {
             "n_samples": len(v),
@@ -85,7 +90,7 @@ def aggregate(cells: list) -> dict:
 
 
 def md_report(cells: list, agg: dict, gold: dict, title: str) -> str:
-    L = [f"# {title}", "", "(機械採点。gold=gold_01.json、規則は実走前固定。)", "", "## 方式×題材 集計", "",
+    L = [f"# {title}", "", f"(機械採点。gold={gold.get('frozen_at')})", "", "## 方式×題材 集計", "",
          "| 方式|題材 | n | KEY保持(Ledger) | KEY保持(下書き) | SEC | CTRL | Fact数平均 | Δ対E0 | フラグ(未判定/創作) | LLM呼出 | 費用JPY | 時間s | 検索 |",
          "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for k, a in agg.items():
@@ -106,8 +111,8 @@ def md_report(cells: list, agg: dict, gold: dict, title: str) -> str:
     return "\n".join(L) + "\n"
 
 
-def collect(out_root: str, variants=None, include_dryrun=False) -> list:
-    gold = load_gold()
+def collect(out_root: str, variants=None, include_dryrun=False, gold_path=None) -> list:
+    gold = load_gold(gold_path)
     adj_path = os.path.join(lib.DOC_DIR, "adjudication_01.json")
     adjud = lib.read_json(adj_path) if os.path.exists(adj_path) else {}
     base = os.path.join(out_root, "_dryrun") if include_dryrun else out_root
@@ -129,10 +134,11 @@ def main(argv=None) -> int:
     ap.add_argument("--report", default=None)
     ap.add_argument("--variant", nargs="*", default=None)
     ap.add_argument("--include-dryrun", action="store_true")
+    ap.add_argument("--gold", default=None, help="gold json path (default gold_02.json)")
     ap.add_argument("--title", default="XRFR eval")
     a = ap.parse_args(argv)
-    cells = collect(os.path.abspath(a.out), a.variant, a.include_dryrun)
-    gold = load_gold()
+    cells = collect(os.path.abspath(a.out), a.variant, a.include_dryrun, a.gold)
+    gold = load_gold(a.gold)
     agg = aggregate(cells)
     res = {"cells": cells, "aggregate": agg}
     lib.write_json(os.path.join(os.path.abspath(a.out), "eval_summary_dryrun.json" if a.include_dryrun else "eval_summary.json"), res)

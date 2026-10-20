@@ -91,6 +91,12 @@ def test_gold_scoring_positive_and_negative():
     # 主体が別Factにしか無い場合は単一ブロック要件を満たさない
     m = lib.match_gold([items["M-A1"]], [neg, "[VERIFIED] F02: アンサール・アッラーは紅海で活動している。"])
     assert m["M-A1"] is None
+    # gold_02の厳格化: 別出典由来の『特使→Ansar Allah→サウジ施設攻撃』Fact(空港を含まない)ではM-A1は充足されない(gold_01の妥当性欠陥の修正)
+    f5 = "[VERIFIED] F5: 特使は、アンサール・アッラーがサウジアラビアの民間インフラおよびエネルギー関連インフラに対して死者を伴う攻撃を行ったと述べた。"
+    assert lib.item_matches(items["M-A1"], f5) is False and lib.item_matches({i["id"]: i for i in GOLD["topics"]["mey"]["items"]}["M-A2"], f5) is True
+    g1 = ev.load_gold(os.path.join(lib.DOC_DIR, "gold_01.json"))
+    a1_old = {i["id"]: i for i in g1["topics"]["mey"]["items"]}["M-A1"]
+    assert lib.item_matches(a1_old, f5) is True  # gold_01では充足されてしまっていた(訂正理由の固定)
     bg = items["M-B2"]
     assert lib.item_matches(bg, "フーシ派(アンサール・アッラー)は紅海でサウジ関連の商船を脅かしていると特使は述べた") is True
     assert lib.item_matches(bg, "紅海の商船航行は通常どおり") is False

@@ -43,7 +43,7 @@ def main(argv=None) -> int:
         return 0
 
     design = load_design(a.design)
-    variants = list(lib.VARIANTS) if (a.variant is None or a.variant == ["ALL"]) else a.variant
+    variants = [v for v in lib.VARIANTS if not lib.VARIANTS[v].get("raw_packet")] if (a.variant is None or a.variant == ["ALL"]) else a.variant
     for v in variants:
         if v not in lib.VARIANTS or v not in design["variants"]:
             raise SystemExit(f"unknown variant {v}")
